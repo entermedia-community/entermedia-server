@@ -1689,16 +1689,16 @@ td.checkbox input, th.firstheader input {
 	display: inline-block;
 }
 .emtree .cat-name.cat-folder {
-    background: url(../images/folder-blue-closed.png) 14px 2px no-repeat;
-}
-.emtree .expanded .cat-name.cat-folder {
-	background: url(../images/folder-blue-open.png) 14px 2px no-repeat;
-}
-.emtree .cat-name.cat-collection {
     background: url(../images/folder-closed.png) 14px 2px no-repeat;
 }
+.emtree .expanded .cat-name.cat-folder {
+	background: url(../images/folder-open.png) 14px 2px no-repeat;
+}
+.emtree .cat-name.cat-collection {
+    background: url(../images/folder-collection-closed.png) 14px 2px no-repeat;
+}
 .emtree .expanded .cat-name.cat-collection {
-    background: url(../images/folder-open.png) 14px 2px no-repeat;
+    background: url(../images/folder-collection-open.png) 14px 2px no-repeat;
 }
 
 .emtree .cat-folder {
@@ -2539,15 +2539,15 @@ label.error {
 .emlist .list-row .category {
     padding-left: 22px;
     padding-top: 0px;
-    background: url('../images/folder-blue-closed.png') 6px 2px no-repeat;
+    background: url('../images/folder-closed.png') 6px 2px no-repeat;
     margin: 0 10px 0 0 ;
     position:relative;
 }
 .emlist .list-row .cat-category {
-    background: url('../images/folder-blue-closed.png') 6px 2px no-repeat;
+    background: url('../images/folder-closed.png') 6px 2px no-repeat;
 }
 .emlist .list-row .cat-collection {
-    background: url('../images/folder-closed.png') 6px 2px no-repeat;
+    background: url('../images/folder-collection-closed.png') 6px 2px no-repeat;
 }
 
 
@@ -2570,7 +2570,7 @@ label.error {
 .summarytab .list-library,
 .summarytab .list-collection {
 	display: block;
-	background: url(../images/folder-closed.png) 6px 4px no-repeat;
+	background: url(../images/folder-collection-closed.png) 6px 4px no-repeat;
     padding-left:26px;
 	line-height: 1.8;
 	text-decoration: none;
