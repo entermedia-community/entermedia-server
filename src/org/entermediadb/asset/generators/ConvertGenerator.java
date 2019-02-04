@@ -62,6 +62,11 @@ public class ConvertGenerator extends FileGenerator
 		{
 		throw new OpenEditException(e);
 		}
+		String collectionid = inReq.findValue("collectionid");
+		if(collectionid != null) {
+			sourcePath = sourcePath.substring(collectionid.length() + 1);
+		}
+		
 		
 //		outputype = outputype.toLowerCase();
 //		if(outputype.contains("?")){
@@ -87,7 +92,9 @@ public class ConvertGenerator extends FileGenerator
 		all.putAll( inReq.getPageMap()); //these could be objects, needed?
 		Map args = inReq.getParameterMap();
 		
-		
+//		if(sourcePath.contains("${")) {
+//			archive.getSearcherManager().getValue(archive.getCatalogId(), inMask, inValues)
+//		}
 		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
 		String name = inPage.get("exportname");

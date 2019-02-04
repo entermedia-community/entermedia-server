@@ -54,6 +54,11 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.redirect(finalpath);
 
 	}
+	
+	
+	
+	
+	
 
 	public void loadOpenCollections(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findValue("catalogid");
@@ -290,7 +295,7 @@ public class ProjectModule extends BaseMediaModule {
 		return null;
 	}
 	
-	protected String loadCollectionId(WebPageRequest inReq) 
+	public String loadCollectionId(WebPageRequest inReq) 
 	{
 		String collectionid = inReq.findValue("collectionid");
 		if (collectionid == null) {
@@ -329,6 +334,10 @@ public class ProjectModule extends BaseMediaModule {
 				page = page.replace(".html", "").replace(".zip", "");
 				collectionid = page;
 			}
+		}
+		if(collectionid != null) {
+			inReq.setRequestParameter("collectionid", collectionid);
+
 		}
 		return collectionid;
 	}

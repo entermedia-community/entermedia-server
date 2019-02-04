@@ -207,7 +207,9 @@
       <language id="en"><![CDATA[Expected Usage]]></language> 
     </name> 
   </property>  
+    <property id="collectionid" index="true"   stored="true" editable="true"  type="list" viewtype="list" listid="librarycollection">Library Collection
    
+  </property>
   
   
 </properties>

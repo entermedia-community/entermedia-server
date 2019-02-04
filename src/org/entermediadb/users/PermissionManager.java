@@ -184,6 +184,9 @@ public class PermissionManager implements CatalogEnabled
 			{
 				//CollectionID specific
 				 per = findPermission(inDataType, inParentFolderId, null, data.getId());
+				 if(per != null) {
+					 log.info("WTF");
+				 }
 			}
 			if( per != null)
 			{
@@ -242,7 +245,9 @@ public class PermissionManager implements CatalogEnabled
 		
 		
 		Searcher searcher = getSearcher("custompermissions");
-		
+		if(inFolder == null && inData == null) {
+			return null;
+		}
 		
 			Data target = (Data) searcher.query().ignoreEmpty().exact("moduleid", inModule).exact("parentfolderid", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
 			if(target != null) {

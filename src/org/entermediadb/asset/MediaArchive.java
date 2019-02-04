@@ -2192,7 +2192,16 @@ public class MediaArchive implements CatalogEnabled
 		return getModuleManager().getBean(getCatalogId(), inId);
 	}
 
-	public String asLinkToPreview(Data inAsset, String inGeneratedName)
+
+	
+	public String asLinkToPreview(Data inAsset, String inGeneratedName) {
+		
+		return asLinkToPreview(inAsset, null, inGeneratedName);
+	}	
+	
+	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName)
+	
+	
 	{
 		if (inAsset == null)
 		{
@@ -2222,13 +2231,27 @@ public class MediaArchive implements CatalogEnabled
 		}
 		String sourcepath = inAsset.getSourcePath();
 
+		String downloadroot = null;
+		if(inCollectionId != null) {
+			downloadroot = "/services/module/librarycollection/downloads/";
+		} else {
+			downloadroot = "/services/module/asset/downloads/";
+
+		}
+		
 		if (inGeneratedName.contains("."))
 		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preset/" + sourcepath + "/" + inGeneratedName;
+			if(inCollectionId != null) {
+
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/"+ inCollectionId +"/" + sourcepath + "/" + inGeneratedName;
+			} else {
+				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + inGeneratedName;
+
+			}
 		}
 		else
 		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
 
 		}
 		finalroot = URLUtilities.urlEscape(finalroot);

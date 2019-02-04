@@ -1,5 +1,7 @@
 #set($hitssessionid = $hits.sessionId )
 $context.putPageValue("showalllanguagevalues",true)
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
 <div class="summarytab">
 <div class="container-fluid ">
 <div class="row">
@@ -21,7 +23,7 @@ $context.putPageValue("showalllanguagevalues",true)
 							#set($collectionid = $context.getRequestParameter("collectionid"))
 							<h4>$context.getText($target.toString()) 
 							#if($caneditasset)
-								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" 
+								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"
 								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
