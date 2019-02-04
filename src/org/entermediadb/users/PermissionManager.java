@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -25,10 +27,15 @@ import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
 
+
 public class PermissionManager implements CatalogEnabled
 {
+	
+	private static final Log log = LogFactory.getLog(PermissionManager.class);
+
 	protected SearcherManager fieldSearcherManager;
 	protected PermissionSorter fieldPermissionSorter;
+	
 	protected String fieldCatalogId;
 	protected FilterReader fieldFilterReader;
 	protected FilterWriter fieldFilterWriter;
@@ -134,6 +141,7 @@ public class PermissionManager implements CatalogEnabled
 					if( value )
 					{
 						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
+						log.info("added custom permission: " + "can" + permissionid +  Boolean.valueOf(value));
 					}
 				}
 			}
