@@ -172,6 +172,8 @@ public class PermissionManager implements CatalogEnabled
 		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
 				exact("moduleid", inDataType).search();
 		log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
+		log.info(modulepermissions.getFriendlyQuery());
+		log.info(modulepermissions.getSearchQuery().toString());
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
