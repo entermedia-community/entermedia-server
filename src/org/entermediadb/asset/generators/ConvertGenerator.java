@@ -65,8 +65,9 @@ public class ConvertGenerator extends FileGenerator
 		String collectionid = inReq.findValue("collectionid");
 		if(collectionid != null) {
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
+			log.info("Final Source Path: " + sourcePath);
+
 		}
-		
 		
 //		outputype = outputype.toLowerCase();
 //		if(outputype.contains("?")){
