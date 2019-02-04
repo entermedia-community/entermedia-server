@@ -23,7 +23,10 @@
 	<input type="hidden" name="catalogid" value="$catalogid"/>
 	<input type="hidden" name="orderid" value="$order.id"/>
 	<input type="hidden" name="newuserstatus" value="downloadrequested"/>
-	
+
+	<input type="hidden" name="field" value="collectionid"/>
+	<input type="hidden" name="collectionid.value" value="$!context.getRequestParameter('collectionid')"/>
+
 	<input type="hidden" name="field" value="publishdestination" />
 	<input type="hidden" name="publishdestination.value" value="$mediaarchive.getCatalogSettingValue("downloadpublisher")" /> ## 0 is http 1 is aspera
 	

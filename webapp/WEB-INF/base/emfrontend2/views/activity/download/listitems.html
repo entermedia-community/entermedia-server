@@ -74,7 +74,7 @@
 						<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn btn-sm btn-primary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+					<a class="btn btn-sm btn-primary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#urlencode($originalpath)?orderid=${order.id}&collectionid=$!{order.collectionid}">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					
@@ -85,7 +85,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}")">[[Download]]</a>
+					<a class="btn small" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
