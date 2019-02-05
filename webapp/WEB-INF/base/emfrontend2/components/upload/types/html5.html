@@ -21,7 +21,7 @@
 	</div>
 	</div>	
 	
-	<!-- This is not shown -->
+	<!-- This is not shown -->view
        <div id="progress_report_template" style="display:none;">
         <li class="uploadprogressrow" >
 			<span id="progress_report_barcurrentupload" style="width: 0px;" class="uploadprogress"></span>
@@ -72,7 +72,6 @@
 					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 					
 					#if( $collectionid)
-						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
@@ -88,8 +87,12 @@
 						<input type="hidden" name="category.value" value="$nodeId"/>
 					#end
 
+                                        #if($collectionid || $nodeid)
+					$context.putPageValue("view","asset/collectionupload")	
 
-					$context.putPageValue("view","asset/multipleupload")	
+#else
+					$context.putPageValue("view","asset/multipleuploadcollection")	
+#end
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
