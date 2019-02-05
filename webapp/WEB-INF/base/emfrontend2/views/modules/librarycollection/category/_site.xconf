@@ -7,7 +7,7 @@
 	
 	<property name="searchcategory">true</property>
 
-	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
+	<inner-layout>/${applicationid}/views/modules/librarycollection/category/collectioncategory.html</inner-layout>
 	
 	<property name="hitsname">hits</property>
 	<property name="virtual">true</property>

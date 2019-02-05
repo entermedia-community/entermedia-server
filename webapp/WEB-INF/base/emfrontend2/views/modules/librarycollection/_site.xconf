@@ -9,7 +9,7 @@
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2/views/modules/default</property>
     <property name="module">librarycollection</property>
     
-	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
 	<path-action name="ProfileModule.savePreference"/>
 	
 	<property name="defaulttab">mediatab</property>
