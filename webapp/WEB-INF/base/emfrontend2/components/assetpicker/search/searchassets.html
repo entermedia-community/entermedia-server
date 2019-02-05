@@ -6,7 +6,7 @@
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("asset") )
 		$context.putPageValue("searcher",$searcher)
-		#set ($details = $searcher.getDetailsForView("asset/advancedsearch", $userprofile))
+		#set ($details = $searcher.getDetailsForView("asset/picker", $userprofile))
 		<form  class="autosubmit"  data-targetdiv="assetsearchresults" action="$home$apphome/components/assetpicker/search/searchassetresults.html">
 		
 
