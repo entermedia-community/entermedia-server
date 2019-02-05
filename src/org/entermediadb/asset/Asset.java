@@ -720,20 +720,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return getMap().getBigDecimal(inKey);
 	}
 
-	public Double getDouble(String inKey)
-	{
-		Object val = getValue(inKey);
-		if( val == null)
-		{
-			return null;
-		}
-		if( val instanceof Double)
-		{
-			return (Double)val;
-		}
-		String value = get(inKey);
-		return Double.parseDouble(value);
-	}
+	
 	
 	public float getUploadPercentage()
 	{

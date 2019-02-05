@@ -921,8 +921,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				
 				
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-				
-				searcher.setAlternativeIndex(newindex);//Should		
+				if(searcher.getCatalogId().equals(inCatalogId)) {
+				searcher.setAlternativeIndex(newindex);//Should	not look at searchers from system etc
+				}
 				long start = System.currentTimeMillis();
 				searcher.reindexInternal();
 				long end = System.currentTimeMillis();
@@ -997,7 +998,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			String searchtype = (String) iterator.next();
 			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-			searcher.setAlternativeIndex(tempindex);//Should				
+			if(searcher.getCatalogId().equals(inCatalogId)) {
+				searcher.setAlternativeIndex(tempindex);//Should
+			}
 			if( !searcher.putMappings() )
 			{
 				log.error("Could not map " + searchtype);

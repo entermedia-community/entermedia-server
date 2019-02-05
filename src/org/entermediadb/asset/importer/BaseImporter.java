@@ -353,10 +353,15 @@ public class BaseImporter extends EnterMediaObject
 			}
 			else if (val != null && val.length() > 0)
 			{
-				
+				PropertyDetail detail = getSearcher().getDetail(header);
+				if(detail == null) {
 				
 				Object value = getSearcher().createValue(headerid, val);
 				inData.setValue(headerid, value);
+				} else {
+					Object value = getSearcher().createValue(header, val);
+					inData.setValue(header, value);
+				}
 				
 			}
 		}
