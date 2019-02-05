@@ -72,6 +72,7 @@
 					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 					
 					#if( $collectionid)
+						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
@@ -88,10 +89,10 @@
 					#end
 
                                         #if($collectionid || $nodeid)
-					$context.putPageValue("view","asset/collectionupload")	
+					$context.putPageValue("view","asset/multipleuploadcollection")	
 
 #else
-					$context.putPageValue("view","asset/multipleuploadcollection")	
+					$context.putPageValue("view","asset/multipleupload")	
 #end
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
