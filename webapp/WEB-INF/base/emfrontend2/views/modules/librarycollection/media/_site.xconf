@@ -16,7 +16,6 @@
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	
 	<!-- We do need the asset permissions here-->
-	
 	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true">
 		<property name="module">asset</property>
 		<property name="parameterid">assetid</property>
@@ -28,8 +27,7 @@
 		<searchtype>librarycollection</searchtype>
 	</path-action>
 	<property name="alwaysresetpage">true</property>
-	
-	
+		
 	 <permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission>

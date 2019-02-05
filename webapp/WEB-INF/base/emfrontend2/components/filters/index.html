@@ -101,12 +101,20 @@
 			#end
 		#end
 			
+		
+		#set( $nodeID = $context.getRequestParameter("nodeID"))
+		
+		
 			
 		#if( $librarycol.rootcategory )
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
 			<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+			#if($nodeID && $nodeID!=$librarycol.rootcategory) 
+				<input type="hidden" name="category.value" value="$nodeID" />
+			#else
+				<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
+			#end
 		#elseif( $selectedlibrary.categoryid )
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
@@ -118,6 +126,8 @@
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
 		#end
+		
+		
 		
 	
 		<input type="hidden" name="customproperty" value="userinputsearch"/>
