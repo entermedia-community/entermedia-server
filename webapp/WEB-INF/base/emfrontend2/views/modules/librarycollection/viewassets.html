@@ -7,7 +7,6 @@ $context.putPageValue("collectionid", $librarycol.getId())
 #set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
 
 #if(!$category)
-
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 	#if (!$categoryid)
 		#set($categoryid = $context.getRequestParameter("nodeID"))
@@ -15,10 +14,14 @@ $context.putPageValue("collectionid", $librarycol.getId())
 	#if(!$categoryid)
 		#set($categoryid = $context.getRequestParameter("category.value"))
 	#end
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
 	
 #end
-
-
 
 
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
