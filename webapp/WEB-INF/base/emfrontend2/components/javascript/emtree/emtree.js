@@ -254,16 +254,30 @@ $(document).ready(function()
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
 				var url = tree.data("home") + "/components/createmedia/upload/index.html?";
 				
-				var collectionid = $("#collectiontoplevel").data("collectionid");
+				var collectionid = $("#resultsdiv").data("collectionid");
 				var postfix = "";
 				if( collectionid )
 				{
-					postfix = "&collectionid=" + collectionid;
-					gotopage(tree,node,maxlevel,url,postfix);
+					//postfix = "&collectionid=" + collectionid;
+				//	gotopage(tree,node,maxlevel,url,postfix);
+					
+					url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
+					if(collectionid){
+						url = url + "&collectionid=" + collectionid;
+					}
+						
+				
+					document.location.href = url; 
+				
 				}
 				else
 				{
 					url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
+					if(collectionid){
+						url = url + "&collectionid=" + collectionid;
+					}
+						
+				
 					document.location.href = url; 
 				}
 				

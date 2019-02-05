@@ -11,11 +11,23 @@
 -->
 	
 	<path-action name="Page.uploadFile"/>
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
+		<path-action name="Admin.allowViewing" />
+	
 	<permission name="view">
-		<not>
-			<pagevalue name="canviewupload" equals="false"/>
-		</not>
+		<or>
+			<pagevalue name="canviewupload" equals="true"/>
+			<pagevalue name="canviewcategoryupload" equals="true"/>			
+		</or>
 	</permission>
+	
+	
 	<property name="threadedupload">true</property>
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	<property name="hitsname">hits</property>

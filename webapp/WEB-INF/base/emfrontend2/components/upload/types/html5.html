@@ -76,6 +76,8 @@
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
+						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
+
 					#else
 				
 					#end

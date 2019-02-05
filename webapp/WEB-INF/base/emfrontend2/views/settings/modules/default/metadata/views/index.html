@@ -16,7 +16,6 @@
 #if( $viewid )
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
-	$view.rendertable $view.getProperties()
 	<li class="header no-sort" id="views-header" >
 	    <span id="name">$context.getText($view)</span>
 	    #if ( $view.rendertable )
