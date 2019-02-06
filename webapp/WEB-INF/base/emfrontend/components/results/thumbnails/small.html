@@ -4,7 +4,7 @@
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
         #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
         <img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
-    #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated")
+    #elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
         $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
     #else   
         #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
