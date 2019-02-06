@@ -10,17 +10,15 @@
 		<form  class="autosubmit"  data-targetdiv="assetsearchresults" action="$home$apphome/components/assetpicker/search/searchassetresults.html">
 		
 
-		<table class="inlinesearch" >
-			<tr>
+			<div class="row inlinesearch">
 			#foreach( $detail in $details)
-				<td>
+				<div class="col">
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-				</td>	
+	
+				</div>
 			#end
-			</tr>
-		</table>
-		
+			</div>
 		</form>
 		
 		<div id="assetsearchresults">
