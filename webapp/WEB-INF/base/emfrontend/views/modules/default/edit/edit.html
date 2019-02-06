@@ -17,7 +17,14 @@
 #if( $view.rendertype )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
 #else
-	#set( $action = "$home$content.searchhome/edit/save.html")
+#if($data.id.contains("multi"))
+		#set( $action = "$home$content.searchhome/save.html")
+	
+	#else
+	
+		#set( $action = "$home$content.searchhome/edit/save.html")
+	
+	#end
 #end
 
 $context.putPageValue("viewid", $view.id)
