@@ -4,6 +4,6 @@
 	<page-action name="DataEditModule.search" >
 		<property name="searchtype">asset</property>
 	</page-action>
-	<property name="hitsperpage">24</property>
+	<property name="hitsperpage">5</property>
 	 <inner-layout />
 </page>

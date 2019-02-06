@@ -5,10 +5,11 @@
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	#set($targetdiv = "dialogsearchresults")
-	<div id="pages">
+	<div class="resultstablenav">
+	<div id="pages" class="pages">
 		<ul>
 			#if( $hits.prevPage() )
-				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-left"></span></a></li>
+				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left"></span></a></li>
 			#end
 			#set( $befores = $hits.linksBefore() )					
 			#if($befores.size()!=0)
@@ -34,9 +35,12 @@
 				#end
 			#end
 			#if ( $hits.nextPage() )
-				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="fas fa-triangle-right"></span></a></li>
+				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right"></span></a></li>
+				
 			#end
 		</ul>
+	</div>
+	<div class="clearfix"></div>
 	</div>
 #end
 
