@@ -50,6 +50,12 @@ $context.putPageValue("viewid", $view.id)
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="view" type="hidden" value="$viewpath" />
     	<input name="hitssessionid" type="hidden" value="$hits.sessionId" />
+#if($data.id.contains("multi"))
+    	<input name="${moduleid}showonlyselections" type="hidden" value="true" />
+
+#end
+
+
 
     	<input name="viewpath" type="hidden" value="$viewpath" />
     	<input name="origURL"  type="hidden" value="$!origURL" />
