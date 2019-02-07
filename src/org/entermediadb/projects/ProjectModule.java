@@ -30,6 +30,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -1214,30 +1215,48 @@ Server ProjectModule.uploadFile
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		ProjectManager manager = getProjectManager(inPageRequest);
 		
-		Category category = archive.getCategory(inPageRequest);
-		inPageRequest.putPageValue("category",category);
-		inPageRequest.putPageValue("selectedcategory",category);
-		LibraryCollection librarycol = loadCollection(inPageRequest);
-		
-		QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
-		
-		Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
-		
-		if (!caneditdata) 
+		Category category = null;
+		String categoryId = inPageRequest.getRequestParameter("selectedcategory");
+		String CATEGORYID = "categoryid";
+		if (categoryId == null)
 		{
-			q.orgroup("editstatus", "6");
+			categoryId = inPageRequest.getRequestParameter(CATEGORYID);
+		}
+		if (categoryId == null)
+		{
+			categoryId = inPageRequest.getRequestParameter("nodeID");
+		}
+		if (categoryId != null)
+		{
+			inPageRequest.putPageValue("categoryid",categoryId);
+			category = archive.getCategory(inPageRequest);
 		}
 		
-		HitTracker tracker =  q.search(inPageRequest);
-		if( tracker != null)
-		{
-				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
-				if(librarycol != null){
-					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
-				}
-				tracker.getSearchQuery().setProperty("categoryid", category.getId());
-				tracker.setPage(1);
-
+		if (category != null) {
+			inPageRequest.putPageValue("category",category);
+			inPageRequest.putPageValue("selectedcategory",category);
+			LibraryCollection librarycol = loadCollection(inPageRequest);
+			
+			QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
+			
+			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+			
+			if (!caneditdata) 
+			{
+				q.orgroup("editstatus", "6");
+			}
+			
+			HitTracker tracker =  q.search(inPageRequest);
+			if( tracker != null)
+			{
+					tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
+					if(librarycol != null){
+						tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
+					}
+					tracker.getSearchQuery().setProperty("categoryid", category.getId());
+					tracker.setPage(1);
+	
+			}
 		}
 	
 	}
