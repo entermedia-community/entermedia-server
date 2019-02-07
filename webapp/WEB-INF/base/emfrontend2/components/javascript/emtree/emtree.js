@@ -404,10 +404,12 @@ function getPosition(e) {
 	  contextmenu($(this).closest(".noderow"), e);
   });
 		  
-  lQuery('body').livequery('click', function () {
+  lQuery('body').livequery('click', function (e) {
      	var $contextMenu = $(".treecontext");
-     	$contextMenu.hide();
-     	$(".categorydroparea").removeClass('selected');     	
+     	if(e.target.id !== $contextMenu.id && !$.contains($contextMenu[0], e.target)) {
+	     	$contextMenu.hide();
+	     	$(".categorydroparea").removeClass('selected');
+     	}
     });
   
   $(document).keydown(function(e) {
