@@ -1,5 +1,6 @@
 #set( $root = "$home$apphome/components/upload/types/html5")
 #set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $nodeID = $context.getRequestParameter("nodeID") )
 
 <div class="container-fluid">
 <div class="row">
@@ -108,13 +109,16 @@
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Upload Queue]]</div>
 		    <div  class="ui-widget-content">
-					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled 
+					
 					#if( $collectionid ) 
-						href="$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown">[[View]]
+						#set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
 					#else
-						 href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&sortby=assetaddeddateDown">[[View Uploads]]
+						 #set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&sortby=assetaddeddateDown")
 					#end
-					</a>	 
+					#if ($nodeID)
+						#set( $href = $href + "&nodeID=$nodeID")
+					#end
+					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="$href"> [[View Upload]]</a>	 
 					<ul id="up-files-list-completed" class="up-files-list" >
 					</ul>	
 			</div>
