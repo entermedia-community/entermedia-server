@@ -16,8 +16,9 @@
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
 
-	 <page-action name="DataEditModule.loadPageOfSearch"/>
+
 	<property name="alwaysresetpage">true</property>
+	<page-action name="DataEditModule.loadPageOfSearch"/>
 
 	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
 

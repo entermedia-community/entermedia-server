@@ -1,4 +1,5 @@
-<div id="application" class="container-fluid" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
+
+<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
 	##Job Number passed in - search on with links to each collection
 	#if( $collectionhits.size() == 0)
 		<p>[[No collections found]]</p>
@@ -12,11 +13,11 @@
 	#set( $hidenav = 1 )
 	
 	<div class="" id="mediadbcontent">	
-		<div class="row">
-	  	<div class="col-md-2" style="padding: 0px; position:inherit;border-right: 1px solid #e2eff4;">
+		<div class="row no-gutters">
+	  	<div class="col-md-2" style="position:inherit;border-right: 1px solid #e2eff4;">
 			$pages.include("$apphome/services/module/asset/players/collections/tree.html")		
 		</div>
-		<div class="col-md-10" style="border:2px; padding: 0px 0px 0px 0px; margin-left: -1px; border-left: 1px solid #e2eff4;">
+		<div class="col-md-10" style="border:2px;margin-left: -1px; border-left: 1px solid #e2eff4;">
 		  	$pages.include("$apphome/services/module/asset/players/collections/display/viewassets.html", $context)
 		</div>
 		</div>
