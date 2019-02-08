@@ -57,6 +57,9 @@ public class assetSearchSecurity implements SearchSecurity
             return inQuery;
         }
 		
+        
+        
+        
 		//log.info( "security filer enabled "  + enabled );
 		
 
@@ -87,11 +90,21 @@ public class assetSearchSecurity implements SearchSecurity
 					required.addNot("editstatus", "7");
 				}
 			}
+			
+			
+			
+			
 			Collection allowedassetstypes = profile.getValues("hideassettype");
 			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
 			{
 				required.addNots("assettype", allowedassetstypes);
 			}
+			
+			Boolean canviewallassets = (Boolean) inPageRequest.getPageValue("canviewallassets");
+			
+
+			
+			
 			
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
@@ -137,7 +150,9 @@ public class assetSearchSecurity implements SearchSecurity
 			
 			
 			
-			if(editstatus == null && (!inPageRequest.hasPermission("showpendingassets") ||inPageRequest.hasPermission("showonlyapprovedassets") )) {
+			boolean showpending = inPageRequest.hasPermission("showpendingassets");
+			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets");
+			if(editstatus == null && (!showpending ||onlyapproved )) {
 				editstatus="6";
 			}
 			
@@ -156,14 +171,14 @@ public class assetSearchSecurity implements SearchSecurity
 			}
 			required.addChildQuery(orchild);
 
-//			//Also add to this list public collections
+			//Also add to this list public collections
 //			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
-////			Collection<String> notshown = new ArrayList<String>();
-////			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
-////			{
-////				Category cat = (Category) iterator.next();
-////				notshown.add(cat.getId());
-////			}
+//			Collection<String> notshown = new ArrayList<String>();
+//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+//			{
+//				Category cat = (Category) iterator.next();
+//				notshown.add(cat.getId());
+//			}
 //			//child.addMatches("id", "*");
 //			if (!privatecats.isEmpty())
 //			{
