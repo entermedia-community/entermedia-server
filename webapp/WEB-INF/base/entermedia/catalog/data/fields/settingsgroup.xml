@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Colonnes de la table]]></language> 
     </name> 
   </property>  
-  <property id="permissions" viewtype="multiselect" editable="false" index="true" stored="true" type="list" listid="permissionapp" keyword="false" filter="false" sortable="true">Permissions 
+  <property id="permissions" viewtype="multiselect" editable="false" index="true" stored="true" type="list" listid="permissionsapp" keyword="false" filter="false" sortable="true">Permissions 
     <name> 
       <language id="de"><![CDATA[Berechtigungen]]></language>  
       <language id="en"><![CDATA[Permissions]]></language>  

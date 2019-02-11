@@ -1797,6 +1797,15 @@ td.checkbox input, th.firstheader input {
     width: 15px;
 }
 
+#categoryEditTreecontextMenu .dropdown-menu {
+    right: 6px;
+    left: auto;
+}
+
+#side-categories {
+	position: relative;
+}
+
 .collectionIcons {
     display: inline-block;
     position: absolute;
