@@ -12,21 +12,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
@@ -49,7 +43,6 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
-import org.openedit.config.XMLConfiguration;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -78,9 +71,6 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
-import org.openedit.util.strainer.Filter;
-import org.openedit.util.strainer.FilterReader;
-import org.openedit.util.strainer.FilterWriter;
 
 public class MediaArchive implements CatalogEnabled
 {
@@ -2328,7 +2318,9 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 	
-	
+	public File getFileForPath(String inPath) {
+		return new File(getPageManager().getPage(inPath).getContentItem().getAbsolutePath());
+	}
 	
 
 }
