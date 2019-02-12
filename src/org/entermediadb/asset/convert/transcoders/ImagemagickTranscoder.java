@@ -319,7 +319,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+			log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 
 			return result;
 		}
@@ -334,7 +334,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			String output = execresult.getStandardOut();
 			if(output != null && output.contains("warning/tiff.c")) {
 				result.setComplete(true);
-				log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}else {
 			result.setError(execresult.getStandardOut());
