@@ -17,7 +17,6 @@
 <!--
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
-	<!-- <path-action name="CommentModule.loadComments" />  -->
 
 	<permission name="view">
 		<or>
