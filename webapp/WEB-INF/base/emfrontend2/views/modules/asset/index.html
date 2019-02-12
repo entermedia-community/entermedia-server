@@ -4,6 +4,9 @@
 	#if(!$categoryid)
 		#set($categoryid = $context.getRequestParameter("category.value"))
 	#end
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("nodeID"))
+	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
 		#if($category)
