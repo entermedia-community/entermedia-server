@@ -21,7 +21,7 @@ public void runit()
 	Downloader downloader = new Downloader();
 	
 	String baseurl = serverroot + "openedit/views/filemanager/download/zip/base.zip?path=/WEB-INF/base&entermedia.key=" + key;
-	String lib = serverroot + "openedit/views/filemanager/download/zip/lib.zip?path=/WEB-INF/base&entermedia.key=" + key;
+	String lib = serverroot + "openedit/views/filemanager/download/zip/lib.zip?path=/WEB-INF/lib&entermedia.key=" + key;
 	downloader.download(baseurl, mediaArchive.getFileForPath("/WEB-INF/temp/base.zip"));
 	downloader.download(lib, mediaArchive.getFileForPath("/WEB-INF/temp/lib.zip"));
 	PageManager pm = mediaArchive.getPageManager();
