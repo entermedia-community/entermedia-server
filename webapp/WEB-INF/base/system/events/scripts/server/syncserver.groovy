@@ -37,8 +37,8 @@ public void runit()
 	Page oldbase = pm.getPage("/WEB-INF/base/");
 	Page backupbase = pm.getPage("/WEB-INF/baseold/");
 	
-	Page newlib = pm.getPage("/WEB-INF/temp/basenew/");
-	Page newbase = pm.getPage("/WEB-INF/temp/libnew/");	
+	Page newlib = pm.getPage("/WEB-INF/temp/basenew/WEB-INF/base/");
+	Page newbase = pm.getPage("/WEB-INF/temp/libnew/WEB-INF/lib/");	
 	
 	pm.removePage(backuplib);
 	pm.removePage(backupbase);
