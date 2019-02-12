@@ -1,3 +1,4 @@
+#set( $module = $content.module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 #end
@@ -27,7 +28,7 @@
 	<div class="collection-header-name">
 	<h1>${librarycol}</h1>
 	</div>
-###	#if($caneditcollection || ($cansharecollection && !$librarycol.isVisibility("3")) )
+
 	<div class="collection-header-actions">
 	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
 	<i class="fas fa-caret-down"></i></a>
@@ -37,26 +38,20 @@
 			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="${librarycol} [[Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Users]]</a>
-#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-			   #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-
+			  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Custom Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Custom Permissions]]</a>
-
 		   	#else
-		   	
-		   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-		   	
-		   	#end
-			
+			   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+			 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+			#end
 		 	#if($cansharecollection && !$librarycol.isVisibility("3") )
 			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
 			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
 		 	#end
 		</div>
 	</div>
-###	#end
 	
 </div>
 #end
@@ -78,7 +73,8 @@
 #foreach( $term in $terms)
 
 
-#if( $librarycol )
+
+#if( $librarycol && $module == "librarycollection" )
 	#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 	
 #else
@@ -120,7 +116,7 @@
 	#end <i class="fas fa-times"></i></a>
 #end
 #if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
-	#if( $librarycol )
+	#if( $librarycol && $module == "librarycollection" )
 		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
 	#else
 		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearfilters=true")
