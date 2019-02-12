@@ -1,12 +1,12 @@
 <form id="okform" action="$home$apphome/views/modules/librarycollection/approval/approve.html">
-<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 <input type="hidden" name="hitssessionid" value="$hits.getSessionId()" />
 <input type="hidden" name="assetclearresults" value="true" />
 
  <p>[[Approve]] $hits.getSelectionSize() [[Assets]] 
 </p>
 [[Enter an optional note]]:
-<textarea style="width: 400px; height: 100px">
+<textarea class="form-control" style="width: 100%; height: 100px">
 
 </textarea>
 
