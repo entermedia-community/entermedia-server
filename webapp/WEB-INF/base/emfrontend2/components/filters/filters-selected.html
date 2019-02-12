@@ -1,3 +1,7 @@
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+#end
+
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
@@ -9,10 +13,10 @@
 	</div>
 	
 	#if($librarycol.collectionimage)
-#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
-#else
-#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
-#end
+		#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
+	#else
+		#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+	#end
 
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
 	
@@ -61,24 +65,30 @@
 
 <div class="filtered #if( $librarycol ) filteredinresults #end">
 #if( $hits.getSearchQuery().hasMainInput() )
-<strong>Searching for:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
+<strong>[[Searching for]]:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
 #end
 ##TODO Loop over the view and show them here if they match
 
 #if( !$librarycol &&  $category )
 	<a
-	href="$home$apphome/views/modules/asset/index.html"
+	href="$home$apphome/views/modules/asset/index.html?clearselection=true"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
 #end
-
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 #foreach( $term in $terms)
-<a
+
+
 #if( $librarycol )
-	href="$home$apphome/views/modules/librarycollection/viewassets.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()"
+	#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
+	
 #else
-	href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()"
+	#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
 #end
+#if ($nodeID)
+ 	#set($href = $href + "&nodeID=${nodeID}")
+#end
+
+<a href="$href"
 	class="badge badge-light">$term.getDetail(): 
 	#foreach( $val in $term.getValueCollection() ) 
 		#if( $foreach.count > 1) or #end
@@ -110,12 +120,14 @@
 	#end <i class="fas fa-times"></i></a>
 #end
 #if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
-<a class="clearfilters" 
-#if( $librarycol )
-	href="$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true">
-#else
-	href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearfilters=true">
-#end
-[[Clear]]</a>
+	#if( $librarycol )
+		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
+	#else
+		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearfilters=true")
+	#end
+	#if ($nodeID)
+ 		#set($href = $href + "&nodeID=${nodeID}")
+	#end
+	<a class="clearfilters" href="$href">[[Clear]]</a>
 #end
 </div>
