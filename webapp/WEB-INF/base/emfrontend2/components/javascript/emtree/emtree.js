@@ -94,24 +94,25 @@ $(document).ready(function()
 		var home = tree.data("home");
 		
 		var depth = node.data('depth');
-		
-		///views/modules/assets/categorysearch.html?selectedcategory=AWdglYgKAPC6HdjLzP_x&nodeID=AWdglYgKAPC6HdjLzP_x
-		//collection view?
-		
+		var iscollection = node.data("iscollection")
 		var reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
 		
 		var collectionid = $("#resultsdiv").data("collectionid");
 		if( collectionid )
 		{
-			
-			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
+			//reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
 			reloadurl = home + "/views/modules/librarycollection/media/index.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
+		}
+		else if (iscollection) {
+			reloadurl = home + "/views/modules/librarycollection/media/index.html?nodeID=" + nodeid;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
 		{
 			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
 		}
+		
+		//Update Address Bar
 		history.pushState({}, null, reloadurl);
 		
 		jQuery.get(prefix + nodeid + postfix,

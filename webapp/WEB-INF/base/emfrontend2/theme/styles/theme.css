@@ -2618,6 +2618,13 @@ label.error {
 	width: 40%;
 	top:10px;
 	bottom:inherit;
+	height:50px;
+    position:absolute;
+    text-align:center;
+    margin: auto;
+    right: 0;
+    left: 0;
+    z-index:25000;
 
 	}
 .assetpanel-chatterbox-header { 

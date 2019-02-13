@@ -548,14 +548,17 @@ public class TaskModule extends BaseMediaModule
 		String taskstatus = inReq.getRequestParameter("taskstatus");
 		task.setValue("taskstatus", taskstatus);
 
-		if( taskstatus != null && taskstatus.equals("3"))
+		if(taskstatus != null && taskstatus.equals("3"))
 		{
-			task.setValue("completedby", inReq.getUserName());
 			if( task.getValue("completedon") == null )
 			{
 				task.setValue("completedon", new Date());
 			}
-			
+			if( task.getValue("completedby") == null )
+			{
+				task.setValue("completedby", inReq.getUserName());
+			}
+
 			//remove task from tree
 			removeCount(archive, task);
 			
@@ -567,6 +570,11 @@ public class TaskModule extends BaseMediaModule
 			{
 				task.setValue("startedon", new Date());
 			}	
+		}
+		String completedby = inReq.getRequestParameter("completedby");
+		if( completedby != null)
+		{
+			task.setValue("completedby", completedby);
 		}
 		
 		tasksearcher.saveData(task);	
@@ -965,6 +973,21 @@ public class TaskModule extends BaseMediaModule
 		Collections.sort(types);
 		inReq.putPageValue("tickets", tickets);
 		inReq.putPageValue("tickettypes", types);
+
+		builder = searcher.query().exact("collectionid", collection.getId());
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalopen = builder.search().size();
+
+		builder = searcher.query().exact("collectionid", collection.getId());
+		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalclosed = builder.search().size();
+
+		
+		inReq.putPageValue("totallikes", likes.size());
+		inReq.putPageValue("totalopen", totalopen);
+		inReq.putPageValue("totalclosed", totalclosed);
+		
+	
 	}
 	
 	

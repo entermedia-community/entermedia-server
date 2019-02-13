@@ -221,6 +221,7 @@ public class AssetSourceManager implements CatalogEnabled
 		{
 			Asset asset = (Asset) iterator.next();
 			findAssetSource(asset).assetUploaded(asset);
+			log.info("Asset saved: " + asset.getId());
 		}
 		
 		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);

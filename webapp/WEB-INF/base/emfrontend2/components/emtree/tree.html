@@ -22,11 +22,12 @@
 		#set( $expanded = $webtree.isExpanded($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
 		
-		##Collection 
+		##Collection
+		#set( $iscollection = false) 
 		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($cat))
-		##set( $iscollection = false)
 		
-		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name">
+		
+		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name" data-iscollection="${iscollection}">
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (10 * ($depth - 1)) + 5 )
 			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end #if($expanded) expanded #end" 
@@ -34,7 +35,10 @@
 				#if($haschildren)
 					<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
 				#end 
-				<div id="${cat.id}_display" class="cat-name #if($iscollection) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" title="$cat.getCategoryPath()" >
+				<div id="${cat.id}_display" 
+					 class="cat-name #if($iscollection) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
+					 title="$cat.getCategoryPath()"
+					  >
 				#if( $cat.getCounts() > 0)
 					<b>$cat.name</b> 
 				#else
