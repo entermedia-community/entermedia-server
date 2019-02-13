@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Write EnterMedia ID to originals</property>	
+
+
+<path-action name="Script.run">
+	<script>/${catalogid}/events/scripts/asset/writeentermediaid.groovy</script>
+</path-action>
+</page>

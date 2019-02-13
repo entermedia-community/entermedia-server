@@ -735,6 +735,10 @@
       <language id="en"><![CDATA[Is Locked]]></language>
     </name>
   </property>   
-  
+  <property id="emidwritten" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+    <name>
+      <language id="en"><![CDATA[EnterMedia ID has been stored in original]]></language>
+    </name>
+  </property>   
   
 </page>
