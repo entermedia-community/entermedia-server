@@ -2,12 +2,11 @@ package asset;
 
 
 import org.apache.commons.codec.binary.Base64
-import org.dom4j.Element;
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.publish.publishers.vizonepublisher;
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.event.WebEvent
 
 public init(){
 	log.info("Starting Pre-Save Event");
@@ -15,6 +14,13 @@ public init(){
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
 	String assetids = context.getRequestParameter("id");
 	Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
+	
+	if(assetids.startsWith("multi")) {
+		WebEvent event = context.getPageValue("webevent");
+		Data composite = event.getValue("data");
+		hits = composite.getInitialSearchResults();
+		
+	}
 	//http://vizmtlvamf.media.in.cbcsrc.ca/vms/#ItemPlace:2101409230000048521
 	vizone = mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "VizOnepublisher");
 	String username = "EMDEV";
@@ -37,4 +43,4 @@ public init(){
 	
 }
 
-//init();
+init();

@@ -677,6 +677,7 @@ public class DataEditModule extends BaseMediaModule
 				event.setProperty("note", "old field diff");
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
 				event.setUser(inReq.getUser());
+				event.setValue("data", data);
 				getEventManager().fireEvent(event);
 			}
 			inReq.putPageValue("rowsedited", String.valueOf(count));
