@@ -400,7 +400,10 @@ uiload = function() {
 	
 	
 	emdialog = function(dialog, event) {
-		event.stopPropagation();
+		if( event )
+		{
+			event.stopPropagation();
+		}
 		var dialog = dialog;
 		var hidescrolling = dialog.data("hidescrolling");
 
@@ -427,6 +430,12 @@ uiload = function() {
 			options[name] = element.val();
 		}
 
+		//openemdialog
+		var urlbar = dialog.data("urlbar");
+		if( urlbar )
+		{
+			history.pushState({}, null, urlbar);
+		}
 		modaldialog.load(link, options, function() {
 			$(".modal-lg").css("min-width", width + "px");
 			// $(".modal-lg").css("min-height",height + "px" );
@@ -474,10 +483,19 @@ uiload = function() {
 		if (dialog.closest('.dropdown-menu').length !== 0) {
 			dialog.closest('.dropdown-menu').removeClass('show');
 		}
-
-		event.preventDefault();
+		if( event )
+		{
+			event.preventDefault();
+		}	
 		return false;
 	}
+	
+	lQuery("a.openemdialog").livequery( function() {
+		var link = $(this);
+		//link[0].click();
+		emdialog($(this), event);
+		//link.trigger("click");
+	});
 	
 	
 	lQuery("a.emdialog").livequery(
