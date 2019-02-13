@@ -22,7 +22,9 @@
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
 	
 	<div class="card card-mini card-collections">
-	 <div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+		<a href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}&clearselection=true" title="${librarycol}">
+	 	<div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	 	</a>
 	</div>
 	
 	<div class="collection-header-name">
