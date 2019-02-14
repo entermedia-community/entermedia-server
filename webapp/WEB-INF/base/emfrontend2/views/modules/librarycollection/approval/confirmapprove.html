@@ -1,6 +1,11 @@
+#set($collectionid = $context.getRequestParameter("collectionid"))
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+
+
+
 <form id="okform" action="$home$apphome/views/modules/librarycollection/approval/approve.html">
-<input type="hidden" name="collectionid" value="$librarycol.getId()" />
-<input type="hidden" name="hitssessionid" value="$hits.getSessionId()" />
+<input type="hidden" name="collectionid" value="$!{collectionid}" />
+<input type="hidden" name="hitssessionid" value="$!{hitssessionid}" />
 <input type="hidden" name="assetclearresults" value="true" />
 
  <p>[[Approve]] $hits.getSelectionSize() [[Assets]] 

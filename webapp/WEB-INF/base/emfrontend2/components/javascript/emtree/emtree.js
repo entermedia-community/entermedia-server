@@ -87,7 +87,7 @@ $(document).ready(function()
 		var nodeid = node.data('nodeid');
 		if( postfix == undefined || postfix == "" )
 		{
-			//postfix = ".html";
+			
 			postfix = "";
 			prefix = prefix + "?categoryid=";
 		}
@@ -97,14 +97,15 @@ $(document).ready(function()
 		var iscollection = node.data("iscollection")
 		var reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
 		
+		prefix = home + "/views/modules/asset/showcategory.html";
+		
 		var collectionid = $("#resultsdiv").data("collectionid");
-		if( collectionid )
+		if( iscollection)
 		{
 			//reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
 			reloadurl = home + "/views/modules/librarycollection/media/index.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
-		}
-		else if (iscollection) {
-			reloadurl = home + "/views/modules/librarycollection/media/index.html?nodeID=" + nodeid;
+			prefix = home + "/views/modules/librarycollection/media/index.html";
+			maxlevel = 2;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
@@ -115,7 +116,8 @@ $(document).ready(function()
 		//Update Address Bar
 		history.pushState({}, null, reloadurl);
 		
-		jQuery.get(prefix + nodeid + postfix,
+		//jQuery.get(prefix + nodeid + postfix,
+		jQuery.get(prefix,
 				{
 					'oemaxlevel':maxlevel,
 					'tree-name':tree.data("treename"),
@@ -128,7 +130,7 @@ $(document).ready(function()
 				function(data) 
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
-					//console.log(cell);
+					console.log(cell);
 					cell.replaceWith(data);
 					//cell.html(data);
 					//window.location.hash="TOP";
