@@ -212,13 +212,16 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	@Override
 	public void toggleNode(Object inNode)
 	{
-		if( hasBeenExpanded(inNode) )
+		if  ( inNode != null) 
 		{
-			collapseNode(inNode);
-		}
-		else
-		{
-			expandNode(inNode);
+			if( hasBeenExpanded(inNode) )
+			{
+				collapseNode(inNode);
+			}
+			else
+			{
+				expandNode(inNode);
+			}
 		}
 	}
 	public void expandNode(Object inNode)

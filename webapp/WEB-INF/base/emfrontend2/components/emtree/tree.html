@@ -7,6 +7,7 @@
 #set( $render = $webtree.getTreeRenderer() )
 
 #set( $adding = $context.getRequestParameter("adding" ) )
+
 #if($selectednodes)
 	$!webtree.getTreeRenderer().selectNodes($selectednodes)
 #end
@@ -22,11 +23,12 @@
 		#set( $expanded = $webtree.isExpanded($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
 		
+		
 		##Collection
 		#set( $iscollection = false) 
 		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($cat))
 		
-		
+	
 		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name" data-iscollection="${iscollection}">
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (10 * ($depth - 1)) + 5 )
@@ -42,7 +44,7 @@
 				#if( $cat.getCounts() > 0)
 					<b>$cat.name</b> 
 				#else
-					$cat.name
+					$cat.name  
 				#end
 				#if($cat.hasCountData())
 					<b class="cat-count"> 
@@ -94,10 +96,12 @@
 	#showtreecategories2($target, $depth)
 	
 #else
-#if($category && $content.isPropertyTrue("searchcategory") )
-	$render.setSelectedNode($category)
+	#if($category && $content.isPropertyTrue("searchcategory") )
+		$render.setSelectedNode($category)
 #end
 #set($rootcategory = $webtree.getModel().getRoot())
+
+
 
 #set( $top = $context.getRequestParameter("treetoplocation") )
 #set( $left = $context.getRequestParameter("treeleftlocation") )

@@ -102,9 +102,8 @@ $(document).ready(function()
 		var collectionid = $("#resultsdiv").data("collectionid");
 		if( iscollection)
 		{
-			//reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
-			reloadurl = home + "/views/modules/librarycollection/media/index.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
-			prefix = home + "/views/modules/librarycollection/media/index.html";
+			reloadurl = home + "/views/modules/librarycollection/showcategory.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
+			prefix = home + "/views/modules/librarycollection/showcategory.html";
 			maxlevel = 2;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');

@@ -30,14 +30,15 @@
 		$context.putPageValue("selectedlibrary",$selectedlibrary)
 	#end
 	
-	##if( $librarycol)
-	##	$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
-	##else
-	##	$pages.include("$apphome/components/categories/sidebar-left.html", $context) 
-	##end
+	#if( $librarycol)
+		$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+	#else
+		$pages.include("$apphome/components/categories/sidebar-left.html", $context) 
+	#end
 	
-	$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&allowselections=false&editabletree=true&url-prefix=$home$apphome/views/modules/asset/showcategory.html&targetdiv=searchlayout&maxlevelclick=1",$context)
 	
+	
+		
 	
  
 <div class="clearfix"></div>

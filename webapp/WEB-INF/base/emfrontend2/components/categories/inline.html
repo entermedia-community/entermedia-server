@@ -1,5 +1,15 @@
 #set( $rootpath = "${apphome}/components/categories")
 
+##Always clear Tree if not category or nodeID
+#set($clearselection = false)
+#set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#if (!$category)
+		#set($clearselection = true)
+	#end
+#end
+
+
 <div id="side-categories" class="cramped assetdropcategory">
-    $pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&allowselections=false&editabletree=true&url-prefix=$home$apphome/views/modules/category/categorysearch.html&targetdiv=searchlayout&maxlevelclick=1",$context)
+    $pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true&url-prefix=$home$apphome/views/modules/category/categorysearch.html&targetdiv=searchlayout&maxlevelclick=1",$context)
 </div>
