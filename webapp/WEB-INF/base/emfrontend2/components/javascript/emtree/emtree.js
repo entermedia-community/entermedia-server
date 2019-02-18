@@ -99,6 +99,9 @@ $(document).ready(function()
 		
 		prefix = home + "/views/modules/asset/showcategory.html";
 		
+	
+		
+		
 		var collectionid = $("#resultsdiv").data("collectionid");
 		if( iscollection)
 		{
@@ -106,15 +109,24 @@ $(document).ready(function()
 			prefix = home + "/views/modules/librarycollection/showcategory.html";
 			maxlevel = 2;
 		}
+		
+		var customprefix=node.data('customprefix');
+		if(customprefix)
+		{
+			prefix = customprefix;
+
+		}	
+		
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
 		{
 			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
 		}
-		
+		if(!customprefix)
 		//Update Address Bar
-		history.pushState({}, null, reloadurl);
-		
+		{
+			history.pushState({}, null, reloadurl);
+		}
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix,
 				{
@@ -124,7 +136,8 @@ $(document).ready(function()
 					'treetoplocation':toplocation,
 					'treeleftlocation':leftlocation,
 					'depth': depth,
-					'collectionid': collectionid
+					'collectionid': collectionid,
+					'categoryid':nodeid
 				},	
 				function(data) 
 				{

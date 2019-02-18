@@ -1,0 +1,18 @@
+<page>
+<path-action name="MediaSearchModule.searchCategories"/>
+	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+	<property name="searchcategory">true</property>
+	
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+	 <permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission>
+
+	 <page-action name="DataEditModule.loadPageOfSearch"/>
+
+	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
+
+<inner-layout/>
+</page>
