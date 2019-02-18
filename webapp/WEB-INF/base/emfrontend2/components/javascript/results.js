@@ -3,6 +3,7 @@ $(document).ready(function(url,params)
 	var appdiv = $('#application');
 	var home = appdiv.data('home') + appdiv.data('apphome');
 	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
+	
 
 	var refreshdiv = function(url,params)
 	{
@@ -821,7 +822,7 @@ checkScroll = function()
   		var totalHeight = $(document).height();
 
 
-	    var page = parseInt(resultsdiv.data("pagenum"));   
+	    var page = parseInt(resultsdiv.data("pagenum")); 
 	    var total = parseInt(resultsdiv.data("totalpages"));
 		//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
 	    if( page == total)
@@ -841,7 +842,10 @@ checkScroll = function()
 		   var session = resultsdiv.data("hitssessionid");
 		   page = page + 1;
 		   resultsdiv.data("pagenum",page);
+		   var appdiv = $('#application');
 		   var home = $('#application').data('home') + $('#application').data('apphome');
+		   var componenthome = appdiv.data('componenthome');
+
 		   console.log("Loading page: #" + page +" - " + home);
 		   
 		   var link = componenthome + "/results/stackedgallery.html";
