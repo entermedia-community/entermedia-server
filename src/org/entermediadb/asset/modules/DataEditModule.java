@@ -337,7 +337,21 @@ public class DataEditModule extends BaseMediaModule
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		Searcher searcher = loadSearcher(inReq);
+
+String viewbase = null;
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		if(archive != null) {
+			viewbase = archive.getCatalogSettingValue("viewbase");
+		}
+		if(viewbase == null) {
+			 viewbase = "/WEB-INF/data/" + searcher.getCatalogId() + "/views/";
+
+		}
+		
+		
+		String path = viewbase + viewpath + ".xml";
 		file.setPath(path);
 		String toremove = inReq.getRequestParameter("toremove");
 		//toremove might have a . in it
@@ -353,7 +367,6 @@ public class DataEditModule extends BaseMediaModule
 		{
 			getXmlArchive().saveXml(file, inReq.getUser());
 		}
-		Searcher searcher = loadSearcher(inReq);
 		searcher.getPropertyDetailsArchive().clearCache();
 
 	}
