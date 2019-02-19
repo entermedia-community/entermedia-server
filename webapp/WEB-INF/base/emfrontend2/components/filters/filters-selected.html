@@ -64,11 +64,11 @@
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
 #end
 #set( $terms = $userfilters.getFilteredTerms($hits) )
+
 #foreach( $term in $terms)
 
 
-
-#if( $librarycol && $module == "librarycollection" )
+#if( $librarycol )
 	#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 	
 #else
@@ -110,14 +110,14 @@
 	#end <i class="fas fa-times"></i></a>
 #end
 #if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
-	#if( $librarycol && $module == "librarycollection" )
+	#if( $librarycol )
 		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
 	#else
 		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
 	#end
-	##if ($nodeID)
- 	##	#set($href = $href + "&nodeID=${nodeID}")
-	##end
+	#if ($nodeID)
+ 		#set($href = $href + "&nodeID=${nodeID}")
+	#end
 	<a class="clearfilters" href="$href">[[Clear]]</a>
 #end
 </div>
