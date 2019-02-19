@@ -36,6 +36,11 @@ $(document).ready(function(url,params)
 			{
 				args.category = category;
 			}
+			var collectionid = $("#resultsdiv").data("collectionid");
+			if( collectionid )
+			{
+				args.collectionid = collectionid;
+			}
 			args.resultview = select.val();
 						 
 			$.get(href, args, function(data) 

@@ -1,11 +1,3 @@
-#set( $module = $content.module)
-#if (!$nodeID)
-	#set($nodeID = $context.getRequestParameter("nodeID"))
-#end
-
-#if( !$librarycol && $category ) 
-	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
-#end
 #if( $librarycol )	
 <div class="collection-header">
 

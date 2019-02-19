@@ -1,13 +1,6 @@
 #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 
-#if(!$librarycol)
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
-		#set( $librarycol = $mediaarchive.query("librarycollection").exact("collectionid",$collectionid).searchOne() )
-	#end
-#end
-
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	$context.putPageValue("hits",$hits)
@@ -160,7 +153,7 @@
 					data-searchtype="asset" 
 					data-page="$hits.getPage()" 
 					data-showremoveselections="$showremoveselections" 
-					data-collectionid="$!librarycol.getId()">
+					data-collectionid="$!collectionid">
 				#set( $types = $mediaarchive.getList("resulttype"))
 				#foreach($type in $types)
 					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
