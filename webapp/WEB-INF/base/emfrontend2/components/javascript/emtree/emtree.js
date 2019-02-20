@@ -110,7 +110,7 @@ $(document).ready(function()
 			maxlevel = 2;
 		}
 		
-		var customprefix=node.data('customprefix');
+		var customprefix=jQuery("#treedetails").data('customprefix');
 		if(customprefix)
 		{
 			prefix = customprefix;
