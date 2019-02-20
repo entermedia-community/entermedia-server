@@ -52,8 +52,6 @@
 
 #if( $showit )
 <div id="${viewid}editor" >
-	
-	
 	#if( !$edit || $edit == "false")
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		#set( $viewdata = $searcher.getViewData($viewid) )
@@ -89,18 +87,16 @@
 				</a>
 		</div>
 		#end
-		
-		
-		
 		  $pages.include("/$applicationid/components/detaileditor/generic.html?$args&targetdiv=${viewid}editor&view=$viewpath&module=$themodule",$context)
 		</div>
 		
 		<div style="margin-top:-40px">  ##TODO: Move this to the detaileditor/generic
-		<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]" style="" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]" style="" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 		</div>
 	
 	#end
 </div>
+<div class="clearfix"></div>
 #else ##showit
 	<p class="info">[[No data has been entered]].</p>
 #end
