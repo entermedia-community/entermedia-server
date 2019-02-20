@@ -20,6 +20,9 @@
 	<property name="mediadbappid">${applicationid}</property>
 	<property name="title">MediaDB</property>
 	
+	<path-action name="MediaArchiveModule.loadApplicationId" />
+  	<path-action name="MediaArchiveModule.loadComponentHome" />
+	
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />

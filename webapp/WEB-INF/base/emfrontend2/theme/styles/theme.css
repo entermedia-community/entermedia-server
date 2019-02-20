@@ -1947,7 +1947,9 @@ td.checkbox input, th.firstheader input {
     background: url('../images/download-file.gif') 0 11px no-repeat;
     width: 15px;
 }
-
+ .uploadfile {
+ padding:1px;
+ line-height: 1.2;}
 
 
 /*OpenCollections*/
@@ -2836,8 +2838,8 @@ label.error {
 #nextfive {
     border-top: 1px solid #eee;
 }
-
-
+#largeimage-embed p { font-size:0.8rem;}
+.embedlinktextarea { margin-top:5px; width:100%; }
 
 
 

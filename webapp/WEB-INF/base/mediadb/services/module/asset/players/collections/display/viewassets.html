@@ -1,4 +1,9 @@
-
+<div id="resultsdiv" 
+data-hitssessionid="$hits.getSessionId()" 
+data-pagenum="$hits.getPage()"  
+data-totalpages="$hits.getTotalPages()"
+data-collectionid="$!librarycol.getId()"
+>
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -13,14 +18,9 @@ $context.putPageValue("showtoolbar", "false")
   	$context.putPageValue("details",$details)
 	$context.putPageValue("thumbsize", $thumbsize )
 <div class="masonry-grid"
-    id="resultsdiv" 
-    data-cellpadding="4"
-    data-hitssessionid="$hits.getSessionId()" 
-    data-pagenum="$hits.getPage()"  
-    data-totalpages="$hits.getTotalPages()" 
     data-maxheight="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
-	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/index.html"
-	data-assettemplate="$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
+    data-cellpadding="4"
+     >
 	
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
@@ -69,3 +69,4 @@ $context.putPageValue("showtoolbar", "false")
 	[[No results found.]]
 	</p>
 #end
+</div>
