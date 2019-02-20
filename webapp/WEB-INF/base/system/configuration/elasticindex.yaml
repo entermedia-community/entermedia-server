@@ -1,7 +1,12 @@
 #mapping._id.indexed: true
 #mapper.dynamic: true
-analysis: 
+analysis:
+ char_filter:
+  quotes:  
+   type: "mapping"
+   mappings: [ "\\u0091=>\\u0027","\\u0092=>\\u0027","\\u2018=>\\u0027","\\u2019=>\\u0027","\\u201B=>\\u0027"] 
  analyzer: 
+ 
   tags:
    type: "custom"
    tokenizer: "keyword"
@@ -9,6 +14,7 @@ analysis:
     - "lowercase"
   lowersnowball:
    tokenizer: "standard"
+   char_filter: ["quotes"]
    filter:
     - standard
     - lowercase
@@ -23,3 +29,4 @@ analysis:
   elision:
    type: "elision"
    articles: ["l", "m", "t", "qu", "n", "s", "j"]
+ 
