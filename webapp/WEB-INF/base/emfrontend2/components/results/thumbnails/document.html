@@ -15,17 +15,14 @@
 
 #set( $imagesize = "image200x200.jpg")
 
-#if($thumbsize == "mediumplus")
-		
-			#set($imagesize = "image550x350.jpg")
-			
-	#elseif($thumbsize == "crop")
-		#set($imagesize = "image110x62cropped.jpg")
-	#end		
+#if($thumbsize == "mediumimage")
+	#set($imagesize = "image550x350.jpg")
+#elseif($thumbsize == "crop")
+	#set($imagesize = "image110x62cropped.jpg")
+#end		
 
 
 #set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
-
 <div id="emthumbholder" class="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	

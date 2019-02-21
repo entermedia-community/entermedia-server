@@ -15,7 +15,7 @@
 			<div class="media-thumbnail">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 				#if( !$thumbsize )
-		    		#set( $thumbsize  = "mediumplus" )
+		    		#set( $thumbsize  = "mediumimage" )
 				#end
 				$context.putPageValue("thumbsize",$thumbsize)
 				#if ( $type == "image" || $type == "document" )
@@ -34,6 +34,8 @@
 		   			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
 		   			
 				#end 
+				
+				
 				
 			</div>
 		            

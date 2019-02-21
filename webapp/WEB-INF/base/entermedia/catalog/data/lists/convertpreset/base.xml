@@ -3,7 +3,7 @@
      <preset id="attachments"  transcoderid="original"  inputtype="all" ordering="01" attachments="true">Attachments</preset>
  
     <preset id="largeimage" guid="imagepreview" generatedoutputfile="image1024x768.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}L.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02" enforceaspectratio="true">Image Large</preset>
-    <preset id="mediumimage" guid="imagemedium" generatedoutputfile="image550x350.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="03" enforceaspectratio="true">Image Medium</preset>
+    <preset id="mediumimage" guid="imagemedium" generatedoutputfile="image550x350.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image|document" onimport="true" ordering="03" enforceaspectratio="true">Image Medium</preset>
     <preset id="mediumimagesmall" guid="imagemediumsmall" generatedoutputfile="image300x300.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="03" enforceaspectratio="true">Image Medium Small</preset>
     <preset id="thumbimage" guid="imagethumb" 	generatedoutputfile="image200x200.jpg" outputextension="jpg" singlepage="true" display="true" fileexportformat="${shortfilename}S.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image|document|video" onimport="true"  ordering="04" enforceaspectratio="true">Image Thumbnail</preset>
     <preset id="imagecrop" guid="imagecrop"  generatedoutputfile="image110x62cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" enforceaspectratio="true" >Small Crop</preset>
@@ -14,7 +14,7 @@
     <preset id="docmediumimagesmall" guid="imagemediumsmall" generatedoutputfile="image300x300.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="false" ordering="05">Document Medium Small</preset>
     
     <preset id="largedocumentpreview" guid="documentlarge" generatedoutputfile="image1500x1500.png" outputextension="png"  display="true" fileexportformat="${shortfilename}L.png" transcoderid="imagemagick" extension="png" inputtype="document" onimport="true" ordering="04" singlepage="true">Document Large PNG</preset>
-    <data id="cropdocument" guid="cropdocument" generatedoutputfile="image110x62cropped.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="06" singlepage="true" name="Document Crop"/>
+    <preset id="cropdocument" guid="cropdocument" generatedoutputfile="image110x62cropped.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="06" singlepage="true" name="Document Crop"></preset>
     <preset id="mp3audio" guid="mp3audio"  generatedoutputfile="audio.mp3" outputextension="mp3"  fileexportformat="${shortfilename}.mp3" transcoderid="audio" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
 
 
