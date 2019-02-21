@@ -20,13 +20,26 @@
 	#end
 	$context.putPageValue("catid",$catid)
 	#if( $catid && !$category)
-		
 		#set( $category = $mediaarchive.getData("category",$catid) )
 	#end
 	#set( $orderid = $hits.getInput("orderid") )
 	#if( $orderid)
 		#set( $order = $mediaarchive.getData("order",$orderid) )
 		$context.putPageValue("order",$order)
+	#end
+	
+	#if( !$librarycol && $category ) 
+		#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+	#end
+	#if( !$librarycol )
+		#set($collectionid = $context.getRequestParameter("collectionid"))
+		#if($collectionid)
+			#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+		#end
+	#end
+	
+	#if( $librarycol )	
+		$context.putPageValue("librarycol",$librarycol)
 	#end
 #end
 
