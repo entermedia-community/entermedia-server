@@ -3,6 +3,10 @@
 	#if(!$categoryid)
 		#set($categoryid = $context.getRequestParameter("category.value"))
 	#end
+	#if (!$categoryid)
+		#set($categoryid = $context.getRequestParameter("nodeID"))
+		#set($nodeID = $context.getRequestParameter("nodeID"))
+	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
 		#if($category)
@@ -36,10 +40,12 @@
 
 $pages.includeContent()
 
+
+
+
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 <div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">
 	<div class="col-main-inner">
-	
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
 	</div>
 </div>

@@ -13,7 +13,9 @@
  
 #if($hits)
 	#set( $catid = $hits.getInput("categoryid") )
-	
+	#if (!$catid)
+		#set( $catid = $context.getRequestParameter("category"))
+	#end
 	#set( $nodeID = $context.getRequestParameter("nodeID"))
 	#if (!$catid && $nodeID)
 		#set( $catid = $nodeID )
