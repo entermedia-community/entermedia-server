@@ -65,7 +65,7 @@
 						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
 							#if( $librarycol )
-							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
 							#end
 						</select>
 					</div>

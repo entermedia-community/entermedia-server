@@ -60,7 +60,7 @@
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
 #if($selectedsitesnapshotid)
 	#set( $snap = $searcherManager.getData("system","sitesnapshot",$selectedsitesnapshotid))
-			  <option value="$snap.getId()" selected="selected">#esc($snap.getName($context.locale))</option>
+			  <option value="$snap.getId()" selected="selected">#esc($snap.getName($context))</option>
 #end				 
 			</select>
 		</form>	

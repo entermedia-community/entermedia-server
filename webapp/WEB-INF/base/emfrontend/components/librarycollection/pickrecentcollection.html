@@ -13,7 +13,7 @@
 				<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 					data-placeholder="$detail.getText($context)" data-sortby="name">
 				#if( $librarycol )
-				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
 				#end
 				</select>
 				#if($canaddnewcollection)

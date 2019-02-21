@@ -66,7 +66,7 @@
 	    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
 	#end
 #set( $urlbase = "$home$apphome/views/modules" )
-<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context)</a> 
 	<div id="module-bar-select" class="dropdown-menu">
 		#foreach ( $amodule in $userprofile.getModules() )
 			<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>

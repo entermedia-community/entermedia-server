@@ -47,7 +47,7 @@ $context.putPageValue("hits",$hits)
 						data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()" data-hitsperpage="$hits.getHitsPerPage()">
 						#set( $types = $mediaarchive.getList("resulttype"))
 						#foreach($type in $types)
-							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
 						#end
 					</select>
 			</li>

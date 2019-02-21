@@ -68,14 +68,14 @@
 							<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 								data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
 								#if( $librarycol )
-								  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+								  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
 								#end
 							</select>
 						#else
 							#set ( $editablecollections = $mediarchive.getProjectManager().listEditableCollections($context) )
 							<select name="currentcollection" id="collectionid" data-placeholder="[[Choose Collection]]" data-searchfield="name" data-sortby="$namedetail.getDefaultSort()">
 								#foreach ($collection in $editablecollections)
-									<option value="$collection.getId()">#esc($librarycol.getName($context.locale))</option>
+									<option value="$collection.getId()">#esc($librarycol.getName($context))</option>
 								#end
 							</select>
 					</div>

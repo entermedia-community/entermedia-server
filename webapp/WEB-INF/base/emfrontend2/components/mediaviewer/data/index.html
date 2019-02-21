@@ -39,9 +39,9 @@ $context.putPageValue("showalllanguagevalues",true)
             				#foreach($library in $libraries)
             					 #set( $division = $mediaarchive.getData("division",$library.division ) )
             					 #if($division)
-            					 	#set($ldata = "$division.getName($context.locale) / $library.getName($context.locale)" )
+            					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
             					 #else
-            					 	#set($ldata = $library.getName($context.locale) )
+            					 	#set($ldata = $library.getName($context) )
             					 #end
             					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="row tag">$ldata</a>
             			

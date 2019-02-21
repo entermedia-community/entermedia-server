@@ -16,7 +16,7 @@
 #foreach( $site in $sortedlist ) 
  <tr data-id="$site.id" >
 <td valign="top" style="white-space: nowrap;">
-#esc($site.getName($context.locale))
+#esc($site.getName($context))
 </td>
 <td valign="top" style="white-space: nowrap;">
 #esc($site.get("rootpath"))

@@ -28,7 +28,7 @@
 #foreach( $plugin in $sortedlist ) 
 <tr>
 <td valign="top" style="white-space: nowrap;">
-#esc($plugin.getName($context.locale))
+#esc($plugin.getName($context))
 </td>
 <td valign="top" style="white-space: nowrap;">
 #esc($plugin.get("version"))
