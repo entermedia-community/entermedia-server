@@ -1349,21 +1349,24 @@ uiload = function() {
 
 	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
-		$("#filterstoggle").toggleClass("hide");
+		
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
 			$(".col-main").removeClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
+			$("#filterstoggle").show();
 		}
 		else {
 			//open
+			$("#filterstoggle").hide();
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});
+			
 		}
 		
 		
@@ -1372,20 +1375,21 @@ uiload = function() {
 	});
 	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
-		$("#lefttoggle").toggleClass("hide");
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
 			$("#col-left").animate({left: "-220px"},100);
 			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
 				$(".col-main").removeClass("leftopen");
+				$("#lefttoggle").show();
 			});
-			
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
+			
 		}
 		else {
 			//open
+			$("#lefttoggle").hide();
 			$("#col-left").animate({left: "0"},100);
 			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
 				$(".col-main").addClass("leftopen");

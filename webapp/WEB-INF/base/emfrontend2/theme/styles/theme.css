@@ -877,6 +877,9 @@ html, body, #application {
 .lefttoggle, .filterstoggle {
 	cursor: pointer;
 }
+.filtersopen #sub-nav li a.filterstoggle {
+	display:none;
+}
 .lefttoggleclose, 
 .filterstoggleclose,
 .sidebarheaderactions {

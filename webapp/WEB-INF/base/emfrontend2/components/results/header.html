@@ -54,7 +54,7 @@
 			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
 		<li>
-			<a class="nav-btn lefttoggle #if ($leftbarstatus!=false) hide #end" href="#" id="lefttoggle">
+			<a class="nav-btn lefttoggle" href="#" id="lefttoggle" style="#if ($leftbarstatus!=false) display:none; #end">
 			<span class="openbar "><i class="fas fa-folder-open"></i> [[LOCATIONS]]</a></span>
 		</li>
 		
@@ -117,7 +117,7 @@
 		
 		<ul class="resultsnavright">
 			<li>
-				<a class="nav-btn filterstoggle #if ($filtersbarstatus!=false) hide #end" href="#" id="filterstoggle">
+				<a class="nav-btn filterstoggle" href="#" id="filterstoggle" style="#if ($filtersbarstatus!=false) display:none; #end">
 				<span class="openbar"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
 				</a>
 			</li>
