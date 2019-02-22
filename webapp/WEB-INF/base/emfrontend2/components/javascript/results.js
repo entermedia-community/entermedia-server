@@ -388,7 +388,7 @@ $(document).ready(function(url,params)
 			
 			if( assetid.indexOf("multiedit:") > -1 )
 			{
-				var link = $("#multiedittab").data("link");
+				var link = $("#main-media-viewer").data("multieeditlink");
 				var mainmedia2 = $("#main-media-viewer");
 			
 				var options = mainmedia2.data();
