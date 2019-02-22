@@ -1,5 +1,5 @@
 #set ($sourcepath = $hit.sourcepath)
-   #if( $hit.previewstatus && $hit.previewstatus == "mime")
+   #if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
        #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
        <div class="emdropshadow">
