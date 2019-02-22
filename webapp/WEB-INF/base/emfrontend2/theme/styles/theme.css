@@ -2883,14 +2883,14 @@ label.error {
 	float:none;
 }
 .media-player-mini  { background-color: #333; color:#efefef; text-align: center; margin-bottom:20px;}
-.media-player-mini  a { 
+.media-player-mini-links  a { 
 	color:#ccc; 
 	text-decoration: none; 
 	display:inline-block;
 	line-height: 1.6;
 	padding: 0 5px; 
 	}
-.media-player-mini  a:hover { color:#fff;  text-decoration: none;}
+.media-player-mini-links  a:hover { color:#fff;  text-decoration: none;}
 .media-player-mini .dropdown-menu {
 	background-color: #434343;
 }
@@ -2899,7 +2899,9 @@ label.error {
 	background-color: #666;
 }
 .media-info-icons { display: inline-block;}
-
+.media-player-mini .jp-audio.mini {
+	width:330px;
+}
 .assetlockedinput {
 	display: inline-block;
 	padding:2px 0 0 0;

@@ -18,6 +18,7 @@
 		    		#set( $thumbsize  = "mediumimage" )
 				#end
 				$context.putPageValue("thumbsize",$thumbsize)
+				$context.putPageValue("viewer","summary")
 				#if ( $type == "image" || $type == "document" )
 					#set ( $urlutils = $context.getPageValue("url_util"))
 					#if ($urlutils)
@@ -38,7 +39,7 @@
 				
 				
 			</div>
-		            
+		    <div class="media-player-mini-links">        
 		    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
 		    <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views" title="$views [[Asset Views]]"><i class="fas fa-eye"></i> $views</a>
 		    #if ($totalpages > 1) 
@@ -72,14 +73,15 @@
 			</div>
 			#end
 			#if( !$ismulti )
-		<form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
-		<input type="hidden" name="assetid" value="${asset.id}"/>
-		<div class="assetlocked">
-			<label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>
-			<input id="assetlocked" class="togglelock form-check-input" type="checkbox" #if($asset.isLocked()) checked #end /> 
-			#if($asset.isLocked()) ( <i class="fas fa-user"></i> $asset.getLockOwner() ) #end
-		</div> 
-		</form>
+				<form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
+				<input type="hidden" name="assetid" value="${asset.id}"/>
+				<div class="assetlocked">
+					<label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>
+					<input id="assetlocked" class="togglelock form-check-input" type="checkbox" #if($asset.isLocked()) checked #end /> 
+					#if($asset.isLocked()) ( <i class="fas fa-user"></i> $asset.getLockOwner() ) #end
+				</div> 
+				</form>
 			#end
 		</div>	
+		</div>
 </div>
