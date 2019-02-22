@@ -41,7 +41,14 @@
 			</div>
 		    <div class="media-player-mini-links">        
 		    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-		    <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views" title="$views [[Asset Views]]"><i class="fas fa-eye"></i> $views</a>
+		    <a class="assettab" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
+						data-assettab="viewactions"
+						data-assettabactions="converthistory"
+						data-assettabname="[[History]]" >
+					<i class="fas fa-eye"></i> $views 
+					</a>
+		    
 		    #if ($totalpages > 1) 
 		         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a> 
 		    #end
