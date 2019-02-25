@@ -1,5 +1,7 @@
 <page>
 	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="Admin.allowViewing"/>
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<property name="assetrootfolder">/${catalogid}/assets</property>
 	<property name="subtab">viewassetedit</property>
@@ -10,6 +12,12 @@
 
 	<!-- jcrop tool -->
   
-	
+	<permission name="view">
+		<or>
+					<userprofile property="multiedit" equals="true" />
+		
+			<pagevalue name="canviewasset" equals="true" />
+		</or>
+	</permission>
 
 </page>
