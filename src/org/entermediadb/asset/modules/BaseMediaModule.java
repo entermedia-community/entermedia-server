@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
@@ -16,6 +18,8 @@ import org.openedit.util.PathUtilities;
 
 public class BaseMediaModule extends BaseModule
 {
+	private static final Log log = LogFactory.getLog(BaseMediaModule.class);
+
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{
 		EnterMedia matt = (EnterMedia) getModuleManager().getBean(inApplicationId, "enterMedia");
@@ -148,7 +152,7 @@ public class BaseMediaModule extends BaseModule
 		{
 			return (Asset)found;
 		}
-		
+		log.info("Running getAsset");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = null;
 

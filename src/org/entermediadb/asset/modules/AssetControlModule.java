@@ -58,6 +58,7 @@ public class AssetControlModule extends BaseMediaModule
 	
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
+		log.info("Running can view asset");
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
 		if(asset == null) {
 			String assetid = inReq.findValue("assetid");
