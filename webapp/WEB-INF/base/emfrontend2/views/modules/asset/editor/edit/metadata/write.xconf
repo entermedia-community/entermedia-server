@@ -1,4 +1,6 @@
 <page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+
 <path-action name="Script.run" allowduplicates="true">
 	<script>/${catalogid}/events/scripts/asset/assetwritemetadata.groovy</script>
 </path-action>
