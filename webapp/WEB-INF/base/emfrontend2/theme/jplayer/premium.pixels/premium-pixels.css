@@ -90,7 +90,7 @@
   border-left: 1px solid #242526;
   border-right: 1px solid #323334;
 }
-.jp-controls li {
+.jp-controls div {
   float: left;
 }
 .jp-controls a {
@@ -159,24 +159,29 @@
     background-size: auto auto;
   }
 }
+
+.jp-time-rail {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+    float: left;
+    height: 1.875em;
+    padding: 13px 5px;
+    position: relative;
+    width: calc(100% - 30px);
+}
 /* PROGRESS BAR
 ----------------------------------------------- */
 .jp-progress {
-  position: absolute;
-  padding: 0 95px 0 40px;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  margin-left: 0;
-  margin-right: 0;
-  width: 266px;
+  
+  width: 100%;
   height: 7px;
 }
 .mini .jp-progress {
-    width: 65px;
+    width: 100%;
 }
 .jp-seek-bar,
 .jp-play-bar {
-  width: 0px;
+  width: 100%;
   height: 5px;
   -webkit-border-radius: 1px;
   -khtml-border-radius: 1px;
@@ -186,11 +191,10 @@
 }
 .jp-seek-bar {
   cursor: pointer;
-  position: relative;
-  z-index: 2;
+  
   background: #464849;
 }
-.jp-seek-bar:before {
+.xjp-seek-bar:before {
   content: " ";
   display: block;
   background: transparent;
@@ -213,9 +217,7 @@
   border-radius: 1px;
 }
 .jp-play-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
+  
   -webkit-animation: progress 0.75s linear infinite;
   -moz-animation: progress 0.75s linear infinite;
   -o-animation: progress 0.75s linear infinite;

@@ -60,7 +60,9 @@ data-editable="$caneditasset"
 data-assetid="$asset.id" data-next="$!next.getId()" 
 data-previous="$!previous.getId()"
 data-previouspage="$!dialoghits.idOnPreviousPage()" 
-data-nextpage="$!dialoghits.idOnNextPage()" >
+data-nextpage="$!dialoghits.idOnNextPage()"
+data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
+ >
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end

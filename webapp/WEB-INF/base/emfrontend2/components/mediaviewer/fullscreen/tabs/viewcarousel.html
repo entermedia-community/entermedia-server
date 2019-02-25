@@ -21,12 +21,17 @@
         			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
         			$context.putPageValue("type", $type)
         			
+        			#if ($type=="audio")
+        				#set( $alwaysmime = true)
+        				$context.putPageValue("alwaysmime", $alwaysmime)
+        			#end
+        			
         			$context.putPageValue("clink", $clink)
 			
 				    #set( $editlink = $content.get("asseteditlink") )
 					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
 				<div class="gallery-thumb #if( $ismultimode && $dialoghits.isSelected($hit.id)) selected-asset #end " id="gallery-${hit.id}">
-        		<div class="">
+        		
         			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hit.name}"   href="#" >
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
@@ -39,7 +44,7 @@
           			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
  					<label for="selectionbox_${hit.id}" class="">${hit.name}</label>
  					</div>
-        		</div>
+        		
        
       			</div>
      			#end

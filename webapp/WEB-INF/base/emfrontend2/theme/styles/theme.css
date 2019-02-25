@@ -877,6 +877,9 @@ html, body, #application {
 .lefttoggle, .filterstoggle {
 	cursor: pointer;
 }
+.filtersopen #sub-nav li a.filterstoggle {
+	display:none;
+}
 .lefttoggleclose, 
 .filterstoggleclose,
 .sidebarheaderactions {
@@ -1227,10 +1230,10 @@ html, body, #application {
     width: 28px;
     text-align: left;
 }
-.emselectable #main-results-table tr {
+.emselectable tr {
 	cursor:pointer;
 }
-.emselectable #main-results-table tr td {
+.emselectable tr td {
     text-align: left;
     border-left: 1px dashed #E2EFF4;
     padding: 2px 10px;
@@ -2880,14 +2883,14 @@ label.error {
 	float:none;
 }
 .media-player-mini  { background-color: #333; color:#efefef; text-align: center; margin-bottom:20px;}
-.media-player-mini  a { 
+.media-player-mini-links  a { 
 	color:#ccc; 
 	text-decoration: none; 
 	display:inline-block;
 	line-height: 1.6;
 	padding: 0 5px; 
 	}
-.media-player-mini  a:hover { color:#fff;  text-decoration: none;}
+.media-player-mini-links  a:hover { color:#fff;  text-decoration: none;}
 .media-player-mini .dropdown-menu {
 	background-color: #434343;
 }
@@ -2896,7 +2899,9 @@ label.error {
 	background-color: #666;
 }
 .media-info-icons { display: inline-block;}
-
+.media-player-mini .jp-audio.mini {
+	width:330px;
+}
 .assetlockedinput {
 	display: inline-block;
 	padding:2px 0 0 0;
