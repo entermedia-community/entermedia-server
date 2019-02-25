@@ -59,6 +59,15 @@ public class AssetControlModule extends BaseMediaModule
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
+		if(asset == null) {
+			String assetid = inReq.findValue("assetid");
+			if(assetid != null && assetid.contains("multi")) {
+				
+			
+			asset = getAsset(inReq);
+			}
+		}
+		
 		if(asset == null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
