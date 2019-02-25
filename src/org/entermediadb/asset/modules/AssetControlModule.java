@@ -67,6 +67,7 @@ public class AssetControlModule extends BaseMediaModule
 			
 			asset = getAsset(inReq);
 			log.info("can view asset was checking :" + assetid);
+			log.info("found: " + asset);
 			}
 		}
 		
