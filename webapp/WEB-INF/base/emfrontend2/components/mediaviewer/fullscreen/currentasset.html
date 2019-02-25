@@ -351,14 +351,16 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
                      </a>
                  </li>
                  #end
-                 #if( $canmultiedit )
+                #if( $canmultiedit )
+                #if($dialoghits.getSelectedHits().size() > 1)
                  <li>
                  	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
 						data-assettab="multiedit">
-					[[Multiedit]] 
+					[[Multiedit]]  $dialoghits.getSelectedHits().size()
 					</a>
                  </li>
+                 #end
                  #end
 				</ul>
 		    </li>
