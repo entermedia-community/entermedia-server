@@ -200,8 +200,9 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 							#set( $cdnprefix = $context.siteRoot )
 						#end
 								
-						 #if($candownload)				
-							<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()">[[Original File]]</a></li>
+						 #if($candownload)	
+						 			
+							<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")">[[Original File]]</a></li>
 						#end
 						
 						#if($canconvert || $candownloadfpo)
