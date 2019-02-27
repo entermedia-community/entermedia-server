@@ -35,6 +35,8 @@ import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
+import groovy.json.internal.Dates;
+
 public class PullManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(PullManager.class);
@@ -152,7 +154,7 @@ public class PullManager implements CatalogEnabled
 							log.info("We just ran a pull within last 10 seconds");
 							continue;
 						}
-						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
+						params.put("lastpulldate", DateStorageUtil.getStorageUtil().formatForStorage(pulldate)); //Tostring
 					}
 					params.put("searchtype", inSearchType); //Loop over all of the types
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
