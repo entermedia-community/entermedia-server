@@ -1,12 +1,28 @@
-#set( $edit = $context.getRequestParameter("editfilters"))
+#if ($editfilters)
+	#set( $edit = true )
+#elseif( !$editfilters)
+	#set( $edit = $context.getRequestParameter("editfilters"))
+#end
 #if( $edit)
 	$context.putPageValue("edit",$edit)
+#end
+
+#if( !$librarycol )
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($collectionid)
+		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+	#end
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+	$context.putPageValue("collectionid", $librarycol.getId())
 #end
 
 <div id="advfilterpanel" class="advfilterpanel" >
 #if( !$edit )
 	<div class="filters-edit-icon">
-		<a class="ajax" data-targetdiv="advfilterpanel" href="$apphome/components/filters/index.html?editfilters=true&oemaxlevel=1"><i class="fas fa-cog"></i></a>
+		<a class="ajax" data-targetdiv="advfilterpanel" href="$apphome/components/filters/index.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid"><i class="fas fa-cog"></i></a>
 	</div>
 #end
 <div class="tanmodule" >
@@ -77,7 +93,7 @@
 			
 		
 
-	
+	##FILTERS
 		
 		#foreach( $detail in $details)
 		
@@ -94,7 +110,9 @@
 					#end	
 					
 				#else
-					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+					
+						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+					
 				#end
 			#else
 				$pages.include("/${applicationid}/components/filters/section.html", $context)
@@ -156,6 +174,7 @@
 			<input type="hidden" name="editadvsearch" value="true"/>
 			<input type="hidden" name="view" value="$view"/>
 			<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
+			<input type="hidden" name="collectionid" value="$!collectionid"/>
 			<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 			<div class="form-group">
 			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
@@ -191,7 +210,13 @@
 			</select>
 			</div>
 		<div class="form-group">
-			<a class="ajax btn btn-sm btn-secondary" targetdiv="advfilterpanel" href="$home$apphome/components/filters/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done Editing]]</a>
+			#if( $collectionid )
+				#set($doneUrl = "$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$!collectionid&clearselection=true") 
+			#else
+				#set($doneUrl = "$home$apphome/views/modules/asset/index.html")
+				 
+			#end
+			<a class="btn btn-sm btn-secondary" href="$doneUrl">[[Done Editing]]</a>
 		</div>	
 		</form>
 		</div>
@@ -200,8 +225,8 @@
 		<script type="text/javascript">
 			deleteFilterField = function(inType,inFieldId)
 			{	
-				console.log('delete field');
-				var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
+				console.log('Delete filter');
+				var params = 'oemaxlevel=1&editfilters=true&collectionid=$!collectionid&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
 				jQuery('#advfilterpanel').load("$home$apphome/components/filters/deletefield.html?" + params)
 			}
 		</script>
