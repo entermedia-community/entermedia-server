@@ -197,7 +197,11 @@ public class SyncModule extends BaseMediaModule
 		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
 		{
 			String pulltype = (String) iterator.next();
-			long total = getPullManager(archive.getCatalogId()).processPullQueue(archive, pulltype);
+			boolean resetdate = !iterator.hasNext();
+			long total = getPullManager(archive.getCatalogId()).processPullQueue(archive, pulltype, resetdate);
+			
+			
+			
 			ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 			if ( log != null)
 			{

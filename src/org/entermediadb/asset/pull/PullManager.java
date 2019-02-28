@@ -108,7 +108,7 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public long processPullQueue(MediaArchive inArchive, String inSearchType)
+	public long processPullQueue(MediaArchive inArchive, String inSearchType, boolean resetdate)
 	{
 		//Connect to all the nodes
 		//Run a search based on las time I pulled it down
@@ -160,11 +160,11 @@ public class PullManager implements CatalogEnabled
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
 					{
 						log.info("Doing a full download");
-						params.put("fulldownload", "true");
+					//	params.put("fulldownload", "true");
 					}
 
 					long ok = downloadPages(inArchive, connection, node, params, inSearchType);
-					if (ok != -1)
+					if (ok != -1 && resetdate)
 					{
 						node.setValue("lastpulldate", now);
 						getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);

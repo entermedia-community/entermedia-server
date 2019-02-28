@@ -123,7 +123,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Override
 	public int importAssets(String inBasepath)
 	{
-		return (int) getPullManager().processPullQueue(getMediaArchive(), "asset");
+		return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true);
 	}
 
 	@Override
