@@ -19,7 +19,7 @@
 		#foreach( $style in $targetpage.getStylePaths(true) )
 			<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$home#end$style" />
 		#end
-		$pages.include($targetpage,$context)
+		$pages.include($targetpage, $context)
 		</div>
 	</div>
 	

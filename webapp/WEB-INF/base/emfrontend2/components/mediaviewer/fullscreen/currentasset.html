@@ -259,7 +259,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			   		[[Map]]
 			   #elseif ($opentabactions=='attachments')
 			   		[[Attachments]]
-			   #elseif ($opentabactions=='converthistory')
+			   #elseif ($opentabactions=='assethistory')
 			   		[[History]]
 			   #else
 			   	[[Actions]]
@@ -329,10 +329,10 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			   	#end
 		    	#if( !$ismulti && $canconverthistory )
 			   	<li>
-			   		<a class="assettab #if($opentabactions=='converthistory') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
+			   		<a class="assettab #if($opentabactions=='assethistory') dropdown-current #end" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
 						data-assettab="viewactions"
-						data-assettabactions="converthistory"
+						data-assettabactions="assethistory"
 						data-assettabname="[[History]]" >
 					[[History]] 
 					</a>
