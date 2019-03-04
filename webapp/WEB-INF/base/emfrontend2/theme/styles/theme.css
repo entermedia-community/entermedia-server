@@ -759,7 +759,7 @@ html, body, #application {
 .filter-box-options a,
 .filter-box-options a:visited {
 	display:block;
-	padding:5px;
+	padding:5px 0;
 	line-height: 1.2;
 	color:#999;
 	cursor: pointer;
@@ -771,6 +771,7 @@ html, body, #application {
 .filter-box-options a label,
 .filter-box-options a input {
 	cursor: pointer;
+	display: inline;
 }
 .filter-box-options a.filter-current {
 	color:#fff;
