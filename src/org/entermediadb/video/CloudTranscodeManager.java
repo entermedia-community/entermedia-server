@@ -473,9 +473,9 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			{
 				try
 				{
-					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
-					inTrack.setValue("percentcomplete", percent);
-					tracksearcher.saveData(inTrack);
+//					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
+//					inTrack.setValue("percentcomplete", percent);
+//					tracksearcher.saveData(inTrack);
 				}
 				catch(Exception e)
 				{
