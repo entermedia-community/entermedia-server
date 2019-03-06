@@ -9,15 +9,20 @@
 #set($views = $mediaarchive.getPropertyDetailsArchive().listViews($moduleid))
 $context.putPageValue("views", $views)
 #set( $viewsroot = $content.viewsroot )
+<div class="tab" id="field-tab">
+<div class="tab-actions" style="height: 30px;">
+</div>
+</div>
 
-
-	<div id="table-container">
+    <div id="table-container" style="padding:20px">
+        
 		<div id="side-nav-inner">
 			<div id="viewlist">
 				$pages.include("$apphome/views/settings/lists/datamanager/views/viewslist.html", $context)		
 			</div>
 		</div>
 		<div id="workarea">
+                    
 			$pages.includeContent()
 		</div>
 	</div>

@@ -3995,35 +3995,37 @@ form .field {
     margin: 10px 0 0 0;
     border-bottom: 1px solid #ddd;
     padding: 0 20px;
-    height: 21px;
+    height: 28px;
 }
 .tabnav a {
-    padding: 5px 10px;
-    background: #f9f9f9;
-    color: #999;
+    padding: 7px 15px;
+    line-height: 2;
+    background: #e1e1e1;
+    color: #666;
     font-size: 0.9rem;
     border: 1px solid #eee;
     border-bottom: none;
-    margin-right: 5px;
+    margin-right: 2px;
 }
 .tabnav a:hover {
-    background: #fff;
-    color: #3DAACD;
+    background: #727B84;
+    color: #fff;
     border-color: #ddd;
     cursor: pointer;
     box-shadow: 0 0 4px 1px rgba(0,0,0,0.05);
+    text-decoration: none;
 }
 .tabnav a.current {
-    border-color: #ddd;
-    background: #fff;
-    color: #3DAACD;
+    border-color: #333;
+    background: #333;
+    color: #fff;
     padding-bottom: 6px;
     box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
 }
 .tab-actions {
     position: relative;
     border-bottom: 1px solid #ddd;
-    padding: 8px 20px;
+    padding: 12px 20px 10px 20px;
     background-color:#333;
     color:#bbb;
 }
