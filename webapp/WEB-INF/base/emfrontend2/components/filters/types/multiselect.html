@@ -63,12 +63,13 @@ $lsearcher.addShowOnly($context, $query)
 #set( $valueid = "$fieldname" )
 
 #if( !$values )
-#set($values = $data.getValues($detail.id))
+    #set($values = $data.getValues($detail.id))
 #end
 
 
+
 #if($types)
-$types.enableBulkOperations()
+    $types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
@@ -86,7 +87,7 @@ $types.enableBulkOperations()
         data-allowclear="false"
 		>
 		#if ($detail.blankoption != false)
-		<option value=""></option>
+		    <option value=""></option>
 		#end
 		#foreach( $type in $types )
 			#set( $key = $type.id)
