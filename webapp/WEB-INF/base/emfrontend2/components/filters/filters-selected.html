@@ -100,10 +100,13 @@
 				[[Between]]:
 			#end
 			
-			$term.getValue()
+            $term.getValue()
 		#else
-			
-			$term.getValue()
+            #if($term.getValue())
+                $term.getValue()
+            #elseif($val)
+                $val
+            #end
 		#end
 		
 		 

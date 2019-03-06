@@ -779,7 +779,11 @@ uiload = function() {
 						var defaulttext = theinput.data('showdefault');
 						if (!defaulttext) {
 							defaulttext = "Search";
-						}
+                        }
+                        var allowClear = $(this).data('allowclear');
+                        if (allowClear == undefined)  {
+                            allowClear = true;
+                        }
 						var url = apphome
 								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
 								+ catalogid + "&field=" + searchfield
@@ -791,7 +795,7 @@ uiload = function() {
 										{
 											tags : true,
 											placeholder : defaulttext,
-											allowClear : true,
+											allowClear : allowClear,
 											selectOnBlur : true,
 											delay : 250,
 											minimumInputLength : 1,

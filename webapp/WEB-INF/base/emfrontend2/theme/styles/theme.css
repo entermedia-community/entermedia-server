@@ -811,7 +811,20 @@ html, body, #application {
 .filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
 	border-color:#eee  transparent transparent;
 }
-
+.filter-box-options .select2-container .select2-search--inline .select2-search__field {
+	background-color: #333!important;
+	color:#eee!important;
+	
+}
+ .select2-results__option {
+    font-size:.8rem;
+}
+.filter-box-options .select2-selection__choice__remove {
+    display:none;
+}
+.filter-box-options .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+    padding:0 5px;
+}
 .filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
 	color:#efefef;
 }
