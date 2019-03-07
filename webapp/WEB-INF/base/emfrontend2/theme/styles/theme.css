@@ -242,8 +242,13 @@ background-color:rgba(0,0,0,0.5);
 	border-left:1px solid #dedede;
 }
 table.table-striped tbody td {
-	border-bottom:1px solid #dedede;
+    border-bottom:1px solid #dedede;
+    border-top: 0 none;
 }
+ul.list-group.list-group-striped li:nth-of-type(odd){
+    background: rgba(0,0,0,.05);
+}
+
 /*TR Hovers*/
 tr.emborderhover td,
 .table-hover tbody tr:hover,
@@ -258,6 +263,7 @@ tr.emborderhover td,
 .filters-sidebar li:hover,
 .filters-sidebar-selected li:hover,
 .list-hover:hover,
+ul.list-group.list-group-hover li:hover,
 .emrowselected
 {
 	background-color: #c9e8f2;
@@ -414,6 +420,10 @@ h3 {
 .dropdown-toggle::after {
 	vertical-align:0.1em;
 }
+
+
+
+
 #emcontent { position: relative;}
 #emfooter {   
 	bottom: 0;
@@ -607,7 +617,7 @@ html, body, #application {
 	}
 	.col-content {
 		margin-left: 280px;
-		min-height: 200px;
+		min-height: 400px;
 	}
 }
 .emfooter {
@@ -4821,6 +4831,9 @@ a.collectionbox.favorite
 .iconbarcontainer {
 	background-color: #000;
 }
+.dashboard {
+    padding:20px;
+}
 .dashboardcontainer {
 	padding-bottom:20px;
 }
@@ -4836,3 +4849,20 @@ a.collectionbox.favorite
 #editlayout .btns {
 	padding:15px 10px;
 }
+
+.activitydetails h3 {
+    padding:10px 0;
+    margin:0;
+    font-size:1.3rem;    
+}
+.activitydetails {
+    padding:10px 20px;
+}
+
+.activitydetailscontainer .settings-table {
+ border-top:1px solid #6663;
+
+}
+
+
+

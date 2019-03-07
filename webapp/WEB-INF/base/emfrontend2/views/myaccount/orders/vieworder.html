@@ -1,17 +1,13 @@
-
-
 <div id="default-top" class="clearfix">
      <div class="main-info" style="padding-bottom: 30px;">
         <div class="primary">
-           Order Details
+           [[Order History]] 
         </div>
         <div class="secondary">
-            View your order details below
+            [[View your order history below]]
         </div>
     </div>
-    
 </div>
-
 #if($order.userid == $user.id)
 	#set ( $orderid = $context.findValue("orderid") )
 	
