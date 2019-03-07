@@ -27,4 +27,10 @@ $pages.include("/${applicationid}/components/reports/types/${report.outputtype}.
 </div></div></div>
 
 </div>
+
+
+#if ($report.id == "assetedits")
+$pages.include("/${applicationid}/components/reports/types/assetsedithistory.html", $context)
+#end
+
 </div>
