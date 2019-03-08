@@ -4829,7 +4829,7 @@ a.collectionbox.favorite
 	overflow:auto;padding-top:10px;margin-top:10px	
 }
 .iconbarcontainer {
-	background-color: #000;
+	background-color: #333;
 }
 .dashboard {
     padding:20px;

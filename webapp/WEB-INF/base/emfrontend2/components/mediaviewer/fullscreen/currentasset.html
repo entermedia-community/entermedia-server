@@ -48,6 +48,10 @@ $context.putPageValue("cdn",$cdnprefix)
 #end
 $context.putPageValue("opentab",$opentab)
 
+
+ 
+
+
 $dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
 #set( $hitssessionid = $dialoghits.getSessionId())
 <div id="main-media-container">
@@ -91,7 +95,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 				##Back to Preview
 				#set( $opentab = "viewproperties")
 				#set( $opentabactions = "")
-				$userprofile.set("assetopentabactions", "")
+				#userprofile.set("assetopentabactions", "")
 				$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
 			#else
 				$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
