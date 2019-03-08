@@ -25,7 +25,7 @@
 			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Permissions]]</a>
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
 		   	#end
 			#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
