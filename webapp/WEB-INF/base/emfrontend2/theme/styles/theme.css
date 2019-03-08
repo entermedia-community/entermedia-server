@@ -790,7 +790,7 @@ html, body, #application {
 	margin: 0;
 }
 .filter-box-options .form-control { 
-	padding:.125rem .5rem;
+	padding:.25rem .5rem;
 }
 .filter-box-options .custom-select {
     background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23EEE' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center;
@@ -4244,7 +4244,7 @@ table.table-striped tbody td.emdatafield { width:220px; padding:5px 8px;}
 .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered{line-height:1.75rem; color:#333; }
 .select2-search--dropdown .select2-search__field{border:1px solid #ced4da;border-radius:.25rem; }
 .select2-results__message{color:#6c757d}
-.select2-container--bootstrap4 .select2-selection--multiple{min-height:calc(2rem)!important;background-color: #fff;}
+.select2-container--bootstrap4 .select2-selection--multiple{height:calc(1.75rem + 2px)!important;background-color: #fff;}
 .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__rendered{-webkit-box-sizing:border-box;box-sizing:border-box;list-style:none;margin:0;padding:0 5px;width:100%}
 .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice{color:#343a40;border:1px solid #bdc6d0;border-radius:.2rem;padding:0;padding-right:5px;cursor:pointer;float:left;margin-top:.4em;margin-right:5px;font-size:0.8rem;line-height: 1.2rem;}
 .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {color:#bdc6d0;font-weight:700;margin-left:3px;margin-right:1px;padding-right:3px;padding-left:3px;float:left}
