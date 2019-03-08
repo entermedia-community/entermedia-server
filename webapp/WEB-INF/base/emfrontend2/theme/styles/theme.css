@@ -1986,7 +1986,7 @@ td.checkbox input, th.firstheader input {
 }
 .opencollections ul li {
     list-style-type: none;
-    padding: 4px 0 4px;
+    padding: 4px 4px;
     word-wrap: break-word;
 }
 .opencollections ul li:last-child {  padding: 10px 0;}
