@@ -13,33 +13,35 @@ $pages.include("$clientroot/details/video.html",$context)
 
 
 
-	
-	<div class="float-left" style=" width:140px; font-size:90%; padding: 6px 0 0 5px;">	
+    <div class="row">
+	<div class="col" style="max-width:130px; font-size:90%;">	
 		<span id="captionstart">00:00.0</span> -
 		<span id="captionend">00:00.0</span>
 	</div>
-	<div class="float-left" style="padding: 0px;">
+	<div class="col" style="padding: 0px;">
 		<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" class="ajaxform" >
 			<input type="hidden" name="assetid" value="$asset.id" />
 			<input type="hidden" name="oemaxlevel" value="1" />
 			<input type="hidden" id="timecodestart" name="timecodestart" value="0" />
 			<input type="hidden" id="timecodelength" name="timecodelength" value="8000" />
-			<input  id="captioninput" 
+			<textarea  id="captioninput" 
 				name="cliplabel"
 				class="form-control" 
 				placeholder="[[press tab to start/stop and press enter to save]]"
-				value="" 
-				style="width:450px;" />
+                value="" 
+                rows="2"
+				style="width:100%;"></textarea>
 		</form>
 	</div>
-	<div class="float-left" style="padding: 0 0 0 20px;">	
+	<div class="col" style=" max-width:160px; padding: 0 0 0 20px;">	
 		##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
 		##	class="btn btn-success btn-sm" style="margin-left:0px;" >[[Play 8s]]</a> 
 		<a id="removetime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-minus"></i></a>
 		<a id="addtime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-plus"></i></a>
 		<a id="removecaption" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-trash"></i></a>
 		
-	</div>
+    </div>
+    </div>
 <div class="clearfix"></div>
 <div class="row">
 	<div class="col-sm-12">
