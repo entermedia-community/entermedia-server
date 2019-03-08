@@ -284,7 +284,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 					</a>
 			   	</li>
 			   	#end
-			   	#if(!$ismulti && $rendertype == "video")
+			   	#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
 			   		#if($canviewtimeline)
 			   			<li>
 					   	<a class="assettab #if($opentabactions=='timeline') dropdown-current #end" 
