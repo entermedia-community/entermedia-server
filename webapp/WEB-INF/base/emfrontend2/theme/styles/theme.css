@@ -233,7 +233,7 @@ background-color:rgba(0,0,0,0.5);
 #eml-tab-subnav li.current a:hover {
 	background-color: #fff!important;
     color:#333!important;
-    box-shadow:inset 0 10px 10px -10px rgba(0,0,0,0.5)
+    box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5)
 }
 #collection-tab-content .tab-paneX {
 	background-color: #D5D5D5;
@@ -4009,36 +4009,36 @@ form .field {
     height: 28px;
 }
 .tabnav a {
-    padding: 7px 15px;
+    padding: 9px 15px;
     line-height: 2;
-    background: #e1e1e1;
-    color: #666;
-    font-size: 0.9rem;
+    background: #8E8E8E;
+    color: #fff;
     border: 1px solid #eee;
     border-bottom: none;
-    margin-right: 2px;
+    
 }
 .tabnav a:hover {
-    background: #727B84;
-    color: #fff;
+    background: rgba(0,0,0,0.5);
+    color:#fff;
     border-color: #ddd;
     cursor: pointer;
     box-shadow: 0 0 4px 1px rgba(0,0,0,0.05);
     text-decoration: none;
+    box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5);
 }
 .tabnav a.current {
-    border-color: #333;
-    background: #333;
-    color: #fff;
+    border-color: #ccc;
+    background: #fff;
+    color: #000;
     padding-bottom: 6px;
-    box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
+box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5);    
 }
 .tab-actions {
     position: relative;
     border-bottom: 1px solid #ddd;
     padding: 12px 20px 10px 20px;
     background-color:#fff;
-    color:#bbb;
+    
 }
 .tab table {
     width: 100%;
