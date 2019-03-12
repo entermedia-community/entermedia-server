@@ -1,4 +1,8 @@
 #set($rootcategory = $mediaarchive.getProjectManager().getRootCategory($mediaarchive, $librarycol.getId()))
-<div class="assetdropcategory assetdropcategorymove treeclickparameters">  
-	$pages.include("$componenthome/emtree/tree.html?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree&url-postfix=.html&url-prefix=$apphome/views/modules/librarycollection/category/$librarycol.getId()/&targetdiv=searchlayout&maxlevelclick=2&editabletree=true",$context)
+<div class="assetdropcategory assetdropcategorymove treeclickparameters"> 
+    #set( $link = "$componenthome/emtree/tree.html")
+    #set( $link = "${link}?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=2" )
+    ##set( $link = "${link}&url-prefix=$apphome/views/modules/librarycollection/category/$librarycol.getId()/&url-postfix=.html" )
+	$pages.include($link, $context)
 </div>

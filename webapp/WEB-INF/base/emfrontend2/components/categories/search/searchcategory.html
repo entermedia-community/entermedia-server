@@ -38,8 +38,11 @@
 	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
 			[[Parent]] 
 		</div>
-	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px;overflow-y:auto;width:300px">  
-		$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&editabletree=true&clearselection=true",$context)
+    <div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px;overflow-y:auto;width:300px">
+        #set( $link = "$apphome/components/emtree/tree.html")
+        #set( $link = "${link}?tree-name=dialogCategoryPickerTree&editabletree=true&clearselection=true" )
+        #set( $link = "${link}&targetdiv=searchareacontent" )
+		$pages.include($link, $context)  
 	</div>
 </td>
 <td style="vertical-align: top;">

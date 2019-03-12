@@ -34,14 +34,16 @@ $(document).ready(function()
 	lQuery('.emtree-widget ul li div .cat-name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
-		console.log('selected');
+		//console.log('selected');
 		$('.emtree ul li div').removeClass('selected cat-current');
-		var tree = $(this).closest(".emtree");
+        var tree = $(this).closest(".emtree");
+        var treename = tree.data("treename");
 		var node = $(this).closest('.noderow');
 		$("div:first",node).addClass('cat-current');
 		var nodeid = node.data('nodeid');	
 		
-		var prefix = tree.data("url-prefix");
+        var prefix = tree.data("url-prefix");
+        var postfix = tree.data("url-postfix");
 		var targetdiv = tree.data("targetdiv");
 		var maxlevel = tree.data("maxlevelclick");
 		if(maxlevel ==  undefined || maxlevel == "" )
@@ -53,19 +55,18 @@ $(document).ready(function()
 			targetdiv = "searchlayout";
 			maxlevel = 3;
 		}
-		if( prefix)
-		{
-			var postfix = tree.data("url-postfix");
-			gotopage(tree,node,maxlevel,prefix, postfix);
-		}
-		else
+        
+		if (treename != undefined && treename == "dialogCategoryPickerTree")  //Dialog Tree
 		{
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
 			var depth = node.data('depth');	
 			//Not really needed?
 			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
-		}
+        }
+        else {  //Regular Tree
+            gotopage(tree, node, maxlevel, prefix, postfix);
+        }
 		var event = $.Event( "emtreeselect" );
 		event.tree = tree;
 		event.nodeid = nodeid;
@@ -85,36 +86,39 @@ $(document).ready(function()
 		}
 		
 		var nodeid = node.data('nodeid');
-		if( postfix == undefined || postfix == "" )
-		{
-			
-			postfix = "";
-			prefix = prefix + "?categoryid=";
-		}
 		var home = tree.data("home");
-		
-		var depth = node.data('depth');
-		var iscollection = node.data("iscollection")
-		var reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
-		
-		prefix = home + "/views/modules/asset/showcategory.html";
-		
-	
-		
-		
-		var collectionid = $("#resultsdiv").data("collectionid");
-		if( iscollection)
+        var depth = node.data('depth');
+        var iscollection = node.data("iscollection")
+        var collectionid = $("#resultsdiv").data("collectionid");
+        var reloadurl = '';
+
+        
+
+        if( prefix == undefined || prefix == "" )
 		{
-			reloadurl = home + "/views/modules/librarycollection/showcategory.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
-			prefix = home + "/views/modules/librarycollection/showcategory.html";
-			maxlevel = 2;
-		}
+            if( iscollection && collectionid != undefined && collectionid != "")
+            {
+                reloadurl = home + "/views/modules/librarycollection/showcategory.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
+                prefix = home + "/views/modules/librarycollection/showcategory.html";
+                maxlevel = 2;
+            }
+            else 
+            {
+                //Asset Module
+                reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
+                prefix = home + "/views/modules/asset/showcategory.html";
+            }
+        }
+        else {
+            reloadurl = prefix + "?nodeID="+ nodeid + "&collectionid=" + collectionid;
+            console.log(prefix);
+        }
+        
 		
 		var customprefix=jQuery("#treedetails").data('customprefix');
 		if(customprefix)
 		{
 			prefix = customprefix;
-
 		}	
 		
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
