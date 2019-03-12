@@ -36,8 +36,12 @@
 	</tr>
 #end
 </table>
-<form name="pickorder" action="$home$apphome/views/modules/asset/activity/details/vieworder.html">
+<form name="pickorder" class="ajaxform" data-targetdiv="orderscontainer"  
+action="$home$apphome/views/modules/asset/activity/details/vieworder.html">
 <input name="orderid" id="emselectedrow" type="hidden" />
+<input name="oemaxlevel" type="hidden" value="1" />
+
+
 </form>
 
 </div>

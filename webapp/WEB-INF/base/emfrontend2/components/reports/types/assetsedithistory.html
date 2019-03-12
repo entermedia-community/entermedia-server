@@ -1,0 +1,25 @@
+ #set($dl = $mediaarchive.getSearcher("asseteditLog"))
+ #set($dlhits = $hits)
+<div class="page-header">
+  <h2>[[Asset Edit History]]</h2>
+</div>
+<div class="col-md-6 ">
+<ul class="list-group list-group-striped list-group-hover ">
+        #foreach($node in $dlhits.loadHistogram("event_breakdown_day", true))
+        #foreach($child in $node.getChildren())
+            #if($child.get("count") != 0)
+            <li class="list-group-item">
+            
+            <b> $context.getSearchDate($child.toString()) </b> : [[Overall Edits]]: $child.get("count")	
+            <a class="float-right btn btn-xs btn-light" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=equals">View Details</a><br/>
+            
+            </li>
+            #end
+        #end
+        #end
+
+</ul>
+<p>
+[[Note - Dates are relative to GMT, search results may be local time]]
+</p>
+</div>

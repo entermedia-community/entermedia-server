@@ -1,8 +1,8 @@
-<div class="em-rounded" >
-	<h3>[[Status Log]]</h3>
-	
-			$pages.include("$apphome/views/modules/asset/activity/status/showstatus.html")
-			#if( $order.userid != $user.getId() )
+<div class="activitydetails" >
+	        ##<h3>[[Status Log]]</h3>
+	        ##$pages.include("$apphome/views/modules/asset/activity/status/showstatus.html")
+            
+            #if( $order.userid != $user.getId() )
 			[[Invalid order]]
 			#end
 		
@@ -18,17 +18,18 @@
 				$context.putPageValue("searcher", $ordersearcher)	 
 				$context.putPageValue("data", $order)	 
 				$context.putPageValue("view", "order/vieworder")	
-				
+                
+                <div class="activitydetailscontainer">
 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 				
 				#if( $savedok)<div class="emfadeout">[[saved]]</div>#end
-				
+				</div>
 			</div>
 			</form>
 			
 
 
-<a href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" class="btn btn-sm btn-primary"><span>[[Add Files]]</span></a>
+##<a href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" class="btn btn-sm btn-primary"><span>[[Add Files]]</span></a>
 
 #if( $orderitems.size() > 0)	
 	<a href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" class="btn btn-sm btn-primary"><span>[[Download]]</span></a>

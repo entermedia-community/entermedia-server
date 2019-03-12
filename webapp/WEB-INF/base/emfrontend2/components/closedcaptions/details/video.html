@@ -4,7 +4,7 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = "/${applicationid}/components/closedcaptions" )
 
-<div class="row">
+<div class="row" style="margin-bottom:20px">
 	<div class="col" style="max-width: 550px">
 		<div id="video-container" >
 			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
@@ -24,7 +24,7 @@
 			</div>									
 		</div>
 	</div>
-	<div class="col-sm-5 col-xl-4">
+	<div class="col-sm-5 col-xl-4" style="max-width: 550px">
 		$pages.include("${clientroot}/details/edit.html", $context)
 	</div>
 </div>

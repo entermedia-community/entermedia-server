@@ -917,18 +917,14 @@ onloadselectors = function()
 		);
 		} //droppable
 		
-		lQuery(".autosubmitdetails").livequery(
-			function()
-			{
-				$(this).find(".autosubmited").change(
-				  function() 
-				  {
-					  $(this).parents("form").submit();
-				  }
-				);
+
+        $(this).find(".autosubmited").change(
+            function() 
+            {
+                $(this).parents("form").submit();
+            }
+        );
 				
-			}
-		);		
 		lQuery(".emfadeout").livequery(
 			function()
 			{

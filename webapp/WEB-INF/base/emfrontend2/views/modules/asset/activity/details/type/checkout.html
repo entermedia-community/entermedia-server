@@ -1,4 +1,4 @@
-<div class="em-rounded" >
+<div class="activitydetails" >
 			#if( $order.userid != $user.getId() )
 			[[Invalid order]]
 			#end
@@ -21,11 +21,14 @@
 				
 			</div>
 			</form>
-</div>
-<h3>[[Checkout Items]]</h3>
-##if( $canviewassets || !$expired )
-	$pages.include("$apphome/views/modules/asset/activity/checkout/listitems.html")
-##end
 
+    <h3>[[Checkout Items]]</h3>
+    ##if( $canviewassets || !$expired )
+        $pages.include("$apphome/views/modules/asset/activity/checkout/listitems.html")
+    ##end
+
+    <a href="$home$apphome/views/myaccount/orders/index.html" class="btn btn-sm btn-secondary"><i class="fas fa-caret-left"></i> [[Orders]]</a>
+
+</div>
 
 

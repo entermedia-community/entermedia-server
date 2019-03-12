@@ -1,7 +1,13 @@
 #set( $root = "$home$apphome/components/upload/types/html5")
-#set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $nodeID = $context.getRequestParameter("nodeID") )
-
+#set($collectionid = $context.getRequestParameter("collectionid"))
+#if( !$collectionid && $nodeID ) 
+    #set($category = $mediaarchive.getData("category",$nodeID))
+	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+#if( $librarycol )
+    #set($collectionid = $librarycol.getId())
+#end
 <div class="container-fluid">
 <div class="row">
     <div  class="col-4 col-upload-left">

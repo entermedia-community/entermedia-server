@@ -11,12 +11,13 @@
 #elseif($assetid)	
 	
 #end	
-	<form id="colsearchform" class="ajaxform"  data-targetdiv="assetcategoryresults" 
-		action="$home$apphome/components/categories/asset/listassetcollections.html">
+     
+    <form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" 
+    action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
-		<input id="submitcollectionid" type="hidden" name="collectionid" />
+		##<input id="submitcollectionid" type="hidden" name="collectionid" />
 		<input type="hidden" name="assetid" value="$!asset.id" />
 		<table>
 		<tr>
@@ -46,19 +47,27 @@
 	</form>
 	
 	
-	<div id="collectionresults">
+	<div id="collectionresultsdialog">
 	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
 	</div>
 	
 	</div>
 </div>	
+	<form id="colelectform" class="ajaxform"  data-targetdiv="assetcategoryresults" 
+		action="$home$apphome/components/categories/asset/listassetcollections.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<input id="submitcollectionid" type="hidden" name="collectionid" />
+        <input type="hidden" name="assetid" value="$!asset.id" />
+    </form>
 
 <script>
-lQuery("#collectionresults .rowclick").livequery("click", function(e) {
+lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
 	$("#submitcollectionid").val(rowid);
-	$("#colsearchform").trigger("submit");
+	$("#colelectform").trigger("submit");
 
 });
 </script>

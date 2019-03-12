@@ -5,20 +5,24 @@
 			<canvas id="fileformatusagechart"></canvas>
 		</div>
 		<div class="col-md-6">
-			<ul class="list-group">
+			<ul class="list-group ">
 				<a href="#" class="list-group-item active"> [[File Formats]] </a>
 				#foreach($item in
-				$diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
-				#foreach($subitem in $item.getAggregations())
+				    $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+				    #foreach($subitem in $item.getAggregations())
 
-				<li class="list-group-item"><span class="badge"
-					title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
-					#set( $data = false)
-					#set( $data = $mediaarchive.getData("fileformat",$item.key))
-					$context.getText($data)
-					
-					<br /></li> #end #end
-
+                        <li class="list-group-item"><span class="badge"
+                        title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+                        #set( $data = false)
+                        #set( $data = $mediaarchive.getData("fileformat", $item.key))
+                        #if ($data) 
+                            $context.getText($data)
+                        #else
+                            $item.key
+                        #end
+                        </li> 
+                    #end 
+                #end
 				<li class="list-group-item"><span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize"))
 				</span> [[Total]]</li>
 
@@ -41,10 +45,7 @@ var data =
 "$item.key" #if($foreach.hasNext),#end
 
 #end
-        
-
-        
-        ],
+       ],
      
         
         
@@ -52,9 +53,9 @@ var data =
             
             data: [
 #foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
-#foreach($subitem in $item.getAggregations())
-$subitem.getValue() ,
-#end
+    #foreach($subitem in $item.getAggregations())
+        $subitem.getValue() ,
+    #end
 #end
                   
                    
@@ -62,12 +63,12 @@ $subitem.getValue() ,
                    #set($count = 1)
 
         backgroundColor: [
-#foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
-#foreach($subitem in $item.getAggregations())
-                #if($count != 1) , #end '$mediaarchive.getData("color", "$count").get("colorcode")'
+    #foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+        #foreach($subitem in $item.getAggregations())
+            #if($count != 1) , #end '$mediaarchive.getData("color", "$count").get("colorcode")'
                 #set($count = $count + 1)
-                #end
-                #end
+        #end
+    #end
             ]
         
         

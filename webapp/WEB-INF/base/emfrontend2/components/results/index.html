@@ -18,8 +18,11 @@
 	$context.putPageValue("librarycol",$librarycol)
 #end
 
+
 <div id="emresultscontent" >
-	$pages.include("$componenthome/filters/filters-selected.html", $context)
+    #if(!$hidefilters)
+        $pages.include("$componenthome/filters/filters-selected.html", $context)
+    #end
 	<div class="pushcontent">
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
