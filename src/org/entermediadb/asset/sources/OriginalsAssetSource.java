@@ -91,6 +91,12 @@ public class OriginalsAssetSource extends BaseAssetSource
 	public boolean handles(Asset inAsset)
 	{
 		String name = getConfig().get("subfolder");
+		if(inAsset == null) {
+			return false;
+		}
+		if(inAsset.getSourcePath() == null) {
+			return false;
+		}
 		if( inAsset.getSourcePath().startsWith(name))
 		{
 			return true;

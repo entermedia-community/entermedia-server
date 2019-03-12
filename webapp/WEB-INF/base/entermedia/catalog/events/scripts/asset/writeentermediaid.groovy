@@ -23,20 +23,23 @@ public void init()
 	ArrayList tosave = new ArrayList();
 	XmpWriter writer = (XmpWriter) archive.getModuleManager().getBean("xmpWriter");
 	int count = 0;
-	assets.each{
-		Asset asset = archive.getAsset(it.id);
-		writeAsset(archive,writer,asset);
-		asset.setValue("emidwritten", "true");
-		tosave.add(asset);
+	for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
+		Data hit = iterator.next();
+		
+		Asset asset = archive.getAsset(hit.id);
+		if(writeAsset(archive,writer,asset)) {
+			log.info("Running on " + asset.getId());
+			asset.setValue("emidwritten", "true");
+			tosave.add(asset);
+		}
 		if(tosave.size() > 1000) {
 			searcher.saveAllData(tosave, null);
 			tosave.clear();
 		}
 		count ++;
-		if(count > 5000) {
-			return;
+		if(count > 5) {
+			break;
 		}
-		log.info("Running on " + asset.getId());
 		
 	}
 	searcher.saveAllData(tosave, null);
@@ -44,7 +47,7 @@ public void init()
 	
 }
 
-public void writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
+public boolean writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
 {
 	if( archive.isTagSync(asset.getFileFormat() ) )
 		{
@@ -54,7 +57,9 @@ public void writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
 				log.info("Failed to write metadata for asset " + asset.getId());
 			
 			}
+			return didSave;
 		}
+		
 	
 }
 

@@ -187,7 +187,8 @@ public class ProjectModule extends BaseMediaModule {
 
 		}
 
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		String hitssessionid = inReq.getRequestParameter("assethitssessionid");
+		
 		ProjectManager manager = getProjectManager(inReq);
 
 		if (hitssessionid != null) {
@@ -196,6 +197,7 @@ public class ProjectModule extends BaseMediaModule {
 				tracker = tracker.getSelectedHitracker();
 			}
 			if (tracker != null && tracker.size() > 0) {
+				log.info("tracker size was" + tracker.size());
 				manager.addAssetToCollection(archive, librarycollection, tracker);
 				inReq.putPageValue("count", String.valueOf(tracker.size()));
 				return;

@@ -118,7 +118,8 @@ public class AssetSourceManager implements CatalogEnabled
 
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
-		ContentItem page = findAssetSource(inAsset).getOriginalContent(inAsset);
+		AssetSource findAssetSource = findAssetSource(inAsset);
+		ContentItem page = findAssetSource.getOriginalContent(inAsset);
 		return page;
 
 	}

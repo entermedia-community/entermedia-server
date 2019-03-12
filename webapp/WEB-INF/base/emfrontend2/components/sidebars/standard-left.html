@@ -1,13 +1,14 @@
-
-
 	<div class="col-sidebar-header">
 		<h2 class="lefttoggle">
 		<i class="fas fa-folder-open"></i> [[LOCATIONS]]	
 		<a class="nav-btn lefttoggleclose float-right" href="#">
 			<i class="fas fa-chevron-circle-left closebar"></i>
 		</a>
-		<a class="emdialog sidebarsubmenu float-right sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
-		<i class="fas fa-search"></i>
+#if( $librarycol )	
+		#else
+<a class="emdialog sidebarsubmenu float-right sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
+	#end
+	<i class="fas fa-search"></i>
 		</a>
 		</h2>
 	</div>

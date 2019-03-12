@@ -152,7 +152,6 @@ public class BaseMediaModule extends BaseModule
 		{
 			return (Asset)found;
 		}
-		log.info("Running getAsset");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = null;
 

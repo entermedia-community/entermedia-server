@@ -370,7 +370,7 @@ public class ProjectManager implements CatalogEnabled {
 
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets) {
 		List tosave = new ArrayList();
-		assets.enableBulkOperations();
+	//	assets.enableBulkOperations();
 		Category root = getRootCategory(archive, librarycollection);
 
 		HitTracker existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
@@ -382,7 +382,9 @@ public class ProjectManager implements CatalogEnabled {
 			Data hit = (Data) iterator.next();
 			assetids.add(hit.getId());
 		}
-
+		log.info("Hits size was " + assets.size());
+		log.info("Show only selected was: " + assets.isShowOnlySelected());
+	
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
 			if (!assetids.contains(data.getId())) {

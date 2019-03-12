@@ -1,4 +1,22 @@
 <page>
-<path-action name="ProjectModule.addAssetsToCollection"/>
+
+<path-action name="ProjectModule.searchForAssetsOnCollection" cancel="true">
+
+		<!-- We think this is an error
+			<searchtype>librarycollection</searchtype>
+		-->
+	</path-action>
+
+<page-action name="ProjectModule.addAssetsToCollection"/>
+
+
+
+<path-action name="ProjectModule.searchForAssetsOnCollection">
+
+		<!-- We think this is an error
+			<searchtype>librarycollection</searchtype>
+		-->
+	</path-action>
+
 
 </page>

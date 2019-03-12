@@ -28,6 +28,7 @@ files.deleteAll( root + "/WEB-INF/base/manager");
 files.deleteAll( root + "/WEB-INF/base/entermedia");
 files.deleteAll( root + "/WEB-INF/base/emfrontend");
 files.deleteAll( root + "/WEB-INF/base/emfrontend2");
+
 files.deleteAll( root + "/WEB-INF/base/modulefrontend");
 files.deleteAll( root + "/WEB-INF/base/system");
 files.deleteAll( root + "/WEB-INF/base/mediadb");

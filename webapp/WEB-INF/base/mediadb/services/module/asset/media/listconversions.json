@@ -41,7 +41,6 @@
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $preset.id))
 	"iscomplete":"$isready"}#end
 
-
 	
 ]
 }
