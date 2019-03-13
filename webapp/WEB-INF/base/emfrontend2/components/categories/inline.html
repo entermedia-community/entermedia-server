@@ -11,5 +11,10 @@
 
 
 <div id="side-categories" class="cramped assetdropcategory">
-    $pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true&url-prefix=$home$apphome/views/modules/category/categorysearch.html&targetdiv=searchlayout&maxlevelclick=1",$context)
+    $pages.include("?&&",$context)
+    #set( $link = "$apphome/components/emtree/tree.html")
+    #set( $link = "${link}?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=1" )
+    ##set( $link = "${link}&url-prefix=$home$apphome/views/modules/category/categorysearch.html" )
+    $pages.include($link, $context)
 </div>
