@@ -6,7 +6,10 @@
 	#end
 	#if(!$categoryid && $nodeID)
 		#set($categoryid = $nodeID)
-	#end
+    #end
+    #if(!$categoryid)
+        #set($categoryid = "index")
+    #end
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
 		#if($category)
@@ -31,7 +34,6 @@
 				$context.putPageValue("showhover", "false")
 				$context.putPageValue("showcaption", "true")
 				$context.putPageValue("hideheader", "true")
-				
 		    	$pages.include("$apphome/components/results/index.html",$context)
 		   #else 
 				$pages.include("$apphome/views/modules/asset/search/all.html")

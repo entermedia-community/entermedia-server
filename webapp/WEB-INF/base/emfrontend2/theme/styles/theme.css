@@ -4318,7 +4318,7 @@ table.table-padding tbody td {
 }
 
 .createmediapanel {
-	padding:30px 20px;
+	border-left: 1px solid #ccc;
 }
 .createmedia-tab {
 	padding:10px 10px;
@@ -4330,7 +4330,8 @@ table.table-padding tbody td {
 .createmediacontent {
 	background-color: #fff;
 	padding:20px;
-	min-height: 480px;
+    min-height: 480px;
+    height: 100%;
 }
 .createmedia-caption {
 	margin-left:135px;
