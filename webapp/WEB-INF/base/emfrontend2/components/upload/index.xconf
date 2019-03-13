@@ -2,4 +2,7 @@
 	<page-action name="PageValue.loadPageVariable" bean="searcherManager" />
 	<property name="dialogicon">/${applicationid}/theme/entermedia/images/navigation/upload.png</property>
 	<layout>/${applicationid}/theme/layouts/dialoglayout.html</layout>
+		<layout/>
+	<inner-layout/>
+	
 </page>
