@@ -69,7 +69,7 @@
 		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 			<a class="dropdown-item " 
 			   title="[[Add to Favorites]]"  
-			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?assethitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
+			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
 		#if ($canmetadatageneral && $canmultiedit)
   		#if ($hits.getSelectionSize() > 1)
