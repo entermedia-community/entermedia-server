@@ -187,7 +187,7 @@ public class ProjectModule extends BaseMediaModule {
 
 		}
 
-		String hitssessionid = inReq.getRequestParameter("assethitssessionid");
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		
 		ProjectManager manager = getProjectManager(inReq);
 
