@@ -141,6 +141,7 @@ public class XmpWriter {
 		}
 		comm.add("-overwrite_original");
 		comm.add("-n");
+		comm.add("-m");
 		return comm;
 	}
 
