@@ -271,27 +271,27 @@ $(document).ready(function()
 				var maxlevel = 2;
 				
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
-				var url = tree.data("home") + "/components/createmedia/upload/index.html?";
+				//var url = tree.data("home") + "/components/createmedia/upload/index.html?";
 				
 				var collectionid = $("#resultsdiv").data("collectionid");
 				var postfix = "";
 				if( collectionid )
 				{
 					//postfix = "&collectionid=" + collectionid;
-				//	gotopage(tree,node,maxlevel,url,postfix);
 					
-					url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
+					var url = tree.data("home") + "/views/modules/librarycollection/components/upload/add/start.html?" + "nodeID=" + nodeid;
 					if(collectionid){
 						url = url + "&collectionid=" + collectionid;
 					}
+					gotopage(tree,node,maxlevel,url);
 						
 				
-					document.location.href = url; 
+					//document.location.href = url; 
 				
 				}
 				else
 				{
-					url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
+					var url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
 					if(collectionid){
 						url = url + "&collectionid=" + collectionid;
 					}

@@ -71,7 +71,7 @@ public class TaskModule extends BaseMediaModule
 			SearchQuery userq = searcher.addStandardSearchTerms(inReq);
 			if( userq == null) 
 			{
-				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(100).exact("collectionid", collection.getId());
+				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
 				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 				userq = builder.getQuery();
 			}
@@ -859,7 +859,7 @@ public class TaskModule extends BaseMediaModule
 			return;
 		}
 	
-		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId()).hitsPerPage(500);
 		builder.match("userlikes", "*").sort("owner").sort("userlikes");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 //		Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");

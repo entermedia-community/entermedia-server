@@ -24,7 +24,7 @@
 	
 	
 	
-	<property id="show_add_media_collection" value="false">Show a collection picker on the simple Add Media page</property>
+	<property id="show_add_media_collection" value="true">Show a collection picker on the simple Add Media page</property>
 
 
 

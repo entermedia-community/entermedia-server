@@ -59,8 +59,9 @@
 				</span>
 				#end
 		    </div>
-		    <div  class="ui-widget-content">
-				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
+		    
+		    <div  class="ui-widget-content"> 
+				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid) 
 				##TODO - Add library filtering here..
 				<div class="inputformrow">
 					<div class="emdatafield">[[Choose Collection]]</div>
