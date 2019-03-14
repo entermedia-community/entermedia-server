@@ -1,3 +1,23 @@
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+	$context.putPageValue("nodeID",$nodeID)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+#if( !$librarycol )
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($collectionid)
+        #set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+        #set($collectionid = $librarycol.getId())
+	#end
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
 #if( $librarycol )	
 <div class="collection-header">
 

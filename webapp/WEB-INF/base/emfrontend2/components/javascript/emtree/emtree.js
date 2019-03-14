@@ -73,7 +73,7 @@ $(document).ready(function()
 		$(document).trigger(event);
 	});
 	
-	gotopage = function(tree, node, maxlevel, prefix, postfix)
+    gotopage = function(tree, node, maxlevel, prefix, postfix)
 	{
 		var treeholder = $("div#categoriescontent");
 		var toplocation =  parseInt( treeholder.scrollTop() );
@@ -278,11 +278,11 @@ $(document).ready(function()
 				if( collectionid )
 				{
 					//postfix = "&collectionid=" + collectionid;
-					
-					var url = tree.data("home") + "/views/modules/librarycollection/components/upload/add/start.html?" + "nodeID=" + nodeid;
+					var url = tree.data("home") + "/views/modules/librarycollection/components/upload/add/start.html";
 					if(collectionid){
-						url = url + "&collectionid=" + collectionid;
-					}
+						//url = url + "&collectionid=" + collectionid;
+                    }
+                    var maxlevel = 1;
 					gotopage(tree,node,maxlevel,url);
 						
 				
@@ -291,13 +291,12 @@ $(document).ready(function()
 				}
 				else
 				{
-					var url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
-					if(collectionid){
-						url = url + "&collectionid=" + collectionid;
-					}
-						
+					var url = tree.data("home") + "/views/modules/asset/components/upload/add/start.html";
+                    var maxlevel = 1;
+
+					gotopage(tree,node,maxlevel,url);
 				
-					document.location.href = url; 
+					//document.location.href = url; 
 				}
 				
 						
