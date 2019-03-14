@@ -64,7 +64,7 @@ public class ElasticHitTracker extends HitTracker
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-
+	@Deprecated
 	public int getLastPageLoaded()
 	{
 		return fieldLastPageLoaded;
@@ -134,8 +134,7 @@ public class ElasticHitTracker extends HitTracker
 	public void setShowOnlySelected(boolean inShowOnlySelected)
 	{
 		fieldShowOnlySelected = inShowOnlySelected;
-
-		getChunks().clear();
+		clear();
 	}
 
 	@Override
@@ -158,6 +157,10 @@ public class ElasticHitTracker extends HitTracker
 		fieldCurrentPage = null;
 		//log.info(getSearcher().getSearchType() + hashCode() + " clear chunks");
 	}
+	
+	
+	
+
 
 	public SearchResponse getSearchResponse(int inChunk)
 	{
