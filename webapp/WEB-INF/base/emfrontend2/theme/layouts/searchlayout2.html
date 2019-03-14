@@ -37,11 +37,7 @@
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 #set( $module = $content.module)
 
-
 $pages.includeContent()
-
-
-
 
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 <div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">

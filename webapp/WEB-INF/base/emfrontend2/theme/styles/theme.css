@@ -830,6 +830,10 @@ html, body, #application {
  .select2-results__option {
     font-size:.8rem;
 }
+.select2-results__options {
+    height: 200px;
+    overflow-y: auto;
+}
 .filter-box-options .select2-selection__choice__remove {
     display:none;
 }

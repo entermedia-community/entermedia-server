@@ -121,6 +121,7 @@ uiload = function() {
 			// console.log("found modal parent, skipping");
 			// https://github.com/select2/select2-bootstrap-theme/issues/41
 		} else {
+            console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
 			theinput = theinput.select2({
 				theme : "bootstrap4",
 				placeholder : '',
@@ -1032,13 +1033,13 @@ uiload = function() {
 
 							var dropdownParent = $("body");
 							var parent = theinput.closest(".modal-dialog");
-							var parent = theinput.parent();
+							//var parent = theinput.parent();
 							if (parent.length) {
 								dropdownParent = parent;
 								// console.log("found modal parent");
 							} else {
 								// console.log("use body parent");
-							}
+                            }
 							// var value = theinput.val();
 							theinput
 									.select2({
