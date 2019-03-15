@@ -466,11 +466,8 @@ select + .select2-container {
 /**MainContent*/
 #application #emcontainer { 
 	padding: 0; 
-	overflow: hidden;
+    overflow: hidden;
 	}
-
-
-
 
 /**Header**/
 #header .navbar {
@@ -1573,7 +1570,8 @@ td.checkbox input, th.firstheader input {
 }
 
 #application .collectionshomecontent { 
-	padding:20px; 
+    padding:20px; 
+    min-height: calc(100vh - 218px);
 }
 .collectionshomeform-container {
 	text-align:right;
