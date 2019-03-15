@@ -466,11 +466,8 @@ select + .select2-container {
 /**MainContent*/
 #application #emcontainer { 
 	padding: 0; 
-	overflow: hidden;
+    overflow: hidden;
 	}
-
-
-
 
 /**Header**/
 #header .navbar {
@@ -1302,8 +1299,15 @@ html, body, #application {
     position:relative;
 }
 
-
-
+.resultstablecell .emdatafieldreadonly {
+  overflow:hidden; 
+  white-space:nowrap; 
+  text-overflow:ellipsis; 
+  max-width:280px; 
+}
+.resultstablecell .emdatafieldreadonly-nobr {
+    white-space: nowrap;
+}
 .rowclick { cursor: pointer;}
 .select-dropdown-open.down {
     background: url('../images/sort-desc.png') 0 0 no-repeat;
@@ -1566,7 +1570,8 @@ td.checkbox input, th.firstheader input {
 }
 
 #application .collectionshomecontent { 
-	padding:20px; 
+    padding:20px; 
+    min-height: calc(100vh - 218px);
 }
 .collectionshomeform-container {
 	text-align:right;

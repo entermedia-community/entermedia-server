@@ -34,9 +34,11 @@
 		
 		jQuery("#inlinesave").on("click", function(){
 			var queryString = $('#inlinedata').formSerialize(); 
-			var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json?" + queryString;
-			var targetselect = "$targetselect";
-			$.getJSON(url, function(data) {
+            //var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json?" + queryString;
+            var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
+            var targetselect = "$targetselect";
+            //debugger;
+			$.getJSON(url, queryString, function(data) {
 				$('#' + targetselect).append($('<option>', {
 				    value: data.id,
 				    text: data.name

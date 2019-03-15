@@ -4,7 +4,7 @@
 ## $val
 ## $searcherManager
 
-
+<div class="emdatafieldreadonly">
 #if(!$val && $detail.rendermask && $data)
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
 	#esc( $label )
@@ -20,7 +20,7 @@
 					<div class="emdatafieldvaluelanguages"><span class="emdatafieldvaluelocale">$locale:</span> $lval</div> 
 				#end 
 			#end
-		#else
+        #else
 			$!map.getText($context.language)
 		#end
 #elseif( $detail.isKeywordMap() )
@@ -30,5 +30,8 @@
 		#if($lval) $keyid:$lval <br>#end 
 	#end		
 #else
-	#esc($!val)	
+    
+    #esc($!val)	
+    
 #end
+</div>
