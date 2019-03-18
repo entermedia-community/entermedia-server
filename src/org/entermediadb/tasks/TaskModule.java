@@ -989,6 +989,20 @@ public class TaskModule extends BaseMediaModule
 		
 	
 	}
-	
+
+	public void resolveTicket(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String goalid = inReq.getRequestParameter("goalid");
+		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
+		
+		selectedgoal.setValue("resolveddate",new Date());
+		Collection users = selectedgoal.getValues("userlikes");
+		selectedgoal.setValue("resolveusers",users);
+		selectedgoal.setValue("projectstatus","completed");
+		
+		archive.saveData("projectgoal",selectedgoal);
+
+	}
 	
 }
