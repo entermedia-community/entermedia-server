@@ -55,7 +55,11 @@
 			  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
 			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Custom Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Custom Permissions]]</a>
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+                          #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
+
+
 		   	#else
 			   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 			 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>

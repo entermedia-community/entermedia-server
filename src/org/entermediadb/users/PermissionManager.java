@@ -185,7 +185,7 @@ public class PermissionManager implements CatalogEnabled
 				//CollectionID specific
 				 per = findPermission(inDataType, inParentFolderId, null, data.getId());
 				 if(per != null) {
-					 log.info("WTF");
+					// log.info("WTF");
 				 }
 			}
 			if( per != null)

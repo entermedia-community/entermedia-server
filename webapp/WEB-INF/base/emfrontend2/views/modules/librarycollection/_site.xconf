@@ -4,7 +4,25 @@
 	
 	<path-action name="DataPermissionModule.loadCustomModulePermissions">
 		<property name="parameterid">collectionid</property>
+		<property name="parentparameterid">library</property>
+		
 	</path-action>
+	
+	
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true">
+		<property name="module">asset</property>
+
+		<property name="parameterid">collectionid</property>
+		<property name="parametertype">librarycollection</property>
+
+		<property name="parentparameterid">library</property>
+		<property name="parentparametertype">library</property>
+
+	</path-action>
+	
+	
+	
 	
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2/views/modules/default</property>
     <property name="module">librarycollection</property>

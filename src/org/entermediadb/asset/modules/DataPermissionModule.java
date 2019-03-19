@@ -44,6 +44,21 @@ public class DataPermissionModule extends BaseMediaModule
 				PermissionManager manager = getPermissionManager(catid);
 				String parentparameterid = inReq.findValue("parentparameterid"); //librarycolleciton
 				String parentvalue = inReq.getRequestParameter(parentparameterid);
+				String parantparametertype = inReq.findValue("parametertype");
+				if(parantparametertype == null) {
+					parantparametertype=moduleid;
+				}
+				
+				if(parentvalue == null && parentparameterid != null) {
+					Data target = getMediaArchive(catid).getData(parantparametertype, id);
+					if(target != null) {
+						parentvalue = target.get(parentparameterid);
+					}
+					
+					
+				}
+				
+				
 				manager.loadModulePermissions(moduleid,parentvalue,id,inReq);
 			
 		}
