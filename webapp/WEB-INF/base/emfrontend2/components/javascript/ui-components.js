@@ -1032,7 +1032,7 @@ uiload = function() {
 							}
 
 							var dropdownParent = $("body");
-							var parent = theinput.closest(".modal-dialog");
+							var parent = theinput.closest(".modal-content");
 							//var parent = theinput.parent();
 							if (parent.length) {
 								dropdownParent = parent;
