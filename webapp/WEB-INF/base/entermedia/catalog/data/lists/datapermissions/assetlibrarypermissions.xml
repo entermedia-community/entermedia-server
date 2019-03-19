@@ -3,44 +3,44 @@
 	
 	
 	
-	<permission moduleid="asset" id="libraryviewcategoryupload" permissiontype="librarycollection" name="Upload Files" description="Enables the upload of assets into categories" ordering="300" />
-	<permission moduleid="asset" id="librarydeleteasset" permissiontype="librarycollection" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="301"/>
+	<permission moduleid="asset" id="libraryviewcategoryupload" permissiontype="librarycollection" name="Upload Files" description="Enables the upload of assets into categories" ordering="308" />
+	<permission moduleid="asset" id="librarydeleteasset" permissiontype="librarycollection" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="305"/>
 	
-	<permission moduleid="asset" id="libraryemaillink" permissiontype="librarycollection" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="302"/>
-	<permission moduleid="asset" id="librarypublish" permissiontype="librarycollection" name="Publish" description="Enables the publishing of an asset to a specified set of servers." ordering="306"/>
-	<permission moduleid="asset" id="libraryshareasset" permissiontype="librarycollection" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="308"/>
-	<permission moduleid="asset" id="librarysharetosocialmedia" permissiontype="librarycollection" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="310"/>
-	<permission moduleid="asset" id="libraryviewconversions" permissiontype="librarycollection" name="Conversions" description="View Conversions and Cropping Tool" ordering="318"/>
-	<permission moduleid="asset" id="libraryembedasset" permissiontype="librarycollection" name="Embedding" description="Enables and embed button that provides HTML code for an asset." ordering="320"/>
-	<permission moduleid="asset" id="libraryquickpublish" permissiontype="librarycollection" name="Quick Publish" description="Enables the quick publish menu for rapidly publishing assets" ordering="322"/>
-	<permission moduleid="asset" id="libraryviewmap" permissiontype="librarycollection" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="350"/>
+	<permission moduleid="asset" id="libraryemaillink" permissiontype="librarycollection" name="Email" description="Allow email a link to an internal asset." ordering="412"/>
+	<permission moduleid="asset" id="librarypublish" permissiontype="librarycollection" name="Publish" description="Allow Publishing assets to a specified set of servers." ordering="416"/>
+	<permission moduleid="asset" id="libraryshareasset" permissiontype="librarycollection" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="410"/>
+	<permission moduleid="asset" id="librarysharetosocialmedia" permissiontype="librarycollection" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="420"/>
+	<permission moduleid="asset" id="libraryviewconversions" permissiontype="librarycollection" name="Conversions" description="View Conversions and Cropping Tool" ordering="332"/>
+	<permission moduleid="asset" id="libraryembedasset" permissiontype="librarycollection" name="Embedding" description="Provides HTML code to embed assets." ordering="414"/>
+	<permission moduleid="asset" id="libraryquickpublish" permissiontype="librarycollection" name="Quick Publish" description="Enables the quick publish menu." ordering="418"/>
+	<permission moduleid="asset" id="libraryviewmap" permissiontype="librarycollection" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="335"/>
 
-	<permission moduleid="asset" id="libraryviewassetedit" permissiontype="librarycollection" name="Cropping" description="Enables cropping" ordering="351" />
+	<permission moduleid="asset" id="libraryviewassetedit" permissiontype="librarycollection" name="Cropping" description="Enables cropping" ordering="333" />
           
-	<permission moduleid="asset" id="libraryviewmetadatageneral" permissiontype="librarycollection" name="View  Metadata" description="View Metadata Summary" ordering="354" />
+	<permission moduleid="asset" id="libraryviewmetadatageneral" permissiontype="librarycollection" name="View  Metadata" description="View Metadata Summary" ordering="302" />
 
-	<permission moduleid="asset" id="libraryviewattachments" permissiontype="librarycollection" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
+	<permission moduleid="asset" id="libraryviewattachments" permissiontype="librarycollection" name="Attachments" description="Enables access to attachments associated with an asset." ordering="334"/>
 	
-	<permission moduleid="asset" id="libraryviewcomments" permissiontype="librarycollection" name="View Comments" description="Enables Collaboration Tool" ordering="358"/>
-	<permission moduleid="asset" id="librarycomment" permissiontype="librarycollection" name="Add Comments" description="Enables Collaboration Tool" ordering="358"/>
-	<permission moduleid="asset" id="librarydeletecomment" permissiontype="librarycollection" name="Delete Comments" description="Enables Collaboration Tool" ordering="358"/>
+	<permission moduleid="asset" id="libraryviewcomments" permissiontype="librarycollection" name="View Comments" description="Enables Collaboration Tool" ordering="386"/>
+	<permission moduleid="asset" id="librarycomment" permissiontype="librarycollection" name="Add Comments" description="Enables Collaboration Tool" ordering="387"/>
+	<permission moduleid="asset" id="librarydeletecomment" permissiontype="librarycollection" name="Delete Comments" description="Enables Collaboration Tool" ordering="388"/>
 	
-	<permission moduleid="asset" id="libraryshowbadge" permissiontype="librarycollection" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
+	<permission moduleid="asset" id="libraryshowbadge" permissiontype="librarycollection" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="392" />
 
-	<permission moduleid="asset" id="libraryviewtimeline" permissiontype="librarycollection" name="Video Timeline" description="Enables access to video clips and metadata" ordering="361" />
-	<permission moduleid="asset" id="libraryviewclosedcaptions" permissiontype="librarycollection" name="Closed Captions" description="Closed Caption Support" ordering="362" />
-
-
-	<permission moduleid="asset" id="libraryeditasset" permissiontype="librarycollection" name="Edit All Assets In Collection" description="Allow editing of assets in this collection" ordering="339" />
+	<permission moduleid="asset" id="libraryviewtimeline" permissiontype="librarycollection" name="Video Timeline" description="Enables access to Video Timeline tool" ordering="338" />
+	<permission moduleid="asset" id="libraryviewclosedcaptions" permissiontype="librarycollection" name="Closed Captions" description="Enables access to Closed Caption tool" ordering="339" />
 
 
-	<permission moduleid="asset"  id="libraryconvert" permissiontype="librarycollection" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="240"/>
-	<permission moduleid="asset"  id="librarydownload" permissiontype="librarycollection" name="Download Original" description="Enables downloading of the original asset." ordering="245"/>
-	<permission moduleid="asset"  id="librarydownloadfpo" permissiontype="librarycollection" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="250"/>
+	<permission moduleid="asset" id="libraryeditasset" permissiontype="librarycollection" name="Edit All Assets In Collection" description="Allow editing of assets in this collection" ordering="304" />
+
+
+	<permission moduleid="asset"  id="libraryconvert" permissiontype="librarycollection" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="324"/>
+	<permission moduleid="asset"  id="librarydownload" permissiontype="librarycollection" name="Download Original" description="Enables downloading of the original asset." ordering="322"/>
+	<permission moduleid="asset"  id="librarydownloadfpo" permissiontype="librarycollection" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="326"/>
 	
-	<permission moduleid="asset"  id="libraryshowpendingassets" permissiontype="librarycollection" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
+	<permission moduleid="asset"  id="libraryshowpendingassets" permissiontype="librarycollection" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="312"/>
 	
-	<permission moduleid="asset"  id="libraryshowunwatermarkedassets" permissiontype="librarycollection" name="Allow assets to be viewed without watermarks" description="Allow assets to be viewed without Watermarks" ordering="366"/>
+	<permission moduleid="asset"  id="libraryshowunwatermarkedassets" permissiontype="librarycollection" name="Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
 		
 	
 </permissions>

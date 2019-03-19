@@ -2,16 +2,17 @@
 
 <div id="allpermissions">
 
+
 <div id="emselectable" >
 
 <form name="permissionsform" class="ajaxform" data-targetdiv="allpermissions" action="$home$apphome/views/modules/${moduleid}/datapermissions/edit.html">
-<table class="table table-striped emdata">		
+<table class="table table-striped table-hover emdata">		
 	<thead>
 	<tr class="tableheader">
-	<th>Type</th>
-	<th>Name</th>
-	<th>Description</th>
-	<th>Rule</th>
+	<th>[[Type]]</th>
+	<th style="min-width:210px">[[Name]]</th>
+	<th>[[Description]]</th>
+	<th>[[Rule]]</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -19,15 +20,7 @@
 	#foreach($perm in $permissions)
 	
 	#if( $perm.permissiontype != "internal")
-		#if( $section != $perm.permissiontype )
-			<tr class="sectionlevel">
-			<td colspan="4" style="height: 35px; line-height: 35px;">
-				$!searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
-			</td>
-			</tr>
-		#set( $section = $perm.permissiontype)
-			
-		#end
+		
 		
 		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${perm.moduleid},${data.id},null,${perm.id}) )
 	
