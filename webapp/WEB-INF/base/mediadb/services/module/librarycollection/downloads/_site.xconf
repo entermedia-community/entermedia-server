@@ -8,10 +8,6 @@
 	<path-action name="ProjectModule.loadCollectionId" alltypes="true"/>
 	
 	
-	
-	
-	
-	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
 		<permissions>view viewasset download forcewatermarkasset</permissions>
 	</path-action>
@@ -23,7 +19,7 @@
 		<property name="parentparameterid">collectionid</property>
 	</path-action>
 	
-	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true" alltypes="true>
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true" alltypes="true">
 		<property name="module">asset</property>
 
 		<property name="parameterid">collectionid</property>
