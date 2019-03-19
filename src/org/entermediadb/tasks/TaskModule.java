@@ -178,29 +178,42 @@ public class TaskModule extends BaseMediaModule
 		return priorities;
 	}	
 	
-	protected Map sortIntoTypes(WebPageRequest inReq, MediaArchive archive, HitTracker all)
+	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek, String collectionid)
 	{
-		Searcher searcher = archive.getSearcher("projectgoal");
-
-		Map types = new HashMap();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		List week = new ArrayList();
+		for (int i = 0; i < 5; i++) //5 days
 		{
-			Data hit = (Data) iterator.next();
-			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
-			String type = goal.get("tickettype");
-			if( type== null)
+			List todaysgoals = new ArrayList();
+			week.add(todaysgoals);
+			for (Iterator iteratorv = all.iterator(); iteratorv.hasNext();)
 			{
-				type="undefined";
+				MultiValued goal = (MultiValued) iteratorv.next();
+				Date rd = goal.getDate("resolveddate");
+				if( rd == null )
+				{
+					if( dayofweek == i )
+					{
+						todaysgoals.add(goal);
+					}
+				}
+				else
+				{
+					GregorianCalendar rg = new GregorianCalendar();
+					rg.setTime(rd);
+					if( (rg.get(Calendar.DAY_OF_WEEK) - 2) == i)
+					{
+						todaysgoals.add(goal);
+					}
+				}
 			}
-			List values = (List)types.get(type);
-			if( values == null)
-			{
-				values = new ArrayList();
-				types.put(type,values);
-			}
-			values.add(goal);
+		}	
+		for (Iterator iterator = week.iterator(); iterator.hasNext();)
+		{
+			List values = (List ) iterator.next();
+			Collections.sort(values);
+			Collections.reverse(values);
 		}
-		return types;
+		return week;
 	}
 	/*
 	public void loadGoals(WebPageRequest inReq) throws Exception
@@ -957,23 +970,64 @@ public class TaskModule extends BaseMediaModule
 		}
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.match("userlikes", "*").sort("tickettype");
-		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		HitTracker likes = builder.search();
-		log.info(builder.getQuery().toQuery() + " " + likes.size());
-
-		Map tickets = sortIntoTypes(inReq, archive, likes);
-		List types = new ArrayList();
-		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
+		
+		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
+		if( seeuser == null || seeuser.isEmpty())
 		{
-			String id = (String) iterator.next();
-			Data type = archive.getData("tickettype",id);
-			types.add(type);
+			seeuser = inReq.getUserName();
 		}
-		Collections.sort(types);
-		inReq.putPageValue("tickets", tickets);
-		inReq.putPageValue("tickettypes", types);
+		builder.match("userlikes", seeuser);
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		HitTracker likesopen = builder.search();
+		//sort users by date?
+		GregorianCalendar thismonday = new GregorianCalendar();
+		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		thismonday.set(Calendar.MINUTE, 0);
+		thismonday.set(Calendar.HOUR, 0);
+		builder = searcher.query().exact("collectionid", collection.getId());
+		builder.match("userlikes", seeuser);
+		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		builder.after("resolveddate", thismonday.getTime());
+		HitTracker likesclosed = builder.search();
 
+		List all = new ArrayList();
+		for (Iterator iterator = likesopen.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			all.add( searcher.loadData(data) );
+		}
+		for (Iterator iterator = likesclosed.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			all.add( searcher.loadData(data) );
+		}
+		//log.info(builder.getQuery().toQuery() + " " + likes.size());
+		GregorianCalendar todayc = new GregorianCalendar();
+		int selectedday1 = todayc.get(Calendar.DAY_OF_WEEK);
+		int selectedday0 = selectedday1 - 2; //zero based  
+		if( selectedday0 < 0 || selectedday0 > 5)
+		{
+			selectedday0 = 0; //monday
+		}
+		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0, collection.getId());
+//		List types = new ArrayList();
+//		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String id = (String) iterator.next();
+//			Data type = archive.getData("tickettype",id);
+//			types.add(type);
+//		}
+//		Collections.sort(types);
+		//inReq.putPageValue("tickets", tickets);
+		//inReq.putPageValue("tickettypes", types);
+		inReq.putPageValue("selectedday0", selectedday0);
+		inReq.putPageValue("week", week);
+		
+		builder = searcher.query().exact("collectionid", collection.getId());
+		builder.match("userlikes", "*");
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalpriority = builder.search().size();
+		
 		builder = searcher.query().exact("collectionid", collection.getId());
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalopen = builder.search().size();
@@ -983,7 +1037,7 @@ public class TaskModule extends BaseMediaModule
 		int totalclosed = builder.search().size();
 
 		
-		inReq.putPageValue("totallikes", likes.size());
+		inReq.putPageValue("totallikes", totalpriority);
 		inReq.putPageValue("totalopen", totalopen);
 		inReq.putPageValue("totalclosed", totalclosed);
 		
@@ -995,8 +1049,10 @@ public class TaskModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String goalid = inReq.getRequestParameter("goalid");
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
-		
-		selectedgoal.setValue("resolveddate",new Date());
+		if( selectedgoal.getValue("resolveddate") == null)
+		{
+			selectedgoal.setValue("resolveddate",new Date());
+		}
 		Collection users = selectedgoal.getValues("userlikes");
 		selectedgoal.setValue("resolveusers",users);
 		selectedgoal.setValue("projectstatus","completed");

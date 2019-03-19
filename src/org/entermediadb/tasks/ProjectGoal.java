@@ -19,7 +19,17 @@ public class ProjectGoal extends BaseData
 		
 		long minute = (diff / (1000 * 60)) % 60;
 		long hour = (diff / (1000 * 60 * 60));
-		String time = String.format("%02d:%02d", hour, minute);
+		String time = null;
+		if( hour > 24)
+		{
+			double days = (double)hour / 24d;
+			hour = hour % 24;
+			time = String.format("%2dd:%2dh:%2dm", (int)days,hour, minute);
+		}
+		else
+		{
+			time = String.format("%2dh:%02dm", hour, minute);
+		}
 		return time;
 	}
 	public int compareTo(Object inO2)
