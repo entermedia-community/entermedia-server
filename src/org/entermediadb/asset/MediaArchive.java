@@ -1780,6 +1780,23 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 
+	public Data getCachedData(String inSearchType, String inId)
+	{
+		if (inId == null)
+		{
+			return null;
+		}
+		Searcher searcher = getSearcher(inSearchType);
+		Data hit = (Data)getCacheManager().get("data" + inSearchType, inId);
+		if( hit == null)
+		{
+			hit = (Data) searcher.searchById(inId);
+			hit = searcher.loadData(hit); //not needed?
+			getCacheManager().put("data" + inSearchType, inId,hit);
+		}
+		return hit;
+	}
+	
 	public HitTracker getList(String inSearchType)
 	{
 		return getSearcherManager().getList(getCatalogId(), inSearchType);

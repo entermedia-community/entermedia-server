@@ -1,6 +1,7 @@
 <permissions name="Collection Asset Permissions">
 	
 	
+	<permission moduleid="asset" id="libraryeditasset" permissiontype="librarycollection" name="Edit Assets" description="Allow editing of assets in this collection" ordering="304" />
 	
 	
 	<permission moduleid="asset" id="libraryviewcategoryupload" permissiontype="librarycollection" name="Upload Files" description="Enables the upload of assets into categories" ordering="308" />
@@ -17,7 +18,7 @@
 
 	<permission moduleid="asset" id="libraryviewassetedit" permissiontype="librarycollection" name="Cropping" description="Enables cropping" ordering="333" />
           
-	<permission moduleid="asset" id="libraryviewmetadatageneral" permissiontype="librarycollection" name="View  Metadata" description="View Metadata Summary" ordering="302" />
+	<permission moduleid="asset" id="libraryviewmetadatageneral" permissiontype="librarycollection" name="View  Metadata" description="View Metadata Summary" ordering="362" />
 
 	<permission moduleid="asset" id="libraryviewattachments" permissiontype="librarycollection" name="Attachments" description="Enables access to attachments associated with an asset." ordering="334"/>
 	
@@ -31,7 +32,6 @@
 	<permission moduleid="asset" id="libraryviewclosedcaptions" permissiontype="librarycollection" name="Closed Captions" description="Enables access to Closed Caption tool" ordering="339" />
 
 
-	<permission moduleid="asset" id="libraryeditasset" permissiontype="librarycollection" name="Edit All Assets In Collection" description="Allow editing of assets in this collection" ordering="304" />
 
 
 	<permission moduleid="asset"  id="libraryconvert" permissiontype="librarycollection" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="324"/>
