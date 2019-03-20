@@ -339,7 +339,7 @@ public class ProjectModule extends BaseMediaModule {
 			}
 		}
 		if(collectionid != null) {
-			inReq.setRequestParameter("collectionid", collectionid);
+			//inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
 
 		}
 		return collectionid;
