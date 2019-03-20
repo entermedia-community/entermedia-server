@@ -139,6 +139,13 @@
       <language id="fr"><![CDATA[Type d&#39;ordre]]></language>
     </name>
   </property>
-  
+   <property id="user" index="true" filter="false"  editable="false" stored="true" viewtype="user" sortable="true" keyword="false" datatype="list">
+    <name>
+      <language id="de"><![CDATA[Benutzername]]></language>
+      <language id="en"><![CDATA[User Name]]></language>
+      <language id="es"><![CDATA[Nombre de usuario]]></language>
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language>
+    </name>
+  </property>
   
 </properties>

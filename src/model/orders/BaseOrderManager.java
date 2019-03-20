@@ -666,7 +666,7 @@ public class BaseOrderManager implements OrderManager {
 			String exportname = archive.asExportFileName(user, asset, preset);
 			publishqeuerow.setProperty("exportname", exportname);
 			publishqeuerow.setProperty("status", publishstatus);
-
+			publishqeuerow.setValue("user", inUser.getId());
 			publishqeuerow.setSourcePath(asset.getSourcePath());
 			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			publishQueueSearcher.saveData(publishqeuerow, inUser);
