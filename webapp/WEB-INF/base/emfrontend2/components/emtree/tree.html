@@ -51,11 +51,17 @@
 					</b> 
 				#end
 							
-				</div>
+                </div>
+                
+                 
 				
 				#if($caneditcategorytree || $editcategories)
-				<a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
-				#end
+				    <a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
+                #end
+                
+                #if( $canviewupload || $canviewcategoryupload)
+                    <a href="#" class="cat-options cat-uploadfromtree"><i class="fas fa-upload"></i></a>
+                #end
 				
 				##if($iscollection)
 				##<a  class="cat-collection cat-options" title="[[Open Collection]]" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$collection.id"><i class="fas fa-box"></i></a>
