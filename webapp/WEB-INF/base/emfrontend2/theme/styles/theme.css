@@ -957,11 +957,16 @@ html, body, #application {
 }
 .ui-widget-content {
 	border: 1px solid #dddddd;
-	background: #ffffff;
+	background: #fff;
 	color: #333333;
-	padding:10px;
+	padding:5px;
 	
 	/*font-size:.8rem;*/
+}
+.ui-widget-content.ui-datepicker {
+    padding:2px;
+    background: #f1f1f1;
+    width: 19em;
 }
 .ui-widget-content-wide {
 	padding: 0;
@@ -4875,6 +4880,10 @@ a.collectionbox.favorite
  border-top:1px solid #6663;
 
 }
+
+.emfield-time { position: relative;}
+.emfield-time .form-control { position: fixed;}
+.emfield-time .ui-datepicker-trigger { margin-left: 245px;}
 
 
 

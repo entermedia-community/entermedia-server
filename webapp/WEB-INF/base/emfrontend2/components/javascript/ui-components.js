@@ -42,6 +42,7 @@ uiload = function() {
 	
 	if ($.datepicker) {
 		lQuery("input.datepicker").livequery(function() {
+            var dpicker = $(this);
 			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
 			$.datepicker.setDefaults($.extend({
 				showOn : 'button',
@@ -52,11 +53,31 @@ uiload = function() {
 				yearRange : '1900:2050'
 			})); // Move this to the Layouts?
 			
-			var targetid = $(this).data("targetid");
-			$(this).datepicker({
+            var targetid = dpicker.data("targetid");
+			dpicker.datepicker({
 				altField : "#" + targetid,
 				altFormat : "yy-mm-dd",
-				yearRange : '1900:2050'
+                yearRange : '1900:2050',
+                beforeShow: function (input, inst) {
+                    setTimeout(function () {
+                        //Fix Position if in bootstrap modal
+                        var modaltop = $("#modals").offset().top;
+                        if (modaltop) {
+                            var dpickertop = dpicker.offset().top;
+                            dpickertop = dpickertop-modaltop;
+                            var dpHeight = inst.dpDiv.outerHeight();
+                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
+                            var viewHeight = document.documentElement.clientHeight;
+                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
+                            {
+                               dpickertop = dpickertop-dpHeight;
+                            }
+                            inst.dpDiv.css({
+                                top: dpickertop+inputHeight
+                            });
+                        }
+                    }, 0);
+                }
 			});
 			
 
@@ -71,7 +92,7 @@ uiload = function() {
 					date = $.datepicker.parseDate('yy-mm-dd', current);
 				} else {
 					date = $.datepicker.parseDate('mm/dd/yy', current); // legacy
-																		// support
+																		
 				}
 				$(this).datepicker("setDate", date);
 			}
