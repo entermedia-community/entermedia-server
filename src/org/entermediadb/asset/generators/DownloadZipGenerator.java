@@ -3,7 +3,9 @@
  */
 package org.entermediadb.asset.generators;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -63,7 +65,7 @@ public class DownloadZipGenerator extends BaseGenerator
 	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, MediaArchiveModule archiveModulex, Output inOut)
 	{
 		Map<Asset, ConvertInstructions> assets = new HashMap<Asset, ConvertInstructions>();
-		
+		ArrayList downloaded = new ArrayList();
 		String catalogid = archive.getCatalogId();
 		String[] assetids = inReq.getRequestParameters("assetselect_" + catalogid);
 		if (assetids == null)
@@ -87,6 +89,7 @@ public class DownloadZipGenerator extends BaseGenerator
 				}
 				
 				Asset asset = archive.getAsset(id);
+				downloaded.add(asset);
 				ConversionManager manager =  archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
 				if( manager != null)
 				{
@@ -108,6 +111,8 @@ public class DownloadZipGenerator extends BaseGenerator
 					log.warn("Cannot add asset with id '" + assetid + "': does not exist in catalog " + catalogid);
 					continue;
 				}
+				downloaded.add(asset);
+
 				inReq.putPageValue("asset",asset);
 				ConversionManager manager =  archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
 				if( manager != null)
@@ -139,10 +144,22 @@ public class DownloadZipGenerator extends BaseGenerator
 				*/
 			}
 		}
+		
+		
 		ZipGroup zip = new ZipGroup();
 		zip.setMediaArchive(archive);
 		zip.setUser(inReq.getUser());
 		zip.zipItems(assets, inOut.getStream());
+	
+		for (Iterator iterator = downloaded.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			archive.logDownload(asset.getSourcePath(), "success", inReq.getUser());
+
+			
+		}
+
+		
 	}
 
 	private void populateInstructions(WebPageRequest inReq, ConvertInstructions ins, String catalogid, String assetid)
