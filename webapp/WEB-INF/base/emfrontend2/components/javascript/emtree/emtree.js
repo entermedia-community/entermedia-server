@@ -152,7 +152,8 @@ $(document).ready(function()
 					//window.location.hash="TOP";
 					$(window).trigger( "resize" );
 				}
-		);
+        );
+        
 	}
 	
 /*	
@@ -244,9 +245,12 @@ $(document).ready(function()
 	getNode = function(clickedon)
 	{
 		var clickedon = $(clickedon);
-		var contextmenu = $(clickedon.closest(".treecontext"));
-		var node = contextmenu.data("selectednoderow");
-		contextmenu.hide();
+        var contextmenu = $(clickedon.closest(".treecontext"));
+        var node = contextmenu.data("selectednoderow");
+        if (!node) {
+             var node = $(clickedon).closest(".noderow");   
+        }
+        contextmenu.hide();
 		return node;
 	}
 	lQuery(".treecontext #nodeproperties").livequery('click', function(event) 
@@ -262,12 +266,11 @@ $(document).ready(function()
 				return false;
 	} );
 
-	lQuery(".treecontext #addmedia").livequery('click', function(event) 
+	lQuery(".treecontext #addmedia, .cat-uploadfromtree").livequery('click', function(event) 
 	{
 				event.stopPropagation();
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
-				var nodeid = node.data('nodeid');
 				var maxlevel = 2;
 				
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
@@ -284,8 +287,6 @@ $(document).ready(function()
                     }
                     var maxlevel = 1;
 					gotopage(tree,node,maxlevel,url);
-						
-				
 					//document.location.href = url; 
 				
 				}

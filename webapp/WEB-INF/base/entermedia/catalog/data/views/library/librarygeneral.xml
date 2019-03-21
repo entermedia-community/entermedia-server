@@ -2,13 +2,10 @@
 
 <root>
   <property id="name"/>
-  <property id="division"/>
   <property id="viewusers"/>  
   <property id="viewgroups"/> 
   <property id="viewroles"/>  
-  <property id="categoryid"/>  
-    <property id="autocreatecollections"/>  
-  
+  <property id="privatelibrary" />  
 
 
 </root>

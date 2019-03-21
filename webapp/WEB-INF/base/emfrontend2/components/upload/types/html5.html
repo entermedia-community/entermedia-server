@@ -121,7 +121,7 @@
 					#if( $collectionid ) 
 						#set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
 					#else
-						 #set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&sortby=assetaddeddateDown")
+						 #set($href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown")
 					#end
 					#if ($nodeID)
 						#set( $href = $href + "&nodeID=$nodeID")
