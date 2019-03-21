@@ -1,5 +1,4 @@
 
-
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
 		#set( $view = $context.findValue("editview") )
 		#if( !$view )
@@ -12,7 +11,6 @@
 		$context.putPageValue("view", $view)
 				#set( $targetselect = $context.getRequestParameter("update" ) )
 
-		$view xxx
 		
 		<form id="inlinedata" name="dataeditor"   >
 			<input name="save" type="hidden" value="true" />
