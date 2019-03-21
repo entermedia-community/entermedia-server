@@ -1,16 +1,15 @@
 
+
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
 		#set( $view = $context.findValue("editview") )
 		#if( !$view )
 			#set( $foundview = $searcher.getPropertyDetailsArchive().getView(${searcher.searchType},"${searcher.searchType}/${searcher.searchType}addnew"))
 			#if( $foundview )
-				found
 				#set( $view = "${searcher.searchType}/${searcher.searchType}addnew")
 			#end
 		#end
 		$context.putPageValue("view", $view)
-				#set( $targetselect = $context.getRequestParameter("update" ) )
-
+		#set( $targetselect = $context.getRequestParameter("update" ) )
 		
 		<form id="inlinedata" name="dataeditor"   >
 			<input name="save" type="hidden" value="true" />
