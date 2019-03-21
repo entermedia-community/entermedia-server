@@ -12,8 +12,8 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.config.Configuration;
 import org.openedit.config.XMLConfiguration;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.users.Group;
 import org.openedit.util.strainer.BooleanFilter;
@@ -291,12 +291,18 @@ public class DataPermissionModule extends BaseMediaModule
 //	
 	public void resetPermission(WebPageRequest inReq) throws Exception
 	{
-		String path = inReq.getRequestParameter("editPath");
-		Permission permission = loadPermission(inReq);
-		Page page = getPageManager().getPage(path,true);
-		page.getPageSettings().removePermission(permission);//may not be in here			
-		getPageManager().saveSettings(page);
-		getPageManager().clearCache(page);
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String id = inReq.getRequestParameter("id");
+		if(id != null) {
+			Searcher searcher = archive.getSearcher("custompermissions");
+			Data perm = (Data) searcher.searchById(id);
+			if(perm != null) {
+			searcher.delete(perm, inReq.getUser());
+			}
+		}
+		
+		
 	}
 	public void addGroup(WebPageRequest inReq) throws Exception
 	{
