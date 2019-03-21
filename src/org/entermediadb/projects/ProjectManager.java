@@ -1428,6 +1428,7 @@ public class ProjectManager implements CatalogEnabled {
 //		if (collectionroot == null) {
 //			collectionroot = "Collections";
 //		}
+		
 		if (!collection.hasRootCategory()) {
 			getRootCategory(mediaArchive, collection);
 			// String path = collectionroot + "/" + collection.getLibrary() + "/" +

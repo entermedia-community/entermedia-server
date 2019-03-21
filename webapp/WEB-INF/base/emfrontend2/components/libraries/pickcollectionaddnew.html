@@ -7,11 +7,11 @@
 <input type="hidden" name="field" value="owner" />
 <input type="hidden" name="owner.value" value="$!user.getId()" />
 
-#set( $data = $context.getData())
-$context.putPageValue("data",$data)
+#set( $pdata = $context.getParameterData())
+$context.putPageValue("data",$pdata)
 
 <input type="hidden" name="field" value="rootcategory" />
-<input type="hidden" name="rootcategory.value" value="$!data.rootcategory" />
+<input type="hidden" name="rootcategory.value" value="$!pdata.rootcategory" />
 
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	

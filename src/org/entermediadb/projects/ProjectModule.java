@@ -49,7 +49,10 @@ public class ProjectModule extends BaseMediaModule {
 	public void redirectToCollection(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
-		String collectionid = loadCollectionId(inReq);
+		String collectionid = inReq.getRequestParameter("newcollectionid");
+		if(collectionid == null) {
+			collectionid = loadCollectionId(inReq);
+		}
 		String appid = inReq.findValue("applicationid");
 		String finalpath = "/" + appid + "/views/modules/librarycollection/media/" + collectionid + ".html";
 		inReq.redirect(finalpath);
@@ -339,7 +342,8 @@ public class ProjectModule extends BaseMediaModule {
 			}
 		}
 		if(collectionid != null) {
-			//inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
+			
+			inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
 
 		}
 		return collectionid;
@@ -376,8 +380,9 @@ public class ProjectModule extends BaseMediaModule {
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
 		//saved.setValue("library", inReq.getRequestParameter("library.value"));  //optional
-		Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
-		saved.setValue("library", userlibrary.getId());
+		//Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
+		
+		
 		librarysearcher.saveData(saved, null); //this fires event ProjectManager.configureCollection
 
 		/*
@@ -387,6 +392,7 @@ public class ProjectModule extends BaseMediaModule {
 		 */
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
+		inReq.setRequestParameter("newcollectionid", saved.getId());
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);

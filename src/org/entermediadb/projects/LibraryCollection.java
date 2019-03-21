@@ -95,11 +95,18 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	public boolean hasRootCategory()
 	{
+		
 		return getRootCategoryId() != null;
 	}
 	public String getRootCategoryId()
 	{
-		return get("rootcategory");
+		String catid = get("rootcategory");
+		if(catid == null || catid.isEmpty()) {
+			return null;
+
+		}
+		 
+return catid;
 	}
 
 	@Override
