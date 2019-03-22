@@ -43,8 +43,10 @@ $context.putPageValue("showalllanguagevalues",true)
 	</div>					
 			<div class="col-4">
 			
-				$pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
-			
+                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
+            
+                
+
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
     				

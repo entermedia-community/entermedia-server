@@ -1,10 +1,10 @@
 #set( $rootpath = "${apphome}/components/categorize")
 #set ($detailid = $context.getRequestParameter("detailid") )
 #if( $detail )
-#set( $detailid = $detail.id)
+    #set( $detailid = $detail.id)
 #end
 
-<div id="addcategory" data-autosubmit="true">
+<div id="addcategory" data-autosubmit="true"> 
 	#set ($existing = $context.getRequestParameter("${detailid}.value") )
 	#if(!$existing)
 		#set ($existing = $val)
@@ -17,27 +17,29 @@
 	#end
 	
 	#if( $existing && !$existing.trim().isEmpty() )
-	 	#set ($existing = $existing.replace("||","|"))
-	    <ul class="cat-list emlist" >
+         #set ($existing = $existing.replace("||","|"))
+         <div id="cat-list" class="emlist" >
 		#foreach($categoryid in $existing.split("\s*\|\s*"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
-			#if($category)
-			<li class="list-row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-					<div class="category ">					
-					#foreach( $parent in $category.getParentCategoriesFrom(1))
-					#if( ${foreach.count} > 1) \ #end
-					<a  href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${category.id}&nodeID=${category.id}">$parent</a>
-					#end
-				<div class="collectionicons">
-						<a href="#" title="[[Remove]]">
-							<span class="closecategory fas fa-times" data-categoryid="$categoryid"></span>
-						</a>
-				</div>
-			</div>
-			</li>
+            #if($category)
+                #set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+			    <div class="list-row" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+					<div class="category #if($iscollection) cat-collection #else cat-category #end">					
+                        #foreach( $parent in $category.getParentCategoriesFrom(1))
+                        
+                        #if( ${foreach.count} > 1) \ #end
+                            <a  href="$home$apphome/views/categories/${category.id}.html" style="padding:0px 4px 4px 4px;">$parent</a>
+                        #end
+                        <div class="collectionicons">
+                                <a href="#" title="[[Remove]]">
+                                    <span class="closecategory fas fa-times" data-categoryid="$categoryid"></span>
+                                </a>
+                        </div>
+	    		    </div>
+                </div>
 			#end
 		#end
-		</ul>
+        </div>
 	#end
 
    <input type="hidden" name="operation" value="orsgroup" />
@@ -56,17 +58,17 @@
 
 <script>
 
-lQuery(".cat-list .closecategory").livequery("click",function() 
+lQuery(".collectionicons .closecategory").livequery("click",function() 
 		{
 			var link = $(this);
-			link.closest("li").hide();
+			link.closest("div.list-row").hide();
 			
 			var id = link.data("categoryid");
 			var existing = $("#categoryvalues").val();
 			existing = existing.replace(id,"");
 			existing = existing.replace("||","|");
 			$("#categoryvalues").val(existing);
-			
+			$("#categorizeform").submit();
 			
 		}
 );

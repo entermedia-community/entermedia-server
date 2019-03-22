@@ -1,15 +1,17 @@
 <div id="summary-mini">
+    <div id="mediaplayer" class="media-player-mini">
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		###set( $ismulti = $asset.getId().startsWith("multiedit:"))
 		#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
+        #if( $ismulti )
+            <div class="media-info">
+                <div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
+            </div>
+        
+        #else
 		
-		<div id="mediaplayer" class="media-player-mini">
-			#if( $ismulti )
-			    <div class="media-info">
-			    	<div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
-				</div>
-			#else     
+			     
 			
 			
 			<div class="media-thumbnail">
@@ -61,7 +63,7 @@
 		        	$pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
 		   		</div>
 			#end
-			#end 
+			
 			#if( $desktop )
 			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 		 
@@ -80,16 +82,18 @@
 		   
 			</div>
 			#end
-			#if( !$ismulti )
-				<form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
-				<input type="hidden" name="assetid" value="${asset.id}"/>
-				<div class="assetlocked">
-					<label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>
-					<input id="assetlocked" class="togglelock form-check-input" type="checkbox" #if($asset.isLocked()) checked #end /> 
-					#if($asset.isLocked()) ( <i class="fas fa-user"></i> $asset.getLockOwner() ) #end
-				</div> 
-				</form>
-			#end
+			
+            <form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
+            <input type="hidden" name="assetid" value="${asset.id}"/>
+            <div class="assetlocked">
+                <label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>
+                <input id="assetlocked" class="togglelock form-check-input" type="checkbox" #if($asset.isLocked()) checked #end /> 
+                #if($asset.isLocked()) ( <i class="fas fa-user"></i> $asset.getLockOwner() ) #end
+            </div> 
+            </form>
+			
 		</div>	
-		</div>
+
+        #end
+    </div>
 </div>
