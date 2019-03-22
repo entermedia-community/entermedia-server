@@ -59,7 +59,18 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 	
-	
+	public void redirectToCategory(WebPageRequest inReq) throws Exception {
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
+		String categoryid = inReq.getRequestParameter("categoryid");
+		if(categoryid != null) {
+			String appid = inReq.findValue("applicationid");
+			String finalpath = "/" + appid + "/views/modules/asset/showcategory.html?categoryid=" + categoryid + "";
+			inReq.redirect(finalpath);
+		}
+		
+
+	}
 	
 	
 	

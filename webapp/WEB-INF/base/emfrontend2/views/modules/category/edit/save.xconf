@@ -7,6 +7,14 @@
     </path-action>
 	
 	<property name="reloadprofile">true</property>
+	
+		<path-action name="DataEditModule.loadOrSearch">
+		<property name="searchtype">asset</property>
+	</path-action>	
+	
+	<property name="hitsname">hits</property>
+	
+	<path-action name="ProjectModule.redirectToCategory"/>
 
 			
 </page>
