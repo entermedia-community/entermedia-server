@@ -119,13 +119,17 @@
 		    <div  class="ui-widget-content">
 					
 					#if( $collectionid ) 
-						#set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
-					#else
-						 #set($href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown")
+                        #set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
+                        #if ($nodeID)
+						    #set( $href = $href + "&nodeID=$nodeID")
+					    #end
+					#elseif($nodeID)
+                         #set($href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown")
+                         #set( $href = $href + "&nodeID=$nodeID")
+                    #else
+                        #set($href = "$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown")
 					#end
-					#if ($nodeID)
-						#set( $href = $href + "&nodeID=$nodeID")
-					#end
+					
 					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="$href"> [[View Upload]]</a>	 
 					<ul id="up-files-list-completed" class="up-files-list" >
 					</ul>	

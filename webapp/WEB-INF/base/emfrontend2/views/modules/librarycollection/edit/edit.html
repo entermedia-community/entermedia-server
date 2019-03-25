@@ -49,7 +49,7 @@ $context.putPageValue("viewid", $view.id)
 		$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
 	#end
 	<div class="btns">
-	<a href="$home$apphome/views/modules/librarycollection/media/index.html?&collectionid=$data.id" style="margin-right: 10px;" class="btn btn-sm btn-secondary">[[Collection View]]</a>
+	##<a href="$home$apphome/views/modules/librarycollection/media/index.html?&collectionid=$data.id" style="margin-right: 10px;" class="btn btn-sm btn-secondary">[[Collection View]]</a>
     #if($caneditcollection)
     <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" style="margin-right: 10px;" />
     #end

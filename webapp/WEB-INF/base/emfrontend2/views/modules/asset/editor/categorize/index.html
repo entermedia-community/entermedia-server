@@ -1,13 +1,13 @@
 
 
-<div id="asset-editor-container">
+<div class="asset-data-detail assetpanel-editor-box" id="asset-editor-container">
 
-<div class="assetpanel-editortitle">
-<h2>[[Asset Categories]]</h2>
-</div>
+
+<h4>[[Locations]]</h4>
+
 <div class="assetpanel-editorinner">
 
-	<form name="catsave" method="post" class="ajaxform" targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/categorize/save.html">
+	<form name="catsave" id="categorizeform" method="post" class="ajaxform" targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/categorize/save.html">
 	
 	<input name="id" value="$asset.id" type="hidden" />
 	<input name="assetid" value="$asset.id" type="hidden" />
@@ -15,31 +15,20 @@
 	#set( $val = $asset.get("category-exact"))
 	<input name="field" value="category-exact" type="hidden" />
 
-<div class="row  no-gutters">
-<div class="col-6 assettab-box">
 
+<div class="assettab-box">
 
-	
-
-	
-			$context.putPageValue("searcher", $mediaarchive.getAssetSearcher())   
-			$context.putPageValue("data", $asset)
-			#if( $val )
-				$context.putPageValue("val", $val)
-				$context.putPageValue("existing", $val)
-			#end
-			$context.putPageValue("detail", $mediaarchive.getAssetSearcher().getDetail("category-exact"))
-			
-			$pages.include("$apphome/components/xml/types/category.html?longform=true", $context)
-			
+    $context.putPageValue("searcher", $mediaarchive.getAssetSearcher())   
+    $context.putPageValue("data", $asset)
+    #if( $val )
+        $context.putPageValue("val", $val)
+        $context.putPageValue("existing", $val)
+    #end
+    $context.putPageValue("detail", $mediaarchive.getAssetSearcher().getDetail("category-exact"))
+    
+    $pages.include("$apphome/components/xml/types/category.html?longform=true", $context)
 
 </div>
-</div>
-
-	<div class="btns">
-		<input class="btn btn-sm btn-primary" type="submit" value="[[Save Categories]]" />
-	</div>
-	##category.values
 	</form>
 	
 </div>

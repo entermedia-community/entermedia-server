@@ -29,10 +29,16 @@
         			$context.putPageValue("clink", $clink)
 			
 				    #set( $editlink = $content.get("asseteditlink") )
-					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+                    #set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+                    #set($hitcaption = "")
+                    #if ($hit.name)
+                        #set($hitcaption = $hit.name)
+                    #elseif($hit.assettitle)
+                        #set($hitcaption = $hit.assettitle)
+                    #end
 				<div class="gallery-thumb #if( $ismultimode && $dialoghits.isSelected($hit.id)) selected-asset #end " id="gallery-${hit.id}">
         		
-        			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hit.name}"   href="#" >
+        			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hitcaption}"   href="#" >
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
@@ -42,7 +48,7 @@
           			</a>
           			<div class="gallery-item-title">
           			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
- 					<label for="selectionbox_${hit.id}" class="">${hit.name}</label>
+ 					<label for="selectionbox_${hit.id}" class="">${hitcaption}</label>
  					</div>
         		
        

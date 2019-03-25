@@ -412,6 +412,16 @@ public class TimelineModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
+		if( lasttrack != null)
+		{
+			String status = lasttrack.get("transcribestatus");
+			if( status.equals("error"))
+			{
+				log.info("Retrying track " + asset.getId() + " " + selectedlang);
+				lasttrack.setValue("transcribestatus", "needstranscribe");
+				lasttrack.setValue("requesteddate", new Date());
+			}
+		}
 		if( lasttrack == null)
 		{
 			log.info("Creating track " + asset.getId() + " " + selectedlang);
@@ -516,7 +526,7 @@ public class TimelineModule extends BaseMediaModule
 
 			}
 		}
-		
+		newtrack.setValue("transcribestatus", "complete");
 		newtrack.setValue("captions", captions);
 		captionsearcher.saveData(newtrack);
 		inReq.putPageValue("track", newtrack);
