@@ -12,7 +12,7 @@
   
      
   
-   <property id="googlekeywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true"> 
+   <property id="googlekeywords" keyword="true" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true"> 
    Google Tags
   </property>  
   
