@@ -1158,7 +1158,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 
-				MatchQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description", String.valueOf(inValue));
+				MatchQueryBuilder text2 = QueryBuilders.matchPhraseQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
 
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
