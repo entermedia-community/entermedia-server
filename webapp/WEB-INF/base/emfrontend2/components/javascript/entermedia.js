@@ -344,6 +344,8 @@ updatebasket = function(e)
 				if(action == 'remove'){
 					$(".selectionbox:checked").closest("tr").hide("slow");
 					$(".selectionbox:checked").closest(".emthumbbox").hide("slow");
+					jQuery(".selectionbox:checked").closest(".grid-gallery-checkbox").hide("slow");
+
 				}
 			}
 		);

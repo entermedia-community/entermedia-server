@@ -291,6 +291,8 @@ updatebasket = function(e)
 				if(action == 'remove'){
 					jQuery(".selectionbox:checked").closest("tr").hide("slow");
 					jQuery(".selectionbox:checked").closest(".emthumbbox").hide("slow");
+					jQuery(".selectionbox:checked").closest(".stackedplayer-cell").hide("slow");
+
 				}
 			}
 		);
