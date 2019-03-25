@@ -259,8 +259,8 @@ public class GoogleManager implements CatalogEnabled
 				{
 					Date now = new Date();
 					long seconds = (now.getTime() - ageoftoken.getTime()) / 1000;
-					int expiresin = (Integer) authinfo.getValue("expiresin");
-					if (seconds > (expiresin - 100))
+					Object expiresin = (Object) authinfo.getValue("expiresin");
+					if (seconds > (Long.parseLong( expiresin.toString()) - 100))
 					{
 						force = true;
 						log.info("Expiring token");

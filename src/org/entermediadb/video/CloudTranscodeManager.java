@@ -345,7 +345,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 					log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
 							+ resp.getStatusLine().getReasonPhrase());
 					String returned = EntityUtils.toString(resp.getEntity());
-					log.info(returned);
+					log.error(returned);
 
 				}
 
@@ -428,7 +428,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 							String word = worddata.get("word").getAsString();
 							charcount += word.length();
 							
-							if(charcount > 200 || !iterator3.hasNext()){
+							if(charcount > 60 || !iterator3.hasNext()){
 								if(!iterator3.hasNext()){
 									buffer.append(word);
 									buffer.append(" ");
@@ -473,6 +473,8 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			{
 				try
 				{
+					Object obj = taskinfo.get("metadata");
+					log.info(obj);
 //					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
 //					inTrack.setValue("percentcomplete", percent);
 //					tracksearcher.saveData(inTrack);
