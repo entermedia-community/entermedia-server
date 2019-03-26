@@ -361,11 +361,12 @@ uiload = function() {
 					},
 					data : data
 				});
-
-				var findmodal = form.closest(".modal");
-				if (findmodal && findmodal.modal) {
-					//findmodal.modal("hide");
-				}
+                if (form.hasClass("autocloseform")) {
+                    var findmodal = form.closest(".modal");
+                    if (findmodal && findmodal.modal) {
+                        findmodal.modal("hide");
+                    }
+                }
 
 				var reset = form.data("reset")
 				if (reset == true) {
