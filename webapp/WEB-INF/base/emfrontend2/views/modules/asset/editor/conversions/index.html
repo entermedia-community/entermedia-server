@@ -1,4 +1,5 @@
 <div id="asset-editor-container">
+                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
 
 <div class="assetpanel-editortitle">
 <h2>[[Asset Conversions]]</h2>
@@ -13,6 +14,10 @@
 #if($canviewassetedit)
 	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 	   href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+
+	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	   href="$home$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
+
 #end
 	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
    	   href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>

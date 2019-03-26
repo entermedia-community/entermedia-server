@@ -17,6 +17,8 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.attachments.AttachmentManager;
+import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
@@ -2102,6 +2104,27 @@ Change Collections to be normal categories path s and make createTree look at th
 		
 	}
 	
+	
+	
+	public void rotateAsset(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		ContentItem item = archive.getOriginalContent(asset);
+		archive.removeGeneratedImages(asset, true);
+
+		ContentItem custom = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
+		ConvertInstructions ins = new ConvertInstructions(archive);
+		ins.setAsset(asset);
+		ins.setInputFile(item);
+		String rotation = inReq.findValue("rotate");
+		ins.setProperty("rotate", rotation);
+		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
+		ins.setOutputFile(custom);
+
+		manager.createOutput(ins);
+		archive.getPresetManager().reQueueConversions(archive, asset);
+		archive.fireSharedMediaEvent("conversions/runconversions");
+	}
 	
 	
 }

@@ -148,6 +148,13 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		}
 
+		String rotate = inStructions.get("rotate");
+		if(rotate != null) {
+			com.add("-rotate");
+			com.add(rotate);
+		}
+		
+		
 		if (inStructions.isCrop())
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
@@ -342,6 +349,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		return result;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext)
 	{

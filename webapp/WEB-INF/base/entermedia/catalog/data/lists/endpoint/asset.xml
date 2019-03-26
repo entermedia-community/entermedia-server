@@ -112,6 +112,9 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
 	<samplerequest><![CDATA[{  "categoryid": "index" }]]></samplerequest>
   </endpoint>
 
-
+ <data id="rotateasset" uploadfile="false" httpmethod="POST" docsection="assetmedia" url="/${applicationid}/services/module/asset/media/rotateasset">
+    <samplerequest><![CDATA[{ "assetid": "101", "rotate": "90" }]]></samplerequest>
+    <name><![CDATA[Rotate Asset]]></name>
+  </data> 
 
 </endpoints>
