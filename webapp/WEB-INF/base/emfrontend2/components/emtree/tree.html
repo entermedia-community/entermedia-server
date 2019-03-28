@@ -60,7 +60,7 @@
                 #end
                 
                 #if( $canviewupload || $canviewcategoryupload)
-                    <a href="#" class="cat-options cat-uploadfromtree"><i class="fas fa-upload"></i></a>
+                    <a href="#" class="cat-options cat-uploadfromtree" title="[[Upload]]"><i class="fas fa-upload"></i></a>
                 #end
 				
 				##if($iscollection)
@@ -137,11 +137,6 @@
 
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
     <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
-    #if( $canviewupload || $canviewcategoryupload)
-      	
-      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
-      	<li class="divider"></li>
-    #end
     #if( $editable && $caneditcategorytree  )
     	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Child]]</a></li>
     #end
