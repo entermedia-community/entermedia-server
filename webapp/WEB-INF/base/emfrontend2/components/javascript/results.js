@@ -759,21 +759,23 @@ $(document).ready(function(url,params)
 	});
 	
 	gridResize();
-	window.addEventListener('load', 
+    
+    window.addEventListener('load', 
 	  function() { 
 	    	gridResize();
 	  }, false);
 	
-	
-	
-	var hash = window.location.hash;
-	
-	if (hash && hash.startsWith('#asset-')){
-		var assetid = hash.substring(7,hash.length);
-		if (assetid) {
-			showAsset(assetid);
-		}
-	}
+	var hidemediaviewer = $("body").data("hidemediaviewer");
+    if (!hidemediaviewer) {
+        var hash = window.location.hash;
+        
+        if (hash && hash.startsWith('#asset-')){
+            var assetid = hash.substring(7,hash.length);
+            if (assetid) {
+                showAsset(assetid);
+            }
+        }
+    }
 	
 });        //document ready
         
