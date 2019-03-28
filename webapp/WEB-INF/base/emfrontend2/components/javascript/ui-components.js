@@ -820,7 +820,7 @@ uiload = function() {
 											placeholder : defaulttext,
 											allowClear : allowClear,
 											selectOnBlur : true,
-											delay : 250,
+											delay : 150,
 											minimumInputLength : 1,
 											ajax : { // instead of writing
 														// the function to
