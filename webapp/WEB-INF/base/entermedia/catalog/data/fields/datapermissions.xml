@@ -34,7 +34,30 @@
       <language id="fr"><![CDATA[Commande]]></language>
     </name>
   </property> 
-  
  
+ 
+  <property id="permission" index="true" filter="false" deleted="false" datatype="list" editable="true" stored="true" sortable="true" keyword="false">New
+    <name>
+      <language id="de"><![CDATA[Eltern Erlaubnis]]></language>
+      <language id="en"><![CDATA[Parent Permission]]></language>
+      <language id="es"><![CDATA[Permiso de los Padres]]></language>
+      <language id="fr"><![CDATA[Permission Parentale]]></language>
+    </name>
+  </property>
+ 
+ 
+  <property id="moduleid" index="true" internalfield="false" editable="true" isbadge="false" required="false" multilanguage="false" filter="false" deleted="false" datatype="list" stored="true" autocreatefromexif="false" writenametoexif="false" keyword="false">New
+    <name> 
+      <language id="en"><![CDATA[Module]]></language> 
+    </name> 
+  </property>  
+  <property id="permissiontype" index="true" filter="false" deleted="false" editable="true" stored="true" sortable="true" keyword="false" datatype="list">New
+    <name> 
+      <language id="de"><![CDATA[Abschnitt]]></language>  
+      <language id="en"><![CDATA[Section]]></language>  
+      <language id="es"><![CDATA[Sección]]></language>  
+      <language id="fr"><![CDATA[Section]]></language> 
+    </name> 
+  </property>  
   
 </properties>

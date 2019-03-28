@@ -133,7 +133,10 @@ public class PermissionManager implements CatalogEnabled
 			Permission per = findPermission(inModuleid, inParentFolderId, inDataId, data.getId());
 			if( per != null)
 			{
-				String permissionid = data.getId();
+				String permissionid = data.get("permission");
+				if(permissionid == null) {
+					permissionid=data.getId();
+				}
 				Boolean systemwide = (Boolean)inReq.getPageValue("can" + permissionid);
 				if( systemwide == null || systemwide == false)  //Option
 				{
@@ -179,18 +182,22 @@ public class PermissionManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			
 			//Specific Asset specific
-			Permission per = findPermission(inDataType, null, inSpecificRow, data.getId());
+			String id = data.get("permission");
+			if(id == null) {
+				id = data.getId();
+			}
+			Permission per = findPermission(inDataType, null, inSpecificRow, id);
 			if( per == null)
 			{
 				//CollectionID specific
-				 per = findPermission(inDataType, inParentFolderId, null, data.getId());
+				 per = findPermission(inDataType, inParentFolderId, null, id);
 				 if(per != null) {
 					// log.info("WTF");
 				 }
 			}
 			if( per != null)
 			{
-				per.setValue("permissionid",data.getId()); //Needed?
+				per.setValue("permissionid",id); //Needed?
 				rules.add(per);
 			}
 		}
