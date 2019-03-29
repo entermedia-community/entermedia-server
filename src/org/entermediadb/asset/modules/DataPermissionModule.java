@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -165,56 +166,57 @@ public class DataPermissionModule extends BaseMediaModule
 	 * @param inReq
 	 * @throws Exception
 	 */
-//	public void savePermissions(WebPageRequest inReq) throws Exception
-//	{
-//		Permission permission = loadPermission(inReq);
-//		if( permission == null)
-//		{
-//			return;
-//		}
-//		resetValues(permission.getRootFilter());
-//		
-//		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();)
-//		{
-//			String  key = (String ) iterator.next();
-//			if( key.startsWith("condition"))
-//			{
-//				int start = "condition.".length();
-//				String traverse = key.substring(start,key.indexOf('.', start+1));
-//				String[] tree = traverse.split("/");
-//				int[] list = makeInts(tree);
-//				Filter target = permission.findCondition(list);
-//				String value = inReq.getRequestParameter(key);
-//				if( key.endsWith(".value"))
-//				{
-//					target.setValue(value);
-//				}
-//				else if( key.endsWith(".name"))
-//				{
-//					target.setProperty("name", value);
-//				}
-//				else if( key.endsWith(".property"))
-//				{
-//					target.setProperty("property",value);
-//				}
-//				String fieldroot = "condition." + traverse + ".field";
-//				String[] fields = inReq.getRequestParameters(fieldroot);
-//				if(fields != null){
-//					for (String string : fields) {
-//						String extra = inReq.getRequestParameter("condition." + traverse + "." + string + ".value");
-//						if(extra != null){
-//							target.setProperty(string, extra);
-//						}
-//					}
-//				}
-//				
-//				//String fields = inReq.getRequestParameter(condtion.)
-//				//TODO: Handle special filters
-//			}
-//		}
-//		savePermission(permission);
-//		
-//	}
+	public void savePermissions(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Permission permission = loadPermission(inReq);
+		if( permission == null)
+		{
+			return;
+		}
+		resetValues(permission.getRootFilter());
+		
+		for (Iterator iterator = inReq.getParameterMap().keySet().iterator(); iterator.hasNext();)
+		{
+			String  key = (String ) iterator.next();
+			if( key.startsWith("condition"))
+			{
+				int start = "condition.".length();
+				String traverse = key.substring(start,key.indexOf('.', start+1));
+				String[] tree = traverse.split("/");
+				int[] list = makeInts(tree);
+				Filter target = permission.findCondition(list);
+				String value = inReq.getRequestParameter(key);
+				if( key.endsWith(".value"))
+				{
+					target.setValue(value);
+				}
+				else if( key.endsWith(".name"))
+				{
+					target.setProperty("name", value);
+				}
+				else if( key.endsWith(".property"))
+				{
+					target.setProperty("property",value);
+				}
+				String fieldroot = "condition." + traverse + ".field";
+				String[] fields = inReq.getRequestParameters(fieldroot);
+				if(fields != null){
+					for (String string : fields) {
+						String extra = inReq.getRequestParameter("condition." + traverse + "." + string + ".value");
+						if(extra != null){
+							target.setProperty(string, extra);
+						}
+					}
+				}
+				
+				//String fields = inReq.getRequestParameter(condtion.)
+				//TODO: Handle special filters
+			}
+		}
+		savePermission(archive, permission);
+		
+	}
 
 	protected void savePermission(MediaArchive archive, Permission permission) throws OpenEditException
 	{
@@ -553,7 +555,9 @@ public class DataPermissionModule extends BaseMediaModule
 	
 	public void addCondition(WebPageRequest inReq) throws Exception
 	{
-		String id = inReq.getRequestParameter("id");
+		Permission permission = loadPermission(inReq);
+
+		String id = permission.getId();
 		String traverse = inReq.getRequestParameter("traverse");
 		String type = inReq.getRequestParameter("conditiontype");
 		MediaArchive archive = getMediaArchive(inReq);
@@ -567,9 +571,8 @@ public class DataPermissionModule extends BaseMediaModule
 		
 		FilterReader reader = (FilterReader)getModuleManager().getBean("filterReader");
 		
-		if( id != null)
+		if( permission != null)
 		{
-			Permission permission = loadPermission(inReq);
 			if( permission != null)
 			{
 				Configuration config = new XMLConfiguration();

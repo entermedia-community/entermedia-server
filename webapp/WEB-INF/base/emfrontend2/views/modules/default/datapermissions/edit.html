@@ -111,7 +111,7 @@
 
 </div>
 #else
-$pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html?id=${permissionid}")
+$pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html?id=${permissionid}", $context)
 #end
 
 </div>
@@ -125,3 +125,7 @@ $pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html
 
 
 </div>
+
+Permssion: $permission
+PermData: $permdata
+

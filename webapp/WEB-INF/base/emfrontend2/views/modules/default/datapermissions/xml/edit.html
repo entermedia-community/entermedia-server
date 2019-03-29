@@ -1,9 +1,9 @@
-<div id="edit$permission.name" style="padding:15px; background-color: #efefef;margin:10px 0;">
+<div id="editperm" style="padding:15px; background-color: #efefef;margin:10px 0;">
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 #set( $id = $context.getRequestParameter("id"))
-$id
-$permission.id
+
+
 #macro(showfilter2 $filter $inLevel $inTraverse)
 $!context.putPageValue("filter", $filter)
 $!context.putPageValue("traverse", $inTraverse)
@@ -26,9 +26,24 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 #end
 	#set( $filter = $permission.rootFilter)
 	#if ($filter)
-		<form name="permissionedit" class="ajaxform" targetdiv="edit$permission.name" action="$home$content.permissionrootpath/save.html">
-			<input type="hidden" name="id" value="$id"/>
-			<input type="hidden" name="name" value="$permission.name"/>
+		<form name="permissionedit" class="ajaxform" targetdiv="editperm" action="$home$content.permissionrootpath/save.html">
+		
+			<input type="hidden" name="datapermission.value" value="${permdata.permission}"/>
+	<input type="hidden" name="moduleid.value" value="${permdata.moduleid}"/>
+	<input type="hidden" name="parentfolderid.value" value="${data.id}"/>
+	<input type="hidden" name="dataid.value" value="${data.id}"/>
+	
+	<input type="hidden" name="field" value="datapermission" />
+	<input type="hidden" name="field" value="moduleid" />
+	<input type="hidden" name="field" value="parentfolderid" />
+	<input type="hidden" name="field" value="dataid" />
+	
+	<input type="hidden" name="permissionid" value="${permdata.id}"/>
+	<input type="hidden" name="dataid" value="${data.id}"/>
+	<input type="hidden" name="currentpermission" value="$!permission.id"/>
+		
+		
+		
 			<input type="hidden" name="inparent" value="$inparent"/>
 			
 			#set( $list = $searcherManager.getList($catalogid,"group"))
@@ -37,10 +52,10 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 			#showfilter2($filter 0 "0")
 			<p>
 				<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
-			##<a class="ajax btn btn-sm btn-danger red" targetdiv="edit$permission.name" href="$home$content.permissionrootpath/cancel.html?name=$permission.name">[[Cancel]]</a>
+			##<a class="ajax btn btn-sm btn-danger red" targetdiv="edit$id" href="$home$content.permissionrootpath/cancel.html?name=$permission.name">[[Cancel]]</a>
 			</p>	
 		</form>
 	#else
-	 	$pages.include("$content.permissionrootpath/addnewcondition.html?id=${id}")
+	 	$pages.include("$content.permissionrootpath/addnewcondition.html?id=${id}", $context)
 	 #end
 </div>

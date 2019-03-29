@@ -1,4 +1,4 @@
-<div id="edit$permission.name" style="background-color: rgb(253,252,220); padding:10px;" >
+<div id="edit-permission" style="background-color: rgb(253,252,220); padding:10px;" >
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 
@@ -8,24 +8,30 @@
 #set( $id = $context.getRequestParameter("id"))
 
 <p><strong>[[Add Condition]]:</strong><p>	
-	<select name="selecttype$permission.name" id="selecttype$permission.name" class="form-control" style="width:200px; float:left; margin-left:5px;" >
+	<select name="selecttype$id" id="selecttype" class="form-control" style="width:200px; float:left; margin-left:5px;" >
 			<option value="">[[select a type]]</option>
 		#foreach( $condition in $list)
 			<option value="$condition.id">$condition.name</option>
 		#end
 	</select>
-	<input class="btn btn-sm btn-primary" type="button" onclick="addCondition('$permission.name','$!traverse');" value="[[Ok]]" />
+	<input class="btn btn-sm btn-primary" type="button" onclick="addCondition('$id','$!traverse');" value="[[Ok]]" />
 
 <script language="javascript">
 
 	addCondition = function(inName, inTraverse )
 	{
-		var theselect = document.getElementById("selecttype" + inName );
+		var theselect = document.getElementById("selecttype");
 		var conditiontype = theselect.options[theselect.selectedIndex].value;
-		$('#edit'+inName).load('$home$content.permissionrootpath/addnewfinish.html?id=$id&name='+ inName + '&traverse=' + inTraverse + "&conditiontype=" + conditiontype + "&oemaxlevel=1");
+		alert("here we go" + inName);
+		jQuery('#edit-permission').load('$home$content.permissionrootpath/addnewfinish.html?moduleid=$!{permdata.moduleid}&dataid=$!{data.id}&currentpemrission=$!permission.id&permissionid=${permdata.id}&traverse=' + inTraverse + "&conditiontype=" + conditiontype + "&oemaxlevel=1");
+		alert("?");
 	}
 	//The parent javascript has showpath
 </script>
 <div class="clearix"></div>
 </div>
+	
+	
+	
+	
 	

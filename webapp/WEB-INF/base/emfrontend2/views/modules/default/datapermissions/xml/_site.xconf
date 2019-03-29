@@ -3,6 +3,7 @@
 <page>
   
   <path-action name="DataPermissionModule.loadPermission"/>
+    <path-action name="DataPermissionModule.loadPermissionForEdit" />
   
   <path-action bean="searcherManager" name="PageValue.loadPageVariable"/>
   <property name="title">
