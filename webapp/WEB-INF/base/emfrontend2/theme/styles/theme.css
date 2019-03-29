@@ -920,6 +920,7 @@ html, body, #application {
 }
 .filtered .badge {
 	margin:0 5px;
+    font-size:0.74rem;
 }
 
 /*Widget*/
