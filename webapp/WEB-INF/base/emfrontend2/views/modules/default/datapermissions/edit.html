@@ -29,8 +29,9 @@
 	<select name="addgroup" class="form-control" style="width:200px; margin-right:5px; float:left;">
 		<option value=""></option>
 		<option value="true">Anyone</option>
-		<option value="false">Nobody</option>
+	<!-- 
 		<option value="xml">Custom Xml</option>
+		 -->
 		<option value="">Groups</option>
 #foreach( $group in $allgroups )
 		<option value="group.$group.id">&nbsp;&nbsp;&nbsp;&nbsp;$group.name</options>
