@@ -302,10 +302,16 @@ $(document).ready(function(url,params)
 			reloadonclose = true;
 		}
 		if (reloadonclose) {
-			var reloadparent =  window.location.href.split('#')[0];
-			if (typeof reloadparent != 'undefined') {
-				 window.location = reloadparent;  //TODO: Use Ajax?
-			}
+                var href = home+'/views/modules/asset/index.html';
+                var searchdata = $("#resultsdiv").data();
+                searchdata.oemaxlevel = 1;
+                $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
+                    $('#searchlayout').html(data);
+                    $(window).trigger( "resize" );
+                }
+                });
+				 //window.location = reloadparent;  //TODO: Use Ajax?
+			
 		}
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
