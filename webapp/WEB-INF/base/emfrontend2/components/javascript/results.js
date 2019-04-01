@@ -302,16 +302,7 @@ $(document).ready(function(url,params)
 			reloadonclose = true;
 		}
 		if (reloadonclose) {
-                var href = home+'/views/modules/asset/index.html';
-                var searchdata = $("#resultsdiv").data();
-                searchdata.oemaxlevel = 1;
-                $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
-                    $('#searchlayout').html(data);
-                    $(window).trigger( "resize" );
-                }
-                });
-				 //window.location = reloadparent;  //TODO: Use Ajax?
-			
+                 refreshresults();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
@@ -508,7 +499,19 @@ $(document).ready(function(url,params)
 		hidden = $("#hiddenoverlay");
 		return hidden;
 		
-	}
+    }
+    
+    refreshresults = function() {
+        var href = home+'/views/modules/asset/index.html';
+        var searchdata = $("#resultsdiv").data();
+        searchdata.oemaxlevel = 1;
+        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
+            $('#searchlayout').html(data);
+            $(window).trigger( "resize" );
+        }
+        });
+
+    }
 	
 	lQuery('#jumptoform .jumpto-left').livequery('click',function(e)
 	{
