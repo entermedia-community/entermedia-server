@@ -6,6 +6,9 @@
  	 <searchtype>${module}</searchtype>
   	</path-action>
   	
+  	<path-action name="ProjectModule.redirectToCategory"/>
+  	
+  	<!--
 	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
 
 	<property name="dataroot">/${catalogid}/side/search</property>
@@ -14,6 +17,6 @@
 	<property name="hitsname">hits</property>
 		
 	<path-action name="DataEditModule.search" cancel="true"/>
-  	
+  	-->
   	
 </page>
