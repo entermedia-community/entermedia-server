@@ -87,6 +87,12 @@ public class XmpWriter {
 			addSaveKeywords(inAsset.getKeywords(), comm);
 			comm.add(path);
 			ok = runExec(comm);
+			if(ok) {
+				inAsset.setValue("assetmodificationdate", inItem.lastModified()); //This needs to be set or it will keep thinking it's changed
+				inArchive.saveAsset(inAsset);
+
+			}
+			
 		} finally {
 			inArchive.fireMediaEvent("savingoriginalcomplete", "asset", inAsset.getSourcePath(), props, null);
 		}
