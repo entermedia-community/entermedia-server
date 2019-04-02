@@ -565,8 +565,6 @@ html, body, #application {
 }
 .mainlayoutcontainer {
 	position:relative;
-	/*height: 100%;*/
-	
 }
 .cols-main,
 .results-header {
@@ -594,11 +592,8 @@ html, body, #application {
 .col-content-main {
 	transition: 0.2s;
 	margin:0;
-	
 }
-.col-content-main.leftopen {
-/*	margin-left:220px;*/
-}
+
 .leftopen .pushcontent {
 	margin-left:220px;
 }
@@ -627,18 +622,19 @@ html, body, #application {
 
 .col-left {
 	height: 100%;
-    width: 220px; 
+    width: 220px;
     position: absolute; 
     /*z-index: 1;*/ 
     top: 45px; 
     left: -220px;
     background-color: #fff; 
-/*    overflow-x: hidden;*/ 
-    transition: 0.2s;
 }
+
 .col-left.leftopen {
-	
 	left:0;
+}
+.col-left.leftopen .col-main-inner {
+    display:block;
 }
 .col-filters {
 	height: 100%;

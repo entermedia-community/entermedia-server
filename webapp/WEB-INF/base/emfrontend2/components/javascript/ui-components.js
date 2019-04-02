@@ -1404,33 +1404,26 @@ uiload = function() {
 			});
 			
 		}
-		
-		
-		
+	
 		return false;
 	});
 	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
-			$("#col-left").animate({left: "-220px"},100);
-			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
-				$(".col-main").removeClass("leftopen");
-				$("#lefttoggle").show();
-			});
+			$("#col-left").removeClass("leftopen");
+            $(".col-main").removeClass("leftopen");
+            $("#lefttoggle").show();
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
-			
 		}
 		else {
 			//open
-			$("#lefttoggle").hide();
-			$("#col-left").animate({left: "0"},100);
-			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
-				$(".col-main").addClass("leftopen");
-			});
-			
+            
+            $("#col-left").addClass("leftopen");
+            $(".col-main").addClass("leftopen");
+            $("#lefttoggle").hide();
 			saveProfileProperty("leftbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});
