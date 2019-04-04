@@ -1,5 +1,6 @@
 <page>
     <path-action name="MediaArchiveModule.getMediaArchive"/>
+	<!--
 	<path-action name="DataEditModule.loadPageOfSearch">
 		<property name="searchtype">asset</property>
 		<property name="hitsname">hits</property>
@@ -7,6 +8,7 @@
 		<property name="alwaysresetpage">true</property>
 		-->
 	</path-action>
+	-->
 	<path-action name="Admin.allowAccesControl" />
 	<permission name="view" ><boolean value="true" /></permission>
 </page>
