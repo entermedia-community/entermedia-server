@@ -1,0 +1,4 @@
+#
+#Thu Mar 28 09:40:48 CST 2019
+Read\ Metadata=Leer metadatos
+Rewrite\ Metadata=Reescribir metadatos

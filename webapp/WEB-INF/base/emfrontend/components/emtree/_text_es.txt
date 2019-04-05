@@ -1,11 +1,13 @@
 #
-#Mon Mar 26 16:11:08 EDT 2018
-Add\ Media=A\u00F1adir medios
-Copy=Dupdo
-Create=Crear
-Create\ Collection=Crear colecci\u00F3n
-Rename=Rebautizar
-Properties=propiedades
-Cut=Cortar
+#Fri Mar 29 09:56:10 CST 2019
 Delete=Borrar
+add=a\u00F1adir
+Cut=Cortar
+Copy=Dupdo
+Create\ Collection=Crear colecci\u00F3n
+Create=Crear
 Paste=Pegar
+Add\ Media=A\u00F1adir medios
+Properties=propiedades
+Add\ Collection=A\u00F1adir colecci\u00F3n
+Rename=Rebautizar

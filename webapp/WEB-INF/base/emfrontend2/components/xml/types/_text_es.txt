@@ -1,17 +1,22 @@
 #
-#Thu Apr 20 13:39:05 CDT 2017
-You\ can\ only\ select=S\u00F3lo puede seleccionar
-Loading\ more\ results=Cargando m\u00E1s resultados
-chars\ more=Chars m\u00E1s
-Search=Buscar
+#Fri Mar 29 09:59:00 CST 2019
+No\ values\ found=No se encontraron valores
+New=Nuevo
 chars\ less=Caracteres menos
-entries=Entradas
-Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
 Please\ enter=Por favor escribe
+chars\ more=Chars m\u00E1s
 No\ results=No hay resultados
-Searching=buscando
 Remove=retirar
+Add\ New=A\u00F1adir nuevo
+Add\ Language=Agregar idioma
+View=Ver
+Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
 entry=entrada
-Pick\ Categories=Escoja Categor\u00EDas
 Over=encima
+entries=Entradas
+You\ can\ only\ select=S\u00F3lo puede seleccionar
+Searching=buscando
+Search=Buscar
+Loading\ more\ results=Cargando m\u00E1s resultados
 Enter\ comma\ separated\ tags=Introducir etiquetas separadas por comas
+Pick\ Categories=Escoja Categor\u00EDas

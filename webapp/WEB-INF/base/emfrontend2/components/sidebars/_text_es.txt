@@ -1,0 +1,4 @@
+#
+#Thu Mar 28 09:39:53 CST 2019
+LOCATIONS=UBICACIONES
+Select\ Category=selecciona una categor\u00EDa

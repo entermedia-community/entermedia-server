@@ -1,7 +1,8 @@
 #
-#Thu Apr 20 13:39:36 CDT 2017
-+=+
-Basket=cesta
+#Fri Mar 29 09:56:01 CST 2019
 Add\ To\ Basket=A\u00F1adir al carrito
+Basket=cesta
++=+
 Remove\ From\ Basket=Eliminar de la cesta
 -=-
+Cart=Carro

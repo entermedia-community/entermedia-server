@@ -347,7 +347,6 @@ var inittimeline = function()
 	updateDetails = function(jumptoend)
 	{
 		var selected = $(".selectedclip");
-	
 			
 		$("#clipdetails :input").prop('disabled', false);
 		

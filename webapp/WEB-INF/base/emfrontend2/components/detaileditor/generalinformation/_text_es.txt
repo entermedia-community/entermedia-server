@@ -1,0 +1,4 @@
+#
+#Thu Mar 28 09:40:42 CST 2019
+Edit=Editar
+Libraries=Bibliotecas

@@ -375,4 +375,7 @@ padding-top: 1px;
 }
  
  
- 
+.btn-disabled
+{
+	background-color:#666;
+} 

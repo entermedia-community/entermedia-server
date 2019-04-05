@@ -1,13 +1,10 @@
 #
-#Thu Apr 20 13:39:36 CDT 2017
-Results=Resultados
-Embed=Embed
-Email=Email
-Delete\ Assets=Eliminar Activos
-File=Archivo
-Add\ to\ Project=A\u00F1adir al proyecto
-Share=Compartir
-Download=Descargar
-Print=Imprimir
-Publish=Publicar
-Delete=Borrar
+#Mon Apr 01 16:32:43 CST 2019
+Relationships=Relaciones
+Configure\ View=Configurar vista
+Cancel=Cancelar
+No\ data\ has\ yet\ been\ entered=A\u00FAn no se han introducido datos
+Saved=Salvado
+Edit=Editar
+Save\ values=Guardar valores
+Edit\ =Editar

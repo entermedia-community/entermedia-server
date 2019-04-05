@@ -1,9 +1,32 @@
 #
-#Mon Mar 26 16:11:07 EDT 2018
-Asset=Activo
+#Thu Mar 28 09:39:44 CST 2019
+Before=antes de
+Done=Hecho
+Sharing\ Collection=Compartiendo Colecci\u00F3n
+Done\ Editing=Edici\u00F3n realizada
+FILTERS=Filtros
+True=Cierto
+False=Falso
+Properties=Propiedades
+Clear=Claro
+View\ Permissions=Ver permisos
+Sharing=Compartir
 Assets=Bienes
 Search=Buscar
+\ Library\ Permissions=Permisos de la biblioteca
+Sort=Ordenar
+Asset=Activo
+Collections=Colecciones
+Between=Entre
+Delete\ Filter=Eliminar filtro
+Followers=Seguidores
+Edit\ Fiters=Edit Fiters
+Library\ Permissions=Permisos de la biblioteca
+Collection\ Followers=Seguidores de la colecci\u00F3n
+After=Despu\u00E9s
 Collection=Colecci\u00F3n
-Clear=Claro
-Done=Hecho
+Collection\ Properties=Propiedades de colecci\u00F3n
+Collection\ Permissions=Permisos de colecci\u00F3n
 Library=Biblioteca
+Collection\ Actions=Acciones de cobro
+Searching\ for=Buscando

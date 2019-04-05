@@ -1,5 +1,5 @@
 #
-#Fri Mar 29 09:55:50 CST 2019
+#Thu Mar 28 11:01:08 CST 2019
 Related\ Media=Medios Relacionados
 Selected\ Media=Medios seleccionados
 Asset\ is\ missing=Falta el activo
@@ -14,11 +14,11 @@ Properties=Propiedades
 Annotate=Anotar
 Attachments=Archivos adjuntos
 Library\ Assets=Activos de la biblioteca
+Powered\ by\ EnterMedia=Desarrollado por EnterMedia
 Language=Idioma
 Assets=Bienes
 Logout=Cerrar sesi\u00F3n
 Permissions=Permisos
 My\ Account=Mi cuenta
-Pending\ Orders=Ordenes pendientes
 Pending=Pendiente
 Settings=ajustes

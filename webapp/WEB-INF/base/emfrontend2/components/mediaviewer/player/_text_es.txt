@@ -1,3 +1,11 @@
 #
-#Thu Apr 20 13:39:39 CDT 2017
+#Thu Mar 28 09:40:56 CST 2019
+Pages=P\u00E1ginas
+Create\ copy\ from\ Desktop=Crear copia desde el escritorio
+Open\ File=Abrir documento
+assets=bienes
+Replace\ from\ Desktop=Reemplazar desde el escritorio
+Lock\ Asset=Activo de bloqueo
 Page=P\u00E1gina
+History=Historia
+Editing\ across=Edici\u00F3n a trav\u00E9s de
