@@ -1,0 +1,13 @@
+#
+#Fri Mar 29 10:14:26 CST 2019
+Delete=Borrar
+Automatic\ Translate=Traduccion automatica
+file=expediente
+Auto\ transcribe\ complete=Auto transcripci\u00F3n completa
+Automatically\ transcribe\ your\ media\ file=Transcriba autom\u00E1ticamente su archivo multimedia
+Automatic\ Captions=Subt\u00EDtulos autom\u00E1ticos
+Export=Exportar
+Transcribing\ Tools=Herramientas de transcripci\u00F3n
+Import\ Captions=Importar subt\u00EDtulos
+Select\ the\ language\ you\ are\ working\ in=Seleccione el idioma en el que est\u00E1 trabajando
+Are\ you\ sure?=\u00BFEst\u00E1s seguro?

@@ -1,23 +1,26 @@
 #
-#Thu Apr 20 13:39:35 CDT 2017
-Permissions=Permisos
-Annotate=Anotar
-Library\ Assets=Activos de la biblioteca
+#Fri Mar 29 10:14:25 CST 2019
 Related\ Media=Medios Relacionados
-Followers=Seguidores
-Assets=Bienes
-My\ Account=Mi cuenta
-Selected\ Media=Medios seleccionados
-Applications=aplicaciones
-Attachments=Archivos adjuntos
-Revisions=Revisiones
-System\ Settings=Ajustes del sistema
-Language=Idioma
-Properties=Propiedades
-Logout=Cerrar sesi\u00F3n
 Asset\ is\ missing=Falta el activo
 Dashboard=Tablero
-Pending=Pendiente
-Login=Iniciar sesi\u00F3n
+System\ Settings=Ajustes del sistema
+Revisions=Revisiones
+Properties=Propiedades
+Annotate=Anotar
+Attachments=Archivos adjuntos
+Language=Idioma
+There\ was\ a\ problem\ completing\ this\ request=Hubo un problema al completar esta solicitud
+Assets=Bienes
+Logout=Cerrar sesi\u00F3n
+Permissions=Permisos
+My\ Account=Mi cuenta
 Settings=ajustes
+Selected\ Media=Medios seleccionados
+Applications=aplicaciones
 Add\ Media=A\u00F1adir medios
+Login=Iniciar sesi\u00F3n
+Followers=Seguidores
+Library\ Assets=Activos de la biblioteca
+Close=Cerrar
+Ok=De acuerdo
+Pending=Pendiente

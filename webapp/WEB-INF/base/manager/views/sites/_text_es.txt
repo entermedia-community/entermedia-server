@@ -1,0 +1,8 @@
+#
+#Thu Mar 28 11:18:28 CST 2019
+Site\ Manager=Administrador del sitio
+Site\ Name=Nombre del sitio
+Folder=Carpeta
+Domain=Dominio
+Snapshots=Instant\u00E1neas
+Catalog=Catalogar

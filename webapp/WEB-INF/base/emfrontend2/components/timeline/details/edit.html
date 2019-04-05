@@ -1,15 +1,22 @@
 <div class="clipedit" style="width:100%;;margin:0px 0 20px;">
-	<div style="margin-bottom:20px;">
+	
 		<h4>
-			[[Clip Details]]
+			[[Timeline Editor]]
 			
 		</h4>
-		<div id="clipdetails" style="padding:20px; border-bottom:1px solid #efefef">
-			#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
-			
-			$context.putPageValue("detail",$detail)
-			$context.putPageValue("searcher",$searcher)
-			$pages.include("/$applicationid/components/xml/detailedit.html", $context)
+	<a id="addnewcopy" href="#" class="btn btn-success" style="margin-left:0px;" >[[Add New]]</a>
+	<a id="removetime" href="#" class="btn btn-success" style="margin-left:0px;" >-</a>
+	<a id="addtime" href="#" class="btn btn-success" style="margin-left:0px;" >+</a>
+
+	<div style="margin-top:20px;border-top:1px solid #efefef">
+		<div id="clipdetails" style="padding:20px; ">
+			#set( $searcher = $mediaarchive.getSearcher("asset") )
+##			#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
+##			$context.putPageValue("value",$asset...)
+##			$context.putPageValue("detail",$detail)
+##			$context.putPageValue("searcher",$searcher)
+##			$pages.include("/$applicationid/components/xml/detailedit.html", $context)
+
 			<div class="btns">
 			<a id="playclip" data-playtext="[[Play]]"  data-stoptext="[[Stop]]"  href="#" class="btn btn-success btn-disabled" >[[Play]]</a>
 			<a id="removeclip" href="#" class="btn btn-danger btn-disabled" >[[Remove]]</a>
@@ -17,10 +24,7 @@
 			</div>
 		</div>
 	</div>
-	
-	<a id="addnewcopy" href="#" class="btn btn-success" style="margin-left:0px;" >[[Add New]]</a>
-	<a id="removetime" href="#" class="btn btn-success" style="margin-left:0px;" >-</a>
-	<a id="addtime" href="#" class="btn btn-success" style="margin-left:0px;" >+</a>
+
 	<a id="savetimeline" href="#" class="btn btn-success btn-disabled" style="float:right" >[[Save Timeline]]</a>
 	<a id="cancel" href="$home$apphome/views/modules/asset/editor/timeline/index.html?assetid=$asset.getId()&hitssessionid=hitsassetassets/catalog" class="btn btn-secondary btn-disabled" style="float:right;margin-right: 10px;" >[[Cancel]]</a>
 	

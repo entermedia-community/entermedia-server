@@ -1,7 +1,10 @@
 #
-#Thu Apr 20 13:39:36 CDT 2017
-+=+
-Basket=cesta
+#Thu Mar 28 09:37:28 CST 2019
+assets=bienes
 Add\ To\ Basket=A\u00F1adir al carrito
+Basket=cesta
++=+
 Remove\ From\ Basket=Eliminar de la cesta
+asset=activo
 -=-
+Cart=Carro

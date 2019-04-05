@@ -1,0 +1,8 @@
+#
+#Thu Mar 28 09:41:54 CST 2019
+Stop=Detener
+in\ progress=en progreso
+error\ auto\ transcribing=auto transcripci\u00F3n de error
+Play\ 8s=Jugar 8s
+transcoder\ uploading\ audio=transcodificador subiendo audio
+press\ tab\ to\ start/stop\ and\ press\ enter\ to\ save=presiona tab para iniciar / detener y presiona enter para guardar

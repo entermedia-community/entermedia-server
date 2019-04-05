@@ -1,4 +1,30 @@
 #
-#Thu Apr 20 13:39:47 CDT 2017
-mediadbappid\ not\ defined\ in\ datamanage=Mediadbappid no definido en datamanage
+#Thu Mar 28 11:18:57 CST 2019
+Email=Email
+Embed=Empotrar
+Add\ to\ Project=A\u00F1adir al proyecto
+Original\ File=Archivo original
+Viewer=Espectador
+History=Historia
+Properties=Propiedades
+Attachments=Archivos adjuntos
+Delete\ Asset=Eliminar activo
 Loading=Cargando
+Collaborate=Colaborar
+Download=Descargar
+View\ Metadata=Ver metadatos
+Publish=Publicar
+Actions=Comportamiento
+Categories=Categor\u00EDas
+View\ $asset=Ver $ activo
+Multiedit=Multiedit
+mediadbappid\ not\ defined\ in\ datamanager=mediadbappid no definido en datamanager
+Closed\ Captions=Subt\u00EDtulos
+Delete\ Selected\ Assets=Eliminar activos seleccionados
+Timeline=L\u00EDnea de tiempo
+Esc\ to\ Close=Esc para cerrar
+Conversions=Conversiones
+Actions\ Menu=Men\u00FA de acciones
+Share=Compartir
+Map=Mapa
+View\ PDF=Ver PDF
