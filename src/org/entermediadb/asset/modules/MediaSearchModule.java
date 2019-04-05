@@ -131,7 +131,9 @@ public class MediaSearchModule extends BaseMediaModule
 			prefs.setProperty("lastcatalog", archive.getCatalogId());
 			//prefs.save();
 		}
+		if(category != null && tracker != null) {
 		tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
+		}
 
 	}
 	/**

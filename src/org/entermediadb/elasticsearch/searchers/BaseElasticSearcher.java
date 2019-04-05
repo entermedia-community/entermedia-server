@@ -1139,7 +1139,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
 				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+				MatchQueryBuilder text = QueryBuilders.matchQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 
@@ -1158,7 +1158,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 
-				MatchQueryBuilder text2 = QueryBuilders.matchPhraseQuery("description", String.valueOf(inValue));
+				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
 
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
