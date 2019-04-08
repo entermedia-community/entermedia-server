@@ -4,10 +4,14 @@
 
 #if($userName)
 
-<div style="max-width:1000px;">
-$pages.include("$content.usermanagerhome/user/editdata.html")
-$pages.include("$content.usermanagerhome/user/editgroups.html")
-$pages.include("$content.usermanagerhome/user/editrole.html")
+<div class="row">
+	<div class="col-md-5">
+	$pages.include("$content.usermanagerhome/user/editdata.html")
+	</div>
+	<div class="col-md-3">
+	$pages.include("$content.usermanagerhome/user/editgroups.html")
+	$pages.include("$content.usermanagerhome/user/editrole.html")
+	</div>
 </div>
 #else
 	<br/>
