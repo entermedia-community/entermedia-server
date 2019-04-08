@@ -16,89 +16,47 @@ import org.openedit.MultiValued;
 
 public class CompletedTasks
 {
-	protected List fieldCompletedTickets = new ArrayList();
+	Map<String,UserReport> byUserUserReport = new HashMap<String,UserReport>();
 	
-	public List getCompletedTickets()
+	public List getUserIds()
 	{
-		return fieldCompletedTickets;
-	}
-	public void setCompletedTickets(List inCompletedTickets)
-	{
-		fieldCompletedTickets = inCompletedTickets;
-	}
-	public CompletedTasks()
-	{
-		fieldCompleted = new ArrayList();
-	}
-	public CompletedTasks(List inCompleted)
-	{
-		fieldCompleted = inCompleted;
-	}
-	protected List fieldCompleted;
-	
-	public int weeksIn(Date month)
-	{
-//		GregorianCalendar completedweek = new GregorianCalendar();
-//		completedweek.setTime(month);
-		return 4;
+		ArrayList users = new ArrayList(byUserUserReport.keySet());
+		Collections.sort(users);
+		return users;
 	}
 	
-	public Collection getTicketsForWeek(int inweek)
+	public List weeksInMonth(Date month)
 	{
-		List tickets = new ArrayList();
-		for (Iterator iterator = getCompletedTickets().iterator(); iterator.hasNext();)
+		GregorianCalendar completedweek = new GregorianCalendar();
+		completedweek.setTime(month);
+		int week = completedweek.get(Calendar.WEEK_OF_MONTH);
+		List weeks = new ArrayList();
+		for (int i = 0; i < 5; i++)
 		{
-			MultiValued ticket = (MultiValued) iterator.next();
-			Date completedon = ticket.getDate("resolveddate");
-			GregorianCalendar completedweek = new GregorianCalendar();
-			completedweek.setTime(completedon);
-			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
-			if( week == inweek)
-			{
-				tickets.add(ticket);
-			}
+			weeks.add(week + i);
 		}
-		return tickets;
+		return weeks;
 	}
+
 	
-	public Collection byWeeks()
+	public void addTask(String inUserId,MultiValued inTask)
 	{
-		Map weeks = new HashMap();
-		for (Iterator iterator = fieldCompleted.iterator(); iterator.hasNext();)
-		{
-			MultiValued task = (MultiValued) iterator.next();
-			Date completedon = task.getDate("completedon");
-			GregorianCalendar completedweek = new GregorianCalendar();
-			completedweek.setTime(completedon);
-			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
-			Collection saved = (Collection)weeks.get(week);
-			if( saved == null)
-			{
-				saved = new ArrayList();
-				weeks.put(week, saved);
-			}
-			saved.add(task);
+		UserReport report = byUserUserReport.get(inUserId);
+		if( report == null) {
+			report = new UserReport();
+			byUserUserReport.put(inUserId, report);
 		}
-		List byweeks = new ArrayList(weeks.keySet());
-		Collections.sort(byweeks);
-		List sorted = new ArrayList();
-		for (Iterator iterator = byweeks.iterator(); iterator.hasNext();)
-		{
-			Integer weekcount = (Integer) iterator.next();
-			List tasks = (List)weeks.get(weekcount);
-			Collections.reverse(tasks);
-			sorted.add(tasks);
+		report.addTask(inTask);
+				
+	}
+	public void addTicket(String inUserId,MultiValued inTicket)
+	{
+		UserReport report = byUserUserReport.get(inUserId);
+		if( report == null) {
+			report = new UserReport();
+			byUserUserReport.put(inUserId, report);
 		}
-		return sorted;
-	}
-	
-	public void addTask(MultiValued inTask)
-	{
-		fieldCompleted.add(inTask);
-	}
-	public void addTicket(MultiValued inTicket)
-	{
-		fieldCompletedTickets.add(inTicket);
+		report.addTicket(inTicket);
 	}
 	
 }

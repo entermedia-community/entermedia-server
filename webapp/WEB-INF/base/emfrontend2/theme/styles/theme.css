@@ -2393,7 +2393,6 @@ label.error {
 	background-image: linear-gradient(to bottom, #696969, #333333);
 	background-repeat: repeat-x;
 	border-color: #333333;
-	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#696969', endColorstr='#333333', GradientType=0);
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
@@ -2407,6 +2406,12 @@ label.error {
 	background: none;
 	background-color: #333333;
 	*background-color: #003bb3;
+}
+
+.assetpanel-editor .btn-disabled
+{
+	background-color:#666!important;
+	color: #333!important;
 }
 
 .assetpanel-editor .btn-secondary {

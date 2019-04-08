@@ -276,7 +276,7 @@ var inittimeline = function()
             	//reload page?
             	//change button color 
             	$("#savetimeline").addClass("btn-disabled");
-            	$("#savetimeline").css("color","white");
+            	//$("#savetimeline").css("color","white");
        		}
     	}); 
 	});

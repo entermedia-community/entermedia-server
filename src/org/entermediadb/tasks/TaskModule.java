@@ -771,28 +771,20 @@ public class TaskModule extends BaseMediaModule
 		cal.add(Calendar.DAY_OF_MONTH,days - 1);
 		
 		Date onemonth = cal.getTime();
-		HashSet usersids = new HashSet();
 
 		String rootid = "tasks" + collection.getId();
 		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
 				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
-		Map byperson = new HashMap();
+		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			MultiValued  task = (MultiValued) iterator.next();
 			String userid = task.get("completedby");
-			CompletedTasks completed = (CompletedTasks)byperson.get(userid);
-			if( completed == null)
-			{
-				completed = new CompletedTasks();
-				byperson.put(userid,completed);
-				usersids.add(userid);
-			}
-			completed.addTask(task);
+			completed.addTask(userid,task);
 		}
 		
-		inReq.putPageValue("byperson", byperson);		
+		inReq.putPageValue("completed", completed);		
 		
 		HitTracker alltickets = archive.query("projectgoal")
 				.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
@@ -808,24 +800,13 @@ public class TaskModule extends BaseMediaModule
 				for (Iterator iterator2 = users.iterator(); iterator2.hasNext();)
 				{
 					String userid = (String) iterator2.next();
-					CompletedTasks completed = (CompletedTasks)byperson.get(userid);
-					if( completed == null)
-					{
-						completed = new CompletedTasks();
-						byperson.put(userid,completed);
-						usersids.add(userid);
-					}
-					completed.addTicket(ticket);
+					completed.addTicket(userid,ticket);
 				}
 			}
 		}
-		
-
-		
-
 		ArrayList users = new ArrayList();
 
-		for (Iterator iterator = usersids.iterator(); iterator.hasNext();)
+		for (Iterator iterator = completed.getUserIds().iterator(); iterator.hasNext();)
 		{
 			String userid = (String) iterator.next();
 			User user = archive.getUser(userid);
