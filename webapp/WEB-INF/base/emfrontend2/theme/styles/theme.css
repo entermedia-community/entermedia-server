@@ -957,7 +957,7 @@ html, body, #application {
 	border: 1px solid #dddddd;
 	background: #fff;
 	color: #333333;
-	padding:5px;
+	padding:15px;
 	
 	/*font-size:.8rem;*/
 }
@@ -1018,7 +1018,9 @@ html, body, #application {
  .ui-autocomplete .ui-state-active {
 	background-color:#ccc;color:#333;
 }
-
+.no-padding-for-real {
+	padding:0!important;
+}
 
 
 /*Search View Sub Nav*/
@@ -1090,7 +1092,7 @@ html, body, #application {
 /* SAVED SEARCH STYLES */
 .search-list, .sidebar-list {
     padding: 0;
-    margin: -10px -14px;
+    
 }
 
 .search-list li, .sidebar-list li {
@@ -1103,7 +1105,7 @@ html, body, #application {
 
 .search-list li a.search-href, .sidebar-list a {
     padding: 8px 30px;
-    margin: 0 4px 0 4px;
+    margin: 0;
     text-decoration: none;
     display: block;
     font-size: 0.8rem;
@@ -2284,6 +2286,7 @@ div#drop-area .drop-over {
 label.error {
     font-weight: bold;
     line-height: 16px;
+	padding:.5rem 0;
     display: block;
     color:red;
 }
@@ -2408,7 +2411,8 @@ label.error {
 	*background-color: #003bb3;
 }
 
-.assetpanel-editor .btn-disabled
+.assetpanel-editor .btn-disabled,
+.assetpanel-editor .btn-disabled:hover
 {
 	background-color:#666!important;
 	color: #333!important;
@@ -2666,7 +2670,7 @@ label.error {
 	width: 40%;
 	top:10px;
 	bottom:inherit;
-	height:50px;
+	padding:10px;
     position:absolute;
     text-align:center;
     margin: auto;

@@ -269,7 +269,7 @@ uiload = function() {
 		$(this).button();
 	});
 	lQuery(".fader").livequery(function() {
-		$(this).fadeOut(1600, "linear");
+		$(this).fadeOut(2000, "linear");
 	});
 
 	lQuery(".uipanel").livequery(
