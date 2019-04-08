@@ -5,13 +5,14 @@
 
 	<property name="dataroot">/${catalogid}/side/search</property>
  	<property name="assetrootfolder">/${catalogid}/assets</property>
+ 	
 	<xpath-action name="DataEditModule.changeFilters">
-		<property name="searchtype">${module}</property>
+		<property name="searchtype">asset</property>
 	</xpath-action>	
 	
 	
 	<path-action name="DataEditModule.loadOrSearch">
-		<property name="searchtype">${module}</property>
+		<property name="searchtype">asset</property>
 	</path-action>	
 	
 	<property name="hitsname">hits</property>

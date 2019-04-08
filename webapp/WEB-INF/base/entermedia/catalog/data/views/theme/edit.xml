@@ -82,6 +82,8 @@
   
   
   <!-- left column -->
+  <property id="locationssidebarwidth"/>
+
   <property id="leftcolumnbackgroundcolor"/>
   <property id="leftcolumnbackgroundgradient"/>
   <property id="leftcolumnnavcolor" />

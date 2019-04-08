@@ -1,0 +1,6 @@
+#
+#Thu Mar 28 09:41:03 CST 2019
+Add\ Category=a\u00F1adir categor\u00EDa
+Category=Categor\u00EDa
+Locations=Ubicaciones
+Add\ Collection=A\u00F1adir colecci\u00F3n

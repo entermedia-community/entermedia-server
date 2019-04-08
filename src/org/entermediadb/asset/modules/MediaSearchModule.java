@@ -53,6 +53,9 @@ public class MediaSearchModule extends BaseMediaModule
 		//Look for a hitsessionid and make sure this category is in there
 		MediaArchive archive = getMediaArchive(inReq);
 		Category category = archive.getCategory(inReq);
+		if(category == null) {
+			return;
+		}
 		inReq.putPageValue("category",category);
 		inReq.putPageValue("selectedcategory",category);
 		
@@ -128,7 +131,9 @@ public class MediaSearchModule extends BaseMediaModule
 			prefs.setProperty("lastcatalog", archive.getCatalogId());
 			//prefs.save();
 		}
+		if(category != null && tracker != null) {
 		tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
+		}
 
 	}
 	/**

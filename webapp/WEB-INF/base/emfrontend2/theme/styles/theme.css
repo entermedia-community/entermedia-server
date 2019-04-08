@@ -565,8 +565,6 @@ html, body, #application {
 }
 .mainlayoutcontainer {
 	position:relative;
-	/*height: 100%;*/
-	
 }
 .cols-main,
 .results-header {
@@ -594,11 +592,8 @@ html, body, #application {
 .col-content-main {
 	transition: 0.2s;
 	margin:0;
-	
 }
-.col-content-main.leftopen {
-/*	margin-left:220px;*/
-}
+
 .leftopen .pushcontent {
 	margin-left:220px;
 }
@@ -627,18 +622,19 @@ html, body, #application {
 
 .col-left {
 	height: 100%;
-    width: 220px; 
+    width: 220px;
     position: absolute; 
     /*z-index: 1;*/ 
     top: 45px; 
     left: -220px;
     background-color: #fff; 
-/*    overflow-x: hidden;*/ 
-    transition: 0.2s;
 }
+
 .col-left.leftopen {
-	
 	left:0;
+}
+.col-left.leftopen .col-main-inner {
+    display:block;
 }
 .col-filters {
 	height: 100%;
@@ -920,6 +916,7 @@ html, body, #application {
 }
 .filtered .badge {
 	margin:0 5px;
+    font-size:0.74rem;
 }
 
 /*Widget*/
@@ -2396,7 +2393,6 @@ label.error {
 	background-image: linear-gradient(to bottom, #696969, #333333);
 	background-repeat: repeat-x;
 	border-color: #333333;
-	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#696969', endColorstr='#333333', GradientType=0);
 	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
@@ -2410,6 +2406,12 @@ label.error {
 	background: none;
 	background-color: #333333;
 	*background-color: #003bb3;
+}
+
+.assetpanel-editor .btn-disabled
+{
+	background-color:#666!important;
+	color: #333!important;
 }
 
 .assetpanel-editor .btn-secondary {

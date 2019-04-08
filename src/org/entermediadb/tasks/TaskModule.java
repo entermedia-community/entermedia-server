@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -769,31 +771,42 @@ public class TaskModule extends BaseMediaModule
 		cal.add(Calendar.DAY_OF_MONTH,days - 1);
 		
 		Date onemonth = cal.getTime();
+
 		String rootid = "tasks" + collection.getId();
 		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
 				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
-
-//		HitTracker all = tasksearcher.query()
-//				.between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
-			
-		Map byperson = new HashMap();
+		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			MultiValued  task = (MultiValued) iterator.next();
-			CompletedTasks completed = (CompletedTasks)byperson.get(task.get("completedby"));
-			if( completed == null)
-			{
-				completed = new CompletedTasks();
-				byperson.put(task.get("completedby"),completed);
-			}
-			completed.addTask(task);
+			String userid = task.get("completedby");
+			completed.addTask(userid,task);
 		}
 		
-		inReq.putPageValue("byperson", byperson);
-
+		inReq.putPageValue("completed", completed);		
+		
+		HitTracker alltickets = archive.query("projectgoal")
+				.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
+		
+		for (Iterator iterator = alltickets.iterator(); iterator.hasNext();)
+		{
+			MultiValued  ticket = (MultiValued) iterator.next();
+			Collection users = ticket.getValues("resolveusers");
+			if( users != null)
+			{
+				double each = MathUtils.divide(20, users.size());
+				ticket.setValue("points",each);
+				for (Iterator iterator2 = users.iterator(); iterator2.hasNext();)
+				{
+					String userid = (String) iterator2.next();
+					completed.addTicket(userid,ticket);
+				}
+			}
+		}
 		ArrayList users = new ArrayList();
-		for (Iterator iterator = byperson.keySet().iterator(); iterator.hasNext();)
+
+		for (Iterator iterator = completed.getUserIds().iterator(); iterator.hasNext();)
 		{
 			String userid = (String) iterator.next();
 			User user = archive.getUser(userid);

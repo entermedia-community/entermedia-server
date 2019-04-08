@@ -4,7 +4,7 @@ var inittimeline = function()
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
-	$("#clipdetails :input").prop('disabled', true);
+	//$("#clipdetails :input").prop('disabled', true);
 
 	var videoclip = $("#videoclip");
 	var video = videoclip[0];
@@ -115,8 +115,9 @@ var inittimeline = function()
 		}
 		
 	});
-	lQuery("#timecodestart-value").livequery("click",function(e)
+	lQuery("#timecodestart\\.value").livequery("click",function(e)
 	{
+		//debugger;
 		var input = $(this);
 		$("input").removeClass("selectedtime");
 		$("input").removeClass("selectedlength");
@@ -132,11 +133,12 @@ var inittimeline = function()
 		input.addClass("selectedtime");
 			
 	});
-	lQuery("#timecodelength-value").livequery("click",function(e)
+	lQuery("#timecodelength\\.value").livequery("click",function(e)
 	{
+		//debugger;
 		var input = $(this);
-		$("input").removeClass("selectedtime");
-		$("input").removeClass("selectedlength");
+		$(input).removeClass("selectedtime");
+		$(input).removeClass("selectedlength");
 		if( !input.val() )
 		{
 			copyLength();
@@ -152,18 +154,18 @@ var inittimeline = function()
 		
 	});
 	
-	lQuery("#cliplabel.value").livequery("keyup", function()
+	lQuery("#cliplabel\\.value").livequery("keyup", function()
 	{
 		updateSelectedClip();		
 	});
 
 
-	lQuery("#timecodestart-value").livequery("blur", function()
+	lQuery("#timecodestart\\.value").livequery("blur", function()
 	{
 		updateSelectedClip();
 	});
 
-	lQuery("#timecodelength-value").livequery("blur", function()
+	lQuery("#timecodelength\\.value").livequery("blur", function()
 	{
 		updateSelectedClip();		
 	});
@@ -210,7 +212,8 @@ var inittimeline = function()
 	lQuery("#addnewcopy").livequery("click",function(e)
 	{
 		e.preventDefault();
-		console.log("Make copy");
+		
+		//console.log("Make copy");
 		var template = $("#templateclip").clone();
 		var timestamp = new Date().getUTCMilliseconds();
 		template.attr("id",timestamp);
@@ -219,23 +222,21 @@ var inittimeline = function()
 		$("#timelinemetadata").append(template);
 		template.show();
 		//This copies the UI into the current selection
-		$("#cliplabel.value").val("");
+		$("#clipdetails").css('display','block');
+		$("#cliplabel\\.value").val("");
 		var done = parseTimeToText(video.currentTime);
-		$("#timecodestart-value").val(done);
+		$("#timecodestart\\.value").val(done);
 
-		var lengthtext = $("#timecodelength-value").val();
+		var lengthtext = $("#timecodelength\\.value").val();
 		if( !lengthtext )
 		{
-			$("#timecodelength-value").val("5");
+			$("#timecodelength\\.value").val("5");
 		}		
 
-		
 		updateSelectedClip();	
 		
-		
-		
 		updateDetails();
-		$("#cliplabel.value").focus();
+		$("#cliplabel\\.value").focus();
 				
 	});
 	
@@ -275,7 +276,7 @@ var inittimeline = function()
             	//reload page?
             	//change button color 
             	$("#savetimeline").addClass("btn-disabled");
-            	$("#savetimeline").css("color","white");
+            	//$("#savetimeline").css("color","white");
        		}
     	}); 
 	});
@@ -301,6 +302,7 @@ var inittimeline = function()
 	lQuery(".data-selection").livequery("click",function(e)
 	{
 		e.preventDefault();
+		
 		selectClip(this);
 		updateDetails();
 	});	
@@ -316,14 +318,14 @@ var inittimeline = function()
 	//Saved the selected data
 	updateSelectedClip = function()
 	{
-		var text = $("#cliplabel.value").val();
+		var text = $("#cliplabel\\.value").val();
 
 		var selected = $(".selectedclip");
 		var cell = $(".selectedclip .timecell");
 		selected.data("cliplabel", text);
 		$(".cliptext",selected).html(text);
 
-		var starttext = $("#timecodestart-value").val();
+		var starttext = $("#timecodestart\\.value").val();
 		var start = parseTimeFromText(starttext);
 		selected.data("timecodestart", start);
 		//calculate the px left
@@ -331,7 +333,7 @@ var inittimeline = function()
 		var left = start * ratio;
 		cell.css({"left" : left + "px"});
 
-		var lengthtext = $("#timecodelength-value").val();
+		var lengthtext = $("#timecodelength\\.value").val();
 		var length = parseTimeFromText(lengthtext);
 		selected.data("timecodelength", length);
 		//console.log("Saved",length,selected);
@@ -347,19 +349,18 @@ var inittimeline = function()
 	updateDetails = function(jumptoend)
 	{
 		var selected = $(".selectedclip");
-	
-			
-		$("#clipdetails :input").prop('disabled', false);
+		$("#clipdetails").css('display','block');	
+		//$("#clipdetails :input").prop('disabled', false);
 		
-		$("#cliplabel.value").val( selected.data("cliplabel") );
+		$("#cliplabel\\.value").val( selected.data("cliplabel") );
 		var decstart = selected.data("timecodestart");
 		decstart = parseFloat(decstart);
 		var start = parseTimeToText( decstart / 1000 );
-		$("#timecodestart-value").val( start );
+		$("#timecodestart\\.value").val( start );
 	
 		var len = parseFloat(selected.data("timecodelength"));
 		var textlength = parseTimeToText( len / 1000);
-		$("#timecodelength-value").val( textlength );
+		$("#timecodelength\\.value").val( textlength );
 		
 		if( jumptoend )
 		{
@@ -512,6 +513,7 @@ var inittimeline = function()
 			if( clickspot )
 			{
 				clearSelection();
+				
 				var changeleft = clickspot.pageX - event.pageX;
 				
 				var left = imageposition.left - changeleft;
@@ -525,8 +527,9 @@ var inittimeline = function()
 				
 				var ratio = $("#timelinemetadata").data("ratio");
 				ratio = parseFloat(ratio);
-				
 				var seconds = left / ratio;
+				
+				console.log("r:"+ratio+" l:"+left+" s:"+seconds);
 				var selected = $(".selectedclip");
 				selected.data("timecodestart",seconds);
 				updateDetails();

@@ -142,11 +142,15 @@ uiload = function() {
 			// console.log("found modal parent, skipping");
 			// https://github.com/select2/select2-bootstrap-theme/issues/41
 		} else {
-            console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
+            //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
+            var allowClear = theinput.data('allowclear');
+            if (allowClear == undefined)  {
+                allowClear = true;
+            }
 			theinput = theinput.select2({
 				theme : "bootstrap4",
 				placeholder : '',
-				allowClear : true,
+				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,
 			});
@@ -1062,12 +1066,17 @@ uiload = function() {
 							} else {
 								// console.log("use body parent");
                             }
-							// var value = theinput.val();
+                            // var value = theinput.val();
+                            
+                            var allowClear = theinput.data('allowclear');
+                            if (allowClear == undefined)  {
+                                allowClear = true;
+                            }
 							theinput
 									.select2({
 										theme : "bootstrap4",
 										placeholder : defaulttext,
-										allowClear : true,
+										allowClear : allowClear,
 										minimumInputLength : 0,
 										dropdownParent : dropdownParent,
 										ajax : { // instead of writing the
@@ -1395,33 +1404,26 @@ uiload = function() {
 			});
 			
 		}
-		
-		
-		
+	
 		return false;
 	});
 	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
-			$("#col-left").animate({left: "-220px"},100);
-			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
-				$(".col-main").removeClass("leftopen");
-				$("#lefttoggle").show();
-			});
+			$("#col-left").removeClass("leftopen");
+            $(".col-main").removeClass("leftopen");
+            $("#lefttoggle").show();
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
-			
 		}
 		else {
 			//open
-			$("#lefttoggle").hide();
-			$("#col-left").animate({left: "0"},100);
-			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
-				$(".col-main").addClass("leftopen");
-			});
-			
+            
+            $("#col-left").addClass("leftopen");
+            $(".col-main").addClass("leftopen");
+            $("#lefttoggle").hide();
 			saveProfileProperty("leftbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});

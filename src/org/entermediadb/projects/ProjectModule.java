@@ -55,6 +55,11 @@ public class ProjectModule extends BaseMediaModule {
 		}
 		String appid = inReq.findValue("applicationid");
 		String finalpath = "/" + appid + "/views/modules/librarycollection/media/" + collectionid + ".html";
+		//Selected Sub folder?
+		String nodeID = inReq.getRequestParameter("nodeID");
+		if (nodeID != null) {
+			finalpath = finalpath + "?nodeID="+nodeID;
+		}
 		inReq.redirect(finalpath);
 
 	}
@@ -63,9 +68,18 @@ public class ProjectModule extends BaseMediaModule {
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		String categoryid = inReq.getRequestParameter("categoryid");
+		String nodeID = inReq.getRequestParameter("nodeID");
+		if (categoryid == null) {
+			if (nodeID != null) {
+				categoryid = nodeID;
+			}
+		}
 		if(categoryid != null) {
 			String appid = inReq.findValue("applicationid");
 			String finalpath = "/" + appid + "/views/modules/asset/showcategory.html?categoryid=" + categoryid + "";
+			if (nodeID != null) {
+				finalpath = finalpath + "&nodeID="+nodeID;
+			}
 			inReq.redirect(finalpath);
 		}
 		

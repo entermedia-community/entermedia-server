@@ -1,4 +1,3 @@
-
 #if($filternode)
 	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
 	#ifnull($viewpermission)
@@ -8,16 +7,15 @@
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
 		
-		
 			#if ($filternode.children.size() > 10)
-				##select2
-				<select  id="${fieldname}select2" name="${fieldname}.value" 
+				<select id="${fieldname}select2" 
+						name="${fieldname}.value" 
 						class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 						listid="${fieldname}filter" 
 						data-listid="${fieldname}filter" 
 						data-searchtype= '$searchtype'
-						onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" 
-					>
+						onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+						data-allowclear="false">
 					<option value=""></option>
 				#foreach($entry in $filternode.children)
 					<option value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end>#esc($entry.getText($context))</option>
@@ -33,13 +31,7 @@
 				</a>
 				#end
 			#end
-			
-			##<a href="" class="filter-current"><i class="fas fa-check-square"></i> Date</a>
-			##<a href=""><i class="far fa-square"></i> Name</a>
-			
-		
-	
-		
+				
 	#end  ##permission
 #end 
 

@@ -77,7 +77,7 @@
 				
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
 			#else
-				
+                $context.putPageValue("removeclear",true)
 				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 			#end
 			</div>
