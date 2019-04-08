@@ -86,8 +86,8 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		
 		ContentItem existing = null;
-		Object val = inSettings.get("canforcewatermarkasset");
-		if(val != null && (Boolean)val)
+		Object val = inSettings.get("canshowunwatermarkedassets");
+		if(val != null && !(Boolean)val)
 		{
 			ConvertInstructions instructions = createInstructions(inSourcePath,exportName,inSettings);
 			existing = instructions.getOutputFile();

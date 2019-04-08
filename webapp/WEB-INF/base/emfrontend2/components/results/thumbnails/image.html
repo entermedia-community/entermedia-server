@@ -34,8 +34,7 @@
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
-	
-	#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
+	#set($tpath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,  $imagesize))
 	<div class="thumbimagecontainer">
 		<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		

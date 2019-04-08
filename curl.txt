@@ -444,7 +444,7 @@ curl -XGET 'http://localhost:9200/archive_catalog/librarycollection/_search' -d 
 curl -XGET  'http://localhost:9200/archive_catalog/librarycollection/_mapping?pretty=true'  | python -mjson.tool
 Get a single field def:
 _mapping/article/field/title
-curl -XGET  'http://localhost:9200/assets_catalog/_mapping/field/creationdate?pretty=true'  
+curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
 
 
 
@@ -453,7 +453,7 @@ curl -XGET  'http://localhost:9200/assets_catalog/_mapping/field/creationdate?pr
 curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
 {
     "persistent" : {
-        "discovery.zen.minimum_master_nodes" : "2"
+        "discovery.zen.minimum_master_nodes" : "21"
     }
 }'
 

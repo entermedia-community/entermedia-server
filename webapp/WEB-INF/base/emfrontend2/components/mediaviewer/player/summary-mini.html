@@ -13,7 +13,6 @@
 		
 			     
 			
-			
 			<div class="media-thumbnail">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 				#if( !$thumbsize )
@@ -83,7 +82,7 @@
 			</div>
 			#end
 			
-            <form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
+            <form name="lockform" class="autosubmit ajaxform" action="$home$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
             <input type="hidden" name="assetid" value="${asset.id}"/>
             <div class="assetlocked">
                 <label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>

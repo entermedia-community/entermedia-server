@@ -1020,6 +1020,19 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		var options = div.data();
 		var assettab = $(this).data("assettab");
 		
+		
+		var collectionid = $("#resultsdiv").data("collectionid");
+		if(collectionid )
+		{
+				options.collectionid = collectionid;
+		}
+		
+		
+		
+		
+		
+		
+		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
 			saveProfileProperty("assetopentab",assettab,function(){});

@@ -65,7 +65,7 @@ data-assetid="$asset.id" data-next="$!next.getId()"
 data-previous="$!previous.getId()"
 data-previouspage="$!dialoghits.idOnPreviousPage()" 
 data-nextpage="$!dialoghits.idOnNextPage()"
-data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
+data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
  >
 
  
@@ -75,21 +75,21 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 	
 	#if($opentab == "viewpreview")
 		##$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
 		
 		#if( $next )
 			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
 			#if( $preloadtype == "image")
-				#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
+				#set($tpath = $mediaarchive.asLinkToPreview($next,  $libarycol.id, "image1024x768.jpg"))
 				<div style="display:none;"><img src="$tpath" /></div>
 			#end
 		#end
 	#elseif($opentab == "viewproperties")
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html")
 	#elseif($opentab == "viewcollaborate")
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html")
 	#elseif($opentab == "multiedit")
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html")
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/multiedit.html")
 	#elseif($opentab == "viewactions")
 		#set( $opentabactions = $userprofile.get("assetopentabactions"))
 		#if ( $rendertype !='video')
@@ -98,12 +98,12 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 				#set( $opentab = "viewproperties")
 				#set( $opentabactions = "")
 				##userprofile.set("assetopentabactions", "")
-				$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
+				$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html")
 			#else
-				$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
+				$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
 			#end
 		#else
-			$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
+			$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
 		#end
 	#elseif($opentab=="viewtable")
 		#set( $opentabassettable = $userprofile.get("assetopentabassettable"))
@@ -124,7 +124,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			</li>
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 
-					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html"
+					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
 					data-assettab="viewpreview"
 					title="[[View $asset]]" >
 				<i class="fas fa-expand"></i> [[Viewer]] 
@@ -133,10 +133,9 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			 #if( !$previewonly && $canmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<a class="expandmenu assettab" 
-					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]"
+					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]"
 					data-assettab="viewproperties" >
-				<i class="fas fa-info-circle"></i> [[Properties]] 
-			
+				<i class="fas fa-info-circle"></i> [[Properties]]  
 				</a>
 			</li>
 			#end
@@ -144,7 +143,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 
 							
 				<div class="hidemulti">
-						$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
+						$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
 			</div>
 						#end
 			
@@ -153,7 +152,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 					#if ($canviewcomments || $canassetannotate)
 					 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 						<a class="expandmenu assettab" 
-							data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
+							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
 							data-assettab="viewcollaborate" >
 						<i class="fas fa-comment-alt"></i> [[Collaborate]] 
 						</a>
@@ -178,7 +177,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 	                       	#end
 	                       	#if( $canembedasset && !$multi)
 	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Embed]]</a>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Embed]]</a>
 	                       </li>
 	                       	#end
 	                       	#if ( $canaddtoproject )
@@ -278,7 +277,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 		    	#if( !$ismulti && $canviewconversions   && $canviewassetedit)
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='conversions') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
 						data-assettab="viewactions"
 						data-assettabactions="conversions"
 						data-assettabname="[[Conversions]]" >
@@ -290,7 +289,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			   		#if($canviewtimeline)
 			   			<li>
 					   	<a class="assettab #if($opentabactions=='timeline') dropdown-current #end" 
-								data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
 								data-assettab="viewactions"
 								data-assettabactions="timeline"
 								data-assettabname="[[Timeline]]" >
@@ -301,7 +300,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 			   		#if($canviewclosedcaptions)
 			   			<li>
 					   	<a class="assettab #if($opentabactions=='closedcaptions') dropdown-current #end" 
-								data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
+								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
 								data-assettab="viewactions"
 								data-assettabactions="closedcaptions"
 								data-assettabname="[[Closed Captions]]" >
@@ -313,7 +312,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 		    	#if(!$ismulti && $canviewmap)
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='map') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
 						data-assettab="viewactions"
 						data-assettabactions="map"
 						data-assettabname="[[Map]]" >
@@ -325,7 +324,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 		    	#if( !$ismulti && $canviewattachments )
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='attachments') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
 						data-assettab="viewactions"
 						data-assettabactions="attachments"
 						data-assettabname="[[Attachments]]" >
@@ -336,7 +335,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
 		    	#if( !$ismulti && $canconverthistory )
 			   	<li>
 			   		<a class="assettab #if($opentabactions=='assethistory') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
 						data-assettab="viewactions"
 						data-assettabactions="assethistory"
 						data-assettabname="[[History]]" >
@@ -348,11 +347,11 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
                  <li>
 					#if ( $ismulti )
 						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
+                     		<a class="emdialog"   href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
 	                     [[Delete Selected Assets]]</a>
 	                    #end 
                     #else
-                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionid">
+                     <a class="emdialog"   href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionid">
 	                     [[Delete Asset]]</a>
                      #end
                      </a>
@@ -362,7 +361,7 @@ data-multieeditlink="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.h
                 #if($dialoghits.getSelectedHits().size() > 1)
                  <li>
                  	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
 						data-assettab="multiedit">
 					[[Multiedit]]  $dialoghits.getSelectedHits().size()
 					</a>

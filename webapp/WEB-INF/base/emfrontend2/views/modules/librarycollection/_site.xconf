@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
+		<path-action name="Admin.loadPermissions"/>
 	
 	<path-action name="DataPermissionModule.loadCustomModulePermissions">
 		<property name="parameterid">collectionid</property>
@@ -39,7 +40,19 @@
 	
 	<path-action name="ProjectModule.listConnectedDesktop"/>
 
-
+<permission name="editdata">
+		<or>
+			<group name="administrators" />
+			<action name="ProjectModule.canEditCollection" />
+		</or>
+	</permission>
+	
+	<permission name="editcollection">
+		<or>
+			<group name="administrators" />
+			<action name="ProjectModule.canEditCollection" />
+		</or>
+	</permission>
 
 
 </page>

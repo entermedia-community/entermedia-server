@@ -4,7 +4,7 @@
 #else #set ( $urlenc = $urlutils.encode($asset.sourcepath)) 
 	#set ( $urlenc = $urlenc.replace("%2F", "/") ) 
 #end
-#set($tpath = $mediaarchive.asLinkToPreview($asset, "image1024x768.jpg"))
+#set($tpath = $mediaarchive.asLinkToPreview($asset, $librarycol.id, "image1024x768.jpg"))
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))

@@ -658,6 +658,20 @@ public class ConvertInstructions
 			setWatermark(Boolean.valueOf(watermark));
 		}
 
+		watermark = getProperty("canshowunwatermarkedassets");
+		if (watermark != null)
+		{
+			
+			boolean showunwatermarked = Boolean.parseBoolean(watermark);
+			if(showunwatermarked) {
+				setWatermark(false);
+			} 
+		} else {
+			//setWatermark(true);
+		}
+
+		
+		
 		String watermarkselected = getProperty("watermark");
 		if (watermarkselected != null)
 		{

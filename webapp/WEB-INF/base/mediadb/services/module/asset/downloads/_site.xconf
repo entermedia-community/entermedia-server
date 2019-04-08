@@ -23,8 +23,17 @@
 	
 	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
-		<permissions>view viewasset download forcewatermarkasset</permissions>
+		<permissions>view viewasset download showunwatermarkedassets forcewatermarkasset</permissions>
 	</path-action>
+	
+	<permission name="showunwatermarkedassets">
+		<userprofile property="showunwatermarkedassets" equals="true" />
+	</permission>
+	
+	<permission name="forcewatermarkasset">
+		<userprofile property="forcewatermarkasset" equals="true" />
+	</permission>
+	
 	
 	
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->	
@@ -41,10 +50,7 @@
   	  </permission>	
 	-->
 	
-	<permission name="forcewatermarkasset">
-		<userprofile property="forcewatermarkasset" equals="true" />
-	</permission>
-  
+	
 	
 	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
