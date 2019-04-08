@@ -305,6 +305,8 @@ $(document).ready(function(url,params)
                  refreshresults();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
+		//remove Asset #hash
+		history.replaceState(null, null, ' '); 
 		$(window).scrollTop( lastscroll );
 	}
 	
