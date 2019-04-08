@@ -62,9 +62,9 @@ public class UserReport
 		return tickets;
 	}
 
-	public Collection getPointsForWeek(int inWeek)
+	public Collection getTasksForWeek(int inWeek)
 	{
-		Map weeks = new HashMap();
+		List weeksworth = new ArrayList();
 		for (Iterator iterator = points.iterator(); iterator.hasNext();)
 		{
 			MultiValued task = (MultiValued) iterator.next();
@@ -72,25 +72,13 @@ public class UserReport
 			GregorianCalendar completedweek = new GregorianCalendar();
 			completedweek.setTime(completedon);
 			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
-			Collection saved = (Collection)weeks.get(week);
-			if( saved == null)
+			if( week == inWeek)
 			{
-				saved = new ArrayList();
-				weeks.put(week, saved);
+				weeksworth.add(task);
 			}
-			saved.add(task);
 		}
-		List byweeks = new ArrayList(weeks.keySet());
-		Collections.sort(byweeks);
-		List sorted = new ArrayList();
-		for (Iterator iterator = byweeks.iterator(); iterator.hasNext();)
-		{
-			Integer weekcount = (Integer) iterator.next();
-			List tasks = (List)weeks.get(weekcount);
-			Collections.reverse(tasks);
-			sorted.add(tasks);
-		}
-		return sorted;
+		Collections.sort(weeksworth);
+		return weeksworth;
 	}
 	
 }

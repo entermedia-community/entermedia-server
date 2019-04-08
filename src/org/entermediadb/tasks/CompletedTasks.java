@@ -7,12 +7,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.users.User;
 
 public class CompletedTasks
 {
@@ -29,7 +28,7 @@ public class CompletedTasks
 	{
 		GregorianCalendar completedweek = new GregorianCalendar();
 		completedweek.setTime(month);
-		int week = completedweek.get(Calendar.WEEK_OF_MONTH);
+		int week = completedweek.get(Calendar.WEEK_OF_YEAR);
 		List weeks = new ArrayList();
 		for (int i = 0; i < 5; i++)
 		{
@@ -59,4 +58,16 @@ public class CompletedTasks
 		report.addTicket(inTicket);
 	}
 	
+	public Collection getTasksForWeek(User inUser, int inWeek)
+	{
+		UserReport report = byUserUserReport.get(inUser.getId());
+		return report.getTasksForWeek(inWeek);
+	}
+
+	public Collection getTicketsForWeek(User inUser, int inWeek)
+	{
+		UserReport report = byUserUserReport.get(inUser.getId());
+		return report.getTicketsForWeek(inWeek);
+	}
+
 }
