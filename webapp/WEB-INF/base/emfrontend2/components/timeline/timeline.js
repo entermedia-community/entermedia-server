@@ -245,40 +245,41 @@ var inittimeline = function()
 		e.preventDefault();
 		//Grab all the dom... Submit it to a method, render
 		
-		var clips = [];
-
-    	$("#timelinemetadata  .data-selection").each(function() 
-    	{
-			var clip = $(this);
-			//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
-
-			var timecodestart = parseFloat( clip.data("timecodestart") );
-			var timecodelength = parseFloat( clip.data("timecodelength") );
-			var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,"cliplabel":clip.data("cliplabel")};
+		if (!$(this).hasClass("btn-disabled")) {
+			var clips = [];
+	    	$("#timelinemetadata  .data-selection").each(function() 
+	    	{
+				var clip = $(this);
+				//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
+	
+				var timecodestart = parseFloat( clip.data("timecodestart") );
+				var timecodelength = parseFloat( clip.data("timecodelength") );
+				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,"cliplabel":clip.data("cliplabel")};
+				
+	    		clips.push(data);
+	    	});
+	    	
+			var assetid = $("#timelinemetadata").data("assetid");
+			var link = $("#timelinemetadata").data("savelink");
 			
-    		clips.push(data);
-    	});
-    	
-		var assetid = $("#timelinemetadata").data("assetid");
-		var link = $("#timelinemetadata").data("savelink");
-		
-		var data = {"assetid": assetid,"clips":clips};
-		
-		var json = JSON.stringify(data);
-		$.ajax({        
-       		type: "POST",
-       		url: link,
-       		data: json,
-       		contentType: "application/json; charset=utf-8",
-    		dataType: "json",
-       		success: function() 
-       		{
-            	//reload page?
-            	//change button color 
-            	$("#savetimeline").addClass("btn-disabled");
-            	//$("#savetimeline").css("color","white");
-       		}
-    	}); 
+			var data = {"assetid": assetid,"clips":clips};
+			
+			var json = JSON.stringify(data);
+			$.ajax({        
+	       		type: "POST",
+	       		url: link,
+	       		data: json,
+	       		contentType: "application/json; charset=utf-8",
+	    		dataType: "json",
+	       		success: function() 
+	       		{
+	            	//reload page?
+	            	$("#savetimeline").addClass("btn-disabled");
+					$("#savetimeline").attr("disabled", true);
+					$("#clipdetails").css('display','none');
+	       		}
+	    	}); 
+		}
 	});
 	
 	lQuery("#removetime").livequery("click",function(e)
@@ -371,7 +372,8 @@ var inittimeline = function()
 			video.currentTime = decstart;
 		}
 		$("a.btn-disabled").removeClass("btn-disabled");
-		$("a.btn-yellow").removeClass("btn-yellow");
+		$("#savetimeline").removeAttr("disabled");
+		
 		
 		var assetName =  $("#timelineviewer").data("assetname");
 		var clipname = selected.data("cliplabel");	
