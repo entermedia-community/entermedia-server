@@ -151,7 +151,7 @@ public class PermissionManager implements CatalogEnabled
 		}
 		
 		Collection custompermissions = loadCustomPermissionRules(inModuleid,inParentFolderId,inDataId);
-		log.info("Checking : " + custompermissions );
+	//	log.info("Checking : " + custompermissions );
 		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
 		{
 			Permission per = (Permission) iterator.next();
@@ -174,7 +174,7 @@ public class PermissionManager implements CatalogEnabled
 		Collection<Permission> rules = new ArrayList();
 		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
 				exact("moduleid", inDataType).search();
-		log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
+	//	log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
 		log.info(modulepermissions.getFriendlyQuery());
 		log.info(modulepermissions.getSearchQuery().toString());
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
