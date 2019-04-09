@@ -3,6 +3,7 @@ package model.push;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,11 +37,11 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.PathUtilities;
 public class EMPushManager extends BasePushManager implements PushManager
@@ -328,20 +329,23 @@ public class EMPushManager extends BasePushManager implements PushManager
 				ors.append(" ");
 			}
 		}
-		HttpRequestBuilder builder = new HttpRequestBuilder();
+                 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();                                                                                                                                                 
 		
-		HashMap map = new HashMap();
-		map.put("field", "publishdestination");
-		map.put("publishdestination.value", ors.toString());
-		map.put("operation", "orsgroup");
-		map.put("field", "status");
-		map.put("status.value", "complete");
-		map.put("operation", "not");
-		map.put("field", "status");
-		map.put("status.value", "error");
-		map.put("operation", "not");
-	
-		method.setEntity(builder.build(map));
+		 nameValuePairs.add(new BasicNameValuePair("field", "publishdestination"));
+		 nameValuePairs.add(new BasicNameValuePair("publishdestination.value", ors.toString()));
+		 nameValuePairs.add(new BasicNameValuePair("operation", "orsgroup"));
+		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
+		 nameValuePairs.add(new BasicNameValuePair("status.value", "complete"));
+		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
+		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
+		 nameValuePairs.add(new BasicNameValuePair("status.value", "error"));
+		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
+		
+			Charset UTF8 = Charset.forName("UTF-8");
+
+		
+		
+		method.setEntity(new UrlEncodedFormEntity(nameValuePairs, UTF8));
 	
 		try
 		{
