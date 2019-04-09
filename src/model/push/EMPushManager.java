@@ -438,7 +438,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		//String password = getUserManager().decryptPassword(getUserManager().getUser(account));
 
-		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
+		String url = server + "/media/services/rest/" + "handlesync.xml?dontclear=true&catalogid=" + targetcatalogid;
 		HttpPost method = new HttpPost(url);
 		//Request.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);
 		//method.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);

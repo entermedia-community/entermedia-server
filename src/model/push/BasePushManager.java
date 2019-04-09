@@ -306,7 +306,10 @@ public abstract class BasePushManager  implements PushManager{
 	
 			if (uploadFiles != null)
 			{
-				archive.removeGeneratedImages(target, true);
+				boolean dontclear = Boolean.parseBoolean(inReq.getRequestParameter("dontclear"));
+				if(!dontclear) {
+					archive.removeGeneratedImages(target, true);
+				}
 				Iterator<FileUploadItem> iter = uploadFiles.iterator();
 				while (iter.hasNext())
 				{
