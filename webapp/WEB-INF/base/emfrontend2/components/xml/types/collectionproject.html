@@ -1,0 +1,12 @@
+#set( $listid = $detail.getListId())
+#set( $allprojects = $mediaarchive.getSearcher($listid).query().match("parentcollectionid",$librarycol.getId()).sort("name").search($context) )
+#set( $fieldid = "${detail.id}.value")
+#set( $projectid = $context.getRequestParameter($fieldid))
+
+<input name="operation" type="hidden" value="matches" />
+<select name="${detail.getId()}.value" class="select2">
+<option value=""></option>
+#foreach( $project in $allprojects )
+	<option value="$project.getId()" #if($projectid == $project.getId()) selected #end>$project</option>
+#end
+</select>

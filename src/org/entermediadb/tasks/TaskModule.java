@@ -76,19 +76,6 @@ public class TaskModule extends BaseMediaModule
 				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
 				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 				userq = builder.getQuery();
-			}
-//			else
-//			{
-//				userq.addChildQuery(builder.getQuery());
-//			}
-			String searchall = inReq.findValue("searchall");
-			if ( Boolean.parseBoolean( searchall) )
-			{
-				//Search all
-				//goaltrackercolumns
-			}
-			else
-			{
 				Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
 				if( filter != null && !filter.isEmpty())
 				{
@@ -97,7 +84,10 @@ public class TaskModule extends BaseMediaModule
 			}
 			all = searcher.cachedSearch(inReq, userq);
 		}
-		
+		if( all == null)
+		{
+			return;
+		}
 		Map results = sortIntoColumns(inReq, archive, all);
 		
 		inReq.putPageValue("goalhits", all); 
