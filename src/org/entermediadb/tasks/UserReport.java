@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -59,6 +60,16 @@ public class UserReport
 				tickets.add(ticket);
 			}
 		}
+		Collections.sort(tickets,new Comparator<MultiValued>()
+		{
+			@Override
+			public int compare(MultiValued inO1, MultiValued inO2)
+			{
+				Date completedon = inO1.getDate("resolveddate");
+				Date completedon2 = inO2.getDate("resolveddate");
+				return completedon.compareTo(completedon2);
+			}
+		});
 		return tickets;
 	}
 
