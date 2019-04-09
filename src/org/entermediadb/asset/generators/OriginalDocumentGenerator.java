@@ -103,7 +103,8 @@ public class OriginalDocumentGenerator extends FileGenerator
 			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
 			fileName.replace("\"", "/\"");
 		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
-			if(inReq.getResponse() == null) {
+			if(inReq.getResponse() != null)
+			{
 				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
 			}
 			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
