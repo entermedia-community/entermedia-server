@@ -40,7 +40,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		TranscodeTools manager = archive.getTranscodeTools();
 
 		ConvertInstructions instructions = new ConvertInstructions(archive);
-		instructions.setForce(true);
+	//	instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/103");
 		instructions.setOutputExtension("flv");
 
@@ -90,8 +90,8 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		assertEquals("mp4", PathUtilities.extractPageType(result.getOutput().getPath()));
 
 		ConvertInstructions instructions = videotool.createInstructions(archive.getAsset("101"), "image1024x768.jpg");
-		instructions.setForce(true);
-		instructions.setAssetSourcePath("users/admin/101");
+	//	instructions.setForce(true);
+		//instructions.setAssetSourcePath("users/admin/101");
 
 		result = videotool.createOutput(instructions);
 		assertNotNull(result.isComplete());
