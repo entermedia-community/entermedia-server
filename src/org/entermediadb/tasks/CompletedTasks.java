@@ -28,9 +28,10 @@ public class CompletedTasks
 	{
 		GregorianCalendar completedweek = new GregorianCalendar();
 		completedweek.setTime(month);
+		int max = completedweek.getActualMaximum(Calendar.WEEK_OF_MONTH);
 		int week = completedweek.get(Calendar.WEEK_OF_YEAR);
 		List weeks = new ArrayList();
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < max; i++)
 		{
 			weeks.add(week + i);
 		}
