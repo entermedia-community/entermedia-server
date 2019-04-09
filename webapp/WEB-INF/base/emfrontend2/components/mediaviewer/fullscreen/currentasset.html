@@ -234,9 +234,9 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 						#end
 						#if($ok)
 									
-									#set($url = $mediaarchive.asLinkToDownload($asset, $result))
+									#set($url = $mediaarchive.asLinkToDownload($asset,$librarycol.id, $result))
 									
-								<li><a href="#urlencode("$url?collectionid=${collectionid}")">$result.name</a></li>
+								<li><a href="$url">$result.name</a></li>
 									
 									#end
 							#end

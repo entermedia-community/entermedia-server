@@ -2206,6 +2206,73 @@ public class MediaArchive implements CatalogEnabled
 		return asLinkToPreview(inAsset, null, inGeneratedName);
 	}	
 	
+	
+	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
+		
+		
+		if (inAsset == null)
+		{
+			return null;
+		}
+		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		String finalroot = null;
+		if (cdnprefix == null)
+		{
+			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+			cdnprefix = rutil.getSiteRoot();
+			if (cdnprefix.contains("localhost"))
+			{
+				cdnprefix = "";
+			}
+			//			//TODO: Look up the home variable?
+			//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
+			//			Data prefix = (Data)searcher.searchById("cdn_prefix");
+			//			if( prefix == null)
+			//			{
+			//				prefix = searcher.createNewData();
+			//				prefix.setId("cdn_prefix");
+			//			}
+			//			prefix.setValue("value", cdnprefix);
+			//			searcher.saveData(prefix);
+			//			getCacheManager().clear("catalogsettings");
+		}
+		
+		String downloadroot = null;
+		if(inCollectionId != null) {
+			downloadroot = "/services/module/librarycollection/downloads/createpreset";
+		} else {
+			downloadroot = "/services/module/asset/downloads/createpreset";
+
+		}
+		
+		
+		
+		String sourcepath = inAsset.getSourcePath();
+		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
+		if(inCollectionId != null) {
+		finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
+		}
+		else {
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename;
+
+		}
+		finalroot = URLUtilities.urlEscape(finalroot);
+		return finalroot;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
 	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName)
 	
 	
@@ -2306,6 +2373,11 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 
 	}
+	
+	
+	
+	
+	
 
 	public boolean isCatalogSettingTrue(String string)
 	{
