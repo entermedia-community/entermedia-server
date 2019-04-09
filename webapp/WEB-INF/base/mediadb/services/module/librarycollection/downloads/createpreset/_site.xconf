@@ -5,11 +5,13 @@
 	
     <!-- This URL will look like this /downloads/preset/sourcepath/presetname.jpg -->
 	<property name="virtual">true</property>
-	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/createpreset</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/librarycollection/downloads/createpreset</property>
 	<property name="sourcepathhasfilename">true</property>	
 	<property name="exportnameinpath">true</property>	
 	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
+	<property name="collectionidinpath">true</property>
 	
+	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
 	<generator name="convertArchiveDocument"/>
 </page>
 

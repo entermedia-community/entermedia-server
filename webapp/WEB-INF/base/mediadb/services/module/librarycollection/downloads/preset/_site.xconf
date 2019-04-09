@@ -2,7 +2,9 @@
                                                                                                                                    
 <page>
 	<!-- No permission check on asset, fast pre loading, dynamic creation -->
+	<property name="collectionidinpath">true</property>
 	
+	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
     <!-- This URL will look like this /downloads/preset/sourcepath/presetname.jpg -->
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/services/module/librarycollection/downloads/preset</property>

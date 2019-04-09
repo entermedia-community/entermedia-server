@@ -4,8 +4,8 @@
 
 	<property name="assetrootfolder">/${applicationid}/services/module/librarycollection/downloads/originals</property>
 	<property name="sourcepathhasfilename">true</property>
-	<property name="collectionidinpath">true</property>
 	<property name="virtual">true</property>
+		<property name="collectionidinpath">true</property>
 	
 	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
 	<path-action name="Admin.allowViewing" alltypes="true">
