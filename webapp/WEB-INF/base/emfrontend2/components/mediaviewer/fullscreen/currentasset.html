@@ -191,7 +191,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
     		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 			#if($candownload && $asset.getFileFormat()  == "pdf")
 			<li class="footermenu bottomtab" >
-			    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+			    <a data-assetid="${asset.id}" target="_new" href="$!cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
 	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
 	            </a>
             </li> 
