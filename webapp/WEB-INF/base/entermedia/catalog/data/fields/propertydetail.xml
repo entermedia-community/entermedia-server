@@ -263,5 +263,8 @@
   <property id="xmpmask"  editable="true" stored="true" index="true" keyword="false" filter="false" >XMP Mask
   </property>  
   
+    <property id="highlight" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Include Text Highlighting 
+  </property>  
+  
   
 </properties>

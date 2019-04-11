@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +42,6 @@ import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
@@ -70,11 +68,9 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -98,7 +94,6 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.SearchData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.ChildFilter;
-import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -255,7 +250,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			addFacets( inQuery, search);
 			
 			addSearcherTerms(inQuery, search);
-			
+			addHighlights(inQuery, search);
+
 			
 
 			search.setFetchSource(null, "description");
@@ -291,6 +287,18 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	
 	
+	public void addHighlights(SearchQuery inQuery, SearchRequestBuilder search)
+	{
+			for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if(detail.isHighlight()) {
+					search.addHighlightedField(detail.getId(), 80);
+				}
+			}
+		
+	}
+
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		for (Iterator iterator = inQuery.getFacets().iterator(); iterator.hasNext();)

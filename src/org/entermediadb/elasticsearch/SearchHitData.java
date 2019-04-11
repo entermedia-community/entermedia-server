@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
+import org.elasticsearch.search.highlight.HighlightField;
 import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -310,6 +313,22 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	}
 	
 	
-	
+	public List getHighlights(String inField) {
+		if(getSearchHit() == null) {
+			return null;
+		}
+		HighlightField field = getSearchHit().getHighlightFields().get(inField);
+		if(field == null) {
+			return null;
+		}
+		ArrayList highlights = new ArrayList();
+		Text[] fragments = field.getFragments();
+		for (Text text : fragments)
+		{
+			String frag = text.string();
+			highlights.add(frag);
+		}
+		return highlights;
+	}
 	
 }

@@ -394,6 +394,7 @@ public class ElasticHitTracker extends HitTracker
 			throw new OpenEditException("row request falls beyond one page of results " + indexlocation + ">=" + hits.length);
 		}
 		SearchHit hit = hits[indexlocation];
+		
 		Searcher searcher = getSearcher();
 		if( searcher == null && getSearcherManager() != null)
 		{

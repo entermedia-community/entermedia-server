@@ -23,6 +23,7 @@
 	<property id="analyzer"  />
 	<property id="isbadge" type="boolean" />
 	<property id="wordpressfield"    />
+		<property id="highlight"    />
 	
 	
 </properties>
