@@ -36,27 +36,35 @@ public class ProjectGoal extends BaseData
 	{
 		ProjectGoal pg2 = (ProjectGoal)inO2;
 		
-//		String status1 = get("projectstatus");
-//		String status2 = pg2.get("projectstatus");
-//		if( status1 == null) status1 = "open";
-//		if( status2 == null) status2 = "open";
-//		if( status1.equals(status2))
-//		{
-		Date date1 = (Date)getDate("creationdate");
-		Date date2 = (Date)pg2.getDate("creationdate");
-		if( date1 != null && date2 != null)
+		String status1 = get("projectstatus");
+		String status2 = pg2.get("projectstatus");
+		if( status1 == null) status1 = "open";
+		if( status2 == null) status2 = "open";
+		if( status1.equals(status2))
 		{
-			return date2.compareTo(date1);
+			Date date1 = (Date)getDate("creationdate");
+			Date date2 = (Date)pg2.getDate("creationdate");
+			if( date1 != null && date2 != null)
+			{
+				return date2.compareTo(date1);
+			}
 		}
-//		}
-//		else if( status1.equals("open"))
-//		{
-//			return -1;
-//		}
-//		else if( status2.equals("open"))
-//		{
-//			return 1;
-//		}
+		else if( status2.equals("critical"))
+		{
+			return 1;
+		}
+		else if( status1.equals("critical"))
+		{
+			return -1;
+		}
+		else if( status1.equals("open"))
+		{
+			return -1;
+		}
+		else if( status2.equals("open"))
+		{
+			return 0;
+		}
 		
 		return 0;
 	}

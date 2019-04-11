@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -173,6 +174,7 @@ public class TaskModule extends BaseMediaModule
 	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek, String collectionid)
 	{
 		List week = new ArrayList();
+		Date today = new Date();
 		for (int i = 0; i < 5; i++) //5 days
 		{
 			List todaysgoals = new ArrayList();
@@ -181,6 +183,11 @@ public class TaskModule extends BaseMediaModule
 			{
 				MultiValued goal = (MultiValued) iteratorv.next();
 				Date rd = goal.getDate("resolveddate");
+				if( rd != null && today.after(rd) && "open".equals( goal.get("projectstatus") ) )
+				{
+					goal.setValue("projectstatus", "critical");
+				}
+
 				if( rd == null )
 				{
 					if( dayofweek == i )
@@ -192,7 +199,8 @@ public class TaskModule extends BaseMediaModule
 				{
 					GregorianCalendar rg = new GregorianCalendar();
 					rg.setTime(rd);
-					if( (rg.get(Calendar.DAY_OF_WEEK) - 2) == i)
+					int dow = rg.get(Calendar.DAY_OF_WEEK) - 2;
+					if( dow == i)
 					{
 						todaysgoals.add(goal);
 					}
@@ -202,7 +210,44 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = week.iterator(); iterator.hasNext();)
 		{
 			List values = (List ) iterator.next();
-			Collections.sort(values);
+			Collections.sort(values, new Comparator<ProjectGoal>()
+			{
+				@Override
+				public int compare(ProjectGoal pg1, ProjectGoal pg2)
+				{
+						String status1 = pg1.get("projectstatus");
+						String status2 = pg2.get("projectstatus");
+						if( status1 == null) status1 = "open";
+						if( status2 == null) status2 = "open";
+						if( status1.equals(status2))
+						{
+							Date date1 = (Date)pg1.getDate("creationdate");
+							Date date2 = (Date)pg2.getDate("creationdate");
+							if( date1 != null && date2 != null)
+							{
+								return date2.compareTo(date1);
+							}
+						}
+						else if( status1.equals("critical"))
+						{
+							return 1;
+						}
+						else if( status2.equals("critical"))
+						{
+							return -1;
+						}
+						else if( status1.equals("open"))
+						{
+							return -1;
+						}
+						else if( status2.equals("open"))
+						{
+							return 0;
+						}
+						
+						return 0;
+					}
+			});
 			Collections.reverse(values);
 		}
 		return week;
