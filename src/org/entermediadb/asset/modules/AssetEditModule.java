@@ -2110,16 +2110,30 @@ Change Collections to be normal categories path s and make createTree look at th
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		ContentItem item = archive.getOriginalContent(asset);
-		archive.removeGeneratedImages(asset, true);
+		
+		String custompath = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.jpg";
+		Page custom = archive.getPageManager().getPage(custompath);
+		Page temp = null;
+		if(custom.exists()) {
+			temp = archive.getPageManager().getPage("/WEB-INF/temp/customthumb.jpg");
+			archive.getPageManager().movePage(custom, temp);
+		}
 
-		ContentItem custom = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
+		
+		archive.removeGeneratedImages(asset, true);
+		
 		ConvertInstructions ins = new ConvertInstructions(archive);
 		ins.setAsset(asset);
-		ins.setInputFile(item);
+		if(temp != null) {
+			ins.setInputFile(temp.getContentItem());
+		}else {
+			ins.setInputFile(item);
+
+		}
 		String rotation = inReq.findValue("rotate");
 		ins.setProperty("rotate", rotation);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
-		ins.setOutputFile(custom);
+		ins.setOutputFile(custom.getContentItem());
 
 		manager.createOutput(ins);
 		archive.getPresetManager().reQueueConversions(archive, asset);
