@@ -174,6 +174,7 @@ public class TaskModule extends BaseMediaModule
 	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek, String collectionid)
 	{
 		List week = new ArrayList();
+		Date today = new Date();
 		for (int i = 0; i < 5; i++) //5 days
 		{
 			List todaysgoals = new ArrayList();
@@ -182,6 +183,11 @@ public class TaskModule extends BaseMediaModule
 			{
 				MultiValued goal = (MultiValued) iteratorv.next();
 				Date rd = goal.getDate("resolveddate");
+				if( rd != null && today.after(rd) && "open".equals( goal.get("projectstatus") ) )
+				{
+					goal.setValue("projectstatus", "critical");
+				}
+
 				if( rd == null )
 				{
 					if( dayofweek == i )
@@ -197,13 +203,6 @@ public class TaskModule extends BaseMediaModule
 					if( dow == i)
 					{
 						todaysgoals.add(goal);
-					}
-					else if( dow < i )
-					{
-						if( "open".equals( goal.get("projectstatus") ) )
-						{
-							goal.setValue("projectstatus", "critical");
-						}
 					}
 				}
 			}
