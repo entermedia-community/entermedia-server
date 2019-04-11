@@ -2,8 +2,9 @@
 
 <page>
 
-	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/vieworiginal</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/librarycollection/downloads/vieworiginal</property>
 	<property name="sourcepathhasfilename">true</property>
+			<property name="collectionidinpath">true</property>
 	
 	<property name="sourcepathhasfilename">true</property>
 	
