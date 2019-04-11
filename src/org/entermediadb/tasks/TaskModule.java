@@ -200,7 +200,10 @@ public class TaskModule extends BaseMediaModule
 					}
 					else if( dow < i )
 					{
-						goal.setValue("projectstatus", "critical");
+						if( "open".equals( goal.get("projectstatus") ) )
+						{
+							goal.setValue("projectstatus", "critical");
+						}
 					}
 				}
 			}
