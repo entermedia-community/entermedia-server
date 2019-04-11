@@ -6,6 +6,7 @@
 	<property name="sourcepathhasfilename">true</property>
 	
 	<property name="sourcepathhasfilename">true</property>
+		<property name="skipheader">true</property>
 	
 	<generator name="originalDownloadGenerator"/>
 	

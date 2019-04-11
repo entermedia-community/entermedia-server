@@ -323,10 +323,16 @@ public class MediaArchiveModule extends BaseMediaModule
 			if( !Boolean.parseBoolean(embedded))
 			{
 				Page content = inReq.getContentPage();
-				String filename = content.getName(); 
-				//filename = URLEncoder.encode(filename,content.getCharacterEncoding());
-				filename = filename.replace(";", "");
-				inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+				String filename = (String) inReq.getPageValue("downloadfilename");
+				if(filename == null) {
+				 filename = content.getName(); 
+				}
+				filename.replace("\"", "/\"");
+
+				if(inReq.getResponse() != null)
+					{
+						inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ filename +"\"");  //This seems to work on firefox
+					}
 			}
 		}
 	}

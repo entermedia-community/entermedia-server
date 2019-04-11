@@ -95,19 +95,20 @@ public class OriginalDocumentGenerator extends FileGenerator
 	
 		//	String fileName = URLEncoder.encode(asset.getName(), "UTF-8");
 		String	 fileName = asset.getName();
-
+		
 			
-		    
-			//fileName=fileName.replaceAll(";", "/;");
-			
-			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
-			fileName.replace("\"", "/\"");
-		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
-			if(inReq.getResponse() != null)
+//		    
+//			//fileName=fileName.replaceAll(";", "/;");
+//			
+//			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
+//			fileName.replace("\"", "/\"");
+//		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
+			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
+		    if(inReq.getResponse() != null && !skipheader )
 			{
 				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
 			}
-			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
+//			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
 
 
 	
