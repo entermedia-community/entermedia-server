@@ -1094,7 +1094,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
-			boolean simple = true;
+ 			boolean simple = true;
 			if (!StringUtils.isAlphanumericSpace(valueof))
 			{
 				simple = false;
@@ -1147,7 +1147,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
 				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchQuery(inTerm.getId(), valueof);
+				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 
