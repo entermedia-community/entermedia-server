@@ -667,7 +667,7 @@ public class ConvertInstructions
 				setWatermark(false);
 			} 
 		} else {
-			//setWatermark(true);
+			setWatermark(false);
 		}
 
 		
