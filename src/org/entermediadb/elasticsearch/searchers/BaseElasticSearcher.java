@@ -1069,7 +1069,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			valueof = valueof.replace("*", "");
 			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
-			phrase.maxExpansions(10);
+			phrase.maxExpansions(75);
 			or.should(phrase);
 			find = or;
 		}
