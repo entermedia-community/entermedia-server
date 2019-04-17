@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -109,9 +110,9 @@ public class ElementalManager implements CatalogEnabled
 		try
 		{
 			HttpResponse resp = getClient().execute(method);
-			//String xml = EntityUtils.toString(resp.getEntity());
+			String xml = EntityUtils.toString(resp.getEntity());
 
-			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
+		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			log.info(resp.getStatusLine());
 			
 			
@@ -212,9 +213,12 @@ public class ElementalManager implements CatalogEnabled
 		Element uri = file.addElement("uri");
 		uri.setText("/mnt/Meld-Playback/temp/18955.mp4");
 		//uri.setText(SOME URI);
-		job.addElement("preset").setText(preset);
-		job.addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
-		
+		Element og = job.addElement("output_group");
+		og.addElement("file_output_group").addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
+		og.addElement("output").addElement("preset").setText(preset);
+		//	job.addElement("preset").setText(preset);
+	//	job.addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
+	//	job.addElement("profile").setText("1");
 		
 		
 		String addr = elementalroot + "/api/jobs";
@@ -227,7 +231,10 @@ public class ElementalManager implements CatalogEnabled
 		try
 		{
 			HttpResponse response2 = getClient().execute(method);
-			String xml = EntityUtils.toString(response2.getEntity());
+			
+			
+			//String xml = EntityUtils.toString(response2.getEntity());
+			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
 
 			StatusLine sl = response2.getStatusLine();
 			int status = sl.getStatusCode();

@@ -1,6 +1,8 @@
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.convert.ConvertInstructions
 import org.entermediadb.elemental.ElementalManager
+import org.openedit.Data
+import org.openedit.data.BaseData
 
 public void init() {
 	
@@ -11,9 +13,9 @@ public void init() {
 	ConvertInstructions ins = new ConvertInstructions(archive);
 	ins.setProperty("preset", "10");
 	manager.createJob(ins);
-//	Data task = new BaseData();
-//	task.setProperty("")
-//	manager.updateJobStatus(inTask)
+	Data task = new BaseData();
+	task.setProperty("externalid", "12722");
+	manager.updateJobStatus(task);
 }
 
 
