@@ -88,7 +88,7 @@ $context.putPageValue("hits",$hits)
 
 		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		
-		<li><a>[[Publish]]</a>
+		<li><a>[[Publish]]</a>  
 				<ul>
 					#foreach($item in $quickpublishlist)
 						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
@@ -104,7 +104,7 @@ $context.putPageValue("hits",$hits)
 <li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
 					 >[[Copy Collection]]</a></li>
 					 #end
-					 #if( $caneditdata)
+					 #if( $caneditcollection)
 					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
 					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
 					#end
@@ -198,4 +198,3 @@ $context.putPageValue("hits",$hits)
 	</ul>
 </div>
 <div class="clearfix"></div>
- 
