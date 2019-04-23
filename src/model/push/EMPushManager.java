@@ -313,7 +313,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		
 		//loop over all the destinations we are monitoring
 		Searcher dests = inArchive.getSearcher("publishdestination");
-		Collection hits = dests.fieldSearch("remotepublish","true");
+		Collection hits = dests.query().match("remotepublish", "true").search();
 		if( hits.size() == 0 )
 		{
 			log.info("No remote publish destinations defined. Disable Pull Remote Event");
