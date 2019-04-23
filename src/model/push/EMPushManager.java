@@ -329,11 +329,11 @@ public class EMPushManager extends BasePushManager implements PushManager
 				ors.append(" ");
 			}
 		}
-                 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();                                                                                                                                                 
+           		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();                                                                                                                                                 
 		
-		 nameValuePairs.add(new BasicNameValuePair("field", "publishdestination"));
-		 nameValuePairs.add(new BasicNameValuePair("publishdestination.value", ors.toString()));
-		 nameValuePairs.add(new BasicNameValuePair("operation", "orsgroup"));
+		// nameValuePairs.add(new BasicNameValuePair("field", "publishdestination"));
+	//	 nameValuePairs.add(new BasicNameValuePair("publishdestination.value", ors.toString()));
+	//	 nameValuePairs.add(new BasicNameValuePair("operation", "orsgroup"));
 		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
 		 nameValuePairs.add(new BasicNameValuePair("status.value", "complete"));
 		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
