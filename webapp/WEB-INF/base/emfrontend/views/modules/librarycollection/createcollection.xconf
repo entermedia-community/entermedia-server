@@ -3,6 +3,8 @@
 	
 	<path-action name="DataEditModule.saveData"/>
 	<path-action name="MediaArchiveModule.clearCaches"/>
+		<path-action name="ProfileModule.reLoadUserProfile"/>
+	
 
 	<path-action name="ProjectModule.addAssetToCollection" />
 	
