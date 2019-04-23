@@ -2,7 +2,7 @@
 	
 	
 	<path-action name="DataEditModule.saveData"/>
-	<path-action name="MediaArchiveModule.clearCaches"/>
+	<path-action name="MediaArchiveModule.clearCache"/>
 		<path-action name="ProfileModule.reLoadUserProfile"/>
 	
 
