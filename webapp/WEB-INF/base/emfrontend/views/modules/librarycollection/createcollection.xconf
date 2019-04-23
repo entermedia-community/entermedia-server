@@ -2,7 +2,11 @@
 	
 	
 	<path-action name="DataEditModule.saveData"/>
+	<path-action name="MediaArchiveModule.clearCaches"/>
+
 	<path-action name="ProjectModule.addAssetToCollection" />
+	
+	
 	
 	<path-action name="ProjectModule.redirectToCollection">
 		<searchtype>librarycollection</searchtype>

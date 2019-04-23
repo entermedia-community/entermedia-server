@@ -341,6 +341,7 @@ public class MediaArchiveModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		archive.clearCaches();
+		archive.clearAll();
 	}
 	public Asset getAssetAndPage(WebPageRequest inReq)
 	{
