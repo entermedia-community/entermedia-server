@@ -66,17 +66,18 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		UserRestInstruction.put("3", "Émission spécifique");
 		UserRestInstruction.put("4", "Utilisation équitable seulement");
 		UserRestInstruction.put("5", "Utilisation éditoriale seulement");
-		
+		UserRestInstruction.put("6", "Respecter le contexte d'origine");
+
 		UserRestrictions.put("1", "Aucune");
 		UserRestrictions.put("2", "Oui");
-		
+
 		RightCodes.put("1", "G");
 		RightCodes.put("2", "Y");
 	}
 
 	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
-		
+
 
 		try
 		{
@@ -92,7 +93,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			String servername = inDestination.get("server");
 			String username = inDestination.get("username");
 			String url = inDestination.get("url");
-			
+
 			log.info("Publishing ${asset} to ftp server ${servername}, with username ${username}.");
 
 			String password = inDestination.get("password");
@@ -109,7 +110,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 			String vizid = inAsset.get("vizid");
 
-			if (true) //vizid == null (Marie-Eve asked to re-push the asset as if it was a new image 
+			if (true) //vizid == null (Marie-Eve asked to re-push the asset as if it was a new image
 			{
 				Element results = createAsset(inMediaArchive, inDestination, inAsset, authString);
 				String id = results.element("id").getText();
@@ -147,9 +148,9 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			inArchive.getCacheManager().put(CACHE, COOKIES, headers[0].getValue());
 			//log.info("*** storeCookies: "+headers[0].getValue());
 		}
-		
+
 	}
-	
+
 	private void setCookies(MediaArchive inArchive, HttpMessage method) {
 		//log.info("*** setCookies");
 		Object header = inArchive.getCacheManager().get(CACHE, COOKIES);
@@ -158,8 +159,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			//log.info("*** setCookies: "+header.toString());
 		}
 	}
-	
-	
+
+
 	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
 	{
 
@@ -167,7 +168,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		String addr = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 
-		//Change URL - 
+		//Change URL -
 		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
 
 		HttpGet get = new HttpGet(addr);
@@ -176,9 +177,9 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
 		setCookies(inArchive, get);
-		
+
 		HttpResponse response = getClient().execute(get);
-		
+
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
 		if (status >= 400)
@@ -221,9 +222,9 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			inAsset.setValue("vizoneretention", vizoneretention);
 			inArchive.saveAsset(inAsset);
 		}
-		
-		
-		//Change URL - 
+
+
+		//Change URL -
 		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
 
 		HttpGet get = new HttpGet(addr);
@@ -243,7 +244,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		}
 		//Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
 		//ArrayList done = new ArrayList();
-        
+
 		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
 		ArrayList done = new ArrayList();
 		/**
@@ -272,7 +273,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				}
 			}
 		}
-		
+
 		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -280,15 +281,15 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				continue;
 			}
 			String vizfield = detail.get("vizonefield");
-			if(vizfield != null){		
+			if(vizfield != null){
 				String assetvalue = inAsset.get(detail.getId());
 				if(assetvalue != null){
 					Element field = elem.addElement("field");
 					field.addAttribute("name", vizfield);
 					Element value = field.addElement("value");
-					value.setText(assetvalue);		
+					value.setText(assetvalue);
 					//log.info("*** value.setText: "+assetvalue +" for "+vizfield);
-					
+
 				}
 			}
 		}
@@ -296,16 +297,20 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		setAssetDate(inArchive, inAsset, elem);
 		setField(inAsset, elem, "asset.retentionPolicy", vizoneretention);
 		setField(inAsset, elem, "asset.owner", "Img");
+
 		String restrictionVal = getRestrictionValue(inAsset);
-		
 		if (restrictionVal != null) {
 			setField(inAsset, elem, "vpm.restrictions", restrictionVal);
 		}
-		
+
         String rightsCode = (String)RightCodes.get(inAsset.get("restrictions"));
-		
 		if (rightsCode != null) {
 			setField(inAsset, elem, "asset.rightsCode", rightsCode);
+		}
+
+		String rightsComment = (String)getRightsComment(inAsset);
+		if (rightsComment != null) {
+			setField(inAsset, elem, "asset.rightsComment", rightsComment);
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -313,20 +318,20 @@ public class vizonepublisher extends BasePublisher implements Publisher
         c.add(Calendar.DATE, 7);  // number of days to add
         String dt = sdf.format(c.getTime());
         setField(inAsset, elem, "asset.retentionDate", dt);
-        
+
 		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
 		method.setHeader("Accept-Charset", "UTF-8");
 		setCookies(inArchive, method);
-		
-		
-		
+
+
+
 		StringEntity params = new StringEntity(elem.asXML(), "UTF-8");
-		
+
 		log.info("*** value.setAll "+elem.asXML());
-		
+
 		method.setEntity(params);
 
 		HttpResponse response2 = getClient().execute(method);
@@ -360,7 +365,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				}
 				//log.info("*** value.setText: "+val +" for "+key);
 				isKeyExists = true;
-			} 
+			}
 		}
 		if (!isKeyExists) {
 			Element field = elem.addElement("field");
@@ -370,14 +375,14 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			//log.info("*** value.setText: "+val +" for "+key);
 		}
 	}
-	
+
 	private void setAssetDate(MediaArchive inArchive, Asset inAsset, Element elem) throws Exception {
 		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			
+
 			String vizfield = detail.get("vizonefield");
-			if(vizfield != null && vizfield.equals("news.eventDate")){		
+			if(vizfield != null && vizfield.equals("news.eventDate")){
 				String assetvalue = inAsset.get(detail.getId());
 				if(assetvalue != null){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -390,22 +395,22 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			}
 		}
 	}
-	
-	
+
+
 	private String getRestrictionValue(Asset inAsset) {
 		String rest_val = (String)UserRestrictions.get(inAsset.get("restrictions"));
 		String right_val = (String)UserRestInstruction.get(inAsset.get("rightsusageinstructions"));
 		String term_val = (String)inAsset.get("rightsusageterms");
 		//log.info("*** getRestrictionValue: "+rest_val +" , "+right_val +" , "+term_val);
-		
+
 		String ret = "";
-		if (rest_val != null) 
+		if (rest_val != null)
 			ret = rest_val + "-";
-		if (right_val != null) 
+		if (right_val != null)
 			ret = ret + right_val + "-";
-		if (term_val != null) 
+		if (term_val != null)
 			ret = ret + term_val + "-";
-		
+
 		if (ret.length() > 0) {
 			ret = ret.substring(0, ret.length()-1);
 			return ret;
@@ -418,6 +423,26 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		} else if (right_val != null) {
 			return right_val;
 		}*/
+		return null;
+	}
+
+	private String getRightsComment(Asset inAsset) {
+		String cr_val = (String)inAsset.get("copyrightnotice");
+		String source_val = (String)inAsset.get("source");
+		log.info("*** getRightsComment cr_val: "+cr_val +" , source_val: "+source_val);
+
+		String ret = "";
+		if (cr_val != null)
+			ret = cr_val + " - ";
+		if (source_val != null)
+			ret = ret + source_val + " - ";
+
+
+		if (ret.length() > 3) {
+			ret = ret.substring(0, ret.length()-3);
+			return ret;
+		}
+
 		return null;
 	}
 
