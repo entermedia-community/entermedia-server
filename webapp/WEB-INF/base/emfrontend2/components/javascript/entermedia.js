@@ -352,6 +352,25 @@ updatebasket = function(e)
 		 e.preventDefault();
 		return false;
 }
+updatebasketmediaviewer = function(e)
+{
+		var nextpage= $(this).attr('href');
+		var targetDiv = $(this).attr("targetdiv");
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		var action= $(this).data('action');
+		var alerttxt = $(this).data("alerttxt");
+		$("#"+targetDiv).load(nextpage, function()
+			{
+			    $("#basket-paint").load(apphome + "/components/basket/menuitem.html");
+				$("#mainmedianotifications").html('<div class="alert alert-success alert-save fader">'+alerttxt+'</div>');
+			}
+		);
+		if ($(this).closest('.dropdown-menu').length !== 0) {
+			$(this).closest('.dropdown-menu').removeClass('show');
+		}
+		 e.preventDefault();
+		return false;
+}
 
 
 //Is this being used?
@@ -401,6 +420,8 @@ onloadselectors = function()
 	lQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	lQuery("a.updatebasket").livequery('click', updatebasket);
+	lQuery("a.updatebasketmediaviewer").livequery('click', updatebasketmediaviewer);
+	
 //	$("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
 	

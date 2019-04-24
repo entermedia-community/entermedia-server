@@ -4,5 +4,5 @@
 		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="ProjectModule.listConnectedDesktop"/>
-
+	<page-action name="OrderModule.loadOrderBasket"/>
 </page>
