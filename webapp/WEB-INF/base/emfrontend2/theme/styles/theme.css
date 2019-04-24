@@ -3337,8 +3337,8 @@ label.error {
 .settings-title {
 	padding:5px;
 }
-.collectionmodule {	1498.	
-		padding:20px 0 0 0;	1499.	
+.collectionmodule {	
+		padding:20px 0 0 0;		
 	}		
 .collectionmodule-header {		
 		position:relative;		
@@ -3986,7 +3986,8 @@ form .field {
     margin: 0;
     padding: 1px 0 2px 0;
     position: relative;
-    top: -4px;left 4px;
+    top: -4px;
+	left: 4px;
 }
 #module-dropdown.active span {
     background: url('../images/sort-asc.png') 0 0 no-repeat;
