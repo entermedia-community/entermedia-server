@@ -1,3 +1,4 @@
+#set($hitssessionid =$hits.getSessionId())
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
