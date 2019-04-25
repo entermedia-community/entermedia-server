@@ -310,7 +310,7 @@ a {
 }
 .badge { font-size:0.86rem; }
 .badge:hover {text-decoration: none;} 
-.badge-tags {white-space:normal; word-break: break-all; line-height: 1.2; padding:.3em .6em; margin-bottom:3px;}
+.badge-tags {white-space:normal; line-height: 1.2; padding:.3em .6em; margin-bottom:3px;}
 .clearfix { clear: both;}
 .form-control {
     padding: .275rem .75rem;
@@ -2548,6 +2548,9 @@ label.error {
 	color:#bbb;
 	font-size: .9rem;
 }
+.asset-data-preview .badge-tags { 
+	word-break: break-all; 
+	} 
 .assetpanel-editor .emdatafieldvalue-readonly {
 	border: 1px solid #999;
     border-radius: .25rem;
