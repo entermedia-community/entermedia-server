@@ -1,0 +1,15 @@
+<page>
+	
+	<path-action name="Script.run" alltypes="true">
+	<script>
+	
+	</path-action>
+	
+	
+	<!--
+	<path-action name="DataEditModule.search" alltypes="true"/>   
+	<path-action name="DataEditModule.loadPageOfSearch" alltypes="true" />	
+	<property name="hitsname">hits</property>
+	<property name="searchtype">publishqueue</property>
+	-->
+</page>
