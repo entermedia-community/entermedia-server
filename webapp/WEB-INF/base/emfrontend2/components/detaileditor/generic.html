@@ -8,7 +8,9 @@
 #if ($columns)
 	$context.putPageValue("detailviewercolumns",$columns)
 #end
-
+#if(!$hitssessionid)
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
 <div id="edit-${viewid}">
 #if( !$catalogid )
 	#set( $catalogid = $mediaarchive.getCatalogId() )
@@ -66,7 +68,7 @@ $context.putPageValue("searchtype", $searchtype)
 	#if (!$targetdiv)
 		#set( $targetdiv = "tabsummarypanel")
 	#end
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" data-includesearchcontext="true">
+	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" data-includesearchcontext="false">
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input name="oemaxlevel" type="hidden" value="1" />
@@ -85,6 +87,8 @@ $context.putPageValue("searchtype", $searchtype)
 ##			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />
 		#end
+		
+		<input type="hidden" name="hitssessionid" value="$!hitssessionid" />
 		
 		##Generic Tables
 		#set ($parentid = $context.getRequestParameter("parentid"))
@@ -117,7 +121,7 @@ $context.putPageValue("searchtype", $searchtype)
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).trigger('submit');" value="[[Save values]]"/>
 			#if ($targetdiv == "tabsummarypanel")
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
-				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
+				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
 			#else
 			#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
