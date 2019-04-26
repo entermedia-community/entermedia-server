@@ -192,6 +192,7 @@ $pages.include("$home$apphome/views/modules/asset/editor/conversions/createnewco
 
 <script>
 $(document).ready(function(){
+	//console.log($(".thumbimagecontainer img").attr('src'));
 	var windowwidth = $(window).width();
 	$(".previewcrop-btn").each(function(i,obj){
 		var href = $(this).attr("href");
@@ -216,7 +217,8 @@ $(document).ready(function(){
 
 </div>
 <div class="col-md-4">
-                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
+	$context.putPageValue("urlparams","?cache=false&_="+$mathutil.getRandomValue(99999))
+	$pages.include("$apphome/components/mediaviewer/player/summary-mini.html", $context)
 </div>
 </div>
 </div>
