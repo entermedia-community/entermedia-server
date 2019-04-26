@@ -1417,9 +1417,12 @@ public class MediaArchive implements CatalogEnabled
 		{
 			asset = findAsset(sourcepath);
 		}
+		if(asset == null) {
+			return; //This doesn't work in collections!
+		}
 
 		List<String> types = Arrays.asList(new String[] { "edit", "view", "forcewatermark" });
-
+		
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
 			String type = (String) iterator.next();
