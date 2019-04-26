@@ -308,7 +308,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		String mediadb = inArchive.getCatalogSettingValue("push_target_mediadb");
 
-		String url = server + "/" + mediadb + "/services/push/searchpendingpublish.xml";
+		String url = server  + mediadb + "/services/push/searchpendingpublish.xml";
 		//url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
 		HttpPost method = new HttpPost(url);
 		
