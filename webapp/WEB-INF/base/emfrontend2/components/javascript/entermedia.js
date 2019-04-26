@@ -196,6 +196,9 @@ runajaxonthis = function(inlink,e)
 		inlink.addClass("active");
 	}
 	var nextpage= inlink.attr('href');
+	if (!nextpage) {
+		nextpage = inlink.data("nextpage");
+	}
 	var targetDiv = inlink.data("targetdiv");
 	if( !targetDiv )
 	{
@@ -321,7 +324,22 @@ runajax = function(e)
 	runajaxonthis($(this),e);
 	return false;
 }
-
+reloadpageajax = function(nextpage, targetDiv) {
+	
+		console.log("Reloading...")
+		var options;
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		$.get(nextpage, options, function(data) 
+				{
+					var cell;
+					cell = $("#" + targetDiv);
+					//Call replacer to pull $scope variables
+					cell.replaceWith(data);
+					$(window).trigger( "resize" );
+				}
+		)
+	
+}
 showHoverMenu = function(inDivId)
 {
 	el = $("#" + inDivId);
@@ -1291,3 +1309,5 @@ emcomponents = function() {
 		});
 	});	
 }
+
+
