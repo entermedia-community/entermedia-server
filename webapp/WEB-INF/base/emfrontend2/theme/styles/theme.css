@@ -2374,7 +2374,7 @@ label.error {
 	
 }
 .assetpanel-editortitle {
-	height: 45px;
+	min-height: 45px;
 	overflow: hidden;
 }
 .assetpanel-editortitle h2 {
@@ -2764,6 +2764,13 @@ label.error {
 .tabe-conversions td {
 	height: 52px;
 }
+.conversionerrortext {
+	max-width:360px;
+	margin:5px 0;
+	word-break: break-all;
+	font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+	color:#666;
+}
 .assetpanel-document {
 	height: 100%;
 }
@@ -2970,6 +2977,9 @@ label.error {
 .assetlockedinput {
 	display: inline-block;
 	padding:2px 0 0 0;
+}
+.assetlocked {
+	position:relative;
 }
 .assetlocked i {
 	font-size:.8em;

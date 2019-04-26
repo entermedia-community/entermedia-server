@@ -4,7 +4,7 @@
 #set( $date = $task.getValue("completed") )
 <td class="text-center">
 <span class="conversionstatus_$!status.getId()">
-	#if($status.getId()=='retry')
+	#if($status.getId()=='retry' || $status.getId()=='new' )
 		<i class="fas fa-spinner fa-spin"></i>
 	#end
 	$status.getName()
@@ -14,7 +14,9 @@
 <span>
  	$!context.getDateTime($date)
 </span>
-	#if( $task.errordetails ) <pre>$task.errordetails</pre>#end
+	#if( $task.errordetails ) 
+		<div class="conversionerrortext">$task.errordetails</div>
+	#end
 
 
 #set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.generatedoutputfile}" )

@@ -1,12 +1,17 @@
 <div id="asset-editor-container">
-                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
 
-<div class="assetpanel-editortitle">
-<h2>[[Asset Conversions]]</h2>
-</div>
 <div class="assetpanel-editorinner">
+
+<div class="container-fluid ">
+<div class="row">
+<div class="col-8">
+
+
+
+<h2>[[Asset Conversions]]</h2>
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+
 
 <div class="conversionsheader">
 
@@ -52,15 +57,17 @@ $context.putPageValue("results", $results)
 $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
 <div class="conversionsall emdata" >
-<table class="table table-striped table-hover tabe-conversions">
+<table class="table table-striped table-hover tabe-conversions" id="conversionstable">
 <thead>
 	<tr class="tableheader">
 		<th>[[Description]]</th>
-		<th>[[Size]]</th>
-		<th>[[Aspect Ratio]]</th>
-		<th>[[Status]]</th>
-		<th>[[Last Updated]]</th>
-		<th>[[Actions]]</th>
+		<th style="width:100px;">[[Size]]</th>
+		<th style="width:100px;">[[Aspect Ratio]]</th>
+		#if( $canviewconversions )
+		<th style="width:95px;">[[Status]]</th>
+		<th style="width:280px;">[[Last Updated]]</th>
+		#end
+		<th style="width:380px;">[[Actions]]</th>
 	</tr>
 </thead>
 #foreach ($result in $results)
@@ -87,7 +94,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		##$context.putPageValue("width", $width)
 		
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
+		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 		<tr>
 		<td>
 		$result.name
@@ -105,7 +112,6 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#end
 		</td>
 		
-		<!-- include modify -->
 		#if( $canviewconversions )
 			$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
 		#end
@@ -153,8 +159,24 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 #if ($notready)
 <script>
 $(document).ready(function(){
-	setTimeout(function(){
-		reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
+	var reloadingconversionspage = setTimeout(function(){
+		//reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
+		var nextpage = "$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
+		var targetDiv = "asset-editor-container";
+		if ($("#conversionstable").length) {
+			//console.log("Reloading...")
+			var options;
+			targetDiv = targetDiv.replace(/\//g, "\\/");
+			$.get(nextpage, options, function(data) 
+					{
+						var cell;
+						cell = $("#" + targetDiv);
+						//Call replacer to pull $scope variables
+						cell.replaceWith(data);
+						$(window).trigger( "resize" );
+					}
+			);
+			}
 		}, 5000);
 });
 </script>
@@ -190,5 +212,14 @@ $(document).ready(function(){
 	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
 	
 </p>
+
+
+</div>
+<div class="col-md-4">
+                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
 </div>
 </div>
+</div>
+</div>
+</div>
+
