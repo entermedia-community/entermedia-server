@@ -356,11 +356,12 @@ uiload = function() {
 				form.ajaxSubmit({
 					error : function(data) {
 						alert("error");
-						$("#" + targetdiv).html(data);
+						$("#" + $.escapeSelector(targetdiv)).html(data);
+						 
 						// $("#" + targetdiv).replaceWith(data);
 					},
 					success : function(result, status, xhr, $form) {
-						$("#" + targetdiv).html(result);
+						$("#" + $.escapeSelector(targetdiv)).html(result);
 						$(window).trigger( "resize" );
 					},
 					data : data
@@ -384,22 +385,22 @@ uiload = function() {
 		var targetdiv = form.data('targetdiv');
 		$("select",form).change(function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
 		$("input",form).on("keyup", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="file"]',form).on("change", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="checkbox"]',form).on("change", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		
@@ -563,7 +564,7 @@ uiload = function() {
 		var targetdiv = form.data("targetdiv");
 		if ((typeof targetdiv) != "undefined") {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		} else {
 			$(form).trigger("submit");
@@ -608,7 +609,7 @@ uiload = function() {
 				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
-						target : "#" + targetdiv, 
+						target : "#" + $.escapeSelector(targetdiv), 
 						data:data
 						
 					});

@@ -310,6 +310,7 @@ a {
 }
 .badge { font-size:0.86rem; }
 .badge:hover {text-decoration: none;} 
+.badge-tags {white-space:normal; line-height: 1.2; padding:.3em .6em; margin-bottom:3px;}
 .clearfix { clear: both;}
 .form-control {
     padding: .275rem .75rem;
@@ -2373,7 +2374,7 @@ label.error {
 	
 }
 .assetpanel-editortitle {
-	height: 45px;
+	min-height: 45px;
 	overflow: hidden;
 }
 .assetpanel-editortitle h2 {
@@ -2547,6 +2548,9 @@ label.error {
 	color:#bbb;
 	font-size: .9rem;
 }
+.asset-data-preview .badge-tags { 
+	word-break: break-all; 
+	} 
 .assetpanel-editor .emdatafieldvalue-readonly {
 	border: 1px solid #999;
     border-radius: .25rem;
@@ -2760,6 +2764,13 @@ label.error {
 .tabe-conversions td {
 	height: 52px;
 }
+.conversionerrortext {
+	max-width:360px;
+	margin:5px 0;
+	word-break: break-all;
+	font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+	color:#666;
+}
 .assetpanel-document {
 	height: 100%;
 }
@@ -2966,6 +2977,9 @@ label.error {
 .assetlockedinput {
 	display: inline-block;
 	padding:2px 0 0 0;
+}
+.assetlocked {
+	position:relative;
 }
 .assetlocked i {
 	font-size:.8em;
@@ -3336,8 +3350,8 @@ label.error {
 .settings-title {
 	padding:5px;
 }
-.collectionmodule {	1498.	
-		padding:20px 0 0 0;	1499.	
+.collectionmodule {	
+		padding:20px 0 0 0;		
 	}		
 .collectionmodule-header {		
 		position:relative;		
@@ -3985,7 +3999,8 @@ form .field {
     margin: 0;
     padding: 1px 0 2px 0;
     position: relative;
-    top: -4px;left 4px;
+    top: -4px;
+	left: 4px;
 }
 #module-dropdown.active span {
     background: url('../images/sort-asc.png') 0 0 no-repeat;

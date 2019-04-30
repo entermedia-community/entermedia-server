@@ -3,4 +3,5 @@
 	<inner-layout>/${applicationid}/views/modules/asset/editor/conversions/innerlayout.html</inner-layout>
 	<path-action name="PageValue.loadPageVariable" bean="mathtool" class="org.entermediadb.asset.util.MathTool"/>
 	
+	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
 </page>

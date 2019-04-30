@@ -2208,4 +2208,11 @@
 	</bean>
 
 		
+	<bean id="elementalManager" class="org.entermediadb.elemental.ElementalManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>		
+		
+		
 </beans>

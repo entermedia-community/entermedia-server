@@ -93,7 +93,7 @@ public class PullManager implements CatalogEnabled
 
 		}
 		//TODO:  support this on all tables
-		if (inLastpulldate != null)
+		if (inLastpulldate != null && inType.equals("asset"))
 		{
 			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);

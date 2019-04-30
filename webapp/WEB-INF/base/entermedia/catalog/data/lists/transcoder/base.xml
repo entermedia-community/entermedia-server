@@ -10,5 +10,6 @@
 <transcoder id="imagemagick">Image Magick</transcoder>
 <transcoder id="audio">Audio</transcoder>
 <transcoder id="ooffice">Libre Office</transcoder>
+<transcoder id="elemental">Elemental</transcoder>
 
 </transcoders>
