@@ -305,6 +305,9 @@ public class EMPushManager extends BasePushManager implements PushManager
 	
 		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
+		if(!server.endsWith("/")) {
+			server = server + "/";
+		}
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		String mediadb = inArchive.getCatalogSettingValue("push_target_mediadb");
 
