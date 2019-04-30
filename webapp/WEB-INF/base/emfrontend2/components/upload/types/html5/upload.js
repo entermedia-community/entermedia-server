@@ -208,8 +208,18 @@ $(document).ready(function()
     				   
     				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');
+
+					   var form = $( startb.closest("form"));
+					   
+    				   if( form.hasClass("autofinishaction") )
+    				   {
+    				   	  var finishaction = form.data("finishaction");
+    				   	  form.attr("action",finishaction);
+    				   	  //TODO remove the last file?
+    				   	  form.submit();
+    				   }			   
     				   
-    				   //$("#autofinishbutton").trigger("click");
+    				   //$("#uploadsfinishedtrigger").trigger("submit");
     				   //$(".media_results_tab").data("tabloaded",false);
 	        	}
 	
