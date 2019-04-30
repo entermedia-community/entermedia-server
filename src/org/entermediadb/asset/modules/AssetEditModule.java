@@ -1085,12 +1085,16 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		
-		String collectionid = inReq.getRequestParameter("currentcollection");
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("currentcollection");
+		}
 		if( collectionid == null)
 		{
 			collectionid = inReq.getRequestParameter("currentcollection.value");
 		}
+		
 		if( collectionid != null && collectionid.trim().length() == 0 )
 		{
 			collectionid = null;
