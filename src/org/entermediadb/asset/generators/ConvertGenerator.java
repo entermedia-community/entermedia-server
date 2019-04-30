@@ -114,7 +114,9 @@ public class ConvertGenerator extends FileGenerator
 		}
 		String themeprefix = inReq.findValue("themeprefix");
 		all.put("themeprefix", themeprefix);
-		log.info("wm" + all.get("canshowunwatermarkedassets"));
+	//	log.info("canshowunwatermarkedassets" + all.get("canshowunwatermarkedassets"));
+		//log.info("canforcewatermarks" + all.get("canforcewatermarks"));
+
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		
