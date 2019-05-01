@@ -7,7 +7,8 @@
 #end
 
 #set ($sourcepath = $hit.sourcepath)
-#set ( $urlutils = $context.getPageValue("url_util"))
+#set ($urlutils = $context.getPageValue("url_util"))
+#set ($thumbsize = $context.getPageValue("thumbsize"))
 #if ($urlutils)
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
@@ -18,7 +19,9 @@
 			#set($imagesize = "image640x480.jpg")
 		#else
 			#set($imagesize = "image550x350.jpg")
-		#end	
+		#end
+	#elseif($thumbsize == "postsize")
+		#set($imagesize = "image700x480cropped.jpg")
 	#elseif($thumbsize == "crop")
 		#set($imagesize = "image110x62cropped.jpg")
 	#end		
