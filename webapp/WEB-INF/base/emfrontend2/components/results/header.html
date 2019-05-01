@@ -1,6 +1,3 @@
-#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
-#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
-
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	$context.putPageValue("hits",$hits)
@@ -44,6 +41,9 @@
 		$context.putPageValue("librarycol",$librarycol)
 	#end
 #end
+
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 
 
 <div id="resultsheader">
