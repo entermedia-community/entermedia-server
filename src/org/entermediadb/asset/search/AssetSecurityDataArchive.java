@@ -286,8 +286,11 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	{
 		if (inAsset == null)
 		{
-			return true; //TODO: Deal with this better
+			return true; //TODO: Deal with this better 
 		}
+		
+		//This is done in the xconf now:
+		//<userprofile property="editallassets" equals="true" />
 //		if (inUser != null && inUser.isInGroup("administrators"))
 //		{
 //			return true;
