@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Download and sync collections</property>	
+	<property name="virtual">true</property>
+	<property name="reloadprofile">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/importcollections.groovy</script>
+	</path-action>
+</page>
