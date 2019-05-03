@@ -13,6 +13,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.http.HttpEntity;
@@ -33,6 +35,8 @@ import org.openedit.util.OutputFiller;
 
 public class Downloader
 {
+	private static final Log log = LogFactory.getLog(Downloader.class);
+
 
 	public void download(String inUrl, String inAbsoluteFilePath) throws OpenEditException
 	{
@@ -53,38 +57,21 @@ public class Downloader
 				client.login("anonymous", "");
 
 			}
-
+            client.enterLocalPassiveMode();
 
 			fos = new FileOutputStream(downloadfilename);
 			client.changeWorkingDirectory(path);
 			// Fetch file from server 
 			
-//			 FTPFile[] ftpFiles = client.listFiles();
-//
-//	            if (ftpFiles != null && ftpFiles.length > 0) {
-//	                //loop thru files
-//	                for (FTPFile file : ftpFiles) {
-//	                    if (!file.isFile()) {
-//	                        continue;
-//	                    }
-//	                    System.out.println("File is " + file.getName());
-//	                    //get output stream
-//	                   // OutputStream output;
-//	                //    output = new FileOutputStream("FtpFiles" + "/" + file.getName());
-//	                    //get the file from the remote system
-//	                    //client.retrieveFile(file.getName(), output);
-//	                    //close output stream
-//	              //      output.close();
-//
-//	                    //delete the file
-//	                    // ftp.deleteFile(file.getName());
-//
-//	                }
-//	            }
-//			
+
 			
-			
-			client.retrieveFile( filename, fos);
+			boolean success = client.retrieveFile( filename, fos);
+			 if (success) {
+	               log.info("Ftp file successfully download.");
+	            }
+			 else {
+				 log.info("Download failed" + 				 client.getReplyString());
+			 }
 
 		}
 		catch (Exception e)
