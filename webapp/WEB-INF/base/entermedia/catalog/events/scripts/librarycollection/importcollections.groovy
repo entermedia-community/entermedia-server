@@ -38,6 +38,14 @@ public void init(){
 			if(collection == null) {
 				collection = searcher.createNewData();
 				collection.setValue("library", "products");
+				collection.setValue("projectdescription", line[36]);
+				collection.setValue("title", line[9]);
+				collection.setValue("subtitle", line[10]);
+				collection.setValue("genre", line[16]);
+				collection.setValue("level", line[21]);
+				collection.setValue("series", line[20]);
+				collection.setValue("keywords", line[26]);
+				
 				collection.setName(id);
 				collection.setId(id);
 				//collection.setValue("rootcategory",id);
