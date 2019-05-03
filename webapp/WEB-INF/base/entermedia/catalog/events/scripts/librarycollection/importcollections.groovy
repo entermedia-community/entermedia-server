@@ -25,7 +25,7 @@ public void init(){
 	Downloader dl = new Downloader();
 	//ftp://pics1.alfred.com/CatData/DailyAll/ALF_ALL_ALL.txt
 	String dlname = upload.getContentItem().getAbsolutePath();
-	dl.ftpDownload("pics1.alfred.com", "/CatData/DailyAll", "ALF_ALL_ALL.txt", dlname, "", "");
+	//dl.ftpDownload("pics1.alfred.com", "/CatData/DailyAll", "ALF_ALL_ALL.txt", dlname, "", "");
 	
 	Reader reader = upload.getReader();
 	try{
@@ -37,21 +37,27 @@ public void init(){
 			Data collection = searcher.searchById(id);
 			if(collection == null) {
 				collection = searcher.createNewData();
-				collection.setValue("library", "products");
-				collection.setValue("projectdescription", line[36]);
-				collection.setValue("title", line[9]);
-				collection.setValue("subtitle", line[10]);
-				collection.setValue("genre", line[16]);
-				collection.setValue("level", line[21]);
-				collection.setValue("series", line[20]);
-				collection.setValue("keywords", line[26]);
+				
 				
 				collection.setName(id);
 				collection.setId(id);
 				//collection.setValue("rootcategory",id);
-				rows.add(collection);
 			}
-
+			collection.setValue("library", "products");
+			if(line.length >=37) {
+			collection.setValue("projectdescription", line[36]);
+			collection.setValue("title", line[9]);
+			collection.setValue("subtitle", line[10]);
+			collection.setValue("genre", line[16]);
+			collection.setValue("level", line[21]);
+			collection.setValue("series", line[20]);
+			collection.setValue("keywords", line[26]);
+			} else {
+				//log.info("Incomplete row " + line);
+			}
+			
+			rows.add(collection);
+			
 			if(rows.size() > 10000){
 				searcher.saveAllData(rows, null);
 				rows.clear();
