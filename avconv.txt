@@ -1,0 +1,3 @@
+Flip video
+
+avconv -i VID_20190504_180253.mp4 -vf transpose=1,transpose=2 VIDout2.mkv
