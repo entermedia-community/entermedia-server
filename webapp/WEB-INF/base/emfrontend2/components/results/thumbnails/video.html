@@ -6,8 +6,7 @@
 #set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
 
 
-
-#if($thumbsize != "mediumplus")
+#if($thumbsize != "mediumplus" && $thumbsize != "postsize")
 	$pages.include("$componenthome/results/thumbnails/image.html", $context)	
 #else
 	#set( $embed = $context.getRequestParameter("embed") )
@@ -23,7 +22,12 @@
 	
 	##Add back full screen button, Autoplay and escape handling
 	<div id="playarea-$hit.id" class="">
-		<video id="videopreview" class="video-js" width="520" height="340"
+		<video id="videopreview" class="video-js" 
+	#if($thumbsize == "postsize")	
+		
+	#else
+		width="520" height="340"
+	#end
 			poster='$thumb'
 			#if( $autoplay && $autoplay == "true") autoplay #end
 			#if( $loop && $loop == "true") loop #end
