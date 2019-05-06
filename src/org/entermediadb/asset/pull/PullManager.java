@@ -193,10 +193,12 @@ public class PullManager implements CatalogEnabled
 		link.append("?");
 		link.append("entermedia.key=");
 		link.append(params.get("entermedia.key"));
+		if(inSearchType.equals("asset")) {
 		link.append("&lastpulldate=");
 		if (params.get("lastpulldate") != null)
 		{
 			link.append(params.get("lastpulldate"));
+		}
 		}
 		link.append("&searchtype=");
 		link.append(params.get("searchtype"));
@@ -485,6 +487,7 @@ public class PullManager implements CatalogEnabled
 				if (node.get("entermediakey") != null)
 				{
 					params.put("entermedia.key", node.get("entermediakey"));
+					finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 				}
 
 				HttpResponse genfile = connection.sharedPost(finalurl, params);
