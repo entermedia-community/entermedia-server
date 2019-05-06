@@ -93,7 +93,7 @@ public class PullManager implements CatalogEnabled
 
 		}
 		//TODO:  support this on all tables
-		if (inLastpulldate != null && inType.equals("asset"))
+		if (inLastpulldate != null )
 		{
 			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);
@@ -193,13 +193,12 @@ public class PullManager implements CatalogEnabled
 		link.append("?");
 		link.append("entermedia.key=");
 		link.append(params.get("entermedia.key"));
-		if(inSearchType.equals("asset")) {
 		link.append("&lastpulldate=");
 		if (params.get("lastpulldate") != null)
 		{
 			link.append(params.get("lastpulldate"));
 		}
-		}
+		
 		link.append("&searchtype=");
 		link.append(params.get("searchtype"));
 		log.info("Checking: " + url + link);
