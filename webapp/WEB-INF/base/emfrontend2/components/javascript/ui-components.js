@@ -174,7 +174,7 @@ uiload = function() {
 		options.each(function() {
 			var id = $(this).data('value');
 			var text = $(this).text();
-			// console.log(id + " " + text);
+			 //console.log(id + " " + text);
 			arr.push({
 				id : id,
 				text : text
@@ -187,7 +187,7 @@ uiload = function() {
 				if ($(data).filter(function() {
 					return this.text.localeCompare(term) === 0;
 				}).length === 0) {
-					console.log("picking" + term);
+					//console.log("picking" + term);
 					return {
 						id : term,
 						text : term
@@ -196,7 +196,12 @@ uiload = function() {
 			},
 			multiple : false,
 			data : arr
-		});
+		}).on('select2:select', function (e) {
+			if ($(this).hasClass("autosubmited")) {
+				$(this).parents("form").submit();
+			}
+        	
+    	});;
 	});
 
 	lQuery(".force-validate-inputs").livequery(function() {
