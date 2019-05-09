@@ -1417,9 +1417,12 @@ public class MediaArchive implements CatalogEnabled
 		{
 			asset = findAsset(sourcepath);
 		}
+		if(asset == null) {
+			return; //This doesn't work in collections!
+		}
 
 		List<String> types = Arrays.asList(new String[] { "edit", "view", "forcewatermark" });
-
+		
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
 			String type = (String) iterator.next();
@@ -1820,6 +1823,11 @@ public class MediaArchive implements CatalogEnabled
 	{
 		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
+	}
+	public boolean fireSharedMediaEvent(String inName, User user)
+	{
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html", user);
 	}
 
 	//What is this for?

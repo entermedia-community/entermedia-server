@@ -114,6 +114,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 		String agency = getParam(inAsset, "copyrightnotice");	
 		String credit = getParam(inAsset, "creator");	
 		String destination = getParam(inAsset, "name");	
+		String username = getParam(inAsset, "username");
 		String directory = "ici-info";	
 		String sub_directory = "Imagerie";	
 		
@@ -122,6 +123,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 		log.info("\t credit: "+credit);
 		log.info("\t destination: "+destination);
 		log.info("\t sub_directory: "+sub_directory);
+		log.info("\t username: "+username);
 		
 		MultipartEntityBuilder entity = MultipartEntityBuilder
 			    .create()
@@ -133,8 +135,10 @@ public class pictopublisher extends BasePublisher implements Publisher
 			    .addTextBody("legend", legend)
 			    .addTextBody("agency", agency)
 			    .addTextBody("credit", credit)
+			    .addTextBody("username", username)
 			    //.addTextBody("subdirectory", sub_directory)
-			    .addBinaryBody("source", f/*new File(filePath)*/, ContentType.create("image/jpeg"), f.getName());
+			    //.addBinaryBody("source", new File(filePath), ContentType.create("image/jpeg"), f.getName());
+			    .addBinaryBody("source", f, ContentType.create("image/jpeg"), f.getName());
 			
 		HttpEntity httpEntithy = entity.build();
 		
@@ -159,6 +163,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new HttpException("Error "+response.getStatusLine().getReasonPhrase());
 		}
+		
 		//if (response.getSt
 		//HttpEntity result = response.getEntity();
 		//result.
