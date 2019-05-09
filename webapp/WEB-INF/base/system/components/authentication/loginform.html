@@ -23,6 +23,9 @@ $!request.getAttribute( "oe-exception")
 				$context.removePageValue("oe-exception")
 			#end
 		</form>
+		#if($disabled)
+			[[Your account is currently disabled.  Please contact your system administrator for assistance.]]
+		#end
 		<p class="note" style="margin-top: 26px; margin-bottom: 10px;"><a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a></p>
 		$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 		
