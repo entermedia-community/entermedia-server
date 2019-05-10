@@ -820,7 +820,7 @@ uiload = function() {
 						var url = apphome
 								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
 								+ catalogid + "&field=" + searchfield
-								+ "&operation=startswith&searchtype="
+								+ "&operation=contains&searchtype="
 								+ searchtype;
 
 						theinput
