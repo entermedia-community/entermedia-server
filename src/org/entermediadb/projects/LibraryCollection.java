@@ -1,6 +1,7 @@
 package org.entermediadb.projects;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.entermediadb.asset.Category;
@@ -10,7 +11,6 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
-import org.openedit.page.Permission;
 import org.openedit.util.strainer.FilterReader;
 
 public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
@@ -54,8 +54,11 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	{
 		if( fieldLibrary == null)
 		{
-			String id = get("library");
-			fieldLibrary = getMediaArchive().getData("library",id);
+			Collection ids = getValues("library");
+			if( ids == null || !ids.isEmpty() )
+			{
+				fieldLibrary = getMediaArchive().getData("library",(String)ids.iterator().next());
+			}
 		}
 		return fieldLibrary;
 	}
