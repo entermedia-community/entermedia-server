@@ -1301,5 +1301,12 @@ Server ProjectModule.uploadFile
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
 	}
 	
+
+	
+	public void loadUploads(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			manager.loadUploads(inReq);
+	}
 	
 }

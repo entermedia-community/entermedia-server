@@ -1652,5 +1652,32 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		}
 		return hits;
 	}
+
+	public void loadUploads(WebPageRequest inReq)
+	{
+		//See if we have a station
+		String selectedlibrary = inReq.getRequestParameter("selectedlibrary");
+		QueryBuilder builder = getMediaArchive().query("userupload");
+		if( selectedlibrary != null)
+		{
+			//get all the collections for this Library
+			HitTracker collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
+			if(!collections.isEmpty())
+			{
+				builder.orgroup("librarycollection", collections);
+			}
+			else
+			{
+				builder.all();
+			}
+		}
+		else
+		{
+			builder.all();
+		}
+		HitTracker topuploads = builder.sort("uploaddateDown").search();
+		inReq.putPageValue("topuploads",topuploads);
+
+	}
 	
 }
