@@ -121,7 +121,16 @@
 				<span class="openbar"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
 				</a>
 			</li>
-		#set ($resultview = $userprofile.get('resultview'))
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = $content.get("resulview"))
+			#end
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+		
 		
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
@@ -155,12 +164,7 @@
 					<span class="small" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
 			</li>
 		#end		
-		#if(!$resultview)
-			#set($resultview = $userprofile.get("resultview"))
-			#if (!$resultview)
-				#set($resultview = "table")
-			#end
-		#end
+
 		#if(!$edit || $edit == "false"  )
 			<li class="resultsnavtitem">
 				<select class="form-control" name="resultview" id="selectresultview"  
@@ -187,10 +191,6 @@
 			#end
 			#end
 		#end	
-
-
-		
-		##Filters
 
 		
 	</ul>
