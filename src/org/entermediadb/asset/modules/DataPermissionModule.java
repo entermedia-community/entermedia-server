@@ -32,6 +32,10 @@ public class DataPermissionModule extends BaseMediaModule
 	public void loadCustomModulePermissions(WebPageRequest inReq) 
 	{
 		String moduleid = inReq.findValue("module"); //librarycolleciton
+		if (moduleid == null)
+		{
+			throw new OpenEditException("No module specified");
+		}
 		String catid = inReq.findValue("catalogid");
 		if (catid == null)
 		{
@@ -55,10 +59,7 @@ public class DataPermissionModule extends BaseMediaModule
 					if(target != null) {
 						parentvalue = target.get(parentparameterid);
 					}
-					
-					
 				}
-				
 				
 				manager.loadModulePermissions(moduleid,parentvalue,id,inReq);
 			

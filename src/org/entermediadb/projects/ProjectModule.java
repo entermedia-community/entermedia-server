@@ -1308,5 +1308,21 @@ Server ProjectModule.uploadFile
 			ProjectManager manager = getProjectManager(inReq);
 			manager.loadUploads(inReq);
 	}
-	
+
+	public Boolean isOnTeam(WebPageRequest inReq)
+	{
+		if(inReq.getUser() == null)
+		{
+			return false;
+		}
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = loadCollection(inReq);
+		if( collection == null)
+		{
+			return false;
+		}
+		String userid = inReq.getUserName();
+		Boolean isOnEditTeam = manager.isOnTeam(collection,userid);
+		return isOnEditTeam;
+	}
 }

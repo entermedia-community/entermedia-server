@@ -1679,5 +1679,11 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		inReq.putPageValue("topuploads",topuploads);
 
 	}
+	public Boolean isOnTeam(LibraryCollection inCollection, String inUserid)
+	{
+		Data subscription = getMediaArchive().query("collectivesubscribers").
+				exact("collectionid",inCollection.getId()).exact("followeruser",inUserid).searchOne();
+		return subscription != null;
+	}
 	
 }

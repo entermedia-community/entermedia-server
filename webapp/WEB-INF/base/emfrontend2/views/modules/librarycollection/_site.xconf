@@ -51,6 +51,7 @@
 		<or>
 			<group name="administrators" />
 			<action name="ProjectModule.canEditCollection" />
+			<action name="ProjectModule.isOnTeam" />
 		</or>
 	</permission>
 
