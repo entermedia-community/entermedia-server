@@ -52,7 +52,7 @@
 					</a>
 		    
 		    #if ($totalpages > 1) 
-		         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a> 
+		         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=#esc($hitssessionid)&oemaxlevel=2">($totalpages [[Pages]])</a> 
 		    #end
 		    #if ($attachmentcount > 0)
 		       	<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>

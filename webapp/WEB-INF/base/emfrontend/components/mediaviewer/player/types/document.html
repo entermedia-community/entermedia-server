@@ -11,7 +11,7 @@
     <div id="pdf-viewer-container">
         #if ($pagenum > 1)
             #set( $prevthumb = $pagenum - 1)
-            <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid&currentpreview=$currentpreview"> [[Previous]] </a>
+            <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=#esc($hitssessionid)&currentpreview=$currentpreview"> [[Previous]] </a>
         #end
         #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&pagenum=$pagenum&name=preview.png")
 	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
@@ -28,7 +28,7 @@
         </a>
         #if ($pagenum != $totalpages)
             #set( $nextthumb = $pagenum + 1)
-            <a id ="nextpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next]] </a>
+            <a id ="nextpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=#esc($hitssessionid)"> [[Next]] </a>
         #end
     </div>
 

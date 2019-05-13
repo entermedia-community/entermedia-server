@@ -28,13 +28,13 @@
     		
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
     	    #if ($attachmentcount && $attachmentcount.size() > 1)
-    	   		<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
+    	   		<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=#esc($hitssessionid)" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
     	   	#end
            	#if($canviewassetpreviewhistory)
-	   			<a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views"><i class="fas fa-eye"></i> $views</a>
+	   			<a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=#esc($hitssessionid)" class="views"><i class="fas fa-eye"></i> $views</a>
 			#end
             #if($canviewcomments)
-            	<a style="margin-left:10px;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments"><i class="fas fa-comments"></i> $comments.size()</a>
+            	<a style="margin-left:10px;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=#esc($hitssessionid)" class="comments"><i class="fas fa-comments"></i> $comments.size()</a>
             #end
                 <a class="stackedplayer" data-assetid="${asset.id}" href="#" >
             	<span class="fas fa-window-maximize" style="color: #fff;"> </span>
