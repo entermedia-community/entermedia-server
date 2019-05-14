@@ -216,7 +216,15 @@ $(document).ready(function()
     				   	  var finishaction = form.data("finishaction");
     				   	  form.attr("action",finishaction);
     				   	  //TODO remove the last file?
-    				   	  form.submit();
+    				   	  //form.submit();
+							
+							var targetdiv = form.data("finishtargetdiv");
+							form.ajaxSubmit({
+								type : "get",
+								target : "#" + $.escapeSelector(targetdiv) 
+							});
+						  
+
     				   }			   
     				   
     				   //$("#uploadsfinishedtrigger").trigger("submit");
