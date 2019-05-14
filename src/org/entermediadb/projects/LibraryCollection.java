@@ -52,7 +52,7 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	public Data getLibrary()
 	{
-		if( fieldLibrary == null)
+		if( fieldLibrary == null && getMediaArchive() != null)
 		{
 			Collection ids = getValues("library");
 			if( ids == null || !ids.isEmpty() )
