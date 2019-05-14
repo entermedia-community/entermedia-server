@@ -166,7 +166,7 @@ public class ProjectManager implements CatalogEnabled {
 	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive inArchive, int count) {
 		// get a library
 		// inReq.putPageValue("selectedlibrary",library);
-		log.info("working?");
+		//log.info("working?");
 		Collection<LibraryCollection> usercollections = (Collection<LibraryCollection>) inReq
 				.getPageValue("usercollections");
 		if (usercollections != null) {

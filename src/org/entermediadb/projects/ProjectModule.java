@@ -1294,11 +1294,12 @@ Server ProjectModule.uploadFile
 	
 	}
 	
-	public void getCategoryCollectionCache(WebPageRequest inPageRequest) throws Exception
+	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest) throws Exception
 	{
 		String catalogid = inPageRequest.findValue("catalogid");
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
+		return cache;
 	}
 	
 

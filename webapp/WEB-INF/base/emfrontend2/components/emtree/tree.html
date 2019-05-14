@@ -40,20 +40,19 @@
 					 class="cat-name #if($iscollection) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
 					 title="$cat.getCategoryPath()"
 					  >
-				#if( $cat.getCounts() > 0)
-					<b>$cat.name</b> 
-				#else
-					$cat.name  
-				#end
 				#if($cat.hasCountData())
+					#if( $cat.getCounts() > 0)
+						<b>$cat.name</b> 
+					#else
+						$cat.name  
+					#end
 					<b class="cat-count"> 
 					($cat.getCount())
 					</b> 
+				#else
+					$cat.name  
 				#end
-							
                 </div>
-                
-                 
 				
 				#if($caneditcategorytree || $editcategories)
 				    <a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
