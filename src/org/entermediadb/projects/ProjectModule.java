@@ -421,6 +421,9 @@ public class ProjectModule extends BaseMediaModule {
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
+		
+		getCategoryCollectionCache(inReq).addCollection(saved);
+		
 	}
 /*
 	public Data createUserLibrary(WebPageRequest inReq) {
@@ -1294,7 +1297,7 @@ Server ProjectModule.uploadFile
 	
 	}
 	
-	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest) throws Exception
+	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest)
 	{
 		String catalogid = inPageRequest.findValue("catalogid");
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);

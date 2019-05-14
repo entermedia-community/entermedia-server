@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.SearcherManager;
@@ -98,5 +99,16 @@ public class CategoryCollectionCache implements CatalogEnabled
 			}
 		}
 		return false;
+	}
+
+	public void addCollection(LibraryCollection inSaved)
+	{
+		getCategoryRoots().put(inSaved.getCategory().getId(),inSaved.getCategory());
+		
+	}
+	public void removedCollection(LibraryCollection inSaved)
+	{
+		getCategoryRoots().remove(inSaved.getCategory().getId());
+		
 	}
 }
