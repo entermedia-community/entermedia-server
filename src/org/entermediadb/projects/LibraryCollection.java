@@ -55,7 +55,7 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 		if( fieldLibrary == null && getMediaArchive() != null)
 		{
 			Collection ids = getValues("library");
-			if( ids == null || !ids.isEmpty() )
+			if( ids != null && !ids.isEmpty() )
 			{
 				fieldLibrary = getMediaArchive().getData("library",(String)ids.iterator().next());
 			}

@@ -253,4 +253,32 @@ public class SyncModule extends BaseMediaModule
 		inReq.putSessionValue(hits.getSessionId(), hits);
 		//inReq.putPageValue("mediaarchive",archive); 
 	}
+	
+	
+	public void listIDs(WebPageRequest inReq)
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = inReq.findValue("searchtype");
+		if(searchtype == null) {
+			searchtype = "asset";
+		}
+		HitTracker 	hits = archive.getSearcher(searchtype).getAllHits(inReq);
+		
+		hits.enableBulkOperations();
+		hits.setHitsPerPage(9000);//TMP
+		hits.getSearchQuery().setHitsName(inReq.findValue("hitsname"));
+		inReq.putPageValue(hits.getHitsName(), hits);
+		inReq.putPageValue("searcher", hits.getSearcher() );
+		
+		//hitsassetassets/catalog
+		inReq.putSessionValue("hitssessionid", hits.getSessionId());
+		inReq.putSessionValue(hits.getSessionId(), hits);
+		//inReq.putPageValue("mediaarchive",archive); 
+	}
+	
+	
+	
+	
+	
 }

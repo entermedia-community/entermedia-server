@@ -1,0 +1,10 @@
+{
+	
+	 "results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		"$hit.id"
+		#end
+		]		
+ 	
+  	
+}
