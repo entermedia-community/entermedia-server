@@ -314,14 +314,15 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	
 	
 	public List getHighlights(String inField) {
+		ArrayList highlights = new ArrayList();
+
 		if(getSearchHit() == null) {
-			return null;
+			return highlights;
 		}
 		HighlightField field = getSearchHit().getHighlightFields().get(inField);
 		if(field == null) {
-			return null;
+			return highlights;
 		}
-		ArrayList highlights = new ArrayList();
 		Text[] fragments = field.getFragments();
 		for (Text text : fragments)
 		{
