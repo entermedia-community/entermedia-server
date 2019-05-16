@@ -1,6 +1,7 @@
 package org.entermediadb.projects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.openedit.util.strainer.FilterReader;
 
 public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
 {
-	protected Data fieldLibrary;
+	protected Collection fieldLibraries;
 	protected Category fieldCategoryRoot;
 	protected int fieldAssetCount;
 	protected String fieldCatalogId;
@@ -52,19 +53,32 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	public Data getLibrary()
 	{
-		if( fieldLibrary == null && getMediaArchive() != null)
+		Collection all = getLibraries();
+		if( all.isEmpty() )
 		{
-			Collection ids = getValues("library");
-			if( ids != null && !ids.isEmpty() )
+			return null;
+		}
+		return (Data)all.iterator().next();
+	}
+	public Collection getLibraries()
+	{
+		if( fieldLibraries == null)
+		{
+			if( getMediaArchive() != null )
 			{
-				fieldLibrary = getMediaArchive().getData("library",(String)ids.iterator().next());
+				Collection ids = getValues("library");
+				if( ids != null && !ids.isEmpty() )
+				{
+					fieldLibraries = getMediaArchive().query("library").ids(ids).search();
+				}
 			}
 		}
-		return fieldLibrary;
+		return fieldLibraries;
 	}
 	public void setLibrary(Data inLibrary)
 	{
-		fieldLibrary = inLibrary;
+		fieldLibraries = Arrays.asList(inLibrary);
+		setValue("library", fieldLibraries);
 	}
 
 	public int getAssetCount()
