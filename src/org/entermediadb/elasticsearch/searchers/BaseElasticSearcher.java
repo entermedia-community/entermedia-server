@@ -642,7 +642,23 @@ public class BaseElasticSearcher extends BaseSearcher
 							jsonproperties = jsonproperties.field("ignore_above", 256);
 
 							jsonproperties.endObject();
+							//lowercase with no analysis 
+							jsonproperties.startObject("sort");
+							jsonproperties = jsonproperties.field("type", "string");
+							jsonproperties = jsonproperties.field("index", "analyzed");
+							jsonproperties = jsonproperties.field("analyzer", "tags");
+							jsonproperties = jsonproperties.field("ignore_above", 256);
+
 							jsonproperties.endObject();
+							
+							
+							
+							
+							jsonproperties.endObject();
+							
+							
+							
+							
 						}
 
 						if (analyzer != null)
@@ -777,6 +793,18 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("ignore_above", 256);
 				}
 				jsonproperties.endObject();
+				
+				jsonproperties.startObject("sort");
+				jsonproperties = jsonproperties.field("type", "string");
+				jsonproperties = jsonproperties.field("index", "analyzed");
+				jsonproperties = jsonproperties.field("analyzer", "tags");
+				jsonproperties = jsonproperties.field("ignore_above", 256);
+
+				jsonproperties.endObject();
+
+				
+				
+				
 				jsonproperties.endObject();
 			}
 
@@ -1515,7 +1543,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (detail.isAnalyzed())
 					{
-						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
+						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".sort");
 					}
 					else
 					{
@@ -1527,7 +1555,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
 					if (first.isAnalyzed())
 					{
-						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".exact");
+						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".sort");
 					}
 					else
 					{
@@ -1536,7 +1564,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				else if (detail.isAnalyzed())
 				{
-					sort = SortBuilders.fieldSort(field + ".exact");
+					sort = SortBuilders.fieldSort(field + ".sort");
 				}
 				else
 				{
@@ -2476,7 +2504,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			delete.setParent(inData.get("_parent"));
 		}
 		delete.setRefresh(true).execute().actionGet();
-
+		
 	}
 
 	// Base class only updated the index in bulk
