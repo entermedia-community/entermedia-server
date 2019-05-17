@@ -66,7 +66,7 @@ data-previous="$!previous.getId()"
 data-previouspage="$!dialoghits.idOnPreviousPage()" 
 data-nextpage="$!dialoghits.idOnNextPage()"
 data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
- >
+ ><div id="mainmedianotifications"></div>
 
  
 	#if( !$mediadbappid)
@@ -343,6 +343,20 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 					</a>
 			   	</li>
 			   	#end
+		    #if ( $canviewbasket  )
+				<li id="mediaviewerbasket">
+				#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
+					<a class="dropdown-item updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
+				#else
+					<a class="dropdown-item updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
+				#end
+				</li>
+			#end
+			#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+			<a class="dropdown-item " 
+			   title="[[Add to Favorites]]"  
+			   href="$home$apphome/views/modules/librarycollection/media/addtocollection.html?searchtype=asset&collectionid=${user.id}-favorites&assetid=$asset.id">[[Add To Favorites]]</a>
+			#end
 		    	#if( $candeleteasset )
                  <li>
 					#if ( $ismulti )

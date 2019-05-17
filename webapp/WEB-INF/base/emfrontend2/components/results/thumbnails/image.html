@@ -7,7 +7,8 @@
 #end
 
 #set ($sourcepath = $hit.sourcepath)
-#set ( $urlutils = $context.getPageValue("url_util"))
+#set ($urlutils = $context.getPageValue("url_util"))
+#set ($thumbsize = $context.getPageValue("thumbsize"))
 #if ($urlutils)
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
@@ -18,11 +19,15 @@
 			#set($imagesize = "image640x480.jpg")
 		#else
 			#set($imagesize = "image550x350.jpg")
-		#end	
+		#end
+	#elseif($thumbsize == "postsize")
+		#set($imagesize = "image730x480cropped.jpg")
 	#elseif($thumbsize == "crop")
 		#set($imagesize = "image110x62cropped.jpg")
 	#end		
-		$context.putPageValue("thumbsize", $thumbsize)
+
+#set($urlparams = $context.getPageValue("urlparams"))
+$context.putPageValue("thumbsize", $thumbsize)
 <div id="emthumbholder" class="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -32,14 +37,14 @@
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
+		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath$!urlparams" border="0"/>
 	#else	
-	#set($tpath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,  $imagesize))
-	<div class="thumbimagecontainer">
-		<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
-		draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		
-		src="$tpath" border="0" />
-	</div>	
+		#set($tpath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,  $imagesize))
+		<div class="thumbimagecontainer">
+			<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
+			draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		
+			src="$tpath$!urlparams" border="0" />
+		</div>	
 	#end
 </div>
 

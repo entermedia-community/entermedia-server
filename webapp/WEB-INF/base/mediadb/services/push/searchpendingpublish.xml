@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
 #set( $fields = $searcher.getPropertyDetails() )
-#foreach( $hit in $hits.getPageOfHits() )
+#foreach( $hit in $hits.getAllHits() )
 <hit #foreach( $field in $fields )
 #set( $value = false )
 #set( $value = $hit.get($field.id))

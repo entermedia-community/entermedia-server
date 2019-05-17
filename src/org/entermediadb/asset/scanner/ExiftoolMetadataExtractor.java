@@ -166,7 +166,9 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			String[] numbers = numberinfo.split("\n");
 			for (int i = 0; i < numbers.length; i++)
 			{
-				Matcher m = p.matcher(numbers[i]);
+				
+				String input = numbers[i];
+				Matcher m = p.matcher(input);
 				if (!m.find())
 				{
 					continue;
@@ -206,6 +208,25 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						log.warn("Could not parse ImageSize string: " + value);
 					}
 				}
+				
+				else if ("ImageWidth".equals(key))
+				{
+					if (inAsset.get("width") == null)
+					{
+						float wide = Float.parseFloat(value);
+						inAsset.setProperty("width", String.valueOf(Math.round(wide)));
+					}
+				}
+				else if ("ImageHeight".equals(key))
+				{
+					if (inAsset.get("height") == null)
+					{
+						float height = Float.parseFloat(value);
+						inAsset.setProperty("height", String.valueOf(Math.round(height)));
+					}
+				}
+				
+				
 				else if ("MaxPageSizeW".equals(key))
 				{
 					if (inAsset.get("width") == null)
@@ -224,6 +245,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("height", String.valueOf(Math.round(height)));
 					}
 				}
+				
+				
 				else if ("Duration".equals(key) || "SendDuration".equals(key))
 				{
 					try
@@ -341,7 +364,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					}
 					else if (property.isList() || property.isMultiValue())  //|| property.isDataType("number")
 					{
-						m = p.matcher(numbers[i]);
+						m = p.matcher(input);
 						if (m.find())
 						{
 							Searcher searcher = inArchive.getSearcherManager().getSearcher(property.getListCatalogId(), property.getListId());

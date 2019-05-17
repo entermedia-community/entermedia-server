@@ -1,12 +1,17 @@
 <div id="asset-editor-container">
-                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
 
-<div class="assetpanel-editortitle">
-<h2>[[Asset Conversions]]</h2>
-</div>
 <div class="assetpanel-editorinner">
+
+<div class="container-fluid ">
+<div class="row">
+<div class="col-8">
+
+
+
+<h2>[[Asset Conversions]]</h2>
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+
 
 <div class="conversionsheader">
 
@@ -52,13 +57,17 @@ $context.putPageValue("results", $results)
 $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
 <div class="conversionsall emdata" >
-<table class="table table-striped table-hover tabe-conversions">
+<table class="table table-striped table-hover tabe-conversions" id="conversionstable">
 <thead>
 	<tr class="tableheader">
 		<th>[[Description]]</th>
-		<th>[[Size]]</th>
-		<th>[[Status]]</th>
-		<th>[[Actions]]</th>
+		<th style="width:100px;">[[Size]]</th>
+		<th style="width:100px;">[[Aspect Ratio]]</th>
+		#if( $canviewconversions )
+		<th style="width:95px;">[[Status]]</th>
+		<th style="width:280px;">[[Last Updated]]</th>
+		#end
+		<th style="width:380px;">[[Actions]]</th>
 	</tr>
 </thead>
 #foreach ($result in $results)
@@ -85,40 +94,44 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		##$context.putPageValue("width", $width)
 		
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
+		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 		<tr>
 		<td>
 		$result.name
 		</td>
-		<td>
+		<td class="text-center">
 		#if ($height && $height > 0 && $width && $width > 0)
-			<span class="h2e">${width}x${height}</span>  <span class="h2e">[[Aspect Ratio]]: $aspectratio</span>
+			<span class="h2e">${width}x${height}</span>
 			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
 		#end
 		#set($description = "")
 		</td>
-		<td>
-		<!-- include modify -->
+		<td class="text-center">
+		#if ($aspectratio)
+			<span class="h2e">$aspectratio</span>
+		#end
+		</td>
+		
 		#if( $canviewconversions )
 			$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
 		#end
-		</td>
+		
 		<td>
 		##ACTIONS
 		#if( $presetdata.id != "0" )
 		<a class="emdialog btn btn-sm btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
 		#end
-		#if($canviewassetedit && $presetdata.id)
-		#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
-			#if($cancrop)
-			<a class="btn btn-sm btn-secondary previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">[[Crop]]</a>
-			#end
-			
-		#end
-		
-		##SHARE
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 		#if($isready)
+			#if($canviewassetedit && $presetdata.id)
+			#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
+				#if($cancrop)
+				<a class="btn btn-sm btn-secondary previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">[[Crop]]</a>
+				#end
+				
+			#end
+			
+			##SHARE
 			<!--  include share -->
 			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
 
@@ -127,10 +140,13 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
 			#end	
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
+			#if(!$cancrop)
+				<div style="font-size:smaller;margin:5px 0 0 0;">[[Image is too small to crop to the desired crop dimension]]</div>
+			#end
+		#else
+			#set($notready = true)
 		#end
-		#if(!$cancrop)
-			<div style="font-size:smaller;margin:5px 0 0 0;">[[Image is too small to crop to the desired crop dimension]]</div>
-		#end
+
 		</td>
 		</tr>
 	#end
@@ -138,6 +154,34 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 #end  ##foreach
 </table>
 </div>
+
+
+#if ($notready)
+<script>
+$(document).ready(function(){
+	var reloadingconversionspage = setTimeout(function(){
+		//reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
+		var nextpage = "$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
+		var targetDiv = "asset-editor-container";
+		if ($("#conversionstable").length) {
+			//console.log("Reloading...")
+			var options;
+			targetDiv = targetDiv.replace(/\//g, "\\/");
+			$.get(nextpage, options, function(data) 
+					{
+						var cell;
+						cell = $("#" + targetDiv);
+						//Call replacer to pull $scope variables
+						cell.replaceWith(data);
+						$(window).trigger( "resize" );
+					}
+			);
+			}
+		}, 5000);
+});
+</script>
+
+#end
 
 $context.putPageValue("asset",$asset)
 #if($newpreset)
@@ -148,6 +192,7 @@ $pages.include("$home$apphome/views/modules/asset/editor/conversions/createnewco
 
 <script>
 $(document).ready(function(){
+	//console.log($(".thumbimagecontainer img").attr('src'));
 	var windowwidth = $(window).width();
 	$(".previewcrop-btn").each(function(i,obj){
 		var href = $(this).attr("href");
@@ -168,5 +213,15 @@ $(document).ready(function(){
 	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
 	
 </p>
+
+
+</div>
+<div class="col-md-4">
+	$context.putPageValue("urlparams","?cache=false&_="+$mathutil.getRandomValue(99999))
+	$pages.include("$apphome/components/mediaviewer/player/summary-mini.html", $context)
 </div>
 </div>
+</div>
+</div>
+</div>
+

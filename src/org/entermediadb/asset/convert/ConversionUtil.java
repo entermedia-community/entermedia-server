@@ -225,6 +225,32 @@ public class ConversionUtil {
 		return status;
 	}
 	
+	public Data getConversionStatusData(String inCatalogId, String inAssetId, String inPresetId) throws Exception {
+		Data status = null;
+		SearcherManager sm = getSearcherManager();
+		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
+		Searcher cssearcher = sm.getSearcher(inCatalogId, "convertstatus");
+		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
+		sq.addSortBy("id");
+		HitTracker hits = ctsearcher.search(sq);
+		if(hits.size() > 0){
+			Data hit = hits.get(0);
+			Data data2 = (Data) cssearcher.searchById(hit.get("status"));
+			//status = data2.getName();
+			return data2;
+		}
+		Asset asset = (Asset) sm.getData(inCatalogId, "asset", inAssetId);
+		if(doesExist(inCatalogId, inAssetId, asset.getSourcePath(), inPresetId)){
+ 			Data data2 = (Data) cssearcher.searchById("complete");
+			if(data2 != null){
+				return  data2;
+			} 
+			return null;
+
+		}
+		return status;
+	}
+	
 	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String sourcepath, String inPresetId) throws Exception{
 		boolean isOk = false;
 		

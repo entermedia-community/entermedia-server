@@ -37,7 +37,7 @@
 	<permission id="viewmediaedit" permissiontype="asset" name="Media Editor" description="Enables access to a crop of thumbnails and rotate tool." ordering="352"/>
 
 	<permission id="viewmetadatageneral" permissiontype="asset" name="View  Metadata" description="View Metadata Summary" ordering="354" />
-	<permission id="editallassets" permissiontype="asset" name="Edit All Assets" description="Allow editing of any asset." ordering="339" />
+	<permission id="editallassets" permissiontype="asset" name="Edit All Assets" description="Allow editing and viewing of any asset." ordering="339" />
 
 	<permission id="viewattachments" permissiontype="asset" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
 	<permission id="viewassets" permissiontype="asset" name="Asset Search" description="Enables access to assets." ordering="359" />

@@ -305,9 +305,13 @@ public class EMPushManager extends BasePushManager implements PushManager
 	
 		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
+		if(!server.endsWith("/")) {
+			server = server + "/";
+		}
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
-	
-		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
+		String mediadb = inArchive.getCatalogSettingValue("push_target_mediadb");
+
+		String url = server  + mediadb + "/services/push/searchpendingpublish.xml";
 		//url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
 		HttpPost method = new HttpPost(url);
 		
@@ -329,17 +333,17 @@ public class EMPushManager extends BasePushManager implements PushManager
 				ors.append(" ");
 			}
 		}
-                 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();                                                                                                                                                 
+           		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();                                                                                                                                                 
 		
-		 nameValuePairs.add(new BasicNameValuePair("field", "publishdestination"));
-		 nameValuePairs.add(new BasicNameValuePair("publishdestination.value", ors.toString()));
-		 nameValuePairs.add(new BasicNameValuePair("operation", "orsgroup"));
+		// nameValuePairs.add(new BasicNameValuePair("field", "publishdestination"));
+	//	 nameValuePairs.add(new BasicNameValuePair("publishdestination.value", ors.toString()));
+	//	 nameValuePairs.add(new BasicNameValuePair("operation", "orsgroup"));
 		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
-		 nameValuePairs.add(new BasicNameValuePair("status.value", "complete"));
-		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
-		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
-		 nameValuePairs.add(new BasicNameValuePair("status.value", "error"));
-		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
+		 nameValuePairs.add(new BasicNameValuePair("status.value", "pending"));
+		 nameValuePairs.add(new BasicNameValuePair("operation", "exact"));
+//		 nameValuePairs.add(new BasicNameValuePair("field", "status"));
+//		 nameValuePairs.add(new BasicNameValuePair("status.value", "error"));
+//		 nameValuePairs.add(new BasicNameValuePair("operation", "not"));
 		
 			Charset UTF8 = Charset.forName("UTF-8");
 

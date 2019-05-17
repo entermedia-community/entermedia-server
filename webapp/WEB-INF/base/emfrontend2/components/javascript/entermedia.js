@@ -196,6 +196,9 @@ runajaxonthis = function(inlink,e)
 		inlink.addClass("active");
 	}
 	var nextpage= inlink.attr('href');
+	if (!nextpage) {
+		nextpage = inlink.data("nextpage");
+	}
 	var targetDiv = inlink.data("targetdiv");
 	if( !targetDiv )
 	{
@@ -321,7 +324,22 @@ runajax = function(e)
 	runajaxonthis($(this),e);
 	return false;
 }
-
+reloadpageajax = function(nextpage, targetDiv) {
+	
+		console.log("Reloading...")
+		var options;
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		$.get(nextpage, options, function(data) 
+				{
+					var cell;
+					cell = $("#" + targetDiv);
+					//Call replacer to pull $scope variables
+					cell.replaceWith(data);
+					$(window).trigger( "resize" );
+				}
+		)
+	
+}
 showHoverMenu = function(inDivId)
 {
 	el = $("#" + inDivId);
@@ -349,6 +367,25 @@ updatebasket = function(e)
 				}
 			}
 		);
+		 e.preventDefault();
+		return false;
+}
+updatebasketmediaviewer = function(e)
+{
+		var nextpage= $(this).attr('href');
+		var targetDiv = $(this).attr("targetdiv");
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		var action= $(this).data('action');
+		var alerttxt = $(this).data("alerttxt");
+		$("#"+targetDiv).load(nextpage, function()
+			{
+			    $("#basket-paint").load(apphome + "/components/basket/menuitem.html");
+				$("#mainmedianotifications").html('<div class="alert alert-success alert-save fader">'+alerttxt+'</div>');
+			}
+		);
+		if ($(this).closest('.dropdown-menu').length !== 0) {
+			$(this).closest('.dropdown-menu').removeClass('show');
+		}
 		 e.preventDefault();
 		return false;
 }
@@ -401,6 +438,8 @@ onloadselectors = function()
 	lQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	lQuery("a.updatebasket").livequery('click', updatebasket);
+	lQuery("a.updatebasketmediaviewer").livequery('click', updatebasketmediaviewer);
+	
 //	$("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
 	
@@ -1270,3 +1309,5 @@ emcomponents = function() {
 		});
 	});	
 }
+
+

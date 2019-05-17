@@ -93,7 +93,7 @@ public class PullManager implements CatalogEnabled
 
 		}
 		//TODO:  support this on all tables
-		if (inLastpulldate != null)
+		if (inLastpulldate != null )
 		{
 			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);
@@ -198,6 +198,7 @@ public class PullManager implements CatalogEnabled
 		{
 			link.append(params.get("lastpulldate"));
 		}
+		
 		link.append("&searchtype=");
 		link.append(params.get("searchtype"));
 		log.info("Checking: " + url + link);
@@ -485,6 +486,7 @@ public class PullManager implements CatalogEnabled
 				if (node.get("entermediakey") != null)
 				{
 					params.put("entermedia.key", node.get("entermediakey"));
+					finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 				}
 
 				HttpResponse genfile = connection.sharedPost(finalurl, params);

@@ -1,4 +1,8 @@
-#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+	#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#else
+	#set( $leftbarstatus = false)
+#end
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 
 #if(!$category)

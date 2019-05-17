@@ -21,6 +21,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.scanner.ExiftoolMetadataExtractor;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -1085,12 +1086,16 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		
-		String collectionid = inReq.getRequestParameter("currentcollection");
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("currentcollection");
+		}
 		if( collectionid == null)
 		{
 			collectionid = inReq.getRequestParameter("currentcollection.value");
 		}
+		
 		if( collectionid != null && collectionid.trim().length() == 0 )
 		{
 			collectionid = null;
@@ -2138,6 +2143,19 @@ Change Collections to be normal categories path s and make createTree look at th
 		manager.createOutput(ins);
 		archive.getPresetManager().reQueueConversions(archive, asset);
 		archive.fireSharedMediaEvent("conversions/runconversions");
+		
+		Asset tempasset = (Asset) archive.getAssetSearcher().createNewData();
+		tempasset.setSourcePath("temp");
+		ExiftoolMetadataExtractor extractor = (ExiftoolMetadataExtractor) archive.getBean("exiftoolMetadataExtractor");
+		
+		extractor.extractData(archive, custom.getContentItem(), tempasset);
+		
+		asset.setValue("height", tempasset.getValue("height"));
+		asset.setValue("width", tempasset.getValue("width"));
+		archive.saveAsset(asset);
+		inReq.putPageValue("asset", asset);
+		
+		
 	}
 	
 	

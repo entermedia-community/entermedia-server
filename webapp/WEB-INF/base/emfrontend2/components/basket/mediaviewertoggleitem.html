@@ -1,0 +1,10 @@
+#set( $assetid = $context.getRequestParameter("assetid") )
+#if(!$assetid)
+	#set( $assetid = $hit.id )
+#end
+
+#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
+					<a class="dropdown-item updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
+				#else
+					<a class="dropdown-item updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
+				#end
