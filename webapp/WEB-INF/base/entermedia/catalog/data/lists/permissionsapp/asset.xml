@@ -20,9 +20,9 @@
 	<permission id="editassetcategories" permissiontype="asset" name="Assign Categories" description="Enables editing of an assets assigned categories" ordering="328" />
     <permission id="editcategories" permissiontype="asset" name="Edit Categories" description="Enables editing of categories" ordering="330" />
 	<permission id="showbadge" permissiontype="asset" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
-	<permission id="viewcomments" permissiontype="asset" name="Add Comments" description="View comments on media assets." ordering="334" />
+	<permission id="viewcomments" permissiontype="asset" name="View Comments" description="View comments on media assets." ordering="334" />
 	<permission id="comment" permissiontype="asset" name="Add Comments" description="Enables commenting on media assets." ordering="334" />
-	<permission id="deletecomments" permissiontype="asset" name="Add Comments" description="Enables deleting commenting on media assets." ordering="334" />
+	<permission id="deletecomments" permissiontype="asset" name="Delete Comments" description="Enables deleting commenting on media assets." ordering="334" />
 	
 	
 	<permission id="assetpermissions" permissiontype="asset" name="Permissions" description="Enables permission alteration for media assets." ordering="340" />
@@ -39,7 +39,7 @@
 	<permission id="viewmetadatageneral" permissiontype="asset" name="View  Metadata" description="View Metadata Summary" ordering="354" />
 	<permission id="editallassets" permissiontype="asset" name="Edit All Assets" description="Allow editing and viewing of any asset." ordering="339" />
 
-	<permission id="viewattachments" permissiontype="asset" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
+	<permission id="viewattachments" permissiontype="asset" name="View Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
 	<permission id="viewassets" permissiontype="asset" name="Asset Search" description="Enables access to assets." ordering="359" />
 	<permission id="showbadge" permissiontype="asset" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
 	<permission id="viewtimeline" permissiontype="asset" name="Video Timeline" description="Enables access to video clips and metadata" ordering="361" />
