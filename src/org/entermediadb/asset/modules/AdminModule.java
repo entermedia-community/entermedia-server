@@ -352,7 +352,9 @@ public class AdminModule extends BaseMediaModule
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
-			account = account.toLowerCase();
+			if(account != null) {
+				account = account.toLowerCase();
+			}
 		}
 		
 		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
