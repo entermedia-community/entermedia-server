@@ -1656,26 +1656,26 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 	public void loadUploads(WebPageRequest inReq)
 	{
 		//See if we have a station
-		String selectedlibrary = inReq.getRequestParameter("selectedlibrary");
+		String selectedlibrary = inReq.getRequestParameter("libraryid");
 		QueryBuilder builder = getMediaArchive().query("userupload");
-		if( selectedlibrary != null)
+		HitTracker collections = null;
+		HitTracker topuploads = null;
+		if( selectedlibrary == null || selectedlibrary.equals("*"))
 		{
-			//get all the collections for this Library
-			HitTracker collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
-			if(!collections.isEmpty())
-			{
-				builder.orgroup("librarycollection", collections);
-			}
-			else
-			{
-				builder.all();
-			}
+			builder.all();
+			topuploads = builder.sort("uploaddateDown").search();
 		}
 		else
 		{
-			builder.all();
+			//get all the collections for this Library
+			collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
+			//log.info("done" + collections.size());
+			if( !collections.isEmpty() )
+			{
+				builder.orgroup("librarycollection", collections);
+				topuploads = builder.sort("uploaddateDown").search();
+			}
 		}
-		HitTracker topuploads = builder.sort("uploaddateDown").search();
 		inReq.putPageValue("topuploads",topuploads);
 
 	}

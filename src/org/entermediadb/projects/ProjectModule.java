@@ -318,10 +318,15 @@ public class ProjectModule extends BaseMediaModule {
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid != null) {
+		if (collectionid != null)
+		{
 			LibraryCollection collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
 			inReq.putPageValue("librarycol", collection);
 			return collection;
+		}
+		else
+		{
+			log.error("No collection id found");
 		}
 		return null;
 	}
