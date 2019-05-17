@@ -224,6 +224,13 @@
 		<property name="root"><ref bean="root"/></property>
 	</bean>
 
+	<bean id="localeManager" class="org.openedit.util.LocaleManager"  />
+	
+	<bean id="textLabelManager" class="org.openedit.page.manage.TextLabelManager"  >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+	    <property name="localeManager"><ref bean="localeManager"/></property>
+	    <property name="translator"><ref bean="translator"/></property>
+	</bean>
 	 
 <bean id="translationSearcher" name="translationSearcher"
         class="org.openedit.modules.translations.TranslationSearcher" abstract="false"

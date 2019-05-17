@@ -1943,7 +1943,9 @@
 		<bean id="gallerypublisher" class="org.entermediadb.asset.publish.publishers.gallerypublisher"  lazy-init="default"/>
 	
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
-	
+	<bean id="Pictopublisher" class="org.entermediadb.asset.publish.publishers.pictopublisher"  lazy-init="default"/>
+    <bean id="Avidpublisher" class="org.entermediadb.asset.publish.publishers.avidpublisher"  lazy-init="default"/>
+
 	<bean id="searchSecurity" class="org.entermediadb.asset.search.BaseSearchSecurity"  lazy-init="default">
 		<property name="cacheManager">
 			<ref bean="timedCacheManager" />

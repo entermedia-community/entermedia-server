@@ -110,11 +110,11 @@ public class pictopublisher extends BasePublisher implements Publisher
 		log.info("**** publishAPicto publish filePath "+filePath + " to "+ addr);
 		
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		String legend = getParam(inAsset, "longcaption");
-		String agency = getParam(inAsset, "copyrightnotice");	
-		String credit = getParam(inAsset, "creator");	
-		String destination = getParam(inAsset, "name");	
-		String username = getParam(inAsset, "username");
+		String legend = getParam(inAsset, "longcaption", "N/A");
+		String agency = getParam(inAsset, "copyrightnotice", "");	
+		String credit = getParam(inAsset, "creator", "");	
+		String destination = getParam(inAsset, "name", "");
+		String username = getParam(inAsset, "username", "");
 		String directory = "ici-info";	
 		String sub_directory = "Imagerie";	
 		
@@ -135,10 +135,9 @@ public class pictopublisher extends BasePublisher implements Publisher
 			    .addTextBody("legend", legend)
 			    .addTextBody("agency", agency)
 			    .addTextBody("credit", credit)
-			    .addTextBody("username", username)
+			    .addTextBody("username", username.trim())
 			    //.addTextBody("subdirectory", sub_directory)
-			    //.addBinaryBody("source", new File(filePath), ContentType.create("image/jpeg"), f.getName());
-			    .addBinaryBody("source", f, ContentType.create("image/jpeg"), f.getName());
+			    .addBinaryBody("source", f/*new File(filePath)*/, ContentType.create("image/jpeg"), f.getName());
 			
 		HttpEntity httpEntithy = entity.build();
 		
@@ -163,15 +162,14 @@ public class pictopublisher extends BasePublisher implements Publisher
 		if (response.getStatusLine().getStatusCode() != 200) {
 			throw new HttpException("Error "+response.getStatusLine().getReasonPhrase());
 		}
-		
 		//if (response.getSt
 		//HttpEntity result = response.getEntity();
 		//result.
 		
 	}
-	private String getParam(Asset inAsset, String id) {
+	private String getParam(Asset inAsset, String id, String defaultValue) {
 		String tmp = inAsset.get(id);
-		return tmp == null ? "N/A": tmp;
+		return tmp == null ? defaultValue: tmp;
 	}
 	
 	private String getClientCredentials(Data inDestination) {

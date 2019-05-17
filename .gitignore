@@ -9,3 +9,4 @@
 /webapp/WEB-INF/logs/*
 
 *.db
+/.DS_Store

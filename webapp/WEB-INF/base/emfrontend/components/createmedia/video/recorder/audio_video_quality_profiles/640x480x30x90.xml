@@ -1,49 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-<bandwidth>
-<item>
-	<nm>640x480@15fps</nm>
-	<df>0</df>
-	<bytes>0</bytes>
-	<q>90</q><fps>30</fps><kfps>15</kfps>
-	<w>640</w><h>480</h>
-			<!-- Flash Player supports encoding sound with 2 codecs: NellyMoser's ASAO and Speex.
-			Speex is optimised for speech, uses less bandwidth and has more quality levels.
-			The snd tag in this XML file controls the sound codec and quality/bandwidth of audio used in HDFVR. 
-			Higher quality sound will use more bandwidth.
-			Possible values:
-				44 : NellyMoser, highest quality, uses 88kbits/s of bandwidth
-				22 : NellyMoser, medium high quality, uses 44kbits/s of bandwidth
-				11 : NellyMoser, medium low quality, uses 22kbits/s of bandwidth
-				8 : NellyMoser, low quality, uses 16kbits/s of bandwidth
-				5 : NellyMoser, lowest quality, uses 10kbits/s of bandwidth
-				speex10 : Speex, highest quality, uses 42.2kbits/s of bandwidth
-				speex9 : 34.2kbits/s
-				speex8 : 27.8kbits/s
-				speex7 : 23.8kbits/s
-				speex6 : Speex, default value, uses 20.6kbits/s of bandwidth
-				speex5 : 16.8kbits/s
-				speex4 : 12.8kbits/s
-				speex3 : Speex, low quality, lowest usable quality,  uses 9.80kbits/s
-				speex2 : 7.75kbits/s
-				speex1 : 5.75kbits/s
-				speex0 : Speex, lowest quality, not really usable,  uses 3.95kbits/s
-			-->
-	<snd>22</snd>
-	<sndSilencelevel>0</sndSilencelevel>
-	
-	<vcodec>sorenson</vcodec>
-		<!--
-		Flash Player 6  (released in 2002) and above supports encoding video with the Sorenson Spark codec.
-		Flash Player 11 (released in 2011) and above supports encoding video with both Sorenson Spark and H.264 .
-		
-		The vcodec tag in this XML file controls which of the supported video codecs is used to encode the video by HDFVR.
-		Possible values:
-			sorenson : use this value to encode video using the Sorenson Spark video codec regardless of the media server used.  All data will be saved in a .flv file.
-			h264_f 	 : use this value to encode video with H.264 codec when using Adobe Media Server. All data will be saved in a .f4v file.
-			h264_w   : use this value to encode video with H.264 codec when using Wowza. All data will be saved in a .flv file.
-			h264_w_t   : use this value to encode video with H.264 codec when using Wowza and the Transcoder AddOn to produce MP4 files containing AAC audio.  All data will be saved in a .flv file and in the corresponding .mp4 file with AAC audio. Use Speex for audio, the Transcoder AddOn only knows to decode Speex.
-			h264_r   : use this value to encode video with H.264 codec when using Red5. All data will be saved in a .flv file.
-		-->
-	
-</item>
+<?xml version="1.0" encoding="utf-8"?>
+<bandwidth>
+<item>
+	<nm>640x480@15fps</nm>
+	<df>0</df>
+	<bytes>0</bytes>
+	<q>90</q><fps>30</fps><kfps>15</kfps>
+	<w>640</w><h>480</h>
+			<!-- Flash Player supports encoding sound with 2 codecs: NellyMoser's ASAO and Speex.
+			Speex is optimised for speech, uses less bandwidth and has more quality levels.
+			The snd tag in this XML file controls the sound codec and quality/bandwidth of audio used in HDFVR. 
+			Higher quality sound will use more bandwidth.
+			Possible values:
+				44 : NellyMoser, highest quality, uses 88kbits/s of bandwidth
+				22 : NellyMoser, medium high quality, uses 44kbits/s of bandwidth
+				11 : NellyMoser, medium low quality, uses 22kbits/s of bandwidth
+				8 : NellyMoser, low quality, uses 16kbits/s of bandwidth
+				5 : NellyMoser, lowest quality, uses 10kbits/s of bandwidth
+				speex10 : Speex, highest quality, uses 42.2kbits/s of bandwidth
+				speex9 : 34.2kbits/s
+				speex8 : 27.8kbits/s
+				speex7 : 23.8kbits/s
+				speex6 : Speex, default value, uses 20.6kbits/s of bandwidth
+				speex5 : 16.8kbits/s
+				speex4 : 12.8kbits/s
+				speex3 : Speex, low quality, lowest usable quality,  uses 9.80kbits/s
+				speex2 : 7.75kbits/s
+				speex1 : 5.75kbits/s
+				speex0 : Speex, lowest quality, not really usable,  uses 3.95kbits/s
+			-->
+	<snd>22</snd>
+	<sndSilencelevel>0</sndSilencelevel>
+	
+	<vcodec>sorenson</vcodec>
+		<!--
+		Flash Player 6  (released in 2002) and above supports encoding video with the Sorenson Spark codec.
+		Flash Player 11 (released in 2011) and above supports encoding video with both Sorenson Spark and H.264 .
+		
+		The vcodec tag in this XML file controls which of the supported video codecs is used to encode the video by HDFVR.
+		Possible values:
+			sorenson : use this value to encode video using the Sorenson Spark video codec regardless of the media server used.  All data will be saved in a .flv file.
+			h264_f 	 : use this value to encode video with H.264 codec when using Adobe Media Server. All data will be saved in a .f4v file.
+			h264_w   : use this value to encode video with H.264 codec when using Wowza. All data will be saved in a .flv file.
+			h264_w_t   : use this value to encode video with H.264 codec when using Wowza and the Transcoder AddOn to produce MP4 files containing AAC audio.  All data will be saved in a .flv file and in the corresponding .mp4 file with AAC audio. Use Speex for audio, the Transcoder AddOn only knows to decode Speex.
+			h264_r   : use this value to encode video with H.264 codec when using Red5. All data will be saved in a .flv file.
+		-->
+	
+</item>
 </bandwidth>

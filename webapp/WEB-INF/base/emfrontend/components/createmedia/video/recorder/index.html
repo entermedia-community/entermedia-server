@@ -1,156 +1,156 @@
-<div class="ui-widget uipanel" style="margin:20px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content" style="overflow: hidden;">		    
-<link rel="stylesheet" type="text/css" href="HDFVR-mobile.css"><script type="text/javascript" src="swfobject.js"></script>
+<div class="ui-widget uipanel" style="margin:20px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content" style="overflow: hidden;">		    
+<link rel="stylesheet" type="text/css" href="HDFVR-mobile.css"><script type="text/javascript" src="swfobject.js"></script>
 
-<script type="text/javascript">
-	var flashvars = {
+<script type="text/javascript">
+	var flashvars = {
 		userId : "XXY",#set($size =  "1024x768x15x85")#if($asset.bandwidth)	#set( $bandwidth = $mediaarchive.getData("bandwidth",$asset.bandwidth) )	#set( $size = $bandwidth.name )#end
-		qualityurl: "audio_video_quality_profiles/wide/${size}.xml",		recorderId: "$asset.getId()",		sscode: "html",		lstext : "Loading Settings..."	};
-	var params = {
+		qualityurl: "audio_video_quality_profiles/wide/${size}.xml",		recorderId: "$asset.getId()",		sscode: "html",		lstext : "Loading Settings..."	};
+	var params = {
 		quality : "high",
 		bgcolor : "#dfdfdf",
 		play : "true",
 		loop : "false",
 		allowscriptaccess: "sameDomain",
 		wmode:"transparent"
-	};
-	var attributes = {
-		name : "VideoRecorder",
-		id :   "VideoRecorder",
-		align : "middle"
+	};
+	var attributes = {
+		name : "VideoRecorder",
+		id :   "VideoRecorder",
+		align : "middle"
 	};	
-	
-	var mobile = false;
-	var ua = navigator.userAgent.toLowerCase();
-	if(ua.indexOf("ipad") != -1 || ua.indexOf("iphone") != -1 || ua.indexOf("android") != -1 || ua.indexOf("ipod") != -1 || ua.indexOf("windows ce") != -1 || ua.indexOf("windows phone") != -1){
-		mobile = true;
-	}
-	
-	if(mobile == false){
-		swfobject.embedSWF("VideoRecorder.swf", "hdfvr-content", "416", "312", "10.3.0", "", flashvars, params, attributes);
-	}else{
-		//do nothing
-	}
-</script>
-
-<!-- The following script is used for mobile devices ONLY -->
-<script type="text/javascript">
-$(document).ready(function() { 
-}); 
-window.onbeforeunload = function(){
-	if (navigator.appName == 'Microsoft Internet Explorer'){
-			var swf = document.getElementById('VideoRecorder');
-			swf.disconnectAndRemove();
-		}
-}togglevideo = function(){	if( $("#VideoRecorder").css('visibility') == 'visible')	{		$("#VideoRecorder").css('visibility', 'hidden');		$("#togglevideo").text("show");	}	else 	{		$("#VideoRecorder").css('visibility', 'visible');		$("#togglevideo").text("hide");				}}
-</script>
+	
+	var mobile = false;
+	var ua = navigator.userAgent.toLowerCase();
+	if(ua.indexOf("ipad") != -1 || ua.indexOf("iphone") != -1 || ua.indexOf("android") != -1 || ua.indexOf("ipod") != -1 || ua.indexOf("windows ce") != -1 || ua.indexOf("windows phone") != -1){
+		mobile = true;
+	}
+	
+	if(mobile == false){
+		swfobject.embedSWF("VideoRecorder.swf", "hdfvr-content", "416", "312", "10.3.0", "", flashvars, params, attributes);
+	}else{
+		//do nothing
+	}
+</script>
+
+<!-- The following script is used for mobile devices ONLY -->
+<script type="text/javascript">
+$(document).ready(function() { 
+}); 
+window.onbeforeunload = function(){
+	if (navigator.appName == 'Microsoft Internet Explorer'){
+			var swf = document.getElementById('VideoRecorder');
+			swf.disconnectAndRemove();
+		}
+}togglevideo = function(){	if( $("#VideoRecorder").css('visibility') == 'visible')	{		$("#VideoRecorder").css('visibility', 'hidden');		$("#togglevideo").text("show");	}	else 	{		$("#VideoRecorder").css('visibility', 'visible');		$("#togglevideo").text("hide");				}}
+</script>
 <div class="wrapper" id="livearea" style="margin:auto;float:left; text-align:right; width:416px;"><a href="#" id="togglevideo" onclick="togglevideo()">[[hide]]</a><br>
-	<div id="hdfvr-content" style="width:400px; >
-	<form action="uploadFromMobile.php" method="post" enctype="multipart/form-data" id="hdfvr-recording-form">
-		<input name="FileInput" id="hdfvr-file-input" type="file" accept="video/*" capture="camcorder" value="Start Recording" />
-		<input type="submit"  id="hdfvr-submit-btn" value="2. Upload"/>
-	</form>
-	<img src="loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
-	<div id="output"></div>
-	</div>	<div id="instructions">	<p>[[Click Red Record button to start live streaming]]</p>	</div></div>
-<div style="float:right;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>[[Live Stream Link]]</h4><div style="margin-left:12px"><a  class="btn" target="_new" title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">[[Live Stream Link]]</a></div><h4>[[Live Stream Embed Code]]</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>[[Screen Capture]]</h4><div style="margin-left:12px"><p>[[Download]] <a href="https://manycam.com/">ManyCam</a> ([[is limited to 720px]])</p></div></div>
-<script>			//document.VideoRecorder.record();		//$('#hdfvr-submit-btn').prop('value','Started Reorder');		
-	function userHasCamMic(cam_number,mic_number,recorderId){
-		//alert("userHasCamMic("+cam_number+","+mic_number+")");
-		//this function is called when HDFVR is initialized
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
+	<div id="hdfvr-content" style="width:400px; >
+	<form action="uploadFromMobile.php" method="post" enctype="multipart/form-data" id="hdfvr-recording-form">
+		<input name="FileInput" id="hdfvr-file-input" type="file" accept="video/*" capture="camcorder" value="Start Recording" />
+		<input type="submit"  id="hdfvr-submit-btn" value="2. Upload"/>
+	</form>
+	<img src="loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
+	<div id="output"></div>
+	</div>	<div id="instructions">	<p>[[Click Red Record button to start live streaming]]</p>	</div></div>
+<div style="float:right;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>[[Live Stream Link]]</h4><div style="margin-left:12px"><a  class="btn" target="_new" title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">[[Live Stream Link]]</a></div><h4>[[Live Stream Embed Code]]</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>[[Screen Capture]]</h4><div style="margin-left:12px"><p>[[Download]] <a href="https://manycam.com/">ManyCam</a> ([[is limited to 720px]])</p></div></div>
+<script>			//document.VideoRecorder.record();		//$('#hdfvr-submit-btn').prop('value','Started Reorder');		
+	function userHasCamMic(cam_number,mic_number,recorderId){
+		//alert("userHasCamMic("+cam_number+","+mic_number+")");
+		//this function is called when HDFVR is initialized
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function btRecordPressed(recorderId){
+		//alert("btRecordPressed");
+		//this function is called whenever the Record button is pressed to start a recording
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page		//document.getElementById("recordbtn").disabled = true;
+		//document.getElementById("stopBtn").disabled = false;		$("#instructions").html("Live stream is started");
+	}
 	
-	function btRecordPressed(recorderId){
-		//alert("btRecordPressed");
-		//this function is called whenever the Record button is pressed to start a recording
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page		//document.getElementById("recordbtn").disabled = true;
-		//document.getElementById("stopBtn").disabled = false;		$("#instructions").html("Live stream is started");
-	}
-	
-	function btStopRecordingPressed(recorderId)	{
-		document.VideoRecorder.save();//		alert("btStopRecordingPressed2");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		setTimeout( function() 		{				window.location.href = "$home$apphome/components/createmedia/video/recorder/finish.html?assetid=$asset.getId()";		}, 2000);				
-		//document.getElementById("recordbtn").disabled = false;
-		//document.getElementById("stopBtn").disabled = true;
-	}
-		function onUploadDone(streamName,streamDuration,userId,recorderId,audioCodec,videoCodec,fileType){
+	function btStopRecordingPressed(recorderId)	{
+		document.VideoRecorder.save();//		alert("btStopRecordingPressed2");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+		setTimeout( function() 		{				window.location.href = "$home$apphome/components/createmedia/video/recorder/finish.html?assetid=$asset.getId()";		}, 2000);				
+		//document.getElementById("recordbtn").disabled = false;
+		//document.getElementById("stopBtn").disabled = true;
+	}
+		function onUploadDone(streamName,streamDuration,userId,recorderId,audioCodec,videoCodec,fileType){
 		//alert("onUploadDone("+streamName+","+streamDuration+","+userId+")");	    alert("Upload done");
-		
-		//this function is called when the video/audio stream has been all sent to the video server and has been saved to the video server HHD, 
-		//on slow client->server connections, because the data can not reach the video server in real time, it is stored in the recorder's buffer until it is sent to the server, you can configure the buffer size in avc_settings.XXX
-		
-		//this function is called with 7 parameters: 
-		//streamName: a string representing the name of the stream recorded on the video server WITHOUT the filename extension (.flv , .f4v or .mp4)
-		//userId: the userId sent via flash vars or via the avc_settings.XXX file, the value in the avc_settings.XXX file takes precedence if its not empty
-		//duration of the recorded video/audio file in seconds but acccurate to the millisecond (like this: 4.322)
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		//audioCodec: the audio codec used for the recording, Nelly Moser or Speex
-		//videoCodec: the video codec used for the recording, Sorenson or H.264
-		//fileType: the format in which the resulting recording will be saved in: FLV, F4V or MP4
-	}
-	
-	function onFlashReady(recorderId){
-		//alert("onFlashReady()");
-		//you can now communicate with HDFVR using the JS Control API
-		//Example : document.VideoRecorder.record(); will make a call to flash in order to start recording
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onRecordingStarted(recorderId){
-		//alert("onRecordingStarted()")
-		//this function is called when HDFVR starts recording
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onCamAccess(allowed,recorderId){
-		//alert("onCamAccess("+allowed+")");
-		//the user clicked Allow or Deny in the Camera/Mic access dialog box in Flash Player
-		//when the user clicks Deny this function is called with allowed=false
-		//when the user clicks Allow this function is called with allowed=true
-		//you should wait for this function before allowing the user to cal the record() function on HDFVR
-		//this function can be called anytime during the life of the HDFVR instance as the user has permanent access to the Camera/Mic access dialog box in Flash Player
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		if (allowed){
-			document.getElementById("recordbtn").disabled = false
-		}else{
-			document.getElementById("recordbtn").disabled = true
-		}
-	}
-	
-	function onFPSChange(recorderId, currentFPS){
-		//console.log("onFPSChange()" + recorderId + " " + currentFPS);
-		//this function is called by HDFVR every second
-		//currentFPS:the current frames-per-second that HDFVR reports (during recording, playback, uploading and saving) depending of the state of HDFVR.
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onConnectionClosed(recorderId){
-		//alert("onConnectionClosed()" + recorderId);
-		//this function is called by HDFVR when the connection to the media server has been lost
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onConnectionStatus(status, recorderId){
-		//alert("onConnectionStatus()" + recorderId);
-		//this function is called by HDFVR for every connection event.
-		//status: the actual connection status: (connected, rejected, invalid app, closed, failed)
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onMicActivityLevel(recorderId, currentActivityLevel){
-		//console.log("onMicActivityLevel()" + recorderId + " " + currentActivityLevel);
-		//this function is called by HDFVR every second
-		//currentActivityLevel:The amount of sound the microphone is detecting
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-	}
-	
-	function onFFMPEGConversionFinished(recorderId, status, streamName){
-		//console.log("onFFMPEGConversionFinished()" + recorderId + " " + status + " " + streamName);
-		//this function is called by HDFVR after the conversion with FFMPEG has finished server side
-		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		//status: the status when the conversion is finished: success or fail
-		//streamName: the name of the stream for which the conversion finished
-	}
-	
+		
+		//this function is called when the video/audio stream has been all sent to the video server and has been saved to the video server HHD, 
+		//on slow client->server connections, because the data can not reach the video server in real time, it is stored in the recorder's buffer until it is sent to the server, you can configure the buffer size in avc_settings.XXX
+		
+		//this function is called with 7 parameters: 
+		//streamName: a string representing the name of the stream recorded on the video server WITHOUT the filename extension (.flv , .f4v or .mp4)
+		//userId: the userId sent via flash vars or via the avc_settings.XXX file, the value in the avc_settings.XXX file takes precedence if its not empty
+		//duration of the recorded video/audio file in seconds but acccurate to the millisecond (like this: 4.322)
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+		//audioCodec: the audio codec used for the recording, Nelly Moser or Speex
+		//videoCodec: the video codec used for the recording, Sorenson or H.264
+		//fileType: the format in which the resulting recording will be saved in: FLV, F4V or MP4
+	}
+	
+	function onFlashReady(recorderId){
+		//alert("onFlashReady()");
+		//you can now communicate with HDFVR using the JS Control API
+		//Example : document.VideoRecorder.record(); will make a call to flash in order to start recording
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onRecordingStarted(recorderId){
+		//alert("onRecordingStarted()")
+		//this function is called when HDFVR starts recording
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onCamAccess(allowed,recorderId){
+		//alert("onCamAccess("+allowed+")");
+		//the user clicked Allow or Deny in the Camera/Mic access dialog box in Flash Player
+		//when the user clicks Deny this function is called with allowed=false
+		//when the user clicks Allow this function is called with allowed=true
+		//you should wait for this function before allowing the user to cal the record() function on HDFVR
+		//this function can be called anytime during the life of the HDFVR instance as the user has permanent access to the Camera/Mic access dialog box in Flash Player
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+		if (allowed){
+			document.getElementById("recordbtn").disabled = false
+		}else{
+			document.getElementById("recordbtn").disabled = true
+		}
+	}
+	
+	function onFPSChange(recorderId, currentFPS){
+		//console.log("onFPSChange()" + recorderId + " " + currentFPS);
+		//this function is called by HDFVR every second
+		//currentFPS:the current frames-per-second that HDFVR reports (during recording, playback, uploading and saving) depending of the state of HDFVR.
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onConnectionClosed(recorderId){
+		//alert("onConnectionClosed()" + recorderId);
+		//this function is called by HDFVR when the connection to the media server has been lost
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onConnectionStatus(status, recorderId){
+		//alert("onConnectionStatus()" + recorderId);
+		//this function is called by HDFVR for every connection event.
+		//status: the actual connection status: (connected, rejected, invalid app, closed, failed)
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onMicActivityLevel(recorderId, currentActivityLevel){
+		//console.log("onMicActivityLevel()" + recorderId + " " + currentActivityLevel);
+		//this function is called by HDFVR every second
+		//currentActivityLevel:The amount of sound the microphone is detecting
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+	}
+	
+	function onFFMPEGConversionFinished(recorderId, status, streamName){
+		//console.log("onFFMPEGConversionFinished()" + recorderId + " " + status + " " + streamName);
+		//this function is called by HDFVR after the conversion with FFMPEG has finished server side
+		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
+		//status: the status when the conversion is finished: success or fail
+		//streamName: the name of the stream for which the conversion finished
+	}
+	
 </script></div></div>
