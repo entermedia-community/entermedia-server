@@ -53,14 +53,16 @@
 			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
 		 	#end
 			#if($caneditcollection)
+			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Notifications]]</a>
 			  #set( $link = "$home$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
+			  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Viewing Users]]</a>
 			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+			  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
               #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
+			  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
 			  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
 		   	#else
