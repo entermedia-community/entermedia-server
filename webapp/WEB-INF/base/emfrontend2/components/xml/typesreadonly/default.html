@@ -3,10 +3,11 @@
 ## $searcher
 ## $val
 ## $searcherManager
-#if($data.getHighlights($detail.id).size() > 0)
+#set( $highlights = $data.getHighlights($detail.id) )
+#if($highlights && $!highlights.isEmpty() )
 
 <ul class="highlightlist list-unstyled " >
-#foreach($item in $data.getHighlights($detail.getId()))
+#foreach($item in $highlights)
 <li>$item</li>
 #end
 </ul>
