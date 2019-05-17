@@ -1681,8 +1681,10 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 	}
 	public Boolean isOnTeam(LibraryCollection inCollection, String inUserid)
 	{
-		Data subscription = getMediaArchive().query("collectivesubscribers").
-				exact("collectionid",inCollection.getId()).exact("followeruser",inUserid).searchOne();
+		Data subscription = getMediaArchive().query("librarycollectionusers").
+				exact("collectionid",inCollection.getId()).
+				exact("ontheteam","true").
+				exact("followeruser",inUserid).searchOne();
 		return subscription != null;
 	}
 	
