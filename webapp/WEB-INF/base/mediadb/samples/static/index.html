@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title> EM Share</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=10">
+  <meta name="keywords" content=""/>
+  <meta name="description" content=""/>
+  <meta http-equiv="imagetoolbar" CONTENT="no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  
+  <meta name="MSSmartTagsPreventParsing" content="TRUE" />  
+  <meta name="robots" content="noindex">
+
+   	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery-3.3.1.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/liveajax/liveajax.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery.validation/jquery.validate.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/bootstrap.bundle.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/popper.min.js">  </script>
+	
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />>
+    
+<script>
+jQuery(document).ready(function() 
+{ 
+var collectionid = "AWrCWC6hx-5hLfzZDuMH";
+var mediadburl = "https://openinstitute.org/site/mediadb"
+
+	jQuery.ajax({
+		type: "GET",
+		url: mediadburl + "/services/module/librarycollection/viewassets.json?id=" + collectionid,
+		async: false,
+		data: {"entermedia.key":"apimd5426a08c3d031575080ed050cd0b40df78754e3d"},
+		error: function(data, status, err) {
+			console.log('from error:', data);
+		},
+		success: function(data) {
+
+			var img = mediadburl + "/services/module/asset/downloads/preset/";			
+
+			$.each(data, function(index, asset) {
+				var url = img + asset.sourcepath + "/image200x200.jpg";
+			
+				$("#stuff").append('<div class="media"><img class="d-flex mr-3" src="' + url + '">    <div class="media-body"><p class="card-text">' + asset.name + '</p></div></div><hr/>');				
+			});
+				
+			$(window).trigger( "resize" );
+			
+		},
+		failure: function(errMsg) {
+			alert(errMsg);
+		}
+	});
+});
+
+</script>
+
+</head>
+<body>
+
+<div class="container" id="stuff" >
+
+</div>
+
+</body>
+</html>

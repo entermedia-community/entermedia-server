@@ -1205,24 +1205,20 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 				if (visibility.equals("1") || visibility.equals("2")) {
 					return true;
 				}
-				if (visibility.equals("3")) {
-					Category root = collection.getCategory();
-					if (root == null) {
-						configureCollection(collection, inReq.getUserName());
-						root = collection.getCategory();
-
-					}
-					UserProfile profile = inReq.getUserProfile();
-					if (profile != null && profile.getViewCategories() != null) {
-						for (Category cat : profile.getViewCategories()) {
-							if (root.hasParent(cat.getId())) {
-								return true;
-							}
+			}
+			Category root = collection.getCategory();
+			if (root != null)
+			{
+				UserProfile profile = inReq.getUserProfile();
+				if (profile != null && profile.getViewCategories() != null) {
+					for (Category cat : profile.getViewCategories()) {
+						if (root.hasParent(cat.getId())) {
+							return true;
 						}
 					}
 				}
-				return false;
 			}
+			return false;
 
 			// //Check the library permissions?
 			// Data library = getMediaArchive().getData("library",

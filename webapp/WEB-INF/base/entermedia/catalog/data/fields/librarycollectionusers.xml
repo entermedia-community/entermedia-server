@@ -72,7 +72,7 @@
       <language id="fr"><![CDATA[Erreur]]></language> 
     </name> 
   </property>  
-  <property id="fromuser"  viewtype="user" type="list" listid="user" catalogid="assets/catalog" index="true" stored="true"   >
+  <property id="fromuser"  viewtype="user" type="list" listid="user" index="true" stored="true"   >
     <name>
       <language id="de"><![CDATA[gesendet von]]></language>
       <language id="en"><![CDATA[Added By]]></language>
