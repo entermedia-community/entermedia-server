@@ -182,9 +182,10 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			if( ok == null && inReq.getRequest() != null)
 			{
 				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY);
-				log.info("Found MD5 in Header" + md5);
+				log.info("Looking for key in " + inReq.getPathUrl() + " found " +md5);
 				if (md5 != null)
 				{
+					log.info("Found MD5 in Header" + md5);
 					ok = autoLoginFromMd5Value(inReq, md5);
 				}
 			}

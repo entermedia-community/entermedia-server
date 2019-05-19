@@ -1,7 +1,0 @@
-<page>
-	<property name="virtual">true</property>
-	<path-action name="JsonDataModule.handleSearch" alltypes="true"/>
-	<permission name="view">
-    		<action name="ProjectModule.checkViewCollection" />
-    </permission>
-</page>
