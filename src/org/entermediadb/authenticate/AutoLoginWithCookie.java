@@ -179,7 +179,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			{
 				String ct = inReq.getRequest().getContentType();
 				//"application/json; charset=utf-8", //This causes CORS to preflight
-				if(ct != null && (ct.contains("text/plain") || ct.contains("application/json") ) )
+				if(ct != null && ct.contains("application/json") )
 				{
 					inReq.getJsonRequest();
 				}
