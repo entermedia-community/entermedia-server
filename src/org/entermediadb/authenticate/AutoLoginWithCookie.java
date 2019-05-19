@@ -181,10 +181,12 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			}
 			if( ok == null && inReq.getRequest() != null)
 			{
-				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY);
-				log.info("Looking for key in " + inReq.getPathUrl() + " found " +md5);
+				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY); //If you get null headers in JSON make sure the user is logged in first
+				//Otherwise you might be getting the HTTP Method == settings that is checking for CORS crap see https://www.codeproject.com/Questions/1211743/Send-custom-header-with-jquery-not-working
 				if (md5 != null)
 				{
+					//log.info("Looking for key in " + inReq.getPathUrl() + " found " +md5);
+					
 					log.info("Found MD5 in Header" + md5);
 					ok = autoLoginFromMd5Value(inReq, md5);
 				}
