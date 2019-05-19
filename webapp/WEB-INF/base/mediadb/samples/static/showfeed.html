@@ -24,18 +24,20 @@
 <script>
 jQuery(document).ready(function() 
 { 
-var collectionid = getUrlParameter("collectionid");
 //var mediadburl = "http://localhost:8080/site/mediadb"
 var mediadburl = "https://openinstitute.org/site/mediadb"
 var entermediakey = "apiusermd5420e30b30f809e600873d0f29690f309b170eb0db0e6";
+
+var collectionid = getUrlParameter("collectionid");
 	console.log("request data");
 	jQuery.ajax({
-		type: "GET",
+		type: "POST",
 		url: mediadburl + "/services/module/librarycollection/viewassets.json?id=" + collectionid,
 		async: false,
-		headers: {
-                'X-entermedia.key': entermediakey
-                },
+		data: JSON.stringify( {
+                'entermedia.key': entermediakey
+              }),
+        contentType: "text/plain" ,      
 		error: function(data, status, err) {
 			console.log('from error:', data);
 		},

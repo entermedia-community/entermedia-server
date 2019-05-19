@@ -174,6 +174,17 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		}
 		if (ok == null)
 		{
+			
+			if( inReq.getRequest() != null)
+			{
+				String ct = inReq.getRequest().getContentType();
+				//"application/json; charset=utf-8", //This causes CORS to preflight
+				if(ct != null && (ct.contains("text/plain") || ct.contains("application/json") ) )
+				{
+					inReq.getJsonRequest();
+				}
+			}
+			
 			String md5 = inReq.getRequestParameter(ENTERMEDIAKEY);
 			if (md5 != null)
 			{
