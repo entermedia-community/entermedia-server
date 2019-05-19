@@ -27,13 +27,15 @@ jQuery(document).ready(function()
 var collectionid = getUrlParameter("collectionid");
 //var mediadburl = "http://localhost:8080/site/mediadb"
 var mediadburl = "https://openinstitute.org/site/mediadb"
-var cookielogin = "apiusermd5420e30b30f809e600873d0f29690f309b170eb0db0e6";
+var entermediakey = "apiusermd5420e30b30f809e600873d0f29690f309b170eb0db0e6";
 	console.log("request data");
 	jQuery.ajax({
 		type: "GET",
 		url: mediadburl + "/services/module/librarycollection/viewassets.json?id=" + collectionid,
 		async: false,
-		data: {"entermedia.key":cookielogin},
+		headers: {
+                'entermedia.key': entermediakey
+                },
 		error: function(data, status, err) {
 			console.log('from error:', data);
 		},
