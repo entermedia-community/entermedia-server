@@ -23,51 +23,39 @@
     
 <script>
 jQuery(document).ready(function() 
-{
- 
+{ 
 //var collectionid = "AWrCWC6hx-5hLfzZDuMH";
-//var libraryid = "AWrBXnMANjyARyxuxhOA";
+//var mediadburl = "https://openinstitute.org/site/mediadb"
+var collectionid = getUrlParameter("collectionid");
 var mediadburl = "http://localhost:8080/site/mediadb"
-var libraryid = "collectives";
 var cookielogin = "apimd5426a08c3d031575080ed050cd0b40df78754e3d";
-
 	console.log("request data");
 	jQuery.ajax({
-		type: "POST",
-		url: mediadburl + "/services/module/librarycollection/search",
+		type: "GET",
+		url: mediadburl + "/services/module/librarycollection/viewassets.json?id=" + collectionid,
 		async: false,
-		data: JSON.stringify(
-			{
-			  "page": "1",
-			  "hitsperpage": "20",
-			  "query": {
-			    "terms": [
-			      {
-			        "field": "library",
-			        "operator": "exact",
-			        "value": libraryid
-			      }
-			    ]
-			  }
-			}
-		),
-    	contentType: "application/json; charset=utf-8",
+		data: {"entermedia.key":cookielogin},
 		error: function(data, status, err) {
 			console.log('from error:', data);
 		},
-		success: function(json) {
-			console.log("Got data back",json);
+		success: function(data) {
+			console.log("Got data back",data);
 			var imgurl = mediadburl + "/services/module/asset/downloads/preset/";			
-			var size = json.response.totalhits;
-			if( size == 0)
-			{
-				$("#results").append('No collections found');
-			}
-			$.each(json.results, function(index, collection) 
+
+			$.each(data, function(index, asset) 
 			{			
-				$("#results").append('<div class="media">');
-				$("#results").append('<a href="showfeed.html?collectionid=' + collection.id + '">' + collection.name + '</a>');
-				$("#results").append('</div><hr/>');
+				$("#stuff").append('<div class="media">');
+				if( asset.assettype == "video")
+				{
+					$("#stuff").append('<iframe src="' + mediadburl + '/services/module/asset/players/play/' + asset.id + '.html" width="550" height="400" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true"></iframe>');
+				}
+				else
+				{
+					var url = imgurl + asset.sourcepath + "/image730x480cropped.jpg";
+				
+					$("#stuff").append('<img class="d-flex mr-3" src="' + url + '">    <div class="media-body"><p class="card-text">' + asset.name + '</p></div>');				
+				}
+				$("#stuff").append('</div><hr/>');
 			});
 				
 			$(window).trigger( "resize" );
@@ -79,23 +67,28 @@ var cookielogin = "apimd5426a08c3d031575080ed050cd0b40df78754e3d";
 	});
 });
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
 </script>
 
 </head>
 <body>
 
+<div class="container" id="stuff" >
 
-<div class="card" style="margin:100px;">
-  <div class="card-header">
-Static HTML Example
-  </div>
-  <div class="card-body">
-    <p class="card-text">Select a channel</p>
-	<div class="container" id="results" ></div>
-
-  </div>
 </div>
-
 
 </body>
 </html>
