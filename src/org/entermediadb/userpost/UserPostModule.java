@@ -2,6 +2,7 @@ package org.entermediadb.userpost;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -41,13 +42,14 @@ public class UserPostModule extends BaseMediaModule
 			HitTracker results = searcher.query().exact("useruploadid", useruploadid).sort("dateDown").search();
 			results.setHitsPerPage(10);
 			Collection page = results.getPageOfHits();
-			Collection loaded = new ArrayList();
+			ArrayList loaded = new ArrayList();
 			for (Iterator iterator = page.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
 				PostComment comment = (PostComment)searcher.loadData(data);
 				loaded.add(comment);
 			}
+			Collections.reverse(loaded);
 			inReq.putPageValue("comments", loaded);
 		}
 		
