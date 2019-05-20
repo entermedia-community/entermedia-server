@@ -111,7 +111,7 @@ $(document).ready(function()
         }
         else {
             reloadurl = prefix + "?nodeID="+ nodeid + "&collectionid=" + collectionid;
-            console.log(prefix);
+            //console.log(prefix);
         }
         
 		
@@ -146,7 +146,7 @@ $(document).ready(function()
 				function(data) 
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
-					console.log(cell);
+					//console.log(cell);
 					cell.replaceWith(data);
 					//cell.html(data);
 					//window.location.hash="TOP";
@@ -207,7 +207,7 @@ $(document).ready(function()
        	var node = input.closest(".noderow");
        	var tree = input.closest(".emtree");
        	var value = input.val();
-       	console.log("childnode",node);
+       	//console.log("childnode",node);
        	var nodeid = node.data('nodeid');
 		if( event.keyCode == 13 ) 
 	  	{
@@ -222,7 +222,7 @@ $(document).ready(function()
 			{
 				node = node.parent(".noderow");
 				nodeid = node.data("nodeid");
-				console.log("Dont want to save",node);
+				//console.log("Dont want to save",node);
 				if(nodeid != undefined)
 				{
 					link = link + "&parentNodeID=" + nodeid;
@@ -270,6 +270,7 @@ $(document).ready(function()
 	{
 				event.stopPropagation();
 				var node = getNode(this);
+				var nodeid = node.data('nodeid');
 				var tree = node.closest(".emtree");
 				var maxlevel = 2;
 				
@@ -287,6 +288,7 @@ $(document).ready(function()
                     }
                     var maxlevel = 1;
 					gotopage(tree,node,maxlevel,url);
+					
 					//document.location.href = url; 
 				
 				}
@@ -299,6 +301,8 @@ $(document).ready(function()
 				
 					//document.location.href = url; 
 				}
+				$(".treerow").removeClass("cat-current");
+				$("#"+nodeid+"_row > .treerow").addClass("cat-current");
 				
 						
 				return false;
@@ -324,7 +328,7 @@ $(document).ready(function()
 		var agree=confirm("Are you sure you want to delete?");
 		if (agree)
 		{
-			console.log("removing",node, nodeid);
+			//console.log("removing",node, nodeid);
 			var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
 			$.get(link, function(data) 
 			{
