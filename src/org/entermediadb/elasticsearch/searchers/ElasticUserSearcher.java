@@ -31,7 +31,8 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 {
 	private static final Log log = LogFactory.getLog(ElasticUserSearcher.class);
 	protected XmlUserArchive fieldXmlUserArchive;
-
+	private User NULLUSER = new BaseUser();
+	
 	@Override
 	public Data createNewData()
 	{
@@ -110,9 +111,36 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	 */
 	public User getUser(String inAccount)
 	{
-		User user = (User)searchById(inAccount);
-		return user;
+		return getUser(inAccount,false);
 	}
+	@Override
+	public User getUser(String inAccount, boolean inCached)
+	{
+		if( inCached)
+		{
+			User user = (User)getCacheManager().get("usercache",inAccount);
+			if( user == null)
+			{
+				user = (User)searchById(inAccount);
+				if( user == null)
+				{
+					user = NULLUSER;
+				}
+				getCacheManager().put("usercache", inAccount, user);
+			}
+			if( user == NULLUSER)
+			{
+				return null;
+			}
+			return user;
+		}
+		else
+		{
+			User user = (User)searchById(inAccount);
+			return user; 
+		}
+	}
+
 
 	protected GroupSearcher getGroupSearcher()
 	{
@@ -155,6 +183,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
 			getXmlUserArchive().saveUser(user);
+			getCacheManager().remove("usercache",user.getId());
 		}
 		super.saveAllData(inAll, inUser);
 	
@@ -163,6 +192,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public void saveData(Data inData, User inUser)
 	{
 		getXmlUserArchive().saveUser((User)inData);
+		getCacheManager().remove("usercache",inData.getId());
 
 		super.saveData(inData, inUser); //update the index
 	}
@@ -180,6 +210,8 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		}
 		super.delete(user, inUser); //delete the index
 		getXmlUserArchive().deleteUser(user);
+		getCacheManager().remove("usercache",user.getId());
+
 	}
 	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
@@ -279,4 +311,5 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	{
 		return getXmlUserArchive().decryptPassword(inUser);
 	}
+
 }

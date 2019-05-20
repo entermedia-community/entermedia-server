@@ -1464,6 +1464,7 @@
 			<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
+		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 	
 	</bean>
 	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
@@ -2226,6 +2227,13 @@
 	    <property name="localeManager"><ref bean="localeManager"/></property>
 	    <property name="translator"><ref bean="translator"/></property>
 	</bean>
-		
+
+	<bean id="UserPostModule" class="org.entermediadb.userpost.UserPostModule">
+	</bean>
+
+	<bean id="postComment" class="org.entermediadb.userpost.PostComment"  scope="prototype">
+	    <property name="localeManager"><ref bean="localeManager"/></property>
+		<property name="userManager"><ref bean="userManager"/></property>
+	</bean>
 		
 </beans>
