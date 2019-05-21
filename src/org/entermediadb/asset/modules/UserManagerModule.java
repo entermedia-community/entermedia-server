@@ -1409,8 +1409,13 @@ public class UserManagerModule extends BaseMediaModule
 			getSearcherManager().getSearcher("system", "user").saveData(user, inReq.getUser());
 			
 		}
-		
-		
 	}
 	
+	public void loadUserByFolder(WebPageRequest inReq)
+	{
+		String path = inReq.getPath();
+		String username = PathUtilities.extractDirectoryName(path);
+		User user = getUserManager(inReq).getUser(username);
+		inReq.putPageValue("selecteduser", user);
+	}
 }
