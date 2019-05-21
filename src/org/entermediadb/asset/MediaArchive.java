@@ -1891,7 +1891,7 @@ public class MediaArchive implements CatalogEnabled
 
 	public User getUser(String inId)
 	{
-		User user = getUserManager().getUserSearcher().getUser(inId);
+		User user = getUserManager().getUserSearcher().getUser(inId,true);
 		return user;
 	}
 

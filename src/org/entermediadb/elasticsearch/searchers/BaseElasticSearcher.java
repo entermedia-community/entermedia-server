@@ -693,7 +693,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
-			log.info(content);
+			//log.info(getSearchType() + " " + content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)

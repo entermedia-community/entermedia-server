@@ -949,7 +949,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			
 		}
 		catch (Throwable e)
-		{ reindexhistory = reindexlogs.createNewData();
+		{ 
+			reindexhistory = reindexlogs.createNewData();
 		reindexhistory.setValue("date", new Date());
 		reindexhistory.setValue("operation", "failed");
 		reindexhistory.setValue("catalogid", inCatalogId);
