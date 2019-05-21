@@ -482,6 +482,8 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("oe-exception", "User has been disabled");
 					inReq.putPageValue("disabled", true);
 					inReq.putPageValue("invaliduser", inUser);
+					getUserManager(inReq).fireUserEvent(inUser, "disabled");
+
 					return false;
 				}
 			}
