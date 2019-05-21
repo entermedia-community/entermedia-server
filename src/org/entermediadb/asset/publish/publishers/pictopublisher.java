@@ -8,6 +8,8 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +46,19 @@ public class pictopublisher extends BasePublisher implements Publisher
 
 	private static final Log log = LogFactory.getLog(pictopublisher.class);
 	private static final Pattern pat = Pattern.compile(".*\"access_token\"\\s*:\\s*\"([^\"]+)\".*");
+	
+	private static Map UserRestInstruction = new HashMap(); //rightsusageinstructions 
+	
+	static {
+		UserRestInstruction.put("1", new String[] {"nouvelle"});
+		UserRestInstruction.put("2", new String[] {"emission"});
+		UserRestInstruction.put("3", new String[] {"exclusif"});
+		UserRestInstruction.put("4", new String[] {"equitable"});
+		UserRestInstruction.put("5", new String[] {"autre", "Utilisation éditoriale seulement"});
+		UserRestInstruction.put("6", new String[] {"autre", "Utilisation éditoriale seulement"});
+	}
+	
+	private static String RESTRICTIONS = "[{\"author\":\"{username}\",\"RestrictionType\":\"{restrictionType}\", \"description\":\"restrinctionOtherSpecs\", \"active\":true}}]";
 	
 	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
@@ -104,20 +119,61 @@ public class pictopublisher extends BasePublisher implements Publisher
 	 * 
 	 */
 	private void publish(Data inDestination, Asset inAsset, File f, String accessToken) throws ClientProtocolException, IOException, HttpException {
-		
+		/*
+		 * restrictions = $"[{{\"author\":\"{sender.DisplayName}\",\"RestrictionType\":\"autre\", \"description\":\"{mediaGroupParent.TermsOfUse}\", \"active\":true}}]";
+           content.Add(new StringContent(restrictions), "\"restrictions\"");
+		 */
 		String addr = inDestination.get("url");
 		String filePath = f.getAbsolutePath();
 		log.info("**** publishAPicto publish filePath "+filePath + " to "+ addr);
 		
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		String legend = getParam(inAsset, "longcaption", "N/A");
+		
+		String legend = getParam(inAsset, "name", "N/A");
+		String alt = getParam(inAsset, "longcaption", "N/A");
+		
+		//String legend = getParam(inAsset, "longcaption", "N/A");
 		String agency = getParam(inAsset, "copyrightnotice", "");	
 		String credit = getParam(inAsset, "creator", "");	
 		String destination = getParam(inAsset, "name", "");
-		String username = getParam(inAsset, "username", "");
+		String username = getParam(inAsset, "username", "").trim().replace(" +", " "); //trim then replace middle spaces with a single space
+		String keywords = getParam(inAsset, "keyword", "").replace('|', '-');
+		if (keywords.length() == 0) {
+			keywords = alt;
+		}
 		String directory = "ici-info";	
 		String sub_directory = "Imagerie";	
-		
+		/*
+		boolean isRestricted = false;
+		String restriction = (String)inAsset.get("restrictions");
+		if (restriction != null && restriction.equals("2")) {
+			isRestricted = true;
+		}
+		*/
+		String restrinctionType = "";
+		String restrinctionOtherSpecs = "";
+		String[] rightUsage = (String[])UserRestInstruction.get(inAsset.get("rightsusageinstructions"));
+		if (rightUsage != null) {
+			restrinctionType = rightUsage[0];
+			if (rightUsage.length == 2) {
+				restrinctionOtherSpecs = rightUsage[2];
+			}
+		}
+		String termVal = (String)inAsset.get("rightsusageterms");
+		if (termVal != null && termVal.length() > 0) {
+			//isRestricted = true;
+			restrinctionType = "autre";
+			restrinctionOtherSpecs = termVal;
+		}
+		String restrictions = "";
+		if (restrinctionType != null) {
+			restrictions = RESTRICTIONS.replace("{username}", username)
+					.replace("{restrictionType}", restrinctionType)
+					.replace("{restrinctionOtherSpecs}", restrinctionOtherSpecs);
+			
+			
+			//restrictions = "\"["{"author":"YAHIA HARKATI","RestrictionType":"equitable", "description":"un dernier exemple equitable", "active":true}]";
+		}
 		log.info("\t legend: "+legend);
 		log.info("\t agency: "+agency);
 		log.info("\t credit: "+credit);
@@ -129,13 +185,15 @@ public class pictopublisher extends BasePublisher implements Publisher
 			    .create()
 			    .addTextBody("destination", destination)
 			    .addTextBody("directory", directory)
-			    .addTextBody("alt", "alt")
+			    .addTextBody("alt", alt)
+			    .addTextBody("language", "fr")
 			    .addTextBody("overwrite", "true")
 			    .addTextBody("autoDeclinaison", "true")
 			    .addTextBody("legend", legend)
 			    .addTextBody("agency", agency)
+			    .addTextBody("keywords", keywords) //TODO insure keywords field is good in picto
 			    .addTextBody("credit", credit)
-			    .addTextBody("username", username.trim())
+			    .addTextBody("username", username)  
 			    //.addTextBody("subdirectory", sub_directory)
 			    .addBinaryBody("source", f/*new File(filePath)*/, ContentType.create("image/jpeg"), f.getName());
 			
