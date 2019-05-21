@@ -54,7 +54,7 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	public Data getLibrary()
 	{
 		Collection all = getLibraries();
-		if( all.isEmpty() )
+		if(all == null ||  all.isEmpty() )
 		{
 			return null;
 		}
