@@ -526,7 +526,7 @@ public class UserManagerModule extends BaseMediaModule
 
 	protected User getUser( WebPageRequest inReq ) throws OpenEditException
 	{
-		String username = inReq.getRequiredParameter( USERNAME_PARAMETER );
+		String username = inReq.getRequestParameter( USERNAME_PARAMETER );
 		if( username == null)
 		{
 			username = inReq.getRequiredParameter( "userid" );
