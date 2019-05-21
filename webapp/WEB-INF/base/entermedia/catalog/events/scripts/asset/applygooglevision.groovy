@@ -22,7 +22,7 @@ public void runit()
 		return null;
 	}
 	
-	HitTracker hits = mediaArchive.getAssetSearcher().query().match("googletagged", "false").search();
+	HitTracker hits = mediaArchive.getAssetSearcher().query().match("googletagged", "false").match("importstatus", "complete").search();
 	hits.each{
 		Data hit = it;
 		Asset asset = mediaArchive.getAsset(it.id);
