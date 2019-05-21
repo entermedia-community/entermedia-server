@@ -693,6 +693,23 @@ public class MediaArchive implements CatalogEnabled
 		Asset asset = (Asset) getAssetSearcher().searchById(inId);
 		return asset;
 	}
+	public Asset getCachedAsset(String inId)
+	{
+		if( inId == null)
+		{
+			return null;
+		}
+		Asset asset = (Asset)getCacheManager().get("assetcache", inId);
+		if( asset == null && inId != null)
+		{
+			asset = (Asset) getAssetSearcher().searchById(inId);
+			if( asset != null)
+			{
+				getCacheManager().put("assetcache", inId, asset);
+			}
+		}
+		return asset;
+	}
 
 	public String getSourcePathForPage(WebPageRequest inReq)
 	{

@@ -1413,9 +1413,13 @@ public class UserManagerModule extends BaseMediaModule
 	
 	public void loadUserByFolder(WebPageRequest inReq)
 	{
-		String path = inReq.getPath();
-		String username = PathUtilities.extractDirectoryName(path);
-		User user = getUserManager(inReq).getUser(username);
+		String selecteduser = inReq.getRequestParameter("userid");
+		if( selecteduser == null)
+		{
+			String path = inReq.getPath();
+			selecteduser = PathUtilities.extractDirectoryName(path);
+		}
+		User user = getUserManager(inReq).getUser(selecteduser);
 		inReq.putPageValue("selecteduser", user);
 	}
 }
