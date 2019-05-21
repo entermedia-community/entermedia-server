@@ -64,6 +64,19 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 	
+	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception {
+		String collectionroot = inReq.findValue("collectionroot");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		String finalpath = collectionroot + "/" + collection.getId() + "/" + collection.getName() + ".html";
+		//Selected Sub folder?
+		String nodeID = inReq.getRequestParameter("nodeID");
+		if (nodeID != null) {
+			finalpath = finalpath + "?nodeID="+nodeID;
+		}
+		inReq.redirect(finalpath);
+
+	}
+	
 	public void redirectToCategory(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
