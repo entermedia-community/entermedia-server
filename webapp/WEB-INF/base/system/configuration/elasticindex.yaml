@@ -12,6 +12,11 @@ analysis:
    tokenizer: "keyword"
    filter:
     - "lowercase"
+  sorter:
+   type: "custom"
+   tokenizer: "keyword"
+   filter:
+    - "lowercase"
   lowersnowball:
    tokenizer: "standard"
    char_filter: ["quotes"]

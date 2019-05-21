@@ -4926,4 +4926,37 @@ a.collectionbox.favorite
 .emfield-time .ui-datepicker-trigger { margin-left: 245px;}
 
 
+#cat-list .row {
+    padding: 7px 0;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+}
+#cat-list .row .category {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/folder-closed.gif') left 7px no-repeat;
+    margin: 0 3px;
+}
 
+
+#cat-list .row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-icon.png') left 7px no-repeat;
+    margin: 0 3px;
+}
+
+
+
+.collectionheader #cat-list .row .category {
+    background: url('../images/icons/box.png') top 3px left 0px no-repeat;
+    
+} 
+
+#cat-list a:hover {
+   text-decoration: underline;
+}
+#cat-list .delete-row {
+    margin-top: -15px;
+    margin-right: 5px;
+}

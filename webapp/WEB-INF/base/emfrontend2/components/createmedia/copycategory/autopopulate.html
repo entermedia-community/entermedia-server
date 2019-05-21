@@ -1,3 +1,6 @@
+ <div class="row">
+ <div class="col-md-12">
+ 
    <ul id="cat-list">
 
 
@@ -32,29 +35,24 @@
 			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-				#set( $thumbpath =  "/${applicationid}/images/mimetypes/${mime}.png" )
+				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
 				<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
 						
-						<a class="" style="padding-left: 18px;" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset</a>
+						<a class="" style="padding-left: 18px;" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset.name</a>
 							<div class="collectionIcons">
 			
 							<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
 			
 							</div>
 		
-						<a class="asset" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset</a>
-						<div class="collectionIcons">
-		
-						<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
-		
-						</div>
+						
 			</li>
 		#end
 		
 		</ul>
 
-   
-   
+   </div>
+ </div>
    
    <script type="text/javascript">
    jQuery("#select-all").on("click", function () {

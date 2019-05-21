@@ -1,3 +1,5 @@
+	<div style="width: 90%;">
+	
 	#set ($existing = $context.getRequestParameter("category.value") )
 	   <input type="hidden" id="categoryvalues" name="category.value" value="$!existing" />
 	   
@@ -9,14 +11,12 @@
 			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 				<input type="hidden" id="categoryvalues" name="categoryid" value="$categoryid" />
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath()</a>
-				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
 							<span class="ui-icon ui-icon-closethick  auto-remove" data-categoryid="$categoryid"></span>
 						</a>
-				</div>
 			</li>
 			#end
 		#end
 		</ul>
 	
-	
+	</div>
