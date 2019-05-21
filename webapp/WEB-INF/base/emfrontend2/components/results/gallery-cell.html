@@ -26,7 +26,19 @@
 	#if( $showcaption )
 	<div class="gallery-caption">
 		<div class="gallery-field-info">
-			<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context) #end</a>
+			  #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		         #if($stackedfield)
+		         	#set($title = $hit.get($stackedfield))
+				 #end
+				 #if(!$title)		         	
+		         
+		         
+		         #if( $hit.assettitle )
+		         
+		         #set($title =  $hit.assettitle) #else #set($title = $hit.name) #end
+		         #end
+
+<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> $title</a>
 		</div>
 		#if($canviewbasket)
 		$pages.include("$componenthome/basket/toggleitem.html", $context)
