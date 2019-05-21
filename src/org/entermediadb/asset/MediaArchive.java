@@ -2219,6 +2219,18 @@ public class MediaArchive implements CatalogEnabled
 		return getModuleManager().getBean(getCatalogId(), inId);
 	}
 
+	public String asLinkToProfile(String assetid)
+	{
+		if( assetid != null)
+		{
+			Asset asset = getCachedAsset(assetid);
+			if( asset != null)
+			{
+				return asLinkToPreview(asset, null, "image200x200.jpg");
+			}
+		}
+		return null;
+	}	
 
 	
 	public String asLinkToPreview(Data inAsset, String inGeneratedName) {
