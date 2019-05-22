@@ -465,3 +465,25 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
         "cluster.routing.allocation.disk.watermark.high" : "2gb"
     }
 }'
+
+
+
+curl -XGET 'http://localhost:9200/_analyze' -d '
+{
+  "analyzer": "standard",
+  "text": "Text to analyze"
+}
+'| python -mjson.tool
+
+
+
+curl -XGET 'http://localhost:9200/_analyze' -d '
+{
+  "analyzer": "lowersnowball",
+  "text": "HL_06_19_42_DRY.wav"
+}
+'| python -mjson.tool
+
+
+
+
