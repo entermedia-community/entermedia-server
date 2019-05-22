@@ -597,7 +597,23 @@ public class BaseElasticSearcher extends BaseSearcher
 			// detail.setId("namesorted");
 			// props.add(detail);
 			// }
+			
+			jsonproperties = jsonproperties.startObject("mastereditclusterid");
+			jsonproperties = jsonproperties.field("type", "string");
+			jsonproperties = jsonproperties.field("index", "not_analyzed");
+			jsonproperties = jsonproperties.field("include_in_all", "true");
+			jsonproperties = jsonproperties.field("store", "false");
 
+			jsonproperties = jsonproperties.endObject();
+			
+			
+			jsonproperties = jsonproperties.startObject("recordmodificationdate");
+			jsonproperties = jsonproperties.field("type", "date");
+			jsonproperties = jsonproperties.field("store", "true");
+
+			jsonproperties = jsonproperties.endObject();
+			
+			
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
@@ -613,10 +629,12 @@ public class BaseElasticSearcher extends BaseSearcher
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains(".")) //TODO: Check search type instead?
+				if ("_parent".equals(detail.getId()) || detail.getId().contains(".") || "recordmodificationdate".equals(detail.getId()) || "mastereditclusterid".equals(detail.getId()) ) //TODO: Check search type instead?
 				{
 					continue;
 				}
+				
+				
 
 				if (detail.isMultiLanguage())
 				{
@@ -1197,10 +1215,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
 
+				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
+				
+				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				or.should(text);
 				or.should(text2);
-
+				or.should(text3);
+				
 				find = or;
 				// TODO: Use RegEx to check for this
 
@@ -1824,17 +1846,18 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
 	{
 
-		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-		if (hasmaster != null)
-		{
-			if (inData.getValue("mastereditclusterid") == null)
-			{
+		
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId());
+				
+				String localClusterId = getElasticNodeManager().getLocalClusterId();
+				String currentid = inData.get("mastereditcluserid");
+				if(currentid == null) {
+					currentid = localClusterId;
+				}
+				content.field("mastereditclusterid", currentid);
 				content.field("recordmodificationdate", new Date());
 
-			}
-		}
+		
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
