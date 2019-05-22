@@ -318,6 +318,9 @@ a {
     line-height: 1.3;
     height:calc(1.5rem + .5rem);
 }
+.form-check {
+	height: calc(1rem + .5rem);
+}
 .input-group-text {
 	padding:.15rem .75rem;
 }
