@@ -1653,24 +1653,33 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 	{
 		//See if we have a station
 		String selectedlibrary = inReq.getRequestParameter("libraryid");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker collections = null;
 		HitTracker topuploads = null;
-		if( selectedlibrary == null || selectedlibrary.equals("*"))
+		
+		if( collection != null)
 		{
-			builder.all();
+			builder.exact("librarycollection", collection.getId());
 		}
 		else
 		{
-			//get all the collections for this Library
-			collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
-			//log.info("done" + collections.size());
-			if( !collections.isEmpty() )
+			if( selectedlibrary == null || selectedlibrary.equals("*"))
 			{
-				builder.orgroup("librarycollection", collections);
+				builder.all();
+			}
+			else
+			{
+				//get all the collections for this Library
+				collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
+				//log.info("done" + collections.size());
+				if( !collections.isEmpty() )
+				{
+					builder.orgroup("librarycollection", collections);
+				}
 			}
 		}
-		
 		String topic = inReq.getRequestParameter("topic");
 		if( topic != null)
 		{
