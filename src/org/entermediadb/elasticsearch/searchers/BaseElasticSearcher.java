@@ -1218,8 +1218,9 @@ public class BaseElasticSearcher extends BaseSearcher
 				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
 				
 				
-				MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+				MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof.toLowerCase());
 				phrase.maxExpansions(75);
+				phrase.analyzer("lowersnowball");
 				
 				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
