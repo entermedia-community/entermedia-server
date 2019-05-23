@@ -1218,10 +1218,15 @@ public class BaseElasticSearcher extends BaseSearcher
 				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
 				
 				
+				MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+				phrase.maxExpansions(75);
+				
+				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				or.should(text);
 				or.should(text2);
 				or.should(text3);
+				or.should(phrase);
 				
 				find = or;
 				// TODO: Use RegEx to check for this
