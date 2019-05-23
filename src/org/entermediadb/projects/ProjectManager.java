@@ -1659,7 +1659,6 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		if( selectedlibrary == null || selectedlibrary.equals("*"))
 		{
 			builder.all();
-			topuploads = builder.sort("uploaddateDown").search();
 		}
 		else
 		{
@@ -1669,9 +1668,16 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 			if( !collections.isEmpty() )
 			{
 				builder.orgroup("librarycollection", collections);
-				topuploads = builder.sort("uploaddateDown").search();
 			}
 		}
+		
+		String topic = inReq.getRequestParameter("topic");
+		if( topic != null)
+		{
+			builder.exact("collectiveproject", topic);
+		}
+		
+		topuploads = builder.sort("uploaddateDown").search();
 		inReq.putPageValue("topuploads",topuploads);
 
 	}
