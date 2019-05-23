@@ -1690,4 +1690,9 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		return subscription != null;
 	}
 	
+	public String formatedText(String inText) {
+		inText = inText.replaceAll("(\r\n|\n)", "<br />");
+		return inText;
+	}
+	
 }
