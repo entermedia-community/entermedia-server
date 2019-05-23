@@ -18,8 +18,11 @@
 
 #set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
 
-<div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
-<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" >
+<div  id="${detailid}-previewlink" >
+<table>
+<tr>
+<td>
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none; margin-right:10px; display:block" >
 
 	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
 	
@@ -30,14 +33,15 @@
 	$context.putPageValue("thumbsize", "image200x200.jpg")
   	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 </a>
-
+</td>
 #if($foundrow && !$context.getRequestParameter("readonly") == "true")
-<br>
-<a href="#"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' > [[clear]]</a>
+<td style="vertical-align: bottom;">
+<a href="#" class="btn btn-xs btn-secondary"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' ><i class="fas fa-times"></i> [[clear]]</a>
+</td>
 #end
-
+</table>
 </div>
-
+<div class="clearfix"></div>
 	#if( $type == "audio")
 	<a href="$click" alt="$foundrow" class="audio-filename"> $foundrow.name	</a>
 	#end
