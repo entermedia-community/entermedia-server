@@ -26,7 +26,7 @@
 				#foreach($entry in $filternode.children)
 				<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 				##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
-				<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+				<input class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 				<label for="$entry.getId()${fieldname}_val"> $entry.getText($context) </label>
 				</a>
 				#end

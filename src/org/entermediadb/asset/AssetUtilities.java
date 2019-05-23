@@ -393,8 +393,10 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				{
 					uploadto = inArchive.getCategory(uploadcategoryid);
 				}
+				if(uploadto != null) {
 
 				vals.put("categorypath", uploadto.getCategoryPath());
+				}
 			}
 		}
 		String[] fields = inReq.getRequestParameters("field");
