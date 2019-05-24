@@ -22,12 +22,14 @@
 	
 	##Add back full screen button, Autoplay and escape handling
 	<div id="playarea-$hit.id" class="">
-		<video id="videopreview" class="video-js" 
-	#if($thumbsize == "postsize")	
-		width="730"
-	#else
-		width="520" height="340"
-	#end
+		<video id="videopreview" 
+				class="video-js vjs-default-skin vjs-big-play-centered" 
+				style="position:relative; width:100%!important;    height: 100%!important; " 
+	##if($thumbsize == "postsize")	
+	##	width="730"
+	##else
+	##	width="520" height="340"
+	##end
 			poster='$thumb'
 			#if( $autoplay && $autoplay == "true") autoplay #end
 			#if( $loop && $loop == "true") loop #end
@@ -50,7 +52,5 @@
 		</video>
 	</div>
 	
-	<script>
-		var myPlayer = videojs('videopreview');
-	</script>
+	
 #end
