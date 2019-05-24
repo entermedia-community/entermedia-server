@@ -459,10 +459,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			if( parentcategory != null)
 			{
 				found.setParentCategory(parentcategory);
-				log.info(parentcategory.isDirty());
+				//log.info(parentcategory.isDirty());
 				//parentcategory.addChild(found);
 				saveData(found);
-				log.info(parentcategory.isDirty());
+				//log.info(parentcategory.isDirty());
 
 				
 			}
