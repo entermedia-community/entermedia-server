@@ -1653,25 +1653,40 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 	{
 		//See if we have a station
 		String selectedlibrary = inReq.getRequestParameter("libraryid");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker collections = null;
 		HitTracker topuploads = null;
-		if( selectedlibrary == null || selectedlibrary.equals("*"))
+		
+		if( collection != null)
 		{
-			builder.all();
-			topuploads = builder.sort("uploaddateDown").search();
+			builder.exact("librarycollection", collection.getId());
 		}
 		else
 		{
-			//get all the collections for this Library
-			collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
-			//log.info("done" + collections.size());
-			if( !collections.isEmpty() )
+			if( selectedlibrary == null || selectedlibrary.equals("*"))
 			{
-				builder.orgroup("librarycollection", collections);
-				topuploads = builder.sort("uploaddateDown").search();
+				builder.all();
+			}
+			else
+			{
+				//get all the collections for this Library
+				collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
+				//log.info("done" + collections.size());
+				if( !collections.isEmpty() )
+				{
+					builder.orgroup("librarycollection", collections);
+				}
 			}
 		}
+		String topic = inReq.getRequestParameter("topic");
+		if( topic != null)
+		{
+			builder.exact("collectiveproject", topic);
+		}
+		
+		topuploads = builder.sort("uploaddateDown").search();
 		inReq.putPageValue("topuploads",topuploads);
 
 	}
@@ -1682,6 +1697,11 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 				exact("ontheteam","true").
 				exact("followeruser",inUserid).searchOne();
 		return subscription != null;
+	}
+	
+	public String formatedText(String inText) {
+		inText = inText.replaceAll("(\r\n|\n)", "<br />");
+		return inText;
 	}
 	
 }
