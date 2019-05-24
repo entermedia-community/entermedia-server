@@ -71,7 +71,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if(inParent== null || inParent.getId() == null) {
 			return new ArrayList();
 		}
-		Collection hits = query().exact("parentid", inParent.getId()).search();
+		HitTracker hits = query().exact("parentid", inParent.getId()).search();
+		hits.enableBulkOperations();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
@@ -457,8 +458,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			Category parentcategory = createCategoryPath(parent);
 			if( parentcategory != null)
 			{
-				parentcategory.addChild(found);
+				found.setParentCategory(parentcategory);
+				log.info(parentcategory.isDirty());
+				//parentcategory.addChild(found);
 				saveData(found);
+				log.info(parentcategory.isDirty());
+
+				
 			}
 		}
 		return found;
