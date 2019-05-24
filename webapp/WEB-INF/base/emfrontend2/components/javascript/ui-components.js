@@ -441,9 +441,9 @@ uiload = function() {
 		var hidescrolling = dialog.data("hidescrolling");
 
 		var width = dialog.data("width");
-		if (!width) {
+		/*if (!width) {
 			width = "800";
-		}
+		}*/
 
 		var id = "modals";
 		var modaldialog = $("#" + id);
@@ -470,7 +470,9 @@ uiload = function() {
 			history.pushState({}, null, urlbar);
 		}
 		modaldialog.load(link, options, function() {
-			$(".modal-lg").css("min-width", width + "px");
+			if (width) {
+				$(".modal-lg").css("min-width", width + "px");
+			}
 			// $(".modal-lg").css("min-height",height + "px" );
 			
 			var modalkeyboard = true;
