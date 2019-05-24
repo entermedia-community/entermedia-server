@@ -19,7 +19,7 @@
 
 
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->
-    <preset id="previewffmpeg" guid="ffmpeg480p" display="true" generatedoutputfile="video.mp4"  outputfile="video.mp4" outputextension="mp4"  fileexportformat="${shortfilename}proxy.mp4" transcoderid="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="06">Video MP4 Preview</preset>
+    <preset id="previewffmpeg" guid="ffmpeg480p" display="true" generatedoutputfile="video.mp4"  outputfile="video.mp4" outputextension="mp4"  fileexportformat="${shortfilename}proxy.mp4" transcoderid="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="0">Video MP4 Preview</preset>
     <preset id="previewflv" guid="ffmpegpreviewmp4" display="true" generatedoutputfile="video720x480.flv" outputextension="flv"  fileexportformat="${shortfilename}.flv" transcoderid="ffmpeg" extension="mp4" inputtype="video" ordering="07">Video FLV</preset>
     <preset id="2" guid="ffmpeg720p"  display="true" generatedoutputfile="video1280x720.avi" outputextension="avi"  fileexportformat="${shortfilename}HQ.avi" transcoderid="ffmpeg" inputtype="video" extension="avi" ordering="08">Video HQ AVI</preset>
     <preset id="1" guid="ffmpeg1080p" display="true" generatedoutputfile="video1920x1080.mp4" outputextension="mp4" fileexportformat="${shortfilename}1080p.mp4" transcoderid="ffmpeg" inputtype="video"  extension="mp4" ordering="09">Video HQ MP4</preset>
