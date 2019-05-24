@@ -8,7 +8,10 @@
 $!url_util.xmlEscape($text)
 #end
 #macro(linebreaks $text)
-#esc($text).replaceAll("(\r\n|\n)", "<br />")
+#if($text)
+#set($text = $url_util.xmlEscape($text))
+$text.replaceAll("(\r\n|\n)", "<br />")
+#end
 #end
 #macro( translate $text )
 $!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
