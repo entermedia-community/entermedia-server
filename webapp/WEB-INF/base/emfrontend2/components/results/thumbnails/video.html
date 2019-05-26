@@ -34,7 +34,7 @@
 			#if( $autoplay && $autoplay == "true") autoplay #end
 			#if( $loop && $loop == "true") loop #end
 			controls
-			preload="auto"
+			preload="none"
 			data-setup=''>
 			<source type="video/mp4" src="$source">
 			#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
