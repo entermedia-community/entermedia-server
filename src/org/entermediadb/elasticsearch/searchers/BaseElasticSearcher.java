@@ -86,6 +86,7 @@ import org.entermediadb.location.Position;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
@@ -104,6 +105,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 
 import groovy.json.JsonOutput;
+import groovy.json.JsonSlurper;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
@@ -2179,7 +2181,22 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (!(value instanceof Collection))
 					{
-						throw new OpenEditException("Data was not a collection " + value.getClass());
+						if( value instanceof String )
+						{
+							String[] values = MultiValued.VALUEDELMITER.split((String)value);
+							Collection objects = new ArrayList(values.length);
+							JsonSlurper slurper = new JsonSlurper();
+							for (int i = 0; i < values.length; i++)
+							{
+								Object map = slurper.parseText(values[i]);
+								objects.add(map);
+							}
+							value = objects;
+						}
+						else
+						{
+							throw new OpenEditException(inData.getId() + " / " + detail.getId() + " Data was not a collection or a string " + value.getClass());
+						}
 					}
 					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
 				}
