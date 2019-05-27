@@ -18,11 +18,11 @@
 	#set( $catalogid = $asset.catalogId )
 	
 	
-		
+	#set($assetidpostfix = $context.getPageValue("assetidpostfix"))
 	
 	##Add back full screen button, Autoplay and escape handling
-	<div id="playarea-$hit.id" class="">
-		<video id="videopreview" 
+	<div id="playarea-$hit.id$!assetidpostfix" class="">
+		<video id="videopreview-$hit.id$!assetidpostfix" 
 				class="video-js vjs-default-skin vjs-big-play-centered" 
 				style="position:relative; width:100%!important;    height: 100%!important; " 
 	##if($thumbsize == "postsize")	
@@ -51,6 +51,9 @@
 	      	#end
 		</video>
 	</div>
+	<script>
+		videojs("videopreview-$hit.id$!assetidpostfix"); 
+	</script>
 	
 	
 #end
