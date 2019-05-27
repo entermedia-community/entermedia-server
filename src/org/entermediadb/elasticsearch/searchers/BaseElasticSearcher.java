@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -105,7 +106,6 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 
 import groovy.json.JsonOutput;
-import groovy.json.JsonSlurper;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
@@ -2185,11 +2185,23 @@ public class BaseElasticSearcher extends BaseSearcher
 						{
 							String[] values = MultiValued.VALUEDELMITER.split((String)value);
 							Collection objects = new ArrayList(values.length);
-							JsonSlurper slurper = new JsonSlurper();
+							//JsonSlurper slurper = new JsonSlurper();
 							for (int i = 0; i < values.length; i++)
 							{
-								Object map = slurper.parseText(values[i]);
-								objects.add(map);
+								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
+								String text = values[i];
+								text = text.substring(1, text.length() -1);
+								String[] parts = text.split(",");
+								Map chunk = new HashMap();
+								for (int j = 0; j < parts.length; j++)
+								{
+									String ptext = parts[j];
+									int eq = ptext.indexOf("=");
+									String id = ptext.substring(0, eq);
+									String valtext = ptext.substring(eq+1, ptext.length());
+									chunk.put(id, valtext);
+								}
+								objects.add(chunk);
 							}
 							value = objects;
 						}
