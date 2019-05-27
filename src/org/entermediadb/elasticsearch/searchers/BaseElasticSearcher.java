@@ -2201,7 +2201,7 @@ public class BaseElasticSearcher extends BaseSearcher
 									{
 										String id = ptext.substring(0, eq);
 										String valtext = ptext.substring(eq+1, ptext.length());
-										chunk.put(id, valtext);
+										chunk.put(id.trim(), valtext.trim());
 									}	
 								}
 								objects.add(chunk);
