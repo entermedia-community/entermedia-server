@@ -2744,6 +2744,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (det.isDataType("objectarray"))
 				{
 					Object values = inData.getValue(det.getId());
+					if(values != null && values instanceof String)
+					{
+						//Spreadsheet import
+						inFullDesc.append(values);
+						inFullDesc.append(' ');
+						return;
+					}
+					
 					if (values != null && det.getObjectDetails() != null)
 					{
 						Collection maps = (Collection) values;
