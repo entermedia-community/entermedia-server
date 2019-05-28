@@ -25,8 +25,6 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
-import org.entermediadb.websocket.chat.ChatServer;
-import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -41,7 +39,6 @@ import org.openedit.event.WebEvent;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -1685,6 +1682,8 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		{
 			builder.exact("collectiveproject", topic);
 		}
+		boolean exclusive = Boolean.parseBoolean(inReq.findValue("exclusiveonly"));
+		builder.match("exclusivecontent", String.valueOf( exclusive));
 		
 		topuploads = builder.sort("uploaddateDown").search();
 		inReq.putPageValue("topuploads",topuploads);
