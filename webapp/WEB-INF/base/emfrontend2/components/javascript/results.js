@@ -422,31 +422,9 @@ $(document).ready(function(url,params)
 	}
 	initKeyBindings = function(hidden)
 	{
-		//Do we need keyup at all?
-		/*
-		$(document).keyup(function(e) 
-		{
-			if( !hidden.is(":visible") )
-			{
-				return;
-			}
-			switch(e.which) {
-		        case 27: // esc
-		        	if ($('#modals').hasClass('show')) {
-		        		//Close modal only
-		        		$('#modals').modal('hide');
-		        		e.stopPropagation();
-		        	}
-		        	else{
-		        		hideOverlayDiv(getOverlay());
-		        	}
-		        break;
-			    
-			    default: return; 
-		     }
-		});*/	
 		$(document).keydown(function(e) {
-			if( !hidden.is(":visible") )
+			
+			if( hidden && !hidden.is(":visible") )
 			{
 				return;
 			}
@@ -519,15 +497,17 @@ $(document).ready(function(url,params)
     }
     
     refreshresults = function() {
-        var href = home+'/views/modules/asset/index.html';
-        var searchdata = $("#resultsdiv").data();
-        searchdata.oemaxlevel = 1;
-        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
-            $('#searchlayout').html(data);
-            $(window).trigger( "resize" );
-        }
-        });
-
+		var resultsdiv = $("#resultsdiv");
+		if (resultsdiv.length) {
+	        var href = home+'/views/modules/asset/index.html';
+	        var searchdata = resultsdiv.data();
+	        searchdata.oemaxlevel = 1;
+	        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
+	            $('#searchlayout').html(data);
+	            $(window).trigger( "resize" );
+	        }
+	        });
+		}
     }
 	
 	lQuery('#jumptoform .jumpto-left').livequery('click',function(e)
