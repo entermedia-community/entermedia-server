@@ -1209,6 +1209,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				String query = "+(" + valueof + ")";
 
+
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
 				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 				text.analyzer("lowersnowball");
@@ -1216,6 +1217,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
+
 
 				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
 				
@@ -1229,7 +1231,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				or.should(text);
 				or.should(text2);
 				//or.should(text3);
-				or.should(phrase);
+				//or.should(phrase);
 				
 				find = or;
 				// TODO: Use RegEx to check for this
