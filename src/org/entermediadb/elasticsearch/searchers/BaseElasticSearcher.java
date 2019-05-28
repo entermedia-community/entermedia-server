@@ -1216,20 +1216,20 @@ public class BaseElasticSearcher extends BaseSearcher
 				text.defaultField("description");
 
 				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
-				text2.analyzer("lowersnowball");
+			//	text2.analyzer("lowersnowball");
 
 
 				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
 				
 				
-				MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof.toLowerCase());
+				MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery("description", valueof.toLowerCase());
 				phrase.maxExpansions(75);
 				phrase.analyzer("lowersnowball");
 				
 				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				or.should(text);
-				or.should(text2);
+				//or.should(text2);
 				//or.should(text3);
 				or.should(phrase);
 				
