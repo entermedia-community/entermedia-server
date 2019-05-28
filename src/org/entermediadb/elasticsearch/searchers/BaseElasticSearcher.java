@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -86,6 +87,7 @@ import org.entermediadb.location.Position;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
@@ -2179,7 +2181,37 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (!(value instanceof Collection))
 					{
-						throw new OpenEditException("Data was not a collection " + value.getClass());
+						if( value instanceof String )
+						{
+							String[] values = MultiValued.VALUEDELMITER.split((String)value);
+							Collection objects = new ArrayList(values.length);
+							//JsonSlurper slurper = new JsonSlurper();
+							for (int i = 0; i < values.length; i++)
+							{
+								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
+								String text = values[i];
+								text = text.substring(1, text.length() -1);
+								String[] parts = text.split(",");
+								Map chunk = new HashMap();
+								for (int j = 0; j < parts.length; j++)
+								{
+									String ptext = parts[j];
+									int eq = ptext.indexOf("=");
+									if( eq > 0)
+									{
+										String id = ptext.substring(0, eq);
+										String valtext = ptext.substring(eq+1, ptext.length());
+										chunk.put(id.trim(), valtext.trim());
+									}	
+								}
+								objects.add(chunk);
+							}
+							value = objects;
+						}
+						else
+						{
+							throw new OpenEditException(inData.getId() + " / " + detail.getId() + " Data was not a collection or a string " + value.getClass());
+						}
 					}
 					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
 				}
@@ -2744,6 +2776,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (det.isDataType("objectarray"))
 				{
 					Object values = inData.getValue(det.getId());
+					if(values != null && values instanceof String)
+					{
+						//Spreadsheet import
+						inFullDesc.append(values);
+						inFullDesc.append(' ');
+						return;
+					}
+					
 					if (values != null && det.getObjectDetails() != null)
 					{
 						Collection maps = (Collection) values;

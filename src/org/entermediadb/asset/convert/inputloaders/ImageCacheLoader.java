@@ -39,6 +39,14 @@ public class ImageCacheLoader implements InputLoader
 		}
 		if (item == null)
 		{
+			if("png".equals( inStructions.getOutputExtension() ) )
+			{
+				if( "png".equals( inStructions.getAsset().getFileFormat() ) )
+				{
+					return null;//use original
+				}
+				item = loadFile(inStructions, page, "png");
+			}
 			item = loadFile(inStructions, page, "jpg");
 		}
 
