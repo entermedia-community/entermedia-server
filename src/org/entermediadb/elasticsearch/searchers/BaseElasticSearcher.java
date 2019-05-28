@@ -1226,7 +1226,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				or.should(text);
 				or.should(text2);
-				or.should(text3);
+				//or.should(text3);
 				or.should(phrase);
 				
 				find = or;
