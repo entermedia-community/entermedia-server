@@ -1231,7 +1231,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				or.should(text);
 				or.should(text2);
 				//or.should(text3);
-				//or.should(phrase);
+				or.should(phrase);
 				
 				find = or;
 				// TODO: Use RegEx to check for this
