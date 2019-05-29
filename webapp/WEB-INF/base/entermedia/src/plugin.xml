@@ -1372,6 +1372,8 @@
 			<ref bean="xmlUtil" />
 		</property>
 		<property name="webServer"><ref bean="WebServer" /></property>		
+				<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 <!-- Remove this one day -->

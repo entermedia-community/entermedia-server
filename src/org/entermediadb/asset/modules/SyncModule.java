@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
 import org.entermediadb.asset.push.PushManager;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -278,7 +279,30 @@ public class SyncModule extends BaseMediaModule
 	}
 	
 	
-	
+	public void loadAll(WebPageRequest inReq ) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+        String sessionid = inReq.getRequestParameter("hitssessionid");
+        String lastmod = inReq.getRequestParameter("lastmod");
+        String page = inReq.getRequestParameter("page");
+        
+        HitTracker tracker = null;
+		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
+		if(sessionid != null) {
+			tracker = (HitTracker) inReq.getSessionValue(sessionid);
+		}
+		if(tracker == null) {
+			tracker = manager.getAllDocuments();
+			
+		}
+		if(page != null) {
+			tracker.setPage(Integer.parseInt(page));
+		}
+		tracker.enableBulkOperations();
+		inReq.putPageValue("hits", tracker);
+		inReq.putPageValue("manager", manager);
+
+	}
 	
 	
 }

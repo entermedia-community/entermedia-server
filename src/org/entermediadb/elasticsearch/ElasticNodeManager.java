@@ -51,13 +51,14 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
-import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkProcessor.Listener;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
@@ -71,6 +72,8 @@ import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.discovery.zen.elect.ElectMasterService;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
@@ -81,14 +84,18 @@ import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
+import com.carrotsearch.hppc.ObjectLookupContainer;
+import com.carrotsearch.hppc.cursors.ObjectCursor;
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 //ES5 class MyNode extends Node {
@@ -107,6 +114,21 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected Node fieldNode;
 	protected Map fieldIndexSettings;
 	protected boolean checkedNodeCount = false;
+	protected CacheManager fieldCacheManager;
+	
+	
+	
+	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
@@ -835,6 +857,43 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		return null;
 	}
+	
+	
+	public String getAliasForIndex(final String inIndex) {
+		
+		
+		String catalog = (String) getCacheManager().get("system", inIndex);
+		if(catalog != null) {
+			return catalog;
+		}
+		
+		AliasOrIndex indexToAliasesMap = getClient().admin().cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(inIndex);
+
+		if (indexToAliasesMap == null)
+		{
+			return null;
+		}
+
+		if (!indexToAliasesMap.isAlias())
+		{
+			//ES5 return indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
+		
+			IndexMetaData index = indexToAliasesMap.getIndices().iterator().next();
+			if(index.getAliases().size() > 0) {
+				ImmutableOpenMap aliases = index.getAliases();
+				ObjectLookupContainer bob = aliases.keys();
+				ObjectCursor key = (ObjectCursor) bob.iterator().next();
+				String catalogid = (String) key.value;
+				getCacheManager().put("system", inIndex, catalogid);
+				return catalogid;
+			}
+			 
+		}
+
+		return null;
+		
+		
+	}
 
 	protected void clearAlias(final String aliasName)
 	{
@@ -1309,5 +1368,25 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		return others;
 	}
+	
+	
+	
+	public HitTracker getAllDocuments() {
+		
+//		public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
+		SearchRequestBuilder search = getClient().prepareSearch();
+		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		//search.setTypes(getSearchType());
+		MatchAllQueryBuilder builder = QueryBuilders.matchAllQuery();
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, builder, 500);
+		//hits.setSearcherManager(getSearcherManager());
+		//hits.setIndexId(getIndexId());
+	//	hits.setSearcher(this);
+	//	hits.setSearchQuery(inQuery);
+		return hits;
+	}
+	
+	
+	
 
 }

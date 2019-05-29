@@ -1214,6 +1214,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
+				
+				
+				
+
+				
+				
 
 				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
 			//	text2.analyzer("lowersnowball");
