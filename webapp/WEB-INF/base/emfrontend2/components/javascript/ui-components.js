@@ -204,27 +204,6 @@ uiload = function() {
     	});;
 	});
 
-	lQuery(".force-validate-inputs").livequery(function() {
-		$(".required", this).each(function() {
-			// $(this).attr("required","true");
-		});
-
-		var theform = $(this).closest("form");
-
-		theform.on("click", function() {
-			theform.valid();
-		});
-
-		$.validator.setDefaults({
-			ignore : ".ignore"
-		});
-
-		theform.validate({
-			ignore : ".ignore"
-		});
-
-	});
-
 	lQuery("select.ajax").livequery('change', function(e) {
 		var inlink = $(this);
 		var nextpage = inlink.data('href');
