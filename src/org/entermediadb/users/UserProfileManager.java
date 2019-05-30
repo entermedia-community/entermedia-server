@@ -271,7 +271,7 @@ public class UserProfileManager
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
-		Collection<Category> okcategories = new ArrayList<Category>();
+		Set<Category> okcategories = new HashSet<Category>();
 		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -281,6 +281,9 @@ public class UserProfileManager
 				okcategories.add(cat);
 			}
 		}
+		
+		loadUsers(mediaArchive, inUserprofile, okcategories);
+
 		
 		//Load all the collections they have rights to based okcategories + their parents
 		//categories+parents
@@ -308,6 +311,39 @@ public class UserProfileManager
 			}
 		}
 		*/
+	}
+
+	protected void loadUsers(MediaArchive mediaArchive, UserProfile inUserprofile, Set<Category> okcategories)
+	{
+		Collection editors = mediaArchive.query("librarycollectionusers").
+				//exact("ontheteam","true").
+				exact("followeruser",inUserprofile.getUserId()).search();
+		
+		Set collectionids = new HashSet();
+		for (Iterator iterator = editors.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String collectionid = data.get("collectionid");
+			collectionids.add(collectionid);
+		}
+		if( !collectionids.isEmpty())
+		{
+			Collection collections = mediaArchive.query("librarycollection").
+						ids(collectionids).search();
+			for (Iterator iterator = collections.iterator(); iterator.hasNext();)
+			{
+				Data collection = (Data)iterator.next();
+				String rootid = collection.get("rootcategory");
+				if( rootid != null)
+				{
+					Category cat = mediaArchive.getCategory(rootid);  //cached
+					if( cat != null)
+					{
+						okcategories.add(cat);
+					}
+				}
+			}
+		}
 	}
 
 	public void saveUserProfile(UserProfile inUserProfile)
