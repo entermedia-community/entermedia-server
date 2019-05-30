@@ -3070,5 +3070,50 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 	}
+	
+	
+	public void saveJson(JSONObject json)
+	{
+		JSONParser parser = new JSONParser();
+
+		ArrayList errors = new ArrayList();
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+
+		try
+		{
+		
+				
+				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
+				req.source(json.toJSONString());
+				//log.info("savinng " + json);
+				//Parse the json and save it with id
+			
+				String id = (String)json.get("id");
+				if( id != null)
+				{
+					req.id(id);
+				}
+				processor.add(req);
+			
+			processor.flush();
+			processor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (Exception e)
+		{
+			errors.add("Could not save " + e);
+		}
+		if(errors.size() > 0) 
+		{
+			
+		}
+
+	}
+
+	
+	
+	
+	
+	
+	
 
 }

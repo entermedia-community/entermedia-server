@@ -222,6 +222,30 @@ public class SyncModule extends BaseMediaModule
 		
 
 	}
+	
+	
+	public void processAll(WebPageRequest inReq)
+	{
+		//log.info("Starting pulling");
+		MediaArchive archive = getMediaArchive(inReq);
+		long total = getPullManager(archive.getCatalogId()).processAll(archive);
+			
+			
+			
+		
+		
+		archive.getCategorySearcher().clearIndex();
+		archive.getCategoryArchive().clearCategories();
+		
+
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	public void listChanges(WebPageRequest inReq)
 	{

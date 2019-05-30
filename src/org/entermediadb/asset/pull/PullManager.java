@@ -35,8 +35,6 @@ import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
-import groovy.json.internal.Dates;
-
 public class PullManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(PullManager.class);
@@ -560,6 +558,221 @@ public class PullManager implements CatalogEnabled
 		}
 		return new File(inAsset.getMediaArchive().getPageManager().getPage(path).getContentItem().getAbsolutePath());
 
+	}
+
+	public long processAll(MediaArchive inArchive)
+	{
+		
+		//Connect to all the nodes
+				//Run a search based on las time I pulled it down
+				long totalcount = 0;
+				try
+				{
+					Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
+					for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+					{
+						Data node = (Data) iterator.next();
+						String url = node.get("baseurl");
+						if (url != null)
+						{
+							long time = System.currentTimeMillis();
+							time = time - 10000L; //Buffer
+							Date now = new Date(time);
+							HttpRequestBuilder connection = new HttpRequestBuilder();
+							Map params = new HashMap();
+							if (node.get("entermediakey") != null)
+							{
+								params.put("entermedia.key", node.get("entermediakey"));
+							}
+							else
+							{
+								log.error("entermediakey is required");
+								continue;
+							}
+							if (node.get("lastpulldate") != null)
+							{
+								Object dateob = node.getValue("lastpulldate");
+								Date pulldate = null;
+								if (dateob instanceof String)
+								{
+									pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+								}
+								else
+								{
+									pulldate = (Date) node.getValue("lastpulldate");
+								}
+
+								if (pulldate.after(now))
+								{
+									log.info("We just ran a pull within last 10 seconds");
+									continue;
+								}
+								params.put("lastpulldate", DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy")); //Tostring
+							}
+							if (inArchive.getAssetSearcher().getAllHits().isEmpty())
+							{
+								log.info("Doing a full download");
+							//	params.put("fulldownload", "true");
+							}
+
+							long ok = downloadData(inArchive, connection, node, params);
+							if (ok != -1)
+							{
+								node.setValue("lastpulldate", now);
+								getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+							}
+							else
+							{
+								//error downloading
+							}
+							totalcount = totalcount + ok;
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					throw new OpenEditException(ex);
+				}
+				return totalcount;
+		
+		
+		
+		
+	}
+
+	protected long downloadData(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params)
+	{
+		
+		try
+		{
+			String baseurl = node.get("baseurl");
+			//add origiginal support
+			String url = baseurl + "/mediadb/services/cluster/listalldocs.json";
+			StringBuffer link = new StringBuffer();
+			link.append("?");
+			link.append("entermedia.key=");
+			link.append(params.get("entermedia.key"));
+			link.append("&lastpulldate=");
+			if (params.get("lastpulldate") != null)
+			{
+				link.append(params.get("lastpulldate"));
+			}
+			
+
+			log.info("Checking: " + url + link);
+			HttpResponse response2 = connection.sharedPost(url, params);
+			StatusLine sl = response2.getStatusLine();
+			if (sl.getStatusCode() != 200)
+			{
+				node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+				node.setValue("lasterrordate", new Date());
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				log.error("Initial data server error " + sl);
+				return -1;
+			}
+			String returned = EntityUtils.toString(response2.getEntity());
+			//log.info("returned:" + returned);
+			Map parsed = (Map) new JSONParser().parse(returned);
+			
+			long assetcount = 0;
+			int page = 1;
+			Map response = (Map) parsed.get("response");
+			String ok = (String) response.get("status");
+			if (ok != null && ok.equals("ok"))
+			{
+				Collection saved = importChanges( returned, parsed);
+				assetcount = assetcount + saved.size();
+			
+				int pages = Integer.parseInt(response.get("pages").toString());
+				//loop over pages
+				String hitssessionid = (String) response.get("hitssessionid");
+				params.put("hitssessionid", hitssessionid);
+				for (int count = 2; count <= pages; count++)
+				{
+					url = baseurl + "/mediadb/services/cluster/nextall.json";
+
+					params.put("page", String.valueOf(count));
+
+					log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
+					response2 = connection.sharedPost(url, params);
+					sl = response2.getStatusLine();
+					if (sl.getStatusCode() != 200)
+					{
+						node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
+						node.setValue("lasterrordate", new Date());
+
+						getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+						log.error("Page server error " + sl);
+						return -1;
+					}
+					returned = EntityUtils.toString(response2.getEntity());
+					//log.info("Got page of json: " + returned);
+					parsed = (Map) new JSONParser().parse(returned);
+					response = (Map) parsed.get("response");
+					ok = (String) response.get("status");
+					if (ok != null && !ok.equals("ok"))
+					{
+						log.error("Page could not be loaded " + returned);
+						return -1;
+					}
+					log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
+					saved = importChanges( returned, parsed);
+					assetcount = assetcount + saved.size();
+				
+				}
+				return assetcount;
+			}
+			else if (ok != null && ok.equals("empty"))
+			{
+				//No changes found
+				return 0;
+			}
+			else
+			{
+				log.error("Initial data could not be loaded " + returned);
+				return -1;
+			}
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+		throw new OpenEditException(e);
+		}
+		
+		
+	}
+
+	protected Collection importChanges( String inReturned, Map inParsed)
+	{
+		//I dont want to edit the json in any way, so using original
+				Collection array;
+				try
+				{
+					//array = new JsonUtil().parseArray("results", returned);
+					JSONParser parser = new JSONParser();
+					JSONObject everything = (JSONObject) parser.parse(inReturned);
+
+					JSONArray jsonarray = (JSONArray) everything.get("results");
+					for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
+					{
+						JSONObject object = (JSONObject) iterator.next();
+						String catalogid = (String) object.get("catalogid");
+						String searchtype = (String) object.get("searchtype");
+						Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+						searcher.saveJson(object);
+
+						
+					}
+					
+					
+					log.info("saved " + jsonarray.size() + " changed asset ");
+					return jsonarray;
+				}
+				catch (Exception e)
+				{
+					log.info("Error parsing following content: " + inReturned);
+					throw new OpenEditException(e);
+				}
 	}
 
 }
