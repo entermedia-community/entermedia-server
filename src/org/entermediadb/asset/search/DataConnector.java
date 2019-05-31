@@ -3,6 +3,7 @@ package org.entermediadb.asset.search;
 import java.io.File;
 import java.util.Collection;
 
+import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -70,5 +71,7 @@ public interface DataConnector extends CatalogEnabled
 	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
 	public boolean initialize();
 	public void saveJson(Collection inJsonArray);
+	public void saveJson(JSONObject inObject);
+
 
 }

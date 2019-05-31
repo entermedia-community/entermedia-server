@@ -756,10 +756,12 @@ public class PullManager implements CatalogEnabled
 					for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
 					{
 						JSONObject object = (JSONObject) iterator.next();
-						String catalogid = (String) object.get("catalogid");
+						String catalogid = (String) object.get("catalog");
+						catalogid = catalogid.replace("_", "/");
 						String searchtype = (String) object.get("searchtype");
 						Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
-						searcher.saveJson(object);
+						JSONObject source = (JSONObject) object.get("source");
+						searcher.saveJson(source);
 
 						
 					}

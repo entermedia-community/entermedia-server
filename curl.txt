@@ -460,7 +460,7 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
 curl -XGET 'http://localhost:9200/_cat/master?v' 
 
 curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
-    "transient" : {
+    "persistent" : {
         "cluster.routing.allocation.disk.watermark.low" : "5gb",
         "cluster.routing.allocation.disk.watermark.high" : "2gb"
     }
@@ -483,6 +483,23 @@ curl -XGET 'http://localhost:9200/_analyze' -d '
   "text": "HL_06_19_42_DRY.wav"
 }
 '| python -mjson.tool
+
+
+
+curl -XGET 'localhost:9200/assets_catalog/asset/_explain' -d '{
+      "query" : {
+"match" : {
+    "description" : {
+      "query" : "HL_1993_07_05.pdf",
+      "type" : "boolean",
+      "analyzer" : "lowersnowball"
+    }
+  }       
+
+
+
+      }
+}'
 
 
 

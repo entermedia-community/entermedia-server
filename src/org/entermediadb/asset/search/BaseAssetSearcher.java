@@ -17,6 +17,7 @@ import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -545,5 +546,11 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		getDataConnector().saveJson(inJsonArray);
 	}
+	
+	public void saveJson(JSONObject object) {
+		getDataConnector().saveJson(object);
+	}
+	
+	
 	
 }

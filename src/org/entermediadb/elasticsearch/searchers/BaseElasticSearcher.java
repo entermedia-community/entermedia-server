@@ -253,7 +253,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			addSearcherTerms(inQuery, search);
 			addHighlights(inQuery, search);
-
+			search.setRequestCache(true);
 			
 
 			search.setFetchSource(null, "description");
