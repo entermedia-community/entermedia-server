@@ -153,7 +153,12 @@ uiload = function() {
 				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,
-			});
+			}).on('select2:select', function (e) {
+			if ($(this).hasClass("autosubmited")) {
+				$(this).parents("form").submit();
+			}
+        	
+    		});
 		}
 
 	});
