@@ -549,13 +549,12 @@ select + .select2-container {
 	#header .navlinks>ul li { float:left; padding:1px 8px;border:0 none; border-left:1px solid #fff; font-size:90%; line-height:1.2;}
 }
 
-#headerstatusarea
+#headerstatusarea.alert
 {
-	float:right;
-	clear:right;
-	margin: 10px 10px 0 0;
+position:absolute;
 	min-width: 200px;
-	min-height: 40px;
+	min-height: 34px;
+	padding:.5rem 1.25rem
 }
 
 
@@ -1470,12 +1469,11 @@ td.checkbox input, th.firstheader input {
 	position:absolute;
 	right:0;
 	top:0;	
-	height: 36px;
+	
 	display:block;
 }
 .emnav .nav-collectionsearch {
-	line-height: 28px;
-
+	line-height: 32px;
 }
 .emnav .input-group-addon {
 	background-color: #fff;
