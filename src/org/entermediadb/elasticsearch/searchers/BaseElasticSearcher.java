@@ -58,6 +58,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FuzzyQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
@@ -1217,7 +1218,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				
 				
+				QueryStringQueryBuilder start = QueryBuilders.queryStringQuery("+(" + inValue + "*)");
+				start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 
+				start.analyzer("lowersnowball");
+				start.defaultField("description");
 				
 				
 
@@ -1225,8 +1230,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				text2.analyzer("lowersnowball");
 
 
-				WildcardQueryBuilder text3 = QueryBuilders.wildcardQuery("description", "*" + String.valueOf(inValue).toLowerCase() + "*");
-				
 				
 //				MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery("description", valueof.toLowerCase());
 //				phrase.maxExpansions(75);
@@ -1237,7 +1240,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				or.should(text);
 				or.should(text2);
 				//or.should(text3);
-				
+				or.should(start);
 				find = or;
 				// TODO: Use RegEx to check for this
 
