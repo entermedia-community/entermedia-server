@@ -10,7 +10,7 @@
 #set( $referer = $request.getHeader("REFERER") )
 
   <p><b>404.</b> That’s an error.
-  </p><p>The requested URL <code>$errorpath</code> was not found on this server.  That’s all we know.
+  </p><p>The requested URL <code> #esc($errorpath)</code> was not found on this server.  That’s all we know.
 </p></body>
 
 <table> 
