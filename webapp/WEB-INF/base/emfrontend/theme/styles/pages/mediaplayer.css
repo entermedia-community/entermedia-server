@@ -355,6 +355,12 @@ color: #fff;
 }
 */
 
+.zoomable {
+	position:absolute; top:0;  left:0; right:0; cursor:grab;
+}
+.imagezooming {
+	cursor: move;
+}
 
 
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover
