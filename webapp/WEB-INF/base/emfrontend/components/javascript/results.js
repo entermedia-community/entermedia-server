@@ -254,6 +254,15 @@ jQuery(document).ready(function(url,params)
 			container.replaceWith(data);
 			overlayResize();
 			var div = $("#main-media-viewer");
+			//center image
+			var tocenter = div.find("#mainimage");
+			var tocenterparent = tocenter.parent();
+			var tocenterw = tocenter.width();
+			var tocenterparentw = tocenterparent.width();
+			if ($.isNumeric(tocenterparentw) && $.isNumeric(tocenterw) && tocenterparentw>tocenterw) {
+			var centered = (tocenterparentw-tocenterw)/2;
+			tocenter.css("left",centered+"px");
+			}
 			var id = div.data("previous");
 			enable(id,".goleftclick span");
 			id = div.data("next");

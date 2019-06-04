@@ -1149,73 +1149,103 @@ uiload = function() {
 		e.stopPropagation();
 	});
 
-	jQuery("#mainimageholder").livequery(function(e)
-	{
-		// Zooming code, only makes sense to run this when we actually have the DOM
-		if ($(this).position() == undefined){ // check if the element isn't there (best practice is...?)
-			return;
-		}
-		var clickspot;
-		var imageposition;
-		var zoom = 30;
-		var mainholder = $(this);
-		var mainimage = $("#mainimage",mainholder);
-		mainimage.width(mainholder.width());
-		$(window).bind('mousewheel DOMMouseScroll', function(event)
-		{
-			var mainimage = $("#mainimage");
-			if ($("#hiddenoverlay").css("display") == "none") {
-				return true;
-			}
+	jQuery("#mainimageholder").livequery(
+					function(e) {
+						// Zooming code, only makes sense to run this when we
+						// actually have the DOM
+						if ($(this).position() == undefined) { // check if the
+																// element isn't
+																// there (best
+																// practice
+																// is...?)
+							return;
+						}
+						var clickspot;
+						var imageposition;
+						var zoom = 30;
+						var mainholder = $(this);
+						
+						var mainimage = $("#mainimage", mainholder);
+						mainimage.width(mainholder.width());
+						
+						
+						$(window)
+								.bind(
+										'mousewheel DOMMouseScroll',
+										function(event) {
+											
+											var mainimage = $("#mainimage");
+											if ($("#hiddenoverlay").css(
+													"display") == "none") {
+												return true;
+											}
 
-			if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
-		        // scroll up
-		        var w = mainimage.width();
-		    	mainimage.width(w+zoom);
-		    	var left = 	mainimage.position().left - zoom/2;
-		    	mainimage.css({"left" : left + "px"});
-		    	return false;
-		    }
-		    else {
-		        // scroll down
-		        var w = mainimage.width();
-		    	mainimage.width(w-zoom);
-		    	var left = 	mainimage.position().left + zoom/2;
-		    	mainimage.css({"left" : left + "px"});
-		    	return false;
-		    }
-		});
+											if (event.originalEvent.wheelDelta > 0
+													|| event.originalEvent.detail < 0) {
+												// scroll up
+												var w = mainimage.width();
+												mainimage.width(w + zoom);
+												var left = mainimage.position().left
+														- zoom / 2;
+												mainimage.css({
+													"left" : left + "px"
+												});
+												return false;
+											} else {
+												// scroll down
+												var w = mainimage.width();
+												if (w>100) {
+													mainimage.width(w - zoom);
+													var left = mainimage.position().left
+															+ zoom / 2;
+													mainimage.css({
+														"left" : left + "px"
+													});
+												}
+												return false;
+											}
+										});
 
-		mainimage.on("mousedown", function(event)
-		{
-			clickspot = event;
-			imageposition = mainimage.position();
-			//console.log(event);
-			return false;
-		});
+						mainimage.on("mousedown", function(event) {
+							console.log($(event.target));
+							if ($(event.target).is(".zoomable")) {
+								clickspot = event;
+								imageposition = mainimage.position();
+							}
+							return false;
+						});
 
-		mainimage.on("mouseup", function(event)
-		{
-			clickspot = false;
-			return false;
-		});
+						mainimage.on("mouseup", function(event) {
+							clickspot = false;
+							var mainimage = $("#mainimage");
+							mainimage.removeClass('imagezooming');
+							return false;
+						});
+						
+						$(document).on("contextmenu", function(event){
+								clickspot = false;
+						});
 
-		mainimage.on("mousemove", function(event)
-		{
-			//if( isMouseDown() )
-			if( clickspot )
-			{
-				var changetop = clickspot.pageY - event.pageY;
-				var changeleft = clickspot.pageX - event.pageX;
+						mainimage.on("mousemove", function(event) {
+							// if( isMouseDown() )
+							
+							if (clickspot) {
+								console.log(clickspot.pageX);
+								var changetop = clickspot.pageY - event.pageY;
+								var changeleft = clickspot.pageX - event.pageX;
 
-				var left = imageposition.left - changeleft;
-				var top = imageposition.top - changetop;
+								var left = imageposition.left - changeleft;
+								var top = imageposition.top - changetop;
+								var mainimage = $("#mainimage");
+								mainimage.css({
+									"left" : left + "px",
+									"top" : top + "px"
+								});
+								mainimage.addClass('imagezooming');
+							}
+						});
 
-				$(this).css({"left" : left + "px", "top" : top + "px"});
-			}
-		});
-
-	});
+					});
 
 
 	document.addEventListener('touchstart', function(e)
