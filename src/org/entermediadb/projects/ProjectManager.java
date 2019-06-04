@@ -368,7 +368,13 @@ public class ProjectManager implements CatalogEnabled {
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets) {
 		List tosave = new ArrayList();
 	//	assets.enableBulkOperations();
-		Category root = getRootCategory(archive, librarycollection);
+		LibraryCollection collection = (LibraryCollection) getLibraryCollection(archive,librarycollection);
+		if( collection == null)
+		{
+			log.error("Could not add assets to deleted collection. " + librarycollection);
+			return;
+		}
+		Category root = getRootCategory(archive, collection);
 
 		HitTracker existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
 		existing.enableBulkOperations();
