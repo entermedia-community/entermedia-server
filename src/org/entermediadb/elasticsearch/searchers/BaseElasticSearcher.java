@@ -1228,8 +1228,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
-
-
+				text2.operator(MatchQueryBuilder.Operator.AND);
 				
 //				MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery("description", valueof.toLowerCase());
 //				phrase.maxExpansions(75);
