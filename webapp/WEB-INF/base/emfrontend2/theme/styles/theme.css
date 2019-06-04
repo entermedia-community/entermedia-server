@@ -104,16 +104,6 @@
 	background-color: #56994c;
 	color:#fff;
 }
-.col-sidebar {
-    background-color: #d5d5d5; /* Old browsers */
-    /*
-	background: -moz-linear-gradient(left, #d5d5d5 79%, #A2A2A2 100%); 
-	background: -webkit-linear-gradient(left, #d5d5d5 79%,#A2A2A2 100%); 
-	background: linear-gradient(to right, #d5d5d5 79%,#A2A2A2 100%); 
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); 
-	*/
-	
-}
 .sidebar-inner {
 	
 }
@@ -122,11 +112,17 @@
 	webkit-box-shadow: -1px 0 0 #d8dddf inset;
     box-shadow: -1px 0 0 #d8dddf inset;
 }
+
 .collectionshomecontent,
+.filtered,
 .createmediapanel,
 .emsubnav,
 .emfooter,
-.main-info   {
+.main-info,
+.cols-main,
+.col-sidebar, 
+.results-header,
+.collection-header {
 	background-color: #d5d5d5;
 }
 .ui-widget-header,
@@ -577,7 +573,6 @@ html, body, #application {
 .cols-main,
 .results-header {
 	position:relative;
-	background-color: #d5d5d5;
 }
 .col-main {
 	min-height: 800px;
@@ -1087,7 +1082,6 @@ html, body, #application {
 
 .filtered {
 	display: block;
-	background-color:#D5D5D5;
 	text-align:center;
 	height: 45px;
 	padding:10px;
@@ -1485,7 +1479,8 @@ td.checkbox input, th.firstheader input {
 }
 .emnav .input-group-addon {
 	background-color: #fff;
-	border:1px solid #e9ecef!important
+	border:1px solid #e9ecef!important;
+	color:#666;
 }
 .emnav .input-group-addon i {
 	cursor: pointer;
@@ -1573,7 +1568,6 @@ td.checkbox input, th.firstheader input {
 }
 
 .collectionshome-header { 
-	background-color: #efefef;
 	height: 40px;
 	padding:4px 10px;
 	}
@@ -2101,7 +2095,6 @@ td.checkbox input, th.firstheader input {
 	}
 
 .collection-header {
-	background-color: #d5d5d5;
 	padding:10px;
 	height: 80px;
 	z-index:3;
@@ -2162,7 +2155,7 @@ td.checkbox input, th.firstheader input {
 	margin-top:0;
 }
 .emsubnav {
-	border-top:1px solid #999;
+	 border-left:1px solid #999; 
 } 
 	
 	
