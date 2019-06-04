@@ -1226,8 +1226,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				
 
-				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
-				text2.analyzer("lowersnowball");
+//				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
+//				text2.analyzer("lowersnowball");
 
 
 				
@@ -1238,7 +1238,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				or.should(text);
-				or.should(text2);
+			//	or.should(text2);
 				//or.should(text3);
 				or.should(start);
 				find = or;
