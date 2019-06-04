@@ -153,7 +153,12 @@ uiload = function() {
 				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,
-			});
+			}).on('select2:select', function (e) {
+			if ($(this).hasClass("autosubmited")) {
+				$(this).parents("form").submit();
+			}
+        	
+    		});
 		}
 
 	});
@@ -202,27 +207,6 @@ uiload = function() {
 			}
         	
     	});;
-	});
-
-	lQuery(".force-validate-inputs").livequery(function() {
-		$(".required", this).each(function() {
-			// $(this).attr("required","true");
-		});
-
-		var theform = $(this).closest("form");
-
-		theform.on("click", function() {
-			theform.valid();
-		});
-
-		$.validator.setDefaults({
-			ignore : ".ignore"
-		});
-
-		theform.validate({
-			ignore : ".ignore"
-		});
-
 	});
 
 	lQuery("select.ajax").livequery('change', function(e) {

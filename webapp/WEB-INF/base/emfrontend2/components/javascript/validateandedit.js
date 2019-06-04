@@ -89,6 +89,45 @@ $(document).ready(function()
 	    
 	});
 	*/ 
+	
+	lQuery(".force-validate-inputs").livequery(function() 
+	{
+		$(".required", this).each(function() {
+			// $(this).attr("required","true");
+		});
+
+		var theform = $(this).closest("form");
+
+		theform.on("click", function() {
+			theform.valid();
+		});
+
+		$.validator.setDefaults({
+			ignore : ".ignore"
+		});
+
+/*
+		if (form.validate) {
+			form.validate({
+				ignore : ".ignore"
+			});
+			var isvalidate = form.valid();
+			if (!isvalidate) {
+				e.preventDefault();
+				// show message
+				return;
+			}
+		}
+*/
+		theform.validate({
+			ignore : ".ignore"
+		});
+
+	});
+
+	
+	
+	
 });
 
 
