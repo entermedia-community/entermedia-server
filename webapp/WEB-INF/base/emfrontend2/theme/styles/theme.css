@@ -710,7 +710,7 @@ html, body, #application {
 .advfilterpanel { padding-top:1px; position:relative;}
 .filters-edit-icon {
 	text-align:right;
-	padding:5px 5px 0;
+	padding:5px 15px 0;
 }
 
 .filters-edit-icon a {
