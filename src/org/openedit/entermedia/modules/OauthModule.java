@@ -428,6 +428,7 @@ public class OauthModule extends BaseMediaModule
 			target.setEnabled(true);
 			target.setId(userid);
 			searcher.saveData(target, null);
+			inReq.putPageValue("isnewuser", true);
 		}
 		
 		
