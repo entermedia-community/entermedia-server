@@ -713,7 +713,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.endObject();
 			}
 			jsonBuilder = jsonproperties.endObject();
-			String content = jsonproperties.string();
+			//String content = jsonproperties.string();
 			//log.info(getSearchType() + " " + content);
 			return jsonproperties;
 		}
@@ -2134,9 +2134,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					detail = inDetails.getLegacyDetail(propid);
 				}
-				if (detail == null && !propid.equals("description") && !propid.contains("_int"))
+				
+				if (detail == null && 
+						!propid.equals("description") && 
+						!propid.contains("_int") &&
+						!propid.equals("recordmodificationdate") &&
+						!propid.equals("mastereditclusterid"))
 				{
-
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					detail.setDeleted(false);
 					//setType(detail);

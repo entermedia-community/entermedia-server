@@ -1703,7 +1703,21 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 				exact("followeruser",inUserid).searchOne();
 		return subscription != null;
 	}
-	
+
+	public Collection listCollectionsForFollower(User inUser)
+	{
+		Collection subscriptions = getMediaArchive().query("librarycollectionusers").exact("followeruser",inUser.getId()).search();
+		Set ids = new HashSet();
+		for (Iterator iterator = subscriptions.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ids.add(hit.get("collectionid"));
+		}
+		HitTracker hits = getMediaArchive().query("librarycollection").ids(ids).sort("name").search();
+		hits.setHitsPerPage(50);
+		return hits;
+
+	}
 
 	
 }
