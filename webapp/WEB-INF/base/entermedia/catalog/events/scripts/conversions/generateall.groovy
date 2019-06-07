@@ -7,7 +7,9 @@ import org.openedit.hittracker.HitTracker
 
 public void init()
 {
-		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+	 log.info("Clearing all generated media files " + user);
+	
+	 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher searcher = archive.getAssetSearcher();
 		HitTracker assets = searcher.getAllHits();
 		assets.enableBulkOperations();
