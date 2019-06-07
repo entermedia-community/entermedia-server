@@ -64,6 +64,9 @@ $query.setSortBy($detail.getDefaultSort())
 #ifnull ($value)
 	#set ($value = $val)
 #end
+#ifnull ($value)
+	#set ($value = $detail.defaultvalue)
+#end
 
 #set( $valueid = "$fieldname" )
 #if($types)
