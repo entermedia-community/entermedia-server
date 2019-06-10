@@ -14,7 +14,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 <select name="${detail.getId()}.value" 
 		id="list-${detailid}${idcount}value" 
 		multiple="multiple" 
-		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
+		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end autosubmited" 
 		data-searchfield="$searchfield"
 		data-searchtype="$searcher.getSearchType()" 
 		data-listcatalogid="$detail.listCatalogId" 

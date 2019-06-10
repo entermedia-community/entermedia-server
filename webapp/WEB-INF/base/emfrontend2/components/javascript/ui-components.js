@@ -867,8 +867,17 @@ uiload = function() {
 								.change(
 										function() {
 											if ($(this).parents(".ignore").length == 0) {
-												$(this).valid();
+												$(this).valid(); 
+												
 											}
+											
+											if ($(this).hasClass("autosubmited")) {
+												$(this).parents("form").submit();
+											}
+											
+											
+											
+											
 										}); // is this still needed?
 					});
 
