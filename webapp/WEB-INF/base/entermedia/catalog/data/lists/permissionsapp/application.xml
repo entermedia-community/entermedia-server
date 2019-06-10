@@ -26,6 +26,7 @@
 	<permission id="editusersgroups" permissiontype="application" name="Edit Users and Groups" description="Allows user to create and edit users or groups" ordering="270"  />
 	
 	<permission id="viewbasket" permissiontype="application" name="Basket" description="Enables the collection basket and related buttons." ordering="275" />
+		<permission id="checkout" permissiontype="application" name="Checkout" description="Enables the checkout button on the basket" ordering="275" />
 	
 	<permission id="viewmyaccount" permissiontype="application" name="My Account Area" description="Enables a page that edit user data and updates passwords." ordering="280"/>
 	<permission id="viewrecentsearches" permissiontype="application" name="Previous Searches" description="Enables access to past searches." ordering="285"/>
