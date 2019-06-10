@@ -202,7 +202,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //	}
 	
 	@Override
-	protected void createContentBuilder(PropertyDetails details, Data inData)
+	protected void createContentBuilder(PropertyDetails inDetails, Data inData, String inUser)
 	{
 		ElasticCategory category = null;
 		if( inData instanceof ElasticCategory)
@@ -213,7 +213,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		{
 			category = (ElasticCategory)loadData(inData);
 		}
-		super.createContentBuilder(details,inData);
+		super.createContentBuilder(inDetails,inData, inUser);
 		Collection values = (Collection)category.getMap().getValue("parents");
 		boolean edited = false;
 		if( values == null)
@@ -231,7 +231,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}	
 		if( edited )
 		{
-			super.createContentBuilder(details,inData);
+			super.createContentBuilder(inDetails,inData, inUser);
 		}
 		
 	}

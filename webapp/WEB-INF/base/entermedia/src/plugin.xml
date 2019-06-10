@@ -2237,5 +2237,13 @@
 	    <property name="localeManager"><ref bean="localeManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
 	</bean>
+	
+	<bean id="transactionLogger" class="org.openedit.data.TransactionLogger"  >
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
+			
+		
+		
+		
 		
 </beans>

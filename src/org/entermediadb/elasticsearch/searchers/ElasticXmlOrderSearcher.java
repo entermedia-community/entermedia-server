@@ -28,9 +28,11 @@ public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 //	}
 	
 	
-	protected void createContentBuilder(PropertyDetails details, Data inData) {
+	@Override
+	protected void createContentBuilder(PropertyDetails inDetails, Data inData, String inUser)
+	{
 		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-		super.createContentBuilder(details, inData);
+		super.createContentBuilder(inDetails, inData, inUser);
 	}
 	
 }

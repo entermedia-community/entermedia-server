@@ -313,13 +313,13 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		//update the index
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
-		createContentBuilder(details, inData);
+		createContentBuilder(details, inData, inUser.getId());
 		if (inData.getSourcePath() == null)
 		{
 			log.error( getSearchType() + " Missing sourcepath" + inData);
 			String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId());
 			inData.setSourcePath(sourcepath);
-			createContentBuilder(details, inData);
+			createContentBuilder(details, inData, inUser.getId());
 		}
 		clearIndex();
 

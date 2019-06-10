@@ -1652,7 +1652,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		createContentBuilder(details, inData);
+		createContentBuilder(details, inData, inUser.getId());
 		clearIndex();
 	}
 
@@ -1708,7 +1708,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				createContentBuilder(details, data);
+				createContentBuilder(details, data, inUser.getId());
 			}
 		}
 		clearIndex();
@@ -1781,7 +1781,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
-				updateMasterClusterId(details, data2, content);
+				updateMasterClusterId(details, data2, content, inUser.getId());
 				updateIndex(content, data2, details);
 
 				content.endObject();
@@ -1860,20 +1860,25 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, String inUser) throws IOException
 	{
 
 		
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				
+				boolean needslog = false;
 				String localClusterId = getElasticNodeManager().getLocalClusterId();
-				String currentid = inData.get("mastereditcluserid");
+				String currentid = inData.get("mastereditclusterid");
 				if(currentid == null) {
 					currentid = localClusterId;
 				}
 				content.field("mastereditclusterid", currentid);
 				content.field("recordmodificationdate", new Date());
-
+				
+				if(!localClusterId.equals(currentid)) {
+					getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);
+				}
+				
+				
 		
 	}
 
@@ -1975,7 +1980,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		clearIndex();
 	}
 
-	protected void createContentBuilder(PropertyDetails details, Data data)
+	protected void createContentBuilder(PropertyDetails details, Data data, String inUser)
 	{
 		try
 		{
@@ -1991,7 +1996,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			updateMasterClusterId(details, data, content);
+			updateMasterClusterId(details, data, content, inUser);
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
