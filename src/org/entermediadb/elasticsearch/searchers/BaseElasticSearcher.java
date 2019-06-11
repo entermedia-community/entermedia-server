@@ -1652,7 +1652,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		createContentBuilder(details, inData, inUser.getId());
+		String userid = null;
+		if(inUser != null) {
+			userid = inUser.getId();
+		}
+		createContentBuilder(details, inData, userid);
 		clearIndex();
 	}
 
