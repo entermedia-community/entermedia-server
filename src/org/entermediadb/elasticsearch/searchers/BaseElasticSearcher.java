@@ -1708,7 +1708,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				createContentBuilder(details, data, inUser.getId());
+				if(inUser ==  null) {
+				createContentBuilder(details, data,null);
+				} else {
+					createContentBuilder(details, data, inUser.getId());
+
+				}
 			}
 		}
 		clearIndex();
