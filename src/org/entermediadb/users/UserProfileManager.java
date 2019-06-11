@@ -183,7 +183,12 @@ public class UserProfileManager
 			}
 			else if( user != null && !"anonymous".equals(inUserName))
 			{
-				userprofile.setProperty("settingsgroup", "users");
+				String profiletype = mediaArchive.getCatalogSettingValue("defaultrole");
+				if(profiletype == null) {
+					profiletype = "users";
+				}
+				
+				userprofile.setProperty("settingsgroup", profiletype);
 			}
 			else
 			{
