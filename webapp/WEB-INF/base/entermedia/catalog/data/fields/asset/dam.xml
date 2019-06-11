@@ -732,5 +732,10 @@
       <language id="en"><![CDATA[EnterMedia ID has been stored in original]]></language>
     </name>
   </property>   
+   <property id="emiderror" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+    <name>
+      <language id="en"><![CDATA[EnterMedia ID could not be stored in XMP]]></language>
+    </name>
+  </property>   
   
 </page>
