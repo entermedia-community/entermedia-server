@@ -1108,5 +1108,64 @@ public class TaskModule extends BaseMediaModule
 		archive.saveData("projectgoal",selectedgoal);
 
 	}
-	
+
+	public void savedGoal(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String goalid = inReq.getRequestParameter("id");
+		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
+
+		//Find all the users
+		Collection userids = new HashSet(selectedgoal.getValues("userlikes"));
+		String owner = selectedgoal.get("owner");
+		if( owner != null)
+		{
+			userids.add(owner);
+		}
+		String collectionid = selectedgoal.get("collectionid");
+
+		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", goalid).exact("userid", userid).searchOne();
+
+			String existingstatus = (String)selectedgoal.get("projectstatus");
+			if( status == null)
+			{
+				status = (MultiValued)archive.getSearcher("statuschanges").createNewData();
+				status.setValue("goalid",goalid);
+				status.setValue("userid",userid);
+				status.setValue("previousstatus",existingstatus);
+			}
+			else
+			{
+				String previous = status.get("previousstatus");
+				if( !existingstatus.equals(previous))
+				{
+					status.setValue("previousstatus",existingstatus);
+					status.setValue("notified",false);
+				}
+			}
+			status.setValue("collectionid",collectionid);
+			status.setValue("date",new Date());
+			archive.saveData("statuschanges", status);
+		}
+	}
+	public void clearNotify(WebPageRequest inReq)
+	{
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
+		Collection results = getMediaArchive(inReq).query("statuschanges").
+				exact("userid", inReq.getUserName()).exact("collectionid",collectionid).search();
+
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
+		{
+			Data status = (Data) iterator.next();
+			status.setValue("notified",true);
+			tosave.add(status);
+		}
+		getMediaArchive(inReq).getSearcher("statuschanges").saveAllData(tosave,null);
+		
+	}
 }
