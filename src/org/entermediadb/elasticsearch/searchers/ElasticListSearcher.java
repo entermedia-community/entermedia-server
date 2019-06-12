@@ -231,7 +231,11 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 		try
 		{
-			createContentBuilder(details, inData, inUser.getId());
+			String userid = null;
+			if(inUser != null) {
+				userid = inUser.getId();
+			}
+			createContentBuilder(details, inData, userid);
 			getXmlSearcher().saveData(inData, inUser);
 			clearIndex();
 		}
