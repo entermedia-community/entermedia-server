@@ -1652,11 +1652,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		String userid = null;
-		if(inUser != null) {
-			userid = inUser.getId();
-		}
-		createContentBuilder(details, inData, userid);
+		createContentBuilder(details, inData, inUser);
 		clearIndex();
 	}
 
@@ -1712,12 +1708,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				if(inUser ==  null) {
-				createContentBuilder(details, data,null);
-				} else {
-					createContentBuilder(details, data, inUser.getId());
-
-				}
+				createContentBuilder(details, data, inUser);
 			}
 		}
 		clearIndex();
@@ -1994,7 +1985,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		clearIndex();
 	}
 
-	protected void createContentBuilder(PropertyDetails details, Data data, String inUser)
+	protected void createContentBuilder(PropertyDetails details, Data data, User inUser)
 	{
 		try
 		{
@@ -2010,7 +2001,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			updateMasterClusterId(details, data, content, inUser);
+			String userid = (inUser == null)?null:inUser.getId();
+			updateMasterClusterId(details, data, content, userid);
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{

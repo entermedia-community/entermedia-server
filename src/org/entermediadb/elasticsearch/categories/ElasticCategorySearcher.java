@@ -202,7 +202,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //	}
 	
 	@Override
-	protected void createContentBuilder(PropertyDetails inDetails, Data inData, String inUser)
+	protected void createContentBuilder(PropertyDetails inDetails, Data inData, User inUser)
 	{
 		ElasticCategory category = null;
 		if( inData instanceof ElasticCategory)
