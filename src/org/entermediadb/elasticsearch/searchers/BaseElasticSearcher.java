@@ -1875,6 +1875,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				String currentid = inData.get("mastereditclusterid");
 				if(currentid == null) {
 					currentid = localClusterId;
+					
 				}
 				content.field("mastereditclusterid", currentid);
 				content.field("recordmodificationdate", new Date());

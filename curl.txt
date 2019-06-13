@@ -446,6 +446,7 @@ Get a single field def:
 _mapping/article/field/title
 curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
 
+curl -XGET  'http://localhost:9200/entermediadb_catalog/_mapping/field/sourcepath?pretty=true'  
 
 
 <!-- Run this in a 2 or 3 node cluster -->
@@ -477,7 +478,7 @@ curl -XGET 'http://localhost:9200/_analyze' -d '
 
 
 
-curl -XGET 'http://localhost:9200/_analyze' -d '
+curl -XGET 'http://localhost:9200/assets_catalog/_analyze' -d '
 {
   "analyzer": "lowersnowball",
   "text": "HL_06_19_42_DRY.wav"

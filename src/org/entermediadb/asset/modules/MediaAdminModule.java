@@ -329,6 +329,24 @@ public class MediaAdminModule extends BaseMediaModule
 	}	
 	public void initCatalogs(WebPageRequest inReq)
 	{
+		NodeManager nodemanager = (NodeManager)getModuleManager().getBean("system","nodeManager");
+
+		
+		do {
+			
+			try
+			{
+				nodemanager.connectCatalog("system");
+			}
+			catch (Exception e)
+			{
+				log.info("Waiting for system catalog to initialize()");
+			}
+			
+			
+		} while(!nodemanager.containsCatalog("system"));
+		
+		
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 		manager.getPathEvents();
 
@@ -340,7 +358,6 @@ public class MediaAdminModule extends BaseMediaModule
 				Data data = (Data) iterator.next();
 				String catalogid = data.getId();
 				
-				NodeManager nodemanager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
 				boolean existed = nodemanager.containsCatalog(catalogid);
 				
 				manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
