@@ -2442,6 +2442,11 @@ public class MediaArchive implements CatalogEnabled
 	public File getFileForPath(String inPath) {
 		return new File(getPageManager().getPage(inPath).getContentItem().getAbsolutePath());
 	}
-	
+
+	public void saveData(String inString, Collection inTosave)
+	{
+		getSearcher(inString).saveAllData(inTosave,null);		
+	}
+
 
 }

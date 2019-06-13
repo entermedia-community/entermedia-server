@@ -1115,15 +1115,30 @@ public class TaskModule extends BaseMediaModule
 		String goalid = inReq.getRequestParameter("id");
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 
-		//Find all the users
 		Collection userids = new HashSet(selectedgoal.getValues("userlikes"));
 		String owner = selectedgoal.get("owner");
 		if( owner != null)
 		{
 			userids.add(owner);
 		}
+		
 		String collectionid = selectedgoal.get("collectionid");
+		//Find all the users
+		Collection team = getMediaArchive(inReq).query("librarycollectionusers").
+				exact("collectionid",collectionid).
+				exact("ontheteam","true").search();
 
+		for (Iterator iterator = team.iterator(); iterator.hasNext();)
+		{
+			Data follower = (Data)iterator.next();
+			String userid = follower.get("followeruser");
+			if( userid != null)
+			{
+				userids.add(userid);
+			}
+		}		
+		Collection tosave = new ArrayList();
+		
 		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
 		{
 			String userid = (String) iterator.next();
@@ -1148,8 +1163,9 @@ public class TaskModule extends BaseMediaModule
 			}
 			status.setValue("collectionid",collectionid);
 			status.setValue("date",new Date());
-			archive.saveData("statuschanges", status);
+			tosave.add(status);
 		}
+		archive.saveData("statuschanges", tosave);
 	}
 	public void clearNotify(WebPageRequest inReq)
 	{
