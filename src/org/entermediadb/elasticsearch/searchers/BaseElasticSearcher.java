@@ -685,7 +685,10 @@ public class BaseElasticSearcher extends BaseSearcher
 						if (analyzer != null)
 						{
 							jsonproperties.field("analyzer", analyzer);
-						} 
+						} else {
+							jsonproperties.field("analyzer", "lowersnowball");
+
+						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
 						jsonproperties.endObject();
 					}
@@ -853,15 +856,10 @@ public class BaseElasticSearcher extends BaseSearcher
 																			// _description
 
 		String analyzer = detail.get("analyzer");
-		if (analyzer != null) {
-		
-			jsonproperties.field("analyzer", analyzer);
-		} else {
-			jsonproperties.field("analyzer", "lowersnowball");
-
+		if (analyzer != null)
+		{
+			jsonproperties = jsonproperties.field("analyzer", analyzer);
 		}
-		
-		
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
