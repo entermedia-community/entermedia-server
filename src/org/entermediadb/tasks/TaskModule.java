@@ -1163,6 +1163,8 @@ public class TaskModule extends BaseMediaModule
 			}
 			status.setValue("collectionid",collectionid);
 			status.setValue("date",new Date());
+			status.setValue("editedbyid",inReq.getUserName());
+			
 			tosave.add(status);
 		}
 		archive.saveData("statuschanges", tosave);

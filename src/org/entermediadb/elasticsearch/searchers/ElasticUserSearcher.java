@@ -116,6 +116,10 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	@Override
 	public User getUser(String inAccount, boolean inCached)
 	{
+		if( inAccount == null)
+		{
+			return null;
+		}
 		if( inCached)
 		{
 			User user = (User)getCacheManager().get("usercache",inAccount);
