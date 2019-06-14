@@ -685,6 +685,9 @@ public class BaseElasticSearcher extends BaseSearcher
 						if (analyzer != null)
 						{
 							jsonproperties.field("analyzer", analyzer);
+						} else {
+							jsonproperties.field("analyzer", "lowersnowball");
+
 						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
 						jsonproperties.endObject();
