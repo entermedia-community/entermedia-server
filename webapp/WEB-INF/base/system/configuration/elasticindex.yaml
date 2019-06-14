@@ -10,8 +10,10 @@ analysis:
   tags:
    type: "custom"
    tokenizer: "keyword"
+   char_filter: ["quotes"]
    filter:
     - "lowercase"
+    - "elision"
   sorter:
    type: "custom"
    tokenizer: "keyword"
