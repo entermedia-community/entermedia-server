@@ -22,7 +22,7 @@
 	#if( $perm.permissiontype != "internal")
 		
 		
-		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${perm.moduleid},${data.id},null,${perm.id}) )
+		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${perm.moduleid},${data.id},null,${perm.permission}) )
 	
 		<tr data-dataid="${data.id}"  data-id="${data.id}" data-permissionid="$perm.id" data-currentpermission="$!permission.id">
 			#set( $module = $searcherManager.getData($catalogid,"module",${perm.moduleid}) )

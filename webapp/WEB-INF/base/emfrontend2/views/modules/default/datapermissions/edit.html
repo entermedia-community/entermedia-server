@@ -1,6 +1,5 @@
 #set( $moduleid = $context.findValue("module") )
 
-
 <div id="permissionedit" class="ui-widget">
 	<div class="ui-widget-header"><span class="widget-header-title">Permissions Editor - $data</span></div>
 	<div class="ui-widget-content" style="padding-top: 20px; ">
@@ -100,10 +99,12 @@
 	
 	
 #else
-	#if( !$permission || $permission.toString() == "false" )
-		Nobody
-	#elseif( $permission.toString() == "true" || $permission.toString() == "" )
+	#if( $permission.toString() == "false" )
+		[[Nobody]]
+	#elseif( $permission.toString() == "true")
 		[[Anyone]]
+	#elseif( $permission.toString() == "" )
+		[[Defaults]]
 	#else
 		Custom: $permission
 	#end
@@ -122,11 +123,6 @@ $pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html
 <a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?id=$permission.id&permissionid=$permdata.id">[[Reset to defaults]]</a>
 </div>
 
-	
-
 
 </div>
-
-Permssion: $permission
-PermData: $permdata
 
