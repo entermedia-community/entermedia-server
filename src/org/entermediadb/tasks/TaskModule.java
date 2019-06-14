@@ -1154,12 +1154,12 @@ public class TaskModule extends BaseMediaModule
 			}
 			else
 			{
-				String previous = status.get("previousstatus");
-				if( !existingstatus.equals(previous))
-				{
-					status.setValue("previousstatus",existingstatus);
+//				String previous = status.get("previousstatus");
+//				if( !existingstatus.equals(previous))
+//				{
+//					status.setValue("previousstatus",existingstatus);
 					status.setValue("notified",false);
-				}
+//				}
 			}
 			status.setValue("collectionid",collectionid);
 			status.setValue("date",new Date());
