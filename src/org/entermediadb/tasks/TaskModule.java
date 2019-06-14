@@ -228,6 +228,14 @@ public class TaskModule extends BaseMediaModule
 								return date2.compareTo(date1);
 							}
 						}
+						else if( status1.equals("active"))
+						{
+							return 1;
+						}
+						else if( status2.equals("active"))
+						{
+							return -1;
+						}
 						else if( status1.equals("critical"))
 						{
 							return 1;
