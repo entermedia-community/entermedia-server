@@ -856,10 +856,15 @@ public class BaseElasticSearcher extends BaseSearcher
 																			// _description
 
 		String analyzer = detail.get("analyzer");
-		if (analyzer != null)
-		{
-			jsonproperties = jsonproperties.field("analyzer", analyzer);
+		if (analyzer != null) {
+		
+			jsonproperties.field("analyzer", analyzer);
+		} else {
+			jsonproperties.field("analyzer", "lowersnowball");
+
 		}
+		
+		
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
