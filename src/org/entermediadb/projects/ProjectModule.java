@@ -66,12 +66,27 @@ public class ProjectModule extends BaseMediaModule {
 	
 	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception {
 		String collectionroot = inReq.findValue("collectionroot");
+		String appid = inReq.findValue("applicationid");
+		String finalpath = "";
 		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		String finalpath = collectionroot + "/" + collection.getId() + "/" + collection.getName() + ".html";
+		if (collectionroot.endsWith(".html")) {
+			finalpath = "/" + appid + "/" + collectionroot + "?collectionid=" + collection.getId();
+		}
+		else {
+			finalpath = "/" + appid + "/" + collectionroot + "/" + collection.getId() + "/" + collection.getName() + ".html";
+		}
+		
 		//Selected Sub folder?
 		String nodeID = inReq.getRequestParameter("nodeID");
 		if (nodeID != null) {
-			finalpath = finalpath + "?nodeID="+nodeID;
+			if (finalpath.contains("?")) {
+				finalpath = finalpath + "&";
+			}
+			else {
+				finalpath = finalpath + "?";	
+			}
+			finalpath = finalpath + "nodeID="+nodeID;
+			
 		}
 		inReq.redirect(finalpath);
 
