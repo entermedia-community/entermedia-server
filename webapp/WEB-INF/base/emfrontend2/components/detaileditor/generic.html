@@ -43,7 +43,7 @@ $context.putPageValue("searchtype", $searchtype)
 #set ( $edit = $context.getRequestParameter("edit") )
 #set ( $editpath = $context.getRequestParameter("editpath"))
 #if(!$editpath)
-	#set( $editpath = "${page.directory}/genericsave.html" )
+	#set( $editpath = "$componenthome/detaileditor/genericsave.html" )
 #end
 #if($data.getId().startsWith("multiedit"))
 	#set($multiedit = true)

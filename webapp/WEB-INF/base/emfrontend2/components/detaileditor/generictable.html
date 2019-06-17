@@ -20,11 +20,11 @@
 
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
-	#set( $editpath = "${page.directory}/generictablesave.html" )
+	#set( $editpath = "$componenthome/detaileditor/generictablesave.html" )
 #end
 #set($link = $context.getRequestParameter("selectlink"))
 #if( !$link )
-	#set( $link = "${page.directory}/generictablesave.html" )
+	#set( $link = "$componenthome/detaileditor/generictablesave.html" )
 #end
 
 #set( $jumptomodule = $context.getRequestParameter("jumptomodule"))
