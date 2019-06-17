@@ -400,6 +400,7 @@ $(document).ready(function(url,params)
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			
+			/*
 			if( assetid.indexOf("multiedit:") > -1 )
 			{
 				var link = $("#main-media-viewer").data("multieeditlink");
@@ -413,9 +414,12 @@ $(document).ready(function(url,params)
 			}
 			else
 			{
-				$("#gallery-" + assetid).addClass("active-asset");
-				$(window).trigger("tabready");
-			}
+			*/
+			
+			$("#gallery-" + assetid).addClass("active-asset");
+			$(window).trigger("tabready");
+			
+			//}
 			
 		});
 		$(document).trigger("domchanged");

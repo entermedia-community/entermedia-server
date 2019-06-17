@@ -43,8 +43,8 @@
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
-						$pages.include("$apphome/components/results/thumbnails/small.html",$context) 
-						$pages.include("$apphome/components/results/badges.html", $context)	
+						$pages.include("$componenthome/results/thumbnails/small.html",$context) 
+						$pages.include("$componenthome/results/badges.html", $context)	
           			</a>
           			<div class="gallery-item-title">
           			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 

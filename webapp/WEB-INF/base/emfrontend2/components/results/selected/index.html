@@ -72,11 +72,16 @@
 			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
 		#if ($canmetadatageneral && $canmultiedit)
-  		#if ($hits.getSelectionSize() > 1)
-  			#set($link = "editall.html")
   			#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
-			<a id="multiedit-menu" class="dropdown-item" href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
-  		#end
+		#if( $librarycol )
+			##set results.js
+			<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
+		#else
+	  		#if ($hits.getSelectionSize() > 1)
+	  			#set($link = "editall.html")
+				<a id="multiedit-menu" class="dropdown-item" href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
+	  		#end
+	  	#end	
 		#end
 	
 		#if($canmultidelete)	    

@@ -858,7 +858,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		String analyzer = detail.get("analyzer");
 		if (analyzer != null)
 		{
-			jsonproperties = jsonproperties.field("analyzer", analyzer);
+			jsonproperties.field("analyzer", analyzer);
+		} else {
+			if(detail.isAnalyzed() && !(detail.isList() || detail.isBoolean() || detail.isNumber() || detail.isDate() || detail.isGeoPoint() || "name".equals(detail.getId()))) {
+			jsonproperties.field("analyzer", "lowersnowball");
+			}
 		}
 	}
 

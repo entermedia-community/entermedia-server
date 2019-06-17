@@ -26,7 +26,7 @@ $context.putPageValue("showalllanguagevalues",true)
 							#set($collectionid = $context.getRequestParameter("collectionid"))
 							<h4>$context.getText($target.toString()) 
 							#if($caneditasset)
-								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" 
+								<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"
 								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
@@ -46,7 +46,7 @@ $context.putPageValue("showalllanguagevalues",true)
 	</div>					
 			<div class="col-4">
 			
-                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
+                $pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
             
                 
 
@@ -70,9 +70,9 @@ $context.putPageValue("showalllanguagevalues",true)
     				</div>
 				#end	
 				
-				##$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
+				##$pages.include("$componenthome/opencollections/asset/listassetcollections.html",$context)
 					
-				$pages.include("$apphome/components/categories/asset/listassetcategories.html",$context)
+				$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
 			</div>	
 	
 </div></div>
