@@ -248,7 +248,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			{
 				root = (Category)createNewData();
 				root.setId("index");
-				root.setName("Index");
+				root.setName("All");
 			}
 			else
 			{

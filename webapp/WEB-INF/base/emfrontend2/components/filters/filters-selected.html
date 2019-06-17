@@ -78,9 +78,11 @@
 ##TODO Loop over the view and show them here if they match
 
 #if( !$librarycol &&  $category )
+	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 	<a
 	href="$home$apphome/views/modules/asset/index.html?clearselection=true"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
+	#end
 #end
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 
