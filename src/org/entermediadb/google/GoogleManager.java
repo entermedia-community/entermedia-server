@@ -638,6 +638,28 @@ public class GoogleManager implements CatalogEnabled
 
 	public JsonObject processImage(Asset inAsset)
 	{
+		MediaArchive archive = getMediaArchive();
+
+		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
+
+		Page inputpage = archive.getPageManager().getPage(input);
+		if (!inputpage.exists())
+		{
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
+			inputpage = archive.getPageManager().getPage(input);
+
+		}
+		if (!inputpage.exists())
+		{
+			log.info("Couldn't process asset as input didn't exist:" + input);
+			
+			return null;
+		}
+		
+		return processImage(inputpage.getContentItem());
+	}
+	public JsonObject processImage(ContentItem inItem)
+	{
 		//https://cloud.google.com/vision/docs/
 
 		try
@@ -652,23 +674,9 @@ public class GoogleManager implements CatalogEnabled
 			
 			String url = "https://vision.googleapis.com/v1/images:annotate?key=" + googleapikey;
 
-			String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
+			
 
-			Page inputpage = archive.getPageManager().getPage(input);
-			if (!inputpage.exists())
-			{
-				input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
-				inputpage = archive.getPageManager().getPage(input);
-
-			}
-			if (!inputpage.exists())
-			{
-				log.info("Couldn't process asset as input didn't exist:" + input);
-				
-				return null;
-			}
-
-			File file = new File(inputpage.getContentItem().getAbsolutePath());
+			File file = new File(inItem.getAbsolutePath());
 			byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
 
 			JsonObject request = new JsonObject();
