@@ -10,7 +10,7 @@
 
     <div class="main-info" style="">
       	<div class="primary">$module / #if($data.name) $!data.name #elseif($data.id) $data.id #else  #end</div>
-  #if( $caneditdata )
+  #if( $caneditdata && $data.id )
     <a class="btn btn-primary emdialog" id="libpermissionstab" 
     	href="$apphome/views/modules/library/datapermissions/index.html?id=$data.id" data-hidefooter="true" title="$data Permissions">
     	<i class="fas fa-user-lock"></i>   Edit Permissions</a>
