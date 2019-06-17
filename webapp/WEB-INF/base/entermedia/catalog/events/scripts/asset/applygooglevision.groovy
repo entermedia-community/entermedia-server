@@ -50,6 +50,11 @@ public void runit()
 		mediaArchive.saveAsset(asset);
 		
 		
+		
+		
+		
+		
+		
 	}
 	
 }

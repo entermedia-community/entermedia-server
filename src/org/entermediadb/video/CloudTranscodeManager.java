@@ -493,4 +493,43 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 	}
 
+	public Data addAutoTranscode(MediaArchive inArchive, String inSelectedlang, Asset inAsset, String inUsername)
+	{
+		
+		Searcher captionsearcher = inArchive.getSearcher("videotrack");
+		Data lasttrack = captionsearcher.query().exact("assetid", inAsset.getId()).exact("sourcelang", inSelectedlang).searchOne();
+		if( lasttrack != null)
+		{
+			String status = lasttrack.get("transcribestatus");
+			if( status.equals("error"))
+			{
+				log.info("Retrying track " + inAsset.getId() + " " + inSelectedlang);
+				lasttrack.setValue("transcribestatus", "needstranscribe");
+				lasttrack.setValue("requesteddate", new Date());
+			}
+		}
+		if( lasttrack == null)
+		{
+			log.info("Creating track " + inAsset.getId() + " " + inSelectedlang);
+			lasttrack = captionsearcher.createNewData();
+			lasttrack.setProperty("sourcelang", inSelectedlang);
+			lasttrack.setProperty("assetid",  inAsset.getId());
+			lasttrack.setValue("transcribestatus", "needstranscribe");
+			lasttrack.setValue("requesteddate", new Date());
+			lasttrack.setValue("owner", inUsername);
+			lasttrack.setValue("length", inAsset.getValue("length"));
+		}
+		captionsearcher.saveData(lasttrack);
+		
+		return lasttrack;
+		
+	}
+
+	
+	
+	
+	
+	
+	
+	
 }

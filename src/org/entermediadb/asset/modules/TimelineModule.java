@@ -407,33 +407,19 @@ public class TimelineModule extends BaseMediaModule
 	{
 		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
 		MediaArchive archive = getMediaArchive(inReq);
+
+		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(archive.getCatalogId(), "cloudTranscodeManager");
+
+		
+		
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 
 		Asset asset = getAsset(inReq);
-		Searcher captionsearcher = archive.getSearcher("videotrack");
-		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
-		if( lasttrack != null)
-		{
-			String status = lasttrack.get("transcribestatus");
-			if( status.equals("error"))
-			{
-				log.info("Retrying track " + asset.getId() + " " + selectedlang);
-				lasttrack.setValue("transcribestatus", "needstranscribe");
-				lasttrack.setValue("requesteddate", new Date());
-			}
-		}
-		if( lasttrack == null)
-		{
-			log.info("Creating track " + asset.getId() + " " + selectedlang);
-			lasttrack = captionsearcher.createNewData();
-			lasttrack.setProperty("sourcelang", selectedlang);
-			lasttrack.setProperty("assetid",  asset.getId());
-			lasttrack.setValue("transcribestatus", "needstranscribe");
-			lasttrack.setValue("requesteddate", new Date());
-			lasttrack.setValue("owner", inReq.getUserName());
-			lasttrack.setValue("length", asset.getValue("length"));
-		}
-		captionsearcher.saveData(lasttrack);
+		
+		
+		Data lasttrack = manager.addAutoTranscode(archive, selectedlang, asset, inReq.getUserName());
+		
+		
 		inReq.putPageValue("track", lasttrack);
 //		inRe
 //		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");

@@ -10,10 +10,15 @@
   <property id="googletagged" internalfield="false" index="true" stored="true"  editable="true" type="boolean">Has been tagged by google</property>  
   
   
+       <property id="googletranscoded" internalfield="false" index="true" stored="true"  editable="true" type="boolean">Has been auto transcoded google</property>  
      
   
    <property id="googlekeywords" keyword="true" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true"> 
    Google Tags
   </property>  
+  
+         <property id="locale" internalfield="false" index="true" stored="true"  editable="true" type="list" >Locale</property>  
+  
+  
   
 </page>
