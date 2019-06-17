@@ -55,7 +55,7 @@
 		</li>
 		#if ( $module=="asset" && $librarycol.getId() )
 				<li class="nav-item">
-					<a class="nav-link" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol">[[Open Collection]]</a>
+					<a class="nav-link nav-hover" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
 				</li>				
 		#end
 		#if ($resultview != "map")
@@ -152,7 +152,7 @@
 					</li>	
 				#else 
 					<li >
-						<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						<a class="ajax nav-hover" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 					</li>
 				#end	
 			#end								

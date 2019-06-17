@@ -70,7 +70,8 @@
 
 .emsubnav,
 .emsubnav .dropdown:hover, 
-.emsubnav .dropdown-menu { 
+.emsubnav .dropdown-menu,
+.emsubnav .nav-hover:hover { 
 	color:#333;
 	background-color: #bcbcbc;
 }
