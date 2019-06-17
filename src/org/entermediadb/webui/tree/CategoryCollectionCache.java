@@ -12,6 +12,7 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 
@@ -41,7 +42,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public Map getCategoryRoots()
+	protected Map getCategoryRoots()
 	{
 		if (fieldCategoryRoots == null)
 		{
@@ -55,55 +56,55 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	protected void loadRoots()
 	{
-		HitTracker all = getSearcherManager().query(getCatalogId(), "librarycollection").all().search();
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+		HitTracker all = searcher.query().all().search();
 		all.setHitsPerPage(1000);
-		Set categoryids = new HashSet();
+		
 		for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			Data collection = (Data) iterator.next();
 			String rootid = collection.get("rootcategory");
 			if( rootid != null)
 			{
-				categoryids.add(rootid);
+				LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
+				fieldCategoryRoots.put( rootid, librarycollection);
 			}
 		}
-		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
-		
-		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
-		{
-			String id = (String) iterator.next();
-			Category cat = searcher.getCategory(id);
-			if( cat != null)
-			{
-				fieldCategoryRoots.put( id, cat);
-			}
-		}
+//		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
+//		
+//		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
+//		{
+//			String id = (String) iterator.next();
+//			Category cat = searcher.getCategory(id);
+//			if( cat != null)
+//			{
+//				fieldCategoryRoots.put( id, cat);
+//			}
+//		}
 		
 	}
-
-	public void setCategoryRoots(Map inCategoryRoots)
-	{
-		fieldCategoryRoots = inCategoryRoots;
-	}
-	
-	public boolean isPartOfCollection(Category inRoot)
+	public String findCollectionId(Category inRoot)
 	{
 		List parents  = inRoot.getParentCategories();
 		for (Iterator iterator = parents.iterator(); iterator.hasNext();)
 		{
 			Category parent = (Category) iterator.next();
-			Category exists = (Category)getCategoryRoots().get(parent.getId());
+			LibraryCollection exists = (LibraryCollection)getCategoryRoots().get(parent.getId());
 			if( exists != null)
 			{
-				return true;
+				return exists.getId();
 			}
 		}
-		return false;
+		return null;
+	}	
+	public boolean isPartOfCollection(Category inRoot)
+	{
+		return findCollectionId(inRoot) != null;
 	}
 
 	public void addCollection(LibraryCollection inSaved)
 	{
-		getCategoryRoots().put(inSaved.getCategory().getId(),inSaved.getCategory());
+		getCategoryRoots().put(inSaved.getCategory().getId(),inSaved);
 		
 	}
 	public void removedCollection(LibraryCollection inSaved)

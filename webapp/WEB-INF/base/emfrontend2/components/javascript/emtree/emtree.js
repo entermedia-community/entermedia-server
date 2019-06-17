@@ -88,38 +88,42 @@ $(document).ready(function()
 		var nodeid = node.data('nodeid');
 		var home = tree.data("home");
         var depth = node.data('depth');
-        var iscollection = node.data("iscollection")
+        var collectionid = node.data("collectionid")
         var reloadurl = '';
-
-        
-
+		var appnavtab = $("#appnavtab").data("openmodule");
         if( prefix == undefined || prefix == "" )
 		{
-            /*
 			// Always load Assets Layout if not prefix
-			if( iscollection && collectionid != undefined && collectionid != "")
+			if( collectionid != undefined && collectionid != "")
             {
-                reloadurl = home + "/views/modules/librarycollection/showcategory.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
+            	if( appnavtab == "asset")
+            	{
+	            	reloadurl = home + "/views/modules/asset/showcategory.html";
+                }
+                else
+                {
+                	reloadurl = home + "/views/modules/librarycollection/showcategory.html";                
+                }
+                
                 prefix = home + "/views/modules/librarycollection/showcategory.html";
                 maxlevel = 2;
             }
             else 
             {
                 //Asset Module
-                reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
+                reloadurl = home + "/views/modules/asset/showcategory.html";
                 prefix = home + "/views/modules/asset/showcategory.html";
-            }*/
-			prefix = home + "/views/modules/asset/showcategory.html";
-			reloadurl = prefix;
-            
-
+            }
         }
         else {
             reloadurl = prefix;
         }
 
 		reloadurl = reloadurl + "?nodeID="+ nodeid;
-		
+		if( collectionid )
+		{
+			reloadurl = reloadurl + "&collectionid=" + collectionid; 
+		}
 	
 		var customprefix=jQuery("#treedetails").data('customprefix');
 		if(customprefix)
@@ -137,17 +141,21 @@ $(document).ready(function()
 		{
 			history.pushState({}, null, reloadurl);
 		}
-		//jQuery.get(prefix + nodeid + postfix,
-		jQuery.get(prefix,
-				{
+		var options = 	{
 					'oemaxlevel':maxlevel,
 					'tree-name':tree.data("treename"),
-					'nodeID':nodeid,							
+					'nodeID':nodeid,	
 					'treetoplocation':toplocation,
 					'treeleftlocation':leftlocation,
 					'depth': depth,
 					'categoryid':nodeid
-				},	
+				};
+		if(collectionid)
+		{
+			options.collectionid = collectionid;						
+		}	
+		//jQuery.get(prefix + nodeid + postfix,
+		jQuery.get(prefix,options,	
 				function(data) 
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
@@ -282,7 +290,7 @@ $(document).ready(function()
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
 				//var url = tree.data("home") + "/components/createmedia/upload/index.html?";
 				
-				var collectionid = $("#resultsdiv").data("collectionid");
+				var collectionid = node.data("collectionid");
 				var postfix = "";
 				if( collectionid )
 				{

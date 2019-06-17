@@ -25,15 +25,18 @@
 		
 		
 		##Collection
-		#set( $iscollection = false) 
-		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($cat))
-	
+		#set( $collectionid = $categoryCollectionCache.findCollectionId($cat))
+		#if($collectionid)   
+			#set( $iscollection = true )
+		#else
+			#set( $iscollection = false  )
+		#end	
 		<li id="${cat.id}_row" 
 			class="noderow categorydraggable" 
 			data-nodeid="$cat.id" 
 			data-depth="$depth" 
 			data-categoryname="$cat.name" 
-			data-iscollection="${iscollection}"
+			data-collectionid="$!collectionid"
 			 >
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (10 * ($depth - 1)) + 5 )
