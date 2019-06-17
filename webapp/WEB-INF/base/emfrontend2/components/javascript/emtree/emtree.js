@@ -89,14 +89,15 @@ $(document).ready(function()
 		var home = tree.data("home");
         var depth = node.data('depth');
         var iscollection = node.data("iscollection")
-        var collectionid = $("#resultsdiv").data("collectionid");
         var reloadurl = '';
 
         
 
         if( prefix == undefined || prefix == "" )
 		{
-            if( iscollection && collectionid != undefined && collectionid != "")
+            /*
+			// Always load Assets Layout if not prefix
+			if( iscollection && collectionid != undefined && collectionid != "")
             {
                 reloadurl = home + "/views/modules/librarycollection/showcategory.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
                 prefix = home + "/views/modules/librarycollection/showcategory.html";
@@ -107,14 +108,19 @@ $(document).ready(function()
                 //Asset Module
                 reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
                 prefix = home + "/views/modules/asset/showcategory.html";
-            }
+            }*/
+			prefix = home + "/views/modules/asset/showcategory.html";
+			reloadurl = prefix;
+            
+
         }
         else {
-            reloadurl = prefix + "?nodeID="+ nodeid + "&collectionid=" + collectionid;
-            //console.log(prefix);
+            reloadurl = prefix;
         }
-        
+
+		reloadurl = reloadurl + "?nodeID="+ nodeid;
 		
+	
 		var customprefix=jQuery("#treedetails").data('customprefix');
 		if(customprefix)
 		{
@@ -140,7 +146,6 @@ $(document).ready(function()
 					'treetoplocation':toplocation,
 					'treeleftlocation':leftlocation,
 					'depth': depth,
-					'collectionid': collectionid,
 					'categoryid':nodeid
 				},	
 				function(data) 

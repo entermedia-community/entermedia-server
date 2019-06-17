@@ -40,7 +40,7 @@ jQuery(document).ready(function()
 		var nodeid = node.data('nodeid');	
 		
 		var prefix = tree.data("url-prefix");
-		console.log(prefix);
+		//console.log(prefix);
 		var targetdiv = tree.data("targetdiv");
 		var maxlevel = tree.data("maxlevelclick");
 		if(maxlevel ==  undefined || maxlevel == "" )
