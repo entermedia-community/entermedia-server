@@ -662,7 +662,11 @@ html, body, #application {
 .cols-category .col-left {
 
 }
-
+.col-left-library.col-left,
+.col-left-library.col-filters
+{
+	top:80px;
+}
 .col-sidebar {  }
 .col-sidebar h2 { margin:15px 20px; font-size: 1.6rem; }
 .col-sidebar .ui-widget {

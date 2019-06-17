@@ -1447,14 +1447,7 @@ uiload = function() {
 
 
 var resizecolumns = function() {
-	//makethem same top
-	var sidebarsposition = $("#resultsdiv").position();
-	var sidebarstop = 0;
-	if (typeof sidebarsposition != "undefined") {
-		sidebarstop = sidebarsposition.top;
-		$('.col-filters').css('top',sidebarstop + 'px');
-		$('.col-left').css('top',sidebarstop + 'px');
-	}
+
 	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
 	if ($(".filtered").height()) {
 		allheights += $(".filtered").height();
@@ -1481,6 +1474,7 @@ var resizecolumns = function() {
 
 $(document).ready(function() {
 	uiload();
+	resizecolumns();
 });
 
 $(window).on('resize',function(){
