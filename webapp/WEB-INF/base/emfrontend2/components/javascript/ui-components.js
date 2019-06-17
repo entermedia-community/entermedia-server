@@ -155,7 +155,10 @@ uiload = function() {
 				dropdownParent : dropdownParent,
 			}).on('select2:select', function (e) {
 			if ($(this).hasClass("autosubmited")) {
-				$(this).parents("form").submit();
+				var theform =$(this).parents("form")
+				if (theform.hasClass("autosubmitform")) {
+					theform.trigger("submit");
+				}
 			}
         	
     		});
@@ -203,7 +206,10 @@ uiload = function() {
 			data : arr
 		}).on('select2:select', function (e) {
 			if ($(this).hasClass("autosubmited")) {
-				$(this).parents("form").submit();
+				var theform =$(this).parents("form")
+				if (theform.hasClass("autosubmitform")) {
+					theform.trigger("submit");
+				}
 			}
         	
     	});;
@@ -872,7 +878,10 @@ uiload = function() {
 											}
 											
 											if ($(this).hasClass("autosubmited")) {
-												$(this).parents("form").submit();
+												var theform =$(this).parents("form")
+												if (theform.hasClass("autosubmitform")) {
+													theform.trigger("submit");
+												}
 											}
 											
 											
@@ -1184,10 +1193,11 @@ uiload = function() {
 									// Check for "_addnew_" show ajax form
 									if (theinput.hasClass("selectautosubmit")) {
 										if (selectedid) {
-											var theform = $(this).closest(
-													"form");
-											theform.closest("form").trigger(
-													"submit");
+											//var theform = $(this).closest("form");
+											var theform =$(this).parents("form")
+											if (theform.hasClass("autosubmitform")) {
+												theform.trigger("submit");
+											}
 										}
 									}
 								}

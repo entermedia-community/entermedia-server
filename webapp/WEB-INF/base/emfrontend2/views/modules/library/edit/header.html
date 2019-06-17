@@ -8,18 +8,13 @@
 <div id="default-top" class="clearfix" >
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 
-      <div class="main-info" style="">
+    <div class="main-info" style="">
       	<div class="primary">$module / #if($data.name) $!data.name #elseif($data.id) $data.id #else  #end</div>
-      	#if( $data.id && $data.categoryid)
-	      	#set( $assets = $mediaarchive.getAssetSearcher().query().exact("category",$data.categoryid).addFacet("filesize").search() )
-
-      	#set( $size = $assets.size() )
-	      	#if( $size > 0)
-	      	<div class="secondary"><a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$data.id">$data.name contains $size files totalling $!sizer.inEnglish($assets.getSum("filesize"))</a></div>
-	      	#else
-	      	[[No assets are associated]]
-	      	#end
-      	#end
-      </div>       
-          
+  #if( $caneditdata && $data.id )
+    <a class="btn btn-primary emdialog" id="libpermissionstab" 
+    	href="$apphome/views/modules/library/datapermissions/index.html?id=$data.id" data-hidefooter="true" title="$data Permissions">
+    	<i class="fas fa-user-lock"></i>   Edit Permissions</a>
+  #end
+    </div>       
+              
 </div>

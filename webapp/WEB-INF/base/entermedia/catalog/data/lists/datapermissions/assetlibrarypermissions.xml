@@ -1,5 +1,11 @@
 <permissions name="Collection Asset Permissions">
 	
+	<permission moduleid="librarycollection" permission="editcollection" id="libraryeditcollection" permissiontype="library" name="Edit Collection" description="Overrides the default edit permissions for collections" ordering="202" />
+	
+	<permission moduleid="asset" permission="multidelete" id="librarymultidelete" permissiontype="library" name="Multi-Delete" description="Enables removal of selected assets, and the option to remove the original." ordering="306"/>
+	<permission moduleid="asset" permission="multiedit" id="librarymultiedit" permissiontype="library" name="Multiple Files" description="Enables various actions across multiple assets simultaneously." ordering="304" />
+	<permission moduleid="asset" permission="viewcategoryupload"  id="libraryviewcategoryupload" permissiontype="library" name="Upload Assets" description="Enables the upload of assets into collections" ordering="308" />
+	
 	
 	<permission moduleid="asset" permission="editasset" id="libraryeditasset" permissiontype="library" name="Edit Assets" description="Allow editing of assets in this collection" ordering="304" />                                                  
 	<permission moduleid="asset" permission="viewcategoryupload" id="libraryviewcategoryupload" permissiontype="library" name="Upload Files" description="Enables the upload of assets into categories" ordering="308" />

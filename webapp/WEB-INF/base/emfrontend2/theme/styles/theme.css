@@ -1555,7 +1555,7 @@ td.checkbox input, th.firstheader input {
 
 /*Collections Home Page*/
 .collectionshome {
-	border:1px solid #efefef;
+	border:0px;
 	margin-bottom:20px;
 	min-height: 152px;
 }
@@ -1568,7 +1568,9 @@ td.checkbox input, th.firstheader input {
 .collectionshome-header { 
 	height: 40px;
 	padding:4px 10px;
-	}
+	background-color: #434343;
+	color: #eee;
+}
 .collectionshome-header h3 {
 	margin:0;
 	line-height: 32px;
@@ -1579,7 +1581,6 @@ td.checkbox input, th.firstheader input {
     min-height: calc(100vh - 218px);
 }
 .collectionshomeform-container {
-	text-align:right;
 	padding:30px 10px;
 	
 }
