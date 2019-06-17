@@ -222,6 +222,10 @@ public class AnnotationManager  {
 			JSONObject assetData = new JSONObject();
 			assetData.put("id",inAssetId);
 			Data asset = getSearcherManager().getData(inCatalogId, "asset", inAssetId);
+			if( asset == null)
+			{
+				return null;
+			}
 			assetData.put("sourcepath",asset.getSourcePath());
 			assetData.put("name", asset.getName());
 			obj.put("assetData",assetData);

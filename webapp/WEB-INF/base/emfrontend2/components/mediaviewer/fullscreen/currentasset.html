@@ -1,3 +1,5 @@
+
+
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $rendertype = $mediaarchive.getMediaRenderType($asset))
@@ -68,7 +70,6 @@ data-nextpage="$!dialoghits.idOnNextPage()"
 data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
  ><div id="mainmedianotifications"></div>
 
- 
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end

@@ -415,8 +415,8 @@ $(document).ready(function(url,params)
 			else
 			{
 			*/
-			
-			$("#gallery-" + assetid).addClass("active-asset");
+			var escape = assetid.replace(/\//g, "\\/");
+			$("#gallery-" + escape).addClass("active-asset");
 			$(window).trigger("tabready");
 			
 			//}
