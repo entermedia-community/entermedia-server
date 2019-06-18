@@ -1447,6 +1447,14 @@ uiload = function() {
 
 
 var resizecolumns = function() {
+	//makethem same top
+	var sidebarsposition = $("#resultsdiv").position();
+	var sidebarstop = 0;
+	if (typeof sidebarsposition != "undefined") {
+		sidebarstop = sidebarsposition.top;
+		$('.col-filters').css('top',sidebarstop + 'px');
+		$('.col-left').css('top',sidebarstop + 'px');
+	}
 
 	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
 	if ($(".filtered").height()) {
@@ -1467,7 +1475,7 @@ var resizecolumns = function() {
 	});
 	$(".col-filters, .col-left").css("height", columnsheight);
 	$(".col-sidebar").css("height", columnsheight);
-	$(".col-content-main").css("min-height", columnsheight + "px");
+	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
 	
 }
