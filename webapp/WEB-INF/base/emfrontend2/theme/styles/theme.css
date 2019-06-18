@@ -1689,7 +1689,7 @@ td.checkbox input, th.firstheader input {
 
 .listdetailpicker .select2-container {
   position: relative;
-  float: left;
+  /*float: left;*/
   width: 100%;
   margin-bottom: 0;
   display: table;
