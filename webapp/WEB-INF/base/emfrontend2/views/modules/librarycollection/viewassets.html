@@ -49,7 +49,8 @@ $context.putPageValue("hideheader", "true")
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 	
-	<script type="text/javascript">
+	##TODO: Move this sompleace else or use jquery more
+	<script type="text/javascript">   
 		jQuery(document).ready(function(){
 			jQuery("#poptrigger").trigger("click");
 		});

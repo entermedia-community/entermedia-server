@@ -82,7 +82,7 @@ $(document).ready(function()
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";
-			maxlevel = 3;
+			maxlevel = 1;
 		}
 		
 		var nodeid = node.data('nodeid');
