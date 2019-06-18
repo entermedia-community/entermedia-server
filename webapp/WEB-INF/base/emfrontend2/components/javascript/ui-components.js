@@ -1467,7 +1467,7 @@ var resizecolumns = function() {
 	});
 	$(".col-filters, .col-left").css("height", columnsheight);
 	$(".col-sidebar").css("height", columnsheight);
-	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+	$(".col-content-main").css("min-height", columnsheight + "px");
 	
 	
 }
