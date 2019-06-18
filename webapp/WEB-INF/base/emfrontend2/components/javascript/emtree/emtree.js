@@ -406,10 +406,6 @@ function getPosition(e) {
   var contextmenu = function(item, e){
 	  	var noderow = item;
 	  //var noderow = $(this); // LI is the think that has context .find("> .noderow");
-	  	var pos = getPosition(e);
-		var xPos = pos.x;
-		var yPos = pos.y - 10;
-		
 		$(".categorydroparea").removeClass('selected');
 		noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
 		var emtreediv = noderow.closest(".emtree");
@@ -417,12 +413,21 @@ function getPosition(e) {
 		//console.log(noderow);
 		
 		var treename = emtreediv.data("treename"); 
-		var $contextMenu = $( "#" + treename + "contextMenu");
-		if( $contextMenu.length > 0 )
+		var contextMenu = $( "#" + treename + "contextMenu");
+		if( contextMenu.length > 0 )
 		{
 			e.preventDefault();
-			$contextMenu.data("selectednoderow",noderow);
-			$contextMenu.css({
+			
+			var pos = getPosition(e);
+			var xPos = pos.x;
+			if( xPos < 150 )
+			{
+				xPos = xPos + 150;
+			}
+			var yPos = pos.y - 10;
+			
+			contextMenu.data("selectednoderow",noderow);
+			contextMenu.css({
 			  display: "block",
 			      left: xPos,
 			      top: yPos

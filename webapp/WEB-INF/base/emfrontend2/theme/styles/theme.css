@@ -1575,6 +1575,7 @@ td.checkbox input, th.firstheader input {
 	padding:4px 10px;
 	background-color: #434343;
 	color: #eee;
+	border-radius: 4px 4px 0 0;
 }
 .collectionshome-header h3 {
 	margin:0;

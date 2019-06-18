@@ -504,16 +504,32 @@ public class ProjectManager implements CatalogEnabled {
 		HitTracker all = null;
 		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
 		Category root = getRootCategory(archive, collectionid);
-		if (root == null) {
+
+		if (root == null) 
+		{
+			log.error("No root category found " + collectionid);
 			return null;
 		}
-
-		if (assetsearch == null) {
+		
+		if (assetsearch == null) 
+		{
 			assetsearch = searcher.createSearchQuery();
-			assetsearch.addExact("category", root.getId());
-
+			String categoryId = inReq.getRequestParameter("categoryid");
+			if (categoryId == null)
+			{
+				categoryId = inReq.getRequestParameter("nodeID");
+			}
+			if( categoryId != null)
+			{
+				assetsearch.addExact("category-exact",categoryId);
+			}
+			else
+			{
+				assetsearch.addExact("category",root.getId());
+			}
 		}
-		if (assetsearch.getTermByDetailId("category") == null) {
+		if (assetsearch.getTermByDetailId("category") == null) 
+		{
 			assetsearch.addExact("category", root.getId());
 		}
 
