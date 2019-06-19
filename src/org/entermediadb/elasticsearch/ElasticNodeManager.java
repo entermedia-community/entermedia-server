@@ -1367,8 +1367,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		SearchRequestBuilder search = getClient().prepareSearch();
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-		RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
-		bool.must(date);
+		if(inAfter != null) {
+			RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
+			bool.must(date);
+		}
 		bool.must(QueryBuilders.matchQuery("masternodeid", getLocalClusterId()));
 		search.setRequestCache(true);
 

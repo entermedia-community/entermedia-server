@@ -2,6 +2,7 @@ package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -16,6 +17,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.util.DateStorageUtil;
 
 public class SyncModule extends BaseMediaModule
 {
@@ -310,13 +312,14 @@ public class SyncModule extends BaseMediaModule
         String lastmod = inReq.getRequestParameter("lastmod");
         String page = inReq.getRequestParameter("page");
         
+        Date lastmoddate = DateStorageUtil.getStorageUtil().parseFromStorage(lastmod);
         HitTracker tracker = null;
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 		if(sessionid != null) {
 			tracker = (HitTracker) inReq.getSessionValue(sessionid);
 		}
 		if(tracker == null) {
-			tracker = manager.getAllDocuments();
+			tracker = manager.getAllDocuments(null,lastmoddate );
 			
 		}
 		if(page != null) {
