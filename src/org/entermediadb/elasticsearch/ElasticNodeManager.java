@@ -1239,42 +1239,53 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public BulkProcessor getBulkProcessor()
 	{
 
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		
+		if (fieldBulkProcessor == null)
 		{
-			@Override
-			public void beforeBulk(long executionId, BulkRequest request)
+			
+			fieldBulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
 			{
-
-			}
-
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-				for (int i = 0; i < response.getItems().length; i++)
+				@Override
+				public void beforeBulk(long executionId, BulkRequest request)
 				{
-					// request.getFromContext(key)
-					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed())
-					{
-						log.info(res.getFailureMessage());
-						fieldBulkErrors.add(res.getFailureMessage());
-
-					}
-					// Data toupdate = toversion.get(res.getId());
 
 				}
-				//	request.refresh(true);
-			}
 
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
-				log.info(failure);
-				fieldBulkErrors.add(failure);
-			}
-		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+				@Override
+				public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+				{
+					for (int i = 0; i < response.getItems().length; i++)
+					{
+						// request.getFromContext(key)
+						BulkItemResponse res = response.getItems()[i];
+						if (res.isFailed())
+						{
+							log.info(res.getFailureMessage());
+							fieldBulkErrors.add(res.getFailureMessage());
 
-		return bulkProcessor;
+						}
+						// Data toupdate = toversion.get(res.getId());
+
+					}
+					//	request.refresh(true);
+				}
+
+				@Override
+				public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+				{
+					log.info(failure);
+					fieldBulkErrors.add(failure);
+				}
+			}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+
+			
+			
+		}
+
+		return fieldBulkProcessor;
+		
+		
+		
 	}
 
 	public NodeStats getNodeStats()
@@ -1404,6 +1415,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		finally
 		{
 			fieldBulkErrors.clear();
+			fieldBulkProcessor = null;
 		}
 	}
 
