@@ -154,6 +154,10 @@ $(document).ready(function()
 		{
 			options.collectionid = collectionid;						
 		}	
+		if( appnavtab == "asset")
+        {
+        	options.showchildassets = true;
+        }
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix,options,	
 				function(data) 
