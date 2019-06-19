@@ -68,7 +68,7 @@
                         	#end
                         	#if( $canembedasset && !$multi)
                         <li>
-                            <a  class="emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a>
+                            <a  class="emdialog"  data-hidefooter="true"   href="$home$componenthome/share/embed.html?assetid=$asset.id" >[[Embed]]</a>
                         </li>
                         	#end
                         	#if ( $canaddtoproject )
@@ -82,7 +82,7 @@
 
     					#if ($canviewbasket)
     					<li style="float: right">
-							$pages.include("$apphome/components/basket/detoggleitem.html?assetid=$asset.id",$context)    					
+							$pages.include("$componenthome/basket/detoggleitem.html?assetid=$asset.id",$context)    					
     					</li>
 						#end
     					

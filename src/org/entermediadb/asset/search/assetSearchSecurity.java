@@ -100,12 +100,7 @@ public class assetSearchSecurity implements SearchSecurity
 				required.addNots("assettype", allowedassetstypes);
 			}
 			
-			Boolean canviewallassets = (Boolean) inPageRequest.getPageValue("canviewallassets");
-			
-
-			
-			
-			
+			//Boolean canviewallassets = (Boolean) inPageRequest.getPageValue("canviewallassets");
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);

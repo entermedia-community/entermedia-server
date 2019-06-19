@@ -70,7 +70,8 @@
 
 .emsubnav,
 .emsubnav .dropdown:hover, 
-.emsubnav .dropdown-menu { 
+.emsubnav .dropdown-menu,
+.emsubnav .nav-hover:hover { 
 	color:#333;
 	background-color: #bcbcbc;
 }
@@ -661,7 +662,11 @@ html, body, #application {
 .cols-category .col-left {
 
 }
-
+.col-left-library.col-left,
+.col-left-library.col-filters
+{
+	top:80px;
+}
 .col-sidebar {  }
 .col-sidebar h2 { margin:15px 20px; font-size: 1.6rem; }
 .col-sidebar .ui-widget {
@@ -1570,6 +1575,7 @@ td.checkbox input, th.firstheader input {
 	padding:4px 10px;
 	background-color: #434343;
 	color: #eee;
+	border-radius: 4px 4px 0 0;
 }
 .collectionshome-header h3 {
 	margin:0;
@@ -1684,7 +1690,7 @@ td.checkbox input, th.firstheader input {
 
 .listdetailpicker .select2-container {
   position: relative;
-  float: left;
+  /*float: left;*/
   width: 100%;
   margin-bottom: 0;
   display: table;

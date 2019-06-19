@@ -402,6 +402,7 @@ $(document).ready(function(url,params)
 			
 			if( assetid.indexOf("multiedit:") > -1 )
 			{
+				/*
 				var link = $("#main-media-viewer").data("multieeditlink");
 				var mainmedia2 = $("#main-media-viewer");
 			
@@ -410,12 +411,15 @@ $(document).ready(function(url,params)
 				{
 					$(window).trigger("tabready");
 				});
+				*/
 			}
 			else
 			{
-				$("#gallery-" + assetid).addClass("active-asset");
-				$(window).trigger("tabready");
+				var escape = assetid.replace(/\//g, "\\/");
+				$("#gallery-" + escape).addClass("active-asset");
 			}
+			$(window).trigger("tabready");
+			
 			
 		});
 		$(document).trigger("domchanged");

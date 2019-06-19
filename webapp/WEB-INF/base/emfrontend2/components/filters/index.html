@@ -1,3 +1,4 @@
+#set( $module = $content.module)
 #if ($editfilters)
 	#set( $edit = true )
 #elseif( !$editfilters)
@@ -9,7 +10,7 @@
 
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
+	#if($module=="librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end

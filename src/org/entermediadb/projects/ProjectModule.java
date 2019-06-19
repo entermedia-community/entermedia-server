@@ -1282,7 +1282,7 @@ Server ProjectModule.uploadFile
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		ProjectManager manager = getProjectManager(inPageRequest);
+		//ProjectManager manager = getProjectManager(inPageRequest);
 		
 		Category category = null;
 		String categoryId = inPageRequest.getRequestParameter("selectedcategory");
@@ -1306,14 +1306,15 @@ Server ProjectModule.uploadFile
 			inPageRequest.putPageValue("selectedcategory",category);
 			LibraryCollection librarycol = loadCollection(inPageRequest);
 			
-			QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
+			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true).exact("category-exact",category.getId());
 			
-			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
-			
-			if (!caneditdata) 
-			{
-				q.orgroup("editstatus", "6");
-			}
+//			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+//			
+//			if (!caneditdata) 
+//			{
+//				Searcharchive.getAssetSearcher().createSearchQuery();
+//				q.orgroup("editstatus", "6");
+//			}
 			
 			HitTracker tracker =  q.search(inPageRequest);
 			if( tracker != null)

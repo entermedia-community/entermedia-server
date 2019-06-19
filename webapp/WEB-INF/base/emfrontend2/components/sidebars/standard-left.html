@@ -1,18 +1,23 @@
+#set( $module = $content.module)
 	<div class="col-sidebar-header">
-		<h2 class="lefttoggle">
-		<i class="fas fa-folder-open"></i> [[LOCATIONS]]	
-		<a class="nav-btn lefttoggleclose float-right" href="#">
-			<i class="fas fa-chevron-circle-left closebar"></i>
+		<h2 class="">
+		
+		#if( $module=="librarycollection" && $librarycol )
+		<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
+			<i class="fas fa-arrow-alt-circle-up"></i>
 		</a>
-		#if( $librarycol )
-	
 		#else
-		<a class="emdialog sidebarsubmenu float-right sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
+		<a class="emdialog sidebarsubmenu float-left sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
 		<i class="fas fa-search"></i>
 		</a>
 		#end
-	
 		
+		<i class="fas fa-folder-open"></i> [[LOCATIONS]]	
+		
+		<a class="nav-btn lefttoggle lefttoggleclose float-right" href="#">
+			<i class="fas fa-chevron-circle-left closebar"></i>
+		</a>
+	
 		</h2>
 	</div>
 	
@@ -34,7 +39,9 @@
 		$context.putPageValue("selectedlibrary",$selectedlibrary)
 	#end
 	
-	#if( $librarycol)
+	#set( $module = $content.module)
+	
+	#if($module=="librarycollection" && $librarycol )
 		$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
 	#else
 		$pages.include("$apphome/components/categories/sidebar-left.html", $context) 

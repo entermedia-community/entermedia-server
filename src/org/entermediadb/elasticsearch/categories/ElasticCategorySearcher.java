@@ -248,7 +248,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			{
 				root = (Category)createNewData();
 				root.setId("index");
-				root.setName("Index");
+				root.setName("All");
 			}
 			else
 			{
@@ -429,8 +429,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public synchronized Category createCategoryPath(String inPath)
 	{
-		
-		if( inPath.length() == 0 || inPath.equals("Index"))
+		if( inPath.length() == 0 || inPath.equals(getRootCategory().getName()))
 		{		
 			return getRootCategory();
 		}

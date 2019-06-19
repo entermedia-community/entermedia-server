@@ -1,4 +1,4 @@
-#set( $root = "$home$apphome/components/upload/types/html5")
+#set( $root = "$home$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
@@ -119,7 +119,7 @@
 		    <div  class="ui-widget-content">
 					
 					#if( $collectionid ) 
-                        #set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
+                        #set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}/index.html?sortby=assetaddeddateDown")
                         #if ($nodeID)
 						    #set( $href = $href + "&nodeID=$nodeID")
 					    #end

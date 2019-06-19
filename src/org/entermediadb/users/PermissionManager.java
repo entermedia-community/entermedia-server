@@ -144,7 +144,7 @@ public class PermissionManager implements CatalogEnabled
 					if( value )
 					{
 						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
-						log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
+						//log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
 					}
 				}
 			}
@@ -163,7 +163,7 @@ public class PermissionManager implements CatalogEnabled
 				if( value )
 				{
 					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
-					log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
+					//log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
 				}
 			}	
 		}

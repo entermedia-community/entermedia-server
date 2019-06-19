@@ -1,4 +1,5 @@
 #set($hitssessionid =$hits.getSessionId())
+#set( $module = $content.module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -7,19 +8,12 @@
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
-#if( !$librarycol )
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
-        #set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-        #set($collectionid = $librarycol.getId())
-	#end
-#end
 
 #if( $librarycol )	
 	$context.putPageValue("librarycol",$librarycol)
 #end
 
-#if( $librarycol )	
+#if($librarycol )	
 <div class="collection-header">
 
 	<div class="collection-header-back">
@@ -84,9 +78,11 @@
 ##TODO Loop over the view and show them here if they match
 
 #if( !$librarycol &&  $category )
+	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 	<a
 	href="$home$apphome/views/modules/asset/index.html?clearselection=true"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
+	#end
 #end
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 

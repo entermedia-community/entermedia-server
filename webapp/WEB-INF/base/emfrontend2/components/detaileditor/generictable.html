@@ -20,11 +20,11 @@
 
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
-	#set( $editpath = "${page.directory}/generictablesave.html" )
+	#set( $editpath = "$componenthome/detaileditor/generictablesave.html" )
 #end
 #set($link = $context.getRequestParameter("selectlink"))
 #if( !$link )
-	#set( $link = "${page.directory}/generictablesave.html" )
+	#set( $link = "$componenthome/detaileditor/generictablesave.html" )
 #end
 
 #set( $jumptomodule = $context.getRequestParameter("jumptomodule"))
@@ -77,7 +77,7 @@
 		<div style="margin: 20px 20px 0 0;">
 			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
 			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
-			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home$apphome/components/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

@@ -1,3 +1,5 @@
+
+
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $rendertype = $mediaarchive.getMediaRenderType($asset))
@@ -68,7 +70,6 @@ data-nextpage="$!dialoghits.idOnNextPage()"
 data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
  ><div id="mainmedianotifications"></div>
 
- 
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -114,6 +115,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 	
 </div>
 <div id="footerbase">
+
 	<div id="footermenu">
 		<ul>
 			
@@ -139,13 +141,11 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 				</a>
 			</li>
 			#end
-							#if (!$ismulti)
-
-							
+			#if (!$ismulti)
 				<div class="hidemulti">
-						$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
-			</div>
-						#end
+					$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
+				</div>
+			#end
 			
 			#if (!$ismulti)
 				#if( !$previewonly )
@@ -375,7 +375,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
                 #if($dialoghits.getSelectedHits().size() > 1)
                  <li>
                  	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true&collectionid=$!collectionid" title="[[Multiedit]]"
 						data-assettab="multiedit">
 					[[Multiedit]]  $dialoghits.getSelectedHits().size()
 					</a>
