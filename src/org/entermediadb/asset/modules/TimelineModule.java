@@ -518,4 +518,14 @@ public class TimelineModule extends BaseMediaModule
 		inReq.putPageValue("track", newtrack);
 		inReq.putSessionValue("selectedlang",targetlang);
 	}
+	
+	
+	
+	public void tagFrames(WebPageRequest inReq) {
+		
+	}
+	
+	
+	
+	
 }
