@@ -33,9 +33,9 @@
 	 ,"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 		{"source": $hit.toJsonString(), 
-		"searchtype":"#jesc($hit.getSearchHit().getType())", 
-		"index": "#jesc($hit.getSearchHit().getIndex())", 
-		"catalog" : "#jesc($manager.getAliasForIndex($hit.getSearchHit().getIndex()))"
+		"searchtype":"$hit.getSearchHit().getType()", 
+		"index": "$hit.getSearchHit().getIndex()", 
+		"catalog" : "$manager.getAliasForIndex($hit.getSearchHit().getIndex())"
 		}
 		#end
 		]		
