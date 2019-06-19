@@ -16,6 +16,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -768,12 +769,21 @@ public class PullManager implements CatalogEnabled
 					
 					
 					log.info("saved " + jsonarray.size() + " changed asset ");
+					
+					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
+					manager.flushBulk();
+					
 					return jsonarray;
 				}
 				catch (Exception e)
 				{
 					log.info("Error parsing following content: " + inReturned);
 					throw new OpenEditException(e);
+				}
+				
+				finally {
+					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
+					manager.flushBulk();
 				}
 	}
 

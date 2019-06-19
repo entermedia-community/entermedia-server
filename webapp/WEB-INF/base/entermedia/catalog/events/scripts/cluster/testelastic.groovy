@@ -12,7 +12,7 @@ public void runit()
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	
 	
-	HitTracker docs = nodeManager.getAllDocuments();
+	HitTracker docs = nodeManager.getAllDocuments(null, new Date());
 
 	
 	docs.each{

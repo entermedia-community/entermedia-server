@@ -866,7 +866,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	protected QueryBuilder buildTerms(SearchQuery inQuery)
+	public QueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
 		// if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() ==
@@ -3061,7 +3061,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		JSONParser parser = new JSONParser();
 
 		ArrayList errors = new ArrayList();
-		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
 
 		try
 		{
@@ -3098,39 +3098,21 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	public void saveJson(JSONObject json)
 	{
-		JSONParser parser = new JSONParser();
 
-		ArrayList errors = new ArrayList();
-		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
-
-		try
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
+		IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
+		req.source(json.toJSONString());
+		String id = (String)json.get("id");
+		if( id != null)
 		{
+			req.id(id);
+		}
+		processor.add(req);
+	
+
 		
-				
-				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
-				req.source(json.toJSONString());
-				//log.info("savinng " + json);
-				//Parse the json and save it with id
-			
-				String id = (String)json.get("id");
-				if( id != null)
-				{
-					req.id(id);
-				}
-				processor.add(req);
-			
-			processor.flush();
-			processor.awaitClose(5, TimeUnit.MINUTES);
-		}
-		catch (Exception e)
-		{
-			errors.add("Could not save " + e);
-		}
-		if(errors.size() > 0) 
-		{
-			
-		}
-
+		
+		
 	}
 
 	
