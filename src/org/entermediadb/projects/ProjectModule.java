@@ -1306,8 +1306,15 @@ Server ProjectModule.uploadFile
 			inPageRequest.putPageValue("selectedcategory",category);
 			LibraryCollection librarycol = loadCollection(inPageRequest);
 			
-			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true).exact("category-exact",category.getId());
-			
+			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true);
+			if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
+			{
+				q.exact("category",category.getId());
+			}
+			else
+			{
+				q.exact("category-exact",category.getId());
+			}
 //			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 //			
 //			if (!caneditdata) 

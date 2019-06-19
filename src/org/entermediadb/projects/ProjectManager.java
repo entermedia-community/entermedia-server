@@ -495,8 +495,10 @@ public class ProjectManager implements CatalogEnabled {
 	// }
 	//
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid
-			) {
-		if (collectionid == null) {
+			) 
+	{
+		if (collectionid == null) 
+		{
 			return null;
 		}
 		Searcher searcher = archive.getAssetSearcher();
@@ -521,7 +523,14 @@ public class ProjectManager implements CatalogEnabled {
 			}
 			if( categoryId != null)
 			{
-				assetsearch.addExact("category-exact",categoryId);
+				if( Boolean.parseBoolean( inReq.getRequestParameter("showchildassets") ) )
+				{
+					assetsearch.addExact("category",categoryId);
+				}
+				else
+				{
+					assetsearch.addExact("category-exact",categoryId);
+				}
 			}
 			else
 			{
