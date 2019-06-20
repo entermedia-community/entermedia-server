@@ -3,5 +3,5 @@
   <property id="longcaption"/>
   <property id="keywords"/>
   <property id="copyrightstatus"/>
-  <property id="language"/>
+  <property id="locale"/>
 </properties>
