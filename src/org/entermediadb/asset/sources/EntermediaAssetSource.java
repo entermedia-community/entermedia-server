@@ -66,16 +66,16 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Override
 	public boolean handles(Asset inAsset)
 	{
-
-		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
-		String clusterid = inAsset.get("mastereditclusterid");
-
-		if (clusterid != null && !clusterid.equals(localid))
-		{
-			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
-			return true;
-		}
 		return false;
+//		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
+//		String clusterid = inAsset.get("mastereditclusterid");
+//
+//		if (clusterid != null && !clusterid.equals(localid))
+//		{
+//			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
+//			return true;
+//		}
+//		return false;
 	}
 
 	@Override
