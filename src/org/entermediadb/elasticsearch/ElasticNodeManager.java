@@ -1385,7 +1385,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		bool.must(QueryBuilders.existsQuery("mastereditclusterid"));
 		search.setRequestCache(true);
 
-		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 500);
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 10);
 		//hits.setSearcherManager(getSearcherManager());
 		if (inIndexId != null)
 		{
