@@ -1383,6 +1383,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			bool.must(date);
 		}
 		bool.must(QueryBuilders.matchQuery("masternodeid", getLocalClusterId()));
+		//TODO:  CAn we filter this better?  remove certain types
 		search.setRequestCache(true);
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 500);

@@ -2010,7 +2010,9 @@ public class BaseElasticSearcher extends BaseSearcher
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
 			String userid = (inUser == null)?null:inUser.getId();
-			updateMasterClusterId(details, data, content, userid);
+			if(!isReIndexing()) {
+				updateMasterClusterId(details, data, content, userid);
+			}
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
