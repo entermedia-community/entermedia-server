@@ -1382,8 +1382,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
 			bool.must(date);
 		}
-		bool.must(QueryBuilders.matchQuery("masternodeid", getLocalClusterId()));
-		//TODO:  CAn we filter this better?  remove certain types
+		bool.must(QueryBuilders.existsQuery("mastereditclusterid"));
 		search.setRequestCache(true);
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 500);
