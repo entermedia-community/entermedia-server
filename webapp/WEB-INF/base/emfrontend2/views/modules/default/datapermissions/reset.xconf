@@ -4,5 +4,12 @@
 
   <path-action name="DataPermissionModule.resetPermission"  />
   <path-action name="DataPermissionModule.loadPermissionForEdit" />
+
+  <path-action name="DataEditModule.loadData" >
+		<property name="searchtype">${module}</property>
+	    <property name="idname">dataid</property>
+  </path-action>
+  <property name="idname">dataid</property>
+
 		 <inner-layout /> 
 </page>

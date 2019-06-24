@@ -16,6 +16,7 @@ import org.openedit.config.XMLConfiguration;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Permission;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 import org.openedit.util.strainer.BooleanFilter;
 import org.openedit.util.strainer.Filter;
@@ -81,11 +82,15 @@ public class DataPermissionModule extends BaseMediaModule
 	{
 		String id = inReq.getRequestParameter("currentpermission");
 		String datapermission = inReq.findValue("datapermission");
+		if( datapermission == null)
+		{
+			datapermission = inReq.findValue("datapermission.value");
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 			
 		
-			Permission permission = loadOrCreatePermission(archive,id,id); 
-			if(datapermission != null) {
+			Permission permission = loadOrCreatePermission(archive,id,null); 
+			if(id != null && datapermission != null) {
 				permission.setValue("datapermission", datapermission);
 			}
 			inReq.putPageValue("permission", permission);
@@ -93,8 +98,12 @@ public class DataPermissionModule extends BaseMediaModule
 		
 	}
 	
-	private Permission loadOrCreatePermission(MediaArchive inArchive,  String id, String inName)
+	protected Permission loadOrCreatePermission(MediaArchive inArchive,  String id, String inName)
 	{
+//		if( id == null)
+//		{
+//			throw new OpenEditException("permission id is required");
+//		}
 		PermissionManager manager = getPermissionManager(inArchive.getCatalogId());
 
 		Permission permission = manager.getPermission(id);// need stuff here...
@@ -296,7 +305,7 @@ public class DataPermissionModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		String id = inReq.getRequestParameter("id");
+		String id = inReq.getRequestParameter("currentpermission");
 		if(id != null) {
 			Searcher searcher = archive.getSearcher("custompermissions");
 			Data perm = (Data) searcher.searchById(id);
@@ -314,7 +323,9 @@ public class DataPermissionModule extends BaseMediaModule
 		String type = inReq.getRequestParameter("addgroup");
 		if( type != null)
 		{
-			Permission permission = loadPermission(inReq);
+			String id = inReq.getRequestParameter("currentpermission");
+
+			Permission permission = loadOrCreatePermission(archive, id, null);
 			if( type.equals("false"))
 			{
 				BooleanFilter nope = new BooleanFilter();
@@ -362,8 +373,7 @@ public class DataPermissionModule extends BaseMediaModule
 			
 			savePermission(archive, permission);
 			inReq.putPageValue("permission", permission);
-			String id = permission.getId();
-			inReq.setRequestParameter("currentpermission", id);
+			inReq.setRequestParameter("currentpermission", permission.getId());
 		}
 	}	
 //	public void addCondition(WebPageRequest inReq) throws Exception
@@ -481,12 +491,16 @@ public class DataPermissionModule extends BaseMediaModule
 		}
 		
 		String permissionid = inReq.getRequestParameter("permissionid");
-		String currentid = inReq.getRequestParameter("currentpermission");
 		Data target =archive.getData("datapermissions",  permissionid);
 		inReq.putPageValue("permdata", target);
 		
-		Permission perm = loadOrCreatePermission(archive,currentid,currentid);
-		inReq.putPageValue("permission", perm);
+		Permission perm = null;
+		String currentid = inReq.getRequestParameter("currentpermission");
+		if( currentid != null)
+		{
+			perm = loadOrCreatePermission(archive,currentid,currentid);
+			inReq.putPageValue("permission", perm);
+		}	
 		inReq.putPageValue("permissionid", permissionid);
 
 		HitTracker groups  = getUserManager(inReq).getGroups();
@@ -516,20 +530,11 @@ public class DataPermissionModule extends BaseMediaModule
 							{
 								if( filters[j] instanceof GroupFilter)
 								{
-									String gid = ((GroupFilter)filters[j]).getGroupId();
-									Data group = (Group)getUserManager(inReq).getGroup(gid);
-									if( group != null)
-									{
-										selgroups.add(group);
-									}
-								} else if(filters[j] instanceof SettingsGroupFilter)
+									selgroups.add(filters[j]);
+								} 
+								else if(filters[j] instanceof SettingsGroupFilter)
 								{
-									String gid = ((SettingsGroupFilter)filters[j]).getGroupId();
-									Data group = (Group)getUserManager(inReq).getGroup(gid);
-									if( group != null)
-									{
-										selroles.add(group);
-									}
+									selroles.add(filters[j]);
 								}
 								else
 								{
