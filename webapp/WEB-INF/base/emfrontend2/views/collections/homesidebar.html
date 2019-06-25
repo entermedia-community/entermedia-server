@@ -1,0 +1,34 @@
+
+			<div class="ui-widget">
+				<div class="ui-widget-header collectionhome-sideheader" style="">
+				<span class="widget-header-title">[[Search]]</span>
+				<a class="emdialog " style="margin-left:2px;float:right" data-hidefooter="true"  title="[[Find Collections]]" 
+	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
+			</div>
+				<div class="ui-widget-content categories-widget no-padding-for-real">
+					<ul id="settings-menu" class="sidebar-list">
+						#set( $selectedtab = $content.selected)
+						<li id="theme"  #if( $selectedtab == "featured")class="current"#end>
+							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> Featured Collections</a>
+						</li>
+						<li id="users"  #if( $selectedtab == "all")class="current"#end>
+							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> All Collections</a>
+						</li>
+						<li id="users" #if( $selectedtab == "saved")class="current"#end>
+							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections</a>
+						</li>
+						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened</a>
+						</li>
+						<li>
+				#if($canaddnewcollection)
+					   	    <li>
+	                 <a  class="emdialog btn btn-primary" style="margin:15px;" title="[[Add New Collection]]" 
+	                 	href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()">
+	                 	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+							</li>
+	             #end
+					</ul>
+				</div>
+			</div>
+			

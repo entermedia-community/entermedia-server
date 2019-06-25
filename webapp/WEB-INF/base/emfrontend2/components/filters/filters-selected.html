@@ -29,7 +29,8 @@
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
 	
 	<div class="card card-mini card-collections">
-		<a href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}&clearselection=true" title="${librarycol}">
+		$pages.include("$apphome/components/librarycollection/togglelike.html",$context)
+		<a href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}&clearselection=true" title="Open ${librarycol}">
 	 	<div class="card-collections-thumb" style='background-image: url("${link}")'></div>
 	 	</a>
 	</div>
@@ -40,7 +41,7 @@
 
 	<div class="collection-header-actions">
 	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
-	<i class="fas fa-caret-down"></i></a>
+	<i class="fas fa-bars"></i></a>
 		<div class="dropdown-menu">
 		 	#if($cansharecollection )
 			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")

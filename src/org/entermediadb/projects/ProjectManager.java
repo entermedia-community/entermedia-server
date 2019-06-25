@@ -1743,6 +1743,28 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 		return hits;
 
 	}
+	public boolean doesLike(User inUser,LibraryCollection inCollection)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("librarycollectionsaved");
+		Data liked = searcher.query().exact("librarycollection",inCollection.getId()).exact("userid", inUser.getId()).searchOne();
+		return liked != null;
+	}
+	public void toggleLike(String inCollectionId, String inUserId)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("librarycollectionsaved");
+		Data liked = searcher.query().exact("librarycollection",inCollectionId).exact("userid", inUserId).searchOne();
+		if( liked == null)
+		{
+			liked = searcher.createNewData();
+			liked.setValue("librarycollection",inCollectionId);
+			liked.setValue("userid", inUserId);
+			searcher.saveData(liked);
+		}
+		else
+		{
+			searcher.delete(liked, null);
+		}
+	}
 
 	
 }

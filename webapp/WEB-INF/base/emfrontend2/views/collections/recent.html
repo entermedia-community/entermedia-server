@@ -1,0 +1,16 @@
+<div class="collectionshomeform-container">
+
+#if( $usercollections )
+	<div class="collectionshome">
+		<div class="collectionshome-header">
+			<h3 class="text-center">[[Recent Collections]]</h3>
+		</div>
+		<div id="" class="collectionshomeresults">		
+			$context.putPageValue("hits",$usercollections)
+			$pages.include("${apphome}/components/collections/cards.html", $context)
+		</div>
+	</div>
+#end
+
+</div>
+

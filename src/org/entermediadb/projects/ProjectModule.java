@@ -1370,4 +1370,12 @@ Server ProjectModule.uploadFile
 		Boolean isOnEditTeam = manager.isOnTeam(collection,userid);
 		return isOnEditTeam;
 	}
+	
+	public void toggleLike(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			LibraryCollection collection = loadCollection(inReq);
+			manager.toggleLike(collection.getId(),inReq.getUserName());
+	}
+	
 }
