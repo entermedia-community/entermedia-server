@@ -12,6 +12,7 @@
 	<input type="hidden" name="datapermission.value" value="${permdata.permission}"/>
 	<input type="hidden" name="moduleid.value" value="${permdata.moduleid}"/>
 	<input type="hidden" name="parentfolderid.value" value="${data.id}"/>
+	<input type="hidden" name="dataid" value="${data.id}"/>
 	<input type="hidden" name="dataid.value" value="${data.id}"/>
 	
 	<input type="hidden" name="field" value="datapermission" />
@@ -37,7 +38,7 @@
 #end
 #set( $settingsgroups = $searcherManager.getList($catalogid,"settingsgroup"))	
 #if( $settingsgroups.size() > 0)
-		<option value="">User Profile</option>
+		<option value="">[[Roles]]</option>
 #foreach( $settings in $settingsgroups )
 		<option value="settingsgroup.$settings.id">&nbsp;&nbsp;&nbsp;&nbsp;$settings.name</options>
 #end
@@ -57,12 +58,12 @@
 #if( $selgroups.size() > 0 || $selroles.size() > 0)	
 #if($selgroups.size() > 0)
 <p><b>[[Allowed Groups]]:</b></p>
-
 	<table class="table table-striped">
-	#set( $count = 0 )
 	#foreach( $group in $selgroups )
 		<tr>
-		<td>$group</td><td> <a class="ajax" targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=0/$count&id=$permission.id"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
+		<td>$mediaarchive.getGroup($group.getGroupId())</td><td> <a class="ajax" targetdiv="permissionedit" 
+		#set( $tree = $permission.findTree($group)) 
+		href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=$tree&currentpermission=$permission.id&permissionid=$permdata.id&parentfolderid.value=${data.id}&dataid=${data.id}"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
 		#set( $count = $count + 1 )
 		</tr>
 	#end
@@ -72,16 +73,15 @@
 	</table>
 #end
 	
-	
-
 #if($selroles.size() > 0)
 <p><b>[[Allowed Roles]]:</b></p>
 
 	<table class="table table-striped">
-	#set( $count = 0 )
 	#foreach( $group in $selroles )
 		<tr>
-		<td>$group</td><td> <a class="ajax" targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=0/$count&id=$permission.id"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
+		<td>$mediaarchive.getData("settingsgroup",$group.getGroupId())</td><td> <a class="ajax" targetdiv="permissionedit"
+		#set( $tree = $permission.findTree($group)) 
+		href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=$tree&currentpermission=$permission.id&permissionid=$permdata.id&parentfolderid.value=${data.id}&dataid=${data.id}"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
 		#set( $count = $count + 1 )
 		</tr>
 	#end
@@ -103,7 +103,7 @@
 		[[Nobody]]
 	#elseif( $permission.toString() == "true")
 		[[Anyone]]
-	#elseif( $permission.toString() == "" )
+	#elseif( !$permission || $permission.toString() == "" )
 		[[Defaults]]
 	#else
 		Custom: $permission
@@ -120,7 +120,10 @@ $pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html
 
 
 <a class="btn btn-sm btn-primary ajax" style="margin-right:5px"  data-targetdiv="allpermissions" data-oemaxlevel="1" href="$home$apphome/views/modules/$moduleid/datapermissions/index.html?collectionid=${data.id}&id=${data.id}">[[Back]]</a>
-<a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?id=$permission.id&permissionid=$permdata.id">[[Reset to defaults]]</a>
+#if( $permission)
+<a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" 
+href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?&currentpermission=$permission.id&permissionid=$permdata.id&parentfolderid.value=${data.id}&dataid=${data.id}">[[Reset to defaults]]</a>
+#end
 </div>
 
 

@@ -4,6 +4,12 @@
 
   <path-action name="DataPermissionModule.addGroup"  />
   <path-action name="DataPermissionModule.loadPermissionForEdit" />
+  <path-action name="DataEditModule.loadData" >
+		<property name="searchtype">${module}</property>
+	</path-action>
+			<property name="idname">dataid</property>
+  	 <inner-layout /> 
+
 		 <inner-layout /> 
 		 
 		 

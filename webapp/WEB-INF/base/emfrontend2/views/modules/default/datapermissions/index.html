@@ -37,7 +37,7 @@
 	#elseif( $permission.toString() == "true" )
 	[[Enabled]]
 	#else
-	$permission
+	$mediaarchive.getPermissionManager().toDisplay($mediaarchive,$permission)
 	#end
 			</td>
 		</tr>

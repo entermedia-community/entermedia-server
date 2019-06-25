@@ -64,6 +64,7 @@ import org.openedit.page.manage.MimeTypeMap;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.PathProcessor;
@@ -1873,11 +1874,6 @@ public class MediaArchive implements CatalogEnabled
 		return library;
 	}
 
-	public UserProfile getUserProfile(String inId)
-	{
-		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
-
-	}
 
 	//Look for previews that should be marked as complete now
 	public void conversionCompleted(Asset asset)
@@ -2448,5 +2444,9 @@ public class MediaArchive implements CatalogEnabled
 		getSearcher(inString).saveAllData(inTosave,null);		
 	}
 
+	public Group getGroup(String inGid)
+	{
+		return getUserManager().getGroup(inGid);
+	}
 
 }
