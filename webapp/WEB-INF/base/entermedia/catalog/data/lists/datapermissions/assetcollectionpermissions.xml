@@ -29,7 +29,7 @@
 	<permission moduleid="asset" permission="download"   id="download" permissiontype="librarycollection" name="Download Original" description="Enables downloading of the original asset." ordering="322"/>
 	<permission moduleid="asset" permission="downloadfpo"   id="downloadfpo" permissiontype="librarycollection" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="326"/>
 	<permission moduleid="asset" permission="showpendingassets"   id="showpendingassets" permissiontype="librarycollection" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="312"/>
-	<permission moduleid="asset" permission="showunwatermarkedassets" id="showunwatermarkedassets" permissiontype="librarycollection" name="Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
+	<permission moduleid="asset" permission="showunwatermarkedassets" id="showunwatermarkedassets" permissiontype="librarycollection" name="Un-Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
 		
 	
 </permissions>
