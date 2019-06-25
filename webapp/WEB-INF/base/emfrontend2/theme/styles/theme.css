@@ -2142,8 +2142,8 @@ td.checkbox input, th.firstheader input {
 	}
 .collection-header-actions {
 	float:left;
-	padding:15px 10px 0 10px;
-	font-size:1.3rem;
+	padding:18px 10px 0 5px;
+	font-size:1.1rem;
 }
 .collection-header-back {
 	float:left;
@@ -4971,9 +4971,10 @@ a.collectionbox.favorite
 
 a.collectionlike,a.collectionsaved
 {
-    top: 21px;
-    left:-16px;
-    position: absolute;
+	padding-left:5px;
+	display: table-caption;
+    font-size:.95rem;
+	
 }
 
  a.collectionsaved, a.collectionsaved:hover,a.collectionlike:hover
