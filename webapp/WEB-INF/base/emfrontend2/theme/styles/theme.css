@@ -173,8 +173,8 @@
 }
 .btn-primary:hover,
 .btn-primary:not([disabled]):not(.disabled).active, .btn-primary:not([disabled]):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
-	background-color: #000;
-	border-color:#000;
+	background-color: #000!important;
+	border-color:#000!important;
 	color:#fff;
 }
 .btn-primary:not([disabled]):not(.disabled).active, .btn-primary:not([disabled]):not(.disabled):active, .show>.btn-primary.dropdown-toggle,
