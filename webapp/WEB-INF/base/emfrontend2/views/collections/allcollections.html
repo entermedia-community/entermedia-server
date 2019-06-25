@@ -10,15 +10,15 @@ $context.putPageValue("searcher",$searcher)
 	<div class="collectionshome">
 		<div class="collectionshome-header">
 
-			<div style="float:right;">Filter By Library:
-			<select name="${detail.getId()}.value" style=""> 
-			<option value=""></option>
-			#foreach( $libraryid in $searcherManager.getList($catalogid,"library") )
-				#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
-				<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$library</option>
-			#end
-			</select>
-			</div>
+##			<div style="float:right;">Filter By Library:
+##			<select name="${detail.getId()}.value" style=""> 
+##			<option value=""></option>
+##			#foreach( $libraryid in $searcherManager.getList($catalogid,"library") )
+##				#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
+##				<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$library</option>
+##			#end
+##			</select>
+##			</div>
 			
 			<h3 class="text-center">[[All Collections]]</h3>
 			
