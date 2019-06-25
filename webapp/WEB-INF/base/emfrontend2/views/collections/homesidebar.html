@@ -16,10 +16,10 @@
 							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> All Collections</a>
 						</li>
 						<li id="users" #if( $selectedtab == "savedcollections")class="current"#end>
-							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections ($likedcollections.size())</a>
+							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections #if($likedcollections)($likedcollections.size())#end</a>
 						</li>
 						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
-							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened ($usercollections.size())</a>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened #if( $usercollections)($usercollections.size())#end</a>
 						</li>
 						<li>
 				#if($canaddnewcollection)

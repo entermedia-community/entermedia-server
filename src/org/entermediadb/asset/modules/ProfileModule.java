@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.WebPageRequest;
@@ -18,6 +20,7 @@ import org.openedit.users.User;
 public class ProfileModule extends MediaArchiveModule
 {
 	protected UserProfileManager fieldUserProfileManager;
+	private static final Log log = LogFactory.getLog(ProfileModule.class);
 
 	public UserProfileManager getUserProfileManager()
 	{
@@ -597,7 +600,14 @@ public class ProfileModule extends MediaArchiveModule
 		}
 
 		prof.setValue(field,value);
-		getUserProfileManager().saveUserProfile(prof);
+		try
+		{
+			getUserProfileManager().saveUserProfile(prof);
+		}
+		catch( Exception ex)
+		{
+			log.error("Could not save ", ex);
+		}
 		inReq.putPageValue("profile",prof);
 	}
 	
