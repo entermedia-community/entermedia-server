@@ -1765,6 +1765,23 @@ if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
 			searcher.delete(liked, null);
 		}
 	}
-
+	public HitTracker listLikedCollections(WebPageRequest inReq)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("librarycollectionsaved");
+		HitTracker hits = searcher.query().exact("userid", inReq.getUserName()).search(inReq);
+		
+		List ids = new ArrayList();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String id = data.get("librarycollection");
+			ids.add(id);
+		}
+		
+		HitTracker liked = getMediaArchive().query("librarycollection").enduser(true).ids(ids).sort("name").named("likedcollections").search(inReq);
+		
+		inReq.putPageValue("likedcollections", liked);
+		return liked;
+	}
 	
 }

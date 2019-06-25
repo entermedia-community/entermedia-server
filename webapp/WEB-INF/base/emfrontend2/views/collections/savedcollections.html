@@ -3,9 +3,7 @@ $context.putPageValue("searcher",$searcher)
 
 <div class="collectionshomeform-container">
 
-	
-	#set( $feturedhits = $mediaarchive.query("librarycollection").exact("featuredcollection", "true").enduser(true).sort("name").search($context) )
-	#if( !$feturedhits.isEmpty() )
+	#if( !$likedcollections.isEmpty() )
 	<div class="collectionshome">
 	
 		<div class="collectionshome-header">
@@ -13,7 +11,7 @@ $context.putPageValue("searcher",$searcher)
 			
 		</div>
 		<div id="" class="collectionshomeresults">		
-			$context.putPageValue("hits",$feturedhits)
+			$context.putPageValue("hits",$likedcollections)
 			$pages.include("${apphome}/components/collections/cards.html", $context)
 		</div>
 	</div>

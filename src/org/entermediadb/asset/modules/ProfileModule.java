@@ -583,6 +583,22 @@ public class ProfileModule extends MediaArchiveModule
 		getUserProfileManager().clearProfile(archive.getCatalogId(), id);
 	}
 	
-	
+
+	public void saveProperty(WebPageRequest inReq)
+	{
+		UserProfile prof = loadUserProfile(inReq);
+
+		String field = inReq.findValue("field");
+		String value = inReq.findValue(field + ".value");
+		String oldval = prof.get(field);
+		if( oldval == value || (oldval != null && oldval.equals(value)) )
+		{
+			return;
+		}
+
+		prof.setValue(field,value);
+		getUserProfileManager().saveUserProfile(prof);
+		inReq.putPageValue("profile",prof);
+	}
 	
 }

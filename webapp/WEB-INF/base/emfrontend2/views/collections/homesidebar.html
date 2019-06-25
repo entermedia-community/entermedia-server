@@ -7,18 +7,19 @@
 			</div>
 				<div class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
-						#set( $selectedtab = $content.selected)
+						#set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
+						#if( !$selectedtab)  #set( $selectedtab = "featured") #end
 						<li id="theme"  #if( $selectedtab == "featured")class="current"#end>
 							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> Featured Collections</a>
 						</li>
-						<li id="users"  #if( $selectedtab == "all")class="current"#end>
+						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
 							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> All Collections</a>
 						</li>
-						<li id="users" #if( $selectedtab == "saved")class="current"#end>
-							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections</a>
+						<li id="users" #if( $selectedtab == "savedcollections")class="current"#end>
+							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections ($likedcollections.size())</a>
 						</li>
 						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
-							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened</a>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened ($usercollections.size())</a>
 						</li>
 						<li>
 				#if($canaddnewcollection)

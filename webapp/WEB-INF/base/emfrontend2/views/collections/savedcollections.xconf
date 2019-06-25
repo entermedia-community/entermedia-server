@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 
 <page>  
-
-<property name="selected">saved</property>
-	
+	<property name="selected">savedcollections</property>
 </page>

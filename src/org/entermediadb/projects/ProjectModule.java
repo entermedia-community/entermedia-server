@@ -1377,5 +1377,10 @@ Server ProjectModule.uploadFile
 			LibraryCollection collection = loadCollection(inReq);
 			manager.toggleLike(collection.getId(),inReq.getUserName());
 	}
+	public void listLikedCollections(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			manager.listLikedCollections(inReq);
+	}
 	
 }
