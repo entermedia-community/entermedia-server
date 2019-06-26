@@ -36,7 +36,11 @@
 	</div>
 	
 	<div class="collection-header-name">
-	<h1>${librarycol} $pages.include("$apphome/components/librarycollection/togglelike.html",$context)</h1>
+	<h1>${librarycol} 
+	#if( $canviewsavedcollections )
+	$pages.include("$apphome/components/librarycollection/togglelike.html",$context)
+	#end
+	</h1>
 	</div>
 
 	<div class="collection-header-actions">

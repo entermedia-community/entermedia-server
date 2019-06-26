@@ -1149,12 +1149,20 @@ public class ProjectManager implements CatalogEnabled {
 				// dont filter since its the admin
 				return true;
 			}
+			
+			Object caneditall = inReq.getPageValue("editallcollections");
+			if( caneditall != null && Boolean.parseBoolean(caneditall.toString()))
+			{
+				return true;
+			}
+			
 			Category root = collection.getCategory();
 			if (root == null) {
 				configureCollection(collection, inReq.getUserName());
 				root = collection.getCategory();
 			}
-if("true".equals(inReq.findValue("legacycollectionpermissions"))) {
+			if("true".equals(inReq.findValue("legacycollectionpermissions"))) 
+			{
 			UserProfile profile = inReq.getUserProfile();
 			if (profile != null && profile.getViewCategories() != null) 
 			{

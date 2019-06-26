@@ -1792,8 +1792,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				if(inUser != null) {
 					userid = inUser.getId();
 				}
-				
-				updateMasterClusterId(details, data2, content, userid);
+				if( !isReIndexing() )
+				{
+					updateMasterClusterId(details, data2, content, userid);
+				}
 				updateIndex(content, data2, details);
 
 				content.endObject();
@@ -1874,25 +1876,27 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, String inUser) throws IOException
 	{
+		if(isReIndexing())
+		{
+			return;
+		}
+		//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
+		String localClusterId = getElasticNodeManager().getLocalClusterId();
+		String currentid = inData.get("mastereditclusterid");
+		if(currentid == null) 
+		{
+			currentid = localClusterId;
+		}
+		content.field("mastereditclusterid", currentid);
+		content.field("recordmodificationdate", new Date());
 
-		
-				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				boolean needslog = false;
-				String localClusterId = getElasticNodeManager().getLocalClusterId();
-				String currentid = inData.get("mastereditclusterid");
-				if(currentid == null) {
-					currentid = localClusterId;
-					
-				}
-				content.field("mastereditclusterid", currentid);
-				content.field("recordmodificationdate", new Date());
-				
-				if(!localClusterId.equals(currentid)) {
-					getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);
-				}
-				
-				
-		
+		if(!getSearchType().endsWith("Log") && !getSearchType().equals("lock") )
+		{
+			if(!localClusterId.equals(currentid)) 
+			{
+				getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);
+			}
+		}	
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -2010,9 +2014,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
 			String userid = (inUser == null)?null:inUser.getId();
-			if(!isReIndexing()) {
-				updateMasterClusterId(details, data, content, userid);
-			}
+			updateMasterClusterId(details, data, content, userid);
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
