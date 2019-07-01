@@ -246,4 +246,11 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	{
 		return inCategory.getChildren();
 	}
+
+	@Override
+	public void clearCategories()
+	{
+		getCategoryArchive().clearCategories();
+		
+	}
 }

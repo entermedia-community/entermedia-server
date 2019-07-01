@@ -1890,8 +1890,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		content.field("mastereditclusterid", currentid);
 		content.field("recordmodificationdate", new Date());
 
-		if(!getSearchType().endsWith("Log") && !getSearchType().equals("lock") )
-		{
+		if( !getSearchType().endsWith("Log") && //Extra noise and confusion
+			!getSearchType().equals("lock") &&  //Lets come back to this. Do we want conversions spread across nodes
+			!getSearchType().equals("editingcluster")	&&  //Adding new ones seems risky
+			!getSearchType().equals("catalogsettings")  //Allow for more options on a per node basis
+		) {
 			if(!localClusterId.equals(currentid)) 
 			{
 				getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);

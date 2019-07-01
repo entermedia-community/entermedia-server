@@ -111,7 +111,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			{
 				updateIndex(tosave,null);
 				tosave.clear();
-				getCacheManager().clear("category");
+				getCacheManager().clear("category");  //TODO: Why do we do this?
 			}
 		}
 		updateIndex(tosave,null);
@@ -480,6 +480,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		delete(root, null);
 		
 		
+		
+	}
+
+	@Override
+	public void clearCategories()
+	{
+		clearIndex();
+		getXmlCategoryArchive().clearCategories();
+		getCacheManager().clear("category");
 		
 	}
 	
