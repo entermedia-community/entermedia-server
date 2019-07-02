@@ -1,22 +1,9 @@
-#set($dl = $mediaarchive.getSearcher("assetdownloadLog"))
+#set($dl = $mediaarchive.getSearcher("publishqueue"))
 #set($hist = $context.getPageMap().get("event_breakdown_day").loadHistogram("event_breakdown_day"))
 
-
-<!--
-$context.getClass()
-
-
-#foreach($node in $hist)
-    #foreach($child in $node.getChildren())
-           $child.toString()
-    #end
-#end
--->
-<canvas id="dlchart" ></canvas>
-
-
+<canvas id="publishchart" ></canvas>
 <script>
-var ctx = document.getElementById("dlchart");
+var ctx = document.getElementById("publishchart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -75,4 +62,3 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
-
