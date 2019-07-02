@@ -1,6 +1,7 @@
 <page>
 
-	<property name="eventname">Pull changes from Nodes</property>	
+	<property name="eventname">Pull Asset changes from Nodes</property>	
+	<property name="eventdescription">Check for data changes from remote Nodes</property>	
 	<path-action name="SyncModule.processPullQueue" />
 	<property name="period">30s</property>
 	<property name="enabled">false</property>

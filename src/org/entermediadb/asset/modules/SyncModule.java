@@ -230,14 +230,17 @@ public class SyncModule extends BaseMediaModule
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
-		long total = getPullManager(archive.getCatalogId()).processAll(archive);
-			
-			
-			
-		
-		
-		archive.getCategorySearcher().clearIndex();
-		archive.getCategoryArchive().clearCategories();
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		long total = pullManager.processAll(archive);
+		if( total > 0)
+		{
+			ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+			if( logger != null)
+			{
+				logger.info("Processed " + total );
+			}
+			archive.getCategorySearcher().clearCategories();
+		}
 		
 
 	}
