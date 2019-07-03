@@ -47,10 +47,10 @@ public User getUser()
 			throw new OpenEditException("passwords don't match");
 		}
 			
-		String username = context.getRequestParameter("id.value");
-		newuser = userManager.createUser( username, password);
-		newuser.setVirtual(false);
 	}
+	String username = context.getRequestParameter("id.value");
+	newuser = userManager.createUser( username, password);
+	newuser.setVirtual(false);
 	
 	return newuser;
 }
@@ -89,7 +89,6 @@ public Data saveUserProfile(String inUserId)
 public void addUser()
 {
 	User newuser = getUser();
-	
 	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
 	List details = usersearcher.getDetailsForView("user/simpleuseradd", context.getPageValue("user"));

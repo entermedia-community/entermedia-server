@@ -5,6 +5,7 @@ package org.entermediadb.elasticsearch.searchers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -182,10 +183,13 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		saveAllData(userstosave,inUser);
 	}
 	public void saveAllData(Collection<Data> inAll, User inUser)
-	
 	{
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
+			if( user.getValue("creationdate") == null )
+			{
+				user.setValue("creationdate", new Date() );
+			}
 			getXmlUserArchive().saveUser(user);
 			getCacheManager().remove("usercache",user.getId());
 		}
@@ -195,7 +199,12 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 
 	public void saveData(Data inData, User inUser)
 	{
-		getXmlUserArchive().saveUser((User)inData);
+		User tosave = (User)inData;
+		if( tosave.getValue("creationdate") == null )
+		{
+			tosave.setValue("creationdate", new Date() );
+		}
+		getXmlUserArchive().saveUser(tosave);
 		getCacheManager().remove("usercache",inData.getId());
 
 		super.saveData(inData, inUser); //update the index
