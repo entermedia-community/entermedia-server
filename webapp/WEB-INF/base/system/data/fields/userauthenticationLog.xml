@@ -1,8 +1,30 @@
 <properties>
 
-
-<property id="user"  keyword="true"  index="true" stored="true" type="list">User</property>
 <property id="details" index="true" stored="true" editable="true">Action</property>
 <property id="date" type="date" format="dd/MM/yyyy hh:mm:ss a" index="true" stored="true" editable="true">Date</property>
+
+  <property id="catalogid" index="true" deleted="false" editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[CatalogID]]></language> 
+    </name> 
+  </property>  
+  <property id="id" deleted="false" editable="true">New 
+    <name> 
+      <language id="en"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" filter="false" deleted="false" editable="false" stored="true" sortable="true" keyword="false">New 
+    <name> 
+      <language id="de"><![CDATA[Betrieb]]></language>  
+      <language id="en"><![CDATA[Operation]]></language>  
+      <language id="es"><![CDATA[Operación]]></language>  
+      <language id="fr"><![CDATA[Opération]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" index="true" listid="user" filter="false" deleted="false" editable="false" stored="true" viewtype="asset" sortable="true" keyword="false" datatype="list">New
+    <name>
+      <language id="en"><![CDATA[User Making Change]]></language>
+    </name>
+  </property>
 
 </properties>

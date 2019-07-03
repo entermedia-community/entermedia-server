@@ -19,4 +19,16 @@
       <language id="en"><![CDATA[Date]]></language>
     </name>
   </property>
+  
+  <property id="details" index="true" deleted="false" editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[Details]]></language> 
+    </name> 
+  </property>  
+  <property id="id" deleted="false" editable="true">New
+    <name>
+      <language id="en"><![CDATA[ID]]></language>
+    </name>
+  </property>
+  
 </properties>
