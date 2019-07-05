@@ -1,10 +1,10 @@
 <h2>[[Monitoring alert Notification]]</h2>
-[[The following instance has entered an error state]]: $monitored.name - <a href="$monitored.url">[[View]]</a><br/><br/>
+[[The following instance has entered an error state]]: $instance.name - <a href="$instance.instanceurl">[[View]]</a><br/><br/>
 
 [[Review below]]:
 <br/><br/>
 #if($monitored.isreachable == "false")
-	[[The instance seems to be down]]: <a href="$monitored.fullurl">$monitored.fullurl</a><br/><br/>
+	[[The instance seems to be down]]: <a href="$instance.instanceurl">$instance.instanceurl</a><br/><br/>
 #else
 	#if($monitored.isssl == "true")
 		#if($monitored.sslstatus == "torenew")
@@ -12,7 +12,7 @@
 		#elseif($monitored.sslstatus == "expired")
 			[[The instance's SSL certificate has expired on]] <b>$monitored.expirationdate</b>. [[Please deploy a new one by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
 		#elseif($monitored.sslstatus == "error")
-			[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
+			[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$instance.instanceurl">$monitored.url</a><br/><br/>
 		#end
 	#else
 		#if ($monitored.isdisk == "true")
