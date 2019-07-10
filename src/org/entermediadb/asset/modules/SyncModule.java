@@ -320,7 +320,8 @@ public class SyncModule extends BaseMediaModule
 			hits.setPage(Integer.parseInt(page));
 		}
 		hits.enableBulkOperations();
-
+		
+		JSONObject finaldata = new JSONObject();
 		
 		JSONObject jsonResults = new JSONObject();
 		if (hits.isEmpty())
@@ -352,7 +353,10 @@ public class SyncModule extends BaseMediaModule
 			arrayValue.add(indiHit);
 		}
 		
-		String jsonString = jsonResults.toJSONString();
+		finaldata.put("response", jsonResults);
+		finaldata.put("results", arrayValue);
+		
+		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
 		
 	}
