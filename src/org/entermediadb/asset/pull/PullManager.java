@@ -707,7 +707,6 @@ public class PullManager implements CatalogEnabled
 						return -1;
 					}
 					returned = EntityUtils.toString(response2.getEntity());
-					log.info("Got page of json: " + returned);
 					parsed = (Map) new JSONParser().parse(returned);
 					response = (Map) parsed.get("response");
 					ok = (String) response.get("status");
