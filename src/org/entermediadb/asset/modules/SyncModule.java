@@ -323,6 +323,15 @@ public class SyncModule extends BaseMediaModule
 
 		
 		JSONObject jsonResults = new JSONObject();
+		if (hits.isEmpty())
+		{
+			jsonResults.put("status", "empty");
+		}
+		else 
+		{	
+			jsonResults.put("status", "ok");
+		}
+	
 		jsonResults.put("totalhits", hits.size());
 		jsonResults.put("hitsperpage", hits.getHitsPerPage());
 		jsonResults.put("page", hits.getPage());
