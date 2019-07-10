@@ -1,1 +1,1 @@
-$pages.include("./listchanges.json")
+$pages.include("./listalldocs.json", $context)
