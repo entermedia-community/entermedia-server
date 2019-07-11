@@ -760,8 +760,9 @@ public class PullManager implements CatalogEnabled
 						catalogid = catalogid.replace("_", "/");
 						String searchtype = (String) object.get("searchtype");
 						Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+						String id = (String) object.get("id");
 						JSONObject source = (JSONObject) object.get("source");
-						searcher.saveJson(source);
+						searcher.saveJson(id, source);
 
 						
 					}

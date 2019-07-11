@@ -3103,17 +3103,14 @@ public class BaseElasticSearcher extends BaseSearcher
 	}
 	
 	
-	public void saveJson(JSONObject json)
+	public void saveJson(String inID, JSONObject json)
 	{
 
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
 		IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
 		req.source(json.toJSONString());
-		String id = (String)json.get("id");
-		if( id != null)
-		{
-			req.id(id);
-		}
+		req.id(inID);
+		
 		processor.add(req);
 	
 

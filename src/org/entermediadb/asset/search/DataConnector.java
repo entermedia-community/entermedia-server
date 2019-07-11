@@ -71,7 +71,7 @@ public interface DataConnector extends CatalogEnabled
 	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
 	public boolean initialize();
 	public void saveJson(Collection inJsonArray);
-	public void saveJson(JSONObject inObject);
+	public void saveJson(String inId, JSONObject inObject);
 
 
 }

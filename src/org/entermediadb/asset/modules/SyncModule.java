@@ -350,6 +350,8 @@ public class SyncModule extends BaseMediaModule
 			indiHit.put("index", index);
 			indiHit.put("catalog", manager.getAliasForIndex(index));
 			indiHit.put("source", data.getSearchData());
+			indiHit.put("id", data.getId());
+
 			arrayValue.add(indiHit);
 		}
 		

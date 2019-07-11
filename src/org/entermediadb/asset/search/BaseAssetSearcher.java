@@ -547,8 +547,8 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		getDataConnector().saveJson(inJsonArray);
 	}
 	
-	public void saveJson(JSONObject object) {
-		getDataConnector().saveJson(object);
+	public void saveJson(String inId,JSONObject object) {
+		getDataConnector().saveJson(inId, object);
 	}
 	
 	
