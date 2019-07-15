@@ -72,7 +72,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $resultdetail)
 	
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-$detail.id" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
@@ -123,7 +123,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 #foreach( $detail in $resultdetail )
-<td class="editfield highlightMe" halign="right">
+<td class="editfield highlightMe tablecell-$detail.id" halign="right">
    <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
 		#set($val = false)	
 		#set( $val =  $cell.get($detail.id) )
