@@ -869,25 +869,35 @@ uiload = function() {
 											templateSelection : select2Selected,
 											tokenSeparators : [ "|" ],
 											separator : '|'
-										})
-								.change(
-										function() {
+										});
+							theinput.on("select2:select" , function() {
 											if ($(this).parents(".ignore").length == 0) {
 												$(this).valid(); 
 												
 											}
-											
+								
 											if ($(this).hasClass("autosubmited")) {
 												var theform =$(this).parents("form")
 												if (theform.hasClass("autosubmitform")) {
 													theform.trigger("submit");
 												}
 											}
-											
-											
-											
-											
-										}); // is this still needed?
+						   });
+						   theinput.on("select2:unselect" , function() {
+											if ($(this).parents(".ignore").length == 0) {
+												$(this).valid(); 
+												
+											}
+								
+											if ($(this).hasClass("autosubmited")) {
+												var theform =$(this).parents("form")
+												if (theform.hasClass("autosubmitform")) {
+													$("#filtersremoveterm", theform).val($(this).data("searchfield"));
+													theform.trigger("submit");
+													
+												}
+											}
+							});
 					});
 
 	lQuery("input.grabfocus").livequery(function() {
