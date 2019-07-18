@@ -10,7 +10,7 @@ $context.putPageValue("searcher",$searcher)
 	<div class="collectionshome">
 		<div class="collectionshome-header">
 
-##			<div style="float:right;">Filter By Library:
+##			<div style="float:right;">[[Filter By Library]]:
 ##			<select name="${detail.getId()}.value" style=""> 
 ##			<option value=""></option>
 ##			#foreach( $libraryid in $searcherManager.getList($catalogid,"library") )
@@ -23,11 +23,12 @@ $context.putPageValue("searcher",$searcher)
 			<h3 class="text-center">[[All Collections]]</h3>
 			
 		</div>
-		<div id="" class="collectionshomeresults">		
+		<div id="emresultscontent" class="collectionshomeresults">		
 	$pages.include("${apphome}/views/collections/pages.html", $context)
+			<div class="clearfix"></div>
 			$context.putPageValue("hits",$hits)
 			$pages.include("${apphome}/components/collections/cards.html", $context)
-			##pagination?
+			
 		</div>
 	</div>
 	#end

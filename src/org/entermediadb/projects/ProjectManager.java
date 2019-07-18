@@ -38,6 +38,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -146,6 +147,7 @@ public class ProjectManager implements CatalogEnabled {
 
 			// Mach up all the top level categories
 			usercollections = loadUserCollections(inReq, allcollections, inArchive, library);
+			
 			inReq.putPageValue("usercollections", usercollections);
 			return usercollections;
 		}
@@ -213,7 +215,8 @@ public class ProjectManager implements CatalogEnabled {
 	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, HitTracker allcollections,
 			MediaArchive inArchive, Data library) {
 		Searcher lcsearcher = inArchive.getSearcher("librarycollection");
-		List usercollections = new ArrayList(allcollections.size());
+		
+		ListHitTracker usercollections = new ListHitTracker();
 
 		Collection categoryids = new ArrayList();
 		// Add the base library

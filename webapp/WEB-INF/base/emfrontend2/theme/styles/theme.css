@@ -1569,7 +1569,10 @@ td.checkbox input, th.firstheader input {
 	position:relative;
 	background-color: #fefefe;
 }
-
+.collectionshomeresults .pages {
+	padding-bottom:20px;
+	height: 40px;
+}
 .collectionhome-sideheader
 {
 	background-color: rgb(137, 137, 137);
