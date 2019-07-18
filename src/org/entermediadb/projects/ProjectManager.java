@@ -166,7 +166,7 @@ public class ProjectManager implements CatalogEnabled {
 		// get a library
 		// inReq.putPageValue("selectedlibrary",library);
 		//log.info("working?");
-		Collection<LibraryCollection> usercollections = (Collection<LibraryCollection>) inReq
+		HitTracker usercollections = (HitTracker) inReq
 				.getPageValue("usercollections");
 		if (usercollections != null) {
 			return usercollections;
@@ -191,11 +191,11 @@ public class ProjectManager implements CatalogEnabled {
 			final List sortorder = array.subList(0, Math.min(array.size(), count));
 			HitTracker allcollections = searcher.query().orgroup("id", sortorder).named("sidebar").search(); // todo:
 																												// Cache?
-			usercollections = loadUserCollections(inReq, allcollections, inArchive, null);
+			List allusercollections = loadUserCollections(inReq, allcollections, inArchive, null);
 
-			List<Data> sorted = new ArrayList(usercollections);
-			Collections.sort(sorted, new Comparator<Data>() {
-				public int compare(Data o1, Data o2) {
+			//List<Data> sorted = new ArrayList(usercollections);
+			Collections.sort(allusercollections, new Comparator<LibraryCollection>() {
+				public int compare(LibraryCollection o1, LibraryCollection o2) {
 					int one = sortorder.indexOf(o1.getId());
 					int two = sortorder.indexOf(o2.getId());
 					if (one == two)
@@ -205,18 +205,18 @@ public class ProjectManager implements CatalogEnabled {
 					return -1;
 				};
 			});
-			inReq.putPageValue("usercollections", sorted);
+			inReq.putPageValue("usercollections", new ListHitTracker(allusercollections));
 		}
 
 		return usercollections;
 
 	}
 
-	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, HitTracker allcollections,
+	protected List<LibraryCollection> loadUserCollections(WebPageRequest inReq, HitTracker allcollections,
 			MediaArchive inArchive, Data library) {
 		Searcher lcsearcher = inArchive.getSearcher("librarycollection");
 		
-		ListHitTracker usercollections = new ListHitTracker();
+		List<LibraryCollection> usercollections = new ArrayList<LibraryCollection>();
 
 		Collection categoryids = new ArrayList();
 		// Add the base library
