@@ -75,7 +75,7 @@ public class TaskModule extends BaseMediaModule
 			if( userq == null) 
 			{
 				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
-				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+				builder.orgroup("projectstatus", Arrays.asList("open","critical"));
 				userq = builder.getQuery();
 				Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
 				if( filter != null && !filter.isEmpty())
