@@ -1,4 +1,4 @@
-#foreach( $hit in $hits )
+#foreach( $hit in $hits.getPageOfHits() )
 	#if($hit.collectionimage)
 #set($asset = $mediaarchive.getAsset($hit.collectionimage))
 #else

@@ -1,9 +1,9 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
 
-<div class="collectionshomeform-container">
+<div id="collectionshomeform-container" class="collectionshomeform-container">
 
-#set( $hits = $mediaarchive.query("librarycollection").all().enduser(true).sort("name").search($context) )
+
 	#if( $hits.isEmpty() )
 		<h2>No featured collections</h2>
 	#else	
@@ -24,11 +24,11 @@ $context.putPageValue("searcher",$searcher)
 			
 		</div>
 		<div id="" class="collectionshomeresults">		
+	$pages.include("${apphome}/views/collections/pages.html", $context)
 			$context.putPageValue("hits",$hits)
 			$pages.include("${apphome}/components/collections/cards.html", $context)
 			##pagination?
 		</div>
 	</div>
 	#end
-
 </div>
