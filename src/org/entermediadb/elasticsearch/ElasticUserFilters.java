@@ -126,7 +126,9 @@ public class ElasticUserFilters implements UserFilters
 		{
 			String key = inSearcher.getSearchType() + inQuery.getMainInput();
 			IndexValues values = (IndexValues)getValues().get(key);
-			if( values == null || values.fieldIndexId != inSearcher.getIndexId() || values.isExpired() ) //|| true)
+			if( 	values == null || 
+					!values.fieldIndexId.equals( inSearcher.getIndexId() ) || 
+					values.isExpired() ) //|| true)
 			{
 				values = new IndexValues();
 				values.fieldIndexId = inSearcher.getIndexId();
@@ -142,8 +144,11 @@ public class ElasticUserFilters implements UserFilters
 							facets.add(detail);
 						}
 					}
-					
-					HitTracker all = (HitTracker)inSearcher.query().facets(facets).attachSecurity(inReq).freeform("description", inQuery.getMainInput()).search();
+					/**
+					 * We want to keep a broad selection of filter so that people can choose more than one
+					 */
+					HitTracker all = (HitTracker)inSearcher.query().facets(facets)
+							.attachSecurity(inReq).freeform("description", inQuery.getMainInput()).search();
 					values.fieldValues = all.getFilterOptions();
 				}	
 				else

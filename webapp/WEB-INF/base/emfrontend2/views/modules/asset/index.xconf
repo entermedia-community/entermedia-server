@@ -11,12 +11,13 @@
 	</xpath-action>	
 	
 	
+	
+	<property name="hitsname">hits</property>
+<!--
 	<path-action name="DataEditModule.loadOrSearch">
 		<property name="searchtype">asset</property>
 	</path-action>	
-	
-	<property name="hitsname">hits</property>
-		
 	<path-action name="DataEditModule.search" cancel="true"/>
+-->	
 	<path-action name="MediaSearchModule.loadHitsCategory"/>
 </page>

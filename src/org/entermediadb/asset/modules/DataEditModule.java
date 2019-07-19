@@ -2035,12 +2035,13 @@ String viewbase = null;
 	public UserFilters loadUserFilters(WebPageRequest inReq)
 	{
 		Searcher searcher = loadSearcher(inReq);
-		UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
+		String key = searcher.getSearchType()+ searcher.getCatalogId() + "userFilters";
+		UserFilters filters = (UserFilters) inReq.getSessionValue(key);
 		if (filters == null)
 		{
 			filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
 			filters.setUserProfile(inReq.getUserProfile());
-			inReq.putSessionValue(searcher.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
+			inReq.putSessionValue(key, filters);
 		}
 		inReq.putPageValue("userfilters", filters);
 
