@@ -1,0 +1,15 @@
+#set( $listid = $detail.getListId())
+#set( $allmembers = $mediaarchive.getSearcher($listid).query().match("collectionid",$librarycol.getId()).sort("name").search($context) )
+#set( $fieldid = "${detail.id}.value")
+#set( $memberid = $context.getRequestParameter($fieldid))
+#ifnull($memberid)
+	#set( $memberid = $val)
+#end
+
+<input name="operation" type="hidden" value="matches" />
+<select name="${detail.getId()}.value" class="select2" >
+<option value=""></option>
+#foreach( $member in $allmembers )
+	<option value="$member.getId()" #if($memberid == $member.followeruser) selected #end>$member.followeruser</option>
+#end
+</select>
