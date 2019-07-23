@@ -1092,12 +1092,10 @@ public class TaskModule extends BaseMediaModule
 		builder = searcher.query().exact("collectionid", collection.getId());
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalclosed = builder.search().size();
-
-		
+			
 		inReq.putPageValue("totallikes", totalpriority);
 		inReq.putPageValue("totalopen", totalopen);
 		inReq.putPageValue("totalclosed", totalclosed);
-		
 	
 	}
 
@@ -1115,6 +1113,7 @@ public class TaskModule extends BaseMediaModule
 		selectedgoal.setValue("projectstatus","completed");
 		
 		archive.saveData("projectgoal",selectedgoal);
+		addStatus(archive, selectedgoal,inReq.getUserName());
 
 	}
 
@@ -1124,6 +1123,12 @@ public class TaskModule extends BaseMediaModule
 		String goalid = inReq.getRequestParameter("id");
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 
+		addStatus(archive, selectedgoal,inReq.getUserName());
+	}
+
+	protected void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
+	{
+		
 		Collection userids = new HashSet(selectedgoal.getValues("userlikes"));
 		String owner = selectedgoal.get("owner");
 		if( owner != null)
@@ -1131,6 +1136,7 @@ public class TaskModule extends BaseMediaModule
 			userids.add(owner);
 		}
 		
+
 		String collectionid = selectedgoal.get("collectionid");
 		//Find all the users
 		Collection team = archive.query("librarycollectionusers").
@@ -1163,13 +1169,13 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
 		{
 			String userid = (String) iterator.next();
-			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", goalid).exact("userid", userid).searchOne();
+			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", selectedgoal.getId()).exact("userid", userid).searchOne();
 
 			String existingstatus = (String)selectedgoal.get("projectstatus");
 			if( status == null)
 			{
 				status = (MultiValued)archive.getSearcher("statuschanges").createNewData();
-				status.setValue("goalid",goalid);
+				status.setValue("goalid",selectedgoal.getId());
 				status.setValue("userid",userid);
 				status.setValue("previousstatus",existingstatus);
 			}
@@ -1184,7 +1190,7 @@ public class TaskModule extends BaseMediaModule
 			}
 			status.setValue("collectionid",collectionid);
 			status.setValue("date",new Date());
-			status.setValue("editedbyid",inReq.getUserName());
+			status.setValue("editedbyid",editedby);
 			
 			tosave.add(status);
 		}
