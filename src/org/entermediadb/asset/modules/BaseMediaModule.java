@@ -77,8 +77,8 @@ public class BaseMediaModule extends BaseModule
 			}
 		}
 		inReq.putPageValue("apphome", apphome);
-		inReq.putPageValue("applink", applink);  //For external link
-		inReq.putPageValue("sitehome", sitehome);  //For external link
+		inReq.putPageValue("applink", applink);  //For external links within an app
+		inReq.putPageValue("sitehome", sitehome);  //For external link across the site
 		
 		String prefix = inReq.getContentProperty("themeprefix");
 		UserProfile profile = inReq.getUserProfile();
