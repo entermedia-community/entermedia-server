@@ -1233,6 +1233,7 @@ public class TaskModule extends BaseMediaModule
 			goal.setValue("goaltrackercolumn", topic);
 			goal.setValue("tickettype", "chat");
 			goal.setValue("projectstatus", "open");
+			goal.setValue("creationdate",new Date());
 			goal.setValue("collectionid", collectionid);
 			goal.setValue("owner", inReq.getUserName());
 			if( content != null && content.length() > 200)
