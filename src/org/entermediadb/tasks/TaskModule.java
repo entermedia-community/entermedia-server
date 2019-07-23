@@ -28,6 +28,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.users.Group;
 import org.openedit.users.User;
 
 public class TaskModule extends BaseMediaModule
@@ -1132,7 +1133,7 @@ public class TaskModule extends BaseMediaModule
 		
 		String collectionid = selectedgoal.get("collectionid");
 		//Find all the users
-		Collection team = getMediaArchive(inReq).query("librarycollectionusers").
+		Collection team = archive.query("librarycollectionusers").
 				exact("collectionid",collectionid).
 				exact("ontheteam","true").search();
 
@@ -1145,6 +1146,18 @@ public class TaskModule extends BaseMediaModule
 				userids.add(userid);
 			}
 		}		
+		
+		Group agents = archive.getGroup("agents");
+		if( agents != null)
+		{
+			Collection users = archive.getUserManager().getUsersInGroup(agents);
+			for (Iterator iterator = users.iterator(); iterator.hasNext();)
+			{
+				User auser = (User) iterator.next();
+				userids.add(auser.getId());
+			}
+		}
+		
 		Collection tosave = new ArrayList();
 		
 		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
@@ -1179,10 +1192,15 @@ public class TaskModule extends BaseMediaModule
 	}
 	public void clearNotify(WebPageRequest inReq)
 	{
-		String collectionid = inReq.getRequestParameter("collectionid");
+		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").
+				exact("userid", inReq.getUserName());
 		
-		Collection results = getMediaArchive(inReq).query("statuschanges").
-				exact("userid", inReq.getUserName()).exact("collectionid",collectionid).search();
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid != null)
+		{
+			query.exact("collectionid",collectionid);
+		}
+		Collection results = query.search();
 
 		Collection tosave = new ArrayList();
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
