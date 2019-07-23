@@ -55,16 +55,18 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("applicationid", applicationid);
 		String siteid = inReq.findValue("siteid");
 
-		String sitehome = null;
-		String apphome = null;
+		String apphome = "/" + applicationid; //The standard apphome -> assets/emshare
+		String applink = null; //The external link -> emshare
+		String sitehome = null; //The root location -> /entermediadb/ or nothing
+		
 		if( sitedata != null)
 		{
-			apphome = sitedata.getAppHome(applicationid);
+			applink = sitedata.getAppLink(applicationid);
 			sitehome = "";
 		}
 		else
 		{
-			apphome = "/" + applicationid;
+			applink = apphome;
 			if( siteid != null)
 			{
 				sitehome = "/" + siteid;
@@ -74,8 +76,9 @@ public class BaseMediaModule extends BaseModule
 				sitehome = "";
 			}
 		}
-		inReq.putPageValue("sitehome", sitehome);
 		inReq.putPageValue("apphome", apphome);
+		inReq.putPageValue("applink", applink);  //For external link
+		inReq.putPageValue("sitehome", sitehome);  //For external link
 		
 		String prefix = inReq.getContentProperty("themeprefix");
 		UserProfile profile = inReq.getUserProfile();
