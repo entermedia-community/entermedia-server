@@ -1129,8 +1129,13 @@ public class TaskModule extends BaseMediaModule
 	protected void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
 	{
 		
-		Collection userids = new HashSet(selectedgoal.getValues("userlikes"));
-		String owner = selectedgoal.get("owner");
+		Collection userids = new HashSet();
+		Collection likes = selectedgoal.getValues("userlikes");
+		if (likes != null) 
+		{
+			userids.addAll(likes);
+		}
+			String owner = selectedgoal.get("owner");
 		if( owner != null)
 		{
 			userids.add(owner);
