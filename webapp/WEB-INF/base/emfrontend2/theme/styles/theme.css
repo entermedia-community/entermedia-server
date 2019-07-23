@@ -273,10 +273,6 @@ ul.list-group.list-group-hover li:hover,
 .dropdown-noarrow:after {
 	border:0 none;
 }
-.ajaxstatus {
-	font-weight:bold;	
-	background-color:#f1f1f1;
-}
 
 
 
