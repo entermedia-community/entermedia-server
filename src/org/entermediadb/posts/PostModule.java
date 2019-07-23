@@ -60,34 +60,27 @@ public class PostModule extends BaseMediaModule
 	{
 		String path = inReq.getPath();
 
-		String sitehome = (String) inReq.getPageValue("sitehome");
 		String apphome = (String)inReq.getPageValue("apphome");
 		if( apphome == null)
 		{
-			log.info("Loading post from base? no apphome set");
+			log.info("no apphome set for " + path);
 			return null;
 		}
-		String 	sourcepath = null;
-		if( apphome.equals(sitehome))
+
+		String sourcepath = null;
+		
+		if( path.startsWith(apphome) && apphome.contains("/"))
 		{
-			sourcepath = path.substring(apphome.length() + 1);
-		}
-		else if( apphome.startsWith(sitehome))
-		{
-			String apphomeending = apphome.substring(sitehome.length() + 1,apphome.length());
-	
-			int loc = path.indexOf(apphomeending);
-			if( loc == -1)
-			{
-				log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
-				return null;			
-			}
+			int loc = path.indexOf("/",1);
 			sourcepath = path.substring(loc,path.length());
 		}
 		else
 		{
-			log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
-			return null;			
+			sourcepath = path;
+		}
+		if( sourcepath.startsWith("/"))
+		{
+			sourcepath = sourcepath.substring(1,sourcepath.length());
 		}
 		return sourcepath;
 	}
