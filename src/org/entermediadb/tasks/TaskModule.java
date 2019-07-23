@@ -1216,6 +1216,34 @@ public class TaskModule extends BaseMediaModule
 			tosave.add(status);
 		}
 		getMediaArchive(inReq).getSearcher("statuschanges").saveAllData(tosave,null);
-		
+	}
+	public void chatEvent(WebPageRequest inReq)
+	{
+		String collectionid = inReq.getRequestParameter("collectionid");
+		String topic = inReq.getRequestParameter("channel");
+		String content = inReq.getRequestParameter("content");
+
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		MultiValued goal = (MultiValued)searcher.query().exact("goaltrackercolumn", topic).
+			exact("tickettype", "chat").orgroup("projectstatus", "open|critical").searchOne();
+		if( goal == null)
+		{
+			goal = (MultiValued)searcher.createNewData();
+			goal.setValue("goaltrackercolumn", topic);
+			goal.setValue("tickettype", "chat");
+			goal.setValue("projectstatus", "open");
+			goal.setValue("collectionid", collectionid);
+			goal.setValue("owner", inReq.getUserName());
+			if( content != null && content.length() > 200)
+			{
+				content = content.substring(0,100) + "...";
+			}
+			goal.setName("Chat: " + content);
+			searcher.saveData(goal);
+			addStatus(archive, goal,inReq.getUserName());
+		}
+
+
 	}
 }
