@@ -71,7 +71,7 @@ public class BaseMediaModule extends BaseModule
 			{
 				slash = applicationid.length();
 			}
-			sitelink = applicationid.substring(0,slash);
+			sitelink = "/" + applicationid.substring(0,slash);
 		}
 		inReq.putPageValue("apphome", apphome);
 		inReq.putPageValue("applink", applink);  //For external links within an app
