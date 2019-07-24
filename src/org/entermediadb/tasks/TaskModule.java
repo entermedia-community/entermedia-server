@@ -46,14 +46,20 @@ public class TaskModule extends BaseMediaModule
 			return;
 		}
 		String id = "tasks" + collection.getId();
+		if (collection.getCategory() == null) 
+		{
+			log.info("Collection have not category");
+			return;
+		}
 		Category cat = archive.getCategory(id);
 		if( cat == null)
 		{
 			cat = (Category)archive.getCategorySearcher().createNewData();
 			cat.setId(id);
+			cat.setName("Tasks");
 			collection.getCategory().addChild(cat);
-			cat.setName("Inbox");
 			archive.getCategorySearcher().saveData(cat);
+			
 		}
 	}
 	
