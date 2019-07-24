@@ -84,11 +84,15 @@ public class TaskModule extends BaseMediaModule
 				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
 				builder.orgroup("projectstatus", Arrays.asList("open","critical"));
 				userq = builder.getQuery();
-				Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
-				if( filter != null && !filter.isEmpty())
-				{
-					userq.addOrsGroup("goaltrackercolumn", filter);
-				}
+				//Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+//				if( filter != null && !filter.isEmpty())
+//				{
+//					userq.addOrsGroup("goaltrackercolumn", filter);
+//				}
+			}
+			else if( !userq.contains("collectionid"))
+			{
+				userq.addExact("collectionid", collection.getId());
 			}
 			all = searcher.cachedSearch(inReq, userq);
 		}
