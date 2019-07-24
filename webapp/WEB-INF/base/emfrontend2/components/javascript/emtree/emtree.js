@@ -56,7 +56,7 @@ $(document).ready(function()
 			maxlevel = 3;
 		}
         
-		if (treename != undefined && treename == "dialogCategoryPickerTree")  //Dialog Tree
+		if (treename != undefined && treename.startsWith("dialog"))  //Dialog Tree
 		{
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
