@@ -1198,7 +1198,7 @@ public class TaskModule extends BaseMediaModule
 			Collection users = archive.getUserManager().getUsersInGroup(agents);
 			for (Iterator iterator = users.iterator(); iterator.hasNext();)
 			{
-				User auser = (User) iterator.next();
+				Data auser = (Data)iterator.next();
 				userids.add(auser.getId());
 			}
 		}
