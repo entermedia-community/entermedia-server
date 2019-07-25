@@ -143,13 +143,18 @@ uiload = function() {
 			// https://github.com/select2/select2-bootstrap-theme/issues/41
 		} else {
             //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
+			var placeholder = theinput.data('placeholder');
+			if (!placeholder) {
+				placeholder = '';
+			}
             var allowClear = theinput.data('allowclear');
+
             if (allowClear == undefined)  {
                 allowClear = true;
             }
 			theinput = theinput.select2({
 				theme : "bootstrap4",
-				placeholder : '',
+				placeholder : placeholder,
 				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,

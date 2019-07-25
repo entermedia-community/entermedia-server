@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +24,7 @@ import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -410,7 +412,8 @@ public class TaskModule extends BaseMediaModule
 				inReq.putPageValue("goal", goal);
 			}
 		}
-			
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
 		
 		//		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
@@ -418,7 +421,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
 			//Legacy: Make sure all tasks have parents
-			List tosave = new ArrayList();
+			Set tosave = new HashSet();
 			Collection values = goal.getValues("countdata");
 			if( values == null)
 			{
@@ -438,6 +441,12 @@ public class TaskModule extends BaseMediaModule
 						tosave.add(existigtask);
 					}
 				}
+				if( existigtask.getValue("collectionid") == null)
+				{
+					existigtask.setValue("collectionid",goal.getValue("collectionid"));
+					tosave.add(existigtask);
+				}
+				
 				extrataskids.remove(existigtask.getId());
 				if(!alltaskids.contains(existigtask.getId()))
 				{
@@ -537,6 +546,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			return;
 		}
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			throw new OpenEditException("No collection id found");
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
 		Data goal = (Data)goalsearcher.searchById(goalid);
@@ -546,6 +560,7 @@ public class TaskModule extends BaseMediaModule
 		
 		Data task = tasksearcher.createNewData(); //TODO: Cjheck for existing
 		task.setValue("projectgoal",goal.getId());
+		task.setValue("collectionid",collectionid);
 		task.setValue("projectdepartment",categoryid);
 		
 		task.setValue("projectdepartmentparents",cat.getParentCategories());
@@ -796,12 +811,8 @@ public class TaskModule extends BaseMediaModule
 	public void loadDashboard(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if( collection == null)
-		{
-			log.info("Collection not found");
-			return;
-		}
+		String collectionid =  inReq.getRequestParameter("collectionid");
+
 		//Search for all tasks with updated dates?
 		GregorianCalendar cal = new GregorianCalendar();
 		String monthsback = inReq.getRequestParameter("monthsback");
@@ -826,9 +837,13 @@ public class TaskModule extends BaseMediaModule
 		
 		Date onemonth = cal.getTime();
 
-		String rootid = "tasks" + collection.getId();
-		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
-				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+		//String rootid = "tasks" + collection.getId();
+		QueryBuilder q = tasksearcher.query();
+		if( !collectionid.equals("*") )
+		{
+				q.exact("collectionid",collectionid);
+		}
+		HitTracker all = q.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
 		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -840,8 +855,12 @@ public class TaskModule extends BaseMediaModule
 		
 		inReq.putPageValue("completed", completed);		
 		
-		HitTracker alltickets = archive.query("projectgoal")
-				.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
+		QueryBuilder gq = archive.query("projectgoal");
+		if( !collectionid.equals("*") )
+		{
+				gq.exact("collectionid",collectionid);
+		}
+		HitTracker alltickets = gq.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
 		
 		for (Iterator iterator = alltickets.iterator(); iterator.hasNext();)
 		{
@@ -873,7 +892,7 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("users", users);
 
 	}
-	
+	//Old?
 	public void loadTaskByStatus(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -891,8 +910,8 @@ public class TaskModule extends BaseMediaModule
 		{
 			status = "1";
 		}
-		String rootid = "tasks" + collection.getId();
-		HitTracker all = tasksearcher.query().exact("taskstatus",status).exact("projectdepartmentparents",rootid ).search();
+		//String rootid = "tasks" + collection.getId();
+		HitTracker all = tasksearcher.query().exact("taskstatus",status).exact("collectionid",collection.getId()).search();
 		Map byperson = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
@@ -1029,14 +1048,13 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("projectgoal");
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if( collection == null)
-		{
-			log.info("Collection not found");
-			return;
-		}
+		String collectionid= inReq.getRequestParameter("collectionid");
 	
-		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		QueryBuilder builder = searcher.query();
+		if( !collectionid.equals("*") )
+		{
+			builder.exact("collectionid", collectionid);
+		}
 		
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 		if( seeuser == null || seeuser.isEmpty())
@@ -1051,12 +1069,18 @@ public class TaskModule extends BaseMediaModule
 		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		thismonday.set(Calendar.MINUTE, 0);
 		thismonday.set(Calendar.HOUR, 0);
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query();
+		if( !collectionid.equals("*") )
+		{
+			builder.exact("collectionid", collectionid);
+		}
 		builder.match("userlikes", seeuser);
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		builder.after("resolveddate", thismonday.getTime());
 		HitTracker likesclosed = builder.search();
 
+		inReq.putPageValue("selecteduser",archive.getUser(seeuser));
+		
 		List all = new ArrayList();
 		for (Iterator iterator = likesopen.iterator(); iterator.hasNext();)
 		{
@@ -1076,7 +1100,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			selectedday0 = 0; //monday
 		}
-		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0, collection.getId());
+		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0, collectionid);
 //		List types = new ArrayList();
 //		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
 //		{
@@ -1090,16 +1114,16 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("selectedday0", selectedday0);
 		inReq.putPageValue("week", week);
 		
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query().exact("collectionid", collectionid);
 		builder.match("userlikes", "*");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalpriority = builder.search().size();
 		
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query().exact("collectionid", collectionid);
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalopen = builder.search().size();
 
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query().exact("collectionid", collectionid);
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalclosed = builder.search().size();
 			
