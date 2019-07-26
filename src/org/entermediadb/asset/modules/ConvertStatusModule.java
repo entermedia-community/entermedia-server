@@ -273,11 +273,14 @@ public class ConvertStatusModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
-		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-		getPageManager().copyPage(s1024, crop1024);
-		archive.removeGeneratedImages(asset, false);
-		reloadThumbnails( inReq, archive, asset);
+		if (asset != null) 
+		{
+			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
+			Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
+			getPageManager().copyPage(s1024, crop1024);
+			archive.removeGeneratedImages(asset, false);
+			reloadThumbnails( inReq, archive, asset);
+		}
 	}
 	public void rerunAllThumbnails(WebPageRequest inReq)
 	{
