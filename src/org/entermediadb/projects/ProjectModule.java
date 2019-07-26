@@ -73,7 +73,7 @@ public class ProjectModule extends BaseMediaModule {
 			finalpath = "/" + appid + "/" + collectionroot + "?collectionid=" + collection.getId();
 		}
 		else {
-			finalpath = "/" + appid + "/" + collectionroot + "/" + collection.getId() + "/" + collection.getName() + ".html";
+			finalpath = "/" + appid + "/" + collectionroot + "/" + collection.getId() + "/index.html";
 		}
 		
 		//Selected Sub folder?

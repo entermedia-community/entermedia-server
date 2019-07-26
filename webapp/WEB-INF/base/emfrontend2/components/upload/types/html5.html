@@ -2,13 +2,21 @@
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
+
 #if( !$collectionid && $nodeID ) 
     #set($category = $mediaarchive.getData("category",$nodeID))
 	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
-#if( $librarycol )
+#if (!$librarycol)
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+	#end
+#end
+#if( $librarycol && !$collectioinid)
     #set($collectionid = $librarycol.getId())
 #end
+
+
 <div class="container-fluid">
 <div class="row">
     <div  class="col-4 col-upload-left">
@@ -62,49 +70,55 @@
 		    </div>
 		    
 		    <div  class="ui-widget-content"> 
-				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid && !$nodeID) 
-				##TODO - Add library filtering here..
+				###if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid && !$nodeID) 
+				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection")) 
+				##TODO - Add library filtering here.
 				<div class="inputformrow">
 					<div class="emdatafield">[[Choose Collection]]</div>
 					<div class="emdatafieldvalue ">
 						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
-							data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+							data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
-							#if( $librarycol )
-							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
+							#if( $collectionid )
+							  <option value="$collectionid" selected="selected">#esc($librarycol.getName($context))</option>
 							#end
 						</select>
 					</div>
+					#if($canaddnewcollection)
+                 			<a  class="emdialog btn btn-xs btn-light" style="margin:5px 0;" title="[[Add New Collection]]" 
+                 			href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()&collectionroot=views/modules/asset/add/start.html">
+	                 		+ [[New Collection]]</a>
+							
+	             	#end
 					<hr>
 				</div>
-			#end
-
-					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-					
+				#else
 					#if( $collectionid)
 						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
 						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
-
-					#else
-				
 					#end
+				#end
+
+					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+					
+					
 
 					#if($nodeID)
 						<input type="hidden" name="field" value="category" />
 						<input type="hidden" name="category.value" value="$nodeID"/>
 					#end
 
-                                        #if($collectionid || $nodeid)
-					$context.putPageValue("view","asset/multipleuploadcollection")	
-
-#else
-					$context.putPageValue("view","asset/multipleupload")	
-#end
+                    #if($collectionid || $nodeid)
+						$context.putPageValue("view","asset/multipleuploadcollection")	
+					#else
+						$context.putPageValue("view","asset/multipleupload")	
+					#end
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-				##have the cancel delete these assets?
+					
+					##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
 				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
 		        	</div>

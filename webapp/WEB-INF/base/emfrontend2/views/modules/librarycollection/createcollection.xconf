@@ -4,7 +4,7 @@
 	<path-action name="ProjectModule.createCollection"/>
 	<path-action name="ProjectModule.addAssetToCollection" />
 	<path-action name="ProfileModule.reLoadUserProfile" />
-	<path-action name="ProjectModule.redirectToCollection">
+	<path-action name="ProjectModule.redirectToCollectionRoot">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
 	

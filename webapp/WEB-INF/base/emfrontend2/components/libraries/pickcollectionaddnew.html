@@ -13,6 +13,12 @@ $context.putPageValue("data",$pdata)
 <input type="hidden" name="field" value="rootcategory" />
 <input type="hidden" name="rootcategory.value" value="$!pdata.rootcategory" />
 
+#set( $collectionroot = $context.getRequestParameter("collectionroot"))
+#if($collectionroot)
+	<input type="hidden" name="collectionroot" value="$collectionroot" />
+#else
+	<input type="hidden" name="collectionroot" value="views/modules/librarycollection/media" />
+#end
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 $context.putPageValue("view","${searchtype}/${searchtype}addnew")	
