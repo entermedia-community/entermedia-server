@@ -1051,7 +1051,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			if (!searcher.putMappings())
 			{
-				log.error("Could not map " + searchtype);
+				//log.error("Could not map " + searchtype);
+				throw new OpenEditException("Could not map " + searchtype);
 			}
 			searcher.setAlternativeIndex(null);
 		}
