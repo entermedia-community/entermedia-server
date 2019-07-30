@@ -355,8 +355,16 @@ public class PullManager implements CatalogEnabled
 				if (!skiporiginal)
 				{
 					Asset asset = inArchive.getAssetBySourcePath(sourcepath);
-					File file = getFile(asset);
-					downloadOriginal(inArchive, asset, file, true);
+					if( asset == null)
+					{
+						log.error("Could not find asset. Canceling " + sourcepath);
+						return;
+					}
+					else
+					{
+						File file = getFile(asset);
+						downloadOriginal(inArchive, asset, file, true);
+					}
 				}
 			}
 		}
