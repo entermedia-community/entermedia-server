@@ -1,5 +1,12 @@
-<p>[[Reindex is complete]]:</p>
+<p>Reloading Settings is complete:</p>
 
-#foreach( $table in $tables )
-$table<br.>
+#if($mappingerror)
+	$pages.include("./mappingerrors.html")
+#else
+	[[Full reindex is complete in]] $time [[seconds]]
+#end
+
+ <h3>$searchtypes.size() [[Types]]</h3>
+#foreach( $type in $searchtypes)
+$type<br>
 #end

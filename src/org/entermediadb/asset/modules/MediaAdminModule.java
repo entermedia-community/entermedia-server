@@ -19,6 +19,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
@@ -699,6 +700,26 @@ public class MediaAdminModule extends BaseMediaModule
 		 }
 		 
 	}
-	
+
+	public void reindexAll(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		NodeManager manager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
+
+		long start = System.currentTimeMillis();
+
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		List mappedtypes = archive.listSearchTypes();
+		inReq.putPageValue("searchtypes",mappedtypes);
+		
+		if(!manager.reindexInternal(catalogid))
+		{
+			inReq.putPageValue("mappingerror",true);
+		}
+		
+		long finish = System.currentTimeMillis();
+		String time = String.valueOf( Math.round( (finish - start) / 1000L) );
+		inReq.putPageValue("time", time);
+	}
 	
 }

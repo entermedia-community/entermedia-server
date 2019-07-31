@@ -79,23 +79,31 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
-		getXmlSearcher().clearIndex();
-		HitTracker allhits = getXmlSearcher().getAllHits();
-		allhits.enableBulkOperations();
-		ArrayList tosave = new ArrayList();
-		for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+		setReIndexing(true);
+		try
 		{
-			Data hit = (Data) iterator2.next();
-			Data real = (Data) loadData(hit);
-			tosave.add(real);
-			if(tosave.size() > 1000)
+			getXmlSearcher().clearIndex();
+			HitTracker allhits = getXmlSearcher().getAllHits();
+			allhits.enableBulkOperations();
+			ArrayList tosave = new ArrayList();
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
-				updateInBatch(tosave, null);
-	
-				tosave.clear();
+				Data hit = (Data) iterator2.next();
+				Data real = (Data) loadData(hit);
+				tosave.add(real);
+				if(tosave.size() > 1000)
+				{
+					updateInBatch(tosave, null);
+		
+					tosave.clear();
+				}
 			}
+			updateInBatch(tosave, null);
+		}	
+		finally
+		{
+			setReIndexing(false);
 		}
-		updateInBatch(tosave, null);
 	}
 
 	public synchronized void reIndexAll() throws OpenEditException

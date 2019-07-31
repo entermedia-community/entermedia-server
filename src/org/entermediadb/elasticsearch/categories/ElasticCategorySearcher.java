@@ -94,30 +94,38 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
 	public void reindexInternal() throws OpenEditException
 	{
-		getXmlCategoryArchive().clearCategories();
-		getCacheManager().clear("category");
-		
-		HitTracker tracker = query().all().sort("categorypath").search();
-		tracker.enableBulkOperations();
-		
-		List tosave = new ArrayList();
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		setReIndexing(true);
+		try
 		{
-			Data hit = (Data) iterator.next();
-			//log.info(hit.get("categorypath"));
-			ElasticCategory data = (ElasticCategory)loadData(hit);
-			tosave.add(data);
-			if( tosave.size() > 1000)
+			getXmlCategoryArchive().clearCategories();
+			getCacheManager().clear("category");
+			
+			HitTracker tracker = query().all().sort("categorypath").search();
+			tracker.enableBulkOperations();
+			
+			List tosave = new ArrayList();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				updateIndex(tosave,null);
-				tosave.clear();
-				getCacheManager().clear("category");  //TODO: Why do we do this?
+				Data hit = (Data) iterator.next();
+				//log.info(hit.get("categorypath"));
+				ElasticCategory data = (ElasticCategory)loadData(hit);
+				tosave.add(data);
+				if( tosave.size() > 1000)
+				{
+					updateIndex(tosave,null);
+					tosave.clear();
+					getCacheManager().clear("category");  //TODO: Why do we do this?
+				}
 			}
+			updateIndex(tosave,null);
+			
+			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
+			getCacheManager().clear("category");
 		}
-		updateIndex(tosave,null);
-		
-		//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
-		getCacheManager().clear("category");
+		finally
+		{
+			setReIndexing(false);
+		}
 	}
 
 	public void reIndexAll() throws OpenEditException 

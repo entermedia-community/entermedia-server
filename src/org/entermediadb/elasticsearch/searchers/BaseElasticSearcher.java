@@ -2961,7 +2961,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				Data hit = (Data) iterator2.next();
 				Data real = (Data) loadData(hit);
 				tosave.add(real);
-				if (tosave.size() > 1000)
+				if (tosave.size() > 3000)
 				{
 					updateInBatch(tosave, null);
 	
