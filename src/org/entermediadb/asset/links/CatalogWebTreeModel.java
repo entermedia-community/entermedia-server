@@ -193,11 +193,11 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 		}
 		*/
 		
-		//In case it's new system TODO: Is this needed?
-		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
-		{
-			return true;
-		}
+//		//In case it's new system TODO: Is this needed?
+//		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
+//		{
+//			return true;
+//		}
 		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );  //deprate this
 		allowed.addAll(viewableparents);
 		

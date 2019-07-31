@@ -1,5 +1,7 @@
 package org.entermediadb.asset.search;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
@@ -56,7 +58,9 @@ public class categorySearchSecurity implements SearchSecurity
 //			match("viewusers", inUserprofile.getUserId()).getQuery();
 		
 		//get the list of parents. Add parent filter
-		SearchQuery securityfilter = inSearcher.query().orgroup("parents", inUserprofile.getViewCategories()).getQuery();
+		Collection view = inUserprofile.getViewCategories();
+		
+		SearchQuery securityfilter = inSearcher.query().orgroup("parents", view ).getQuery();
 		
 		inQuery.addChildQuery(securityfilter);
 		

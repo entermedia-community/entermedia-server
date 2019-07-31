@@ -63,17 +63,13 @@
 				#end
                 </div>
 				
-				#if($caneditcategorytree || $editcategories)
+				#if($caneditcategorytree || $caneditcategories)
 				    <a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
                 #end
                 
                 #if( $canviewupload || $canviewcategoryupload)
                     <a href="#" class="cat-options cat-uploadfromtree" title="[[Upload]]"><i class="fas fa-upload"></i></a>
                 #end
-				
-				##if($iscollection)
-				##<a  class="cat-collection cat-options" title="[[Open Collection]]" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$collection.id"><i class="fas fa-box"></i></a>
-				##end
 			</div>
 		#if($haschildren && $expanded)
 		   <ul class="open" > <!-- Open with $cat.name $children.size() -->
