@@ -18,9 +18,20 @@ import org.openedit.hittracker.HitTracker;
 
 public class CategoryCollectionCache implements CatalogEnabled
 {
+	private static final LibraryCollection NULLCOLLECTION = new LibraryCollection();
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
 	protected CacheManager fieldCacheManager;
+	protected CacheManager fieldTimedCacheManager;
+	public CacheManager getTimedCacheManager()
+	{
+		return fieldTimedCacheManager;
+	}
+
+	public void setTimedCacheManager(CacheManager inTimedCacheManager)
+	{
+		fieldTimedCacheManager = inTimedCacheManager;
+	}
 	protected boolean init = false;
 	
 	public String getCatalogId()
@@ -66,7 +77,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 			if( rootid != null)
 			{
 				LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
-				fieldCacheManager.put("collectioncache", rootid, librarycollection);
+				getCacheManager().put(getCatalogId() + "collectioncache", rootid, librarycollection);
 			}
 		}
 //		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
@@ -89,6 +100,10 @@ public class CategoryCollectionCache implements CatalogEnabled
 			loadRoots();
 			init = true;
 		}
+		if( "index".equals(inRoot.getId()) )
+		{
+			return null;
+		}
 		List parents  = inRoot.getParentCategories();
 		if( parents != null)
 		{
@@ -98,15 +113,43 @@ public class CategoryCollectionCache implements CatalogEnabled
 		for (Iterator iterator = parents.iterator(); iterator.hasNext();)
 		{
 			Category parent = (Category) iterator.next();
-			LibraryCollection exists = (LibraryCollection)getCacheManager().get("collectioncache", parent.getId());
+			LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
+			if( exists != null)
+			{
+				return exists.getId();  //Loaded on boot up once time and cached heaviliy
+			}
+			
+			exists = (LibraryCollection)getTimedCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
+			if( exists == NULLCOLLECTION)
+			{
+				return null;
+			}
 			if( exists != null)
 			{
 				return exists.getId();
 			}
 		}
 		
-		//TODO: Do a DB lookup just to be sure?
-		
+		//It expired after 15 min. Do a DB lookup just to be sure
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+		Data exists = searcher.query().orgroup("rootcategory", parents).searchOne();
+		if( exists == null)
+		{
+			exists = NULLCOLLECTION;
+		}
+		else
+		{
+			exists = searcher.loadData(exists);
+		}
+		getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
+		if( exists == NULLCOLLECTION)
+		{
+			return null;
+		}
+		if( exists != null)
+		{
+			return exists.getId();
+		}
 		return null;
 	}	
 	public boolean isPartOfCollection(Category inRoot)
@@ -116,12 +159,12 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	public void addCollection(LibraryCollection inSaved)
 	{
-		getCacheManager().put("collectioncache", inSaved.getCategory().getId(),inSaved);
+		getCacheManager().put(getCatalogId() + "collectioncache", inSaved.getCategory().getId(),inSaved);
 		
 	}
 	public void removedCollection(LibraryCollection inSaved)
 	{
-		getCacheManager().remove("collectioncache", inSaved.getCategory().getId());
+		getCacheManager().remove(getCatalogId() + "collectioncache", inSaved.getCategory().getId());
 		
 	}
 }
