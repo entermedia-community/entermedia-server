@@ -953,6 +953,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				searchtype = (String) iterator.next();
+				if( searchtype == null || searchtype.equals("null"))
+				{
+					continue;
+				}
 				long start = System.currentTimeMillis();
 
 				reindexhistory = reindexlogs.createNewData();
@@ -1014,7 +1018,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				throw e;
 			}
 
-			throw new OpenEditException(e);
+			throw new OpenEditException("Could not reindex " + searchtype,e);
 		}
 		finally
 		{

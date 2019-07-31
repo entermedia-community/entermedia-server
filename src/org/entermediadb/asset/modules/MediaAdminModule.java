@@ -711,10 +711,18 @@ public class MediaAdminModule extends BaseMediaModule
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		List mappedtypes = archive.listSearchTypes();
 		inReq.putPageValue("searchtypes",mappedtypes);
-		
-		if(!manager.reindexInternal(catalogid))
+		try
 		{
+			if(!manager.reindexInternal(catalogid))
+			{
+				inReq.putPageValue("mappingerror",true);
+			}
+		}
+		catch ( Exception ex)
+		{
+			inReq.putPageValue("exception",ex);
 			inReq.putPageValue("mappingerror",true);
+			
 		}
 		
 		long finish = System.currentTimeMillis();
