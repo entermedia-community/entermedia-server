@@ -123,10 +123,6 @@ public class MediaArchive implements CatalogEnabled
 
 	public CacheManager getCacheManager()
 	{
-		if (fieldCacheManager == null)
-		{
-			fieldCacheManager = new CacheManager(); //TODO remove this
-		}
 		return fieldCacheManager;
 	}
 
@@ -1904,6 +1900,11 @@ public class MediaArchive implements CatalogEnabled
 	{
 		getCacheManager().clearAll();
 		getPresetManager().clearCaches();
+		CacheManager shared = (CacheManager) getModuleManager().getBean("cacheManager");
+		if( shared != null)
+		{
+			shared.clearAll();
+		}
 	}
 
 	public ContentItem getContent(String inPath)

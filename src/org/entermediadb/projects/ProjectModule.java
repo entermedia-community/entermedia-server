@@ -1335,7 +1335,6 @@ Server ProjectModule.uploadFile
 	
 			}
 		}
-	
 	}
 	
 	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest)

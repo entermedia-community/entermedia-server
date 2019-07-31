@@ -2205,6 +2205,7 @@
 
 	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="permissionManager" class="org.entermediadb.users.PermissionManager" scope="prototype" >

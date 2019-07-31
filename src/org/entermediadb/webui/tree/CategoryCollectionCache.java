@@ -11,15 +11,17 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 
 public class CategoryCollectionCache implements CatalogEnabled
 {
-	protected Map fieldCategoryRoots;
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
+	protected CacheManager fieldCacheManager;
+	protected boolean init = false;
 	
 	public String getCatalogId()
 	{
@@ -41,16 +43,14 @@ public class CategoryCollectionCache implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	protected Map getCategoryRoots()
+	protected CacheManager getCacheManager()
 	{
-		if (fieldCategoryRoots == null)
-		{
-			fieldCategoryRoots = new HashMap(1000);
-			loadRoots();
-			
-		}
-
-		return fieldCategoryRoots;
+		return fieldCacheManager;
+	}
+	
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
 	}
 
 	protected void loadRoots()
@@ -66,7 +66,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 			if( rootid != null)
 			{
 				LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
-				fieldCategoryRoots.put( rootid, librarycollection);
+				fieldCacheManager.put("collectioncache", rootid, librarycollection);
 			}
 		}
 //		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
@@ -84,6 +84,11 @@ public class CategoryCollectionCache implements CatalogEnabled
 	}
 	public String findCollectionId(Category inRoot)
 	{
+		if( !init )
+		{
+			loadRoots();
+			init = true;
+		}
 		List parents  = inRoot.getParentCategories();
 		if( parents != null)
 		{
@@ -93,7 +98,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 		for (Iterator iterator = parents.iterator(); iterator.hasNext();)
 		{
 			Category parent = (Category) iterator.next();
-			LibraryCollection exists = (LibraryCollection)getCategoryRoots().get(parent.getId());
+			LibraryCollection exists = (LibraryCollection)getCacheManager().get("collectioncache", parent.getId());
 			if( exists != null)
 			{
 				return exists.getId();
@@ -111,12 +116,12 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	public void addCollection(LibraryCollection inSaved)
 	{
-		getCategoryRoots().put(inSaved.getCategory().getId(),inSaved);
+		getCacheManager().put("collectioncache", inSaved.getCategory().getId(),inSaved);
 		
 	}
 	public void removedCollection(LibraryCollection inSaved)
 	{
-		getCategoryRoots().remove(inSaved.getCategory().getId());
+		getCacheManager().remove("collectioncache", inSaved.getCategory().getId());
 		
 	}
 }
