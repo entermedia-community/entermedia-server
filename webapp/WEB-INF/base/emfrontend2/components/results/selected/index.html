@@ -71,7 +71,7 @@
 			   title="[[Add to Favorites]]"  
 			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
-		#if ($canmetadatageneral && $canmultiedit)
+		#if ($canmultiedit)
   			#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 		#if( $librarycol )
 			##set results.js

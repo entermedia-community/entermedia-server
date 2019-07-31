@@ -27,7 +27,7 @@ $context.putPageValue("cdn",$cdnprefix)
 
 #set( $opentab = $userprofile.get("assetopentab"))
 #if( !$opentab)
-	#if( $canmetadatageneral )
+	#if( $canviewmetadatageneral )
 		#set( $opentab = "viewproperties")
 	#else
 		#set( $opentab = "viewpreview")
@@ -132,7 +132,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 				<i class="fas fa-expand"></i> [[Viewer]] 
 				</a>
 			 </il>
-			 #if( !$previewonly && $canmetadatageneral )
+			 #if( !$previewonly && $canviewmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<a class="expandmenu assettab" 
 					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]"
