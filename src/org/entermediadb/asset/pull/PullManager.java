@@ -33,6 +33,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
+import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
@@ -74,7 +75,7 @@ public class PullManager implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public HitTracker listRecentChanges(String inType, String inLastpulldate)
+	public HitTracker listRecentChanges(String inType, Date startingfrom)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
 		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
@@ -92,9 +93,8 @@ public class PullManager implements CatalogEnabled
 
 		}
 		//TODO:  support this on all tables
-		if (inLastpulldate != null )
+		if (startingfrom != null )
 		{
-			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);
 		} 
 		HitTracker hits = builder.search();
@@ -121,10 +121,10 @@ public class PullManager implements CatalogEnabled
 				String url = node.get("baseurl");
 				if (url != null)
 				{
-					long time = System.currentTimeMillis();
-					time = time - 10000L; //Buffer
-					Date now = new Date(time);
-					HttpRequestBuilder connection = new HttpRequestBuilder();
+					//long time = System.currentTimeMillis();
+					//time = time - 10000L; //Buffer
+					Date now = new Date();
+					HttpSharedConnection connection = new HttpSharedConnection();
 					Map<String,String> params = new HashMap();
 					if (node.get("entermediakey") != null)
 					{
@@ -154,8 +154,9 @@ public class PullManager implements CatalogEnabled
 							continue;
 						}
 						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
-						String timestamp = DateStorageUtil.getStorageUtil().formatForStorage(pulldate);
-						params.put("lastpulldate", timestamp); 
+						//String timestamp = DateStorageUtil.getStorageUtil().formatForStorage(pulldate);
+						long ago = now.getTime() - pulldate.getTime();
+						params.put("lastpullago", String.valueOf( ago ) ); 
 					}
 					params.put("searchtype", inSearchType); //Loop over all of the types
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
@@ -185,7 +186,7 @@ public class PullManager implements CatalogEnabled
 		return totalcount;
 	}
 
-	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map<String,String> params, String inSearchType) throws Exception
+	protected long downloadPages(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, String inSearchType) throws Exception
 	{
 		String baseurl = node.get("baseurl");
 		//add origiginal support
@@ -194,10 +195,10 @@ public class PullManager implements CatalogEnabled
 		debugurl.append("?");
 		debugurl.append("entermedia.key=");
 		debugurl.append(params.get("entermedia.key"));
-		debugurl.append("&lastpulldate=");
-		if (params.get("lastpulldate") != null)
+		debugurl.append("&lastpullago=");
+		if (params.get("lastpullago") != null)
 		{
-			String last = params.get("lastpulldate");
+			String last = params.get("lastpullago");
 			debugurl.append(last);
 		}
 		
@@ -230,11 +231,13 @@ public class PullManager implements CatalogEnabled
 		{
 			Collection saved = importChanges(inArchive, returned, parsed,inSearchType);
 			assetcount = assetcount + saved.size();
-			if("asset".equals(inSearchType)) {
-			downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
+			if("asset".equals(inSearchType)) 
+			{
+				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
 			}
+			
+			//Now loop over pages
 			int pages = Integer.parseInt(response.get("pages").toString());
-			//loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
 			for (int count = 2; count <= pages; count++)
@@ -268,11 +271,10 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
 				saved = importChanges(inArchive, returned, parsed,inSearchType);
 				assetcount = assetcount + saved.size();
-				if("asset".equals(inSearchType)) {
-
-				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
+				if("asset".equals(inSearchType)) 
+				{
+					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
 				}
-
 			}
 			return assetcount;
 		}
@@ -288,7 +290,7 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
+	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
 	{
 		String url = node.get("baseurl");
 		try

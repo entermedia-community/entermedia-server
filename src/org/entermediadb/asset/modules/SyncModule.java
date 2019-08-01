@@ -196,7 +196,6 @@ public class SyncModule extends BaseMediaModule
 			pulltypes.add("category");
 			pulltypes.add("librarycollection");
 			pulltypes.add("asset");
-
 		}
 		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
 		{
@@ -213,7 +212,6 @@ public class SyncModule extends BaseMediaModule
 				}
 				log.info("imported " + total + " " + pulltype);
 			}
-
 		}
 
 		archive.getCategorySearcher().clearIndex();
@@ -256,9 +254,18 @@ public class SyncModule extends BaseMediaModule
 		}
 		else
 		{
-			String lastpulldate = inReq.getRequestParameter("lastpulldate");
-			hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, lastpulldate);
-
+			String lastpullago = inReq.getRequestParameter("lastpullago");
+			if( lastpullago == null)
+			{
+				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
+				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, ago);
+			}
+			else
+			{
+				String lastpulldate = inReq.getRequestParameter("lastpulldate");
+				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(lastpulldate);
+				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, startingfrom);
+			}
 		}
 		hits.enableBulkOperations();
 		hits.setHitsPerPage(200);//TMP
