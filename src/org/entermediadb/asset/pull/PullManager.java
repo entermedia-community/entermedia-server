@@ -354,11 +354,12 @@ public class PullManager implements CatalogEnabled
 
 				if (!skiporiginal)
 				{
-					Asset asset = inArchive.getAssetBySourcePath(sourcepath);
+					String assetid = (String)changed.get("assetid");
+					Asset asset = inArchive.getAsset(assetid);
 					if( asset == null)
 					{
-						log.error("Could not find asset. Canceling " + sourcepath);
-						return;
+						log.error("Could not find asset. Canceling original download for " + sourcepath);
+						continue;
 					}
 					else
 					{
