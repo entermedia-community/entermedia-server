@@ -72,6 +72,7 @@ import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.discovery.zen.elect.ElectMasterService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -82,6 +83,7 @@ import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -99,6 +101,8 @@ import org.openedit.util.Replacer;
 import com.carrotsearch.hppc.ObjectLookupContainer;
 import com.carrotsearch.hppc.cursors.ObjectCursor;
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+
+import groovy.json.JsonOutput;
 
 //ES5 class MyNode extends Node {
 //    public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
@@ -910,6 +914,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
+		if (reindexing)
+		{
+			throw new OpenEditException("Already reindexing");
+		}
+		reindexing = true;
 		try
 		{
 			createSnapShot(inCatalogId);
@@ -917,46 +926,53 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		catch (Throwable ex)
 		{
 			log.error("Could not get snapshot", ex);
+			reindexing = false;
 		}
-		if (reindexing)
-		{
-			throw new OpenEditException("Already reindexing");
-		}
-		reindexing = true;
-		Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
-		Data reindexhistory = reindexlogs.createNewData();
-		reindexhistory.setValue("date", new Date());
-		reindexhistory.setValue("operation", "started");
-		reindexhistory.setValue("catalogid", inCatalogId);
-		reindexlogs.saveData(reindexhistory);
-
-		getPageManager().clearCache();
-		getSearcherManager().getCacheManager().clearAll();
-
-		String id = toId(inCatalogId);
-
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-		List mappedtypes = archive.listSearchTypes();
-
-		String newindex = null;
-		String searchtype = null;
+			Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
+			Data reindexhistory = reindexlogs.createNewData();
+			reindexhistory.setValue("date", new Date());
+			reindexhistory.setValue("operation", "started");
+			reindexhistory.setValue("catalogid", inCatalogId);
+			reindexlogs.saveData(reindexhistory);
+			String newindex = null;
+			String searchtype = null;
 		try
 		{
+			getPageManager().clearCache();
+			getSearcherManager().getCacheManager().clearAll();
+	
+			String id = toId(inCatalogId);
+	
+			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+			//List mappedtypes = archive.listSearchTypes();
+	
+			List searchers = new ArrayList();
 			archive.clearCache();
 			getPageManager().clearCache();
 			getSearcherManager().getCacheManager().clearAll();
 
-			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
-
-			mappedtypes.remove("lock");
-
+			//need to reset/create the mappings o
+			List mappedtypes = getMappedTypes(inCatalogId); //from existing elastic database
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
-				searchtype = (String) iterator.next();
-				if( searchtype == null || searchtype.equals("null"))
+				String searchtypeid = (String) iterator.next();
+				if( searchtypeid == null || searchtypeid.equals("null"))
 				{
 					continue;
 				}
+				Searcher searcher = getSearcherManager().loadSearcher(inCatalogId, searchtypeid, false);
+				searchers.add(searcher);
+				//Make sure all the errors are done loading from initilize() putMappings on the old index
+			}
+			
+			newindex = prepareTemporaryIndex(inCatalogId, searchers);  //TODO: Dont initilize/putMappings on all the searchers
+
+			mappedtypes.remove("lock");
+
+			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+			{
+				Searcher searcher = (Searcher) iterator.next();
+				searchtype = searcher.getSearchType();
 				long start = System.currentTimeMillis();
 
 				reindexhistory = reindexlogs.createNewData();
@@ -967,7 +983,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 				reindexlogs.saveData(reindexhistory);
 
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+				//This calls initialize that calls putMappings...
 				if (searcher.getCatalogId().equals(inCatalogId))
 				{
 					searcher.setAlternativeIndex(newindex);//Should	not look at searchers from system etc
@@ -976,7 +992,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					continue;
 				}
-				searcher.reindexInternal();
+				searcher.reindexInternal();  //This calls put mapping again
 				searcher.setAlternativeIndex(null);
 
 				reindexhistory = reindexlogs.createNewData();
@@ -988,7 +1004,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				reindexlogs.saveData(reindexhistory);
 				long end = System.currentTimeMillis();
 				log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
-
 			}
 
 			loadIndex(id, newindex, true);
@@ -1010,7 +1025,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();
 				if (!delete.isAcknowledged())
 				{
-					log.error("Index wasn't deleted");
+					log.error("Index wasn't deleted " + newindex);
 				}
 			}
 			if (e instanceof OpenEditException)
@@ -1034,54 +1049,116 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	}
 
-	public String prepareTemporaryIndex(String inCatalogId, List mappedtypes)
+	public String prepareTemporaryIndex(String inCatalogId, List searchers)
 	{
 		Date date = new Date();
 		String id = toId(inCatalogId);
 		String tempindex = id + date.getTime();
 		prepareIndex(null, tempindex);
-		//need to reset/creat the mappings here!
-		getMappingErrors().clear();
 
-		for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
+		boolean ok = true;
+		try
 		{
-			String searchtype = (String) iterator.next();
-			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-			if (!searcher.getCatalogId().equals(inCatalogId))
-			{
-				continue;
-			}
-			searcher.setAlternativeIndex(tempindex);//Should
+			getMappingErrors().clear();
 
-			if (!searcher.putMappings())
+			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
 			{
-				//log.error("Could not map " + searchtype);
-				throw new OpenEditException("Could not map " + searchtype);
+				Searcher searcher = (Searcher)iterator.next();
+				if (!searcher.getCatalogId().equals(inCatalogId))
+				{
+					continue;
+				}
+				searcher.setAlternativeIndex(tempindex);//Should
+	
+				if (!searcher.putMappings())
+				{
+					ok = false;
+					//get this mapping and show all mapping info
+					BaseElasticSearcher elasticsearcher = (BaseElasticSearcher)searcher;
+					String error = "Could not map " + searcher.getSearchType();
+					XContentBuilder source = elasticsearcher.buildMapping();
+					try
+					{
+						String out = JsonOutput.prettyPrint(source.string());
+						error = error + " with mapping of : <pre class='errordump'>" + out + "</pre><br>";
+					}
+					catch (IOException e)
+					{
+						log.error("Mapping ", e);
+					}
+					error = error + " existing mapping " + showAllExistingMapping(inCatalogId,tempindex);
+					throw new OpenEditException(error);  //real error
+				}
+				searcher.setAlternativeIndex(null);
 			}
-			searcher.setAlternativeIndex(null);
 		}
-
-		if (!getMappingErrors().isEmpty())
+		finally
 		{
-			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
-			if (!delete.isAcknowledged())
+			if (!ok)
 			{
-				log.error("Index wasn't deleted");
+				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
+				if (!delete.isAcknowledged())
+				{
+					log.error("Index wasn't deleted");
+				}
 			}
-			throw new OpenEditException("Was unable to create new mappings, inconsistent");
 		}
 		return tempindex;
-
 	}
 
+	public String listAllExistingMapping(String inCatalogId)
+	{
+		String indexid = toId(inCatalogId);
+		String actualindex = getIndexNameFromAliasName(indexid);	
+
+		String mapping = showAllExistingMapping(inCatalogId, actualindex);
+		return mapping;
+	}
+	
+	protected String showAllExistingMapping(String inCatalogId, String tmpindexid)
+	{
+
+		GetMappingsResponse getMappingsResponse = getClient().admin().indices().getMappings(new GetMappingsRequest().indices(tmpindexid)).actionGet();
+		
+		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
+
+		StringBuffer all = new StringBuffer();
+		
+		ImmutableOpenMap<String, MappingMetaData> typeMappings = indexToMappings.get(tmpindexid);
+        for (ObjectCursor<String> typeName : typeMappings.keys()) 
+        {
+        	if( typeName.value != null && typeName.value.startsWith("$") )
+        	{
+        		continue;
+        	}
+			MappingMetaData actualMapping = typeMappings.get(typeName.value);
+			if (actualMapping != null)
+			{
+				try
+				{
+					String jsonString = actualMapping.source().string();
+					jsonString = JsonOutput.prettyPrint(jsonString);
+					all.append("<br>" + typeName.value + " : <pre>" + jsonString + "</pre>");
+				}
+				catch (IOException e)
+				{
+					new OpenEditException(e);
+				}
+			}
+        }
+		return all.toString();
+	}
+
+	
 	public List getMappedTypes(String inCatalogId)
 	{
-		GetMappingsRequest req = new GetMappingsRequest().indices(inCatalogId);
+		String indexid = toId(inCatalogId);
+		String oldindex = getIndexNameFromAliasName(indexid);	
+		List types = new ArrayList();
+		GetMappingsRequest req = new GetMappingsRequest().indices(indexid);
 		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
-		String oldindex = getIndexNameFromAliasName(inCatalogId);
 
-		ArrayList types = new ArrayList();
-		ImmutableOpenMap<String, MappingMetaData> mapping = resp.mappings().get(oldindex);
+		ImmutableOpenMap<String, MappingMetaData> mapping = resp.getMappings().get(oldindex);
 		for (ObjectObjectCursor<String, MappingMetaData> c : mapping)
 		{
 			// System.out.println(c.key+" = "+c.value.source());
@@ -1090,26 +1167,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				types.add(c.key);
 			}
 		}
+		
+		
+	//		for (ObjectCursor<String> mappingIndexName : resp.getMappings().keys()) 
+	//		{
+	//			ImmutableOpenMap<String, MappingMetaData> typeMappings = resp.getMappings().get(mappingIndexName.value);
+	//            for (ObjectCursor<String> typeName : typeMappings.keys()) 
+	//            {
+	//            	types.add(typeName.value);
+	//                MappingMetaData typeMapping = typeMappings.get(typeName.value);
+	//               // Map<String, Map<String, String>> properties = getPropertiesFromTypeMapping(typeMapping);
+	//            }
+	//		}
 
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-		final List withparents = archive.findChildTablesNames();
-
-		types.sort(new Comparator()
-		{
-			@Override
-			public int compare(Object inO1, Object inO2)
-			{
-				if (withparents.contains(inO1))
-				{
-					return 1;
-				}
-				if (withparents.contains(inO2))
-				{
-					return -1;
-				}
-				return 0;
-			}
-		});
 		types.remove("category");
 		types.add(0, "category");
 		return types;

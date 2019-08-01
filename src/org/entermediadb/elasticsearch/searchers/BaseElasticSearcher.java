@@ -416,14 +416,12 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{
-
 			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
 			if (!alreadyin)
 			{
 				log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
 				putMappings();
 			}
-
 		}
 		catch (Exception ex)
 		{
@@ -604,7 +602,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.startObject("mastereditclusterid");
 			jsonproperties = jsonproperties.field("type", "string");
 			jsonproperties = jsonproperties.field("index", "not_analyzed");
-			jsonproperties = jsonproperties.field("include_in_all", "true");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
 			jsonproperties = jsonproperties.field("store", "false");
 
 			jsonproperties = jsonproperties.endObject();
@@ -612,7 +610,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			jsonproperties = jsonproperties.startObject("recordmodificationdate");
 			jsonproperties = jsonproperties.field("type", "date");
-			jsonproperties = jsonproperties.field("store", "true");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
+			jsonproperties = jsonproperties.field("store", "false");
 
 			jsonproperties = jsonproperties.endObject();
 			

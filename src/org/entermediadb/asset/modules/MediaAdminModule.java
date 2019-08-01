@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
@@ -19,7 +20,6 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
-import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
@@ -708,9 +708,6 @@ public class MediaAdminModule extends BaseMediaModule
 
 		long start = System.currentTimeMillis();
 
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		List mappedtypes = archive.listSearchTypes();
-		inReq.putPageValue("searchtypes",mappedtypes);
 		try
 		{
 			if(!manager.reindexInternal(catalogid))
@@ -729,5 +726,12 @@ public class MediaAdminModule extends BaseMediaModule
 		String time = String.valueOf( Math.round( (finish - start) / 1000L) );
 		inReq.putPageValue("time", time);
 	}
-	
+	public void listMappings(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ElasticNodeManager manager = (ElasticNodeManager)getModuleManager().getBean(catalogid,"nodeManager");
+		String map = manager.listAllExistingMapping(catalogid);
+		inReq.putPageValue("mappingdebug",map);
+
+	}
 }
