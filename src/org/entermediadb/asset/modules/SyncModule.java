@@ -189,35 +189,10 @@ public class SyncModule extends BaseMediaModule
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection pulltypes = archive.getCatalogSettingValues("nodepulltypes");
-		if (pulltypes == null)
-		{
-			pulltypes = new ArrayList();
-			pulltypes.add("category");
-			pulltypes.add("librarycollection");
-			pulltypes.add("asset");
+		PullManager manager = getPullManager(archive.getCatalogId());
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 
-		}
-		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
-		{
-			String pulltype = (String) iterator.next();
-			boolean resetdate = !iterator.hasNext();
-			long total = getPullManager(archive.getCatalogId()).processPullQueue(archive, pulltype, resetdate);
-
-			ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
-			if (log != null)
-			{
-				if (total == -1)
-				{
-					log.info("Pull error happened, check logs");
-				}
-				log.info("imported " + total + " " + pulltype);
-			}
-
-		}
-
-		archive.getCategorySearcher().clearIndex();
-		archive.getCategoryArchive().clearCategories();
+		manager.processAllPull(archive,log);
 
 	}
 
@@ -256,9 +231,18 @@ public class SyncModule extends BaseMediaModule
 		}
 		else
 		{
-			String lastpulldate = inReq.getRequestParameter("lastpulldate");
-			hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, lastpulldate);
-
+			String lastpullago = inReq.getRequestParameter("lastpullago");
+			if( lastpullago == null)
+			{
+				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
+				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, ago);
+			}
+			else
+			{
+				String lastpulldate = inReq.getRequestParameter("lastpulldate");
+				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(lastpulldate);
+				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, startingfrom);
+			}
 		}
 		hits.enableBulkOperations();
 		hits.setHitsPerPage(200);//TMP

@@ -3,6 +3,7 @@ package org.entermediadb.asset.pull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -28,11 +30,13 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.locks.Lock;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
+import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
@@ -74,7 +78,7 @@ public class PullManager implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public HitTracker listRecentChanges(String inType, String inLastpulldate)
+	public HitTracker listRecentChanges(String inType, Date startingfrom)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
 		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
@@ -92,9 +96,8 @@ public class PullManager implements CatalogEnabled
 
 		}
 		//TODO:  support this on all tables
-		if (inLastpulldate != null )
+		if (startingfrom != null )
 		{
-			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);
 		} 
 		HitTracker hits = builder.search();
@@ -121,11 +124,11 @@ public class PullManager implements CatalogEnabled
 				String url = node.get("baseurl");
 				if (url != null)
 				{
-					long time = System.currentTimeMillis();
-					time = time - 10000L; //Buffer
-					Date now = new Date(time);
-					HttpRequestBuilder connection = new HttpRequestBuilder();
-					Map params = new HashMap();
+					//long time = System.currentTimeMillis();
+					//time = time - 10000L; //Buffer
+					Date now = new Date();
+					HttpSharedConnection connection = new HttpSharedConnection();
+					Map<String,String> params = new HashMap();
 					if (node.get("entermediakey") != null)
 					{
 						params.put("entermedia.key", node.get("entermediakey"));
@@ -148,12 +151,15 @@ public class PullManager implements CatalogEnabled
 							pulldate = (Date) node.getValue("lastpulldate");
 						}
 
-						if (pulldate.after(now))
+						if (pulldate.getTime()*1000L*30L > now.getTime() )
 						{
-							log.info("We just ran a pull within last 10 seconds");
+							log.info("Skipping pull. We just ran a pull within last 30 seconds. On another node?");
 							continue;
 						}
-						params.put("lastpulldate", DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy")); //Tostring
+						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
+						//String timestamp = DateStorageUtil.getStorageUtil().formatForStorage(pulldate);
+						long ago = now.getTime() - pulldate.getTime();
+						params.put("lastpullago", String.valueOf( ago ) ); 
 					}
 					params.put("searchtype", inSearchType); //Loop over all of the types
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
@@ -183,24 +189,27 @@ public class PullManager implements CatalogEnabled
 		return totalcount;
 	}
 
-	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params, String inSearchType) throws Exception
+	protected long downloadPages(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, String inSearchType) throws Exception
 	{
 		String baseurl = node.get("baseurl");
 		//add origiginal support
 		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
-		StringBuffer link = new StringBuffer();
-		link.append("?");
-		link.append("entermedia.key=");
-		link.append(params.get("entermedia.key"));
-		link.append("&lastpulldate=");
-		if (params.get("lastpulldate") != null)
+		StringBuffer debugurl = new StringBuffer();
+		debugurl.append("?");
+		debugurl.append("entermedia.key=");
+		debugurl.append(params.get("entermedia.key"));
+		debugurl.append("&lastpullago=");
+		if (params.get("lastpullago") != null)
 		{
-			link.append(params.get("lastpulldate"));
+			String last = params.get("lastpullago");
+			debugurl.append(last);
 		}
 		
-		link.append("&searchtype=");
-		link.append(params.get("searchtype"));
-		log.info("Checking: " + url + link);
+		debugurl.append("&searchtype=");
+		debugurl.append(params.get("searchtype"));
+		
+		String encoded = url + debugurl;
+		log.info("Checking: " + URLUtilities.urlEscape(encoded));
 		HttpResponse response2 = connection.sharedPost(url, params);
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
@@ -225,11 +234,21 @@ public class PullManager implements CatalogEnabled
 		{
 			Collection saved = importChanges(inArchive, returned, parsed,inSearchType);
 			assetcount = assetcount + saved.size();
-			if("asset".equals(inSearchType)) {
-			downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
+			if("asset".equals(inSearchType)) 
+			{
+				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
 			}
+			if("category".equals(inSearchType)) 
+			{
+				if( !saved.isEmpty() )
+				{
+					inArchive.getCategorySearcher().clearIndex();
+					inArchive.getCategoryArchive().clearCategories();
+				}	
+			}	
+
+			//Now loop over pages
 			int pages = Integer.parseInt(response.get("pages").toString());
-			//loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
 			for (int count = 2; count <= pages; count++)
@@ -238,7 +257,7 @@ public class PullManager implements CatalogEnabled
 
 				params.put("page", String.valueOf(count));
 
-				log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
+				log.info("next page: " + url + debugurl + "&page=" + count + "&hitssessionid=" + hitssessionid);
 				response2 = connection.sharedPost(url, params);
 				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
@@ -263,11 +282,10 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
 				saved = importChanges(inArchive, returned, parsed,inSearchType);
 				assetcount = assetcount + saved.size();
-				if("asset".equals(inSearchType)) {
-
-				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
+				if("asset".equals(inSearchType)) 
+				{
+					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
 				}
-
 			}
 			return assetcount;
 		}
@@ -283,7 +301,7 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
+	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
 	{
 		String url = node.get("baseurl");
 		try
@@ -388,7 +406,7 @@ public class PullManager implements CatalogEnabled
 			JSONArray jsonarray = (JSONArray) everything.get("results");
 
 			inArchive.getSearcher(inSearchType).saveJson(jsonarray);
-			log.info("saved " + jsonarray.size() + " changed asset ");
+			log.info("saved " + jsonarray.size() + " changed " + inSearchType );
 			return jsonarray;
 		}
 		catch (Exception e)
@@ -794,6 +812,42 @@ public class PullManager implements CatalogEnabled
 					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
 					manager.flushBulk();
 				}
+	}
+
+	public void processAllPull(MediaArchive inArchive,ScriptLogger log)
+	{
+		//TODO: Only call this every 30 seconds not more
+		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
+		if( lock == null)
+		{
+			log.info("Pull is already locked");
+			return;
+		}
+		Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
+		if (pulltypes == null)
+		{
+			pulltypes = new ArrayList();
+			pulltypes.add("category");
+			pulltypes.add("librarycollection");
+			pulltypes.add("asset");
+		}
+		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
+		{
+			String pulltype = (String) iterator.next();
+			boolean resetdate = !iterator.hasNext();
+			long total = processPullQueue(inArchive, pulltype, resetdate);
+
+			if (log != null)
+			{
+				if (total == -1)
+				{
+					log.info("Pull error happened, check logs");
+				}
+				log.info("imported " + total + " " + pulltype);
+			}
+
+		}
+		
 	}
 
 }
