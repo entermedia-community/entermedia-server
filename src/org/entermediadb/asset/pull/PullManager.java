@@ -372,7 +372,7 @@ public class PullManager implements CatalogEnabled
 
 				if (!skiporiginal)
 				{
-					String assetid = (String)changed.get("assetid");
+					String assetid = (String)changed.get("id");
 					Asset asset = inArchive.getAsset(assetid);
 					if( asset == null)
 					{
