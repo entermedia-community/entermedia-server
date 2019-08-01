@@ -151,7 +151,7 @@ public class PullManager implements CatalogEnabled
 							pulldate = (Date) node.getValue("lastpulldate");
 						}
 
-						if (pulldate.getTime()*1000L*30L > now.getTime() )
+						if (pulldate.getTime() + (1000L*30L) > now.getTime() )
 						{
 							log.info("Skipping pull. We just ran a pull within last 30 seconds. On another node?");
 							continue;
