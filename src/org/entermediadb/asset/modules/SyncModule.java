@@ -216,7 +216,6 @@ public class SyncModule extends BaseMediaModule
 
 	public void listChanges(WebPageRequest inReq)
 	{
-
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.findValue("searchtype");
 		if (searchtype == null)
@@ -232,7 +231,7 @@ public class SyncModule extends BaseMediaModule
 		else
 		{
 			String lastpullago = inReq.getRequestParameter("lastpullago");
-			if( lastpullago == null)
+			if( lastpullago != null)
 			{
 				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
 				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, ago);
@@ -240,8 +239,15 @@ public class SyncModule extends BaseMediaModule
 			else
 			{
 				String lastpulldate = inReq.getRequestParameter("lastpulldate");
-				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(lastpulldate);
-				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, startingfrom);
+				if( lastpulldate == null)
+				{
+					hits = archive.getSearcher(searchtype).getAllHits(inReq);
+				}
+				else
+				{
+					Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(lastpulldate);
+					hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, startingfrom);
+				}
 			}
 		}
 		hits.enableBulkOperations();
