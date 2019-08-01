@@ -136,12 +136,15 @@
 .ui-widget-header a:hover,
 .ui-widget-header a:visited {
 	color: #fff;
-	background-color: rgb(137, 137, 137);
+	
 }
-
+.ui-widget-header .dropdown-menu a {
+	color:#333;
+}
 .ui-widget-header .dropdown-menu a:hover,
 .ui-widget-header .dropdown-item:hover {
 	background-color:rgba(0,0,0,0.5);
+	color:#fff;
 }
 .ui-widget-content a {
 	color: #333333;
@@ -663,10 +666,10 @@ html, body, #application {
 {
 	top:80px;
 }
-.col-sidebar {  }
+
 .col-sidebar h2 { margin:15px 20px; font-size: 1.6rem; }
 .col-sidebar .ui-widget {
-	margin:20px 20px;	
+	margin:20px 20px 40px;	
 } 
 .col-sidebar .ui-widget .select2 { 
 	min-width: 216px;
@@ -1094,6 +1097,7 @@ html, body, #application {
 /* SAVED SEARCH STYLES */
 .search-list, .sidebar-list {
     padding: 0;
+	margin:0;
     
 }
 
@@ -1381,7 +1385,7 @@ td.checkbox input, th.firstheader input {
 
 /*Emshare Nav Bar*/
 .emnav {
-	min-height: 50px;
+	min-height: 56px;
 }
 .emnav .navtabs {
 	margin:0 5px 0 15px;
@@ -1398,7 +1402,7 @@ td.checkbox input, th.firstheader input {
 .emnav .navtabitem {
 	display:block;
 	position:relative;
-	padding: 8px 16px 10px;
+	padding: 10px 16px 12px;
 	text-align: center;
 	border-radius: 4px 4px 0 0;
 	font-weight: bold;
@@ -1485,9 +1489,10 @@ td.checkbox input, th.firstheader input {
 	cursor: pointer;
 }
 .emnav .form-control {
-		padding: .175rem .75rem;
+		padding: 0 .75rem;
 		line-height: 1rem;
 		font-size:0.9rem;
+		height: calc(1.5rem + .4rem);
 }
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
@@ -1502,8 +1507,12 @@ td.checkbox input, th.firstheader input {
 }
 .navbar-quicksearch {
 	float: left;
-	padding:12px 0 0 0;
+	padding:14px 0 0 0;
 }
+.navbar-quicksearch .input-group-addon a {
+	padding: 4px .5rem 2px;
+	}
+
 .navtabsright-text { display: none;}
 
 @media (max-width: 1024px) {
