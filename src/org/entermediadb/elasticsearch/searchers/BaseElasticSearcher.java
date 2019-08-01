@@ -3072,9 +3072,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	public void saveJson(Collection inJsonArray)
 	{
-		JSONParser parser = new JSONParser();
-
-		ArrayList errors = new ArrayList();
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
 
 		try
@@ -3095,18 +3092,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				processor.add(req);
 			}
-			processor.flush();
-			processor.awaitClose(5, TimeUnit.MINUTES);
+			//processor.awaitClose(5, TimeUnit.MINUTES);  do in flushBulk
 		}
 		catch (Exception e)
 		{
-			errors.add("Could not save " + e);
+			throw new OpenEditException("Errors saving bulk data " ,e);
 		}
-		if(errors.size() > 0) 
+		finally
 		{
-			
+			getElasticNodeManager().flushBulk();
 		}
-
 	}
 	
 	

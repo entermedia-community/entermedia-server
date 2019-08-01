@@ -396,7 +396,6 @@ public class PullManager implements CatalogEnabled
 	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed, String inSearchType)
 	{
 		//I dont want to edit the json in any way, so using original
-		Collection array;
 		try
 		{
 			//array = new JsonUtil().parseArray("results", returned);
@@ -414,6 +413,7 @@ public class PullManager implements CatalogEnabled
 			log.info("Error parsing following content: " + returned);
 			throw new OpenEditException(e);
 		}
+	
 
 	}
 
