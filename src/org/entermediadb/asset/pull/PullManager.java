@@ -125,7 +125,7 @@ public class PullManager implements CatalogEnabled
 					time = time - 10000L; //Buffer
 					Date now = new Date(time);
 					HttpRequestBuilder connection = new HttpRequestBuilder();
-					Map params = new HashMap();
+					Map<String,String> params = new HashMap();
 					if (node.get("entermediakey") != null)
 					{
 						params.put("entermedia.key", node.get("entermediakey"));
@@ -150,10 +150,12 @@ public class PullManager implements CatalogEnabled
 
 						if (pulldate.after(now))
 						{
-							log.info("We just ran a pull within last 10 seconds");
+							log.info("We just ran a pull within last 10 seconds. On another node?");
 							continue;
 						}
-						params.put("lastpulldate", DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy")); //Tostring
+						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
+						String timestamp = DateStorageUtil.getStorageUtil().formatForStorage(pulldate);
+						params.put("lastpulldate", timestamp); 
 					}
 					params.put("searchtype", inSearchType); //Loop over all of the types
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
@@ -183,24 +185,27 @@ public class PullManager implements CatalogEnabled
 		return totalcount;
 	}
 
-	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params, String inSearchType) throws Exception
+	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map<String,String> params, String inSearchType) throws Exception
 	{
 		String baseurl = node.get("baseurl");
 		//add origiginal support
 		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
-		StringBuffer link = new StringBuffer();
-		link.append("?");
-		link.append("entermedia.key=");
-		link.append(params.get("entermedia.key"));
-		link.append("&lastpulldate=");
+		StringBuffer debugurl = new StringBuffer();
+		debugurl.append("?");
+		debugurl.append("entermedia.key=");
+		debugurl.append(params.get("entermedia.key"));
+		debugurl.append("&lastpulldate=");
 		if (params.get("lastpulldate") != null)
 		{
-			link.append(params.get("lastpulldate"));
+			String last = params.get("lastpulldate");
+			debugurl.append(last);
 		}
 		
-		link.append("&searchtype=");
-		link.append(params.get("searchtype"));
-		log.info("Checking: " + url + link);
+		debugurl.append("&searchtype=");
+		debugurl.append(params.get("searchtype"));
+		
+		String encoded = url + debugurl;
+		log.info("Checking: " + URLUtilities.urlEscape(encoded));
 		HttpResponse response2 = connection.sharedPost(url, params);
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
@@ -238,7 +243,7 @@ public class PullManager implements CatalogEnabled
 
 				params.put("page", String.valueOf(count));
 
-				log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
+				log.info("next page: " + url + debugurl + "&page=" + count + "&hitssessionid=" + hitssessionid);
 				response2 = connection.sharedPost(url, params);
 				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)

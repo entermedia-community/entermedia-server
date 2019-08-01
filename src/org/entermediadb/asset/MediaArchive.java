@@ -1826,10 +1826,18 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String[] vals = value.split("\\s+");
-		Collection presets = Arrays.asList(vals);
-
-		return presets;
+		if( value.contains("|"))
+		{
+			String[] vals = value.split("\\|+");
+			Collection presets = Arrays.asList(vals);
+			return presets;			
+		}
+		else
+		{
+			String[] vals = value.split("\\s+");
+			Collection presets = Arrays.asList(vals);
+			return presets;
+		}	
 	}
 
 	//force runs now instead of on a delay in the scheduler
