@@ -19,10 +19,10 @@
   </property>  
   <property id="baseurl" index="true" stored="true" editable="true"  >
     <name>
-      <language id="de"><![CDATA[URL]]></language>
-      <language id="en"><![CDATA[URL]]></language>
-      <language id="es"><![CDATA[URL]]></language>
-      <language id="fr"><![CDATA[URL]]></language>
+      <language id="de"><![CDATA[Base URL]]></language>
+      <language id="en"><![CDATA[Base URL]]></language>
+      <language id="es"><![CDATA[Base URL]]></language>
+      <language id="fr"><![CDATA[Base URL]]></language>
     </name>
   </property> 
   <property id="entermediakey" index="true" stored="true" editable="true"  >

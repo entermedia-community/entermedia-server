@@ -823,30 +823,37 @@ public class PullManager implements CatalogEnabled
 			log.info("Pull is already locked");
 			return;
 		}
-		Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
-		if (pulltypes == null)
+		try
 		{
-			pulltypes = new ArrayList();
-			pulltypes.add("category");
-			pulltypes.add("librarycollection");
-			pulltypes.add("asset");
-		}
-		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
-		{
-			String pulltype = (String) iterator.next();
-			boolean resetdate = !iterator.hasNext();
-			long total = processPullQueue(inArchive, pulltype, resetdate);
-
-			if (log != null)
+			Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
+			if (pulltypes == null)
 			{
-				if (total == -1)
-				{
-					log.info("Pull error happened, check logs");
-				}
-				log.info("imported " + total + " " + pulltype);
+				pulltypes = new ArrayList();
+				pulltypes.add("category");
+				pulltypes.add("librarycollection");
+				pulltypes.add("asset");
 			}
-
+			for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
+			{
+				String pulltype = (String) iterator.next();
+				boolean resetdate = !iterator.hasNext();
+				long total = processPullQueue(inArchive, pulltype, resetdate);
+	
+				if (log != null)
+				{
+					if (total == -1)
+					{
+						log.info("Pull error happened, check logs");
+					}
+					log.info("imported " + total + " " + pulltype);
+				}
+			}
 		}
+		finally
+		{
+			inArchive.releaseLock(lock);
+		}
+		
 		
 	}
 
