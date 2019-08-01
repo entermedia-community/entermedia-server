@@ -189,33 +189,10 @@ public class SyncModule extends BaseMediaModule
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection pulltypes = archive.getCatalogSettingValues("nodepulltypes");
-		if (pulltypes == null)
-		{
-			pulltypes = new ArrayList();
-			pulltypes.add("category");
-			pulltypes.add("librarycollection");
-			pulltypes.add("asset");
-		}
-		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
-		{
-			String pulltype = (String) iterator.next();
-			boolean resetdate = !iterator.hasNext();
-			long total = getPullManager(archive.getCatalogId()).processPullQueue(archive, pulltype, resetdate);
+		PullManager manager = getPullManager(archive.getCatalogId());
+		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
 
-			ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
-			if (log != null)
-			{
-				if (total == -1)
-				{
-					log.info("Pull error happened, check logs");
-				}
-				log.info("imported " + total + " " + pulltype);
-			}
-		}
-
-		archive.getCategorySearcher().clearIndex();
-		archive.getCategoryArchive().clearCategories();
+		manager.processAllPull(archive,log);
 
 	}
 

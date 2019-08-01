@@ -3,6 +3,7 @@ package org.entermediadb.asset.pull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -28,6 +30,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.locks.Lock;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
@@ -148,9 +151,9 @@ public class PullManager implements CatalogEnabled
 							pulldate = (Date) node.getValue("lastpulldate");
 						}
 
-						if (pulldate.after(now))
+						if (pulldate.getTime()*1000L*30L > now.getTime() )
 						{
-							log.info("We just ran a pull within last 10 seconds. On another node?");
+							log.info("Skipping pull. We just ran a pull within last 30 seconds. On another node?");
 							continue;
 						}
 						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
@@ -235,7 +238,15 @@ public class PullManager implements CatalogEnabled
 			{
 				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
 			}
-			
+			if("category".equals(inSearchType)) 
+			{
+				if( !saved.isEmpty() )
+				{
+					inArchive.getCategorySearcher().clearIndex();
+					inArchive.getCategoryArchive().clearCategories();
+				}	
+			}	
+
 			//Now loop over pages
 			int pages = Integer.parseInt(response.get("pages").toString());
 			String hitssessionid = (String) response.get("hitssessionid");
@@ -395,7 +406,7 @@ public class PullManager implements CatalogEnabled
 			JSONArray jsonarray = (JSONArray) everything.get("results");
 
 			inArchive.getSearcher(inSearchType).saveJson(jsonarray);
-			log.info("saved " + jsonarray.size() + " changed asset ");
+			log.info("saved " + jsonarray.size() + " changed " + inSearchType );
 			return jsonarray;
 		}
 		catch (Exception e)
@@ -801,6 +812,42 @@ public class PullManager implements CatalogEnabled
 					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
 					manager.flushBulk();
 				}
+	}
+
+	public void processAllPull(MediaArchive inArchive,ScriptLogger log)
+	{
+		//TODO: Only call this every 30 seconds not more
+		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
+		if( lock == null)
+		{
+			log.info("Pull is already locked");
+			return;
+		}
+		Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
+		if (pulltypes == null)
+		{
+			pulltypes = new ArrayList();
+			pulltypes.add("category");
+			pulltypes.add("librarycollection");
+			pulltypes.add("asset");
+		}
+		for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
+		{
+			String pulltype = (String) iterator.next();
+			boolean resetdate = !iterator.hasNext();
+			long total = processPullQueue(inArchive, pulltype, resetdate);
+
+			if (log != null)
+			{
+				if (total == -1)
+				{
+					log.info("Pull error happened, check logs");
+				}
+				log.info("imported " + total + " " + pulltype);
+			}
+
+		}
+		
 	}
 
 }
