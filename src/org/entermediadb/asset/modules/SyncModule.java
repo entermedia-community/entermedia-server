@@ -16,6 +16,7 @@ import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -241,7 +242,7 @@ public class SyncModule extends BaseMediaModule
 				String lastpulldate = inReq.getRequestParameter("lastpulldate");
 				if( lastpulldate == null)
 				{
-					hits = archive.getSearcher(searchtype).getAllHits(inReq);
+					throw new OpenEditException("lastpullago not defined");
 				}
 				else
 				{
