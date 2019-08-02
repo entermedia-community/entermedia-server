@@ -754,5 +754,24 @@ public class MediaAdminModule extends BaseMediaModule
 			}
 		}
 		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+
+		all = archive.getAssetSearcher().query().exact("mastereditclusterid",localmaster ).search();
+		all.enableBulkOperations();
+		tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			if( asset.getValue("recordmodificationdate") == null)
+			{
+				tosave.add(asset); //this will update it
+				if( tosave.size() > 1000)
+				{
+					archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+					tosave.clear();
+				}
+			}	
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+
 	}
 }
