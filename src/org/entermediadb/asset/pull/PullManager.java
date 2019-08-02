@@ -285,7 +285,7 @@ public class PullManager implements CatalogEnabled
 				assetcount = assetcount + saved.size();
 				if("asset".equals(inSearchType)) 
 				{
-					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
+					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
 				}
 			}
 			return assetcount;
