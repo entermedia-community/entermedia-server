@@ -259,7 +259,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	
 	public Collection<Category> getCategories()
 	{
-		return (Collection<Category>) getValue("category-exact");
+		Collection values = (Collection<Category>) getValue("category-exact");
+		return values;
 	}
 
 	/**

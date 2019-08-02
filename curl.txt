@@ -60,7 +60,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AWSudkEOitp-LpW3ZyZX' | python -mjson.tool
 
 
-curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AWxThKyEX1lT2im69SSK' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:b0173a11_f45e_4be6_9465_b5985d023382' | python -mjson.tool
 

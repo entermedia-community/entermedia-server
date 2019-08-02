@@ -599,10 +599,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			// props.add(detail);
 			// }
 			
+			
 			jsonproperties = jsonproperties.startObject("mastereditclusterid");
 			jsonproperties = jsonproperties.field("type", "string");
 			jsonproperties = jsonproperties.field("index", "not_analyzed");
-			jsonproperties = jsonproperties.field("include_in_all", "false");
+			jsonproperties = jsonproperties.field("include_in_all", "true");
 			jsonproperties = jsonproperties.field("store", "false");
 
 			jsonproperties = jsonproperties.endObject();
@@ -610,8 +611,21 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			jsonproperties = jsonproperties.startObject("recordmodificationdate");
 			jsonproperties = jsonproperties.field("type", "date");
-			jsonproperties = jsonproperties.field("include_in_all", "false");
-			jsonproperties = jsonproperties.field("store", "false");
+			jsonproperties = jsonproperties.field("store", "true");
+			
+//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
+//			jsonproperties = jsonproperties.field("type", "string");
+//			jsonproperties = jsonproperties.field("index", "not_analyzed");
+//			jsonproperties = jsonproperties.field("include_in_all", "false");
+//			jsonproperties = jsonproperties.field("store", "false");
+//
+//			jsonproperties = jsonproperties.endObject();
+//			
+//			
+//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
+//			jsonproperties = jsonproperties.field("type", "date");
+//			jsonproperties = jsonproperties.field("include_in_all", "false");
+//			jsonproperties = jsonproperties.field("store", "false");
 
 			jsonproperties = jsonproperties.endObject();
 			

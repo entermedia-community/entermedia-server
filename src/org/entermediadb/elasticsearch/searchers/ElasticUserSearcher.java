@@ -226,10 +226,10 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		getCacheManager().remove("usercache",user.getId());
 
 	}
-	
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	@Override
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
-		super.updateIndex(inContent, inData, inDetails);
+		super.updateIndex(inContent, inData, inDetails,inUser);
 		User user = null;
 		if(!(inData instanceof User)){
 			user = (User) loadData(inData);
