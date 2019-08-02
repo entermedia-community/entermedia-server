@@ -755,7 +755,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
 
-		all = archive.getAssetSearcher().query().exact("mastereditclusterid",localmaster ).search();
+		all = archive.getAssetSearcher().query().all().search();
 		all.enableBulkOperations();
 		tosave = new ArrayList();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
