@@ -343,7 +343,7 @@ public class PullManager implements CatalogEnabled
 							String remotecatalogid = (String)response.get("catalogid");
 							String generatefolder = remotecatalogid + "/generated";
 							String endpath = genpath.substring(genpath.indexOf(  generatefolder ) + generatefolder.length() ) ;
-							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + endpath + "/generated";
+							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated" + endpath;
 							ContentItem found = inArchive.getContent(savepath);
 							
 							
