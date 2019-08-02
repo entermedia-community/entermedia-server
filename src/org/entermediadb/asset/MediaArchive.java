@@ -1923,18 +1923,33 @@ public class MediaArchive implements CatalogEnabled
 	public Collection<ContentItem> listGeneratedFiles(Data inHit)
 	{
 		String sourcepath = inHit.getSourcePath();
-		Collection paths = getPageManager().getChildrenPaths("/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/");
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/";
+		Collection<ContentItem> children = new ArrayList();
+		findItems(path, children);
+		return children;
+	}
+
+	protected void findItems(String path, Collection<ContentItem> children)
+	{
+		Collection paths = getPageManager().getChildrenPaths(path);
 		if (paths.isEmpty())
 		{
-			return Collections.EMPTY_LIST;
+			return;
 		}
-		Collection<ContentItem> children = new ArrayList();
+
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
-			String path = (String) iterator.next();
-			children.add(getContent(path));
+			String cpath = (String) iterator.next();
+			ContentItem item = getContent(cpath);
+			if( item.isFolder())
+			{
+				findItems(item.getPath(), children);
+			}
+			else
+			{
+				children.add(item);
+			}
 		}
-		return children;
 	}
 
 	public OrderManager getOrderManager()

@@ -5,6 +5,7 @@
 		    #if( $hits )
 		    ,"totalhits" : $hits.size(),
 			"searchtype" : "$searcher.getSearchType()",
+			"catalogid" : "$searcher.getCatalogId()",
 			"hitsperpage": $hits.getHitsPerPage(),			
 			"page": $hits.getPage(),
 			"pages": $hits.totalPages,
@@ -39,7 +40,7 @@
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 		{ "id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath), "files":
 		[ #foreach($item in $mediaarchive.listGeneratedFiles($hit) )#if( ${foreach.count} != 1 ), #end
-			{"filename": #jesc($item.getName()), "lastmodified" : #jesc($item.getLastModified() )} 
+			{"filename": #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" : #jesc($item.getLastModified() )} 
 		  #end
 		]}
 		#end

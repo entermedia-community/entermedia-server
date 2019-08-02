@@ -345,9 +345,12 @@ public class PullManager implements CatalogEnabled
 							String filename = (String) filelisting.get("filename");
 							String lastmodified = (String) filelisting.get("lastmodified");
 							long datetime = Long.parseLong(lastmodified);
-							//TODO:remove any milliseconds? Does this match rsync?
+							String genpath = (String) filelisting.get("lastmodified"); //TODO: Support multiple catalog ids
 
-							ContentItem found = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
+							String remotecatalogid = (String)parsed.get("catalogid");
+							String endpath = genpath.substring(genpath.indexOf(  remotecatalogid ) + remotecatalogid.length() ) ;
+							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + endpath;
+							ContentItem found = inArchive.getContent(savepath);
 							if (!found.exists() || found.getLastModified() != datetime)
 							{
 								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
