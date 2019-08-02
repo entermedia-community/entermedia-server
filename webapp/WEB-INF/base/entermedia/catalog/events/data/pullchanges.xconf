@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Pull Remote Data</property>	
-	
-	<path-action name="SyncModule.processPullQueue" />
-
-	
-</page>

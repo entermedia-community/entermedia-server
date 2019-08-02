@@ -154,7 +154,8 @@ public class PullManager implements CatalogEnabled
 
 						if (pulldate.getTime() + (1000L*30L) > now.getTime() )
 						{
-							log.info("Skipping pull. We just ran a pull within last 30 seconds. On another node?");
+							log.info(node.getName() + "/" +inSearchType + " We just ran a pull within last 30 seconds. Trying again later");
+							inLog.info(node.getName()  + "/" +inSearchType + " We just ran a pull within last 30 seconds. Trying again later");
 							continue;
 						}
 						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
@@ -829,13 +830,14 @@ public class PullManager implements CatalogEnabled
 				}
 	}
 
-	public void processAllPull(MediaArchive inArchive,ScriptLogger log)
+	public void processAllPull(MediaArchive inArchive,ScriptLogger inLog)
 	{
 		//TODO: Only call this every 30 seconds not more
 		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
 		if( lock == null)
 		{
 			log.info("Pull is already locked");
+			inLog.info("Pull is locked or already running");
 			return;
 		}
 		try
@@ -852,15 +854,15 @@ public class PullManager implements CatalogEnabled
 			{
 				String pulltype = (String) iterator.next();
 				boolean resetdate = !iterator.hasNext();
-				long total = processPullQueue(inArchive, pulltype, resetdate, log);
+				long total = processPullQueue(inArchive, pulltype, resetdate, inLog);
 	
-				if (log != null)
+				if (inLog != null)
 				{
 					if (total == -1)
 					{
-						log.info("Pull error happened, check logs");
+						inLog.info("Pull error happened, check logs");
 					}
-					log.info("imported " + total + " " + pulltype);
+					inLog.info("imported " + total + " " + pulltype);
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -733,5 +734,25 @@ public class MediaAdminModule extends BaseMediaModule
 		String map = manager.listAllExistingMapping(catalogid);
 		inReq.putPageValue("mappingdebug",map);
 
+	}
+	public void makeMaster(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String localmaster = archive.getNodeManager().getLocalClusterId();
+		HitTracker all = archive.getAssetSearcher().query().all().not("mastereditclusterid",localmaster ).search();
+		all.enableBulkOperations();
+		List tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			asset.setValue("mastereditclusterid",localmaster);
+			tosave.add(asset);
+			if( tosave.size() > 1000)
+			{
+				archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+				tosave.clear();
+			}
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
 	}
 }
