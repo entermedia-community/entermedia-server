@@ -1891,7 +1891,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			content.field("mastereditclusterid", currentid);
 			Object currentmod = inData.getValue("recordmodificationdate");
-			if( currentmod == null && !isReIndexing() ) 
+			if( !isReIndexing() ) 
 			{
 				currentmod = new Date();
 			}
