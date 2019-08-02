@@ -121,9 +121,11 @@ public class EntermediaAssetSource extends BaseAssetSource
 	}
 
 	@Override
+	@Deprecated
 	public int importAssets(String inBasepath)
 	{
-		return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true,null);
+		//return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true,null);
+		throw new OpenEditException("Not impletmented");
 	}
 
 	@Override
