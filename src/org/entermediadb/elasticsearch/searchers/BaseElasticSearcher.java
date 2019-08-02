@@ -1787,16 +1787,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
-				String userid = null;
-				if(inUser != null) {
-					userid = inUser.getId();
-				}
-				if( !isReIndexing() )
-				{
-					updateMasterClusterId(details, data2, content, userid);
-				}
-				updateIndex(content, data2, details);
-
+				updateIndex(content, data2, details,inUser);
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
@@ -1873,32 +1864,42 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, String inUser) throws IOException
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, String inUser)
 	{
-		if(isReIndexing())
+		try
 		{
-			return;
-		}
-		//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-		String localClusterId = getElasticNodeManager().getLocalClusterId();
-		String currentid = inData.get("mastereditclusterid");
-		if(currentid == null) 
-		{
-			currentid = localClusterId;
-		}
-		content.field("mastereditclusterid", currentid);
-		content.field("recordmodificationdate", new Date());
-
-		if( !getSearchType().endsWith("Log") && //Extra noise and confusion
-			!getSearchType().equals("lock") &&  //Lets come back to this. Do we want conversions spread across nodes
-			!getSearchType().equals("editingcluster")	&&  //Adding new ones seems risky
-			!getSearchType().equals("catalogsettings")  //Allow for more options on a per node basis
-		) {
-			if(!localClusterId.equals(currentid)) 
+			//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
+			String localClusterId = getElasticNodeManager().getLocalClusterId();
+			String currentid = inData.get("mastereditclusterid");
+			if(currentid == null && !isReIndexing() ) 
 			{
-				getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);
+				currentid = localClusterId;
 			}
-		}	
+			content.field("mastereditclusterid", currentid);
+			Object currentmod = inData.getValue("recordmodificationdate");
+			if( currentmod == null && !isReIndexing() ) 
+			{
+				currentmod = new Date();
+			}
+			content.field("recordmodificationdate", currentmod);
+	
+			if( !isReIndexing() )
+			{
+				if( !getSearchType().endsWith("Log") && //Extra noise and confusion
+					!getSearchType().equals("lock") &&  //Lets come back to this. Do we want conversions spread across nodes
+					!getSearchType().equals("editingcluster")	&&  //Adding new ones seems risky
+					!getSearchType().equals("catalogsettings")  //Allow for more options on a per node basis
+				) {
+					if(!localClusterId.equals(currentid)) 
+					{
+						getTransactionLogger().logEvent("system", "edit", getSearchType(), inData, inUser);
+					}
+				}
+			}
+		} catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -2015,8 +2016,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			String userid = (inUser == null)?null:inUser.getId();
-			updateMasterClusterId(details, data, content, userid);
+
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
@@ -2032,7 +2032,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 			}
 
-			updateIndex(content, data, details);
+			updateIndex(content, data, details,inUser);
 			content.endObject();
 			if (log.isDebugEnabled())
 			{
@@ -2100,26 +2100,20 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 	}
-
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	{
+		updateIndex(inContent,inData,inDetails,null);
+	}
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
 		if (inData == null)
 		{
-			log.info("Null Data");
+			log.error("Null Data");
+			return;
 		}
-		// Map props = inData.getProperties();
-		// HashSet everything = new HashSet(props.keySet());
-		// everything.add("id");
-		// everything.add("name");
-		// everything.add("sourcepath");
-		// for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
-		// {
-		// PropertyDetail detail = (PropertyDetail) iterator.next();
-		// everything.add(detail.getId());// We need this to handle booleans
-		// // and potentially other things.
-		//
-		// }
-		// everything.remove(".version"); // is this correct?
+		String userid = (inUser == null)?null:inUser.getId();
+		updateMasterClusterId(inDetails, inData, inContent, userid);
+		
 		try
 		{
 			Map props = inData.getProperties();
@@ -2507,9 +2501,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				inContent.field("badge", badges);
 			}
-
 			addCustomFields(inContent, inData);
-
 		}
 
 		catch (Exception ex)
