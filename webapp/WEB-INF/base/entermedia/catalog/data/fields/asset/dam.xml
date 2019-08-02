@@ -704,6 +704,11 @@
       <language id="en"><![CDATA[Master Edit Cluster]]></language>
     </name>
   </property> 
+  <property id="recordmodificationdate" index="true" type="date" viewtype="time">
+    <name>
+      <language id="en"><![CDATA[Record Modification]]></language>
+    </name>
+  </property> 
   <property id="etagid" index="true" stored="true" editable="true" keyword="true" >
     <name>
       <language id="en"><![CDATA[ETag]]></language>
