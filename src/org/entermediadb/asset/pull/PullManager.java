@@ -110,94 +110,84 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public long processPullQueue(MediaArchive inArchive, String inSearchType, boolean resetdate, ScriptLogger inLog)
+	public void processPullQueue(MediaArchive inArchive, ScriptLogger inLog)
 	{
+		
 		//Connect to all the nodes
 		//Run a search based on las time I pulled it down
-		long totalcount = 0;
 		Data node = null;
-		try
+		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
-			Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
-			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+			node = (Data) iterator.next();
+			String url = node.get("baseurl");
+			if (url == null)
 			{
-				node = (Data) iterator.next();
-				String url = node.get("baseurl");
-				if (url != null)
+				continue;
+			}
+			Date now = new Date();
+			HttpSharedConnection connection = new HttpSharedConnection();
+			Map<String,String> params = new HashMap();
+			try
+			{
+
+				if (node.get("entermediakey") != null)
 				{
-					//long time = System.currentTimeMillis();
-					//time = time - 10000L; //Buffer
-					Date now = new Date();
-					HttpSharedConnection connection = new HttpSharedConnection();
-					Map<String,String> params = new HashMap();
-					if (node.get("entermediakey") != null)
+					params.put("entermedia.key", node.get("entermediakey"));
+				}
+				else
+				{
+					log.error("entermediakey is required");
+					continue;
+				}
+				if (node.get("lastpulldate") != null)
+				{
+					Object dateob = node.getValue("lastpulldate");
+					Date pulldate = null;
+					if (dateob instanceof String)
 					{
-						params.put("entermedia.key", node.get("entermediakey"));
+						pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
 					}
 					else
 					{
-						log.error("entermediakey is required");
+						pulldate = (Date) node.getValue("lastpulldate");
+					}
+
+					if (pulldate.getTime() + (1000L*30L) > now.getTime() )
+					{
+						log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
+						inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
 						continue;
 					}
-					if (node.get("lastpulldate") != null)
-					{
-						Object dateob = node.getValue("lastpulldate");
-						Date pulldate = null;
-						if (dateob instanceof String)
-						{
-							pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-						}
-						else
-						{
-							pulldate = (Date) node.getValue("lastpulldate");
-						}
-
-						if (pulldate.getTime() + (1000L*30L) > now.getTime() )
-						{
-							log.info(node.getName() + "/" +inSearchType + " We just ran a pull within last 30 seconds. Trying again later");
-							inLog.info(node.getName()  + "/" +inSearchType + " We just ran a pull within last 30 seconds. Trying again later");
-							continue;
-						}
-						//String timestamp = DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy");
-						//String timestamp = DateStorageUtil.getStorageUtil().formatForStorage(pulldate);
-						long ago = now.getTime() - pulldate.getTime();
-						params.put("lastpullago", String.valueOf( ago ) ); 
-					}
-					params.put("searchtype", inSearchType); //Loop over all of the types
-					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
-					{
-						log.info("Doing a full download");
-					//	params.put("fulldownload", "true");
-					}
-
-					long ok = downloadPages(inArchive, connection, node, params, inSearchType);
-					if (ok != -1 && resetdate)
-					{
-						node.setValue("lastpulldate", now);
-						getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-					}
-					else
-					{
-						//error downloading
-					}
-					totalcount = totalcount + ok;
+					long ago = now.getTime() - pulldate.getTime();
+					params.put("lastpullago", String.valueOf( ago ) ); 
 				}
+				
+				Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
+				for (Iterator iteratort = pulltypes.iterator(); iteratort.hasNext();)
+				{
+					String inSearchType = (String) iteratort.next();
+					params.put("searchtype", inSearchType); //Loop over all of the types
+					long totalcount = downloadPages(inArchive, connection, node, params, inSearchType);
+					inLog.info("imported " + totalcount + " " + inSearchType);
+				}
+				node.setValue("lastpulldate", now);
+				node.setValue("lasterrormessage", null);
+				node.setValue("lasterrordate",null);
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+			}
+			catch (Throwable ex)
+			{
+				log.error("Could not process sync files ", ex);
+				inLog.error("Could not process sync files " +  ex);
+				if( node != null)
+				{
+					node.setProperty("lasterrormessage", "Could not process sync files " + ex);
+					node.setValue("lasterrordate", new Date());
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				}	
 			}
 		}
-		catch (Throwable ex)
-		{
-			log.error("Could not process sync files " + inSearchType, ex);
-			inLog.error("Could not process sync files " + inSearchType + " " +  ex);
-			if( node != null)
-			{
-				node.setProperty("lasterrormessage", "Could not process sync files " + inSearchType + " " +  ex);
-				node.setValue("lasterrordate", new Date());
-				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-
-			}	
-
-		}
-		return totalcount;
 	}
 
 	protected long downloadPages(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, String inSearchType) throws Exception
@@ -323,6 +313,7 @@ public class PullManager implements CatalogEnabled
 			{
 				return;
 			}
+			Map response = (Map)parsed.get("response");
 			for (Iterator iterator2 = changes.iterator(); iterator2.hasNext();)
 			{
 				Map changed = (Map) iterator2.next();
@@ -345,9 +336,9 @@ public class PullManager implements CatalogEnabled
 							String filename = (String) filelisting.get("filename");
 							String lastmodified = (String) filelisting.get("lastmodified");
 							long datetime = Long.parseLong(lastmodified);
-							String genpath = (String) filelisting.get("lastmodified"); //TODO: Support multiple catalog ids
+							String genpath = (String) filelisting.get("path"); //TODO: Support multiple catalog ids
 
-							String remotecatalogid = (String)parsed.get("catalogid");
+							String remotecatalogid = (String)response.get("catalogid");
 							String endpath = genpath.substring(genpath.indexOf(  remotecatalogid ) + remotecatalogid.length() ) ;
 							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + endpath;
 							ContentItem found = inArchive.getContent(savepath);
@@ -845,29 +836,7 @@ public class PullManager implements CatalogEnabled
 		}
 		try
 		{
-			Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
-			if (pulltypes == null)
-			{
-				pulltypes = new ArrayList();
-				pulltypes.add("category");
-				pulltypes.add("librarycollection");
-				pulltypes.add("asset");
-			}
-			for (Iterator iterator = pulltypes.iterator(); iterator.hasNext();)
-			{
-				String pulltype = (String) iterator.next();
-				boolean resetdate = !iterator.hasNext();
-				long total = processPullQueue(inArchive, pulltype, resetdate, inLog);
-	
-				if (inLog != null)
-				{
-					if (total == -1)
-					{
-						inLog.info("Pull error happened, check logs");
-					}
-					inLog.info("imported " + total + " " + pulltype);
-				}
-			}
+				processPullQueue(inArchive, inLog);
 		}
 		finally
 		{
