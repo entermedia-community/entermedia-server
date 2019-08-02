@@ -2148,6 +2148,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
+				if( propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid"))
+				{
+					continue;
+				}
 				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(propid);
 				if (detail == null)
 				{
