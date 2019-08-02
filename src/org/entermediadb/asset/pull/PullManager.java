@@ -35,6 +35,7 @@ import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.FileUtils;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
@@ -344,7 +345,9 @@ public class PullManager implements CatalogEnabled
 							String endpath = genpath.substring(genpath.indexOf(  generatefolder ) + generatefolder.length() ) ;
 							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + endpath + "/generated";
 							ContentItem found = inArchive.getContent(savepath);
-							if (!found.exists() || found.getLastModified() != datetime)
+							
+							
+							if (!found.exists() || !FileUtils.isSameDate(found.getLastModified() , datetime ) )
 							{
 								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
