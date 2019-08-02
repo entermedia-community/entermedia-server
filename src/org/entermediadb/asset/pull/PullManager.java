@@ -102,6 +102,7 @@ public class PullManager implements CatalogEnabled
 		{
 			builder.after("recordmodificationdate", startingfrom);
 		} 
+		builder.sort("recordmodificationdateDown"); //newer first
 		HitTracker hits = builder.search();
 		if (!hits.isEmpty())
 		{
@@ -166,17 +167,25 @@ public class PullManager implements CatalogEnabled
 				}
 				
 				Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
+				boolean foundsomething = false;
 				for (Iterator iteratort = pulltypes.iterator(); iteratort.hasNext();)
 				{
 					String inSearchType = (String) iteratort.next();
 					params.put("searchtype", inSearchType); //Loop over all of the types
 					long totalcount = downloadPages(inArchive, connection, node, params, inSearchType);
 					inLog.info("imported " + totalcount + " " + inSearchType);
+					if( totalcount > 0)
+					{
+						foundsomething = true;
+					}
 				}
-				node.setValue("lastpulldate", now);
-				node.setValue("lasterrormessage", null);
-				node.setValue("lasterrordate",null);
-				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				if( foundsomething )
+				{
+					node.setValue("lastpulldate", now);
+					node.setValue("lasterrormessage", null);
+					node.setValue("lasterrordate",null);
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				}	
 			}
 			catch (Throwable ex)
 			{
