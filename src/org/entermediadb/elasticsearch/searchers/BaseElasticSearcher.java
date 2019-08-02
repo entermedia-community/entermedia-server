@@ -2190,14 +2190,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if (key.equals("recordmodificationdate"))
-				{
-					inContent.field(key, new Date());
-					continue;
-				}
-
 				Object value = inData.getValue(key);
-
 				if (value != null)
 				{
 					if (value instanceof String && ((String) value).isEmpty())
@@ -2205,6 +2198,19 @@ public class BaseElasticSearcher extends BaseSearcher
 						value = null;
 					}
 				}
+//				if( isReIndexing() ) //When reindexing dont mess with this data
+//				{
+//					if (key.equals("recordmodificationdate"))
+//					{
+//						inContent.field(key, value);
+//						continue;
+//					}
+//					if (key.equals("mastereditclusterid"))
+//					{
+//						inContent.field(key, value); //Copy over existing values
+//						continue;
+//					}
+//				}	
 
 				if (shoudSkipField(key))
 				{
@@ -2491,7 +2497,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 						if (value != null)
 						{
-
 							inContent.field(key, value);
 						}
 					}
