@@ -110,17 +110,18 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public long processPullQueue(MediaArchive inArchive, String inSearchType, boolean resetdate)
+	public long processPullQueue(MediaArchive inArchive, String inSearchType, boolean resetdate, ScriptLogger inLog)
 	{
 		//Connect to all the nodes
 		//Run a search based on las time I pulled it down
 		long totalcount = 0;
+		Data node = null;
 		try
 		{
 			Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
 			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
-				Data node = (Data) iterator.next();
+				node = (Data) iterator.next();
 				String url = node.get("baseurl");
 				if (url != null)
 				{
@@ -182,9 +183,18 @@ public class PullManager implements CatalogEnabled
 				}
 			}
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-			throw new OpenEditException(ex);
+			log.error("Could not process sync files " + inSearchType, ex);
+			inLog.error("Could not process sync files " + inSearchType + " " +  ex);
+			if( node != null)
+			{
+				node.setProperty("lasterrormessage", "Could not process sync files " + inSearchType + " " +  ex);
+				node.setValue("lasterrordate", new Date());
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+
+			}	
+
 		}
 		return totalcount;
 	}
@@ -390,6 +400,11 @@ public class PullManager implements CatalogEnabled
 		catch (Exception ex)
 		{
 			log.error("Could not download files " + url, ex);
+			if( ex instanceof OpenEditException)
+			{
+				throw (OpenEditException)ex;
+			}
+			throw new OpenEditException(ex);
 		}
 	}
 
@@ -837,7 +852,7 @@ public class PullManager implements CatalogEnabled
 			{
 				String pulltype = (String) iterator.next();
 				boolean resetdate = !iterator.hasNext();
-				long total = processPullQueue(inArchive, pulltype, resetdate);
+				long total = processPullQueue(inArchive, pulltype, resetdate, log);
 	
 				if (log != null)
 				{
