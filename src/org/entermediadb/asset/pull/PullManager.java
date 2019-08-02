@@ -38,6 +38,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
 public class PullManager implements CatalogEnabled
@@ -346,17 +347,18 @@ public class PullManager implements CatalogEnabled
 							{
 								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-								String path = url + URLUtilities.encode("/mediadb/services/module/asset/downloads/generated/" + endpath + "/" + filename + "/" + filename);
+								String tmpfilename = PathUtilities.extractFileName(endpath);
+								String path = url + URLUtilities.encode("/mediadb/services/module/asset/downloads" + endpath + "/" + tmpfilename);
 								HttpResponse genfile = inConnection.sharedPost(path, inParams);
 								StatusLine filestatus = genfile.getStatusLine();
 								if (filestatus.getStatusCode() != 200)
 								{
 									log.error("Could not download generated " + filestatus + " " + path);
-									continue;
+									throw new OpenEditException("Could not download generated " + filestatus + " " + path);
 								}
 
 								//Save to local file
-								log.info("Saving :" + sourcepath + "/" + filename + " URL:" + path);
+								log.info("Saving :" + endpath + " URL:" + path);
 								InputStream stream = genfile.getEntity().getContent();
 								//								InputStreamItem item  = new InputStreamItem();
 								//								item.setAbsolutePath(found.getAbsolutePath());
