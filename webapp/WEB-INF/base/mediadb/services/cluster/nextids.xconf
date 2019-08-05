@@ -1,7 +1,0 @@
-<page>
- 	<path-action name="DataEditModule.loadPageOfSearch" alltypes="true"/>
- 	<permission name="view">
-			<userprofile property="api-search-data" equals="true" />
-	</permission>
- 
-</page>

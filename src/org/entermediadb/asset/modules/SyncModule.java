@@ -1,6 +1,5 @@
 package org.entermediadb.asset.modules;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -21,6 +20,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 public class SyncModule extends BaseMediaModule
@@ -191,30 +191,24 @@ public class SyncModule extends BaseMediaModule
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager manager = getPullManager(archive.getCatalogId());
-		ScriptLogger log = (ScriptLogger) inReq.getPageValue("log");
+		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		manager.processAllPull(archive,log);
+		manager.processPull(archive,logger);
 
 	}
 
-	public void processAll(WebPageRequest inReq)
+	public void processDataQueue(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		long total = pullManager.processAll(archive);
-		if (total > 0)
-		{
-			ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
-			if (logger != null)
-			{
-				logger.info("Processed " + total);
-			}
-			archive.getCategorySearcher().clearCategories();
-		}
+		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
+
+		pullManager.processAllData(archive,logger);
 
 	}
 
+	@Deprecated
 	public void listChanges(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -262,7 +256,7 @@ public class SyncModule extends BaseMediaModule
 		inReq.putSessionValue(hits.getSessionId(), hits);
 		//inReq.putPageValue("mediaarchive",archive); 
 	}
-
+	@Deprecated 
 	public void listIDs(WebPageRequest inReq)
 	{
 
@@ -290,10 +284,8 @@ public class SyncModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String sessionid = inReq.getRequestParameter("hitssessionid");
-		String lastmod = inReq.getRequestParameter("lastmod");
 		String page = inReq.getRequestParameter("page");
-
-		Date lastmoddate = DateStorageUtil.getStorageUtil().parseFromStorage(lastmod);
+		
 		HitTracker hits = null;
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 		if (sessionid != null)
@@ -302,56 +294,75 @@ public class SyncModule extends BaseMediaModule
 		}
 		if (hits == null)
 		{
-			hits = manager.getAllDocuments(null, lastmoddate);
-
+			String lastpullago = inReq.getRequiredParameter("lastpullago");  //force them to pick a date
+			Date ago = null;
+			if( lastpullago != null)
+			{
+				ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
+			}
+			hits = manager.getAllDocuments(null, ago);
 		}
 		if (page != null)
-
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
-		hits.enableBulkOperations();
 		
 		JSONObject finaldata = new JSONObject();
 		
-		JSONObject jsonResults = new JSONObject();
+		JSONObject response = new JSONObject();
 		if (hits.isEmpty())
 		{
-			jsonResults.put("status", "empty");
+			response.put("status", "empty");
 		}
 		else 
 		{	
-			jsonResults.put("status", "ok");
+			response.put("status", "ok");
 		}
 	
-		jsonResults.put("totalhits", hits.size());
-		jsonResults.put("hitsperpage", hits.getHitsPerPage());
-		jsonResults.put("page", hits.getPage());
-		jsonResults.put("pages", hits.getTotalPages());
-		jsonResults.put("hitssessionid", sessionid);
-		JSONArray arrayValue = new JSONArray();
-		jsonResults.put("results", arrayValue);
+		response.put("totalhits", hits.size());
+		response.put("hitsperpage", hits.getHitsPerPage());
+		response.put("page", hits.getPage());
+		response.put("pages", hits.getTotalPages());
+		response.put("hitssessionid", sessionid);
 		
+		finaldata.put("response", response);
+		JSONArray generated = new JSONArray();		
+
+		JSONArray results = new JSONArray();		
 		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
 			JSONObject indiHit = new JSONObject();
-			indiHit.put("searchtype", data.getSearchHit().getType());
+			String searchtype = data.getSearchHit().getType();
+			indiHit.put("searchtype", searchtype);
 			String index = data.getSearchHit().getIndex();
 			indiHit.put("index", index);
 			indiHit.put("catalog", manager.getAliasForIndex(index));
 			indiHit.put("source", data.getSearchData());
 			indiHit.put("id", data.getId());
+			results.add(indiHit);
 
-			arrayValue.add(indiHit);
+			if( searchtype.equals("asset"))  ///Also add stuff to the generated list
+			{
+				JSONObject details = new JSONObject();
+				details.put("id",data.getId());
+				details.put("sourcepath",data.getSourcePath());
+				JSONArray files = new JSONArray();	
+				for(ContentItem item : archive.listGeneratedFiles(data))
+				{
+					JSONObject contentdetails = new JSONObject();
+					contentdetails.put("filename", item.getName());
+					contentdetails.put("path", item.getPath());
+					contentdetails.put("lastmodified", item.getLastModified());
+				}		
+				details.put("files",files);
+				generated.add(details);
+			}
 		}
-		
-		finaldata.put("response", jsonResults);
-		finaldata.put("results", arrayValue);
+		finaldata.put("results", results);
+		finaldata.put("generated", generated);
 		
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
-		
 	}
-
 }

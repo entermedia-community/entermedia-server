@@ -2,17 +2,20 @@ package org.entermediadb.asset.pull;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
@@ -113,7 +116,8 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public void processPullQueue(MediaArchive inArchive, ScriptLogger inLog)
+	@Deprecated
+	public void processAssetPullQueue(MediaArchive inArchive, ScriptLogger inLog)
 	{
 		
 		//Connect to all the nodes
@@ -172,7 +176,7 @@ public class PullManager implements CatalogEnabled
 				{
 					String inSearchType = (String) iteratort.next();
 					params.put("searchtype", inSearchType); //Loop over all of the types
-					long totalcount = downloadPages(inArchive, connection, node, params, inSearchType);
+					long totalcount = downloadPullData(inArchive, connection, node, params, inSearchType);
 					inLog.info("imported " + totalcount + " " + inSearchType);
 					if( totalcount > 0)
 					{
@@ -200,8 +204,8 @@ public class PullManager implements CatalogEnabled
 			}
 		}
 	}
-
-	protected long downloadPages(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, String inSearchType) throws Exception
+	@Deprecated
+	protected long downloadPullData(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, String inSearchType) throws Exception
 	{
 		String baseurl = node.get("baseurl");
 		//add origiginal support
@@ -312,20 +316,21 @@ public class PullManager implements CatalogEnabled
 			return -1;
 		}
 	}
-
+	
+	//Used by both pulls
 	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
 	{
 		String url = node.get("baseurl");
 		try
 		{
-			//How do I get the sourcepath list?
-			Collection changes = (Collection) parsed.get("generated");
-			if (changes == null || changes.isEmpty())
+			Map response = (Map)parsed.get("response");
+
+			Collection generated = (Collection) parsed.get("generated");
+			if (generated == null || generated.isEmpty())
 			{
 				return;
 			}
-			Map response = (Map)parsed.get("response");
-			for (Iterator iterator2 = changes.iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = generated.iterator(); iterator2.hasNext();)
 			{
 				Map changed = (Map) iterator2.next();
 				String sourcepath = (String) changed.get("sourcepath");
@@ -344,7 +349,6 @@ public class PullManager implements CatalogEnabled
 						{
 							Map filelisting = (Map) iterator3.next();
 							//Compare timestamps
-							String filename = (String) filelisting.get("filename");
 							String lastmodified = (String) filelisting.get("lastmodified");
 							long datetime = Long.parseLong(lastmodified);
 							String genpath = (String) filelisting.get("path"); //TODO: Support multiple catalog ids
@@ -375,10 +379,6 @@ public class PullManager implements CatalogEnabled
 								//Save to local file
 								log.info("Saving :" + endpath + " URL:" + path);
 								InputStream stream = genfile.getEntity().getContent();
-								//								InputStreamItem item  = new InputStreamItem();
-								//								item.setAbsolutePath(found.getAbsolutePath());
-								//								item.setInputStream(genfile.getEntity().getContent());
-								//								inArchive.getPageManager().getRepository().put(item);
 								//Change the timestamp to match
 								File tosave = new File(found.getAbsolutePath());
 								tosave.getParentFile().mkdirs();
@@ -419,7 +419,8 @@ public class PullManager implements CatalogEnabled
 			throw new OpenEditException(ex);
 		}
 	}
-
+	
+	@Deprecated
 	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed, String inSearchType)
 	{
 		//I dont want to edit the json in any way, so using original
@@ -440,8 +441,6 @@ public class PullManager implements CatalogEnabled
 			log.info("Error parsing following content: " + returned);
 			throw new OpenEditException(e);
 		}
-	
-
 	}
 
 	/**
@@ -534,7 +533,7 @@ public class PullManager implements CatalogEnabled
 			if (item.getLength() != size)
 			{
 				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
-				HttpRequestBuilder connection = new HttpRequestBuilder();
+				HttpSharedConnection connection = new HttpSharedConnection();
 				Map params = new HashMap();
 				if (node.get("entermediakey") != null)
 				{
@@ -583,7 +582,7 @@ public class PullManager implements CatalogEnabled
 			Data node = (Data) inArchive.getSearcher("editingcluser").searchByField("clustername", inAsset.get("mastednodeid"));
 			String url = node.get("baseurl");
 			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
-			HttpRequestBuilder connection = new HttpRequestBuilder();
+			HttpSharedConnection connection = new HttpSharedConnection();
 			Map params = new HashMap();
 			if (node.get("entermediakey") != null)
 			{
@@ -615,106 +614,124 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public long processAll(MediaArchive inArchive)
+	public void processAllData(MediaArchive inArchive, ScriptLogger inLog)
 	{
 		
-		//Connect to all the nodes
-				//Run a search based on las time I pulled it down
-				long totalcount = 0;
-				try
-				{
-					Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
-					for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
-					{
-						Data node = (Data) iterator.next();
-						String url = node.get("baseurl");
-						if (url != null)
-						{
-							long time = System.currentTimeMillis();
-							time = time - 10000L; //Buffer
-							Date now = new Date(time);
-							HttpRequestBuilder connection = new HttpRequestBuilder();
-							Map params = new HashMap();
-							if (node.get("entermediakey") != null)
-							{
-								params.put("entermedia.key", node.get("entermediakey"));
-							}
-							else
-							{
-								log.error("entermediakey is required");
-								continue;
-							}
-							if (node.get("lastpulldate") != null)
-							{
-								Object dateob = node.getValue("lastpulldate");
-								Date pulldate = null;
-								if (dateob instanceof String)
-								{
-									pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-								}
-								else
-								{
-									pulldate = (Date) node.getValue("lastpulldate");
-								}
-
-								if (pulldate.after(now))
-								{
-									log.info("We just ran a pull within last 10 seconds");
-									continue;
-								}
-								params.put("lastpulldate", DateStorageUtil.getStorageUtil().formatDateObj(pulldate, "MM/dd/yyyy")); //Tostring
-							}
-							if (inArchive.getAssetSearcher().getAllHits().isEmpty())
-							{
-								log.info("Doing a full download");
-							//	params.put("fulldownload", "true");
-							}
-
-							long ok = downloadData(inArchive, connection, node, params);
-							if (ok != -1)
-							{
-								node.setValue("lastpulldate", now);
-								getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-							}
-							else
-							{
-								//error downloading
-							}
-							totalcount = totalcount + ok;
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					throw new OpenEditException(ex);
-				}
-				return totalcount;
-		
-		
-		
-		
-	}
-
-	protected long downloadData(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params)
-	{
-		
+		//TODO: Only call this every 30 seconds not more
+		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
+		if( lock == null)
+		{
+			log.info("Pull is already running");
+			inLog.info("Pull is already running");
+			return;
+		}
 		try
 		{
+			processAllDataQueue(inArchive, inLog);
+		}
+		finally
+		{
+			inArchive.releaseLock(lock);
+		}
+		
+
+	}
+
+	protected void processAllDataQueue(MediaArchive inArchive, ScriptLogger inLog)
+	{
+		
+		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
+		Data node = null;
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+		{
+			try
+			{
+				node = (Data) iterator.next();
+				String url = node.get("baseurl");
+				if (url == null)
+				{
+					log.error("No url, skipping");
+					continue;
+				}
+				Date now = new Date();
+
+				HttpSharedConnection connection = new HttpSharedConnection();
+				Map params = new HashMap();
+				if (node.get("entermediakey") == null)
+				{
+					log.error("entermediakey is required");
+					continue;
+				}
+				params.put("entermedia.key", node.get("entermediakey"));
+				if (node.get("lastpulldate") != null)
+				{
+					Object dateob = node.getValue("lastpulldate");
+					Date pulldate = null;
+					if (dateob instanceof String)
+					{
+						pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+					}
+					else
+					{
+						pulldate = (Date) node.getValue("lastpulldate");
+					}
+
+					if (pulldate.getTime() + (1000L*20L) > System.currentTimeMillis() )
+					{
+						log.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
+						inLog.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
+						continue;
+					}
+					long ago = now.getTime() - pulldate.getTime();
+					params.put("lastpullago", String.valueOf( ago ) ); 
+				}
+
+				long totalcount = downloadAllData(inArchive, connection, node, params);
+				if( totalcount > 0  || node.getValue("lasterrordate") != null)
+				{
+					node.setValue("lastpulldate", now);
+					node.setValue("lasterrormessage", null);
+					node.setValue("lasterrordate",null);
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				}	
+			}
+			catch (Throwable ex)
+			{
+				log.error("Could not process sync files ", ex);
+				inLog.error("Could not process sync files " +  ex);
+				if( node != null)
+				{
+					node.setProperty("lasterrormessage", "Could not process sync files " + ex);
+					node.setValue("lasterrordate", new Date());
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				}	
+			}
+
+		}		
+	}
+
+	protected long downloadAllData(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params)
+	{
 			String baseurl = node.get("baseurl");
 			//add origiginal support
 			String url = baseurl + "/mediadb/services/cluster/listalldocs.json";
-			StringBuffer link = new StringBuffer();
-			link.append("?");
-			link.append("entermedia.key=");
-			link.append(params.get("entermedia.key"));
-			link.append("&lastpulldate=");
-			if (params.get("lastpulldate") != null)
+			StringBuffer debugurl = new StringBuffer();
+			debugurl.append("?");
+			debugurl.append("entermedia.key=");
+			debugurl.append(params.get("entermedia.key"));
+			debugurl.append("&lastpullago=");
+			if (params.get("lastpullago") != null)
 			{
-				link.append(params.get("lastpulldate"));
+				String last = params.get("lastpullago");
+				debugurl.append(last);
 			}
 			
+			debugurl.append("&searchtype=");
+			debugurl.append(params.get("searchtype"));
 
-			log.info("Checking: " + url + link);
+			String encoded = url + debugurl;
+			log.info("Checking: " + URLUtilities.urlEscape(encoded));
+			
 			HttpResponse response2 = connection.sharedPost(url, params);
 			StatusLine sl = response2.getStatusLine();
 			if (sl.getStatusCode() != 200)
@@ -723,125 +740,124 @@ public class PullManager implements CatalogEnabled
 				node.setValue("lasterrordate", new Date());
 				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 				log.error("Initial data server error " + sl);
-				return -1;
 			}
-			String returned = EntityUtils.toString(response2.getEntity());
-			//log.info("returned:" + returned);
-			Map parsed = (Map) new JSONParser().parse(returned);
-			
-			long assetcount = 0;
-			int page = 1;
+			String returned = null;
+			Map parsed = null;
+			try
+			{
+				returned = EntityUtils.toString(response2.getEntity());
+				parsed = (Map) new JSONParser().parse(returned);
+			}
+			catch (Exception e)
+			{
+				throw new OpenEditException(e);
+			}
+			long datacounted = 0;
 			Map response = (Map) parsed.get("response");
 			String ok = (String) response.get("status");
 			if (ok != null && ok.equals("ok"))
 			{
-				Collection saved = importChanges( returned, parsed);
-				assetcount = assetcount + saved.size();
+				boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
+				boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
+
+				Collection saved = importChanges(inArchive, returned, parsed);
+				//pull in generated 	
+				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
+
+				datacounted = datacounted + saved.size();
 			
 				int pages = Integer.parseInt(response.get("pages").toString());
 				//loop over pages
 				String hitssessionid = (String) response.get("hitssessionid");
 				params.put("hitssessionid", hitssessionid);
-				for (int count = 2; count <= pages; count++)
+				for (int page = 2; page <= pages; page++)
 				{
 					url = baseurl + "/mediadb/services/cluster/nextall.json";
 
-					params.put("page", String.valueOf(count));
+					params.put("page", String.valueOf(page));
 
-					log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
+					log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
 					response2 = connection.sharedPost(url, params);
 					sl = response2.getStatusLine();
 					if (sl.getStatusCode() != 200)
 					{
-						node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
-						node.setValue("lasterrordate", new Date());
-
-						getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-						log.error("Page server error " + sl);
-						return -1;
+						throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					}
-					returned = EntityUtils.toString(response2.getEntity());
-					parsed = (Map) new JSONParser().parse(returned);
+					try
+					{
+						returned = EntityUtils.toString(response2.getEntity());
+						parsed = (Map) new JSONParser().parse(returned);
+					}
+					catch (Exception e)
+					{
+						throw new OpenEditException(e);
+					}
 					response = (Map) parsed.get("response");
 					ok = (String) response.get("status");
 					if (ok != null && !ok.equals("ok"))
 					{
-						log.error("Page could not be loaded " + returned);
-						return -1;
+						throw new OpenEditException("Page could not be loaded " + returned);
 					}
-					log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
-					saved = importChanges( returned, parsed);
-					assetcount = assetcount + saved.size();
-				
+					log.info("Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
+					saved = importChanges(inArchive, returned, parsed);
+					//pull in generated 	
+					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
+
+					datacounted = datacounted + saved.size();
 				}
-				return assetcount;
+				return datacounted;
 			}
-			else if (ok != null && ok.equals("empty"))
+			else 
 			{
-				//No changes found
-				return 0;
+				throw new OpenEditException("Initial data could not be loaded " + returned);
 			}
-			else
+	}
+
+	protected Collection importChanges( MediaArchive inArchive, String inReturned, Map inParsed)
+	{
+		try
+		{
+			JSONParser parser = new JSONParser();
+			Set searchers = new HashSet();
+			JSONObject everything = (JSONObject) parser.parse(inReturned);
+			JSONArray jsonarray = (JSONArray) everything.get("results");
+			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
 			{
-				log.error("Initial data could not be loaded " + returned);
-				return -1;
+				JSONObject object = (JSONObject) iterator.next();
+				String catalogid = (String) object.get("catalog");
+				catalogid = catalogid.replace("_", "/");
+				String searchtype = (String) object.get("searchtype");
+				
+				Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+				searchers.add(searcher);
+				String id = (String) object.get("id");
+				JSONObject source = (JSONObject) object.get("source");
+				searcher.saveJson(id, source);
+				
 			}
+			
+			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+			{
+				Searcher searcher = (Searcher) iterator.next();
+				searcher.clearIndex();
+				//IF categorty clear cache
+			}
+			return jsonarray;
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
-		throw new OpenEditException(e);
+			log.info("Error parsing following content: " + inReturned);
+			throw new OpenEditException(e);
 		}
-		
-		
+		finally 
+		{
+			ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
+			manager.flushBulk();
+		}
 	}
 
-	protected Collection importChanges( String inReturned, Map inParsed)
-	{
-		//I dont want to edit the json in any way, so using original
-				Collection array;
-				try
-				{
-					//array = new JsonUtil().parseArray("results", returned);
-					JSONParser parser = new JSONParser();
-					JSONObject everything = (JSONObject) parser.parse(inReturned);
-
-					JSONArray jsonarray = (JSONArray) everything.get("results");
-					for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
-					{
-						JSONObject object = (JSONObject) iterator.next();
-						String catalogid = (String) object.get("catalog");
-						catalogid = catalogid.replace("_", "/");
-						String searchtype = (String) object.get("searchtype");
-						Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
-						String id = (String) object.get("id");
-						JSONObject source = (JSONObject) object.get("source");
-						searcher.saveJson(id, source);
-
-						
-					}
-					
-					
-					log.info("saved " + jsonarray.size() + " changed asset ");
-					
-					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
-					manager.flushBulk();
-					
-					return jsonarray;
-				}
-				catch (Exception e)
-				{
-					log.info("Error parsing following content: " + inReturned);
-					throw new OpenEditException(e);
-				}
-				
-				finally {
-					ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
-					manager.flushBulk();
-				}
-	}
-
-	public void processAllPull(MediaArchive inArchive,ScriptLogger inLog)
+	@Deprecated
+	public void processPull(MediaArchive inArchive,ScriptLogger inLog)
 	{
 		//TODO: Only call this every 30 seconds not more
 		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
@@ -853,7 +869,7 @@ public class PullManager implements CatalogEnabled
 		}
 		try
 		{
-				processPullQueue(inArchive, inLog);
+				processAssetPullQueue(inArchive, inLog);
 		}
 		finally
 		{
