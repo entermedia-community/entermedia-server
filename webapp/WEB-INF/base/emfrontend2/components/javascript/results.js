@@ -855,17 +855,26 @@ checkScroll = function()
 		  return;
 		}
 		 
-		   stopautoscroll = true; 
-		   var session = resultsdiv.data("hitssessionid");
-		   page = page + 1;
-		   resultsdiv.data("pagenum",page);
-		   var appdiv = $('#application');
-		   var home = $('#application').data('home') + $('#application').data('apphome');
-		   var componenthome = appdiv.data('componenthome');
-
-		   console.log("Loading page: #" + page +" - " + home);
+	   stopautoscroll = true; 
+	   var session = resultsdiv.data("hitssessionid");
+	   page = page + 1;
+	   resultsdiv.data("pagenum",page);
+	   var appdiv = $('#application');
+	   var home = $('#application').data('home') + $('#application').data('apphome');
+	   var componenthome = appdiv.data('componenthome');
+	   var link = componenthome + "/results/stackedgallery.html";
+	   var collectionid = $('#resultsdiv').data("collectionid");
+	   var params = {
+		"hitssessionid":session,
+		"page":page,
+		"oemaxlevel":"1"
+		};
+		if (collectionid) {
+			params.collectionid = collectionid;
+		}
+	   console.log("Loading page: #" + page +" - " + link);
 		   
-		   var link = componenthome + "/results/stackedgallery.html";
+		   
 	//			   	async: false,
 
 		   $.ajax({
@@ -874,7 +883,7 @@ checkScroll = function()
 			      withCredentials: true
 			   	},
 			   	cache: false,
-			   	data: {hitssessionid:session,page:page,oemaxlevel:"1"},
+			   	data: params,
 				success: function(data) 
 			   	{
 				   var jdata = $(data);
