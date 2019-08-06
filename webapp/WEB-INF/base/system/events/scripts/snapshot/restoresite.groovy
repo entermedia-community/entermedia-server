@@ -560,16 +560,13 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 public void importJson(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 
-	
-
-
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
 	if(searcher instanceof ElasticListSearcher){
 		return;
 	}
-
-	ArrayList errors = new ArrayList();
-	BulkProcessor processor = mediaarchive.getNodeManager().getBulkProcessor(errors);
+	ElasticNodeManager manager = (ElasticNodeManager)mediaarchive.getNodeManager();
+	
+	BulkProcessor processor = manager.getBulkProcessor();
 	
 	try{
 
@@ -629,12 +626,8 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	}
 	finally{
 
-		
-			processor.flush();
-			processor.awaitClose(5, TimeUnit.MINUTES);
-			if(errors.size() > 0) {
-				throw new OpenEditException("Errors from bulk import!");
-			}
+		manager.flushBulk();
+
 			//This is in memory only flush
 			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
