@@ -1447,7 +1447,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return others;
 	}
 
-	public HitTracker getAllDocuments(String inIndexId, Date inAfter)
+	public HitTracker getAllDocuments(String inCatalogId, Date inAfter)
 	{
 
 		SearchRequestBuilder search = getClient().prepareSearch();
@@ -1460,11 +1460,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		bool.must(QueryBuilders.existsQuery("mastereditclusterid"));
 		search.setRequestCache(true);
 
-		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 10);
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
 		hits.enableBulkOperations();
 		//hits.setSearcherManager(getSearcherManager());
-		if (inIndexId != null)
+		if (inCatalogId != null)
 		{
+			String inIndexId = toId(inCatalogId);
 			hits.setIndexId(inIndexId);
 		}
 		//hits.setSearcher(this);

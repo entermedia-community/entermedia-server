@@ -576,7 +576,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
-			List objectarrays = new ArrayList();
+			//List objectarrays = new ArrayList();
 			if (props.size() == 0)
 			{
 				log.error("No fields defined for " + getSearchType());
@@ -603,32 +603,30 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.startObject("mastereditclusterid");
 			jsonproperties = jsonproperties.field("type", "string");
 			jsonproperties = jsonproperties.field("index", "not_analyzed");
-			jsonproperties = jsonproperties.field("include_in_all", "true");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
 			jsonproperties = jsonproperties.field("store", "false");
 
 			jsonproperties = jsonproperties.endObject();
 			
 			
 			jsonproperties = jsonproperties.startObject("recordmodificationdate");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
 			jsonproperties = jsonproperties.field("type", "date");
 			jsonproperties = jsonproperties.field("store", "true");
-			
-//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
-//			jsonproperties = jsonproperties.field("type", "string");
-//			jsonproperties = jsonproperties.field("index", "not_analyzed");
-//			jsonproperties = jsonproperties.field("include_in_all", "false");
-//			jsonproperties = jsonproperties.field("store", "false");
-//
-//			jsonproperties = jsonproperties.endObject();
-//			
-//			
-//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
-//			jsonproperties = jsonproperties.field("type", "date");
-//			jsonproperties = jsonproperties.field("include_in_all", "false");
-//			jsonproperties = jsonproperties.field("store", "false");
-
 			jsonproperties = jsonproperties.endObject();
 			
+			jsonproperties = jsonproperties.startObject("masterrecordmodificationdate");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
+			jsonproperties = jsonproperties.field("type", "date");
+			jsonproperties = jsonproperties.field("store", "true");
+			jsonproperties = jsonproperties.endObject();
+
+			jsonproperties = jsonproperties.startObject("recorddeleted");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
+			jsonproperties = jsonproperties.field("type", "boolean");
+			jsonproperties = jsonproperties.field("store", "false");
+			jsonproperties = jsonproperties.endObject();
+
 			
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
@@ -645,7 +643,11 @@ public class BaseElasticSearcher extends BaseSearcher
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains(".") || "recordmodificationdate".equals(detail.getId()) || "mastereditclusterid".equals(detail.getId()) ) //TODO: Check search type instead?
+				if ("_parent".equals(detail.getId()) 
+						|| detail.getId().contains(".") || "recordmodificationdate".equals(detail.getId()) 
+						|| "mastereditclusterid".equals(detail.getId())
+						|| detail.getId().startsWith("_")
+				) //TODO: Check search type instead?
 				{
 					continue;
 				}
@@ -1896,7 +1898,18 @@ public class BaseElasticSearcher extends BaseSearcher
 				currentmod = new Date();
 			}
 			content.field("recordmodificationdate", currentmod);
-	
+
+			Object currentmastermod = inData.getValue("masterrecordmodificationdate");
+			if( !isReIndexing() ) 
+			{
+				if(currentid.equals(localClusterId)) 
+				{
+					currentmastermod = currentmod;
+				}
+			}
+			content.field("masterrecordmodificationdate", currentmastermod);
+			
+			
 			if( !isReIndexing() )
 			{
 				if( !getSearchType().endsWith("Log") && //Extra noise and confusion
@@ -2162,7 +2175,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if( propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid"))
+				if( propid.equals("recordmodificationdate") 
+					|| propid.equals("mastereditclusterid")
+					|| propid.equals("masterrecordmodificationdate") )
+				{
+					continue;
+				}
+				if (propid.contains("recorddeleted"))
 				{
 					continue;
 				}

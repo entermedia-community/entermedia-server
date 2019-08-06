@@ -300,7 +300,7 @@ public class SyncModule extends BaseMediaModule
 			{
 				ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
 			}
-			hits = manager.getAllDocuments(null, ago);
+			hits = manager.getAllDocuments(archive.getCatalogId(), ago);
 		}
 		if (page != null)
 		{
