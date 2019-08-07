@@ -1385,7 +1385,7 @@ td.checkbox input, th.firstheader input {
 
 /*Emshare Nav Bar*/
 .emnav {
-	min-height: 56px;
+	min-height: 55px;
 }
 .emnav .navtabs {
 	margin:0 5px 0 15px;
