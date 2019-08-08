@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -713,7 +714,17 @@ public class GoogleManager implements CatalogEnabled
 			CloseableHttpClient httpclient;
 			httpclient = HttpClients.createDefault();
 			
-			CloseableHttpResponse resp = httpclient.execute(post);
+			CloseableHttpResponse resp = null;
+			
+			 try {
+				 	resp = httpclient.execute(post);
+
+		        } catch (ClientProtocolException e) {
+		        	throw new OpenEditException(e);
+		        } catch (Exception e)
+				{
+					throw new OpenEditException(e);
+				}
 
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
