@@ -716,11 +716,9 @@ public class MediaAdminModule extends BaseMediaModule
 				inReq.putPageValue("mappingerror",true);
 			}
 		}
-		catch ( Exception ex)
+		catch ( Throwable ex)
 		{
 			inReq.putPageValue("exception",ex);
-			inReq.putPageValue("mappingerror",true);
-			
 		}
 		
 		long finish = System.currentTimeMillis();

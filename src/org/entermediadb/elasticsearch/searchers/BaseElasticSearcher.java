@@ -65,6 +65,7 @@ import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
@@ -2191,6 +2192,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
+
 				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(propid);
 				if (detail == null)
 				{
@@ -2218,10 +2220,26 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() + " as " + detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex() && !propid.equals("description")) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}
+				if (propid.equals("description"))
+				{
+					Object value = inData.getValue(propid);
+					if (value == null)
+					{
+						StringBuffer desc = new StringBuffer();
+						populateKeywords(desc, inData, inDetails);
+						if (desc.length() > 0)
+						{
+							value = desc.toString();
+						}
+					}
+					inContent.field(propid, value);
+					continue;
+				}
+
 				String key = detail.getId();
 				if (key == null)
 				{
@@ -2460,17 +2478,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
 						inData.setValue(key, position); //For next time?
-					}
-				}
-				else if (key.equals("description")) // TODO: This should be
-													// moved to _all
-													// searches
-				{
-					StringBuffer desc = new StringBuffer();
-					populateKeywords(desc, inData, inDetails);
-					if (desc.length() > 0)
-					{
-						inContent.field(key, desc.toString());
 					}
 				}
 				else if (detail.isMultiLanguage())
@@ -2989,18 +2996,20 @@ public class BaseElasticSearcher extends BaseSearcher
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
-		HitTracker allhits = getAllHits();
+		HitTracker allhits = getAllIndexed();
 		setReIndexing(true);
 		try
 		{
+			int SIZE = 3000;
+			
 			allhits.enableBulkOperations();
+			allhits.setHitsPerPage(SIZE);
 			ArrayList tosave = new ArrayList();
 			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
 				Data hit = (Data) iterator2.next();
-				Data real = (Data) loadData(hit);
-				tosave.add(real);
-				if (tosave.size() > 3000)
+				tosave.add(hit);
+				if (tosave.size() > SIZE)
 				{
 					updateInBatch(tosave, null);
 	
@@ -3154,14 +3163,26 @@ public class BaseElasticSearcher extends BaseSearcher
 		req.id(inID);
 		
 		processor.add(req);
-	
-
-		
-		
 		
 	}
 
-	
+	public HitTracker getAllIndexed()
+	{
+		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
+		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		search.setTypes(getSearchType());
+		search.setRequestCache(true);
+		QueryBuilder findall = QueryBuilders.matchAllQuery();
+		search.setQuery(findall);
+
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, findall, 1000);
+		hits.enableBulkOperations();
+		hits.setSearcherManager(getSearcherManager());
+		//String inIndexId = toId(getCatalogId());
+		hits.setIndexId(getIndexId());
+		hits.setCatalogId(getCatalogId());
+		return hits;
+	}
 	
 	
 	
