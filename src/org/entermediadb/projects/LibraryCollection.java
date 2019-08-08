@@ -134,14 +134,18 @@ return catid;
 			if(getRootCategoryId() == null){
 				return null;
 			}
-			Category root = getCategory();
-			if( root == null)
+			Object values = super.getValues(inKey);
+			if( values == null) //Must not be in the index yet
 			{
-				return null;
+				Category root = getCategory();
+				if( root == null)
+				{
+					return null;
+				}
+				values = root.getParentCategories();
 			}
-			return root.getParentCategories();
+			return values;
 		}
-		// TODO Auto-generated method stub
 		return super.getValue(inKey);
 	}
 	

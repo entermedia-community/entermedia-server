@@ -62,6 +62,7 @@
   <property id="skipgenerated" index="true" stored="true" editable="true" datatype="boolean" >Don't download generated files</property>
   <property id="skiporiginal" index="true" stored="true" editable="true" datatype="boolean" >Don't download original files</property>
 
+  <property id="enabled" index="true" stored="true" editable="true" datatype="boolean" >Enabled</property>
   
   
 </properties>

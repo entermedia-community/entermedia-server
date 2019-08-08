@@ -1449,9 +1449,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public HitTracker getAllDocuments(String inCatalogId, Date inAfter)
 	{
-
-		SearchRequestBuilder search = getClient().prepareSearch();
+		SearchRequestBuilder search = null;
+		if( inCatalogId != null )
+		{
+			search = getClient().prepareSearch(toId(inCatalogId));
+		}
+		else
+		{
+			//across all?
+			search = getClient().prepareSearch();
+		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		
+		
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
 		if(inAfter != null) {
 			RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
@@ -1463,11 +1473,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
 		hits.enableBulkOperations();
 		//hits.setSearcherManager(getSearcherManager());
-		if (inCatalogId != null)
-		{
-			String inIndexId = toId(inCatalogId);
-			hits.setIndexId(inIndexId);
-		}
 		//hits.setSearcher(this);
 		//hits.setSearchQuery(inQuery);
 		return hits;
