@@ -1893,6 +1893,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			content.field("mastereditclusterid", currentid);
 			Object currentmod = inData.getValue("recordmodificationdate");
+			if(currentmod instanceof String) {
+				currentmod = DateStorageUtil.getStorageUtil().parseFromStorage((String)currentmod);
+			}
 			if( !isReIndexing() ) 
 			{
 				currentmod = new Date();
@@ -1900,6 +1903,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			content.field("recordmodificationdate", currentmod);
 
 			Object currentmastermod = inData.getValue("masterrecordmodificationdate");
+			if(currentmastermod instanceof String) {
+				currentmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String)currentmastermod);
+			}
 			if( !isReIndexing() ) 
 			{
 				if(currentid.equals(localClusterId)) 
