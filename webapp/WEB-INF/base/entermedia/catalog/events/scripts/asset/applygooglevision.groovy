@@ -23,6 +23,8 @@ public void runit()
 	}
 	
 	HitTracker hits = mediaArchive.getAssetSearcher().query().match("googletagged", "false").match("importstatus", "complete").search();
+	log.info(hits.size()+" assets to be tagged by Google.");
+	Integer assetcount = 0;
 	hits.each{
 		Data hit = it;
 		Asset asset = mediaArchive.getAsset(it.id);
@@ -49,13 +51,10 @@ public void runit()
 		
 		mediaArchive.saveAsset(asset);
 		
-		
-		
-		
-		
-		
+		assetcount++;
 		
 	}
+	log.info(assetcount+" assets tagged by Google.")
 	
 }
 

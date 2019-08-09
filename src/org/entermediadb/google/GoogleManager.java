@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.net.ssl.SSLException;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -19,7 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -676,14 +680,12 @@ public class GoogleManager implements CatalogEnabled
 			
 			String url = "https://vision.googleapis.com/v1/images:annotate?key=" + googleapikey;
 
-			
-
 			File file = new File(inItem.getAbsolutePath());
 			byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
 
 			JsonObject request = new JsonObject();
 			JsonArray requestlist = new JsonArray();
-			request.add("requests", requestlist);
+			
 			JsonObject data = new JsonObject();
 			requestlist.add(data);
 
@@ -705,27 +707,30 @@ public class GoogleManager implements CatalogEnabled
 			type = new JsonObject();
 			type.addProperty("type", "LANDMARK_DETECTION");
 			features.add(type);
+			
+			request.add("requests", requestlist);
 
-			HttpMimeBuilder build = new HttpMimeBuilder();
+			//HttpMimeBuilder build = new HttpMimeBuilder();
 
 			HttpPost post = new HttpPost(url);
+			
 			post.setEntity(new StringEntity(request.toString(), "UTF-8"));
-
+			post.addHeader("Content-Type", "application/json");
+			post.setProtocolVersion(HttpVersion.HTTP_1_1);
+			
+			//System.setProperty("https.protocols", "TLSv1.2");
+			
 			CloseableHttpClient httpclient;
-			httpclient = HttpClients.createDefault();
+			httpclient = HttpClients.createSystem();
 			
 			CloseableHttpResponse resp = null;
 			
-			 try {
-				 	resp = httpclient.execute(post);
-
-		        } catch (ClientProtocolException e) {
-		        	throw new OpenEditException(e);
-		        } catch (Exception e)
-				{
-					throw new OpenEditException(e);
-				}
-
+   		 	try {
+			 	resp = httpclient.execute(post);
+	        } finally {
+	        	
+	        }
+			
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
 				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
@@ -743,6 +748,9 @@ public class GoogleManager implements CatalogEnabled
 			return json;
 
 		}
+		catch (SSLException e) {
+        	throw new OpenEditException(e);
+        } 
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
