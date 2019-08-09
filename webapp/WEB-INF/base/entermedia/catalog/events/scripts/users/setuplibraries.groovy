@@ -98,6 +98,8 @@ public void init()
 			
 			
 			//Create a hotfolder
+			if (manager)
+			{
 			Data profile = profilesearcher.searchById(it.id);
 			String path = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${it.id}/";
 			Data existing = manager.getFolderByPathEnding(catalogId, "test");
@@ -126,13 +128,15 @@ public void init()
 				manager.saveFolder(catalogId,newrow);
 				manager.saveMounts(catalogId);
 				
+				
+				log.info("verified  ${ok}");
 			
-			
+			}
 			
 			
 		}
 		
-		log.info("verified  ${ok}");
+		
 		
 }
 
