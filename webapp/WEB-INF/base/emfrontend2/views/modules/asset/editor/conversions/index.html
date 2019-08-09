@@ -120,14 +120,14 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		<td>
 		##ACTIONS
 		#if( $presetdata.id != "0" )
-		<a class="emdialog btn btn-sm btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
+		<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
 		#end
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 		#if($isready)
 			#if($canviewassetedit && $presetdata.id)
 			#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
 				#if($cancrop)
-				<a class="btn btn-sm btn-secondary previewcrop-btn ajax"
+				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
 					targetdivinner="asset-editor-container" 
 					data-oemaxlevel="1" 
 				href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">[[Crop]]</a>

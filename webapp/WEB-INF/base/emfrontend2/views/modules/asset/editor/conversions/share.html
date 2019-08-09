@@ -6,10 +6,10 @@
 
 #if(${presetdata.id} != "0") 
 
-<a class="btn btn-sm btn-secondary" target="_blank" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?cache=false">[[Preview]]</a>
-<a class="btn btn-sm btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
+<a class="btn btn-xs btn-secondary" target="_blank" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?cache=false">[[Preview]]</a>
+<a class="btn btn-xs btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
 #if($canembedasset)
-<a class="btn btn-sm btn-secondary ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" 
+<a class="btn btn-xs btn-secondary ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" 
 	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">[[Embed]]</a>
 #end
 
