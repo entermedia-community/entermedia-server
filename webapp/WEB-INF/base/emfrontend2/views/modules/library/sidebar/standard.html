@@ -7,7 +7,7 @@
 	<div  class="ui-widget-header">Search
 		#if( $caneditadvancedsearch )
 			<span class="widget-header-edit">
-			<a class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/index.html?viewid=${moduleid}advancedsearch&viewpath=${moduleid}/${moduleid}advancedsearch">Edit</a>
+			<a class="btn btn-sm" style="padding:0;" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/index.html?viewid=${moduleid}advancedsearch&viewpath=${moduleid}/${moduleid}advancedsearch"><i class="fas fa-cog"></i></a>
 			</span>
 		#end
 	</div>
@@ -15,13 +15,12 @@
 	
 	
 	<div  class="ui-widget-content">
-
 			$pages.include("${searchhome}/searchform.html")
 
 	</div>
 	
 
-		##$pages.include("$apphome/components/libraries/sidebar.html",$context)
+	##$pages.include("$apphome/components/libraries/sidebar.html",$context)
 	
 	
 </div>

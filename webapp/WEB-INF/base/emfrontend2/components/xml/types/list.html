@@ -97,8 +97,8 @@ $query.setSortBy($detail.getDefaultSort())
 		#end
 		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 	#end
-	#if( $hits.size() > 1000 )
-		<option value="-1">[[1000 limit reached]]</option>
+	#if($hits && $hits.size() > 1000 )
+		<option value="-1">1000 [[limit reached]]</option>
 	#end
    </select>
  

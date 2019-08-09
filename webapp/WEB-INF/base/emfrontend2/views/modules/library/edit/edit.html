@@ -54,7 +54,7 @@ $context.putPageValue("viewid", $view.id)
     <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" style="margin-right: 10px;" />
     #end
     #if($caneditcollection || $candelete)	
-    <a class="btn btn-sm btn-danger ajax"  data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
+    <a class="btn btn-sm btn-danger ajax"  data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-right:10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
     #if( $caneditmetadatasetup )
 	 <a class="btn btn-sm btn-light float-right" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"><i class="fas fa-cog"></i></a>
