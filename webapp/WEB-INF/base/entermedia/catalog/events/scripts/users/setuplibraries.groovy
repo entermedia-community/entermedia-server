@@ -1,7 +1,7 @@
 package users
 
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.scanner.HotFolderManager
+//import org.entermediadb.asset.scanner.HotFolderManager
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -17,7 +17,7 @@ public void init()
 			return;
 		}
 		
-		HotFolderManager manager =mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "hotFolderManager");
+		//HotFolderManager manager =mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "hotFolderManager");
 		
 		String catalogId = mediaArchive.getCatalogId();
 		
