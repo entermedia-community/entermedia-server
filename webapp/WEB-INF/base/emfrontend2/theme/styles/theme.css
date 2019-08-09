@@ -2142,20 +2142,24 @@ td.checkbox input, th.firstheader input {
 	float:left;
 	padding:10px;
 	max-width:400px;
-	overflow: hidden; 
-	text-overflow: ellipsis;
-    
-    white-space: nowrap;
+
     
 }
-.collection-header-name h1{
+.collection-header-name h1 {
     font-size: 2rem;
     margin:0 0 .5rem 0;
-
+	width:100%;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+    white-space: nowrap;
+	
 	}
+.collection-header-name h1 a:hover {
+	text-decoration: none;
+} 
 .collection-header-actions {
 	float:left;
-	padding:18px 10px 0 5px;
+	padding:18px 10px 0 0px;
 	font-size:1.1rem;
 }
 .collection-header-back {
