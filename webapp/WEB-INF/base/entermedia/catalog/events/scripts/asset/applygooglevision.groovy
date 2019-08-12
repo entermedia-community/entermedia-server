@@ -33,7 +33,7 @@ public void runit()
 	if( !Boolean.parseBoolean(systemwidetagging))
 	{
 		Collection cats = new HashSet();
-		Collection found = mediaArchive.query("librarycollection").exact("automatictagging", true).search();
+		Collection found = mediaArchive.query("librarycollection").exact("automatictagging", "true").search();
 		for(Data col in found)
 		{
 			Category cat = mediaArchive.getCategory(col.get("rootcategory"));
