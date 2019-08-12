@@ -161,6 +161,12 @@
  
  
    <property id="collectionimage" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="collections/${id}">Image</property>  
+
+  <property id="automatictagging"  index="true" datatype="boolean" >
+    <name> 
+      <language id="en"><![CDATA[Automatic Tagging]]></language>  
+    </name> 
+  </property>  
  
  
  
