@@ -1035,12 +1035,6 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				options.collectionid = collectionid;
 		}
 		
-		
-		
-		
-		
-		
-		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
 			saveProfileProperty("assetopentab",assettab,function(){});
@@ -1060,6 +1054,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			{
 				$(window).trigger("tabready");
 			});
+			
 			saveProfileProperty("assetopentab",assettab,function(){});
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
