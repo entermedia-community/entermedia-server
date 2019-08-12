@@ -44,18 +44,15 @@ $context.putPageValue("showalllanguagevalues",true)
 			#end
 			</div>
 	</div>					
-			<div class="col-4">
-			
+		<div class="col-4">
                 $pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
-            
-                
 
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
     				
     				<div class="asset-data-detail assetpanel-editor-box" >
-    				<h4>[[Libraries]]</h4>
-    				<div class="emlist">
+    				  <h4>[[Libraries]]</h4>
+    				  <div class="emlist">
             				#foreach($library in $libraries)
             					 #set( $division = $mediaarchive.getData("division",$library.division ) )
             					 #if($division)
@@ -66,14 +63,12 @@ $context.putPageValue("showalllanguagevalues",true)
             					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
             			
             				#end
-    					</div>
+    				  </div>
     				</div>
 				#end	
-				
-				##$pages.include("$componenthome/opencollections/asset/listassetcollections.html",$context)
-					
+									
 				$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
-			</div>	
-	
-</div></div>
+		</div>	
+</div>
+</div>
 </div>
