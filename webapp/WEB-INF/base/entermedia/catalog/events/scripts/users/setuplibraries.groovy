@@ -1,7 +1,6 @@
 package users
 
 import org.entermediadb.asset.MediaArchive
-//import org.entermediadb.asset.scanner.HotFolderManager
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -97,41 +96,6 @@ public void init()
 			}
 			
 			
-			//Create a hotfolder
-			if (manager)
-			{
-			Data profile = profilesearcher.searchById(it.id);
-			String path = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${it.id}/";
-			Data existing = manager.getFolderByPathEnding(catalogId, "test");
-			if( existing != null)
-			{
-				manager.deleteFolder(catalogId,existing);
-			}
-			Searcher hotfolders = mediaArchive.getSearcher("hotfolder");
-			
-			Data newrow = hotfolders.searchById("user-${it.id}");
-			if(newrow == null){
-				newrow = hotfolders.createNewData();
-				newrow.setId("user-${it.id}");
-			}
-				newrow.setName("Hot Folder for ${it} (${it.id})");
-				newrow.setProperty("subfolder", "${hit.id}");
-				//newrow.setProperty("externalpath", path);
-				
-				if(profile != null && profile.get("syncthing") != null){
-					newrow.setProperty("hotfoldertype", "syncthing");
-					newrow.setProperty("deviceid", profile.get("syncthing"));
-					
-					
-				}
-				newrow.setProperty("excludes", "*tmp*, */.*,*/Thumbs.db,*.old, *.ini");
-				manager.saveFolder(catalogId,newrow);
-				manager.saveMounts(catalogId);
-				
-				
-				log.info("verified  ${ok}");
-			
-			}
 			
 			
 		}
