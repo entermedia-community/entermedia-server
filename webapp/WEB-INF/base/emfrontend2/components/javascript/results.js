@@ -1044,6 +1044,9 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
+			    //Update AssetID
+			    var assetid = $("#multieditpanel").data("assetid");
+			    $("#main-media-viewer").data("assetid",assetid);
 				$(window).trigger("tabready");
 			});
 		}
