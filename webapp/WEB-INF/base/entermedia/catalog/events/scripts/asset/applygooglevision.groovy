@@ -1,6 +1,7 @@
 package asset
 
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.google.GoogleManager
 import org.openedit.Data
@@ -42,12 +43,18 @@ public void runit()
 				cats.add(cat);
 			}
 		}
+		if(cats.isEmpty())
+		{
+			log.info("No collections are marked as automatic");
+			return;
+		}
 		query.orgroup("category", cats);
 	}	
 	HitTracker hits = query.search();
 	
 	log.info(hits.size()+" assets to be tagged by Google. System wide:"  + query);
 	Integer assetcount = 0;
+	int logcount = 0;
 	hits.each{
 		Data hit = it;
 		Asset asset = mediaArchive.getAsset(it.id);
@@ -75,6 +82,13 @@ public void runit()
 		mediaArchive.saveAsset(asset);
 		
 		assetcount++;
+		logcount++;
+		if( logcount == 200)
+		{
+			logcount = 0;
+			log.info(assetcount+" assets tagged by Google.");
+		}
+		
 		
 	}
 	log.info(assetcount+" assets tagged by Google.")
