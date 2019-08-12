@@ -705,9 +705,9 @@ public class GoogleManager implements CatalogEnabled
 			type.addProperty("type", "OBJECT_LOCALIZATION");
 			features.add(type);
 
-			type = new JsonObject();
-			type.addProperty("type", "LANDMARK_DETECTION");
-			features.add(type);
+			//type = new JsonObject();
+			//type.addProperty("type", "LANDMARK_DETECTION");
+			//features.add(type);
 			
 			request.add("requests", requestlist);
 

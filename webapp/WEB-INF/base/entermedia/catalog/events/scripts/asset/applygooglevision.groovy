@@ -54,8 +54,10 @@ public void runit()
 	
 	log.info(hits.size()+" assets to be tagged by Google. System wide:"  + query);
 	Integer assetcount = 0;
-	int logcount = 0;
-	hits.each{
+	
+	List tosave = new ArrayList();
+	hits.each
+	{
 		Data hit = it;
 		Asset asset = mediaArchive.getAsset(it.id);
 		
@@ -78,19 +80,33 @@ public void runit()
 			asset.setValue("googletagged", "true");
 			
 		}
-		
-		mediaArchive.saveAsset(asset);
+		/*
+		others = responselist.getAsJsonArray("landmarkAnnotations");
+		"locations": [
+			{
+			  "latLng": {
+				"latitude": 55.752912,
+				"longitude": 37.622315883636475
+			  }
+			}
+		  ]
+		others.each {
+			String tag = it.name.getAsString();
+			asset.addValue("googlekeywords", tag);
+			asset.setValue("googletagged", "true");
+		}
+		*/
+		tosave.add(asset);
 		
 		assetcount++;
-		logcount++;
-		if( logcount == 200)
+		if( tosave.size() == 200)
 		{
-			logcount = 0;
+			mediaArchive.saveAssets(tosave);
+			tosave.clear();
 			log.info(assetcount+" assets tagged by Google.");
 		}
-		
-		
 	}
+	mediaArchive.saveAssets(tosave);
 	log.info(assetcount+" assets tagged by Google.")
 	
 }
