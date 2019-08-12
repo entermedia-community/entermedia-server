@@ -1,4 +1,5 @@
 <properties>
+  <rightsusageterms id="1day" name="1 Day" ></rightsusageterms>
   <rightsusageterms id="1year" name="1 Year" fatwirevalue="365"></rightsusageterms>
   <rightsusageterms id="30days" name="30 days" fatwirevalue="30"></rightsusageterms>
   <rightsusageterms id="60days" name="60 Days" fatwirevalue="60"></rightsusageterms>

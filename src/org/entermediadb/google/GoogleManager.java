@@ -57,6 +57,7 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
+import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
@@ -642,7 +643,7 @@ public class GoogleManager implements CatalogEnabled
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public JsonObject processImage(Asset inAsset)
+	public JsonObject processImage(HttpSharedConnection connection, Asset inAsset)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -662,9 +663,9 @@ public class GoogleManager implements CatalogEnabled
 			return null;
 		}
 		
-		return processImage(inputpage.getContentItem());
+		return processImage(connection,  inputpage.getContentItem());
 	}
-	public JsonObject processImage(ContentItem inItem)
+	public JsonObject processImage(	HttpSharedConnection connection,ContentItem inItem)
 	{
 		//https://cloud.google.com/vision/docs/
 
@@ -710,8 +711,6 @@ public class GoogleManager implements CatalogEnabled
 			
 			request.add("requests", requestlist);
 
-			//HttpMimeBuilder build = new HttpMimeBuilder();
-
 			HttpPost post = new HttpPost(url);
 			
 			post.setEntity(new StringEntity(request.toString(), "UTF-8"));
@@ -720,33 +719,32 @@ public class GoogleManager implements CatalogEnabled
 			
 			//System.setProperty("https.protocols", "TLSv1.2");
 			
-			CloseableHttpClient httpclient;
-			httpclient = HttpClients.createSystem();
-			
+			//CloseableHttpClient httpclient = HttpClients.createSystem();
 			CloseableHttpResponse resp = null;
+   		 	try
+   		 	{
+   		 		resp = connection.sharedPost(post);
 			
-   		 	try {
-			 	resp = httpclient.execute(post);
-	        } finally {
-	        	
+				if (resp.getStatusLine().getStatusCode() != 200)
+				{
+					log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
+					String returned = EntityUtils.toString(resp.getEntity());
+					log.info(returned);
+					return null;
+				}
+	
+				HttpEntity entity = resp.getEntity();
+				String content = IOUtils.toString(entity.getContent());
+				JsonParser parser = new JsonParser();
+				JsonElement elem = parser.parse(content);
+				// log.info(content);
+				JsonObject json = elem.getAsJsonObject();
+				return json;
 	        }
-			
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
-				String returned = EntityUtils.toString(resp.getEntity());
-				log.info(returned);
-				return null;
-			}
-
-			HttpEntity entity = resp.getEntity();
-			String content = IOUtils.toString(entity.getContent());
-			JsonParser parser = new JsonParser();
-			JsonElement elem = parser.parse(content);
-			// log.info(content);
-			JsonObject json = elem.getAsJsonObject();
-			return json;
-
+   		 	finally 
+   		 	{
+	        	connection.release(resp);
+	        }
 		}
 		catch (SSLException e) {
         	throw new OpenEditException(e);
