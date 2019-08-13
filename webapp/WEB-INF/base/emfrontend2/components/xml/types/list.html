@@ -68,6 +68,8 @@ $query.setSortBy($detail.getDefaultSort())
 	#set ($value = $detail.defaultvalue)
 #end
 
+#set($searchfield = $detail.getId() )
+
 #set( $valueid = "$fieldname" )
 #if($types)
 	#if( $foreignkeyid)
@@ -76,13 +78,15 @@ $query.setSortBy($detail.getDefaultSort())
 		</script>
 	#end
 	
-	<select  id="$csslistid" name="${fieldname}.value" 
-		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
-		listid="$listid" id="${valueid}.value"
-		data-listid="$listid" 
-		data-searchtype= '$searchtype'
-        onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
-        #if($removeclear) data-allowclear="false" #end
+	<select name="${fieldname}.value" 
+			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+			listid="$listid" 
+			id="${valueid}.value"
+			data-listid="$listid" 
+			data-searchtype= '$searchtype'
+			data-searchfield="$searchfield"
+        	onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+        	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")
 	<option value=""></option>

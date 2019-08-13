@@ -66,6 +66,7 @@ $lsearcher.addShowOnly($context, $query)
 #set($values = $data.getValues($detail.id))
 #end
 
+#set($searchfield = $detail.getId() )
 
 #if($types)
 $types.enableBulkOperations()
@@ -82,6 +83,7 @@ $types.enableBulkOperations()
 		data-listid="$listid" 
 		data-placeholder=" "
 		data-searchtype='$!searchtype'
+		data-searchfield="$searchfield"
 		data-width="100%"
 		>
 		#if ($detail.blankoption != false)

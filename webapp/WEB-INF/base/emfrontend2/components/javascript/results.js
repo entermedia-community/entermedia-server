@@ -3,7 +3,6 @@ $(document).ready(function(url,params)
 	var appdiv = $('#application');
 	var home = appdiv.data('home') + appdiv.data('apphome');
 	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
-	
 
 	var refreshdiv = function(url,params)
 	{
@@ -172,7 +171,11 @@ $(document).ready(function(url,params)
 			{
 			    form.trigger("submit");
 			});
-			
+			$('select',form).on("select2:unselect", function() 
+			{
+				$("#filtersremoveterm", form).val($(this).data("searchfield"));
+				form.trigger("submit");
+			});
 			$('input[type=checkbox]',form).change( function() 
 			{
 			    if($(this).hasClass("filtercheck")) {

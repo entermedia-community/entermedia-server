@@ -7,17 +7,28 @@
   <!-- property id="google-thumb-url" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Fetch URL</property -->  
   <property id="google-view-link" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Drive URL</property>  
 
-  <property id="googletagged" internalfield="false" index="true" stored="true"  editable="true" type="boolean">Has been tagged by google</property>  
-  
-  
-       <property id="googletranscoded" internalfield="false" index="true" stored="true"  editable="true" type="boolean">Has been auto transcoded google</property>  
-     
-  
-   <property id="googlekeywords" keyword="true" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true"> 
-   Google Tags
+  <property id="googletagged" internalfield="false" index="true" stored="true"  editable="true" type="boolean">
+  	<name>
+      <language id="en"><![CDATA[Tagged by Google]]></language>
+    </name>
   </property>  
   
-         <property id="locale" internalfield="false" index="true" stored="true"  editable="true" type="list" >Locale</property>  
+  
+  <property id="googletranscoded" internalfield="false" index="true" stored="true"  editable="true" type="boolean">
+  <name>
+      <language id="en"><![CDATA[Auto transcoded Google]]></language>
+    </name>
+  </property>  
+     
+  
+   <property id="googlekeywords" keyword="true" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true">
+    <name>
+      <language id="en"><![CDATA[Google Tags]]></language>
+    </name>
+   
+  </property>  
+  
+  <property id="locale" internalfield="false" index="true" stored="true"  editable="true" type="list" >Locale</property>  
   
   
   

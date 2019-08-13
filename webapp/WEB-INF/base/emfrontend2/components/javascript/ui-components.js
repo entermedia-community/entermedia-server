@@ -158,15 +158,8 @@ uiload = function() {
 				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,
-			}).on('select2:select', function (e) {
-			if ($(this).hasClass("autosubmited")) {
-				var theform =$(this).parents("form")
-				if (theform.hasClass("autosubmitform")) {
-					theform.trigger("submit");
-				}
-			}
-        	
-    		});
+			});
+		
 		}
 
 	});
@@ -209,7 +202,9 @@ uiload = function() {
 			},
 			multiple : false,
 			data : arr
-		}).on('select2:select', function (e) {
+		});
+		/*
+		.on('select2:select', function (e) {
 			if ($(this).hasClass("autosubmited")) {
 				var theform =$(this).parents("form")
 				if (theform.hasClass("autosubmitform")) {
@@ -217,7 +212,8 @@ uiload = function() {
 				}
 			}
         	
-    	});;
+    	});
+		*/
 	});
 
 	lQuery("select.ajax").livequery('change', function(e) {
@@ -876,32 +872,34 @@ uiload = function() {
 											separator : '|'
 										});
 							theinput.on("select2:select" , function() {
-											if ($(this).parents(".ignore").length == 0) {
-												$(this).valid(); 
-												
-											}
-								
-											if ($(this).hasClass("autosubmited")) {
-												var theform =$(this).parents("form")
-												if (theform.hasClass("autosubmitform")) {
-													theform.trigger("submit");
-												}
-											}
+									if ($(this).parents(".ignore").length == 0) {
+										$(this).valid(); 
+										
+									}
+									/*
+									if ($(this).hasClass("autosubmited")) {
+										var theform =$(this).parents("form")
+										if (theform.hasClass("autosubmitform")) {
+											theform.trigger("submit");
+										}
+									}
+									*/
 						   });
 						   theinput.on("select2:unselect" , function() {
-											if ($(this).parents(".ignore").length == 0) {
-												$(this).valid(); 
-												
-											}
-								
-											if ($(this).hasClass("autosubmited")) {
-												var theform =$(this).parents("form")
-												if (theform.hasClass("autosubmitform")) {
-													$("#filtersremoveterm", theform).val($(this).data("searchfield"));
-													theform.trigger("submit");
-													
-												}
-											}
+									if ($(this).parents(".ignore").length == 0) {
+										$(this).valid(); 
+									}
+									
+									
+									/*
+									if ($(this).hasClass("autosubmited")) {
+										var theform =$(this).parents("form")
+										if (theform.hasClass("autosubmitform")) {
+											$("#filtersremoveterm", theform).val($(this).data("searchfield"));
+											theform.trigger("submit");
+										}
+									}
+									*/
 							});
 					});
 
