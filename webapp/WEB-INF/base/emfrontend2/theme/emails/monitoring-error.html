@@ -4,16 +4,16 @@
 [[Review below]]:
 <br/><br/>
 #if($monitored.isreachable == "false")
-	[[The instance seems to be down]]: <a href="$instance.instanceurl">$instance.instanceurl</a><br/><br/>
+	[[The instance seems to be down]]: <a href="$instance.instanceurl">$instance.name ($instance.instanceurl)</a><br/><br/>
 #end
 
 #if($monitored.isssl == "true")
 	#if($monitored.sslstatus == "torenew")
-		[[The instance's SSL certificate will expires in ]]$monitored.daystoexpiration[[ days, ]][[on ]]<b>$monitored.expirationdate</b>. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
+		[[The instance's SSL certificate will expires in ]]$monitored.daystoexpiration[[days]],[[on]] <b>$monitored.expirationdate</b>. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
 	#elseif($monitored.sslstatus == "expired")
 		[[The instance's SSL certificate has expired on]] <b>$monitored.expirationdate</b>. [[Please deploy a new one by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
 	#elseif($monitored.sslstatus == "error")
-		[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$instance.instanceurl">$monitored.url</a><br/><br/>
+		[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$instance.instanceurl">$instance.url</a><br/><br/>
 	#end
 #else
 	#if ($monitored.isdisk == "true")
