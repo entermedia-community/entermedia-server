@@ -15,8 +15,8 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
 #if( $geofilter)
 <div style="padding:10px;background:#eee;">
-##look in the search for this map terms? #set( $found = $term.getParameter("formatted_address") )
-#set( $found = $geofilter.getParameter("formatted_address") )
+##look in the search for this map terms? #set( $found = $term.getValue("formatted_address") )
+#set( $found = $geofilter.getValue("formatted_address") )
 Found $hits.size() results searching within $geofilter.getDistance() [[meters]] of $!found  
 </div>
 #end
