@@ -431,7 +431,7 @@ public class AutoCompleteModule extends DataEditModule
 			}
 			else if( size != Integer.parseInt(hitcount))
 			{
-				term.setValue("hitcount", hitcount);
+				term.setValue("hitcount", size);
 				tosave.add(term);
 			}
 		}
