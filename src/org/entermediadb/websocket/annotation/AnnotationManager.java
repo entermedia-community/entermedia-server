@@ -306,6 +306,21 @@ public class AnnotationManager  {
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
+
+	public void annotationsRemoved(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
+	{
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "annotation");
+		HitTracker annotations = searcher.query().exact("assetid", inAssetId).search();
+		
+		searcher.deleteAll(annotations, null);
+		getCacheManager().remove(CACHENAME, catalogid + inAssetId);
+//		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+//		{
+//			AnnotationConnection annotationConnection2 = (AnnotationConnection) iterator.next();
+//			annotationConnection2.sendMessage(command);
+//		}
+	}
+
 	
 }    
 //    private static class EchoMessageHandlerBinary

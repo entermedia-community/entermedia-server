@@ -2,6 +2,7 @@ package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class AutoCompleteModule extends DataEditModule
 {
@@ -432,6 +434,8 @@ public class AutoCompleteModule extends DataEditModule
 			else if( size != Integer.parseInt(hitcount))
 			{
 				term.setValue("hitcount", size);
+				term.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
+
 				tosave.add(term);
 			}
 		}
