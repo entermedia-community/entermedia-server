@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Auto-Complete Expire</property>	
+
+	<path-action name="AutoCompleteModule.expireSuggestions" allowduplicates="true">
+		<property name="searchtype">asset</property>
+	</path-action>
+
+</page>
