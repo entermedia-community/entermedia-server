@@ -1023,7 +1023,7 @@ autoheight = function(container)
 showajaxstatus = function(uid)
 {
 	//for each asset on the page reload it's status
-	console.log(uid);
+	//console.log(uid);
 	var cell = $("#" + uid);
 	if( cell )
 	{

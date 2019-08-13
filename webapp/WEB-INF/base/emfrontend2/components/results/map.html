@@ -1,3 +1,4 @@
+<div id="emresultscontainer">
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
 data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()"
 data-collectionid="$!librarycol.getId()"
@@ -8,7 +9,7 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
 	$pages.include("$componenthome/results/header.html",$context) 
 #end
-
+#set($hits = $hits.copy() )
 #set( $n = $hits.setHitsPerPage(1000))
 
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
@@ -53,4 +54,5 @@ $('#map').gmap({
 });
     </script>
 <div id="map" align style="width: 100%; height: 750px;"></div>
+</div>
 </div>
