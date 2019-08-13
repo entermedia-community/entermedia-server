@@ -5,7 +5,7 @@ import java.util.Date;
 import org.entermediadb.asset.util.MathUtils;
 import org.openedit.data.BaseData;
 
-public class ProjectGoal extends BaseData
+public class ProjectGoal extends BaseData implements Comparable
 {
 	public String getAge()
 	{
@@ -40,6 +40,21 @@ public class ProjectGoal extends BaseData
 		String status2 = pg2.get("projectstatus");
 		if( status1 == null) status1 = "open";
 		if( status2 == null) status2 = "open";
+		
+		if( status1.equals("critical") && status2.equals("critical"))
+		{
+			return 0;
+		}
+		else if( status1.equals("critical"))
+		{
+			return -1;
+		}
+		else if( status2.equals("critical"))
+		{
+			return 1;
+		}
+
+		
 		if( status1.equals(status2))
 		{
 			Date date1 = (Date)getDate("creationdate");
@@ -49,21 +64,14 @@ public class ProjectGoal extends BaseData
 				return date2.compareTo(date1);
 			}
 		}
-		else if( status2.equals("critical"))
+
+		if( status1.equals("open"))
 		{
 			return 1;
 		}
-		else if( status1.equals("critical"))
-		{
-			return -1;
-		}
-		else if( status1.equals("open"))
-		{
-			return -1;
-		}
 		else if( status2.equals("open"))
 		{
-			return 0;
+			return -1;
 		}
 		
 		return 0;
