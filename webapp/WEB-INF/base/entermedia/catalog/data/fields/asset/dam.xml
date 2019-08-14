@@ -619,6 +619,13 @@
       <language id="fr"><![CDATA[Doublon]]></language> 
     </name> 
   </property>  
+  
+  
+   <property id="duplicatesourcepath" index="true" editable="true" type="boolean"  isbadge="true"  stored="true" filter="true"  sortable="true">
+ Duplicate Source PAth
+  </property>  
+  
+  
   <property id="retentionpolicy" datatype="list" listid="retentionrules" editable="true" index="true" stored="true" filter="true"   type="list">Retention Policy 
     <name> 
       <language id="de"><![CDATA[Aufbewahrungsrichtlinie]]></language>  
