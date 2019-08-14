@@ -3,7 +3,6 @@ $(document).ready(function(url,params)
 	var appdiv = $('#application');
 	var home = appdiv.data('home') + appdiv.data('apphome');
 	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
-	
 
 	var refreshdiv = function(url,params)
 	{
@@ -172,7 +171,11 @@ $(document).ready(function(url,params)
 			{
 			    form.trigger("submit");
 			});
-			
+			$('select',form).on("select2:unselect", function() 
+			{
+				$("#filtersremoveterm", form).val($(this).data("searchfield"));
+				form.trigger("submit");
+			});
 			$('input[type=checkbox]',form).change( function() 
 			{
 			    if($(this).hasClass("filtercheck")) {
@@ -1035,12 +1038,6 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				options.collectionid = collectionid;
 		}
 		
-		
-		
-		
-		
-		
-		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
 			saveProfileProperty("assetopentab",assettab,function(){});
@@ -1050,6 +1047,9 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
+			    //Update AssetID
+			    var assetid = $("#multieditpanel").data("assetid");
+			    $("#main-media-viewer").data("assetid",assetid);
 				$(window).trigger("tabready");
 			});
 		}
@@ -1060,6 +1060,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			{
 				$(window).trigger("tabready");
 			});
+			
 			saveProfileProperty("assetopentab",assettab,function(){});
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {

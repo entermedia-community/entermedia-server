@@ -1,7 +1,6 @@
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
         <div class="carousel-inner">
             <div class="carousel-items">
-            	
             	  #if ( $asset.id.startsWith("multiedit:") )
 				        #set  ( $ismultimode = true)
 				   #else
@@ -36,7 +35,14 @@
                     #elseif($hit.assettitle)
                         #set($hitcaption = $hit.assettitle)
                     #end
-				<div class="gallery-thumb #if( $ismultimode && $dialoghits.isSelected($hit.id)) selected-asset #end " id="gallery-${hit.id}">
+				   <div class="gallery-thumb 
+				   		#if( $ismultimode && $dialoghits.isSelected($hit.id))
+				   		 selected-asset 
+				   		#elseif($hit.id == $asset.id )
+				   		 selected-asset 
+				   		#end
+				   		"
+				   		id="gallery-${hit.id}">
         		
         			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hitcaption}"   href="#" >
           				$context.putPageValue("hit", $hit)

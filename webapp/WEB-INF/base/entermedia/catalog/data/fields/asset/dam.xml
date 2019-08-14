@@ -565,10 +565,10 @@
   <!-- Approvals -->  
   <!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->  
   <!-- Geo Location -->  
-  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true">Position 
+  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Position]]></language>  
-      <language id="en"><![CDATA[Position]]></language>  
+      <language id="en"><![CDATA[GEO Location]]></language>  
       <language id="es"><![CDATA[Posición]]></language>  
       <language id="fr"><![CDATA[Position]]></language> 
     </name> 

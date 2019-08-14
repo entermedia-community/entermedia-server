@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="date" index="true" filter="false" deleted="false" datatype="date" editable="false" stored="true" sortable="true" keyword="false"> 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="assetids" index="true" filter="false" deleted="false" editable="true" stored="true" sortable="true" keyword="false"> 
+    <name> 
+      <language id="de"><![CDATA[Asset-IDs]]></language>  
+      <language id="en"><![CDATA[Asset Ids]]></language>  
+      <language id="es"><![CDATA[Ids de activos]]></language>  
+      <language id="fr"><![CDATA[Ids items]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false"> 
+    <name> 
+      <language id="de"><![CDATA[Id]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Id]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" indextype="not_analyzed" deleted="false" stored="true"> 
+    <name> 
+      <language id="de"><![CDATA[Betrieb]]></language>  
+      <language id="en"><![CDATA[Operation]]></language>  
+      <language id="es"><![CDATA[Operación]]></language>  
+      <language id="fr"><![CDATA[Opération]]></language> 
+    </name> 
+  </property>  
+  <property id="user" index="true" filter="false" deleted="false" editable="false" stored="true" viewtype="user" sortable="true" keyword="false" datatype="list"> 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" internalfield="false" deleted="false" editable="false" stored="true" sortable="true">
+    <name>
+      <language id="de"><![CDATA[Source-Pfad]]></language>
+      <language id="en"><![CDATA[Source Path]]></language>
+      <language id="es"><![CDATA[Ruta de origen]]></language>
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language>
+    </name>
+  </property>
+</properties>

@@ -1,0 +1,13 @@
+#set($searchfield = $detail.getId() )
+
+<select name="${detail.getId()}.value" 
+		class="form-control listdropdown"
+		listid="$listid" 
+		id="${valueid}.value"
+		data-listid="$listid" 
+		data-searchfield="$searchfield"
+		data-searchtype= '$searchtype'>
+<option  value=""  ></option>						
+<option name="[[Yes]]" value="true"  #if( "true" == $val ) selected #end >[[Yes]]</option>						
+<option name="[[No]]" value="false" #if( "false" == $val ) selected #end  >[[No]]</option>
+</select>			

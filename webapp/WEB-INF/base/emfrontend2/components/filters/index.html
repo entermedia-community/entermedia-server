@@ -96,24 +96,18 @@
 
 	##FILTERS
 		
-		#foreach( $detail in $details)
-		
+		#foreach( $detail in $details)   
 			$context.putPageValue("detail", $detail)
 			$context.putPageValue("searchform", true)
 			#if ($detail.isLeaf())
 				#if ($detail.isFilter())
-					
 					#set($filternode = $userfiltervalues.get($detail.id))
 					$context.putPageValue("filternode",$filternode)
 					#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))
-						
 						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 					#end	
-					
 				#else
-					
-						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
-					
+					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 				#end
 			#else
 				$pages.include("/${applicationid}/components/filters/section.html", $context)

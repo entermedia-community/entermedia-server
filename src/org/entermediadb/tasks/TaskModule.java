@@ -145,7 +145,10 @@ public class TaskModule extends BaseMediaModule
 		{
 			String p = (String) iterator.next();
 			List values = (List)priorities.get(p);
-			Collections.sort(values);
+			if( !values.isEmpty())
+			{
+				Collections.sort(values);
+			}
 			inReq.putPageValue("goalhits" + p, values);
 		}
 		return priorities;

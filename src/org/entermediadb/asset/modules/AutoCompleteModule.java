@@ -2,8 +2,10 @@ package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +13,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.autocomplete.AutoCompleteSearcher;
 import org.entermediadb.asset.util.JsonUtil;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -19,6 +22,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class AutoCompleteModule extends DataEditModule
 {
@@ -404,5 +408,45 @@ public class AutoCompleteModule extends DataEditModule
 		inReq.putPageValue("searcher", searcher);
 	}
 	
+	public void expireSuggestions(WebPageRequest inReq) throws Exception
+	{
+		//Pass in search type
+		String searchtype = inReq.findValue("searchtype");
+		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getAutoCompleteSearcher(inReq);
+		//Look for any that now have 0 and remove them
+		HitTracker all = searcher.getAllHits();
+		all.enableBulkOperations();
+		
+		String catalogid = inReq.findValue("catalogid");
+		Searcher finder = getSearcherManager().getSearcher(catalogid, searchtype);
+		List todelete = new ArrayList();
+		List tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data term = (Data) iterator.next();
+			String searchby = term.getId();
+			String hitcount = term.get("hitcount");
+			int size = finder.query().freeform("description", searchby).hitsPerPage(1).search().size();
+			if( size == 0)
+			{
+				todelete.add(term);
+			}
+			else if( size != Integer.parseInt(hitcount))
+			{
+				term.setValue("hitcount", size);
+				term.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
+
+				tosave.add(term);
+			}
+		}
+		searcher.deleteAll(todelete, null);
+		searcher.saveAllData(tosave, null);
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		if( logger != null)
+		{
+			logger.info("Deleted " + todelete.size() );
+			logger.info("Updated " + tosave.size() );
+		}
+	}
 	
 }
