@@ -714,22 +714,6 @@ $(document).ready(function(url,params)
 				
 			});
 	
-	document.addEventListener('touchmove', function(e) 
-	{
-		//console.log("touchmove event");
-		checkScroll();
-	});
-	
-	$(window).on('scroll',function(e) 
-	{
-		//console.log("scroll event *");
-		checkScroll();
-	});
-	$(document).on('domchanged',function() 
-	{
-		checkScroll();
-	});
-	//END Gallery stuff
 	
 	lQuery('select.addremovecolumns').livequery("change",function()
 	{
@@ -766,13 +750,28 @@ $(document).ready(function(url,params)
             }
         }
     );
+
+	document.addEventListener('touchmove', function(e) 
+	{
+		//console.log("touchmove event");
+		checkScroll();
+	});
 	
+	$(window).on('scroll',function(e) 
+	{
+		//console.log("scroll event *");
+		checkScroll();
+	});
+
+	$(document).on('domchanged',function() 
+	{
+		gridResize(); //This calls checkScroll. Makes sure this is last after any actions		
+	});
 	$(window).on('resize',function(){
 		gridResize();
 	});
 	
 	gridResize();
-    
     window.addEventListener('load', 
 	  function() { 
 	    	gridResize();
@@ -923,28 +922,19 @@ gridResize = function()
 		fixedheight = 200;
 	}
 	fixedheight = parseInt(fixedheight);
-	var cellpadding = grid.data("cellpadding");
-	if( cellpadding == null)
-	{
-		cellpadding = 8;  //this has to be twice what is in results.css
-	}
-	cellpadding = parseInt(cellpadding);
 	
 	var totalwidth = 0;
 	var rownum = 0;
-
 	var totalavailablew = grid.width();
 	
 	//Two loops, one to make rows and one to render cells
 	var sofarusedw = 0;
 	var sofarusedh = 0;
 	
-	var row = [];
+	var row = new Array();
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		cell.css("margin",cellpadding/2 + "px");
-		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");
 		w = parseInt(w);
@@ -954,35 +944,27 @@ gridResize = function()
 			w = fixedheight;
 			h = fixedheight;
 		}
-		var a = w / h;  
+		var a = (w) / (h);  
 		cell.data( "aspect",a);
-		//console.log("Aspect" + cell.data("aspect"));
-		var neww = Math.floor( fixedheight * a );
+		var neww = a * fixedheight;
+		cell.data("targetw",Math.ceil(neww));
 		var isover = sofarusedw + neww;
-		if( isover > totalavailablew )
+		if( isover > totalavailablew )  //Just to make a row
 		{
 			//Process previously added cell
-			computeRow(row,fixedheight,totalavailablew,sofarusedw,cellpadding);
-			row = [];
+			trimRowToFit(fixedheight,row,totalavailablew);
+			row = new Array();
 			sofarusedw = 0;
 			rownum = rownum + 1;
 		}
-		sofarusedw = sofarusedw + neww;// + cellpadding;
+		sofarusedw = sofarusedw + neww;
 		row.push( cell );		
 		cell.data( "rownum",rownum);
 	});
-	$.each( row, function()
-			{
-				var div = this;
-				var a = div.data("aspect");
-				div.css("line-height",fixedheight + "px"); 
-				div.height(fixedheight);
-				$("img.imagethumb",div).height(fixedheight);
-				var neww = fixedheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));
-	});
 	
-	//console.log("Resized grid");
+	trimRowToFit(fixedheight,row,totalavailablew);
+
+	
 	checkScroll();
 	
 }
@@ -992,22 +974,49 @@ A = W / H
 H = W / A
 W = A * H
 */
-computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
+trimRowToFit = function(targetheight,row,totalavailablew)
 {
-			var growthratiow = (totalavailablew - sofarusedw) / sofarusedw;
-			$.each( row, function()
-			{
-				var div = this;
-				var a = div.data("aspect");
-				var oldw = a * fixedheight;
-				var ratiow = oldw + (oldw * growthratiow); //Here is the magic
-				var newheight = Math.floor(ratiow / a); //There cells should all be the same height
-				div.css("line-height",newheight + "px"); 
-				div.height(newheight);
-				$("img.imagethumb",div).height(newheight);
-				var neww = newheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));  //The 1 is for rounding errors
-			});
+	var totalwidthused = 0;
+	$.each( row, function()
+	{
+		var div = this;
+		var usedw = div.data("targetw");
+		totalwidthused = totalwidthused + usedw ;
+	});
+    var existingaspect = targetheight / totalwidthused; //Existing aspec ratio
+	var overwidth = totalwidthused - totalavailablew;
+	var changeheight = existingaspect * overwidth;
+	var fixedheight = targetheight - changeheight;
+	
+	//The overwidth may not be able to be divided out evenly depending on number of 
+	var totalwused = 0;
+	$.each( row, function()
+	{
+		var div = this;
+		div.css("line-height",fixedheight + "px"); 
+		div.css("height",fixedheight + "px");
+		$("img.imagethumb",div).height(fixedheight);
+		
+		var a = div.data("aspect");
+		var neww = (fixedheight) * a ;
+		
+		neww = Math.round(neww);//make sure we dont round too high across lots of widths
+		div.css("width",neww + "px");
+		
+		totalwused = totalwused + neww;		
+	});
+	
+	if( totalwused != totalavailablew ) //Deal with fraction of a pixel
+	{
+		//We have a fraction of a pixel to add to last item
+		var toadd = totalavailablew - totalwused;
+		var div = row[row.length-1];
+		var w = div.width();
+		w = w + toadd;
+		div.css("width",w + "px");
+	}
+	
+			
 }
 	
 
