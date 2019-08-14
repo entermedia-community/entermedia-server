@@ -1405,17 +1405,22 @@ uiload = function() {
 			//close
 			$(".col-main").removeClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",false,function(){
-				$(window).trigger( "resize" );
+				
 			});
-			$("#filterstoggle").show();
+			$("#filterstoggle").show( "fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
+			
 		}
 		else {
 			//open
-			$("#filterstoggle").hide();
+			$("#filterstoggle").hide("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",true,function(){
-				$(window).trigger( "resize" );
+				
 			});
 			
 		}
@@ -1428,9 +1433,11 @@ uiload = function() {
 			//close
 			$("#col-left").removeClass("leftopen");
             $(".col-main").removeClass("leftopen");
-            $("#lefttoggle").show();
+            $("#lefttoggle").show("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			saveProfileProperty("leftbarstatus",false,function(){
-				$(window).trigger( "resize" );
+				
 			});
 		}
 		else {
@@ -1438,9 +1445,11 @@ uiload = function() {
             
             $("#col-left").addClass("leftopen");
             $(".col-main").addClass("leftopen");
-            $("#lefttoggle").hide();
+            $("#lefttoggle").hide("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			saveProfileProperty("leftbarstatus",true,function(){
-				$(window).trigger( "resize" );
+				
 			});
 		}
 		return false;

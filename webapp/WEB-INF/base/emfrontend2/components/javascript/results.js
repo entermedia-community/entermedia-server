@@ -765,7 +765,8 @@ $(document).ready(function(url,params)
 
 	$(document).on('domchanged',function() 
 	{
-		gridResize(); //This calls checkScroll. Makes sure this is last after any actions		
+		gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+		console.log("resized")		
 	});
 	$(window).on('resize',function(){
 		gridResize();
