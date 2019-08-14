@@ -11,8 +11,6 @@
 	font-size: 1.1em;
 }
 
-
-
 .emthumbbox {
 	margin-bottom: 4px;
 	float:left;
@@ -62,14 +60,26 @@ td.resultstablecell .proxythumb {
 }
 
 
-.emboxthumb
-{
-	width: 200px;
+.emboxthumb {
+	width: calc(33% - 20px);
 	height: 262px;
 	text-align: center;
 	border-bottom:1px solid #666;
 	padding-bottom:15px;
+	overflow: hidden;
 }
+@media (min-width: 1200px) {
+	.emboxthumb {
+		width: calc(25% - 20px);	
+	}
+}
+
+@media (min-width: 1400px) {
+	.emboxthumb {
+		width: calc(20% - 20px);	
+	}
+}
+
 
 .proxythumb .loadingbar {
     height: 8px;
@@ -100,8 +110,8 @@ div.emdropshadow {
     display: inline-block;
     min-width: 40px;
     min-height: 40px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 span.emdropshadow {
@@ -157,41 +167,6 @@ div#hiddenoverlay .playerarea {
 
 
 /* STACKED VIEW OVERLAY */
-#hiddenoverlay div.jp-audio {
-
-	margin-left: auto;
-	margin-right: auto;
-	position: relative;
-    ##top: 50%;
-    ##transform: translateY(-50%);
-    top: 360px;
-    
-
-}
-
-#hiddenoverlay div.jp-playlist {
-
-	width: 100%;
-
-}
-.goleftclick, .gorightclick {
-	display: inline;
-}  
-
-.goleftclick span.glyphicon {
-
-	font-size: 30px;
-	color: rgb(255,255,255);
-	display: inline;
-}
-
-.gorightclick span.glyphicon {
-
-	font-size: 30px;
-	color: rgb(255,255,255);
-	display: inline;
-}
-
 
 #emthumbholder img.mimethumb {
 
@@ -389,19 +364,21 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb
 
 .masonry-grid
 {
-padding:4px;
-background-color: #eee;
+	padding:0px;
+	margin:0px;
+	background-color: #fff;
 }
 
 .masonry-grid-cell
 {
 	position: relative;
 	padding: 0;
-	border: 0;
 	text-overflow: ellipsis;
-	min-width:200px;
 	overflow:hidden;
+	border: 4px solid white;
 }
+
+
 .masonry-grid-cell .grid-thumbimage
 {
 	vertical-align: middle;
@@ -411,10 +388,6 @@ background-color: #eee;
 .masonry-grid-cell .imagearea
 {
 	overflow: hidden;
-}
-.masonry-grid-cell #emthumbholder img
-{
-	border-radius: 0 0 .2em .2em;
 }
 
 .masonry-grid-cell .gallery-status-info
@@ -532,10 +505,10 @@ background-color: #eee;
 }
 
 .overlay-close.largeicon {
-	font-size:22px;
+	font-size:20px;
 	color: #efefef;
 	position: fixed;
-	right:21px;
+	right:28px;
 	top: 13px;
 	z-index: 10001;
 	cursor:pointer;
@@ -632,7 +605,6 @@ span.glyphicon-triangle-left.overlay-nav {
     background: #f9f9f9;
     margin: 0;
     margin: 10px;
-    width: 230px;
     display: inline-block;
     text-align: center;
     position:relative;
@@ -776,10 +748,7 @@ max-width:200px;
 
 /* VOTING */
 #assetVoteCount {
-    color: white;
     text-align: center;
-    font-size: 12px;
-    padding:5px;
 }
 #asset-viewer-status {
     background: #f7f7f7;
@@ -810,10 +779,12 @@ max-width:200px;
 }
 #assetVoteCount .star {
     display: inline-block;
+    line-height: 1;
 }
 #assetVoteCount .star.full {
     color:#FEDC71;
 }
+
 #assetVoteCount .voting-label { 
 	line-height: 1.5;
 	display: inline-block; 
@@ -863,9 +834,6 @@ max-width:200px;
 
 
 
-.dashboardcontainer {
-	padding:20px 0 20px;
-}
 
 
 .assetpanel-sidebar .gallery-thumb.selected-asset {
