@@ -1263,27 +1263,30 @@ public class BaseElasticSearcher extends BaseSearcher
 
 
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-				text.analyzer("lowersnowball");
-				text.defaultField("description");
-				
-				
-				
-				QueryStringQueryBuilder start = QueryBuilders.queryStringQuery("+(" + inValue + "*)");
-				start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+                text.analyzer("lowersnowball");
+                text.defaultField("description");
+                
 
-				start.analyzer("lowersnowball");
-				start.defaultField("description");
-				
-				
+				String fuzzy = "+(" + valueof + "*)";
+                QueryStringQueryBuilder start = QueryBuilders.queryStringQuery(fuzzy);
+                start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+                start.analyzer("lowersnowball");
+                start.defaultField("description");
+                
 
-				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
-				text2.analyzer("lowersnowball");
-				text2.operator(MatchQueryBuilder.Operator.AND);
-				
-//				MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery("description", valueof.toLowerCase());
-//				phrase.maxExpansions(75);
-//				phrase.analyzer("lowersnowball");
+                
+//                MatchQueryBuilder start = QueryBuilders.matchPhrasePrefixQuery("description",fuzzy);
+//                //start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+//                start.analyzer("lowersnowball");
+//                //start.defaultField("description");
+                
+                MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", query);
+                text2.analyzer("lowersnowball");
+                text2.operator(MatchQueryBuilder.Operator.AND);
+                
+                
+                
 				
 				
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
