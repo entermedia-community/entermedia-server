@@ -2310,69 +2310,56 @@ public class MediaArchive implements CatalogEnabled
 		}
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 	
 	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName)
+	{
+		return asLinkToPreview(inAsset,inCollectionId,inGeneratedName,false);
+	}
 	
-	
+	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName, boolean isExternalLink)
 	{
 		if (inAsset == null)
 		{
 			return null;
 		}
-		String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String finalroot = null;
-		if (cdnprefix == null)
+		
+		String cdnprefix = "";
+		if (isExternalLink)
 		{
-			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-			cdnprefix = rutil.getSiteRoot();
-			if (cdnprefix.contains("localhost"))
+			cdnprefix = getCatalogSettingValue("cdn_prefix");
+			if (cdnprefix == null)
 			{
-				cdnprefix = "";
+				RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+				cdnprefix = rutil.getSiteRoot();
+				//				if (cdnprefix.contains("localhost")) //Prefix no longer used for internal checks
+				//				{
+				//					cdnprefix = "";
+				//				}
 			}
-			//			//TODO: Look up the home variable?
-			//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
-			//			Data prefix = (Data)searcher.searchById("cdn_prefix");
-			//			if( prefix == null)
-			//			{
-			//				prefix = searcher.createNewData();
-			//				prefix.setId("cdn_prefix");
-			//			}
-			//			prefix.setValue("value", cdnprefix);
-			//			searcher.saveData(prefix);
-			//			getCacheManager().clear("catalogsettings");
 		}
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-		if(inCollectionId != null) {
+		if (inCollectionId != null)
+		{
 			downloadroot = "/services/module/librarycollection/downloads/";
-		} else {
-			downloadroot = "/services/module/asset/downloads/";
-
 		}
-		
+		else
+		{
+			downloadroot = "/services/module/asset/downloads/";
+		}
+
 		if (inGeneratedName.contains("."))
 		{
-			if(inCollectionId != null) {
-
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/"+ inCollectionId +"/" + sourcepath + "/" + inGeneratedName;
-			} else {
+			if (inCollectionId != null)
+			{
+				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + inGeneratedName;
+			}
+			else
+			{
 				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + inGeneratedName;
-
 			}
 		}
 		else
