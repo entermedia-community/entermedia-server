@@ -58,14 +58,12 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FuzzyQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
@@ -87,7 +85,6 @@ import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.location.Position;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -125,7 +122,29 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
 	protected CacheManager fieldCacheManager;
+	protected ArrayList<String> fieldSearchTypes ;
 	
+	
+	
+
+	public ArrayList<String> getSearchTypes()
+	{
+		if (fieldSearchTypes == null)
+		{
+			fieldSearchTypes = new ArrayList();
+			
+		}
+
+		return fieldSearchTypes;
+	}
+
+	public void setSearchTypes(ArrayList<String> inSearchTypes)
+	{
+		fieldSearchTypes = inSearchTypes;
+	}
+	
+	
+
 	public CacheManager getCacheManager()
 	{
 		return fieldCacheManager;
@@ -241,7 +260,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			long start = System.currentTimeMillis();
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-			search.setTypes(getSearchType());
+			
+			if(getPropertyDetails().getSearchTypes() != null) {
+				search.setTypes(getPropertyDetails().getSearchTypes().split(","));
+			}
+			else {
+				search.setTypes(getSearchType());
+			}
+			
+			
+			
 			if (isCheckVersions())
 			{
 				search.setVersion(true);

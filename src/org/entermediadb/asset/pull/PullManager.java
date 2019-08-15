@@ -132,6 +132,12 @@ public class PullManager implements CatalogEnabled
 			{
 				continue;
 			}
+			if( !Boolean.parseBoolean( node.get("enabled") ) )
+			{
+				inLog.info(node.getName() + " disabled. Skipping ");
+				continue;
+			}
+			
 			Date now = new Date();
 			HttpSharedConnection connection = new HttpSharedConnection();
 			Map<String,String> params = new HashMap();
@@ -147,28 +153,29 @@ public class PullManager implements CatalogEnabled
 					log.error("entermediakey is required");
 					continue;
 				}
-				if (node.get("lastpulldate") != null)
+				Object dateob = node.getValue("lastpulldate");
+				if( dateob == null)
 				{
-					Object dateob = node.getValue("lastpulldate");
-					Date pulldate = null;
-					if (dateob instanceof String)
-					{
-						pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-					}
-					else
-					{
-						pulldate = (Date) node.getValue("lastpulldate");
-					}
-
-					if (pulldate.getTime() + (1000L*30L) > now.getTime() )
-					{
-						log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
-						inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
-						continue;
-					}
-					long ago = now.getTime() - pulldate.getTime();
-					params.put("lastpullago", String.valueOf( ago ) ); 
+					throw new OpenEditException("lastpulldate must be set on " + node.getName());
 				}
+				Date pulldate = null;
+				if (dateob instanceof String)
+				{
+					pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+				}
+				else
+				{
+					pulldate = (Date) node.getValue("lastpulldate");
+				}
+
+				if (pulldate.getTime() + (1000L*30L) > now.getTime() )
+				{
+					log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
+					inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
+					continue;
+				}
+				long ago = now.getTime() - pulldate.getTime();
+				params.put("lastpullago", String.valueOf( ago ) ); 
 				
 				Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
 				boolean foundsomething = false;
@@ -233,8 +240,7 @@ public class PullManager implements CatalogEnabled
 			node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			node.setValue("lasterrordate", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-			log.error("Initial data server error " + sl);
-			return -1;
+			throw new OpenEditException("Initial data server error " + sl + " on " + encoded);
 		}
 		String returned = EntityUtils.toString(response2.getEntity());
 		//log.info("returned:" + returned);
@@ -243,7 +249,6 @@ public class PullManager implements CatalogEnabled
 		boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
 
 		long assetcount = 0;
-		int page = 1;
 		Map response = (Map) parsed.get("response");
 		String ok = (String) response.get("status");
 		if (ok != null && ok.equals("ok"))
