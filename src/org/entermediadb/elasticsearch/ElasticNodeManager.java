@@ -770,11 +770,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					}
 				}
 
-				if (health != null && health.getNumberOfNodes() > 1)
-				{
-					settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
-				}
-
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 
 				/*
@@ -798,7 +793,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					log.info("index created " + index);
 				}
 				createdIndex = true;
-
 			}
 			catch (RemoteTransportException exists)
 			{
@@ -826,6 +820,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				log.error("Could not refresh shards");
 			}
+			//TODO: Make sure we are setting replicas and master nodes
+//			if (health != null && health.getNumberOfNodes() > 1)
+//			{
+//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+//			}
 		}
 
 		//Check the number of nodes
