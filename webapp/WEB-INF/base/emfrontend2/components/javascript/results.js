@@ -964,7 +964,10 @@ gridResize = function()
 		cell.data( "rownum",rownum);
 	});
 	
-	trimRowToFit(fixedheight,row,totalavailablew);
+	if (row.length>1) {
+		trimRowToFit(fixedheight,row,totalavailablew);
+	}
+	
 
 	
 	checkScroll();
@@ -978,6 +981,7 @@ W = A * H
 */
 trimRowToFit = function(targetheight,row,totalavailablew)
 {
+
 	var totalwidthused = 0;
 	$.each( row, function()
 	{
