@@ -88,7 +88,7 @@ public class assetSearchSecurity implements SearchSecurity
 				if(inQuery.getTermByDetailId("editstatus") == null)
 				{
 					required.addNot("editstatus", "7");
-					required.addNot("deleted", "false");
+					required.addNot("deleted", "true");
 				}
 			}
 			
