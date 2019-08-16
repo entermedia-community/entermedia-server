@@ -739,6 +739,13 @@
       <language id="en"><![CDATA[Is Locked]]></language>
     </name>
   </property>   
+  
+   <property id="deleted" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+   Deleted
+  </property>   
+  
+  
+  
   <property id="emidwritten" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
     <name>
       <language id="en"><![CDATA[EnterMedia ID has been stored in original]]></language>
