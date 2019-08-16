@@ -503,14 +503,16 @@ $(document).ready(function(url,params)
 		
     }
     
+
     refreshresults = function() {
-		var resultsdiv = $("#resultsdiv");
-		if (resultsdiv.length) {
-	        var href = home+'/views/modules/asset/index.html';
+		var resultsdiv = $("#searchlayout");
+			if (resultsdiv.length) {
+	        var href = home+'/views/search/index.html';
 	        var searchdata = resultsdiv.data();
 	        searchdata.oemaxlevel = 1;
+			
 	        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
-	            $('#searchlayout').html(data);
+	            $('#filteredresults').html(data);
 	            $(window).trigger( "resize" );
 	        }
 	        });
@@ -766,7 +768,6 @@ $(document).ready(function(url,params)
 	$(document).on('domchanged',function() 
 	{
 		gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-		console.log("resized")		
 	});
 	$(window).on('resize',function(){
 		gridResize();

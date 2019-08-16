@@ -1,4 +1,7 @@
 #set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeid"))
+#end
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 	#if(!$categoryid)
@@ -16,7 +19,12 @@
 		#if($category)
 			$context.putPageValue("category",$category)
 		#end
+		#if(!$nodeID)
+			#set($nodeID = $categoryid)
+		#end
 	#end
+#else
+	#set($categoryid = $category.getId())
 #end
 
 ##Sidebars
@@ -26,25 +34,18 @@
 	#set( $leftbarstatus = false)
 #end
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
- 	
 
-<div class="cols-main #if ($module) cols-$module #end searchlayout2" id="searchlayout"  data-nodeid="$!nodeID" data-collectionid="$!collectionid">
-	<div class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end #if ($filtersbarstatus!=false) filtersopen #end " id="maincontent">
+<div id="searchlayout" class="cols-main #if ($module) cols-$module #end searchlayout2" 
+	 data-nodeID="$!nodeID" data-collectionid="$!collectionid" data-module="asset"
+	 data-hitssessionid="$!hits.sessionId" data-searchtype="asset" data-hitsperpage="$!hits.hitsPerPage">
+	<div id="maincontent" class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end #if ($filtersbarstatus!=false) filtersopen #end ">
 			<div id="emresultscontainer" >
-			#if( $hits )
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("showcaption", "true")
-				$context.putPageValue("hideheader", "true")
 		    	$pages.include("$apphome/components/results/index.html",$context) 
-		   #else 
-				$pages.include("$apphome/views/modules/asset/search/all.html") 
-			#end
 			</div>		
 	</div>
-	<div class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end" id="col-filters">
+	<div id="col-filters" class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end">
 		<div class="col-main-inner">
-		
-		$pages.include("$apphome/components/filters/sidebar.html", $context)
+			$pages.include("$apphome/components/filters/sidebar.html", $context)
 		</div>
 	</div>
 </div>

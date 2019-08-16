@@ -37,10 +37,11 @@
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 #set( $module = $content.module)
 
-$pages.includeContent()
-
+<div id="filteredresults" class="layoutmaincontent">
+	$pages.includeContent()
+</div>
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-<div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end" id="col-left">
+<div id="col-left" class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end">
 	<div class="col-main-inner">
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
 	</div>

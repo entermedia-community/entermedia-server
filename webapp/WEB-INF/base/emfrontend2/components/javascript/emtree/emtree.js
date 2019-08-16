@@ -106,7 +106,7 @@ $(document).ready(function()
                 }
                 
                 prefix = home + "/views/modules/librarycollection/showcategory.html";
-                maxlevel = 2;
+                //maxlevel = 2;
             }
             else 
             {
