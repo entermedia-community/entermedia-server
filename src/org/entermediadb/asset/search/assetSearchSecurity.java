@@ -61,39 +61,42 @@ public class assetSearchSecurity implements SearchSecurity
         
         
 		//log.info( "security filer enabled "  + enabled );
-		
 
 		//check for category joins
 		if (!inQuery.hasChildren())
 		{
-			
-			
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
 			String profilefilters = profile.get(inSearcher.getSearchType() + "showonly");
-			if(profilefilters != null && profilefilters.length() != 0) {
-				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
+			if(profilefilters != null && profilefilters.length() != 0) 
+			{
+				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery); //TODO: Depregate this approach
 			}
 			
-//			if (profile != null && profile.isInRole("administrator"))
-//			{
-//				return inQuery;					
-//			}
-			
-			SearchQuery required = inSearcher.createSearchQuery();
+			SearchQuery required = null;
 
-			//TODO: Add userprofile asset type filtering
-			if( inPageRequest.hasPermission("hidedeletedassets"))
+			if(inPageRequest.hasPermission("hidedeletedassets"))
 			{
 				if(inQuery.getTermByDetailId("editstatus") == null)
 				{
+					required = inSearcher.createSearchQuery();
 					required.addNot("editstatus", "7");
 					required.addNot("deleted", "true");
+					if (profile != null && profile.isInRole("administrator"))
+					{
+						inQuery.addChildQuery(required); //Short cut
+						return inQuery;
+					}
 				}
 			}
-			
-			
-			
+			if (profile != null && profile.isInRole("administrator"))
+			{
+				return inQuery;					
+			}
+			if( required == null)
+			{
+				required = inSearcher.createSearchQuery();
+			}
 			
 			Collection allowedassetstypes = profile.getValues("hideassettype");
 			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
