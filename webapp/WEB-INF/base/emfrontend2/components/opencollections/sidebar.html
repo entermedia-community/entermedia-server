@@ -5,9 +5,9 @@
 		data-target="opencollectionscontent">
 		<i class="fas 
 		#if($userprofile.minimizeopencollectionscontent == "false") 
-				 fa-caret-down 
+				 fa-caret-right 
 		  	#else 
-		  		 fa-caret-right 
+		  		 fa-caret-down 
 		  	#end 
 		 caret"></i>
 		<span>[[Recent Collections]]</span>
@@ -31,7 +31,7 @@
 				data-targetdiv="left-col-opencollections"
 			>
 				<div class="collectionrow collectionrowfavorite">
-					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
 					 	class="collectionbox #if ($selected ) selected #end favorite"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
@@ -51,7 +51,7 @@
 				data-targetdiv="left-col-opencollections"
 			>
 				<div class="collectionrow">
-					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
 					 	class="collectionbox #if ($selected ) selected #end"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
