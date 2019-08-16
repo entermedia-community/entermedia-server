@@ -4,10 +4,10 @@
 	<div  class=" sidebar-component-header sidetoggle"
 		data-target="opencollectionscontent">
 		<i class="fas 
-		#if($userprofile.minimizeopencollectionscontent == "false") 
-				 fa-caret-right 
+		#if($userprofile.minimizeopencollectionscontent) 
+				 fa-caret-down 
 		  	#else 
-		  		 fa-caret-down 
+		  		 fa-caret-right 
 		  	#end 
 		 caret"></i>
 		<span>[[Recent Collections]]</span>
