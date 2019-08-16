@@ -40,7 +40,7 @@
 	
 
 	
-	<form  	name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" 
+	<form  	name="filterform" id="filterform" class="autosubmitform novalidate em-widget-content ajaxform" 
 			data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
 		data-oemaxlevel="2" 
@@ -48,7 +48,7 @@
 	#else
 		data-oemaxlevel="1" 
 		action="$home$apphome/views/search/search.html" 
-	#end
+	#end 
 	>
 	#if( $librarycol)
 		<input name="collectionid" type="hidden" value="$librarycol.getId()">
