@@ -75,10 +75,10 @@ public class assetSearchSecurity implements SearchSecurity
 				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
 			}
 			
-			if (profile != null && profile.isInRole("administrator"))
-			{
-				return inQuery;					
-			}
+//			if (profile != null && profile.isInRole("administrator"))
+//			{
+//				return inQuery;					
+//			}
 			
 			SearchQuery required = inSearcher.createSearchQuery();
 
@@ -88,6 +88,7 @@ public class assetSearchSecurity implements SearchSecurity
 				if(inQuery.getTermByDetailId("editstatus") == null)
 				{
 					required.addNot("editstatus", "7");
+					required.addNot("deleted", "false");
 				}
 			}
 			
