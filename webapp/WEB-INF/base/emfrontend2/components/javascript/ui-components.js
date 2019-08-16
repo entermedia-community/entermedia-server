@@ -300,7 +300,7 @@ uiload = function() {
 				e.preventDefault();
 				var form = $(this);
 
-				if (form.validate) {
+				if (form.validate && !form.hasClass("novalidate")) {
 					form.validate({
 						ignore : ".ignore"
 					});
