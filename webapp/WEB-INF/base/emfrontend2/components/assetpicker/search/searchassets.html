@@ -1,6 +1,7 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
-
+#set($hits = $pickerhits)
+$context.putPageValue("hits",$hits)
 <div id="search-categories" >
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("asset") )

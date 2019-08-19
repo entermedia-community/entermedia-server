@@ -21,8 +21,6 @@ $pages.include("./pages.html", $context)
 <table  id="assetpicker-results-table" class="emdata table table-striped table-hover" >
 	<tr class="tableheader" >
 	<th>[[Preview]]</th>
-
-	<th>[[Name]]</th>
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end
@@ -33,9 +31,6 @@ $pages.include("./pages.html", $context)
 			<tr   data-assetid="$hit.id"  class="selectrowclick #if($selectedid == $hit.id) emhighlight #end">
 				<td>
 					$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
-				</td>
-				<td  data-nodeid="$hit.id" >
-				$hit.name 
 				</td>
 				#foreach( $detail in $details)
 					<td style="padding:4px;">

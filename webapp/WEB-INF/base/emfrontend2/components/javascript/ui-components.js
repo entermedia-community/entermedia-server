@@ -423,6 +423,7 @@ uiload = function() {
 		var hidescrolling = dialog.data("hidescrolling");
 
 		var width = dialog.data("width");
+		var maxwidth = dialog.data("maxwidth");
 		/*if (!width) {
 			width = "800";
 		}*/
@@ -457,6 +458,9 @@ uiload = function() {
 		modaldialog.load(link, options, function() {
 			if (width) {
 				$(".modal-lg").css("min-width", width + "px");
+			}
+			if (maxwidth) {
+				$(dialog).css("max-width", maxwidth + "px");
 			}
 			// $(".modal-lg").css("min-height",height + "px" );
 			
