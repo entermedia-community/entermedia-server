@@ -110,8 +110,14 @@
 
 <a href="$href"
 	class="badge badge-light">$term.getDetail(): 
-	#foreach( $val in $term.getValueCollection() ) 
-		#if( $foreach.count > 1) or #end
+	#foreach( $val in $term.getValueCollection() )
+		
+	 	#if ($term.getDetail().getId() == "keywords")
+			#if( $foreach.count > 1) [[and]] #end
+		#else
+			#if( $foreach.count > 1) [[or]] #end
+		#end
+		
 		#if($term.getDetail().isList())
 			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
 		#elseif($term.getDetail().isBoolean())
@@ -149,7 +155,7 @@
 		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
 	#end
 	#if ($nodeID)
- 		#set($href = $href + "&nodeID=${nodeID}")
+ 		#set($href = $href + "&nodeID=$!{nodeID}")
 	#end
 	<a class="clearfilters" href="$href">[[Clear]]</a>
 #end
