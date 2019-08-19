@@ -426,8 +426,11 @@ uiload = function() {
 		/*if (!width) {
 			width = "800";
 		}*/
-
-		var id = "modals";
+		var id = dialog.data("dialogid");
+		if (!id) {
+			id = "modals";	
+		}
+		
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
 			$("body").append(

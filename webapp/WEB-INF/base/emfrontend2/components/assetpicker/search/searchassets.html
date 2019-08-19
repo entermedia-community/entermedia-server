@@ -1,7 +1,6 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 
-
 <div id="search-categories" >
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("asset") )
@@ -34,12 +33,10 @@
 	
 	
 	jQuery("#assetsearchresults").on("click", ".selectrowclick", function() {
-		
 		var assetid = jQuery(this).data('assetid');
-		
 		jQuery("#" + targetdiv).attr("value", assetid);
 		jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
-			jQuery(".modal").modal('hide');
+			jQuery("#assetsearchdialog").modal('hide');
 	});
 	});
 </script>

@@ -88,7 +88,7 @@ $context.putPageValue("longform",false)
 				#end
 			</td>
 			
-			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end" >
+			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end emdatafieldtype" >
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE

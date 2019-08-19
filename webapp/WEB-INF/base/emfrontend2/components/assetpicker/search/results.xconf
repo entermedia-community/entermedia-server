@@ -3,17 +3,14 @@
 <page>
   
   <path-action name="DataEditModule.loadHits">
+  	<property name="hitsname">pickerhits</property>
   </path-action>
   
   <path-action name="DataEditModule.loadPageOfSearch">
-
+	<property name="hitsname">pickerhits</property>
   </path-action>
-		<property name="searchtype">asset</property>
   
-
-  
-  
- 
+  <property name="searchtype">asset</property>
 
 
 </page>

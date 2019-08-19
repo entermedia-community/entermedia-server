@@ -20,13 +20,20 @@
 
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
 
-<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog  btn btn-primary" >[[Browse]]</a> 
+<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" 
+	data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}"
+	data-dialogid="assetsearchdialog" 
+	data-width="90%" data-height="90%"  
+	class="emdialog  btn btn-primary" >[[Browse]]</a> 
 
 [[or]] 
 <span class="btn btn-sm btn-primary btn-default btn-file">
     [[Choose a File]] <input type="file" name="file.${detail.getId()}" id="${detail.id}-file" onchange='$("#${detail.id}-file-info").html($(this).val());'>
 </span>
 <span id="${detail.id}-file-info" style="font-size:90%"></span>
+
+
+
 ##<input class="render-choose-file btn-btn-sm btn-primary" type="file" name="file.${detail.getId()}" />
 
 
