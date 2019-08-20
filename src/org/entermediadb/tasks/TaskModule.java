@@ -32,6 +32,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class TaskModule extends BaseMediaModule
 {
@@ -84,7 +85,12 @@ public class TaskModule extends BaseMediaModule
 			if( userq == null) 
 			{
 				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
-				builder.orgroup("projectstatus", Arrays.asList("open","critical"));
+				builder.orgroup("projectstatus", "open|critical|completed");
+				
+				//Within 6 months?
+				Date old = DateStorageUtil.getStorageUtil().addDaysToDate(new Date(), 30*-6);
+				builder.after("creationdate",old);
+				
 				userq = builder.getQuery();
 				//Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
 //				if( filter != null && !filter.isEmpty())
@@ -148,6 +154,7 @@ public class TaskModule extends BaseMediaModule
 			if( !values.isEmpty())
 			{
 				Collections.sort(values);
+				Collections.reverse(values);
 			}
 			inReq.putPageValue("goalhits" + p, values);
 		}
@@ -1060,12 +1067,11 @@ public class TaskModule extends BaseMediaModule
 		}
 		
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
-		if( seeuser == null || seeuser.isEmpty())
+		if( seeuser != null)
 		{
-			seeuser = inReq.getUserName();
+			builder.match("userlikes", seeuser);
 		}
-		builder.match("userlikes", seeuser);
-		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		builder.orgroup("projectstatus", "open|critical");
 		HitTracker likesopen = builder.search();
 		//sort users by date?
 		GregorianCalendar thismonday = new GregorianCalendar();
