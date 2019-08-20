@@ -315,7 +315,7 @@ uiload = function() {
 				if (!targetdiv) {
 					targetdiv = form.attr("targetdiv");
 				}
-				targetdiv = targetdiv.replace(/\//g, "\\/");
+				targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
 
 				if (form.hasClass("showwaiting")) {
 					var app = $("#application");
@@ -347,8 +347,17 @@ uiload = function() {
 						 
 						// $("#" + targetdiv).replaceWith(data);
 					},
-					success : function(result, status, xhr, $form) {
-						$("#" + $.escapeSelector(targetdiv)).html(result);
+					success : function(result, status, xhr, $form) 
+					{
+						var targetdivinner = form.data("targetdivinner");
+						if( targetdivinner )
+						{
+							$("#" + $.escapeSelector(targetdivinner)).html(result);
+						}
+						else
+						{		
+					 		$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+					 	}
 						$(window).trigger( "resize" );
 					},
 					data : data
@@ -472,8 +481,10 @@ uiload = function() {
 			modaldialog.modal({
 				keyboard : modalkeyboard,
 				backdrop : true,
+				closeExisting: false,
 				"show" : true
 			});
+						
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
 			if (justok != null) {
