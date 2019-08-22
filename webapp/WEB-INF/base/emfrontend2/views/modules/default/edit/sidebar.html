@@ -1,8 +1,8 @@
-#set( $moduleid = $context.findValue("module") )
+#set($moduleid = $context.findValue("module") )
 #set($viewid = $context.findValue("viewid"))
 #set($viewpath = $context.findValue("viewpath"))
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $viewonly = $context.getRequestParameter("preview" ) )
+#set($origURL = $context.getRequestParameter("origURL" ) )
+#set($viewonly = $context.getRequestParameter("preview" ) )
     
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false") )
@@ -16,6 +16,8 @@ $context.putPageValue("view", $viewpath)
         #set($lastselected = $userprofile.last_selected_module )
     #end
     #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
+
 <ul id="assetmenu" class="sidebar-list">
       
               #foreach( $target in $views)       
@@ -28,14 +30,19 @@ $context.putPageValue("view", $viewpath)
                    #if( $viewonly)
 	                   #set( $editing = false)
                    #end
+
+
                   <li class="#if( $editing ) current #end projects-$target.id" byassettype="$!target.byassettype">
-                  		
-                  	#if( $target.rendertable )
-			        	 <a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
-	                     <span class="icon"></span><span class="text"> $target</span></a>
+					#if( $target.rendertable )
+			        	<a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+	                    	<span class="icon"></span>
+							<span class="text"> $target</span>
+						</a>
                   	#else
                       	<a class="tab" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
-                        	<span class="icon"></span><span class="text"> $target</span></a>
+                        	<span class="icon"></span>
+							<span class="text"> $target</span>
+						</a>
                     #end
                   </li>
                   #end

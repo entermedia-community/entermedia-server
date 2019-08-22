@@ -55,7 +55,7 @@
 	#if( !$edit || $edit == "false")
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		#set( $viewdata = $searcher.getViewData($viewid) )
-		<h4>$!context.getText($viewdata) </h4>
+		<h4 style="margin-top:10px;">$!context.getText($viewdata) </h4>
 		
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		

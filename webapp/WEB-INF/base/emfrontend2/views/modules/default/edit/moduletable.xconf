@@ -1,4 +1,3 @@
 <page>
-<layout />
-	<inner-layout />
+<property name="searchtype" />
 </page>
