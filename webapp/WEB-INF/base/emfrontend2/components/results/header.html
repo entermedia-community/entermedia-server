@@ -18,7 +18,9 @@
 	#if (!$catid && $nodeID)
 		#set( $catid = $nodeID )
 	#end
-	$context.putPageValue("catid",$catid)
+	#if ($catid)
+		$context.putPageValue("catid",$catid)
+	#end
 	#if( $catid && !$category)
 		#set( $category = $mediaarchive.getData("category",$catid) )
 	#end
