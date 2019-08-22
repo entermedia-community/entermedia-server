@@ -7,7 +7,7 @@
 				    	#set  ( $ismultimode = false)     
 				    #end
 				#set( $selectedindex = 1)
-				$!dialoghis.setPage($dialoghits.pageOfId($asset.id))
+				
 				#foreach($hit in $dialoghits.getPageOfHits())
 					#set( $count = $dialoghits.getPage()+-1 )
 					#set( $count = $count*$dialoghits.getHitsPerPage() )	
@@ -65,7 +65,7 @@
     </div>
     <ol class="carousel-indicators">
             <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
-            <li style="padding:4px; width:120px;" >$selectedindex [[of]] $dialoghits.size()</li>
+            <li style="padding:4px; width:120px;" >$dialoghits.getPage() [[of]] $dialoghits.getTotalPages()</li>
             <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
     </ol>
     

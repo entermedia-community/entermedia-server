@@ -34,7 +34,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -1317,8 +1316,17 @@ String viewbase = null;
 			trackerCopy.getSearchQuery().setHitsName(othername);
 			inReq.putSessionValue(trackerCopy.getSessionId(), trackerCopy);
 		}
+		
+		String pageheight = inReq.getRequestParameter("pageheight");
+		if (pageheight != null) 
+		{
+			trackerCopy.setHitsPerPageHeight(pageheight, 150);
+		}
+
+		
 		inReq.putPageValue(trackerCopy.getHitsName(), trackerCopy);
 		inReq.setRequestParameter("hitssessionid", trackerCopy.getSessionId());
+		
 		return trackerCopy;
 	}
 
@@ -2047,5 +2055,20 @@ String viewbase = null;
 
 		return filters;
 	}
+	
+	public void setPageById(WebPageRequest inReq) 
+	{
+		String name = inReq.findValue("hitsname");
+		String pagevalue = inReq.findValue("pagevalue");
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		Data data = (Data) inReq.getPageValue(pagevalue);
+	
+		hits.setPage(hits.pageOfId(data.getId()));
+	
+		
+	}
+	
+	
+	
 
 }

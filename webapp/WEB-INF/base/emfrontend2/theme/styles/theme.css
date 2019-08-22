@@ -4861,7 +4861,7 @@ a.collectionbox.favorite
 .carousel-indicators {
     position: absolute;
     right: 0;
-    bottom: 10px;
+    bottom: 0;
     left: 0;
     z-index: 15;
     display: -ms-flexbox;
@@ -4869,8 +4869,7 @@ a.collectionbox.favorite
     -ms-flex-pack: center;
     justify-content: center;
     padding-left: 0;
-    margin-right: 0;
-    margin-left: 0;
+    margin: 0;
     list-style: none;
 }
 
@@ -4879,21 +4878,26 @@ a.collectionbox.favorite
     -ms-flex: 0 1 auto;
     flex: 0 1 auto;
     width: 30px;
-    height: 30px;
+    height: 20px;
     margin-right: 3px;
     margin-left: 3px;
     text-indent: 0px;
     text-align:center;
-    background-color: rgba(255,255,255,.3);
+    background-color: rgba(255,255,255,.4);
+	cursor:auto;
+}
+.carousel-indicators .arrowenabled
+{
+	background-color: #ccc;
+	cursor:pointer;
 }
 
  /**   Xvisibility:hidden; */
-
-.carousel-indicators li#leftpage:hover, .carousel-indicators li#rightpage:hover
+.carousel-indicators li#leftpage:hover, 
+.carousel-indicators li#rightpage:hover
 {
 	background-color: #efefef;
 	cursor:pointer;
-	
 }
 
 .themeeditor .emdatafield {
@@ -4903,8 +4907,6 @@ a.collectionbox.favorite
 .detail-note {
 	font-size:.9rem; color:#606060;
 }
-
-
 
 .timelineviewer {
 	background-color: #efefef;

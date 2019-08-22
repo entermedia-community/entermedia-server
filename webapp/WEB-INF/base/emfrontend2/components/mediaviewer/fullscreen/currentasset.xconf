@@ -1,6 +1,10 @@
 <page>
-	<path-action name="DataEditModule.loadHitsCopy"  >
+	<path-action name="DataEditModule.loadHitsCopy">
 		<property name="searchtype">asset</property>
+		<property name="hitsname">dialoghits</property>
+	</path-action>
+	<path-action name="DataEditModule.setPageById">
+		<property name="pagevalue">asset</property>
 		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="ProjectModule.listConnectedDesktop"/>
