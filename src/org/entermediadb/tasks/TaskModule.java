@@ -1158,6 +1158,7 @@ public class TaskModule extends BaseMediaModule
 		archive.saveData("projectgoal",selectedgoal);
 		addStatus(archive, selectedgoal,inReq.getUserName());
 
+		inReq.putPageValue("goal",selectedgoal);
 	}
 
 	public void savedGoal(WebPageRequest inReq)
