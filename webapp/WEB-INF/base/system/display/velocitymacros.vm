@@ -1,4 +1,4 @@
-#macro(iesc $inId)$inId.replace('.','-').replace('\\', '/')#end
+#macro(eid $inId)$inId.replace('.','-').replace('\\', '/')#end
 #macro(uuencode $invalue)$!url_util.encode($invalue)#end
 #macro(urlencode $invalue)$!url_util.urlEscape($invalue)#end
 #macro(urlescape $invalue)$!url_util.urlEscape($invalue)#end
