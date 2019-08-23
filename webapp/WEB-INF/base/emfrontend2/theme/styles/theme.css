@@ -4949,7 +4949,7 @@ a.collectionbox.favorite
 }
 
 .emfield-time { position: relative;}
-.emfield-time .form-control { position: fixed;}
+.emfield-time .form-control { position: absolute;}
 .emfield-time .ui-datepicker-trigger { margin-left: 245px;}
 
 
