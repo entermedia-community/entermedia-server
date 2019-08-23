@@ -61,20 +61,23 @@ uiload = function() {
                 beforeShow: function (input, inst) {
                     setTimeout(function () {
                         //Fix Position if in bootstrap modal
-                        var modaltop = $("#modals").offset().top;
-                        if (modaltop) {
-                            var dpickertop = dpicker.offset().top;
-                            dpickertop = dpickertop-modaltop;
-                            var dpHeight = inst.dpDiv.outerHeight();
-                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
-                            var viewHeight = document.documentElement.clientHeight;
-                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
-                            {
-                               dpickertop = dpickertop-dpHeight;
-                            }
-                            inst.dpDiv.css({
-                                top: dpickertop+inputHeight
-                            });
+						var modal = $("#modals");
+                        if (modal) {
+							var modaltop = $("#modals").offset().top;
+							if (modaltop) {
+	                            var dpickertop = dpicker.offset().top;
+	                            dpickertop = dpickertop-modaltop;
+	                            var dpHeight = inst.dpDiv.outerHeight();
+	                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
+	                            var viewHeight = document.documentElement.clientHeight;
+	                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
+	                            {
+	                               dpickertop = dpickertop-dpHeight;
+	                            }
+	                            inst.dpDiv.css({
+	                                top: dpickertop+inputHeight
+	                            });
+							}
                         }
                     }, 0);
                 }
