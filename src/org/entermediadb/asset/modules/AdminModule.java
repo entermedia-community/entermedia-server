@@ -699,8 +699,7 @@ public class AdminModule extends BaseMediaModule
 				String catalogid = userManager.getUserSearcher().getCatalogId();
 				inReq.putSessionValue(catalogid + "user", result.getUser());
 				inReq.putPageValue( "user", result.getUser());
-				userManager.fireUserEvent(result.getUser(), "autologin");
-
+				//userManager.fireUserEvent(result.getUser(), "autologin");
 				return;
 			}
 		}
