@@ -27,10 +27,14 @@
 		#end
 		#set($textarearows = 3)
 		#set($val = $map.getText($languagecode))
-		#if($val.length() > 200)
-			#set($textarearows = 5)
+		#if($val.length() < 30)
+			<input type="text" class="form-control detail_$detail.id textinput #if($detail.isRequired() && !$multiedit) required #end" #if( $autocomplete ) autocomplete="$autocomplete" #end value="#esc($val)"  id="${detail.getId()}.${languagecode}.value" name="${detailid}.${languagecode}.value"   />
+		#else
+			#if($val.length() > 200)
+				#set($textarearows = 5)
+			#end
+			<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($val)</textarea>
 		#end
-		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($val)</textarea>
 		
 	</div>
 	<div class='clearfix'></div>	
