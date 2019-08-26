@@ -58,12 +58,10 @@
 	</div>
 	<div class="clearfix" ></div>
 #else
-
-	#if( !$val || $val.length() < 30)
-	
-		<input type="text" class="form-control detail_$detail.id textinput autosubmited #if($detail.isRequired() && !$multiedit) required #end" #if( $autocomplete ) autocomplete="$autocomplete" #end value="#esc($val)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"   />
-	#else
+	#if( $val && $val.length() > 50)
 		<textarea name="$!{detailprefix}${detail.getId()}.value" class="form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" id="${detail.getId()}.value" cols="40" rows="5" >#esc($val)</textarea>
+	#else
+		<input type="text" class="form-control detail_$detail.id textinput autosubmited #if($detail.isRequired() && !$multiedit) required #end" #if( $autocomplete ) autocomplete="$autocomplete" #end value="#esc($val)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"   />
 	#end
 #end
 
