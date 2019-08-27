@@ -8,24 +8,31 @@
 				<div class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						#set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
+						
+						#if(!$selectedtab)
+						  #if( $canviewfeaturedcollections) 
+						   #set( $selectedtab = "featured")
+						  #else
+						   #set( $selectedtab = "allcollections")
+						  #end
+						#end
+						 
+						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
+							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> All Collections</a>
+						</li>
 						#if($canviewfeaturedcollections)
-						#if( !$selectedtab)  #set( $selectedtab = "featured") #end
 						<li id="theme"  #if( $selectedtab == "featured")class="current"#end>
 							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> Featured Collections</a>
 						</li>
-						#elseif( !$selectedtab)  #set( $selectedtab = "allcollections") 
 						#end
-						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
-							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> All Collections</a>
+						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened #if( $usercollections)($usercollections.size())#end</a>
 						</li>
 						#if( $canviewsavedcollections)
 						<li id="users" #if( $selectedtab == "savedcollections")class="current"#end>
 							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> Saved Collections #if($likedcollections)($likedcollections.size())#end</a>
 						</li>
 						#end
-						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
-							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> Recently Opened #if( $usercollections)($usercollections.size())#end</a>
-						</li>
 						<li>
 				#if($canaddnewcollection)
 					   	    <li>
