@@ -111,7 +111,7 @@ $query.setSortBy($detail.getDefaultSort())
 	[[No values found]] 
 #end
  #if( $caneditlists)
-		<a class="emdialog addnewitem btn btn-xs btn-light" 
+		<a class="emdialog addnewitem btn btn-xs btn-light" data-dialogid="inlineedit" 
 			href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
   #end
   <div class="clearfix"></div>

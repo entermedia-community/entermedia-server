@@ -12,7 +12,7 @@
   <property id="name" index="true" stored="true" editable="true"  > 
     <name> 
       <language id="de"><![CDATA[Kollektion]]></language>  
-      <language id="en"><![CDATA[Collections]]></language>  
+      <language id="en"><![CDATA[Collection Name]]></language>  
       <language id="es"><![CDATA[Colección]]></language>  
       <language id="fr"><![CDATA[Collection]]></language> 
     </name> 

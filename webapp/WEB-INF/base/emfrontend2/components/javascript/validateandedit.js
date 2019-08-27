@@ -139,8 +139,7 @@ $(document).ready(function()
 				$("#" + targetselect).val(data.id);
 				
 			});
-			
-			jQuery(".modal").modal('hide');
+			$(this).closest(".modal").modal('hide');
 			
 		});
 	
