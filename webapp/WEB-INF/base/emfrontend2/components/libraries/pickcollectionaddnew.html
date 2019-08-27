@@ -16,8 +16,6 @@ $context.putPageValue("data",$pdata)
 #set( $collectionroot = $context.getRequestParameter("collectionroot"))
 #if($collectionroot)
 	<input type="hidden" name="collectionroot" value="$collectionroot" />
-#else
-	<input type="hidden" name="collectionroot" value="views/modules/librarycollection/media" />
 #end
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	

@@ -23,9 +23,9 @@
 
 #set ($fieldname = $detail.id)
 #set( $listid = $detail.getListId())
-#set( $csslistid = "list-$!detailprefix${detail.id}")
+#set( $csslistid = "listdetail_$fieldname")
 
-<div id="listdetail_$fieldname" class="listdetailpicker">
+<div id="$csslistid" class="listdetailpicker">
 
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##optional things to filter the list
@@ -81,7 +81,7 @@ $query.setSortBy($detail.getDefaultSort())
 	<select name="${fieldname}.value" 
 			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 			listid="$listid" 
-			id="${valueid}.value"
+			id="${valueid}value"
 			data-listid="$listid" 
 			data-searchtype= '$searchtype'
 			data-searchfield="$searchfield"
@@ -111,7 +111,8 @@ $query.setSortBy($detail.getDefaultSort())
 	[[No values found]] 
 #end
  #if( $caneditlists)
-		<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+		<a class="emdialog addnewitem btn btn-xs btn-light" 
+			href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
   #end
   <div class="clearfix"></div>
 </div>
