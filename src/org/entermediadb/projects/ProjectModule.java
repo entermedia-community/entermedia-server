@@ -64,16 +64,26 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 	
-	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception {
-		String collectionroot = inReq.findValue("collectionroot");
-		String appid = inReq.findValue("applicationid");
+	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
+	{
+		String collectionroot = inReq.getRequestParameter("collectionroot");
+		if( collectionroot == null)
+		{
+			collectionroot = inReq.findValue("collectionroot");
+		}
+		if( collectionroot == null)
+		{
+			throw new OpenEditException("collectionroot not set");
+		}
 		String finalpath = "";
 		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if (collectionroot.endsWith(".html")) {
-			finalpath = "/" + appid + "/" + collectionroot + "?collectionid=" + collection.getId();
+		if (collectionroot.endsWith(".html")) 
+		{
+			finalpath = collectionroot + "?collectionid=" + collection.getId();
 		}
-		else {
-			finalpath = "/" + appid + "/" + collectionroot + "/" + collection.getId() + "/index.html";
+		else 
+		{
+			finalpath = collectionroot + "/" + collection.getId() + "/index.html";
 		}
 		
 		//Selected Sub folder?

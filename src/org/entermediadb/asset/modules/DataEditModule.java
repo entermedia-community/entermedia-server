@@ -2061,10 +2061,14 @@ String viewbase = null;
 		String name = inReq.findValue("hitsname");
 		String pagevalue = inReq.findValue("pagevalue");
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
-		Data data = (Data) inReq.getPageValue(pagevalue);
-	
-		hits.setPage(hits.pageOfId(data.getId()));
-	
+		if( hits != null)
+		{
+			Data data = (Data) inReq.getPageValue(pagevalue);
+			if( data != null)
+			{
+				hits.setPage(hits.pageOfId(data.getId()));
+			}
+		}
 		
 	}
 	

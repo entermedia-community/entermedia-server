@@ -21,9 +21,9 @@
 #end
 
 #set( $detailid = $detail.getId().replace('.','-') )
-
+#set( $valueid = "list-${detailid}${idcount}value")
 <select name="${detail.getId()}.value"  
-		id="list-${detailid}${idcount}value"  
+		id="$valueid"  
 		class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
 		data-searchfield="$searchfield" 
 		data-searchtype="$detail.listId" 
@@ -36,7 +36,10 @@
 </select>
 
  #if( $caneditlists)
-	<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+	<a class="emdialog addnewitem btn btn-xs btn-light" 
+	data-dialogid="inlineedit" 
+	href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()&update=${valueid}" 
+	title="[[Add New]] $detail" data-hidefooter="true" >+ [[New]] $detail</a>
 #end
 
 

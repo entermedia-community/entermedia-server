@@ -76,7 +76,7 @@
 				<div class="inputformrow">
 					<div class="emdatafield">[[Choose Collection]]</div>
 					<div class="emdatafieldvalue ">
-						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
+						<select name="currentcollection" id="collectionidvalue"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
 							data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
 							#if( $collectionid )
@@ -85,10 +85,11 @@
 						</select>
 					</div>
 					#if($canaddnewcollection)
-                 			<a  class="emdialog btn btn-xs btn-light" style="margin:5px 0;" title="[[Add New Collection]]" 
-                 			href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()&collectionroot=views/modules/asset/add/start.html">
-	                 		+ [[New Collection]]</a>
-							
+
+						<a class="emdialog btn btn-xs btn-light"  style="margin:5px 0;"  
+							href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=librarycollection&update=collectionidvalue" 
+							title="[[Add New Collection]]" data-hidefooter="true">+ [[New Collection]]</a>
+
 	             	#end
 					<hr>
 				</div>

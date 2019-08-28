@@ -125,8 +125,25 @@ $(document).ready(function()
 
 	});
 
+	lQuery("#inlinesave").livequery("click", function()
+	{
+			var queryString = $('#inlinedata').formSerialize(); 
+            var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
+            var targetselect = $(this).data("targetselect");
+            //debugger;
+			$.getJSON(url, queryString, function(data) {
+				$('#' + targetselect).append($('<option>', {
+				    value: data.id,
+				    text: data.name
+				}));
+				$("#" + targetselect).val(data.id);
+				
+			});
+			$(this).closest(".modal").modal('hide');
+			
+		});
 	
-	
+	//End of init
 	
 });
 
