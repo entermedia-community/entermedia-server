@@ -98,7 +98,13 @@ public void addUser()
 	details.each { fieldlist << it.id; }
 	def fields = fieldlist as String[]
 	
+	//Validation
 	context.setRequestParameter("id.value", newuser.getId());
+	String email = context.getRequestParameter("email.value");
+	if ( email != null)
+	{
+		context.setRequestParameter("email.value", email.toLowerCase().trim());
+	}
 	
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
