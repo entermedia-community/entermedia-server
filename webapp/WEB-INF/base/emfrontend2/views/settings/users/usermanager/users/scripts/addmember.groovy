@@ -23,7 +23,7 @@ public Group getGroup()
 	return group;
 }
 
-public User getUser()
+public User createUser()
 {
 	String email = context.getRequestParameter("email.value");
 	String emailcheck = context.getRequestParameter("emailmatch.value");
@@ -49,11 +49,7 @@ public User getUser()
 			
 	}
 	String username = context.getRequestParameter("id.value");
-	if (username != null)
-	{
-		username = username.trim();
-		context.setRequestParameter("id.value", username);
-	}
+
 	newuser = userManager.createUser( username, password);
 	newuser.setVirtual(false);
 	
@@ -93,7 +89,7 @@ public Data saveUserProfile(String inUserId)
 
 public void addUser()
 {
-	User newuser = getUser();
+	User newuser = createUser();
 	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
 	List details = usersearcher.getDetailsForView("user/simpleuseradd", context.getPageValue("user"));
@@ -102,7 +98,8 @@ public void addUser()
 	details.each { fieldlist << it.id; }
 	def fields = fieldlist as String[]
 	
-
+	context.setRequestParameter("id.value", newuser.getId());
+	
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
 	saveUserProfile(newuser.getId());
