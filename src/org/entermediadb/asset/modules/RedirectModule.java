@@ -92,7 +92,7 @@ public class RedirectModule extends BaseMediaModule {
 
 			String base = utils.siteRoot() + utils.relativeHomePrefix();
 			base = toSubdomain(base);
-			log.info("normalized base was" + base);
+			//log.info("normalized base was" + base);
 			String catalogid = inReq.findValue("catalogid");
 
 			Searcher searcher = getHostSearcher(catalogid);
