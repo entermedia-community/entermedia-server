@@ -14,7 +14,7 @@ $context.putPageValue("hits", $userTracker)
 #set( $oeview = "user/results")
 #set( $details = $userSearcher.getDetailsForView($oeview,$user))
 
-<table width="100%" class="table table-striped emdata" id="main-results-table">
+<table width="100%" class="table table-striped table-hover emdata" id="main-results-table">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
@@ -42,7 +42,7 @@ $context.putPageValue("hits", $userTracker)
 <tbody>
 
 #foreach ( $hit in $userTracker.getPageOfHits() )
-	<tr rowid="${hit.id}" #if ($hit.enabled != true) style="border-style:solid;border-color:red;border-width:2px;" #end >
+	<tr rowid="${hit.id}" #if ($hit.enabled != true) class="trdisabled" #end >
 
 	#foreach( $detail in $details ) 
 	
@@ -92,7 +92,7 @@ $context.putPageValue("hits", $userTracker)
 #elseif( $userTracker.totalPages == 1 )
 #elseif( $userTracker )
 
-<div style="text-align: left; padding-left: 20px; pading-top: 5px;">
+<div style="text-align: right; padding:10px 20px;">
 		#set($thispage = $userTracker.getPage())
 		
 		#if( $userTracker.prevPage() )

@@ -249,6 +249,9 @@ table.table-striped tbody td {
 ul.list-group.list-group-striped li:nth-of-type(odd){
     background: rgba(0,0,0,.05);
 }
+.table .trdisabled {
+	background-color:#cacaca;
+}
 
 /*TR Hovers*/
 tr.emborderhover td,

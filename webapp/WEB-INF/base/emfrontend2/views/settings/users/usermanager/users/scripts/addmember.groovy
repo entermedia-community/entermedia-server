@@ -49,6 +49,11 @@ public User getUser()
 			
 	}
 	String username = context.getRequestParameter("id.value");
+	if (username != null)
+	{
+		username = username.trim();
+		context.setRequestParameter("id.value", username);
+	}
 	newuser = userManager.createUser( username, password);
 	newuser.setVirtual(false);
 	
@@ -97,6 +102,7 @@ public void addUser()
 	details.each { fieldlist << it.id; }
 	def fields = fieldlist as String[]
 	
+
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
 	saveUserProfile(newuser.getId());
