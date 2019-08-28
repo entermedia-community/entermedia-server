@@ -41,7 +41,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#else	
 		#set($tpath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,  $imagesize))
 		<div class="thumbimagecontainer">
-			<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
+			<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="$hit.name"
 			draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		
 			src="$tpath$!urlparams" border="0" />
 		</div>	
