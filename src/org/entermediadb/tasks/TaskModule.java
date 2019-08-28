@@ -421,65 +421,72 @@ public class TaskModule extends BaseMediaModule
 				inReq.putPageValue("selectedgoal", goal);
 				inReq.putPageValue("goal", goal);
 			}
-		}
-		String collectionid = inReq.getRequestParameter("collectionid");
-		
-		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-		
-		//		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		}		
+	}
+	public void loadTasksForGoal(WebPageRequest inReq)
+	{
+		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
 		if( goal != null)
 		{
-			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-			//Legacy: Make sure all tasks have parents
-			Set tosave = new HashSet();
-			Collection values = goal.getValues("countdata");
-			if( values == null)
+			loadTasksForGoal(inReq,goal);
+		}
+	}
+
+	protected void loadTasksForGoal(WebPageRequest inReq, MultiValued goal)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+
+		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+		//Legacy: Make sure all tasks have parents
+		Set tosave = new HashSet();
+		Collection values = goal.getValues("countdata");
+		if( values == null)
+		{
+			values = new ArrayList();
+		}
+		Collection alltaskids = new ArrayList(values);
+		Collection extrataskids = new ArrayList(values);
+		for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+		{
+			MultiValued existigtask = (MultiValued) iterator.next();
+			if( existigtask.getValue("projectdepartmentparents") == null)
 			{
-				values = new ArrayList();
-			}
-			Collection alltaskids = new ArrayList(values);
-			Collection extrataskids = new ArrayList(values);
-			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
-			{
-				MultiValued existigtask = (MultiValued) iterator.next();
-				if( existigtask.getValue("projectdepartmentparents") == null)
+				Category child = archive.getCategory(existigtask.get("projectdepartment"));
+				if( child != null)
 				{
-					Category child = archive.getCategory(existigtask.get("projectdepartment"));
-					if( child != null)
-					{
-						existigtask.setValue("projectdepartmentparents",child.getParentCategories());
-						tosave.add(existigtask);
-					}
-				}
-				if( existigtask.getValue("collectionid") == null)
-				{
-					existigtask.setValue("collectionid",goal.getValue("collectionid"));
+					existigtask.setValue("projectdepartmentparents",child.getParentCategories());
 					tosave.add(existigtask);
 				}
-				
-				extrataskids.remove(existigtask.getId());
-				if(!alltaskids.contains(existigtask.getId()))
-				{
-					alltaskids.add(existigtask.getId());
-				}
 			}
-			alltaskids.removeAll(extrataskids);
-			if( !alltaskids.equals(values))
+			if( existigtask.getValue("collectionid") == null)
 			{
-				goal.setValue("countdata",alltaskids);
-				archive.saveData("projectgoal", goal);
+				existigtask.setValue("collectionid",goal.getValue("collectionid"));
+				tosave.add(existigtask);
 			}
 			
-			tasksearcher.saveAllData(tosave, null);
-			TaskList goaltasks = new TaskList(goal,tasks);
-			inReq.putPageValue("tasklist", goaltasks);
-			inReq.putPageValue("tasks", goaltasks.getSortedTasks());
-			if( goal.getValue("projectstatus") == null)
+			extrataskids.remove(existigtask.getId());
+			if(!alltaskids.contains(existigtask.getId()))
 			{
-				goal.setValue("projectstatus","open");
-				archive.saveData("projectgoal", goal);
+				alltaskids.add(existigtask.getId());
 			}
-		}	
+		}
+		alltaskids.removeAll(extrataskids);
+		if( !alltaskids.equals(values))
+		{
+			goal.setValue("countdata",alltaskids);
+			archive.saveData("projectgoal", goal);
+		}
+		
+		tasksearcher.saveAllData(tosave, null);
+		TaskList goaltasks = new TaskList(goal,tasks);
+		inReq.putPageValue("tasklist", goaltasks);
+		inReq.putPageValue("tasks", goaltasks.getSortedTasks());
+		if( goal.getValue("projectstatus") == null)
+		{
+			goal.setValue("projectstatus","open");
+			archive.saveData("projectgoal", goal);
+		}
 	}
 	
 	public void checkGoalCount(WebPageRequest inReq)
