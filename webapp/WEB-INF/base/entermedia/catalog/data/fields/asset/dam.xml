@@ -389,10 +389,7 @@
   </property>  
   <property id="headline" multilanguage="true" index="true" stored="true" editable="true" keyword="true" externalid="iptc:Headline,XMP-photoshop:Headline" >Headline 
     <name> 
-      <language id="de"><![CDATA[Headline]]></language>  
-      <language id="en"><![CDATA[Headline]]></language>  
-      <language id="es"><![CDATA[Titular]]></language>  
-      <language id="fr"><![CDATA[Titre]]></language> 
+      <language id="en"><![CDATA[Caption]]></language>  
     </name> 
   </property>  
   <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  sortable="true" wordpressfield="description">Description 
