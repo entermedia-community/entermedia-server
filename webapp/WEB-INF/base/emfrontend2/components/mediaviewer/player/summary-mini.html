@@ -16,29 +16,17 @@
 			<div class="media-thumbnail">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 				#if( !$thumbsize )
-		    		#set( $thumbsize  = "mediumimage" )
+		    		#set( $thumbsize  = "mediumplus" )
 				#end
 				$context.putPageValue("thumbsize",$thumbsize)
 				$context.putPageValue("viewer","summary")
-				#if ( $type == "image" || $type == "document" )
-					#set ( $urlutils = $context.getPageValue("url_util"))
-					#if ($urlutils)
-						#set ( $sourcepath = $urlutils.encode($asset.sourcepath))
-						#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
-					#else
-						#set ( $sourcepath = $asset.sourcepath)
-					#end
-		 			
-		 			#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
-		 			
-		 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-                #else
-                    #if ($type)
-		   			    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-		   			#end
-				#end 
 				
-				
+				<a class="assettab" 
+					data-link="$applink/views/modules/asset/components/mediaviewer/fullscreen/tabs/viewpreview.html" 
+					data-assettab="viewpreview" 
+					title="Preview $asset">
+	 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+				</a>
 				
 			</div>
 		    <div class="media-player-mini-links">        
