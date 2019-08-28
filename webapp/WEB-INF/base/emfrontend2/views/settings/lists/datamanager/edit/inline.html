@@ -13,7 +13,7 @@
 		$context.putPageValue("view", $view)
 		#set( $targetselect = $context.getRequestParameter("update" ) )
 		
-		<form id="inlinedata" name="dataeditor"   >
+		<form class="inlinedata" name="dataeditor"   >
 			<input name="save" type="hidden" value="true" />
 			<input name="id" type="hidden" value="$!data.id" />
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -21,7 +21,7 @@
 			<input name="origURL"  type="hidden" value="$!origURL" />
 		<div id="edit-data">	
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-		<input id="inlinesave" data-targetselect="$targetselect" class="btn btn-sm btn-primary float-right" style="" type="button" value="[[Save]]" />
+		<input id="" data-targetselect="$targetselect" class="btn btn-sm btn-primary float-right inlinesave"  type="button" value="[[Save]]" />
 
 		</div>
 		<div id="messagearea">$!message

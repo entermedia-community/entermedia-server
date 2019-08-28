@@ -125,9 +125,9 @@ $(document).ready(function()
 
 	});
 
-	lQuery("#inlinesave").livequery("click", function()
+	lQuery(".inlinesave").livequery("click", function()
 	{
-			var queryString = $('#inlinedata').formSerialize(); 
+			var queryString = $(this).closest('.inlinedata').formSerialize(); 
             var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
             var targetselect = $(this).data("targetselect");
             //debugger;
