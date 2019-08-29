@@ -1293,10 +1293,12 @@ public class TaskModule extends BaseMediaModule
 			goal = (MultiValued)searcher.createNewData();
 			goal.setValue("goaltrackercolumn", topic);
 			goal.setValue("tickettype", "chat");
+			goal.setValue("ticketlevel", "1");
 			goal.setValue("projectstatus", "open");
 			goal.setValue("creationdate",new Date());
 			goal.setValue("collectionid", collectionid);
 			goal.setValue("chatparentid", messageid);
+			goal.addValue("userlikes",inReq.getUserName());
 			goal.setValue("owner", inReq.getUserName());
 			if( content != null && content.length() > 200)
 			{
