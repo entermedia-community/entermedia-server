@@ -1254,8 +1254,8 @@ public class TaskModule extends BaseMediaModule
 	}
 	public void clearNotify(WebPageRequest inReq)
 	{
-		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").
-				exact("userid", inReq.getUserName());
+		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").exact("notified","false").
+				exact("userid", inReq.getUserName()).sort("dateDown");
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
 		if( collectionid != null)
@@ -1263,7 +1263,7 @@ public class TaskModule extends BaseMediaModule
 			query.exact("collectionid",collectionid);
 		}
 		Collection results = query.search();
-
+		inReq.putPageValue("recentactivities",results);
 		Collection tosave = new ArrayList();
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
