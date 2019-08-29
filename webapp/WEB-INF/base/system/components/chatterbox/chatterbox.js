@@ -106,9 +106,13 @@ function connect() {
         }
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
 		var listarea = chatter.find(".chatterbox-message-list")
-		var urls =  apphome + "/components/chatterbox/message.html";
+		var url = chatter.data("rendermessageurl");
+		if( !url)
+		{
+			url =  apphome + "/components/chatterbox/message.html";
+		}	
 
-		jQuery.get( urls, message, function( data ) {
+		jQuery.get( url, message, function( data ) {
 			listarea.append( data );
 			$(document).trigger("domchanged");
 		});
@@ -125,16 +129,20 @@ function reloadAll(){
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	
-	jQuery(".chatterbox").each(function () {
-			var urls =  apphome + "/components/chatterbox/index.html";
-			var chatterdiv = $(this);
-			var mydata = $( this ).data();
-			jQuery.get( urls, mydata, function( data ) {
-					chatterdiv.html( data );
-					scrollToChat();
-
-			});
-					
+	jQuery(".chatterbox").each(function () 
+	{
+		var chatter = $(this);
+		var url = chatter.data("renderurl");
+		if( !url)
+		{
+			url =  apphome + "/components/chatterbox/index.html";
+		}	
+		var chatterdiv = $(this);
+		var mydata = $( this ).data();
+		jQuery.get( url, mydata, function( data ) {
+				chatterdiv.html( data );
+				scrollToChat();
+		});
 					
 	});
 	

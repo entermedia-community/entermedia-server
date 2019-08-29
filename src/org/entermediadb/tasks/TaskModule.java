@@ -1273,16 +1273,21 @@ public class TaskModule extends BaseMediaModule
 		}
 		getMediaArchive(inReq).getSearcher("statuschanges").saveAllData(tosave,null);
 	}
-	public void chatEvent(WebPageRequest inReq)
+	
+	public void createGoalFromMessage(WebPageRequest inReq)
 	{
-		String collectionid = inReq.getRequestParameter("collectionid");
-		String topic = inReq.getRequestParameter("channel");
-		String content = inReq.getRequestParameter("content");
-
 		MediaArchive archive = getMediaArchive(inReq);
+		String messageid = inReq.getRequestParameter("messageid");
+		Searcher chatsearcher = archive.getSearcher("chatterbox");
+
+		Data message = (Data)chatsearcher.searchById(messageid);
+		
+		String topic = message.get("channel");
+		String content = message.get("message");
+		String collectionid = inReq.getRequestParameter("collectionid");
+
 		Searcher searcher = archive.getSearcher("projectgoal");
-		MultiValued goal = (MultiValued)searcher.query().exact("goaltrackercolumn", topic).
-			exact("tickettype", "chat").orgroup("projectstatus", "open|critical").searchOne();
+		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", messageid).searchOne();
 		if( goal == null)
 		{
 			goal = (MultiValued)searcher.createNewData();
@@ -1291,6 +1296,7 @@ public class TaskModule extends BaseMediaModule
 			goal.setValue("projectstatus", "open");
 			goal.setValue("creationdate",new Date());
 			goal.setValue("collectionid", collectionid);
+			goal.setValue("chatparentid", messageid);
 			goal.setValue("owner", inReq.getUserName());
 			if( content != null && content.length() > 200)
 			{
@@ -1300,7 +1306,8 @@ public class TaskModule extends BaseMediaModule
 			searcher.saveData(goal);
 			addStatus(archive, goal,inReq.getUserName());
 		}
-
-
+		inReq.putPageValue("chat",message);
 	}
+	
+	
 }
