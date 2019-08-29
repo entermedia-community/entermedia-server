@@ -436,8 +436,14 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-
-		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+		QueryBuilder query = tasksearcher.query().exact("projectgoal", goal.getId());
+		String onlyopen = inReq.getRequestParameter("onlyopen");
+		if( Boolean.parseBoolean(onlyopen))
+		{
+			query.not("taskstatus", "3");
+		}
+		
+		HitTracker tasks = query.search();
 		//Legacy: Make sure all tasks have parents
 		Set tosave = new HashSet();
 		Collection values = goal.getValues("countdata");
