@@ -1306,11 +1306,20 @@ public class TaskModule extends BaseMediaModule
 			goal.setValue("chatparentid", messageid);
 			goal.addValue("userlikes",inReq.getUserName());
 			goal.setValue("owner", inReq.getUserName());
-			if( content != null && content.length() > 200)
+			goal.addValue("details",content);
+			if( content != null && content.length() > 70)
 			{
-				content = content.substring(0,100) + "...";
+				content = content.substring(0,70) + "...";
 			}
-			goal.setName("Chat: " + content);
+			User user = archive.getUser(message.get("user"));
+			if( user != null)
+			{
+				goal.setName(user.getScreenName() + ": " + content);
+			}
+			else
+			{
+				goal.setName("Anonymous : " + content);				
+			}
 			searcher.saveData(goal);
 			addStatus(archive, goal,inReq.getUserName());
 		}
