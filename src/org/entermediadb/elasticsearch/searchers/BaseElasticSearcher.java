@@ -285,8 +285,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			addHighlights(inQuery, search);
 			search.setRequestCache(true);
 			
-
-			search.setFetchSource(null, "description");
+			if(!inQuery.isIncludeDescription()) {
+				search.setFetchSource(null, "description");
+			}
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
