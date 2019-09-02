@@ -942,8 +942,9 @@ html, body, #application {
 }
 .ui-widget-header {
     font-weight: bold;
-    padding: 4px 6px 4px 10px;
-    font-size: 0.9rem;
+    padding: 6px 8px 4px 10px;
+	border-radius: 4px 4px 0 0;
+    font-size: 1rem;
 }
 .ui-widget-header.minimized {
 
