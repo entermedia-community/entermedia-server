@@ -54,7 +54,7 @@
     <div  class="col-8 col-upload-right" >
 
 <form id="uploaddata" name="wizard" onSubmit="return false;"
-				    action="$root/finish.html" class="validate"  >
+				    action="$root/finish.html" class="force-validate-inputs"  >
 		<div id="uploadmetadata">
 		
 		
@@ -76,7 +76,8 @@
 				<div class="inputformrow">
 					<div class="emdatafield">[[Choose Collection]]</div>
 					<div class="emdatafieldvalue ">
-						<select name="currentcollection" id="collectionidvalue"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
+						<select name="currentcollection" id="collectionidvalue"  
+							class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
 							data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
 							#if( $collectionid )

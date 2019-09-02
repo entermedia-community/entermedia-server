@@ -6,6 +6,9 @@
 	<property name="hitsname">hits</property>
 	<property name="virtual">true</property>
 	
+	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+	
+	
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	

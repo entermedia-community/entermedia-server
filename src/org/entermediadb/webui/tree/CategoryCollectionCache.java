@@ -128,29 +128,28 @@ public class CategoryCollectionCache implements CatalogEnabled
 			{
 				return exists.getId();
 			}
-		}
-		
-		//It expired after 15 min. Do a DB lookup just to be sure
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-		Data exists = searcher.query().orgroup("rootcategory", parents).searchOne();
-		if( exists == null)
-		{
-			exists = NULLCOLLECTION;
-		}
-		else
-		{
-			exists = searcher.loadData(exists);
-		}
-		getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
-		if( exists == NULLCOLLECTION)
-		{
-			return null;
-		}
-		if( exists != null)
-		{
-			return exists.getId();
+			else
+			{
+				//It expired after 15 min. Do a DB lookup just to be sure
+				Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+				Data found = (Data)searcher.query().orgroup("rootcategory", parents).searchOne();
+				if( found == null)
+				{
+					exists = NULLCOLLECTION;
+				}
+				else
+				{
+					exists = (LibraryCollection)searcher.loadData(found);
+				}
+				getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
+				if( exists != NULLCOLLECTION)
+				{
+					return exists.getId();
+				}
+			}
 		}
 		return null;
+		
 	}	
 	public boolean isPartOfCollection(Category inRoot)
 	{

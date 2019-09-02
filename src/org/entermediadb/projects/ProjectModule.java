@@ -37,7 +37,8 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
-public class ProjectModule extends BaseMediaModule {
+public class ProjectModule extends BaseMediaModule 
+{
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 
 	public void loadCollections(WebPageRequest inReq) throws Exception {
@@ -46,6 +47,7 @@ public class ProjectModule extends BaseMediaModule {
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
+	/*
 	public void redirectToCollection(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
@@ -61,8 +63,8 @@ public class ProjectModule extends BaseMediaModule {
 			finalpath = finalpath + "?nodeID="+nodeID;
 		}
 		inReq.redirect(finalpath);
-
 	}
+	*/
 	
 	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
 	{
@@ -76,7 +78,8 @@ public class ProjectModule extends BaseMediaModule {
 			throw new OpenEditException("collectionroot not set");
 		}
 		String finalpath = "";
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		LibraryCollection collection = loadCollection(inReq);
+		
 		if (collectionroot.endsWith(".html")) 
 		{
 			finalpath = collectionroot + "?collectionid=" + collection.getId();
@@ -356,17 +359,21 @@ public class ProjectModule extends BaseMediaModule {
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid != null)
+		LibraryCollection collection = null;
+		if (collectionid == null)
 		{
-			LibraryCollection collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
-			inReq.putPageValue("librarycol", collection);
-			return collection;
+			collection = loadCollectionFromFolder(inReq);
 		}
 		else
 		{
+			collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+		}
+		if( collection == null)
+		{
 			log.error("No collection id found");
 		}
-		return null;
+		inReq.putPageValue("librarycol", collection);
+		return collection;
 	}
 	
 	public String loadCollectionId(WebPageRequest inReq) 
@@ -399,16 +406,13 @@ public class ProjectModule extends BaseMediaModule {
 				}
 			}
 		}
-		if (collectionid == null) {
-			LibraryCollection coll = loadCollectionFromFolder(inReq);
-			if (coll != null) {
-				collectionid = coll.getId();
-			} else {
-				String page = inReq.getPage().getName();
-				page = page.replace(".html", "").replace(".zip", "");
-				collectionid = page;
-			}
-		}
+//		if (collectionid == null) 
+//		{
+//			LibraryCollection coll = loadCollectionFromFolder(inReq);
+//			if (coll != null) {
+//				collectionid = coll.getId();
+//			}
+//		}
 		if(collectionid != null) {
 			
 			inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
@@ -637,8 +641,7 @@ public class ProjectModule extends BaseMediaModule {
 	public void copyCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
+		LibraryCollection collection = loadCollection(inReq);
 
 		Searcher colsearcher = archive.getSearcher("librarycollection");
 		LibraryCollection newcollection = (LibraryCollection) colsearcher.createNewData();
@@ -852,7 +855,8 @@ public class ProjectModule extends BaseMediaModule {
 	
 	
 	
-	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq) {
+	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
+	{
 		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq), colid);
