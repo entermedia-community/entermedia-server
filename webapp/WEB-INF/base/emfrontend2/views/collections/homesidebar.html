@@ -1,11 +1,20 @@
-
-			<div class="ui-widget">
-				<div class="ui-widget-header collectionhome-sideheader" style="">
+<div class="h-100" style="padding:30px 20px 0">
+			<div class="ui-widget h-100" style="margin:0;">
+				<div class="ui-widget-header collectionhome-sideheader">
 				<span class="widget-header-title">[[Collection Search]]</span>
-				<a class="emdialog " style="margin-left:2px;float:right" data-hidefooter="true"  title="[[Find Collections]]" 
-	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
+				
+				#if($canaddnewcollection)
+				<a class="emdialog btn btn-xs btn-primary" 
+					style="margin-left:5px;float:right" title="[[Add New Collection]]" 
+				   	href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()">
+				<i class="fa fa-plus"></i>
+				</a>
+				#end
+				<a class="emdialog btn btn-xs btn-primary" 
+					style="margin-left:2px;float:right" data-hidefooter="true"  title="[[Find Collections]]" 
+				   	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
 			</div>
-				<div class="ui-widget-content categories-widget no-padding-for-real">
+				<div class="ui-widget-content categories-widget no-padding-for-real" style="height: calc(100% - 32px); max-height: 250px;">
 					<ul id="settings-menu" class="sidebar-list">
 						#set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
 						
@@ -45,3 +54,4 @@
 				</div>
 			</div>
 			
+</div>

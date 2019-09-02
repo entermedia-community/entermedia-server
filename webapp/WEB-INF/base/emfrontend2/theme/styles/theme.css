@@ -1117,7 +1117,7 @@ html, body, #application {
     margin: 0;
     text-decoration: none;
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     word-wrap: break-word;
     border-bottom: 1px solid #e5e5e5;
 }
@@ -1571,11 +1571,13 @@ td.checkbox input, th.firstheader input {
 	border:0px;
 	margin-bottom:20px;
 	min-height: 152px;
+	height: 100%;
 }
 .collectionshomeresults {
 	padding:20px;
 	position:relative;
 	background-color: #fefefe;
+	height: calc(100% - 34px);
 }
 .collectionshomeresults .pages {
 	padding-bottom:20px;
@@ -1583,23 +1585,29 @@ td.checkbox input, th.firstheader input {
 }
 .collectionhome-sideheader
 {
-	background-color: rgb(137, 137, 137);
+	color: #bbb;
+	padding:5px 10px 5px;
+	background-color: #333;
+	text-transform: uppercase;
+	font-size: 1rem;
+	height: 34px;
 	border-radius: 4px 4px 0 0;
-	border: 1px solid rgb(137, 137, 137);
 }
 
 .collectionshome-header { 
-	height: 30px;
-	padding:4px 10px;
-	background-color: rgb(137, 137, 137);
-	color: #eee;
+	color: #bbb;
+	padding:5px 10px 5px;
+	background-color: #333;
+	text-transform: uppercase;
+	font-size: 1rem;
 	border-radius: 4px 4px 0 0;
+	height: 34px;
 	position:relative;
 }
 .collectionshome-header h3 {
 	margin:0;
-	line-height: 20px;
-	font-size:21px;
+	font-size: 1rem;
+	line-height: 26px;
 }
 .collectionshome-header a,
 .collectionshome-header a:hover {
@@ -1611,7 +1619,7 @@ td.checkbox input, th.firstheader input {
 }
 .collectionshomeform-container {
 	padding:30px 20px 0 0;
-	
+	height: 100%;
 }
 .collectionshomeform {
 	display: inline-block;
