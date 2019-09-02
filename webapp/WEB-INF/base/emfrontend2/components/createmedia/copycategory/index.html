@@ -1,10 +1,3 @@
-	<div class="cols-main #if ($module) cols-$module #end searchlayout2" id="searchlayout" data-nodeid="$!nodeID" data-collectionid="$!collectionid">
-		<div class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end  " id="maincontent">
-
-
-<div class="pushcontent"> 
-<div class="row">
- <div class="col-md-12">
 
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set($auto = $context.getRequestParameter("autorun"))
@@ -38,10 +31,10 @@
 	<input class="btn btn-primary" type="submit" value="Import" />	
 
 </div>
-</div></div>
+</div>
 	
 	
-	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+	##<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
 
 	<script type="text/javascript">
 	lQuery(".auto-remove").livequery("click", function() {
@@ -58,8 +51,3 @@
 	</script>		
 
 
-	</div>
-
-	</div>
-	</div>
-</div>
