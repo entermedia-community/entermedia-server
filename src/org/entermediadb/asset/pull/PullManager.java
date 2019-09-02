@@ -106,6 +106,7 @@ public class PullManager implements CatalogEnabled
 			builder.after("recordmodificationdate", startingfrom);
 		} 
 		builder.sort("recordmodificationdateDown"); //newer first
+		builder.includeDescription();
 		HitTracker hits = builder.search();
 		if (!hits.isEmpty())
 		{
@@ -207,7 +208,8 @@ public class PullManager implements CatalogEnabled
 					node.setProperty("lasterrormessage", "Could not process sync files " + ex);
 					node.setValue("lasterrordate", new Date());
 					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}	
+				}
+				throw new OpenEditException(ex);
 			}
 		}
 	}
