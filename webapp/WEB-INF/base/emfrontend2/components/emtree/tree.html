@@ -37,7 +37,7 @@
 			data-depth="$depth" 
 			data-categoryname="$cat.name" 
 			data-collectionid="$!collectionid"
-			 >
+			 > 
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (10 * ($depth - 1)) + 5 )
 			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end #if($expanded) expanded #end" 
