@@ -23,31 +23,32 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
+
 #set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 
 #set( $opentab = $userprofile.get("assetopentab"))
-#if( !$opentab)
-	#if( $canviewmetadatageneral )
-		#set( $opentab = "viewproperties")
-	#else
-		#set( $opentab = "viewpreview")
-	#end
+
+#if( $opentab != "viewpreview" && $canviewmetadatageneral )
+	#set( $opentab = "viewproperties")
+#else
+	#set( $opentab = "viewpreview")
 #end
 
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
 #end
 
-#if($opentab == "viewactions")
- #set( $opentabactions = $userprofile.get("assetopentabactions"))
+## #if($opentab == "viewactions")
+## 	#set( $opentabactions = $userprofile.get("assetopentabactions"))
 
- #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
-	#if( $rendertype != "video")
-		#set( $opentab = "viewproperties")
-		#set( $opentabactions = false)
-	#end
- #end
-#end
+## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
+##	#if( $rendertype != "video")
+##		#set( $opentab = "viewproperties")
+##		#set( $opentabactions = false)
+##	#end
+## #end
+## #end
+
 $context.putPageValue("opentab",$opentab)
 
 
