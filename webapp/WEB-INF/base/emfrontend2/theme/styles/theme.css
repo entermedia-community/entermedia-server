@@ -3650,6 +3650,7 @@ table.greytxt {
     border: 1px solid #aaa;
     border-top: none;
     overflow:hidden;
+	position:relative;
     color: #444;
 }
 .emsettingslist li:first-child {
