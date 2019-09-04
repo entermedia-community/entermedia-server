@@ -10,7 +10,7 @@
 #set( $viewpath = $context.getRequestParameter("viewpath") )
 
 #set( $viewsroot = $content.viewsroot )
-<ul  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
+<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
 
 	
 #if( $viewid )
@@ -61,7 +61,7 @@
            	<input type="hidden" value="rendertype" name="field" />
             <div class="checkbox">
                 [[Custom Render Type]]
-            	<select name="rendertype.value">
+            	<select name="rendertype.value" class="form-control form-control-sm">
             		<option value="default"></option>
             		<option value="table" #if($view.rendertable) selected #end>[[One to Many]]</option>
             		<option value="external" #if($view.rendertype == "external") selected #end>[[One to One]]</option>
@@ -112,7 +112,7 @@
 
             </div>
             #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn btn-sm btn-primary" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+            <a class="ajax btn btn-sm btn-secondary" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
 <div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
@@ -157,7 +157,8 @@
         #end
         #if( $canviewsettings )
         <div class="subheader-title">
-		<a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>	    </div>
+		<a class="btn btn-xs btn-primary" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>	    
+		</div>
 	    #end
 	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
@@ -171,13 +172,20 @@
 			#else
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
-            <select id="fieldnames" name="newone" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
+            <select id="fieldnames" 
+					name="newone"
+					class="form-control form-control-sm2 float-right" 
+					style="#if( $canviewsettings ) ; #else display:none;  #end" 
+					onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
 				<option value="$detail.id">$detail.getText($context)</option>
                 #end
             </select>
-            <select id="tableid" name="tableid" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" 
+            <select id="tableid" 
+				name="tableid"
+				class="form-control form-control-sm2 float-right"  
+				style="#if( $canviewsettings ) ; #else display:none;  #end" 
             	onchange='$("#fieldnames").load("$home$apphome/views/settings/modules/${moduleid}/metadata/views/listfieldoptions.html?searchtype=" + $("#tableid").val())'  >
                 <option value=""> </option>
                 #foreach( $table in $searcher.getPropertyDetailsArchive().listSearchTypes() )
@@ -189,18 +197,20 @@
 	</li>
 #end
 </ul>
-<ul  class="sortviews" data-viewid="$viewid" data-catalogid="$catalogid" data-searchtype="$moduleid" data-assettype="$assettype" data-viewpath="$viewpath" data-path="$home$viewsroot/saveview.html">
+<ul  class="emsettingslist sortviews" data-viewid="$viewid" data-catalogid="$catalogid" data-searchtype="$moduleid" data-assettype="$assettype" data-viewpath="$viewpath" data-path="$home$viewsroot/saveview.html">
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
 				#set( $pid = "${element.searchType}.${element.id}")
-				<li id="viewid_$pid" ><span class="drag-and-drop"></span> 
+				#set( $pid = $pid.replace("_","")) 
+				<li id="viewid_$pid" > 
 					#if( $canviewsettings )
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a class="sortableitem" href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype"><span class="drag-and-drop"></span> ${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	
-						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
-					<a class="ajax delete-row" targetdiv="vieweditorarea" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1"></a>
+					<a class="ajax delete-row" targetdiv="vieweditorarea" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1">
+					<i class="fas fa-times"></i></a>
 				</li>
 			#end		
 		
