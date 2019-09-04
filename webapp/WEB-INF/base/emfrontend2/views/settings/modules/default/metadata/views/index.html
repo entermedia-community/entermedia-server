@@ -35,7 +35,7 @@
             #set($current = $context.getRequestParameter("assettype")) 
             #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
             
-            <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
+            <select id="assettype" class="form-control form-control-sm2" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
                     <option value="default" >[[Default]]</option>
                         #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
                             <option #if($current == $item.id) selected #end value="$item.id">$item.getName($context.getLocale())</option>
