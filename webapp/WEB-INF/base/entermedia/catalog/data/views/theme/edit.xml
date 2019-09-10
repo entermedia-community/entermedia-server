@@ -111,6 +111,7 @@
 
   <!-- settings menu selection -->
   <property id="settingsmenuselectioncolor" />
+  <property id="settingsmenuselectioncolortext" />
 
   <!-- asset details  -->
   <property id="assetdetailsselectedtabcolor" />

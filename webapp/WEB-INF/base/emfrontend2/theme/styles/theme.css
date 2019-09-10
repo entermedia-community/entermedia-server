@@ -58,6 +58,7 @@
 .emnav .navtabs li.navactive a.navtabitem {
 	background: none;
 	background-color:#D5D5D5;
+	color:#333;
 }
 .nav-collectionsearch {
 	color:#d5d5d5;
@@ -531,6 +532,7 @@ select + .select2-container {
 #header .navlinks>ul li.first { border:0 none;}
 #header .dropdown-menu {
 	padding:0;
+	border:0;
 }
 #header ul.dropdown-menu li { float: none;}
 #header .navlinks li>a {
@@ -627,7 +629,7 @@ html, body, #application {
 	}
 }
 .emfooter {
-	padding:15px 0;
+	padding:40px 0 20px;
 }
 
 /*Sidebars*/
@@ -685,7 +687,9 @@ html, body, #application {
 	min-width: 216px;
 	max-width: 100%;
 	}
-
+.col-sidebar .ui-widget-content {
+	border:0;
+}
 .filters-sidebar h4 { margin:0; font-size:.9rem; font-weight:bold; }
 .filters-sidebar ul,
 .filters-sidebar-selected ul { 
@@ -1076,7 +1080,7 @@ html, body, #application {
 	padding:0; 
 	margin:0;
 	min-width:11rem;
-	border-top:0 none;
+	border:0 none;
 	border-radius:0;
 	}
 
@@ -1396,7 +1400,7 @@ td.checkbox input, th.firstheader input {
 
 /*Emshare Nav Bar*/
 .emnav {
-	min-height: 55px;
+	min-height: 57px;
 }
 .emnav .navtabs {
 	margin:0 5px 0 15px;
@@ -1409,6 +1413,9 @@ td.checkbox input, th.firstheader input {
 	padding:0;
 	list-style: none;
 	float:left;
+}
+.emnav .navtabs li.navactive {
+	margin-top:13px;
 }
 .emnav .navtabitem {
 	display:block;
@@ -1758,9 +1765,7 @@ td.checkbox input, th.firstheader input {
     min-height: 28px;
     display: block;
     cursor: pointer;
-    
-    border:1px solid #fff;
-    
+ 
 }
 .emtree .cat-arrow {
 	position:absolute;
@@ -2203,7 +2208,7 @@ td.checkbox input, th.firstheader input {
 	margin-top:0;
 }
 .emsubnav {
-	 border-left:1px solid #999; 
+	  
 } 
 	
 	
@@ -4349,13 +4354,13 @@ table.table-padding tbody td {
 
 
 .main-info .primary {
-    font-size: 16px;
+    font-size: 1.6rem;
     font-weight: bold;
     color: #444;
     line-height: 30px;
 }
 #default-top .secondary {
-    font-size: 14px;
+    font-size: 1.1rem;
     color: #666;
 }
 #default-top .secondary a {
@@ -4377,10 +4382,11 @@ table.table-padding tbody td {
 
 .createmediapanel {
 	border-left: 1px solid #ccc;
+	
 }
 .createmedia-tab {
 	padding:10px 10px;
-	border-bottom:1px solid #efefef;
+	border-bottom:1px solid #bbb;
 }
 .createmedia-selected {
 	background-color: #fff;
@@ -4390,6 +4396,10 @@ table.table-padding tbody td {
 	padding:20px;
     min-height: 480px;
     height: 100%;
+	
+}
+.createmediasidebar {
+	
 }
 .createmedia-caption {
 	margin-left:135px;
