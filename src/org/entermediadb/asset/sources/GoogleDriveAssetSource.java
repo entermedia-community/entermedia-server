@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.google.GoogleManager;
 import org.entermediadb.google.Results;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
@@ -167,6 +168,13 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void refresh( ) 
+	{
+		MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
+		setConfig(currentConfig);
+	}
 
 	@Override
 	public void saveConfig()
@@ -178,6 +186,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	@Override
 	public int importAssets(String inBasepath)
 	{
+		refresh();
 		String subfolder = getConfig().get("subfolder");
 		if(subfolder == null) {
 			subfolder = getName();

@@ -425,6 +425,11 @@ public abstract class BaseAssetSource implements AssetSource
 		
 		getWebServer().saveMounts(configs);
 	}
+	
+	public void refresh( ) 
+	{
+		
+	}
 
 
 

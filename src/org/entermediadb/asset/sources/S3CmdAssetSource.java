@@ -24,6 +24,7 @@ import org.entermediadb.asset.Category;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
@@ -257,7 +258,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	@Override
+	public void refresh( ) 
+	{
+		MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
+		setConfig(currentConfig);
+	}
+	
 	@Override
 	public void saveConfig()
 	{
@@ -301,6 +309,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public int importAssets(String inBasepath)
 	{
+		refresh();
+		saveConfig();
+		
 		List cmd = new ArrayList();
 		//aws s3 cp file.txt s3://
 		cmd.add("s3api");

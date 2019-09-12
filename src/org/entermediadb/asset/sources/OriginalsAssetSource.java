@@ -21,6 +21,7 @@ import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.util.TimeParser;
 import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
@@ -204,6 +205,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 			}
 			
 		}
+		
+		@Override
+		public void refresh( ) 
+		{
+			MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
+			setConfig(currentConfig);
+		}
 
 		@Override
 		public void saveConfig()
@@ -264,6 +272,8 @@ public class OriginalsAssetSource extends BaseAssetSource
 		
 		public int importAssets(String inSubChangePath)
 		{
+			refresh();
+			
 			String base = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
 			String name = getConfig().get("subfolder");
 			String path = base + "/" + name;
