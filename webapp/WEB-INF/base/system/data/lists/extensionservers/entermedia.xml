@@ -12,5 +12,6 @@
 
 	<server id="em9" listingurl="http://dev.entermediasoftware.com/jenkins/job/app-site-manager/lastSuccessfulBuild/artifact/deploy/sitemanager.xml" caption="Installs the Site Manager tools">Site Manager - Plugin Only</server>
 
+	<server id="em10" listingurl="http://dev.entermediasoftware.com/jenkins/job/extension-sql/lastSuccessfulBuild/artifact/deploy/extension-sql.xml" caption="Installs the Site Manager tools">Site Manager - Plugin Only</server>
 		
 </servers>
