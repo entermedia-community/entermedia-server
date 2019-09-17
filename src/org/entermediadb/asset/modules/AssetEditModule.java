@@ -1711,6 +1711,8 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.putPageValue("deletedlist", assets);
 		}
 	}
+	
+	//Deprecated use: MediaArchiveModule.getAsset()
 
 	public Data createMultiEditDataFromSelections(WebPageRequest inReq) throws Exception
 	{

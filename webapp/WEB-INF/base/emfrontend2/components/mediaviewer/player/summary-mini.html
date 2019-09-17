@@ -1,7 +1,7 @@
 <div id="summary-mini">
     <div id="mediaplayer" class="media-player-mini">
 		#set($totalpages = $numberutils.toInt($asset.pages))
-		###set( $ismulti = $asset.getId().startsWith("multiedit:"))
+		
 		#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
         #if( $ismulti )

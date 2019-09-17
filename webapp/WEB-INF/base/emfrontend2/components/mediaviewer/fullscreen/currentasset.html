@@ -375,11 +375,8 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
                 #if( $canmultiedit )
                 #if($dialoghits.getSelectedHits().size() > 1)
                  <li>
-                 	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true&collectionid=$!collectionid" title="[[Multiedit]]"
-						data-assettab="multiedit">
-					[[Multiedit]]  $dialoghits.getSelectedHits().size()
-					</a>
+	  				#set($text = "[[Multi Edit]] ($dialoghits.getSelectionSize())")
+					<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
                  </li>
                  #end
                  #end

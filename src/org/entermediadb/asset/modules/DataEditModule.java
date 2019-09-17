@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -1295,10 +1296,7 @@ String viewbase = null;
 
 		HitTracker trackerCopy = (HitTracker) inReq.getSessionValue(hitssessionidCopy);
 
-		if (trackerCopy == null ||
-				!trackerCopy.getQuery().equals(trackerOriginal.getQuery()) ||
-				!trackerCopy.getIndexId().equals(trackerOriginal.getIndexId()) ||
-				trackerCopy.getSelectionSize() != trackerOriginal.getSelectionSize())
+		if (trackerCopy == null || trackerCopy.hasChanged(trackerOriginal))
 		{
 			trackerCopy = trackerOriginal.copy();
 			if (trackerOriginal.hasSelections())
@@ -1314,7 +1312,8 @@ String viewbase = null;
 				}
 			}
 			trackerCopy.getSearchQuery().setHitsName(othername);
-			inReq.putSessionValue(trackerCopy.getSessionId(), trackerCopy);
+			String sessionName = trackerCopy.getSessionId();
+			inReq.putSessionValue(sessionName, trackerCopy);
 		}
 		
 		String pageheight = inReq.getRequestParameter("pageheight");
@@ -1528,11 +1527,15 @@ String viewbase = null;
 		{
 			//setup the session value
 			//BaseCompositeData
-			Data data = (CompositeData) inReq.getSessionValue(id);
-			if (data == null)
+			CompositeData compositedata = (CompositeData) inReq.getSessionValue(id);
+			String hitssessionid = id.substring("multiedit".length() + 1);
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if (compositedata!= null && !compositedata.getSelectedResults().hasChanged(hits)) 
 			{
-				String hitssessionid = id.substring("multiedit".length() + 1);
-				HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+				result = compositedata;
+			}
+			if (compositedata == null)
+			{
 				if (hits == null)
 				{
 					log.error("Could not find " + hitssessionid);
@@ -1541,6 +1544,7 @@ String viewbase = null;
 				CompositeData composite = new BaseCompositeData(searcher, hits);
 				composite.setId(id);
 				result = composite;
+				inReq.putSessionValue(id, result);
 			}
 		}
 		if (result == null)

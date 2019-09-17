@@ -660,13 +660,19 @@ public class MediaArchive implements CatalogEnabled
 	public Asset getAsset(String assetid, WebPageRequest inReq)
 	{
 		Asset asset = null;
+		
 		if (assetid.startsWith("multiedit"))
 		{
-			asset = (CompositeAsset) inReq.getSessionValue(assetid);
+			CompositeAsset compositeasset = (CompositeAsset) inReq.getSessionValue(assetid);
+			String hitssessionid = assetid.substring("multiedit".length() + 1);
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if (compositeasset!= null && !compositeasset.getSelectedResults().hasChanged(hits)) 
+			{
+				asset = compositeasset;
+			}
+
 			if (asset == null)
 			{
-				String hitssessionid = assetid.substring("multiedit".length() + 1);
-				HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 				if (hits == null)
 				{
 					log.error("Could not find " + hitssessionid);
@@ -675,6 +681,7 @@ public class MediaArchive implements CatalogEnabled
 				CompositeAsset composite = new CompositeAsset(this, hits);
 				composite.setId(assetid);
 				asset = composite;
+				inReq.putSessionValue(assetid, asset);
 			}
 		}
 		else

@@ -390,12 +390,12 @@ $(document).ready(function(url,params)
 			container.replaceWith(data);
 			var div = $("#main-media-viewer");
 			var id = div.data("previous");
-			if (typeof id != 'undefined') {
+			if (typeof id != 'undefined'  && id != '') {
 				enable(id,".goleftclick");
 				enable(id,"#leftpage");
 			}
 			id = div.data("next");
-			if (typeof id != 'undefined') {
+			if (typeof id != 'undefined' && id != '') {
 				enable(id,".gorightclick");
 				enable(id,"#rightpage");
 			}
