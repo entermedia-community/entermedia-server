@@ -1403,13 +1403,13 @@ td.checkbox input, th.firstheader input {
 	min-height: 57px;
 }
 .emnav .navtabs {
-	margin:0 5px 0 15px;
+	margin:1px 5px 0 15px;
 	padding:0;
 	list-style: none;
 	float:left;
 }
 .emnav .navtabs li {
-	margin:12px 0 0 5px;
+	margin:13px 0 0 5px;
 	padding:0;
 	list-style: none;
 	float:left;
