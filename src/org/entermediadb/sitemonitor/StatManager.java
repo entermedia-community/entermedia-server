@@ -1,19 +1,23 @@
 package org.entermediadb.sitemonitor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.entermediadb.asset.MediaArchive;
-import org.openedit.CatalogEnabled;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.CatalogEnabled;
 
 public class StatManager implements CatalogEnabled
 {
 	protected String fieldCatalogId;
+	private static final Log log = LogFactory.getLog(StatManager.class);
+
 
 	private Stat buildStat(Stat stat, String inName, Object inValue, String error)
 	{
@@ -84,8 +88,7 @@ public class StatManager implements CatalogEnabled
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
-						error = e.toString();
+						log.error("Can't gather OJVM hardware usage", e);
 					}
 					stat = buildStat(stat, method.getName(), value, error);
 					stats.add(stat);
@@ -98,7 +101,7 @@ public class StatManager implements CatalogEnabled
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			log.error("Can't gather OJVM hardware usage", e);
 		}
 		return new ArrayList<Stat>();
 	}
