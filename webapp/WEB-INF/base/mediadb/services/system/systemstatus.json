@@ -9,15 +9,5 @@
 				#if( ${foreach.count} != 1 ), #end
 				{"name":"$partition.name","totalcapacity": $partition.totalCapacity, "freepartitionspace": $partition.freePartitionSpace, "usablepartitionspace": $partition.usablePartitionSpace }
 			#end 
-	],
-	"stats":[	
-			#foreach( $stat in $stats )
-				#if( ${foreach.count} != 1 ), #end
-				#if( $$stat.name == "clusterhealth" )
-					{"name":"$stat.name","value": "$stat.value"}
-				#else
-					{"name":"$stat.name","value": $stat.value}
-				#end
-			#end 
 	]
 }
