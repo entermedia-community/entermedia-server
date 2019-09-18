@@ -1420,7 +1420,7 @@ td.checkbox input, th.firstheader input {
 .emnav .navtabitem {
 	display:block;
 	position:relative;
-	padding: 10px 16px 12px;
+	padding: 12px 16px 12px;
 	text-align: center;
 	border-radius: 4px 4px 0 0;
 	font-weight: bold;
@@ -1679,6 +1679,9 @@ td.checkbox input, th.firstheader input {
 	margin-top: 24px;
 	font-weight: 700;
 }
+.card-collections:hover .collectionbox {
+	background-color: rgba(20, 20, 20, 0.8);
+	}
 .card-collections a .collectionbox {
 	color: #efefef;
 }
