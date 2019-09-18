@@ -207,39 +207,38 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 						#end
 								
 						 #if($candownload)	
-						 			
 							<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")">[[Original File]]</a></li>
 						#end
 						
 						#if($canconvert || $candownloadfpo)
 
-						#if( $rendertype )
-						#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-						#set( $results = $searcher.query().exact("inputtype",$rendertype).sort("ordering").named("convertpresets").search($context) )
-						#end
-						
+							#if( $rendertype )
+								##set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+								##set( $results = $searcher.query().exact("inputtype",$rendertype).sort("ordering").named("convertpresets").search($context) )
+								
+								#set($results = $conversionUtil.getActivePresetList($catalogid,$rendertype) )
+							#end
+							
 							#foreach($result in $results )						
-									#set($ok = false)
-						#if($canconvert && $candownloadfpo)
-							#set($ok = true) 
-						#elseif ($canconvert && $result.watermark != "true")
-							#set($ok = true) 
-						#elseif($candownloadfpo && $result.watermark == "true")
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && $candownload)
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && !$candownload)
-							#set($ok = false) 
-						#end
-						#if($ok)
-									
+								#set($ok = false)
+								#if($canconvert && $candownloadfpo)
+									#set($ok = true) 
+								#elseif ($canconvert && $result.watermark != "true")
+									#set($ok = true) 
+								#elseif($candownloadfpo && $result.watermark == "true")
+									#set($ok = true) 
+								#end
+								#if($result.id == "0" && $candownload)
+									#set($ok = true) 
+								#end
+								#if($result.id == "0" && !$candownload)
+									#set($ok = false) 
+								#end
+								#if($ok)
+											
 									#set($url = $mediaarchive.asLinkToDownload($asset,$librarycol.id, $result))
-									
-								<li><a href="$url">$result.name</a></li>
-									
-									#end
+									<li><a href="$url">$result.name</a></li>
+								#end
 							#end
 						#end
 					</ul>

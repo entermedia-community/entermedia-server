@@ -46,11 +46,11 @@
 </div>
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($newpreset = $context.findValue("newpreset"))
-#set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
 #set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
-#if( !$cdnprefix )
-#set( $cdnprefix = $context.siteRoot )
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
 #end
 
 $context.putPageValue("results", $results)

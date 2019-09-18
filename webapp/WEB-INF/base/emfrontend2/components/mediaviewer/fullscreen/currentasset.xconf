@@ -10,4 +10,6 @@
 	</path-action>
 	<path-action name="ProjectModule.listConnectedDesktop"/>
 	<page-action name="OrderModule.loadOrderBasket"/>
+	
+	<page-action name="PageValue.loadPageVariable" bean="conversionUtil"/>
 </page> 
