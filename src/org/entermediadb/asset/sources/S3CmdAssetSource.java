@@ -101,14 +101,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 		
 		cmd.add("s3://" + getBucket() + "/" + awskey );
 		cmd.add(file.getAbsolutePath());
-		/*
+		
 		ExecResult res = getExec().runExec("aws", cmd,true);
 		if( !res.isRunOk() )
 		{
 			
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
 		}
-		*/
+		
 		//How do we set the timestamp? From the asset?
 		return file;
 	}
