@@ -49,6 +49,7 @@
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
+						$context.putPageValue("thumbsize", "carousel")
 						$pages.include("$componenthome/results/thumbnails/small.html",$context) 
 						$pages.include("$componenthome/results/badges.html", $context)	
           			</a>

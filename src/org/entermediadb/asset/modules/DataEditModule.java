@@ -1319,7 +1319,7 @@ String viewbase = null;
 		String pageheight = inReq.getRequestParameter("pageheight");
 		if (pageheight != null) 
 		{
-			trackerCopy.setHitsPerPageHeight(pageheight, 150);
+			trackerCopy.setHitsPerPageHeight(pageheight, 180);
 		}
 
 		
