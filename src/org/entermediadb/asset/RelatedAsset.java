@@ -16,6 +16,14 @@ public class RelatedAsset implements Data
 	public String getName(String inLocale) {
 		return getName();
 	}
+	
+	public Collection getObjects(String inField)
+	{
+		Collection values = (Collection)getValue(inField);
+		return values;
+	}
+	
+	
 	public String getType()
 	{
 		return get("type");
