@@ -410,11 +410,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return getMap().getDate(inField, inDateFormat);
 	}
 
-	public Collection getObjects(String inField)
-	{
-		Collection values = (Collection)getValue(inField);
-		return values;
-	}
+//	public Collection getObjects(String inField)
+//	{
+//		Collection values = (Collection)getValue(inField);
+//		return values;
+//	}
 	
 	public boolean isRelated(Asset inAsset)
 	{

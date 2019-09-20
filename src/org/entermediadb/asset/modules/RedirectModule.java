@@ -57,6 +57,10 @@ public class RedirectModule extends BaseMediaModule {
 			String root = inReq.findValue("redirectroot");
 			log.info("redirect root was" + root);
 		
+			if(root == null) {
+				return;
+			}
+			
 			if (!root.equals(base)) {
 				return;
 			}
@@ -80,6 +84,9 @@ public class RedirectModule extends BaseMediaModule {
 			}
 		}
 	}
+	
+	
+	
 	
 	public void virtualHost(WebPageRequest inReq) {
 		String skipredirect = inReq.findValue("skipvirtualhost");

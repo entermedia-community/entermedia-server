@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -119,7 +120,11 @@ public class TemplateWebEmail extends WebEmail implements Data
 		fieldSendDate = inSendDate;
 		
 	}
-
+	public Collection getObjects(String inField)
+	{
+		Collection values = (Collection)getValue(inField);
+		return values;
+	}
 	public boolean isSent() {
 		return fieldSent;
 	}
