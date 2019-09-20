@@ -33,12 +33,13 @@ $context.putPageValue("longform",false)
 	#if( $context.getUserProfile() )
 		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
 	#else
-		#set ($details = $searcher.getDetailsForView($view))
+		#set ($details = $searcher.getDetailsForView($view)) 
 	#end
 	#if( !$details)
 		[[No details available for this view.  Please configure your view settings.]]
 
 	#end
+
 #else
 	##leagacy check. We used to pass in the $details
 	#if( !$details)
