@@ -61,6 +61,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 <table class="table table-striped table-hover tabe-conversions" id="conversionstable">
 <thead>
 	<tr class="tableheader">
+	    <th>[[Preview]]</th>
 		<th>[[Description]]</th>
 		<th style="width:100px;">[[Size]]</th>
 		<th style="width:100px;">[[Aspect Ratio]]</th>
@@ -97,6 +98,10 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 		<tr>
+		<td class="text-center">
+		<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)"
+			  style="max-width:120px; max-height: 80px;" />
+		</td>
 		<td>
 		$result.name
 		</td>
@@ -119,27 +124,15 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		
 		<td>
 		##ACTIONS
-		#if( $presetdata.id != "0" )
-		<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
-		#end
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
+		
+		
+		
 		#if($isready)
-			#if($canviewassetedit && $presetdata.id)
-			#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
-				#if($cancrop)
-				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-					targetdivinner="asset-editor-container" 
-					data-oemaxlevel="1" 
-				href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">[[Crop]]</a>
-				#end
-				
-			#end
-			
 			##SHARE
-			<!--  include share -->
 			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
 
-			<!-- include submit to fatwire -->
+			##FATWIRE & FALCON
 			#if($result.publishtofatwire == "true") 
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
 			#end	
@@ -150,6 +143,27 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#else
 			#set($notready = true)
 		#end
+		
+		##UPLOAD
+		#if( $presetdata.id != "0" )
+			<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
+		#end
+		#if($isready)
+			#if($canviewassetedit && $presetdata.id)
+			
+				##CROP
+				#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
+				#if($cancrop)
+				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+					targetdivinner="asset-editor-container" 
+					data-oemaxlevel="1" 
+				href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">[[Crop]]</a>
+				#end
+				
+			#end
+		#end
+		
+		<div id="${presetdata.id}-embed"></div>
 
 		</td>
 		</tr>
@@ -159,11 +173,37 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 </table>
 </div>
 
-
-#if ($notready)
 <script>
 $(document).ready(function(){
-	var reloadingconversionspage = setTimeout(function(){
+	lQuery( ".embedbtn" ).livequery("click", function(e) {
+		e.preventDefault();
+		var presetid = $(this).attr("id");
+		var status = $(this).data("isshowing");
+		
+		if (status === "true"){
+			$( this ).data("isshowing", "false");
+			$(this).addClass("ajax");
+			$("#"+presetid+"-embed").css("display","block");
+		} else {
+			$( this ).data("isshowing", "true");
+			$(this).removeClass("ajax");
+			$("#"+presetid+"-embed").css("display","none");
+		}
+		
+	});
+	lQuery( ".copyembed" ).livequery("click", function(e) {
+		  e.preventDefault();
+		  var presetidtxt = $(this).data("targetdivinner");
+ 		  var copyText = $("#"+presetidtxt).children("textarea");
+          if ((typeof copyText) != "undefined") {
+			  copyText.select();
+			  document.execCommand("copy");
+		  }	
+	});
+
+	#if ($notready)
+
+		var reloadingconversionspage = setTimeout(function(){
 		//reloadpageajax("$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
 		var nextpage = "$home$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
 		var targetDiv = "asset-editor-container";
@@ -182,10 +222,9 @@ $(document).ready(function(){
 			);
 			}
 		}, 5000);
+	#end
 });
 </script>
-
-#end
 
 $context.putPageValue("asset",$asset)
 #if($newpreset)
