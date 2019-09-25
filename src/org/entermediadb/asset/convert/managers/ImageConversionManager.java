@@ -106,45 +106,45 @@ public class ImageConversionManager extends BaseConversionManager
 	protected ContentItem makeCustomInput(BaseTranscoder inImTranscoder, String inFormat, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();
-		if ("png".equals(asset.getFileFormat()))
-		{
-
-			ContentItem custom = getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.png");
-			ContentItem originalDocument = inStructions.getOriginalDocument();
-
-			if (!custom.exists())
-			{
-
-				List<String> com = new ArrayList<String>();
-
-				int finalwidth = asset.getInt("width");
-				int finalheight = asset.getInt("height");
-				//com.add("\\( -size " + finalwidth + "x" + finalheight + " tile:pattern:checkerboard \\)");
-				com.add("\\)");
-				
-				com.add("-size");
-				com.add(finalwidth + "x" + finalheight);
-				com.add("tile:pattern:checkerboard");
-				com.add("\\)");
-				
-				
-				com.add(originalDocument.getAbsolutePath());
-				com.add("-compose");
-				com.add("over");
-				com.add("-composite ");
-				com.add(custom.getAbsolutePath());
-				ExecResult execresult = getDefaultTranscoder().getExec().runExec("convert", com, true, 50000);
-				if(!execresult.isRunOk()) {
-						String output = execresult.getStandardOut();
-						if(output != null && output.contains("warning/tiff.c")) {
-							
-						}else {
-						//	execresult.setError(execresult.getStandardOut());
-						}
-				}
-			}
-
-		}
+//		if ("png".equals(asset.getFileFormat()))
+//		{
+//
+//			ContentItem custom = getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.png");
+//			ContentItem originalDocument = inStructions.getOriginalDocument();
+//
+//			if (!custom.exists())
+//			{
+//
+//				List<String> com = new ArrayList<String>();
+//
+//				int finalwidth = asset.getInt("width");
+//				int finalheight = asset.getInt("height");
+//				//com.add("\\( -size " + finalwidth + "x" + finalheight + " tile:pattern:checkerboard \\)");
+//				com.add("\\)");
+//				
+//				com.add("-size");
+//				com.add(finalwidth + "x" + finalheight);
+//				com.add("tile:pattern:checkerboard");
+//				com.add("\\)");
+//				
+//				
+//				com.add(originalDocument.getAbsolutePath());
+//				com.add("-compose");
+//				com.add("over");
+//				com.add("-composite ");
+//				com.add(custom.getAbsolutePath());
+//				ExecResult execresult = getDefaultTranscoder().getExec().runExec("convert", com, true, 50000);
+//				if(!execresult.isRunOk()) {
+//						String output = execresult.getStandardOut();
+//						if(output != null && output.contains("warning/tiff.c")) {
+//							
+//						}else {
+//						//	execresult.setError(execresult.getStandardOut());
+//						}
+//				}
+//			}
+//
+//		}
 
 		return super.makeCustomInput(inImTranscoder, inFormat, inStructions);
 	}
