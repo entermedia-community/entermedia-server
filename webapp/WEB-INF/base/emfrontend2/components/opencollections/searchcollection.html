@@ -2,7 +2,9 @@
 	<div id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
-	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+	#set($viewid = "librarysearchcollection")
+	#set($viewpath = "librarycollection/${viewid}")
+	#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
 	#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 	#if( $hitssessionid)
 		#set( $hits = $context.getSessionValue($hitssessionid))
@@ -16,9 +18,10 @@
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
-		<table>
+		<table class="" style="width:100%;">
 		<tr>
-		<td width="100%">
+		<td>
+
 		<div  class="row inlinesearch" >
 		$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
@@ -33,8 +36,14 @@
 			#end
 		</div>	
 		</td>
-		#if($canaddnewcollection)
-		<td >
+		#if($canaddnewcollection || $canedittablecolumns)
+		<td style="width:120px; padding:0; position:relative">
+			#if( $canedittablecolumns )
+			<a style="position:absolute; top:3px; right:3px;"
+				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}">
+			<i class="fas fa-edit"></i>
+			</a>
+			#end
 			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
 				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid">[[New Collection]]</a>
 		</td>

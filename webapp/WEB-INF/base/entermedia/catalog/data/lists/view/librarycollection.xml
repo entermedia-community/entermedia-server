@@ -5,6 +5,8 @@
   <property id="librarycollectionshares" moduleid="librarycollection" systemdefined="false" ordering="2" rendertable="librarycollectionshares" renderexternalid="librarycollection">Shared With</property>
   <property id="librarycollectionusers" moduleid="librarycollection" systemdefined="false" ordering="2" rendertable="librarycollectionusers" renderexternalid="collectionid">Users</property>
 
+  
+  <property id="librarysearchcollection" moduleid="librarycollection" systemdefined="true" byassettype="false">Library Collection Search</property>
   <property id="librarycollectionadvancedsearch" moduleid="librarycollection" systemdefined="true" byassettype="false">Advanced Search</property>
   <property id="librarycollectionresultstable" moduleid="librarycollection" systemdefined="true" byassettype="false">Results Table</property>
   <property id="librarycollectionheaderdetail" moduleid="librarycollection" systemdefined="true" byassettype="false">Edit Header</property>
