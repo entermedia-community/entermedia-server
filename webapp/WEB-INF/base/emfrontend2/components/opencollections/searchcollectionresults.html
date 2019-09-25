@@ -2,7 +2,9 @@
 
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
-#set ($details = $searcher.getDetailsForView("librarycollection/librarycollectionresultstable", $userprofile))
+#set($viewid = "librarycollectiondialogresultstable")
+$context.putPageValue("viewid", $viewid)
+#set ($details = $searcher.getDetailsForView($viewid, $userprofile))
 $context.putPageValue("details",$details)
 $context.putPageValue("module","librarycollection")
 $context.putPageValue("hits",$collhits)

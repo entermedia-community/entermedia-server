@@ -1,15 +1,24 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
-	data-searchtype="librarycollection" 
+#set($viewid =  $context.viewid)
+#if(!$viewid)
+	#set($viewid =  $context.getRequestParameter("viewid"))
+	#if(!$viewid)
+		#set( $viewid = "${hits.getSearchType()}resultstable" )
+	#end
+#end
+
+<div id="resultsdiv" 
+	data-hitssessionid="$hits.getSessionId()" 
+	data-searchtype="librarycollection"
+	data-viewid="$!viewid" 
 	data-searchhome="$home$apphome/components/table" 
 	data-pagenum="$hits.getPage()"  
 	data-collectionid="$!librarycol.getId()"
 	data-totalpages="$hits.getTotalPages()">
 #if(!$details)
-	#set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
-	#set($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
+	#set($details = $hits.getSearcher().getDetailsForView("${hits.getSearchType()}/${viewid}", $userprofile))
 #end
 #set($searchhome = "$home$apphome/components/table")
-#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
 #set($targetdiv = "resultsdiv")
 
 <div class="resultstablenav">
@@ -42,7 +51,7 @@
 									#end
 								</select>
 								
-								<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1">
+								<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1&viewid=$!viewid">
 									<i class="fas fa-times"></i>
 								</a>
 							</div>
@@ -75,7 +84,7 @@
 				#text( $detail.name )
 				#if( $edit)
 					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
-						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
+						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"><i class="fas fa-times"></i></a>
 				
 				#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
