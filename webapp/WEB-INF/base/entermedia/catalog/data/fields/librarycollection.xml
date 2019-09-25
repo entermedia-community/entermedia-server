@@ -167,7 +167,14 @@
       <language id="en"><![CDATA[Automatic Tagging]]></language>  
     </name> 
   </property>  
- 
+ <property id="sessioncalcdate" index="true" deleted="false" editable="true" stored="true" type="date">Session Calc Date
+  </property>  
+  <property id="totalsessionspurchased" index="true" deleted="false" editable="true" stored="true" type="number">Total Sessions Purchased
+  </property>  
+  <property id="totalsessionsused" index="true" deleted="false" editable="true" stored="true" type="number">Total Sessions Used
+  </property>
+  <property id="remainingsessions" index="true" deleted="false" editable="true" stored="true" type="number">Remaining Sessions
+  </property>
  
  
 </properties>
