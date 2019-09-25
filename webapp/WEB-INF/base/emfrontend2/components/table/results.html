@@ -38,7 +38,9 @@
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
 						#if( !$edit ) 
-						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true">
+						<a class="ajax edit-icon" 
+							targetdiv="$targetdiv" href="${resultsLink}&editheader=true"
+							title="[[Edit Results Table Columns]]">
 							<i class="fas fa-edit"></i>
 						</a>
 						#else 

@@ -18,7 +18,8 @@
 <div id="sub-nav" class="search-views emsubnav">
 #if(!$edit)
 	<ul class="resultsnav">
-	<li><a href="$home${searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a></li>
+	<li>
+	<a href="$home${searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a></li>
 	#if($content.showactions)
 		$pages.include("$searchhome/selectionactions.html")
 	#end
@@ -35,7 +36,7 @@
 		#if( !$edit )
 			<li>	
 				 
-					<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
+				<a class="ajax edit-icon" id="table-editor" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
 			</li>
 		#else
 			<li> 

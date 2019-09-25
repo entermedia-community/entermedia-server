@@ -104,9 +104,6 @@
 	background-color: #56994c;
 	color:#fff;
 }
-.sidebar-inner {
-	
-}
 .col-sidebar-detaileditor {
 	background-color: #edf0f1;
 	webkit-box-shadow: -1px 0 0 #d8dddf inset;
@@ -158,6 +155,12 @@
 }
 .table #tableheader {
 	
+}
+.edit-icon {
+	color:#666
+}
+.edit-icon:hover {
+	color:#000
 }
 .emresultstable th { 
 	color:#fff; font-weight:bold;

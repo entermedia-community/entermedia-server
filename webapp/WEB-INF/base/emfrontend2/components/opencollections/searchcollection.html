@@ -40,11 +40,14 @@
 		<td style="width:120px; padding:0; position:relative">
 			#if( $canedittablecolumns )
 			<a style="position:absolute; top:3px; right:3px;"
-				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}">
+				class=" edit-icon"
+				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+				title="[[Edit Search Form Fields]]">
 			<i class="fas fa-edit"></i>
 			</a>
 			#end
-			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
+			<a class="ajax btn btn-sm btn-primary" 
+				title="[[Add New Collection]]" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
 				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid">[[New Collection]]</a>
 		</td>
 		#end
