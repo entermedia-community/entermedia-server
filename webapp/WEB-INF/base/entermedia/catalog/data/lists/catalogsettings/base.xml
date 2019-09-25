@@ -28,6 +28,7 @@
 	<property id="transcodebucket" value="emtranscribe">Google Cloud Storage transcode bucket</property>
 
 	<property id="defaultrole" value="users">Default role for users accessing the site </property>
+	<property id="applycheckerboardtransparency" value="false">Apply a "checkerboard" background to PNG conversions </property>
 
 
 
