@@ -5,39 +5,46 @@
 	data-collectionid="$!librarycol.getId()"
 	data-totalpages="$hits.getTotalPages()">
 #if(!$details)
-#set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
-#set ($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
+	#set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
+	#set($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
 #end
-#set( $searchhome = "$home$apphome/components/table")
+#set($searchhome = "$home$apphome/components/table")
 #set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
-
 #set($targetdiv = "resultsdiv")
+
 <div class="resultstablenav">
-<table style="float:right">
-<tr><td>
-$pages.include("${apphome}/components/table/pages.html", $context)
-</td>
-<td class="edit-columns">	
-			#set( $edit = $context.getRequestParameter("editheader"))
-			#if( !$edit || $edit == "false")
-			#set( $edit = false)
-			#end
+<table style="float:right;">
+<tr>
+	<td>
+		$pages.include("${apphome}/components/table/pages.html", $context)
+	</td>
+	<td class="edit-columns">	
+	
+				#set( $edit = $context.getRequestParameter("editheader"))
+				#if( !$edit || $edit == "false")
+				#set( $edit = false)
+				#end
 			
 				<div >
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
 						#if( !$edit ) 
-						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"><i class="fas fa-edit"></i></a>
+						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true">
+							<i class="fas fa-edit"></i>
+						</a>
 						#else 
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select  class="addremovecolumns form-control form-control-sm" name="addcolumn" >
 									<option>[[Add Column]]</option>
-									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+									#foreach( $detail in $alldetails) 
+										<option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
 								
-						<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><i class="fas fa-times"></i></a>
+								<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1">
+									<i class="fas fa-times"></i>
+								</a>
 							</div>
 						#end
 					</div>

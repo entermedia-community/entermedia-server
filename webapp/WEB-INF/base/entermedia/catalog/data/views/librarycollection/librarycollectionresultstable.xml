@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-
-  <property id="division" />
   <property id="library" />
   <property id="name" />
   <property id="owner" />
