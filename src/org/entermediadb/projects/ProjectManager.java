@@ -1925,7 +1925,7 @@ public class ProjectManager implements CatalogEnabled
 		for (Iterator iterator = sessiontickets.iterator(); iterator.hasNext();)
 		{
 			Data ticket = (Data) iterator.next();
-			Integer sessioncount = (int) ticket.getValue("sessioncount");
+			Integer sessioncount = (Integer) ticket.getValue("sessioncount");
 			if (sessioncount != null)
 			{
 				sessionsused += sessioncount;
