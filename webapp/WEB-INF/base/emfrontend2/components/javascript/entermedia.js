@@ -860,22 +860,34 @@ onloadselectors = function()
 							var destination = this.id;
 							
 							var rdiv = $("#resultsdiv");
-							var searchtype = rdiv.data("searchtype");
-							var sessionid = rdiv.data("hitssessionid");
-							
+							var options = rdiv.data();
+							options.source = source;
+							options.destination = destination;
+				
 							var editing = ui.draggable.attr("editing")
 							if( !editing )
 							{
 								editing = false;
 							}
+							
+							options.editheader = editing;
+							
+							console.log(options.moduleid);
+							$.get(apphome + "/components/results/savecolumns.html", options, function(data) {
+								var cell = findclosest(rdiv, "#resultsdiv");
+								cell.replaceWith(data);
+							})
+							/*
 							$("#resultsdiv").load(apphome + "/components/results/savecolumns.html",
 								{
 								"source":source,
 								"destination":destination,
 								editheader:editing,
 								searchtype:searchtype,
+								moduleid:moduleid,
 								"hitssessionid":sessionid
 								});
+							*/
 							//ui.helper.effect("transfer", { to: $(this).children("a") }, 200);
 						},
 						tolerance: 'pointer',

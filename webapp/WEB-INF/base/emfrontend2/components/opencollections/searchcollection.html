@@ -3,15 +3,15 @@
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
-#if( $hitssessionid)
-#set( $hits = $context.getSessionValue($hitssessionid))
-#if( $hits && $hits.getSelectionSize() > 0)	
-	<div class="alert alert-info">
-  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
-	</div>
-#end	
-#end
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+	#if( $hitssessionid)
+		#set( $hits = $context.getSessionValue($hitssessionid))
+		#if( $hits && $hits.getSelectionSize() > 0)	
+			<div class="alert alert-info">
+		  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
+			</div>
+		#end	
+	#end
 	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
@@ -45,7 +45,7 @@
 	
 	
 	<div id="collectionresultsdialog">
-	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+		$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
 	</div>
 	
 	</div>

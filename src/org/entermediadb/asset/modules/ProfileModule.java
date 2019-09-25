@@ -87,34 +87,39 @@ public class ProfileModule extends MediaArchiveModule
 		List details = archive.getAssetSearcher().getDetailsForView(view, inReq.getUserProfile());
 
 		int target = details.size();
-
+		PropertyDetail detail = null;
 		for (int i = 0; i < details.size(); i++)
 		{
-			PropertyDetail detail = (PropertyDetail) details.get(i);
+			detail = (PropertyDetail) details.get(i);
 			if (detail.getId().equals(dest))
 			{
 				target = i;
 				break;
 			}
 		}
+		
 		for (int i = 0; i < details.size(); i++)
 		{
-			PropertyDetail detail = (PropertyDetail) details.get(i);
+			detail = (PropertyDetail) details.get(i);
 			if (detail.getId().equals(source))
 			{
-				details.add(target, detail);
-				if (i > target)
+				if (i < target)
 				{
-					i++; // there are two now
+					details.add(target+1, detail);
+					details.remove(i);
 				}
-				details.remove(i);
+				else {
+					details.add(target, detail);
+					details.remove(i+1);
+				}
+				//
 				break;
 			}
 		}
 		Collection ids = new ArrayList();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
+			detail = (PropertyDetail) iterator.next();
 			ids.add(detail.getId());
 		}
 		inReq.getUserProfile().setValues("view_" + searchtype + "_resultstable", ids);
