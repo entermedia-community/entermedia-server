@@ -1,0 +1,33 @@
+#if($librarycol)
+	#set( $collectionid = $librarycol.getId())
+#else
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+#end
+
+<div class="nav-form nav-quicksearch">
+	#set($formlink = "$home$apphome/views/modules/asset/search.html")
+	#if($collectionid)
+		#set($formlink = "$home$apphome/views/modules/librarycollection/search.html")
+	#end
+	<form id="search_form" action="$formlink" class="form-inline em-widget-content">
+		<input type="hidden" name="field" value="description" />
+		<input type="hidden" name="operation" value="freeform" />
+		<input type="hidden" name="quicksearched" value="true" />
+		#if($collectionid)
+			<input type="hidden" name="collectionid" value="$collectionid" />
+		#end
+		#set( $input = $hits.getInput("description") )
+		#if (!$input)
+			#set( $input = "")
+		#end
+		<div class="input-group">
+			<input class="suggestsearchinput form-control border-right-0 border" type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"   name="description.value" value="$input" />
+			##<span class="fas fa-search form-control-feedback submitform" ></span>
+			<div class="input-group-addon submitform" style="pointer-events: initial;">
+			<a><i class="fa fa-search"></i></a>
+			</div>
+            
+		</div>
+		
+	</form>
+</div>
