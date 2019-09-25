@@ -22,6 +22,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.projects.LibraryCollection;
+import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -1181,8 +1182,40 @@ public class TaskModule extends BaseMediaModule
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 
 		addStatus(archive, selectedgoal,inReq.getUserName());
+		
+		recalculateSessions(archive, selectedgoal, inReq.getUserName());
 	}
 
+	protected void recalculateSessions(MediaArchive inArchive, MultiValued inSelectedgoal, String inUserName)
+	{
+		String collectionid = inSelectedgoal.get("collectionid");
+		ProjectManager manager = inArchive.getProjectManager();
+		manager.recalculateSessions(collectionid);
+		
+	}
+
+	public void  recalculateSessions(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.findValue("collectionid");
+		
+		Searcher collectionsearcher = archive.getSearcher("librarycollection");
+		HitTracker cols;
+		if(collectionid != null) {
+			cols = collectionsearcher.fieldSearch("id", collectionid);
+		} else {
+			cols = collectionsearcher.getAllHits();
+		}
+		for (Iterator iterator = cols.iterator(); iterator.hasNext();)
+		{
+			Data object = (Data) iterator.next();
+			archive.getProjectManager().recalculateSessions(object.getId());
+			
+		}
+		
+	}
+	
+	
+	
 	protected void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
 	{
 		
