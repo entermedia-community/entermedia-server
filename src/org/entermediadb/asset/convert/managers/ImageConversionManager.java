@@ -1,9 +1,13 @@
 package org.entermediadb.asset.convert.managers;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
@@ -26,6 +30,9 @@ public class ImageConversionManager extends BaseConversionManager
 	//document.pdf
 	//video.mp4
 	//Original file
+	
+	private static final Log log = LogFactory.getLog(ImageConversionManager.class);
+
 
 	public BaseTranscoder getCMYKTranscoder()
 	{
@@ -106,45 +113,48 @@ public class ImageConversionManager extends BaseConversionManager
 	protected ContentItem makeCustomInput(BaseTranscoder inImTranscoder, String inFormat, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();
-//		if ("png".equals(asset.getFileFormat()))
-//		{
-//
-//			ContentItem custom = getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.png");
-//			ContentItem originalDocument = inStructions.getOriginalDocument();
-//
-//			if (!custom.exists())
-//			{
-//
-//				List<String> com = new ArrayList<String>();
-//
-//				int finalwidth = asset.getInt("width");
-//				int finalheight = asset.getInt("height");
-//				//com.add("\\( -size " + finalwidth + "x" + finalheight + " tile:pattern:checkerboard \\)");
-//				com.add("\\)");
-//				
-//				com.add("-size");
-//				com.add(finalwidth + "x" + finalheight);
-//				com.add("tile:pattern:checkerboard");
-//				com.add("\\)");
-//				
-//				
-//				com.add(originalDocument.getAbsolutePath());
-//				com.add("-compose");
-//				com.add("over");
-//				com.add("-composite ");
-//				com.add(custom.getAbsolutePath());
-//				ExecResult execresult = getDefaultTranscoder().getExec().runExec("convert", com, true, 50000);
-//				if(!execresult.isRunOk()) {
-//						String output = execresult.getStandardOut();
-//						if(output != null && output.contains("warning/tiff.c")) {
-//							
-//						}else {
-//						//	execresult.setError(execresult.getStandardOut());
-//						}
-//				}
-//			}
-//
-//		}
+		MediaArchive archive = getMediaArchive();
+		
+		if (archive.isCatalogSettingTrue("applycheckerboardtransparency") && "png".equals(asset.getFileFormat()))
+		{
+
+			ContentItem custom = getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.png");
+			ContentItem originalDocument = inStructions.getOriginalDocument();
+
+			if (!custom.exists())
+			{
+				// convert   -size 376x254 tile:pattern:checkerboard /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/originals/Collections/General/TEST/car.png[0] -compose over -composite  /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/generated/Collections/General/TEST/car.png/image1024x768.jpg
+
+				List<String> com = new ArrayList<String>();
+
+				int finalwidth = asset.getInt("width");
+				int finalheight = asset.getInt("height");
+				//com.add("\\( -size " + finalwidth + "x" + finalheight + " tile:pattern:checkerboard \\)");
+				//com.add("\\)");
+				
+				com.add("-size");
+				com.add(finalwidth + "x" + finalheight);
+				com.add("tile:pattern:checkerboard");
+			//	com.add("\\)");
+				
+
+				com.add(originalDocument.getAbsolutePath());
+				com.add("-compose");
+				com.add("over");
+				com.add("-composite");
+				com.add(custom.getAbsolutePath());
+				ExecResult execresult = getDefaultTranscoder().getExec().runExec("convert", com, true, 50000);
+				if(!execresult.isRunOk()) {
+						String output = execresult.getStandardOut();
+						if(output != null && output.contains("warning/tiff.c")) {
+							
+						}else {
+						log.info(execresult.getStandardOut());
+						}
+				}
+			}
+			return custom;
+		}
 
 		return super.makeCustomInput(inImTranscoder, inFormat, inStructions);
 	}
