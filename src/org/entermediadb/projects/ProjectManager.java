@@ -1937,7 +1937,7 @@ public class ProjectManager implements CatalogEnabled
 		col.setValue("totalsessionspurchased", sessionspurchased);
 		col.setValue("totalsessionsused", sessionsused);
 		col.setValue("sessioncalcdate", new Date());
-
+		col.setValue("remainingsessions", sessionspurchased - sessionsused);
 		//TODO: Don't save if they are identical
 
 		getMediaArchive().saveData("librarycollection", col);
