@@ -88,7 +88,7 @@ public class StatManager implements CatalogEnabled
 					}
 					catch (Exception e)
 					{
-						log.error("Can't gather OJVM hardware usage", e);
+						log.error("Can't gather JVM hardware usage", e);
 					}
 					stat = buildStat(stat, method.getName(), value, error);
 					stats.add(stat);
@@ -101,7 +101,7 @@ public class StatManager implements CatalogEnabled
 		}
 		catch (Exception e)
 		{
-			log.error("Can't gather OJVM hardware usage", e);
+			log.error("Can't gather JVM hardware usage", e);
 		}
 		return new ArrayList<Stat>();
 	}
