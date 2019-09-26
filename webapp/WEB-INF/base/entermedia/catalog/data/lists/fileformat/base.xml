@@ -20,8 +20,8 @@
 	<property id="ico"  synctags="true"  rendertype="image" creator="imagemagick">ICO</property>
 	<property id="jpg"  synctags="true"  rendertype="image" creator="imagemagick">JPG</property>
 	<property id="jp2"  synctags="true"  rendertype="image" creator="imagemagick">JP2</property>
-
 	<property id="jpeg"  synctags="true"  rendertype="image" creator="imagemagick">JPEG</property>
+	<property id="svg"  synctags="true"  rendertype="image" creator="imagemagick">SVG</property>
 	<property id="mov"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg" >MOV</property>
 	<property id="moov"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"  >MooV</property>
 	<property id="mp3"  synctags="true"  rendertype="audio" creator="audio" >MP3</property>
