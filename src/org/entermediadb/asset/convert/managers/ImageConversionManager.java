@@ -126,7 +126,7 @@ public class ImageConversionManager extends BaseConversionManager
 			{
 				// convert   -size 376x254 tile:pattern:checkerboard /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/originals/Collections/General/TEST/car.png[0] -compose over -composite  /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/generated/Collections/General/TEST/car.png/image1024x768.jpg
 				File file = new File(custom.getAbsolutePath());
-				file.mkdirs();
+				file.getParentFile().mkdirs();
 				List<String> com = new ArrayList<String>();
 
 				int finalwidth = asset.getInt("width");
