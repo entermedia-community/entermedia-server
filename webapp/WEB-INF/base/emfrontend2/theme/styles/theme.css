@@ -532,7 +532,7 @@ select + .select2-container {
     border-top:1px solid #fff;
     line-height:2.2;
 }
-#header .navlinks>ul li.first { border:0 none;}
+#header .navlinks>ul li.nav-first-item { border:0 none;}
 #header .dropdown-menu {
 	padding:0;
 	border:0;
@@ -4939,3 +4939,15 @@ a.collectionlike,a.collectionsaved
 {
 	color:black;
 }	
+
+.helpcenter li {
+	padding-bottom:2px;
+	line-height: 1.6;
+}
+.helpcenter a{
+	color:#444;
+	text-decoration:underline;
+}
+.helpcenter a:hover{
+	color:#000;
+	}
