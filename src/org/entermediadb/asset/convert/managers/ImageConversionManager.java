@@ -1,6 +1,7 @@
 package org.entermediadb.asset.convert.managers;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,11 +121,12 @@ public class ImageConversionManager extends BaseConversionManager
 
 			ContentItem custom = getMediaArchive().getContent("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb.png");
 			ContentItem originalDocument = inStructions.getOriginalDocument();
-
+			
 			if (!custom.exists())
 			{
 				// convert   -size 376x254 tile:pattern:checkerboard /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/originals/Collections/General/TEST/car.png[0] -compose over -composite  /home/ian/git/testbench/webapp/WEB-INF/data/assets/catalog/generated/Collections/General/TEST/car.png/image1024x768.jpg
-
+				File file = new File(custom.getAbsolutePath());
+				file.mkdirs();
 				List<String> com = new ArrayList<String>();
 
 				int finalwidth = asset.getInt("width");
