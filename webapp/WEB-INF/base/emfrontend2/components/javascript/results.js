@@ -221,14 +221,16 @@ $(document).ready(function(url,params)
 		var overlay = $("#hiddenoverlay");
 		overlay.height(wheight);
 		overlay.width(avwidth);
+		var w = parseInt(img.data("width"));
+		var h = parseInt(img.data("height"));
 		
 		$("#hiddenoverlay .playerarea").width(avwidth);
-		var w = img.data("width");
+		
 		var avheight = $(window).height() - 40;
 		if(!isNaN(w) && w != "")
 		{
 			w = parseInt(w);
-			var h = parseInt(img.data("height"));	
+				
 			var newh = Math.floor( avwidth * h / w );
 			var neww = Math.max(avwidth, Math.floor( avwidth * w / h ));
 			img.width(avwidth);
@@ -264,10 +266,12 @@ $(document).ready(function(url,params)
 		}
 		else
 		{
+			/*
 			img.width(avwidth);
 			//img.css("height", "auto");
 			img.css("height", avheight);
 			img.css("margin-top","0px");
+			*/
 		}
 	}
 	$(window).resize(function(){

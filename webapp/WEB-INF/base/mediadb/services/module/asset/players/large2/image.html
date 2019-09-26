@@ -8,11 +8,16 @@
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))
-
+<table width="100%" style="height: 100%;">
+<tr>
+<td style="vertical-align: middle; text-align: center;">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
 	data-name="$asset.name" 
-	data-width="$assetwidth"
-	data-height="$assetheight"
+	data-width="$!assetwidth"
+	data-height="$!assetheight"
 	src="$tpath"
 	alt="$!asset.name" />
+	</td>
+</tr>
+</table>
