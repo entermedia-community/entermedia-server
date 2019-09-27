@@ -699,7 +699,8 @@ $(document).ready(function(url,params)
 	lQuery('a#multiedit-menu').livequery('click',function(e)
 	{
 		e.preventDefault();
-		showAsset("multiedit:dialoghitsassetassets/catalog",1);
+		var catalogid = $("#application").data("catalogid");
+		showAsset("multiedit:dialoghitsasset"+catalogid,1);
 		return false;
 	});
 	

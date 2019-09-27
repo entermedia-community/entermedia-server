@@ -23,7 +23,7 @@ public void init()
 		HitTracker assets =  assetsearcher.search(q);
 		assets.enableBulkOperations();
 		
-		log.info("Processing ${assets.size()}" + q	);
+		log.info("Processing ${assets.size()} assets " + q	);
 		
 		long added = 0;
 		long checked  = 0;
