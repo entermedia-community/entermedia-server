@@ -379,9 +379,7 @@ color: #fff;
 
 #footerbase { 
 	height:32px;
-	position: absolute;
-	width: 100%;
-	bottom:0px;
+	
 	/*opacity: 0.8;*/
 	background-color: #333;
 }
@@ -401,12 +399,12 @@ color: #fff;
 #footermenu li.footermenu {
 	font-size: 1rem;
 	color:#fff;
-	line-height:32px;
+	height: 32px;
 	font-weight: normal;
 	float:left;
 	display:block;
 }
-#footermenu .gotoarrows { font-size: 1.6rem; padding: 0 2px; cursor:pointer; }
+#footermenu .gotoarrows { font-size: 1.6rem; line-height: 25px; padding: 0 2px; cursor:pointer; }
 #footermenu .goleftclick { padding-left: 8px;}
 #footermenu .gorightclick { padding-right: 8px;}
 #footermenu .gotoarrows { color:#777;} 
@@ -417,18 +415,23 @@ color: #fff;
 
 
 #footermenu li a {
-	color: white;	
+	color: #efefef;	
 	display:block;
+	line-height: 32px;
 }
 #footermenu .expandmenu {
 	padding:0 20px;
 }
-#footermenu li.tabselected a.expandmenu,
-#footermenu .expandmenu:hover {
+#footermenu li.tabselected {
+	background-color: #ccc;
+	
+}
+#footermenu li a:hover,
+#footermenu li.tabselected a {
 	text-decoration: none;
-		background-color: #ccc;
 	color: #212529;
 }
+
 #footermenu li.bottomtab .assetpreview {
     overflow: hidden; 
     text-overflow: ellipsis;
