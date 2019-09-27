@@ -46,8 +46,10 @@
 <div id="resultsheader">
 <div id="sub-nav" class="emsubnav">
 	<ul class="resultsnav">
-		#set ($enabled=$hits.getSelectionSize() > 0)
-		
+		#set ($enabled = false)
+		#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
+			#set ($enabled = true)
+		#end
 		#if( $librarycol )
 			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()", $context)				
 		#end
