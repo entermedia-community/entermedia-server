@@ -7,7 +7,7 @@
 #if(${presetdata.id} != "0") 
 
 <a class="btn btn-xs btn-secondary" target="_blank" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?cache=false">[[Preview]]</a>
-<a class="btn btn-xs btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
+<a class="btn btn-xs btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $presetdata))?includemetadata=true">[[Download]]</a>
 #if($canembedasset)
 <a class="btn btn-xs btn-secondary embedbtn copyembed " 
 	id="${presetdata.id}-btn" 
