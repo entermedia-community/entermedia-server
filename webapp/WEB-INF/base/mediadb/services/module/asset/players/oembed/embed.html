@@ -1,0 +1,15 @@
+#set($url = $context.getRequestParameter("url"))
+
+#set($outputfile = $context.getRequestParameter("outputfile"))
+##set($src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
+{
+	"version": "1.0",
+	"type": "image",
+	"provider_name": "EnterMedia",
+	"provider_url": "https://entermediadb.org/",
+	"width": 425,
+	"height": 344,
+	"title": "$asset.name",
+	"html":
+		"<img src="${src}">",
+}
