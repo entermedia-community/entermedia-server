@@ -99,12 +99,15 @@ public class ConvertStatusModule extends BaseMediaModule
         
 		instructions.setForce(true);
 		
-		
-		
-		
-		
-		
 		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getPath() + "/" + preset.get("generatedoutputfile"));
+		
+		
+//		//TODO: Re-enamble version control
+//		if(outputpage.exists()){
+//			getPageManager().putPage(outputpage); // this should create a new version
+//		}archive
+			
+		
 		instructions.setOutputFile(outputpage);
 		//always use the 1024 - otherwise larger crops are incorrect
 		
@@ -147,26 +150,15 @@ public class ConvertStatusModule extends BaseMediaModule
 			instructions.setProperty("y1", Integer.toString(y1.intValue()));
 			instructions.setOutputFile(outputpage);
 			
-					
-			
-			
-			
-			
-			
 		}
 		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
 			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
 			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
 		}
-		
-		
-		
+	
+	
 		manager.createOutput(instructions); //This will go back to the original if needed
-
-//		//TODO: Re-enamble version control
-//		if(outputpage.exists()){
-//			getPageManager().putPage(outputpage); // this should create a new version
-//		}archive
+	
 		Searcher tasks = archive.getSearcher("conversiontask");
 		Data task = tasks.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
 
