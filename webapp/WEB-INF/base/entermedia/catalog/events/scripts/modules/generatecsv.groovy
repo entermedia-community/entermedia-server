@@ -56,11 +56,20 @@ public void runExport(){
 			String value = tracker.get(detail.getId());
 			//do special logic here
 			if(detail.isList() && friendly){
-				Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
+				valuelist = tracker.getValues(detail.getId());
+				StringBuffer endval = new StringBuffer();
+				valuelist.each {
+					Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), it);
 
-				if(remote != null){
-					value= remote.getName();
+					if(remote != null){
+						
+						endval.append(remote.getName());
+						endval.append(" | ");
+
+					}
 				}
+				value = endval.toString()
+				
 			}
 			String render = detail.get("render");
 			if(render != null)

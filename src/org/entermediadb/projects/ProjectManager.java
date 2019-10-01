@@ -1885,7 +1885,7 @@ public class ProjectManager implements CatalogEnabled
 		return liked;
 	}
 
-	public void recalculateSessions(String inCollectionid)
+	public LibraryCollection recalculateSessions(String inCollectionid)
 	{
 		Searcher goalsearcher = getMediaArchive().getSearcher("projectgoal"); //tickets
 		Searcher tasksearcher = getMediaArchive().getSearcher("goaltask"); //tasks on tickets
@@ -1941,6 +1941,7 @@ public class ProjectManager implements CatalogEnabled
 		//TODO: Don't save if they are identical
 
 		getMediaArchive().saveData("librarycollection", col);
+		return col;
 
 	}
 
