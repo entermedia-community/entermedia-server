@@ -487,5 +487,56 @@ body.widthless1000 #pdf-thumbnail-sidebar
 {
 	cursor: pointer;
 }
-
+.media-presets { padding-top:10px;}
+.media-presets-sidebar {
+	background-color:#CCCCCC;
+	height: 100%;
+	
+}
+.media-presets-sidebar h3 {
+	color: #bbb;
+    padding: 5px 10px 7px;
+    background-color: #333;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+	margin:0;
+	}
+.media-presets-sidebar-content {
+	padding:10px;
+	color:#333;
+}
+.mediapreset {
+	background-color:#CeCeCe;
+	border:2px solid #CeCeCe;
+	width:220px;
+	height: 220px;
+	text-align:center;
+	line-height: 1;
+	float:left;
+	margin:0 3px 3px 0;
+	color:#333;
+	
+}
+.mediapreset:hover
+ {
+	
+}
+.mediapresetselected
+ {
+border:2px solid #fff;
+background-color:#bebebe;
+}
+.mediapreset a.mediapresetcontainer {
+	display:blocK;
+	padding:20px 10px 10px;
+	
+}
+.mediapreset-image {
+	height: 165px;
+}
+.mediapreset img {
+	border:2px solid #fff;
+	max-width:180px; 
+	max-height: 165px;
+}
 

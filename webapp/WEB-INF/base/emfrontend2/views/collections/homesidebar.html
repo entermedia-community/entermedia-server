@@ -1,17 +1,13 @@
 <div class="h-100" style="padding:30px 20px 0">
 			<div class="ui-widget h-100" style="margin:0;">
 				<div class="ui-widget-header collectionhome-sideheader">
-				<span class="widget-header-title">[[Collection Search]]</span>
+				<span class="widget-header-title">[[Collections]]</span>
 				
-				#if($canaddnewcollection)
-				<a class="emdialog btn btn-xs btn-primary" 
-					style="margin-left:5px;float:right" title="[[Add New Collection]]" 
-				   	href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()">
-				<i class="fa fa-plus"></i>
-				</a>
-				#end
-				<a class="emdialog btn btn-xs btn-primary" 
-					style="margin-left:2px;float:right" data-hidefooter="true"  title="[[Find Collections]]" 
+				
+				<a class="emdialog btn btn-xs btn-secondary" 
+					style="margin-left:2px; float:right;" 
+					data-hidefooter="true"  
+					title="[[Find Collections]]" 
 				   	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
 			</div>
 				<div class="ui-widget-content categories-widget no-padding-for-real" style="height: calc(100% - 32px); max-height: 250px; border:0;">
@@ -26,12 +22,10 @@
 						  #end
 						#end
 						 
-						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
-							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> [[All Collections]]</a>
-						</li>
+						
 						#if($canviewfeaturedcollections)
 						<li id="theme"  #if( $selectedtab == "featured")class="current"#end>
-							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> [[Featured Collections]]</a>
+							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> [[Featured Libraries]]</a>
 						</li>
 						#end
 						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
@@ -43,6 +37,9 @@
 						</li>
 						#end
 						<li>
+						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
+							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> [[All Collections]]</a>
+						</li>
 				#if($canaddnewcollection)
 					   	    <li>
 	                 <a  class="emdialog btn btn-primary" style="margin:15px;" title="[[Add New Collection]]" 

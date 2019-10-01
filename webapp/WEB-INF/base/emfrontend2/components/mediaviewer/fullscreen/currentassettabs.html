@@ -33,12 +33,22 @@
 			
 			#if (!$ismulti)
 				#if( !$previewonly )
+					#if( !$ismulti && $canviewconversions   && $canviewassetedit)
+				   	<li class="footermenu hidemulti bottomtab #if($opentab == "viewmedia")tabselected#end">
+				   	<a class="expandmenu assettab #if($opentabactions=='conversions') dropdown-current #end" 
+							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=media" title="[[Media]]"
+							data-assettab="viewactions"
+							data-assettabname="[[Media]]" >
+						<i class="fas fa-images"></i>  [[Media]] 
+						</a>
+				   	</li>
+				   	#end
 					#if ($canviewcomments || $canassetannotate)
 					 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 						<a class="expandmenu assettab" 
-							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
+							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Chat]]"
 							data-assettab="viewcollaborate" >
-						<i class="fas fa-comment-alt"></i> [[Collaborate]] 
+						<i class="fas fa-comment-alt"></i> [[Chat]] 
 						</a>
 					</li>
 					#end
@@ -75,13 +85,13 @@
     		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 			#if($candownload && $asset.getFileFormat()  == "pdf")
 			<li class="footermenu bottomtab" >
-			    <a data-assetid="${asset.id}" target="_new" href="$!cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+			    <a class="expandmenu" data-assetid="${asset.id}" target="_new" href="$!cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
 	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
 	            </a>
             </li> 
 			#end
 			#if (!$ismulti)
-			#if($candownload || $canconvert || $candownloadfpo)
+			#if(1==2 && ($candownload || $canconvert || $candownloadfpo))
 				<li class="footermenu bottomtab hidemulti" >		
 					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
 					   <ul class="dropdown-menu">

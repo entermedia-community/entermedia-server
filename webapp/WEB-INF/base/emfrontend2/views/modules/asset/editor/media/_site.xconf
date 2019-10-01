@@ -1,0 +1,6 @@
+<page>
+	<property name="assettab">viewmedia</property>
+	<inner-layout>/${applicationid}/views/modules/asset/editor/conversions/innerlayout.html</inner-layout>
+	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.js" />
+	
+</page>
