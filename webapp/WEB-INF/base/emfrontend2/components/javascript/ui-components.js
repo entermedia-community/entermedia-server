@@ -884,34 +884,14 @@ uiload = function() {
 											separator : '|'
 										});
 							theinput.on("select2:select" , function() {
-									if ($(this).parents(".ignore").length == 0) {
-										$(this).valid(); 
-										
-									}
-									/*
-									if ($(this).hasClass("autosubmited")) {
-										var theform =$(this).parents("form")
-										if (theform.hasClass("autosubmitform")) {
-											theform.trigger("submit");
-										}
-									}
-									*/
+								if ($(this).parents(".ignore").length == 0) {
+									$(this).valid(); 
+								}
 						   });
 						   theinput.on("select2:unselect" , function() {
-									if ($(this).parents(".ignore").length == 0) {
-										$(this).valid(); 
-									}
-									
-									
-									/*
-									if ($(this).hasClass("autosubmited")) {
-										var theform =$(this).parents("form")
-										if (theform.hasClass("autosubmitform")) {
-											$("#filtersremoveterm", theform).val($(this).data("searchfield"));
-											theform.trigger("submit");
-										}
-									}
-									*/
+								if ($(this).parents(".ignore").length == 0) {
+									$(this).valid(); 
+								}
 							});
 					});
 

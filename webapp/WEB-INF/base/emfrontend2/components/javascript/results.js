@@ -183,13 +183,9 @@ $(document).ready(function(url,params)
 			    	
 			    	var boxes = $('.filtercheck' + fieldname + ':checkbox:checked');
 			    	if(boxes.length == 0){
-				    	$('<input>').attr({
-				    	    type: 'hidden',
-				    	    id: 'foo',
-				    	    name: 'removeterm', 
-				    	    value: fieldname
-				    	   
-				    	}).appendTo(form);
+						if($("#filtersremoveterm").length) {
+							$("#filtersremoveterm").val(fieldname);
+						}
 			    	}
 			    	
 			    }
