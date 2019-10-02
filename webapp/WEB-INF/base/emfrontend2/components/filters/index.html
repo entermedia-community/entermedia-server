@@ -40,7 +40,7 @@
 	
 
 	
-	<form  	name="filterform" id="filterform" class="autosubmitform novalidate em-widget-content ajaxform" 
+	<form  	name="filterform" id="filterform" class="autosubmitform novalidate em-widget-content" 
 			data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
 		data-oemaxlevel="2" 
@@ -124,8 +124,8 @@
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 			#if($nodeID && $nodeID != $librarycol.rootcategory) 
-				<input type="hidden" name="category.value" value="$nodeID" />
-				<input type="hidden" name="nodeID" value="$nodeID" />
+				<input type="hidden" name="category.value" value="$!nodeID" />
+				<input type="hidden" name="nodeID" value="$!nodeID" />
 			#else
 				<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
 			#end
@@ -139,7 +139,7 @@
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
-			<input type="hidden" name="nodeID" value="$nodeID" />
+			<input type="hidden" name="nodeID" value="$!nodeID" />
 		#end
 		
 
