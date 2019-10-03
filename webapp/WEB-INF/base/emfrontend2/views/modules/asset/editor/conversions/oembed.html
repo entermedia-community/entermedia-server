@@ -5,6 +5,6 @@
 #set( $src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
 
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="4" cols="60">
-$src&outputfile=${outputfile}
+$src&assetid=$!{asset.id}&outputfile=${outputfile}
 </textarea>
 <div class="alert alert-success fader" role="alert" style="position: absolute; top:10px;">[[oEmbed code copied to Clipboard]]</div>

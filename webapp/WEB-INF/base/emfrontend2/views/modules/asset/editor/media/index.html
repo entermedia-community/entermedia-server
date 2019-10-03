@@ -52,9 +52,7 @@ $context.putPageValue("results", $results)
 			#end
 		
 			#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
-				#if(!$currentpreset)
-					#set($currentpreset = $result.id)
-				#end
+				
 				#if($currentpreset == $result.id)
 					#set($current = $result)
 				#end
@@ -71,14 +69,13 @@ $context.putPageValue("results", $results)
 					targetdivinner="asset-editor-container" data-oemaxlevel="1"
 					title="$result.name">
 					<div class="mediapreset-image">
-						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)"
-					  	style="" />
+						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
 					</div>
 					</a>
 					<div>
 						<a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
-						   title="[[Download]] $result.name">
-							$result.generatedoutputfile <i class="fas fa-download"></i>
+						   title="[[Download]] $result.generatedoutputfile">
+							$result.name <i class="fas fa-download"></i>
 						</a>
 					</div>
 					
@@ -115,14 +112,15 @@ $context.putPageValue("results", $results)
 			<div class="media-presets-sidebar">
 			<h3>[[File]]</h3>
 			<div class="media-presets-sidebar-content">
-			##	<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-			##		targetdivinner="asset-editor-container" 
-			##		data-oemaxlevel="1" 
-			##	>[[Copy]]</a>
-			##	<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-			##		targetdivinner="asset-editor-container" 
-			##		data-oemaxlevel="1" 
-			##	>[[Delete]]</a>
+				<a class="btn btn-xs btn-secondary emdialog"
+					href="$home$apphome/views/modules/asset/editor/media/presetsaveas.html?presetid=$current.id&assetid=$asset.id"
+					data-noesc="true" 
+					title="[[Copy Media]]"
+				>[[Save as...]]</a>
+				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+					targetdivinner="asset-editor-container" 
+					data-oemaxlevel="1" 
+				>[[Delete]]</a>
 			#set($cancrop = $conversionUtil.canCrop($catalogid, $current.id, $asset.id))
 				#if($cancrop)
 				##change to use filename not presetid
@@ -149,17 +147,21 @@ $context.putPageValue("results", $results)
 				<a class="btn btn-xs btn-secondary embedbtn copyembed " 
 					id="${current.id}-btn" 
 					data-targetdivinner="${current.id}-embed"
-					data-isshowing="false" 
-					href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1">[[Link]]</a>
+					data-isshowing="false"
+					data-embedtext="" 
+					href="">[[Link]]</a>
+					<input style="position:absolute; top:-1000px;" id="${current.id}-embed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
 				<a class="btn btn-xs btn-secondary embedbtn copyembed " 
 					id="${current.id}-obtn" 
-					data-targetdivinner="${current.id}-embed"
+					data-targetdivinner="${current.id}-oembed"
 					data-isshowing="false" 
-					href="$home$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=${asset.id}&ouputpreset=${current.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1">[[oEmbed]]</a>
+					href="">[[oEmbed]]</a>
+					<input style="position:absolute; top:-1000px;" id="${current.id}-oembed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${current.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
+					<div class="alert alert-success" id="embedalert" role="alert" style="position: absolute; top:10px; display:none;">[[Copied to Clipboard]]</div>
 				
 				#end
 			
-				<div id="${current.id}-embed"></div>
+				
 			</div>
 			</div>
 		#end
@@ -178,19 +180,10 @@ $(document).ready(function(){
 		  e.preventDefault();
           var embedbtn = $(this);
 		  var loaddiv = embedbtn.data("targetdivinner");
-		  var nextpage = embedbtn.attr("href")
-		  jQuery.get(nextpage, function(data) 
-				{
-					$("#"+loaddiv).html(data);
-					var copyText = $("#"+loaddiv).children("textarea");
-			        if ((typeof copyText) != "undefined") {
-						  copyText.select();
-						  document.execCommand("copy");
-					}	
-					$(window).trigger( "resize" );
-				})		
-		  
-		  
+		  var copyText = $("#"+loaddiv);
+	      copyText.select();
+		  document.execCommand("copy");
+		  $("#embedalert").show().fadeOut(2000);
  		  
 	});
 	});
