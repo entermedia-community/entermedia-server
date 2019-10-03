@@ -1,15 +1,22 @@
 #set($url = $context.getRequestParameter("url"))
-$url
-#set($outputfile = $context.getRequestParameter("outputfile"))
-##set($src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
+#set($querystring = $urlutils.getQueryMap($url))
+#set($assetid = $querystring.get("assetid"))
+#set($outputfile = $querystring.get("outputfile"))
+#if ($assetid && $outputfile)
+#set($asset  = $mediaarchive.getAsset($assetid))
+#if($asset)
+#set($src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
 {
+	"asset": "$assetid",
 	"version": "1.0",
 	"type": "image",
 	"provider_name": "EnterMedia",
 	"provider_url": "https://entermediadb.org/",
-	"width": 425,
-	"height": 344,
-	"title": "$asset.name",
+	"width": $!{asset.width},
+	"height": $!{asset.height},
+	"title": "$asset.headline",
 	"html":
-		"<img src="${src}">",
+		"[caption]<img src="${src}" alt="$!{asset.headline}" />$!{asset.headline}[/caption]",
 }
+#end
+#end

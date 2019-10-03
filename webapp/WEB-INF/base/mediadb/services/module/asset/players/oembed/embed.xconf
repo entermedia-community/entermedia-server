@@ -1,5 +1,5 @@
 <page>
 
 	<path-action name="MediaArchiveModule.getAsset"  />
-
+	<page-action name="PageValue.loadPageVariable" bean="urlutils" class="org.openedit.entermedia.util.RFC3986" />
 </page>
