@@ -91,6 +91,8 @@ public class assetSearchSecurity implements SearchSecurity
 			}
 			if (profile != null && profile.isInRole("administrator"))
 			{
+				addJoins(inPageRequest,inSearcher,inQuery);
+				inQuery.setSecurityAttached(true);
 				return inQuery;					
 			}
 			if( required == null)
@@ -189,67 +191,73 @@ public class assetSearchSecurity implements SearchSecurity
 			{
 				inQuery.addChildQuery(required);
 			}
+			addJoins(inPageRequest,inSearcher,inQuery);
 
-			SearchQuery filterchild = null;
-			for (Term term : inQuery.getTerms())
-			{
-				String type = term.getDetail().getSearchType();
-				if (type == null)
-				{
-					continue;
-				}
-				if (!type.equals("library") && !type.equals("librarycollection"))  //Join searches
-				{
-					continue;
-				}
-				if (filterchild == null)
-				{
-					filterchild = inSearcher.createSearchQuery();
-				}
-				Searcher othersearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), type);
-
-				SearchQuery othersearch = othersearcher.createSearchQuery();
-				//fix the detail id?
-				othersearch.addTerm(term);
-
-				//First find any matching libraries or collections
-				Collection<Data> parenthits = othersearcher.search(othersearch);
-				Collection<Data> libraryhits = null;
-				Collection<String> categoryids = new ArrayList();
-
-				if (type.equals("library"))
-				{
-					for (Data data : parenthits)
-					{
-						categoryids.add(data.get("categoryid"));
-					}
-				}
-				else if (type.equals("librarycollection"))
-				{
-					//Since we found collections, find the correct 
-					for (Data data : parenthits)
-					{
-						categoryids.add(data.get("rootcategory"));
-					}
-				}
-				else
-				{
-					throw new OpenEditException("Asset searches only support Library and Collection joins not: " + type);
-				}
-				if (categoryids.isEmpty())
-				{
-					categoryids.add("nocategoryhits");
-				}
-				
-				filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids); //This will filter in specific assets
-			}
-			if (filterchild != null)
-			{
-				inQuery.addChildQuery(filterchild);
-			}
 		}
 
 		return inQuery;
+	}
+	
+	protected void addJoins(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
+	{
+		// TODO Auto-generated method stub
+		SearchQuery filterchild = null;
+		for (Term term : inQuery.getTerms())
+		{
+			String type = term.getDetail().getSearchType();
+			if (type == null)
+			{
+				continue;
+			}
+			if (!type.equals("library") && !type.equals("librarycollection"))  //Join searches
+			{
+				continue;
+			}
+			if (filterchild == null)
+			{
+				filterchild = inSearcher.createSearchQuery();
+			}
+			Searcher othersearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), type);
+
+			SearchQuery othersearch = othersearcher.createSearchQuery();
+			//fix the detail id?
+			othersearch.addTerm(term);
+
+			//First find any matching libraries or collections
+			Collection<Data> parenthits = othersearcher.search(othersearch);
+			Collection<Data> libraryhits = null;
+			Collection<String> categoryids = new ArrayList();
+
+			if (type.equals("library"))
+			{
+				for (Data data : parenthits)
+				{
+					categoryids.add(data.get("categoryid"));
+				}
+			}
+			else if (type.equals("librarycollection"))
+			{
+				//Since we found collections, find the correct 
+				for (Data data : parenthits)
+				{
+					categoryids.add(data.get("rootcategory"));
+				}
+			}
+			else
+			{
+				throw new OpenEditException("Asset searches only support Library and Collection joins not: " + type);
+			}
+			if (categoryids.isEmpty())
+			{
+				categoryids.add("nocategoryhits");
+			}
+			
+			filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids); //This will filter in specific assets
+		}
+		if (filterchild != null)
+		{
+			inQuery.addChildQuery(filterchild);
+		}	
 	}
 
 	protected MediaArchive getMediaArchive(String inCatalogId)

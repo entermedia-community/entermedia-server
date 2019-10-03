@@ -988,7 +988,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				continue;
 			}
 
-			String value = term.getValue();
+		
+			Object value = term.getValue();
+			if( value == null)
+			{
+				value = term.getValues();
+			}
 			QueryBuilder find = buildTerm(detail, term, value);
 			if (find != null)
 			{
