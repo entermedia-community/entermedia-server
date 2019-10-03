@@ -110,9 +110,9 @@ public class RFC3986 {
     public static Map<String, String> getQueryMap(String url)
     {
     	Map<String, String> map = new HashMap<String, String>();
-    	String[] urlparts = url.split("\\?");
-    	if (urlparts.length>1 && urlparts[1] != null) {
-	        String[] params = urlparts[1].split("&");
+    		String[] urlparts = url.split("\\?");
+    	   	if (urlparts.length>1) {
+	        String[] params = urlparts[1].split("\\&");
 	        for (String param : params)
 	        {
 	            String name = param.split("=")[0];
