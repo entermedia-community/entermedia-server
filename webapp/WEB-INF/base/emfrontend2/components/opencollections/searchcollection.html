@@ -69,7 +69,7 @@ lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
 	#if(  $hits &&  $hitsselected > 0 )	
 		var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
 	#else	
-	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
+	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '/index.html';
 	#end   
 	//$("#left-col-opencollections").load(nextpage);
 	//console.log(${hitsselected});
