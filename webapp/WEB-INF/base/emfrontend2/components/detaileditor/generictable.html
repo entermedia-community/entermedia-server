@@ -46,19 +46,20 @@
 #end
 
 #if( $showit )
-<div id="${viewid}editor" >
+
+<div id="#makeid(${viewid})editor" >
 	#if( !$edit || $edit == "false")
 	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic">
-	<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
+	<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">[[Add New]]</a>
 	</div>
 	#end
 	
 	#else
 	
-	<form name="edit${viewid}" class="ajaxform" targetdiv="${viewid}editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
+	<form name="edit${viewid}" class="ajaxform" targetdiv="#makeid(${viewid})editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
 	
 		$context.putPageValue("view", $viewpath)
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
@@ -76,8 +77,8 @@
 		#end
 		<div style="margin: 20px 20px 0 0;">
 			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
-			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
-			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='#makeid(${viewid})editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='#makeid(${viewid})editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

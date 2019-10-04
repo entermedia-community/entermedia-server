@@ -23,10 +23,12 @@ $context.putPageValue("view", $view)
 <div class="ui-widget-actions">
 <a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
 <a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+#if( $data.guid )
 <a class="btn btn-sm btn-secondary" style="margin-right:10px" 
-	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.id}'>
+	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.guid}'>
 [[View Parameters]]
 </a>	
+#end
 
 
 <a class="btn  btn-sm btn-danger red"  href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
