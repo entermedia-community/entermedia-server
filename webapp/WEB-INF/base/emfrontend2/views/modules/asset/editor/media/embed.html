@@ -1,0 +1,9 @@
+#set($outputfile = $context.findValue("outputfile"))
+#set($mediadbappid = $!mediaarchive.getMediaDbId())
+#set($prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
+#if(!$prefix) 
+	#set( $prefix = $context.siteRoot )
+ #end
+##$!{prefix}$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($outputfile)
+#set( $src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
+$src

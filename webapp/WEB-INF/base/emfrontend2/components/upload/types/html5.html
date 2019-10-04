@@ -70,48 +70,27 @@
 		    </div>
 		    
 		    <div  class="ui-widget-content"> 
-				###if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid && !$nodeID) 
-				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection")) 
-				##TODO - Add library filtering here.
-				<div class="inputformrow">
-					<div class="emdatafield">[[Choose Collection]]</div>
-					<div class="emdatafieldvalue ">
-						<select name="currentcollection" id="collectionidvalue"  
-							class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
-							data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
-							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
-							#if( $collectionid )
-							  <option value="$collectionid" selected="selected">#esc($librarycol.getName($context))</option>
-							#end
-						</select>
-					</div>
-					#if($canaddnewcollection)
 
-						<a class="emdialog btn btn-xs btn-light"  style="margin:5px 0;"  
-							href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=librarycollection&update=collectionidvalue" 
-							title="[[Add New Collection]]" data-hidefooter="true">+ [[New Collection]]</a>
-
-	             	#end
-					<hr>
-				</div>
-				#else
-					#if( $collectionid)
+				#if( $collectionid)
 						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
-						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
 						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
-					#end
+				#else
+					#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+						 
+						$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+						
+					#end						
 				#end
-
-					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-					
-					
-
-					#if($nodeID)
+				
+				
+				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+				
+				#if($nodeID)
 						<input type="hidden" name="field" value="category" />
 						<input type="hidden" name="category.value" value="$nodeID"/>
-					#end
+				#end
 
                     #if($collectionid || $nodeid)
 						$context.putPageValue("view","asset/multipleuploadcollection")	

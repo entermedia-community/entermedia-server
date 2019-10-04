@@ -3,7 +3,4 @@
 	<page-action name="PageValue.loadPageVariable" bean="mathtool" class="org.entermediadb.asset.util.MathTool"/>
 	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.entermediadb.asset.util.MathUtils"/>
 	<property name="hidepreview">true</property>
-
-
-
 </page>

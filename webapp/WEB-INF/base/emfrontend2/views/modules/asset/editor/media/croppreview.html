@@ -1,349 +1,332 @@
-#set($presetid = $context.findValue("presetid"))
-#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetid))
-#set($width = $dimension.getWidth())
-#set($height = $dimension.getHeight())
-#set($width = $numberutils.createDouble("$width").intValue())
-#set($height = $numberutils.createDouble("$height").intValue())
-#set($assetwidth = $numberutils.toInt($asset.width))
-#set($assetheight = $numberutils.toInt($asset.height))
-
-##set a few constants
-#set($min_display = 1024.0)
-#set($width_offset = 138.0)
-#set($bf_img_width = $min_display)
-#set($bf_img_height = $min_display)
-#set($bf_preview_width = 220.0)
-#set($bf_preview_height = 220.0)
-
-###get the window size
-#set($maxdisplay = $context.getRequestParameter("maxsize"))
-#set($displaywidth = $context.getRequestParameter("displaywidth"))
-#if(!$displaywidth)
-	#set($displaywidth = $min_display + $bf_preview_width + $width_offset)
-#end
-#set($displaywidth = $numberutils.createDouble("${displaywidth}"))
-#set($displaywidth = $displaywidth - $bf_preview_width - $width_offset)
-
-###set max display
-#if($displaywidth < $min_display)
-	#set($displaywidth = $min_display)
-#end
-#set($max_display = $displaywidth)
-
-###calculate the best fit dimensions of the display and crop preview
-#set($factorwidth = $assetwidth / $bf_img_width)
-#set($factorheight = $assetheight / $bf_img_height)
-#if($factorwidth > $factorheight)
-	#if($factorwidth < 1.0)
-		#set($img_width = $assetwidth * $factorwidth)
-		#set($img_height = $assetheight * $factorwidth)
-	#else
-		#set($img_width = $assetwidth / $factorwidth)
-		#set($img_height = $assetheight / $factorwidth)
-	#end
-#else
-	#if($factorheight < 1.0)
-		#set($img_width = $assetwidth * $factorheight)
-		#set($img_height = $assetheight * $factorheight)
-	#else
-		#set($img_width = $assetwidth / $factorheight)
-		#set($img_height = $assetheight / $factorheight)
-	#end
-#end
-##check if maxsize or maxsize button clicked
-#if($userprofile.maximize_screen == "true" || $maxdisplay == "true")
-	#set($display_factor = $max_display / $min_display)
-	#set($img_width = $img_width * $display_factor)
-	#set($img_height = $img_height * $display_factor)
-#end
-##round to int
-#set($img_width = $numberutils.createDouble("${img_width}").intValue())
-#set($img_height = $numberutils.createDouble("${img_height}").intValue())
-
-##check whether resulting display dimensions is greather than original image
-#if($img_width > $assetwidth)
-	#set($img_width = $assetwidth)
-	#set($img_height = $assetheight)
-#end
-
-##calculate preview dimensions
-#set($factorwidth = $width / $bf_preview_width)
-#set($factorheight = $height / $bf_preview_height)
-#if($factorwidth > $factorheight)
-	#set($preview_img_width = $width / $factorwidth)
-	#set($preview_img_height = $height / $factorwidth)
-#else
-	#set($preview_img_width = $width / $factorheight)
-	#set($preview_img_height = $height / $factorheight)
-#end
-##round to int
-#set($preview_img_width = $numberutils.createDouble("${preview_img_width}").intValue())
-#set($preview_img_height = $numberutils.createDouble("${preview_img_height}").intValue())
-
-##set crop link
-#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
-<h2>
-<a href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=$asset.id"
-	class="ajax" style="color:#fefefe;"
-	title="[[Asset Files]]"
-   	targetdivinner="asset-editor-container" data-oemaxlevel="1"><i class="fas fa-caret-left" style="font-size: .8em;"></i></a>
-[[Asset Files Crop]]</h2>
-
-
+#set($presetid = $context.getRequestParameter("presetid"))
+#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $presetid))
+#if($presetid)
+	#set($width = $dimension.getWidth())
+	#set($height = $dimension.getHeight())
+	#set($width = $numberutils.createDouble("$width").intValue())
+	#set($height = $numberutils.createDouble("$height").intValue())
+	#set($assetwidth = $numberutils.toInt($asset.width))
+	#set($assetheight = $numberutils.toInt($asset.height))
 	
-<div id="croptool">
-	<div class="jc-demo-box">
-			#set( $savetoall = $context.getRequestParameter("savetoall"))
-			#if( $savetoall)
-			    <form id="coords" 
-			    		class="coords ajaxform" 
-			    		method="post"  
-			    		targetdiv="asset-editor-container" 
-			    		action="$home$apphome/views/modules/asset/editor/media/cropcustom.html">
-			#else
-				<form id="coords" 
-						class="coords ajaxform" 
-						method="post" 
-						data-targetdiv="asset-editor-container" 
-						action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
-			#end    
-			<div class="row no-gutters" style="height: calc(100% - 40px)">
-			<div class="col">
-				<div style="background-color: #333; padding:20px; text-align:center; margin-right:20px;">
-				<div class="display-full" style="margin: 0 auto;" >
-					<img id="targetimg" class="targetimg" src="$cropinputlink" alt="[[Crop Area]]" style="display:none;" />
-				</div>
-				<div class="clearfix"></div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="media-presets-sidebar">
-				<h3>[[Crop Preview]]</h3>
-				<div id="preview-panel" class="display-container" >
-					
-					<div class="preview-container">
-						<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
+	##set a few constants
+	#set($min_display = 1024.0)
+	#set($width_offset = 138.0)
+	#set($bf_img_width = $min_display)
+	#set($bf_img_height = $min_display)
+	#set($bf_preview_width = 400.0)
+	#set($bf_preview_height = 380.0)
+	
+	###get the window size
+	#set($maxdisplay = $context.getRequestParameter("maxsize"))
+	#set($displaywidth = $context.getRequestParameter("displaywidth"))
+	#if(!$displaywidth)
+		#set($displaywidth = $min_display + $bf_preview_width + $width_offset)
+	#end
+	#set($displaywidth = $numberutils.createDouble("${displaywidth}"))
+	#set($displaywidth = $displaywidth - $bf_preview_width - $width_offset)
+	
+	###set max display
+	#if($displaywidth < $min_display)
+		#set($displaywidth = $min_display)
+	#end
+	#set($max_display = $displaywidth)
+	
+	###calculate the best fit dimensions of the display and crop preview
+	#set($factorwidth = $assetwidth / $bf_img_width)
+	#set($factorheight = $assetheight / $bf_img_height)
+	#if($factorwidth > $factorheight)
+		#if($factorwidth < 1.0)
+			#set($img_width = $assetwidth * $factorwidth)
+			#set($img_height = $assetheight * $factorwidth)
+		#else
+			#set($img_width = $assetwidth / $factorwidth)
+			#set($img_height = $assetheight / $factorwidth)
+		#end
+	#else
+		#if($factorheight < 1.0)
+			#set($img_width = $assetwidth * $factorheight)
+			#set($img_height = $assetheight * $factorheight)
+		#else
+			#set($img_width = $assetwidth / $factorheight)
+			#set($img_height = $assetheight / $factorheight)
+		#end
+	#end
+	
+	##check if maxsize or maxsize button clicked
+	#if($userprofile.maximize_screen == "true" || $maxdisplay == "true")
+		#set($display_factor = $max_display / $min_display)
+		#set($img_width = $img_width * $display_factor)
+		#set($img_height = $img_height * $display_factor)
+	#end
+	##round to int
+	#set($img_width = $numberutils.createDouble("${img_width}").intValue())
+	#set($img_height = $numberutils.createDouble("${img_height}").intValue())
+	
+	##check whether resulting display dimensions is greather than original image
+	#if($img_width > $assetwidth)
+		#set($img_width = $assetwidth)
+		#set($img_height = $assetheight)
+	#end
+	
+	##calculate preview dimensions
+	#if($width<$bf_preview_width && $height<$bf_preview_height)
+		#set($preview_img_width = $width)
+		#set($preview_img_height = $height)
+	#else
+		#set($factorwidth = $width / $bf_preview_width)
+		#set($factorheight = $height / $bf_preview_height)
+		#if($factorwidth > $factorheight)
+			#set($preview_img_width = $width / $factorwidth)
+			#set($preview_img_height = $height / $factorwidth)
+		#else
+			#set($preview_img_width = $width / $factorheight)
+			#set($preview_img_height = $height / $factorheight)
+		#end
+	#end
+	##round to int
+	#set($preview_img_width = $numberutils.createDouble("${preview_img_width}").intValue())
+	#set($preview_img_height = $numberutils.createDouble("${preview_img_height}").intValue())
+	
+	##set crop link
+	#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
+	
+	$displaywidth : $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
+	
+	<h2>
+	<a href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=$asset.id"
+		class="ajax" style="color:#fefefe;"
+		title="[[Asset Files]]"
+	   	targetdivinner="asset-editor-container" data-oemaxlevel="1"><i class="fas fa-caret-left" style="font-size: .8em;"></i></a>
+	[[Asset Files Crop]]</h2>
+	
+		
+			
+		<div id="croptool">
+			<div class="jc-demo-box">
+					#set( $savetoall = $context.getRequestParameter("savetoall"))
+					#if( $savetoall)
+					    <form id="coords" 
+					    		class="coords ajaxform" 
+					    		method="post"  
+					    		targetdiv="asset-editor-container" 
+					    		action="$home$apphome/views/modules/asset/editor/media/cropcustom.html">
+					#else
+						<form id="coords" 
+								class="coords ajaxform" 
+								method="post" 
+								data-targetdiv="asset-editor-container" 
+								action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
+					#end    
+					<div class="row no-gutters" style="height: calc(100% - 40px)">
+					<div class="col">
+						<div style="background-color: #333; padding:20px; text-align:center; margin-right:20px;">
+						<div class="display-full" style="margin: 0 auto;" >
+							<img id="targetimg" class="targetimg" src="$cropinputlink" alt="[[Crop Area]]" style="display:none;" />
+						</div>
+						<div class="clearfix"></div>
+						</div>
 					</div>
-					<div class="media-presets-sidebar-content">
-					<div class="preview-labels">
-						<span id="dimension"></span>
-					</div>
-					 <div class="text-left">
-						
-					    <div>
-						<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Save]]"  />
-						<a class="btn btn-sm btn-secondary ajax float-right" 
-							style="margin-left:10px;" 
-							href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=$asset.id"
-							targetdivinner="asset-editor-container" data-oemaxlevel="1">[[Cancel]]</a>
+					<div class="col-md-3">
+						<div class="media-presets-sidebar">
+						<h3>[[Crop Preview]]</h3>
+						<div id="preview-panel" class="display-container" >
+							
+							<div class="preview-container">
+								<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
+							</div>
+							<div class="media-presets-sidebar-content">
+							<div class="preview-labels">
+								<span id="dimension"></span>
+							</div>
+							 <div class="text-left">
+								
+							    <div>
+								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Save]]"  />
+								<a class="btn btn-sm btn-secondary ajax float-right" 
+									style="margin-left:10px;" 
+									href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=$asset.id"
+									targetdivinner="asset-editor-container" data-oemaxlevel="1">[[Cancel]]</a>
+								</div>
+							</div>
+							</div>
+						</div>
 						</div>
 					</div>
 					</div>
-				</div>
-				</div>
+					<div class="clearfix"></div>
+		
+					<input type="hidden" name="oemaxlevel" value="1"/>
+				    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
+				    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
+				    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
+				    <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
+				    <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
+				    <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
+				    
+				    <input type="hidden" name="field" value="x1"/>
+				    <input type="hidden" name="field" value="y1"/>
+				    <input type="hidden" name="field" value="cropwidth"/>
+				    <input type="hidden" name="field" value="cropheight"/>
+				    <input type="hidden" name="field" value="crop"/>
+				    <input type="hidden" name="field" value="force"/>
+				    <input type="hidden" name="field" value="assetid"/>
+				    <input type="hidden" name="preset" value="${presetid}"/>
+				    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
+				    <input type="hidden" name="crop.value" value="true"/>
+				    <input type="hidden" name="force.value" value="true"/>
+				    <input type="hidden" name="assetid.value" value="${asset.id}"/>
+				    <input type="hidden" name="assetid" value="${asset.id}"/>
+				   
+				</form>
+				
+				
+				
 			</div>
-			</div>
-			<div class="clearfix"></div>
-
-			<input type="hidden" name="oemaxlevel" value="1"/>
-		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
-		    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
-		    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
-		    <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
-		    <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
-		    <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
-		    
-		    <input type="hidden" name="field" value="x1"/>
-		    <input type="hidden" name="field" value="y1"/>
-		    <input type="hidden" name="field" value="cropwidth"/>
-		    <input type="hidden" name="field" value="cropheight"/>
-		    <input type="hidden" name="field" value="crop"/>
-		    <input type="hidden" name="field" value="force"/>
-		    <input type="hidden" name="field" value="assetid"/>
-		    <input type="hidden" name="preset" value="${presetid}"/>
-		    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
-		    <input type="hidden" name="crop.value" value="true"/>
-		    <input type="hidden" name="force.value" value="true"/>
-		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
-		    <input type="hidden" name="assetid" value="${asset.id}"/>
-		   
-		</form>
+			
+		</div>
 		
+		#set($preview_img_height_offset = $preview_img_height + 36 )
+		#set($preview_img_width_offset = $img_width + 16 )
+		#set($preview_info_width_offset = $img_width + 24)
+		#set($preview_info_top = $preview_img_height_offset + 176 )
 		
+		#set($forceaspect = $conversionUtil.isEnforceAspectRatio($mediaarchive,$presetid))
+		<script>
+		lQuery("img.targetimg").livequery("load", function(e) {
+			e.preventDefault();
+			var id = $(this).attr("id");
+			if (id == "targetimg"){
+				$(this).width(${img_width});
+				$(this).height(${img_height});
+				$(this).css("display","none");
+				$(this).css("visibility","hidden");
+				prepareCropUtil(${img_width},${img_height});
+			} 
+		});
 		
-	</div>
-	
-</div>
-
-#set($preview_img_height_offset = $preview_img_height + 36 )
-#set($preview_img_width_offset = $img_width + 16 )
-#set($preview_info_width_offset = $img_width + 24)
-#set($preview_info_top = $preview_img_height_offset + 176 )
-
-#set($forceaspect = $conversionUtil.isEnforceAspectRatio($mediaarchive,$presetid))
-<script>
-$("imgA").on("load", function(e) {
-	e.preventDefault();
-	var id = $(this).attr("id");
-	if (id == "target"){
-		//--
-		$(this).width(${img_width});
-		$(this).height(${img_height});
-		//--
-		$("#target").show();
-		prepareCropUtil(${img_width},${img_height});
-	} else if (id == "preview-image"){
-		$(this).show();
-	}
-}).each(function() {
-		if (this.complete) {
-			//$(this).load();
-			$(this).trigger('load'); 
+			
+		
+		var jcrop_api;
+		
+		function prepareCropUtil(boxwidth,boxheight){
+			var boundx,
+			    boundy,
+			    xsize = ${width},
+			    ysize = ${height};
+			$('#targetimg').Jcrop({
+				keySupport: false,
+				onChange: updatePreview,
+				onSelect: updatePreview,
+				minSize: [xsize,ysize],
+				#if( $forceaspect)
+				aspectRatio: xsize / ysize,
+				#end
+				setSelect: [0,0,xsize,ysize]
+			},function(){
+			    jcrop_api = this;
+				var bounds = this.getBounds();
+				boundx = bounds[0];
+				boundy = bounds[1];
+				//$('#preview-panel').appendTo(this.ui.holder);
+			});
+			/*
+						trueSize: [1024,768]
+			*/			
+			function updatePreview(c){
+				
+				if (parseInt(c.w) > 0){
+			    	var rx = xsize / c.w;
+			    	var ry = ysize / c.h;
+			    	$("#preview-image").css({
+			        	"width": Math.round(rx * boundx) + 'px',
+			          	height: Math.round(ry * boundy) + 'px',
+			          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+			          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+			        });
+			    	rx = ${width} / c.w;
+			    	ry = ${height} / c.h;
+			    	
+			  	}
+				
+			  	var x1 = Math.round(c.x),
+			 		y1 = Math.round(c.y),
+			 		x2 = Math.round(c.x2),
+			 		y2 = Math.round(c.y2),
+			 		w = Math.round(c.w),
+			 		h = Math.round(c.h);
+				$('#x1').val(x1);
+			 	$('#y1').val(y1);
+			  	$('#x2').val(x2);
+			  	$('#y2').val(y2);
+			  	$('#w').val(w);
+			  	$('#h').val(h); 
+			  	$('#dimension').text(w+"x"+h);
+			};
 		}
-});
-
-lQuery("img.targetimg").livequery("load", function(e) {
-	e.preventDefault();
-	var id = $(this).attr("id");
-	if (id == "targetimg"){
-		//--
-		$(this).width(${img_width});
-		$(this).height(${img_height});
-		//--
-		$(this).css("display","none");
-		$(this).css("visibility","hidden");
-		prepareCropUtil(${img_width},${img_height});
-	} 
-});
-
-	
-
-var jcrop_api;
-
-function prepareCropUtil(boxwidth,boxheight){
-	var boundx,
-	    boundy,
-	    xsize = ${preview_img_width},
-	    ysize = ${preview_img_height};
-	$('#targetimg').Jcrop({
-		keySupport: false,
-		onChange: updatePreview,
-		onSelect: updatePreview,
-		minSize: [xsize,ysize],
-		#if( $forceaspect)
-		aspectRatio: xsize / ysize,
-		#end
-		setSelect: [0,0,xsize,ysize]
-	},function(){
-	    jcrop_api = this;
-		var bounds = this.getBounds();
-		boundx = bounds[0];
-		boundy = bounds[1];
-		//$('#preview-panel').appendTo(this.ui.holder);
-	});
-	/*
-				trueSize: [1024,768]
-	*/			
-	function updatePreview(c){
 		
-		if (parseInt(c.w) > 0){
-	    	var rx = xsize / c.w;
-	    	var ry = ysize / c.h;
-	    	$("#preview-image").css({
-	        	"width": Math.round(rx * boundx) + 'px',
-	          	height: Math.round(ry * boundy) + 'px',
-	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-	        });
-	    	rx = ${width} / c.w;
-	    	ry = ${height} / c.h;
-	    	
-	  	}
 		
-	  	var x1 = Math.round(c.x),
-	 		y1 = Math.round(c.y),
-	 		x2 = Math.round(c.x2),
-	 		y2 = Math.round(c.y2),
-	 		w = Math.round(c.w),
-	 		h = Math.round(c.h);
-		$('#x1').val(x1);
-	 	$('#y1').val(y1);
-	  	$('#x2').val(x2);
-	  	$('#y2').val(y2);
-	  	$('#w').val(w);
-	  	$('#h').val(h); 
-	  	$('#dimension').text(w+"x"+h);
-	};
-	/*
-	$("#showpreview").fancybox({
-		'autoScale':'false',
-		'scrolling':'no'
-	});
-	*/
-}
-
-
-
-$(document).ready(function(){
-	
-	$("#maximize").bind("click",function(){
 		
-		var displaywidth = $(window).width();
+		$(document).ready(function(){
+			$("#maximize").bind("click",function(){
+				var displaywidth = $(window).width();
+				setTimeout(function(){
+					var is_max = $("#embody").hasClass("max");
+					var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max+"&displaywidth="+displaywidth;
+					window.open(url,"_self");
+				}, 300); //add a timeout to allow for toggleprofileproperty to be executed
+				
+			});
+			//prepareCropUtil(${img_width},${img_height});
+		});
+		</script>
 		
-		###jcrop_api.destroy();
-		###$("#preview-panel").hide();
-		###$(".display-container").hide();
+		<style>
+		.jcrop-holder{direction:ltr;text-align:left;-ms-touch-action:none}
+		.jcrop-hline,.jcrop-vline{font-size:0;position:absolute}
+		.jcrop-vline{height:100%;width:1px!important}
+		.jcrop-vline.right{right:0}
+		.jcrop-hline{height:1px!important;width:100%}
+		.jcrop-hline.bottom{bottom:0}
+		.jcrop-tracker{height:100%;width:100%;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none}
+		.jcrop-handle{background-color:#333;border:1px #eee solid;width:7px;height:7px;font-size:1px}
+		.jcrop-handle.ord-n{left:50%;margin-left:-4px;margin-top:-4px;top:0}
+		.jcrop-handle.ord-s{bottom:0;left:50%;margin-bottom:-4px;margin-left:-4px}
+		.jcrop-handle.ord-e{margin-right:-4px;margin-top:-4px;right:0;top:50%}
+		.jcrop-handle.ord-w{left:0;margin-left:-4px;margin-top:-4px;top:50%}
+		.jcrop-handle.ord-nw{left:0;margin-left:-4px;margin-top:-4px;top:0}
+		.jcrop-handle.ord-ne{margin-right:-4px;margin-top:-4px;right:0;top:0}
+		.jcrop-handle.ord-se{bottom:0;margin-bottom:-4px;margin-right:-4px;right:0}
+		.jcrop-handle.ord-sw{bottom:0;left:0;margin-bottom:-4px;margin-left:-4px}
+		.jcrop-dragbar.ord-n,.jcrop-dragbar.ord-s{height:7px;width:100%}
+		.jcrop-dragbar.ord-e,.jcrop-dragbar.ord-w{height:100%;width:7px}
+		.jcrop-dragbar.ord-n{margin-top:-4px}
+		.jcrop-dragbar.ord-s{bottom:0;margin-bottom:-4px}
+		.jcrop-dragbar.ord-e{margin-right:-4px;right:0}
+		.jcrop-dragbar.ord-w{margin-left:-4px}
+		.jcrop-light .jcrop-hline,.jcrop-light .jcrop-vline{background:#fff;filter:alpha(opacity=70)!important;opacity:.7!important}
+		.jcrop-light .jcrop-handle{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#000;border-color:#fff;border-radius:3px}
+		.jcrop-dark .jcrop-hline,.jcrop-dark .jcrop-vline{background:#000;filter:alpha(opacity=70)!important;opacity:.7!important}
+		.jcrop-dark .jcrop-handle{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#fff;border-color:#000;border-radius:3px}
+		.solid-line .jcrop-hline,.solid-line .jcrop-vline{background:#fff}
+		.jcrop-holder img,img.jcrop-preview{max-width:none}
 		
-		//destroy
-		//jcrop_api.destroy();
-		//var is_max = $("#embody").hasClass("max");
-		//prepareCropUtil(width, height);
 		
-		//refresh
-		$(".jc-demo-box").prepend("<p>Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\"></p>");
-		setTimeout(function(){
-			var is_max = $("#embody").hasClass("max");
-			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max+"&displaywidth="+displaywidth;
-			window.open(url,"_self");
-		}, 300); //add a timeout to allow for toggleprofileproperty to be executed
-		
-	});
-	//prepareCropUtil(${img_width},${img_height});
-
-});
-</script>
-
-<style>
-
-
-.jcrop-holder{direction:ltr;text-align:left;-ms-touch-action:none}
-##.jcrop-hline,.jcrop-vline{background:#fff url(Jcrop.gif);}
-.jcrop-hline,.jcrop-vline{font-size:0;position:absolute}
-.jcrop-vline{height:100%;width:1px!important}.jcrop-vline.right{right:0}.jcrop-hline{height:1px!important;width:100%}.jcrop-hline.bottom{bottom:0}.jcrop-tracker{height:100%;width:100%;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none}.jcrop-handle{background-color:#333;border:1px #eee solid;width:7px;height:7px;font-size:1px}.jcrop-handle.ord-n{left:50%;margin-left:-4px;margin-top:-4px;top:0}.jcrop-handle.ord-s{bottom:0;left:50%;margin-bottom:-4px;margin-left:-4px}.jcrop-handle.ord-e{margin-right:-4px;margin-top:-4px;right:0;top:50%}.jcrop-handle.ord-w{left:0;margin-left:-4px;margin-top:-4px;top:50%}.jcrop-handle.ord-nw{left:0;margin-left:-4px;margin-top:-4px;top:0}.jcrop-handle.ord-ne{margin-right:-4px;margin-top:-4px;right:0;top:0}.jcrop-handle.ord-se{bottom:0;margin-bottom:-4px;margin-right:-4px;right:0}.jcrop-handle.ord-sw{bottom:0;left:0;margin-bottom:-4px;margin-left:-4px}.jcrop-dragbar.ord-n,.jcrop-dragbar.ord-s{height:7px;width:100%}.jcrop-dragbar.ord-e,.jcrop-dragbar.ord-w{height:100%;width:7px}.jcrop-dragbar.ord-n{margin-top:-4px}.jcrop-dragbar.ord-s{bottom:0;margin-bottom:-4px}.jcrop-dragbar.ord-e{margin-right:-4px;right:0}.jcrop-dragbar.ord-w{margin-left:-4px}.jcrop-light .jcrop-hline,.jcrop-light .jcrop-vline{background:#fff;filter:alpha(opacity=70)!important;opacity:.7!important}.jcrop-light .jcrop-handle{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#000;border-color:#fff;border-radius:3px}.jcrop-dark .jcrop-hline,.jcrop-dark .jcrop-vline{background:#000;filter:alpha(opacity=70)!important;opacity:.7!important}.jcrop-dark .jcrop-handle{-moz-border-radius:3px;-webkit-border-radius:3px;background-color:#fff;border-color:#000;border-radius:3px}.solid-line .jcrop-hline,.solid-line .jcrop-vline{background:#fff}
-.jcrop-holder img,img.jcrop-preview{max-width:none}
-
-
-#preview-panel .preview-container {
-  #if (!$preview_img_width)
-  	#set($preview_img_width = "220")
-  #end	
-  width: ${preview_img_width}px;
-  height: ${preview_img_height}px;
-  overflow: hidden;
-	margin:10px auto;
-
-}
-.display-container{
-  padding: 6px;
-  text-align:center;
-}
-.display-full {
-	float:left;
-	padding:0 20px 20px 0;
-}
-.preview-labels {
-	margin:0 0 10px 0px; 
-	
-	text-align:center;
-}
-</style>
+		#preview-panel .preview-container {
+		  #if (!$preview_img_width)
+		  	#set($preview_img_width = "220")
+		  #end	
+		  width: ${preview_img_width}px;
+		  height: ${preview_img_height}px;
+		  overflow: hidden;
+		  margin:10px auto;
+		}
+		.display-container{
+		  padding: 6px;
+		  text-align:center;
+		}
+		.display-full {
+			float:left;
+			padding:0 20px 20px 0;
+		}
+		</style>
+#end

@@ -1,5 +1,7 @@
 package org.openedit.entermedia.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,4 +106,22 @@ public class RFC3986 {
         }
         return sb.toString();
     }
+    
+    public static Map<String, String> getQueryMap(String url)
+    {
+    	Map<String, String> map = new HashMap<String, String>();
+    		String[] urlparts = url.split("\\?");
+    	   	if (urlparts.length>1) {
+	        String[] params = urlparts[1].split("\\&");
+	        for (String param : params)
+	        {
+	            String name = param.split("=")[0];
+	            String value = param.split("=")[1];
+	            map.put(name, value);
+	        }
+    	}
+        return map;
+    }
+    
+    
 }

@@ -1,0 +1,4 @@
+#set($outputfile = $context.findValue("outputfile"))
+#set($mediadbappid = $!mediaarchive.getMediaDbId())
+#set( $src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
+$src&assetid=$!{asset.id}&outputfile=${outputfile}

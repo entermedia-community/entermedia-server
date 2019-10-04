@@ -1,0 +1,12 @@
+#set($asssetid = $context.getRequestParameter("assetid"))
+#set($presetid = $context.getRequestParameter("presetid"))
+#set($preset = $searcherManager.getData($catalogid, "convertpreset", $presetid))
+#if($preset)
+<p>
+[[Enter a label]]:
+</p>
+<input type="text" class="form-control" name="saveas" placeholdeR="[[Label]]" value="$preset.name [[Copy]]" />
+<input type="hidden" name="assetid" value="$assetid" />
+
+</form>
+#end

@@ -513,18 +513,17 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	text-align:center;
 	line-height: 1;
 	float:left;
-	margin:0 3px 3px 0;
+	margin:0 6px 6px 0;
 	color:#333;
 	
 }
 .mediapreset:hover
  {
-	
+	border:2px solid #56994C;
 }
 .mediapresetselected
  {
-border:2px solid #fff;
-background-color:#bebebe;
+	border:2px solid #56994C;
 }
 .mediapreset a.mediapresetcontainer {
 	display:blocK;
@@ -540,3 +539,6 @@ background-color:#bebebe;
 	max-height: 165px;
 }
 
+.embedcopytext textarea {
+	visibility: hidden;	
+}

@@ -1,0 +1,26 @@
+#set($collectionid = $context.getRequestParameter("collectionid"))
+<div id="uploadcollectionpicker" data-collectionpicker="$apphome/components/upload/types/html5/collectionpicker.html">
+<div class="inputformrow">
+	<div class="emdatafield">[[Choose Collection]]</div>
+	<div class="emdatafieldvalue "> 
+		#if($collectionid)
+			#set($collection = $mediaarchive.getData("librarycollection",$collectionid))
+			<div class="uploadcollection">$collection 
+			<a href="$apphome/components/upload/types/html5/collectionpicker.html" 
+				class="ajax delete-row"
+				data-targetdiv="uploadcollectionpicker"
+				 title="[[Remove Collection]]"><i class="fas fa-times float-right"></i></a></div>
+			
+		#end
+		<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
+		<a class="emdialog btn btn-xs btn-light"
+			id="uploadfindcollection"  
+			style="margin:5px 0;"  
+			href="$home$apphome/components/opencollections/searchcollection.html?targetdiv=uploadcollectionpicker" 
+			title="[[Add New Collection]]" 
+			data-hidefooter="true"
+			data-targetdiv="uploadcollectionpicker">[[Find Collection]]</a>
+	</div>
+	<hr>
+</div>
+</div>
