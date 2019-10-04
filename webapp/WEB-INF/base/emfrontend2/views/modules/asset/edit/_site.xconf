@@ -2,6 +2,7 @@
 
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<inner-layout>/${applicationid}/theme/layouts/mediaviewer.html</inner-layout>
+	<property name="searchtype">${module}</property>
 	
 
 </page>

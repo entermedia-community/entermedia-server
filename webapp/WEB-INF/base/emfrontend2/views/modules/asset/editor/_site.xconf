@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
+	<property name="searchtype">${module}</property>
+
 	<path-action name="AssetEditModule.loadAssetFromSelection"/>
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>
