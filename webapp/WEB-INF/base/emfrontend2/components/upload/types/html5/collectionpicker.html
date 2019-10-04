@@ -12,7 +12,7 @@
 				 title="[[Remove Collection]]"><i class="fas fa-times float-right"></i></a></div>
 			
 		#end
-		<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
+		
 		<a class="emdialog btn btn-xs btn-light"
 			id="uploadfindcollection"  
 			style="margin:5px 0;"  
@@ -20,6 +20,7 @@
 			title="[[Add New Collection]]" 
 			data-hidefooter="true"
 			data-targetdiv="uploadcollectionpicker">[[Find Collection]]</a>
+			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" class="required" required />
 	</div>
 	<hr>
 </div>
