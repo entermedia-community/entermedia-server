@@ -4940,6 +4940,11 @@ a.collectionlike,a.collectionsaved
 	color:black;
 }	
 
+.uploadcollection {
+	background-color:rgb(0, 0, 0,0.06); 
+	padding:5px;
+	position:relative;
+}
 .helpcenter li {
 	padding-bottom:2px;
 	line-height: 1.6;

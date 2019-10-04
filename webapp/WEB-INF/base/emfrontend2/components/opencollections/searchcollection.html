@@ -1,3 +1,4 @@
+#set($targetdiv = $context.getRequestParameter("targetdiv"))
 <div  id="search-collections" >
 	<div id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
@@ -5,8 +6,8 @@
 	#set($viewid = "librarysearchcollection")
 	#set($viewpath = "librarycollection/${viewid}")
 	#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
-	#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
-	#if( $hitssessionid)
+	#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+	#if($hitssessionid)
 		#set( $hits = $context.getSessionValue($hitssessionid))
 		#if( $hits && $hits.getSelectionSize() > 0)	
 			<div class="alert alert-info">
@@ -23,7 +24,7 @@
 		<td>
 
 		<div  class="row inlinesearch" >
-		$context.putPageValue("autocomplete","off")
+			$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
 			<div class="col">
 					$context.putPageValue("detail", $detail)
@@ -48,7 +49,7 @@
 			#end
 			<a class="ajax btn btn-sm btn-primary" 
 				title="[[Add New Collection]]" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
-				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid">[[New Collection]]</a>
+				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid&targetdiv=$!{targetdiv}">[[New Collection]]</a>
 		</td>
 		#end
 		</tr>
@@ -65,16 +66,26 @@
 lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
-	#set($hitsselected = $hits.getSelectionSize())
-	#if(  $hits &&  $hitsselected > 0 )	
-		var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
-	#else	
-	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '/index.html';
-	#end   
-	//$("#left-col-opencollections").load(nextpage);
-	//console.log(${hitsselected});
-	window.location.href = nextpage;
-
+	#if ($targetdiv)
+		##Update targetdiv only
+		var targetdiv = $("#${targetdiv}");
+		var nextpage = targetdiv.data("collectionpicker");
+		var options = targetdiv.data();
+		options.collectionid = rowid;
+		$.get(nextpage, options, function(data) {
+			targetdiv.replaceWith(data);
+		});
+	#else
+		#set($hitsselected = $hits.getSelectionSize())
+		#if(  $hits &&  $hitsselected > 0 )	
+			var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
+		#else	
+		    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '/index.html';
+		#end   
+		//$("#left-col-opencollections").load(nextpage);
+		//console.log(${hitsselected});
+		window.location.href = nextpage;
+	#end
 
 });
 </script>
