@@ -31,7 +31,7 @@
 	<div class="card card-mini card-collections">
 		
 		<a href="$home$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">
-	 	<div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	 	<div class="card-collections-thumb" style='background-image: url("#uuencode(${link})")'></div>
 	 	</a>
 	</div>
 	
@@ -152,7 +152,8 @@
 		 
 	#end <i class="fas fa-times"></i></a>
 #end
-#if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
+
+#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 	#if( $librarycol )
 		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
 	#else
