@@ -60,7 +60,7 @@
 				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
 				##TODO - Add library filtering here..
 				<div class="inputformrow">
-					<div class="emdatafield">[[Choose Collection]]</div>
+					<div class="emdatafield">[[Choose Library]]</div>
 					<div class="emdatafieldvalue ">
 						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
@@ -68,6 +68,10 @@
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
 							#end
 						</select>
+						#if($canaddnewcollection)
+
+						<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" ><img src="$apphome/theme/images/icons/addgray.png"></a>
+	             	#end
 					</div>
 					<hr>
 				</div>
