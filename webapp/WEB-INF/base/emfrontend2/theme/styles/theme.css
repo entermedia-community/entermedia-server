@@ -1683,6 +1683,7 @@ td.checkbox input, th.firstheader input {
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
     border: 1px solid #aaa;
     border-radius: 50%;
+	background-position:center center;
 }
 .card-collections .collectionbox {
 	padding: 4px; 
