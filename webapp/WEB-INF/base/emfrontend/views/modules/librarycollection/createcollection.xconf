@@ -3,8 +3,8 @@
 	
 	<path-action name="ProjectModule.createCollection"/>
 	<path-action name="ProjectModule.addAssetToCollection" />
-	<path-action name="ProfileModule.reLoadUserProfile" />
-	<path-action name="ProjectModule.redirectToCollection">
+	<path-action name="ProfileModule.reLoadUserProfileRoot" />
+	<path-action name="ProjectModule.a">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
 	
