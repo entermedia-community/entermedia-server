@@ -83,9 +83,9 @@
 <div class="filtered #if( $librarycol ) filteredinresults #end">
 #if( $hits.getSearchQuery().hasMainInput() )
 	#if($librarycol)
-		<strong>[[Searching within]]: <em>$librarycol</em> </strong> for:  "<em>$hits.getSearchQuery().getMainInput()</em>"
+		[[Searching within]]: <strong><em>$librarycol</em> </strong> for:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#else
-		<strong>[[Searching for]]:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
+		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#end
 #end
 ##TODO Loop over the view and show them here if they match
