@@ -1268,7 +1268,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					if((word.startsWith("\"") && word.endsWith("\"")))
 					{
 						String sub = word.substring(1,word.length() -1);
-						out.append(QueryParser.escape(sub));
+						out.append("\"" + QueryParser.escape(sub) + "\"");
 					}
 					else
 					{
