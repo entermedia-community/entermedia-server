@@ -7,7 +7,7 @@ $context.putPageValue("groupid", $groupid)
 #set( $userTracker = $userTracker)
 #set( $oeview = "usersearchresults")
 #set( $details = $searcher.getDetailsForView($oeview,$user))
-<div  id="emselectable" style="height:185px;margin-bottom:5px;">
+<div  id="emselectable" style="min-height:85px;margin-bottom:5px;">
 
 <table class="settings-table table table-striped table-hover">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
