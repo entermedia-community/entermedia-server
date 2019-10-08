@@ -54,24 +54,27 @@ $context.putPageValue("hideheader", "true")
 #end
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 
-#if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
-	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
-	
-	##TODO: Move this sompleace else or use jquery more
-	<script type="text/javascript">   
-		jQuery(document).ready(function(){
-			jQuery("#poptrigger").trigger("click");
-		});
-	</script>
-
-#else
-	###always go to index - don't care about resultview
 	<div id="searchlayout" class="cols-main #if ($module) cols-$module #end searchlayout2" 
 		 data-nodeID="$!nodeID" data-collectionid="$!collectionid"  data-module="librarycollection"
 		 data-hitssessionid="$!hits.sessionId" data-searchtype="asset" data-hitsperpage="$!hits.hitsPerPage">
 		<div class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end #if ($filtersbarstatus!=false) filtersopen #end " id="maincontent">
 				<div id="emresultscontainer" >
-		    	$pages.include("$apphome/components/results/index.html",$context)
+				#if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
+
+					$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
+					
+					##TODO: Move this sompleace else or use jquery more
+					<script type="text/javascript">   
+						jQuery(document).ready(function(){
+							jQuery("#poptrigger").trigger("click");
+						});
+					</script>
+				
+				#else
+					
+		    		$pages.include("$apphome/components/results/index.html",$context)
+					
+				#end
 		    	</div>
 		</div>
 		<div id="col-filters" class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end">
@@ -80,4 +83,3 @@ $context.putPageValue("hideheader", "true")
 			</div>
 		</div>
 	</div>
-#end
