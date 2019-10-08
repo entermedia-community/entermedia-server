@@ -112,6 +112,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
+	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -1200,123 +1201,112 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
- 			boolean simple = true;
-			if (!StringUtils.isAlphanumericSpace(valueof))
+			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
-				simple = false;
-
-				// Replace GOOD stuff for now. Then escape whats left then
-				// replace back
-				valueof = valueof.replace("*", "_STAR_");
-				valueof = valueof.replace("\"", "_QUOTE_");
-				valueof = valueof.replace(":", "_COLON_");
+				valueof = valueof.replace("\"", "");
 				valueof = QueryParser.escape(valueof);
-				valueof = valueof.replace("_STAR_", "*");
-				valueof = valueof.replace("_QUOTE_", "\"");
-				valueof = valueof.replace("_COLON_", ":");
-
+				String query = "+(" + valueof + ")";
+				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), query);
+				text.analyzer("lowersnowball");
+				find = text;
 			}
-			if (simple) // If there is one * then let them add them all in
+			else
 			{
+				String uppercase = valueof.replace(" and ", " AND ").
+						replace(" or ", " OR ").
+						replace(" not ", " NOT ").
+						replace(" to ", " TO ").
+						replace(", ", " AND "); //Babson uses lots of commas
+				//We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
-				String uppercase = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");
 
-				Matcher m = operators.matcher(uppercase);
-				if (!m.find())
+				Matcher customlogic = operators.matcher(uppercase);
+				if (!customlogic.find())
 				{
-					// inValue = inValue.replaceAll(" ", " "); //recurse
-					uppercase = uppercase.replaceAll(" ", " AND ");
+					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
 				}
-				m = operators.matcher(uppercase);
-				StringBuffer output = new StringBuffer();
-				int location = 0;
-				while (m.find())
-				{
-					String word = uppercase.substring(location, m.start());
-					String operator = m.group();
-					wildcard(output, word);
-					output.append(operator);
-					location = m.end();
-				}
-				wildcard(output, uppercase.substring(location, uppercase.length()));
-				valueof = output.toString();
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
 				// tom*nancy => tom*nancy
 				// tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
 				// "Big Deal" => "Big Deal"
-			}
-
-			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
-			{
-				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
-				text.analyzer("lowersnowball");
-				find = text;
-
-			}
-			else
-			{
-				if (!simple)
-				{
-					valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
-				}
-
-				String query = "+(" + valueof + ")";
-
-
-				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-                text.analyzer("lowersnowball");
-                text.defaultField("description");
-                
-
-				String fuzzy = "+(" + valueof + "*)";
-                QueryStringQueryBuilder start = QueryBuilders.queryStringQuery(fuzzy);
-                start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-                start.analyzer("lowersnowball");
-                start.defaultField("description");
-                
-
-                
-//                MatchQueryBuilder start = QueryBuilders.matchPhrasePrefixQuery("description",fuzzy);
-//                //start.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-//                start.analyzer("lowersnowball");
-//                //start.defaultField("description");
-                
-                MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", query);
-                text2.analyzer("lowersnowball");
-                text2.operator(MatchQueryBuilder.Operator.AND);
-                
-                
-                
-				
-				
+				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
-				or.should(text);
-				or.should(text2);
-				//or.should(text3);
-				or.should(start);
+
+				Matcher m = operators.matcher(uppercase);
+
+				int start = 0;
+				int ending = uppercase.length();
+				String operator = null;
+				boolean keepgoing = true;
+				String nextoperator = null;
+				while (keepgoing)
+				{
+					if( m.find() )
+					{
+						ending = m.start();
+						nextoperator = m.group().trim();
+					}
+					else
+					{
+						keepgoing = false;
+						ending = uppercase.length();
+					}
+					StringBuffer out = new StringBuffer();
+
+					String word = uppercase.substring(start, ending);
+					if( keepgoing )
+					{
+						start = m.end();
+					}
+					
+					out.append("+(");
+					
+					if((word.startsWith("\"") && word.endsWith("\"")))
+					{
+						String sub = word.substring(1,word.length() -1);
+						out.append(QueryParser.escape(sub));
+					}
+					else
+					{
+						//Check for quotes..
+						wildcard(out, word);
+					}
+					
+					out.append(") ");
+					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
+	                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+	                text.analyzeWildcard(true); //This is important
+	                text.allowLeadingWildcard(true);
+	                text.analyzer("lowersnowball");
+	                text.defaultField("description");
+	                if( operator == null && (nextoperator != null && nextoperator.equals("OR")))
+	                {
+	                	operator = "OR";
+	                }
+	                else if(operator == null)
+	                {
+	                	operator = "AND";
+	                }
+	                if( operator.equals("NOT"))
+	                {
+	                	or.mustNot(text);
+	                }
+	                if( operator.equals("OR"))
+	                {
+	                	or.should(text);	                	
+	                }
+	                else
+	                {
+	                	or.must(text);
+	                }
+					operator = nextoperator;
+
+				}
 				find = or;
-				// TODO: Use RegEx to check for this
-
-				// if( valueof.contains("-") || valueof.contains(",") ||
-				// valueof.contains("/") || valueof.contains("\\") ||
-				// valueof.contains("#") || valueof.contains("@"))
-				// {
-				// BoolQueryBuilder or = QueryBuilders.boolQuery();
-				// or.should(text);
-				// MatchQueryBuilder phrase =
-				// QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
-				// phrase.analyzer("lowersnowball");
-				// or.should(phrase);
-				// find = or;
-				// }
-				// else
-
 			}
 		}
 		else if (valueof.endsWith("*"))
