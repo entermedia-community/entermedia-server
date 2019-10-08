@@ -1212,7 +1212,10 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				String uppercase = valueof.replace(" and ", " AND ").
+				String uppercase = valueof.
+						replace(" and ", " AND ").
+						replace(" And ", " AND ").
+						replace(" Or ", " OR ").
 						replace(" or ", " OR ").
 						replace(" not ", " NOT ").
 						replace(" to ", " TO ").
@@ -1276,7 +1279,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					out.append(")");
 					
-					//Make a *xxx* OR xxx* search
+					//Make a *xxx* OR xxx* search to deal with bugs
 					BoolQueryBuilder pair = QueryBuilders.boolQuery();
 					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
 	                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
