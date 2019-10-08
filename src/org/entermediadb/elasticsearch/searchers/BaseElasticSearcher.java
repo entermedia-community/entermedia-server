@@ -1277,6 +1277,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					
 					out.append(") ");
+
 					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
 	                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 	                text.analyzeWildcard(true); //This is important
@@ -1301,11 +1302,20 @@ public class BaseElasticSearcher extends BaseSearcher
 	                }
 	                else
 	                {
-	                	or.must(text);
-	                }
+						BoolQueryBuilder and = QueryBuilders.boolQuery();
+	                	and.should(text);
+		            	String fuzzy = "+(" +  QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
+		                QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(fuzzy);
+		                startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+		                startw.analyzer("lowersnowball");
+		                startw.defaultField("description");
+						and.should(startw);
+						or.must(and);
+	                }	              
+	                
 					operator = nextoperator;
-
 				}
+				
 				find = or;
 			}
 		}
