@@ -1226,7 +1226,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				// Look for Quotes
 
 				Matcher customlogic = operators.matcher(uppercase);
-				if (!customlogic.find())
+				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
 				{
 					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
 				}
