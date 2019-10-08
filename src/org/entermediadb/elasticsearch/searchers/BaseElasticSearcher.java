@@ -1255,7 +1255,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						keepgoing = false;
 						ending = uppercase.length();
 					}
-					StringBuffer out = new StringBuffer();
 
 					String word = uppercase.substring(start, ending);
 					if( keepgoing )
@@ -1263,8 +1262,9 @@ public class BaseElasticSearcher extends BaseSearcher
 						start = m.end();
 					}
 					
+					StringBuffer out = new StringBuffer();
 					out.append("+(");
-					
+					//Check for quotes..
 					if((word.startsWith("\"") && word.endsWith("\"")))
 					{
 						String sub = word.substring(1,word.length() -1);
@@ -1272,18 +1272,27 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else
 					{
-						//Check for quotes..
 						wildcard(out, word);
 					}
+					out.append(")");
 					
-					out.append(") ");
-
+					//Make a *xxx* OR xxx* search
+					BoolQueryBuilder pair = QueryBuilders.boolQuery();
 					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
 	                text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 	                text.analyzeWildcard(true); //This is important
 	                text.allowLeadingWildcard(true);
 	                text.analyzer("lowersnowball");
 	                text.defaultField("description");
+                	pair.should(text);
+
+	            	String startswith = "+(" +  QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
+	                QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
+	                startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+	                startw.analyzer("lowersnowball");
+	                startw.defaultField("description");
+                	pair.should(startw);
+	                
 	                if( operator == null && (nextoperator != null && nextoperator.equals("OR")))
 	                {
 	                	operator = "OR";
@@ -1294,23 +1303,15 @@ public class BaseElasticSearcher extends BaseSearcher
 	                }
 	                if( operator.equals("NOT"))
 	                {
-	                	or.mustNot(text);
+	                	or.mustNot(pair);
 	                }
 	                if( operator.equals("OR"))
 	                {
-	                	or.should(text);	                	
+	                	or.should(pair);	                	
 	                }
 	                else
 	                {
-						BoolQueryBuilder and = QueryBuilders.boolQuery();
-	                	and.should(text);
-		            	String fuzzy = "+(" +  QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
-		                QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(fuzzy);
-		                startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-		                startw.analyzer("lowersnowball");
-		                startw.defaultField("description");
-						and.should(startw);
-						or.must(and);
+						or.must(pair);
 	                }	              
 	                
 					operator = nextoperator;
