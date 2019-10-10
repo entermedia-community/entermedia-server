@@ -27,6 +27,14 @@ $context.putPageValue("results", $results)
 
 <div class="row no-gutters" style="height: calc(100% - 40px)">
 	<div class="col">
+	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+	#if( !$cdnprefix )
+		#set( $cdnprefix = $context.siteRoot )
+	#end
+	#if($candownload)	
+		<a class="btn btn-sm btn-primary" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"><i class="fas fa-download"></i> [[Download Original]]</a>
+	#end
+						
 	
 ##	#if($canviewassetedit)
 ##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
