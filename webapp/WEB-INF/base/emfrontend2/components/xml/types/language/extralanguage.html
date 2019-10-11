@@ -31,7 +31,7 @@
 		#if($val && $val.length() < 30)
 			#set($textarearows = 1)
 		#end
-		#if($val.length() > 200)
+		#if($val && $val.length() > 200)
 			#set($textarearows = 5)
 		#end
 		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($val)</textarea>
