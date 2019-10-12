@@ -1335,6 +1335,7 @@ String viewbase = null;
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher == null)
 		{
+			log.error("Null Searcher");
 			return null;
 		}
 		String hitsname = inReq.findValue("hitsname");
@@ -1380,6 +1381,10 @@ String viewbase = null;
 			inReq.putPageValue(hitsname + catalogid, hits);
 			inReq.putPageValue(hitsname, hits);
 			//inReq.putPageValue("hits", hits);
+		}
+		else
+		{
+			log.error("Null Hits");
 		}
 
 		return hits;
