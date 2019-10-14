@@ -78,7 +78,8 @@ $(document).ready(function(url,params)
 		
 	lQuery("input.selectionbox").livequery("change", function(e) 
 	{
-		var dataid = $(this).data('dataid');
+		var clicked = $(this);
+		var dataid = $(clicked).data('dataid');
 		var data = $('#resultsdiv').data();
 		
 		data['dataid'] = dataid;
@@ -87,6 +88,14 @@ $(document).ready(function(url,params)
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
+		var ischecked = $(clicked).prop("checked");
+		if (ischecked == true) {
+			$(clicked).closest("tr").addClass("emrowselected");
+		}
+		else {
+			$(clicked).closest("tr").removeClass("emrowselected");
+		}
+		
 		jQuery('.assetproperties').trigger('click');
 	});
 	
@@ -656,6 +665,16 @@ $(document).ready(function(url,params)
 		);
 	});
 		
+	var ctrlPressed = false;
+	$(window).keydown(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = true;
+		  }
+		}).keyup(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = false;
+		  }
+	});
 	
 	lQuery('table.stackedplayertable td').livequery('click',function(e)
 	{
@@ -667,7 +686,20 @@ $(document).ready(function(url,params)
 		{
 			return true;
 		}
-		
+		if (ctrlPressed) {
+		    var chkbox = clicked.closest("tr").find(".selectionbox");
+			if (chkbox) {
+				var ischecked = $(chkbox).prop("checked");
+				if (!ischecked || ischecked == "true") {
+					$(chkbox).prop( "checked", true );	
+				} 
+				else {
+					$(chkbox).prop( "checked", false );
+				}
+				$(chkbox).trigger("change");				
+			}
+			return false;
+		  } 
 		e.preventDefault();
 		e.stopPropagation()
 		

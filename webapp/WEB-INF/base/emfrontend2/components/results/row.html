@@ -1,8 +1,11 @@
-<tr data-rowid="$hit.id" title="$sourcepath" >
+#if($hits.isSelected(${hit.id}))
+#set($selectedrow = true)
+#end
+<tr data-rowid="$hit.id" title="$sourcepath" class="#if($selectedrow) emrowselected #end" >
 #if( $showtoolbar )
 	<td class="borderedcell checkbox" noclick="true"> 
 		
-<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
+<input type="checkbox" class="selectionbox" name="count" value="" #if($selectedrow) checked #end data-dataid="${hit.id}" />
 
 	</td>
 #end	

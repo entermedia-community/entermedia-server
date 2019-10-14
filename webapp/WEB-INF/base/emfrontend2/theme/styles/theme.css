@@ -272,7 +272,8 @@ tr.emborderhover td,
 .filters-sidebar-selected li:hover,
 .list-hover:hover,
 ul.list-group.list-group-hover li:hover,
-.emrowselected
+.emrowselected,
+.table-striped tr.emrowselected:nth-of-type(odd)
 {
 	background-color: #c9e8f2;
 }
