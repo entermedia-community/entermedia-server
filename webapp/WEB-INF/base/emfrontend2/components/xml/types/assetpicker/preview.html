@@ -10,7 +10,7 @@
 	#set($val = $context.getRequestParameter('assetid'))
 ####end
 #if($val && $val != "")
-#set( $foundrow = $mediaarchive.getAsset($val)  )
+	#set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
 
 

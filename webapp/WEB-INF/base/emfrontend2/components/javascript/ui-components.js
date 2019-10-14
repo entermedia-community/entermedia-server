@@ -423,6 +423,14 @@ uiload = function() {
 		$('#' + navbar).toggle();
 
 	});
+	
+	lQuery(".removefieldassetvalue").livequery("click", function() {
+		var dataid = $(this).data("dataid");
+		if($(dataid)) {
+			$("#"+dataid).val("");
+		}		
+	});
+	
 
 	
 	
