@@ -349,7 +349,7 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
-
+		if (assetid) {
 		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
@@ -435,6 +435,7 @@ $(document).ready(function(url,params)
 			
 		});
 		$(document).trigger("domchanged");
+	  }
 	}
 	initKeyBindings = function(hidden)
 	{
@@ -708,6 +709,44 @@ $(document).ready(function(url,params)
 		
 		showAsset(assetid);
 	});
+	
+  var isMouseDown = false, isHighlighted;
+  var currentCol;
+  $("table.stackedplayertable td")
+    .mousedown(function (event) {
+      isMouseDown = true;
+	  if (event.shiftKey) {
+		  var row = $(this).closest("tr");
+	      currentCol = row.data("rowid");
+		  if (currentCol) {
+		      row.toggleClass("emrowselected");
+		      isHighlighted = row.hasClass("emrowselected");
+		  }
+	  }
+      return false; // prevent text selection
+    })
+    .mouseover(function (event) {
+      if (isMouseDown) {
+		if (event.shiftKey) {
+		  var row = $(this).closest("tr");
+		  var currentColDown = row.data("rowid");
+	      if (currentColDown) {
+          	row.toggleClass("emrowselected", isHighlighted);
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+       }
+      }
+    })
+    .bind("selectstart", function () {
+      return false;
+    })
+
+   $(document)
+    .mouseup(function () {
+      isMouseDown = false;
+    });
 	
 	lQuery('.showasset').livequery('click',function(e)
 	{
