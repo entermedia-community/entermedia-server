@@ -710,7 +710,7 @@ $(document).ready(function(url,params)
 		showAsset(assetid);
 	});
 	
-  var isMouseDown = false, isHighlighted;
+  var isMouseDown = false;
   var currentCol;
   $("table.stackedplayertable td")
     .mousedown(function (event) {
@@ -719,8 +719,11 @@ $(document).ready(function(url,params)
 		  var row = $(this).closest("tr");
 	      currentCol = row.data("rowid");
 		  if (currentCol) {
-		      row.toggleClass("emrowselected");
-		      isHighlighted = row.hasClass("emrowselected");
+		    row.toggleClass("emrowselected");
+		    var isHighlighted = row.hasClass("emrowselected");
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
 		  }
 	  }
       return false; // prevent text selection
@@ -730,7 +733,8 @@ $(document).ready(function(url,params)
 		if (event.shiftKey) {
 		  var row = $(this).closest("tr");
 		  var currentColDown = row.data("rowid");
-	      if (currentColDown) {
+		  var isHighlighted = row.hasClass("emrowselected");
+	      if (currentColDown && !isHighlighted) {
           	row.toggleClass("emrowselected", isHighlighted);
 			var chkbox = row.find(".selectionbox");
 			$(chkbox).prop( "checked", true );
@@ -743,7 +747,7 @@ $(document).ready(function(url,params)
       return false;
     })
 
-   $(document)
+   $(window)
     .mouseup(function () {
       isMouseDown = false;
     });
@@ -1170,8 +1174,3 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		}
 		
 	});
-	
-	
-	
-	
-	
