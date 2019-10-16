@@ -6,15 +6,17 @@
 
 <div class="render-type-thumbnail" id="${detail.id}-preview" style="padding: 4px;">
 
-
 #if($val && $val != "")
-#set( $foundrow = $mediaarchive.getAsset($val)  )
-#if($foundrow)
-
-	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-#else
-##set( $foundrow = "")
-#end
+	#set( $foundrow = $mediaarchive.getAsset($val)  )
+	#if($foundrow)
+		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
+		<div style="padding:5px 0;">
+		<a href="$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1" class="ajax removefieldassetvalue" 
+			data-targetdivinner="${detail.id}-preview"
+			title="[[Remove Asset Selected]]" 
+			data-dataid="${detail.id}-value"><i class="fas fa-times"></i> [[Clear Selection]]</a>
+		</div>
+	#end
 #end
 </div>
 
@@ -28,7 +30,8 @@
 
 [[or]] 
 <span class="btn btn-sm btn-primary btn-default btn-file">
-    [[Choose a File]] <input type="file" name="file.${detail.getId()}" id="${detail.id}-file" onchange='$("#${detail.id}-file-info").html($(this).val());'>
+    [[Choose a File]] 
+	<input type="file" name="file.${detail.getId()}" id="${detail.id}-file" onchange='$("#${detail.id}-file-info").html($(this).val());'>
 </span>
 <span id="${detail.id}-file-info" style="font-size:90%"></span>
 

@@ -265,7 +265,7 @@
                  </li>
                  #end
                 #if( $canmultiedit )
-                #if($dialoghits.getSelectedHits().size() > 1)
+                #if($dialoghits.getSelectedHits() && $dialoghits.getSelectedHits().size() > 1)
                  <li>
 	  				#set($text = "[[Multi Edit]] ($dialoghits.getSelectionSize())")
 					<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>

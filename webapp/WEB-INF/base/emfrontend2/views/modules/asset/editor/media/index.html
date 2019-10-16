@@ -28,6 +28,8 @@ $context.putPageValue("results", $results)
 <div class="row no-gutters" style="height: calc(100% - 40px)">
 	<div class="col">
 	
+						
+	
 ##	#if($canviewassetedit)
 ##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 ##	   href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
@@ -84,23 +86,35 @@ $context.putPageValue("results", $results)
 			#end
 		
 		#end  ##foreach
-		<div class="clearfix"></div><hr>
+		<div class="clearfix"></div>
+		<hr>
+		
 		##make it submit for on file selected
 			<form id="uploadform" 
-			class="ajaxform" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" 
+			class="ajaxform inline-form" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" 
 			action="$home${apphome}/views/modules/asset/editor/media/customthumb.html">
-	<span class="btn btn-sm btn-secondary btn-default btn-file">
-	[[Upload]] 
-	<input type="file" name="file.0" id="file0-file" onchange='$("#uploadform").submit();'>
-	</span>
-	<span id="file0-file-info" style="font-size:90%"></span>
+			#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+		#if( !$cdnprefix )
+			#set( $cdnprefix = $context.siteRoot )
+		#end
+		#if($candownload)	
+			<a class="btn btn-sm btn-primary" 
+			href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"
+			style="margin-right:5px;"
+			title="[[Download]] $asset.name"
+			><i class="fas fa-download"></i> [[Download Original]]</a>
+		#end
+##	<span class="btn btn-sm btn-secondary btn-default btn-file">
+##	[[Upload]] 
+##	<input type="file" name="file.0" id="file0-file" onchange='$("#uploadform").submit();'>
+##	</span>
+##	<span id="file0-file-info" style="font-size:90%"></span>
 	##[[Replace Image]]:<input type="file" size="50" name="file.0">
 	<input type="hidden" name="unzip" value="false" />
 	<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
 	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
 	<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
-	
-</form>
+		</form>
 		</div>
 	</div>
 	<div class="col-md-3">

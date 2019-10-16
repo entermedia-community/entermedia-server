@@ -78,7 +78,8 @@ $(document).ready(function(url,params)
 		
 	lQuery("input.selectionbox").livequery("change", function(e) 
 	{
-		var dataid = $(this).data('dataid');
+		var clicked = $(this);
+		var dataid = $(clicked).data('dataid');
 		var data = $('#resultsdiv').data();
 		
 		data['dataid'] = dataid;
@@ -87,6 +88,14 @@ $(document).ready(function(url,params)
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
+		var ischecked = $(clicked).prop("checked");
+		if (ischecked == true) {
+			$(clicked).closest("tr").addClass("emrowselected");
+		}
+		else {
+			$(clicked).closest("tr").removeClass("emrowselected");
+		}
+		
 		jQuery('.assetproperties').trigger('click');
 	});
 	
@@ -340,7 +349,7 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
-
+		if (assetid) {
 		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
@@ -426,6 +435,7 @@ $(document).ready(function(url,params)
 			
 		});
 		$(document).trigger("domchanged");
+	  }
 	}
 	initKeyBindings = function(hidden)
 	{
@@ -636,6 +646,7 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
+	//Select multiple assets with CTRL key
 	lQuery('.stackedplayertable tr td' ).livequery(
 	function()
 	{
@@ -656,8 +667,61 @@ $(document).ready(function(url,params)
 		);
 	});
 		
+	var ctrlPressed = false;
+	$(window).keydown(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = true;
+		  }
+		}).keyup(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = false;
+		  }
+	});
 	
-	lQuery('table.stackedplayertable td').livequery('click',function(e)
+	
+	//Select multiple assets with Shift+Mouse
+	var isMouseDown = false;
+  	var currentCol;
+  	lQuery('.stackedplayertable td').livequery('mousedown',function(e) {
+      isMouseDown = true;
+	  if (e.shiftKey) {
+		  var row = $(this).closest("tr");
+	      currentCol = row.data("rowid");
+		  if (currentCol) {
+		    row.toggleClass("emrowselected");
+		    var isHighlighted = row.hasClass("emrowselected");
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+	  }
+      return false; //Prevent text selection
+    });
+	lQuery('.stackedplayertable td').livequery('mouseover',function(e) {
+      if (isMouseDown && e.shiftKey) {  //Mouse + Shift Key
+		  var row = $(this).closest("tr");
+		  var currentColDown = row.data("rowid");
+		  var isHighlighted = row.hasClass("emrowselected");
+	      if (currentColDown && !isHighlighted) {
+          	row.toggleClass("emrowselected", isHighlighted);
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+      }
+    })
+	
+	//    .bind("selectstart", function () {
+	//      return false;
+	//    })
+
+   $(window)
+    .mouseup(function () {
+      isMouseDown = false;
+    });
+
+	//Click on asset
+	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
@@ -667,7 +731,20 @@ $(document).ready(function(url,params)
 		{
 			return true;
 		}
-		
+		if (ctrlPressed) {
+		    var chkbox = clicked.closest("tr").find(".selectionbox");
+			if (chkbox) {
+				var ischecked = $(chkbox).prop("checked");
+				if (!ischecked || ischecked == "true") {
+					$(chkbox).prop( "checked", true );	
+				} 
+				else {
+					$(chkbox).prop( "checked", false );
+				}
+				$(chkbox).trigger("change");				
+			}
+			return false;
+		  } 
 		e.preventDefault();
 		e.stopPropagation()
 		
@@ -686,9 +763,8 @@ $(document).ready(function(url,params)
 		
 		e.preventDefault();
 		e.stopPropagation()
-		
+	
 		var assetid = clicked.data("assetid");
-		
 		showAsset(assetid);
 	});
 
@@ -1099,8 +1175,3 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		}
 		
 	});
-	
-	
-	
-	
-	
