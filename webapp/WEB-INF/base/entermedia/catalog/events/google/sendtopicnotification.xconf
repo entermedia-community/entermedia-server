@@ -1,0 +1,9 @@
+<page>
+	<property name="virtual">true</property>
+	<property name="eventname">Sent Hello World</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>
+			/${catalogid}/events/scripts/google/sendtopicnotification.groovy
+		</script>
+	</path-action>
+</page>

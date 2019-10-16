@@ -282,7 +282,9 @@ public class GoogleManager implements CatalogEnabled
 
 			if (accesstoken == null || force)
 			{
-				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
+				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
+						setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).
+						setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
 				OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
 				// response is
@@ -345,8 +347,10 @@ public class GoogleManager implements CatalogEnabled
 		}
 		if (accesstoken == null || force)
 		{
-
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(config.get("refreshtoken")).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
+					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(config.get("refreshtoken")).
+					setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).
+					buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
 			// response is
@@ -1010,4 +1014,15 @@ public class GoogleManager implements CatalogEnabled
 	//				
 	//	}
 
+	public void notifyTopic(String inChannel, String inSubject, String inMessage)
+	{
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+		Data authinfo = archive.getData("oauthprovider", "google");
+
+		String accesstoken = getAccessToken(authinfo);
+		FireBase base = new FireBase();
+
+		base.notifyTopic(accesstoken, inChannel, inSubject, inMessage);
+	}
+	
 }
