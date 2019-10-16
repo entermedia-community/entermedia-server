@@ -743,17 +743,15 @@ $(document).ready(function(url,params)
 			$(clicked).closest("tr").removeClass("emrowselected");
 		}
 		
-		jQuery('.assetproperties').trigger('click');
+		$('.assetproperties').trigger('click');
 	});
 	
 	lQuery("a.deselectpage").livequery( 'click', function() 
 	{
-		//$('input[name=pagetoggle]').prop('checked',false);
+		$('input[name=pagetoggle]').prop('checked',false);
 		$('.selectionbox').prop('checked',false); //Not firing the page
-		$('.selectionbox').trigger("change");
-	//	$("#select-dropdown-open").click();
+		$('.selectionbox').closest("tr").removeClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
-			console.log("refreshSelections");
 			refreshSelections();
 		}
 	
