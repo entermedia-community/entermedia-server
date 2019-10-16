@@ -73,32 +73,6 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
-	
-	
-		
-	lQuery("input.selectionbox").livequery("change", function(e) 
-	{
-		var clicked = $(this);
-		var dataid = $(clicked).data('dataid');
-		var data = $('#resultsdiv').data();
-		
-		data['dataid'] = dataid;
-		
-		refreshdiv( componenthome + "/results/toggle.html", data);
-		if(typeof(refreshSelections) != 'undefined'){
-			refreshSelections();
-		}
-		var ischecked = $(clicked).prop("checked");
-		if (ischecked == true) {
-			$(clicked).closest("tr").addClass("emrowselected");
-		}
-		else {
-			$(clicked).closest("tr").removeClass("emrowselected");
-		}
-		
-		jQuery('.assetproperties').trigger('click');
-	});
-	
 	lQuery("a.selectpage").livequery( 'click', function() 
 	{
 		jQuery('input[name=pagetoggle]').prop('checked',true);
@@ -111,41 +85,6 @@ $(document).ready(function(url,params)
 	//    $("#select-dropdown-open").click();
 	
 	});
-		//Uses ajax
-	lQuery("a.deselectpage").livequery( 'click', function() 
-	{
-		jQuery('input[name=pagetoggle]').prop('checked',false);
-		jQuery('.selectionbox').prop('checked',false); //Not firing the page
-	//	$("#select-dropdown-open").click();
-		if(typeof(refreshSelections) != 'undefined'){
-			refreshSelections();
-		}
-	
-	});
-	
-	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
-	{
-		  var home = $('#application').data('home');
-		  var apphome = $('#application').data('apphome');
-		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
-		   var options = $('#resultsdiv').data();
-		   options.oemaxlevel = 1;
-		   
-		   var status = $('input[name=pagetoggle]').is(':checked');
-		   if(status)
-		   {
-			   options.action = "page";
-			   refreshdiv( componenthome + "/results/togglepage.html", options);
-			   $('.selectionbox').prop('checked', true);
-	       }
-	       else
-	       {
-	       	   options.action = "pagenone";
-	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
-	   	       $('.selectionbox').prop('checked', false);  
-	   	   }
-	});
-	
 	
 	lQuery(".gallery-checkbox input").livequery( 'click', function() 
 	{
@@ -646,8 +585,7 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
-	//Select multiple assets with CTRL key
-	lQuery('.stackedplayertable tr td' ).livequery(
+	lQuery('.stackedplayertableX tr td' ).livequery(
 	function()
 	{
 		$(this).hover(
@@ -666,18 +604,6 @@ $(document).ready(function(url,params)
 			}
 		);
 	});
-		
-	var ctrlPressed = false;
-	$(window).keydown(function(evt) {
-		  if (evt.which == 17) { // ctrl
-		    ctrlPressed = true;
-		  }
-		}).keyup(function(evt) {
-		  if (evt.which == 17) { // ctrl
-		    ctrlPressed = false;
-		  }
-	});
-	
 	
 	//Select multiple assets with Shift+Mouse
 	var isMouseDown = false;
@@ -688,7 +614,7 @@ $(document).ready(function(url,params)
 		  var row = $(this).closest("tr");
 	      currentCol = row.data("rowid");
 		  if (currentCol) {
-		    row.toggleClass("emrowselected");
+		    //row.toggleClass("emrowselected");
 		    var isHighlighted = row.hasClass("emrowselected");
 			var chkbox = row.find(".selectionbox");
 			$(chkbox).prop( "checked", true );
@@ -697,13 +623,14 @@ $(document).ready(function(url,params)
 	  }
       return false; //Prevent text selection
     });
+
 	lQuery('.stackedplayertable td').livequery('mouseover',function(e) {
       if (isMouseDown && e.shiftKey) {  //Mouse + Shift Key
 		  var row = $(this).closest("tr");
 		  var currentColDown = row.data("rowid");
 		  var isHighlighted = row.hasClass("emrowselected");
 	      if (currentColDown && !isHighlighted) {
-          	row.toggleClass("emrowselected", isHighlighted);
+          	//row.toggleClass("emrowselected", isHighlighted);
 			var chkbox = row.find(".selectionbox");
 			$(chkbox).prop( "checked", true );
 			$(chkbox).trigger("change");
@@ -720,7 +647,20 @@ $(document).ready(function(url,params)
       isMouseDown = false;
     });
 
+	//Select multiple assets with CTRL key	
+	var ctrlPressed = false;
+	$(window).keydown(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = true;
+		  }
+		}).keyup(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = false;
+		  }
+	});
+
 	//Click on asset
+	var selectStart = null;
 	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -731,6 +671,7 @@ $(document).ready(function(url,params)
 		{
 			return true;
 		}
+		//click+ctrl
 		if (ctrlPressed) {
 		    var chkbox = clicked.closest("tr").find(".selectionbox");
 			if (chkbox) {
@@ -744,7 +685,34 @@ $(document).ready(function(url,params)
 				$(chkbox).trigger("change");				
 			}
 			return false;
-		  } 
+		} 
+		//click+shift
+		if (e.shiftKey){
+			if (selectStart == null) {
+				selectStart = $(clicked).closest("tr");
+			}
+			else {
+				var selectEnd = $(clicked).closest("tr");
+				if(selectStart) {
+					$(selectStart).nextUntil($(selectEnd)).each(function() {
+						var chkbox = $(this).find(".selectionbox");
+						if (chkbox) {
+							var ischecked = $(chkbox).prop("checked");
+							if (!ischecked || ischecked == "true") {
+								$(chkbox).prop( "checked", true );	
+							} 
+							else {
+								$(chkbox).prop( "checked", false );
+							}
+							$(chkbox).trigger("change");
+						}
+					});
+					selectStart = null;
+					selectEnd = null;
+				}
+			}
+			return false;
+		}
 		e.preventDefault();
 		e.stopPropagation()
 		
@@ -752,6 +720,66 @@ $(document).ready(function(url,params)
 		var assetid = row.data("rowid");
 		
 		showAsset(assetid);
+	});
+	
+	
+	lQuery(".stackedplayertable input.selectionbox").livequery("change", function(e) 
+	{
+		var clicked = $(this);
+		var dataid = $(clicked).data('dataid');
+		var data = $('#resultsdiv').data();
+		
+		data['dataid'] = dataid;
+		
+		refreshdiv( componenthome + "/results/toggle.html", data);
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
+		var ischecked = $(clicked).prop("checked");
+		if (ischecked == true) {
+			$(clicked).closest("tr").addClass("emrowselected");
+		}
+		else {
+			$(clicked).closest("tr").removeClass("emrowselected");
+		}
+		
+		jQuery('.assetproperties').trigger('click');
+	});
+	
+	lQuery("a.deselectpage").livequery( 'click', function() 
+	{
+		//$('input[name=pagetoggle]').prop('checked',false);
+		$('.selectionbox').prop('checked',false); //Not firing the page
+		$('.selectionbox').trigger("change");
+	//	$("#select-dropdown-open").click();
+		if(typeof(refreshSelections) != 'undefined'){
+			console.log("refreshSelections");
+			refreshSelections();
+		}
+	
+	});
+	
+	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
+	{
+		  var home = $('#application').data('home');
+		  var apphome = $('#application').data('apphome');
+		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		   var options = $('#resultsdiv').data();
+		   options.oemaxlevel = 1;
+		   
+		   var status = $('input[name=pagetoggle]').is(':checked');
+		   if(status)
+		   {
+			   options.action = "page";
+			   refreshdiv( componenthome + "/results/togglepage.html", options);
+			   $('.selectionbox').prop('checked', true);
+	       }
+	       else
+	       {
+	       	   options.action = "pagenone";
+	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
+	   	       $('.selectionbox').prop('checked', false);  
+	   	   }
 	});
 	
 	lQuery('.showasset').livequery('click',function(e)
