@@ -646,6 +646,7 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
+	//Select multiple assets with CTRL key
 	lQuery('.stackedplayertable tr td' ).livequery(
 	function()
 	{
@@ -677,7 +678,50 @@ $(document).ready(function(url,params)
 		  }
 	});
 	
-	lQuery('table.stackedplayertable td').livequery('click',function(e)
+	
+	//Select multiple assets with Shift+Mouse
+	var isMouseDown = false;
+  	var currentCol;
+  	lQuery('.stackedplayertable td').livequery('mousedown',function(e) {
+      isMouseDown = true;
+	  if (e.shiftKey) {
+		  var row = $(this).closest("tr");
+	      currentCol = row.data("rowid");
+		  if (currentCol) {
+		    row.toggleClass("emrowselected");
+		    var isHighlighted = row.hasClass("emrowselected");
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+	  }
+      return false; //Prevent text selection
+    });
+	lQuery('.stackedplayertable td').livequery('mouseover',function(e) {
+      if (isMouseDown && e.shiftKey) {  //Mouse + Shift Key
+		  var row = $(this).closest("tr");
+		  var currentColDown = row.data("rowid");
+		  var isHighlighted = row.hasClass("emrowselected");
+	      if (currentColDown && !isHighlighted) {
+          	row.toggleClass("emrowselected", isHighlighted);
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+      }
+    })
+	
+	//    .bind("selectstart", function () {
+	//      return false;
+	//    })
+
+   $(window)
+    .mouseup(function () {
+      isMouseDown = false;
+    });
+
+	//Click on asset
+	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
@@ -710,48 +754,6 @@ $(document).ready(function(url,params)
 		showAsset(assetid);
 	});
 	
-  var isMouseDown = false;
-  var currentCol;
-  $("table.stackedplayertable td")
-    .mousedown(function (event) {
-      isMouseDown = true;
-	  if (event.shiftKey) {
-		  var row = $(this).closest("tr");
-	      currentCol = row.data("rowid");
-		  if (currentCol) {
-		    row.toggleClass("emrowselected");
-		    var isHighlighted = row.hasClass("emrowselected");
-			var chkbox = row.find(".selectionbox");
-			$(chkbox).prop( "checked", true );
-			$(chkbox).trigger("change");
-		  }
-	  }
-      return false; // prevent text selection
-    })
-    .mouseover(function (event) {
-      if (isMouseDown) {
-		if (event.shiftKey) {
-		  var row = $(this).closest("tr");
-		  var currentColDown = row.data("rowid");
-		  var isHighlighted = row.hasClass("emrowselected");
-	      if (currentColDown && !isHighlighted) {
-          	row.toggleClass("emrowselected", isHighlighted);
-			var chkbox = row.find(".selectionbox");
-			$(chkbox).prop( "checked", true );
-			$(chkbox).trigger("change");
-		  }
-       }
-      }
-    })
-    .bind("selectstart", function () {
-      return false;
-    })
-
-   $(window)
-    .mouseup(function () {
-      isMouseDown = false;
-    });
-	
 	lQuery('.showasset').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -761,9 +763,8 @@ $(document).ready(function(url,params)
 		
 		e.preventDefault();
 		e.stopPropagation()
-		
+	
 		var assetid = clicked.data("assetid");
-		
 		showAsset(assetid);
 	});
 
