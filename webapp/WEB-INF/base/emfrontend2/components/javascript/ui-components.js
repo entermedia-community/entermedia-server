@@ -480,7 +480,7 @@ uiload = function() {
 				$(".modal-lg").css("min-width", width + "px");
 			}
 			if (maxwidth) {
-				$(dialog).css("max-width", maxwidth + "px");
+				$(".modal-lg").css("max-width", maxwidth + "px");
 			}
 			// $(".modal-lg").css("min-height",height + "px" );
 			
