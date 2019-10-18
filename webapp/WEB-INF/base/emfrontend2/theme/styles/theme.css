@@ -4617,45 +4617,6 @@ a.collectionbox.favorite
     padding-right: 20px;
     margin-right: 20px;
 }
-.password-helper a {
-    text-decoration: none;
-    position: relative;
-    top: 4px;
-}
-.password-helper a:hover {
-    text-decoration: underline;
-}
-#registration-form .oeinputform input, #password-reminder input[type="text"] {
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    font-size: 16px;
-    padding: 8px;
-    width: 260px;
-    margin-bottom: 10px;
-    margin-top: 6px;
-}
-#registration-form .oeinputform h4 {
-    font-weight: bold;
-    padding-bottom: 8px;
-    width: 100%;
-    font-size: 14px;
-    text-align: left;
-    padding: 0;
-    margin: 0;
-}
-#password-reminder label {
-    clear: both;
-    display: block;
-    margin: 25px 0 0 0;
-    padding: 0;
-}
-.col4 {
-    width: 340px;
-    float: left;
-}
-
-
 
 .btns { padding:15px 0;}
 
