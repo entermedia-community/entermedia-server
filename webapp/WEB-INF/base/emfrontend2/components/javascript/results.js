@@ -140,9 +140,9 @@ $(document).ready(function(url,params)
 				form.trigger("submit");
 			});
 			$('input[type=radio]',form).change( function() 
-					{
-					    form.trigger("submit");
-					});
+			{
+			    form.trigger("submit");
+			});
 	
 			$('input[type=text]',form).change( function() 
 			{
@@ -156,6 +156,21 @@ $(document).ready(function(url,params)
 		autosubmitformtriggers($(this));
 				
 	});
+	
+	$(".autosubmitform").on('submit', function() 
+			{
+				var form = $(this);
+				//Remove required from Filters Form
+				if (form.hasClass('filterform')) {
+					$('.required', form).each(function() {
+						$(this).removeClass('required');
+					});
+				}
+				if(form.valid()) {
+						return true;
+					}
+				return false;
+			});
 	
 	overlayResize = function()
 	{
