@@ -14,9 +14,9 @@
 	"provider_url": "https://entermediadb.org/",
 	"width": $!{asset.width},
 	"height": $!{asset.height},
-	"title": "$asset.headline",
+	"title": "$!{asset.headline}",
 	"html":
-		"[caption]<img src="${src}" alt="$!{asset.headline}" />$!{asset.headline}[/caption]",
+		"[caption]<img src=\"${src}\" alt=\"$!{asset.headline}\" />$!{asset.headline}[/caption]",
 }
 #end
 #end
