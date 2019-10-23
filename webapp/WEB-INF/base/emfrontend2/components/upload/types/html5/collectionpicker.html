@@ -1,7 +1,7 @@
 #set($collectionid = $context.getRequestParameter("collectionid"))
 <div id="uploadcollectionpicker" data-collectionpicker="$apphome/components/upload/types/html5/collectionpicker.html">
 <div class="inputformrow">
-	<div class="emdatafield">[[Choose Collection]]</div>
+	<div class="emdatafield">[[Collection]]</div>
 	<div class="emdatafieldvalue "> 
 		#if($collectionid)
 			#set($collection = $mediaarchive.getData("librarycollection",$collectionid))
@@ -13,14 +13,22 @@
 			
 		#end
 		
-		<a class="emdialog btn btn-xs btn-light"
+		<a class="emdialog btn btn-sm btn-light"
 			id="uploadfindcollection"  
-			style="margin:5px 0;"  
+			style="margin:5px 0 5px 0;"  
 			href="$home$apphome/components/opencollections/searchcollection.html?targetdiv=uploadcollectionpicker" 
-			title="[[Add New Collection]]" 
+			title="[[Find or Create Collection]]" 
 			data-hidefooter="true"
-			data-targetdiv="uploadcollectionpicker">[[Find Collection]]</a>
-			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" class="required" required />
+			data-targetdiv="uploadcollectionpicker"><i class="fa fa-search"></i> [[Find Collection]]</a>
+			#if($canaddnewcollection)
+	                 <a  class="emdialog btn btn-sm btn-light" 
+	                 	title="[[Create New Collection]]" 
+	                 	href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=uploadcollectionpicker&library.value=$!library.getId()">
+	                 	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+            #end
+			
+		<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" class="required" required />
+		<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
 	</div>
 	<hr>
 </div>

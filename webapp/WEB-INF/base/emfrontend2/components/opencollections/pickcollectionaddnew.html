@@ -1,7 +1,7 @@
-#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set($targetdiv = $context.getRequestParameter("targetdiv"))
-#set( $searchtype = $context.getRequestParameter("searchtype"))
-#set( $assetid = $context.getRequestParameter("assetid"))
+#set($searchtype = $context.getRequestParameter("searchtype"))
+#set($assetid = $context.getRequestParameter("assetid"))
 #if( $assetid)
 	#set( $action = "$home$apphome/components/opencollections/asset/createcollection.html")
 #else

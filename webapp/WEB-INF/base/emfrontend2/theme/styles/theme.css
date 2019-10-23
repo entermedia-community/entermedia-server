@@ -1131,7 +1131,7 @@ html, body, #application {
 
 
 .search-list li a.search-href, .sidebar-list a {
-    padding: 8px 30px;
+    padding: 8px 2rem;
     margin: 0;
     text-decoration: none;
     display: block;
