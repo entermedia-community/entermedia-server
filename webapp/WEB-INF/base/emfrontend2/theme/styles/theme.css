@@ -4749,8 +4749,12 @@ a.collectionbox.favorite
 
 .modal-content .tableholder {
 	overflow-y:auto; 
+	height: 300px;
+	margin-bottom:15px;
 }
-
+.modal-content .tableholder .table {
+	margin-bottom:0;
+}
 
 .breadcrumbs {
 	line-height: 27px;
