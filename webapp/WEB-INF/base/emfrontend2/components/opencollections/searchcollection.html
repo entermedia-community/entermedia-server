@@ -37,30 +37,39 @@
 			#end
 		</div>	
 		</td>
-		#if($canaddnewcollection || $canedittablecolumns)
-		<td style="width:120px; padding:0; position:relative">
-			#if( $canedittablecolumns )
+		#if($canviewsettings)
+		<td style="width:20px; padding:0; position:relative">
+			
 			<a style="position:absolute; top:3px; right:3px;"
 				class=" edit-icon"
 				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
 				title="[[Edit Search Form Fields]]">
 			<i class="fas fa-edit"></i>
 			</a>
-			#end
-			<a class="ajax btn btn-sm btn-primary" 
-				title="[[Add New Collection]]" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
-				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid&targetdiv=$!{targetdiv}">[[New Collection]]</a>
+			
+			
 		</td>
 		#end
 		</tr>
 		</table>
 	</form>
 	
+
 	
-	<div id="collectionresultsdialog">
+	<div id="collectionresultsdialog" class="" style="overflow:auto; height:400px; margin-bottom:15px; ">
+	<div style="min-height: 100px;">
 		$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+		<div class="clearfix"></div>
+		</div>
+		
 	</div>
 	
+	#if($canaddnewcollection)
+       <a  class="emdialog btn btn-sm btn-light" 
+       	title="[[Create New Collection]]" 
+       	href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()">
+       	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+    #end	
 	</div>
 <script>
 lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
