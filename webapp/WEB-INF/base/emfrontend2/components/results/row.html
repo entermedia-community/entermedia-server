@@ -5,8 +5,17 @@
 #if( $showtoolbar )
 	<td class="borderedcell checkbox" noclick="true"> 
 		
-<input type="checkbox" class="selectionbox" name="count" value="" #if($selectedrow) checked #end data-dataid="${hit.id}" />
+<input type="checkbox" class="selectionbox" name="count" value="" #if($selectedrow) checked #end data-dataid="${hit.id}" #if($canquickdownload) style="margin-right: 17px;" #end />
+#if($canquickdownload)
+#set($dlink = $mediaarchive.asLinkToOriginal($hit))
 
+		<a class="btn btn-sm btn-primary" 
+			href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")"
+			style="margin-right:5px;"
+			title="[[Download]] $asset.name"
+			><i class="fas fa-download"></i></a>
+
+#end
 	</td>
 #end	
 	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >

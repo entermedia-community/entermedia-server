@@ -161,8 +161,8 @@ public class PluginUpgrader
 	}
 	public void shutdown()
 	{
-		Shutdownable manager = (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
-		manager.shutdown();
+//		Shutdownable manager = (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
+//		manager.shutdown();
 		
 		//Touch web.xml
 		File web = new File( getRoot(), "WEB-INF/web.xml");
