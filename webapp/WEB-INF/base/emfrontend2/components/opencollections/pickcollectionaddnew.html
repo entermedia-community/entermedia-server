@@ -1,13 +1,17 @@
-#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set($searchtype = $context.getRequestParameter("searchtype"))
+#set($assetid = $context.getRequestParameter("assetid"))
 #set($targetdiv = $context.getRequestParameter("targetdiv"))
-#set( $searchtype = $context.getRequestParameter("searchtype"))
-#set( $assetid = $context.getRequestParameter("assetid"))
-#if( $assetid)
-	#set( $action = "$home$apphome/components/opencollections/asset/createcollection.html")
-#else
-	#set( $action = "$home$apphome/components/opencollections/createcollection.html")
+#if ($targetdiv == "uploadcollectionpicker")
+	#set( $action = "$home$apphome/components/upload/types/html5/collectionpickeraddnew.html")
+#else 
+	#if( $assetid)
+		#set( $action = "$home$apphome/components/opencollections/asset/createcollection.html")
+	#else
+		#set( $action = "$home$apphome/components/opencollections/createcollection.html")
+	#end
 #end
-<form name="adder" id="adder" class="validate-inputs ajaxform" targetdiv="search-collections" action="$action">
+<form name="adder" id="adder" class="validate-inputs #if($targetdiv) ajaxform autocloseform #end" targetdiv="$!{targetdiv}" action="$action">
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="$searchtype" />
 <input type="hidden" name="field" value="owner" />
@@ -23,11 +27,7 @@ $context.putPageValue("data",$data)
 <input type="hidden" name="field" value="rootcategory" />
 <input type="hidden" name="rootcategory.value" value="$!data.rootcategory" />
 
-
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 $context.putPageValue("view","${searchtype}/${searchtype}addnew")	
 $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-
-<input type="submit" value="[[Save]]" class="btn btn-sm btn-primary" />
-
 </form>

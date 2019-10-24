@@ -1131,7 +1131,7 @@ html, body, #application {
 
 
 .search-list li a.search-href, .sidebar-list a {
-    padding: 8px 30px;
+    padding: 8px 2rem;
     margin: 0;
     text-decoration: none;
     display: block;
@@ -4749,8 +4749,12 @@ a.collectionbox.favorite
 
 .modal-content .tableholder {
 	overflow-y:auto; 
+	height: 300px;
+	margin-bottom:15px;
 }
-
+.modal-content .tableholder .table {
+	margin-bottom:0;
+}
 
 .breadcrumbs {
 	line-height: 27px;

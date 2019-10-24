@@ -17,11 +17,12 @@
 #if(!$details)
 	#set($details = $hits.getSearcher().getDetailsForView("${hits.getSearchType()}/${viewid}", $userprofile))
 #end
+
 #set($searchhome = "$home$apphome/components/table")
 #set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
 #set($targetdiv = "resultsdiv")
 
-<div class="resultstablenav">
+<div>
 <table style="float:right;">
 <tr>
 	<td>
@@ -66,60 +67,59 @@
 </table>
 <div class="clearfix"></div>
 </div>
-
-<div  class="tableholder">
-#set( $xmledithome = "$apphome/components/xml")    
-#set( $sortby = $hits.getSearchQuery().getSortBy() )
-#set( $edit = $context.getRequestParameter("editheader"))
-#if( !$edit || $edit == "false")
-#set( $edit = false)
-#end
-
-<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable" >
-	<thead>
-	<tr class="tableheader">
-	#foreach( $detail in $details )
-	
-	<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
-				
-		<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
-				#text( $detail.name )
-				#if( $edit)
-					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
-						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"><i class="fas fa-times"></i></a>
-				
-				#elseif ($sortby.startsWith($detail.getId()))
-		 				#if($sortby.endsWith("Up"))
-		 					#set($sorticon="up")
-		 				#else
-		 					#set($sorticon="down")
-		 				#end	
-		 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
-				#end
-		</div>
-	 </th>
+<div class="tableholder">
+	#set( $xmledithome = "$apphome/components/xml")    
+	#set( $sortby = $hits.getSearchQuery().getSortBy() )
+	#set( $edit = $context.getRequestParameter("editheader"))
+	#if( !$edit || $edit == "false")
+		#set( $edit = false)
 	#end
-	</tr>
-	</thead>
-	<tbody>
-		#foreach( $hit in $hits.getPageOfHits() )
-			<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
-			#foreach( $detail in $details)
-				<td style="padding:4px;">
-					#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
-					#if($detail.render)
-						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+	
+	<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable" >
+		<thead>
+		<tr class="tableheader">
+		#foreach( $detail in $details )
+		
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
+					
+			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
+					#text( $detail.name )
+					#if( $edit)
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
+							href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"><i class="fas fa-times"></i></a>
+					
+					#elseif ($sortby.startsWith($detail.getId()))
+			 				#if($sortby.endsWith("Up"))
+			 					#set($sorticon="up")
+			 				#else
+			 					#set($sorticon="down")
+			 				#end	
+			 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
 					#end
-					$context.putPageValue("detail",$detail)
-					$context.putPageValue("val",$val)
-					$pages.include("$xmledithome/detailreadonly.html", $context)
-				</td>
-			#end	
-			</tr>
+			</div>
+		 </th>
 		#end
-	</tbody>
-</table>
-
+		</tr>
+		</thead>
+		<tbody>
+			#foreach( $hit in $hits.getPageOfHits() )
+				<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
+				#foreach( $detail in $details)
+					<td style="padding:4px;">
+						#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
+						#if($detail.render)
+							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+						#end
+						$context.putPageValue("detail",$detail)
+						$context.putPageValue("val",$val)
+						$pages.include("$xmledithome/detailreadonly.html", $context)
+					</td>
+				#end	
+				</tr>
+			#end
+		</tbody>
+	</table>
+</div>
 #if( $hits.size() == 0  )
 [[No results found]]
 #end
