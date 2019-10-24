@@ -1072,13 +1072,13 @@ public class MediaArchive implements CatalogEnabled
 			path = path + "/";
 
 		}
-
-		if (everything)
-		{
-			Page folder = getPageManager().getPage(path);
-			getPageManager().removePage(folder);
-			return;
-		}
+//TODO: refine this to only do if no child folders
+//		if (everything)
+//		{
+//			Page folder = getPageManager().getPage(path);
+//			getPageManager().removePage(folder);
+//			return;
+//		}
 
 		PathProcessor processor = new PathProcessor()
 		{
@@ -1107,7 +1107,7 @@ public class MediaArchive implements CatalogEnabled
 
 			}
 		};
-		processor.setRecursive(true);
+		processor.setRecursive(true); //Should this be tr
 		processor.setRootPath(path);
 		processor.setPageManager(getPageManager());
 		processor.process();
