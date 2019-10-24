@@ -663,7 +663,7 @@ public class AdminModule extends BaseMediaModule
 
 		inReq.removePageValue("user");
 		inReq.removePageValue("userprofile");
-		getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
+		getCookieEncryption().removeCookie(inReq,AutoLoginProvider.ENTERMEDIAKEY);
 		getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
 		
 

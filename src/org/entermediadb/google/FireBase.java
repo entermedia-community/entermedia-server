@@ -7,8 +7,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
-import org.openedit.util.HttpSharedConnection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

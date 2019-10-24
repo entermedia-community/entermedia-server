@@ -22,8 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -44,6 +42,8 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -57,7 +57,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
-import org.openedit.util.HttpSharedConnection;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
@@ -76,6 +75,7 @@ public class GoogleManager implements CatalogEnabled
 	protected OutputFiller filler = new OutputFiller();
 	protected XmlUtil fieldXmlUtil;
 	protected Date fieldTokenTime;
+	protected HttpSharedConnection connection;
 
 	public Date getTokenTime()
 	{
@@ -318,6 +318,11 @@ public class GoogleManager implements CatalogEnabled
 		}
 	}
 
+	//TODO: Validate this token before running any API. Cache results
+	//Create user if not exists
+	//https://developers.google.com/identity/sign-in/web/backend-auth
+	
+	
 	public String getUserAccessToken(Data config, String inType) throws Exception
 	{
 		String accesstoken = config.get("httprequesttoken"); // Expired in 14 days
@@ -1023,6 +1028,39 @@ public class GoogleManager implements CatalogEnabled
 		FireBase base = new FireBase();
 
 		base.notifyTopic(accesstoken, inChannel, inSubject, inMessage);
+	}
+
+	protected HttpSharedConnection getConnection() 
+	{
+		if( connection == null)
+		{
+			connection = new HttpSharedConnection();
+		}
+		return connection;
+	}
+	
+	public Map<String,String> getTokenDetails(String token) {
+
+		JSONObject resp = getConnection().getJson("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=" + token);
+		if( resp != null)
+		{
+			
+			/**
+			{
+  "issued_to": "279466694094-jo658skoqembq8p6nd5fqsl2t2p15lj0.apps.googleusercontent.com",
+  "audience": "279466694094-jo658skoqembq8p6nd5fqsl2t2p15lj0.apps.googleusercontent.com",
+  "user_id": "101451826132682989401",
+  "scope": "https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/userinfo.profile",
+  "expires_in": 1306,
+  "email": "cburkey@openedit.org",
+  "verified_email": true,
+  "access_type": "online"
+}
+			 */
+			return resp;
+		}
+			
+		return null;
 	}
 	
 }

@@ -17,11 +17,6 @@ import org.openedit.util.StringEncryption;
 public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvider
 {
 	private static final Log log = LogFactory.getLog(AutoLoginWithCookie.class);
-	public static final String ENTERMEDIAKEY = "entermedia.key"; //username + md542 + md5password + tstamp + timestampenc
-	protected static final String TIMESTAMP = "tstamp";
-	protected static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;// milliseconds in one day (used to calculate password expiry)
-
-	protected StringEncryption fieldCookieEncryption;
 	protected User readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
 	{
 		// see if we have a coookie for this person with their encrypted password
@@ -153,7 +148,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				catch (Exception ex)
 				{
 					//throw new OpenEditException(ex);
-					getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
+					getCookieEncryption().removeCookie(inReq,ENTERMEDIAKEY);
 					getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
 					log.error(ex);
 				}
@@ -214,21 +209,6 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		return null;
 	}
 
-	public StringEncryption getCookieEncryption()
-	{
-		//		if (fieldCookieEncryption == null)
-		//		{
-		//			fieldCookieEncryption = new StringEncryption();
-		////			String KEY = "SomeWeirdReallyLongStringYUITYGFNERDF343dfdGDFGSDGGD";
-		////			fieldCookieEncryption.setEncryptionKey(KEY);
-		//		}
-		return fieldCookieEncryption;
-	}
-
-	public void setCookieEncryption(StringEncryption inCookieEncryption)
-	{
-		fieldCookieEncryption = inCookieEncryption;
-	}
 
 	String createMd5CookieName(WebPageRequest inReq, boolean withapp)
 	{
@@ -247,32 +227,5 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		return name;
 	}
 
-	public void saveCookieForUser(WebPageRequest inReq,User inUser)
-	{
-		HttpServletResponse res = inReq.getResponse();
-		if (res != null)
-		{
-			String name = getCookieEncryption().createMd5CookieName(inReq,AutoLoginWithCookie.ENTERMEDIAKEY,true);
-			try
-			{
-				String value = getCookieEncryption().getEnterMediaKey(inUser);
-				Cookie cookie = new Cookie(name, value);
-				cookie.setMaxAge(Integer.MAX_VALUE);
-				//Needs new servelet api jar
-				//				cookie.setHttpOnly(true);
-				
-				cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm   This does not really work. It tends to not send the data
-				res.addCookie(cookie);
-				inReq.putPageValue("entermediakey", value);
-			}
-			catch (Exception ex)
-			{
-				throw new OpenEditException(ex);
-			}
-			//TODO: Add a new alternative cookie that will auto login the user by passing the md5 of a secret key + their password
-			//TODO: If the MD5 matches on both sides then we are ok to log them in
-
-		}
-	}
 	
 }

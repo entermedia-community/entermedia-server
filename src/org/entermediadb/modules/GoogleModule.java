@@ -1,5 +1,7 @@
 package org.entermediadb.modules;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
@@ -30,20 +32,26 @@ public class GoogleModule extends BaseMediaModule
 
 	}
 
-	
-	
-
 	public void syncContacts(WebPageRequest inReq) throws Exception
 	{
-
-		MediaArchive archive = getMediaArchive(inReq);
+		//MediaArchive archive = getMediaArchive(inReq);
 		log.info("Running syncUsers");
 		
 		getGoogleManager(inReq).syncContacts(inReq.getUser());
 
 	}
 
-	
+	public void authenticateWithToken(WebPageRequest inReq) throws Exception
+	{
+		String token = inReq.getRequestParameter("googletoken");
+		Map details = getGoogleManager(inReq).getTokenDetails(token);
+		if( details != null)
+		{
+			
+		}
+		inReq.putPageValue("details", details);
+
+	}	
 	
 	
 }
