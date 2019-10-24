@@ -36,15 +36,22 @@
 
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
 				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
-				<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
-						
+					#if($canquickdownload)
+#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+
+		<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")"><img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/></a>
+
+#else
+			<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>	
+				
+	#end					
 						<a class="" style="padding-left: 18px;" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset.name</a>
 							<div class="collectionIcons">
 			
 							<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
 			
 							</div>
-		
+	
 						
 			</li>
 		#end

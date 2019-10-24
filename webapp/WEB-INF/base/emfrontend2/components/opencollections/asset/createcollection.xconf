@@ -1,11 +1,8 @@
 <page>
-	<path-action name="DataEditModule.saveData"/>	
+	
 	<inner-layout />
-	<property name="enforcesecurity">true</property>
-	<page-action name="DataEditModule.search" >
-		<property name="searchtype">librarycollection</property>
-		<property name="sortby">name</property>
-	</page-action>
+	<path-action name="ProjectModule.createCollection"/>
+	<path-action name="ProjectModule.addAssetToCollection"  />
 	<path-action name="MediaArchiveModule.getAsset"  />
 	
 </page>

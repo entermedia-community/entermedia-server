@@ -92,10 +92,6 @@ $(document).ready(function()
 	
 	lQuery(".force-validate-inputs").livequery(function() 
 	{
-		$(".required", this).each(function() {
-			// $(this).attr("required","true");
-		});
-
 		var theform = $(this).closest("form");
 
 		theform.on("click", function() {
@@ -106,23 +102,14 @@ $(document).ready(function()
 			ignore : ".ignore"
 		});
 
-/*
-		if (form.validate) {
-			form.validate({
-				ignore : ".ignore"
-			});
-			var isvalidate = form.valid();
-			if (!isvalidate) {
-				e.preventDefault();
-				// show message
-				return;
-			}
-		}
-*/
 		theform.validate({
 			ignore : ".ignore"
 		});
 
+	});
+	
+	$.validator.addClassRules("validateNumber", {
+	     number: true
 	});
 
 	lQuery(".inlinesave").livequery("click", function()

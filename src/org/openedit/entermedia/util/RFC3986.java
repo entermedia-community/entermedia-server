@@ -116,7 +116,11 @@ public class RFC3986 {
 	        for (String param : params)
 	        {
 	            String name = param.split("=")[0];
-	            String value = param.split("=")[1];
+	            String value = "";
+	            if (param.split("=")[1] != null) 
+	            {
+	            	value = param.split("=")[1];
+	            }
 	            map.put(name, value);
 	        }
     	}

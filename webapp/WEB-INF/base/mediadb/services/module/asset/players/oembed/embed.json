@@ -3,20 +3,22 @@
 #set($assetid = $querystring.get("assetid"))
 #set($outputfile = $querystring.get("outputfile"))
 #if ($assetid && $outputfile)
-#set($asset  = $mediaarchive.getAsset($assetid))
+	#set($asset  = $mediaarchive.getAsset($assetid))
+#end
 #if($asset)
 #set($src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
 {
 	"asset": "$assetid",
 	"version": "1.0",
-	"type": "image",
+	"type": "rich",
 	"provider_name": "EnterMedia",
 	"provider_url": "https://entermediadb.org/",
-	"width": $!{asset.width},
-	"height": $!{asset.height},
-	"title": "$asset.headline",
-	"html":
-		"[caption]<img src="${src}" alt="$!{asset.headline}" />$!{asset.headline}[/caption]",
+	"width": "$!{asset.width}px",
+	"height": "$!{asset.height}px",
+	"title": "$!{asset.headline}",
+	"url": "$!{src}",
+	"htmlOLD": "[caption]<img src=\"${src}\" alt=\"$!{asset.headline}\" />$!{asset.headline}[/caption]",
+	"html2": "<figure><img src=\"${src}\" alt=\"$!{asset.headline}\" /><figcaption>$!{asset.headline}</figcaption></figure>",
+	"html": "<div><img src=\"${src}\" alt=\"$!{asset.headline}\" /><div style=\"\"><em>$!{asset.headline}</em></div></div>"
 }
-#end
 #end
