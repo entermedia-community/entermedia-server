@@ -19,12 +19,9 @@ $context.putPageValue("longform",false)
 
 
 #if(!$view)
-
-#if($viewid)
+	#if($viewid)
 		#set($view = "${searcher.searchType}/${viewid}")
-
-#end
-
+	#end
 #end
 
 
