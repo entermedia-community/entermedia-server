@@ -1,0 +1,5 @@
+<page>
+	<property name="eventname">Saved Chat</property>	
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/google/sendtopicnotification.html"  allowduplicates="true"/>
+
+</page>

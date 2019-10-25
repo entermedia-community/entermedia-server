@@ -18,7 +18,9 @@ package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -150,12 +152,14 @@ public class ChatServer
 		Data chat = chats.createNewData();
 		chat.setValue("date", new Date());
 		chat.setValue("message", inMap.get("content"));
-		chat.setValue("user", inMap.get("user"));
+		String userid = (String)inMap.get("user").toString();
+		chat.setValue("user", userid);
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("channeltype", inMap.get("channeltype"));
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 		
+		User user = archive.getUser(userid);
 		String assetid = (String)inMap.get("assetid");
 		if( assetid != null)
 		{
@@ -165,8 +169,18 @@ public class ChatServer
 				asset.setValue("haschat", true);
 				archive.saveAsset(asset);
 			}
-			User user = archive.getUser((String)inMap.get("user").toString());
 			archive.fireMediaEvent("assetchat", user,asset );
+		}
+		else
+		{
+			Map params = new HashMap(chat.getProperties());
+			params.remove("user");
+			Object collectionid = inMap.get( "collectionid" );
+			if( collectionid != null)
+			{
+				params.put("collectionid",String.valueOf(collectionid));
+			}
+			archive.fireMediaEvent("chatterbox","saved", params, user  );
 		}
 	}
 

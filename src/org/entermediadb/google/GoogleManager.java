@@ -55,6 +55,7 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.ExecutorManager;
 import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
@@ -1018,16 +1019,27 @@ public class GoogleManager implements CatalogEnabled
 	//		return elem.getAsJsonObject();
 	//				
 	//	}
-
-	public void notifyTopic(String inChannel, String inSubject, String inMessage)
+	public ExecutorManager getExecutorManager()
 	{
-		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
-		Data authinfo = archive.getData("oauthprovider", "google");
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
+		return queue;
+	}
 
-		String accesstoken = getAccessToken(authinfo);
-		FireBase base = new FireBase();
+	public void notifyTopic(final String inChannel,final  String inTopic,final  User inUser,final  String inSubject, final String inMessage)
+	{
+		//TODO: Dont spam the channel. Send the first one. Then wait 20min for the rest
+		getExecutorManager().execute( new Runnable() {
+			
+			@Override
+			public void run() {
+				MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+				final Data authinfo = archive.getData("oauthprovider", "google");
 
-		base.notifyTopic(accesstoken, inChannel, inSubject, inMessage);
+				String accesstoken = getAccessToken(authinfo);
+				FireBase base = new FireBase();
+				base.notifyTopic(accesstoken, inChannel, inTopic, inUser.getId(), inUser.getScreenName(), inSubject, inMessage);
+			}
+		});
 	}
 
 	protected HttpSharedConnection getConnection() 

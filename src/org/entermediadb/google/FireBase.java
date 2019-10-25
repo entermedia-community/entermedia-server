@@ -17,7 +17,7 @@ public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String inToken, String inChannel, String inSubject, String inMessage)
+	public void notifyTopic(String inToken, String inChannel, String inTopic, String inUserId, String inUserLabel, String inSubject, String inMessage)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
@@ -39,8 +39,19 @@ public class FireBase {
 		//message.put("to", "dBbB2BFT-VY:APA91bHrvgfXbZa-K5eg9vVdUkIsHbMxxxxxc8dBAvoH_3ZtaahVVeMXP7Bm0iera5s37ChHmAVh29P8aAVa8HF0I0goZKPYdGT6lNl4MXN0na7xbmvF25c4ZLl0JkCDm_saXb51Vrte");
 		//message.put("priority", "high");
 		//message.put("topic", "my_channel_id");
-		message.put("topic", "9");
+		message.put("topic", inChannel);
+		
 		//message.put("channel_id","my_channel_id");
+		JSONObject data = new JSONObject();
+		data.put("collectionid",inChannel);
+		data.put("userid",inUserId); //TODO: Make label
+		data.put("userlabel",inUserLabel); 
+		data.put("chattopic",inTopic);
+//		 intent.putExtra("collectionid",inCollectionId);
+//        intent.putExtra("userlabel",inUserLabel);
+//        intent.putExtra("message",messageBody);
+		
+		message.put("data", data);
 	
 		JSONObject notification = new JSONObject();
 		notification.put("title", inSubject);
@@ -61,12 +72,12 @@ public class FireBase {
 			{
 				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
 				String returned = EntityUtils.toString(resp.getEntity());
-				log.info(returned);
+				log.error(returned);
 			}
 			else
 			{
-				String content = IOUtils.toString(resp.getEntity().getContent());
-				log.info(content);
+//				String content = IOUtils.toString(resp.getEntity().getContent());
+				log.info("Google message sent " +  message);
 			}
 //			JsonParser parser = new JsonParser();
 //			JsonElement elem = parser.parse(content);

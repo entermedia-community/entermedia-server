@@ -1,6 +1,8 @@
 <page>
 	<property name="virtual">true</property>
-	<property name="eventname">Sent Hello World</property>	
+	<property name="eventname">Notify Firebase</property>	
+	<property name="enabled">false</property>
+	
 	<path-action name="Script.run" allowduplicates="true" >
 		<script>
 			/${catalogid}/events/scripts/google/sendtopicnotification.groovy
