@@ -1290,6 +1290,7 @@ String viewbase = null;
 		{
 			return null;
 		}
+		inReq.setRequestParameter("hitssessionidOriginal", hitssessionidOriginal);
 		String othername = inReq.findValue("hitsname");
 
 		String hitssessionidCopy = othername + trackerOriginal.getSearchQuery().getResultType() + trackerOriginal.getCatalogId();
