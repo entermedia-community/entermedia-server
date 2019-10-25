@@ -14,21 +14,14 @@
    $pages.include("$apphome/views/modules/asset/editor/categorize/index.html", $context)
 #else
 <div class="asset-data-detail assetpanel-editor-box">
-	<h4>[[Locations]]
+	<h4>[[Folders]]
 	#if( $caneditassetcategories )
 	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
 	   class="detail-edit-icon float-right btn btn-xs emdialog"
 	   data-cancelsubmit="true" 
 	   data-parameterdata="categoryvalues"
 	   data-noesc="true"
-	   title="[[Add Category]]"><i class="fas fa-plus"></i> [[Category]]</a>
-	#end
-	#if( $caneditassetcategories )
-	<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
-			   class="detail-edit-icon float-right  btn btn-xs emdialog"
-			   data-hidefooter="true" 
-			   data-noesc="true"
-			   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add Collection]]</a>
+	   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Folder]]</a>
 	#end
 	</h4>
 
@@ -53,3 +46,15 @@
 </div>
 #end
 </div>
+
+#if( $caneditassetcategories )
+<div class="asset-data-detail assetpanel-editor-box">
+<div >
+	<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+			   class=" emdialog btn btn-sm btn-primary"
+			   data-hidefooter="true" 
+			   data-noesc="true"
+			   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Collection]]</a>
+</div>
+</div>
+#end
