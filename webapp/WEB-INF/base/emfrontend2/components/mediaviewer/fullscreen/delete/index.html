@@ -1,4 +1,4 @@
-<div style="margin: 20px;">
+<div style="margin: 0px;">
     <p>[[Are you sure you want to delete?]]</p>
 	#set( $collectionid = $context.getRequestParameter("collectionid") )
     #if( $collectionid)
@@ -15,6 +15,7 @@
 	    <input name="nodeID" value="$!nodeID" type="hidden" />
 	    <input name="assetid" value="$asset.id" type="hidden" />
 	    <input name="cache" value="false" type="hidden" />
-	    <p><input type="checkbox" name="deleteoriginal" value="true" /> [[Also delete original]]</p>
+	    <p><input type="checkbox" name="deleteoriginal" value="true" id="deleteoriginal" />
+	    <label for="deleteoriginal">[[Also delete original]]</label></p>
     </form>
 </div>
