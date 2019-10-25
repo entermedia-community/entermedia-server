@@ -101,6 +101,17 @@ public class ProjectModule extends BaseMediaModule
 			finalpath = finalpath + "nodeID="+nodeID;
 			
 		}
+		String args = inReq.getRequestParameter("args");
+		if (args != null) {
+			if (finalpath.contains("?")) {
+				finalpath = finalpath + "&";
+			}
+			else {
+				finalpath = finalpath + "?";	
+			}
+			finalpath = finalpath + args;
+			
+		}
 		inReq.redirect(finalpath);
 
 	}

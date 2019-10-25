@@ -49,12 +49,10 @@ $context.putPageValue("cdn",$cdnprefix)
 
 $context.putPageValue("opentab",$opentab)
 
-
- 
-
-
-
+#set( $hitssessionidOriginal = $context.getRequestParameter("hitssessionidOriginal") )
+$context.putPageValue("hitssessionidOriginal",$hitssessionidOriginal)
 #set( $hitssessionid = $dialoghits.getSessionId())
+$context.putPageValue("hitssessionid",$hitssessionid)
 <div id="main-media-container">
 
 $pages.include("$componenthome/mediaviewer/fullscreen/currentassettabs.html",$context)

@@ -63,7 +63,7 @@ $context.putPageValue("searcher",$searcher)
 		#else
 			#set($addnewurl = "$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=$!{targetdiv}&library.value=$!library.getId()")
 		#end
-		    <a  class="emdialog btn btn-sm btn-light" 
+		    <a  class="emdialog" 
 	       	title="[[Create New Collection]]" 
 	       	href="$addnewurl">
 	       	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>

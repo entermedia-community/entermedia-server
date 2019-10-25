@@ -318,7 +318,9 @@ uiload = function() {
 				if (!targetdiv) {
 					targetdiv = form.attr("targetdiv");
 				}
-				targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
+				if (targetdiv) {
+					targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
+				}
 
 				if (form.hasClass("showwaiting")) {
 					var app = $("#application");
@@ -346,7 +348,9 @@ uiload = function() {
 				form.ajaxSubmit({
 					error : function(data) {
 						alert("error");
-						$("#" + $.escapeSelector(targetdiv)).html(data);
+						if (targetdiv) {
+							$("#" + $.escapeSelector(targetdiv)).html(data);
+						}
 						 
 						// $("#" + targetdiv).replaceWith(data);
 					},
@@ -359,18 +363,24 @@ uiload = function() {
 						}
 						else
 						{		
-					 		$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+							if (targetdiv) {
+								$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+							}
 					 	}
+		                if (form.hasClass("autocloseform")) {
+		                    var findmodal = form.closest(".modal");
+		                    if (findmodal && findmodal.modal) {
+		                        findmodal.modal("hide");
+		                    }
+		                }
+		                if (form.hasClass("autohideOverlay")) {
+		                	hideOverlayDiv(getOverlay());
+		                }
 						$(window).trigger( "resize" );
 					},
 					data : data
 				});
-                if (form.hasClass("autocloseform")) {
-                    var findmodal = form.closest(".modal");
-                    if (findmodal && findmodal.modal) {
-                        findmodal.modal("hide");
-                    }
-                }
+
 
 				var reset = form.data("reset")
 				if (reset == true) {

@@ -39,9 +39,7 @@ $context.putPageValue("showalllanguagevalues",true)
                 #set($permissionvalue = "")
 				
 			#end
-			#if($caneditasset)
-				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
-			#end
+			
 			</div>
 	</div>					
 		<div class="col-4">
@@ -68,6 +66,25 @@ $context.putPageValue("showalllanguagevalues",true)
 				#end	
 									
 				$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
+				
+				
+				#if( $caneditassetcategories )
+				<div class="asset-data-detail assetpanel-editor-box">
+					<div class="float-left" style="margin-left: 0px;">
+					<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+							   class=" emdialog btn btn-sm btn-primary"
+							   data-hidefooter="true" 
+							   data-noesc="true"
+							   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Collection]]</a>
+							   </div>
+				
+				#if($caneditasset)
+				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+				#end
+				</div>
+				#end
+				
+				
 		</div>	
 </div>
 </div>
