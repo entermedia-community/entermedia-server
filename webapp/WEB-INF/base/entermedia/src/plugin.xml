@@ -22,6 +22,7 @@
 				<ref bean="autoLoginWithCookie" />
 				<ref bean="autoLoginByHeader" />
 				<ref bean="autoLoginLti" />
+				<ref bean="autoLoginByGoogle" />
 			</list>
 		</property>
 	</bean>
@@ -43,6 +44,14 @@
         	<ref bean="moduleManager" />
         </property>
 		<property name="stringEncryption">
+			<ref bean="stringEncryption" />
+		</property>
+	</bean>
+	<bean id="autoLoginByGoogle" class="org.entermediadb.authenticate.AutoLoginByGoogle">
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
+		<property name="cookieEncryption">
 			<ref bean="stringEncryption" />
 		</property>
 	</bean>

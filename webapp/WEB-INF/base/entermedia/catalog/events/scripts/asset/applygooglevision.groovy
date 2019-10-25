@@ -4,10 +4,10 @@ import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.google.GoogleManager
+import org.entermediadb.net.HttpSharedConnection
 import org.openedit.Data
 import org.openedit.data.QueryBuilder
 import org.openedit.hittracker.HitTracker
-import org.openedit.util.HttpSharedConnection
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

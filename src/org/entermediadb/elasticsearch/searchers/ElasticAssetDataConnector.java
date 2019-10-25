@@ -559,7 +559,5 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	}
 
 	
-	
-	
 
 }
