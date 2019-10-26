@@ -25,7 +25,11 @@ $invalue
 #end
 #end
 #macro(jsonmap $detail $map)
-#if( $map )$map.toJson()#end
+#set($totext = $map.toJson())
+#if( $totext )$totext
+#else
+#jesc($map)
+#end
 #end
 #macro(datajsonmin $detail $id)
 #set($data = false)#set($data = $searcherManager.getData($detail, $id))
