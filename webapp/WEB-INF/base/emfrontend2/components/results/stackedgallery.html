@@ -43,7 +43,7 @@ data-cellpadding="4"  >
         #set($assetheight = $mediaarchive.getRealImageHeight($hit))
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
-		<div class="float-left masonry-grid-cell stackedplayer-cell assetdraggable" id="gallerycell_${hit.id}"
+		<div class="float-left masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer" id="gallerycell_${hit.id}"
 			 data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
 		    	<a class="stackedplayer imagearea " id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		    	    <div class="grid-thumbimage " data-assetid="$hit.id">
@@ -57,7 +57,7 @@ data-cellpadding="4"  >
 		        	</div>
 		    	</a>
 		      <div class="caption">
-			      <div class="grid-gallery-checkbox">
+			      <div class="grid-gallery-checkbox resultsassetselection">
 			          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
 			      </div>
 		         

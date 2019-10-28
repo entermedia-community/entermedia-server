@@ -1,9 +1,12 @@
-<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}">
+<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
 	#if($showtoolbar)
-	<div class="gallery-checkbox">
-		<input type="checkbox" class="selectionbox" name="count" value=""
-			#if($hits.isSelectedOnPage(${hit.id})) checked #end
-			data-dataid="${hit.id}" />
+	<div class="gallery-checkbox resultsassetselection">
+		<input type="checkbox" 
+				class="selectionbox" 
+				name="count" 
+				value=""
+				#if($hits.isSelectedOnPage(${hit.id})) checked #end
+				data-dataid="${hit.id}" />
 	</div>
 	#end 
 	#if( $canviewvoting )

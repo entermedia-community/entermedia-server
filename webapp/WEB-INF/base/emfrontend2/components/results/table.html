@@ -40,9 +40,6 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 #set( $viewerlink = $content.get("assetviewerlink") )
 
-##	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
-
-
 	<table id="main-results-table" class="table table-striped table-hover emresultstable stackedplayertable" >
 			$pages.include("$componenthome/results/tableheader.html",$context)
 			#set($count = 0)
