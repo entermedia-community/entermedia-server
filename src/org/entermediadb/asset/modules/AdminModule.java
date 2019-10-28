@@ -22,26 +22,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.AutoLoginWithCookie;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.config.Configuration;
 import org.openedit.data.SearcherManager;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.Permission;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.Group;
-import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
@@ -49,6 +45,10 @@ import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
+
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
+import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 
 /**
  * This module allows the user to view and administer the site.
@@ -1311,5 +1311,58 @@ public class AdminModule extends BaseMediaModule
 			req.setHeader("Access-Control-Allow-Credentials","true");
 		}	
 	}	
+	
+	public void generateKey(WebPageRequest inReq) {
+		
+		String account = inReq.getRequestParameter("accountname");
+		String password = inReq.getRequestParameter("password");
+
+		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			if(account != null) {
+				account = account.toLowerCase();
+			}
+		}
+		UserManager userManager = getUserManager(inReq);
+
+		User user = userManager.getUser(account);
+		if(user.get("googlesecretkey") != null) {
+			inReq.putPageValue("error", "Sorry, your code has already been generated.  IF you need it reset contact your administrator");
+			return;
+		}
+		
+		AuthenticationRequest aReq = getUserManager(inReq).createAuthenticationRequest(inReq, password, user);
+		if (userManager.getAuthenticator().authenticate(aReq))
+		{
+			
+			GoogleAuthenticator gAuth = new GoogleAuthenticator();
+			final GoogleAuthenticatorKey key = gAuth.createCredentials();
+			String secret = key.getKey();
+			user.setValue("googlesecretkey", secret);
+			getSearcherManager().getSearcher(aReq.getCatalogId(), "user").saveData(user);
+			inReq.putPageValue("googlesecret", secret);
+			String sitename = getMediaArchive(inReq).getCatalogSettingValue("sitename");
+//			if(sitename == null) {
+//				sitename = inReq.findValue("siteroot");
+//			}
+//			if(sitename == null) {
+//				sitename = inReq.getSiteRoot();
+//			}
+			if(sitename == null) {
+				sitename="Entermedia";
+			}
+			
+			String qr = GoogleAuthenticatorQRGenerator.getOtpAuthURL(sitename, user.getEmail(), key);
+			inReq.putPageValue("qrcode", qr);
+			
+			
+			
+		}
+		
+		
+		
+		
+	}
+	
+	
 	
 }
