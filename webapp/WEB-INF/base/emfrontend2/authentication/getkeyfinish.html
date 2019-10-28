@@ -1,0 +1,27 @@
+#if($error)
+<p>You've already setup Two Factor Authentication.  If you need to reset your key please contact your system administrator</p>
+#else
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<h1>Key Generated</h1>
+
+</div>
+
+<div class="row">
+<div class="col-md-12">
+<img src="$qrcode" align="top"> 
+</div></div>
+
+<div class="row">
+<div class="col-md-12">
+Your key is: <strong>$googlesecret</strong>
+
+<br/>
+Please install it into the Google Authenticator Application and then <a href="login.html">Login here</a>
+
+</div></div>
+</div>
+</div>
+
+#end
