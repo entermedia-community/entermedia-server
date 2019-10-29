@@ -1,4 +1,6 @@
 <page>
 	<generator name="velocity"/>
-	
+	<permission name="view">
+			<userprofile property="api-searchprojects" equals="true" />
+	</permission>
 </page>

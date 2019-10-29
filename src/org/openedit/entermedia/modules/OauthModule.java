@@ -382,16 +382,22 @@ public class OauthModule extends BaseMediaModule
 
 		if (authinfo.getValue("alloweddomains") != null)
 		{
-
 			boolean ok = false;
 			String domains = authinfo.get("alloweddomains");
-			String[] domainlist = domains.split(",");
-			for (int i = 0; i < domainlist.length; i++)
+			if( domains.equals("*"))
 			{
-				String domain = domainlist[i];
-				if (email.endsWith(domain))
+				ok = true;
+			}
+			else
+			{
+				String[] domainlist = domains.split(",");
+				for (int i = 0; i < domainlist.length; i++)
 				{
-					ok = true;
+					String domain = domainlist[i];
+					if (email.endsWith(domain))
+					{
+						ok = true;
+					}
 				}
 			}
 			if (!ok)

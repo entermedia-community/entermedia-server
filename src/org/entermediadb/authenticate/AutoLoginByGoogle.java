@@ -31,11 +31,10 @@ public class AutoLoginByGoogle extends BaseAutoLogin implements AutoLoginProvide
 			Map<String,String> details = manager.getTokenDetails(accesskey);
 			if( details != null)
 			{
-				UserManager userManager = getUserManager(inReq);
 				String email = details.get("email");
 				if( email != null)
 				{
-					User user = userManager.getUserByEmail(email);
+					User user = manager.createUser(email);
 					if( user != null)
 					{
 						saveCookieForUser(inReq,user); //For next time

@@ -54,6 +54,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.HttpMimeBuilder;
@@ -1073,6 +1074,59 @@ public class GoogleManager implements CatalogEnabled
 		}
 			
 		return null;
+	}
+
+	public User createUser(String email)
+	{
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+		Data authinfo = archive.getData("oauthprovider", "google");
+		String allowed = authinfo.get("alloweddomains");
+		if( allowed == null)
+		{
+			log.error("Not allowed to create user based on alloweddomains" );
+			return null;
+		}
+		boolean ok = false;
+		String domains = authinfo.get("alloweddomains");
+		if( domains.equals("*"))
+		{
+			ok  = true;
+		}
+		else
+		{
+			String[] domainlist = domains.split(",");
+			for (int i = 0; i < domainlist.length; i++)
+			{
+				String domain = domainlist[i];
+				if (email.endsWith(domain))
+				{
+					ok = true;
+				}
+			}
+		}
+		if( !ok)
+		{
+			log.error("Domain not authorized " + email );
+			return null;
+		}
+		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
+		User target = null;
+		
+		if( email != null) {
+			target = searcher.getUserByEmail(email);
+		}
+		
+		if (target == null)
+		{
+			target = (User) searcher.createNewData();
+			//target.setFirstName(firstname);
+			//target.setLastName(lastname);
+			target.setEmail(email);
+			target.setEnabled(true);
+			//target.setId(userid);
+			searcher.saveData(target, null);
+		}
+		return target;
 	}
 	
 }
