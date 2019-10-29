@@ -2211,15 +2211,20 @@ td.checkbox input, th.firstheader input {
 }
 .filteredinresults {
 	position:absolute;
-	top:40px;
+	top:60px;
 	left:0;
 	right:0;
 	background: none;
 	z-index:2;
-	width:420px;
+	width:340px;
 	word-wrap:break-word;
 	padding:0px;
 }	
+@media (min-width: 768px) {
+	.filteredinresults {
+		width:500px;
+	}
+}
 .collection-container .col-left,
 .collection-container .col-filters {
 	top:0;
@@ -2228,8 +2233,6 @@ td.checkbox input, th.firstheader input {
 .emsubnav {
 	  
 } 
-	
-	
 	
 /*Upload*/
 .col-upload-option { width:240px; text-align:center; background-color:#efefef; margin:0 0 5px 5px;}
