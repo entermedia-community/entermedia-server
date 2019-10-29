@@ -2645,6 +2645,12 @@ label.error {
 .fields-editor .emdatafieldvalue  {
 	margin-bottom: 15px;
 }
+.fields-editor label.error {
+	padding-top:0;
+}
+.fields-editor .form-control.error {
+	border:1px solid red;
+}
 .assetpanel-editor .btns {
 	padding:15px 0;
 
