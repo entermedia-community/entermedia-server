@@ -754,4 +754,22 @@
     </name>
   </property>   
   
+  <property id="xmperrormessage" index="true" deleted="false" editable="true" stored="true">
+    <name> 
+      <language id="en"><![CDATA[XMP Error Message]]></language> 
+    </name> 
+  </property>  
+  <property id="xmperror" index="true" deleted="false" editable="true" stored="true" type="boolean">
+    <name>  
+      <language id="en"><![CDATA[XMP Writing Failed]]></language> 
+    </name> 
+  </property>  
+  <property id="xmpoutput" index="true" deleted="false" editable="true" stored="true">New
+    <name>
+      <language id="en"><![CDATA[XMP Output]]></language>
+    </name>
+  </property>
+  
+  
+  
 </page>
