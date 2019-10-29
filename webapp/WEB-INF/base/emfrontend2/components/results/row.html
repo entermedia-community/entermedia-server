@@ -1,11 +1,17 @@
 #if($hits.isSelected(${hit.id}))
 #set($selectedrow = true)
 #end
-<tr data-rowid="$hit.id" title="$sourcepath" class="#if($selectedrow) emrowselected #end" >
+<tr data-rowid="$hit.id" title="$sourcepath" class="resultsassetcontainer #if($selectedrow) emrowselected #end" >
 #if( $showtoolbar )
-	<td class="borderedcell checkbox" noclick="true"> 
+	<td class="borderedcell checkbox resultsassetselection" noclick="true"> 
 		
-<input type="checkbox" class="selectionbox" name="count" value="" #if($selectedrow) checked #end data-dataid="${hit.id}" #if($canquickdownload) style="margin-right: 17px;" #end />
+<input type="checkbox" 
+		class="selectionbox" 
+		name="count" 
+		value="" 
+		#if($selectedrow) checked #end 
+		data-dataid="${hit.id}" 
+		#if($canquickdownload) style="margin-right: 17px;" #end />
 #if($canquickdownload)
 #set($dlink = $mediaarchive.asLinkToOriginal($hit))
 

@@ -10,6 +10,8 @@
     <permission id="api-manage-users" permissiontype="restapi" name="Manage Users and Groups " description="Enables user to use the api to create and manage users and groups" ordering="735"/>
 	<permission id="api-manage-modules" permissiontype="restapi" name="Manage Modules " description="Enables user to use the api to create and manage new modules" ordering="740"/>
 	
+	<permission id="api-searchprojects" permissiontype="restapi" name="Search Project List" description="View a list of projects" ordering="745"/>
+	
 </permissions>
 
 	

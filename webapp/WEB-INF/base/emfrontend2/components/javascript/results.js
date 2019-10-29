@@ -738,7 +738,7 @@ $(document).ready(function(url,params)
 	});
 	
 	
-	lQuery(".stackedplayertable input.selectionbox").livequery("change", function(e) 
+	lQuery(".resultsassetselection input.selectionbox").livequery("change", function(e) 
 	{
 		var clicked = $(this);
 		var dataid = $(clicked).data('dataid');
@@ -752,10 +752,10 @@ $(document).ready(function(url,params)
 		}
 		var ischecked = $(clicked).prop("checked");
 		if (ischecked == true) {
-			$(clicked).closest("tr").addClass("emrowselected");
+			$(clicked).closest(".resultsassetcontainer").addClass("emrowselected");
 		}
 		else {
-			$(clicked).closest("tr").removeClass("emrowselected");
+			$(clicked).closest(".resultsassetcontainer").removeClass("emrowselected");
 		}
 		
 		$('.assetproperties').trigger('click');

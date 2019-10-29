@@ -44,10 +44,9 @@ function chatterbox() {
 	lQuery('.chatter-text').livequery("keyup", function(e){
 	    if(e.keyCode == 13)
 	    {
-	    	
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
-	    	clear();
+	    	jQuery("#chatter-msg").val("");
 	    }
 	});
 	
@@ -56,11 +55,6 @@ function chatterbox() {
 	
 }
 
-
-
-function clear(){
-	jQuery("#chatter-msg").val("");
-}
 
 
 function scrollToChat()
