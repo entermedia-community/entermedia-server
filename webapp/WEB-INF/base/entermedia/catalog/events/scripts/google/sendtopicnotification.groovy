@@ -30,19 +30,27 @@ public void runit()
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
 		String topic = event.get("channel");
 		Data project = mediaArchive.getData("collectiveproject", topic);
-		String label = null;
+		String subject;
 		if( project != null)
 		{
-			label = collection.getName() + " / " + project.getName();
+			subject = collection.getName() + " / " + project.getName();
 		}
 		else
 		{
-			label = collection.getName();
+			subject = collection.getName();
 		}
+		subject = subject + " chat from:" + aUser.getScreenName();
 		Map extra = new HashMap();
-		extra.put("chattopic", label);
-
-		manager.notifyTopic(collectionid, aUser, "Chat Received", message,extra);
+		extra.put("collectionid", collectionid);
+		extra.put("collectiveprojectid", topic);
+		if( project != null)
+		{
+			extra.put("collectiveprojectlabel", project.getName());
+		}
+		extra.put("userid", aUser.getId());
+		
+		manager.notifyTopic(collectionid, aUser, subject, message, extra);
+		
 	}
 
 }

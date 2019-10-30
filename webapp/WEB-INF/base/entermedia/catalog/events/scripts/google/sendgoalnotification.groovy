@@ -27,28 +27,54 @@ public void runit()
 	if( projectgoalid != null)
 	{
 		Data projectgoal = mediaArchive.getData("projectgoal", projectgoalid);
+		
+		boolean notified = Boolean.parseBoolean(projectgoal.getValue("notifiedteam"));
+		String projectstatus = projectgoal.get("projectstatus"); 
+		if( notified )
+		{
+			//If we are open then return. If closed then continue
+			if( "open".equals( projectstatus ) )
+			{
+				return; //No need to send another notification on an open ticket
+			}
+		}
 		String collectionid = projectgoal.get("collectionid");
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
 		
 		String topic = event.get("goaltrackercolumn");
-		Data project = mediaArchive.getData("collectiveproject", topic);
-		String label = null;
-		if( project != null)
+		Data topic = mediaArchive.getData("collectiveproject", topic);
+		String subject = collection.getName();
+		if( topic != null)
 		{
-			label = collection.getName() + " / " + project.getName();
+			subject = subject + " / " + topic.getName();
+		}
+		Data status =  mediaArchive.getData("projectstatus",projectgoal.get("projectstatus") );
+		if( status != null )
+		{
+			 subject = subject + " " + status.getName() + " Goal";
 		}
 		else
 		{
-			label = collection.getName();
+			 subject = subject + " new Goal";
 		}
 		Map extra = new HashMap();
-		extra.put("chattopic", label);
-		extra.put("chattopic", projectgoalid);
+		extra.put("projectgoalid", projectgoal.getId());
+		extra.put("projectgoallabel",  projectgoal.getName());
 		extra.put("collectionid", collectionid);
 
 		String message = projectgoal.getName();
-		
-		manager.notifyTopic(collectionid, aUser, aUser.getScreenName() + " Goal edited", message, extra);
+		//Level and status info
+		Data level = mediaArchive.getData("ticketlevel",projectgoal.get("ticketlevel") );
+		if( level != null)
+		{
+			message = level.getName() + ": " + message );
+		}
+		if( ! notified)
+		{	
+			projectgoal.setValue("notifiedteam",true);
+			mediaArchive.saveData(projectgoal);
+		}	
+		manager.notifyTopic(collectionid, aUser, subject, message, extra);
 	}
 
 }
