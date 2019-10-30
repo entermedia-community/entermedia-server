@@ -44,12 +44,17 @@ function chatterbox() {
 	lQuery('.chatter-text').livequery("keyup", function(e){
 	    if(e.keyCode == 13)
 	    {
+	    	jQuery("#chatter-msg").val("");
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
-	    	jQuery("#chatter-msg").val("");
 	    }
 	});
 	
+	lQuery('button[data-command="messagereceived"]').livequery("click", function(e)
+	{
+		jQuery("#chatter-msg").val("");
+	});
+
 	chatopen=true;
 	
 	

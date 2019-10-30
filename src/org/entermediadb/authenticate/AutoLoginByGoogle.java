@@ -34,7 +34,7 @@ public class AutoLoginByGoogle extends BaseAutoLogin implements AutoLoginProvide
 				String email = details.get("email");
 				if( email != null)
 				{
-					User user = manager.createUser(email);
+					User user = manager.createUserIfNeeded(email);
 					if( user != null)
 					{
 						saveCookieForUser(inReq,user); //For next time
