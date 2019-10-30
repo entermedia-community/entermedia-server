@@ -12,6 +12,9 @@
 	#set($resultsPage = "$home$apphome/views/search/index.html")
 	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage")
 	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+	#if($module)
+		#set($resultsPage = "$resultsPage&module=$module")
+	#end
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
