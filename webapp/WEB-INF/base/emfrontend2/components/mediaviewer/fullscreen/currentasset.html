@@ -1,5 +1,6 @@
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $collectionid = $context.getRequestParameter("collectionid") )
+$context.putPageValue("collectionid",$collectionid) 
 #set( $rendertype = $mediaarchive.getMediaRenderType($asset))
 #set( $playertype = $mediaarchive.getMediaPlayerType($asset))
 #if( !$playertype )
