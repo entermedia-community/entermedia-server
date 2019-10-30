@@ -73,7 +73,6 @@ public void init(){
 	autocompletesearcher.saveAllData(toSave, user);
 	toSave.clear();
 	
-	log.info("that's my loop: " + assetTags.size());
 	assetTags.each
 	{
 		String text = it;
