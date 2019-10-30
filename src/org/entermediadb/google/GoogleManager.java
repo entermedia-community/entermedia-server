@@ -1076,9 +1076,20 @@ public class GoogleManager implements CatalogEnabled
 		return null;
 	}
 
-	public User createUser(String email)
+	public User createUserIfNeeded(String email)
 	{
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
+
+		User target = null;
+		
+		if( email != null) {
+			target = searcher.getUserByEmail(email);
+		}
+		if( target != null)
+		{
+			return target;
+		}
 		Data authinfo = archive.getData("oauthprovider", "google");
 		String allowed = authinfo.get("alloweddomains");
 		if( allowed == null)
@@ -1108,12 +1119,6 @@ public class GoogleManager implements CatalogEnabled
 		{
 			log.error("Domain not authorized " + email );
 			return null;
-		}
-		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-		User target = null;
-		
-		if( email != null) {
-			target = searcher.getUserByEmail(email);
 		}
 		
 		if (target == null)
