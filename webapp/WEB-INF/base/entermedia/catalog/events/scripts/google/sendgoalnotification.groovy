@@ -23,7 +23,6 @@ public void runit()
 	 */
 	User aUser = event.getUser();
 	
-	String message = event.get("message");
 	String projectgoalid = event.get("dataid");
 	if( projectgoalid != null)
 	{
@@ -46,8 +45,10 @@ public void runit()
 		extra.put("chattopic", label);
 		extra.put("chattopic", projectgoalid);
 		extra.put("collectionid", collectionid);
+
+		String message = projectgoal.getName();
 		
-		manager.notifyTopic(collectionid, aUser, "Goal Updated", message, extra);
+		manager.notifyTopic(collectionid, aUser, aUser.getScreenName() + " Goal edited", message, extra);
 	}
 
 }
