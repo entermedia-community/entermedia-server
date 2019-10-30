@@ -75,7 +75,6 @@
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
 		#end
-	
 		#if($canmultidelete)
 			#set($deleteurl = "$home$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
 			#if($module=="librarycollection")

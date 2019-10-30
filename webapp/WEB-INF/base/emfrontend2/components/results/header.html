@@ -1,4 +1,10 @@
-#set( $module = $content.module)
+#if(!$module)
+	#set( $module = $content.module)
+#end
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+$context.putPageValue("module", $module)
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	$context.putPageValue("hits",$hits)

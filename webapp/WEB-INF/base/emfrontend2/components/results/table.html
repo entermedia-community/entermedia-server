@@ -5,7 +5,8 @@
 		data-collectionid="$!librarycol.getId()" 
 		data-searchtype="asset" 
 		data-pagenum="$hits.getPage()" 
-		data-totalpages="$hits.getTotalPages()">
+		data-totalpages="$hits.getTotalPages()"
+		data-module="$!module">
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)

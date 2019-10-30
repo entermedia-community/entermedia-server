@@ -1,4 +1,8 @@
 #set( $module = $content.module)
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+$context.putPageValue("module", $module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)

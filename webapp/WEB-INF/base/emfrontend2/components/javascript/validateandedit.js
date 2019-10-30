@@ -111,6 +111,19 @@ $(document).ready(function()
 	$.validator.addClassRules("validateNumber", {
 	     number: true
 	});
+	
+	$.validator.setDefaults({
+	    errorPlacement: function(error, element) {
+	    	var elementid = element.attr('id');
+	    	var elementparent = $("#" + $.escapeSelector(elementid)).closest(".emdatafieldvalue");
+	    	if(elementparent.length != 0) {
+	    		//elementparent = $("#" + $.escapeSelector(elementid));
+	    		error.insertAfter(elementparent);
+	    	}
+	    	
+	    	
+	    }
+	});
 
 	lQuery(".inlinesave").livequery("click", function()
 	{
