@@ -211,10 +211,10 @@ public class ElementalManager implements CatalogEnabled
 		Element input = job.addElement("input");
 		Element file = input.addElement("file_input");
 		Element uri = file.addElement("uri");
-		uri.setText("/mnt/Meld-Playback/temp/18955.mp4");
+		uri.setText("/mnt/Meld/Playback/temp/18955.mp4");
 		//uri.setText(SOME URI);
 		Element og = job.addElement("output_group");
-		og.addElement("file_output_group").addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
+		og.addElement("file_output_group").addElement("destination").addElement("uri").setText("/mnt/Meld/Playback/temp-out");
 		og.addElement("output").addElement("preset").setText(preset);
 		//	job.addElement("preset").setText(preset);
 	//	job.addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");

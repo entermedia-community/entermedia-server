@@ -1184,6 +1184,8 @@ public class TaskModule extends BaseMediaModule
 		addStatus(archive, selectedgoal,inReq.getUserName());
 		
 		recalculateSessions(archive, selectedgoal, inReq.getUserName());
+		
+		
 	}
 
 	protected void recalculateSessions(MediaArchive inArchive, MultiValued inSelectedgoal, String inUserName)

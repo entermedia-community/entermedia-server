@@ -1026,7 +1026,7 @@ public class GoogleManager implements CatalogEnabled
 		return queue;
 	}
 
-	public void notifyTopic(final String inChannel,final  String inTopic,final  User inUser,final  String inSubject, final String inMessage)
+	public void notifyTopic(final String inChannel,final  User inUser,final  String inSubject, final String inMessage, final Map inExtraData)
 	{
 		//TODO: Dont spam the channel. Send the first one. Then wait 20min for the rest
 		getExecutorManager().execute( new Runnable() {
@@ -1038,7 +1038,7 @@ public class GoogleManager implements CatalogEnabled
 
 				String accesstoken = getAccessToken(authinfo);
 				FireBase base = new FireBase();
-				base.notifyTopic(accesstoken, inChannel, inTopic, inUser.getId(), inUser.getScreenName(), inSubject, inMessage);
+				base.notifyTopic(accesstoken, inChannel, inUser.getId(), inUser.getScreenName(), inSubject, inMessage, inExtraData);
 			}
 		});
 	}

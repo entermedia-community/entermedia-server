@@ -1,6 +1,8 @@
 package org.entermediadb.google;
 
-import org.apache.commons.io.IOUtils;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -10,14 +12,11 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
 public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String inToken, String inChannel, String inTopic, String inUserId, String inUserLabel, String inSubject, String inMessage)
+	public void notifyTopic(String inToken, String inChannel,String inUserId, String inUserLabel, String inSubject, String inMessage, Map extraData)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
@@ -46,7 +45,12 @@ public class FireBase {
 		data.put("collectionid",inChannel);
 		data.put("userid",inUserId); //TODO: Make label
 		data.put("userlabel",inUserLabel); 
-		data.put("chattopic",inTopic);
+		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			String value = (String)extraData.get(key);
+			//data.put("chattopic",inTopic);
+			data.put(key,value);
+		}
 //		 intent.putExtra("collectionid",inCollectionId);
 //        intent.putExtra("userlabel",inUserLabel);
 //        intent.putExtra("message",messageBody);

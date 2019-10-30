@@ -1930,17 +1930,18 @@ public class ProjectManager implements CatalogEnabled
 			{
 				sessionsused += sessioncount;
 			}
-
 		}
 
 		LibraryCollection col = getLibraryCollection(getMediaArchive(), inCollectionid);
-		col.setValue("totalsessionspurchased", sessionspurchased);
-		col.setValue("totalsessionsused", sessionsused);
-		col.setValue("sessioncalcdate", new Date());
-		col.setValue("remainingsessions", sessionspurchased - sessionsused);
-		//TODO: Don't save if they are identical
-
-		getMediaArchive().saveData("librarycollection", col);
+		
+		if(col.getLong("totalsessionspurchased") != sessionspurchased || col.getLong("totalsessionsused") != sessionsused)
+		{
+			col.setValue("totalsessionspurchased", sessionspurchased);
+			col.setValue("totalsessionsused", sessionsused);
+			col.setValue("sessioncalcdate", new Date());
+			col.setValue("remainingsessions", sessionspurchased - sessionsused);
+			getMediaArchive().saveData("librarycollection", col);
+		}	
 		return col;
 
 	}

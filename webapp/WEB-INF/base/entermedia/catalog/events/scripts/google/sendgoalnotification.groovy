@@ -24,11 +24,14 @@ public void runit()
 	User aUser = event.getUser();
 	
 	String message = event.get("message");
-	String collectionid = event.get("collectionid");
-	if( collectionid != null)
+	String projectgoalid = event.get("dataid");
+	if( projectgoalid != null)
 	{
+		Data projectgoal = mediaArchive.getData("projectgoal", projectgoalid);
+		String collectionid = projectgoal.get("collectionid");
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
-		String topic = event.get("channel");
+		
+		String topic = event.get("goaltrackercolumn");
 		Data project = mediaArchive.getData("collectiveproject", topic);
 		String label = null;
 		if( project != null)
@@ -41,8 +44,10 @@ public void runit()
 		}
 		Map extra = new HashMap();
 		extra.put("chattopic", label);
-
-		manager.notifyTopic(collectionid, aUser, "Chat Received", message,extra);
+		extra.put("chattopic", projectgoalid);
+		extra.put("collectionid", collectionid);
+		
+		manager.notifyTopic(collectionid, aUser, "Goal Updated", message, extra);
 	}
 
 }
