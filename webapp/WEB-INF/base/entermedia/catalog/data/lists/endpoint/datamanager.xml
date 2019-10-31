@@ -49,6 +49,7 @@
   </endpoint>  
   -->
   <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" caption="Reloads xml lists to update Manager">Reload Data</endpoint>  
-  <endpoint id="helloworld" name="Hello World" url="/${applicationid}/services/test/helloworld" docsection="moduletestmodule" httpmethod="GET" caption="Returns Hello World !">Hellow World</endpoint>  
+  <endpoint id="helloworld" name="Hello World" url="/${applicationid}/services/test/helloworld" docsection="moduletestmodule" httpmethod="GET" caption="Returns Hello World !">Hello World</endpoint>  
+  <endpoint id="viewasset" name="Get Assets" url="/${applicationid}/services/module/librarycollection/viewassets" docsection="modulelibrarycollection" httpmethod="POST" caption="Returns all the assets from a Collection">Get Assets</endpoint>  
 
 </endpoints>
