@@ -62,7 +62,8 @@ public void runit()
 		extra.put("projectgoalid", projectgoal.getId());
 		extra.put("projectgoallabel",  projectgoal.getName());
 		extra.put("collectionid", collectionid);
-
+		extra.put("collectionlabel", collection.getName());
+		
 		String message = projectgoal.getName();
 		//Level and status info
 		Data level = mediaArchive.getData("ticketlevel",projectgoal.get("ticketlevel") );
