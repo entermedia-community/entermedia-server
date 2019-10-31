@@ -49,5 +49,6 @@
   </endpoint>  
   -->
   <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" caption="Reloads xml lists to update Manager">Reload Data</endpoint>  
+  <endpoint id="helloworld" name="Hello World" url="/${applicationid}/services/test/helloworld" docsection="moduletestmodule" httpmethod="GET" caption="Returns Hello World !">Hellow World</endpoint>  
 
 </endpoints>
