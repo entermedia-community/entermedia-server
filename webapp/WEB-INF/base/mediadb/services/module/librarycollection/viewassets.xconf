@@ -5,6 +5,8 @@
 	<permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
+    
+    <path-action name="PageValue.loadPageVariable" bean="conversionUtil"  alltypes="true" />
 	
 	
 </page>

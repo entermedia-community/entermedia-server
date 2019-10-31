@@ -1,17 +1,31 @@
 ## This is really only used for annotations
 
 [
-#foreach($hit in $hits)
- 
- #if(${foreach.count} > 1)
- ,
- #end
+#foreach($hit in $hits) #if(${foreach.count} > 1) , #end
  {
- "id": "${hit.id}",
- "sourcepath": "${hit.sourcepath}",
+ 	#jsonpartial($hit $searcher.getPropertyDetails())
  "annotated":false,
- "assettype":"${hit.assettype}",
- "name": "${hit.name}"
+	#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
+	#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
+ "downloads":[
+		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
+		{	
+			"name":#jesc($preset.name),
+			"id":#jesc($preset.id),
+			#if( $preset.getId() == "0")
+				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+			#else
+				#set( $outputfile = "${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
+			"outputfile":"#urlencode($outputfile)",
+				#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
+			#end	
+			#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${hit.sourcepath}/${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
+			"url":"#urlencode($url)",
+			"downloadurl":"#urlencode($downloadurl)",
+			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
+			"iscomplete":"$isready"
+		}
+		#end
  } 
 #end
 ]
