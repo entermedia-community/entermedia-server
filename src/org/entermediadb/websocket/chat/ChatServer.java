@@ -180,7 +180,7 @@ public class ChatServer
 			{
 				params.put("collectionid",String.valueOf(collectionid));
 			}
-			archive.fireMediaEvent("chatterbox","saved", params, user  );
+			archive.fireGeneralEvent(user,"chatterbox","saved", params);
 		}
 	}
 

@@ -28,7 +28,7 @@ public void runit()
 	{
 		Data projectgoal = mediaArchive.getData("projectgoal", projectgoalid);
 		
-		boolean notified = Boolean.parseBoolean(projectgoal.getValue("notifiedteam"));
+		boolean notified = Boolean.parseBoolean(projectgoal.get("notifiedteam"));
 		String projectstatus = projectgoal.get("projectstatus"); 
 		if( notified )
 		{
@@ -41,13 +41,14 @@ public void runit()
 		String collectionid = projectgoal.get("collectionid");
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
 		
-		String topic = event.get("goaltrackercolumn");
-		Data topic = mediaArchive.getData("collectiveproject", topic);
+		String topicid = event.get("goaltrackercolumn");
+		Data topic = mediaArchive.getData("collectiveproject", topicid);
 		String subject = collection.getName();
 		if( topic != null)
 		{
 			subject = subject + " / " + topic.getName();
 		}
+		subject = "[" + subject + "] " + aUser.getScreenName();
 		Data status =  mediaArchive.getData("projectstatus",projectgoal.get("projectstatus") );
 		if( status != null )
 		{
@@ -67,12 +68,12 @@ public void runit()
 		Data level = mediaArchive.getData("ticketlevel",projectgoal.get("ticketlevel") );
 		if( level != null)
 		{
-			message = level.getName() + ": " + message );
+			message = level.getName() + ": " + message;
 		}
-		if( ! notified)
+		if( !notified)
 		{	
 			projectgoal.setValue("notifiedteam",true);
-			mediaArchive.saveData(projectgoal);
+			mediaArchive.saveData("projectgoal",projectgoal);
 		}	
 		manager.notifyTopic(collectionid, aUser, subject, message, extra);
 	}

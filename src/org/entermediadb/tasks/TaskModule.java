@@ -29,6 +29,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
@@ -1173,12 +1174,19 @@ public class TaskModule extends BaseMediaModule
 		addStatus(archive, selectedgoal,inReq.getUserName());
 
 		inReq.putPageValue("goal",selectedgoal);
+		Map params = new HashMap();
+		params.put("dataid", selectedgoal.getId());
+		archive.fireGeneralEvent(inReq.getUser(),"projectgoal","saved", params);
 	}
 
 	public void savedGoal(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String goalid = inReq.getRequestParameter("id");
+		String goalid = inReq.getRequestParameter("dataid");
+		if( goalid == null )
+		{
+			goalid = inReq.getRequestParameter("id");  //legacy
+		}
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 
 		addStatus(archive, selectedgoal,inReq.getUserName());

@@ -1332,14 +1332,14 @@ public class MediaArchive implements CatalogEnabled
 		getEventManager().fireEvent(event);
 	}
 
-	public void fireMediaEvent(String inMetadataType, String operation, Map inParams, User inUser)
+	public void fireGeneralEvent(User inUser, String inSearchType, String inAction, Map inParams)
 	{
 		WebEvent event = new WebEvent();
 		event.setProperties(inParams);
-		event.setSearchType(inMetadataType);
+		event.setSearchType(inSearchType);
 
 		event.setCatalogId(getCatalogId());
-		event.setOperation(operation);
+		event.setOperation(inAction);
 		event.setUser(inUser);
 		event.setSource(this);
 

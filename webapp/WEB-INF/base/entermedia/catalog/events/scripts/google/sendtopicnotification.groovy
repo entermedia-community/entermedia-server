@@ -33,11 +33,11 @@ public void runit()
 		String subject;
 		if( project != null)
 		{
-			subject = collection.getName() + " / " + project.getName();
+			subject = "[" + collection.getName() + " / " + project.getName() + "]";
 		}
 		else
 		{
-			subject = collection.getName();
+			subject = "[" + collection.getName() +"]";
 		}
 		subject = subject + " chat from:" + aUser.getScreenName();
 		Map extra = new HashMap();
