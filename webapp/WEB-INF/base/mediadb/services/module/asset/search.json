@@ -1,5 +1,4 @@
 #set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
-
 {
 	"response":
 		{
@@ -34,50 +33,32 @@
 		{
 			#jsonpartial($hit $searcher.getPropertyDetails()) 
 			#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
-			#set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$asset.getMediaName()")
+			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
 			#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
-			
-			
-			
-			
-			
 			
 			,"downloads":[
 		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
 		{	
 			"name":#jesc($preset.name),	
 			"id":#jesc($preset.id),	
-
 			#if( $preset.getId() == "0")
 				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
 			#else
-			#set( $outputfile = "${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)")
-			"outputfile":#jesc($outputfile),
-			#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
+				#set( $outputfile = "${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
+			"outputfile":"#urlencode($outputfile)",
+				#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
 			#end	
-
-
-#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${asset.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)" )
-	"url":"#urlencode($url)",
-	"downloadurl":"#urlencode($downloadurl)",
-
+			#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${hit.sourcepath}/${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
+			"url":"#urlencode($url)",
+			"downloadurl":"#urlencode($downloadurl)",
 			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
 			"iscomplete":"$isready"
-		
 		}
 		
 		
 		#end
 		]
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 		}
 		#end
 		]		
