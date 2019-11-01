@@ -11,12 +11,13 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
+import org.openedit.users.User;
 
 public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String inToken, String inChannel,String inUserId, String inUserLabel, String inSubject, String inMessage, Map extraData)
+	public void notifyTopic(String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
@@ -43,8 +44,9 @@ public class FireBase {
 		//message.put("channel_id","my_channel_id");
 		JSONObject data = new JSONObject();
 		data.put("collectionid",inChannel);
-		data.put("userid",inUserId); //TODO: Make label
-		data.put("userlabel",inUserLabel); 
+		data.put("userid",inUser.getId()); 
+		data.put("useremail",inUser.getEmail()); 
+		data.put("userlabel",inUser.getScreenName()); 
 		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String value = (String)extraData.get(key);

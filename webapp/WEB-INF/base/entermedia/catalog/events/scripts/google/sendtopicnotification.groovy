@@ -29,11 +29,11 @@ public void runit()
 	{
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
 		String topic = event.get("channel");
-		Data project = mediaArchive.getData("collectiveproject", topic);
+		Data topicdata = mediaArchive.getData("collectiveproject", topic);
 		String subject;
-		if( project != null)
+		if( topicdata != null)
 		{
-			subject = "[" + collection.getName() + " / " + project.getName() + "]";
+			subject = "[" + collection.getName() + " / " + topicdata.getName() + "]";
 		}
 		else
 		{
@@ -42,10 +42,12 @@ public void runit()
 		subject = subject + " chat from:" + aUser.getScreenName();
 		Map extra = new HashMap();
 		extra.put("collectionid", collectionid);
-		extra.put("collectiveprojectid", topic);
-		if( project != null)
+		extra.put("collectionlabel", collection.getName());
+
+		extra.put("collectivetopicid", topic);
+		if( topicdata != null)
 		{
-			extra.put("collectiveprojectlabel", project.getName());
+			extra.put("collectivetopiclabel", topicdata.getName());
 		}
 		extra.put("userid", aUser.getId());
 		
