@@ -1038,7 +1038,7 @@ public class GoogleManager implements CatalogEnabled
 
 				String accesstoken = getAccessToken(authinfo);
 				FireBase base = new FireBase();
-				base.notifyTopic(accesstoken, inChannel, inUser.getId(), inUser.getScreenName(), inSubject, inMessage, inExtraData);
+				base.notifyTopic(accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
 			}
 		});
 	}
