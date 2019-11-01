@@ -1323,6 +1323,20 @@ public class TaskModule extends BaseMediaModule
 		getMediaArchive(inReq).getSearcher("statuschanges").saveAllData(tosave,null);
 	}
 	
+	public void showRecentActivity(WebPageRequest inReq)
+	{
+		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").
+				exact("userid", inReq.getUserName()).sort("dateDown");
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid != null)
+		{
+			query.exact("collectionid",collectionid);
+		}
+		Collection results = query.search();
+		inReq.putPageValue("recentactivities",results);
+	}
+	
 	public void createGoalFromMessage(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
