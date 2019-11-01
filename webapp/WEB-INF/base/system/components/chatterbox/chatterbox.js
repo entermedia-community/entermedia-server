@@ -13,9 +13,7 @@ function chatterbox() {
 	}	
 	
 	connect();
-	
-	
-	
+
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
 		var chatter = button.closest(".chatterbox");
@@ -29,22 +27,19 @@ function chatterbox() {
 	    if(chatconnection.readyState === chatconnection.CLOSED  ){
 	    	connect();
 	    	//IF we do a reconnect render the whole page
-	    
-	    
 	    }
 	    var toggle = button.data("toggle");
 	    if(toggle == true){
 	    	jQuery(".chatter-toggle").toggle();
 	    }
 	    chatconnection.send(json);
-		
-	}
-	);
+	    jQuery("#chatter-msg").val("");
+	});
 
 	lQuery('.chatter-text').livequery("keyup", function(e){
 	    if(e.keyCode == 13)
 	    {
-	    	jQuery("#chatter-msg").val("");
+	    	//jQuery("#chatter-msg").val("");
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
 	    }
@@ -52,7 +47,7 @@ function chatterbox() {
 	
 	lQuery('button[data-command="messagereceived"]').livequery("click", function(e)
 	{
-		jQuery("#chatter-msg").val("");
+		//jQuery("#chatter-msg").val("");
 	});
 
 	chatopen=true;
@@ -144,13 +139,7 @@ function reloadAll(){
 		});
 					
 	});
-	
-	
-	
-	
-	
-	
-	
+
 }
 
 
@@ -169,8 +158,7 @@ function keepAlive() {
     	connect();
     	reloadAll();
     }
-    
-    
+  
     timerId = setTimeout(keepAlive, timeout);  
 }  
 
