@@ -1,4 +1,3 @@
-#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
 {
 	"response":
 		{
@@ -29,18 +28,17 @@
 			}
 		},
 	"results":[
-		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
-		{
-			#jsonpartial($hit $searcher.getPropertyDetails()) 
-			#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
-			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
-			#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
-			
-			,"downloads":[
+#foreach($hit in $hits) #if(${foreach.count} > 1) , #end
+ {
+ 	#jsonpartial($hit $searcher.getPropertyDetails())
+ ,"annotated":false,
+	#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
+	#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
+ "downloads":[
 		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
 		{	
-			"name":#jesc($preset.name),	
-			"id":#jesc($preset.id),	
+			"name":#jesc($preset.name),
+			"id":#jesc($preset.id),
 			#if( $preset.getId() == "0")
 				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
 			#else
@@ -54,34 +52,9 @@
 			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
 			"iscomplete":"$isready"
 		}
-		
-		
 		#end
-		]
-
-		}
-		#end
-		]		
- #if( $hits.getSearchQuery().hasFilters() )
- , "filters":[
-	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( $foreach.count != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
-		{ "id":"$selectedfilter.getId()", "name":#jesc($selectedfilter.getName()) }
-	#end
-  ]	
-#end	
-#if( $filteroptions)		
-, "filteroptions":[
-	#foreach($type in $filteroptions )#if( $foreach.count != 1 ), #end
-		#if(!$hits.isChildFacetSelected($type))
-		 {"id":"$type.getId()","name":#jesc($type.getName()),"children":
-		    [
-			#foreach($entry in $type.children)#if( $foreach.count != 1 ), #end
-			{"id":"$entry.getId()","name":#jesc($entry.getName()),"count":#jesc($entry.count)}
-			#end
-			]
-		}
-		#end
-	#end
-    ]		
-#end		
+	] 
+ } 
+#end
+] 
 }
