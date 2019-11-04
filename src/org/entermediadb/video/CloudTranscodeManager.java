@@ -28,6 +28,7 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.google.GoogleManager;
+import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -279,14 +280,14 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			ConvertResult result = manager.createOutput(instructions);
 
 			String bucket = getMediaArchive().getCatalogSettingValue("transcodebucket");
-			JsonObject data = new JsonObject();
+			JSONObject data = new JSONObject();
 			String googlename = "temp/" + inAsset.getId() + "data.flac";
-			data.addProperty("name", googlename);
+			data.put("name", googlename);
 			try {
 				if(inTrack.get("selfLink") == null)
 				{
 					log.info("Uploading to bucket: " + inAsset.getName() );
-					JsonObject response = getGoogleManager().uploadToBucket(authinfo, bucket, result.getOutput(),data);
+					JSONObject response = getGoogleManager().uploadToBucket(authinfo, bucket, result.getOutput(),data);
 					if( response == null)
 					{
 						log.error("Could not upload to bucket");
@@ -295,10 +296,10 @@ public class CloudTranscodeManager implements CatalogEnabled {
 						return;
 					}
 					log.info("Uploading complete: " + inAsset.getName() );
-					inTrack.setValue("googleid", response.get("id").getAsString());
-					String selflink = response.get("selfLink").getAsString();
+					inTrack.setValue("googleid", (String)response.get("id"));
+					String selflink = (String)response.get("selfLink");
 					inTrack.setValue("selfLink", selflink);
-					inTrack.setValue("mediaLink", response.get("mediaLink").getAsString());
+					inTrack.setValue("mediaLink", (String)response.get("mediaLink"));
 					inTrack.setValue("transcribestatus", "inprogress");
 					captionsearcher.saveData(inTrack);
 				}
@@ -307,7 +308,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 
 				CloseableHttpClient httpclient;
-				httpclient = HttpClients.createDefault();
+				httpclient = HttpClients.createDefault(); //TODO use HttpSharedConnection
 				HttpPost httpmethod = new HttpPost(url);
 
 				String accesstoken = getGoogleManager().getAccessToken(authinfo);

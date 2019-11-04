@@ -3,5 +3,7 @@
 		<blank/>
 	</permission>
 	<path-action name="JsonAdminModule.preprocess" />
-	<path-action name="GoogleModule.authenticateWithToken" />
+	<path-action name="Admin.login" />		
+	<path-action name="GoogleModule.createUserInFirebase" />
+
 </page>

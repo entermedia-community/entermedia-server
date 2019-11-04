@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
-import org.entermediadb.authenticate.AutoLoginWithCookie;
+import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
@@ -349,6 +349,7 @@ public class AdminModule extends BaseMediaModule
 	public void login(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("accountname");
+		String email = inReq.getRequestParameter("email");
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
@@ -357,7 +358,7 @@ public class AdminModule extends BaseMediaModule
 			}
 		}
 		
-		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
+		if (account == null && email == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
 			String referrer = inReq.getRequest().getHeader("REFERER");
 			if (referrer != null && !referrer.contains("authentication") && referrer.startsWith(inReq.getSiteRoot()))
@@ -366,13 +367,26 @@ public class AdminModule extends BaseMediaModule
 				inReq.putSessionValue("fullOriginalEntryPage", referrer);
 			}
 		}
-		else if (account != null)
+		else
 		{
 			UserManager userManager = getUserManager(inReq);
-			User user = userManager.getUser(account);
-			if (user == null && account.contains("@"))
+			User user = null;
+			if( account == null)
 			{
-				user = userManager.getUserByEmail(account);
+				if( email == null)
+				{
+					inReq.putPageValue("oe-exception", "No user id or email found");
+					return;
+				}
+				user = userManager.getUserByEmail(email);
+			}
+			else
+			{
+				user = userManager.getUser(account);
+				if( user == null && account.contains("@"))
+				{
+					user = userManager.getUserByEmail(account);
+				}
 			}
 			if (user == null) // Allow guest user
 			{
@@ -606,7 +620,7 @@ public class AdminModule extends BaseMediaModule
 			log.debug("User is virtual. Not saving cookie");
 			return;
 		}
-		AutoLoginWithCookie autologin = (AutoLoginWithCookie)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+		BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
 		autologin.saveCookieForUser(inReq, user);
 	}
 

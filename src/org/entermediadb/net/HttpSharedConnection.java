@@ -10,10 +10,10 @@ import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -22,7 +22,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -30,8 +32,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
-
-import com.google.gson.JsonElement;
 
 
 
@@ -85,29 +85,30 @@ public class HttpSharedConnection
 	
 	public CloseableHttpResponse sharedPost(String path, Map<String,String> inParams)
 	{
-		try
-		{
 			HttpPost method = new HttpPost(path);
 			method.setEntity(build(inParams));
-			CloseableHttpResponse response2 = (CloseableHttpResponse)getSharedClient().execute(method);
+			CloseableHttpResponse response2 = sharedExecute(method);
 			return response2;
-		}
-		catch ( Throwable e )
-		{
-			throw new OpenEditException(e);
-		}
+	
 	}
+	public CloseableHttpResponse sharedPostWithJson(String inUrl,JSONObject inBody)
+	{
+		HttpPost post = new HttpPost(inUrl);
+		
+		post.setEntity(new StringEntity(inBody.toString(), "UTF-8"));
+		post.addHeader("Content-Type", "application/json");
+		post.setProtocolVersion(HttpVersion.HTTP_1_1);
+		
+		return sharedPost(post);
+		
+	}
+	
+	
 	public CloseableHttpResponse sharedPost(HttpPost inPost)
 	{
-		try
-		{
-			CloseableHttpResponse response2 = (CloseableHttpResponse)getSharedClient().execute(inPost);
-			return response2;
-		}
-		catch ( Throwable e )
-		{
-			throw new OpenEditException(e);
-		}
+		CloseableHttpResponse response2 = sharedExecute(inPost);
+		return response2;
+		
 	}
 	public void release(CloseableHttpResponse response2)
 	{
@@ -127,16 +128,13 @@ public class HttpSharedConnection
 	}
 	public CloseableHttpResponse sharedGet(String inUrl)
 	{
-		try
-		{
-			HttpGet method = new HttpGet(inUrl);
-			CloseableHttpResponse response2 = (CloseableHttpResponse) getSharedClient().execute(method);
-			return response2;
-		}
-		catch ( Exception ex )
-		{
-			throw new RuntimeException(ex);
-		}
+		return sharedGet(inUrl,null);
+	}
+	public CloseableHttpResponse sharedGet(String inUrl,Map extraHeaders)
+	{
+		HttpGet method = new HttpGet(inUrl);
+		CloseableHttpResponse response2 = (CloseableHttpResponse) sharedExecute(method);
+		return response2;
 	}
 	
 	protected HttpEntity build(Map <String, String> inMap){
@@ -158,18 +156,31 @@ public class HttpSharedConnection
 //	{
 //
 //	}
+	//httpmethod.addHeader("authorization", "Bearer " + inAccessToken);
 	public JSONObject getJson(String inUrl) 
 	{
-		CloseableHttpResponse resp = sharedGet(inUrl);
-		try
-		{
+		return getJson(inUrl,null);
+	}	
+	public JSONObject getJson(String inUrl,Map extraHeaders) 
+	{
+		CloseableHttpResponse resp = sharedGet(inUrl,extraHeaders);
+		JSONObject elem = parseJson(resp);
+		return elem;
+	}
+
+	public JSONObject parseJson(CloseableHttpResponse resp) 
+	{
+		String content;
+		try {
+
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
+				log.info("Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
 				String returned = EntityUtils.toString(resp.getEntity());
-				log.info(returned);
-				return null;
+				log.error(returned);
+				throw new OpenEditException("Could not process " + returned);
 			}
+			
 			HttpEntity entity = resp.getEntity();
 			JSONParser parser = new JSONParser();
 			
@@ -179,26 +190,32 @@ public class HttpSharedConnection
 				charset = entity.getContentEncoding().getValue();
 			}
 			InputStreamReader reader = new InputStreamReader(entity.getContent(),charset);
-			JSONObject elem = (JSONObject)parser.parse(reader);
+			JSONObject json = (JSONObject)parser.parse(reader);
+
 			// log.info(content);
-			//JsonObject json = elem.getAsJsonObject();
-			return elem;
-		}
-		catch (Throwable ex)
-		{
-			throw new OpenEditException(ex);
+			return json;
+		} catch (Throwable e) {
+			throw new OpenEditException(e);
 		}
 		finally
 		{
-			if( resp != null)
-			{
-				try {
-					resp.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			release(resp);
+		}
+	}
+
+
+	public CloseableHttpResponse sharedExecute(HttpRequestBase method) 
+	{
+		CloseableHttpResponse resp = null;
+		try 
+		{
+			resp = (CloseableHttpResponse)getSharedClient().execute(method);
+			return resp;
+		} 
+		catch (Throwable e)
+		{
+			release(resp);
+			throw new OpenEditException(e);
 		}
 	}
 }

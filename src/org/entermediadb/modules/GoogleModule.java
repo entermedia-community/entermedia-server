@@ -9,6 +9,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.google.GoogleManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.users.User;
 
 public class GoogleModule extends BaseMediaModule
 {
@@ -41,15 +42,17 @@ public class GoogleModule extends BaseMediaModule
 
 	}
 
-	public void authenticateWithToken(WebPageRequest inReq) throws Exception
+	public void createUserInFirebase(WebPageRequest inReq) throws Exception
 	{
-		String token = inReq.getRequestParameter("googletoken");
-		Map details = getGoogleManager(inReq).getTokenDetails(token);
-		if( details != null)
-		{
-			
-		}
-		inReq.putPageValue("details", details);
+		User user = inReq.getUser();
+		
+		String md5 = getMediaArchive(inReq).getUserManager().getStringEncryption().getPasswordMd5(user.getPassword());
+		String value = user.getUserName() + "md542" + md5;
+		inReq.putPageValue("entermediakey", value);
+		inReq.putPageValue("user", user);
+		
+		//update Firebase		
+		getGoogleManager(inReq).createFireBaseUser(user);
 
 	}	
 	

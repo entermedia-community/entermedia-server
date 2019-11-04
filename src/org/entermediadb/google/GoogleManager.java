@@ -43,6 +43,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -63,10 +64,10 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import videotrack.closecaptions;
+
 
 public class GoogleManager implements CatalogEnabled
 {
@@ -148,20 +149,20 @@ public class GoogleManager implements CatalogEnabled
 		{
 			fileurl = fileurl + "&pageToken=" + URLEncoder.encode(results.getResultToken(), "UTF-8");
 		}
-		JsonObject json = get(fileurl, inAccessToken);
-		JsonElement pagekey = json.get("nextPageToken");
+		JSONObject json = get(fileurl, inAccessToken);
+		String pagekey = (String)json.get("nextPageToken");
 		if (pagekey != null)
 		{
-			results.setResultToken(pagekey.getAsString());
+			results.setResultToken(pagekey);
 		}
-		JsonArray files = json.getAsJsonArray("files");
+		JSONArray files = (JSONArray)json.get("files");
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
-			JsonObject object = (JsonObject) iterator.next();
-			String name = object.get("name").getAsString();
-			String id = object.get("id").getAsString();
+			JSONObject object = (JSONObject) iterator.next();
+			String name = (String)object.get("name");
+			String id = (String)object.get("id");
 
-			String mt = object.get("mimeType").getAsString();
+			String mt = (String)object.get("mimeType");
 
 			if (mt.equals("application/vnd.google-apps.folder"))
 			{
@@ -172,44 +173,22 @@ public class GoogleManager implements CatalogEnabled
 				results.addFile(object);
 			}
 		}
-		String keepgoing = json.get("incompleteSearch").getAsString();
+		String keepgoing = (String)json.get("incompleteSearch");
 		return Boolean.parseBoolean(keepgoing);
 	}
 
-	private JsonObject get(String inFileurl, String inAccessToken) throws Exception
+	protected JSONObject get(String inFileurl, String inAccessToken) throws Exception
 	{
+		Map headers = new HashMap(1);
+		headers.put("authorization", "Bearer " + inAccessToken);
 
-		CloseableHttpClient httpclient;
-		httpclient = HttpClients.createDefault();
-		HttpRequestBase httpmethod = null;
-		httpmethod = new HttpGet(inFileurl);
-		httpmethod.addHeader("authorization", "Bearer " + inAccessToken);
-
-		HttpResponse resp = httpclient.execute(httpmethod);
-
-		if (resp.getStatusLine().getStatusCode() != 200)
-		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
-		}
-
-		HttpEntity entity = resp.getEntity();
-		String content = IOUtils.toString(entity.getContent());
-		JsonParser parser = new JsonParser();
-		JsonElement elem = parser.parse(content);
-		// log.info(content);
-		JsonObject json = elem.getAsJsonObject();
-		if (json.get("error") != null) // Invalid Credentials
-		{
-			log.error("Could not connect API" + content);
-
-		}
+		JSONObject json = getConnection().getJson(inFileurl, headers);
 		return json;
 
 	}
 
 	public File saveFile(String inAccessToken, Asset inAsset) throws Exception
 	{
-		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// GET
 		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
@@ -219,32 +198,38 @@ public class GoogleManager implements CatalogEnabled
 		HttpRequestBase httpmethod = new HttpGet(url);
 		httpmethod.addHeader("authorization", "Bearer " + inAccessToken);
 
-		HttpResponse resp = httpclient.execute(httpmethod);
-
-		if (resp.getStatusLine().getStatusCode() != 200)
+		CloseableHttpResponse resp = getConnection().sharedExecute(httpmethod);
+		try
 		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
-			log.info("Google Server error returned " + resp.getStatusLine());
-
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
+				log.info("Google Server error returned " + resp.getStatusLine());
+				throw new OpenEditException("Could not save to google " + inAsset.getName());
+			}
+	
+			HttpEntity entity = resp.getEntity();
+	
+			ContentItem item = getMediaArchive().getOriginalContent(inAsset);
+	
+			File output = new File(item.getAbsolutePath());
+			output.getParentFile().mkdirs();
+			log.info("Google Manager Downloading " + item.getPath());
+			filler.fill(entity.getContent(), new FileOutputStream(output), true);
+		
+			// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
+			// inAsset);
+			// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
+			getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
+			inAsset.setProperty("previewstatus", "converting");
+			getMediaArchive().saveAsset(inAsset);
+			getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
+			return output;
 		}
-
-		HttpEntity entity = resp.getEntity();
-
-		ContentItem item = getMediaArchive().getOriginalContent(inAsset);
-
-		File output = new File(item.getAbsolutePath());
-		output.getParentFile().mkdirs();
-		log.info("Google Manager Downloading " + item.getPath());
-		filler.fill(entity.getContent(), new FileOutputStream(output), true);
-
-		// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
-		// inAsset);
-		// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
-		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
-		inAsset.setProperty("previewstatus", "converting");
-		getMediaArchive().saveAsset(inAsset);
-		getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-		return output;
+		finally
+		{
+			getConnection().release(resp);
+		}
 		// if( assettype != null && assettype.equals("embedded") )
 		// {
 		// current.setValue("assettype","embedded");
@@ -407,9 +392,9 @@ public class GoogleManager implements CatalogEnabled
 			{
 				for (Iterator iterator = inResults.getFolders().iterator(); iterator.hasNext();)
 				{
-					JsonObject folder = (JsonObject) iterator.next();
-					String id = folder.get("id").getAsString();
-					String foldername = folder.get("name").getAsString();
+					JSONObject folder = (JSONObject) iterator.next();
+					String id = (String)folder.get("id");
+					String foldername = (String)folder.get("name");
 					foldername = foldername.trim();
 					Results folderresults = listDriveFiles(inAccessToken, id);
 					String categorypath = inCategoryPath + "/" + foldername;
@@ -442,22 +427,17 @@ public class GoogleManager implements CatalogEnabled
 		Map onepage = new HashMap();
 		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 		{
-			JsonObject object = (JsonObject) iterator.next();
-			String id = object.get("id").getAsString();
+			JSONObject object = (JSONObject) iterator.next();
+			String id = (String)object.get("id");
 			onepage.put(id, object);
-			JsonElement fs = object.get("size");
+			String fs = (String)object.get("size");
 			if (fs != null)
 			{
-				String size = fs.getAsString();
-
-				if (size != null)
+				leftkb = leftkb - (Long.parseLong(fs) / 1000);
+				if (leftkb < Long.parseLong(free))
 				{
-					leftkb = leftkb - (Long.parseLong(size) / 1000);
-					if (leftkb < Long.parseLong(free))
-					{
-						log.info("Not enough disk space left to download more " + leftkb + "<" + free);
-						return false;
-					}
+					log.info("Not enough disk space left to download more " + leftkb + "<" + free);
+					return false;
 				}
 			}
 
@@ -513,12 +493,12 @@ public class GoogleManager implements CatalogEnabled
 		for (Iterator iterator = inOnepage.keySet().iterator(); iterator.hasNext();)
 		{
 			String id = (String) iterator.next();
-			JsonObject object = (JsonObject) inOnepage.get(id);
+			JSONObject object = (JSONObject) inOnepage.get(id);
 
 			// log.info(object.get("kind"));// "kind": "drive#file",
 			// String md5 = object.get("md5Checksum").getAsString();
 			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
-			String filename = object.get("name").getAsString();
+			String filename = (String)object.get("name");
 			filename = filename.trim();
 			// JsonElement webcontentelem = object.get("webContentLink");
 
@@ -528,21 +508,19 @@ public class GoogleManager implements CatalogEnabled
 			newasset.setValue("assetaddeddate", new Date());
 			newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
 			newasset.setValue("importstatus", "needsmetadata");
-			JsonElement jsonElement = object.get("webContentLink");
-			if (jsonElement != null)
+			String googledownloadurl = (String)object.get("webContentLink");
+			if (googledownloadurl != null)
 			{
-				newasset.setValue("googledownloadurl", jsonElement.getAsString());
-
+				newasset.setValue("googledownloadurl", googledownloadurl);
 			}
 
 			// TODO: Add dates here
 
 			newasset.setName(filename);
-			jsonElement = object.get("webViewLink");
-			if (jsonElement != null)
+			String weblink  = (String)object.get("webViewLink");
+			if (weblink != null)
 			{
-				newasset.setValue("linkurl", jsonElement.getAsString());
-
+				newasset.setValue("linkurl", weblink);
 			}
 			// JsonElement thumbnailLink = object.get("thumbnailLink");
 			// if (thumbnailLink != null)
@@ -654,7 +632,7 @@ public class GoogleManager implements CatalogEnabled
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public JsonObject processImage(HttpSharedConnection connection, Asset inAsset)
+	public JSONObject processImage(HttpSharedConnection connection, Asset inAsset)
 	{
 		MediaArchive archive = getMediaArchive();
 
@@ -676,7 +654,7 @@ public class GoogleManager implements CatalogEnabled
 		
 		return processImage(connection,  inputpage.getContentItem());
 	}
-	public JsonObject processImage(	HttpSharedConnection connection,ContentItem inItem)
+	public JSONObject processImage(	HttpSharedConnection connection,ContentItem inItem)
 	{
 		//https://cloud.google.com/vision/docs/
 
@@ -695,67 +673,40 @@ public class GoogleManager implements CatalogEnabled
 			File file = new File(inItem.getAbsolutePath());
 			byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
 
-			JsonObject request = new JsonObject();
-			JsonArray requestlist = new JsonArray();
+			JSONObject request = new JSONObject();
+			JSONArray requestlist = new JSONArray();
 			
-			JsonObject data = new JsonObject();
+			JSONObject data = new JSONObject();
 			requestlist.add(data);
 
-			JsonObject image = new JsonObject();
-			image.addProperty("content", new String(new String(encoded, StandardCharsets.US_ASCII)));
-			data.add("image", image);
+			JSONObject image = new JSONObject();
+			image.put("content", new String(new String(encoded, StandardCharsets.US_ASCII)));
+			data.put("image", image);
 
-			JsonArray features = new JsonArray();
-			data.add("features", features);
+			JSONArray features = new JSONArray();
+			data.put("features", features);
 
-			JsonObject type = new JsonObject();
-			type.addProperty("type", "LABEL_DETECTION");
+			JSONObject type = new JSONObject();
+			type.put("type", "LABEL_DETECTION");
 			features.add(type);
 
-			type = new JsonObject();
-			type.addProperty("type", "OBJECT_LOCALIZATION");
+			type = new JSONObject();
+			type.put("type", "OBJECT_LOCALIZATION");
 			features.add(type);
 
-			//type = new JsonObject();
+			//type = new JSONObject();
 			//type.addProperty("type", "LANDMARK_DETECTION");
 			//features.add(type);
 			
-			request.add("requests", requestlist);
-
-			HttpPost post = new HttpPost(url);
-			
-			post.setEntity(new StringEntity(request.toString(), "UTF-8"));
-			post.addHeader("Content-Type", "application/json");
-			post.setProtocolVersion(HttpVersion.HTTP_1_1);
-			
+			request.put("requests", requestlist);
+						
 			//System.setProperty("https.protocols", "TLSv1.2");
 			
 			//CloseableHttpClient httpclient = HttpClients.createSystem();
 			CloseableHttpResponse resp = null;
-   		 	try
-   		 	{
-   		 		resp = connection.sharedPost(post);
-			
-				if (resp.getStatusLine().getStatusCode() != 200)
-				{
-					log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
-					String returned = EntityUtils.toString(resp.getEntity());
-					log.info(returned);
-					return null;
-				}
-	
-				HttpEntity entity = resp.getEntity();
-				String content = IOUtils.toString(entity.getContent());
-				JsonParser parser = new JsonParser();
-				JsonElement elem = parser.parse(content);
-				// log.info(content);
-				JsonObject json = elem.getAsJsonObject();
-				return json;
-	        }
-   		 	finally 
-   		 	{
-	        	connection.release(resp);
-	        }
+	 		resp = getConnection().sharedPostWithJson(url,request);
+			JSONObject json = getConnection().parseJson(resp);
+			return json;
 		}
 		catch (SSLException e) {
         	throw new OpenEditException(e);
@@ -768,11 +719,11 @@ public class GoogleManager implements CatalogEnabled
 
 	}
 
-	public JsonObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, JsonObject inMetadata) throws Exception
+	public JSONObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, JSONObject inMetadata) throws Exception
 	{
 		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload
 
-		String filename = URLUtilities.encode(inMetadata.get("name").getAsString());
+		String filename = URLUtilities.encode((String)inMetadata.get("name"));
 		String geturl = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/" + filename;
 
 		File file = new File(inItem.getAbsolutePath());
@@ -781,48 +732,34 @@ public class GoogleManager implements CatalogEnabled
 		{
 			throw new OpenEditException("Input file missing " + file.getPath());
 		}
+		
+		String accesstoken = getAccessToken(inAuthInfo);
+		
+		Map headers = new HashMap(1);
+		headers.put("authorization", "Bearer " + accesstoken);
 
-		HttpRequestBuilder builder = new HttpRequestBuilder();
+		JSONObject json = getConnection().getJson(geturl,headers);
 
-		HttpGet getmethod = new HttpGet(geturl);
-		getmethod.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
-
-		CloseableHttpClient httpclient;
-		httpclient = HttpClients.createDefault();
-
-		HttpResponse getresp = httpclient.execute(getmethod);
-		int code = getresp.getStatusLine().getStatusCode();
-		if (code == 404)
+		//chek the size of the file
+		Object existingsize = json.get("size");
+		if( existingsize == null)
 		{
-			//do nothing
+			
 		}
-		else if (code != 200)
+		if (file.length() == Long.parseLong( existingsize.toString() ) )
 		{
-			log.error("Google Server error returned " + getresp.getStatusLine().getStatusCode());
-
-		}
-		else
-		{
-			//chek the size of the file
-			HttpEntity entity = getresp.getEntity();
-			JsonParser parser = new JsonParser();
-			String content = IOUtils.toString(entity.getContent(), entity.getContentEncoding().getValue());
-			JsonElement elem = parser.parse(content);
-			JsonObject json = elem.getAsJsonObject();
-			long existingsize = json.get("size").getAsLong();
-			if (file.length() == existingsize)
-			{
-				return json;
-			}
+			return json;
 		}
 
 		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
 		//TODO: Use HttpRequestBuilder.addPart()
 		HttpPost method = new HttpPost(url);
-		method.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
+		method.addHeader("authorization", "Bearer " + accesstoken);
+
+		HttpRequestBuilder builder = new HttpRequestBuilder();
 
 		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-		builder.addPart("metadata", inMetadata.toString(), "application/json"); //What should this be called?
+		builder.addPart("metadata", inMetadata.toJSONString(), "application/json"); //What should this be called?
 
 		builder.addPart("file", file);
 		//long size = inMetadata.getBytes().length + file.getTotalSpace();
@@ -834,61 +771,32 @@ public class GoogleManager implements CatalogEnabled
 		String boundary = contenttype.substring(contenttype.indexOf("boundary=") + 9, contenttype.length());
 		method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
 
-		HttpResponse resp = httpclient.execute(method);
-
-		if (resp.getStatusLine().getStatusCode() != 200)
-		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
-			String returned = EntityUtils.toString(resp.getEntity());
-			log.error(returned);
-			return null;
-		}
-
-		HttpEntity entity = resp.getEntity();
-		JsonParser parser = new JsonParser();
-		String content = IOUtils.toString(entity.getContent());
-
-		JsonElement elem = parser.parse(content);
-		return elem.getAsJsonObject();
+		CloseableHttpResponse resp = getConnection().sharedPost(method);
+		JSONObject json2 = getConnection().parseJson(resp);
+		return json2;
 
 	}
 
-	public JsonObject listFiles(String bucket) throws Exception
+	public JSONObject listFiles(String bucket) throws Exception
 	{
 		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
-		HttpRequestBuilder builder = new HttpRequestBuilder();
 		String url = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/";
 		//TODO: Use HttpRequestBuilder.addPart()
-		HttpGet method = new HttpGet(url);
-		method.addHeader("authorization", "Bearer " + getAccessToken(getMediaArchive().getData("oauthprovider", "google")));
 
 		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 
-		CloseableHttpClient httpclient;
-		httpclient = HttpClients.createDefault();
-
-		HttpResponse resp = httpclient.execute(method);
-
-		if (resp.getStatusLine().getStatusCode() != 200)
-		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
-			String returned = EntityUtils.toString(resp.getEntity());
-			log.info(returned);
-
-		}
-
-		HttpEntity entity = resp.getEntity();
-		JsonParser parser = new JsonParser();
-		String content = IOUtils.toString(entity.getContent());
-
-		JsonElement elem = parser.parse(content);
-		return elem.getAsJsonObject();
+		String accesstoken = getAccessToken(getMediaArchive().getData("oauthprovider", "google")); //TODO: Cache this?
+		
+		Map headers = new HashMap(1);
+		headers.put("authorization", "Bearer " + accesstoken);
+		
+		JSONObject json = getConnection().getJson(url, headers);
+		return json;
 		//This needs to loop over to get more than 1000 results
 	}
 
 	public void saveCloudFile(Data authinfo, String inUrl, ContentItem inItem) throws Exception
 	{
-		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// GET
 		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
@@ -898,20 +806,26 @@ public class GoogleManager implements CatalogEnabled
 		String accesstoken = getAccessToken(authinfo);
 		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
 
-		HttpResponse resp = httpclient.execute(httpmethod);
+		CloseableHttpResponse resp = getConnection().sharedExecute(httpmethod);
 
 		if (resp.getStatusLine().getStatusCode() != 200)
 		{
 			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
 		}
 
-		HttpEntity entity = resp.getEntity();
-
-		File output = new File(inItem.getAbsolutePath());
-		output.getParentFile().mkdirs();
-		log.info("Google Manager Downloading " + inItem.getPath());
-		filler.fill(entity.getContent(), new FileOutputStream(output), true);
-
+		try
+		{
+			HttpEntity entity = resp.getEntity();
+	
+			File output = new File(inItem.getAbsolutePath());
+			output.getParentFile().mkdirs();
+			log.info("Google Manager Downloading " + inItem.getPath());
+			filler.fill(entity.getContent(), new FileOutputStream(output), true);
+		}
+		finally
+		{
+			getConnection().release(resp);
+		}
 		// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
 		// inAsset);
 
@@ -935,12 +849,9 @@ public class GoogleManager implements CatalogEnabled
 			HttpPost method = new HttpPost(geturl);
 			method.addHeader("authorization", "Bearer " + inAccessToken);
 
-			CloseableHttpClient httpclient;
-			httpclient = HttpClients.createDefault();
-
 			//HttpResponse getresp = httpclient.execute(method);
-			JsonObject object = new JsonObject();
-			object.addProperty("name", inAsset.getName());
+			JSONObject object = new JSONObject();
+			object.put("name", inAsset.getName());
 			String metadata = object.toString();
 			//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 			builder.addPart("file", metadata, "application/json"); //What should this be called?
@@ -954,22 +865,10 @@ public class GoogleManager implements CatalogEnabled
 			String boundary = contenttype.substring(contenttype.indexOf("boundary=") + 9, contenttype.length());
 			method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
 
-			HttpResponse resp = httpclient.execute(method);
-
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
-				String returned = EntityUtils.toString(resp.getEntity());
-				log.error(returned);
-				return;
-			}
-
-			HttpEntity entity = resp.getEntity();
-			JsonParser parser = new JsonParser();
-			String content = IOUtils.toString(entity.getContent());
-
-			JsonElement elem = parser.parse(content);
-			//return elem.getAsJsonObject();
+			CloseableHttpResponse resp = getConnection().sharedExecute(method);
+			JSONObject json = getConnection().parseJson(resp);
+			
+			//ok?
 		}
 		catch (Exception e)
 		{
@@ -1017,7 +916,7 @@ public class GoogleManager implements CatalogEnabled
 	//		String content = IOUtils.toString(entity.getContent());
 	//
 	//		JsonElement elem = parser.parse(content);
-	//		return elem.getAsJsonObject();
+	//		return elem.getAsJSONObject();
 	//				
 	//	}
 	public ExecutorManager getExecutorManager()
@@ -1133,5 +1032,68 @@ public class GoogleManager implements CatalogEnabled
 		}
 		return target;
 	}
+
+	//https://firebase.google.com/docs/reference/rest/auth
+	public void createFireBaseUser(User inUser) 
+	{
+		String apikey = getMediaArchive().getCatalogSettingValue("firebaseapikey");
+		if( apikey == null)
+		{
+			throw new OpenEditException("Firebase apikey not set");
+		}
+
+		String password = getMediaArchive().getUserManager().decryptPassword(inUser);
+
+		//The only way to save the password is to login as the user first.
+		
+		//We will need to either store their old password in EnterMedia or have someone delete the firebase user
+		String idToken = createUser(apikey, inUser, password);
+	}
+		
+	protected String createUser(String apikey, User inUser, String password)
+	{
+		JSONObject createrequest = new JSONObject();		
+		createrequest.put("email",inUser.getEmail());
+		createrequest.put("password",password);	
+		createrequest.put("returnSecureToken",true);
+			
+		String createurl = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + apikey;
+		CloseableHttpResponse createresp = null;
+ 		createresp = getConnection().sharedPostWithJson(createurl,createrequest);
+ 		
+// 		if( createresp.getStatusLine().getStatusCode() == 400)
+//		{
+ 			getConnection().release(createresp);
+// 			//EMAIL_EXISTS So login and get token
+// 			createurl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apikey;
+//	 		createresp = getConnection().sharedPostWithJson(createurl,createrequest);
+//		}
+// 		JSONObject json  = getConnection().parseJson(createresp);
+// 		String idtoken = (String)json.get("idToken");
+//
+// 		return idtoken;
+ 		return null; //We dont really need this for anything
+	}
+
+//	public JSONObject validateLogin(String email, String password) 
+//	{
+//		JSONObject request = new JSONObject();		
+//		request.put("email",email);
+//		request.put("password",password);
+//		
+//		String url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]";
+//		CloseableHttpResponse resp = null;
+//	 	try
+//	 	{
+//	 		resp = getConnection().sharedPostWithJson(url,request);
+//			JSONObject json = getConnection().parseJson(resp);
+//			return json;
+//	 	}
+//	 	catch( Throwable ex)
+//	 	{
+//	 		log.error("Network error " ,ex);
+//	 		throw new OpenEditException(ex);
+//	 	}
+//	}
 	
 }

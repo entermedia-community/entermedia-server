@@ -23,6 +23,7 @@
 	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 
 	<property id="groups" stored="true" index="true" type="list"   viewtype="multiselect"  listid="group" editable="false">Groups</property>
+	<property id="firebasetokenid" stored="true" index="true" editable="true">Firebase ID</property>
 
 
 	

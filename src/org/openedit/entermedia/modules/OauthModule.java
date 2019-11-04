@@ -12,7 +12,7 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.authenticate.AutoLoginWithCookie;
+import org.entermediadb.authenticate.BaseAutoLogin;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -457,7 +457,7 @@ public class OauthModule extends BaseMediaModule
 			archive.getSearcher("user").saveData(target);
 
 			
-			AutoLoginWithCookie autologin = (AutoLoginWithCookie)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+			BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
 			autologin.saveCookieForUser(inReq, target);
 
 			
