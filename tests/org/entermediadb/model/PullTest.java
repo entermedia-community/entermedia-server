@@ -9,8 +9,10 @@ import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.SyncModule;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.util.HttpMimeBuilder;
 
 public class PullTest extends BaseEnterMediaTest
@@ -41,7 +43,7 @@ public class PullTest extends BaseEnterMediaTest
 		HttpPost postMethod = null;
 		try
 		{
-			String url = "https://em9dev.entermediadb.org/assets/mediadb/services/lists/create/purpose?entermedia.key=adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc";
+			String url = "https://em9dev.entermediadb.org/assets/mediadb/services/lists/create/purpose?entermedia.key=adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc&lastpullago=";
 
 			String payload = "{\"id\": \"purpose\", \"name\": \"I have a purpose\" }";
 
@@ -72,7 +74,13 @@ public class PullTest extends BaseEnterMediaTest
 				nodeinfo.setValue("baseurl", "https://em9dev.entermediadb.org/assets/");
 
 			}
-			nodeinfo.setValue("lastpulldate", null);
+			nodeinfo.setName("demo");
+
+			nodeinfo.setValue("clustername", "template9dev-cluster");
+			nodeinfo.setValue("enabled", "true");
+			nodeinfo.setValue("lastpullago", "5000000");
+
+			nodeinfo.setValue("lastpulldate", "50000");
 			editingcluster.saveData(nodeinfo);
 
 			SyncModule module = (SyncModule) getFixture().getModuleManager().getModule("SyncModule");
@@ -102,8 +110,99 @@ public class PullTest extends BaseEnterMediaTest
 		}
 		catch (Exception e)
 		{
+			 throw new OpenEditException(e);
 
 		}
 	}
+	
+	
+	
+	
+	public void testAssetDescription() throws Exception
+	{
+
+		HttpMimeBuilder builder = new HttpMimeBuilder();
+
+		HttpPost postMethod = null;
+		try
+		{
+			String url = "https://em9dev.entermediadb.org/assets/mediadb/services/lists/create/asset?entermedia.key=adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc&lastpullago=";
+
+			String payload = "{\"id\": \"descriptiontest\", \"name\": \"I have a purpose\", \"sourcepath\" : \"descriptiontest\" }";
+
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost postRequest = new HttpPost(url);
+
+			StringEntity input = new StringEntity(payload);
+			input.setContentType("application/json");
+			postRequest.setEntity(input);
+
+			HttpResponse response = httpClient.execute(postRequest);
+
+			assertEquals(200, response.getStatusLine().getStatusCode());
+
+			MediaArchive archive = getMediaArchive();
+			
+			
+				//Create the purpose entry on the demo
+			Searcher editingcluster = archive.getSearcher("editingcluster");
+
+			Data nodeinfo = (Data) editingcluster.searchById("demo");
+
+			if (nodeinfo == null)
+			{
+				nodeinfo = editingcluster.createNewData();
+				nodeinfo.setId("demo");
+				nodeinfo.setName("demo");
+
+				nodeinfo.setValue("entermediakey", "adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc");
+				nodeinfo.setValue("baseurl", "https://em9dev.entermediadb.org/assets/");
+
+			}
+			nodeinfo.setName("demo");
+			nodeinfo.setValue("enabled", "true");
+
+			nodeinfo.setValue("lastpulldate", null);			
+			nodeinfo.setValue("lastpullago", "5000000");
+
+			nodeinfo.setValue("clustername", "template9dev-cluster");
+
+			editingcluster.saveData(nodeinfo);
+
+			SyncModule module = (SyncModule) getFixture().getModuleManager().getModule("SyncModule");
+
+			WebPageRequest req = getFixture().createPageRequest("/assets/mediadb");
+			req.setRequestParameter("catalogid", archive.getCatalogId());
+			
+			//See if we already have a "purpose" entry locally.  If we do delete it.
+			
+			Data descriptiontest = archive.getData("asset", "descriptiontest");
+			if (descriptiontest != null)
+			{
+				archive.getSearcher("asset").delete(descriptiontest, null);
+			}
+			
+			
+			//Sync the data from the remote demo server
+			
+			module.processPullQueue(req);
+			
+			//Validate that Purpose now exists locally.
+			
+			
+			descriptiontest = archive.getData("asset", "descriptiontest");
+			assertNotNull(descriptiontest);
+			
+			HitTracker assets = archive.getAssetSearcher().fieldSearch("description", "purpose");
+			assertTrue(assets.size() > 0);
+
+		}
+		catch (Exception e)
+		{
+			 throw new OpenEditException(e);
+		}
+	}
+	
+	
 
 }

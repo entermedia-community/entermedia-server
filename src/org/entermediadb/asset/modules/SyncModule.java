@@ -2,6 +2,7 @@ package org.entermediadb.asset.modules;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -285,7 +286,7 @@ public class SyncModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String sessionid = inReq.getRequestParameter("hitssessionid");
 		String page = inReq.getRequestParameter("page");
-		
+		HashSet types = new HashSet();
 		HitTracker hits = null;
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 		if (sessionid != null)
@@ -324,6 +325,7 @@ public class SyncModule extends BaseMediaModule
 		response.put("page", hits.getPage());
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", sessionid);
+		response.put("catalogid", archive.getCatalogId());
 		
 		finaldata.put("response", response);
 		JSONArray generated = new JSONArray();		
@@ -346,14 +348,16 @@ public class SyncModule extends BaseMediaModule
 			{
 				JSONObject details = new JSONObject();
 				details.put("id",data.getId());
-				details.put("sourcepath",data.getSourcePath());
+				String sourcepath = (String) data.getSearchData().get("sourcepath");
+				details.put("sourcepath",sourcepath);
 				JSONArray files = new JSONArray();	
-				for(ContentItem item : archive.listGeneratedFiles(data))
+				for(ContentItem item : archive.listGeneratedFiles(sourcepath))
 				{
 					JSONObject contentdetails = new JSONObject();
 					contentdetails.put("filename", item.getName());
 					contentdetails.put("path", item.getPath());
 					contentdetails.put("lastmodified", item.getLastModified());
+					files.add(contentdetails);
 				}		
 				details.put("files",files);
 				generated.add(details);

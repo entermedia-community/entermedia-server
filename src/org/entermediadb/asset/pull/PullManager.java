@@ -356,8 +356,8 @@ public class PullManager implements CatalogEnabled
 						{
 							Map filelisting = (Map) iterator3.next();
 							//Compare timestamps
-							String lastmodified = (String) filelisting.get("lastmodified");
-							long datetime = Long.parseLong(lastmodified);
+							//String lastmodified = (String) filelisting.get("lastmodified");
+							long datetime = (long) filelisting.get("lastmodified");
 							String genpath = (String) filelisting.get("path"); //TODO: Support multiple catalog ids
 
 							String remotecatalogid = (String)response.get("catalogid");
@@ -519,7 +519,16 @@ public class PullManager implements CatalogEnabled
 	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
 
-		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", inAsset.get("mastereditclusterid"));
+		String clusterid = inAsset.get("mastereditclusterid");
+		String localClusterId = inArchive.getNodeManager().getLocalClusterId();
+		if(localClusterId.equals(clusterid)) {
+			log.info("This is our own asset, nothing to do");
+			return null;
+		}
+		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", clusterid);
+		if(node == null) {
+			log.info("Cannot find information for : " + clusterid + " so cannot download asset " + inAsset.getId());
+		}
 		String url = node.get("baseurl");
 		inFile.getParentFile().mkdirs();
 		FileItem item = new FileItem(inFile);
@@ -687,7 +696,7 @@ public class PullManager implements CatalogEnabled
 					{
 						log.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
 						inLog.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
-						continue;
+					//	continue;
 					}
 					long ago = now.getTime() - pulldate.getTime();
 					params.put("lastpullago", String.valueOf( ago ) ); 

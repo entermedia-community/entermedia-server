@@ -1460,14 +1460,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		
+		String[] types = new String[] {"category","asset","conversiontask"};
+		search.setTypes(types);
 		
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
 		if(inAfter != null) {
 			RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
 			bool.must(date);
 		}
-		bool.must(QueryBuilders.existsQuery("mastereditclusterid"));
+		bool.must(QueryBuilders.matchQuery("mastereditclusterid", getLocalClusterId()));
+		
 		search.setRequestCache(true);
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
