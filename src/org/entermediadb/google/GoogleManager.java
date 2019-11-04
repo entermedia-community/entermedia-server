@@ -16,18 +16,15 @@ import javax.net.ssl.SSLException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -64,9 +61,6 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
 
-import com.google.gson.JsonElement;
-
-import videotrack.closecaptions;
 
 
 public class GoogleManager implements CatalogEnabled
