@@ -813,7 +813,7 @@ $(document).ready(function(url,params)
 	{
 		e.preventDefault();
 		var catalogid = $("#application").data("catalogid");
-		showAsset("multiedit:dialoghitsasset"+catalogid,1);
+		showAsset("multiedit:hitsasset"+catalogid,1);
 		return false;
 	});
 	

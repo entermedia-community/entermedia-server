@@ -1,5 +1,5 @@
 <page>
-	<path-action name="MediaArchiveModule.getAsset"  />
+	<!-- <path-action name="MediaArchiveModule.getAsset"  />  -->
 
 	<property name="section">details</property>
 	
