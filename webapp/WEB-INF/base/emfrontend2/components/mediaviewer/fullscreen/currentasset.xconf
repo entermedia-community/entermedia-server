@@ -3,9 +3,6 @@
 		<property name="searchtype">asset</property>
 	</path-action>
 	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="DataEditModule.setPageById">
-		<property name="pagevalue">asset</property>
-	</path-action>
 	<path-action name="ProjectModule.listConnectedDesktop"/>
 	<page-action name="OrderModule.loadOrderBasket"/>
 	
