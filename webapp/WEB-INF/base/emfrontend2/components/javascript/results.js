@@ -1162,6 +1162,9 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		$(this).closest(".bottomtab").addClass("tabselected");
 		var div = $("#main-media-viewer");
 		var options = div.data();
+		
+		options.pageheight =  $(window).height() - 100;
+
 		var assettab = $(this).data("assettab");
 		
 		

@@ -1,12 +1,10 @@
 <page>
-	<path-action name="DataEditModule.loadHitsCopy">
+	<path-action name="DataEditModule.loadHits" >
 		<property name="searchtype">asset</property>
-		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="DataEditModule.setPageById">
 		<property name="pagevalue">asset</property>
-		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="ProjectModule.listConnectedDesktop"/>
 	<page-action name="OrderModule.loadOrderBasket"/>

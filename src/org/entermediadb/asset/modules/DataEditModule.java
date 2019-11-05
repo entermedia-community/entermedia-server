@@ -36,6 +36,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.HitTrackerWrapper;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
@@ -1280,8 +1281,36 @@ String viewbase = null;
 		inReq.putPageValue("values", values);
 		inReq.putPageValue("additionals", additionals.toString());
 		inReq.putPageValue("searcher", getSearcherManager().getListSearcher(detail));
-	}
 
+	}
+	public HitTracker loadHitsWrapped(WebPageRequest inReq) throws Exception
+	{
+		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
+		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		if (trackerOriginal == null)
+		{
+			return null;
+		}
+		HitTrackerWrapper wrapped = new HitTrackerWrapper(trackerOriginal);
+		inReq.putPageValue(trackerOriginal.getHitsName(), wrapped);
+		return wrapped;
+	}
+	public void setHitsPageSize(WebPageRequest inReq) throws Exception
+	{
+		String hitsname = inReq.findValue("hitsname");
+		HitTracker tracker = (HitTracker) inReq.getPageValue(hitsname);
+		if (tracker == null)
+		{
+			return;
+		}
+	
+		String pageheight = inReq.getRequestParameter("pageheight");
+		if (pageheight != null) 
+		{
+			tracker.setHitsPerPageHeight(pageheight, 180);
+		}
+	}
+	
 	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
 	{
 		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
@@ -2074,9 +2103,10 @@ String viewbase = null;
 		if( hits != null)
 		{
 			Data data = (Data) inReq.getPageValue(pagevalue);
-			if( data != null)
+			if( data != null && !data.getId().startsWith("multiedit:"))
 			{
-				hits.setPage(hits.pageOfId(data.getId()));
+				int page = hits.pageOfId(data.getId());
+				hits.setPage(page);
 			}
 		}
 		
