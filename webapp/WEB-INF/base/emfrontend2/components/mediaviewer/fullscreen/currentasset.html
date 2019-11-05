@@ -23,8 +23,6 @@ $context.putPageValue("cdn",$cdnprefix)
 	#set( $previewonly = false)
 #end
 
-#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
-
 #set( $opentab = $userprofile.get("assetopentab"))
 
 #if( $opentab != "viewpreview" && $canviewmetadatageneral )
@@ -33,8 +31,10 @@ $context.putPageValue("cdn",$cdnprefix)
 	#set( $opentab = "viewpreview")
 #end
 
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
+	$context.putPageValue("ismulti",$ismulti)
 #end
 
 ## #if($opentab == "viewactions")

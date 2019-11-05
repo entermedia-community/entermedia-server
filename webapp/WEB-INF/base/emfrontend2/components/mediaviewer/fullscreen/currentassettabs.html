@@ -2,12 +2,12 @@
 
 	<div id="footermenu">
 		<ul>
-			
 			<li class="footermenu">
 				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
 				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
 				
 			</li>
+			#if (!$ismulti)
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 
 					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
@@ -16,6 +16,7 @@
 				<i class="fas fa-expand"></i> [[Viewer]] 
 				</a>
 			 </il>
+			 #end
 			 #if( !$previewonly && $canviewmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<a class="expandmenu assettab" 

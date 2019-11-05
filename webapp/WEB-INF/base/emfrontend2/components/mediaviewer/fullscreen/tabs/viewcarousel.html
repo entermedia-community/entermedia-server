@@ -1,13 +1,7 @@
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
         <div class="carousel-inner">
             <div class="carousel-items">
-            	  #if ( $asset.id.startsWith("multiedit:") )
-				        #set  ( $ismultimode = true)
-				   #else
-				    	#set  ( $ismultimode = false)     
-				    #end
 				#set( $selectedindex = 1)
-				
 				#foreach($hit in $hits.getPageOfHits())
 					#set( $count = $hits.getPage()+-1 )
 					#set( $count = $count*$hits.getHitsPerPage() )	
@@ -36,7 +30,7 @@
                         #set($hitcaption = $hit.assettitle)
                     #end
 				   <div class="gallery-thumb 
-				   		#if( $ismultimode && $hits.isSelected($hit.id))
+				   		#if( $ismulti && $hits.isSelected($hit.id))
 				   		 selected-asset 
 				   		#elseif($hit.id == $asset.id )
 				   		 selected-asset 
