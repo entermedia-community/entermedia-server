@@ -43,8 +43,16 @@ $context.putPageValue("showalllanguagevalues",true)
 			</div>
 	</div>					
 		<div class="col-4">
-                $pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
-
+				#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+		        #if( $ismulti )
+		        
+    				<div class="media-player-mini">
+		                <div class="primary" style="text-align: center; height: 33px; line-height: 33px;">[[Editing across]] $asset.size() [[assets]]</div>
+		        	</div>
+		        
+		        #else
+					$pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
+				#end
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
     				

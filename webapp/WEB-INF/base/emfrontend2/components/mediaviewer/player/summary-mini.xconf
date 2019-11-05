@@ -4,6 +4,6 @@
 	<page-action name="AttachmentModule.countAttachments" />
 	
 	<path-action name="AssetEditModule.toggleAssetLock"/>
-		<page-action name="ProjectModule.listConnectedDesktop"/>
+	<page-action name="ProjectModule.listConnectedDesktop"/>
 	
 </page>

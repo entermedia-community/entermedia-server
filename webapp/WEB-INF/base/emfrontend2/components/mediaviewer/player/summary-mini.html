@@ -1,18 +1,7 @@
 <div id="summary-mini">
     <div id="mediaplayer" class="media-player-mini">
 		#set($totalpages = $numberutils.toInt($asset.pages))
-		
-		#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
-        #if( $ismulti )
-            <div class="media-info">
-                <div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
-            </div>
-        
-        #else
-		
-			     
-			
 			<div class="media-thumbnail">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 				#if( !$thumbsize )
@@ -81,6 +70,6 @@
 			
 		</div>	
 
-        #end
+        
     </div>
 </div>
