@@ -1935,6 +1935,16 @@ public class MediaArchive implements CatalogEnabled
 		findItems(path, children);
 		return children;
 	}
+	
+	public Collection<ContentItem> listGeneratedFiles(String  inSourcePath)
+	{
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inSourcePath + "/";
+		Collection<ContentItem> children = new ArrayList();
+		findItems(path, children);
+		return children;
+	}
+	
+	
 
 	protected void findItems(String path, Collection<ContentItem> children)
 	{
