@@ -46,8 +46,7 @@ public class GoogleModule extends BaseMediaModule
 	{
 		User user = inReq.getUser();
 		
-		String md5 = getMediaArchive(inReq).getUserManager().getStringEncryption().getPasswordMd5(user.getPassword());
-		String value = user.getUserName() + "md542" + md5;
+		String value = getMediaArchive(inReq).getUserManager().getEnterMediaKey(user);
 		inReq.putPageValue("entermediakey", value);
 		inReq.putPageValue("user", user);
 		

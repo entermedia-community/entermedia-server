@@ -1331,7 +1331,17 @@ public class MediaArchive implements CatalogEnabled
 		//archive.getWebEventListener()
 		getEventManager().fireEvent(event);
 	}
-
+	/**
+	 * @deprecated use fireGeneralEvent
+	 * @param inMetadataType
+	 * @param operation
+	 * @param inParams
+	 * @param inUser
+	 */
+	public void fireMediaEvent(String inMetadataType, String operation, Map inParams, User inUser)
+	{
+		fireGeneralEvent(inUser,inMetadataType,operation,inParams);
+	}
 	public void fireGeneralEvent(User inUser, String inSearchType, String inAction, Map inParams)
 	{
 		WebEvent event = new WebEvent();
