@@ -388,6 +388,50 @@ public class ProjectManager implements CatalogEnabled
 		return collection;
 	}
 
+	public LibraryCollection getMessagesCollection(User inUser)
+	{
+		Searcher collections = getMediaArchive().getSearcher("librarycollection");
+		if (inUser == null)
+		{
+			return null;
+		}
+		LibraryCollection collection = (LibraryCollection) collections.searchById(inUser.getId() + "-messages");
+		if (collection == null)
+		{
+			collection = (LibraryCollection) collections.createNewData();
+			collection.setName(inUser.getScreenName());
+			collection.setId(inUser.getId() + "-messages");
+			Searcher categories = getMediaArchive().getSearcher("category");
+
+			String collectionroot = getMediaArchive().getCatalogSettingValue("collection_root");
+			if (collectionroot == null)
+			{
+				collectionroot = "System";
+			}
+
+			Category newcat = getMediaArchive().createCategoryPath(collectionroot + "/Messages/" + collection.getName());
+
+			newcat.setName(collection.getName());
+
+			categories.saveData(newcat);
+
+			collection.setValue("rootcategory", newcat.getId());
+			collection.setValue("creationdate", new Date());
+			collection.setValue("owner", inUser.getId());
+
+			/**
+			 * We cant make this private because then assets would become hidden
+			 * from regular users collection.setValue("visibility", "3");
+			 */
+			collection.setValue("collectiontype", "3");
+			collections.saveData(collection);
+		}
+
+		HitTracker hits = getMediaArchive().getAssetSearcher().query().hitsPerPage(1).exact("category", collection.getRootCategoryId()).search();
+		collection.setAssetCount(hits.size());
+
+		return collection;
+	}
 	// public void addAssetToCollection(MediaArchive archive, String libraryid,
 	// String collectionid, HitTracker assets)
 	// {

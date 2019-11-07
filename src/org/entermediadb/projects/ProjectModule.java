@@ -1407,4 +1407,16 @@ Server ProjectModule.uploadFile
 			manager.listLikedCollections(inReq);
 	}
 	
+	public void loadMessagesCollection(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = manager.getMessagesCollection(inReq.getUser());
+		inReq.putPageValue("librarycol", collection);
+		
+		TopicLabelPicker labels = new TopicLabelPicker();
+		labels.setArchive(getMediaArchive(inReq));
+		labels.setLibraryCollection(collection);
+		inReq.putPageValue("topiclabels", labels);
+		
+	}
 }
