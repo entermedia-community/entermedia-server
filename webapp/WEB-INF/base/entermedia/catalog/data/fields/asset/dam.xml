@@ -769,7 +769,8 @@
       <language id="en"><![CDATA[XMP Output]]></language>
     </name>
   </property>
-  
+    <property id="missinggenerated" index="true" deleted="false" editable="true" stored="true" type="boolean">Asset missing preview
+  </property>  
   
   
 </page>
