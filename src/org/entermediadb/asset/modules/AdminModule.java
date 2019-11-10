@@ -1372,6 +1372,12 @@ public class AdminModule extends BaseMediaModule
 			
 		}
 		
+		else {
+			inReq.putPageValue("invalid", "Sorry, couldn't login.  Please try again.");
+
+			
+		}
+		
 		
 		
 		
