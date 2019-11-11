@@ -77,7 +77,7 @@
       <language id="fr"><![CDATA[Obligatoire]]></language> 
     </name> 
   </property>  
-  <property id="index" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Searchable 
+  <property id="index" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >
     <name> 
       <language id="de"><![CDATA[durchsuchbar]]></language>  
       <language id="en"><![CDATA[Searchable]]></language>  

@@ -2850,7 +2850,7 @@ public class BaseElasticSearcher extends BaseSearcher
 							inFullDesc.append(' ');
 						}
 					}
-					else
+					else if(prop instanceof String)
 					{
 						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) prop);
 						if (data != null && data.getName() != null)
