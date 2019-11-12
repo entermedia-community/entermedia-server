@@ -1,5 +1,8 @@
 #if($error)
 <p>You've already setup Two Factor Authentication.  If you need to reset your key please contact your system administrator</p>
+#elseif($invalid)
+<p>Login Failed - please try again</p>
+
 #else
 <div class="container">
 <div class="row">
