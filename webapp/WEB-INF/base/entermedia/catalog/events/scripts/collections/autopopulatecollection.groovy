@@ -36,9 +36,9 @@ public void init(){
 
 		String colid = it.id;
 		Data collection = archive.getData("librarycollection", colid);
-		log.info("searching for categories contains(categorypath =" +  searchstring);
+		//log.info("Searching for categories contains categorypath = " +  searchstring);
 		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
-		log.info("Found ${categories.size()} existing categories");
+		//log.info("Found ${categories.size()} existing categories");
 		
 		
 		
@@ -54,6 +54,7 @@ public void init(){
 		SearchQuery query = assets.createSearchQuery();
 		query.addSortBy("sourcepath");
 		query.addContains("description", searchstring);
+		//log.info("Searching for assets contains = " +  searchstring);
 	
 		rootcats.each{
 			query.addNot("category", it);

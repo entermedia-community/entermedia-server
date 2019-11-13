@@ -1,5 +1,7 @@
+
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
         <div class="carousel-inner">
+        #if ($hits)
             <div class="carousel-items">
 				#set( $selectedindex = 1)
 				#foreach($hit in $hits.getPageOfHits())
@@ -56,11 +58,14 @@
       			</div>
      			#end
           </div>
+          #end
         </div>
     </div>
+    #if($hits)
     <ol class="carousel-indicators">
             <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
             <li style="padding:4px; width:120px;" >$hits.getPage() [[of]] $hits.getTotalPages()</li>
             <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
     </ol>
+    #end
     
