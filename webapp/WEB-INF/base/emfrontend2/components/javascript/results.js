@@ -856,17 +856,18 @@ $(document).ready(function(url,params)
 			var searchhome = resultsdiv.data('searchhome');
 			var sessionid = resultsdiv.data("hitssessionid");
 			var searchtype = resultsdiv.data("searchtype");
+			var viewid = resultsdiv.data("viewid");
             
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
                 } else {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
             }
         }
     );

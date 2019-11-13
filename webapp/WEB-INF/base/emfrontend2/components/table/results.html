@@ -6,9 +6,15 @@
 	#end
 #end
 
+#if ($canedittablecolumns)
+	#if($viewid == "pickerresults")
+		#set($canedittablecolumns = false)
+	#end
+#end
+
 <div id="resultsdiv" 
 	data-hitssessionid="$hits.getSessionId()" 
-	data-searchtype="librarycollection"
+	data-searchtype="$!searchtype"
 	data-viewid="$!viewid" 
 	data-searchhome="$home$apphome/components/table" 
 	data-pagenum="$hits.getPage()"  
