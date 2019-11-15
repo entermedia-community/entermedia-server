@@ -2,7 +2,7 @@
 
 <page>  
 
-<property name="selected">allcollections</property>
+	<property name="selected">allcollections</property>
 	<page-action name="DataEditModule.loadOrSearch">	
 		<property name="searchtype">librarycollection</property>
 	</page-action>

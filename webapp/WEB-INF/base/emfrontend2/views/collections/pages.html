@@ -1,12 +1,15 @@
 #if( $hits && $hits.getTotalPages() >  1  )
-	#if($categorycarousel == "true" && $category)
-		#set($categoryid = $category)
-	#else
-		#set($categoryid = "")
-	#end
-	#set($targetdiv = "collectionshomeform-container")
 	#set( $module = "librarycollection")
-	#set($resultsPage = "$home$apphome/views/collections/allcollections.html?hitssessionid=$hits.sessionId&searchtype=${module}&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($targetdiv = "collectionshomecontainer")
+	#set($selectedlibrary = $context.getRequestParameter("libraryid"))
+	#set($resultpage = $context.getRequestParameter("resultpage"))
+	#if(!$resultpage)
+		#set($resultpage="allcollections.html")
+	#end
+	#set($resultsPage = "$home$apphome/views/collections/$resultpage?hitssessionid=$hits.sessionId&searchtype=${module}&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&resultpage=$resultpage")
+	#if($selectedlibrary)
+		#set($resultsPage = "$resultsPage&libraryid=$selectedlibrary")
+	#end
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	<div id="pages" class="pages">

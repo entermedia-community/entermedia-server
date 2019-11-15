@@ -1,36 +1,17 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
 
-<div id="collectionshomeform-container" class="collectionshomeform-container">
-
-
-	#if( $hits.isEmpty() )
-		##<h2>No featured collections</h2>
-	#else	
+<div class="collectionshomeform-container" id="collectionshomecontainer">
 	<div class="collectionshome">
 		<div class="collectionshome-header">
-##			<div style="float:right;">[[Filter By Library]]:
-##			<select name="${detail.getId()}.value" style=""> 
-##			<option value=""></option>
-##			#foreach( $libraryid in $searcherManager.getList($catalogid,"library") )
-##				#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
-##				<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$library</option>
-##			#end
-##			</select>
-##			</div>
-			
 			<h3 class="text-center">[[All Collections]]</h3>
 			<a class="emdialog btn btn-xs btn-primary" style="position:absolute; top:5px; right:8px;" data-hidefooter="true"  title="[[Find Collections]]" 
 	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
 			
 		</div>
-		<div id="emresultscontent" class="collectionshomeresults">		
-	$pages.include("${apphome}/views/collections/pages.html", $context)
-			<div class="clearfix"></div>
-			$context.putPageValue("hits",$hits)
-			$pages.include("${apphome}/components/collections/cards.html", $context)
-			
+		<div class="collectionshomeresults">
+			#set($args = "")
+			$pages.include("$apphome/views/collections/collectionresults.html${args}",$context)
 		</div>
 	</div>
-	#end
 </div>

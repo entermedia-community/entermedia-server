@@ -1,17 +1,11 @@
-#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-$context.putPageValue("searcher",$searcher)
-
-<div id="collectionshomeform-container" >
+$context.putPageValue("hits",$hits)
 	#if( $hits.isEmpty() )
-		##<h2>No featured collections</h2>
+	
 	#else	
 		<div id="emresultscontent" >		
-	$pages.include("${apphome}/views/collections/pages.html", $context)
+			$pages.include("${apphome}/views/collections/pages.html", $context)
 			<div class="clearfix"></div>
-			$context.putPageValue("hits",$hits)
 			$pages.include("${apphome}/components/collections/cards.html", $context)
 			
 		</div>
-	</div>
 	#end
-</div>

@@ -1,0 +1,46 @@
+#set($selectedlibraryid = $context.getRequestParameter("libraryid"))
+#set( $libraries = $mediaarchive.query("library").exact("privatelibrary","false").enduser(true).sort("name").search($context) )
+#foreach($library in $libraries)
+	#if(!$selectedlibrary || $selectedlibraryid==$library.getId())
+		#set($selectedlibrary = $library)
+	#end
+#end
+<div id="collectionshomecontainer">
+<div class="collectionshome-header">
+	<h3 class="text-center">$selectedlibrary.getName() [[Collection]]</h3>
+	<a class="emdialog btn btn-xs btn-primary" 
+		style="position:absolute; top:5px; right:8px;" data-hidefooter="true"  title="[[Find Collections]]" 
+		href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i>
+	</a>
+</div>
+<div class="collectionshomeresults" style="padding:0;">
+	<div class="row no-gutters h-100" >
+		<div class="col-2">
+			<div class="h-100" style="background-color:#f3f3f3; border-right:1px solid #ddd;">
+				#if($libraries.size())
+					<ul class="sidebar-list list-group list-group-striped" style="border-bottom:1px solid #ddd;">
+					#foreach($library in $libraries)
+						<li class="#if($selectedlibrary.getId()==$library.getId())current #end">
+						<a class="ajax" 
+							data-targetdiv="collectionshomecontainer" 
+							data-oemaxlevel="1" 
+							href="$apphome/views/collections/libraryresults.html?libraryid=$library.getId()&resultpage=libraryresults.html">
+							$library</a>
+						</li>			
+					#end
+					</ul>
+				#end		
+			</div>
+		</div>
+		<div class="col-10" style="padding:20px;">
+			#set($args = "")
+			#if($selectedlibrary)
+				#set($args = "?field=library&operation=exact&library.value=$selectedlibrary.getId()")
+			#else
+				
+			#end
+			$pages.include("$apphome/views/collections/collectionresults.html${args}",$context)
+		</div>
+	</div>
+</div>
+</div>
