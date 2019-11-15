@@ -1,0 +1,39 @@
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+$context.putPageValue("searcher",$searcher)
+
+<div class="collectionshomeform-container">
+
+	#set( $libraries = $mediaarchive.query("library").all().enduser(true).sort("name").search($context) )
+	#if( !$libraries.isEmpty() )
+	#end
+
+<div class="collectionshome">
+
+		<div class="collectionshome-header">
+			<h3 class="text-center">[[Collections By Library]]</h3>
+			<a class="emdialog btn btn-xs btn-primary" style="position:absolute; top:5px; right:8px;" data-hidefooter="true"  title="[[Find Collections]]" 
+	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
+		</div>
+<div  style="padding:10px;background:white;">
+<div class="row " >
+	<div class="col-2">
+		<div class="ui-widget-content categories-widget no-padding-for-real" style="border:0;">
+			<ul id="settings-menu" class="sidebar-list">
+		#foreach($library in $libraries)
+			<li><a class="ajax" data-targetdiv="collectionshomeform-container" 
+				data-oemaxlevel="1" href="$apphome/views/collections/collectionresults.html?field=libraryid&operation=exact&libraryid.value=$library.getId()">$library</a>
+			</li>			
+		#end
+		</ul>		
+		</div>
+	</div>
+	<div class="col-10">
+		$pages.include("./collectionresults.html",$context)
+	</div>
+</div>
+</div>
+
+</div>
+</div>
+
+

@@ -22,10 +22,13 @@
 						  #end
 						#end
 						 
+						<li id="libraries"  #if( $selectedtab == "libraries")class="current"#end>
+							<a href="$home$apphome/views/collections/libraries.html"><i class="fa fa-book"></i> [[By Library]]</a>
+						</li>
 						
 						#if($canviewfeaturedcollections)
 						<li id="theme"  #if( $selectedtab == "featured")class="current"#end>
-							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> [[Featured Libraries]]</a>
+							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> [[Featured Collections]]</a>
 						</li>
 						#end
 						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
@@ -37,9 +40,6 @@
 						</li>
 						#end
 						<li>
-						<li id="users"  #if( $selectedtab == "allcollections")class="current"#end>
-							<a href="$home$apphome/views/collections/allcollections.html"><i class="fa fa-book"></i> [[All Collections]]</a>
-						</li>
 				#if($canaddnewcollection)
 					   	    <li>
 	                 <a class="emdialog btn btn-primary" 
