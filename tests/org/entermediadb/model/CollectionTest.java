@@ -241,7 +241,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		User user = inReq.getUser();
 		getFixture().getEngine().executePathActions(inReq);
 		user = inReq.getUser();
-		Data library = manager.loadUserLibrary(archive, inReq.getUserProfile());
+		//Data library = manager.loadUserLibrary(archive, inReq.getUserProfile());
 		
 		
 		
@@ -249,7 +249,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		Data collection = lcsearcher.createNewData();
 		collection.setId("testcollection");
 		collection.setName("Movie");
-		collection.setValue("library", library.getId());
+		//collection.setValue("library", library.getId());
 		lcsearcher.saveData(collection);
 		HitTracker assets = archive.getAssetSearcher().fieldSearch("id","101");
 		manager.addAssetToCollection(archive, collection.getId(), assets);

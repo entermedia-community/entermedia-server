@@ -1171,6 +1171,7 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
+	/*
 	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile)
 	{
 		User user = inProfile.getUser();
@@ -1199,7 +1200,7 @@ public class ProjectManager implements CatalogEnabled
 
 		return userlibrary;
 	}
-
+	*/
 	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
 	{
 		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
@@ -1632,13 +1633,12 @@ public class ProjectManager implements CatalogEnabled
 		if (collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
 		{
 			collectioncategory.setName(collection.getName());
-			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
 
 		//ProjectManager manager = mediaArchive.getProjectManager();
 		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
 
-		mediaArchive.getCategorySearcher().saveData(collectioncategory);
+		mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 
 		// Move the parents if needed
 		// if( !collectioncategory.hasParent(librarycategory.getId()))
