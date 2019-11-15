@@ -3,6 +3,5 @@
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.addAssetToCollection"/>
 	<path-action name="ProjectModule.addCategoryToCollection"/>
-		<path-action name="ProfileModule.reLoadUserProfile" />
-	
+	<path-action name="ProfileModule.reLoadUserProfile" />
 </page>

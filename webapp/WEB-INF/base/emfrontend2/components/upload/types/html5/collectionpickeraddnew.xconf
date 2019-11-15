@@ -1,5 +1,5 @@
 <page>
 	<inner-layout />
-	<path-action name="ProjectModule.createCollection"/>>
-	
+	<path-action name="ProjectModule.createCollection" />
+	<path-action name="ProfileModule.reLoadUserProfile" />
 </page>
