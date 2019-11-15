@@ -31,12 +31,16 @@ public void init() {
 		{
 			library.setProperty("owner", username);
 		}	
-		boolean isprivate = false;
-		if( library.getValue("viewusers") != null ||  library.getValue("viewroles") != null ||  library.getValue("viewgroups") != null)
+		
+		String isprivate = Boolean.parseBoolean(library.setValue("privatelibrary"));
+		
+		if( !isprivate )
 		{
-			isprivate  = true;
-		}
-		library.setValue("privatelibrary", isprivate);
+			if( library.getValue("viewusers") != null ||  library.getValue("viewroles") != null ||  library.getValue("viewgroups") != null)
+			{
+				library.setValue("privatelibrary", true);
+			}
+		}	
 		//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
 		log.info("saving library $library");
 		archive.getSearcher("library").saveData(library, null);
