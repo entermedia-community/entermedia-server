@@ -1636,6 +1636,7 @@ td.checkbox input, th.firstheader input {
 .collectionshome-header h3 {
 	margin:0;
 	font-size: 1rem;
+	font-weight: bold;
 	line-height: 26px;
 }
 .collectionshome-header a,
@@ -1647,7 +1648,7 @@ td.checkbox input, th.firstheader input {
     min-height: calc(100vh - 218px);
 }
 .collectionshomeform-container {
-	padding:30px 20px 0 0;
+	padding:30px 0 0 0;
 	height: 100%;
 }
 .collectionshomeform {
@@ -1670,10 +1671,10 @@ td.checkbox input, th.firstheader input {
 	text-align: center;
 }
 .card-collections { 
-	float:none;
+	float:left;
 	display: inline-block; 
 	border: 0 none; 
-	margin: 0 10px;
+	margin: 0 10px 10px;
 	width:140px;
     
 }
