@@ -263,9 +263,9 @@ tr.emborderhover td,
 .emsettingslist li.current,
 .emsettingslist li:nth-of-type(even):hover,
 .search-list li.current a.search-href, 
-.sidebar-list li.current a,
-.search-list li:hover a.search-href, 
-.sidebar-list a:hover,
+.sidebar-list li.current ,
+.search-list li:hover, 
+.sidebar-list li:hover,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
 .emtree .cat-current,
 .filters-sidebar li:hover,
@@ -1127,19 +1127,19 @@ html, body, #application {
     padding: 0;
     list-style: none;
     color: #49494b;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 
 .search-list li a.search-href, .sidebar-list a {
-    padding: 8px 2rem;
+    padding: 9px 1.2rem;
     margin: 0;
     text-decoration: none;
     display: block;
     font-size: 0.9rem;
     word-wrap: break-word;
-    border-bottom: 1px solid #e5e5e5;
 }
-.search-list li:last-child a.search-href, .sidebar-list li:last-child a {
+.search-list li:last-child, .sidebar-list li:last-child  {
     border-bottom: none;
 }
 .search-save a {
@@ -1208,6 +1208,11 @@ html, body, #application {
 }
 .search-list li.current .search-edit a:hover, .search-list li.current .search-delete a:hover, .search-list li.current .search-save a:hover {
     opacity: 0.8;
+}
+
+.sidebar-list .badge {
+	display:inline-block;
+	padding:.25em .4em;
 }
 
 
