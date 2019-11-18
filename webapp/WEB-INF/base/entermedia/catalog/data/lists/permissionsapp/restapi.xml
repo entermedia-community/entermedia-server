@@ -1,5 +1,5 @@
 <permissions name="API Permissions">
-	<permission id="api-manage-list" permissiontype="restapi" name="Data Manager" description="Enables user to create a new list/table within the catalog." ordering="700"/>
+	<permission id="api-manage-list" permissiontype="restapi" name="Manage Lists" description="Enables user to create a new list/table within the catalog." ordering="700"/>
 	<permission id="api-create-data" permissiontype="restapi" name="Create Data" description="Enables user to create a new entry in a list" ordering="705"/>
 	<permission id="api-load-data" permissiontype="restapi" name="Load Data" description="Enables user to load data records" ordering="710"/>
 	<permission id="api-delete-data" permissiontype="restapi" name="Delete Data" description="Enables user to delete an entry in a list" ordering="715"/>

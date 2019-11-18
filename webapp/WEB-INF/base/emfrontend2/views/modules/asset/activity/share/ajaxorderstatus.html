@@ -15,6 +15,26 @@
 	
 	[[Published]] $history.getItemSuccessCount() [[with]] $history.getItemErrorCount() [[errors]]
 	
+	#if( $history.getItemErrorCount() > 0)
+		#set( $errors = $mediaarchive.query("orderitem").exact("status","error").exact("orderid",$order.getId()).search() )
+		$errors.size()
+		<table>
+		#foreach( $error in $errors)
+			#set($asset = $mediaarchive.getAsset($error.get("assetid")))
+			<tr>
+			<td>$asset.getName()</td>
+			<td>
+			#set( $details = $error.get("errordetails") )
+			#if( $details && $details.startsWith("667:"))
+				#set( $details ="[[Asset type was excluded from publishing]]")				
+			#end
+			$details
+			</td>
+			</tr>
+		#end
+		</table>
+	
+	#end
 	
 	#end
 #elseif( $order.orderstatus == "error" )

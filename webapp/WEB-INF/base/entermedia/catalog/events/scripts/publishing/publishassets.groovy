@@ -78,9 +78,29 @@ public void init() {
 				publishrequest.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
 				queuesearcher.saveData(publishrequest, context.getUser());
 				log.error("Publish destination is invalid " + publishdestination);
-				
 				continue;
 			}
+			
+			Collection excludes = destination.getValues("excludeassettype");
+			if( excludes != null)
+			{
+				String type = asset.get("assettype");
+				if( type == null)
+				{
+					type = "none";
+				}
+				if( excludes.contains(type))
+				{
+					publishrequest.setProperty('status', 'error');
+					
+					Data assetttype = mediaArchive.getData("assettype",type);
+					publishrequest.setProperty("errordetails", "667: Asset Type excluded from publishing");
+					queuesearcher.saveData(publishrequest, context.getUser());
+					log.error("Publish destination asset type excluded " + publishdestination);
+					continue;
+				}
+			}
+			
 			Lock lock = null;
 			try
 			{
