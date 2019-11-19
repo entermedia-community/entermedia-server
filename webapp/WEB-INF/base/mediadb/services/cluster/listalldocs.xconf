@@ -1,8 +1,7 @@
 <page>
- 	<path-action name="SyncModule.loadAll" alltypes="true"/>
+ 	<path-action name="SyncModule.loadAllChanges" alltypes="true"/>
  	<property name="hitsname">hits</property>
  	<permission name="view">
 			<userprofile property="api-search-data" equals="true" />
 	</permission>
- 
 </page>

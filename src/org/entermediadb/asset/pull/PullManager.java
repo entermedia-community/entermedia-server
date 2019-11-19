@@ -523,8 +523,10 @@ public class PullManager implements CatalogEnabled
 	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
 
-		String clusterid = inAsset.get("mastereditclusterid");
+		Map emEditStatus = inAsset.getEmEditStatus();
+		String clusterid = (String)emEditStatus.get("mastereditclusterid");
 		String localClusterId = inArchive.getNodeManager().getLocalClusterId();
+		
 		if (localClusterId.equals(clusterid))
 		{
 			log.info("This is our own asset, nothing to do");
@@ -685,28 +687,30 @@ public class PullManager implements CatalogEnabled
 					continue;
 				}
 				params.put("entermedia.key", node.get("entermediakey"));
-				if (node.get("lastpulldate") != null)
+				Object dateob = node.getValue("lastpulldate");
+				Date pulldate = null;
+				
+				if (dateob == null)
 				{
-					Object dateob = node.getValue("lastpulldate");
-					Date pulldate = null;
-					if (dateob instanceof String)
-					{
-						pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-					}
-					else
-					{
-						pulldate = (Date) node.getValue("lastpulldate");
-					}
-
-					if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
-					{
-						log.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
-						inLog.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
-						//	continue;
-					}
-					long ago = now.getTime() - pulldate.getTime();
-					params.put("lastpullago", String.valueOf(ago));
+					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 1);
 				}
+				if (dateob instanceof String)
+				{
+					pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+				}
+				else
+				{
+					pulldate = (Date)dateob;
+				}
+
+				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
+				{
+					log.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
+					inLog.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
+					//	continue;
+				}
+				long ago = now.getTime() - pulldate.getTime();
+				params.put("lastpullago", String.valueOf(ago));
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
 				if (totalcount > 0 || node.getValue("lasterrordate") != null)
@@ -750,7 +754,10 @@ public class PullManager implements CatalogEnabled
 		}
 
 		debugurl.append("&searchtype=");
-		debugurl.append(params.get("searchtype"));
+		if (params.get("searchtype") != null)
+		{
+			debugurl.append(params.get("searchtype"));
+		}
 
 		String encoded = url + debugurl;
 		log.info("Checking: " + URLUtilities.urlEscape(encoded));
@@ -879,10 +886,10 @@ public class PullManager implements CatalogEnabled
 				JSONObject source = (JSONObject) object.get("source");
 
 				SearchHitData localchange = localchanges.get(searchtype + id);
-				if (localchange != null)
+				if (localchange != null && source.get("emrecordstatus") != null)
 				{
-					
 					JSONObject recordstatus = (JSONObject) source.get("emrecordstatus");//What we got from the other server
+					
 					Map localrecordstatus = (Map) localchange.getSearchHit().getSource().get("emrecordstatus");
 
 					String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");

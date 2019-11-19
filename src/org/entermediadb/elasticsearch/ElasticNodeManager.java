@@ -1453,7 +1453,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		String[] types = new String[] { "category", "asset", "conversiontask" };
+		String[] types = new String[] { "category", "asset", "librarycollection" };
 		search.setTypes(types);
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();

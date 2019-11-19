@@ -282,7 +282,7 @@ public class SyncModule extends BaseMediaModule
 		//inReq.putPageValue("mediaarchive",archive); 
 	}
 
-	public void loadAll(WebPageRequest inReq) throws Exception
+	public void loadAllChanges(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String sessionid = inReq.getRequestParameter("hitssessionid");
