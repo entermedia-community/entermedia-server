@@ -821,11 +821,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				log.error("Could not refresh shards");
 			}
 			//TODO: Make sure we are setting replicas and master nodes
-//			if (health != null && health.getNumberOfNodes() > 1)
-//			{
-//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
-//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
-//			}
+			//			if (health != null && health.getNumberOfNodes() > 1)
+			//			{
+			//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+			//				settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+			//			}
 		}
 
 		//Check the number of nodes
@@ -928,24 +928,24 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			log.error("Could not get snapshot", ex);
 			reindexing = false;
 		}
-			Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
-			Data reindexhistory = reindexlogs.createNewData();
-			reindexhistory.setValue("date", new Date());
-			reindexhistory.setValue("operation", "started");
-			reindexhistory.setValue("catalogid", inCatalogId);
-			reindexlogs.saveData(reindexhistory);
-			String newindex = null;
-			String searchtype = null;
+		Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
+		Data reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+		reindexhistory.setValue("operation", "started");
+		reindexhistory.setValue("catalogid", inCatalogId);
+		reindexlogs.saveData(reindexhistory);
+		String newindex = null;
+		String searchtype = null;
 		try
 		{
 			getPageManager().clearCache();
 			getSearcherManager().getCacheManager().clearAll();
-	
+
 			String id = toId(inCatalogId);
-	
+
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			//List mappedtypes = archive.listSearchTypes();
-	
+
 			List searchers = new ArrayList();
 			archive.clearCache();
 			getPageManager().clearCache();
@@ -956,7 +956,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				String searchtypeid = (String) iterator.next();
-				if( searchtypeid == null || searchtypeid.equals("null"))
+				if (searchtypeid == null || searchtypeid.equals("null"))
 				{
 					continue;
 				}
@@ -964,8 +964,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				searchers.add(searcher);
 				//Make sure all the errors are done loading from initilize() putMappings on the old index
 			}
-			
-			newindex = prepareTemporaryIndex(inCatalogId, searchers);  //TODO: Dont initilize/putMappings on all the searchers
+
+			newindex = prepareTemporaryIndex(inCatalogId, searchers); //TODO: Dont initilize/putMappings on all the searchers
 
 			mappedtypes.remove("lock");
 
@@ -992,7 +992,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					continue;
 				}
-				searcher.reindexInternal();  //This calls put mapping again
+				searcher.reindexInternal(); //This calls put mapping again
 				searcher.setAlternativeIndex(null);
 
 				reindexhistory = reindexlogs.createNewData();
@@ -1033,7 +1033,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				throw e;
 			}
 
-			throw new OpenEditException("Could not reindex " + searchtype,e);
+			throw new OpenEditException("Could not reindex " + searchtype, e);
 		}
 		finally
 		{
@@ -1063,18 +1063,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
 			{
-				Searcher searcher = (Searcher)iterator.next();
+				Searcher searcher = (Searcher) iterator.next();
 				if (!searcher.getCatalogId().equals(inCatalogId))
 				{
 					continue;
 				}
 				searcher.setAlternativeIndex(tempindex);//Should
-	
+
 				if (!searcher.putMappings())
 				{
 					ok = false;
 					//get this mapping and show all mapping info
-					BaseElasticSearcher elasticsearcher = (BaseElasticSearcher)searcher;
+					BaseElasticSearcher elasticsearcher = (BaseElasticSearcher) searcher;
 					String error = "Could not map " + searcher.getSearchType();
 					XContentBuilder source = elasticsearcher.buildMapping();
 					try
@@ -1086,8 +1086,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						log.error("Mapping ", e);
 					}
-					error = error + " existing mapping " + showAllExistingMapping(inCatalogId,tempindex);
-					throw new OpenEditException(error);  //real error
+					error = error + " existing mapping " + showAllExistingMapping(inCatalogId, tempindex);
+					throw new OpenEditException(error); //real error
 				}
 				searcher.setAlternativeIndex(null);
 			}
@@ -1109,28 +1109,28 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public String listAllExistingMapping(String inCatalogId)
 	{
 		String indexid = toId(inCatalogId);
-		String actualindex = getIndexNameFromAliasName(indexid);	
+		String actualindex = getIndexNameFromAliasName(indexid);
 
 		String mapping = showAllExistingMapping(inCatalogId, actualindex);
 		return mapping;
 	}
-	
+
 	protected String showAllExistingMapping(String inCatalogId, String tmpindexid)
 	{
 
 		GetMappingsResponse getMappingsResponse = getClient().admin().indices().getMappings(new GetMappingsRequest().indices(tmpindexid)).actionGet();
-		
+
 		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
 
 		StringBuffer all = new StringBuffer();
-		
+
 		ImmutableOpenMap<String, MappingMetaData> typeMappings = indexToMappings.get(tmpindexid);
-        for (ObjectCursor<String> typeName : typeMappings.keys()) 
-        {
-        	if( typeName.value != null && typeName.value.startsWith("$") )
-        	{
-        		continue;
-        	}
+		for (ObjectCursor<String> typeName : typeMappings.keys())
+		{
+			if (typeName.value != null && typeName.value.startsWith("$"))
+			{
+				continue;
+			}
 			MappingMetaData actualMapping = typeMappings.get(typeName.value);
 			if (actualMapping != null)
 			{
@@ -1145,15 +1145,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					new OpenEditException(e);
 				}
 			}
-        }
+		}
 		return all.toString();
 	}
 
-	
 	public List getMappedTypes(String inCatalogId)
 	{
 		String indexid = toId(inCatalogId);
-		String oldindex = getIndexNameFromAliasName(indexid);	
+		String oldindex = getIndexNameFromAliasName(indexid);
 		List types = new ArrayList();
 		GetMappingsRequest req = new GetMappingsRequest().indices(indexid);
 		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
@@ -1167,18 +1166,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				types.add(c.key);
 			}
 		}
-		
-		
-	//		for (ObjectCursor<String> mappingIndexName : resp.getMappings().keys()) 
-	//		{
-	//			ImmutableOpenMap<String, MappingMetaData> typeMappings = resp.getMappings().get(mappingIndexName.value);
-	//            for (ObjectCursor<String> typeName : typeMappings.keys()) 
-	//            {
-	//            	types.add(typeName.value);
-	//                MappingMetaData typeMapping = typeMappings.get(typeName.value);
-	//               // Map<String, Map<String, String>> properties = getPropertiesFromTypeMapping(typeMapping);
-	//            }
-	//		}
+
+		//		for (ObjectCursor<String> mappingIndexName : resp.getMappings().keys()) 
+		//		{
+		//			ImmutableOpenMap<String, MappingMetaData> typeMappings = resp.getMappings().get(mappingIndexName.value);
+		//            for (ObjectCursor<String> typeName : typeMappings.keys()) 
+		//            {
+		//            	types.add(typeName.value);
+		//                MappingMetaData typeMapping = typeMappings.get(typeName.value);
+		//               // Map<String, Map<String, String>> properties = getPropertiesFromTypeMapping(typeMapping);
+		//            }
+		//		}
 
 		types.remove("category");
 		types.add(0, "category");
@@ -1314,10 +1312,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public BulkProcessor getBulkProcessor()
 	{
 
-		
 		if (fieldBulkProcessor == null)
 		{
-			
+
 			fieldBulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
 			{
 				@Override
@@ -1353,14 +1350,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 			}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
-			
-			
 		}
 
 		return fieldBulkProcessor;
-		
-		
-		
+
 	}
 
 	public NodeStats getNodeStats()
@@ -1447,10 +1440,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return others;
 	}
 
-	public HitTracker getAllDocuments(String inCatalogId, Date inAfter)
+	public HitTracker getEditedDocuments(String inCatalogId, Date inAfter)
 	{
 		SearchRequestBuilder search = null;
-		if( inCatalogId != null )
+		if (inCatalogId != null)
 		{
 			search = getClient().prepareSearch(toId(inCatalogId));
 		}
@@ -1460,16 +1453,27 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		String[] types = new String[] {"category","asset","conversiontask"};
+		String[] types = new String[] { "category", "asset", "conversiontask" };
 		search.setTypes(types);
-		
+
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-		if(inAfter != null) {
-			RangeQueryBuilder date = QueryBuilders.rangeQuery("recordmodificationdate").from(inAfter);// .to(before);
+		if (inAfter != null)
+		{
+			RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
 			bool.must(date);
 		}
-		bool.must(QueryBuilders.matchQuery("mastereditclusterid", getLocalClusterId()));
-		
+
+//		if (inMasterNodeId == null)
+//		{
+//			bool.must(QueryBuilders.matchQuery("emrecordstatus.mastereditclusterid", getLocalClusterId()));
+//		}
+//		else
+//		{
+//			bool.must(QueryBuilders.matchQuery("emrecordstatus.mastereditclusterid", inMasterNodeId));
+//			bool.must(QueryBuilders.matchQuery("emrecordstatus.lastmodifiednodeid", inMasterNodeId));
+//
+//		}
+
 		search.setRequestCache(true);
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
@@ -1482,7 +1486,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public void flushBulk()
 	{
-		
+
 		try
 		{
 			getBulkProcessor().flush();
@@ -1493,7 +1497,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				throw new OpenEditException("Error importing bulk data: " + fieldBulkErrors);
 			}
 		}
-		catch(Exception e) {
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 		finally
