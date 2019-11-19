@@ -194,7 +194,7 @@ public class SyncModule extends BaseMediaModule
 		PullManager manager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		manager.processPull(archive,logger);
+		manager.processPull(archive, logger);
 
 	}
 
@@ -205,7 +205,7 @@ public class SyncModule extends BaseMediaModule
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		pullManager.processAllData(archive,logger);
+		pullManager.processAllData(archive, logger);
 
 	}
 
@@ -227,15 +227,15 @@ public class SyncModule extends BaseMediaModule
 		else
 		{
 			String lastpullago = inReq.getRequestParameter("lastpullago");
-			if( lastpullago != null)
+			if (lastpullago != null)
 			{
-				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
+				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, ago);
 			}
 			else
 			{
 				String lastpulldate = inReq.getRequestParameter("lastpulldate");
-				if( lastpulldate == null)
+				if (lastpulldate == null)
 				{
 					throw new OpenEditException("lastpullago not defined");
 				}
@@ -257,7 +257,8 @@ public class SyncModule extends BaseMediaModule
 		inReq.putSessionValue(hits.getSessionId(), hits);
 		//inReq.putPageValue("mediaarchive",archive); 
 	}
-	@Deprecated 
+
+	@Deprecated
 	public void listIDs(WebPageRequest inReq)
 	{
 
@@ -295,42 +296,56 @@ public class SyncModule extends BaseMediaModule
 		}
 		if (hits == null)
 		{
-			String lastpullago = inReq.getRequiredParameter("lastpullago");  //force them to pick a date
+			String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
 			Date ago = null;
-			if( lastpullago != null)
+			if (lastpullago != null)
 			{
-				ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong( lastpullago ) );
+				ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 			}
-			hits = manager.getAllDocuments(archive.getCatalogId(), ago);
+			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
 		}
 		if (page != null)
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
 		
-		JSONObject finaldata = new JSONObject();
+		JSONObject finaldata = createJsonFromHits(inReq, hits);
+
+		String jsonString = finaldata.toJSONString();
+		inReq.putPageValue("jsonString", jsonString);
+	}
+
+	protected JSONObject createJsonFromHits(WebPageRequest inReq, HitTracker hits)
+	{
 		
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
+
+		JSONObject finaldata = new JSONObject();
+
 		JSONObject response = new JSONObject();
 		if (hits.isEmpty())
 		{
 			response.put("status", "empty");
 		}
-		else 
-		{	
+		else
+		{
 			response.put("status", "ok");
 		}
-	
+		String sessionid = inReq.getRequestParameter("hitssessionid");
+
 		response.put("totalhits", hits.size());
 		response.put("hitsperpage", hits.getHitsPerPage());
 		response.put("page", hits.getPage());
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", sessionid);
 		response.put("catalogid", archive.getCatalogId());
-		
-		finaldata.put("response", response);
-		JSONArray generated = new JSONArray();		
 
-		JSONArray results = new JSONArray();		
+		finaldata.put("response", response);
+		JSONArray generated = new JSONArray();
+
+		JSONArray results = new JSONArray();
 		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
@@ -344,29 +359,30 @@ public class SyncModule extends BaseMediaModule
 			indiHit.put("id", data.getId());
 			results.add(indiHit);
 
-			if( searchtype.equals("asset"))  ///Also add stuff to the generated list
+			if (searchtype.equals("asset")) ///Also add stuff to the generated list
 			{
 				JSONObject details = new JSONObject();
-				details.put("id",data.getId());
+				details.put("id", data.getId());
 				String sourcepath = (String) data.getSearchData().get("sourcepath");
-				details.put("sourcepath",sourcepath);
-				JSONArray files = new JSONArray();	
-				for(ContentItem item : archive.listGeneratedFiles(sourcepath))
+				details.put("sourcepath", sourcepath);
+				JSONArray files = new JSONArray();
+				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
 				{
 					JSONObject contentdetails = new JSONObject();
 					contentdetails.put("filename", item.getName());
 					contentdetails.put("path", item.getPath());
 					contentdetails.put("lastmodified", item.getLastModified());
 					files.add(contentdetails);
-				}		
-				details.put("files",files);
+				}
+				details.put("files", files);
 				generated.add(details);
 			}
 		}
 		finaldata.put("results", results);
 		finaldata.put("generated", generated);
 		
-		String jsonString = finaldata.toJSONString();
-		inReq.putPageValue("jsonString", jsonString);
+		return finaldata;
 	}
+
+	
 }
