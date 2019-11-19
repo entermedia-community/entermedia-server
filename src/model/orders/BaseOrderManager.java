@@ -556,6 +556,10 @@ public class BaseOrderManager implements OrderManager {
 				if( presetid == null)
 				{
 					String type = asset.get("assettype");
+					if( type ==  null)
+					{
+						type = "none";
+					}
 					presetid = properties.get(type + ".presetid.value");
 				}
 				if( presetid == null)
@@ -931,6 +935,9 @@ public class BaseOrderManager implements OrderManager {
 				else if ("error".equals( publish.get("status") ) )
 				{
 					inHistory.addItemErrorCount();
+					orderitemhit.setProperty("status","error");
+					orderitemhit.setProperty("errordetails",publish.get("errordetails"));
+					archive.saveData("orderitem",orderitemhit);
 					return false;
 				}
 			}

@@ -19,7 +19,7 @@
 				#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
 				#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
 				#if(!$filetype)
-					#set($filetype="[[None]]")
+					#set($filetype = $searcherManager.getData($catalogid,"assettype","none"))
 				#end
 				#set( $omit = $invaliditems.contains("${asset.id}"))
 				#set($found = false)
@@ -126,7 +126,7 @@
 							#end
 						</select>
 						#else
-							<input type="hidden" name="$filetype.getName($context.getLocale()).presetid.value" value="0">
+							<input type="hidden" name="${filetype.getId()}.presetid.value" value="0">
 						#end	
 					</td>
 					#end
