@@ -35,6 +35,7 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -2669,19 +2670,24 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void delete(Data inData, User inUser)
 	{
-//		String id = inData.getId();
-//		//log.info(id.length());
-//		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-//		if (inData.get("_parent") != null)
-//		{
-//			delete.setParent(inData.get("_parent"));
-//		}
-//		delete.setRefresh(true).execute().actionGet();
-
-		
 		Map recordstatus = (Map) inData.getValue("emrecordstatus");
-		recordstatus.put("recorddeleted", true);
-		saveData(inData, inUser);
+		if( recordstatus != null)
+		{
+			recordstatus.put("recorddeleted", true);
+			saveData(inData, inUser);
+		}
+		else
+		{
+			String id = inData.getId();
+			//log.info(id.length());
+			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+			if (inData.get("_parent") != null)
+			{
+				delete.setParent(inData.get("_parent"));
+			}
+			delete.setRefresh(true).execute().actionGet();
+		}
+		
 	}
 
 	// Base class only updated the index in bulk
