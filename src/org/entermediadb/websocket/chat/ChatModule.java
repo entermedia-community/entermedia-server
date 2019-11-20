@@ -36,6 +36,16 @@ public class ChatModule extends BaseMediaModule {
 		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
 		inReq.putPageValue("messages", recent);
 		
+		if( inReq.getUser() != null)
+		{
+			ChatManager manager = getChatManager(inReq);
+			
+			String collectionid = inReq.getRequestParameter("collectionid");
+			if( collectionid != null)
+			{
+				manager.updateChatTopicLastChecked(String.valueOf(collectionid), channel,inReq.getUserName());
+			}
+		}
 		
 	}
 	public void loadLastPageOfChats(WebPageRequest inReq){

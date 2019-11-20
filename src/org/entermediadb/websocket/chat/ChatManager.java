@@ -94,7 +94,7 @@ public class ChatManager implements CatalogEnabled
 		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();)
 		{
 			Data expiredcheck = (Data) iterator.next();
-			modifiedtopics.put(expiredcheck.getId(), expiredcheck);
+			modifiedtopics.put(expiredcheck.get("chattopicid"), expiredcheck);
 		}
 
 		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId).exact("collectionid", inCollectionId).search();
@@ -110,7 +110,8 @@ public class ChatManager implements CatalogEnabled
 				Date checked = (Date) lastcheck.getValue("datechecked");
 				if (modifiedtopic.before(checked))
 				{
-					modifiedtopics.remove(existingtopicmodified.getId());
+					String topicid = existingtopicmodified.get("chattopicid");
+					modifiedtopics.remove(topicid);
 				}
 			}
 		}

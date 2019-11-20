@@ -68,7 +68,6 @@ function scrollToChat()
 }
 
 function connect() {
-    var username = "$context.getUserName()";
     
     var tabID = sessionStorage.tabID && sessionStorage.closedLastTab !== '2' ? sessionStorage.tabID : sessionStorage.tabID = Math.random();
     sessionStorage.closedLastTab = '2';
@@ -151,7 +150,13 @@ function keepAlive() {
     var timeout = 20000;  
     if (chatconnection.readyState == chatconnection.OPEN) {  
     	wasconencted = true;
-    	chatconnection.send('');  
+    	var command = new Object();
+    	command.command = "keepalive";
+    	
+    	var userid = jQuery(".chatterbox").data("user"); //TODO: Use app?
+    	command.userid =  userid;
+    	var json = JSON.stringify(command);
+    	chatconnection.send(json);  
     }
     
     if (chatconnection.readyState === chatconnection.CLOSED) {  

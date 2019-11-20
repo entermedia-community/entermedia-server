@@ -140,8 +140,27 @@ public class ChatServer
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
+			if( chatConnection.getUserId() != null)
+			{
+				String catalogid = (String) inMap.get("catalogid");
+				if( catalogid != null)
+				{
+					Object collectionid = inMap.get( "collectionid" );
+					if( collectionid != null)
+					{
+						getExecutorManager(catalogid).execute( new Runnable() {
+							@Override
+							public void run() 
+							{
+								ChatManager manager = getChatManager(catalogid);
+								String channelid = (String)inMap.get("channel");
+								manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid,chatConnection.getUserId());
+							}
+						});
+					}	
+				}
+			}
 		}
-
 	}
 
 	public void saveMessage(final JSONObject inMap)
@@ -191,7 +210,6 @@ public class ChatServer
 						ChatManager manager = getChatManager(catalogid);
 						String channelid = (String)inMap.get("channel");
 						manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
-						manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid,userid);
 					}
 				});
 			}
