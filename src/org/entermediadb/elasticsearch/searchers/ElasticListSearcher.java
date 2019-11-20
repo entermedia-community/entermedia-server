@@ -47,7 +47,13 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		fieldXmlSearcher = inXmlSearcher;
 	}
 
-	
+	/**
+	 * @override
+	 */
+	protected boolean isTrackEdits()
+	{
+		return false;
+	}
 
 	
 	

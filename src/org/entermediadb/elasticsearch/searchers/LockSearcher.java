@@ -11,6 +11,15 @@ public class LockSearcher extends BaseElasticSearcher
 
 	protected boolean fieldClearIndexOnStart;
 
+	
+	/**
+	 * @override
+	 */
+	protected boolean isTrackEdits()
+	{
+		return false;
+	}
+	
 	public boolean isClearIndexOnStart()
 	{
 		return fieldClearIndexOnStart;

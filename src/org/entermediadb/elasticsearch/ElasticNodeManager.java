@@ -1462,6 +1462,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
 			bool.must(date);
 		}
+		else
+		{
+			throw new OpenEditException("No pulldate set");
+		}
 
 //		if (inMasterNodeId == null)
 //		{

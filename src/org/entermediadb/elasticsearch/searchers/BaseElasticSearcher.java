@@ -1912,6 +1912,11 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{
+			if (!isTrackEdits())
+			{
+				return;
+			}
+			
 			Map status = (Map) inData.getValue("emrecordstatus");
 			if(status == null) {
 				status = new HashMap();
@@ -1970,6 +1975,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			throw new OpenEditException(ex);
 		}
+	}
+
+	protected boolean isTrackEdits()
+	{
+		return true;
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)

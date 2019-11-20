@@ -332,9 +332,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		return highlights;
 	}
 	
-	public Map getEmEditStatus()
+	public Map getEmRecordStatus()
 	{
-		return (Map)getFromDb("emeditstatus");
+		return (Map)getFromDb("emrecordstatus");
 	}
 	
 }

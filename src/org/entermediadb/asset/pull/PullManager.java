@@ -80,6 +80,7 @@ public class PullManager implements CatalogEnabled
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
+
 	/**
 	 * @deprecated
 	 * @param inType
@@ -528,10 +529,10 @@ public class PullManager implements CatalogEnabled
 	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
 
-		Map emEditStatus = inAsset.getEmEditStatus();
-		String clusterid = (String)emEditStatus.get("mastereditclusterid");
+		Map emEditStatus = inAsset.getEmRecordStatus();
+		String clusterid = (String) emEditStatus.get("mastereditclusterid");
 		String localClusterId = inArchive.getNodeManager().getLocalClusterId();
-		
+
 		if (localClusterId.equals(clusterid))
 		{
 			log.info("This is our own asset, nothing to do");
@@ -694,7 +695,7 @@ public class PullManager implements CatalogEnabled
 				params.put("entermedia.key", node.get("entermediakey"));
 				Object dateob = node.getValue("lastpulldate");
 				Date pulldate = null;
-				
+
 				if (dateob == null)
 				{
 					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 1);
@@ -705,7 +706,7 @@ public class PullManager implements CatalogEnabled
 				}
 				else
 				{
-					pulldate = (Date)dateob;
+					pulldate = (Date) dateob;
 				}
 
 				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
@@ -894,7 +895,7 @@ public class PullManager implements CatalogEnabled
 				if (localchange != null && source.get("emrecordstatus") != null)
 				{
 					JSONObject recordstatus = (JSONObject) source.get("emrecordstatus");//What we got from the other server
-					
+
 					Map localrecordstatus = (Map) localchange.getSearchHit().getSource().get("emrecordstatus");
 
 					String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
@@ -913,30 +914,33 @@ public class PullManager implements CatalogEnabled
 					//We have a conflict, has been modified on both.
 					boolean oktosave = false;
 
-					Date remotemastermastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("masterrecordmodificationdate"));
 					Date localmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("masterrecordmodificationdate"));
-				   
-				
-
-					//log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was " + localmastermod + " Remote last mod was " + remoterecordmod 
- 					if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) //In order to save, it MUST be equal or after the master we started with
+					if (localmastermod == null)
 					{
-
- 						Date remoterecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("recordmodificationdate"));
- 						Date localrecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("recordmodificationdate"));
-						if (remoterecordmod.equals(localrecordmod))
-						{
-							continue; //we already have this change, it's just circling around	
-						}
-
-						if (remoterecordmod.after(localrecordmod))
-						{
-							//no conflict, remote was edited after local was edited.  We are taking the remote.
-							oktosave = true;
-						}
-
+						oktosave = true;
 					}
+					else
+					{
+						Date remotemastermastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("masterrecordmodificationdate"));
 
+						//log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was " + localmastermod + " Remote last mod was " + remoterecordmod 
+						if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) //In order to save, it MUST be equal or after the master we started with
+						{
+							Date remoterecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("recordmodificationdate"));
+							Date localrecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("recordmodificationdate"));
+							if (remoterecordmod.equals(localrecordmod))
+							{
+								continue; //we already have this change, it's just circling around	
+							}
+
+							if (remoterecordmod.after(localrecordmod))
+							{
+								//no conflict, remote was edited after local was edited.  We are taking the remote.
+								oktosave = true;
+							}
+
+						}
+					}
 					if (oktosave)
 					{
 
