@@ -19,6 +19,10 @@ public void init(){
 	HitTracker hits = autocompletesearcher.getAllHits();
 	List toDelete = new ArrayList();
 	
+	if (hits != null)
+	{
+		hits.enableBulkOperations();
+	}
 	hits.each{
 		Data word = autocompletesearcher.loadData(it);
 		
