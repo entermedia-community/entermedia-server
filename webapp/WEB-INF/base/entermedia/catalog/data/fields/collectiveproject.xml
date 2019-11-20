@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+
+  <property id="id" index="true" stored="true" editable="true" internalfield="true"  > 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true"  > 
+    <name> 
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nobre]]></language>  
+    </name> 
+  </property>  
+  
+    <property id="projectdescription" index="true" stored="true" viewtype="html" editable="true"   > 
+    <name> 
+      <language id="de"><![CDATA[Projektbeschreibung]]></language>  
+      <language id="en"><![CDATA[Description]]></language>  
+      <language id="es"><![CDATA[Descripción del Proyecto]]></language>  
+      <language id="fr"><![CDATA[Description du projet]]></language> 
+    </name> 
+  </property>  
+ 
+  <property id="projectusertags" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags" >User Tags 
+    <name>
+      <language id="de"><![CDATA[Nutzer-Tags]]></language>
+      <language id="en"><![CDATA[Hashtags]]></language>
+      <language id="es"><![CDATA[Etiquetas de usuarios]]></language>
+      <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
+    </name>
+  </property> 
+ 
+  <property id="facebooklink" index="true" stored="true" editable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Facebook]]></language>  
+    </name> 
+  </property>  
+  <property id="websitelink" index="true" stored="true" editable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Web Site]]></language>  
+    </name> 
+  </property>  
+
+  	<property id="contactemail" index="true" stored="true" keyword="true" editable="true"  indextype="not_analyzed">Email</property>
+  	<property id="contactphone" index="true" stored="true" keyword="true" editable="true"  >Phone</property>
+  
+    <property id="parentcollectionid" listid="librarycollection" index="true" stored="true" editable="true" viewtype="list"   type="list"> 
+    <name> 
+      <language id="en"><![CDATA[Parent Collection]]></language>  
+    </name> 
+  </property> 
+    <property id="creationdate" index="true" stored="true" editable="true"  type="date" datatype="date" >
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Created Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[Date de création]]></language> 
+    </name> 
+  </property>  
+  
+   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list"  datatype="list"  >Project Status 
+    <name> 
+      <language id="de"><![CDATA[Projekt-Status]]></language>  
+      <language id="en"><![CDATA[Project Status]]></language>  
+      <language id="es"><![CDATA[Estado del proyecto]]></language>  
+      <language id="fr"><![CDATA[Etat du projet]]></language> 
+    </name> 
+  </property>  
+
+  
+    <property id="teamproject" index="true" type="boolean" keyword="false" filter="false" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Team Only]]></language>  
+    </name> 
+  </property>
+
+<property id="featured" index="true" type="boolean" keyword="false" filter="false" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Featured]]></language>  
+    </name> 
+  </property>
+  
+</properties>

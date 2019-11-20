@@ -2256,11 +2256,14 @@
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
 			
-		<!--  Could replace with a composite someday -->
-		<bean id="twofactorAuthenticator" class="org.entermediadb.authenticate.GoogleTwoFactorAuthenticator"  >
+	<!--  Could replace with a composite someday -->
+	<bean id="twofactorAuthenticator" class="org.entermediadb.authenticate.GoogleTwoFactorAuthenticator"  >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 	</bean>
 			
+	<bean id="chatManager" class="org.entermediadb.websocket.chat.ChatManager"  scope="prototype">
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
 		
 		
 </beans>

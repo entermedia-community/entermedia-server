@@ -158,10 +158,6 @@ public class ElasticHitTracker extends HitTracker
 		//log.info(getSearcher().getSearchType() + hashCode() + " clear chunks");
 	}
 	
-	
-	
-
-
 	public SearchResponse getSearchResponse(int inChunk)
 	{
 		Integer chunk = Integer.valueOf(inChunk);

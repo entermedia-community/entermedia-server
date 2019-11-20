@@ -1474,7 +1474,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 //
 //		}
 
-		search.setRequestCache(true);
+		search.setRequestCache(true);  //What does this do?
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
 		hits.enableBulkOperations();

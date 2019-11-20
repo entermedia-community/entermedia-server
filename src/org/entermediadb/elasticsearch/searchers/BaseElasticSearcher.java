@@ -64,6 +64,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -269,11 +270,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				search.setVersion(true);
 			}
-			if(!inQuery.isIncludeDeleted()) {
-				inQuery.addNot("emrecordstatus.recorddeleted", "true");
-			}
 			
-			QueryBuilder terms = buildTerms(inQuery);
+			BoolQueryBuilder terms = buildTerms(inQuery);
+			
+			if(!inQuery.isIncludeDeleted()) 
+			{
+				TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
+				terms.mustNot(deleted);
+			}
 			
 			search.setQuery(terms);
 			// search.
@@ -902,7 +906,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	public QueryBuilder buildTerms(SearchQuery inQuery)
+	public BoolQueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
 		// if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() ==

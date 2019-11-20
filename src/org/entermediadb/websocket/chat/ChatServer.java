@@ -36,6 +36,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
+import org.openedit.util.ExecutorManager;
 
 public class ChatServer
 {
@@ -143,7 +144,7 @@ public class ChatServer
 
 	}
 
-	public void saveMessage(JSONObject inMap)
+	public void saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
 		log.info("Saving Message: " + inMap.toJSONString());
@@ -181,9 +182,35 @@ public class ChatServer
 				params.put("collectionid",String.valueOf(collectionid));
 			}
 			archive.fireGeneralEvent(user,"chatterbox","saved", params);
+			if( collectionid != null)
+			{
+				getExecutorManager(catalogid).execute( new Runnable() {
+					@Override
+					public void run() 
+					{
+						ChatManager manager = getChatManager(catalogid);
+						String channelid = (String)inMap.get("channel");
+						manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
+					}
+				});
+			}
+			
 		}
 	}
 
+	public ExecutorManager getExecutorManager(String inCatalogId)
+	{
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
+		return queue;
+	}
+
+	public ChatManager getChatManager(String inCatalogId)
+	{
+		ChatManager queue = (ChatManager) getModuleManager().getBean(inCatalogId, "chatManager");
+		return queue;
+	}
+
+			
 	public void approveAsset(JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");

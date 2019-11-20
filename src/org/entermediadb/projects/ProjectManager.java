@@ -1987,7 +1987,6 @@ public class ProjectManager implements CatalogEnabled
 			getMediaArchive().saveData("librarycollection", col);
 		}	
 		return col;
-
 	}
 
 }

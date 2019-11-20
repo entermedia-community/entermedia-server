@@ -80,7 +80,12 @@ public class PullManager implements CatalogEnabled
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-
+	/**
+	 * @deprecated
+	 * @param inType
+	 * @param startingfrom
+	 * @return
+	 */
 	public HitTracker listRecentChanges(String inType, Date startingfrom)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
