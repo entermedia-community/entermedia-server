@@ -34,7 +34,7 @@
 			
 			#if (!$ismulti)
 				#if( !$previewonly )
-					#if( !$ismulti && $canviewconversions   && $canviewassetedit)
+					#if( !$ismulti && $canviewconversions )
 				   	<li class="footermenu hidemulti bottomtab #if($opentab == "viewmedia")tabselected#end">
 				   	<a class="expandmenu assettab #if($opentabactions=='conversions') dropdown-current #end" 
 							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=media" title="[[Media]]"
@@ -168,7 +168,7 @@
 			   <ul class="dropdown-menu">
 
 			   
-		    	#if( !$ismulti && $canviewconversions   && $canviewassetedit)
+		    	#if( !$ismulti && $canviewconversions )
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='conversions') dropdown-current #end" 
 						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"

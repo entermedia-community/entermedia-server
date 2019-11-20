@@ -191,6 +191,7 @@ public class ChatServer
 						ChatManager manager = getChatManager(catalogid);
 						String channelid = (String)inMap.get("channel");
 						manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
+						manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid,userid);
 					}
 				});
 			}

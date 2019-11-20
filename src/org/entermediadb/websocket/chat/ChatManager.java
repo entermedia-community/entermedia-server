@@ -63,22 +63,24 @@ public class ChatManager implements CatalogEnabled
 			status.setValue("chattopicid", channelid);
 			status.setValue("collectionid", collectionid);
 		}
-		status.setValue("lastmodified", new Date());
+		status.setValue("datemodified", new Date());
 		getMediaArchive().saveData("chattopiclastmodified", status);
 
 	}
 
 	//TODO: Do this while messages are coming in
-	public void updateChatTopicLastChecked(String channelid, String inUserId)
+	public void updateChatTopicLastChecked(String collectionid, String channelid, String inUserId)
 	{
-		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("channelid", channelid).exact("userid", inUserId).searchOne();
+		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).exact("userid", inUserId).searchOne();
 		if (status == null)
 		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastchecked").createNewData();
 			status.setValue("chattopicid", channelid);
 			status.setValue("userid", inUserId);
+			status.setValue("collectionid", collectionid);
+			
 		}
-		status.setValue("lastcheckeddate", new Date());
+		status.setValue("datechecked", new Date());
 		getMediaArchive().saveData("chattopiclastchecked", status);
 
 	}
@@ -86,13 +88,13 @@ public class ChatManager implements CatalogEnabled
 	public Set loadChatTopicLastChecked(String inCollectionId, String inUserId)
 	{
 		//First get all the topics
-		Collection alltopics = getMediaArchive().query("chattopiclastmodified").exact("collectionid", inCollectionId).search();
+		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").exact("collectionid", inCollectionId).search();
 
-		HashMap<String, Data> remainingtopics = new HashMap<String, Data>();
-		for (Iterator iterator = alltopics.iterator(); iterator.hasNext();)
+		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
+		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();)
 		{
 			Data expiredcheck = (Data) iterator.next();
-			remainingtopics.put(expiredcheck.getId(), expiredcheck);
+			modifiedtopics.put(expiredcheck.getId(), expiredcheck);
 		}
 
 		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId).exact("collectionid", inCollectionId).search();
@@ -101,19 +103,19 @@ public class ChatManager implements CatalogEnabled
 		{
 			Data lastcheck = (Data) iterator.next();
 
-			Data existingtopicmodified = remainingtopics.get(lastcheck.get("chattopicid"));
+			Data existingtopicmodified = modifiedtopics.get(lastcheck.get("chattopicid"));
 			if (existingtopicmodified != null)
 			{
-				Date modifiedtopic = (Date) existingtopicmodified.getValue("datechecked");
+				Date modifiedtopic = (Date) existingtopicmodified.getValue("datemodified");
 				Date checked = (Date) lastcheck.getValue("datechecked");
-				if (modifiedtopic.after(checked))
+				if (modifiedtopic.before(checked))
 				{
-					remainingtopics.remove(existingtopicmodified.getId());
+					modifiedtopics.remove(existingtopicmodified.getId());
 				}
 			}
 		}
 		//What is left has not been viewed... TODO: Deal with empty topics? put welcome message.. Please enter chat
-		return new HashSet(remainingtopics.keySet());
+		return new HashSet(modifiedtopics.keySet());
 
 	}
 

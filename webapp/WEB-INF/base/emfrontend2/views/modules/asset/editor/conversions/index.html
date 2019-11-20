@@ -15,7 +15,7 @@
 
 <div class="conversionsheader">
 
-#if($canviewassetedit)
+#if($caneditasset)
 	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 	   href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
 
@@ -144,7 +144,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 			<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
 		#end
 		#if($isready)
-			#if($canviewassetedit && $presetdata.id)
+			#if($caneditasset && $presetdata.id)
 			
 				##CROP
 				#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))

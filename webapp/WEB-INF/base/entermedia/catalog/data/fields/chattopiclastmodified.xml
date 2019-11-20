@@ -24,7 +24,7 @@
 	    </name> 
   </property>  
   
-  <property id="chattopic" index="true" stored="true" editable="true"  
+  <property id="chattopicid" index="true" stored="true" editable="true"  
   	listid="collectiveproject" viewtype="collectionproject" searchcomponent="collectionproject" datatype="list" foreignkeyid="parentcollectionid" > 
     <name> 
       <language id="en"><![CDATA[Topic]]></language>  
