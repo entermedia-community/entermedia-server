@@ -697,11 +697,11 @@ public abstract class PullManager implements CatalogEnabled
 					pulldate = (Date) dateob;
 				}
 
-				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
+				if (pulldate.getTime() + (1000L * 30L) > System.currentTimeMillis())
 				{
-					log.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
-					inLog.info(node.getName() + " We just ran a pull within last 20 seconds. Trying again later");
-					//	continue;
+					log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
+					inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
+					continue;
 				}
 				long ago = now.getTime() - pulldate.getTime();
 				params.put("lastpullago", String.valueOf(ago));
