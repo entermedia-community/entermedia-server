@@ -120,4 +120,47 @@ public class ChatManager implements CatalogEnabled
 
 	}
 
+	public Collection loadCollectionsModified(Collection inCollections, String inUserId)
+	{
+		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").orgroup("collectionid", inCollections).search();
+
+		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
+		for (Iterator iterator = alltopicsmodified.iterator(); iterator.hasNext();)
+		{
+			Data expiredcheck = (Data) iterator.next();
+			modifiedtopics.put(expiredcheck.get("chattopicid"), expiredcheck);
+		}
+
+		Collection lastchecks = getMediaArchive().query("chattopiclastchecked").exact("userid", inUserId).orgroup("collectionid", inCollections).search();
+
+		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();)
+		{
+			Data lastcheck = (Data) iterator.next();
+			String lastchecktopicid = lastcheck.get("chattopicid");
+			Data existingtopicmodified = modifiedtopics.get(lastchecktopicid);
+			if (existingtopicmodified != null)
+			{
+				Date modifiedtopic = (Date) existingtopicmodified.getValue("datemodified");
+				Date checked = (Date) lastcheck.getValue("datechecked");
+				if (!modifiedtopic.after(checked))
+				{
+					String topicid = lastcheck.get("chattopicid");
+					modifiedtopics.remove(topicid);
+				}
+			}
+		}
+		
+		Set collectionids = new HashSet();
+		for (Iterator iterator = modifiedtopics.values().iterator(); iterator.hasNext();)
+		{
+			Data expiredlastmod = (Data) iterator.next();
+			collectionids.add(expiredlastmod.get("collectionid"));
+		}
+		
+		//What is left has not been viewed... TODO: Deal with empty topics? put welcome message.. Please enter chat
+		return collectionids;
+
+	}
+	
+	
 }
