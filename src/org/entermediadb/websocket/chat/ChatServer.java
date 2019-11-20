@@ -145,21 +145,15 @@ public class ChatServer
 				String catalogid = (String) inMap.get("catalogid");
 				if( catalogid != null)
 				{
-					Object collectionid = inMap.get( "collectionid" );
-					if( collectionid != null)
-					{
-						getExecutorManager(catalogid).execute( new Runnable() {
-							@Override
-							public void run() 
-							{
-								ChatManager manager = getChatManager(catalogid);
-								String channelid = (String)inMap.get("channel");
-								String userid = chatConnection.getUserId();
-								//manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid, userid);
-								manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
-							}
-						});
-					}	
+					getExecutorManager(catalogid).execute( new Runnable() {
+						@Override
+						public void run() 
+						{
+							ChatManager manager = getChatManager(catalogid);
+							String channelid = (String)inMap.get("channel");
+							manager.updateChatTopicLastModified(channelid);
+						}
+					});
 				}
 			}
 		}
@@ -203,18 +197,15 @@ public class ChatServer
 				params.put("collectionid",String.valueOf(collectionid));
 			}
 			archive.fireGeneralEvent(user,"chatterbox","saved", params);
-			if( collectionid != null)
-			{
-				getExecutorManager(catalogid).execute( new Runnable() {
-					@Override
-					public void run() 
-					{
-						ChatManager manager = getChatManager(catalogid);
-						String channelid = (String)inMap.get("channel");
-						manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
-					}
-				});
-			}
+			getExecutorManager(catalogid).execute( new Runnable() {
+				@Override
+				public void run() 
+				{
+					ChatManager manager = getChatManager(catalogid);
+					String channelid = (String)inMap.get("channel");
+					manager.updateChatTopicLastModified(channelid);
+				}
+			});
 			
 		}
 	}

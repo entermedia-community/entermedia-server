@@ -58,12 +58,7 @@ public class ChatModule extends BaseMediaModule {
 		if(  userid != null)
 		{
 			ChatManager manager = getChatManager(inReq);
-			
-			String collectionid = inReq.getRequestParameter("collectionid");
-			if( collectionid != null)
-			{
-				manager.updateChatTopicLastChecked(String.valueOf(collectionid), channel, userid);
-			}
+			manager.updateChatTopicLastChecked(channel, userid);
 		}
 		
 	}

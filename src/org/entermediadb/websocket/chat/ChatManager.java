@@ -54,14 +54,17 @@ public class ChatManager implements CatalogEnabled
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public void updateChatTopicLastModified(String collectionid, String channelid)
+	public void updateChatTopicLastModified(String channelid)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("channelid", channelid).searchOne();
 		if (status == null)
 		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastmodified").createNewData();
 			status.setValue("chattopicid", channelid);
-			status.setValue("collectionid", collectionid);
+			//String collectionid, 
+			MultiValued topic = (MultiValued)getMediaArchive().getData("collectiveproject",channelid);
+			Collection collections = topic.getValues("parentcollectionid");
+			status.setValue("collectionid", collections);
 		}
 		status.setValue("datemodified", new Date());
 		getMediaArchive().saveData("chattopiclastmodified", status);
@@ -69,7 +72,7 @@ public class ChatManager implements CatalogEnabled
 	}
 
 	//TODO: Do this while messages are coming in
-	public void updateChatTopicLastChecked(String collectionid, String channelid, String inUserId)
+	public void updateChatTopicLastChecked(String channelid, String inUserId)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).exact("userid", inUserId).searchOne();
 		if (status == null)
@@ -77,7 +80,9 @@ public class ChatManager implements CatalogEnabled
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastchecked").createNewData();
 			status.setValue("chattopicid", channelid);
 			status.setValue("userid", inUserId);
-			status.setValue("collectionid", collectionid);
+			MultiValued topic = (MultiValued)getMediaArchive().getData("collectiveproject",channelid);
+			Collection collections = topic.getValues("parentcollectionid");
+			status.setValue("collectionid", collections);
 			
 		}
 		status.setValue("datechecked", new Date());
