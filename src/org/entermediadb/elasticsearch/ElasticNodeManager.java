@@ -1457,15 +1457,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		search.setTypes(types);
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-		if (inAfter != null)
-		{
-			RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
-			bool.must(date);
-		}
-		else
+
+		if (inAfter == null)
 		{
 			throw new OpenEditException("No pulldate set");
 		}
+		RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
+		bool.must(date);
 
 //		if (inMasterNodeId == null)
 //		{
@@ -1477,7 +1475,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 //			bool.must(QueryBuilders.matchQuery("emrecordstatus.lastmodifiednodeid", inMasterNodeId));
 //
 //		}
-
+		search.setQuery(bool);
 		search.setRequestCache(true);  //What does this do?
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
