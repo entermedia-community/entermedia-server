@@ -7,13 +7,13 @@ function chatterbox() {
 	var apphome = app.data("home") + app.data("apphome");
 
 	reloadAll();
-	
+
 	if(chatopen){
 		return;
 	}	
 	
 	connect();
-
+	
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
 		var chatter = button.closest(".chatterbox");
@@ -36,13 +36,23 @@ function chatterbox() {
 	    jQuery("#chatter-msg").val("");
 	});
 
-	lQuery('.chatter-text').livequery("keyup", function(e){
-	    if(e.keyCode == 13)
+	lQuery('.chatter-text').livequery("keydown", function(e){
+	    if(e.keyCode == 13 && !e.shiftKey)
 	    {
 	    	//jQuery("#chatter-msg").val("");
+	    	e.preventDefault();
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
-	    }
+	    	return false;
+	    } 
+	    else
+    	{
+			var scroll_height = $(this).get(0).scrollHeight;
+			if (!$('.chatterbox').hasClass('chatterlongtext') && scroll_height>30) {
+				$('.chatterbox').addClass('chatterlongtext');
+				scrollToChat();
+			}
+    	}
 	});
 	
 	lQuery('button[data-command="messagereceived"]').livequery("click", function(e)
@@ -118,7 +128,7 @@ function connect() {
 
 
 function reloadAll(){
-	
+
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	
@@ -183,8 +193,6 @@ function play(){
 	
 	
 }
-
-
 
 
 

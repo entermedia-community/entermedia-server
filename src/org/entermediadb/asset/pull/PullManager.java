@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -29,7 +28,6 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -40,6 +38,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
+import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
@@ -82,259 +81,6 @@ public abstract class PullManager implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	/**
-	 * @deprecated
-	 * @param inType
-	 * @param startingfrom
-	 * @return
-	 */
-	public HitTracker listRecentChanges(String inType, Date startingfrom)
-	{
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
-		QueryBuilder builder = null;
-		if (inType.equals("asset"))
-		{
-			if (archive.isCatalogSettingTrue("syncalways"))
-			{
-				builder = searcher.query().exact("mastereditclusterid", getNodeManager().getLocalClusterId());
-
-			}
-			else
-			{
-				builder = searcher.query().exact("importstatus", "complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
-
-			}
-		}
-		else
-		{
-			builder = searcher.query().exact("mastereditclusterid", getNodeManager().getLocalClusterId());
-
-		}
-		//TODO:  support this on all tables
-		if (startingfrom != null)
-		{
-			builder.after("recordmodificationdate", startingfrom);
-		}
-		builder.sort("recordmodificationdateDown"); //newer first
-		builder.includeDescription();
-		HitTracker hits = builder.search();
-		if (!hits.isEmpty())
-		{
-			hits.enableBulkOperations();
-			log.info("Found changes " + hits.size());
-		}
-		return hits;
-
-	}
-
-	@Deprecated
-	public void processAssetPullQueue(MediaArchive inArchive, ScriptLogger inLog)
-	{
-
-		//Connect to all the nodes
-		//Run a search based on las time I pulled it down
-		Data node = null;
-		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
-		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
-		{
-			node = (Data) iterator.next();
-			String url = node.get("baseurl");
-			if (url == null)
-			{
-				continue;
-			}
-			if (!Boolean.parseBoolean(node.get("enabled")))
-			{
-				inLog.info(node.getName() + " disabled. Skipping ");
-				continue;
-			}
-
-			Date now = new Date();
-			HttpSharedConnection connection = new HttpSharedConnection();
-			Map<String, String> params = new HashMap();
-			try
-			{
-
-				if (node.get("entermediakey") != null)
-				{
-					params.put("entermedia.key", node.get("entermediakey"));
-				}
-				else
-				{
-					log.error("entermediakey is required");
-					continue;
-				}
-				Object dateob = node.getValue("lastpulldate");
-				if (dateob == null)
-				{
-					throw new OpenEditException("lastpulldate must be set on " + node.getName());
-				}
-				Date pulldate = null;
-				if (dateob instanceof String)
-				{
-					pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-				}
-				else
-				{
-					pulldate = (Date) node.getValue("lastpulldate");
-				}
-
-				if (pulldate.getTime() + (1000L * 30L) > now.getTime())
-				{
-					log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
-					inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
-					continue;
-				}
-				long ago = now.getTime() - pulldate.getTime();
-				params.put("lastpullago", String.valueOf(ago));
-
-				Collection pulltypes = inArchive.getCatalogSettingValues("nodepulltypes");
-				boolean foundsomething = false;
-				for (Iterator iteratort = pulltypes.iterator(); iteratort.hasNext();)
-				{
-					String inSearchType = (String) iteratort.next();
-					params.put("searchtype", inSearchType); //Loop over all of the types
-					long totalcount = downloadPullData(inArchive, connection, node, params, inSearchType);
-					inLog.info("imported " + totalcount + " " + inSearchType);
-					if (totalcount > 0)
-					{
-						foundsomething = true;
-					}
-				}
-				if (foundsomething)
-				{
-					node.setValue("lastpulldate", now);
-					node.setValue("lasterrormessage", null);
-					node.setValue("lasterrordate", null);
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
-			}
-			catch (Throwable ex)
-			{
-				log.error("Could not process sync files ", ex);
-				inLog.error("Could not process sync files " + ex);
-				if (node != null)
-				{
-					node.setProperty("lasterrormessage", "Could not process sync files " + ex);
-					node.setValue("lasterrordate", new Date());
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
-				throw new OpenEditException(ex);
-			}
-		}
-	}
-
-	@Deprecated
-	protected long downloadPullData(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String, String> params, String inSearchType) throws Exception
-	{
-		String baseurl = node.get("baseurl");
-		//add origiginal support
-		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
-		StringBuffer debugurl = new StringBuffer();
-		debugurl.append("?");
-		debugurl.append("entermedia.key=");
-		debugurl.append(params.get("entermedia.key"));
-		debugurl.append("&lastpullago=");
-		if (params.get("lastpullago") != null)
-		{
-			String last = params.get("lastpullago");
-			debugurl.append(last);
-		}
-
-		debugurl.append("&searchtype=");
-		debugurl.append(params.get("searchtype"));
-
-		String encoded = url + debugurl;
-		log.info("Checking: " + URLUtilities.urlEscape(encoded));
-		HttpResponse response2 = connection.sharedPost(url, params);
-		StatusLine sl = response2.getStatusLine();
-		if (sl.getStatusCode() != 200)
-		{
-			node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-			node.setValue("lasterrordate", new Date());
-			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-			throw new OpenEditException("Initial data server error " + sl + " on " + encoded);
-		}
-		String returned = EntityUtils.toString(response2.getEntity());
-		//log.info("returned:" + returned);
-		Map parsed = (Map) new JSONParser().parse(returned);
-		boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
-		boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
-
-		long assetcount = 0;
-		Map response = (Map) parsed.get("response");
-		String ok = (String) response.get("status");
-		if (ok != null && ok.equals("ok"))
-		{
-			Collection saved = importChanges(inArchive, returned, parsed, inSearchType);
-			assetcount = assetcount + saved.size();
-			if ("asset".equals(inSearchType))
-			{
-				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
-			}
-			if ("category".equals(inSearchType))
-			{
-				if (!saved.isEmpty())
-				{
-					inArchive.getCategorySearcher().clearIndex();
-					inArchive.getCategoryArchive().clearCategories();
-				}
-			}
-
-			//Now loop over pages
-			int pages = Integer.parseInt(response.get("pages").toString());
-			String hitssessionid = (String) response.get("hitssessionid");
-			params.put("hitssessionid", hitssessionid);
-			for (int count = 2; count <= pages; count++)
-			{
-				url = baseurl + "/mediadb/services/cluster/nextpage.json";
-
-				params.put("page", String.valueOf(count));
-
-				log.info("next page: " + url + debugurl + "&page=" + count + "&hitssessionid=" + hitssessionid);
-				response2 = connection.sharedPost(url, params);
-				sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200)
-				{
-					node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
-					node.setValue("lasterrordate", new Date());
-
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-					log.error("Page server error " + sl);
-					return -1;
-				}
-				returned = EntityUtils.toString(response2.getEntity());
-				//log.info("Got page of json: " + returned);
-				parsed = (Map) new JSONParser().parse(returned);
-				response = (Map) parsed.get("response");
-				ok = (String) response.get("status");
-				if (ok != null && !ok.equals("ok"))
-				{
-					log.error("Page could not be loaded " + returned);
-					return -1;
-				}
-				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
-				saved = importChanges(inArchive, returned, parsed, inSearchType);
-				assetcount = assetcount + saved.size();
-				if ("asset".equals(inSearchType))
-				{
-					downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
-				}
-			}
-			return assetcount;
-		}
-		else if (ok != null && ok.equals("empty"))
-		{
-			//No changes found
-			return 0;
-		}
-		else
-		{
-			log.error("Initial data could not be loaded " + returned);
-			return -1;
-		}
-	}
 
 	//Used by both pulls
 	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
@@ -438,29 +184,6 @@ public abstract class PullManager implements CatalogEnabled
 		}
 	}
 
-	@Deprecated
-	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed, String inSearchType)
-	{
-		//I dont want to edit the json in any way, so using original
-		try
-		{
-			//array = new JsonUtil().parseArray("results", returned);
-			JSONParser parser = new JSONParser();
-			JSONObject everything = (JSONObject) parser.parse(returned);
-
-			JSONArray jsonarray = (JSONArray) everything.get("results");
-
-			inArchive.getSearcher(inSearchType).saveJson(jsonarray);
-			log.info("saved " + jsonarray.size() + " changed " + inSearchType);
-			return jsonarray;
-		}
-		catch (Exception e)
-		{
-			log.info("Error parsing following content: " + returned);
-			throw new OpenEditException(e);
-		}
-	}
-
 	/**
 	 * Should this be in realtime? Maybe we should have as database journal to
 	 * track local edits and push them out slowly...yes!
@@ -468,44 +191,57 @@ public abstract class PullManager implements CatalogEnabled
 	 * @param inType
 	 * @param inAssetIds
 	 */
-	protected void pushLocalChanges(MediaArchive inArchive, Data inRemoteNode, HitTracker inLocalchanges, HttpSharedConnection inConnection)
+	public void pushLocalChangesToMaster(String inType, Collection<String> inAssetIds)
 	{
-		//Push up any and all data changes with details on the files it has.
-		
-		if (inLocalchanges.isEmpty())
-		{
-			return;
-		}
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
+		Collection nodes = getNodeManager().getRemoteEditClusters(getCatalogId());
+		HttpRequestBuilder builder = new HttpRequestBuilder();
 		try
 		{
-			String url = inRemoteNode.get("baseurl");
-			if (url != null)
+			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
-				JSONObject params = createJsonFromHits(inArchive,inLocalchanges);
-				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
-				
-				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/savechanges.json", params);
-				StatusLine sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200)
+				Data node = (Data) iterator.next();
+				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditclusterid", node.getId()).search();
+				if (!hits.isEmpty())
 				{
-					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					return;
-				}
-				//The server will return a list of files it needs
-				JSONObject json = inConnection.parseJson(response2);
-				Collection toupload = (Collection)json.get("uploads");
-				if( toupload != null)
-				{
-					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
+					String url = node.get("baseurl");
+					if (url != null)
 					{
-						JSONObject record = (JSONObject) iterator.next();
-						
+						Map params = new HashMap();
+						if (node.get("entermediadkey") != null)
+						{
+							params.put("entermediadkey", node.get("entermediadkey"));
+						}
+						if (node.get("lastpulldate") != null)
+						{
+							params.put("lastpulldate", node.get("lastpulldate"));
+						}
+						//TODO: Add the json data
+						StringBuffer jsonbody = new StringBuffer();
+						jsonbody.append("[");
+						for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
+						{
+							SearchHitData data = (SearchHitData) iterator2.next();
+							jsonbody.append(data.toJsonString());
+							if (iterator2.hasNext())
+							{
+								jsonbody.append(",");
+							}
+						}
+						jsonbody.append("]");
+						params.put("changes", jsonbody.toString());
+
+						HttpResponse response2 = builder.post(url + "/mediadb/services/cluster/savechanges.json", params);
+						StatusLine sl = response2.getStatusLine();
+						if (sl.getStatusCode() != 200)
+						{
+							node.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+							getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(node);
+							log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+							continue;
+						}
 					}
 				}
-				
-				//Upload those files
 			}
 		}
 		catch (Exception ex)
@@ -707,13 +443,6 @@ public abstract class PullManager implements CatalogEnabled
 				params.put("lastpullago", String.valueOf(ago));
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
-				
-				//TODO uploadChanges... 
-				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
-				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
-				pushLocalChanges(inArchive,node,localchanges, connection);
-				
-				
 				if (totalcount > 0 || node.getValue("lasterrordate") != null)
 				{
 					node.setValue("lastpulldate", now);
@@ -980,28 +709,6 @@ public abstract class PullManager implements CatalogEnabled
 			ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
 			manager.flushBulk();
 		}
-	}
-
-	@Deprecated
-	public void processPull(MediaArchive inArchive, ScriptLogger inLog)
-	{
-		//TODO: Only call this every 30 seconds not more
-		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
-		if (lock == null)
-		{
-			log.info("Pull is already locked");
-			inLog.info("Pull is locked or already running");
-			return;
-		}
-		try
-		{
-			processAssetPullQueue(inArchive, inLog);
-		}
-		finally
-		{
-			inArchive.releaseLock(lock);
-		}
-
 	}
 
 	public void pullRemoteEdits(MediaArchive inArchive, ScriptLogger inLog)

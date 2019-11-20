@@ -194,7 +194,8 @@ public class SyncModule extends BaseMediaModule
 		PullManager manager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		manager.processPull(archive, logger);
+		//TODO Deprecated ?
+		//manager.processPull(archive, logger);
 
 	}
 
@@ -207,79 +208,6 @@ public class SyncModule extends BaseMediaModule
 
 		pullManager.processAllData(archive, logger);
 
-	}
-
-	@Deprecated
-	public void listChanges(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String searchtype = inReq.findValue("searchtype");
-		if (searchtype == null)
-		{
-			searchtype = "asset";
-		}
-		String fulldownload = inReq.getRequestParameter("fulldownload");
-		HitTracker hits = null;
-		if (fulldownload != null && Boolean.parseBoolean(fulldownload))
-		{
-			hits = archive.getSearcher(searchtype).getAllHits(inReq);
-		}
-		else
-		{
-			String lastpullago = inReq.getRequestParameter("lastpullago");
-			if (lastpullago != null)
-			{
-				Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
-				hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, ago);
-			}
-			else
-			{
-				String lastpulldate = inReq.getRequestParameter("lastpulldate");
-				if (lastpulldate == null)
-				{
-					throw new OpenEditException("lastpullago not defined");
-				}
-				else
-				{
-					Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(lastpulldate);
-					hits = getPullManager(archive.getCatalogId()).listRecentChanges(searchtype, startingfrom);
-				}
-			}
-		}
-		hits.enableBulkOperations();
-		hits.setHitsPerPage(200);//TMP
-		hits.getSearchQuery().setHitsName(inReq.findValue("hitsname"));
-		inReq.putPageValue(hits.getHitsName(), hits);
-		inReq.putPageValue("searcher", hits.getSearcher());
-
-		//hitsassetassets/catalog
-		inReq.putSessionValue("hitssessionid", hits.getSessionId());
-		inReq.putSessionValue(hits.getSessionId(), hits);
-		//inReq.putPageValue("mediaarchive",archive); 
-	}
-
-	@Deprecated
-	public void listIDs(WebPageRequest inReq)
-	{
-
-		MediaArchive archive = getMediaArchive(inReq);
-		String searchtype = inReq.findValue("searchtype");
-		if (searchtype == null)
-		{
-			searchtype = "asset";
-		}
-		HitTracker hits = archive.getSearcher(searchtype).getAllHits(inReq);
-
-		hits.enableBulkOperations();
-		hits.setHitsPerPage(9000);//TMP
-		hits.getSearchQuery().setHitsName(inReq.findValue("hitsname"));
-		inReq.putPageValue(hits.getHitsName(), hits);
-		inReq.putPageValue("searcher", hits.getSearcher());
-
-		//hitsassetassets/catalog
-		inReq.putSessionValue("hitssessionid", hits.getSessionId());
-		inReq.putSessionValue(hits.getSessionId(), hits);
-		//inReq.putPageValue("mediaarchive",archive); 
 	}
 
 	public void loadAllChanges(WebPageRequest inReq) throws Exception
@@ -314,8 +242,4 @@ public class SyncModule extends BaseMediaModule
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
 	}
-
-
-
-	
 }

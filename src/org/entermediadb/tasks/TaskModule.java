@@ -1073,7 +1073,7 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("projectgoal");
-		//String collectionid= inReq.getRequestParameter("collectionid");
+		String collectionid= inReq.getRequestParameter("collectionid");
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 				
 		QueryBuilder builder = searcher.query();
@@ -1085,26 +1085,32 @@ public class TaskModule extends BaseMediaModule
 		{
 			builder.match("userlikes", seeuser);
 		}
-
-		//search only in project the user belongs
-		String currentuser = inReq.getUserName();
-		Collection allprojectsuser = archive.query("librarycollectionusers").
-				exact("followeruser",currentuser).
-				exact("ontheteam","true").search();
-		if(allprojectsuser.size()<1)
+		if (collectionid != null) 
 		{
-			return;
+			userprojects.add(collectionid);
 		}
-		for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+		else 
 		{
-			Data librarycol = (Data)iterator.next();
-			String colid = librarycol.get("collectionid");
-			if( colid != null)
+			//search only in project the user belongs
+			String currentuser = inReq.getUserName();
+			Collection allprojectsuser = archive.query("librarycollectionusers").
+					exact("followeruser",currentuser).
+					exact("ontheteam","true").search();
+			if(allprojectsuser.size()<1)
 			{
-				userprojects.add(colid);
+				return;
+			}
+			for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+			{
+				Data librarycol = (Data)iterator.next();
+				String colid = librarycol.get("collectionid");
+				if( colid != null)
+				{
+					userprojects.add(colid);
+				}
 			}
 		}
-			
+		
 		if(userprojects.size()>0) 
 		{
 			builder.orgroup("collectionid", userprojects);
