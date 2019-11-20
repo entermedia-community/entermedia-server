@@ -308,81 +308,14 @@ public class SyncModule extends BaseMediaModule
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
-		
-		JSONObject finaldata = createJsonFromHits(inReq, hits);
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		JSONObject finaldata = pullManager.createJsonFromHits(archive,hits);
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
 	}
 
-	protected JSONObject createJsonFromHits(WebPageRequest inReq, HitTracker hits)
-	{
-		
-		
-		MediaArchive archive = getMediaArchive(inReq);
-		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 
-		JSONObject finaldata = new JSONObject();
-
-		JSONObject response = new JSONObject();
-		if (hits.isEmpty())
-		{
-			response.put("status", "empty");
-		}
-		else
-		{
-			response.put("status", "ok");
-		}
-		String sessionid = inReq.getRequestParameter("hitssessionid");
-
-		response.put("totalhits", hits.size());
-		response.put("hitsperpage", hits.getHitsPerPage());
-		response.put("page", hits.getPage());
-		response.put("pages", hits.getTotalPages());
-		response.put("hitssessionid", sessionid);
-		response.put("catalogid", archive.getCatalogId());
-
-		finaldata.put("response", response);
-		JSONArray generated = new JSONArray();
-
-		JSONArray results = new JSONArray();
-		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
-		{
-			SearchHitData data = (SearchHitData) iterator.next();
-			JSONObject indiHit = new JSONObject();
-			String searchtype = data.getSearchHit().getType();
-			indiHit.put("searchtype", searchtype);
-			String index = data.getSearchHit().getIndex();
-			indiHit.put("index", index);
-			indiHit.put("catalog", manager.getAliasForIndex(index));
-			indiHit.put("source", data.getSearchData());
-			indiHit.put("id", data.getId());
-			results.add(indiHit);
-
-			if (searchtype.equals("asset")) ///Also add stuff to the generated list
-			{
-				JSONObject details = new JSONObject();
-				details.put("id", data.getId());
-				String sourcepath = (String) data.getSearchData().get("sourcepath");
-				details.put("sourcepath", sourcepath);
-				JSONArray files = new JSONArray();
-				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
-				{
-					JSONObject contentdetails = new JSONObject();
-					contentdetails.put("filename", item.getName());
-					contentdetails.put("path", item.getPath());
-					contentdetails.put("lastmodified", item.getLastModified());
-					files.add(contentdetails);
-				}
-				details.put("files", files);
-				generated.add(details);
-			}
-		}
-		finaldata.put("results", results);
-		finaldata.put("generated", generated);
-		
-		return finaldata;
-	}
 
 	
 }

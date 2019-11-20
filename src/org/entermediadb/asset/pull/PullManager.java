@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -28,6 +29,7 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -38,12 +40,11 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
-import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
-public class PullManager implements CatalogEnabled
+public abstract class PullManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(PullManager.class);
 	protected SearcherManager fieldSearcherManager;
@@ -467,57 +468,44 @@ public class PullManager implements CatalogEnabled
 	 * @param inType
 	 * @param inAssetIds
 	 */
-	public void pushLocalChangesToMaster(String inType, Collection<String> inAssetIds)
+	protected void pushLocalChanges(MediaArchive inArchive, Data inRemoteNode, HitTracker inLocalchanges, HttpSharedConnection inConnection)
 	{
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		Collection nodes = getNodeManager().getRemoteEditClusters(getCatalogId());
-		HttpRequestBuilder builder = new HttpRequestBuilder();
+		//Push up any and all data changes with details on the files it has.
+		
+		if (inLocalchanges.isEmpty())
+		{
+			return;
+		}
 		try
 		{
-			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+			String url = inRemoteNode.get("baseurl");
+			if (url != null)
 			{
-				Data node = (Data) iterator.next();
-				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditclusterid", node.getId()).search();
-				if (!hits.isEmpty())
+				JSONObject params = createJsonFromHits(inArchive,inLocalchanges);
+				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
+				
+				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/savechanges.json", params);
+				StatusLine sl = response2.getStatusLine();
+				if (sl.getStatusCode() != 200)
 				{
-					String url = node.get("baseurl");
-					if (url != null)
+					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
+					log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					return;
+				}
+				//The server will return a list of files it needs
+				JSONObject json = inConnection.parseJson(response2);
+				Collection toupload = (Collection)json.get("uploads");
+				if( toupload != null)
+				{
+					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 					{
-						Map params = new HashMap();
-						if (node.get("entermediadkey") != null)
-						{
-							params.put("entermediadkey", node.get("entermediadkey"));
-						}
-						if (node.get("lastpulldate") != null)
-						{
-							params.put("lastpulldate", node.get("lastpulldate"));
-						}
-						//TODO: Add the json data
-						StringBuffer jsonbody = new StringBuffer();
-						jsonbody.append("[");
-						for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
-						{
-							SearchHitData data = (SearchHitData) iterator2.next();
-							jsonbody.append(data.toJsonString());
-							if (iterator2.hasNext())
-							{
-								jsonbody.append(",");
-							}
-						}
-						jsonbody.append("]");
-						params.put("changes", jsonbody.toString());
-
-						HttpResponse response2 = builder.post(url + "/mediadb/services/cluster/savechanges.json", params);
-						StatusLine sl = response2.getStatusLine();
-						if (sl.getStatusCode() != 200)
-						{
-							node.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-							getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(node);
-							log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-							continue;
-						}
+						JSONObject record = (JSONObject) iterator.next();
+						
 					}
 				}
+				
+				//Upload those files
 			}
 		}
 		catch (Exception ex)
@@ -719,6 +707,13 @@ public class PullManager implements CatalogEnabled
 				params.put("lastpullago", String.valueOf(ago));
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
+				
+				//TODO uploadChanges... 
+				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
+				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
+				pushLocalChanges(inArchive,node,localchanges, connection);
+				
+				
 				if (totalcount > 0 || node.getValue("lasterrordate") != null)
 				{
 					node.setValue("lastpulldate", now);
@@ -1031,10 +1026,72 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	protected void pullRemote(MediaArchive inArchive, ScriptLogger inLog)
+	protected abstract void pullRemote(MediaArchive inArchive, ScriptLogger inLog);
+
+	public JSONObject createJsonFromHits(MediaArchive archive, HitTracker hits)
 	{
-		// TODO Auto-generated method stub
+		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 
+		JSONObject finaldata = new JSONObject();
+
+		JSONObject response = new JSONObject();
+		if (hits.isEmpty())
+		{
+			response.put("status", "empty");
+		}
+		else
+		{
+			response.put("status", "ok");
+		}
+		//String sessionid = inReq.getRequestParameter("hitssessionid");
+
+		response.put("totalhits", hits.size());
+		response.put("hitsperpage", hits.getHitsPerPage());
+		response.put("page", hits.getPage());
+		response.put("pages", hits.getTotalPages());
+		response.put("hitssessionid", hits.getSessionId());
+		response.put("catalogid", archive.getCatalogId());
+
+		finaldata.put("response", response);
+		JSONArray generated = new JSONArray();
+
+		JSONArray results = new JSONArray();
+		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
+		{
+			SearchHitData data = (SearchHitData) iterator.next();
+			JSONObject indiHit = new JSONObject();
+			String searchtype = data.getSearchHit().getType();
+			indiHit.put("searchtype", searchtype);
+			String index = data.getSearchHit().getIndex();
+			indiHit.put("index", index);
+			indiHit.put("catalog", manager.getAliasForIndex(index));
+			indiHit.put("source", data.getSearchData());
+			indiHit.put("id", data.getId());
+			results.add(indiHit);
+
+			if (searchtype.equals("asset")) ///Also add stuff to the generated list
+			{
+				JSONObject details = new JSONObject();
+				details.put("id", data.getId());
+				String sourcepath = (String) data.getSearchData().get("sourcepath");
+				details.put("sourcepath", sourcepath);
+				JSONArray files = new JSONArray();
+				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
+				{
+					JSONObject contentdetails = new JSONObject();
+					contentdetails.put("filename", item.getName());
+					contentdetails.put("path", item.getPath());
+					contentdetails.put("lastmodified", item.getLastModified());
+					files.add(contentdetails);
+				}
+				details.put("files", files);
+				generated.add(details);
+			}
+		}
+		finaldata.put("results", results);
+		finaldata.put("generated", generated);
+		
+		return finaldata;
 	}
-
+	
 }
