@@ -28,22 +28,41 @@ public class ChatModule extends BaseMediaModule {
 	public void loadRecentChats(WebPageRequest inReq){
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		
 		String channel = inReq.findValue("channel");
-		
 		Searcher chats = archive.getSearcher("chatterbox");
 		
 		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
 		inReq.putPageValue("messages", recent);
 		
-		if( inReq.getUser() != null)
+		
+		/*	Pagination
+	    Searcher searcher = getMessagesSearcher(inReq);
+	 	HitTracker results = searcher.query().match("channel", channel).sort("dateDown").search();
+		results.setHitsPerPage(10);
+		Collection page = results.getPageOfHits();
+		ArrayList loaded = new ArrayList();
+		for (Iterator iterator = page.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Data message = searcher.loadData(data);
+			loaded.add(message);
+		}
+		Collections.reverse(loaded);
+		inReq.putPageValue("messages", loaded);
+		 */
+		String userid = null;
+		if(inReq.getUser() != null) 
+		{
+			userid = inReq.getUser().getId();
+		}
+		if(  userid != null)
 		{
 			ChatManager manager = getChatManager(inReq);
 			
 			String collectionid = inReq.getRequestParameter("collectionid");
 			if( collectionid != null)
 			{
-				manager.updateChatTopicLastChecked(String.valueOf(collectionid), channel,inReq.getUserName());
+				manager.updateChatTopicLastChecked(String.valueOf(collectionid), channel, userid);
 			}
 		}
 		

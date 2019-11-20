@@ -154,7 +154,9 @@ public class ChatServer
 							{
 								ChatManager manager = getChatManager(catalogid);
 								String channelid = (String)inMap.get("channel");
-								manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid,chatConnection.getUserId());
+								String userid = chatConnection.getUserId();
+								//manager.updateChatTopicLastChecked(String.valueOf(collectionid), channelid, userid);
+								manager.updateChatTopicLastModified(String.valueOf(collectionid), channelid);
 							}
 						});
 					}	

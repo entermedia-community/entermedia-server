@@ -102,15 +102,15 @@ public class ChatManager implements CatalogEnabled
 		for (Iterator iterator = lastchecks.iterator(); iterator.hasNext();)
 		{
 			Data lastcheck = (Data) iterator.next();
-
-			Data existingtopicmodified = modifiedtopics.get(lastcheck.get("chattopicid"));
+			String lastchecktopicid = lastcheck.get("chattopicid");
+			Data existingtopicmodified = modifiedtopics.get(lastchecktopicid);
 			if (existingtopicmodified != null)
 			{
 				Date modifiedtopic = (Date) existingtopicmodified.getValue("datemodified");
 				Date checked = (Date) lastcheck.getValue("datechecked");
-				if (modifiedtopic.before(checked))
+				if (!modifiedtopic.after(checked))
 				{
-					String topicid = existingtopicmodified.get("chattopicid");
+					String topicid = lastcheck.get("chattopicid");
 					modifiedtopics.remove(topicid);
 				}
 			}
