@@ -1479,7 +1479,7 @@ uiload = function() {
 
 
 var resizecolumns = function() {
-	//makethem same top
+	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
 	if (typeof sidebarsposition != "undefined") {
@@ -1488,24 +1488,48 @@ var resizecolumns = function() {
 		$('.col-left').css('top',sidebarstop + 'px');
 	}
 
-	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
-	if ($(".filtered").height()) {
-		allheights += $(".filtered").height();
+	var allheights  = $("#header").outerHeight() + $("#EMnav").outerHeight() + $("#footer").outerHeight();
+	 if($(".collection-header").outerHeight()) {
+		 allheights += $(".collection-header").outerHeight();
+	}
+	else if ($(".filtered").outerHeight()) {
+			allheights += $(".filtered").outerHeight();
 	}
 
-	var columnsheight = $("body").height() - allheights;
+	var columnsheight = $("body").outerHeight() - allheights;
 	var sidebartop = 1;
 	$(".col-main").each(function(){
-		var thisheight = $(this).height();
-		if ($(this).children(0)	&& $(this).children(0).hasClass("col-main-inner")) {
-			thisheight = $(this).children(0).height();
+		var col = $(this);
+		if(col.hasClass("col-left") && col.hasClass("fixedheight")) {
+				return true;
+		}
+		var thisheight = col.outerHeight();
+		if (col.children(0)	&& col.children(0).hasClass("col-main-inner")) {
+			thisheight = col.children(0).outerHeight();
 		}
 		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
 	});
-	$(".col-filters, .col-left").css("height", columnsheight);
+	$(".col-filters").css("height", columnsheight);
+	if(!$(".col-left").hasClass("fixedheight")) {
+		$(".col-left").css("height", columnsheight);
+	}
+	else {
+		allheights  = $("#header").outerHeight() + $("#EMnav").outerHeight() + 45;
+		 if($(".collection-header").outerHeight()) {
+			 allheights += $(".collection-header").outerHeight();
+		}
+		else if ($(".filtered").outerHeight()) {
+				allheights += $(".filtered").outerHeight();
+		}
+		var windowh = $(window).height();
+		console.log(windowh);
+		windowh = windowh - allheights;
+		console.log(windowh + " allH "+allheights);
+		$(".col-left").css("height", windowh);
+	}
 	$(".col-sidebar").css("height", columnsheight);
 	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
