@@ -249,7 +249,13 @@ public class SyncModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		
-		pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
+		JSONArray todownload = pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
+		
+		JSONObject finaldata = new JSONObject();
+		finaldata.put("catalogid", archive.getCatalogId());
+		finaldata.put("fileuploads", todownload);
+		
+		inReq.putPageValue("finaldata", todownload);
 	}
 	public void receiveFile(WebPageRequest inReq)
 	{

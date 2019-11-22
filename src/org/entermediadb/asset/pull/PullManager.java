@@ -35,6 +35,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
@@ -383,7 +384,11 @@ public class PullManager implements CatalogEnabled
 				//uploadChanges... 
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
-				pushLocalChanges(inArchive,node,pulldate,localchanges, connection);
+				
+				String remotemastereditid = node.get("clustername");
+				HitTracker trimmed = removeMasterNodeEdits(remotemastereditid,localchanges);
+				
+				pushLocalChanges(inArchive,node,pulldate,trimmed, connection);
 				
 				if (totalcount > 0 || node.getValue("lasterrordate") != null)
 				{
@@ -406,6 +411,31 @@ public class PullManager implements CatalogEnabled
 			}
 
 		}
+	}
+
+	private HitTracker removeMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
+	{
+		HitTracker finallist = new ListHitTracker();
+		
+		for (Iterator iterator = inLocalchanges.iterator(); iterator.hasNext();)
+		{
+			SearchHitData hit = (SearchHitData) iterator.next();
+			Map localrecordstatus = (Map) hit.getSearchHit().getSource().get("emrecordstatus");
+			if( localrecordstatus == null)
+			{
+				continue;
+			}
+			String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
+			String remotelastmodifiedclusterid = (String) localrecordstatus.get("lastmodifiedclusterid");
+
+			if (masterNodeId.equals(remotemasterclusterid) && remotemasterclusterid.equals(remotelastmodifiedclusterid))
+			{
+				continue; //This is an identical record to what we have						
+			}
+			finallist.add(hit);
+		}
+
+		return finallist;
 	}
 
 	protected long downloadAllData(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String, String> params)
@@ -722,6 +752,7 @@ public class PullManager implements CatalogEnabled
 					JSONObject contentdetails = new JSONObject();
 					contentdetails.put("filename", item.getName());
 					contentdetails.put("localpath", item.getPath());
+					contentdetails.put("size", String.valueOf( item.getLength()) );
 					contentdetails.put("lastmodified", item.getLastModified());
 					files.add(contentdetails);
 				}
@@ -737,21 +768,53 @@ public class PullManager implements CatalogEnabled
 
 	//Send in pages
 	
-	public Collection receiveDataChanges(MediaArchive inArchive, Map inJsonRequest)
+	public JSONArray receiveDataChanges(MediaArchive inArchive, Map inJsonRequest)
 	{
-		Map response = (Map)inJsonRequest.get("response");
-
-		//TODO:Search for these assetids. Do them in chunks
-		//Map<String,SearchHitData> changes = buildLocalChanges(inArchive, since);
-			
 		JSONArray array = (JSONArray)inJsonRequest.get("results");
 		
 		importChanges(inArchive,array);
 		
 		//Look for any assets and compare all the thunbnails
+		Map response = (Map)inJsonRequest.get("response");
+
+		JSONArray todownload = new JSONArray();
+		
+		Collection generated = (Collection)inJsonRequest.get("generated");
+		for (Iterator iterator = generated.iterator(); iterator.hasNext();)
+		{
+			JSONObject object = (JSONObject) iterator.next();
+			String assetsouercepath = (String)object.get("sourcepath");
+			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetsouercepath + "/";
+			Collection files = (Collection)object.get("files");
+			if( files != null)
+			{
+				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();)
+				{
+					Map file = (Map) iterator2.next();
+					String filename = (String)file.get("filename");
+					String fullpath = basepath + filename;
+					String size = (String)file.get("size");
+					
+					ContentItem item = inArchive.getContent(fullpath);
+					if( item.getLength() != Long.parseLong(size))
+					{
+						//download it
+						
+						JSONObject contentdetails = new JSONObject();
+						contentdetails.put("filename", item.getName());
+						contentdetails.put("localpath", item.getPath());
+						//contentdetails.put("size", String.valueOf( item.getLength()) );
+						contentdetails.put("lastmodified", item.getLastModified());
+						
+						todownload.add(contentdetails);
+					}
+					
+				}
+			}
+		}
 
 		//and send them back
-		return null;
+		return todownload;
 	}
 
 	/**
@@ -776,8 +839,6 @@ public class PullManager implements CatalogEnabled
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
 				
-				//TODO: Remove data that has the same masternodeid as the remote one
-				
 				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
 				
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
@@ -791,6 +852,8 @@ public class PullManager implements CatalogEnabled
 				}
 				//The server will return a list of files it needs
 				JSONObject json = inConnection.parseJson(response2);
+				
+				String remotecatalogid = (String)json.get("catalogid");
 				Collection toupload = (Collection)json.get("fileuploads");
 				if( toupload != null)
 				{
@@ -800,8 +863,11 @@ public class PullManager implements CatalogEnabled
 						JSONObject fileinfo = (JSONObject) iterator.next();
 						String urlpath = url + "/services/module/asset/sync/uploadfile.json";
 						
-						String localpath = (String)fileinfo.get("frompath"); //On my machine?
-						File tosend = new File(localpath);
+						String localpath = (String)fileinfo.get("localpath"); //On the remote machie
+						
+						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
+						
+						File tosend = new File(reallocalpath);
 
 						JSONObject tosendparams = new JSONObject(fileinfo);
 						tosendparams.put("localpath", localpath);
