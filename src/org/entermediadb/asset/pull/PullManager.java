@@ -15,9 +15,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.net.HttpSharedConnection;
@@ -28,7 +32,7 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.QueryBuilder;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -38,7 +42,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
-import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
@@ -116,8 +119,7 @@ public abstract class PullManager implements CatalogEnabled
 							//Compare timestamps
 							//String lastmodified = (String) filelisting.get("lastmodified");
 							long datetime = (long) filelisting.get("lastmodified");
-							String genpath = (String) filelisting.get("path"); //TODO: Support multiple catalog ids
-
+							String genpath = (String) filelisting.get("localpath");
 							String remotecatalogid = (String) response.get("catalogid");
 							String generatefolder = remotecatalogid + "/generated";
 							String endpath = genpath.substring(genpath.indexOf(generatefolder) + generatefolder.length());
@@ -180,72 +182,6 @@ public abstract class PullManager implements CatalogEnabled
 			{
 				throw (OpenEditException) ex;
 			}
-			throw new OpenEditException(ex);
-		}
-	}
-
-	/**
-	 * Should this be in realtime? Maybe we should have as database journal to
-	 * track local edits and push them out slowly...yes!
-	 * 
-	 * @param inType
-	 * @param inAssetIds
-	 */
-	public void pushLocalChangesToMaster(String inType, Collection<String> inAssetIds)
-	{
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		Collection nodes = getNodeManager().getRemoteEditClusters(getCatalogId());
-		HttpRequestBuilder builder = new HttpRequestBuilder();
-		try
-		{
-			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
-			{
-				Data node = (Data) iterator.next();
-				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditclusterid", node.getId()).search();
-				if (!hits.isEmpty())
-				{
-					String url = node.get("baseurl");
-					if (url != null)
-					{
-						Map params = new HashMap();
-						if (node.get("entermediadkey") != null)
-						{
-							params.put("entermediadkey", node.get("entermediadkey"));
-						}
-						if (node.get("lastpulldate") != null)
-						{
-							params.put("lastpulldate", node.get("lastpulldate"));
-						}
-						//TODO: Add the json data
-						StringBuffer jsonbody = new StringBuffer();
-						jsonbody.append("[");
-						for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
-						{
-							SearchHitData data = (SearchHitData) iterator2.next();
-							jsonbody.append(data.toJsonString());
-							if (iterator2.hasNext())
-							{
-								jsonbody.append(",");
-							}
-						}
-						jsonbody.append("]");
-						params.put("changes", jsonbody.toString());
-
-						HttpResponse response2 = builder.post(url + "/mediadb/services/cluster/savechanges.json", params);
-						StatusLine sl = response2.getStatusLine();
-						if (sl.getStatusCode() != 200)
-						{
-							node.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-							getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(node);
-							log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-							continue;
-						}
-					}
-				}
-			}
-		}
-		catch (Exception ex)
-		{
 			throw new OpenEditException(ex);
 		}
 	}
@@ -441,8 +377,15 @@ public abstract class PullManager implements CatalogEnabled
 				}
 				long ago = now.getTime() - pulldate.getTime();
 				params.put("lastpullago", String.valueOf(ago));
+				params.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(pulldate));
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
+				
+				//TODO uploadChanges... 
+				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
+				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
+				pushLocalChanges(inArchive,node,pulldate,localchanges, connection);
+				
 				if (totalcount > 0 || node.getValue("lasterrordate") != null)
 				{
 					node.setValue("lastpulldate", now);
@@ -492,8 +435,9 @@ public abstract class PullManager implements CatalogEnabled
 		String encoded = url + debugurl;
 		log.info("Checking: " + URLUtilities.urlEscape(encoded));
 
-		Map localchanges = buildLocalChanges(inArchive, last);
-
+		Date ago = null;
+		ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(last));
+		
 		HttpResponse response2 = connection.sharedPost(url, params);
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
@@ -522,7 +466,9 @@ public abstract class PullManager implements CatalogEnabled
 			boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
 			boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
 
-			Collection saved = importChanges(inArchive, localchanges, remotechanges);
+			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
+
+			Collection saved = importChanges(inArchive, jsonarray);
 			//pull in generated 	
 			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated, skiporiginal);
 
@@ -539,7 +485,9 @@ public abstract class PullManager implements CatalogEnabled
 				params.put("page", String.valueOf(page));
 
 				log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
+				
 				response2 = connection.sharedPost(url, params);
+				
 				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
 				{
@@ -561,7 +509,9 @@ public abstract class PullManager implements CatalogEnabled
 					throw new OpenEditException("Page could not be loaded " + returned);
 				}
 				log.info("Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
-				saved = importChanges(inArchive, localchanges, remotechanges);
+				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
+				
+				saved = importChanges(inArchive, results);
 				//pull in generated 	
 				downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated, skiporiginal);
 
@@ -575,34 +525,45 @@ public abstract class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected Map buildLocalChanges(MediaArchive inArchive, String last)
+	protected Map buildLocalChanges(MediaArchive inArchive, Date sinceDate)
 	{
-		Date ago = null;
-		ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(last));
 		ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
-		HitTracker hits = manager.getEditedDocuments(getCatalogId(), ago);
+		HitTracker hits = manager.getEditedDocuments(getCatalogId(), sinceDate);
+		return map(hits);
+	}
+	protected Map<String, SearchHitData> buildLocalChangesByIds(MediaArchive inArchive, JSONArray inArray)
+	{
+		ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
+		HitTracker hits = manager.getDocumentsByIds(getCatalogId(), inArray);
+		return map(hits);
+	}
+
+
+	protected Map map(HitTracker hits)
+	{
 		HashMap map = new HashMap();
 		hits.enableBulkOperations();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
-
-			JSONObject indiHit = new JSONObject();
+			//JSONObject indiHit = new JSONObject();
 			String searchtype = data.getSearchHit().getType();
-
 			map.put(searchtype + data.getId(), data);
 		}
 		return map;
-
 	}
+	
 
-	protected Collection importChanges(MediaArchive inArchive, Map<String, SearchHitData> localchanges, JSONObject remoteresultspage)
+	
+	protected Collection importChanges(MediaArchive inArchive, JSONArray jsonarray)
 	{
 		try
 		{
 			String clusterid = inArchive.getNodeManager().getLocalClusterId();
 			Set searchers = new HashSet();
-			JSONArray jsonarray = (JSONArray) remoteresultspage.get("results");
+			
+			Map<String,SearchHitData> localchanges = buildLocalChangesByIds(inArchive, jsonarray);
+			
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
 			{
 				JSONObject object = (JSONObject) iterator.next();
@@ -616,6 +577,9 @@ public abstract class PullManager implements CatalogEnabled
 				JSONObject source = (JSONObject) object.get("source");
 
 				SearchHitData localchange = localchanges.get(searchtype + id);
+				
+				boolean oktosave = false;
+
 				if (localchange != null && source.get("emrecordstatus") != null)
 				{
 					JSONObject recordstatus = (JSONObject) source.get("emrecordstatus");//What we got from the other server
@@ -636,7 +600,6 @@ public abstract class PullManager implements CatalogEnabled
 					}
 
 					//We have a conflict, has been modified on both.
-					boolean oktosave = false;
 
 					Date localmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("masterrecordmodificationdate"));
 					if (localmastermod == null)
@@ -662,17 +625,10 @@ public abstract class PullManager implements CatalogEnabled
 								//no conflict, remote was edited after local was edited.  We are taking the remote.
 								oktosave = true;
 							}
-
 						}
 					}
-					if (oktosave)
+					if (!oktosave)
 					{
-
-						searcher.saveJson(id, source);
-					}
-					else
-					{
-
 						Searcher conflictsearcher = inArchive.getSearcher("remotesaveconflictLog");
 						Data conflict = (Data) conflictsearcher.createNewData();
 						conflict.setValue("masternodeid", remotemasterclusterid);
@@ -684,15 +640,17 @@ public abstract class PullManager implements CatalogEnabled
 						conflict.setValue("remotesource", source.toJSONString());
 						conflict.setValue("localsource", localchange.getSearchHit().getSource().toString());
 						conflictsearcher.saveData(conflict);
-
 					}
-
 				}
 				else
 				{
-					searcher.saveJson(id, source);
+					oktosave = true;
 				}
-
+				if(oktosave)
+				{
+					searcher.saveJson(id, source);
+					
+				}
 			}
 
 			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
@@ -735,7 +693,7 @@ public abstract class PullManager implements CatalogEnabled
 
 	protected abstract void pullRemote(MediaArchive inArchive, ScriptLogger inLog);
 
-	public JSONObject createJsonFromHits(MediaArchive archive, HitTracker hits)
+	public JSONObject createJsonFromHits(MediaArchive archive, Date inSince, HitTracker hits)
 	{
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 
@@ -758,7 +716,7 @@ public abstract class PullManager implements CatalogEnabled
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", hits.getSessionId());
 		response.put("catalogid", archive.getCatalogId());
-
+		response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
 		finaldata.put("response", response);
 		JSONArray generated = new JSONArray();
 
@@ -787,7 +745,7 @@ public abstract class PullManager implements CatalogEnabled
 				{
 					JSONObject contentdetails = new JSONObject();
 					contentdetails.put("filename", item.getName());
-					contentdetails.put("path", item.getPath());
+					contentdetails.put("localpath", item.getPath());
 					contentdetails.put("lastmodified", item.getLastModified());
 					files.add(contentdetails);
 				}
@@ -800,5 +758,107 @@ public abstract class PullManager implements CatalogEnabled
 		
 		return finaldata;
 	}
+
+	//Send in pages
+	
+	public Collection receiveDataChanges(MediaArchive inArchive, Map inJsonRequest)
+	{
+		Map response = (Map)inJsonRequest.get("response");
+
+		//TODO:Search for these assetids. Do them in chunks
+		//Map<String,SearchHitData> changes = buildLocalChanges(inArchive, since);
+			
+		JSONArray array = (JSONArray)inJsonRequest.get("results");
+		
+		importChanges(inArchive,array);
+		
+		//Look for any assets and compare all the thunbnails
+
+		//and send them back
+		return null;
+	}
+
+	/**
+	 * Should this be in realtime? Maybe we should have as database journal to
+	 * track local edits and push them out slowly...yes!
+	 * 
+	 * @param inType
+	 * @param inAssetIds
+	 */
+	protected void pushLocalChanges(MediaArchive inArchive, Data inRemoteNode, Date inSince, HitTracker inLocalchanges, HttpSharedConnection inConnection)
+	{
+		//Push up any and all data changes with details on the files it has.
+		
+		if (inLocalchanges.isEmpty())
+		{
+			return;
+		}
+		try
+		{
+			String url = inRemoteNode.get("baseurl");
+			if (url != null)
+			{
+				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
+				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
+				
+				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
+				StatusLine sl = response2.getStatusLine();
+				if (sl.getStatusCode() != 200)
+				{
+					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
+					log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					return;
+				}
+				//The server will return a list of files it needs
+				JSONObject json = inConnection.parseJson(response2);
+				Collection toupload = (Collection)json.get("fileuploads");
+				if( toupload != null)
+				{
+					//TODO: Use pagination to do a few at a time
+					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
+					{
+						JSONObject fileinfo = (JSONObject) iterator.next();
+						String urlpath = url + "/services/module/asset/sync/uploadfile.json";
+						
+						String localpath = (String)fileinfo.get("frompath"); //On my machine?
+						File tosend = new File(localpath);
+
+						JSONObject tosendparams = new JSONObject(fileinfo);
+						tosendparams.put("localpath", localpath);
+						tosendparams.put("file.0", tosend);
+													
+						CloseableHttpResponse resp = inConnection.sharedMimePost(url,tosendparams);
+
+						if (resp.getStatusLine().getStatusCode() != 200)
+						{
+							//error
+							//reportError();
+							throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+						}
+					}	
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+	}
+
+	public void receiveFile(WebPageRequest inReq, MediaArchive inArchive)
+	{
+	
+		FileUpload command = (FileUpload) inArchive.getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+			
+		String remotecatalogid = (String) inReq.getRequestParameter("catalogid");
+		String localpath =  inReq.getRequestParameter("localpath");
+		String savepath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
+
+		FileUploadItem item = properties.getFirstItem();
+		properties.saveFileAs(item, savepath, inReq.getUser());
+	}
+
 	
 }

@@ -75,6 +75,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.discovery.zen.elect.ElectMasterService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.node.Node;
@@ -1465,20 +1466,29 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
 		bool.must(date);
 
-//		if (inMasterNodeId == null)
-//		{
-//			bool.must(QueryBuilders.matchQuery("emrecordstatus.mastereditclusterid", getLocalClusterId()));
-//		}
-//		else
-//		{
-//			bool.must(QueryBuilders.matchQuery("emrecordstatus.mastereditclusterid", inMasterNodeId));
-//			bool.must(QueryBuilders.matchQuery("emrecordstatus.lastmodifiednodeid", inMasterNodeId));
-//
-//		}
 		search.setQuery(bool);
 		search.setRequestCache(true);  //What does this do?
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
+		hits.enableBulkOperations();
+		//hits.setSearcherManager(getSearcherManager());
+		//hits.setSearcher(this);
+		//hits.setSearchQuery(inQuery);
+		return hits;
+	}
+	public HitTracker getDocumentsByIds(String inCatalogId,Collection<String> inIds)
+	{
+		SearchRequestBuilder search = getClient().prepareSearch(toId(inCatalogId));
+		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		String[] types = new String[] { "category", "asset", "librarycollection" };
+		search.setTypes(types);
+
+		IdsQueryBuilder ids = QueryBuilders.idsQuery(types);
+		ids.addIds(inIds);
+		search.setQuery(ids);
+		search.setRequestCache(true);  //What does this do?
+
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, ids, 1000);
 		hits.enableBulkOperations();
 		//hits.setSearcherManager(getSearcherManager());
 		//hits.setSearcher(this);
