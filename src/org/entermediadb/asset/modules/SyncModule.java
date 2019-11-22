@@ -186,7 +186,7 @@ public class SyncModule extends BaseMediaModule
 		//getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
 		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}
-
+/**
 	public void processPullQueue(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
@@ -198,7 +198,7 @@ public class SyncModule extends BaseMediaModule
 		//manager.processPull(archive, logger);
 
 	}
-
+*/
 	public void processDataQueue(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");

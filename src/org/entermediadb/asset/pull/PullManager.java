@@ -46,7 +46,7 @@ import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
-public abstract class PullManager implements CatalogEnabled
+public class PullManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(PullManager.class);
 	protected SearcherManager fieldSearcherManager;
@@ -668,30 +668,6 @@ public abstract class PullManager implements CatalogEnabled
 			manager.flushBulk();
 		}
 	}
-
-	public void pullRemoteEdits(MediaArchive inArchive, ScriptLogger inLog)
-	{
-
-		//TODO: Only call this every 30 seconds not more
-		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
-		if (lock == null)
-		{
-			log.info("Pull is already running");
-			inLog.info("Pull is already running");
-			return;
-		}
-		try
-		{
-			pullRemote(inArchive, inLog);
-		}
-		finally
-		{
-			inArchive.releaseLock(lock);
-		}
-
-	}
-
-	protected abstract void pullRemote(MediaArchive inArchive, ScriptLogger inLog);
 
 	public JSONObject createJsonFromHits(MediaArchive archive, Date inSince, HitTracker hits)
 	{
