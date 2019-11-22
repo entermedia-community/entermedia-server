@@ -1087,6 +1087,7 @@ gridResize = function()
 		trimRowToFit(fixedheight,row,totalavailablew);
 	}
 	
+	resizecolumns();
 
 	
 	checkScroll();

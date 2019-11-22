@@ -41,7 +41,8 @@
 	$pages.includeContent()
 </div>
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-<div id="col-left" class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end">
+<div id="col-left" 
+	class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end fixedheight">
 	<div class="col-main-inner">
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
 	</div>
