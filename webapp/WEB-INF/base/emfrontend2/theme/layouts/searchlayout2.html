@@ -35,16 +35,22 @@
 	#set( $leftbarstatus = false)
 #end
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
-#set( $module = $content.module)
 
+#set( $colleftwidth = $userprofile.get("colleftwidth"))
+#set( $module = $content.module)
 <div id="filteredresults" class="layoutmaincontent">
 	$pages.includeContent()
 </div>
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 <div id="col-left" 
-	class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end fixedheight">
+	class="col-main col-left #if ($leftbarstatus!=false) leftopen #end #if($librarycol) col-left-library #end fixedheight"
+	style="#if($colleftwidth) width:${colleftwidth}px;#end"
+	data-colleftwidth="$!{colleftwidth}">
 	<div class="col-main-inner">
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
+	</div>
+	<div class="colslidercontainer">
+	<a href="#" class="col-left-resize" title="[[Resize Sidebar]]"></a>
 	</div>
 </div>
 #end

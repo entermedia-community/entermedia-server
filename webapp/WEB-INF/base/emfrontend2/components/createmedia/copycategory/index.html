@@ -4,7 +4,9 @@
 #if(!$hidefilters)
 	$pages.include("$apphome/components/filters/filters-selected.html", $context)
 #end
-<div class="pushcontent">
+#set( $colleftwidth = $userprofile.get("colleftwidth"))
+    #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+<div class="pushcontent" style="#if($leftbarstatus!=false && $colleftwidth) margin-left:${colleftwidth}px;#end">
 <div id="resultsdiv">
 	
 	<h3 class="collection-config-title">[[Copy Existing Folders]]</h3>

@@ -41,7 +41,9 @@ $context.putPageValue("module", $module)
     #if(!$hidefilters)
         $pages.include("$apphome/components/filters/filters-selected.html", $context)
     #end
-	<div class="pushcontent">
+    #set( $colleftwidth = $userprofile.get("colleftwidth"))
+    #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+	<div class="pushcontent" style="#if($leftbarstatus!=false && $colleftwidth) margin-left:${colleftwidth}px;#end">
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			$context.putPageValue("showhover", "false")
