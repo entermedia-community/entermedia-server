@@ -3,6 +3,7 @@ package org.entermediadb.asset.pull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
@@ -28,7 +28,6 @@ import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -305,7 +304,7 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public void processAllData(MediaArchive inArchive, ScriptLogger inLog)
+	public void pullRemoteChanges(MediaArchive inArchive, ScriptLogger inLog)
 	{
 
 		//TODO: Only call this every 30 seconds not more
@@ -381,7 +380,7 @@ public class PullManager implements CatalogEnabled
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
 				
-				//TODO uploadChanges... 
+				//uploadChanges... 
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
 				pushLocalChanges(inArchive,node,pulldate,localchanges, connection);
@@ -435,10 +434,9 @@ public class PullManager implements CatalogEnabled
 		String encoded = url + debugurl;
 		log.info("Checking: " + URLUtilities.urlEscape(encoded));
 
-		Date ago = null;
-		ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(last));
 		
-		HttpResponse response2 = connection.sharedPost(url, params);
+		CloseableHttpResponse response2 = connection.sharedPost(url, params);
+		
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
@@ -446,18 +444,9 @@ public class PullManager implements CatalogEnabled
 			node.setValue("lasterrordate", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("Initial data server error " + sl);
+			return -1;
 		}
-		String returned = null;
-		JSONObject remotechanges = null;
-		try
-		{
-			returned = EntityUtils.toString(response2.getEntity());
-			remotechanges = (JSONObject) new JSONParser().parse(returned);
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
+		JSONObject	remotechanges = connection.parseJson(response2);
 		long datacounted = 0;
 		Map response = (Map) remotechanges.get("response");
 		String ok = (String) response.get("status");
@@ -493,20 +482,12 @@ public class PullManager implements CatalogEnabled
 				{
 					throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 				}
-				try
-				{
-					returned = EntityUtils.toString(response2.getEntity());
-					remotechanges = (JSONObject) new JSONParser().parse(returned);
-				}
-				catch (Exception e)
-				{
-					throw new OpenEditException(e);
-				}
+				remotechanges = connection.parseJson(response2);
 				response = (Map) remotechanges.get("response");
 				ok = (String) response.get("status");
 				if (ok != null && !ok.equals("ok"))
 				{
-					throw new OpenEditException("Page could not be loaded " + returned);
+					throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
 				}
 				log.info("Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
 				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
@@ -521,7 +502,7 @@ public class PullManager implements CatalogEnabled
 		}
 		else
 		{
-			throw new OpenEditException("Initial data could not be loaded " + returned);
+			throw new OpenEditException("Initial data could not be loaded " +  remotechanges.toJSONString());
 		}
 	}
 
@@ -534,7 +515,14 @@ public class PullManager implements CatalogEnabled
 	protected Map<String, SearchHitData> buildLocalChangesByIds(MediaArchive inArchive, JSONArray inArray)
 	{
 		ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
-		HitTracker hits = manager.getDocumentsByIds(getCatalogId(), inArray);
+		Collection<String> ids = new ArrayList<String>();
+		for (Iterator iterator = inArray.iterator(); iterator.hasNext();)
+		{
+			JSONObject objt = (JSONObject) iterator.next();
+			String id = (String)objt.get("id");
+			ids.add(id);
+		}
+		HitTracker hits = manager.getDocumentsByIds(getCatalogId(), ids);
 		return map(hits);
 	}
 
@@ -557,13 +545,12 @@ public class PullManager implements CatalogEnabled
 	
 	protected Collection importChanges(MediaArchive inArchive, JSONArray jsonarray)
 	{
+		Set searchers = new HashSet();
 		try
 		{
-			String clusterid = inArchive.getNodeManager().getLocalClusterId();
-			Set searchers = new HashSet();
-			
 			Map<String,SearchHitData> localchanges = buildLocalChangesByIds(inArchive, jsonarray);
-			
+			String localClusterId = inArchive.getNodeManager().getLocalClusterId();
+
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
 			{
 				JSONObject object = (JSONObject) iterator.next();
@@ -574,56 +561,61 @@ public class PullManager implements CatalogEnabled
 				Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 				searchers.add(searcher);
 				String id = (String) object.get("id");
-				JSONObject source = (JSONObject) object.get("source");
+				JSONObject remotesource = (JSONObject) object.get("source");
 
 				SearchHitData localchange = localchanges.get(searchtype + id);
 				
 				boolean oktosave = false;
 
-				if (localchange != null && source.get("emrecordstatus") != null)
+				if (localchange != null && remotesource.get("emrecordstatus") != null)
 				{
-					JSONObject recordstatus = (JSONObject) source.get("emrecordstatus");//What we got from the other server
+					JSONObject recordstatus = (JSONObject) remotesource.get("emrecordstatus");//What we got from the other server
 
 					Map localrecordstatus = (Map) localchange.getSearchHit().getSource().get("emrecordstatus");
-
-					String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
-					String remotelastmodifiedclusterid = (String) recordstatus.get("lastmodifiedclusterid");
-
-					String localClusterId = inArchive.getNodeManager().getLocalClusterId();
-
-					if (remotemasterclusterid.equals(remotelastmodifiedclusterid))
+					if( localrecordstatus != null)
 					{
-						if (remotemasterclusterid.equals(localClusterId))
+						String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
+						String remotelastmodifiedclusterid = (String) recordstatus.get("lastmodifiedclusterid");
+	
+						if (remotemasterclusterid.equals(remotelastmodifiedclusterid))
 						{
-							continue; //This is an identical record to what we have, coming back to us.						
+							if (remotemasterclusterid.equals(localClusterId))
+							{
+								continue; //This is an identical record to what we have, coming back to us.						
+							}
 						}
-					}
-
-					//We have a conflict, has been modified on both.
-
-					Date localmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("masterrecordmodificationdate"));
-					if (localmastermod == null)
-					{
-						oktosave = true;
 					}
 					else
 					{
-						Date remotemastermastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("masterrecordmodificationdate"));
-
-						//log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was " + localmastermod + " Remote last mod was " + remoterecordmod 
-						if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) //In order to save, it MUST be equal or after the master we started with
+						oktosave = true;
+					}
+					//We have a conflict, has been modified on both.
+					if( !oktosave )
+					{
+						Date localmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("masterrecordmodificationdate"));
+						if (localmastermod == null)
 						{
-							Date remoterecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("recordmodificationdate"));
-							Date localrecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("recordmodificationdate"));
-							if (remoterecordmod.equals(localrecordmod))
+							oktosave = true;
+						}
+						else
+						{
+							Date remotemastermastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("masterrecordmodificationdate"));
+	
+							//log.info("Node " + localClusterId + " Pulled " + id + " Local Last Mod was " + localmastermod + " Remote last mod was " + remoterecordmod 
+							if (remotemastermastermod.equals(localmastermod) || remotemastermastermod.after(localmastermod)) //In order to save, it MUST be equal or after the master we started with
 							{
-								continue; //we already have this change, it's just circling around	
-							}
-
-							if (remoterecordmod.after(localrecordmod))
-							{
-								//no conflict, remote was edited after local was edited.  We are taking the remote.
-								oktosave = true;
+								Date remoterecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) recordstatus.get("recordmodificationdate"));
+								Date localrecordmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) localrecordstatus.get("recordmodificationdate"));
+								if (remoterecordmod.equals(localrecordmod))
+								{
+									continue; //we already have this change, it's just circling around	
+								}
+	
+								if (remoterecordmod.after(localrecordmod))
+								{
+									//no conflict, remote was edited after local was edited.  We are taking the remote.
+									oktosave = true;
+								}
 							}
 						}
 					}
@@ -631,14 +623,24 @@ public class PullManager implements CatalogEnabled
 					{
 						Searcher conflictsearcher = inArchive.getSearcher("remotesaveconflictLog");
 						Data conflict = (Data) conflictsearcher.createNewData();
-						conflict.setValue("masternodeid", remotemasterclusterid);
+
 						conflict.setValue("searchtype", searchtype);
 						conflict.setValue("pulltime", new Date());
-						conflict.setValue("remoterecordstatus", recordstatus.toJSONString());
-						conflict.setValue("localrecordstatus", localrecordstatus.toString());
 						conflict.setValue("dataid", id);
-						conflict.setValue("remotesource", source.toJSONString());
-						conflict.setValue("localsource", localchange.getSearchHit().getSource().toString());
+
+						if( recordstatus != null)
+						{
+							String remotemasterclusterid = (String) recordstatus.get("mastereditclusterid");
+							String remotelastmodifiedclusterid = (String) recordstatus.get("lastmodifiedclusterid");
+							conflict.setValue("masternodeid", remotemasterclusterid);
+							conflict.setValue("remoterecordstatus", recordstatus.toJSONString());
+							conflict.setValue("remotesource", remotesource.toJSONString());
+						}	
+						if( localrecordstatus != null)
+						{
+							conflict.setValue("localrecordstatus", localrecordstatus.toString());
+							conflict.setValue("localsource", localchange.getSearchHit().getSource().toString());
+						}
 						conflictsearcher.saveData(conflict);
 					}
 				}
@@ -648,25 +650,23 @@ public class PullManager implements CatalogEnabled
 				}
 				if(oktosave)
 				{
-					searcher.saveJson(id, source);
-					
+					searcher.saveJson(id, remotesource);
 				}
 			}
-
-			for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
-			{
-				Searcher searcher = (Searcher) iterator.next();
-				searcher.clearIndex();
-				//IF categorty clear cache
-			}
-			return jsonarray;
 		}
-
 		finally
 		{
 			ElasticNodeManager manager = (ElasticNodeManager) getNodeManager();
 			manager.flushBulk();
 		}
+		for (Iterator iterator = searchers.iterator(); iterator.hasNext();)
+		{
+			Searcher searcher = (Searcher) iterator.next();
+			searcher.clearIndex();
+			//IF categorty clear cache
+		}
+		return jsonarray;
+
 	}
 
 	public JSONObject createJsonFromHits(MediaArchive archive, Date inSince, HitTracker hits)
@@ -775,6 +775,9 @@ public class PullManager implements CatalogEnabled
 			if (url != null)
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
+				
+				//TODO: Remove data that has the same masternodeid as the remote one
+				
 				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
 				
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);

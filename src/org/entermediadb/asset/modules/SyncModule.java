@@ -199,14 +199,14 @@ public class SyncModule extends BaseMediaModule
 
 	}
 */
-	public void processDataQueue(WebPageRequest inReq)
+	public void pullRemoteChanges(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		pullManager.processAllData(archive, logger);
+		pullManager.pullRemoteChanges(archive, logger);
 
 	}
 
