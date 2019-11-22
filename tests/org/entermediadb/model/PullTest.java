@@ -99,7 +99,7 @@ public class PullTest extends BaseEnterMediaTest
 			
 			//Sync the data from the remote demo server
 			
-			module.processDataQueue(req);
+			module.pullRemoteChanges(req);
 			
 			//Validate that Purpose now exists locally.
 			

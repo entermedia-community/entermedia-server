@@ -1,9 +1,13 @@
 package org.entermediadb.net;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +16,9 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,13 +31,17 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
+import org.openedit.util.URLUtilities;
 
 
 
@@ -46,6 +56,24 @@ public class HttpSharedConnection
 	ContentType octectType = ContentType.create("application/octect-stream", UTF8);
 	
 	protected HttpClient fieldHttpClient;
+	protected Collection fieldSharedHeaders;
+    protected BasicCookieStore cookieStore = new BasicCookieStore();
+
+	public Collection getSharedHeaders()
+	{
+		if (fieldSharedHeaders == null)
+		{
+			fieldSharedHeaders = new ArrayList();
+		}
+
+		return fieldSharedHeaders;
+	}
+
+
+	public void setSharedHeaders(Collection inSharedHeaders)
+	{
+		fieldSharedHeaders = inSharedHeaders;
+	}
 	
 	public HttpClient getSharedClient()
 	{
@@ -68,10 +96,6 @@ public class HttpSharedConnection
 			{
 				throw new OpenEditException(e);
 			}
-
-			
-		           
-			
 		}
 		return fieldHttpClient;
 	}
@@ -203,6 +227,20 @@ public class HttpSharedConnection
 		}
 	}
 
+	public CloseableHttpResponse sharedPost(String path,HttpEntity inBuild)
+	{
+			HttpPost method = new HttpPost(URLUtilities.urlEscape(path));
+			for (Iterator iterator = getSharedHeaders().iterator(); iterator.hasNext();)
+			{
+				Header header =  (Header)iterator.next();
+				method.addHeader(header);
+			}
+			method.setEntity(inBuild);
+			
+			CloseableHttpResponse response2 = sharedExecute(method);
+			return response2;
+		
+	}
 
 	public CloseableHttpResponse sharedExecute(HttpRequestBase method) 
 	{
@@ -218,4 +256,54 @@ public class HttpSharedConnection
 			throw new OpenEditException(e);
 		}
 	}
+	
+	public CloseableHttpResponse sharedMimePost(String path, Map<String,Object> inParams)
+	{
+		HttpEntity entity = buildMime(inParams);
+		return sharedPost(path,entity);
+	}
+	
+	protected HttpEntity buildMime(Map <String, Object> inMap)
+	{
+		HttpMimeBuilder builder = new HttpMimeBuilder();
+
+		for (Iterator iterator = inMap.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			Object value = inMap.get(key);
+			if( value instanceof String)
+			{
+				builder.addPart(key, (String)value);
+			}
+			else if(value instanceof File)
+			{
+				builder.addPart(key, (File)value);
+			}
+			else if( value instanceof JSONObject)
+			{
+				builder.addPart(key, ((JSONObject) value).toJSONString(), "application/json" );
+			}
+			
+		}
+		return builder.build();
+	}
+
+	public void addSharedHeader(String inType, String inVal)
+	{
+		BasicHeader header = new BasicHeader("X-" + inType, inVal);
+		getSharedHeaders().add(header);
+	}
+	
+	public void addSharedCookie(String domain, String inKey,String inVal)
+	{
+		BasicClientCookie cookie = new BasicClientCookie(inKey, inVal);
+		cookie.setPath("/");
+		cookie.setDomain(domain);
+    	Calendar cal = new GregorianCalendar();
+    	cal.add(Calendar.MONTH, 1);
+    	cookie.setExpiryDate(cal.getTime());
+    	cookieStore.addCookie(cookie);
+	}
+	
+	
 }

@@ -1417,6 +1417,6 @@ Server ProjectModule.uploadFile
 		labels.setArchive(getMediaArchive(inReq));
 		labels.setLibraryCollection(collection);
 		inReq.putPageValue("topiclabels", labels);
-		
 	}
+	
 }

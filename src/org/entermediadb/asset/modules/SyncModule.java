@@ -186,7 +186,7 @@ public class SyncModule extends BaseMediaModule
 		//getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
 		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}
-
+/**
 	public void processPullQueue(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
@@ -198,15 +198,15 @@ public class SyncModule extends BaseMediaModule
 		//manager.processPull(archive, logger);
 
 	}
-
-	public void processDataQueue(WebPageRequest inReq)
+*/
+	public void pullRemoteChanges(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		pullManager.processAllData(archive, logger);
+		pullManager.pullRemoteChanges(archive, logger);
 
 	}
 
@@ -218,18 +218,19 @@ public class SyncModule extends BaseMediaModule
 		HashSet types = new HashSet();
 		HitTracker hits = null;
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
+		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
+		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
+		if( ago == null)
+		{
+			throw new OpenEditException("lastpull required");
+		}
+			
 		if (sessionid != null)
 		{
 			hits = (HitTracker) inReq.getSessionValue(sessionid);
 		}
 		if (hits == null)
 		{
-			String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
-			Date ago = null;
-			if (lastpullago != null)
-			{
-				ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
-			}
 			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
 		}
 		if (page != null)
@@ -237,9 +238,30 @@ public class SyncModule extends BaseMediaModule
 			hits.setPage(Integer.parseInt(page));
 		}
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		JSONObject finaldata = pullManager.createJsonFromHits(archive,hits);
+		JSONObject finaldata = pullManager.createJsonFromHits(archive,ago,hits);
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
 	}
+	
+	public void receiveDataChanges(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		
+		JSONArray todownload = pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
+		
+		JSONObject finaldata = new JSONObject();
+		finaldata.put("catalogid", archive.getCatalogId());
+		finaldata.put("fileuploads", todownload);
+		
+		inReq.putPageValue("finaldata", todownload);
+	}
+	public void receiveFile(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		pullManager.receiveFile(inReq, archive);
+	}
+	
 }
