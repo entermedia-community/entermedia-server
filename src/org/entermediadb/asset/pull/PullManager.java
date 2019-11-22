@@ -500,6 +500,11 @@ public class PullManager implements CatalogEnabled
 			}
 			return datacounted;
 		}
+		else if (ok.equals("empty"))
+		{
+			log.info("No changes found");
+			return 0;
+		}
 		else
 		{
 			throw new OpenEditException("Initial data could not be loaded " +  remotechanges.toJSONString());
