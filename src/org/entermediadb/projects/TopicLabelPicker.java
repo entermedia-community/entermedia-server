@@ -27,6 +27,10 @@ public class TopicLabelPicker
 	
 	public String showLabel(MultiValued inTopic)
 	{
+		if( inTopic == null) 
+		{
+			return null;
+		}
 		Collection values = inTopic.getValues("parentcollectionid");
 		if( values != null)
 		{

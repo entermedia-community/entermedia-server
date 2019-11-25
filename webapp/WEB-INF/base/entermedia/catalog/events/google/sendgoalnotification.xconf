@@ -1,6 +1,6 @@
 <page>
 	<property name="virtual">true</property>
-	<property name="eventname">Firebase Goal Notification</property>	
+	<property name="eventname">Send Goal Notification</property>	
 	<property name="enabled">false</property>
 	
 	<path-action name="Script.run" allowduplicates="true" >

@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
+import org.entermediadb.projects.TopicLabelPicker;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -166,6 +168,4 @@ public class ChatManager implements CatalogEnabled
 		return collectionids;
 
 	}
-	
-	
 }
