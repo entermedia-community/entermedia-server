@@ -206,19 +206,33 @@ public class HttpSharedConnection
 			}
 			
 			HttpEntity entity = resp.getEntity();
-			JSONParser parser = new JSONParser();
 			
-			String charset = "utf-8";
-			if( entity.getContentEncoding() != null )
-			{
-				charset = entity.getContentEncoding().getValue();
-			}
-			InputStreamReader reader = new InputStreamReader(entity.getContent(),charset);
-			JSONObject json = (JSONObject)parser.parse(reader);
+			JSONObject json = null;
+			JSONParser parser = new JSONParser();
 
+			boolean DEBUG = true;
+			if (DEBUG)
+			{
+				String returned = EntityUtils.toString(resp.getEntity());
+				log.info(returned);
+				json = (JSONObject)parser.parse(returned);
+			}
+			else
+			{
+				String charset = "utf-8";
+				if( entity.getContentEncoding() != null )
+				{
+					charset = entity.getContentEncoding().getValue();
+				}
+				InputStreamReader reader = new InputStreamReader(entity.getContent(),charset);
+				json = (JSONObject)parser.parse(reader);
+				
+			}
 			// log.info(content);
 			return json;
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) 
+		{
 			throw new OpenEditException(e);
 		}
 		finally

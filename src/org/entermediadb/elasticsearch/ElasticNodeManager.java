@@ -1457,20 +1457,24 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		String[] types = new String[] { "category", "asset", "librarycollection" };
 		search.setTypes(types);
 
-		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-
 		if (inAfter == null)
 		{
 			throw new OpenEditException("No pulldate set");
 		}
 		RangeQueryBuilder date = QueryBuilders.rangeQuery("emrecordstatus.recordmodificationdate").from(inAfter);// .to(before);
-		bool.must(date);
 
-		search.setQuery(bool);
-		search.setRequestCache(true);  //What does this do?
+		search.setQuery(date);
+		search.setRequestCache(false);  //What does this do?
 
-		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, bool, 1000);
+		//search.toString()
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.enableBulkOperations();
+		if (getSearcherManager().getShowSearchLogs(inCatalogId))
+		{
+			String json = search.toString();
+			log.info(toId(inCatalogId) + "/_search' -d '" + json + "' \n");
+		}
+
 		//hits.setSearcherManager(getSearcherManager());
 		//hits.setSearcher(this);
 		//hits.setSearchQuery(inQuery);

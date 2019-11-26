@@ -101,6 +101,19 @@ curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
 }'| python -mjson.tool
 
 
+curl -XGET http://localhost:9200/assets_catalog/_search -d '{
+  "query" : {
+    "range" : {
+      "emrecordstatus.recordmodificationdate" : {
+        "from" : "2019-11-26T06:40:43.096Z",
+        "to" : null,
+        "include_lower" : true,
+        "include_upper" : true
+      }
+    }
+  }
+}'| python -mjson.tool
+
 curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
   "from" : 0,
   "size" : 50,

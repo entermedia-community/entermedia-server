@@ -35,7 +35,7 @@
   </property> 
   <property id="clustername" index="true" stored="true" editable="true"  >
     <name>
-      <language id="en"><![CDATA[Cluster Name]]></language>
+      <language id="en"><![CDATA[Remote Master Cluster ID]]></language>
     </name>
   </property> 
  
