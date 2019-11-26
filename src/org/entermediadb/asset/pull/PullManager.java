@@ -170,7 +170,7 @@ public class PullManager implements CatalogEnabled
 					else
 					{
 						File file = getFile(asset);
-						downloadOriginal(inArchive, asset, file, true);
+						downloadOriginal(inArchive, inConnection, asset, file, true);
 					}
 				}
 			}
@@ -186,7 +186,7 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
+	public ContentItem downloadOriginal(MediaArchive inArchive,HttpSharedConnection connection, Asset inAsset, File inFile, boolean ifneeded)
 	{
 
 		Map emEditStatus = inAsset.getEmRecordStatus();
@@ -224,13 +224,8 @@ public class PullManager implements CatalogEnabled
 			if (item.getLength() != size)
 			{
 				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
-				HttpSharedConnection connection = new HttpSharedConnection();
 				Map params = new HashMap();
-				if (node.get("entermediakey") != null)
-				{
-					params.put("entermedia.key", node.get("entermediakey"));
-					finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
-				}
+				finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 
 				HttpResponse genfile = connection.sharedPost(finalurl, params);
 				StatusLine filestatus = genfile.getStatusLine();
@@ -355,7 +350,8 @@ public class PullManager implements CatalogEnabled
 					log.error("entermediakey is required");
 					continue;
 				}
-				params.put("entermedia.key", node.get("entermediakey"));
+				connection.addSharedHeader("X-token", node.get("entermediakey"));
+				connection.addSharedHeader("X-tokentype", "entermedia");
 				Object dateob = node.getValue("lastpulldate");
 				Date pulldate = null;
 
@@ -386,7 +382,6 @@ public class PullManager implements CatalogEnabled
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
 				
-				inLog.info(node.getName() + " downloaded " + totalcount );
 				
 				//uploadChanges... 
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
@@ -396,6 +391,15 @@ public class PullManager implements CatalogEnabled
 				HitTracker trimmed = removeMasterNodeEdits(remotemastereditid,localchanges);
 				
 				pushLocalChanges(inArchive,node,pulldate,trimmed, connection);
+				
+				if( node.getValue("lasterrormessage") != null )
+				{
+					inLog.info(node.getName() + " error " + node.getValue("lasterrormessage"));					
+				}
+				else
+				{
+					inLog.info(node.getName() + " downloaded " + totalcount + " and uploaded " + trimmed.size() );
+				}
 				
 				node.setValue("lastpulldate", now);
 				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
@@ -473,7 +477,7 @@ public class PullManager implements CatalogEnabled
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
-			node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			node.setValue("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			node.setValue("lasterrordate", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("Initial data server error " + sl);
@@ -851,8 +855,6 @@ public class PullManager implements CatalogEnabled
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
 				
-				params.put("entermediadkey", inRemoteNode.get("entermediadkey"));
-				
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 				StatusLine sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
@@ -873,20 +875,20 @@ public class PullManager implements CatalogEnabled
 					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 					{
 						JSONObject fileinfo = (JSONObject) iterator.next();
-						String urlpath = url + "/services/module/asset/sync/uploadfile.json";
+						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json";
 						
 						String localpath = (String)fileinfo.get("localpath"); //On the remote machie
 						
 						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
-						
-						File tosend = new File(reallocalpath);
+						ContentItem item = inArchive.getContent(reallocalpath);
+						File tosend = new File(item.getAbsolutePath());
 
 						JSONObject tosendparams = new JSONObject(fileinfo);
 						tosendparams.put("catalogid", inArchive.getCatalogId());
 						tosendparams.put("savepath", localpath);
 						tosendparams.put("file.0", tosend);
 													
-						CloseableHttpResponse resp = inConnection.sharedMimePost(url,tosendparams);
+						CloseableHttpResponse resp = inConnection.sharedMimePost(urlpath,tosendparams);
 
 						if (resp.getStatusLine().getStatusCode() != 200)
 						{

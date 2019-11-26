@@ -244,11 +244,6 @@ public class HttpSharedConnection
 	public CloseableHttpResponse sharedPost(String path,HttpEntity inBuild)
 	{
 			HttpPost method = new HttpPost(URLUtilities.urlEscape(path));
-			for (Iterator iterator = getSharedHeaders().iterator(); iterator.hasNext();)
-			{
-				Header header =  (Header)iterator.next();
-				method.addHeader(header);
-			}
 			method.setEntity(inBuild);
 			
 			CloseableHttpResponse response2 = sharedExecute(method);
@@ -261,6 +256,12 @@ public class HttpSharedConnection
 		CloseableHttpResponse resp = null;
 		try 
 		{
+			for (Iterator iterator = getSharedHeaders().iterator(); iterator.hasNext();)
+			{
+				Header header =  (Header)iterator.next();
+				method.addHeader(header);
+			}
+
 			resp = (CloseableHttpResponse)getSharedClient().execute(method);
 			return resp;
 		} 
@@ -304,7 +305,7 @@ public class HttpSharedConnection
 
 	public void addSharedHeader(String inType, String inVal)
 	{
-		BasicHeader header = new BasicHeader("X-" + inType, inVal);
+		BasicHeader header = new BasicHeader(inType, inVal);
 		getSharedHeaders().add(header);
 	}
 	
