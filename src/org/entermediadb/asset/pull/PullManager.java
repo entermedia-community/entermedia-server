@@ -337,6 +337,9 @@ public class PullManager implements CatalogEnabled
 			try
 			{
 				node = (Data) iterator.next();
+				node.setValue("lasterrordate",null);
+				node.setValue("lasterrormessage", null);
+
 				String url = node.get("baseurl");
 				if (url == null || !Boolean.parseBoolean( node.get("enabled") ) )
 				{
@@ -369,7 +372,7 @@ public class PullManager implements CatalogEnabled
 					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 7);
 				}
 
-				if (pulldate.getTime() + (1000L * 30L) > System.currentTimeMillis())
+				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
 				{
 					log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
 					inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
@@ -394,13 +397,9 @@ public class PullManager implements CatalogEnabled
 				
 				pushLocalChanges(inArchive,node,pulldate,trimmed, connection);
 				
-				if (node.getValue("lasterrordate") != null)
-				{
-					node.setValue("lastpulldate", now);
-					node.setValue("lasterrormessage", null);
-					node.setValue("lasterrordate", null);
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
+				node.setValue("lastpulldate", now);
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+
 			}
 			catch (Throwable ex)
 			{
@@ -883,7 +882,8 @@ public class PullManager implements CatalogEnabled
 						File tosend = new File(reallocalpath);
 
 						JSONObject tosendparams = new JSONObject(fileinfo);
-						tosendparams.put("localpath", localpath);
+						tosendparams.put("catalogid", inArchive.getCatalogId());
+						tosendparams.put("savepath", localpath);
 						tosendparams.put("file.0", tosend);
 													
 						CloseableHttpResponse resp = inConnection.sharedMimePost(url,tosendparams);
