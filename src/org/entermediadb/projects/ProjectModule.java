@@ -1161,6 +1161,26 @@ Client EnterMediaModule.uploadFilesIntoCollection
 Server ProjectModule.uploadFile
 
 	 */
+	public void uploadMedia(WebPageRequest inReq) throws Exception
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+
+		//MediaArchive archive = getMediaArchive(inReq);
+
+		String savepath = inReq.getRequestParameter("savepath");
+		FileUploadItem item = properties.getFirstItem();
+		
+		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
+		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+		
+	}
+	
 	public void uploadFile(WebPageRequest inReq) throws Exception
 	{
 		//MediaArchive archive = getMediaArchive(inReq);

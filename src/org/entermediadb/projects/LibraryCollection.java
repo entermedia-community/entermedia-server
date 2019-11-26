@@ -10,6 +10,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 import org.openedit.util.strainer.FilterReader;
@@ -194,6 +195,15 @@ return catid;
 
 		return fieldPermissions;
 	}
+	
+	public String pickLabel(MultiValued inTopic)
+	{
+		TopicLabelPicker labels = new TopicLabelPicker();
+		labels.setArchive(getMediaArchive());
+		labels.setLibraryCollection(this);
+		return labels.showLabel(inTopic);
+	}
+
 	
 	
 	

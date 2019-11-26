@@ -255,7 +255,7 @@ public class SyncModule extends BaseMediaModule
 		finaldata.put("catalogid", archive.getCatalogId());
 		finaldata.put("fileuploads", todownload);
 		
-		inReq.putPageValue("finaldata", todownload);
+		inReq.putPageValue("finaldata", finaldata);
 	}
 	public void receiveFile(WebPageRequest inReq)
 	{

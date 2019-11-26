@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties> 
+<properties   beanname="dataSearcher"> > 
   <property id="id" datatype="number" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="number">Id 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  

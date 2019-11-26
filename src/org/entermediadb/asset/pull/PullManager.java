@@ -337,10 +337,13 @@ public class PullManager implements CatalogEnabled
 			try
 			{
 				node = (Data) iterator.next();
+				node.setValue("lasterrordate",null);
+				node.setValue("lasterrormessage", null);
+
 				String url = node.get("baseurl");
-				if (url == null)
+				if (url == null || !Boolean.parseBoolean( node.get("enabled") ) )
 				{
-					log.error("No url, skipping");
+					log.error("skipping " + node);
 					continue;
 				}
 				Date now = new Date();
@@ -356,10 +359,6 @@ public class PullManager implements CatalogEnabled
 				Object dateob = node.getValue("lastpulldate");
 				Date pulldate = null;
 
-				if (dateob == null)
-				{
-					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 1);
-				}
 				if (dateob instanceof String)
 				{
 					pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
@@ -368,8 +367,12 @@ public class PullManager implements CatalogEnabled
 				{
 					pulldate = (Date) dateob;
 				}
+				if (dateob == null)
+				{
+					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 7);
+				}
 
-				if (pulldate.getTime() + (1000L * 30L) > System.currentTimeMillis())
+				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
 				{
 					log.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
 					inLog.info(node.getName() + " We just ran a pull within last 30 seconds. Trying again later");
@@ -379,7 +382,11 @@ public class PullManager implements CatalogEnabled
 				params.put("lastpullago", String.valueOf(ago));
 				params.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(pulldate));
 
+				inLog.info(node.getName() + " checking since " + pulldate);
+
 				long totalcount = downloadAllData(inArchive, connection, node, params);
+				
+				inLog.info(node.getName() + " downloaded " + totalcount );
 				
 				//uploadChanges... 
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
@@ -390,13 +397,9 @@ public class PullManager implements CatalogEnabled
 				
 				pushLocalChanges(inArchive,node,pulldate,trimmed, connection);
 				
-				if (totalcount > 0 || node.getValue("lasterrordate") != null)
-				{
-					node.setValue("lastpulldate", now);
-					node.setValue("lasterrormessage", null);
-					node.setValue("lasterrordate", null);
-					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-				}
+				node.setValue("lastpulldate", now);
+				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+
 			}
 			catch (Throwable ex)
 			{
@@ -547,13 +550,13 @@ public class PullManager implements CatalogEnabled
 		HitTracker hits = manager.getEditedDocuments(getCatalogId(), sinceDate);
 		return map(hits);
 	}
-	protected Map<String, SearchHitData> buildLocalChangesByIds(MediaArchive inArchive, JSONArray inArray)
+	protected Map<String, SearchHitData> buildLocalChangesByIds(MediaArchive inArchive, Collection inArray)
 	{
 		ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 		Collection<String> ids = new ArrayList<String>();
 		for (Iterator iterator = inArray.iterator(); iterator.hasNext();)
 		{
-			JSONObject objt = (JSONObject) iterator.next();
+			Map objt = (Map) iterator.next();
 			String id = (String)objt.get("id");
 			ids.add(id);
 		}
@@ -578,7 +581,7 @@ public class PullManager implements CatalogEnabled
 	
 
 	
-	protected Collection importChanges(MediaArchive inArchive, JSONArray jsonarray)
+	protected Collection importChanges(MediaArchive inArchive, Collection jsonarray)
 	{
 		Set searchers = new HashSet();
 		try
@@ -775,7 +778,11 @@ public class PullManager implements CatalogEnabled
 	
 	public JSONArray receiveDataChanges(MediaArchive inArchive, Map inJsonRequest)
 	{
-		JSONArray array = (JSONArray)inJsonRequest.get("results");
+		//sed by: java.lang.ClassCastException: class java.util.ArrayList cannot be cast to class org.json.simple.JSONArray (java.util.ArrayList is in module java.base of loader 'bootstrap'; 
+		//org.json.simple.JSONArray is in unnamed module of loader 'app')
+
+		
+		Collection array = (Collection)inJsonRequest.get("results");
 		
 		importChanges(inArchive,array);
 		
@@ -852,7 +859,7 @@ public class PullManager implements CatalogEnabled
 				{
 					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					return;
 				}
 				//The server will return a list of files it needs
@@ -875,7 +882,8 @@ public class PullManager implements CatalogEnabled
 						File tosend = new File(reallocalpath);
 
 						JSONObject tosendparams = new JSONObject(fileinfo);
-						tosendparams.put("localpath", localpath);
+						tosendparams.put("catalogid", inArchive.getCatalogId());
+						tosendparams.put("savepath", localpath);
 						tosendparams.put("file.0", tosend);
 													
 						CloseableHttpResponse resp = inConnection.sharedMimePost(url,tosendparams);

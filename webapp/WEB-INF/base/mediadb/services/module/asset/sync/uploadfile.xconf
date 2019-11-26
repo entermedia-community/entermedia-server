@@ -1,5 +1,5 @@
 <page>
-	<path-action name="ProjectModule.uploadFile" alltypes="true"/>
+	<path-action name="ProjectModule.uploadMedia" alltypes="true"/>
 	<permission name="view">
 			<userprofile property="api-load-data" equals="true" />
 	</permission>

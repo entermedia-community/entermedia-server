@@ -5,10 +5,12 @@
 #end
 #set( $searcher = $mediaarchive.getSearcher("searcher") )
 #set( $hits = $mediaarchive.query("librarycollection").ids($oids).sort("name").search() )
+$hits.setHitsPerPage(200)
 {
 	"response":
 		{
 		    "status":"ok",
+		    "userid":"$user.getId()",
 			"totalhits" : $hits.size(),
 			"searchtype" : "$searcher.getSearchType()",
 			"hitsperpage": $hits.getHitsPerPage(),			
@@ -22,7 +24,7 @@
 			}
 		},
 	"results":[
-		#foreach($hit in $hits)#if( ${foreach.count} != 1 ), #end
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 		#json($hit $searcher.getPropertyDetails()) 
 		#end
 		]
