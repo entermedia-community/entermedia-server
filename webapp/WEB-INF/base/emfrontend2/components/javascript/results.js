@@ -474,7 +474,7 @@ $(document).ready(function(url,params)
 	        var href = home+'/views/search/index.html';
 	        var searchdata = resultsdiv.data();
 	        searchdata.oemaxlevel = 1;
-			
+			searchdata.cache = false;
 	        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
 	            $('#filteredresults').html(data);
 	            $(window).trigger( "resize" );

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties  beanname="dataSearcher"> 
+
+  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
+    <name>
+      <language id="de"><![CDATA[Id]]></language>
+      <language id="en"><![CDATA[Id]]></language>
+      <language id="es"><![CDATA[Id]]></language>
+      <language id="fr"><![CDATA[Id]]></language>
+    </name>
+  </property>
+
   <property id="date" index="true" filter="false"  datatype="date" editable="false" stored="true" sortable="true" keyword="false">
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  
