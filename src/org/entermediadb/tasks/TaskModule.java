@@ -234,7 +234,7 @@ public class TaskModule extends BaseMediaModule
 		}	
 		for (Iterator iterator = week.iterator(); iterator.hasNext();)
 		{
-			List values = (List ) iterator.next();
+			List values = (List) iterator.next();
 			Collections.sort(values, new Comparator<ProjectGoal>()
 			{
 				@Override
@@ -1075,15 +1075,14 @@ public class TaskModule extends BaseMediaModule
 		Searcher searcher = archive.getSearcher("projectgoal");
 		
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
+		
+		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
 				
 		QueryBuilder builder = searcher.query();
 		Collection userprojects = new HashSet();;
 		//if user is agent?
 		if( seeuser != null) {
-			if (!seeuser.equals("*"))  //Agent can see all
-			{
 				builder.match("userlikes", seeuser);
-			}
 		}
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
@@ -1094,28 +1093,26 @@ public class TaskModule extends BaseMediaModule
 		}
 		else 
 		{
-			if( seeuser == null || (seeuser != null && !seeuser.equals("*"))) 
+			if( !isAgent ) 
 				{
-				
-						//search only in project the user belongs
-						String currentuser = inReq.getUserName();
-						Collection allprojectsuser = archive.query("librarycollectionusers").
-								exact("followeruser",currentuser).
-								exact("ontheteam","true").search();
-						if(allprojectsuser.size()<1)
+					//search only in project the user belongs
+					String currentuser = inReq.getUserName();
+					Collection allprojectsuser = archive.query("librarycollectionusers").
+							exact("followeruser",currentuser).
+							exact("ontheteam","true").search();
+					if(allprojectsuser.size()<1)
+					{
+						return;
+					}
+					for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+					{
+						Data librarycol = (Data)iterator.next();
+						String colid = librarycol.get("collectionid");
+						if( colid != null)
 						{
-							return;
+							userprojects.add(colid);
 						}
-						for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
-						{
-							Data librarycol = (Data)iterator.next();
-							String colid = librarycol.get("collectionid");
-							if( colid != null)
-							{
-								userprojects.add(colid);
-							}
-						}
-					
+					}
 				}
 		}
 		
