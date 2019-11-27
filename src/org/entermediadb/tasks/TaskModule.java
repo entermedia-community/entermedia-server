@@ -1073,42 +1073,50 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("projectgoal");
-		String collectionid= inReq.getRequestParameter("collectionid");
+		
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 				
 		QueryBuilder builder = searcher.query();
 		Collection userprojects = new HashSet();;
 		//if user is agent?
-		//String collectionid= "*";
-		
-		if( seeuser != null)
-		{
-			builder.match("userlikes", seeuser);
+		if( seeuser != null) {
+			if (!seeuser.equals("*"))  //Agent can see all
+			{
+				builder.match("userlikes", seeuser);
+			}
 		}
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		//String collectionid= "*";
 		if (collectionid != null) 
 		{
 			userprojects.add(collectionid);
 		}
 		else 
 		{
-			//search only in project the user belongs
-			String currentuser = inReq.getUserName();
-			Collection allprojectsuser = archive.query("librarycollectionusers").
-					exact("followeruser",currentuser).
-					exact("ontheteam","true").search();
-			if(allprojectsuser.size()<1)
-			{
-				return;
-			}
-			for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
-			{
-				Data librarycol = (Data)iterator.next();
-				String colid = librarycol.get("collectionid");
-				if( colid != null)
+			if( seeuser == null || (seeuser != null && !seeuser.equals("*"))) 
 				{
-					userprojects.add(colid);
+				
+						//search only in project the user belongs
+						String currentuser = inReq.getUserName();
+						Collection allprojectsuser = archive.query("librarycollectionusers").
+								exact("followeruser",currentuser).
+								exact("ontheteam","true").search();
+						if(allprojectsuser.size()<1)
+						{
+							return;
+						}
+						for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+						{
+							Data librarycol = (Data)iterator.next();
+							String colid = librarycol.get("collectionid");
+							if( colid != null)
+							{
+								userprojects.add(colid);
+							}
+						}
+					
 				}
-			}
 		}
 		
 		if(userprojects.size()>0) 
