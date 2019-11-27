@@ -1,0 +1,8 @@
+<page>
+	<permission name="view">
+		<blank/>
+	</permission>
+	<path-action name="JsonAdminModule.preprocess" />
+	<path-action name="GoogleModule.createUserFromGoogleKey" />
+
+</page>

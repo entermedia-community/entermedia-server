@@ -55,5 +55,25 @@ public class GoogleModule extends BaseMediaModule
 
 	}	
 	
+	public void createUserFromGoogleKey(WebPageRequest inReq) throws Exception
+	{
+		String accesstoken = inReq.getRequestParameter("accesstoken");
+		
+		GoogleManager manager = getGoogleManager(inReq);
+		Map<String,String> details = manager.getTokenDetails(accesstoken);
+		if( details != null)
+		{
+			String email = details.get("email");
+			if( email != null)
+			{
+				User user = manager.createUserIfNeeded(email);
+				String value = getMediaArchive(inReq).getUserManager().getEnterMediaKey(user);
+				inReq.putPageValue("entermediakey", value);
+				inReq.putPageValue("user", user);
+			}	
+		}
+
+	}	
+
 	
 }
