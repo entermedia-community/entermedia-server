@@ -170,7 +170,7 @@ public class PullManager implements CatalogEnabled
 					else
 					{
 						File file = getFile(asset);
-						downloadOriginal(inArchive, inConnection, asset, file, true);
+						downloadOriginal(inArchive, inConnection, node, asset, file, true);
 					}
 				}
 			}
@@ -185,10 +185,22 @@ public class PullManager implements CatalogEnabled
 			throw new OpenEditException(ex);
 		}
 	}
-
-	public ContentItem downloadOriginal(MediaArchive inArchive,HttpSharedConnection connection, Asset inAsset, File inFile, boolean ifneeded)
+	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
+		Data node = loadMasterDataForAsset(inArchive, inAsset);
+		if( node == null)
+		{
+			return null;
+		}
+		HttpSharedConnection connection = createConnection(node);
+		
+		ContentItem item = downloadOriginal(inArchive,connection,node,inAsset,inFile,ifneeded);
+		return item;
 
+	}
+
+	protected Data loadMasterDataForAsset(MediaArchive inArchive, Asset inAsset)
+	{
 		Map emEditStatus = inAsset.getEmRecordStatus();
 		String clusterid = (String) emEditStatus.get("mastereditclusterid");
 		String localClusterId = inArchive.getNodeManager().getLocalClusterId();
@@ -204,6 +216,11 @@ public class PullManager implements CatalogEnabled
 			log.info("Cannot find information for : " + clusterid + " so cannot download asset " + inAsset.getId());
 			return null;
 		}
+		return node;
+	}
+	public ContentItem downloadOriginal(MediaArchive inArchive, HttpSharedConnection connection, Data node, Asset inAsset, File inFile, boolean ifneeded)
+	{
+
 		String url = node.get("baseurl");
 		inFile.getParentFile().mkdirs();
 		FileItem item = new FileItem(inFile);
@@ -260,21 +277,25 @@ public class PullManager implements CatalogEnabled
 		return item;
 
 	}
-
 	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset)
+	{
+		Data masterData = loadMasterDataForAsset(inArchive, inAsset);
+		if( masterData == null)
+		{
+			return null;
+		}
+		HttpSharedConnection connection = createConnection(masterData);
+		InputStream stream = getOriginalDocumentStream(inArchive, connection,masterData, inAsset);
+		return stream;
+
+	}
+	protected InputStream getOriginalDocumentStream(MediaArchive inArchive, HttpSharedConnection connection, Data inMasterData, Asset inAsset)
 	{
 		try
 		{
-			Data node = (Data) inArchive.getSearcher("editingcluser").searchByField("clustername", inAsset.get("mastednodeid"));
-			String url = node.get("baseurl");
+			String url = inMasterData.get("baseurl");
 			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
-			HttpSharedConnection connection = new HttpSharedConnection();
 			Map params = new HashMap();
-			if (node.get("entermediakey") != null)
-			{
-				params.put("entermedia.key", node.get("entermediakey"));
-			}
-
 			HttpResponse genfile = connection.sharedPost(finalurl, params);
 			return genfile.getEntity().getContent();
 		}
@@ -342,16 +363,13 @@ public class PullManager implements CatalogEnabled
 					continue;
 				}
 				Date now = new Date();
-
-				HttpSharedConnection connection = new HttpSharedConnection();
-				Map params = new HashMap();
 				if (node.get("entermediakey") == null)
 				{
 					log.error("entermediakey is required");
 					continue;
 				}
-				connection.addSharedHeader("X-token", node.get("entermediakey"));
-				connection.addSharedHeader("X-tokentype", "entermedia");
+
+				HttpSharedConnection connection = createConnection(node);
 				Object dateob = node.getValue("lastpulldate");
 				Date pulldate = null;
 
@@ -375,6 +393,7 @@ public class PullManager implements CatalogEnabled
 					continue;
 				}
 				long ago = now.getTime() - pulldate.getTime();
+				Map params = new HashMap();
 				params.put("lastpullago", String.valueOf(ago));
 				params.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(pulldate));
 
@@ -418,6 +437,14 @@ public class PullManager implements CatalogEnabled
 			}
 
 		}
+	}
+
+	private HttpSharedConnection createConnection(Data node)
+	{
+		HttpSharedConnection connection = new HttpSharedConnection();
+		connection.addSharedHeader("X-token", node.get("entermediakey"));
+		connection.addSharedHeader("X-tokentype", "entermedia");
+		return connection;
 	}
 
 	private HitTracker removeMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
@@ -875,7 +902,7 @@ public class PullManager implements CatalogEnabled
 					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 					{
 						JSONObject fileinfo = (JSONObject) iterator.next();
-						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json";
+						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
 						
 						String localpath = (String)fileinfo.get("localpath"); //On the remote machie
 						

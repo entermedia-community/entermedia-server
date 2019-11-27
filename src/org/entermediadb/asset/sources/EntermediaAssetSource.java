@@ -58,8 +58,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
-
+		//log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
 		return getPullManager().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
 
