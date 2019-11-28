@@ -1,7 +1,11 @@
 {
 	"response":
 	{
+#if($entermediakey)
 		"status":"ok",
+#else
+		 "status": "invalidlogin",
+#end		 		
 		"user":"${user.id}"
 	},
 	"results": 
@@ -13,8 +17,6 @@
 		"email" : "$!user.email",
 		"userid":"${user.id}"
 		"screenname" : "$!user.getScreenName()"
-#else
-		 "status": "invalidlogin"		
 #end
 	}
 }

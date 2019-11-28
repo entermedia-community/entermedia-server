@@ -19,6 +19,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.sources.OriginalsAssetSource;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -103,6 +104,7 @@ public class PullManager implements CatalogEnabled
 				Map changed = (Map) iterator2.next();
 				String sourcepath = (String) changed.get("sourcepath");
 				//List generated media and compare it
+								
 				if (!skipgenerated)
 				{
 					Collection files = (Collection) changed.get("files");
@@ -169,8 +171,19 @@ public class PullManager implements CatalogEnabled
 					}
 					else
 					{
-						File file = getFile(asset);
-						downloadOriginal(inArchive, inConnection, node, asset, file, true);
+						
+						Map localrecordstatus = (Map) asset.getEmRecordStatus();
+						if( localrecordstatus == null)
+						{
+							continue;
+						}
+						String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
+						String myself = inArchive.getNodeManager().getLocalClusterId();
+						if (!myself.equals(remotemasterclusterid))
+						{
+							File file = getFile(asset);
+							downloadOriginal(inArchive, inConnection, node, asset, file, true);
+						}
 					}
 				}
 			}
@@ -407,7 +420,7 @@ public class PullManager implements CatalogEnabled
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
 				
 				String remotemastereditid = node.get("clustername");
-				HitTracker trimmed = removeMasterNodeEdits(remotemastereditid,localchanges);
+				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid,localchanges);
 				
 				pushLocalChanges(inArchive,node,pulldate,trimmed, connection);
 				
@@ -447,7 +460,7 @@ public class PullManager implements CatalogEnabled
 		return connection;
 	}
 
-	private HitTracker removeMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
+	private HitTracker removeRemotesMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
 	{
 		HitTracker finallist = new ListHitTracker();
 		
@@ -786,6 +799,11 @@ public class PullManager implements CatalogEnabled
 				String sourcepath = (String) data.getSearchData().get("sourcepath");
 				details.put("sourcepath", sourcepath);
 				JSONArray files = new JSONArray();
+				
+				Asset asset = archive.getAsset(data.getId());
+				Map editstatus = asset.getEmRecordStatus();
+				String mastereditclusterid = (String)editstatus.get("mastereditclusterid");
+				
 				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
 				{
 					JSONObject contentdetails = new JSONObject();
@@ -793,6 +811,8 @@ public class PullManager implements CatalogEnabled
 					contentdetails.put("localpath", item.getPath());
 					contentdetails.put("size", String.valueOf( item.getLength()) );
 					contentdetails.put("lastmodified", item.getLastModified());
+					contentdetails.put("mastereditclusterid", mastereditclusterid);
+					
 					files.add(contentdetails);
 				}
 				details.put("files", files);
@@ -813,20 +833,27 @@ public class PullManager implements CatalogEnabled
 		//org.json.simple.JSONArray is in unnamed module of loader 'app')
 
 		
-		Collection array = (Collection)inJsonRequest.get("results");
+		Collection jsonarray = (Collection)inJsonRequest.get("results");
 		
-		importChanges(inArchive,array);
+		importChanges(inArchive,jsonarray);
 		
 		//Look for any assets and compare all the thunbnails
 		Map response = (Map)inJsonRequest.get("response");
 
-		JSONArray todownload = new JSONArray();
+		JSONArray toupload = new JSONArray();
 		
 		Collection generated = (Collection)inJsonRequest.get("generated");
 		for (Iterator iterator = generated.iterator(); iterator.hasNext();)
 		{
 			JSONObject object = (JSONObject) iterator.next();
 			String assetsouercepath = (String)object.get("sourcepath");
+			
+			String remotemasterclusterid = (String) object.get("mastereditclusterid");
+//			if( inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
+//			{
+//				log.info("Dont download non-master generated files?");
+//				continue;
+//			}
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetsouercepath + "/";
 			Collection files = (Collection)object.get("files");
 			if( files != null)
@@ -849,15 +876,58 @@ public class PullManager implements CatalogEnabled
 						//contentdetails.put("size", String.valueOf( item.getLength()) );
 						contentdetails.put("lastmodified", item.getLastModified());
 						
-						todownload.add(contentdetails);
+						toupload.add(contentdetails);
 					}
 					
 				}
 			}
 		}
 
+		OriginalsAssetSource originals = (OriginalsAssetSource)inArchive.getBean("mountAssetSource");
+		//Loop over the original media
+		for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
+		{
+			JSONObject object = (JSONObject) iterator.next();
+			String searchtype = (String) object.get("searchtype");
+			if( searchtype.equals("asset"))
+			{
+				String catalogid = (String) object.get("catalog");
+				catalogid = catalogid.replace("_", "/");
+	
+				Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+				String id = (String) object.get("id");
+				
+				JSONObject remotesource = (JSONObject) object.get("source");
+				Map localrecordstatus = (Map)remotesource.get("emrecordstatus");
+				if (remotesource != null &&  localrecordstatus != null)
+				{
+//					String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
+//					if( !inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
+//					{
+					//Upload the original if they have it?
+					Asset localasset = inArchive.getAsset(id);
+					if(localasset != null)
+					{
+						ContentItem item = originals.getOriginalContent(localasset);
+						if( !item.exists() )
+						{
+							JSONObject contentdetails = new JSONObject();
+							contentdetails.put("filename", item.getName());
+							contentdetails.put("localpath", item.getPath());
+							contentdetails.put("size", String.valueOf( item.getLength()) );
+							contentdetails.put("lastmodified", item.getLastModified());
+							toupload.add(contentdetails);
+						}
+					}
+//					}
+				}
+			}
+		}
+		
+		
+
 		//and send them back
-		return todownload;
+		return toupload;
 	}
 
 	/**
