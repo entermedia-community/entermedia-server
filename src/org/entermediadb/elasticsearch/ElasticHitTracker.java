@@ -2,7 +2,6 @@ package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -34,9 +33,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.hittracker.UserFilters;
-
-import com.vividsolutions.jts.index.bintree.Node;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -424,16 +420,22 @@ public class ElasticHitTracker extends HitTracker
 		return (int) getSearchResponse(0).getHits().getTotalHits();
 	}
 
-	public double getSum(String inField)
+	public double getSum(String inField, String inSummarizer)
 	{
-		SearchResponse response = getSearchResponse(0);
-
-		Sum aggregation = (Sum) response.getAggregations().get(inField + "_sum");
-		if(aggregation != null){
-		return aggregation.getValue();
-		} else{
-			return -1;
+		double total = 0;
+		Terms terms = (Terms)getAggregations().get(inField);
+		if( terms != null)
+		{
+			Collection<Terms.Bucket> buckets = terms.getBuckets(); 
+		
+			for(Terms.Bucket bucket : buckets)
+			{
+				Sum aggregation = bucket.getAggregations().get(inSummarizer);
+				double count = aggregation.getValue();				
+				total = total + count;
+			}
 		}
+		return total;
 	}
 	
 
