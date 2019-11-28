@@ -87,7 +87,7 @@ public class PullManager implements CatalogEnabled
 
 
 	//Used by both pulls
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
+	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated)
 	{
 		String url = node.get("baseurl");
 		try
@@ -156,33 +156,6 @@ public class PullManager implements CatalogEnabled
 								filler.close(fos);
 								tosave.setLastModified(datetime);
 							}
-						}
-					}
-				}
-
-				if (!skiporiginal)
-				{
-					String assetid = (String) changed.get("id");
-					Asset asset = inArchive.getAsset(assetid);
-					if (asset == null)
-					{
-						log.error("Could not find asset. Canceling original download for assetid " + assetid + " sourcepath:" + sourcepath);
-						continue;
-					}
-					else
-					{
-						
-						Map localrecordstatus = (Map) asset.getEmRecordStatus();
-						if( localrecordstatus == null)
-						{
-							continue;
-						}
-						String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
-						String myself = inArchive.getNodeManager().getLocalClusterId();
-						if (!myself.equals(remotemasterclusterid))
-						{
-							File file = getFile(asset);
-							downloadOriginal(inArchive, inConnection, node, asset, file, true);
 						}
 					}
 				}
@@ -530,13 +503,12 @@ public class PullManager implements CatalogEnabled
 		if (ok != null && ok.equals("ok"))
 		{
 			boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
-			boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
 
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
 
 			Collection saved = importChanges(inArchive, jsonarray);
 			//pull in generated 	
-			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated, skiporiginal);
+			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
 			datacounted = datacounted + saved.size();
 
@@ -571,7 +543,7 @@ public class PullManager implements CatalogEnabled
 				
 				saved = importChanges(inArchive, results);
 				//pull in generated 	
-				downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated, skiporiginal);
+				downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
 				datacounted = datacounted + saved.size();
 			}
@@ -869,62 +841,16 @@ public class PullManager implements CatalogEnabled
 					if( item.getLength() != Long.parseLong(size))
 					{
 						//download it
-						
 						JSONObject contentdetails = new JSONObject();
 						contentdetails.put("filename", item.getName());
 						contentdetails.put("localpath", item.getPath());
-						//contentdetails.put("size", String.valueOf( item.getLength()) );
 						contentdetails.put("lastmodified", item.getLastModified());
-						
 						toupload.add(contentdetails);
 					}
 					
 				}
 			}
 		}
-
-		OriginalsAssetSource originals = (OriginalsAssetSource)inArchive.getBean("mountAssetSource");
-		//Loop over the original media
-		for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
-		{
-			JSONObject object = (JSONObject) iterator.next();
-			String searchtype = (String) object.get("searchtype");
-			if( searchtype.equals("asset"))
-			{
-				String catalogid = (String) object.get("catalog");
-				catalogid = catalogid.replace("_", "/");
-	
-				Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
-				String id = (String) object.get("id");
-				
-				JSONObject remotesource = (JSONObject) object.get("source");
-				Map localrecordstatus = (Map)remotesource.get("emrecordstatus");
-				if (remotesource != null &&  localrecordstatus != null)
-				{
-//					String remotemasterclusterid = (String) localrecordstatus.get("mastereditclusterid");
-//					if( !inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
-//					{
-					//Upload the original if they have it?
-					Asset localasset = inArchive.getAsset(id);
-					if(localasset != null)
-					{
-						ContentItem item = originals.getOriginalContent(localasset);
-						if( !item.exists() )
-						{
-							JSONObject contentdetails = new JSONObject();
-							contentdetails.put("filename", item.getName());
-							contentdetails.put("localpath", item.getPath());
-							contentdetails.put("size", String.valueOf( item.getLength()) );
-							contentdetails.put("lastmodified", item.getLastModified());
-							toupload.add(contentdetails);
-						}
-					}
-//					}
-				}
-			}
-		}
-		
-		
 
 		//and send them back
 		return toupload;

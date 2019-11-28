@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -124,6 +125,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected CacheManager fieldCacheManager;
 	protected BulkProcessor fieldBulkProcessor;
 	protected ArrayList fieldBulkErrors = new ArrayList();
+
+	public static String[] synctypes = new String[] { "library","category", "asset", "librarycollection"};
+	public static Collection synctypesCol = Arrays.asList(synctypes);
 
 	public CacheManager getCacheManager()
 	{
@@ -1454,8 +1458,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		String[] types = new String[] { "library","category", "asset", "librarycollection" };
-		search.setTypes(types);
+		search.setTypes(synctypes);
 
 		if (inAfter == null)
 		{
@@ -1484,10 +1487,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		SearchRequestBuilder search = getClient().prepareSearch(toId(inCatalogId));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		String[] types = new String[] { "library","category", "asset", "librarycollection" };
-		search.setTypes(types);
+		search.setTypes(synctypes);
 
-		IdsQueryBuilder ids = QueryBuilders.idsQuery(types);
+		IdsQueryBuilder ids = QueryBuilders.idsQuery(synctypes);
 		ids.addIds(inIds);
 		search.setQuery(ids);
 		search.setRequestCache(true);  //What does this do?
