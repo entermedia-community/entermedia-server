@@ -1916,11 +1916,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				return;
 			}
-			if( !ElasticNodeManager.synctypesCol.contains(getSearchType()))
-			{
-				return;
-			}
-					
 			Map status = (Map) inData.getValue("emrecordstatus");
 			if(status == null) {
 				status = new HashMap();
