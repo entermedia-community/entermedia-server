@@ -1038,13 +1038,70 @@ public class GoogleManager implements CatalogEnabled
 
 		String password = getMediaArchive().getUserManager().decryptPassword(inUser);
 
-		//The only way to save the password is to login as the user first.
-		
-		//We will need to either store their old password in EnterMedia or have someone delete the firebase user
-		String idToken = createUser(apikey, inUser, password);
+		String firebasepassword = inUser.get("firebasepassword");
+		if( firebasepassword != null)
+		{
+			if( !password.equals(firebasepassword))
+			{
+				String token = logIntoFirebase(apikey,inUser,firebasepassword);
+				if(token != null)
+				{
+					updatePasswordOn(apikey,inUser,token,password);
+			 		inUser.setValue("firebasepassword", password);
+			 		getMediaArchive().getUserManager().saveUser(inUser);
+				}
+			}
+		}
+		else
+		{
+			createFirebaseUser(apikey,inUser,password);
+	 		inUser.setValue("firebasepassword", password);
+	 		getMediaArchive().getUserManager().saveUser(inUser);
+		}
+	}
+
+	protected String logIntoFirebase(String apikey, User inUser, String firebasepassword)
+	{
+		JSONObject createrequest = new JSONObject();		
+		createrequest.put("email",inUser.getEmail());
+		createrequest.put("password",firebasepassword);	
+		createrequest.put("returnSecureToken",true)	;
+
+		String createurl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apikey;
+		CloseableHttpResponse createresp = getConnection().sharedPostWithJson(createurl,createrequest);
+ 		
+ 		if( createresp.getStatusLine().getStatusCode() != 200)
+		{
+ 			getConnection().release(createresp);
+ 			log.error("Could not log into Firebase. Please delete user " + inUser.getEmail());
+ 			return null;
+		}
+ 		JSONObject json  = getConnection().parseJson(createresp);
+ 		String idtoken = (String)json.get("idToken");
+ 		return idtoken;
+	}
+
+	protected void updatePasswordOn(String apikey, User inUser, String firebaseid, String password)
+	{
+		JSONObject createrequest = new JSONObject();		
+		createrequest.put("idToken",firebaseid);
+		createrequest.put("password",password);	
+		createrequest.put("returnSecureToken",true);
+
+		String createurl = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + apikey;
+		CloseableHttpResponse createresp = getConnection().sharedPostWithJson(createurl,createrequest);
+ 		
+ 		if( createresp.getStatusLine().getStatusCode() != 200)
+		{
+ 			getConnection().release(createresp);
+ 			log.error("Could not update password in Firebase. Please delete user " + inUser.getEmail());
+ 			return;
+		}
+ 		JSONObject json  = getConnection().parseJson(createresp);
+ 		String idtoken = (String)json.get("idToken");
 	}
 		
-	protected String createUser(String apikey, User inUser, String password)
+	protected void createFirebaseUser(String apikey, User inUser, String password)
 	{
 		JSONObject createrequest = new JSONObject();		
 		createrequest.put("email",inUser.getEmail());
@@ -1055,18 +1112,14 @@ public class GoogleManager implements CatalogEnabled
 		CloseableHttpResponse createresp = null;
  		createresp = getConnection().sharedPostWithJson(createurl,createrequest);
  		
-// 		if( createresp.getStatusLine().getStatusCode() == 400)
-//		{
+ 		if( createresp.getStatusLine().getStatusCode() != 200)
+		{
  			getConnection().release(createresp);
-// 			//EMAIL_EXISTS So login and get token
-// 			createurl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apikey;
-//	 		createresp = getConnection().sharedPostWithJson(createurl,createrequest);
-//		}
-// 		JSONObject json  = getConnection().parseJson(createresp);
+ 			log.error("Could not create user in firebase. Please delete existing user " + inUser.getEmail());
+ 			return;
+		}
+ 		JSONObject json  = getConnection().parseJson(createresp);
 // 		String idtoken = (String)json.get("idToken");
-//
-// 		return idtoken;
- 		return null; //We dont really need this for anything
 	}
 
 //	public JSONObject validateLogin(String email, String password) 
