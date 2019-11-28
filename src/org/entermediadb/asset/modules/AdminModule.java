@@ -406,7 +406,7 @@ public class AdminModule extends BaseMediaModule
 			}
 			if (user == null)
 			{
-				inReq.putPageValue("oe-exception", "Invalid Logon");
+				inReq.putPageValue("oe-exception", "Invalid Login");
 				return;
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
