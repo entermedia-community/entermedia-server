@@ -3757,7 +3757,10 @@ table.greytxt {
 	float:left; 
 	line-height: 22px;
 }
-
+.emsettingslist  li.singlecontainer,
+.emsettingslist  li.singlecontainer:hover {
+	background-color:#f9f9f9;
+}
 #addeditbox .form-control {
 	padding:0.15rem;
 	width:170px;
