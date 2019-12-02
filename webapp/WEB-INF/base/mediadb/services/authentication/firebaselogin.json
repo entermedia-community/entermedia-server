@@ -1,12 +1,14 @@
 {
 	"response":
 	{
-#if($entermediakey)
+#if($user && $entermediakey)
 		"status":"ok",
 #else
 		 "status": "invalidlogin",
 #end		 		
+#if( $user )
 		"user":"${user.id}"
+#end		
 	},
 	"results": 
 	{ 
