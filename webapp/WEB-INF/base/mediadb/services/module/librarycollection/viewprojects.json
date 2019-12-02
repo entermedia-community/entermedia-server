@@ -3,6 +3,7 @@
 #foreach( $ohit in $organizationsuser )
 	#set($x = $oids.add($ohit.collectionid))
 #end
+#set($x = $oids.add("NONE"))
 #set( $searcher = $mediaarchive.getSearcher("searcher") )
 #set( $hits = $mediaarchive.query("librarycollection").ids($oids).sort("name").search() )
 $hits.setHitsPerPage(200)

@@ -39,6 +39,7 @@ public class FireBase {
 		//message.put("to", "dBbB2BFT-VY:APA91bHrvgfXbZa-K5eg9vVdUkIsHbMxxxxxc8dBAvoH_3ZtaahVVeMXP7Bm0iera5s37ChHmAVh29P8aAVa8HF0I0goZKPYdGT6lNl4MXN0na7xbmvF25c4ZLl0JkCDm_saXb51Vrte");
 		//message.put("priority", "high");
 		//message.put("topic", "my_channel_id");
+		//message.put("from", inUser.getEmail());
 		message.put("topic", inChannel);
 		
 		//message.put("channel_id","my_channel_id");

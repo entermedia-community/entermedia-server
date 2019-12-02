@@ -3,6 +3,7 @@ package google;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.google.GoogleManager
 import org.entermediadb.projects.LibraryCollection
+import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.event.WebEvent
 import org.openedit.users.User
@@ -48,14 +49,25 @@ public void runit()
 			User otherUser = mediaArchive.getUser(userid);
 			if( otherUser != null)
 			{
-				String subject = "Messages / " + otherUser.getScreenName() + "]";
-				Map extra = new HashMap();
-				extra.put("collectionid", parentcollectionid);
-				extra.put("collectionlabel", collection.getName());
-				extra.put("collectivetopicid", topicid);
-				extra.put("collectivetopiclabel", otherUser.getScreenName());
-				extra.put("userid", aUser.getId());
-				manager.notifyTopic(parentcollectionid, aUser, subject, message, extra);
+				Data lastchecked = mediaArchive.query("chattopiclastchecked").exact("userid", userid).
+					exact("collectionid", parentcollectionid).searchOne();  //Wont be in any other collection
+				if( lastchecked != null)
+				{
+					Date checked = lastchecked.getDate("datechecked");
+					if( checked.getTime() + 1000*60*10 > System.currentTimeMillis())
+					{
+						continue;
+					}
+					String subject = "Message from " + aUser.getScreenName();
+					Map extra = new HashMap();
+					
+					extra.put("collectionid", collection.getId());
+					extra.put("collectionlabel", collection.getName());
+					extra.put("collectivetopicid", topicid);
+					extra.put("collectivetopiclabel", otherUser.getScreenName());
+					extra.put("userid", aUser.getId());
+					manager.notifyTopic(collection.getId(), aUser, subject, message, extra);
+				}
 			}
 		}
 		else

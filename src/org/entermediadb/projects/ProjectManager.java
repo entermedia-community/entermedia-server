@@ -1388,6 +1388,7 @@ public class ProjectManager implements CatalogEnabled
 				return true;
 			}
 
+			//Legacy?
 			String visibility = collection.get("visibility");
 			if (visibility != null)
 			{

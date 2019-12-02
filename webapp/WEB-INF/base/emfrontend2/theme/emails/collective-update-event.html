@@ -1,0 +1,19 @@
+<p>[[Notifications for User]]: $followeruser</p>
+
+
+#foreach( $topicmod in $topicmods)
+
+#set($collectionid = $topicmod.collectionid)
+#set($topicid = $topicmod.chattopicid)
+
+#set( $collection = $mediaarchive.getCachedData("librarycollection"),$collectionid) )
+#set( $topic = $mediaarchive.getCachedData("collectiveproject"),$topicid) )
+<div>
+	<a href="$context.siteRoot$apphome/collective/community/index.html?collectionid={$collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
+</div>	
+#end
+
+<br>
+<p>
+[[To change notification preferences please edit your]] <a href="$context.siteRoot$apphome/views/myaccount/preferences/index.html">[[Account Preferences]]</a>
+</p>

@@ -1041,15 +1041,19 @@ public class GoogleManager implements CatalogEnabled
 		String firebasepassword = inUser.get("firebasepassword");
 		if( firebasepassword != null)
 		{
-			if( !password.equals(firebasepassword))
+			String token = logIntoFirebase(apikey,inUser,firebasepassword);
+			if( token == null)
 			{
-				String token = logIntoFirebase(apikey,inUser,firebasepassword);
-				if(token != null)
-				{
-					updatePasswordOn(apikey,inUser,token,password);
-			 		inUser.setValue("firebasepassword", password);
-			 		getMediaArchive().getUserManager().saveUser(inUser);
-				}
+				//maybe user is deleted?
+				createFirebaseUser(apikey,inUser,password);
+		 		inUser.setValue("firebasepassword", password);
+		 		getMediaArchive().getUserManager().saveUser(inUser);
+			}
+			else if( !password.equals(firebasepassword ) )
+			{
+				updatePasswordOn(apikey,inUser,token,password);
+		 		inUser.setValue("firebasepassword", password);
+		 		getMediaArchive().getUserManager().saveUser(inUser);
 			}
 		}
 		else
