@@ -80,6 +80,7 @@ public void init()
 		objects.put("topicmods",topicmods);
 		objects.put("followeruser",followeruser);
 		objects.put("apphome","/" + appid);
+		objects.put("mediaarchive",mediaArchive);
 		templatemail.send(objects);
 		log.info("Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
 	}

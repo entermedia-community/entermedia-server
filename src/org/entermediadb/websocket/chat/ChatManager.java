@@ -56,7 +56,7 @@ public class ChatManager implements CatalogEnabled
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public void updateChatTopicLastModified(String channelid)
+	public synchronized void updateChatTopicLastModified(String channelid)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("channelid", channelid).searchOne();
 		if (status == null)
@@ -74,7 +74,7 @@ public class ChatManager implements CatalogEnabled
 	}
 
 	//TODO: Do this while messages are coming in
-	public void updateChatTopicLastChecked(String channelid, String inUserId)
+	public synchronized void updateChatTopicLastChecked(String channelid, String inUserId)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).exact("userid", inUserId).searchOne();
 		if (status == null)

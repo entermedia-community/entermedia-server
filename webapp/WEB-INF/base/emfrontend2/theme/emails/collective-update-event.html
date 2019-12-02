@@ -6,10 +6,10 @@
 #set($collectionid = $topicmod.collectionid)
 #set($topicid = $topicmod.chattopicid)
 
-#set( $collection = $mediaarchive.getCachedData("librarycollection"),$collectionid) )
-#set( $topic = $mediaarchive.getCachedData("collectiveproject"),$topicid) )
+#set( $collection = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+#set( $topic = $mediaarchive.getCachedData("collectiveproject",$topicid) )
 <div>
-	<a href="$context.siteRoot$apphome/collective/community/index.html?collectionid={$collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
+	<a href="$context.siteRoot$apphome/collective/community/index.html?collectionid=${collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
 </div>	
 #end
 
