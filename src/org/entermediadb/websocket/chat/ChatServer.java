@@ -140,22 +140,27 @@ public class ChatServer
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
-//			if( chatConnection.getUserId() != null)
-//			{
-//				String catalogid = (String) inMap.get("catalogid");
-//				if( catalogid != null)
-//				{
-//					getExecutorManager(catalogid).execute( new Runnable() {
-//						@Override
-//						public void run() 
-//						{
-//							ChatManager manager = getChatManager(catalogid);
-//							String channelid = (String)inMap.get("channel");
-//							manager.updateChatTopicLastModified(channelid);
-//						}
-//					});
-//				}
-//			}
+			
+		}	
+		String catalogid = (String) inMap.get("catalogid");
+		if( catalogid != null)
+		{
+			ChatManager manager = getChatManager(catalogid);
+			getExecutorManager(catalogid).execute( new Runnable() {
+				@Override
+				public void run() 
+				{
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
+						if( chatConnection.getUserId() != null)
+						{
+							String channelid = (String)inMap.get("channel");
+							manager.updateChatTopicLastChecked(channelid,  chatConnection.getUserId());
+						}						
+					}	
+				}
+			});
 		}
 	}
 
