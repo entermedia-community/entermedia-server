@@ -547,7 +547,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		try
 		{
 			String from = getFrom();
-			
+			String fromname = getFromName();
 			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
 			{
 				postMail.postMail(getRecipients(),getSubject(),output,null,from,getFileAttachments(), getProperties());
@@ -556,10 +556,14 @@ public class TemplateWebEmail extends WebEmail implements Data
 			{
 				InternetAddress target = new InternetAddress();
 				target.setAddress(from);
+				if( fromname != null)
+				{
+					target.setPersonal(fromname);
+				}
 				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,target,getFileAttachments(), getProperties());
 			}
 		}
-		catch ( MessagingException ex)
+		catch ( Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
