@@ -75,7 +75,16 @@ public void init()
 		List topicmods = usertopics.get(useerid);
 		User followeruser = mediaArchive.getUser(useerid);
 		WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
-		templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+		if( topicmods.size() > 1)
+		{
+			templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+		}
+		else
+		{
+			Data oneitem = topicmods.iterator().next();
+			Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
+			templatemail.setSubject("[EM] " + topic.getName() + " Notification"); //TODO: Translate
+		}
 		Map objects = new HashMap();
 		objects.put("topicmods",topicmods);
 		objects.put("followeruser",followeruser);
