@@ -58,7 +58,7 @@ public class ChatManager implements CatalogEnabled
 
 	public synchronized void updateChatTopicLastModified(String channelid)
 	{
-		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("channelid", channelid).searchOne();
+		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("chattopicid", channelid).searchOne();
 		if (status == null)
 		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastmodified").createNewData();
