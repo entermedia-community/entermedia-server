@@ -3,18 +3,19 @@
 	#set($idcount = "")
 #end
 
+<div class="assetpicker">
 
 <div class="render-type-thumbnail" id="${detail.id}-preview" style="padding: 4px;">
-
 #if($val && $val != "")
 	#set( $foundrow = $mediaarchive.getAsset($val)  )
 	#if($foundrow)
 		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
 		<div style="padding:5px 0;">
-		<a href="$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1" class="ajax removefieldassetvalue" 
+		<a href="#" class="removefieldassetvalue" 
 			data-targetdivinner="${detail.id}-preview"
 			title="[[Remove Asset Selected]]" 
-			data-dataid="${detail.id}-value"><i class="fas fa-times"></i> [[Clear Selection]]</a>
+			data-detailid="${detail.id}"
+			><i class="fas fa-times"></i> [[Clear Selection]]</a>
 		</div>
 	#end
 #end
@@ -36,8 +37,4 @@
 <span id="${detail.id}-file-info" style="font-size:90%"></span>
 
 
-
-##<input class="render-choose-file btn-btn-sm btn-primary" type="file" name="file.${detail.getId()}" />
-
-
-
+</div>

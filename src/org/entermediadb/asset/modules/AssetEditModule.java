@@ -1877,16 +1877,6 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			target = archive.getData(searchtype, id);
 		}
-
-		if (properties.getFirstItem() == null)
-		{
-			properties = (UploadRequest) inReq.getPageValue("properties");
-			if (properties == null || properties.getFirstItem() == null)
-			{
-				return;
-			}
-
-		}
 		if (id == null && target == null)
 		{
 			Searcher searcher = archive.getSearcher(searchtype);
@@ -1896,9 +1886,10 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.setRequestParameter("id", id);
 			String[] fields = inReq.getRequestParameters("field");
 
-			searcher.updateData(inReq, fields, target);
+			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
 		}
-
+		Collection savedassets = new ArrayList();
+		
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
 		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
@@ -1943,6 +1934,12 @@ public class AssetEditModule extends BaseMediaModule
 
 			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
 
+			String assigncategoryval  = inReq.findValue("assigncategory");
+			if( assigncategoryval != null)
+			{
+				assigncategory = Boolean.parseBoolean(assigncategoryval);
+			}
+
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
 
 			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
@@ -1974,7 +1971,9 @@ public class AssetEditModule extends BaseMediaModule
 				ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
 				manager.addAssetToCollection(archive, currentcollection, current);
 			}
+			savedassets.add(current);
 		}
+		inReq.putPageValue("savedassets", savedassets);
 
 	}
 

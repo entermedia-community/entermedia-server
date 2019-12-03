@@ -430,16 +430,7 @@ uiload = function() {
 		$('#' + navbar).toggle();
 
 	});
-	
-	lQuery(".removefieldassetvalue").livequery("click", function() {
-		var dataid = $(this).data("dataid");
-		if($(dataid)) {
-			$("#"+dataid).val("");
-		}		
-	});
-	
-
-	
+		
 	
 	emdialog = function(dialog, event) {
 		if( event )
@@ -1479,6 +1470,25 @@ uiload = function() {
 			});
 		}
 		return false;
+	});
+	
+
+	lQuery(".assetpicker .removefieldassetvalue").livequery("click", function(e) 
+	{
+		e.preventDefault();
+		var picker = $(this).closest(".assetpicker");
+		var detailid = $(this).data("detailid");
+		
+		picker.find("#" + detailid + "-preview").html("");
+		picker.find("#" + detailid + "-value").val("");
+		picker.find("#" + detailid + "-file").val("");		
+		
+		var theform = $(picker).closest("form");
+		theform = $(theform);
+		if( theform.hasClass("autosubmit"))
+		{
+			theform.trigger("submit");
+		}
 	});
 
 }// uiload

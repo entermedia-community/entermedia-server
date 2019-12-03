@@ -17,7 +17,7 @@ public class RelatedAsset implements Data
 		return getName();
 	}
 	
-	public Collection getObjects(String inField)
+	public Collection getValues(String inField)
 	{
 		Collection values = (Collection)getValue(inField);
 		return values;

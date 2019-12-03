@@ -16,8 +16,12 @@
  */
 package org.entermediadb.websocket.chat;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -86,5 +90,35 @@ public class ChatModule extends BaseMediaModule {
 		return manager;
 		
 	}
-	
+
+	public void attachFiles(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection savedassets = (Collection)inReq.getPageValue("savedassets");
+		String chatid = inReq.getRequestParameter("chatid");
+		Data chat = archive.getData("chatterbox",chatid);
+		String channel = chat.get("channel");
+		inReq.setRequestParameter("channel",channel);
+		//Just support one upload for now
+		Collection existing = chat.getValues("attachedassets");
+		if( existing != null && !existing.isEmpty() )
+		{
+			if(savedassets == null || savedassets.isEmpty())
+			{
+				savedassets = new ArrayList();
+			}
+		}
+		if(savedassets == null || savedassets.isEmpty())
+		{
+			chat.setValue("attachedassets", null);
+		}
+		else
+		{
+			Data firstupload = (Data)savedassets.iterator().next();
+			chat.setValue("attachedassets", firstupload);
+		}
+		archive.saveData("chatterbox", chat);
+		
+		
+	}
 }

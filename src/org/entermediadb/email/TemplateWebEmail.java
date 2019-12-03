@@ -120,7 +120,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		fieldSendDate = inSendDate;
 		
 	}
-	public Collection getObjects(String inField)
+	public Collection getValues(String inField)
 	{
 		Collection values = (Collection)getValue(inField);
 		return values;

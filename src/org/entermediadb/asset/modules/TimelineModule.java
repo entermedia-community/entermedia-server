@@ -118,7 +118,7 @@ public class TimelineModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		
 		String field = inReq.getRequestParameter("parentfield");
-		Collection timeline = asset.getObjects(field);
+		Collection timeline = asset.getValues(field);
 		if(timeline == null)
 		{
 			timeline = new ArrayList();

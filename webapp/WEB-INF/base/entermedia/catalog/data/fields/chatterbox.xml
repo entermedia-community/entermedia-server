@@ -47,4 +47,12 @@
       <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language>
     </name>
   </property>
+  
+  <property id="attachedassets" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" datatype="list" sourcepath="users/chatattachments/${id}">
+    <name>
+      <language id="en"><![CDATA[Attachments]]></language>
+    </name>
+   </property>  
+  
+  
 </properties>

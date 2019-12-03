@@ -1944,7 +1944,7 @@ public class ProjectManager implements CatalogEnabled
 		for (Iterator iterator = invoices.iterator(); iterator.hasNext();)
 		{
 			Data invoice = (Data) iterator.next();
-			Collection productlist = invoice.getObjects("productlist");
+			Collection productlist = invoice.getValues("productlist");
 			if (productlist != null)
 			{
 				for (Iterator iterator2 = productlist.iterator(); iterator2.hasNext();)

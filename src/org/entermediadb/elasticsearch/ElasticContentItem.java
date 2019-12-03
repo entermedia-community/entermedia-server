@@ -38,7 +38,7 @@ class ElasticContentItem extends StringItem implements Data{
 			throw new RepositoryException(ex);
 		}
 	}
-	public Collection getObjects(String inField)
+	public Collection getValues(String inField)
 	{
 		Collection values = (Collection)getValue(inField);
 		return values;
