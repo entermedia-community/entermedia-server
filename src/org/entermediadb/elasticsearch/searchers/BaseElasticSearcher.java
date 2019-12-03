@@ -2227,7 +2227,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid") || propid.equals("masterrecordmodificationdate"))
+				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid") || propid.equals("masterrecordmodificationdate") || propid.equals("emrecordstatus"))
 				{
 					continue;
 				}
