@@ -401,7 +401,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (inQuery.getAggregation() != null)
 		{
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
-
+		}
+		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
+		if(q.getAggregationJson() != null) {
+			inSearch.setAggregations(q.getAggregationJson().getBytes());
 		}
 		return true;
 	}
