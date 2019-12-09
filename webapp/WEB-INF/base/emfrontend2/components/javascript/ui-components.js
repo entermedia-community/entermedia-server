@@ -1487,6 +1487,7 @@ uiload = function() {
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
 				$(".account-content").addClass('account-content-fullwidth');
+				saveProfileProperty("usersidebarhidden","true");
 			}
 			});
 		}
@@ -1495,6 +1496,7 @@ uiload = function() {
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
 				$(".account-content").removeClass('account-content-fullwidth');
+				saveProfileProperty("usersidebarhidden","false");
 			}
 			});
 		}
