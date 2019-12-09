@@ -92,8 +92,16 @@
   </property>
 
  <property id="autocreatecollections" internalfield="false" index="true" type="boolean"  editable="true" >
-    Auto Create Collections on Save
+    
+    <language id="en"><![CDATA[Auto Create Collections on Save]]></language>
   </property>
+  
+  <property id="libraryicon" index="true" stored="true" editable="true"> 
+    <name> 
+     <language id="en"><![CDATA[Library Icon]]></language>  
+    </name> 
+  </property> 
+  
 
 
    

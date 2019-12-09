@@ -5,7 +5,8 @@
   <property id="viewusers"/>  
   <property id="viewgroups"/> 
   <property id="viewroles"/>  
-  <property id="privatelibrary" />  
+  <property id="privatelibrary" />
+  <property id="libraryicon" />    
 
 
 </root>

@@ -1699,9 +1699,6 @@ td.checkbox input, th.firstheader input {
 .collectionshomeform .input-group-addon {
 	border:1px solid #e9ecef;
 	}
-.collectionshomeresults {
-	text-align: center;
-}
 .card-collections { 
 	float:left;
 	display: inline-block; 

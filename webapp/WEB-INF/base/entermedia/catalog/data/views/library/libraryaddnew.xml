@@ -2,4 +2,5 @@
 
 <root>
  <property id="name"/>
+ <property id="libraryicon" />
 </root>
