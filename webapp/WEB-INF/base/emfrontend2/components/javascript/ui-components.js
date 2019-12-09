@@ -1472,6 +1472,34 @@ uiload = function() {
 		return false;
 	});
 	
+	
+	
+	lQuery('.sidebar-toggler').livequery("click", function(e) {
+		e.preventDefault();
+		var toggler = $(this);
+		var data = toggler.data;
+		var targetdiv = toggler.data('targetdiv');
+		
+		if (toggler.data('action') == 'hide') {
+			//hide sidebar
+			var url = apphome + '/components/sidebars/user/hide.html';
+			
+			$.ajax({ url: url, async: false, data: data, success: function(data) {
+				$("#"+targetdiv).html(data);
+				$(".account-content").addClass('account-content-fullwidth');
+			}
+			});
+		}
+		else {
+			var url = apphome + '/components/sidebars/user/show.html';
+			$.ajax({ url: url, async: false, data: data, success: function(data) {
+				$("#"+targetdiv).html(data);
+				$(".account-content").removeClass('account-content-fullwidth');
+			}
+			});
+		}
+	});
+	
 
 	lQuery(".assetpicker .removefieldassetvalue").livequery("click", function(e) 
 	{
