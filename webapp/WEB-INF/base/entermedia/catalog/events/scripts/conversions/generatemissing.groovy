@@ -44,7 +44,7 @@ public void init()
 
 			Collection more = presets.createMissingOnImport(mediaarchive, tasksearcher, hit);
 			
-			presets.checkAssetConversions(mediaarchive, hit, more);
+			//presets.checkAssetConversions(mediaarchive, hit, more);
 			
 			added = added + more.size();
 			if( logcount == 1000 )
