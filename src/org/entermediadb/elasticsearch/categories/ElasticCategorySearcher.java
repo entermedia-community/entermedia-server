@@ -400,7 +400,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	{
 		//For the path to be saved we might need to force category?
 		
-		super.saveData((Category)inData, inUser);
+		super.saveData(inData, inUser);
 		setIndexId(-1);
 //		cat = (ElasticCategory)cat.getParentCategory();
 //		if( cat == null)
