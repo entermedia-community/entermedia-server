@@ -86,8 +86,29 @@ public class PresetCreator
 	public Collection createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
 	{
 		Collection found = queueConversions(mediaarchive, tasksearcher, asset, false);
+		checkAssetConversions(mediaarchive,  asset,  found ); //Nothing to convert?, try updating status
 		return found;
 	}
+	/**
+	 * Called from import code
+	 * @param mediaarchive
+	 * @param tasksearcher
+	 * @param asset
+	 */
+	public void queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
+	{
+		if( "needsdownload".equals( asset.get("importstatus") ) )
+		{
+			return;
+		}
+		Collection assetconversions = queueConversions(mediaarchive, tasksearcher, asset, true);
+		
+		checkAssetConversions(mediaarchive,  asset,  assetconversions ); //Nothing to convert, try updating status
+		//asset.setProperty("previewstatus","mime");
+
+	}
+	
+	
 	public Collection queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean forcererun )
 	{
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
@@ -293,19 +314,7 @@ public class PresetCreator
 		return (Data)inArchive.getSearcher("convertpreset").query().exact("generatedoutputfile", inFileName).exact("inputtype", inRenderType).searchOne();
 	}
 
-	public void queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
-	{
-		if( "needsdownload".equals( asset.get("importstatus") ) )
-		{
-			return;
-		}
-		Collection assetconversions = queueConversions(mediaarchive, tasksearcher, asset, true);
-		
-		checkAssetConversions(mediaarchive,  asset,  assetconversions ); //Nothing to convert, try updating status
-		//asset.setProperty("previewstatus","mime");
 
-	}
-	
 	public void conversionCompleted(MediaArchive inArchive, Asset inAsset)
 	{
 		Searcher tasksearcher = inArchive.getSearcher("conversiontask");
