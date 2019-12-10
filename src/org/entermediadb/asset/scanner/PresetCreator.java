@@ -83,18 +83,12 @@ public class PresetCreator
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-
 	public Collection createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
 	{
-		return queueConversions(mediaarchive, tasksearcher, asset, false);
+		Collection found = queueConversions(mediaarchive, tasksearcher, asset, false);
+		return found;
 	}
-	public Collection queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean rerun )
+	public Collection queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean forcererun )
 	{
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 		
@@ -111,15 +105,18 @@ public class PresetCreator
 			return Collections.emptyList();
 		}
 		int added = 0;
-		Collection hits = getPresets(mediaarchive,rendertype);
-		if( hits.size() == 0)
+		Collection presets = getPresets(mediaarchive,rendertype);
+		if( presets.size() == 0)
 		{
 			return Collections.emptyList();
 		}
 		boolean missingconversion = false;
-		HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search(); //This is slow, we should load up a bunch at once
+		HitTracker conversions = tasksearcher.query().exact("assetid", asset.getId()).orgroup("presetid",presets).search(); //This is slow, we should load up a bunch at once
 		HashMap alltasks = new HashMap();
 		List tosave = new ArrayList();
+		
+		boolean settoretry = forcererun;
+		
 		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
 		{
 			Data existing = (Data) iterator.next();
@@ -130,13 +127,13 @@ public class PresetCreator
 			}
 			if( "error".equals( existing.get("status")))
 			{
-				rerun = true;
+				settoretry = true;
 			}
-			else if( !"complete".equals( existing.get("status" ) ) && existing.getValue("submitteddate") == null )
+			else if( !"complete".equals( existing.get("status" ) ) && existing.getValue("submitteddate") == null ) 
 			{
-				rerun = true;				
+				settoretry = true;				
 			}
-			if( rerun )
+			if( settoretry )
 			{
 				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");
@@ -148,7 +145,7 @@ public class PresetCreator
 			}
 			alltasks.put(existing.get("presetid") + page,existing);
 		}
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) //Existing ones
+		for (Iterator iterator = presets.iterator(); iterator.hasNext();) //Existing ones
 		{
 			Data preset = (Data) iterator.next();
 			added = added + createMissing(mediaarchive, tasksearcher, alltasks, tosave, preset, asset);
