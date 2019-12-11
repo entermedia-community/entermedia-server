@@ -759,8 +759,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		jsonproperties.startObject("properties");
 
 		jsonproperties.startObject("mastereditclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
-		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
 		jsonproperties.startObject("masterrecordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
+
+		jsonproperties.startObject("lastmodifiedclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
+		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
 		jsonproperties.startObject("recorddeleted").field("include_in_all", "false").field("type", "boolean").field("store", "false").endObject();
 
 		

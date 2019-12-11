@@ -955,7 +955,7 @@ public class PullManager implements CatalogEnabled
 				String url = node.get("baseurl");
 				if (url == null || !Boolean.parseBoolean( node.get("enabled") ) )
 				{
-					log.error("skipping originals " + node);
+					log.error(node + " not enabled " + node);
 					continue;
 				}
 				Date now = new Date();
