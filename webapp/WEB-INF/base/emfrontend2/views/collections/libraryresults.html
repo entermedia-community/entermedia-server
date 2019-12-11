@@ -25,10 +25,10 @@
 							data-targetdiv="collectionshomecontainer" 
 							data-oemaxlevel="1" 
 							href="$apphome/views/collections/libraryresults.html?libraryid=$library.getId()&resultpage=libraryresults.html">
-							#if(!$library.libraryicon)
-								#set($libraryicon = "fas fa-folder")
-							#else
+							#if($library.libraryicon)
 								#set($libraryicon = $library.libraryicon)
+							#else
+								#set($libraryicon = "fas fa-book")
 							#end
 							<i class="$libraryicon"></i>&nbsp;$library</a>
 						</li>			

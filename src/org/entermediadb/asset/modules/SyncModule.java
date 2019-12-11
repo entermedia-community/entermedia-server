@@ -199,6 +199,11 @@ public class SyncModule extends BaseMediaModule
 
 	}
 */
+	
+	/** 
+	 * This is the main event
+	 * @param inReq
+	 */
 	public void pullRemoteChanges(WebPageRequest inReq)
 	{
 		//log.info("Starting pulling");
@@ -210,7 +215,7 @@ public class SyncModule extends BaseMediaModule
 
 	}
 
-	public void loadAllChanges(WebPageRequest inReq) throws Exception
+	public void loadAllDataChanges(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String sessionid = inReq.getRequestParameter("hitssessionid");
@@ -263,5 +268,52 @@ public class SyncModule extends BaseMediaModule
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		pullManager.receiveFile(inReq, archive);
 	}
+
+	public void loadRecentUploads(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String sessionid = inReq.getRequestParameter("hitssessionid");
+		String page = inReq.getRequestParameter("page");
+		HitTracker hits = null;
+		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
+		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
+		if( ago == null)
+		{
+			throw new OpenEditException("lastpull required");
+		}
+			
+		if (sessionid != null)
+		{
+			hits = (HitTracker) inReq.getSessionValue(sessionid);
+		}
+		if (hits == null)
+		{
+			String mastereditid = archive.getNodeManager().getLocalClusterId();
+
+			hits = archive.query("asset").after("assetaddeddate", ago).
+					exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").search();
+			hits.enableBulkOperations();
+		}
+		if (page != null)
+		{
+			hits.setPage(Integer.parseInt(page));
+		}
+		inReq.putPageValue("hits", hits);
+	}
 	
+	public void receiveOriginalsChanges(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		
+		JSONArray todownload = pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
+		
+		JSONObject finaldata = new JSONObject();
+		finaldata.put("catalogid", archive.getCatalogId());
+		finaldata.put("fileuploads", todownload);
+		
+		inReq.putPageValue("finaldata", finaldata);
+	}
+
+
 }

@@ -394,20 +394,23 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-
-			List list = listSnapShots(inCatalogId);
-			if (list.size() > 0)
+			if( lock != null)
 			{
-				SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
-				Date date = new Date(recent.startTime());
-				Calendar yesterday = new GregorianCalendar();
-				yesterday.add(Calendar.DAY_OF_YEAR, -1);
-				if (date.after(yesterday.getTime()))
+				List list = listSnapShots(inCatalogId);
+				if (list.size() > 0)
 				{
-					return String.valueOf(recent.startTime());
+					SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
+					Date date = new Date(recent.startTime());
+					Calendar yesterday = new GregorianCalendar();
+					yesterday.add(Calendar.DAY_OF_YEAR, -1); 
+					yesterday.add(Calendar.MINUTE,15); //has it been 23 hours and 45 minutes
+					if (date.after(yesterday.getTime()))
+					{
+						return String.valueOf(recent.startTime());
+					}
 				}
+				return createSnapShot(inCatalogId, lock, wholedatabase);
 			}
-			return createSnapShot(inCatalogId, lock, wholedatabase);
 		}
 		catch (Throwable ex)
 		{
@@ -417,6 +420,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			getLockManager(inCatalogId).release(lock);
 		}
+		return null;
 	}
 
 	public List listSnapShots(String inCatalogId)

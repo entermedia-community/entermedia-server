@@ -19,6 +19,7 @@ import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.locks.Lock;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 import com.fasterxml.jackson.databind.ser.std.UUIDSerializer;
 
@@ -123,19 +124,20 @@ public class NotificationModule extends BaseMediaModule
 				archive.saveData("eventmanager", event);
 			}
 			Date startingfrom = (Date) event.getDate("lastrandate");
-
 			Date today = new Date();
+			if (startingfrom == null)
+			{
+				startingfrom = DateStorageUtil.getStorageUtil().addDaysToDate(today, -7);
+			}
+
 			// Check the search
 			Collection hits = null;
-			if (startingfrom != null)
+			hits = archive.query("asseteditLog").exact("operation", "edit").after("date", startingfrom).search();
+			if(hits.isEmpty())
 			{
-				hits = archive.query("asseteditLog").exact("operation", "edit").between("date", startingfrom, today).search();
+				log.info("No edits made");
+				return;
 			}
-			else
-			{
-				hits = archive.query("asseteditLog").exact("operation", "edit").before("date", today).search();
-			}
-
 			Map users = loadUserEditMetadata(archive, hits);
 
 			sendEmails(archive, users, "metadata");

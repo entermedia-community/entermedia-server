@@ -393,6 +393,10 @@ public class AssetSourceManager implements CatalogEnabled
 					//pullGit(path,1);
 					int found = source.importAssets(null); 
 					inLog.info("Hot folder: " + name + ", imported " + found + " assets");
+					
+					//TODO: Clear empty hot folder if enabled
+					
+					
 				}
 				catch( Exception ex)
 				{

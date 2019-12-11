@@ -1705,7 +1705,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		createContentBuilder(details, inData, inUser);
+		saveToElasticSearch(details, inData, false, inUser);
 		clearIndex();
 	}
 
@@ -1761,7 +1761,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				createContentBuilder(details, data, inUser);
+				saveToElasticSearch(details, data, false, inUser);
 			}
 		}
 		clearIndex();
@@ -1911,7 +1911,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, String inUser)
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
 	{
 		try
 		{
@@ -1939,7 +1939,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				currentid = localClusterId;
 			}
 			
-			//content.startObject("emrecordstatus");
+			status.put("recorddeleted", delete);
 			status.put("mastereditclusterid", currentid);
 			status.put("lastmodifiedclusterid", localClusterId);
 
@@ -2080,7 +2080,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		clearIndex();
 	}
 
-	protected void createContentBuilder(PropertyDetails details, Data data, User inUser)
+	protected void saveToElasticSearch(PropertyDetails details, Data data, boolean delete, User inUser)
 	{
 		try
 		{
@@ -2111,7 +2111,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
-
+			updateMasterClusterId(details, data, content, delete);
 			updateIndex(content, data, details, inUser);
 			content.endObject();
 			if (log.isDebugEnabled())
@@ -2193,9 +2193,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			log.error("Null Data");
 			return;
 		}
-		String userid = (inUser == null) ? null : inUser.getId();
-		updateMasterClusterId(inDetails, inData, inContent, userid);
-
 		try
 		{
 			Map props = inData.getProperties();
@@ -2687,8 +2684,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		Map recordstatus = (Map) inData.getValue("emrecordstatus");
 		if( recordstatus != null)
 		{
-			recordstatus.put("recorddeleted", true);
-			saveData(inData, inUser);
+			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+			saveToElasticSearch(details, inData, true, inUser);
 		}
 		else
 		{
@@ -2701,6 +2698,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			delete.setRefresh(true).execute().actionGet();
 		}
+		clearIndex();
 		
 	}
 

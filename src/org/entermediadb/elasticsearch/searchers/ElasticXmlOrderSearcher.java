@@ -30,10 +30,10 @@ public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 	
 	
 	@Override
-	protected void createContentBuilder(PropertyDetails inDetails, Data inData, User inUser)
+	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
 	{
 		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-		super.createContentBuilder(inDetails, inData, inUser);
+		super.saveToElasticSearch(inDetails, inData, delete, inUser);
 	}
 	
 }
