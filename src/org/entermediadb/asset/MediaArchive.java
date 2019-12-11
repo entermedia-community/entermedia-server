@@ -313,10 +313,18 @@ public class MediaArchive implements CatalogEnabled
 		return page;
 	}
 
-	public ContentItem getOriginalContent(Asset inAsset)
+	public ContentItem getOriginalContent(Data inAsset)
 	{
-
-		return getAssetManager().getOriginalContent(inAsset);
+		Asset asset = null;
+		if( inAsset instanceof Asset)
+		{
+			asset = (Asset)inAsset;
+		}
+		else
+		{
+			asset = (Asset)getAssetSearcher().loadData(inAsset);
+		}
+		return getAssetManager().getOriginalContent(asset);
 	}
 
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException

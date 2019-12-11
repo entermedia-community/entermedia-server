@@ -976,9 +976,9 @@ public class PullManager implements CatalogEnabled
 					pulldate = DateStorageUtil.getStorageUtil().substractDaysToDate(new Date(), 7);
 				}
 
-				if (pulldate.getTime() + (1000L * 1200L) > System.currentTimeMillis())
+				if (pulldate.getTime() + (1000L * 20L) > System.currentTimeMillis())
 				{
-					inLog.info(node.getName() + " Orignals pulled within 20 minutes. Trying again later");
+					inLog.info(node.getName() + " Orignals pulled within 20 seconds. Trying again later");
 					continue;
 				}
 				node.setValue("lasterrordateoriginals",null);
@@ -1153,20 +1153,12 @@ public class PullManager implements CatalogEnabled
 		String url = baseurl + "/mediadb/services/cluster/pullrecentuploads.json";
 		StringBuffer debugurl = new StringBuffer();
 		debugurl.append("?");
-		debugurl.append("entermedia.key=");
-		debugurl.append(params.get("entermedia.key"));
-		debugurl.append("&lastpullago=");
+		debugurl.append("lastpullago=");
 		String last = params.get("lastpullago");
 
 		if (params.get("lastpullago") != null)
 		{
 			debugurl.append(last);
-		}
-
-		debugurl.append("&searchtype=");
-		if (params.get("searchtype") != null)
-		{
-			debugurl.append(params.get("searchtype"));
 		}
 
 		String encoded = url + debugurl;

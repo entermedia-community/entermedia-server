@@ -33,7 +33,8 @@
 	#if( $hits )
 	  "results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-		{#set($item in $mediaarchive.getOriginalContent($hit) ) "id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
+		{#set($item = $mediaarchive.getOriginalContent($hit) ) 
+		"id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
 		"filename": #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" : #jesc($item.getLastModified() ) 
 		}
 		#end
