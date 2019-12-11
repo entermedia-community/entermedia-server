@@ -548,19 +548,20 @@ public class TemplateWebEmail extends WebEmail implements Data
 		{
 			String from = getFrom();
 			String fromname = getFromName();
+			InternetAddress fromAddress = new InternetAddress();
+			fromAddress.setAddress(from);
+			if( fromname != null)
+			{
+				fromAddress.setPersonal(fromname);
+			}
 			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
 			{
-				postMail.postMail(getRecipients(),getSubject(),output,null,from,getFileAttachments(), getProperties());
+				postMail.postMail(getRecipients(),getSubject(),output,null,fromAddress,getFileAttachments(), getProperties());
 			}
 			else
 			{
-				InternetAddress target = new InternetAddress();
-				target.setAddress(from);
-				if( fromname != null)
-				{
-					target.setPersonal(fromname);
-				}
-				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,target,getFileAttachments(), getProperties());
+
+				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,fromAddress,getFileAttachments(), getProperties());
 			}
 		}
 		catch ( Exception ex)

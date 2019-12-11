@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.page.manage.PageManager;
 
 public class PostMail
@@ -137,7 +138,27 @@ public class PostMail
 
 	public void postMail(String[] recipients, String subject, String inHtml, String inText, String from) throws MessagingException
 	{
-		postMail(parseEmails(recipients), subject, inHtml, inText, from, null, null);
+		InternetAddress fromAddress = new InternetAddress();
+		fromAddress.setAddress(from);
+		postMail(parseEmails(recipients), subject, inHtml, inText, fromAddress, null, null);
+	}
+	
+	public void postMail(String[] recipients, String subject, String inHtml, String inText,  String from,  String fromname) throws MessagingException
+	{
+		try
+		{
+			InternetAddress fromAddress = new InternetAddress();
+			fromAddress.setAddress(from);
+			if( fromname != null)
+			{
+				fromAddress.setPersonal(fromname);
+			}
+			postMail(parseEmails(recipients), subject, inHtml, inText, fromAddress, null, null);
+		}
+		catch ( Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
 	}
 
 	
@@ -162,12 +183,12 @@ public class PostMail
 		}
 		return emails;
 	}
-	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, String inFrom, List inAttachments, Map inProperties) throws MessagingException
+	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, InternetAddress inFrom, List inAttachments, Map inProperties) throws MessagingException
 	{
 		
-		InternetAddress from = new InternetAddress();
-		from.setAddress(inFrom);
-		postMail(recipients, null, subject, inHtml, inText, from, inAttachments, inProperties);
+		//InternetAddress from = new InternetAddress();
+		//from.setAddress(inFrom);
+		postMail(recipients, null, subject, inHtml, inText, inFrom, inAttachments, inProperties);
 	}
 
 	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
