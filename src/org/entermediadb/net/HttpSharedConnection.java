@@ -55,6 +55,8 @@ public class HttpSharedConnection
 	ContentType contentType = ContentType.create("text/plain", UTF8);
 	ContentType octectType = ContentType.create("application/octect-stream", UTF8);
 	
+	public boolean DEBUG = false;
+	
 	protected HttpClient fieldHttpClient;
 	protected Collection fieldSharedHeaders;
     protected BasicCookieStore cookieStore = new BasicCookieStore();
@@ -194,15 +196,13 @@ public class HttpSharedConnection
 
 	public JSONObject parseJson(CloseableHttpResponse resp) 
 	{
-		String content;
 		try {
 
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Server error returned " + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase());
 				String returned = EntityUtils.toString(resp.getEntity());
-				log.error(returned);
-				throw new OpenEditException("Could not process " + returned);
+				throw new OpenEditException("HTTP Error:" + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase() + " Body: \n" + returned);
+				//throw new OpenEditException("Could not process " + returned);
 			}
 			
 			HttpEntity entity = resp.getEntity();
@@ -210,7 +210,6 @@ public class HttpSharedConnection
 			JSONObject json = null;
 			JSONParser parser = new JSONParser();
 
-			boolean DEBUG = true;
 			if (DEBUG)
 			{
 				String returned = EntityUtils.toString(resp.getEntity());

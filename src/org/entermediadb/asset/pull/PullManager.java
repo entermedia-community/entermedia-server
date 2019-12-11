@@ -396,7 +396,7 @@ public class PullManager implements CatalogEnabled
 				
 				syncUpLocalDataChanges(inArchive,node,pulldate,trimmed, connection);
 				
-				inLog.info(node.getName() + " downloaded " + totalcount + " and uploaded " + trimmed.size() );
+				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
 				
 				node.setValue("lastpulldate", now);
 				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
@@ -992,23 +992,34 @@ public class PullManager implements CatalogEnabled
 
 				HttpSharedConnection connection = createConnection(node);
 
-				long totalcount = downloadOriginals(inArchive, connection, node,params,inLog);
-				
-				inLog.info(node.getName() + " downloaded " + totalcount );
+				if( Boolean.parseBoolean( node.get("pulloriginals") ) )
+				{
+					long totalcount = downloadOriginals(inArchive, connection, node,params,inLog);
+					
+					if( node.getValue("lasterrormessageoriginals") != null )
+					{
+						inLog.info(node.getName() + " originals download error " + node.getValue("lasterrormessageoriginals"));
+						continue;
+					}
+					else
+					{
+						inLog.info(node.getName() + " originals downloaded: " + totalcount );
+					}
+				}
 				
 				//Upload origianls
-				params.remove("hitssessionid");
-				params.remove("page");
-				
-				syncUpLocalOriginals(inArchive,connection,node,pulldate,params,inLog);
-				
-				if( node.getValue("lasterrormessageoriginals") != null )
+				if( Boolean.parseBoolean( node.get("pushoriginals") ) )
 				{
-					inLog.info(node.getName() + " error " + node.getValue("lasterrormessageoriginals"));					
-				}
-				else
-				{
-					inLog.info(node.getName() + " downloaded " + totalcount );
+						params.remove("hitssessionid");
+						params.remove("page");
+						
+						syncUpLocalOriginals(inArchive,connection,node,pulldate,params,inLog);
+						
+						if( node.getValue("lasterrormessageoriginals") != null )
+						{
+							inLog.info(node.getName() + " error " + node.getValue("lasterrormessageoriginals"));
+							continue;
+						}
 				}
 				//save the date
 				node.setValue("lastpulldateoriginals", now);
@@ -1169,7 +1180,7 @@ public class PullManager implements CatalogEnabled
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
-			node.setValue("lasterrormessageoriginals", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			node.setValue("lasterrormessageoriginals", "Could not list originals " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			node.setValue("lasterrordateoriginals", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("Initial originals server error " + sl);
@@ -1181,9 +1192,12 @@ public class PullManager implements CatalogEnabled
 		String ok = (String) response.get("status");
 		if (ok != null && ok.equals("ok"))
 		{
+			
+			String removecatalogid = (String)response.get("catalogid");
+			
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
 
-			counted = counted + downloadOriginalFiles(inArchive, connection, node,  params,jsonarray);
+			counted = counted + downloadOriginalFiles(inArchive, connection, node,  params,removecatalogid,jsonarray);
 
 			int pages = Integer.parseInt(response.get("pages").toString());
 			//loop over pages
@@ -1212,7 +1226,7 @@ public class PullManager implements CatalogEnabled
 
 				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 				
-				counted = counted + downloadOriginalFiles(inArchive, connection, node, params, jsonarray);
+				counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
 			}
 			return counted;
 		}
@@ -1227,29 +1241,31 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected long downloadOriginalFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map<String,String> params, JSONArray inJsonarray)
+	protected int downloadOriginalFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map<String,String> params, String removecatalogid, JSONArray inJsonarray)
 	{
+		int downloads = 0;
 		String url = node.get("baseurl");
 		try
 		{
 			for (Iterator iterator2 = inJsonarray.iterator(); iterator2.hasNext();)
 			{
 				Map filelisting = (Map) iterator2.next();
-				String sourcepath = (String) filelisting.get("sourcepath");
 				//List generated media and compare it
 								
 				//Compare timestamps
 				//String lastmodified = (String) filelisting.get("lastmodified");
-				long datetime = (long) filelisting.get("lastmodified");
-				String originalpath = (String) filelisting.get("originalpath");
-				String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals" + originalpath;
+				long longedited = Long.parseLong((String)filelisting.get("lastmodified"));
+				String originalpath = (String) filelisting.get("path");
+				
+				String savepath  = originalpath.replace(removecatalogid, inArchive.getCatalogId());
 				ContentItem found = inArchive.getContent(savepath);
 
-				if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
+				if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), longedited))
 				{
-					log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
+					//log.info("Found change: " + found.getLastModified() + " !=" + longedited + " on " + found.getAbsolutePath());
 					//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 					//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
+					String sourcepath = (String) filelisting.get("sourcepath");
 					String tmpfilename = PathUtilities.extractFileName(sourcepath);
 					String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/originals/" + sourcepath + "/" + found.getName());
 					HttpResponse genfile = inConnection.sharedGet(path);
@@ -1259,9 +1275,9 @@ public class PullManager implements CatalogEnabled
 						log.error("Could not download generated " + filestatus + " " + path);
 						throw new OpenEditException("Could not download generated " + filestatus + " " + path);
 					}
-
+					downloads++;
 					//Save to local file
-					log.info("Saving :" + path);
+					log.info("Saving :" + found.getAbsolutePath());
 					InputStream stream = genfile.getEntity().getContent();
 					//Change the timestamp to match
 					File tosave = new File(found.getAbsolutePath());
@@ -1270,7 +1286,7 @@ public class PullManager implements CatalogEnabled
 					filler.fill(stream, fos);
 					filler.close(stream);
 					filler.close(fos);
-					tosave.setLastModified(datetime);
+					tosave.setLastModified(longedited);
 				}
 			}
 		}
@@ -1283,7 +1299,7 @@ public class PullManager implements CatalogEnabled
 			}
 			throw new OpenEditException(ex);
 		}
-		return 0;
+		return downloads;
 	}
 	
 	

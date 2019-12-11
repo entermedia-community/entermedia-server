@@ -298,6 +298,7 @@ public class SyncModule extends BaseMediaModule
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
+		inReq.putPageValue("searcher", archive.getAssetSearcher());		
 		inReq.putPageValue("hits", hits);
 	}
 	
