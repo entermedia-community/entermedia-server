@@ -67,6 +67,7 @@
       <language id="en"><![CDATA[Originals Sync Date]]></language>  
     </name> 
   </property>  
+  
   <property id="lasterrormessageorginals" index="true" stored="true" editable="true"  >
     <name>
       <language id="en"><![CDATA[Original Sync Error]]></language>

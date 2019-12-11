@@ -1,0 +1,37 @@
+{
+	"response":
+		{
+		    "status":#if($hits.isEmpty())"empty"#elseif(!$error)"ok"#else"error"#end
+		    #if( $hits )
+		    ,"totalhits" : $hits.size(),
+			"catalogid" : "$searcher.getCatalogId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( ${foreach.count} != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( ${foreach.count} != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+			#end
+		}
+	#if( $hits )
+	  "results":[
+		#foreach($hit in $hits)#if( ${foreach.count} != 1 ), #end
+		{ 
+			"path":#jesc($hit.path) 
+		}
+		#end
+  	]
+    #end		
+}

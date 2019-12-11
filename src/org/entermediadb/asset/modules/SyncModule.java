@@ -3,7 +3,7 @@ package org.entermediadb.asset.modules;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,7 +11,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
 import org.entermediadb.asset.push.PushManager;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
-import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,8 +19,8 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 public class SyncModule extends BaseMediaModule
@@ -306,14 +305,18 @@ public class SyncModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		
-		JSONArray todownload = pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
-		
-		JSONObject finaldata = new JSONObject();
-		finaldata.put("catalogid", archive.getCatalogId());
-		finaldata.put("fileuploads", todownload);
-		
-		inReq.putPageValue("finaldata", finaldata);
+		inReq.putPageValue("searcher", archive.getAssetSearcher() );
+		try
+		{
+			List todownload = pullManager.receiveOriginalsChanges(archive, inReq.getJsonRequest());
+			ListHitTracker hits = new ListHitTracker(todownload);
+			inReq.putPageValue("hits", hits);
+			
+		}
+		catch(Throwable ex)
+		{
+			inReq.putPageValue("error", ex);
+		}
 	}
 
 

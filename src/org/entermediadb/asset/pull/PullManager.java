@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +20,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.sources.OriginalsAssetSource;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -498,7 +498,7 @@ public class PullManager implements CatalogEnabled
 
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
 
-			Collection saved = importChanges(inArchive, jsonarray);
+			Collection saved = importDataChanges(inArchive, jsonarray);
 			//pull in generated 	
 			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
@@ -533,7 +533,7 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
 				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 				
-				saved = importChanges(inArchive, results);
+				saved = importDataChanges(inArchive, results);
 				//pull in generated 	
 				downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
@@ -589,7 +589,7 @@ public class PullManager implements CatalogEnabled
 	
 
 	
-	protected Collection importChanges(MediaArchive inArchive, Collection jsonarray)
+	protected Collection importDataChanges(MediaArchive inArchive, Collection jsonarray)
 	{
 		Set searchers = new HashSet();
 		try
@@ -600,11 +600,9 @@ public class PullManager implements CatalogEnabled
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();)
 			{
 				JSONObject object = (JSONObject) iterator.next();
-				String catalogid = (String) object.get("catalog");
-				catalogid = catalogid.replace("_", "/");
 				String searchtype = (String) object.get("searchtype");
 
-				Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+				Searcher searcher = inArchive.getSearcher(searchtype);
 				searchers.add(searcher);
 				String id = (String) object.get("id");
 				JSONObject remotesource = (JSONObject) object.get("source");
@@ -797,12 +795,14 @@ public class PullManager implements CatalogEnabled
 		//org.json.simple.JSONArray is in unnamed module of loader 'app')
 
 		
-		Collection jsonarray = (Collection)inJsonRequest.get("results");
-		
-		importChanges(inArchive,jsonarray);
-		
 		//Look for any assets and compare all the thunbnails
 		Map response = (Map)inJsonRequest.get("response");
+		String removecatalogid = (String)response.get("catalogid");
+
+		Collection jsonarray = (Collection)inJsonRequest.get("results");
+
+		importDataChanges(inArchive,jsonarray);
+		
 
 		JSONArray toupload = new JSONArray();
 		
@@ -1032,8 +1032,8 @@ public class PullManager implements CatalogEnabled
 				inLog.error("Could not originals process sync files " + ex);
 				if (node != null)
 				{
-					node.setProperty("lasterrormessageoriginals ", "Could not process originals files " + ex);
-					node.setValue("lasterrordateoriginals ", new Date());
+					node.setValue("lasterrormessageoriginals", "Could not process originals files " + ex);
+					node.setValue("lasterrordateoriginals", new Date());
 					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 				}
 			}
@@ -1041,122 +1041,6 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected void syncUpLocalOriginals(MediaArchive inArchive, HttpSharedConnection inConnection, Data inRemoteNode, Date inPulldate, Map<String, String> inParams, ScriptLogger inLog)
-	{
-		//Post a list of local orginals (less ones I have that belong to the server)
-
-		String mastereditid = inArchive.getNodeManager().getLocalClusterId();
-		//Search for uploads
-		
-		//Only upload our own files. Because otherwise it might try and download stuff
-		
-		HitTracker recentuploads = inArchive.query("asset").after("assetaddeddate", inPulldate).
-				exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").search();
-		
-		recentuploads.enableBulkOperations();
-		recentuploads.setHitsPerPage(100);  //No timeouts
-		if (recentuploads.isEmpty())
-		{
-			return;
-		}
-
-		try
-		{
-			JSONObject finaldata = new JSONObject();
-
-			JSONObject response = new JSONObject();
-			response.put("status", "ok");
-			response.put("totalhits", recentuploads.size());
-			response.put("hitsperpage", recentuploads.getHitsPerPage());
-			response.put("pages", recentuploads.getTotalPages());
-			
-			//TODO: On remote server use the ids to find local assets
-			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inPulldate));
-			finaldata.put("response", response);
-			
-			for (int i = 0; i < recentuploads.getTotalPages(); i++)
-			{
-				recentuploads.setPage(i+1); //1 based
-				response.put("page", recentuploads.getPage());
-
-				JSONArray results = new JSONArray();
-				Collection apage = recentuploads.getPageOfHits();
-				for (Iterator iterator2 = apage.iterator(); iterator2.hasNext();)
-				{
-					Data data = (Data) iterator2.next();
-					Asset asset = inArchive.getAsset(data.getId());
-					JSONObject details = new JSONObject();
-					
-					details.put("id",asset.getId());
-					details.put("sourcepath",asset.getSourcePath());
-					details.put("isfolder",asset.getSourcePath());
-					details.put("filename",asset.getName());
-					
-					ContentItem item = inArchive.getOriginalContent(asset);
-					String originalspath = item.getPath();
-					String starts = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
-					originalspath = originalspath.substring(starts.length());
-					details.put("originalspath",originalspath);
-					details.put("filesize",String.valueOf(item.getLength()));
-					details.put("filedate",item.getLastModified());
-					
-					results.add(details);
-				}
-				finaldata.put("results", results);
-				
-				String url = inRemoteNode.get("baseurl");
-				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadoriginalslist.json", finaldata);
-				StatusLine sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200)
-				{
-					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					return;
-				}
-				//The server will return a list of files it needs
-				JSONObject json = inConnection.parseJson(response2);
-				
-				String remotecatalogid = (String)json.get("catalogid");
-				Collection toupload = (Collection)json.get("fileuploads");
-				if( toupload != null)
-				{
-					//TODO: Use pagination to do a few at a time
-					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
-					{
-						JSONObject fileinfo = (JSONObject) iterator.next();
-						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
-						
-						String localpath = (String)fileinfo.get("localpath"); //On the remote machie
-						
-						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
-						ContentItem item = inArchive.getContent(reallocalpath);
-						File tosend = new File(item.getAbsolutePath());
-
-						JSONObject tosendparams = new JSONObject(fileinfo);
-						tosendparams.put("catalogid", inArchive.getCatalogId());
-						tosendparams.put("savepath", localpath);
-						tosendparams.put("file.0", tosend);
-													
-						CloseableHttpResponse resp = inConnection.sharedMimePost(urlpath,tosendparams);
-
-						if (resp.getStatusLine().getStatusCode() != 200)
-						{
-							//error
-							//reportError();
-							throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
-						}
-					}	
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}		
-		//It will return a list of files I need to upload
-		
-	}
 
 	protected long downloadOriginals(MediaArchive inArchive, HttpSharedConnection connection, Data node, Map<String,String> params, ScriptLogger inLog)
 	{
@@ -1302,5 +1186,186 @@ public class PullManager implements CatalogEnabled
 		return downloads;
 	}
 	
+	protected void syncUpLocalOriginals(MediaArchive inArchive, HttpSharedConnection inConnection, Data inRemoteNode, Date inPulldate, Map<String, String> inParams, ScriptLogger inLog)
+	{
+		//Post a list of local orginals (less ones I have that belong to the server)
+
+		String mastereditid = inArchive.getNodeManager().getLocalClusterId();
+		//Search for uploads
+		
+		//Only upload our own files. Because otherwise it might try and download stuff
+		
+		HitTracker recentuploads = inArchive.query("asset").after("assetaddeddate", inPulldate).
+				exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").search();
+		
+		recentuploads.enableBulkOperations();
+		recentuploads.setHitsPerPage(100);  //No timeouts
+		if (recentuploads.isEmpty())
+		{
+			return;
+		}
+
+		try
+		{
+			JSONObject finaldata = new JSONObject();
+
+			JSONObject response = new JSONObject();
+			response.put("status", "ok");
+			response.put("totalhits", recentuploads.size());
+			response.put("hitsperpage", recentuploads.getHitsPerPage());
+			response.put("pages", recentuploads.getTotalPages());
+			response.put("catalogid", inArchive.getCatalogId());
+			
+			//TODO: On remote server use the ids to find local assets
+			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inPulldate));
+			finaldata.put("response", response);
+			
+			for (int i = 0; i < recentuploads.getTotalPages(); i++)
+			{
+				recentuploads.setPage(i+1); //1 based
+				response.put("page", recentuploads.getPage());
+
+				JSONArray results = new JSONArray();
+				Collection apage = recentuploads.getPageOfHits();
+				for (Iterator iterator2 = apage.iterator(); iterator2.hasNext();)
+				{
+					Data data = (Data) iterator2.next();
+					Asset asset = inArchive.getAsset(data.getId());
+					JSONObject details = new JSONObject();
+					
+					details.put("id",asset.getId());
+					details.put("sourcepath",asset.getSourcePath());
+					details.put("isfolder",asset.isFolder());
+					
+					ContentItem item = inArchive.getOriginalContent(asset);
+					String originalspath = item.getPath();
+					details.put("path",item.getPath());
+					details.put("filename",item.getName());
+					String starts = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
+					originalspath = originalspath.substring(starts.length());
+					details.put("originalspath",originalspath);
+					details.put("filesize",String.valueOf(item.getLength()));
+					details.put("filedate",item.getLastModified());
+					
+					results.add(details);
+				}
+				finaldata.put("results", results);
+				
+				String url = inRemoteNode.get("baseurl");
+				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json", finaldata);
+				StatusLine sl = response2.getStatusLine();
+				if (sl.getStatusCode() != 200)
+				{
+					inRemoteNode.setValue("lasterrormessageoriginals", "Could not get originals list " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					inRemoteNode.setValue("lasterrordateoriginals", new Date());
+					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
+					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					return;
+				}
+				//The server will return a list of files it needs
+				JSONObject json = inConnection.parseJson(response2);
+				
+				Map responseheader = (Map)json.get("response");
+				
+				String status = (String)responseheader.get("status");
+				if( status.equals("error"))
+				{
+					inRemoteNode.setValue("lasterrormessageoriginals", "Could not get list of originals from remote server");
+					inRemoteNode.setValue("lasterrordateoriginals", new Date());
+					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
+					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					return;
+				}
+				String remotecatalogid = (String)responseheader.get("catalogid");
+				Collection toupload = (Collection)json.get("results");
+				if( toupload != null)
+				{
+					//TODO: Use pagination to do a few at a time
+					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
+					{
+						JSONObject fileinfo = (JSONObject) iterator.next();
+						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
+						
+						String localpath = (String)fileinfo.get("path"); //On the remote machie
+						
+						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
+						ContentItem item = inArchive.getContent(reallocalpath);
+						File tosend = new File(item.getAbsolutePath());
+
+						JSONObject tosendparams = new JSONObject(fileinfo);
+						tosendparams.put("catalogid", inArchive.getCatalogId());
+						tosendparams.put("savepath", localpath);
+						tosendparams.put("file.0", tosend);
+													
+						CloseableHttpResponse resp = inConnection.sharedMimePost(urlpath,tosendparams);
+
+						if (resp.getStatusLine().getStatusCode() != 200)
+						{
+							//error
+							//reportError();
+							throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+						}
+					}	
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}		
+		//It will return a list of files I need to upload
+		
+	}
+
+	/**
+	 * Send a list of files I have and see if you need em
+	 * @param inArchive
+	 * @param inJsonRequest
+	 * @return
+	 */
+	public List receiveOriginalsChanges(MediaArchive inArchive, Map inJsonRequest)
+	{
+		
+		//Look for any assets and compare all the thunbnails
+		Map response = (Map)inJsonRequest.get("response");
+		String remotecatalogid = (String)response.get("catalogid");
+
+		Collection results = (Collection)inJsonRequest.get("results");
+
+		List toupload = new ArrayList();
+		
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
+		{
+			JSONObject originaldata = (JSONObject) iterator.next();
+			String assetsouercepath = (String)originaldata.get("sourcepath");
+			
+			String remotemasterclusterid = (String) originaldata.get("mastereditclusterid");
+//			if( inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
+//			{
+//				log.info("Dont download non-master generated files?");
+//				continue;
+//			}
+			
+			///TODO: See if we have a copy already
+			//long longedited = Long.parseLong((String)originaldata.get("filedate"));
+			long size = Long.parseLong((String)originaldata.get("filesize"));
+			String originalpath = (String) originaldata.get("path");
+			
+			String savepath  = originalpath.replace(remotecatalogid, inArchive.getCatalogId());
+			ContentItem found = inArchive.getContent(savepath);
+
+			if (!found.exists() || found.getLength() != size)
+			{
+				//download it
+				JSONObject contentdetails = new JSONObject();
+				contentdetails.put("path",originalpath);
+				toupload.add(contentdetails);
+			}
+		}
+
+		//and send them back
+		return toupload;	
+	}
+
 	
 }

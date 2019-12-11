@@ -2,7 +2,7 @@
 
 	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
 
- 	<path-action name="SyncModule.receiveDataChanges" alltypes="true"/>
+ 	<path-action name="SyncModule.receiveOriginalsChanges" alltypes="true"/>
  	<property name="hitsname">hits</property>
  	<permission name="view">
 			<userprofile property="api-load-data" equals="true" />
