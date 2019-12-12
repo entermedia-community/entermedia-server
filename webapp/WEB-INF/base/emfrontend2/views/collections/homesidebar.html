@@ -14,19 +14,14 @@
 						
 						#if(!$selectedtab)
 						  #if( $canviewfeaturedcollections) 
-						   #set( $selectedtab = "featured")
+						   #set( $selectedtab = "libraries")
 						  #else
 						   #set( $selectedtab = "allcollections")
 						  #end
 						#end
 						
-						#if($canviewfeaturedcollections)
-						<li id=""  #if( $selectedtab == "featured")class="current"#end>
-							<a href="$home$apphome/views/collections/featured.html"><i class="fa fa-star"></i> [[Featured]]</a>
-						</li>
-						#end
 						<li id=""  #if( $selectedtab == "libraries")class="current"#end>
-							<a href="$home$apphome/views/collections/libraries.html"><i class="fa fa-book"></i> [[By Library]]</a>
+							<a href="$home$apphome/views/collections/libraries.html"><i class="fa fa-book"></i> [[All Collections]]</a>
 						</li>
 						
 						

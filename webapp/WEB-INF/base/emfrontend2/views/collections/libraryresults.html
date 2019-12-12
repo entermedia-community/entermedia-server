@@ -1,13 +1,23 @@
 #set($selectedlibraryid = $context.getRequestParameter("libraryid"))
 #set( $libraries = $mediaarchive.query("library").exact("privatelibrary","false").enduser(true).sort("name").search($context) )
-#foreach($library in $libraries)
-	#if(!$selectedlibrary || $selectedlibraryid==$library.getId())
-		#set($selectedlibrary = $library)
-	#end
+
+#if(!$selectedlibraryid)
+#set($selectedlibraryid = "featured")
 #end
+
+ #if($selectedlibraryid != "featured")
+ 	#set($selectedlibrary = $mediaarchive.getCachedData("library",$selectedlibraryid) )
+ #end 
+
 <div id="collectionshomecontainer">
 <div class="collectionshome-header">
-	<h3 class="text-center">$selectedlibrary.getName() [[Library]]</h3>
+	<h3 class="text-center">
+	 #if($selectedlibraryid=="featured") 
+	 	[[Featured Collections]]
+	 #else
+		$selectedlibrary.getName() [[Collections]]
+	#end
+	</h3>
 	<a class="emdialog btn btn-xs btn-secondary" 
 		style="position:absolute; top:5px; right:8px;" data-hidefooter="true"  title="[[Find Collections]]" 
 		href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i>
@@ -18,9 +28,19 @@
 		<div class="col-2">
 			<div class="h-100" style="background-color:#f3f3f3; border-right:1px solid #ddd;">
 				#if($libraries.size())
-					<ul class="sidebar-list list-group list-group-striped" style="border-bottom:1px solid #ddd;">
+					<ul class="sidebar-list list-group " style="border-bottom:1px solid #ddd;">
+					
+					#if($canviewfeaturedcollections)
+						<li #if($selectedlibraryid=="featured") class="current"#end>
+						<a class="ajax" 
+							data-targetdiv="collectionshomecontainer" 
+							data-oemaxlevel="1" 
+							href="$apphome/views/collections/libraryresults.html?libraryid=featured&resultpage=libraryresults.html">
+							<i class="fa fa-star"></i>&nbsp;[[Featured]]</a>
+						</li>			
+					#end
 					#foreach($library in $libraries)
-						<li class="#if($selectedlibrary.getId()==$library.getId())current #end">
+						<li class="#if($selectedlibraryid==$library.getId())current #end">
 						<a class="ajax" 
 							data-targetdiv="collectionshomecontainer" 
 							data-oemaxlevel="1" 
