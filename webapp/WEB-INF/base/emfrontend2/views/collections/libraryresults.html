@@ -60,7 +60,9 @@
 		</div>
 		<div class="col-10" style="padding:20px;">
 			#set($args = "")
-			#if($selectedlibrary)
+		 	#if($selectedlibraryid == "featured")
+		 		#set($args = "?field=featuredcollection&operation=exact&featuredcollection.value=true")
+		 	#elseif($selectedlibrary)
 				#set($args = "?field=library&operation=exact&library.value=$selectedlibrary.getId()")
 			#else
 				
