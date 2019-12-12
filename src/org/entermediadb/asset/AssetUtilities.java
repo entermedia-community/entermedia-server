@@ -346,9 +346,52 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		Map vals = new HashMap();
 		vals.putAll(inReq.getPageMap());
 
-		if (currentcollectionid == null)
+		if (currentcollectionid != null)
 		{
-			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
+			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
+			
+			LibraryCollection coll = (LibraryCollection) inArchive.getData("librarycollection", currentcollectionid);
+			if (coll != null)
+			{
+				vals.put("librarycollection", coll);
+				vals.put("library", coll.get("library"));
+				
+				String uploadcategoryid = inReq.getRequestParameter("category.value");
+				String categorypath = null;
+				Category uploadto  = null;
+
+				if (uploadcategoryid != null)
+				{
+					uploadto = inArchive.getCategory(uploadcategoryid);
+					if(uploadto != null) 
+					{
+						categorypath = uploadto.getCategoryPath(); //No year needed
+					}
+				}
+				else
+				{
+					uploadto = coll.getCategory();
+					if(uploadto != null) 
+					{
+						categorypath = uploadto.getCategoryPath(); 
+						String year = inArchive.getCatalogSettingValue("collectionuploadwithyear");
+						if( year == null || Boolean.parseBoolean(year)) //Not reindexed yet
+						{
+							String thisyear = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy"); 
+							categorypath = categorypath + "/" + thisyear;
+						}
+					}
+				}
+				if( categorypath != null)
+				{
+					vals.put("categorypath", categorypath);
+				}
+
+			}
+		}
+		else
+		{
+			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //Dumb name ${division.uploadpath}/${user.userName}/${formateddate}
 			String uploadcategoryid = inReq.getRequestParameter("category.value");
 
 			if (uploadcategoryid != null)
@@ -375,27 +418,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 					{
 						vals.put("categorypath", uploadto.getCategoryPath());
 					}
-				}
-			}
-		}
-		else
-		{
-			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}	
-			LibraryCollection coll = (LibraryCollection) inArchive.getData("librarycollection", currentcollectionid);
-			if (coll != null)
-			{
-				vals.put("librarycollection", coll);
-				vals.put("library", coll.get("library"));
-				Category uploadto = coll.getCategory();
-				String uploadcategoryid = inReq.getRequestParameter("category.value");
-
-				if (uploadcategoryid != null)
-				{
-					uploadto = inArchive.getCategory(uploadcategoryid);
-				}
-				if(uploadto != null) {
-
-				vals.put("categorypath", uploadto.getCategoryPath());
 				}
 			}
 		}
@@ -468,6 +490,13 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		Date now = new Date();
 		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage
 		vals.put("formatteddate", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy"); //TODO: Use DataStorage
+		vals.put("formattedyear", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "MM"); //TODO: Use DataStorage
+		vals.put("formattedmonth", date);
+
 		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "dd"); //TODO: Use DataStorage
 		vals.put("formattedday", date);
 

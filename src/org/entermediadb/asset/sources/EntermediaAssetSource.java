@@ -53,13 +53,13 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Override
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
-		return getPullManager().getOriginalDocumentStream(getMediaArchive(), inAsset);
+		return getPullManager().getOriginalPuller().getOriginalDocumentStream(getMediaArchive(), inAsset);
 	}
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
 		//log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
-		return getPullManager().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
+		return getPullManager().getOriginalPuller().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
 
 	@Override

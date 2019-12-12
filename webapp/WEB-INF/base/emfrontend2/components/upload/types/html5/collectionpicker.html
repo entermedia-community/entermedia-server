@@ -1,11 +1,18 @@
-#set($collectionid = $context.getRequestParameter("collectionid"))
+#if ($librarycol)
+	#set($collectionid = $librarycol.getId() )
+#else	
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+	#end
+#end
+
 <div id="uploadcollectionpicker" data-collectionpicker="$apphome/components/upload/types/html5/collectionpicker.html">
 <div class="inputformrow">
 	<div class="emdatafield">[[Collection]]</div>
 	<div class="emdatafieldvalue "> 
-		#if($collectionid)
-			#set($collection = $mediaarchive.getData("librarycollection",$collectionid))
-			<div class="uploadcollection">$collection 
+		#if($librarycol)
+			<div class="uploadcollection">$librarycol 
 			<a href="$apphome/components/upload/types/html5/collectionpicker.html" 
 				class="ajax delete-row"
 				data-targetdiv="uploadcollectionpicker"

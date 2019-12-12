@@ -2160,6 +2160,12 @@
 	</bean>
  	
  	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+ 	
+ 	<bean id="originalPuller" class="org.entermediadb.asset.pull.OriginalPuller" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -2167,7 +2173,16 @@
 			<ref bean="elasticNodeManager" />
 		</property>
 	</bean>
- 	
+
+ 	<bean id="dataPuller" class="org.entermediadb.asset.pull.DataPuller" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
+
  	 	
  	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
 	</bean>	

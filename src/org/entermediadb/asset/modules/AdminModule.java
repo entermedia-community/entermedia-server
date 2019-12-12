@@ -350,6 +350,13 @@ public class AdminModule extends BaseMediaModule
 	{
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
+		
+		if( account == null && email == null)
+		{
+			//log.debug
+			return;
+		}
+		
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
@@ -612,7 +619,16 @@ public class AdminModule extends BaseMediaModule
 		}
 
 	}
-
+	public void savePasswordAsCookie(WebPageRequest inReq)
+	{
+		User user = getUserSearcher(inReq).getUser(inReq.getUserName());
+		//Latest one
+		savePasswordAsCookie(user, inReq);
+		String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+		inReq.putSessionValue(catalogid + "user", user);
+		inReq.putPageValue( "user", user);
+		
+	}
 	public void savePasswordAsCookie(User user, WebPageRequest inReq) throws OpenEditException
 	{
 		if (user.isVirtual())

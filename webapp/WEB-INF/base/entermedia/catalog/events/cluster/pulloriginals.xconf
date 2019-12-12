@@ -1,0 +1,10 @@
+<page>
+
+	<property name="eventname">Pull2 Recent Uploads</property>
+	<property name="eventdescription">Check for original files on remote Nodes</property>	
+	<path-action name="SyncModule.pullRecentUploads" />
+	<property name="period">60s</property>
+	<property name="enabled">false</property>
+
+</page>
+

@@ -13,6 +13,8 @@
 	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
 	<property id="projectassetupload" value="${categorypath}/${formatteddate}/${shortguid}/">Add Media Upload Path</property>
 	<property id="collectionassetupload" value="${categorypath}/${filename}">Collection Media Upload Path</property>
+	<property id="collectionuploadwithyear" value="true">Add Year To Collection Uploads Path</property>
+	
 	<property id="catalogassetupload" value="${formattedmonth}/${splitguid}/">API Upload Path</property>
 	<property id="movecollectionpath" value="${newlibrary.folder||newlibrary.name}/${year}/${splitname}">Collection Export Path</property>
 	
@@ -24,7 +26,7 @@
 	
 	
 	
-	<property id="show_add_media_collection" value="true">Show a collection picker on the simple Add Media page</property>
+	<property id="show_add_media_collection" value="true">Require a collection picker on the simple Add Media page</property>
 
 
 
