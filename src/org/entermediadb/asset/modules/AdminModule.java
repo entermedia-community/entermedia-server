@@ -350,6 +350,13 @@ public class AdminModule extends BaseMediaModule
 	{
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
+		
+		if( account == null && email == null)
+		{
+			//log.debug
+			return;
+		}
+		
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
