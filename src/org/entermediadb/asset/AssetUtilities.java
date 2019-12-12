@@ -468,6 +468,13 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		Date now = new Date();
 		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage
 		vals.put("formatteddate", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy"); //TODO: Use DataStorage
+		vals.put("formattedyear", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "MM"); //TODO: Use DataStorage
+		vals.put("formattedmonth", date);
+
 		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "dd"); //TODO: Use DataStorage
 		vals.put("formattedday", date);
 

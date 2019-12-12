@@ -464,8 +464,8 @@ public class ProjectManager implements CatalogEnabled
 			Data hit = (Data) iterator.next();
 			assetids.add(hit.getId());
 		}
-		log.info("Hits size was " + assets.size());
-		log.info("Show only selected was: " + assets.isShowOnlySelected());
+		//log.info("Hits size was " + assets.size());
+		//log.info("Show only selected was: " + assets.isShowOnlySelected());
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{

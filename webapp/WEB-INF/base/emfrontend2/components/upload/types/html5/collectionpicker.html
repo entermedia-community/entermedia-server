@@ -1,4 +1,12 @@
-#set($collectionid = $context.getRequestParameter("collectionid"))
+#if ($librarycol)
+	#set($collectionid = $librarycol.getId() )
+#else	
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+	#end
+#end
+
 <div id="uploadcollectionpicker" data-collectionpicker="$apphome/components/upload/types/html5/collectionpicker.html">
 <div class="inputformrow">
 	<div class="emdatafield">[[Collection]]</div>

@@ -749,11 +749,12 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
 		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
-		boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
 
 		final Map metadata = readMetaData(inReq, archive, "");
 		final String currentcollection = (String) metadata.get("collectionid");
 
+		boolean assigncategory =  currentcollection != null || archive.isCatalogSettingTrue("assigncategoryonupload");
+		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inPages);
 		final User user = inReq.getUser();
 
