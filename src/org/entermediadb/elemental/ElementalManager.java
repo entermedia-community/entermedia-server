@@ -28,6 +28,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.XmlUtil;
 
 
@@ -186,7 +187,24 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 
-	public String createJob(ConvertInstructions inStructions)
+	public String fieldRootPath;
+	
+	
+	public String getRootPath()
+	{
+		if(fieldRootPath == null)
+		{
+			fieldRootPath = "/mnt/Meld/Playback/";
+		}
+		return fieldRootPath;
+	}
+
+	public void setRootPath(String inRootPath)
+	{
+		fieldRootPath = inRootPath;
+	}
+
+	public Element createJob(ConvertInstructions inStructions)
 	{
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		
@@ -205,16 +223,18 @@ public class ElementalManager implements CatalogEnabled
 		
 		///mnt/Meld-Playback/temp-out 
 		
+		ContentItem item = inStructions.getInputFile(); 
 		
 		String preset = inStructions.getProperty("preset");
 		Element job = DocumentHelper.createElement("job");
 		Element input = job.addElement("input");
 		Element file = input.addElement("file_input");
 		Element uri = file.addElement("uri");
-		uri.setText("/mnt/Meld/Playback/temp/18955.mp4");
+		//uri.setText("/mnt/Meld/Playback/temp/18955.mp4");  //Input
+		uri.setText(item.getAbsolutePath());
 		//uri.setText(SOME URI);
 		Element og = job.addElement("output_group");
-		og.addElement("file_output_group").addElement("destination").addElement("uri").setText("/mnt/Meld/Playback/temp-out");
+		og.addElement("file_output_group").addElement("destination").addElement("uri").setText(getRootPath()  + "/" + inStructions.getAssetSourcePath() );
 		og.addElement("output").addElement("preset").setText(preset);
 		//	job.addElement("preset").setText(preset);
 	//	job.addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
@@ -248,11 +268,7 @@ public class ElementalManager implements CatalogEnabled
 			throw new OpenEditException (e);
 		}
 		
-		
-		
-		return "test";
-		
-		
+		return job;
 		
 	}
 	

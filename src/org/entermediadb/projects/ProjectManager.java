@@ -1617,20 +1617,9 @@ public class ProjectManager implements CatalogEnabled
 		//			collectionroot = "Collections";
 		//		}
 
-		if (!collection.hasRootCategory())
-		{
-			getRootCategory(mediaArchive, collection);
-			// String path = collectionroot + "/" + collection.getLibrary() + "/" +
-			// collection.getName();
-			// Category collectioncategory = mediaArchive.createCategoryPath( path);
-			// mediaArchive.getCategorySearcher().saveData(collectioncategory);
-			// collection.setValue("rootcategory", collectioncategory.getId());
-			// mediaArchive.getSearcher("librarycollection").saveData(collection, null);
-			log.info("saving root on collection");
+		Category collectioncategory = getRootCategory(mediaArchive, collection);
 
-		}
 		// Make sure the name still matches
-		Category collectioncategory = collection.getCategory();
 		if (collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
 		{
 			collectioncategory.setName(collection.getName());

@@ -210,7 +210,17 @@ public class SyncModule extends BaseMediaModule
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
-		pullManager.pullRemoteChanges(archive, logger);
+		pullManager.getDataPuller().pull(archive, logger);
+
+	}
+	public void pullRecentUploads(WebPageRequest inReq)
+	{
+		//log.info("Starting pulling");
+		MediaArchive archive = getMediaArchive(inReq);
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
+
+		pullManager.getOriginalPuller().pull(archive, logger);
 
 	}
 
@@ -242,7 +252,7 @@ public class SyncModule extends BaseMediaModule
 			hits.setPage(Integer.parseInt(page));
 		}
 		PullManager pullManager = getPullManager(archive.getCatalogId());
-		JSONObject finaldata = pullManager.createJsonFromHits(archive,ago,hits);
+		JSONObject finaldata = pullManager.getDataPuller().createJsonFromHits(archive,ago,hits);
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
@@ -253,7 +263,7 @@ public class SyncModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		
-		JSONArray todownload = pullManager.receiveDataChanges(archive, inReq.getJsonRequest());
+		JSONArray todownload = pullManager.getDataPuller().receiveDataChanges(archive, inReq.getJsonRequest());
 		
 		JSONObject finaldata = new JSONObject();
 		finaldata.put("catalogid", archive.getCatalogId());
@@ -308,7 +318,7 @@ public class SyncModule extends BaseMediaModule
 		inReq.putPageValue("searcher", archive.getAssetSearcher() );
 		try
 		{
-			List todownload = pullManager.receiveOriginalsChanges(archive, inReq.getJsonRequest());
+			List todownload = pullManager.getOriginalPuller().receiveOriginalsChanges(archive, inReq.getJsonRequest());
 			ListHitTracker hits = new ListHitTracker(todownload);
 			inReq.putPageValue("hits", hits);
 			
