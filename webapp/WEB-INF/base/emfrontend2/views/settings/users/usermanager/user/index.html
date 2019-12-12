@@ -11,6 +11,19 @@
 	<div class="col-md-3">
 	$pages.include("$content.usermanagerhome/user/editgroups.html")
 	$pages.include("$content.usermanagerhome/user/editrole.html")
+	
+	#if($canactasotherusers)
+	<div style="margin-bottom:8px;">
+	<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
+	</div>
+	#end
+	
+	<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Edit Password]]</a>
+	 #if( $selectedUser.password && $selectedUser.email )
+       	<a class="btn btn-sm btn-secondary ajax" targetdiv="passwordsent" href="$home$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id&oemaxlevel=1">Send Password Reset</a>
+	#end
+	
+	<div id="passwordsent"></div>
 	</div>
 </div>
 #else
