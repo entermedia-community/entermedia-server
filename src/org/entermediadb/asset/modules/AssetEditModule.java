@@ -753,7 +753,20 @@ public class AssetEditModule extends BaseMediaModule
 		final Map metadata = readMetaData(inReq, archive, "");
 		final String currentcollection = (String) metadata.get("collectionid");
 
-		boolean assigncategory =  currentcollection != null || archive.isCatalogSettingTrue("assigncategoryonupload");
+		boolean oktoadd = archive.isCatalogSettingTrue("assigncategoryonupload");
+
+		if( currentcollection != null)
+		{
+			oktoadd = true; //Should use the mask to make any sub-categories
+		}
+
+		Object cat = metadata.get("category.value");
+
+		if( cat != null)
+		{
+			oktoadd = false; //Will already exist
+		}
+		boolean assigncategory =  oktoadd;
 		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inPages);
 		final User user = inReq.getUser();

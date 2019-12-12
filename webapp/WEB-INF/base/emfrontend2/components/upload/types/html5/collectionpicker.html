@@ -11,9 +11,8 @@
 <div class="inputformrow">
 	<div class="emdatafield">[[Collection]]</div>
 	<div class="emdatafieldvalue "> 
-		#if($collectionid)
-			#set($collection = $mediaarchive.getData("librarycollection",$collectionid))
-			<div class="uploadcollection">$collection 
+		#if($librarycol)
+			<div class="uploadcollection">$librarycol 
 			<a href="$apphome/components/upload/types/html5/collectionpicker.html" 
 				class="ajax delete-row"
 				data-targetdiv="uploadcollectionpicker"
