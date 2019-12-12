@@ -236,7 +236,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
 	{
 
-		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
+		Lock lock = inArchive.getLockManager().lockIfPossible("processOriginalPull", "processAllPull");
 		if (lock == null)
 		{
 			log.info("Pull is already running");
