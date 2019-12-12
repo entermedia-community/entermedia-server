@@ -1,9 +1,10 @@
 #set($selectedlibraryid = $context.getRequestParameter("libraryid"))
 #set( $libraries = $mediaarchive.query("library").exact("privatelibrary","false").enduser(true).sort("name").search($context) )
 
-#if(!$selectedlibraryid)
+#if($canviewfeaturedcollections && !$selectedlibraryid)
 #set($selectedlibraryid = "featured")
 #end
+
 
  #if($selectedlibraryid != "featured")
  	#set($selectedlibrary = $mediaarchive.getCachedData("library",$selectedlibraryid) )
@@ -14,7 +15,7 @@
 	<h3 class="text-center">
 	 #if($selectedlibraryid=="featured") 
 	 	[[Featured Collections]]
-	 #else
+	 #elseif($selectedlibrary)
 		$selectedlibrary.getName() [[Collections]]
 	#end
 	</h3>
