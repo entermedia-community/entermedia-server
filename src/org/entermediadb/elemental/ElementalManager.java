@@ -164,8 +164,12 @@ public class ElementalManager implements CatalogEnabled
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		String addr = elementalroot + "/api/jobs/" + inTask.get("externalid") + "/status";
 
+		String jobid =  inTask.get("externalid");
+		log.info("found " + jobid);
 		HttpGet method = new HttpGet(addr);
-		setHeaders(method, "/jobs/" + inTask.get("externalid") + "/status");
+		
+		
+		setHeaders(method, "/jobs/" + jobid + "/status");
 		ConvertResult result = new ConvertResult();
 		
 		try
@@ -255,13 +259,25 @@ public class ElementalManager implements CatalogEnabled
 			
 			//String xml = EntityUtils.toString(response2.getEntity());
 			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
-
+			log.info("Got this back:" + body);
 			StatusLine sl = response2.getStatusLine();
 			int status = sl.getStatusCode();
 			if (status >= 400)
 			{
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
+			//https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html
+//			{
+//				  "jobs": [
+//				    {
+//				      "arn": "string",
+//				      "id": "string",
+//				      "createdAt": "string",
+//				      "jobTemplate": "string",
+//				      "queue": "string",
+//				      "userMetadata": {
+//				      },
+			job.addAttribute("jobid", "someid");
 		}
 		catch (Exception e)
 		{
