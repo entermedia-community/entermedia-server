@@ -24,6 +24,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.net.HttpSharedConnection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -89,13 +90,10 @@ public class ElementalManager implements CatalogEnabled
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public HttpClient getClient()
+	public HttpSharedConnection getClient()
 	{
-
-		RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
-
-		return httpClient;
+		HttpSharedConnection connection = new HttpSharedConnection();
+		return connection;
 	}
 	
 	public void getJobs()  {
@@ -110,7 +108,7 @@ public class ElementalManager implements CatalogEnabled
 		
 		try
 		{
-			HttpResponse resp = getClient().execute(method);
+			HttpResponse resp = getClient().sharedExecute(method);
 			String xml = EntityUtils.toString(resp.getEntity());
 
 		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
@@ -174,7 +172,7 @@ public class ElementalManager implements CatalogEnabled
 		
 		try
 		{
-			HttpResponse resp = getClient().execute(method);
+			HttpResponse resp = getClient().sharedExecute(method);
 			String xml = EntityUtils.toString(resp.getEntity());
 		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			log.info(resp.getStatusLine());
@@ -254,7 +252,7 @@ public class ElementalManager implements CatalogEnabled
 		log.info("Sending job xml: " + asXML);
 		try
 		{
-			HttpResponse response2 = getClient().execute(method);
+			HttpResponse response2 = getClient().sharedExecute(method);
 			
 			
 			//String xml = EntityUtils.toString(response2.getEntity());
