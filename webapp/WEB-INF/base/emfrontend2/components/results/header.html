@@ -63,11 +63,11 @@ $context.putPageValue("module", $module)
 			<a class="nav-btn lefttoggle" href="#" id="lefttoggle" style="#if ($leftbarstatus!=false) display:none; #end">
 			<span class="openbar"><i class="fas fa-folder-open"></i> [[FOLDERS]]</a></span>
 		</li>
-		#if ( $module=="asset" && $librarycol.getId() )
-				<li class="nav-item">
-					<a class="nav-link nav-hover" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
-				</li>				
-		#end
+		## #if ( $module=="asset" && $librarycol.getId() )
+		##		<li class="nav-item">
+		##			<a class="nav-link nav-hover" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
+		##		</li>				
+		## #end
 		#if ($resultview != "map")
 			$pages.include("$componenthome/results/selected/index.html",$context)
 
