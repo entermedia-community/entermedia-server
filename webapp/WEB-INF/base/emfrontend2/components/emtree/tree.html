@@ -141,6 +141,11 @@
 
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
     <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
+    #if( $canviewupload || $canviewcategoryupload)
+      	
+      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
+      	<li class="divider"></li>
+    #end
     #if( $editable && $caneditcategorytree  )
     	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Folder]]</a></li>
     #end
@@ -164,13 +169,12 @@
 ##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Paste]]</a></li>
     </ul>
     
+
+    
      #if($canaddnewcollection)
 		<a id="collectionidaddbycategory" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
 	#end
   </div>
   #end
-
-
-
 #end
 
