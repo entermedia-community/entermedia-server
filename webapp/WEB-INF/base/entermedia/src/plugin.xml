@@ -2244,13 +2244,12 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+	</bean>
 		
 	 <bean id="elementalTranscoder" class="org.entermediadb.asset.convert.transcoders.ElementalTranscoder" lazy-init="default">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
-		
-		
 		
 	<bean id="webPageRequest" class="org.openedit.BaseWebPageRequest"  scope="prototype">
 		<property name="localeManager"><ref bean="localeManager"/></property>

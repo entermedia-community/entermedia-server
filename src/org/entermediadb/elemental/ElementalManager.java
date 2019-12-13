@@ -251,7 +251,7 @@ public class ElementalManager implements CatalogEnabled
 		String asXML = job.asXML();
 		StringEntity params = new StringEntity(asXML, "UTF-8");
 		method.setEntity(params);
-		
+		log.info("Sending job xml: " + asXML);
 		try
 		{
 			HttpResponse response2 = getClient().execute(method);
