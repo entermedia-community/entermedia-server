@@ -431,6 +431,10 @@ public abstract class BaseAssetSource implements AssetSource
 		
 	}
 
+	public boolean isHotFolder()
+	{
+		return false;
+	}
 
 
 	protected Repository createRepo(String inType)
