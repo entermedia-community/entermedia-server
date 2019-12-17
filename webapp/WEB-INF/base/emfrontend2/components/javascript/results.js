@@ -278,12 +278,17 @@ $(document).ready(function(url,params)
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
-		var reloadonclose =  $(inOverlay).data('reloadonclose');
+		
+		var reloadonclose =  $('#resultsdiv').data('reloadresults');
 		if (reloadonclose == undefined) {
-			reloadonclose = true;
+			reloadonclose = false;
 		}
 		if (reloadonclose) {
-                 refreshresults();
+             refreshresults();
+		}
+		else
+		{
+			gridResize();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
 		//remove Asset #hash
