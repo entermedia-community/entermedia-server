@@ -1,7 +1,15 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
-data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()"
-data-collectionid="$!librarycol.getId()"
->
+
+<div id="resultsdiv" class="tableresults" 
+		data-hitssessionid="$hits.getSessionId()" 
+		data-searchhome="$home$componenthome/results"
+		data-category="$!category.getId()"
+		data-collectionid="$!librarycol.getId()" 
+		data-searchtype="asset" 
+		data-pagenum="$hits.getPage()" 
+		data-totalpages="$hits.getTotalPages()"
+		data-module="$!module">
+
+
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
@@ -27,6 +35,7 @@ data-cellpadding="4"  >
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
+
     #foreach ($hit in $hits.getPageOfHits())
     
         #set ($sourcepath = $hit.sourcepath)

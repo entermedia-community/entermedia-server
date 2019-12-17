@@ -17,9 +17,13 @@ public class ElementalTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ElementalManager manager = (ElementalManager) inStructions.getMediaArchive().getBean("elementalManager");
-		Element jobid = manager.createJob(inStructions);
+		Element job = manager.createJob(inStructions);
+		
+		//Wait for it to finish?
+		String jobid = job.attributeValue("jobid");
+		
 		ConvertResult result = new ConvertResult();
-		//result.setProperty("externalid", jobid);
+		result.setProperty("externalid", jobid);
 		result.setComplete(false);
 		result.setOk(true);
 		return result;

@@ -26,16 +26,8 @@ $context.putPageValue("module", $module)
 #if($module=="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 
 	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
-	
-	##TODO: Move this sompleace else or use jquery more
-	<script type="text/javascript">   
-		jQuery(document).ready(function(){
-			jQuery("#poptrigger").trigger("click");
-		});
-	</script>
 
 #else
-
 
 <div id="emresultscontent" >
     #if(!$hidefilters)

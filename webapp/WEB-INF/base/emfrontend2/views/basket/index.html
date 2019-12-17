@@ -1,3 +1,4 @@
+
 $context.putPageValue("hits",$orderassets)
 $context.putPageValue("hidefilters",true)
 
@@ -15,7 +16,6 @@ $context.putPageValue("hidefilters",true)
 	</div>
 	<div class="col-main col-content col-content-main" class="module-inner">
 				<div id="collectionbasket">
-                    <div id="resultsdiv" data-hitssessionid="$orderassets.getSessionId()">
                     #if($orderitems.size() >0 )
                         $pages.include("$apphome/components/results/index.html",$context)
                     #else
@@ -23,8 +23,7 @@ $context.putPageValue("hidefilters",true)
                     <p class="info" style="padding:20px;">[[No Items in Cart]]</p>
 
                     #end
-                    </div>
-                    </div>
+                </div>
 
 				<div class="clearfix"></div>
 	</div>

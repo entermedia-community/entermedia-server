@@ -51,7 +51,11 @@ public class OriginalsAssetSource extends BaseAssetSource
 		}
 		return fullpath.getInputStream();
 	}
-	
+	public boolean isHotFolder()
+	{
+		return true;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Bob#getOriginalContent(org.entermediadb.asset.Asset)
 	 */

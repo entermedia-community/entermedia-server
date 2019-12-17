@@ -52,7 +52,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 		}
 		return fieldFileUtils;
 	}
-
+	public boolean isHotFolder()
+	{
+		return true;
+	}
 	public void setFileUtils(FileUtils inFileUtils)
 	{
 		fieldFileUtils = inFileUtils;

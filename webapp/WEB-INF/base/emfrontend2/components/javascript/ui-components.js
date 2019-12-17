@@ -370,6 +370,9 @@ uiload = function() {
 		                        findmodal.modal("hide");
 		                    }
 		                }
+		        		$('#resultsdiv').data('reloadresults',true);
+
+		                //TODO: Move this to results.js
 		                if (form.hasClass("autohideOverlay")) {
 		                	hideOverlayDiv(getOverlay());
 		                }

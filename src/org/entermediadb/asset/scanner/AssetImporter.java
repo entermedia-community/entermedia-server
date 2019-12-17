@@ -118,7 +118,8 @@ public class AssetImporter
 	
 	public List<String> processOn(String inRootPath, String inStartingPoint, boolean checkformod, final MediaArchive inArchive, User inUser)
 	{
-		AssetPathProcessor finder = new AssetPathProcessor();
+		//AssetPathProcessor finder = new AssetPathProcessor();
+		AssetPathProcessor finder = new CachedAssetPathProcessor();
 		finder.setModificationCheck(checkformod);
 		finder.setMediaArchive(inArchive);
 		finder.setAssetImporter(this);

@@ -36,7 +36,10 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		}
 	}
 	
-	
+	public boolean isHotFolder()
+	{
+		return true;
+	}
 
 	@Override
 	public InputStream getOriginalDocumentStream(Asset inAsset)

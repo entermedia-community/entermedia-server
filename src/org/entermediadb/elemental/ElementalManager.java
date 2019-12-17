@@ -24,6 +24,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.net.HttpSharedConnection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -89,13 +90,10 @@ public class ElementalManager implements CatalogEnabled
 		fieldXmlUtil = inXmlUtil;
 	}
 
-	public HttpClient getClient()
+	public HttpSharedConnection getClient()
 	{
-
-		RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
-		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).build();
-
-		return httpClient;
+		HttpSharedConnection connection = new HttpSharedConnection();
+		return connection;
 	}
 	
 	public void getJobs()  {
@@ -110,7 +108,7 @@ public class ElementalManager implements CatalogEnabled
 		
 		try
 		{
-			HttpResponse resp = getClient().execute(method);
+			HttpResponse resp = getClient().sharedExecute(method);
 			String xml = EntityUtils.toString(resp.getEntity());
 
 		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
@@ -164,13 +162,17 @@ public class ElementalManager implements CatalogEnabled
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		String addr = elementalroot + "/api/jobs/" + inTask.get("externalid") + "/status";
 
+		String jobid =  inTask.get("externalid");
+		log.info("found " + jobid);
 		HttpGet method = new HttpGet(addr);
-		setHeaders(method, "/jobs/" + inTask.get("externalid") + "/status");
+		
+		
+		setHeaders(method, "/jobs/" + jobid + "/status");
 		ConvertResult result = new ConvertResult();
 		
 		try
 		{
-			HttpResponse resp = getClient().execute(method);
+			HttpResponse resp = getClient().sharedExecute(method);
 			String xml = EntityUtils.toString(resp.getEntity());
 		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			log.info(resp.getStatusLine());
@@ -247,21 +249,33 @@ public class ElementalManager implements CatalogEnabled
 		String asXML = job.asXML();
 		StringEntity params = new StringEntity(asXML, "UTF-8");
 		method.setEntity(params);
-		
+		log.info("Sending job xml: " + asXML);
 		try
 		{
-			HttpResponse response2 = getClient().execute(method);
+			HttpResponse response2 = getClient().sharedExecute(method);
 			
 			
 			//String xml = EntityUtils.toString(response2.getEntity());
 			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
-
+			log.info("Got this back:" + body);
 			StatusLine sl = response2.getStatusLine();
 			int status = sl.getStatusCode();
 			if (status >= 400)
 			{
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
+			//https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html
+//			{
+//				  "jobs": [
+//				    {
+//				      "arn": "string",
+//				      "id": "string",
+//				      "createdAt": "string",
+//				      "jobTemplate": "string",
+//				      "queue": "string",
+//				      "userMetadata": {
+//				      },
+			job.addAttribute("jobid", "someid");
 		}
 		catch (Exception e)
 		{

@@ -1900,7 +1900,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
-		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + "(" + getSearchType() + ")");
+		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
