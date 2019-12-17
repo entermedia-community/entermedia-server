@@ -308,6 +308,14 @@ a {
     line-height: 1;
     border-radius: .2rem;
 }
+.btn-xxs {
+    padding: .1rem .2rem;
+    font-size: .725rem;
+    font-weight: normal;
+    line-height: 1.1;
+    border-radius: .2rem;
+}
+
 .btn-secondary, .btn-primary,.btn-warning, .btn-danger,
 .badge-primary { color: #fff!important;}
 .btn-lg {

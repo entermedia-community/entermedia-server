@@ -60,7 +60,8 @@
 		document.head.appendChild(script); 
     	
     });
-</script>			<!-- AddThis Button END -->
+</script>
+<!-- AddThis Button END -->
 		</div>
 #end
 <textarea class="embedlinktextarea form-control" type=text onclick="this.select();" readonly="readonly" rows="6" cols="45">
@@ -72,42 +73,57 @@
 </iframe>
 </textarea>
 <hr>
-<p class="hyphenate"> 
-<strong>[[Preview Page]]</strong><br> 
-<a href="$sharelink">$sharelink</a>
-</p>
+<div style="position:relative;">
+	<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+	#if( $collectionid )
+		
+		#set( $collectionlink = "$home/${mediadbappid}/services/module/librarycollection/downloads/originals/${collectionid}/$asset.getSourcePath()/$asset.getMediaName()")
+		<h5>[[Collection Share]] 
+		<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="collectionlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+			</h5> 
+		<p class="hyphenate">
+		<a href="$collectionlink" target="_blank" >$collectionlink</a>
+		<input style="position:absolute; top:-1000px;" id="collectionlink" value="$collectionlink" />
+		</p>
+		
+	#end
 
-#if( $mediadbappid )
-#set( $downloadlink = "$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
-#else
-#set( $downloadlink = "$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
-#end
-<hr>
-<p class="hyphenate"> 
-<strong>[[Original Media Download]]</strong><br> 
-<a href="$downloadlink">$downloadlink</a>
-</p>
+	
+	<h5>[[Preview Page]]
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</h5> 
+	<p class="hyphenate">
+	<a href="$sharelink">$sharelink</a>
+	<input style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
+	</p>
+	
+	
+	#if( $mediadbappid )
+		#set( $downloadlink = "$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+	#else
+		#set( $downloadlink = "$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+	#end
+	
+	
+	<h5>[[Original Media Download]]
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="downloadlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</h5>
+	<p class="hyphenate">
+	<a href="$downloadlink">$downloadlink</a>
+	<input style="position:absolute; top:-1000px;" id="downloadlink" value="$downloadlink" >
+	</p>
 
-#set( $collectionid = $context.getRequestParameter("collectionid"))
-#if( $collectionid )
-<p class="hyphenate"> 
-#set( $collectionlink = "$home/${mediadbappid}/services/module/librarycollection/downloads/originals/${collectionid}/$asset.getSourcePath()/$asset.getMediaName()")
-<strong>[[Collection Share]]</strong><br> 
-<a href="$collectionlink" target="_blank" >$collectionlink</a>
-</p>
-#end
 
 </div>
 </div>
-
-<script>
-var acc = document.getElementsByClassName("accordion2");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-    acc[i].onclick = function(){
-        this.classList.toggle("active");
-        this.nextElementSibling.classList.toggle("show");
-  }
-}
-</script>
+</div>
