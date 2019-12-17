@@ -44,7 +44,7 @@ $(document).ready(function(url,params)
 						 
 			$.get(href, args, function(data) 
 			{
-				$("#emresultscontainer").html(data);
+				$("#emresultscontent").html(data);
 				$(window).trigger( "resize" );
 			});
 		});

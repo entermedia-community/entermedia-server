@@ -1,6 +1,8 @@
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set($auto = $context.getRequestParameter("autorun"))
 <div id="emresultscontent" >
+
+
 #if(!$hidefilters)
 	$pages.include("$apphome/components/filters/filters-selected.html", $context)
 #end
@@ -21,6 +23,7 @@
 	    <a #if($auto == "true") style="display: none;" #end class="ajax btn" id="poptrigger" targetdivinner="auto-pop"  
 				  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" >
 				  	<i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
+
 		
 	   <a class="emdialog btn btn-primary" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
 	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Select Additional Categories]]</a>
@@ -48,10 +51,13 @@
 		
 		
 	});
-	
 
-	
-	
+	##TODO: Move this sompleace else or use jquery more
+	jQuery(document).ready(function(){
+		jQuery("#poptrigger").trigger("click");
+	});
+
 	</script>		
+	
 
 
