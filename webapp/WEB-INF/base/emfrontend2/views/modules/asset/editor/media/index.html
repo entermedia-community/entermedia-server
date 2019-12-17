@@ -158,16 +158,18 @@ $context.putPageValue("results", $results)
 				##<a class="btn btn-xs btn-secondary" 
 				##    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($current.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $current))?includemetadata=true">[[Download]]</a>
 				#if($canembedasset)
-				<a class="btn btn-xs btn-secondary embedbtn copyembed " 
+				<a class="btn btn-xs btn-secondary embedbtn copytoclipboard " 
 					id="${current.id}-btn" 
-					data-targetdivinner="${current.id}-embed"
+					data-targetdiv="embedalert"
+					data-copytext="${current.id}-embed"
 					data-isshowing="false"
 					data-embedtext="" 
 					href="">[[Link]]</a>
 					<input style="position:absolute; top:-1000px;" id="${current.id}-embed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
-				<a class="btn btn-xs btn-secondary embedbtn copyembed " 
+				<a class="btn btn-xs btn-secondary embedbtn copytoclipboard " 
 					id="${current.id}-obtn" 
-					data-targetdivinner="${current.id}-oembed"
+					data-targetdiv="embedalert"
+					data-copytext="${current.id}-oembed"
 					data-isshowing="false" 
 					href="">[[oEmbed]]</a>
 					<input style="position:absolute; top:-1000px;" id="${current.id}-oembed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${current.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
@@ -186,22 +188,6 @@ $context.putPageValue("results", $results)
 
 </div>
 </div>
-
-<script>
-$(document).ready(function(){
-
-	lQuery( ".copyembed" ).livequery("click", function(e) {
-		  e.preventDefault();
-          var embedbtn = $(this);
-		  var loaddiv = embedbtn.data("targetdivinner");
-		  var copyText = $("#"+loaddiv);
-	      copyText.select();
-		  document.execCommand("copy");
-		  $("#embedalert").show().fadeOut(2000);
- 		  
-	});
-	});
-</script>
 
 
 

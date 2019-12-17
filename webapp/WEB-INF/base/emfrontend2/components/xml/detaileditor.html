@@ -15,12 +15,9 @@ $context.putPageValue("longform",false)
 
 
 #if(!$view)
-
-#if($viewid)
+	#if($viewid)
 		#set($view = "${searcher.searchType}/${viewid}")
-
-#end
-
+	#end
 #end
 
 
@@ -32,7 +29,7 @@ $context.putPageValue("longform",false)
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
 	#if( !$details)
-		[[No details available for this view.  Please configure your view settings.]]
+		[[No details available for this view]] ($view). [[Please configure your view settings.]]
 
 	#end
 #else
