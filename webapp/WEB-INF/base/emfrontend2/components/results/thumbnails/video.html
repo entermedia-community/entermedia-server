@@ -6,54 +6,62 @@
 #set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
 
 
-#if($thumbsize != "mediumplus" && $thumbsize != "postsize")
-	$pages.include("$componenthome/results/thumbnails/image.html", $context)	
-#else
-	#set( $embed = $context.getRequestParameter("embed") )
-	#set( $autoplay = $context.getRequestParameter("autoplay") )
-	#set( $loop = $context.getRequestParameter("loop") )
-	
-	#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-	#set( $root = "$!prefix$home$page.directory")
-	#set( $catalogid = $asset.catalogId )
-	
-	
-	#set($assetidpostfix = $context.getPageValue("assetidpostfix"))
-	
-	##Add back full screen button, Autoplay and escape handling
-	<div id="playarea-$hit.id$!assetidpostfix" class="">
-		<video id="videopreview-$hit.id$!assetidpostfix" 
-				class="video-js vjs-default-skin vjs-big-play-centered" 
-				style="position:relative; width:100%!important;    height: 100%!important; " 
-	##if($thumbsize == "postsize")	
-	##	width="730"
-	##else
-	##	width="520" height="340"
-	##end
-			poster='$thumb'
-			#if( $autoplay && $autoplay == "true") autoplay #end
-			#if( $loop && $loop == "true") loop #end
-			controls
-			preload="none"
-			data-setup=''>
-			<source type="video/mp4" src="$source">
-			#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-			<source type="video/flash" src="mp4:$short">
-	     	#if( $tracks && !$tracks.isEmpty() )
-	      		#foreach( $track in $tracks)
-	     		 <track 
-	     		 	label="$track.sourcelang subtitles" 
-	     		 	kind="subtitles" 
-	     		 	srclang="$track.sourcelang" 
-	      			src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-	      		#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
-	      		#end
-	      	#end
-		</video>
-	</div>
-	<script>
-		videojs("videopreview-$hit.id$!assetidpostfix"); 
-	</script>
-	
-	
+#if ($urlutils)
+	#set ( $sourcepath = $urlutils.encode($sourcepath))
+	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+	#set ( $thumb = $urlutils.encode($thumb))
+	#set ( $thumb = $urlutils.encode($thumb))
 #end
+
+#if($sourcepath)
+	#if($thumbsize != "mediumplus" && $thumbsize != "postsize")
+		$pages.include("$componenthome/results/thumbnails/image.html", $context)	
+	#else
+		#set( $embed = $context.getRequestParameter("embed") )
+		#set( $autoplay = $context.getRequestParameter("autoplay") )
+		#set( $loop = $context.getRequestParameter("loop") )
+		
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		#set( $root = "$!prefix$home$page.directory")
+		#set( $catalogid = $asset.catalogId )
+		
+		
+		#set($assetidpostfix = $context.getPageValue("assetidpostfix"))
+		
+		##Add back full screen button, Autoplay and escape handling
+		<div id="playarea-$hit.id$!assetidpostfix" class="">
+			<video id="videopreview-$hit.id$!assetidpostfix" 
+					class="video-js vjs-default-skin vjs-big-play-centered" 
+					style="position:relative; width:100%!important;    height: 100%!important; " 
+		##if($thumbsize == "postsize")	
+		##	width="730"
+		##else
+		##	width="520" height="340"
+		##end
+				poster='$!thumb'
+				#if( $autoplay && $autoplay == "true") autoplay #end
+				#if( $loop && $loop == "true") loop #end
+				controls
+				preload="none"
+				data-setup=''>
+				<source type="video/mp4" src="$!source">
+				#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+				<source type="video/flash" src="mp4:$short">
+		     	#if( $tracks && !$tracks.isEmpty() )
+		      		#foreach( $track in $tracks)
+		     		 <track 
+		     		 	label="$track.sourcelang subtitles" 
+		     		 	kind="subtitles" 
+		     		 	srclang="$track.sourcelang" 
+		      			src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+		      		#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+		      		#end
+		      	#end
+			</video>
+		</div>
+		<script>
+			videojs("videopreview-$hit.id$!assetidpostfix"); 
+		</script>
+	#end
+#end
+
