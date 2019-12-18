@@ -474,8 +474,9 @@ $(document).ready(function(url,params)
     
 
     refreshresults = function() {
-		var resultsdiv = $("#searchlayout");
-			if (resultsdiv.length) {
+		var resultsdiv = $("#resultsdiv");
+		if (resultsdiv.length) 
+		{
 	        var href = home+'/views/search/index.html';
 	        var searchdata = resultsdiv.data();
 	        searchdata.oemaxlevel = 1;

@@ -95,6 +95,36 @@ public class CategoryCollectionCache implements CatalogEnabled
 	}
 	public String findCollectionId(Category inRoot)
 	{
+		LibraryCollection collection = findCollection(inRoot);
+		if( collection != null)
+		{
+			return collection.getId();
+		}
+		return null;
+	}
+
+	public boolean isCollectionRoot(Category inRoot)
+	{
+		LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", inRoot.getId());
+		if( exists == NULLCOLLECTION)
+		{
+			return false;
+		}
+		if( exists == null)
+		{
+			exists = findCollection(inRoot);
+		}
+		if( exists != null)
+		{
+			return inRoot.getId().equals(exists.getRootCategoryId());
+		}
+		
+		return false;
+	}
+
+	
+	public LibraryCollection findCollection(Category inRoot)
+	{
 		if( !init )
 		{
 			loadRoots();
@@ -116,7 +146,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 			LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
 			if( exists != null)
 			{
-				return exists.getId();  //Loaded on boot up once time and cached heaviliy
+				return exists;  //Loaded on boot up once time and cached heaviliy
 			}
 			
 			exists = (LibraryCollection)getTimedCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
@@ -126,7 +156,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 			}
 			if( exists != null)
 			{
-				return exists.getId();
+				return exists;
 			}
 			else
 			{
@@ -144,7 +174,7 @@ public class CategoryCollectionCache implements CatalogEnabled
 				getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
 				if( exists != NULLCOLLECTION)
 				{
-					return exists.getId();
+					return exists;
 				}
 			}
 		}
