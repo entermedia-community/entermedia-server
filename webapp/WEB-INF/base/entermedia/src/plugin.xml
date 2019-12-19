@@ -2271,11 +2271,11 @@
 	    <property name="localeManager"><ref bean="localeManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
 	</bean>
-	
+	<!-- We dont use this
 	<bean id="transactionLogger" class="org.openedit.data.TransactionLogger"  >
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
-			
+		 -->	
 	<!--  Could replace with a composite someday -->
 	<bean id="twofactorAuthenticator" class="org.entermediadb.authenticate.GoogleTwoFactorAuthenticator"  >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
