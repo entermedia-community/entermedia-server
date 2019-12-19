@@ -276,7 +276,7 @@ $(document).ready(function()
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
-				var link = tree.data("home") + "/views/modules/category/edit/edit.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral";
+				var link = tree.data("home") + "/views/modules/category/edit/editdialog.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral";
 				$(this).attr('href',link);
 				emdialog($(this), event);
 				//document.location = link;

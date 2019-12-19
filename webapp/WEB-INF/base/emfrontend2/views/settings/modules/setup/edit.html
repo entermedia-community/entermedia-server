@@ -6,7 +6,7 @@
 
 <label>[[Module Name]]</label>
 <input type="hidden" name="field" value="name" />
-<input class="field short required" name="name.value" value ="$!data.name" />
+<input class="form-control form-control-sm short required" name="name.value" value ="$!data.name" />
 <div class="note">[[Module nickname.]]</div>
 
 
@@ -15,7 +15,7 @@
 
 #if( !$id )
 <label>[[Module Id]]</label>
-<input class="field short required" name="id" value ="$!data.id" />
+<input class="form-control form-control-sm short required" name="id" value ="$!data.id" />
 <div class="note">[[lower case, singular, no spaces]]</div>
 #else
 <input type="hidden" name="id" value="$!id" />
@@ -29,7 +29,7 @@
 
 <input name="reloadprofile" type="hidden" value="true" />
 
-<input style="margin-top: 40px;" class="btn" type="submit" value="[[Save]]" />
+<input style="margin-top: 40px;" class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
 
 
 </form>

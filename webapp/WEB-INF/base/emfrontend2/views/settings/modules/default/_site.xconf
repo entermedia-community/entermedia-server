@@ -1,3 +1,4 @@
 <page>
   <property name="editPath">/${applicationid}/views/modules/${module}/_site.xconf</property>
+  <property name="tab">modules</property>
   </page>

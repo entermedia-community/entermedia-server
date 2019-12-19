@@ -3208,8 +3208,9 @@ label.error {
     width: 100%;
 }
 #details {
-    display: table-cell;
+   /* display: table-cell;*/
     vertical-align: top;
+    margin-left:155px;
 }
 #details h2 {
 	padding:10px 5px;
@@ -3217,9 +3218,14 @@ label.error {
 #details h2 a {
 	color:#2790B0;
 }
+#detailarea {
+	position:relative;
+}
 /* SIDE BAR NAV */
 #de-side-nav {
-    display: table-cell;
+   /* display: table-cell;*/
+   position:absolute;
+   top:0;
     background: #F7F7F7 url('../images/sidebar-shadow.png') right top repeat-y;
     border-right: 1px solid #CCC;
     width: 48px;
@@ -3232,7 +3238,7 @@ label.error {
 }
 #de-side-nav.open {
     width: 155px;
-    display: table-cell;
+    /*display: table-cell;*/
     -webkit-transition: width 0.05s ease-out;
     -moz-transition: width 0.05s ease-out;
     -ms-transition: width 0.05s ease-out;

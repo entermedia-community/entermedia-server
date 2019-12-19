@@ -1552,8 +1552,8 @@ var resizecolumns = function() {
 	}
 	
 	var allheights  =  header_height +  nav_height + footer_height + resultsheader_height;
-
 	var columnsheight = $("body").outerHeight() - allheights;
+	
 	var sidebartop = 1;
 	$(".col-main").each(function(){
 		var col = $(this);
@@ -1580,8 +1580,14 @@ var resizecolumns = function() {
 		$(".col-left").css("height", columnsheight);
 		$(".col-left > .col-main-inner").css("height", windowh);
 	}
-	$(".col-sidebar").css("height", columnsheight);
-	$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
+	$(".col-sidebar").css("min-height", columnsheight);
+	if ($(".col-content-main").parent().hasClass("settingslayout")) {
+		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+	}
+	else {
+		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
+	}
+	
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)")
 	
 	//Moved From settings.js
