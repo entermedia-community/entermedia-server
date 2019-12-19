@@ -1,5 +1,6 @@
 package conversions;
 
+import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.scanner.PresetCreator
 import org.openedit.Data
@@ -35,12 +36,17 @@ public void init()
 			checked++;
 			logcount++;
 			
-//			Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
-//			if( asset == null )
-//			{
-//				log.info("Missing" + hit.getSourcePath() );
-//				continue; //Bad index
-//			}
+			String hitsourcepath = hit.getSourcePath();
+			if (hitsourcepath == null) {
+				log.info("Missing asset sourcepath: " + hit.getId() );
+				continue; //Bad asset
+			}
+			Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+			if( asset == null )
+			{
+				log.info("Missing" + hit.getSourcePath() );
+				continue; //Bad index
+			}
 
 			Collection more = presets.createMissingOnImport(mediaarchive, tasksearcher, hit);
 			
