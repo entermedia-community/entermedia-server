@@ -187,6 +187,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					try
 					{
 						String[] dims = value.split("x");
+						if( dims.length < 2)
+						{
+							dims = value.split(" ");
+						}
 						String width = dims[0];
 						String height = dims[1];
 						//width & heights can have decimals if converted from vectors, e.g., SVGs
