@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -76,7 +77,15 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 			{
 				String value = getCookieEncryption().getEnterMediaKey(inUser);
 				Cookie cookie = new Cookie(name, value);
-				cookie.setMaxAge(Integer.MAX_VALUE);
+				
+				Data age  = getSearcherManager().getCachedData("system", "systemsettings", "cookie_expiration_age");
+				int maxage = Integer.MAX_VALUE;
+				if( age != null)
+				{
+					//how many seconds a given cookie should be
+					maxage = Integer.parseInt(age.get("value"));
+				}
+				cookie.setMaxAge(maxage);
 				//Needs new servelet api jar
 				//				cookie.setHttpOnly(true);
 				
