@@ -41,10 +41,9 @@ public class GoogleTwoFactorAuthenticator implements Authenticator{
 
 		String secret = user.get("googlesecretkey");
 				
-		if(user.get("googlesecretkey") == null) {
-		
+		if(secret == null) 
+		{
 			return false;
-			
 		}
 		if(keystring == null) {
 			return false;
