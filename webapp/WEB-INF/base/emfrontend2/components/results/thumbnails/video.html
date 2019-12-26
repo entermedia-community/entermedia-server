@@ -10,7 +10,7 @@
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 	#set ( $thumb = $urlutils.encode($thumb))
-	#set ( $thumb = $urlutils.encode($thumb))
+	#set ( $thumb = $thumb	.replace("%2F", "/"))
 #end
 
 #if($sourcepath)
