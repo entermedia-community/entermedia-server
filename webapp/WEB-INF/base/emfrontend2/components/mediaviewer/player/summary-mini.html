@@ -10,12 +10,16 @@
 				$context.putPageValue("thumbsize",$thumbsize)
 				$context.putPageValue("viewer","summary")
 				
-				<a class="assettab" 
-					data-link="$applink/views/modules/asset/components/mediaviewer/fullscreen/tabs/viewpreview.html" 
-					data-assettab="viewpreview" 
-					title="Preview $asset">
-	 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-				</a>
+				#if (${type} == "video")
+					$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+				#else
+					<a class="assettab" 
+						data-link="$applink/views/modules/asset/components/mediaviewer/fullscreen/tabs/viewpreview.html" 
+						data-assettab="viewpreview" 
+						title="Preview $asset">
+		 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+					</a>
+				#end
 				
 			</div>
 		    <div class="media-player-mini-links">        
