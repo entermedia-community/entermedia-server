@@ -9,16 +9,16 @@
 	#else
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
-	#if( !$details)
-		404 on view: $view
-	#end
 #else
 	##leagacy check. We used to pass in the $details
 	#if( !$details)
-	#set ($details = $searcher.getPropertyDetails())
+		#set ($details = $searcher.getPropertyDetails())
 	#end
 #end	
 
+#if( !$details)
+		[[Not view defined on]]: $view
+#end
 
 #if(!$detailviewercolumns)
 	#set($detailviewercolumns = 2)
