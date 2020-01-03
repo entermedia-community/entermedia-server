@@ -13,7 +13,7 @@ $!query.addSortBy("ordering")
 
 
 
-<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" class="emsettingslist" data-searchtype="view" data-field="ordering">
+<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" class="emsettingslist listsort" data-searchtype="view" data-field="ordering">
         <li class="header no-sort">[[Editing Boxes]]</li>
         #if ($systemdefined != "true")
         <li class="no-sort subheader" id="addeditbox" >
@@ -23,7 +23,7 @@ $!query.addSortBy("ordering")
       
     #foreach( $target in $views)
 	    #set($sortid = $target.id.replaceAll("_", "||"))
-        <li id="view_$sortid" data-ordering="${view.ordering}" class=" #if($viewid == $target.id) current #end " byassettype="$!target.byassettype">
+        <li id="view_$sortid" data-ordering="${target.ordering}" class=" #if($viewid == $target.id) current #end " byassettype="$!target.byassettype">
            
             #if( ($target.byassettype && $target.byassettype == "true") )
             	
