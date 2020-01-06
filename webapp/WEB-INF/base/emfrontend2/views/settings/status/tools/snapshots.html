@@ -5,18 +5,21 @@
 
 <p>[[No snapshots found]]</p>
 #end
-<a class="btn"  href="./create.html">[[Create New]]</a>&nbsp;&nbsp;&nbsp;<a class="btn"  href="./snapshots.html">[[Refresh]]</a>
+<a class="btn btn-primary"  href="./create.html">[[Create New]]</a>&nbsp;&nbsp;&nbsp;
+<a class="btn btn-secondary"  href="./snapshots.html">[[Refresh]]</a>
 <br>
 <br>
 <hr>
-<table width="50%" class="striped">
+<table width="50%" class="table table-striped table-hover" style="width:50%;">
+<thead>
 <tr>
 <th>[[Name]]</th><th>[[Sections]]</th><th></th>
 </tr>
+</thead>
 #foreach( $snap in $snapshots)
 	<tr><td>$snap.name()</td>
 	<td>$snap.totalShards()</td>
-	<td style="padding:10px 0;"><a href="./restore.html?id=$snap.name()" class="btn btn-sm"> [[Restore]]</td>
+	<td style="padding:10px 0;"><a href="./restore.html?id=$snap.name()" class="btn btn-sm btn-primary"> [[Restore]]</td>
 	</tr>
 #end
 </table>

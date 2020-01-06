@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
@@ -92,17 +93,17 @@ public class ElasticUserFilters implements UserFilters
 //			getCacheManager().put(inQuery.getMainInput(), inFilters);
 //		}
 //	}
-	public Map getFilterValues(HitTracker inHits)
+	public Map getFilterValues(HitTracker inHits, WebPageRequest inReq)
 	{
 		if(inHits == null) {
 			return new HashMap();
 		}
-		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery());
+		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery(), inReq);
 		return filterValues;
 	}
-	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery)
+	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery, WebPageRequest inReq)
 	{
-		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery);
+		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery, inReq);
 		Map options = new HashMap();
 		if( nodes != null)
 		{
@@ -115,17 +116,19 @@ public class ElasticUserFilters implements UserFilters
 		return options;
 		
 	}
-	public List<FilterNode> getFilterOptions(HitTracker inHits)
+	public List<FilterNode> getFilterOptions(HitTracker inHits, WebPageRequest inReq)
 	{
-		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery());
+		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery(), inReq);
 	}
-	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery)
+	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery, WebPageRequest inReq)
 	{
 		if (inQuery.getMainInput() != null)
 		{
 			String key = inSearcher.getSearchType() + inQuery.getMainInput();
 			IndexValues values = (IndexValues)getValues().get(key);
-			if( values == null || values.fieldIndexId != inSearcher.getIndexId() || values.isExpired() ) //|| true)
+			if( 	values == null || 
+					!values.fieldIndexId.equals( inSearcher.getIndexId() ) || 
+					values.isExpired() ) //|| true)
 			{
 				values = new IndexValues();
 				values.fieldIndexId = inSearcher.getIndexId();
@@ -141,8 +144,11 @@ public class ElasticUserFilters implements UserFilters
 							facets.add(detail);
 						}
 					}
-					
-					HitTracker all = (HitTracker)inSearcher.query().facets(facets).freeform("description", inQuery.getMainInput()).search();
+					/**
+					 * We want to keep a broad selection of filter so that people can choose more than one
+					 */
+					HitTracker all = (HitTracker)inSearcher.query().facets(facets)
+							.attachSecurity(inReq).freeform("description", inQuery.getMainInput()).search();
 					values.fieldValues = all.getFilterOptions();
 				}	
 				else
@@ -204,6 +210,18 @@ public class ElasticUserFilters implements UserFilters
 			Term term = (Term) iterator.next();
 			term.setUserFilter(true);
 		}
+	}
+
+	@Override
+	public List<FilterNode> getFilterOptions(HitTracker inHits)
+	{
+	return getFilterOptions(inHits, null);
+	}
+
+	@Override
+	public Map<String, FilterNode> getFilterValues(HitTracker inHits)
+	{
+	return getFilterValues(inHits, null);
 	}
 
 }

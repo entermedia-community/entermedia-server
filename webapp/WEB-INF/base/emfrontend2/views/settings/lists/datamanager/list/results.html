@@ -2,28 +2,24 @@
 #if( !$view )
     #set( $view = "${searcher.searchType}/${searcher.searchType}search.xml")
 #end
-    $context.putPageValue("hits",$datalist) 
-    #if( $view )
-        #set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
-    #else
-    #set( $details = $searcher.getSearchProperties($user) )
-    #end
-    $context.putPageValue("details",$details) 
-    
-    
- #set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
-        #set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
-        #if(!$details)
-        #set( $details = $searcher.getStoredProperties() )
-        #end
-        $context.putPageValue("details",$details) 
+$context.putPageValue("hits",$datalist) 
+#if( $view )
+	#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
+#else
+  	#set( $details = $searcher.getSearchProperties($user) )
+#end
+$context.putPageValue("details",$details) 
+  
+  
+#set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
+#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
+#if(!$details)
+	#set( $details = $searcher.getStoredProperties() )
+#end
+$context.putPageValue("details",$details) 
 
 <div class="tab" id="data-tab">
-	
 	$pages.include("$apphome/views/settings/lists/datamanager/list/actions.html", $context)
-
-	
-
 	<div style="overflow-x:auto;">
 		<div id="emselectable">
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
@@ -53,17 +49,20 @@
 		#set( $origURL = $context.getRequestParameter("origURL" ) )				
 			
 		#foreach ( $hit in $datalist.getPageOfHits() )
-		  $context.putPageValue('data', $hit)
-    $context.putPageValue('cell', $hit)
+		  	$context.putPageValue('data', $hit)
+    		$context.putPageValue('cell', $hit)
     
 			<tr rowid="$hit.id">
 			#foreach( $detail in $details )
 				
-				<td nowrap>
+				<td>
 				
-				 $context.putPageValue('val',  $!hit.get($detail.id))
-              $context.putPageValue('detail',  $detail)
-              $pages.include("$apphome/components/search/cell.html", $context)    
+				 	$context.putPageValue('val',  $!hit.get($detail.id))
+              		$context.putPageValue('detail',  $detail)
+              		#if($detail.viewType == "html")
+              			$context.putPageValue('viewtype', "htmlescaped")
+              		#end
+              		$pages.include("$apphome/components/search/cell.html", $context)    
 				
 				</td>
 			#end

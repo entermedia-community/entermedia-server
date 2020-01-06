@@ -1,9 +1,12 @@
-<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}">
+<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
 	#if($showtoolbar)
-	<div class="gallery-checkbox">
-		<input type="checkbox" class="selectionbox" name="count" value=""
-			#if($hits.isSelectedOnPage(${hit.id})) checked #end
-			data-dataid="${hit.id}" />
+	<div class="gallery-checkbox resultsassetselection">
+		<input type="checkbox" 
+				class="selectionbox" 
+				name="count" 
+				value=""
+				#if($hits.isSelectedOnPage(${hit.id})) checked #end
+				data-dataid="${hit.id}" />
 	</div>
 	#end 
 	#if( $canviewvoting )
@@ -26,7 +29,19 @@
 	#if( $showcaption )
 	<div class="gallery-caption">
 		<div class="gallery-field-info">
-			<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context) #end</a>
+			  #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		         #if($stackedfield)
+		         	#set($title = $hit.get($stackedfield))
+				 #end
+				 #if(!$title)		         	
+		         
+		         
+		         #if( $hit.assettitle )
+		         
+		         #set($title =  $hit.assettitle) #else #set($title = $hit.name) #end
+		         #end
+
+<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> $title</a>
 		</div>
 		#if($canviewbasket)
 		$pages.include("$componenthome/basket/toggleitem.html", $context)

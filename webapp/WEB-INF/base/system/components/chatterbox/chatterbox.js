@@ -7,14 +7,12 @@ function chatterbox() {
 	var apphome = app.data("home") + app.data("apphome");
 
 	reloadAll();
-	
+
 	if(chatopen){
 		return;
 	}	
 	
 	connect();
-	
-	
 	
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
@@ -29,38 +27,44 @@ function chatterbox() {
 	    if(chatconnection.readyState === chatconnection.CLOSED  ){
 	    	connect();
 	    	//IF we do a reconnect render the whole page
-	    
-	    
 	    }
 	    var toggle = button.data("toggle");
 	    if(toggle == true){
 	    	jQuery(".chatter-toggle").toggle();
 	    }
 	    chatconnection.send(json);
-		
-	}
-	);
+	    jQuery("#chatter-msg").val("");
+	});
 
-	lQuery('.chatter-text').livequery("keyup", function(e){
-	    if(e.keyCode == 13)
+	lQuery('.chatter-text').livequery("keydown", function(e){
+	    if(e.keyCode == 13 && !e.shiftKey)
 	    {
-	    	
+	    	//jQuery("#chatter-msg").val("");
+	    	e.preventDefault();
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
-	    	clear();
-	    }
+	    	return false;
+	    } 
+	    else
+    	{
+			var scroll_height = $(this).get(0).scrollHeight;
+			if (!$('.chatterbox').hasClass('chatterlongtext') && scroll_height>30) {
+				$('.chatterbox').addClass('chatterlongtext');
+				scrollToChat();
+			}
+    	}
 	});
 	
+	lQuery('button[data-command="messagereceived"]').livequery("click", function(e)
+	{
+		//jQuery("#chatter-msg").val("");
+	});
+
 	chatopen=true;
 	
 	
 }
 
-
-
-function clear(){
-	jQuery("#chatter-msg").val("");
-}
 
 
 function scrollToChat()
@@ -74,7 +78,6 @@ function scrollToChat()
 }
 
 function connect() {
-    var username = "$context.getUserName()";
     
     var tabID = sessionStorage.tabID && sessionStorage.closedLastTab !== '2' ? sessionStorage.tabID : sessionStorage.tabID = Math.random();
     sessionStorage.closedLastTab = '2';
@@ -106,9 +109,13 @@ function connect() {
         }
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
 		var listarea = chatter.find(".chatterbox-message-list")
-		var urls =  apphome + "/components/chatterbox/message.html";
+		var url = chatter.data("rendermessageurl");
+		if( !url)
+		{
+			url =  apphome + "/components/chatterbox/message.html";
+		}	
 
-		jQuery.get( urls, message, function( data ) {
+		jQuery.get( url, message, function( data ) {
 			listarea.append( data );
 			$(document).trigger("domchanged");
 		});
@@ -121,29 +128,27 @@ function connect() {
 
 
 function reloadAll(){
-	
+
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	
-	jQuery(".chatterbox").each(function () {
-			var urls =  apphome + "/components/chatterbox/index.html";
-			var chatterdiv = $(this);
-			var mydata = $( this ).data();
-			jQuery.get( urls, mydata, function( data ) {
-					chatterdiv.html( data );
-					scrollToChat();
-
-			});
-					
+	jQuery(".chatterbox").each(function () 
+	{
+		var chatter = $(this);
+		var url = chatter.data("renderurl");
+		if( !url)
+		{
+			url =  apphome + "/components/chatterbox/index.html";
+		}	
+		var chatterdiv = $(this);
+		var mydata = $( this ).data();
+		jQuery.get( url, mydata, function( data ) {
+				chatterdiv.html( data );
+				scrollToChat();
+		});
 					
 	});
-	
-	
-	
-	
-	
-	
-	
+
 }
 
 
@@ -155,15 +160,20 @@ function keepAlive() {
     var timeout = 20000;  
     if (chatconnection.readyState == chatconnection.OPEN) {  
     	wasconencted = true;
-    	chatconnection.send('');  
+    	var command = new Object();
+    	command.command = "keepalive";
+    	
+    	var userid = jQuery(".chatterbox").data("user"); //TODO: Use app?
+    	command.userid =  userid;
+    	var json = JSON.stringify(command);
+    	chatconnection.send(json);  
     }
     
     if (chatconnection.readyState === chatconnection.CLOSED) {  
     	connect();
     	reloadAll();
     }
-    
-    
+  
     timerId = setTimeout(keepAlive, timeout);  
 }  
 
@@ -183,8 +193,6 @@ function play(){
 	
 	
 }
-
-
 
 
 

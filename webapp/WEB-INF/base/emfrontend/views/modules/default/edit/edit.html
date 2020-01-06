@@ -14,7 +14,7 @@
 #if( !$view )
 	#set($view = $searcherManager.getData($catalogid, "view",$viewid))
 #end
-#if( $view.rendertype )
+#if( $view.rendertype && $view.rendertype != "default" )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
 #else
 #if($data.id.contains("multi"))

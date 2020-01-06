@@ -1,5 +1,11 @@
 <permissions name="Collection Asset Permissions">
 	
+	<permission moduleid="librarycollection" permission="editcollection" id="libraryeditcollection" permissiontype="library" name="Edit Collection" description="Overrides the default edit permissions for collections" ordering="202" />
+	
+	<permission moduleid="asset" permission="multidelete" id="librarymultidelete" permissiontype="library" name="Multi-Delete" description="Enables removal of selected assets, and the option to remove the original." ordering="306"/>
+	<permission moduleid="asset" permission="multiedit" id="librarymultiedit" permissiontype="library" name="Multiple Files" description="Enables various actions across multiple assets simultaneously." ordering="304" />
+	<permission moduleid="asset" permission="viewcategoryupload"  id="libraryviewcategoryupload" permissiontype="library" name="Upload Assets" description="Enables the upload of assets into collections" ordering="308" />
+	
 	
 	<permission moduleid="asset" permission="editasset" id="libraryeditasset" permissiontype="library" name="Edit Assets" description="Allow editing of assets in this collection" ordering="304" />                                                  
 	<permission moduleid="asset" permission="viewcategoryupload" id="libraryviewcategoryupload" permissiontype="library" name="Upload Files" description="Enables the upload of assets into categories" ordering="308" />
@@ -25,7 +31,7 @@
 	<permission moduleid="asset" permission="download"  id="librarydownload" permissiontype="library" name="Download Original" description="Enables downloading of the original asset." ordering="322"/>
 	<permission moduleid="asset" permission="downloadfpo"  id="librarydownloadfpo" permissiontype="library" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="326"/>
 	<permission moduleid="asset" permission="showpendingassets"   id="libraryshowpendingassets" permissiontype="library" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="312"/>
-	<permission moduleid="asset" permission="showunwatermarkedassets"   id="libraryshowunwatermarkedassets" permissiontype="library" name="Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
+	<permission moduleid="asset" permission="showunwatermarkedassets"   id="libraryshowunwatermarkedassets" permissiontype="library" name="Un-Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
 		
 	
 </permissions>

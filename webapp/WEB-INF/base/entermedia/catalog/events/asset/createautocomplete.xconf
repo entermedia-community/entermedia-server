@@ -1,0 +1,8 @@
+<page>
+	<property name="virtual">true</property>
+	<property name="eventname">Prepopulate Auto-Complete Values</property>	
+	<property name="eventdescription">Import tags and categories</property>	
+		<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/asset/createautocomplete.groovy</script>
+	</path-action>
+</page>

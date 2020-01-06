@@ -7,11 +7,9 @@ $context.putPageValue("groupid", $groupid)
 #set( $userTracker = $userTracker)
 #set( $oeview = "usersearchresults")
 #set( $details = $searcher.getDetailsForView($oeview,$user))
-<div  id="emselectable" style="border:1px solid lightgray;height:185px;margin-bottom:5px;background-color:white;">
+<div  id="emselectable" style="min-height:85px;margin-bottom:5px;">
 
-<table width="100%">
-<tr>	
-</tr>	
+<table class="settings-table table table-striped table-hover">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )				
 	#foreach ( $hit in $userTracker.getPageOfHits() )
@@ -42,21 +40,12 @@ $context.putPageValue("groupid", $groupid)
 	<input type="hidden" id="emselectedrow" name="username" />
 
 </div>
-<table width="100%">
-<tr>
-	<td>
-		<div>
-			<a  href="#" class="btn btn-xs btn-primary" onclick="removeMember('$group.id');;return false;">[[Remove Selected]]</a>
-		</div>
-	</td>
-	<td>
-		<div>
-			<a  href="#" class="btn btn-xs btn-primary" style="float: right;" onclick="selectAllMembers();return false;">[[Select All]]</a>
-		</div>
-	</td>
-</tr>
-</table>
-</div>
+	<div>
+		<a  href="#" class="btn btn-sm btn-primary" style="margin-right:10px;" onclick="selectAllMembers();return false;">[[Select All]]</a>
+		<a  href="#" class="btn btn-sm btn-danger" onclick="removeMember('$group.id');;return false;">[[Remove Selected]]</a>
+	</div>
+	
+
 
 <div style="text-align: right; padding-left: 30px; padding-top: 5px;">
 	#if ( $userTracker.totalPages == 0 )
@@ -76,7 +65,7 @@ $context.putPageValue("groupid", $groupid)
 		#end
 	#end
 </div>
-</div> 
+
 
 
 <script>

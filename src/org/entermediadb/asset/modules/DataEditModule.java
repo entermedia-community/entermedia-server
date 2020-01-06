@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -34,8 +35,8 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.HitTrackerWrapper;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
@@ -1280,8 +1281,36 @@ String viewbase = null;
 		inReq.putPageValue("values", values);
 		inReq.putPageValue("additionals", additionals.toString());
 		inReq.putPageValue("searcher", getSearcherManager().getListSearcher(detail));
-	}
 
+	}
+	public HitTracker loadHitsWrapped(WebPageRequest inReq) throws Exception
+	{
+		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
+		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		if (trackerOriginal == null)
+		{
+			return null;
+		}
+		HitTrackerWrapper wrapped = new HitTrackerWrapper(trackerOriginal);
+		inReq.putPageValue(trackerOriginal.getHitsName(), wrapped);
+		return wrapped;
+	}
+	public void setHitsPageSize(WebPageRequest inReq) throws Exception
+	{
+		String hitsname = inReq.findValue("hitsname");
+		HitTracker tracker = (HitTracker) inReq.getPageValue(hitsname);
+		if (tracker == null)
+		{
+			return;
+		}
+	
+		String pageheight = inReq.getRequestParameter("pageheight");
+		if (pageheight != null) 
+		{
+			tracker.setHitsPerPageHeight(pageheight, 180);
+		}
+	}
+	
 	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
 	{
 		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
@@ -1290,16 +1319,14 @@ String viewbase = null;
 		{
 			return null;
 		}
+		inReq.setRequestParameter("hitssessionidOriginal", hitssessionidOriginal);
 		String othername = inReq.findValue("hitsname");
 
 		String hitssessionidCopy = othername + trackerOriginal.getSearchQuery().getResultType() + trackerOriginal.getCatalogId();
 
 		HitTracker trackerCopy = (HitTracker) inReq.getSessionValue(hitssessionidCopy);
 
-		if (trackerCopy == null ||
-				!trackerCopy.getQuery().equals(trackerOriginal.getQuery()) ||
-				!trackerCopy.getIndexId().equals(trackerOriginal.getIndexId()) ||
-				trackerCopy.getSelectionSize() != trackerOriginal.getSelectionSize())
+		if (trackerCopy == null || trackerCopy.hasChanged(trackerOriginal))
 		{
 			trackerCopy = trackerOriginal.copy();
 			if (trackerOriginal.hasSelections())
@@ -1315,10 +1342,20 @@ String viewbase = null;
 				}
 			}
 			trackerCopy.getSearchQuery().setHitsName(othername);
-			inReq.putSessionValue(trackerCopy.getSessionId(), trackerCopy);
+			String sessionName = trackerCopy.getSessionId();
+			inReq.putSessionValue(sessionName, trackerCopy);
 		}
+		
+		String pageheight = inReq.getRequestParameter("pageheight");
+		if (pageheight != null) 
+		{
+			trackerCopy.setHitsPerPageHeight(pageheight, 180);
+		}
+
+		
 		inReq.putPageValue(trackerCopy.getHitsName(), trackerCopy);
 		inReq.setRequestParameter("hitssessionid", trackerCopy.getSessionId());
+		
 		return trackerCopy;
 	}
 
@@ -1328,6 +1365,7 @@ String viewbase = null;
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher == null)
 		{
+			log.error("Null Searcher");
 			return null;
 		}
 		String hitsname = inReq.findValue("hitsname");
@@ -1373,6 +1411,10 @@ String viewbase = null;
 			inReq.putPageValue(hitsname + catalogid, hits);
 			inReq.putPageValue(hitsname, hits);
 			//inReq.putPageValue("hits", hits);
+		}
+		else
+		{
+			log.error("Null Hits");
 		}
 
 		return hits;
@@ -1520,11 +1562,15 @@ String viewbase = null;
 		{
 			//setup the session value
 			//BaseCompositeData
-			Data data = (CompositeData) inReq.getSessionValue(id);
-			if (data == null)
+			CompositeData compositedata = (CompositeData) inReq.getSessionValue(id);
+			String hitssessionid = id.substring("multiedit".length() + 1);
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if (compositedata!= null && !compositedata.getSelectedResults().hasChanged(hits)) 
 			{
-				String hitssessionid = id.substring("multiedit".length() + 1);
-				HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+				result = compositedata;
+			}
+			if (compositedata == null)
+			{
 				if (hits == null)
 				{
 					log.error("Could not find " + hitssessionid);
@@ -1533,6 +1579,7 @@ String viewbase = null;
 				CompositeData composite = new BaseCompositeData(searcher, hits);
 				composite.setId(id);
 				result = composite;
+				inReq.putSessionValue(id, result);
 			}
 		}
 		if (result == null)
@@ -2035,16 +2082,37 @@ String viewbase = null;
 	public UserFilters loadUserFilters(WebPageRequest inReq)
 	{
 		Searcher searcher = loadSearcher(inReq);
-		UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
+		String key = searcher.getSearchType()+ searcher.getCatalogId() + "userFilters";
+		UserFilters filters = (UserFilters) inReq.getSessionValue(key);
 		if (filters == null)
 		{
 			filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
 			filters.setUserProfile(inReq.getUserProfile());
-			inReq.putSessionValue(searcher.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
+			inReq.putSessionValue(key, filters);
 		}
 		inReq.putPageValue("userfilters", filters);
 
 		return filters;
 	}
+	
+	public void setPageById(WebPageRequest inReq) 
+	{
+		String name = inReq.findValue("hitsname");
+		String pagevalue = inReq.findValue("pagevalue");
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		if( hits != null)
+		{
+			Data data = (Data) inReq.getPageValue(pagevalue);
+			if( data != null && !data.getId().startsWith("multiedit:"))
+			{
+				int page = hits.pageOfId(data.getId());
+				hits.setPage(page);
+			}
+		}
+		
+	}
+	
+	
+	
 
 }

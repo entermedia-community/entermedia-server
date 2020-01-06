@@ -41,7 +41,7 @@
             <div class="main-info">
                 <div class="primary">
                                 
-                    $asset #if ($totalpages > 1) <span style="opacity: 0.8; font-size: 11px; font-weight: normal; position: relative; top: -3px; margin-left: 5px;"><a class="propertyset" propertyname="maximize_player" style="color: #fff;" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a></span> #end
+                    $asset #if ($totalpages > 1) <span style="opacity: 0.8; font-size: 11px; font-weight: normal; position: relative; top: -3px; margin-left: 5px;"><a class="propertyset" propertyname="maximize_player" style="color: #fff;" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=#esc($hitssessionid)&oemaxlevel=2">($totalpages [[Pages]])</a></span> #end
                 </div>
                 <div class="secondary">
                     <div id="mp-asset-info">
@@ -49,9 +49,9 @@
                         <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
                         #end
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-                        <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
+                        <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=#esc($hitssessionid)" class="views">$views<span class="">&nbsp;</span></a>
                         
-                        <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$!comments.size()<span>&nbsp;</span></a>
+                        <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=#esc($hitssessionid)" class="comments">$!comments.size()<span>&nbsp;</span></a>
                                            
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                                 #if ( ${foreach.count} <= 10 )
                                 <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag">$tag</a> 
                                 #elseif ( ${foreach.count} == 11 )
-                                    <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                    <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=#esc($hitssessionid)&oemaxlevel=2">...</a>
                                 #end
                             #end
                             </div>
@@ -79,7 +79,7 @@
                                 #if ( ${foreach.count} <= 8 )
                                 <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
                                 #elseif ( ${foreach.count} == 9 )
-                                    <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                    <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=#esc($hitssessionid)&oemaxlevel=2">...</a>
                                 #end
                             #end
                             </div>

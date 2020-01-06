@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.users.User;
 
 public class TaskRunner extends java.util.TimerTask
 {
@@ -19,7 +20,17 @@ public class TaskRunner extends java.util.TimerTask
 	protected boolean fieldWithParameters;
 	protected boolean fieldRunAgainSoon;
 	protected boolean fieldQueuedToRun;
+	protected User fieldUser;
 	
+	
+	public User getUser()
+	{
+		return fieldUser;
+	}
+	public void setUser(User inUser)
+	{
+		fieldUser = inUser;
+	}
 	public boolean isQueuedToRun()
 	{
 		return fieldQueuedToRun;
@@ -66,13 +77,18 @@ public class TaskRunner extends java.util.TimerTask
 	}
 	public TaskRunner(PathEvent inPathEvent,PathEventManager inManager)
 	{
-		this( inPathEvent,  null,null,inManager);
+		this( inPathEvent,  null,null,inManager,null);
 		setWithParameters(false);
 	}
-	public TaskRunner(PathEvent inPathEvent, Map inParams, Map inPageValues, PathEventManager inManager)
+	public TaskRunner(PathEvent inPathEvent, Map inParams, Map inPageValues, PathEventManager inManager, User inUser)
 	{
 		fieldPathEvent = inPathEvent;
 		fieldEventManager = inManager;
+		if(inUser == null) {
+			fieldUser = inManager.getDefaultUser();
+		} else {
+			fieldUser = inUser;
+		}
 		setParams(inParams);
 		setPageValues(inPageValues);
 		setWithParameters(true);
@@ -92,11 +108,10 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		if (fieldWebPageRequest == null)
 		{
-			if( getPathEvent().getUser() == null)
-			{
-				throw new OpenEditException("admin User is required");
-			}
-			fieldWebPageRequest =  getEventManager().getRequestUtils().createPageRequest(getPathEvent().getPage().getPath(), getPathEvent().getUser());
+			
+			
+			
+			fieldWebPageRequest =  getEventManager().getRequestUtils().createPageRequest(getPathEvent().getPage().getPath(), getUser());
 			if( fieldParams != null)
 			{
 				for (Iterator iterator = fieldParams.keySet().iterator(); iterator.hasNext();)

@@ -12,6 +12,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -23,9 +24,13 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.page.PermissionSorter;
+import org.openedit.users.Group;
 import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
+import org.openedit.util.strainer.GroupFilter;
+import org.openedit.util.strainer.OrFilter;
+import org.openedit.util.strainer.SettingsGroupFilter;
 
 
 public class PermissionManager implements CatalogEnabled
@@ -144,7 +149,7 @@ public class PermissionManager implements CatalogEnabled
 					if( value )
 					{
 						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
-						log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
+						//log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
 					}
 				}
 			}
@@ -163,7 +168,7 @@ public class PermissionManager implements CatalogEnabled
 				if( value )
 				{
 					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
-					log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
+					//log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
 				}
 			}	
 		}
@@ -317,4 +322,60 @@ return null;
 		fieldFilterWriter = inFilterWriter;
 	}
 
+	public String toDisplay(MediaArchive inArchive, Permission inPermission)
+	{
+		StringBuffer buffer = new StringBuffer();
+		Filter filter = inPermission.getRootFilter();
+		renderFilter(inArchive,filter,buffer);
+		return buffer.toString();
+	}
+
+	private void renderFilter(MediaArchive inArchive, Filter inFilter, StringBuffer inBuffer)
+	{
+		if( inFilter instanceof OrFilter)
+		{
+			OrFilter or = (OrFilter)inFilter;
+
+			Filter[] filters = or.getFilters();
+			if( filters == null || filters.length == 0)
+			{
+				inBuffer.append( "false" );
+				return;
+			}
+			for (int i = 0; i < filters.length; i++)
+			{
+				if (i > 0)
+				{
+					inBuffer.append(" Or ");
+				}
+				//inBuffer.append("(");
+				renderFilter(inArchive,filters[i],inBuffer);
+				//inBuffer.append(")");
+			}
+		}
+		else if( inFilter instanceof GroupFilter)
+		{		
+			String gid = ((GroupFilter)inFilter).getGroupId();
+			Group group = inArchive.getGroup(gid);
+			if( group != null)
+			{
+				inBuffer.append(" Group = " + group.getName() );
+			}
+		}
+		else if( inFilter instanceof SettingsGroupFilter)
+		{
+			String gid = ((SettingsGroupFilter)inFilter).getGroupId();
+			Data settings = inArchive.getData("settingsgroup", gid);
+			if( settings != null)
+			{
+				inBuffer.append(" Role = " + settings.getName() );
+			}
+		}
+		else
+		{
+			inBuffer.append(inFilter.toString());
+		}
+	}
+
+	
 }

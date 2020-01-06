@@ -93,6 +93,7 @@ lQuery('.sortviews').livequery(function()
 			axis: 'y',
 		    update: function (event, ui) 
 		    {
+				debugger;
 		        var data = sortable.sortable('serialize');
 		        data = replaceAll(data,"viewid[]=","|");
 		        data = replaceAll(data,"&","");

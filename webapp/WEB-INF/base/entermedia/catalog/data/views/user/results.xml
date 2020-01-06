@@ -2,4 +2,5 @@
 <property id="id" />
 <property id="firstName" />
 <property id="lastName" />
+<property id="creationdate" />
 </properties> 

@@ -1,11 +1,17 @@
-#set($s = $mediaarchive.getSearcherManager().getSearcher("system", "userauthenticationLog"))
-#set($hits = $s.getAllHits($context))
 #set($dl = $mediaarchive.getSearcher("assetdownloadLog"))
-#set($dlhits = $dl.getAllHits($context))
+#set($hist = $context.getPageMap().get("event_breakdown_day").loadHistogram("event_breakdown_day"))
 
-#set($assetsearcher = $mediaarchive.getSearcher("asset"))
-#set($assets = $assetsearcher.getAllHits($context))
 
+<!--
+$context.getClass()
+
+
+#foreach($node in $hist)
+    #foreach($child in $node.getChildren())
+           $child.toString()
+    #end
+#end
+-->
 <canvas id="dlchart" ></canvas>
 
 
@@ -16,9 +22,9 @@ var myChart = new Chart(ctx, {
     data: {
         labels: [
 
-#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($node in $hist)
 	#foreach($child in $node.getChildren())
-		"$context.getDate($child.toString())",
+		"$context.getSearchDate($child.toString())",
 	#end
 #end
         
@@ -29,7 +35,7 @@ var myChart = new Chart(ctx, {
         datasets: [{
             label: '[[Downloads over time]]',
             data: [
-#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($node in $hist)
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
@@ -38,7 +44,7 @@ var myChart = new Chart(ctx, {
                    
                    ],
             backgroundColor: [
-#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($node in $hist)
 
 #foreach($child in $node.getChildren())
 
@@ -69,5 +75,4 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
-
 

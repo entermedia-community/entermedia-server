@@ -3,9 +3,7 @@
 	#set($idcount = "")
 #end
 
-
 <div class="render-type-thumbnail" id="${detail.id}-preview" style="padding: 4px;">
-
 
 
 #set( $foundrow = $mediaarchive.getAsset($val)  )
@@ -16,6 +14,8 @@
 
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
 
-<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog  btn btn-default" >[[Browse]]</a> 
+<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" 
+	data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" 
+	data-width="90%" data-height="90%"  class="emdialog  btn btn-default" >[[Browse]]</a> 
 
 [[or]] <input class="render-choose-file" type="file" name="file.${detail.getId()}" />

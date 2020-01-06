@@ -1,14 +1,12 @@
 #set( $moduleid = $context.findValue("module") )
 #set($viewid = $context.findValue("viewid"))
-
 #set($viewpath = $context.findValue("viewpath"))
-
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 
 #if( !$viewid )
 
 	#set($ismodule = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#if($ismodule)
-		#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 		#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false") )
 		$!query.addSortBy("ordering")   
 		#set($view = $viewsearcher.searchByQuery($query))
@@ -23,68 +21,63 @@
 
 #set( $searchhome = $context.findValue("searchhome") )
 $context.putPageValue("searchhome",$searchhome)
-<div id="searchplugin">
-        <div class="module-inner">
-                
-            <div id="resultsdiv">
-                <div id="emresultscontent">
-                    
-                    <div id="resultsarea">
-                        <div id="resultslist">
-
-				#if(!$hits)
-				        #set($hitsname = $context.getRequestParameter('hitsname'))
-				        #set($hits = $context.getPageValue($hitsname))
-				#end
-				
-				#if(!$hits)
-				        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
-				        #if($hitssessionid)
-				            #set($hits = $context.getSessionValue($hitssessionid))
-				        #end
-				#end
-				#if(!$hits)
-				#set($hits = $context.getPageValue($content.hitsname))
-				#end
-				
-				$context.putPageValue("hits", $hits)
-				#set( $moduleid = $context.findValue("module") )
-				
-				$pages.include("${searchhome}/edit/actions.html", $context)
-				$pages.include("${searchhome}/edit/header.html", $context)
-  
-   
-  
-      <div id="detailarea">
-        <div id="de-table">
-           #if($content.isPropertyTrue("batchedit"))
-				<div id="details">
-                     $pages.includeContent() 
-
-				</div>
-			#else
-	            <div class="tr">
-	                #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-	                <div id="de-side-nav" class="open">
-	                 $pages.include("${searchhome}/edit/sidebar.html",$context)
-	
-	                 $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
+<div id="searchplugin"  class="h-100" > 
+        <div class="module-inner h-100" >
+            <div id="resultsdiv"  class="h-100" >
+                <div id="emresultscontent"   class="h-100" >
+                    <div id="resultsarea"   class="h-100" >
+						#if(!$hits)
+						        #set($hitsname = $context.getRequestParameter('hitsname'))
+						        #set($hits = $context.getPageValue($hitsname))
+						#end
+						
+						#if(!$hits)
+						        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+						        #if($hitssessionid)
+						            #set($hits = $context.getSessionValue($hitssessionid))
+						        #end
+						#end
+						#if(!$hits)
+						#set($hits = $context.getPageValue($content.hitsname))
+						#end
+						
+						$context.putPageValue("hits", $hits)
+						#set( $moduleid = $context.findValue("module") )
+						
+						$pages.include("${searchhome}/edit/actions.html", $context)
+						$pages.include("${searchhome}/edit/header.html", $context)
+						  
+					      <div id="detailarea" class="h-100">
+					        
+					           #if($content.isPropertyTrue("batchedit"))
+									<div id="details">
+					                     $pages.includeContent() 
 					
-	                </div>
-	                <div id="details">
-	                     $pages.includeContent()
-	                </div>
-	           </div>
-			#end
-        </div>
-     </div>	               
-                              
-                        </div>
-                    </div>
-                    
+									</div>
+								#else
+
+									#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false") )
+									#set($views = $viewsearcher.search($query))
+									$context.putPageValue("views",$views)
+						            
+						            #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
+						            #if($views.size()>1)
+										<div id="de-side-nav" class="open h-100">
+						                	$pages.include("${searchhome}/edit/sidebar.html",$context)
+						                	## $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
+										</div>
+									#end
+						                <div id="details" class="h-100" style="padding:20px 20px; #if($views.size()<=1) margin-left:0; #end">
+						                     $pages.includeContent()
+						                     <div class="clearfix"></div>
+						                </div>
+						           
+								#end
+					        
+					     </div>	               
+                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 

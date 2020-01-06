@@ -1,0 +1,10 @@
+<page>
+	<property name="eventname">Send Chat Notification</property>	
+	<property name="enabled">false</property>
+	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>
+			/${catalogid}/events/scripts/google/sendchatnotification.groovy
+		</script>
+	</path-action>
+</page>

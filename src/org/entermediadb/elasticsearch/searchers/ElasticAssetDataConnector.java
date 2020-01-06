@@ -192,17 +192,19 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		return super.shoudSkipField(inKey);
 	}
-	
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	@Override
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
 		try
 		{
-			if( !(inData instanceof Asset))
+			if( !(inData instanceof Asset)) //Low level performance fix
 			{
 				MultiValued values = (MultiValued)inData;
 				saveArray(inContent, "category",values.getValues("category"));
 				saveArray(inContent, "category-exact",values.getValues("category-exact"));
-				super.updateIndex(inContent, inData, inDetails);
+				String desc = values.get("description");
+				inContent.field("description", desc);
+				super.updateIndex(inContent, inData, inDetails,inUser);
 			
 				return;
 			}
@@ -240,7 +242,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 			// populateSecurity(doc, asset, catalogs);
 			
-			super.updateIndex(inContent, inData, inDetails);
+			super.updateIndex(inContent, inData, inDetails,inUser);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)
 			// {
@@ -271,6 +273,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException
 	{
+		if( inData == null)
+		{
+			return;
+		}
 		List ids = new ArrayList(inData.size());
 		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
 		{
@@ -552,7 +558,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
 	}
 
-	
 	
 
 }

@@ -5,6 +5,11 @@
   <parameter id="imagethumb3" parameterdata="imagethumb" value="76" >quality</parameter> 
   <parameter id="imagethumb4" parameterdata="imagethumb" value="4:2:0" >sampling-factor</parameter> 
 
+  <parameter id="imagethumb1png" parameterdata="imagethumbpng" value="200" >prefwidth</parameter> 
+  <parameter id="imagethumb2png" parameterdata="imagethumbpng" value="200" >prefheight</parameter> 
+  <parameter id="imagethumb3png" parameterdata="imagethumbpng" value="76" >quality</parameter> 
+  <parameter id="imagethumb4png" parameterdata="imagethumbpng" value="4:2:0" >sampling-factor</parameter> 
+
   <parameter id="imagemedium1" parameterdata="imagemedium" value="550" >prefwidth</parameter> 
   <parameter id="imagemedium2" parameterdata="imagemedium" value="350" >prefheight</parameter> 
   <parameter id="imagemedium3" parameterdata="imagemedium" value="76" >quality</parameter> 

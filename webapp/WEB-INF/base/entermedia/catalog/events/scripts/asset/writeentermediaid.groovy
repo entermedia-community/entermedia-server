@@ -55,7 +55,8 @@ public boolean writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
 			boolean didSave = writer.saveMetadata(archive, asset, additionaldetail, true);
 			if(!didSave){
 				log.info("Failed to write metadata for asset " + asset.getId());
-			
+				asset.setValue("emiderror", true);
+				archive.saveAsset(asset);
 			}
 			return didSave;
 		}

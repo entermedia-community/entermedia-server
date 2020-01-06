@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
@@ -329,6 +331,24 @@ public class MediaAdminModule extends BaseMediaModule
 	}	
 	public void initCatalogs(WebPageRequest inReq)
 	{
+		NodeManager nodemanager = (NodeManager)getModuleManager().getBean("system","nodeManager");
+
+		
+		do {
+			
+			try
+			{
+				nodemanager.connectCatalog("system");
+			}
+			catch (Exception e)
+			{
+				log.info("Waiting for system catalog to initialize()");
+			}
+			
+			
+		} while(!nodemanager.containsCatalog("system"));
+		
+		
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 		manager.getPathEvents();
 
@@ -340,7 +360,6 @@ public class MediaAdminModule extends BaseMediaModule
 				Data data = (Data) iterator.next();
 				String catalogid = data.getId();
 				
-				NodeManager nodemanager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
 				boolean existed = nodemanager.containsCatalog(catalogid);
 				
 				manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
@@ -682,6 +701,75 @@ public class MediaAdminModule extends BaseMediaModule
 		 }
 		 
 	}
-	
-	
+
+	public void reindexAll(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		NodeManager manager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
+
+		long start = System.currentTimeMillis();
+
+		try
+		{
+			if(!manager.reindexInternal(catalogid))
+			{
+				inReq.putPageValue("mappingerror",true);
+			}
+		}
+		catch ( Throwable ex)
+		{
+			inReq.putPageValue("exception",ex);
+		}
+		
+		long finish = System.currentTimeMillis();
+		String time = String.valueOf( Math.round( (finish - start) / 1000L) );
+		inReq.putPageValue("time", time);
+	}
+	public void listMappings(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ElasticNodeManager manager = (ElasticNodeManager)getModuleManager().getBean(catalogid,"nodeManager");
+		String map = manager.listAllExistingMapping(catalogid);
+		inReq.putPageValue("mappingdebug",map);
+
+	}
+	public void makeMaster(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String localmaster = archive.getNodeManager().getLocalClusterId();
+		HitTracker all = archive.getAssetSearcher().query().all().not("mastereditclusterid",localmaster ).search();
+		all.enableBulkOperations();
+		List tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			asset.setValue("mastereditclusterid",localmaster);
+			tosave.add(asset);
+			if( tosave.size() > 1000)
+			{
+				archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+				tosave.clear();
+			}
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+
+		all = archive.getAssetSearcher().query().all().search();
+		all.enableBulkOperations();
+		tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			if( asset.getValue("recordmodificationdate") == null)
+			{
+				tosave.add(asset); //this will update it
+				if( tosave.size() > 1000)
+				{
+					archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+					tosave.clear();
+				}
+			}	
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+
+	}
 }

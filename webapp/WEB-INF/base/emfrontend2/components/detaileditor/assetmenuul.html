@@ -61,7 +61,7 @@
                	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a></li>
                #end
                #if( $canembedasset && !$multi)
-               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a></li>
+               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$componenthome/share/embed.html?assetid=$asset.id" >[[Embed]]</a></li>
                #end
                #if ( $canaddtoproject )
 				<li id="add-to-collection"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a></li>
@@ -78,7 +78,7 @@
     #foreach( $link in $links)
 		#if( ${foreach.count} == 2)
 			##render editing boxes
-			$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
+			$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
 		#end
 
 		#set( $pname = "can${link.id}")
@@ -88,7 +88,7 @@
 		#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
 		#set( $text = $link.name)
 		
-		#if($link.id == "metadatageneral"  &&  $caneditmetadatageneral == "false" && $canviewmetadatageneral=="true")
+		#if($link.id == "metadatageneral"  &&  $canviewmetadatageneral=="true")
 			#set( $text = "View Metadata") ##change label
             #set( $permission = true)
 		#end
@@ -117,7 +117,7 @@
 			#elseif ($link.id == "assetpermissions")
 				#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
 			#elseif ($link.id == "metadatageneral")
-				#if($canmetadatageneral)
+				#if($caneditasset)
 					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}&edit=true&cemg=$canmetadatageneral")
 				#else
 					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")

@@ -1,0 +1,11 @@
+<span id="togglecollectionlike">
+	<a href="$home$apphome/components/librarycollection/togglelike.html?collectionid=$librarycol.getId()"  data-targetdiv="togglecollectionlike" data-oemaxlevel="1" 
+	#if( $mediaarchive.getProjectManager().doesLike($user,$librarycol))
+		class="collectionsaved ajax" title="[[Unsave Collection]]" 
+	#else
+		class="collectionlike ajax" title="[[Save Collection]]" 	
+	#end	
+		>
+	<i class="fas fa-heart"></i>
+	</a>
+</span>

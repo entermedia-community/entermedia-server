@@ -1,0 +1,48 @@
+#if( $hits && $hits.getTotalPages() >  1  )
+	#set( $module = "librarycollection")
+	#set($targetdiv = "collectionshomecontainer")
+	#set($selectedlibrary = $context.getRequestParameter("libraryid"))
+	#set($resultpage = $context.getRequestParameter("resultpage"))
+	#if(!$resultpage)
+		#set($resultpage="allcollections.html")
+	#end
+	#set($resultsPage = "$home$apphome/views/collections/$resultpage?hitssessionid=$hits.sessionId&searchtype=${module}&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&resultpage=$resultpage")
+	#if($selectedlibrary)
+		#set($resultsPage = "$resultsPage&libraryid=$selectedlibrary")
+	#end
+	#set($resultsPage = "$resultsPage&page")
+	#set($thispage = $hits.getPage())
+	<div id="pages" class="pages">
+		<ul>
+			#if( $hits.prevPage() )
+				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" data-setparam="page" data-setvalue="$hits.prevPage()" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
+			#end
+			#set( $befores = $hits.linksBefore() )					
+			#if($befores.size()!=0)
+			  #if($befores.get(0)>1)
+				<li><a class="ajax" targetdiv="$targetdiv" data-setparam="page" data-setvalue="1" href="$resultsPage=1" >1</a></li>	
+			    <li class="ellipsis">...</li>
+			   #end
+			#end
+			#set( $afters = $hits.linksAfter() )
+			#foreach( $before in $befores )
+				<li><a class="ajax" targetdiv="$targetdiv" data-setparam="page" data-setvalue="${before}" href="$resultsPage=$before" >$before</a></li>		
+			#end
+			<li class="current"><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$thispage" >$!thispage</a></li>
+			#foreach( $after in $afters )
+				<li><a  class="ajax" targetdiv="$targetdiv"  data-setparam="page" data-setvalue="${after}" href="$resultsPage=$after">$after</a></li>		
+			#end
+			#set($size=${afters.size()})
+			#set( $size = $size - 1 )
+			#if($size>0)
+				#if ($afters.get($size)< $hits.getTotalPages() )
+					<li class="ellipsis">...</li>
+					<li><a  class="ajax" targetdiv="$targetdiv"  data-setparam="page" data-setvalue="$hits.getTotalPages()" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+				#end
+			#end
+			#if ( $hits.nextPage() )
+				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv"  data-setparam="page" data-setvalue="$hits.nextPage()" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
+			#end
+		</ul>
+	</div>
+#end

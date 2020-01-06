@@ -1,13 +1,16 @@
-   <ul id="cat-list">
+ <div class="row">
+ <div class="col-md-12">
+ 
+   <ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
 
 
 
-			<li class="row  collectionBox  " >
-								<a class="" title="Select All"  href="#" >&nbsp; </a>
+			<li class="collectionBox  " >
+							
 				
-				<div class="collectionIcons">
+				<div class="text-right">
 
-				Select All: <input type="checkbox" id="select-all" class="select-all" /> 
+				<label for="select-all">[[Select All]]:</label> <input type="checkbox" id="select-all" class="select-all" /> 
 
 				</div>
 			</li>
@@ -16,45 +19,43 @@
 			#foreach($categoryid in $foundcategories)
 			#set($category  = $mediaarchive.getCategory($categoryid))
 
-			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<li id="auto-${categoryid}" class="categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath() </a>
 				<div class="collectionIcons">
-
-				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
-
+					<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
 				</div>
 			</li>
 		#end
 
 #foreach($asset in $assets)
-			
-
-			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<li id="auto-${asset.id}" class=" categorydraggable ui-draggable ui-draggable-handle collectionBox">
 
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-				#set( $thumbpath =  "/${applicationid}/images/mimetypes/${mime}.png" )
-				<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
-						
-						<a class="" style="padding-left: 18px;" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset</a>
+				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
+					#if($canquickdownload)
+						#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+							<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")">
+							<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
+							</a>
+					#else
+						<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>	
+				
+					#end					
+						<a class="stackedplayer" data-assetid="$asset.id" style="padding-left: 20px;" title="$asset.name" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >
+							$asset.sourcepath $asset.name
+						</a>
 							<div class="collectionIcons">
-			
-							<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
-			
+								<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
 							</div>
-		
-						<a class="asset" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset</a>
-						<div class="collectionIcons">
-		
-						<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
-		
-						</div>
+	
+						
 			</li>
 		#end
 		
 		</ul>
 
-   
-   
+   </div>
+ </div>
    
    <script type="text/javascript">
    jQuery("#select-all").on("click", function () {

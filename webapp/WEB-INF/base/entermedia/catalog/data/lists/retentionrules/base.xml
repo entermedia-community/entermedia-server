@@ -1,15 +1,16 @@
 <page>
 
-	<rule id="100" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Auto Archived" expirationperiod="0d"/>
-	<rule id="101" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="30 Days Old" expirationperiod="30d"/>
-	<rule id="102" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="1 Year" expirationperiod="12M"/>
-	<rule id="103" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Delete after 2 Years" expirationperiod="24M"/>
+	<rule id="100" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Archive immediately" expirationperiod="0d"/>
+	<rule id="archive104" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Archive 24 hours old" expirationperiod="1d"/>
+	<rule id="101" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Archive 30 days old" expirationperiod="30d"/>
+	<rule id="102" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Archive 1 year old" expirationperiod="12M"/>
+
 	<rule id="deleteoriginals" deleteoriginal="true" name="Delete Original Immediately" expirationperiod="0d" />
-	
 	<rule id="delete30" deleteasset="true" deleteoriginal="true" deletegenerated="true"  name="Remove after 30 days" expirationperiod="30d" />
 	<rule id="delete60" deleteasset="true" deleteoriginal="true" deletegenerated="true"  name="Remove after 60 days" expirationperiod="60d" />
 	<rule id="delete90" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Remove after 90 days" expirationperiod="90d" />
 	<rule id="delete365" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Remove after one year" expirationperiod="365d" />
+	<rule id="103" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Delete after two years" expirationperiod="24M"/>
 
 
 

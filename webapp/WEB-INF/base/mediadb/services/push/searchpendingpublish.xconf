@@ -1,0 +1,12 @@
+<page>
+	    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<generator name="velocity"/>
+	<path-action name="Script.run" alltypes="true">
+	<script>/${catalogid}/events/scripts/publishing/searchpending.groovy</script>
+	
+	</path-action>
+	
+	
+	
+	
+</page>

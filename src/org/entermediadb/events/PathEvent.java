@@ -23,7 +23,6 @@ import org.openedit.util.RequestUtils;
 public class PathEvent implements Comparable, TextAppender
 {
 	private static final Log log = LogFactory.getLog(PathEvent.class);
-	protected User fieldUser;
 	protected Page fieldPage;
 	protected boolean fieldAsleep;
 	protected boolean fieldHasFailed;
@@ -198,16 +197,7 @@ public class PathEvent implements Comparable, TextAppender
 		fieldExpirationTime = inExpirationTime;
 	}
 
-	public User getUser()
-	{
-		return fieldUser;
-	}
-
-	public void setUser(User inUser)
-	{
-		fieldUser = inUser;
-	}
-
+	
 	public boolean hasFailed()
 	{
 		return fieldHasFailed;

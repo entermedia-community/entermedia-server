@@ -180,7 +180,7 @@ public class AssetSourceManager implements CatalogEnabled
 	public HitTracker saveFilesAndImport(final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		MediaArchive archive = getMediaArchive();
-		log.info("Starting saving");
+		//log.info("Starting saving");
 		ListHitTracker tracker = new ListHitTracker();
 		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
 		{
@@ -376,28 +376,32 @@ public class AssetSourceManager implements CatalogEnabled
 			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + source.getId(), "HotFolderManager");
 			if( lock == null)
 			{
-				inLog.info("folder is already in lock table" + name);
+				inLog.info("Hot folder is already in lock table: " + name);
 				continue;
 			}
 			try
 			{
 				if( !source.isEnabled() )
 				{
-					inLog.info("Hot folder not enabled " + name);
+					//inLog.info("Hot folder not enabled " + name);
 					continue;
 				}
-				inLog.info("Starting hot folder import " + name);
+				inLog.info("Hot folder import started: " + name);
 	
 				try
 				{
 					//pullGit(path,1);
 					int found = source.importAssets(null); 
-					inLog.info(name + " Imported " + found + " assets");
+					inLog.info("Hot folder: " + name + ", imported " + found + " assets");
+					
+					//TODO: Clear empty hot folder if enabled
+					
+					
 				}
 				catch( Exception ex)
 				{
-					inLog.error("Could not process folder " + name ,ex);
-					log.error("Could not process folder " + name,ex);
+					inLog.error("Could not process Hot folder " + name ,ex);
+					log.error("Could not process Hot folder " + name,ex);
 				}
 				
 			}

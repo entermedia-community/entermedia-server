@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher" class="postComment">
+ 
+  <property id="id" index="true" filter="false" internalfield="true" editable="true" stored="true" sortable="true" >New
+    <name>
+      <language id="de"><![CDATA[Id]]></language>
+      <language id="en"><![CDATA[Id]]></language>
+      <language id="es"><![CDATA[Id]]></language>
+      <language id="fr"><![CDATA[Id]]></language>
+    </name>
+  </property>
+  <property id="date" index="true" filter="false" datatype="date"  stored="true" sortable="true" >New 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="commenttext" index="true" editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[commenttext]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" index="true" filter="false" datatype="text"  stored="true" sortable="true" > 
+    <name> 
+      <language id="de"><![CDATA[Author]]></language>  
+      <language id="en"><![CDATA[Author]]></language>  
+      <language id="es"><![CDATA[Autor]]></language>  
+      <language id="fr"><![CDATA[Auteur]]></language> 
+    </name> 
+  </property>  
+  <property id="useruploadid" index="true" editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[goaltaskid]]></language> 
+    </name> 
+  </property>  
+</properties>

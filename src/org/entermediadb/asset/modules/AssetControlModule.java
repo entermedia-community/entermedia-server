@@ -58,16 +58,15 @@ public class AssetControlModule extends BaseMediaModule
 	
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
-		log.info("Running can view asset");
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
-		if(asset == null) {
+		if(asset == null) 
+		{
 			String assetid = inReq.findValue("assetid");
-			if(assetid != null && assetid.contains("multi")) {
-				
-			
-			asset = getAsset(inReq);
-			log.info("can view asset was checking :" + assetid);
-			log.info("found: " + asset);
+			if(assetid != null && assetid.contains("multi")) //Should be with a !?
+			{
+				asset = getAsset(inReq);
+				//log.info("can view asset was checking :" + assetid);
+				//log.info("found: " + asset);
 			}
 		}
 		
@@ -83,11 +82,12 @@ public class AssetControlModule extends BaseMediaModule
 		
 		MediaArchive archive = getMediaArchive(inReq);
 
-		if(asset == null) {
-			String assetid = inReq.findValue("assetid");
-			if(assetid != null) {
+		if(asset == null) 
+		{
+			String assetid = inReq.findValue("assetid");  //Why again?
+			if(assetid != null) 
+			{
 				asset = archive.getAsset(assetid);
-
 			}
 		}
 		if(asset == null)

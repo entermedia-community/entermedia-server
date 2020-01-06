@@ -14,7 +14,7 @@
 #if( !$view )
 	#set($view = $searcherManager.getData($catalogid, "view",$viewid))
 #end
-#if( $view.rendertype )
+#if( $view.rendertype && $view.rendertype != "default" )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
 #else
 	#set( $action = "$home$content.searchhome/edit/save.html")
@@ -22,15 +22,9 @@
 
 $context.putPageValue("viewid", $view.id)
 
-	<div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
-		  	<div  class="ui-widget-header">[[Properties]]
-		    	#if( $caneditmetadatasetup )
-		    	<span class="widget-header-edit">
-				 <a href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"><i class="fas fa-cog"></i></a>
-				</span>
-				#end
-		    </div>
-			<div class="ui-widget-content">
+<h4 style="margin-top:10px;">[[Properties]]</h4>
+
+
 
 <div id="default-fields">
     <div id="editlayout">
@@ -63,9 +57,20 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     #if($caneditdata || $candelete)	
     <a class="btn btn-sm btn-danger ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
+
+#if( $caneditmetadatasetup )
+	
+	 <a class=" float-right btn btn-sm btn-light" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">
+	 <i class="fas fa-cog"></i> [[Edit View]]</a>
+	
+#end
+
     </form>
+
     </div>
 </div>
 
-</div>
-</div>
+
+
+
+

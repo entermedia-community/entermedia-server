@@ -38,7 +38,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid">&lt;&lt; [[Previous Five]] </a>                         
+                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=#esc($hitssessionid)">&lt;&lt; [[Previous Five]] </a>                         
                 #end
                 </li>
                     
@@ -67,7 +67,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=#esc($hitssessionid)"> [[Next Five]] >> </a>
                 #end
                 </li>
             </ul>

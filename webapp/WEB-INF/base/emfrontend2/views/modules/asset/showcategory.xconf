@@ -1,5 +1,3 @@
 <page>
 	<path-action name="MediaSearchModule.showCategory"/>
-    <inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
-
 </page>

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -64,6 +64,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -84,8 +85,8 @@ import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.location.Position;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
@@ -111,6 +112,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
+	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -121,7 +123,24 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
 	protected CacheManager fieldCacheManager;
-	
+	protected ArrayList<String> fieldSearchTypes;
+
+	public ArrayList<String> getSearchTypes()
+	{
+		if (fieldSearchTypes == null)
+		{
+			fieldSearchTypes = new ArrayList();
+
+		}
+
+		return fieldSearchTypes;
+	}
+
+	public void setSearchTypes(ArrayList<String> inSearchTypes)
+	{
+		fieldSearchTypes = inSearchTypes;
+	}
+
 	public CacheManager getCacheManager()
 	{
 		return fieldCacheManager;
@@ -237,24 +256,42 @@ public class BaseElasticSearcher extends BaseSearcher
 			long start = System.currentTimeMillis();
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-			search.setTypes(getSearchType());
+
+			if (getPropertyDetails().getSearchTypes() != null)
+			{
+				search.setTypes(getPropertyDetails().getSearchTypes().split(","));
+			}
+			else
+			{
+				search.setTypes(getSearchType());
+			}
+
 			if (isCheckVersions())
 			{
 				search.setVersion(true);
 			}
-			QueryBuilder terms = buildTerms(inQuery);
-
+			
+			BoolQueryBuilder terms = buildTerms(inQuery);
+			
+			if(!inQuery.isIncludeDeleted()) 
+			{
+				TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
+				terms.mustNot(deleted);
+			}
+			
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			addFacets( inQuery, search);
-			
+			addFacets(inQuery, search);
+
 			addSearcherTerms(inQuery, search);
 			addHighlights(inQuery, search);
+			search.setRequestCache(true);
 
-			
-
-			search.setFetchSource(null, "description");
+			if (!inQuery.isIncludeDescription())
+			{
+				search.setFetchSource(null, "description");
+			}
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
@@ -284,19 +321,18 @@ public class BaseElasticSearcher extends BaseSearcher
 			throw new OpenEditException(ex);
 		}
 	}
-	
-	
-	
+
 	public void addHighlights(SearchQuery inQuery, SearchRequestBuilder search)
 	{
-			for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if (detail.isHighlight())
 			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if(detail.isHighlight()) {
-					search.addHighlightedField(detail.getId(), 80);
-				}
+				search.addHighlightedField(detail.getId(), 80);
 			}
-		
+		}
+
 	}
 
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
@@ -365,21 +401,18 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (inQuery.getAggregation() != null)
 		{
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
-
+		}
+		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
+		if(q.getAggregationJson() != null) {
+			inSearch.setAggregations(q.getAggregationJson().getBytes());
 		}
 		return true;
 	}
-	
-	
-	
-	
-	
-	
 
 	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
@@ -404,8 +437,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	//
 	//
 
-	
-
 	@SuppressWarnings("rawtypes")
 
 	@Override
@@ -413,14 +444,12 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{
-
 			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
 			if (!alreadyin)
 			{
 				log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
 				putMappings();
 			}
-
 		}
 		catch (Exception ex)
 		{
@@ -575,7 +604,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
-			List objectarrays = new ArrayList();
+			//List objectarrays = new ArrayList();
 			if (props.size() == 0)
 			{
 				log.error("No fields defined for " + getSearchType());
@@ -598,10 +627,27 @@ public class BaseElasticSearcher extends BaseSearcher
 			// props.add(detail);
 			// }
 
+//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
+//			jsonproperties = jsonproperties.field("type", "string");
+//			jsonproperties = jsonproperties.field("index", "not_analyzed");
+//			jsonproperties = jsonproperties.field("include_in_all", "false");
+//			jsonproperties = jsonproperties.field("store", "false");
+//
+//			jsonproperties = jsonproperties.endObject();
+//
+//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
+//			jsonproperties = jsonproperties.field("include_in_all", "false");
+//			jsonproperties = jsonproperties.field("type", "date");
+//			jsonproperties = jsonproperties.field("store", "true");
+//			jsonproperties = jsonproperties.endObject();
+
+			jsonproperties = buildClusterSyncMappings(jsonproperties);
+
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
-				if(detail.isDeleted()){
+				if (detail.isDeleted())
+				{
 					continue;
 				}
 				if (detail.getId() == null || "_id".equals(detail.getId()) || "id".equals(detail.getId()))
@@ -613,7 +659,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains(".")) //TODO: Check search type instead?
+				if ("_parent".equals(detail.getId()) || detail.getId().contains(".") || "emrecordstatus".equals(detail.getId()) || "recordmodificationdate".equals(detail.getId()) || "mastereditclusterid".equals(detail.getId()) || detail.getId().startsWith("_")) //TODO: Check search type instead?
 				{
 					continue;
 				}
@@ -642,12 +688,27 @@ public class BaseElasticSearcher extends BaseSearcher
 							jsonproperties = jsonproperties.field("ignore_above", 256);
 
 							jsonproperties.endObject();
+							//lowercase with no analysis 
+							jsonproperties.startObject("sort");
+							jsonproperties = jsonproperties.field("type", "string");
+							jsonproperties = jsonproperties.field("index", "analyzed");
+							jsonproperties = jsonproperties.field("analyzer", "tags");
+							jsonproperties = jsonproperties.field("ignore_above", 256);
+
 							jsonproperties.endObject();
+
+							jsonproperties.endObject();
+
 						}
 
 						if (analyzer != null)
 						{
 							jsonproperties.field("analyzer", analyzer);
+						}
+						else
+						{
+							jsonproperties.field("analyzer", "lowersnowball");
+
 						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
 						jsonproperties.endObject();
@@ -677,7 +738,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
-			log.info(content);
+			//log.info(getSearchType() + " " + content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -686,6 +747,30 @@ public class BaseElasticSearcher extends BaseSearcher
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+	private XContentBuilder buildClusterSyncMappings(XContentBuilder jsonproperties) throws Exception
+	{
+
+		//		What about an object called asset.recordstatus.deleted = true
+		//				asset.recordstatus.lastmodified and asset.recordstatus.lastmodifiedclusterid and asset.recordstatus.masternodeid and asset.recordstatus.masterlastmodified (edited) 
+
+		jsonproperties.startObject("emrecordstatus").field("type", "object");
+		jsonproperties.startObject("properties");
+
+		jsonproperties.startObject("mastereditclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
+		jsonproperties.startObject("masterrecordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
+
+		jsonproperties.startObject("lastmodifiedclusterid").field("type", "string").field("index", "not_analyzed").field("include_in_all", "false").field("store", "false").endObject();
+		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
+		jsonproperties.startObject("recorddeleted").field("include_in_all", "false").field("type", "boolean").field("store", "false").endObject();
+
+		
+		
+		jsonproperties.endObject();
+		jsonproperties.endObject();
+
+		return jsonproperties;
 	}
 
 	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception
@@ -725,7 +810,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("type", "date");
 			jsonproperties = jsonproperties.field("store", "true");
-			
+
 			// "date_detection" : 0
 			// jsonproperties = jsonproperties.field("format",
 			// "yyyy-MM-dd HH:mm:ss Z");
@@ -777,6 +862,15 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("ignore_above", 256);
 				}
 				jsonproperties.endObject();
+
+				jsonproperties.startObject("sort");
+				jsonproperties = jsonproperties.field("type", "string");
+				jsonproperties = jsonproperties.field("index", "analyzed");
+				jsonproperties = jsonproperties.field("analyzer", "tags");
+				jsonproperties = jsonproperties.field("ignore_above", 256);
+
+				jsonproperties.endObject();
+
 				jsonproperties.endObject();
 			}
 
@@ -806,11 +900,18 @@ public class BaseElasticSearcher extends BaseSearcher
 		String analyzer = detail.get("analyzer");
 		if (analyzer != null)
 		{
-			jsonproperties = jsonproperties.field("analyzer", analyzer);
+			jsonproperties.field("analyzer", analyzer);
+		}
+		else
+		{
+			if (detail.isAnalyzed() && !(detail.isList() || detail.isBoolean() || detail.isNumber() || detail.isDate() || detail.isGeoPoint() || "name".equals(detail.getId())))
+			{
+				jsonproperties.field("analyzer", "lowersnowball");
+			}
 		}
 	}
 
-	protected QueryBuilder buildTerms(SearchQuery inQuery)
+	public BoolQueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
 		// if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() ==
@@ -887,7 +988,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				continue;
 			}
 
-			String value = term.getValue();
+			Object value = term.getValue();
+			if (value == null)
+			{
+				value = term.getValues();
+			}
 			QueryBuilder find = buildTerm(detail, term, value);
 			if (find != null)
 			{
@@ -1069,7 +1174,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			valueof = valueof.replace("*", "");
 			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
-			phrase.maxExpansions(10);
+			phrase.maxExpansions(75);
 			or.should(phrase);
 			find = or;
 		}
@@ -1094,102 +1199,119 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
-			boolean simple = true;
-			if (!StringUtils.isAlphanumericSpace(valueof))
+			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
-				simple = false;
-
-				// Replace GOOD stuff for now. Then escape whats left then
-				// replace back
-				valueof = valueof.replace("*", "_STAR_");
-				valueof = valueof.replace("\"", "_QUOTE_");
-				valueof = valueof.replace(":", "_COLON_");
+				valueof = valueof.replace("\"", "");
 				valueof = QueryParser.escape(valueof);
-				valueof = valueof.replace("_STAR_", "*");
-				valueof = valueof.replace("_QUOTE_", "\"");
-				valueof = valueof.replace("_COLON_", ":");
-
+				String query = "+(" + valueof + ")";
+				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), query);
+				text.analyzer("lowersnowball");
+				find = text;
 			}
-			if (simple) // If there is one * then let them add them all in
+			else
 			{
+				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ").replace(", ", " AND "); //Babson uses lots of commas
+				//We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
-				String uppercase = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");
 
-				Matcher m = operators.matcher(uppercase);
-				if (!m.find())
+				Matcher customlogic = operators.matcher(uppercase);
+				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
 				{
-					// inValue = inValue.replaceAll(" ", " "); //recurse
-					uppercase = uppercase.replaceAll(" ", " AND ");
+					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
 				}
-				m = operators.matcher(uppercase);
-				StringBuffer output = new StringBuffer();
-				int location = 0;
-				while (m.find())
-				{
-					String word = uppercase.substring(location, m.start());
-					String operator = m.group();
-					wildcard(output, word);
-					output.append(operator);
-					location = m.end();
-				}
-				wildcard(output, uppercase.substring(location, uppercase.length()));
-				valueof = output.toString();
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
 				// tom*nancy => tom*nancy
 				// tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
 				// "Big Deal" => "Big Deal"
-			}
+				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
+				BoolQueryBuilder or = QueryBuilders.boolQuery();
 
-			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
-			{
-				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchQuery(inTerm.getId(), valueof);
-				text.analyzer("lowersnowball");
-				find = text;
+				Matcher m = operators.matcher(uppercase);
 
-			}
-			else
-			{
-				if (!simple)
+				int start = 0;
+				int ending = uppercase.length();
+				String operator = null;
+				boolean keepgoing = true;
+				String nextoperator = null;
+				while (keepgoing)
 				{
-					valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
+					if (m.find())
+					{
+						ending = m.start();
+						nextoperator = m.group().trim();
+					}
+					else
+					{
+						keepgoing = false;
+						ending = uppercase.length();
+					}
+
+					String word = uppercase.substring(start, ending);
+					if (keepgoing)
+					{
+						start = m.end();
+					}
+
+					StringBuffer out = new StringBuffer();
+					out.append("+(");
+					//Check for quotes..
+					if ((word.startsWith("\"") && word.endsWith("\"")))
+					{
+						String sub = word.substring(1, word.length() - 1);
+						out.append("\"" + QueryParser.escape(sub) + "\"");
+					}
+					else
+					{
+						wildcard(out, word);
+					}
+					out.append(")");
+
+					//Make a *xxx* OR xxx* search to deal with bugs
+					BoolQueryBuilder pair = QueryBuilders.boolQuery();
+					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
+					text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+					text.analyzeWildcard(true); //This is important
+					text.allowLeadingWildcard(true);
+					text.analyzer("lowersnowball");
+					text.defaultField("description");
+					pair.should(text);
+
+					String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
+					QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
+					startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+					startw.analyzer("lowersnowball");
+					startw.defaultField("description");
+					pair.should(startw);
+
+					if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
+					{
+						operator = "OR";
+					}
+					else if (operator == null)
+					{
+						operator = "AND";
+					}
+					if (operator.equals("NOT"))
+					{
+						or.mustNot(pair);
+					}
+					if (operator.equals("OR"))
+					{
+						or.should(pair);
+					}
+					else
+					{
+						or.must(pair);
+					}
+
+					operator = nextoperator;
 				}
 
-				String query = "+(" + valueof + ")";
-
-				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-				text.analyzer("lowersnowball");
-				text.defaultField("description");
-
-				MatchQueryBuilder text2 = QueryBuilders.matchQuery("description", String.valueOf(inValue));
-				text2.analyzer("lowersnowball");
-
-				BoolQueryBuilder or = QueryBuilders.boolQuery();
-				or.should(text);
-				or.should(text2);
-
 				find = or;
-				// TODO: Use RegEx to check for this
-
-				// if( valueof.contains("-") || valueof.contains(",") ||
-				// valueof.contains("/") || valueof.contains("\\") ||
-				// valueof.contains("#") || valueof.contains("@"))
-				// {
-				// BoolQueryBuilder or = QueryBuilders.boolQuery();
-				// or.should(text);
-				// MatchQueryBuilder phrase =
-				// QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
-				// phrase.analyzer("lowersnowball");
-				// or.should(phrase);
-				// find = or;
-				// }
-				// else
-
 			}
 		}
 		else if (valueof.endsWith("*"))
@@ -1515,7 +1637,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (detail.isAnalyzed())
 					{
-						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
+						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".sort");
 					}
 					else
 					{
@@ -1527,7 +1649,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
 					if (first.isAnalyzed())
 					{
-						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".exact");
+						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".sort");
 					}
 					else
 					{
@@ -1536,7 +1658,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				else if (detail.isAnalyzed())
 				{
-					sort = SortBuilders.fieldSort(field + ".exact");
+					sort = SortBuilders.fieldSort(field + ".sort");
 				}
 				else
 				{
@@ -1585,7 +1707,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		createContentBuilder(details, inData);
+		saveToElasticSearch(details, inData, false, inUser);
 		clearIndex();
 	}
 
@@ -1641,7 +1763,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				createContentBuilder(details, data);
+				saveToElasticSearch(details, data, false, inUser);
 			}
 		}
 		clearIndex();
@@ -1714,9 +1836,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
-				updateMasterClusterId(details, data2, content);
-				updateIndex(content, data2, details);
-
+				updateIndex(content, data2, details, inUser);
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
@@ -1780,7 +1900,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
-		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + "(" + getSearchType() + ")");
+		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
@@ -1793,20 +1913,75 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
 	{
-
-		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-		if (hasmaster != null)
+		try
 		{
-			if (inData.getValue("mastereditclusterid") == null)
+			if (!isTrackEdits())
 			{
-				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId());
-				content.field("recordmodificationdate", new Date());
-
+				return;
 			}
+			Map status = (Map) inData.getValue("emrecordstatus");
+			if(status == null) {
+				status = new HashMap();
+			}
+			if (isReIndexing())
+			{
+				content.field("emrecordstatus", status);
+				return;
+			}
+
+			String localClusterId = getElasticNodeManager().getLocalClusterId();
+			String currentid = null;
+			if(status != null) {
+			 currentid = (String) status.get("mastereditclusterid");
+			}
+			if (currentid == null && !isReIndexing())
+			{
+				currentid = localClusterId;
+			}
+			
+			status.put("recorddeleted", delete);
+			status.put("mastereditclusterid", currentid);
+			status.put("lastmodifiedclusterid", localClusterId);
+
+			Object currentmod = status.get("recordmodificationdate");
+			if (currentmod instanceof String)
+			{
+				currentmod = DateStorageUtil.getStorageUtil().parseFromStorage((String) currentmod);
+			}
+
+			currentmod = new Date();
+
+			status.put("recordmodificationdate", currentmod);
+
+			Object currentmastermod= null;
+			if(status != null ) {
+					
+				currentmastermod = status.get("masterrecordmodificationdate");
+			}
+			if (currentmastermod instanceof String)
+			{
+				currentmastermod = DateStorageUtil.getStorageUtil().parseFromStorage((String) currentmastermod);
+			}
+			if (currentid.equals(localClusterId))
+			{
+				currentmastermod = currentmod;
+			}
+			status.put("masterrecordmodificationdate", currentmastermod);
+
+			content.field("emrecordstatus", status);
+			
 		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+	}
+
+	protected boolean isTrackEdits()
+	{
+		return true;
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -1907,7 +2082,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		clearIndex();
 	}
 
-	protected void createContentBuilder(PropertyDetails details, Data data)
+	protected void saveToElasticSearch(PropertyDetails details, Data data, boolean delete, User inUser)
 	{
 		try
 		{
@@ -1923,7 +2098,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			updateMasterClusterId(details, data, content);
+
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
@@ -1938,8 +2113,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
-
-			updateIndex(content, data, details);
+			updateMasterClusterId(details, data, content, delete);
+			updateIndex(content, data, details, inUser);
 			content.endObject();
 			if (log.isDebugEnabled())
 			{
@@ -2010,23 +2185,16 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
+		updateIndex(inContent, inData, inDetails, null);
+	}
+
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser)
+	{
 		if (inData == null)
 		{
-			log.info("Null Data");
+			log.error("Null Data");
+			return;
 		}
-		// Map props = inData.getProperties();
-		// HashSet everything = new HashSet(props.keySet());
-		// everything.add("id");
-		// everything.add("name");
-		// everything.add("sourcepath");
-		// for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
-		// {
-		// PropertyDetail detail = (PropertyDetail) iterator.next();
-		// everything.add(detail.getId());// We need this to handle booleans
-		// // and potentially other things.
-		//
-		// }
-		// everything.remove(".version"); // is this correct?
 		try
 		{
 			Map props = inData.getProperties();
@@ -2061,20 +2229,29 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
+				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid") || propid.equals("masterrecordmodificationdate") || propid.equals("emrecordstatus"))
+				{
+					continue;
+				}
+				if (propid.contains("recorddeleted"))
+				{
+					continue;
+				}
+
 				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(propid);
 				if (detail == null)
 				{
 					detail = inDetails.getLegacyDetail(propid);
 				}
-				if (detail == null && !propid.equals("description") && !propid.contains("_int"))
-				{
 
+				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
+				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					detail.setDeleted(false);
 					//setType(detail);
-					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);					
+					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
 					inDetails.addDetail(detail);
-					
+
 					if (!putMappings())
 					{
 						throw new OpenEditException(getSearchType() + " could not put mapping on data " + propid + " rowid=" + inData.getId());
@@ -2084,23 +2261,32 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() + " as " + detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex() && !propid.equals("description")) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}
+				if (propid.equals("description"))
+				{
+					Object value = inData.getValue(propid);
+					if (value == null)
+					{
+						StringBuffer desc = new StringBuffer();
+						populateKeywords(desc, inData, inDetails);
+						if (desc.length() > 0)
+						{
+							value = desc.toString();
+						}
+					}
+					inContent.field(propid, value);
+					continue;
+				}
+
 				String key = detail.getId();
 				if (key == null)
 				{
 					continue;
 				}
-				if (key.equals("recordmodificationdate"))
-				{
-					inContent.field(key, new Date());
-					continue;
-				}
-
 				Object value = inData.getValue(key);
-
 				if (value != null)
 				{
 					if (value instanceof String && ((String) value).isEmpty())
@@ -2108,6 +2294,19 @@ public class BaseElasticSearcher extends BaseSearcher
 						value = null;
 					}
 				}
+				//				if( isReIndexing() ) //When reindexing dont mess with this data
+				//				{
+				//					if (key.equals("recordmodificationdate"))
+				//					{
+				//						inContent.field(key, value);
+				//						continue;
+				//					}
+				//					if (key.equals("mastereditclusterid"))
+				//					{
+				//						inContent.field(key, value); //Copy over existing values
+				//						continue;
+				//					}
+				//				}	
 
 				if (shoudSkipField(key))
 				{
@@ -2122,7 +2321,37 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (!(value instanceof Collection))
 					{
-						throw new OpenEditException("Data was not a collection " + value.getClass());
+						if (value instanceof String)
+						{
+							String[] values = MultiValued.VALUEDELMITER.split((String) value);
+							Collection objects = new ArrayList(values.length);
+							//JsonSlurper slurper = new JsonSlurper();
+							for (int i = 0; i < values.length; i++)
+							{
+								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
+								String text = values[i];
+								text = text.substring(1, text.length() - 1);
+								String[] parts = text.split(",");
+								Map chunk = new HashMap();
+								for (int j = 0; j < parts.length; j++)
+								{
+									String ptext = parts[j];
+									int eq = ptext.indexOf("=");
+									if (eq > 0)
+									{
+										String id = ptext.substring(0, eq);
+										String valtext = ptext.substring(eq + 1, ptext.length());
+										chunk.put(id.trim(), valtext.trim());
+									}
+								}
+								objects.add(chunk);
+							}
+							value = objects;
+						}
+						else
+						{
+							throw new OpenEditException(inData.getId() + " / " + detail.getId() + " Data was not a collection or a string " + value.getClass());
+						}
 					}
 					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
 				}
@@ -2292,17 +2521,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						inData.setValue(key, position); //For next time?
 					}
 				}
-				else if (key.equals("description")) // TODO: This should be
-													// moved to _all
-													// searches
-				{
-					StringBuffer desc = new StringBuffer();
-					populateKeywords(desc, inData, inDetails);
-					if (desc.length() > 0)
-					{
-						inContent.field(key, desc.toString());
-					}
-				}
 				else if (detail.isMultiLanguage())
 				{
 					// This is a nested document
@@ -2364,7 +2582,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 						if (value != null)
 						{
-
 							inContent.field(key, value);
 						}
 					}
@@ -2375,9 +2592,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				inContent.field("badge", badges);
 			}
-
 			addCustomFields(inContent, inData);
-
 		}
 
 		catch (Exception ex)
@@ -2468,15 +2683,25 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void delete(Data inData, User inUser)
 	{
-		String id = inData.getId();
-		//log.info(id.length());
-		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-		if (inData.get("_parent") != null)
+		Map recordstatus = (Map) inData.getValue("emrecordstatus");
+		if( recordstatus != null)
 		{
-			delete.setParent(inData.get("_parent"));
+			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+			saveToElasticSearch(details, inData, true, inUser);
 		}
-		delete.setRefresh(true).execute().actionGet();
-
+		else
+		{
+			String id = inData.getId();
+			//log.info(id.length());
+			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+			if (inData.get("_parent") != null)
+			{
+				delete.setParent(inData.get("_parent"));
+			}
+			delete.setRefresh(true).execute().actionGet();
+		}
+		clearIndex();
+		
 	}
 
 	// Base class only updated the index in bulk
@@ -2635,7 +2860,7 @@ public class BaseElasticSearcher extends BaseSearcher
 							inFullDesc.append(' ');
 						}
 					}
-					else
+					else if(prop instanceof String)
 					{
 						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) prop);
 						if (data != null && data.getName() != null)
@@ -2687,6 +2912,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (det.isDataType("objectarray"))
 				{
 					Object values = inData.getValue(det.getId());
+					if (values != null && values instanceof String)
+					{
+						//Spreadsheet import
+						inFullDesc.append(values);
+						inFullDesc.append(' ');
+						return;
+					}
+
 					if (values != null && det.getObjectDetails() != null)
 					{
 						Collection maps = (Collection) values;
@@ -2814,22 +3047,32 @@ public class BaseElasticSearcher extends BaseSearcher
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
-		HitTracker allhits = getAllHits();
-		allhits.enableBulkOperations();
-		ArrayList tosave = new ArrayList();
-		for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+		HitTracker allhits = getAllIndexed();
+		setReIndexing(true);
+		try
 		{
-			Data hit = (Data) iterator2.next();
-			Data real = (Data) loadData(hit);
-			tosave.add(real);
-			if (tosave.size() > 1000)
-			{
-				updateInBatch(tosave, null);
+			int SIZE = 3000;
 
-				tosave.clear();
+			allhits.enableBulkOperations();
+			allhits.setHitsPerPage(SIZE);
+			ArrayList tosave = new ArrayList();
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+			{
+				Data hit = (Data) iterator2.next();
+				tosave.add(hit);
+				if (tosave.size() > SIZE)
+				{
+					updateInBatch(tosave, null);
+
+					tosave.clear();
+				}
 			}
+			updateInBatch(tosave, null);
 		}
-		updateInBatch(tosave, null);
+		finally
+		{
+			setReIndexing(false);
+		}
 
 	}
 
@@ -2926,44 +3169,68 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	
 	public void saveJson(Collection inJsonArray)
 	{
-		JSONParser parser = new JSONParser();
-
-		ArrayList errors = new ArrayList();
-		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
 
 		try
 		{
 			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
 			{
 				JSONObject json = (JSONObject) iterator.next();
-				
+
 				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
 				req.source(json.toJSONString());
 				//log.info("savinng " + json);
 				//Parse the json and save it with id
-			
-				String id = (String)json.get("id");
-				if( id != null)
+
+				String id = (String) json.get("id");
+				if (id != null)
 				{
 					req.id(id);
 				}
 				processor.add(req);
 			}
-			processor.flush();
-			processor.awaitClose(5, TimeUnit.MINUTES);
+			//processor.awaitClose(5, TimeUnit.MINUTES);  do in flushBulk
 		}
 		catch (Exception e)
 		{
-			errors.add("Could not save " + e);
+			throw new OpenEditException("Errors saving bulk data ", e);
 		}
-		if(errors.size() > 0) 
+		finally
 		{
-			
+			getElasticNodeManager().flushBulk();
 		}
+	}
 
+	public void saveJson(String inID, JSONObject json)
+	{
+
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
+		IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
+		req.source(json.toJSONString());
+		req.id(inID);
+
+		processor.add(req);
+
+	}
+
+	public HitTracker getAllIndexed()
+	{
+		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
+		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		search.setTypes(getSearchType());
+		search.setRequestCache(true);
+		QueryBuilder findall = QueryBuilders.matchAllQuery();
+		search.setQuery(findall);
+
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, findall, 1000);
+		hits.enableBulkOperations();
+		hits.setSearcherManager(getSearcherManager());
+		//String inIndexId = toId(getCatalogId());
+		hits.setIndexId(getIndexId());
+		hits.setCatalogId(getCatalogId());
+		return hits;
 	}
 
 }

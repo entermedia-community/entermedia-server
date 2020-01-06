@@ -1,0 +1,32 @@
+#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
+#set($oids = [])
+#foreach( $ohit in $organizationsuser )
+	#set($x = $oids.add($ohit.collectionid))
+#end
+#set($x = $oids.add("NONE"))
+#set( $searcher = $mediaarchive.getSearcher("searcher") )
+#set( $hits = $mediaarchive.query("librarycollection").ids($oids).sort("name").search() )
+$hits.setHitsPerPage(200)
+{
+	"response":
+		{
+		    "status":"ok",
+		    "userid":"$user.getId()",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		#json($hit $searcher.getPropertyDetails()) 
+		#end
+		]
+}

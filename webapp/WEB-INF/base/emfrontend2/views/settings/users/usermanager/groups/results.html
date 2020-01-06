@@ -1,5 +1,5 @@
 
-<h4>[[Select a Group]]</h4>
+<h5 class="float-left">[[Select a Group]]: </h5>
 <script type="text/javascript">
 selectgroup = function(group)
 {
@@ -15,7 +15,10 @@ selectgroup = function(group)
 #set( $details = $searcher.getDetailsForView($oeview,$user))
 <div id="groupresults_${oeview}">
 <form id="groupselectform" action="$home$usermanagerhome/groups/modifygroup.html">
-<select name="groupid" id="groupselect" onchange="jQuery('#groupselectform').submit();" class="form-control form-control-sm">
+<select name="groupid" id="groupselect" 
+		onchange="jQuery('#groupselectform').submit();" 
+		class="form-control form-control-sm"
+		style="margin:0 10px;">
 	<option value="null"></option>
 #foreach ( $hit in $grouphits)
 	<option value="$hit.id" #if( $group && $group.id == $hit.id ) [[selected]] #end>$hit</option>

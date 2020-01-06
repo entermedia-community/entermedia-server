@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -119,7 +120,11 @@ public class TemplateWebEmail extends WebEmail implements Data
 		fieldSendDate = inSendDate;
 		
 	}
-
+	public Collection getValues(String inField)
+	{
+		Collection values = (Collection)getValue(inField);
+		return values;
+	}
 	public boolean isSent() {
 		return fieldSent;
 	}
@@ -542,19 +547,24 @@ public class TemplateWebEmail extends WebEmail implements Data
 		try
 		{
 			String from = getFrom();
-			
+			String fromname = getFromName();
+			InternetAddress fromAddress = new InternetAddress();
+			fromAddress.setAddress(from);
+			if( fromname != null)
+			{
+				fromAddress.setPersonal(fromname);
+			}
 			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
 			{
-				postMail.postMail(getRecipients(),getSubject(),output,null,from,getFileAttachments(), getProperties());
+				postMail.postMail(getRecipients(),getSubject(),output,null,fromAddress,getFileAttachments(), getProperties());
 			}
 			else
 			{
-				InternetAddress target = new InternetAddress();
-				target.setAddress(from);
-				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,target,getFileAttachments(), getProperties());
+
+				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,fromAddress,getFileAttachments(), getProperties());
 			}
 		}
-		catch ( MessagingException ex)
+		catch ( Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}

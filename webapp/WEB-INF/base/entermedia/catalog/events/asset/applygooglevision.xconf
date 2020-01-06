@@ -8,6 +8,6 @@
 	</path-action>
 				<property name="enabled">true</property>
 	
-			<property name="period">1m</property>
+			<property name="period">15m</property>
 		
 </page>

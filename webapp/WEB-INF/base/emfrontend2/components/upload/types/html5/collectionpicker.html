@@ -1,0 +1,44 @@
+#if ($librarycol)
+	#set($collectionid = $librarycol.getId() )
+#else	
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+	#end
+#end
+
+##TODO: Verify upload rights to $collectionid?
+
+<div id="uploadcollectionpicker" data-collectionpicker="$apphome/components/upload/types/html5/collectionpicker.html">
+<div class="inputformrow">
+	<div class="emdatafield">[[Collection]]</div>
+	<div class="emdatafieldvalue "> 
+		#if($librarycol)
+			<div class="uploadcollection">$librarycol 
+			<a href="$apphome/components/upload/types/html5/collectionpicker.html" 
+				class="ajax delete-row"
+				data-targetdiv="uploadcollectionpicker"
+				 title="[[Remove Collection]]"><i class="fas fa-times float-right"></i></a></div>
+			
+		#end
+		
+		#if($canaddnewcollection)
+                 <a  class="emdialog btn btn-sm btn-light" 
+                 	title="[[Create New Collection]]" 
+                 	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=uploadcollectionpicker&library.value=$!library.getId()">
+                 	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+           #end
+		<a class="emdialog btn btn-sm btn-light"
+			id="uploadfindcollection"  
+			style="margin:5px 0 5px 0;"  
+			href="$home$apphome/components/opencollections/searchcollection.html?targetdiv=uploadcollectionpicker" 
+			title="[[Find or Create Collection]]"
+			data-hidefooter="true"
+			data-targetdiv="uploadcollectionpicker"><i class="fa fa-search"></i> [[Choose Collection]]</a>
+			
+		<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" class="required" required />
+		<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+	</div>
+	<hr>
+</div>
+</div>

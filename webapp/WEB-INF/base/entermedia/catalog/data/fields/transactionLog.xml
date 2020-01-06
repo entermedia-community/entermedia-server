@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="user" index="true" viewtype="user" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">User Name 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="date" datatype="date" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property> 
+  
+  <!--  Data Merged -->
+  
+    <property id="catalogid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true">New 
+    <name> 
+      <language id="de"><![CDATA[CatalogID]]></language>  
+      <language id="en"><![CDATA[CatalogID]]></language>  
+      <language id="es"><![CDATA[CatalogID]]></language>  
+      <language id="fr"><![CDATA[ID Catalogue]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" internalfield="true">New 
+    <name> 
+      <language id="de"><![CDATA[Id]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Id]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" indextype="not_analyzed" stored="true" sortable="true">
+    <name>
+      <language id="de"><![CDATA[Betrieb]]></language>
+      <language id="en"><![CDATA[Operation]]></language>
+      <language id="es"><![CDATA[Operación]]></language>
+      <language id="fr"><![CDATA[Opération]]></language>
+    </name>
+  </property>
+  
+</properties>

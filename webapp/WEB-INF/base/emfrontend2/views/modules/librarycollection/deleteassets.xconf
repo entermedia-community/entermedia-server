@@ -3,6 +3,7 @@
 	<property name="copyprefix">assetdialog</property>
 	<path-action name="AssetEditModule.deleteAssets"/>
 
-<path-action name="ProjectModule.redirectToCollection"/>
-  	
+	<!--
+	<path-action name="ProjectModule.redirectToCollectionRoot"/>
+  	-->
 </page>

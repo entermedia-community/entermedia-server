@@ -26,12 +26,17 @@ import org.openedit.util.URLUtilities;
 
 public class BaseImporter extends EnterMediaObject
 {
+	public void setSearcher(Searcher inSearcher)
+	{
+		fieldSearcher = inSearcher;
+	}
+
 	protected HashMap<String, Map> fieldLookUps;
 	protected Searcher fieldSearcher;
 	protected boolean fieldMakeId;
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
-	
+
 	
 	
 	

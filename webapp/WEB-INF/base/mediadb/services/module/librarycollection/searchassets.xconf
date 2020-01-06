@@ -1,0 +1,12 @@
+<page>
+	<generator name="velocity"/>
+	<path-action name="ProjectModule.searchForAssetsOnCollection" alltypes="true"/>
+	
+	<permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission>
+    
+    <path-action name="PageValue.loadPageVariable" bean="conversionUtil"  alltypes="true" />
+	
+	
+</page>

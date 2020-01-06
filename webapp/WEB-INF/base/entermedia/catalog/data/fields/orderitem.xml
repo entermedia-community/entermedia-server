@@ -95,4 +95,15 @@
       <language id="fr"><![CDATA[Statut]]></language>
     </name>
   </property>
+  
+    <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
+    <name> 
+      <language id="de"><![CDATA[Fehlerdetails]]></language>  
+      <language id="en"><![CDATA[Error Details]]></language>  
+      <language id="es"><![CDATA[Detalles del error]]></language>  
+      <language id="fr"><![CDATA[Détails de l&#39;erreur]]></language> 
+    </name> 
+  </property>  
+  
+  
 </properties>

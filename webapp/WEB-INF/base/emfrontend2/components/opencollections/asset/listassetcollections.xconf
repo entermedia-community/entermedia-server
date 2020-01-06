@@ -1,4 +1,0 @@
-<page>
-	<path-action name="ProjectModule.addAssetToCollection"  />
-	<path-action name="MediaArchiveModule.getAsset"  />
-</page>

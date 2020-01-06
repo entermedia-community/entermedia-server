@@ -5,6 +5,7 @@ import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.orders.OrderSearcher;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
+import org.openedit.users.User;
 
 public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
 {
@@ -37,9 +38,6 @@ public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSe
 //	}
 	
 	
-	protected void createContentBuilder(PropertyDetails details, Data inData) {
-		//getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-		super.createContentBuilder(details, inData);
-	}
+	
 	
 }

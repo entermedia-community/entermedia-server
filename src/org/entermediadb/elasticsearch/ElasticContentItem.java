@@ -3,6 +3,7 @@ package org.entermediadb.elasticsearch;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +38,11 @@ class ElasticContentItem extends StringItem implements Data{
 			throw new RepositoryException(ex);
 		}
 	}
-
+	public Collection getValues(String inField)
+	{
+		Collection values = (Collection)getValue(inField);
+		return values;
+	}
 	public boolean exists() {
 		return true;
 	}

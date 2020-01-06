@@ -317,14 +317,6 @@
       <language id="fr"><![CDATA[Dernière modification]]></language> 
     </name> 
   </property>  
-  <property id="recordmodificationdate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" sortable="true">Record Edit Date 
-    <name> 
-      <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
-      <language id="en"><![CDATA[Record Edit Date]]></language>  
-      <language id="es"><![CDATA[Record Edit Fecha]]></language>  
-      <language id="fr"><![CDATA[Date d&#39;édition de l&#39;enregistrement]]></language> 
-    </name> 
-  </property>  
   <!--  should be a date -->  
   <property id="assetaddeddate"  editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch"  type="date">Uploaded Date 
     <name> 
@@ -397,10 +389,7 @@
   </property>  
   <property id="headline" multilanguage="true" index="true" stored="true" editable="true" keyword="true" externalid="iptc:Headline,XMP-photoshop:Headline" >Headline 
     <name> 
-      <language id="de"><![CDATA[Headline]]></language>  
-      <language id="en"><![CDATA[Headline]]></language>  
-      <language id="es"><![CDATA[Titular]]></language>  
-      <language id="fr"><![CDATA[Titre]]></language> 
+      <language id="en"><![CDATA[Caption]]></language>  
     </name> 
   </property>  
   <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  sortable="true" wordpressfield="description">Description 
@@ -573,10 +562,10 @@
   <!-- Approvals -->  
   <!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->  
   <!-- Geo Location -->  
-  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true">Position 
+  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Position]]></language>  
-      <language id="en"><![CDATA[Position]]></language>  
+      <language id="en"><![CDATA[GEO Location]]></language>  
       <language id="es"><![CDATA[Posición]]></language>  
       <language id="fr"><![CDATA[Position]]></language> 
     </name> 
@@ -627,6 +616,13 @@
       <language id="fr"><![CDATA[Doublon]]></language> 
     </name> 
   </property>  
+  
+  
+   <property id="duplicatesourcepath" index="true" editable="true" type="boolean"  isbadge="true"  stored="true" filter="true"  sortable="true">
+ Duplicate Source PAth
+  </property>  
+  
+  
   <property id="retentionpolicy" datatype="list" listid="retentionrules" editable="true" index="true" stored="true" filter="true"   type="list">Retention Policy 
     <name> 
       <language id="de"><![CDATA[Aufbewahrungsrichtlinie]]></language>  
@@ -707,9 +703,9 @@
       <language id="en"><![CDATA[EnterMedia ExifData]]></language> 
     </name> 
   </property>  
-  <property id="mastereditclusterid" index="true" stored="true" editable="true">
+  <property id="recordmodificationdate" index="true" type="date" viewtype="time">
     <name>
-      <language id="en"><![CDATA[Master Edit Cluster]]></language>
+      <language id="en"><![CDATA[Record Modification]]></language>
     </name>
   </property> 
   <property id="etagid" index="true" stored="true" editable="true" keyword="true" >
@@ -735,10 +731,41 @@
       <language id="en"><![CDATA[Is Locked]]></language>
     </name>
   </property>   
+  
+   <property id="deleted" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+   Deleted
+  </property>   
+  
+  
+  
   <property id="emidwritten" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
     <name>
       <language id="en"><![CDATA[EnterMedia ID has been stored in original]]></language>
     </name>
   </property>   
+   <property id="emiderror" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+    <name>
+      <language id="en"><![CDATA[EnterMedia ID could not be stored in XMP]]></language>
+    </name>
+  </property>   
+  
+  <property id="xmperrormessage" index="true" deleted="false" editable="true" stored="true">
+    <name> 
+      <language id="en"><![CDATA[XMP Error Message]]></language> 
+    </name> 
+  </property>  
+  <property id="xmperror" index="true" deleted="false" editable="true" stored="true" type="boolean">
+    <name>  
+      <language id="en"><![CDATA[XMP Writing Failed]]></language> 
+    </name> 
+  </property>  
+  <property id="xmpoutput" index="true" deleted="false" editable="true" stored="true">New
+    <name>
+      <language id="en"><![CDATA[XMP Output]]></language>
+    </name>
+  </property>
+    <property id="missinggenerated" index="true" deleted="false" editable="true" stored="true" type="boolean">Asset missing preview
+  </property>  
+  
   
 </page>

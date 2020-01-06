@@ -50,6 +50,8 @@ public interface AssetSource
 
 	boolean isEnabled();
 
+	boolean isHotFolder();
+
 	String getId();
 
 

@@ -3,7 +3,7 @@
     #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
     #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
     #set($owner = $userManager.getUser($order.userid))
-    <h2>Customer: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h2>
+    <h2>[[Customer]]: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h2>
     #set($usersearcher = $searcherManager.getSearcher("system", "user"))
     $context.putPageValue("searcher", $usersearcher)	 
     $context.putPageValue("view", "user/useredit")	
@@ -14,7 +14,7 @@
    
    
     <form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
-    <h2 style="border-top: 1px solid #bbb;">Order Details</h2>
+    <h2>[[Order Details]]</h2>
     <table class="settings-table" id="order-details">
        <input type="hidden" name="id" value="$order.id"/>
        <input type="hidden" name="orderid" value="$order.id"/>
@@ -40,18 +40,19 @@
        $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
    
    
-    <h2 style="border-top: 1px solid #bbb;">
     
-    <div style="float: right; padding:10px 0">
-            <input class="btn btn-sm btn-primary" type="button" id="approveall" value="Approve All"/>
-            <input class="btn btn-sm btn-primary" type="button" value="Reject All" id="rejectall">
-            <input class="btn btn-sm brtn-primary" type="submit" id="save" name="Save" value="Save"/>
-      ##      <input class="btn" type="button" name="Send" id="sendnotification" value="Send Notification"/>
+    
+    	<div style="float: right; padding:10px 0 20px;">
+            <input class="btn btn-sm btn-secondary" type="button" id="approveall" value="[[Approve All]]"/>
+            <input class="btn btn-sm btn-secondary" type="button" value="[[Reject All]]" id="rejectall">
+            <input class="btn btn-sm btn-primary" type="submit" id="save" name="Save" value="[[Save]]"/>
+      ##      <input class="btn" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
   
         </div>
         <span id="itemsaved"></span>
         <span id="itemsent"></span>
-    </h2>
+    #if($orderitems)
+    <h2>[[Assets]]</h2>
     <table class="emdata table table-striped table-hover">
         <tr class="tableheader">
             <th>[[Asset]]</th>
@@ -77,12 +78,16 @@
         #end
     
     </table>
+    #end
     </form>
     </div>
+#if( $caneditmetadatasetup )
+	<div class="clearfix"></div>
+	 <a class="btn btn-sm btn-light float-right" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"><i class="fas fa-cog"></i> [[Edit View]]</a>
+	#end
     
    
      </div>
-</div> 
 
 <div style="display: none;">
   <form id="emailform" class="ajaxform" targetdiv="itemsent" name="emailform" action="$home$apphome/views/modules/order/edit/sendnotification.html">
@@ -94,6 +99,8 @@
     
     </form>
 </div>
+
+    
 
 <script type="text/javascript">
 

@@ -132,5 +132,10 @@
       <language id="en"><![CDATA[Crop to Aspect Ratio]]></language>
     </name>
   </property>
+  <property id="systemdefinedpreset" index="true" stored="true" editable="true" type="boolean" sortable="true">
+    <name>
+      <language id="en"><![CDATA[System Defined]]></language>
+    </name>
+  </property>
   
 </properties>

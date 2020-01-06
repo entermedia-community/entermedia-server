@@ -13,6 +13,8 @@ $context.putPageValue("data",$data)
 <input type="hidden" name="field" value="rootcategory" />
 <input type="hidden" name="rootcategory.value" value="$!data.rootcategory" />
 
+<input type="hidden" name="collectionroot" value="$home$apphome/views/upload/create/createnewstart.html" />
+
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 $context.putPageValue("view","${searchtype}/${searchtype}addnew")	

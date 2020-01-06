@@ -23,7 +23,11 @@
     $("select.jump").change(function () 
    		{
         	var val = $(this).val();
-	        $("#eventlist").load("./list.html?oemaxlevel=1&type=" + val);
+        	
+	        $("#eventlist").load("./list.html?oemaxlevel=1&type=" + val, function(){
+	        	$(window).trigger( "resize" );
+	        });
+	        
         });
 </script>
 

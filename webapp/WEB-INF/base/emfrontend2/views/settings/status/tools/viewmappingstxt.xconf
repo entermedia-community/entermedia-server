@@ -1,0 +1,7 @@
+<page>
+	<path-action name="MediaAdminModule.listMappings"  alltypes="true"/>
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+	<generator name="velocity" />
+	<path-action name="EditModule.forceDownload" alltypes="true"/>
+	
+</page>

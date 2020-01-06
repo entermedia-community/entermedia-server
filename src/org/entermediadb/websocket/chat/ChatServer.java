@@ -18,7 +18,9 @@ package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -34,6 +36,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
+import org.openedit.util.ExecutorManager;
 
 public class ChatServer
 {
@@ -137,11 +140,31 @@ public class ChatServer
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
+			
+		}	
+		String catalogid = (String) inMap.get("catalogid");
+		if( catalogid != null)
+		{
+			ChatManager manager = getChatManager(catalogid);
+			getExecutorManager(catalogid).execute( new Runnable() {
+				@Override
+				public void run() 
+				{
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
+						if( chatConnection.getUserId() != null)
+						{
+							String channelid = (String)inMap.get("channel");
+							manager.updateChatTopicLastChecked(channelid,  chatConnection.getUserId());
+						}						
+					}	
+				}
+			});
 		}
-
 	}
 
-	public void saveMessage(JSONObject inMap)
+	public void saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
 		log.info("Saving Message: " + inMap.toJSONString());
@@ -150,12 +173,14 @@ public class ChatServer
 		Data chat = chats.createNewData();
 		chat.setValue("date", new Date());
 		chat.setValue("message", inMap.get("content"));
-		chat.setValue("user", inMap.get("user"));
+		String userid = (String)inMap.get("user").toString();
+		chat.setValue("user", userid);
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("channeltype", inMap.get("channeltype"));
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 		
+		User user = archive.getUser(userid);
 		String assetid = (String)inMap.get("assetid");
 		if( assetid != null)
 		{
@@ -165,11 +190,44 @@ public class ChatServer
 				asset.setValue("haschat", true);
 				archive.saveAsset(asset);
 			}
-			User user = archive.getUser((String)inMap.get("user").toString());
 			archive.fireMediaEvent("assetchat", user,asset );
+		}
+		else
+		{
+			Map params = new HashMap(chat.getProperties());
+			params.remove("user");
+			Object collectionid = inMap.get( "collectionid" );
+			if( collectionid != null)
+			{
+				params.put("collectionid",String.valueOf(collectionid));
+			}
+			archive.fireGeneralEvent(user,"chatterbox","saved", params);
+			getExecutorManager(catalogid).execute( new Runnable() {
+				@Override
+				public void run() 
+				{
+					ChatManager manager = getChatManager(catalogid);
+					String channelid = (String)inMap.get("channel");
+					manager.updateChatTopicLastModified(channelid);
+				}
+			});
+			
 		}
 	}
 
+	public ExecutorManager getExecutorManager(String inCatalogId)
+	{
+		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
+		return queue;
+	}
+
+	public ChatManager getChatManager(String inCatalogId)
+	{
+		ChatManager queue = (ChatManager) getModuleManager().getBean(inCatalogId, "chatManager");
+		return queue;
+	}
+
+			
 	public void approveAsset(JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");

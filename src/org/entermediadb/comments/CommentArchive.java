@@ -234,7 +234,7 @@ public class CommentArchive
 			//Wow terrible code
 			if(c.getComment().equals(inComment.getComment()))
 			{
-				if(c.getDate().equals(inComment.getDate()) && c.getUser().equals(inComment.getUser()))
+				if(c.getDate().equals(inComment.getDate()) && c.getUser().getId().equals(inComment.getUser().getId()))
 				{
 					toremove = c;
 					break;

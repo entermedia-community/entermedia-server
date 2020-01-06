@@ -47,7 +47,13 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		fieldXmlSearcher = inXmlSearcher;
 	}
 
-	
+	/**
+	 * @override
+	 */
+	protected boolean isTrackEdits()
+	{
+		return false;
+	}
 
 	
 	
@@ -79,23 +85,31 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
-		getXmlSearcher().clearIndex();
-		HitTracker allhits = getXmlSearcher().getAllHits();
-		allhits.enableBulkOperations();
-		ArrayList tosave = new ArrayList();
-		for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+		setReIndexing(true);
+		try
 		{
-			Data hit = (Data) iterator2.next();
-			Data real = (Data) loadData(hit);
-			tosave.add(real);
-			if(tosave.size() > 1000)
+			getXmlSearcher().clearIndex();
+			HitTracker allhits = getXmlSearcher().getAllHits();
+			allhits.enableBulkOperations();
+			ArrayList tosave = new ArrayList();
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
-				updateInBatch(tosave, null);
-	
-				tosave.clear();
+				Data hit = (Data) iterator2.next();
+				Data real = (Data) loadData(hit);
+				tosave.add(real);
+				if(tosave.size() > 1000)
+				{
+					updateInBatch(tosave, null);
+		
+					tosave.clear();
+				}
 			}
+			updateInBatch(tosave, null);
+		}	
+		finally
+		{
+			setReIndexing(false);
 		}
-		updateInBatch(tosave, null);
 	}
 
 	public synchronized void reIndexAll() throws OpenEditException
@@ -213,7 +227,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			Data data = (Data)object;
 			try
 			{
-				createContentBuilder(details, data); //Cant use bulk operations because id wont be set
+				saveToElasticSearch(details, data, false,inUser); //Cant use bulk operations because id wont be set
 				getXmlSearcher().saveData(data, inUser);
 			}
 			catch(Throwable ex)
@@ -231,7 +245,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 		try
 		{
-			createContentBuilder(details, inData);
+			saveToElasticSearch(details, inData, false, inUser);
 			getXmlSearcher().saveData(inData, inUser);
 			clearIndex();
 		}

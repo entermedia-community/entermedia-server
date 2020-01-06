@@ -12,7 +12,7 @@
 	<path-action name="Admin.loadPermissions" alltypes="true"/>
 
 	<path-action name="TranslationModule.loadBrowserLanguage" />	
-	<path-action name="JsonAdminModule.allowHeaders" />	
+	<path-action name="JsonAdminModule.allowHeaders" alltypes="true" />	
 	
 	<path-action name="Admin.allowViewing" alltypes="true">
 		<login-path>/${applicationid}/services/authentication/noaccess.json</login-path>

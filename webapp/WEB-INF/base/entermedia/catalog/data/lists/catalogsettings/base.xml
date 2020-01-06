@@ -4,7 +4,7 @@
 
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
-	<property id="events_notify_app" value="assets/emshare">Email Notify App</property>
+	<property id="events_notify_app" value="assets/emshare2">Email Notify App</property>
 	<property id="events_conversion_error_grace_period" value="1h">Conversion Error Asset Delete</property>
 	
 	<!--  system email settings -->
@@ -27,6 +27,8 @@
 
 	<property id="transcodebucket" value="emtranscribe">Google Cloud Storage transcode bucket</property>
 
+	<property id="defaultrole" value="users">Default role for users accessing the site </property>
+	<property id="applycheckerboardtransparency" value="false">Apply a "checkerboard" background to PNG conversions </property>
 
 
 

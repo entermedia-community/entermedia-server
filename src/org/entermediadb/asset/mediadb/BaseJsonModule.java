@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
@@ -30,7 +32,18 @@ public class BaseJsonModule extends BaseMediaModule
 	
 	public void allowHeaders(WebPageRequest inReq)
 	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		HttpServletResponse red = inReq.getResponse();
+		if( red != null)
+		{
+			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+			red.setHeader("Access-Control-Allow-Origin","*");
+			if( inReq.getRequest().getMethod().equals("OPTIONS"))
+			{
+				inReq.setHasRedirected(true);
+				log.info("Preflight detected ignoring request");
+			}
+		}	
+		
 	}
 	 
 	public void preprocess(WebPageRequest inReq)

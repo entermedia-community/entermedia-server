@@ -66,6 +66,7 @@ $lsearcher.addShowOnly($context, $query)
 #set($values = $data.getValues($detail.id))
 #end
 
+#set($searchfield = $detail.getId() )
 
 #if($types)
 $types.enableBulkOperations()
@@ -74,7 +75,7 @@ $types.enableBulkOperations()
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
 	#end
-		
+
 	<select id="${valueid}.value" 
 		multiple name="$!detailprefix${valueid}.values" 
 		class="select2 form-control select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
@@ -82,6 +83,7 @@ $types.enableBulkOperations()
 		data-listid="$listid" 
 		data-placeholder=" "
 		data-searchtype='$!searchtype'
+		data-searchfield="$searchfield"
 		data-width="100%"
 		>
 		#if ($detail.blankoption != false)
@@ -103,11 +105,6 @@ $types.enableBulkOperations()
   #end
 
 </div>
-
-
-
-
-
 
 
 

@@ -1,0 +1,56 @@
+<div class="form-container" >
+
+$!request.getAttribute( "oe-exception")
+<div class="col4 login-form" >
+	#if($user)
+		<p>[[You are logged in as]] $user</p>		
+	#end
+		#set($loginok = $context.findValue("loginokpage") )
+		
+
+		<p class="note">[[To generate an authenticator key please enter your username and password: ]]</p>
+		<div class="hr"></div>
+		<form name="login" id="login" action="$home$content.loginroot/getkeyfinish.html" method="POST" onsubmit="return confirmPassword(this);">
+			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+			<div class="form-group">
+			<label for="accountname">[[Email or Username]]</label>
+			<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off"
+                autocorrect="off" />
+			</div>
+			<div class="form-group">
+			<label for="password">[[Password]]</label>
+			<input class="form-control" id="password" name="password" type="password" />
+			</div>
+		
+			
+			<div class="form-group">
+			<input class="btn btn-sm btn-primary float-right" name="submit" type="submit" id="login-submit" value="[[Get Key]]" />
+			</div>
+			#if ( $context.getPageValue("oe-exception") )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+				$context.removePageValue("oe-exception")
+			#end
+		</form>
+		
+</div>	
+</div>
+	<script language="JavaScript" >
+
+	jQuery(document).ready(function() 
+	{ 
+		document.getElementById("accountname" ).focus();
+	});
+	function confirmPassword(form)
+	{
+		if(form.password.value=="")
+		{
+			alert("[[Please enter your password]]");
+			form.password.focus();
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	</script> 

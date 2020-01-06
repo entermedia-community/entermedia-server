@@ -3,8 +3,8 @@
 #end
 
 #set( $source = $mediaarchive.asLinkToPreview($hit,"video.mp4")) 
-##set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480.jpg"))
 #set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
+##set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480.jpg"))
 
 #set( $embed = $context.getRequestParameter("embed") )
 #set( $autoplay = $context.getRequestParameter("autoplay") )
@@ -20,15 +20,15 @@
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
 	<video id="videoplayerfull" class="video-js" width="480" height="320"
-		poster='$thumb'
+		poster='#esc($thumb)'
 		#if( $autoplay && $autoplay == "true") autoplay #end
 		#if( $loop && $loop == "true") loop #end
 		controls
 		preload="auto"
 		data-setup=''>
-		<source type="video/mp4" src="$source">
+		<source type="video/mp4" src="#esc($source)">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-		<source type="video/flash" src="mp4:$short">
+		<source type="video/flash" src="mp4:#esc($short)">
      	#if( $tracks && !$tracks.isEmpty() )
       		#foreach( $track in $tracks)
      		 <track 

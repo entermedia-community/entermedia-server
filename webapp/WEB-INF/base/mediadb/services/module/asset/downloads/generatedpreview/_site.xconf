@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
+	<path-action name="Admin.autoLogin" alltypes="true" cancel="true" />	
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true"  cancel="true"/>
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true"  cancel="true" />
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true" allowduplicates="true"  cancel="true" />
+	<path-action name="Admin.loadPermissions"  alltypes="true"  cancel="true"/>
+
 	<property name="virtual">true</property>
 	<generator name="generatedMediaGenerator"/>
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/generatedpreview</property>

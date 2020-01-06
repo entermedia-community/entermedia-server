@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <page>
-
-
 	<inner-layout />
-		<layout />
-
+	<path-action name="DataEditModule.loadOrSearch">
+		<property name="searchtype">asset</property>
+  		<property name="hitsname">pickerhits</property>
+  	</path-action>
 </page>

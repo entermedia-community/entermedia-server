@@ -898,13 +898,17 @@ public class BaseCategory extends BaseData implements Category
 	}
 	public int getCounts()
 	{
-		int self = getCount();
-		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
+		if( hasCountData() )
 		{
-			BaseCategory child = (BaseCategory) iterator.next();
-			self = self + child.getCounts();
+			int self = getCount();
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
+			{
+				BaseCategory child = (BaseCategory) iterator.next();
+				self = self + child.getCounts();
+			}
+			return self;
 		}
-		return self;
+		return 0;
 	}
 	
 	public int getCount()

@@ -38,7 +38,7 @@ $context.putPageValue("cdn",$cdnprefix)
 		
 			<li  class="botmenulink">	
 				#if( $canmetadatageneral )
-				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" class="nav-link" > $asset </a>
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=#esc($hitssessionid)&assetid=$asset.getId()" class="nav-link" > $asset </a>
 				#else
 				<a href="#" class="nav-link" > $asset </a>
 				#end

@@ -22,6 +22,7 @@
 				<ref bean="autoLoginWithCookie" />
 				<ref bean="autoLoginByHeader" />
 				<ref bean="autoLoginLti" />
+				<ref bean="autoLoginByToken" />
 			</list>
 		</property>
 	</bean>
@@ -43,6 +44,14 @@
         	<ref bean="moduleManager" />
         </property>
 		<property name="stringEncryption">
+			<ref bean="stringEncryption" />
+		</property>
+	</bean>
+	<bean id="autoLoginByToken" class="org.entermediadb.authenticate.AutoLoginByToken">
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
+		<property name="cookieEncryption">
 			<ref bean="stringEncryption" />
 		</property>
 	</bean>
@@ -1372,6 +1381,8 @@
 			<ref bean="xmlUtil" />
 		</property>
 		<property name="webServer"><ref bean="WebServer" /></property>		
+				<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 <!-- Remove this one day -->
@@ -1464,6 +1475,7 @@
 			<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
+		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 	
 	</bean>
 	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
@@ -1943,7 +1955,9 @@
 		<bean id="gallerypublisher" class="org.entermediadb.asset.publish.publishers.gallerypublisher"  lazy-init="default"/>
 	
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
-	
+	<bean id="Pictopublisher" class="org.entermediadb.asset.publish.publishers.pictopublisher"  lazy-init="default"/>
+    <bean id="Avidpublisher" class="org.entermediadb.asset.publish.publishers.avidpublisher"  lazy-init="default"/>
+
 	<bean id="searchSecurity" class="org.entermediadb.asset.search.BaseSearchSecurity"  lazy-init="default">
 		<property name="cacheManager">
 			<ref bean="timedCacheManager" />
@@ -2146,6 +2160,12 @@
 	</bean>
  	
  	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+ 	
+ 	<bean id="originalPuller" class="org.entermediadb.asset.pull.OriginalPuller" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -2153,7 +2173,16 @@
 			<ref bean="elasticNodeManager" />
 		</property>
 	</bean>
- 	
+
+ 	<bean id="dataPuller" class="org.entermediadb.asset.pull.DataPuller" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
+
  	 	
  	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
 	</bean>	
@@ -2200,6 +2229,9 @@
 
 	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="timedCacheManager"><ref bean="timedCacheManager"/></property>
+		
 	</bean>
 
 	<bean id="permissionManager" class="org.entermediadb.users.PermissionManager" scope="prototype" >
@@ -2207,5 +2239,51 @@
 		<property name="filterReader"><ref bean="filterReader"/></property>	
 	</bean>
 
+		
+	<bean id="elementalManager" class="org.entermediadb.elemental.ElementalManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+		
+	 <bean id="elementalTranscoder" class="org.entermediadb.asset.convert.transcoders.ElementalTranscoder" lazy-init="default">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+		
+	<bean id="webPageRequest" class="org.openedit.BaseWebPageRequest"  scope="prototype">
+		<property name="localeManager"><ref bean="localeManager"/></property>
+	</bean>
+	<bean id="localeManager" class="org.openedit.util.LocaleManager">
+		<property name="textLabelManager"><ref bean="textLabelManager"/></property>
+	</bean>
+	
+	<bean id="textLabelManager" class="org.openedit.page.manage.TextLabelManager"  >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+	    <property name="localeManager"><ref bean="localeManager"/></property>
+	    <property name="translator"><ref bean="translator"/></property>
+	</bean>
+
+	<bean id="UserPostModule" class="org.entermediadb.userpost.UserPostModule">
+	</bean>
+
+	<bean id="postComment" class="org.entermediadb.userpost.PostComment"  scope="prototype">
+	    <property name="localeManager"><ref bean="localeManager"/></property>
+		<property name="userManager"><ref bean="userManager"/></property>
+	</bean>
+	<!-- We dont use this
+	<bean id="transactionLogger" class="org.openedit.data.TransactionLogger"  >
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
+		 -->	
+	<!--  Could replace with a composite someday -->
+	<bean id="twofactorAuthenticator" class="org.entermediadb.authenticate.GoogleTwoFactorAuthenticator"  >
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>
+			
+	<bean id="chatManager" class="org.entermediadb.websocket.chat.ChatManager"  scope="prototype">
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
+		
 		
 </beans>

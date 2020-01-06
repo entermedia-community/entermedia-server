@@ -21,9 +21,6 @@ uiload = function() {
 	
 	resizecolumns()
 	
-	
-
-	
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
 	}
@@ -61,20 +58,23 @@ uiload = function() {
                 beforeShow: function (input, inst) {
                     setTimeout(function () {
                         //Fix Position if in bootstrap modal
-                        var modaltop = $("#modals").offset().top;
-                        if (modaltop) {
-                            var dpickertop = dpicker.offset().top;
-                            dpickertop = dpickertop-modaltop;
-                            var dpHeight = inst.dpDiv.outerHeight();
-                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
-                            var viewHeight = document.documentElement.clientHeight;
-                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
-                            {
-                               dpickertop = dpickertop-dpHeight;
-                            }
-                            inst.dpDiv.css({
-                                top: dpickertop+inputHeight
-                            });
+						var modal = $("#modals");
+                        if (modal) {
+							var modaltop = $("#modals").offset().top;
+							if (modaltop) {
+	                            var dpickertop = dpicker.offset().top;
+	                            dpickertop = dpickertop-modaltop;
+	                            var dpHeight = inst.dpDiv.outerHeight();
+	                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
+	                            var viewHeight = document.documentElement.clientHeight;
+	                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
+	                            {
+	                               dpickertop = dpickertop-dpHeight;
+	                            }
+	                            inst.dpDiv.css({
+	                                top: dpickertop+inputHeight
+	                            });
+							}
                         }
                     }, 0);
                 }
@@ -143,17 +143,23 @@ uiload = function() {
 			// https://github.com/select2/select2-bootstrap-theme/issues/41
 		} else {
             //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
+			var placeholder = theinput.data('placeholder');
+			if (!placeholder) {
+				placeholder = '';
+			}
             var allowClear = theinput.data('allowclear');
+
             if (allowClear == undefined)  {
                 allowClear = true;
             }
 			theinput = theinput.select2({
 				theme : "bootstrap4",
-				placeholder : '',
+				placeholder : placeholder,
 				allowClear : allowClear,
 				minimumInputLength : 0,
 				dropdownParent : dropdownParent,
 			});
+		
 		}
 
 	});
@@ -174,7 +180,7 @@ uiload = function() {
 		options.each(function() {
 			var id = $(this).data('value');
 			var text = $(this).text();
-			// console.log(id + " " + text);
+			 //console.log(id + " " + text);
 			arr.push({
 				id : id,
 				text : text
@@ -187,7 +193,7 @@ uiload = function() {
 				if ($(data).filter(function() {
 					return this.text.localeCompare(term) === 0;
 				}).length === 0) {
-					console.log("picking" + term);
+					//console.log("picking" + term);
 					return {
 						id : term,
 						text : term
@@ -197,27 +203,17 @@ uiload = function() {
 			multiple : false,
 			data : arr
 		});
-	});
-
-	lQuery(".force-validate-inputs").livequery(function() {
-		$(".required", this).each(function() {
-			// $(this).attr("required","true");
-		});
-
-		var theform = $(this).closest("form");
-
-		theform.on("click", function() {
-			theform.valid();
-		});
-
-		$.validator.setDefaults({
-			ignore : ".ignore"
-		});
-
-		theform.validate({
-			ignore : ".ignore"
-		});
-
+		/*
+		.on('select2:select', function (e) {
+			if ($(this).hasClass("autosubmited")) {
+				var theform =$(this).parents("form")
+				if (theform.hasClass("autosubmitform")) {
+					theform.trigger("submit");
+				}
+			}
+        	
+    	});
+		*/
 	});
 
 	lQuery("select.ajax").livequery('change', function(e) {
@@ -304,7 +300,7 @@ uiload = function() {
 				e.preventDefault();
 				var form = $(this);
 
-				if (form.validate) {
+				if (form.validate && !form.hasClass("novalidate")) {
 					form.validate({
 						ignore : ".ignore"
 					});
@@ -319,12 +315,10 @@ uiload = function() {
 				if (!targetdiv) {
 					targetdiv = form.attr("targetdiv");
 				}
-				targetdiv = targetdiv.replace(/\//g, "\\/");
-				// allows for posting to a div in the parent from a fancybox.
+				if (targetdiv) {
+					targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
+				}
 
-				// closes the fancybox after submitting
-				// Refreshing... <img
-				// src="/${applicationid}/theme/images/ajax-loader.gif">
 				if (form.hasClass("showwaiting")) {
 					var app = $("#application");
 					var apphome = app.data("home") + app.data("apphome");
@@ -345,32 +339,48 @@ uiload = function() {
 				}
 				
 				else{
-				
 					data = {oemaxlevel:oemaxlevel};
 				} 
-				
-
-				
-				
 				
 				form.ajaxSubmit({
 					error : function(data) {
 						alert("error");
-						$("#" + targetdiv).html(data);
+						if (targetdiv) {
+							$("#" + $.escapeSelector(targetdiv)).html(data);
+						}
+						 
 						// $("#" + targetdiv).replaceWith(data);
 					},
-					success : function(result, status, xhr, $form) {
-						$("#" + targetdiv).html(result);
+					success : function(result, status, xhr, $form) 
+					{
+						var targetdivinner = form.data("targetdivinner");
+						if( targetdivinner )
+						{
+							$("#" + $.escapeSelector(targetdivinner)).html(result);
+						}
+						else
+						{		
+							if (targetdiv) {
+								$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+							}
+					 	}
+		                if (form.hasClass("autocloseform")) {
+		                    var findmodal = form.closest(".modal");
+		                    if (findmodal && findmodal.modal) {
+		                        findmodal.modal("hide");
+		                    }
+		                }
+		        		$('#resultsdiv').data('reloadresults',true);
+
+		                //TODO: Move this to results.js
+		                if (form.hasClass("autohideOverlay")) {
+		                	hideOverlayDiv(getOverlay());
+		                }
 						$(window).trigger( "resize" );
 					},
 					data : data
 				});
-                if (form.hasClass("autocloseform")) {
-                    var findmodal = form.closest(".modal");
-                    if (findmodal && findmodal.modal) {
-                        findmodal.modal("hide");
-                    }
-                }
+
 
 				var reset = form.data("reset")
 				if (reset == true) {
@@ -384,22 +394,22 @@ uiload = function() {
 		var targetdiv = form.data('targetdiv');
 		$("select",form).change(function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
 		$("input",form).on("keyup", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="file"]',form).on("change", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="checkbox"]',form).on("change", function() {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		
@@ -423,8 +433,7 @@ uiload = function() {
 		$('#' + navbar).toggle();
 
 	});
-
-	
+		
 	
 	emdialog = function(dialog, event) {
 		if( event )
@@ -435,11 +444,15 @@ uiload = function() {
 		var hidescrolling = dialog.data("hidescrolling");
 
 		var width = dialog.data("width");
-		if (!width) {
+		var maxwidth = dialog.data("maxwidth");
+		/*if (!width) {
 			width = "800";
+		}*/
+		var id = dialog.data("dialogid");
+		if (!id) {
+			id = "modals";	
 		}
-
-		var id = "modals";
+		
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
 			$("body").append(
@@ -464,7 +477,12 @@ uiload = function() {
 			history.pushState({}, null, urlbar);
 		}
 		modaldialog.load(link, options, function() {
-			$(".modal-lg").css("min-width", width + "px");
+			if (width) {
+				$(".modal-lg").css("min-width", width + "px");
+			}
+			if (maxwidth) {
+				$(".modal-lg").css("max-width", maxwidth + "px");
+			}
 			// $(".modal-lg").css("min-height",height + "px" );
 			
 			var modalkeyboard = true;
@@ -475,8 +493,10 @@ uiload = function() {
 			modaldialog.modal({
 				keyboard : modalkeyboard,
 				backdrop : true,
+				closeExisting: false,
 				"show" : true
 			});
+						
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
 			if (justok != null) {
@@ -563,7 +583,7 @@ uiload = function() {
 		var targetdiv = form.data("targetdiv");
 		if ((typeof targetdiv) != "undefined") {
 			$(form).ajaxSubmit({
-				target : "#" + targetdiv
+				target : "#" + $.escapeSelector(targetdiv)
 			});
 		} else {
 			$(form).trigger("submit");
@@ -608,7 +628,7 @@ uiload = function() {
 				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
-						target : "#" + targetdiv, 
+						target : "#" + $.escapeSelector(targetdiv), 
 						data:data
 						
 					});
@@ -814,7 +834,7 @@ uiload = function() {
 						var url = apphome
 								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
 								+ catalogid + "&field=" + searchfield
-								+ "&operation=startswith&searchtype="
+								+ "&operation=contains&searchtype="
 								+ searchtype;
 
 						theinput
@@ -871,13 +891,17 @@ uiload = function() {
 											templateSelection : select2Selected,
 											tokenSeparators : [ "|" ],
 											separator : '|'
-										})
-								.change(
-										function() {
-											if ($(this).parents(".ignore").length == 0) {
-												$(this).valid();
-											}
-										}); // is this still needed?
+										});
+							theinput.on("select2:select" , function() {
+								if ($(this).parents(".ignore").length == 0) {
+									$(this).valid(); 
+								}
+						   });
+						   theinput.on("select2:unselect" , function() {
+								if ($(this).parents(".ignore").length == 0) {
+									$(this).valid(); 
+								}
+							});
 					});
 
 	lQuery("input.grabfocus").livequery(function() {
@@ -1183,10 +1207,11 @@ uiload = function() {
 									// Check for "_addnew_" show ajax form
 									if (theinput.hasClass("selectautosubmit")) {
 										if (selectedid) {
-											var theform = $(this).closest(
-													"form");
-											theform.closest("form").trigger(
-													"submit");
+											//var theform = $(this).closest("form");
+											var theform =$(this).parents("form")
+											if (theform.hasClass("autosubmitform")) {
+												theform.trigger("submit");
+											}
 										}
 									}
 								}
@@ -1390,45 +1415,113 @@ uiload = function() {
 			//close
 			$(".col-main").removeClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",false,function(){
-				$(window).trigger( "resize" );
+				
 			});
-			$("#filterstoggle").show();
+			$("#filterstoggle").show( "fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
+			
 		}
 		else {
 			//open
-			$("#filterstoggle").hide();
+			$("#filterstoggle").hide("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",true,function(){
-				$(window).trigger( "resize" );
+				
 			});
 			
 		}
 	
 		return false;
 	});
+	//Left Column Toggle
 	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
+		var colleftwidth = $("#col-left").data("colleftwidth");
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
 			$("#col-left").removeClass("leftopen");
+			$("#col-left").css("width",0);
             $(".col-main").removeClass("leftopen");
-            $("#lefttoggle").show();
+            $(".pushcontent").css("margin-left",0);
+            $("#lefttoggle").show("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			saveProfileProperty("leftbarstatus",false,function(){
-				$(window).trigger( "resize" );
+				
 			});
 		}
 		else {
 			//open
             
             $("#col-left").addClass("leftopen");
+            if (colleftwidth) {
+            	$("#col-left").css("width", colleftwidth);
+            }
             $(".col-main").addClass("leftopen");
-            $("#lefttoggle").hide();
+            if (colleftwidth) {
+            	$(".pushcontent").css("margin-left", colleftwidth+"px");
+            }
+            $("#lefttoggle").hide("fast", function() {
+				$(document).trigger( "domchanged" );
+  			});
 			saveProfileProperty("leftbarstatus",true,function(){
-				$(window).trigger( "resize" );
+				
 			});
 		}
 		return false;
+	});
+	
+	
+	
+	lQuery('.sidebar-toggler').livequery("click", function(e) {
+		e.preventDefault();
+		var toggler = $(this);
+		var data = toggler.data;
+		var targetdiv = toggler.data('targetdiv');
+		
+		if (toggler.data('action') == 'hide') {
+			//hide sidebar
+			var url = apphome + '/components/sidebars/user/hide.html';
+			
+			$.ajax({ url: url, async: false, data: data, success: function(data) {
+				$("#"+targetdiv).html(data);
+				$(".account-content").addClass('account-content-fullwidth');
+				saveProfileProperty("usersidebarhidden","true");
+			}
+			});
+		}
+		else {
+			var url = apphome + '/components/sidebars/user/show.html';
+			$.ajax({ url: url, async: false, data: data, success: function(data) {
+				$("#"+targetdiv).html(data);
+				$(".account-content").removeClass('account-content-fullwidth');
+				saveProfileProperty("usersidebarhidden","false");
+			}
+			});
+		}
+	});
+	
+
+	lQuery(".assetpicker .removefieldassetvalue").livequery("click", function(e) 
+	{
+		e.preventDefault();
+		var picker = $(this).closest(".assetpicker");
+		var detailid = $(this).data("detailid");
+		
+		picker.find("#" + detailid + "-preview").html("");
+		picker.find("#" + detailid + "-value").val("");
+		picker.find("#" + detailid + "-file").val("");		
+		
+		var theform = $(picker).closest("form");
+		theform = $(theform);
+		if( theform.hasClass("autosubmit"))
+		{
+			theform.trigger("submit");
+		}
 	});
 
 }// uiload
@@ -1436,7 +1529,7 @@ uiload = function() {
 
 
 var resizecolumns = function() {
-	//makethem same top
+	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
 	if (typeof sidebarsposition != "undefined") {
@@ -1444,32 +1537,238 @@ var resizecolumns = function() {
 		$('.col-filters').css('top',sidebarstop + 'px');
 		$('.col-left').css('top',sidebarstop + 'px');
 	}
-	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
-	if ($(".filtered").height()) {
-		allheights += $(".filtered").height();
+	
+	var header_height = $("#header").outerHeight()
+	var nav_height = $("#EMnav").outerHeight();
+	var footer_height = $("#footer").outerHeight();
+	var resultsheader_height = 0;
+	
+	
+	if($(".collection-header").outerHeight()) {
+		resultsheader_height = $(".collection-header").outerHeight();
 	}
-
-	var columnsheight = $("body").height() - allheights;
+	else if ($(".filtered").outerHeight()) {
+		resultsheader_height = $(".filtered").outerHeight();
+	}
+	
+	var allheights  =  header_height +  nav_height + footer_height + resultsheader_height;
+	var columnsheight = $("body").outerHeight() - allheights;
+	
 	var sidebartop = 1;
 	$(".col-main").each(function(){
-		var thisheight = $(this).height();
-		if ($(this).children(0)	&& $(this).children(0).hasClass("col-main-inner")) {
-			thisheight = $(this).children(0).height();
+		var col = $(this);
+		if(col.hasClass("col-left") && col.hasClass("fixedheight")) {
+				return true;
+		}
+		var thisheight = col.outerHeight();
+		if (col.children(0)	&& col.children(0).hasClass("col-main-inner")) {
+			thisheight = col.children(0).outerHeight();
 		}
 		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
 	});
-	$(".col-filters, .col-left").css("height", columnsheight);
-	$(".col-sidebar").css("height", columnsheight);
-	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+	$(".col-filters").css("height", columnsheight);
+	if(!$(".col-left").hasClass("fixedheight")) {
+		$(".col-left").css("height", columnsheight);
+	}
+	else {
+		allheights  = header_height + nav_height + resultsheader_height;
+		var windowh = $(window).height();
+		windowh = windowh - allheights;
+		$(".col-left").css("height", columnsheight);
+		$(".col-left > .col-main-inner").css("height", windowh);
+	}
+	$(".col-sidebar").css("min-height", columnsheight);
+	if ($(".col-content-main").parent().hasClass("settingslayout")) {
+		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+	}
+	else {
+		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
+	}
 	
+	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)")
+	
+	//Moved From settings.js
+	
+	lQuery('#datamanager-workarea th.sortable').livequery("click",function()
+	      {
+	      		var table = $("#main-results-table");
+                var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
+                var column = $(this);
+                var fieldid = column.data("fieldid");
+				var apphome = app.data("home") + app.data("apphome");
+
+                if ( column.hasClass('currentsort') ) 
+                {
+                    if ( column.hasClass('up') ) {
+						args.sortby=fieldid + 'Down';
+                    } else {
+                    	args.sortby=fieldid + 'Up';
+                    }	         
+                } else {
+                    $('#datamanager-workarea th.sortable').removeClass('currentsort');
+                   column.addClass('currentsort');
+                   column.addClass("up");
+                   args.sortby=fieldid + 'Up';
+                }
+                $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
+        });
+
+	function replaceAll(str, find, replace) {
+		find = escapeRegExp(find);
+	    return str.replace(new RegExp(find, 'g'), replace);
+	}
+	
+	function escapeRegExp(str) {
+	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	}
+	lQuery('.sortviews').livequery(function()
+		{
+		var sortable = $(this);
+		var path = sortable.data("path");
+		
+		sortable.sortable({
+			axis: 'y',
+			cancel: ".no-sort",
+		    update: function (event, ui) 
+		    {
+				//debugger;
+		        var data = sortable.sortable('serialize');
+		        data = replaceAll(data,"viewid[]=","|");
+		        data = replaceAll(data,"&","");
+		        data = data.replace("|","");
+		        var args = {};
+		        args.items = data;
+		        args.viewpath = sortable.data("viewpath");
+		        args.searchtype = sortable.data("searchtype");
+		        args.assettype = sortable.data("assettype");
+		        args.viewid = sortable.data("viewid");
+		        $.ajax({
+		            data: args,
+		            type: 'POST',
+		            url: path 		            
+		        });
+		    },
+	        stop: function (event, ui) 
+	        {
+	            //db id of the item sorted
+	            //alert(ui.item.attr('plid'));
+	            //db id of the item next to which the dragged item was dropped
+	            //alert(ui.item.prev().attr('plid'));
+	        }
+	     });   
+	});
+	
+	$('.listsort').sortable({
+			  
+			axis: 'y',
+			cancel: ".no-sort",
+		    stop: function (event, ui) {
+		  
+				var path = $(this).data("path");
+				
+		    	
+		        var data = $(this).sortable('serialize');
+		        
+		        // POST to server using $.post or $.ajax
+		        $.ajax({
+		            data: data,
+		            type: 'POST',
+		            url: path 		            
+		        });
+		    }
+	});
+	
+	//Sidebar Custom Width
+	lQuery(".col-left-resize").livequery(function()	{
+		var slider = $(this);
+		var column = $(this).closest(".col-left");
+		var content = $(".pushcontent");
+		
+		var clickspot;
+		var startwidth;
+		var width;
+		
+		
+		slider.on("mousedown", function(event) {
+			if (!clickspot) {
+				clickspot = event;
+				startwidth = column.width();
+				return false;
+			}
+			
+		});
+		$(window).on("mouseup", function(event)
+		{
+			if( clickspot )
+			{
+				clickspot = false;
+				if (width != "undefined") {
+					saveProfileProperty("colleftwidth",width,function(){
+						$(document).trigger("domchanged");
+					});
+				}
+				return false;
+			}
+		});
+		slider.on("mouseleaveXX", function(event)
+		{
+			if( clickspot )
+			{
+			clickspot = false;
+			if (width != "undefined") {
+				saveProfileProperty("colleftwidth",width,function(){
+					$(document).trigger("domchanged");
+				});
+			}
+			return false;
+			}
+		});
+		$(window).on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				width = 0;
+				var changeleft = event.pageX - clickspot.pageX;
+				width = startwidth + changeleft;
+				if( width < 220 )
+				{
+					width = 220;
+				}
+				column.width(width);
+				column.data("colleftwidth",width);
+				$(".pushcontent").css("margin-left",width+"px");
+				event.preventDefault();
+				return false;
+			}	
+		});	
+	});
+	
+	
+	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
+		  e.preventDefault();
+		  e.stopPropagation();
+		  var btn = $(this);
+		  var copytextcontainer = btn.data("copytext");
+		  var copyText = $("#"+copytextcontainer);
+	      copyText.select();
+		  document.execCommand("copy");
+		  var alertdiv = btn.data("targetdiv");
+		  if (alertdiv) {
+			  console.log(alertdiv);
+			  $("#"+alertdiv).show().fadeOut(2000);
+		  }
+		  
+	});
+		
 	
 }
 
 $(document).ready(function() {
 	uiload();
+	resizecolumns();
 });
 
 $(window).on('resize',function(){

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher" > 
+  <property id="id" index="true" stored="true" keyword="true" internalfield="true" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollection" index="true" type="list" stored="true" editable="true"   > 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>   
+</properties>

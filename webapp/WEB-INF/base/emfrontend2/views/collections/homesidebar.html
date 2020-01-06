@@ -1,0 +1,51 @@
+<div class="h-100" style="padding:30px 0 0">
+			<div class="ui-widget h-100" style="margin:0;">
+				<div class="ui-widget-header collectionhome-sideheader">
+					<span class="widget-header-title">[[Collections]]</span>
+				<a class="emdialog btn btn-xs btn-secondary" 
+					style="margin-left:2px; float:right;" 
+					data-hidefooter="true"  
+					title="[[Find Collections]]" 
+				   	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
+				</div>
+				<div class="ui-widget-content categories-widget no-padding-for-real" style="height: calc(100% - 32px); min-height: 250px; border:0;">
+					<ul id="settings-menu" class="sidebar-list">
+						#set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
+						
+						#if(!$selectedtab)
+						  #if( $canviewfeaturedcollections) 
+						   #set( $selectedtab = "libraries")
+						  #else
+						   #set( $selectedtab = "allcollections")
+						  #end
+						#end
+						
+						<li id=""  #if( $selectedtab == "libraries")class="current"#end>
+							<a href="$home$apphome/views/collections/libraries.html"><i class="fa fa-book"></i> [[All Collections]]</a>
+						</li>
+						
+						
+						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> [[Recently Opened]] #if( $usercollections)($usercollections.size())#end</a>
+						</li>
+						#if( $canviewsavedcollections)
+						<li id="" #if( $selectedtab == "savedcollections")class="current"#end>
+							<a href="$home$apphome/views/collections/savedcollections.html" ><i class="fa fa-heart"></i> [[Saved Collections]] #if($likedcollections)($likedcollections.size())#end</a>
+						</li>
+						#end
+						
+						<li>
+				#if($canaddnewcollection)
+					   	    <li>
+	                 <a class="emdialog btn btn-primary" 
+	                 	style="margin:15px;" 
+	                 	title="[[Add New Collection]]" 
+	                 	href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&library.value=$!library.getId()">
+	                 	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+							</li>
+	             #end
+					</ul>
+				</div>
+			</div>
+			
+</div>

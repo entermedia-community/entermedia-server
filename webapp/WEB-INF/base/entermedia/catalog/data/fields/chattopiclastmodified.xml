@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties   beanname="dataSearcher"> 
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>
+  <property id="userid" index="true" viewtype="user" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">User Name 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>
+    
+  <property id="collectionid" required="true" index="true" stored="true" editable="true"  type="list" viewtype="multiselect" listid="librarycollection" datatype="list" > 
+    <name> 
+      <language id="en"><![CDATA[Collection]]></language>  
+	    </name> 
+  </property>  
+  
+  <property id="chattopicid" index="true" stored="true" editable="true"  
+  	listid="collectiveproject" viewtype="collectionproject" searchcomponent="collectionproject" datatype="list" > 
+    <name> 
+      <language id="en"><![CDATA[Topic]]></language>  
+    </name> 
+  </property>  
+  
+    <property id="datemodified" datatype="date" viewtype="date" searchcomponent="datesearch" index="true" stored="true" keyword="false" filter="true" editable="false" sortable="true" type="date">Date
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property> 
+  
+   
+</properties>

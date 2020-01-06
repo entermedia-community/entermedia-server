@@ -23,9 +23,9 @@
 
 #set ($fieldname = $detail.id)
 #set( $listid = $detail.getListId())
-#set( $csslistid = "list-$!detailprefix${detail.id}")
+#set( $csslistid = "listdetail_$fieldname")
 
-<div id="listdetail_$fieldname" class="listdetailpicker">
+<div id="$csslistid" class="listdetailpicker">
 
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##optional things to filter the list
@@ -64,28 +64,35 @@ $query.setSortBy($detail.getDefaultSort())
 #ifnull ($value)
 	#set ($value = $val)
 #end
+#ifnull ($value)
+	#set ($value = $detail.defaultvalue)
+#end
+
+#set($searchfield = $detail.getId() )
 
 #set( $valueid = "$fieldname" )
 #if($types)
-	$types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
 	#end
 	
-	<select  id="$csslistid" name="${fieldname}.value" 
-		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
-		listid="$listid" id="${valueid}.value"
-		data-listid="$listid" 
-		data-searchtype= '$searchtype'
-        onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
-        #if($removeclear) data-allowclear="false" #end
+	<select name="${fieldname}.value" 
+			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+			listid="$listid" 
+			id="${valueid}value"
+			data-listid="$listid" 
+			data-searchtype= '$searchtype'
+			data-searchfield="$searchfield"
+        	onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+        	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")
 	<option value=""></option>
 	#end
-	#foreach( $type in $types )
+	$types.setHitsPerPage(1000)
+	#foreach( $type in $types.getPageOfHits() )
 		#set( $key = $type.id)
 		#if($detail.render)
    			#set($label = $searcherManager.getValue($catalogid, $detail.render, $type.properties))
@@ -94,6 +101,9 @@ $query.setSortBy($detail.getDefaultSort())
 		#end
 		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 	#end
+	#if($hits && $hits.size() > 1000 )
+		<option value="-1">1000 [[limit reached]]</option>
+	#end
    </select>
  
    
@@ -101,7 +111,8 @@ $query.setSortBy($detail.getDefaultSort())
 	[[No values found]] 
 #end
  #if( $caneditlists)
-		<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+		<a class="emdialog addnewitem btn btn-xs btn-light" data-dialogid="inlineedit" 
+			href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
   #end
   <div class="clearfix"></div>
 </div>

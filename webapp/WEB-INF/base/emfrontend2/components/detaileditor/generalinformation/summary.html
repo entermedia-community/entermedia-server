@@ -1,4 +1,7 @@
 #set($hitssessionid = $hits.sessionId )
+#if(!$hitssessionid)
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
 $context.putPageValue("showalllanguagevalues",true)
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 
@@ -23,7 +26,7 @@ $context.putPageValue("showalllanguagevalues",true)
 							#set($collectionid = $context.getRequestParameter("collectionid"))
 							<h4>$context.getText($target.toString()) 
 							#if($caneditasset)
-								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}" 
+								<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"
 								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
@@ -36,23 +39,26 @@ $context.putPageValue("showalllanguagevalues",true)
                 #set($permissionvalue = "")
 				
 			#end
-			#if($caneditasset)
-				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
-			#end
+			
 			</div>
 	</div>					
-			<div class="col-4">
-			
-                $pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
-            
-                
-
+		<div class="col-4">
+				#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+		        #if( $ismulti )
+		        
+    				<div class="media-player-mini">
+		                <div class="primary" style="text-align: center; height: 33px; line-height: 33px;">[[Editing across]] $asset.size() [[assets]]</div>
+		        	</div>
+		        
+		        #else
+					$pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
+				#end
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
     				
     				<div class="asset-data-detail assetpanel-editor-box" >
-    				<h4>[[Libraries]]</h4>
-    				<div class="emlist">
+    				  <h4>[[Libraries]]</h4>
+    				  <div class="emlist">
             				#foreach($library in $libraries)
             					 #set( $division = $mediaarchive.getData("division",$library.division ) )
             					 #if($division)
@@ -63,14 +69,31 @@ $context.putPageValue("showalllanguagevalues",true)
             					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
             			
             				#end
-    					</div>
+    				  </div>
     				</div>
 				#end	
+									
+				$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
 				
-				##$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
-					
-				$pages.include("$apphome/components/categories/asset/listassetcategories.html",$context)
-			</div>	
-	
-</div></div>
+				
+				#if( $caneditassetcategories )
+				<div class="asset-data-detail assetpanel-editor-box">
+					<div class="float-left" style="margin-left: 0px;">
+					<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+							   class=" emdialog btn btn-sm btn-primary"
+							   data-hidefooter="true" 
+							   data-noesc="true"
+							   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Collection]]</a>
+							   </div>
+				
+				#if($caneditasset)
+				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+				#end
+				</div>
+				#end
+				
+				
+		</div>	
+</div>
+</div>
 </div>

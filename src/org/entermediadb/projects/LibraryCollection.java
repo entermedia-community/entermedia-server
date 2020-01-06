@@ -1,6 +1,8 @@
 package org.entermediadb.projects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.entermediadb.asset.Category;
@@ -8,14 +10,14 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
-import org.openedit.page.Permission;
 import org.openedit.util.strainer.FilterReader;
 
 public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
 {
-	protected Data fieldLibrary;
+	protected Collection fieldLibraries;
 	protected Category fieldCategoryRoot;
 	protected int fieldAssetCount;
 	protected String fieldCatalogId;
@@ -52,16 +54,32 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	public Data getLibrary()
 	{
-		if( fieldLibrary == null)
+		Collection all = getLibraries();
+		if(all == null ||  all.isEmpty() )
 		{
-			String id = get("library");
-			fieldLibrary = getMediaArchive().getData("library",id);
+			return null;
 		}
-		return fieldLibrary;
+		return (Data)all.iterator().next();
+	}
+	public Collection getLibraries()
+	{
+		if( fieldLibraries == null)
+		{
+			if( getMediaArchive() != null )
+			{
+				Collection ids = getValues("library");
+				if( ids != null && !ids.isEmpty() )
+				{
+					fieldLibraries = getMediaArchive().query("library").ids(ids).search();
+				}
+			}
+		}
+		return fieldLibraries;
 	}
 	public void setLibrary(Data inLibrary)
 	{
-		fieldLibrary = inLibrary;
+		fieldLibraries = Arrays.asList(inLibrary);
+		setValue("library", fieldLibraries);
 	}
 
 	public int getAssetCount()
@@ -117,14 +135,18 @@ return catid;
 			if(getRootCategoryId() == null){
 				return null;
 			}
-			Category root = getCategory();
-			if( root == null)
+			Object values = super.getValues(inKey);
+			if( values == null) //Must not be in the index yet
 			{
-				return null;
+				Category root = getCategory();
+				if( root == null)
+				{
+					return null;
+				}
+				values = root.getParentCategories();
 			}
-			return root.getParentCategories();
+			return values;
 		}
-		// TODO Auto-generated method stub
 		return super.getValue(inKey);
 	}
 	
@@ -173,6 +195,15 @@ return catid;
 
 		return fieldPermissions;
 	}
+	
+	public String pickLabel(MultiValued inTopic)
+	{
+		TopicLabelPicker labels = new TopicLabelPicker();
+		labels.setArchive(getMediaArchive());
+		labels.setLibraryCollection(this);
+		return labels.showLabel(inTopic);
+	}
+
 	
 	
 	

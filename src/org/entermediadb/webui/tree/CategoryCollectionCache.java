@@ -1,24 +1,38 @@
 package org.entermediadb.webui.tree;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.entermediadb.asset.Category;
-import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.cache.CacheManager;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 
 public class CategoryCollectionCache implements CatalogEnabled
 {
-	protected Map fieldCategoryRoots;
+	private static final LibraryCollection NULLCOLLECTION = new LibraryCollection();
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
+	protected CacheManager fieldCacheManager;
+	protected CacheManager fieldTimedCacheManager;
+	public CacheManager getTimedCacheManager()
+	{
+		return fieldTimedCacheManager;
+	}
+
+	public void setTimedCacheManager(CacheManager inTimedCacheManager)
+	{
+		fieldTimedCacheManager = inTimedCacheManager;
+	}
+	protected boolean init = false;
 	
 	public String getCatalogId()
 	{
@@ -40,63 +54,146 @@ public class CategoryCollectionCache implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public Map getCategoryRoots()
+	protected CacheManager getCacheManager()
 	{
-		if (fieldCategoryRoots == null)
-		{
-			fieldCategoryRoots = new HashMap(1000);
-			loadRoots();
-			
-		}
-
-		return fieldCategoryRoots;
+		return fieldCacheManager;
+	}
+	
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
 	}
 
 	protected void loadRoots()
 	{
-		HitTracker all = getSearcherManager().query(getCatalogId(), "librarycollection").all().search();
-		all.setHitsPerPage(1000);
-		Set categoryids = new HashSet();
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+		HitTracker all = searcher.query().all().search();
+		all.setHitsPerPage(2000);
+		
 		for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			Data collection = (Data) iterator.next();
 			String rootid = collection.get("rootcategory");
 			if( rootid != null)
 			{
-				categoryids.add(rootid);
+				LibraryCollection librarycollection = (LibraryCollection)searcher.loadData(collection);
+				getCacheManager().put(getCatalogId() + "collectioncache", rootid, librarycollection);
 			}
 		}
-		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
+//		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
+//		
+//		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
+//		{
+//			String id = (String) iterator.next();
+//			Category cat = searcher.getCategory(id);
+//			if( cat != null)
+//			{
+//				fieldCategoryRoots.put( id, cat);
+//			}
+//		}
 		
-		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
+	}
+	public String findCollectionId(Category inRoot)
+	{
+		LibraryCollection collection = findCollection(inRoot);
+		if( collection != null)
 		{
-			String id = (String) iterator.next();
-			Category cat = searcher.getCategory(id);
-			if( cat != null)
-			{
-				fieldCategoryRoots.put( id, cat);
-			}
+			return collection.getId();
 		}
-		
+		return null;
 	}
 
-	public void setCategoryRoots(Map inCategoryRoots)
+	public boolean isCollectionRoot(Category inRoot)
 	{
-		fieldCategoryRoots = inCategoryRoots;
+		LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", inRoot.getId());
+		if( exists == NULLCOLLECTION)
+		{
+			return false;
+		}
+		if( exists == null)
+		{
+			exists = findCollection(inRoot);
+		}
+		if( exists != null)
+		{
+			return inRoot.getId().equals(exists.getRootCategoryId());
+		}
+		
+		return false;
 	}
+
 	
-	public boolean isPartOfCollection(Category inRoot)
+	public LibraryCollection findCollection(Category inRoot)
 	{
+		if( !init )
+		{
+			loadRoots();
+			init = true;
+		}
+		if( "index".equals(inRoot.getId()) )
+		{
+			return null;
+		}
 		List parents  = inRoot.getParentCategories();
+		if( parents != null)
+		{
+			parents = new ArrayList(parents);
+			Collections.reverse(parents);
+		}
 		for (Iterator iterator = parents.iterator(); iterator.hasNext();)
 		{
 			Category parent = (Category) iterator.next();
-			Category exists = (Category)getCategoryRoots().get(parent.getId());
+			LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
 			if( exists != null)
 			{
-				return true;
+				return exists;  //Loaded on boot up once time and cached heaviliy
+			}
+			
+			exists = (LibraryCollection)getTimedCacheManager().get(getCatalogId() + "collectioncache", parent.getId());
+			if( exists == NULLCOLLECTION)
+			{
+				return null;
+			}
+			if( exists != null)
+			{
+				return exists;
+			}
+			else
+			{
+				//It expired after 15 min. Do a DB lookup just to be sure
+				Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+				Data found = (Data)searcher.query().orgroup("rootcategory", parents).searchOne();
+				if( found == null)
+				{
+					exists = NULLCOLLECTION;
+				}
+				else
+				{
+					exists = (LibraryCollection)searcher.loadData(found);
+				}
+				getTimedCacheManager().put(getCatalogId() + "collectioncache", inRoot.getId(), exists);
+				if( exists != NULLCOLLECTION)
+				{
+					return exists;
+				}
 			}
 		}
-		return false;
+		return null;
+		
+	}	
+	public boolean isPartOfCollection(Category inRoot)
+	{
+		return findCollectionId(inRoot) != null;
+	}
+
+	public void addCollection(LibraryCollection inSaved)
+	{
+		getCacheManager().put(getCatalogId() + "collectioncache", inSaved.getCategory().getId(),inSaved);
+		
+	}
+	public void removedCollection(LibraryCollection inSaved)
+	{
+		getCacheManager().remove(getCatalogId() + "collectioncache", inSaved.getCategory().getId());
+		
 	}
 }

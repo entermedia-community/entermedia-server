@@ -22,26 +22,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
-import org.entermediadb.authenticate.AutoLoginWithCookie;
+import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.config.Configuration;
 import org.openedit.data.SearcherManager;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.Permission;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.Group;
-import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
@@ -49,6 +45,10 @@ import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
+
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
+import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 
 /**
  * This module allows the user to view and administer the site.
@@ -349,13 +349,23 @@ public class AdminModule extends BaseMediaModule
 	public void login(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("accountname");
+		String email = inReq.getRequestParameter("email");
+		
+		if( account == null && email == null)
+		{
+			//log.debug
+			return;
+		}
+		
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
-			account = account.toLowerCase();
+			if(account != null) {
+				account = account.toLowerCase();
+			}
 		}
 		
-		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
+		if (account == null && email == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
 			String referrer = inReq.getRequest().getHeader("REFERER");
 			if (referrer != null && !referrer.contains("authentication") && referrer.startsWith(inReq.getSiteRoot()))
@@ -364,13 +374,26 @@ public class AdminModule extends BaseMediaModule
 				inReq.putSessionValue("fullOriginalEntryPage", referrer);
 			}
 		}
-		else if (account != null)
+		else
 		{
 			UserManager userManager = getUserManager(inReq);
-			User user = userManager.getUser(account);
-			if (user == null && account.contains("@"))
+			User user = null;
+			if( account == null)
 			{
-				user = userManager.getUserByEmail(account);
+				if( email == null)
+				{
+					inReq.putPageValue("oe-exception", "No user id or email found");
+					return;
+				}
+				user = userManager.getUserByEmail(email);
+			}
+			else
+			{
+				user = userManager.getUser(account);
+				if( user == null && account.contains("@"))
+				{
+					user = userManager.getUserByEmail(account);
+				}
 			}
 			if (user == null) // Allow guest user
 			{
@@ -390,7 +413,7 @@ public class AdminModule extends BaseMediaModule
 			}
 			if (user == null)
 			{
-				inReq.putPageValue("oe-exception", "Invalid Logon");
+				inReq.putPageValue("oe-exception", "Invalid Login");
 				return;
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
@@ -480,6 +503,8 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("oe-exception", "User has been disabled");
 					inReq.putPageValue("disabled", true);
 					inReq.putPageValue("invaliduser", inUser);
+					getUserManager(inReq).fireUserEvent(inUser, "disabled");
+
 					return false;
 				}
 			}
@@ -594,7 +619,16 @@ public class AdminModule extends BaseMediaModule
 		}
 
 	}
-
+	public void savePasswordAsCookie(WebPageRequest inReq)
+	{
+		User user = getUserSearcher(inReq).getUser(inReq.getUserName());
+		//Latest one
+		savePasswordAsCookie(user, inReq);
+		String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+		inReq.putSessionValue(catalogid + "user", user);
+		inReq.putPageValue( "user", user);
+		
+	}
 	public void savePasswordAsCookie(User user, WebPageRequest inReq) throws OpenEditException
 	{
 		if (user.isVirtual())
@@ -602,7 +636,7 @@ public class AdminModule extends BaseMediaModule
 			log.debug("User is virtual. Not saving cookie");
 			return;
 		}
-		AutoLoginWithCookie autologin = (AutoLoginWithCookie)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+		BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
 		autologin.saveCookieForUser(inReq, user);
 	}
 
@@ -659,7 +693,7 @@ public class AdminModule extends BaseMediaModule
 
 		inReq.removePageValue("user");
 		inReq.removePageValue("userprofile");
-		getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
+		getCookieEncryption().removeCookie(inReq,AutoLoginProvider.ENTERMEDIAKEY);
 		getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
 		
 
@@ -695,8 +729,7 @@ public class AdminModule extends BaseMediaModule
 				String catalogid = userManager.getUserSearcher().getCatalogId();
 				inReq.putSessionValue(catalogid + "user", result.getUser());
 				inReq.putPageValue( "user", result.getUser());
-				userManager.fireUserEvent(result.getUser(), "autologin");
-
+				//userManager.fireUserEvent(result.getUser(), "autologin");
 				return;
 			}
 		}
@@ -1308,5 +1341,64 @@ public class AdminModule extends BaseMediaModule
 			req.setHeader("Access-Control-Allow-Credentials","true");
 		}	
 	}	
+	
+	public void generateKey(WebPageRequest inReq) {
+		
+		String account = inReq.getRequestParameter("accountname");
+		String password = inReq.getRequestParameter("password");
+
+		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			if(account != null) {
+				account = account.toLowerCase();
+			}
+		}
+		UserManager userManager = getUserManager(inReq);
+
+		User user = userManager.getUser(account);
+		if(user.get("googlesecretkey") != null) {
+			inReq.putPageValue("error", "Sorry, your code has already been generated.  IF you need it reset contact your administrator");
+			return;
+		}
+		
+		AuthenticationRequest aReq = getUserManager(inReq).createAuthenticationRequest(inReq, password, user);
+		if (userManager.getAuthenticator().authenticate(aReq))
+		{
+			
+			GoogleAuthenticator gAuth = new GoogleAuthenticator();
+			final GoogleAuthenticatorKey key = gAuth.createCredentials();
+			String secret = key.getKey();
+			user.setValue("googlesecretkey", secret);
+			getSearcherManager().getSearcher(aReq.getCatalogId(), "user").saveData(user);
+			inReq.putPageValue("googlesecret", secret);
+			String sitename = getMediaArchive(inReq).getCatalogSettingValue("sitename");
+//			if(sitename == null) {
+//				sitename = inReq.findValue("siteroot");
+//			}
+//			if(sitename == null) {
+//				sitename = inReq.getSiteRoot();
+//			}
+			if(sitename == null) {
+				sitename="Entermedia";
+			}
+			
+			String qr = GoogleAuthenticatorQRGenerator.getOtpAuthURL(sitename, user.getEmail(), key);
+			inReq.putPageValue("qrcode", qr);
+			
+			
+			
+		}
+		
+		else {
+			inReq.putPageValue("invalid", "Sorry, couldn't login.  Please try again.");
+
+			
+		}
+		
+		
+		
+		
+	}
+	
+	
 	
 }

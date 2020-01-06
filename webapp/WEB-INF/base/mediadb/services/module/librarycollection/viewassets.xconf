@@ -5,6 +5,6 @@
 	<permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
-	
+    
 	
 </page>

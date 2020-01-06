@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true"   >
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" > 
+    <name> 
+      <language id="de"><![CDATA[SourcePath]]></language>  
+      <language id="en"><![CDATA[SourcePath]]></language>  
+      <language id="es"><![CDATA[SourcePath]]></language>  
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
+    </name> 
+  </property>  
+  <property id="collectionid" index="true" 
+  	type="list" stored="true" editable="true" listid="librarycollection" > 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="followeruser" index="true" viewtype="user" type="list" listid="user"  stored="true" editable="true"  > 
+    <name> 
+      <language id="en"><![CDATA[User]]></language>  
+    </name> 
+  </property>  
+  <!-- 
+  <property id="emails" index="true" stored="true" editable="true" viewtype="tageditor"   >
+    <name> 
+      <language id="de"><![CDATA[Anteil von E-Mails]]></language>  
+      <language id="en"><![CDATA[External Email]]></language>  
+      <language id="es"><![CDATA[Los correos electrónicos de Acciones]]></language>  
+      <language id="fr"><![CDATA[Partager Emails]]></language> 
+    </name> 
+  </property>
+   -->  
+  <property id="addeddate"  index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true"   >
+    <name> 
+      <language id="de"><![CDATA[Sendedatum]]></language>  
+      <language id="en"><![CDATA[Added Date]]></language>  
+      <language id="es"><![CDATA[Fecha enviada]]></language>  
+      <language id="fr"><![CDATA[Date d&#39;envoi]]></language> 
+    </name> 
+  </property>  
+  <!-- 
+  <property id="apphome" editable="true" index="true" stored="true"   > 
+    <name> 
+      <language id="en"><![CDATA[App Home]]></language>  
+    </name> 
+  </property>
+  -->   
+  <property id="note" editable="true" viewtype="textarea" index="true" stored="true"   > 
+    <name> 
+      <language id="de"><![CDATA[Hinweis]]></language>  
+      <language id="en"><![CDATA[Leave a comment]]></language>  
+      <language id="es"><![CDATA[Nota]]></language>  
+      <language id="fr"><![CDATA[Remarque]]></language> 
+    </name> 
+  </property>  
+  <property id="senderror"  index="true" stored="true"   >Error 
+    <name> 
+      <language id="de"><![CDATA[Fehler]]></language>  
+      <language id="en"><![CDATA[Error]]></language>  
+      <language id="es"><![CDATA[Error]]></language>  
+      <language id="fr"><![CDATA[Erreur]]></language> 
+    </name> 
+  </property>  
+  <property id="fromuser"  viewtype="user" type="list" listid="user" index="true" stored="true"   >
+    <name>
+      <language id="de"><![CDATA[gesendet von]]></language>
+      <language id="en"><![CDATA[Added By]]></language>
+      <language id="es"><![CDATA[Enviado por]]></language>
+      <language id="fr"><![CDATA[Envoyée par]]></language>
+    </name>
+  </property> 
+  <property id="agreetoterms"  index="true" stored="true"  type="boolean" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[I want to contribute]]></language>  
+    </name> 
+  </property>  
+  <property id="whatsappnumber"  index="true" stored="true" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[WhatsApp]]></language>  
+    </name> 
+  </property>  
+  <property id="ontheteam"  index="true" stored="true"  type="boolean" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Allow Editing]]></language>  
+    </name> 
+  </property>  
+  
+
+</properties>

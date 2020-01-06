@@ -37,7 +37,8 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
-public class ProjectModule extends BaseMediaModule {
+public class ProjectModule extends BaseMediaModule 
+{
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 
 	public void loadCollections(WebPageRequest inReq) throws Exception {
@@ -46,6 +47,7 @@ public class ProjectModule extends BaseMediaModule {
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
+	/*
 	public void redirectToCollection(WebPageRequest inReq) throws Exception {
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
@@ -59,6 +61,56 @@ public class ProjectModule extends BaseMediaModule {
 		String nodeID = inReq.getRequestParameter("nodeID");
 		if (nodeID != null) {
 			finalpath = finalpath + "?nodeID="+nodeID;
+		}
+		inReq.redirect(finalpath);
+	}
+	*/
+	
+	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
+	{
+		String collectionroot = inReq.getRequestParameter("collectionroot");
+		if( collectionroot == null)
+		{
+			collectionroot = inReq.findValue("collectionroot");
+		}
+		if( collectionroot == null)
+		{
+			throw new OpenEditException("collectionroot not set");
+		}
+		String finalpath = "";
+		LibraryCollection collection = loadCollection(inReq);
+		
+		if (collectionroot.endsWith(".html")) 
+		{
+			finalpath = collectionroot + "?collectionid=" + collection.getId();
+		}
+		else 
+		{
+			finalpath = collectionroot + "/" + collection.getId() + "/index.html";
+		}
+		
+		//Selected Sub folder?
+		String nodeID = inReq.getRequestParameter("nodeID");
+		if (nodeID != null) {
+			if (finalpath.contains("?")) {
+				finalpath = finalpath + "&";
+			}
+			else {
+				finalpath = finalpath + "?";	
+			}
+			finalpath = finalpath + "nodeID="+nodeID;
+			
+		}
+		String args = inReq.getRequestParameter("args");
+		if (args != null) {
+			if (finalpath.contains("?")) {
+				finalpath = finalpath + "&";
+			}
+			else {
+				finalpath = finalpath + "?";	
+			}
+			finalpath = finalpath + args;
+			
 		}
 		inReq.redirect(finalpath);
 
@@ -318,12 +370,21 @@ public class ProjectModule extends BaseMediaModule {
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid != null) {
-			LibraryCollection collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
-			inReq.putPageValue("librarycol", collection);
-			return collection;
+		LibraryCollection collection = null;
+		if (collectionid == null)
+		{
+			collection = loadCollectionFromFolder(inReq);
 		}
-		return null;
+		else
+		{
+			collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+		}
+		if( collection == null)
+		{
+			log.error("No collection id found");
+		}
+		inReq.putPageValue("librarycol", collection);
+		return collection;
 	}
 	
 	public String loadCollectionId(WebPageRequest inReq) 
@@ -356,16 +417,13 @@ public class ProjectModule extends BaseMediaModule {
 				}
 			}
 		}
-		if (collectionid == null) {
-			LibraryCollection coll = loadCollectionFromFolder(inReq);
-			if (coll != null) {
-				collectionid = coll.getId();
-			} else {
-				String page = inReq.getPage().getName();
-				page = page.replace(".html", "").replace(".zip", "");
-				collectionid = page;
-			}
-		}
+//		if (collectionid == null) 
+//		{
+//			LibraryCollection coll = loadCollectionFromFolder(inReq);
+//			if (coll != null) {
+//				collectionid = coll.getId();
+//			}
+//		}
 		if(collectionid != null) {
 			
 			inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
@@ -421,6 +479,9 @@ public class ProjectModule extends BaseMediaModule {
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
+		
+		getCategoryCollectionCache(inReq).addCollection(saved);
+		
 	}
 /*
 	public Data createUserLibrary(WebPageRequest inReq) {
@@ -591,8 +652,7 @@ public class ProjectModule extends BaseMediaModule {
 	public void copyCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
+		LibraryCollection collection = loadCollection(inReq);
 
 		Searcher colsearcher = archive.getSearcher("librarycollection");
 		LibraryCollection newcollection = (LibraryCollection) colsearcher.createNewData();
@@ -806,7 +866,8 @@ public class ProjectModule extends BaseMediaModule {
 	
 	
 	
-	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq) {
+	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
+	{
 		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq), colid);
@@ -1100,6 +1161,26 @@ Client EnterMediaModule.uploadFilesIntoCollection
 Server ProjectModule.uploadFile
 
 	 */
+	public void uploadMedia(WebPageRequest inReq) throws Exception
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+
+		//MediaArchive archive = getMediaArchive(inReq);
+
+		String savepath = inReq.getRequestParameter("savepath");
+		FileUploadItem item = properties.getFirstItem();
+		
+		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
+		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+		
+	}
+	
 	public void uploadFile(WebPageRequest inReq) throws Exception
 	{
 		//MediaArchive archive = getMediaArchive(inReq);
@@ -1246,7 +1327,7 @@ Server ProjectModule.uploadFile
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		ProjectManager manager = getProjectManager(inPageRequest);
+		//ProjectManager manager = getProjectManager(inPageRequest);
 		
 		Category category = null;
 		String categoryId = inPageRequest.getRequestParameter("selectedcategory");
@@ -1270,14 +1351,22 @@ Server ProjectModule.uploadFile
 			inPageRequest.putPageValue("selectedcategory",category);
 			LibraryCollection librarycol = loadCollection(inPageRequest);
 			
-			QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
-			
-			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
-			
-			if (!caneditdata) 
+			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true);
+			if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
 			{
-				q.orgroup("editstatus", "6");
+				q.exact("category",category.getId());
 			}
+			else
+			{
+				q.exact("category-exact",category.getId());
+			}
+//			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+//			
+//			if (!caneditdata) 
+//			{
+//				Searcharchive.getAssetSearcher().createSearchQuery();
+//				q.orgroup("editstatus", "6");
+//			}
 			
 			HitTracker tracker =  q.search(inPageRequest);
 			if( tracker != null)
@@ -1291,15 +1380,63 @@ Server ProjectModule.uploadFile
 	
 			}
 		}
-	
 	}
 	
-	public void getCategoryCollectionCache(WebPageRequest inPageRequest) throws Exception
+	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest)
 	{
 		String catalogid = inPageRequest.findValue("catalogid");
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
+		return cache;
 	}
 	
+
+	
+	public void loadUploads(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			manager.loadUploads(inReq);
+	}
+
+	public Boolean isOnTeam(WebPageRequest inReq)
+	{
+		if(inReq.getUser() == null)
+		{
+			return false;
+		}
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = loadCollection(inReq);
+		if( collection == null)
+		{
+			return false;
+		}
+		String userid = inReq.getUserName();
+		Boolean isOnEditTeam = manager.isOnTeam(collection,userid);
+		return isOnEditTeam;
+	}
+	
+	public void toggleLike(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			LibraryCollection collection = loadCollection(inReq);
+			manager.toggleLike(collection.getId(),inReq.getUserName());
+	}
+	public void listLikedCollections(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			manager.listLikedCollections(inReq);
+	}
+	
+	public void loadMessagesCollection(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = manager.getMessagesCollection(inReq.getUser());
+		inReq.putPageValue("librarycol", collection);
+		
+		TopicLabelPicker labels = new TopicLabelPicker();
+		labels.setArchive(getMediaArchive(inReq));
+		labels.setLibraryCollection(collection);
+		inReq.putPageValue("topiclabels", labels);
+	}
 	
 }

@@ -29,9 +29,19 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected String fieldCurrentConnectionId;
 	protected ChatServer fieldChatServer;
 	protected String fieldSessionID;
+	protected String fieldUserId;
 	
 	
-	
+	public String getUserId()
+	{
+		return fieldUserId;
+	}
+
+	public void setUserId(String inUserId)
+	{
+		fieldUserId = inUserId;
+	}
+
 	public ChatServer getChatServer() {
 		if (fieldChatServer == null) {
 			fieldChatServer = (ChatServer) getModuleManager().getBean("system", "chatServer");
@@ -105,7 +115,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		Map props = endpointConfig.getUserProperties();
 		HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
 		User user = (User) current.getServletContext().getAttribute("user");
-		
+		if( user != null)
+		{
+			setUserId(user.getId());
+		}
 		String query = session.getQueryString();
 		Map params = getQueryMap(query);
 		
@@ -182,10 +195,12 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
 			
-			log.info("Command was: " + command);
-			if ("login".equals(command)) //Return all the annotation on this asset
+			//log.info("Command was: " + command);
+			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
 				//receiveLogin(map); 
+				String userid = (String) map.get("userid");
+				setUserId(userid);
 			}
 			else if("messagereceived".equals(command)){
 			

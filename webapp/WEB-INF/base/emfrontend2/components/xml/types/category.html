@@ -3,9 +3,11 @@
 #if( $detail )
     #set( $detailid = $detail.id)
 #end
-
+ 
 <div id="addcategory" data-autosubmit="true"> 
 	#set ($existing = $context.getRequestParameter("${detailid}.value") )
+	
+	
 	#if(!$existing)
 		#set ($existing = $val)
 	#end
@@ -15,6 +17,11 @@
 	#if(!$existing)
 		#set ($existing = $context.getRequestParameter("${detailid}.values") )
 	#end
+	#if(!$existing)
+		#set ($existing = $context.getRequestParameter("nodeID") )
+	#end
+	
+	
 	
 	#if( $existing && !$existing.trim().isEmpty() )
          #set ($existing = $existing.replace("||","|"))

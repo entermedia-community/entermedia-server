@@ -1,0 +1,7 @@
+<page>
+	<page-action name="DataEditModule.loadData" >
+			<searchtype>${module}</searchtype>
+    </page-action>
+	<property name="searchtype" />
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+</page>

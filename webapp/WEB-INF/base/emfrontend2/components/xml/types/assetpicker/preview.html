@@ -6,12 +6,14 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-#if(!$val)
+####if(!$val)
 	#set($val = $context.getRequestParameter('assetid'))
-#end
+####end
 #if($val && $val != "")
-#set( $foundrow = $mediaarchive.getAsset($val)  )
+	#set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
+
+
 
 #if( $foundrow )
 #set( $rootid = $hits.sessionId )
@@ -19,22 +21,17 @@
 #set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
 
 <div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
-<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" >
+#set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
+#set( $img = $mediaarchive.asLinkToPreview($foundrow,"image200x200.jpg"))
 
-	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
-	
-	$context.putPageValue("cell", $foundrow)
-	$context.putPageValue("hit", $foundrow)
-	
-	$context.putPageValue("showdetails", "false")
-	$context.putPageValue("thumbsize", "image200x200.jpg")
-  	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
+       data-sourcepath="$urlenc" data-name="$foundrow.name" src="$img" alt="$!foundrow.name"/>
 </a>
 
-#if($foundrow && !$context.getRequestParameter("readonly") == "true")
-<br>
-<a href="#"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' > [[clear]]</a>
-#end
+
+
+
 
 </div>
 

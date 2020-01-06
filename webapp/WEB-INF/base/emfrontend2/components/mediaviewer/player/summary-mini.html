@@ -1,44 +1,25 @@
 <div id="summary-mini">
     <div id="mediaplayer" class="media-player-mini">
 		#set($totalpages = $numberutils.toInt($asset.pages))
-		###set( $ismulti = $asset.getId().startsWith("multiedit:"))
-		#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
-        #if( $ismulti )
-            <div class="media-info">
-                <div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
-            </div>
-        
-        #else
-		
-			     
-			
 			<div class="media-thumbnail">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 				#if( !$thumbsize )
-		    		#set( $thumbsize  = "mediumimage" )
+		    		#set( $thumbsize  = "mediumplus" )
 				#end
 				$context.putPageValue("thumbsize",$thumbsize)
 				$context.putPageValue("viewer","summary")
-				#if ( $type == "image" || $type == "document" )
-					#set ( $urlutils = $context.getPageValue("url_util"))
-					#if ($urlutils)
-						#set ( $sourcepath = $urlutils.encode($asset.sourcepath))
-						#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
-					#else
-						#set ( $sourcepath = $asset.sourcepath)
-					#end
-		 			
-		 			#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
-		 			
-		 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-                #else
-                    #if ($type)
-		   			    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-		   			#end
-				#end 
 				
-				
+				#if (${type} == "video")
+					$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+				#else
+					<a class="assettab" 
+						data-link="$applink/views/modules/asset/components/mediaviewer/fullscreen/tabs/viewpreview.html" 
+						data-assettab="viewpreview" 
+						title="Preview $asset">
+		 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+					</a>
+				#end
 				
 			</div>
 		    <div class="media-player-mini-links">        
@@ -52,7 +33,7 @@
 					</a>
 		    
 		    #if ($totalpages > 1) 
-		         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a> 
+		         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=#esc($hitssessionid)&oemaxlevel=2">($totalpages [[Pages]])</a> 
 		    #end
 		    #if ($attachmentcount > 0)
 		       	<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
@@ -93,6 +74,6 @@
 			
 		</div>	
 
-        #end
+        
     </div>
 </div>

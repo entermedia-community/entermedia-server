@@ -17,11 +17,15 @@
         $("select#roles").change(function () {
            var val = $(this).val();
            if ( val == "new" ) {
-              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/addnew.html?oemaxlevel=1&groupname=New");
+              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/addnew.html?oemaxlevel=1&groupname=New", function(){
+            	  $(window).trigger( "resize" );
+              });
               $('#module-picker').hide();
            }
            else {
-              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val);
+              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val, function(){
+            	  $(window).trigger( "resize" );
+              });
               $('#module-picker').show();
            }
         });

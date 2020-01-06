@@ -29,5 +29,7 @@ public interface MediaTranscoder
 	void setPageManager(PageManager inPageManager);
 
 	void setExec(Exec inExec);
+	Exec getExec();
+
 	
 }

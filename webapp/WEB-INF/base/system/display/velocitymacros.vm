@@ -1,12 +1,18 @@
+#macro(eid $inId)$inId.replace('.','-').replace('\\', '/')#end
 #macro(uuencode $invalue)$!url_util.encode($invalue)#end
 #macro(urlencode $invalue)$!url_util.urlEscape($invalue)#end
 #macro(urlescape $invalue)$!url_util.urlEscape($invalue)#end
-
 #macro(esc $invalue)$!url_util.xmlEscape($invalue)#end
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)
 #set( $text = $context.getText($t) )
 $!url_util.xmlEscape($text)
+#end
+#macro(linebreaks $text)
+#if($text)
+#set($text = $url_util.xmlEscape($text))
+$text.replaceAll("(\r\n|\n)", "<br />")
+#end
 #end
 #macro( translate $text )
 $!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
@@ -19,7 +25,11 @@ $invalue
 #end
 #end
 #macro(jsonmap $detail $map)
-#if( $map )$map.toJson()#end
+#set($totext = $map.toJson())
+#if( $totext )$totext
+#else
+#jesc($map)
+#end
 #end
 #macro(datajsonmin $detail $id)
 #set($data = false)#set($data = $searcherManager.getData($detail, $id))

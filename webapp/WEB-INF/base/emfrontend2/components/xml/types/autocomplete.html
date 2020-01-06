@@ -21,18 +21,25 @@
 #end
 
 #set( $detailid = $detail.getId().replace('.','-') )
-
-<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"  
+#set( $valueid = "list-${detailid}${idcount}value")
+<select name="${detail.getId()}.value"  
+		id="$valueid"  
 		class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
-		data-searchfield="$searchfield" data-searchtype="$detail.listId" 
-	data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-placeholder="$detail.getText($context)" data-sortby="$!detail.sort">
+		data-searchfield="$searchfield" 
+		data-searchtype="$detail.listId" 
+		data-listcatalogid="$detail.listCatalogId" 
+		data-foreignkeyid="$!detail.foreignkeyid" 
+		data-placeholder="$detail.getText($context)" data-sortby="$!detail.sort">
 #if( $foundrow )
   <option value="$!val" selected="selected">#esc($label)</option>
 #end
 </select>
 
  #if( $caneditlists)
-	<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+	<a class="emdialog addnewitem btn btn-xs btn-light" 
+	data-dialogid="inlineedit" 
+	href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()&update=${valueid}" 
+	title="[[Add New]] $detail" data-hidefooter="true" >+ [[New]] $detail</a>
 #end
 
 
@@ -63,7 +70,7 @@
 
 #if($link)
 #if($pages.canView($link))
- 	<a class="btn btn-xs btn-light" href="$link">[[View]]</a>
+ 	<a class="btn btn-xs btn-light addnewitem" href="$link">[[View]]</a>
 
 #end
 #end

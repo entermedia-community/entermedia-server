@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="catalogid" index="true"  editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[CatalogID]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" filter="false"  editable="false" stored="true" sortable="true" keyword="false">New 
+    <name> 
+      <language id="de"><![CDATA[Betrieb]]></language>  
+      <language id="en"><![CDATA[Operation]]></language>  
+      <language id="es"><![CDATA[Operación]]></language>  
+      <language id="fr"><![CDATA[Opération]]></language> 
+    </name> 
+  </property>  
+  <property id="date" index="true" editable="true" stored="true" type="date">
+    <name>
+      <language id="en"><![CDATA[Date]]></language>
+    </name>
+  </property>
+  
+  <property id="details" index="true" deleted="false" editable="true" stored="true">New 
+    <name> 
+      <language id="en"><![CDATA[Details]]></language> 
+    </name> 
+  </property>  
+  <property id="id" deleted="false" editable="true">New
+    <name>
+      <language id="en"><![CDATA[ID]]></language>
+    </name>
+  </property>
+  
+</properties>

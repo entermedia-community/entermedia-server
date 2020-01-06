@@ -1,26 +1,25 @@
-<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="/${applicationid}/theme" 
-	data-browserlanguage="$!{browserlanguage}" data-mediadbappid="$!mediaarchive.getMediaDbId()" 
-	data-componenthome="$!componenthome">
+<div id="application" data-home="$home" data-apphome="$apphome" data-catalogid="$catalogid" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}" data-componenthome="$componenthome" data-mediadbappid="$!mediaarchive.getMediaDbId()">
 
     #if ( $canviewerrors )
-	<div id="errordiv"></div>
+		<div id="errordiv"></div>
 	#end
-
-
-	<div id="emcontainer">
-		<div id="header" role="banner">
-			$pages.include("/${applicationid}/theme/layouts/header.html")
-			<div id="site-title">$!content.tagline</div>
+	<div id="emcontainer" class="clearfix">
+			$pages.include("${themeprefix}/layouts/header.html")
+		<div id="EMnav" class="emnav">
+		    $pages.include("$apphome/theme/layouts/nav.html")
 		</div>
- 
+	
+	 
 		<div id="emcontent">
+		  <div id="main" class="mainlayoutcontainer">
 		       $pages.includeContent()
-		<div class="clearfix"></div>
-		<div id="footer" role="contentinfo" class="emfooter">
-	    	 $pages.include("/${applicationid}/theme/layouts/footer.html")
+		  </div>
+		  <div class="clearfix"></div>
+			<div id="footer" role="contentinfo" class="emfooter">
+		   	 $pages.include("${themeprefix}/layouts/footer.html")
+		    	## $pages.include("${apphome}/components/uploadqueue/index.html")
+			</div>
 		</div>
 		
-		</div>
- 
 	</div>
 </div>

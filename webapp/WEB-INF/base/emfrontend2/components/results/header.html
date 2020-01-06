@@ -1,6 +1,10 @@
-#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
-#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
-
+#if(!$module)
+	#set( $module = $content.module)
+#end
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+$context.putPageValue("module", $module)
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	$context.putPageValue("hits",$hits)
@@ -8,7 +12,7 @@
 
 #if( !$hits )
 	#set( $hits = $orderassets)
-	$context.putPageValue("hits",$hits)
+	$context.putPageValue("hits", $hits)
 #end
  
 #if($hits)
@@ -20,12 +24,14 @@
 	#if (!$catid && $nodeID)
 		#set( $catid = $nodeID )
 	#end
-	$context.putPageValue("catid",$catid)
+	#if ($catid)
+		$context.putPageValue("catid",$catid)
+	#end
 	#if( $catid && !$category)
 		#set( $category = $mediaarchive.getData("category",$catid) )
 	#end
 	#set( $orderid = $hits.getInput("orderid") )
-	#if( $orderid)
+	#if( $orderid )
 		#set( $order = $mediaarchive.getData("order",$orderid) )
 		$context.putPageValue("order",$order)
 	#end
@@ -33,37 +39,38 @@
 	#if( !$librarycol && $category ) 
 		#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 	#end
-	#if( !$librarycol )
-		#set($collectionid = $context.getRequestParameter("collectionid"))
-		#if($collectionid)
-			#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-		#end
-	#end
-	
+
 	#if( $librarycol )	
 		$context.putPageValue("librarycol",$librarycol)
 	#end
 #end
 
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+
 
 <div id="resultsheader">
 <div id="sub-nav" class="emsubnav">
 	<ul class="resultsnav">
-		#set ($enabled=$hits.getSelectionSize() > 0)
+		#set ($enabled = false)
+		#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
+			#set ($enabled = true)
+		#end
 		#if( $librarycol )
-			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
-			#end
+			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()", $context)				
+		#end
 		<li>
 			<a class="nav-btn lefttoggle" href="#" id="lefttoggle" style="#if ($leftbarstatus!=false) display:none; #end">
-			<span class="openbar "><i class="fas fa-folder-open"></i> [[LOCATIONS]]</a></span>
+			<span class="openbar"><i class="fas fa-folder-open"></i> [[FOLDERS]]</a></span>
 		</li>
-		
+		## #if ( $module=="asset" && $librarycol.getId() )
+		##		<li class="nav-item">
+		##			<a class="nav-link nav-hover" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
+		##		</li>				
+		## #end
 		#if ($resultview != "map")
-		  	
 			$pages.include("$componenthome/results/selected/index.html",$context)
-		
-		
-	
+
 			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
 			  <li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" 
@@ -101,15 +108,16 @@
 			#end
 		
   			#set( $edit = $context.getRequestParameter("editheader") )
-			
-
 		
-			#if ( $canviewbasket )
-				#if($order)
-					<li ><a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a></li>				
-				#end
+			#if ( $cancheckout && $order)
+				<li>
+					<a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
+				</li>				
 			#end
 		#end
+		
+
+			
 		</ul>
 		
 
@@ -121,7 +129,16 @@
 				<span class="openbar"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
 				</a>
 			</li>
-		#set ($resultview = $userprofile.get('resultview'))
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = $content.get("resulview"))
+			#end
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+		
 		
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
@@ -145,7 +162,7 @@
 					</li>	
 				#else 
 					<li >
-						<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						<a class="ajax nav-hover" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 					</li>
 				#end	
 			#end								
@@ -155,12 +172,7 @@
 					<span class="small" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
 			</li>
 		#end		
-		#if(!$resultview)
-			#set($resultview = $userprofile.get("resultview"))
-			#if (!$resultview)
-				#set($resultview = "table")
-			#end
-		#end
+
 		#if(!$edit || $edit == "false"  )
 			<li class="resultsnavtitem">
 				<select class="form-control" name="resultview" id="selectresultview"  
@@ -168,7 +180,7 @@
 					data-searchtype="asset" 
 					data-page="$hits.getPage()" 
 					data-showremoveselections="$showremoveselections" 
-					data-collectionid="$!collectionid">
+					data-collectionid="$!librarycol.getId()">
 				#set( $types = $mediaarchive.getList("resulttype"))
 				#foreach($type in $types)
 					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
@@ -187,10 +199,6 @@
 			#end
 			#end
 		#end	
-
-
-		
-		##Filters
 
 		
 	</ul>

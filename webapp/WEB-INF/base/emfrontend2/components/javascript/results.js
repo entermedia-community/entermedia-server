@@ -3,7 +3,6 @@ $(document).ready(function(url,params)
 	var appdiv = $('#application');
 	var home = appdiv.data('home') + appdiv.data('apphome');
 	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
-	
 
 	var refreshdiv = function(url,params)
 	{
@@ -45,7 +44,7 @@ $(document).ready(function(url,params)
 						 
 			$.get(href, args, function(data) 
 			{
-				$("#emresultscontainer").html(data);
+				$("#emresultscontent").html(data);
 				$(window).trigger( "resize" );
 			});
 		});
@@ -74,23 +73,6 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
-	
-	
-		
-	lQuery("input.selectionbox").livequery("change", function(e) 
-	{
-		var dataid = $(this).data('dataid');
-		var data = $('#resultsdiv').data();
-		
-		data['dataid'] = dataid;
-		
-		refreshdiv( componenthome + "/results/toggle.html", data);
-		if(typeof(refreshSelections) != 'undefined'){
-			refreshSelections();
-		}
-		jQuery('.assetproperties').trigger('click');
-	});
-	
 	lQuery("a.selectpage").livequery( 'click', function() 
 	{
 		jQuery('input[name=pagetoggle]').prop('checked',true);
@@ -103,41 +85,6 @@ $(document).ready(function(url,params)
 	//    $("#select-dropdown-open").click();
 	
 	});
-		//Uses ajax
-	lQuery("a.deselectpage").livequery( 'click', function() 
-	{
-		jQuery('input[name=pagetoggle]').prop('checked',false);
-		jQuery('.selectionbox').prop('checked',false); //Not firing the page
-	//	$("#select-dropdown-open").click();
-		if(typeof(refreshSelections) != 'undefined'){
-			refreshSelections();
-		}
-	
-	});
-	
-	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
-	{
-		  var home = $('#application').data('home');
-		  var apphome = $('#application').data('apphome');
-		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
-		   var options = $('#resultsdiv').data();
-		   options.oemaxlevel = 1;
-		   
-		   var status = $('input[name=pagetoggle]').is(':checked');
-		   if(status)
-		   {
-			   options.action = "page";
-			   refreshdiv( componenthome + "/results/togglepage.html", options);
-			   $('.selectionbox').prop('checked', true);
-	       }
-	       else
-	       {
-	       	   options.action = "pagenone";
-	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
-	   	       $('.selectionbox').prop('checked', false);  
-	   	   }
-	});
-	
 	
 	lQuery(".gallery-checkbox input").livequery( 'click', function() 
 	{
@@ -172,15 +119,30 @@ $(document).ready(function(url,params)
 			{
 			    form.trigger("submit");
 			});
-			
+			$('select',form).on("select2:unselect", function() 
+			{
+				$("#filtersremoveterm", form).val($(this).data("searchfield"));
+				form.trigger("submit");
+			});
 			$('input[type=checkbox]',form).change( function() 
+			{
+			    if($(this).hasClass("filtercheck")) {
+			    	var fieldname = $(this).data("fieldname");
+			    	
+			    	var boxes = $('.filtercheck' + fieldname + ':checkbox:checked');
+			    	if(boxes.length == 0){
+						if($("#filtersremoveterm").length) {
+							$("#filtersremoveterm").val(fieldname);
+						}
+			    	}
+			    	
+			    }
+				form.trigger("submit");
+			});
+			$('input[type=radio]',form).change( function() 
 			{
 			    form.trigger("submit");
 			});
-			$('input[type=radio]',form).change( function() 
-					{
-					    form.trigger("submit");
-					});
 	
 			$('input[type=text]',form).change( function() 
 			{
@@ -195,6 +157,21 @@ $(document).ready(function(url,params)
 				
 	});
 	
+	$(".autosubmitform").on('submit', function() 
+			{
+				var form = $(this);
+				//Remove required from Filters Form
+				if (form.hasClass('filterform')) {
+					$('.required', form).each(function() {
+						$(this).removeClass('required');
+					});
+				}
+				if(form.valid()) {
+						return true;
+					}
+				return false;
+			});
+	
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
@@ -203,14 +180,16 @@ $(document).ready(function(url,params)
 		var overlay = $("#hiddenoverlay");
 		overlay.height(wheight);
 		overlay.width(avwidth);
+		var w = parseInt(img.data("width"));
+		var h = parseInt(img.data("height"));
 		
 		$("#hiddenoverlay .playerarea").width(avwidth);
-		var w = img.data("width");
+		
 		var avheight = $(window).height() - 40;
 		if(!isNaN(w) && w != "")
 		{
 			w = parseInt(w);
-			var h = parseInt(img.data("height"));	
+				
 			var newh = Math.floor( avwidth * h / w );
 			var neww = Math.max(avwidth, Math.floor( avwidth * w / h ));
 			img.width(avwidth);
@@ -246,10 +225,12 @@ $(document).ready(function(url,params)
 		}
 		else
 		{
+			/*
 			img.width(avwidth);
 			//img.css("height", "auto");
 			img.css("height", avheight);
 			img.css("margin-top","0px");
+			*/
 		}
 	}
 	$(window).resize(function(){
@@ -297,12 +278,17 @@ $(document).ready(function(url,params)
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
-		var reloadonclose =  $(inOverlay).data('reloadonclose');
+		
+		var reloadonclose =  $('#resultsdiv').data('reloadresults');
 		if (reloadonclose == undefined) {
-			reloadonclose = true;
+			reloadonclose = false;
 		}
 		if (reloadonclose) {
-                 refreshresults();
+             refreshresults();
+		}
+		else
+		{
+			gridResize();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
 		//remove Asset #hash
@@ -322,7 +308,7 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
-
+		if (assetid) {
 		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
@@ -372,12 +358,12 @@ $(document).ready(function(url,params)
 			container.replaceWith(data);
 			var div = $("#main-media-viewer");
 			var id = div.data("previous");
-			if (typeof id != 'undefined') {
+			if (typeof id != 'undefined'  && id != '') {
 				enable(id,".goleftclick");
 				enable(id,"#leftpage");
 			}
 			id = div.data("next");
-			if (typeof id != 'undefined') {
+			if (typeof id != 'undefined' && id != '') {
 				enable(id,".gorightclick");
 				enable(id,"#rightpage");
 			}
@@ -387,6 +373,7 @@ $(document).ready(function(url,params)
 			
 			if( assetid.indexOf("multiedit:") > -1 )
 			{
+				/*
 				var link = $("#main-media-viewer").data("multieeditlink");
 				var mainmedia2 = $("#main-media-viewer");
 			
@@ -395,43 +382,25 @@ $(document).ready(function(url,params)
 				{
 					$(window).trigger("tabready");
 				});
+				*/
 			}
 			else
 			{
-				$("#gallery-" + assetid).addClass("active-asset");
-				$(window).trigger("tabready");
+				var escape = assetid.replace(/\//g, "\\/");
+				$("#gallery-" + escape).addClass("active-asset");
 			}
+			$(window).trigger("tabready");
+			
 			
 		});
 		$(document).trigger("domchanged");
+	  }
 	}
 	initKeyBindings = function(hidden)
 	{
-		//Do we need keyup at all?
-		/*
-		$(document).keyup(function(e) 
-		{
-			if( !hidden.is(":visible") )
-			{
-				return;
-			}
-			switch(e.which) {
-		        case 27: // esc
-		        	if ($('#modals').hasClass('show')) {
-		        		//Close modal only
-		        		$('#modals').modal('hide');
-		        		e.stopPropagation();
-		        	}
-		        	else{
-		        		hideOverlayDiv(getOverlay());
-		        	}
-		        break;
-			    
-			    default: return; 
-		     }
-		});*/	
 		$(document).keydown(function(e) {
-			if( !hidden.is(":visible") )
+			
+			if( hidden && !hidden.is(":visible") )
 			{
 				return;
 			}
@@ -503,16 +472,21 @@ $(document).ready(function(url,params)
 		
     }
     
-    refreshresults = function() {
-        var href = home+'/views/modules/asset/index.html';
-        var searchdata = $("#resultsdiv").data();
-        searchdata.oemaxlevel = 1;
-        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
-            $('#searchlayout').html(data);
-            $(window).trigger( "resize" );
-        }
-        });
 
+    refreshresults = function() {
+		var resultsdiv = $("#resultsdiv");
+		if (resultsdiv.length) 
+		{
+	        var href = home+'/views/search/index.html';
+	        var searchdata = resultsdiv.data();
+	        searchdata.oemaxlevel = 1;
+			searchdata.cache = false;
+	        $.ajax({ url:href, async: false, data: searchdata, success: function(data) {
+	            $('#filteredresults').html(data);
+	            $(window).trigger( "resize" );
+	        }
+	        });
+		}
     }
 	
 	lQuery('#jumptoform .jumpto-left').livequery('click',function(e)
@@ -632,7 +606,7 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
-	lQuery('.stackedplayertable tr td' ).livequery(
+	lQuery('.stackedplayertableX tr td' ).livequery(
 	function()
 	{
 		$(this).hover(
@@ -651,9 +625,64 @@ $(document).ready(function(url,params)
 			}
 		);
 	});
-		
 	
-	lQuery('table.stackedplayertable td').livequery('click',function(e)
+	//Select multiple assets with Shift+Mouse
+	var isMouseDown = false;
+  	var currentCol;
+  	lQuery('.stackedplayertable td').livequery('mousedown',function(e) {
+      isMouseDown = true;
+	  if (e.shiftKey) {
+		  var row = $(this).closest("tr");
+	      currentCol = row.data("rowid");
+		  if (currentCol) {
+		    //row.toggleClass("emrowselected");
+		    var isHighlighted = row.hasClass("emrowselected");
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+	  }
+      return false; //Prevent text selection
+    });
+
+	lQuery('.stackedplayertable td').livequery('mouseover',function(e) {
+      if (isMouseDown && e.shiftKey) {  //Mouse + Shift Key
+		  var row = $(this).closest("tr");
+		  var currentColDown = row.data("rowid");
+		  var isHighlighted = row.hasClass("emrowselected");
+	      if (currentColDown && !isHighlighted) {
+          	//row.toggleClass("emrowselected", isHighlighted);
+			var chkbox = row.find(".selectionbox");
+			$(chkbox).prop( "checked", true );
+			$(chkbox).trigger("change");
+		  }
+      }
+    })
+	
+	//    .bind("selectstart", function () {
+	//      return false;
+	//    })
+
+   $(window)
+    .mouseup(function () {
+      isMouseDown = false;
+    });
+
+	//Select multiple assets with CTRL key	
+	var ctrlPressed = false;
+	$(window).keydown(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = true;
+		  }
+		}).keyup(function(evt) {
+		  if (evt.which == 17) { // ctrl
+		    ctrlPressed = false;
+		  }
+	});
+
+	//Click on asset
+	var selectStart = null;
+	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
@@ -663,7 +692,48 @@ $(document).ready(function(url,params)
 		{
 			return true;
 		}
-		
+		//click+ctrl
+		if (ctrlPressed) {
+		    var chkbox = clicked.closest("tr").find(".selectionbox");
+			if (chkbox) {
+				var ischecked = $(chkbox).prop("checked");
+				if (!ischecked || ischecked == "true") {
+					$(chkbox).prop( "checked", true );	
+				} 
+				else {
+					$(chkbox).prop( "checked", false );
+				}
+				$(chkbox).trigger("change");				
+			}
+			return false;
+		} 
+		//click+shift
+		if (e.shiftKey){
+			if (selectStart == null) {
+				selectStart = $(clicked).closest("tr");
+			}
+			else {
+				var selectEnd = $(clicked).closest("tr");
+				if(selectStart) {
+					$(selectStart).nextUntil($(selectEnd)).each(function() {
+						var chkbox = $(this).find(".selectionbox");
+						if (chkbox) {
+							var ischecked = $(chkbox).prop("checked");
+							if (!ischecked || ischecked == "true") {
+								$(chkbox).prop( "checked", true );	
+							} 
+							else {
+								$(chkbox).prop( "checked", false );
+							}
+							$(chkbox).trigger("change");
+						}
+					});
+					selectStart = null;
+					selectEnd = null;
+				}
+			}
+			return false;
+		}
 		e.preventDefault();
 		e.stopPropagation()
 		
@@ -671,6 +741,64 @@ $(document).ready(function(url,params)
 		var assetid = row.data("rowid");
 		
 		showAsset(assetid);
+	});
+	
+	
+	lQuery(".resultsassetselection input.selectionbox").livequery("change", function(e) 
+	{
+		var clicked = $(this);
+		var dataid = $(clicked).data('dataid');
+		var data = $('#resultsdiv').data();
+		
+		data['dataid'] = dataid;
+		
+		refreshdiv( componenthome + "/results/toggle.html", data);
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
+		var ischecked = $(clicked).prop("checked");
+		if (ischecked == true) {
+			$(clicked).closest(".resultsassetcontainer").addClass("emrowselected");
+		}
+		else {
+			$(clicked).closest(".resultsassetcontainer").removeClass("emrowselected");
+		}
+		
+		$('.assetproperties').trigger('click');
+	});
+	
+	lQuery("a.deselectpage").livequery( 'click', function() 
+	{
+		$('input[name=pagetoggle]').prop('checked',false);
+		$('.selectionbox').prop('checked',false); //Not firing the page
+		$('.selectionbox').closest("tr").removeClass("emrowselected");
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
+	
+	});
+	
+	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
+	{
+		  var home = $('#application').data('home');
+		  var apphome = $('#application').data('apphome');
+		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		   var options = $('#resultsdiv').data();
+		   options.oemaxlevel = 1;
+		   
+		   var status = $('input[name=pagetoggle]').is(':checked');
+		   if(status)
+		   {
+			   options.action = "page";
+			   refreshdiv( componenthome + "/results/togglepage.html", options);
+			   $('.selectionbox').prop('checked', true);
+	       }
+	       else
+	       {
+	       	   options.action = "pagenone";
+	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
+	   	       $('.selectionbox').prop('checked', false);  
+	   	   }
 	});
 	
 	lQuery('.showasset').livequery('click',function(e)
@@ -682,16 +810,16 @@ $(document).ready(function(url,params)
 		
 		e.preventDefault();
 		e.stopPropagation()
-		
+	
 		var assetid = clicked.data("assetid");
-		
 		showAsset(assetid);
 	});
 
 	lQuery('a#multiedit-menu').livequery('click',function(e)
 	{
 		e.preventDefault();
-		showAsset("multiedit:dialoghitsassetassets/catalog",1);
+		var catalogid = $("#application").data("catalogid");
+		showAsset("multiedit:hitsasset"+catalogid,1);
 		return false;
 	});
 	
@@ -712,22 +840,6 @@ $(document).ready(function(url,params)
 				
 			});
 	
-	document.addEventListener('touchmove', function(e) 
-	{
-		//console.log("touchmove event");
-		checkScroll();
-	});
-	
-	$(window).on('scroll',function(e) 
-	{
-		//console.log("scroll event *");
-		checkScroll();
-	});
-	$(document).on('domchanged',function() 
-	{
-		checkScroll();
-	});
-	//END Gallery stuff
 	
 	lQuery('select.addremovecolumns').livequery("change",function()
 	{
@@ -750,27 +862,43 @@ $(document).ready(function(url,params)
 			var searchhome = resultsdiv.data('searchhome');
 			var sessionid = resultsdiv.data("hitssessionid");
 			var searchtype = resultsdiv.data("searchtype");
+			var viewid = resultsdiv.data("viewid");
             
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
                 } else {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
             }
         }
     );
+
+	document.addEventListener('touchmove', function(e) 
+	{
+		//console.log("touchmove event");
+		checkScroll();
+	});
 	
+	$(window).on('scroll',function(e) 
+	{
+		//console.log("scroll event *");
+		checkScroll();
+	});
+
+	$(document).on('domchanged',function() 
+	{
+		gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+	});
 	$(window).on('resize',function(){
 		gridResize();
 	});
 	
 	gridResize();
-    
     window.addEventListener('load', 
 	  function() { 
 	    	gridResize();
@@ -856,17 +984,26 @@ checkScroll = function()
 		  return;
 		}
 		 
-		   stopautoscroll = true; 
-		   var session = resultsdiv.data("hitssessionid");
-		   page = page + 1;
-		   resultsdiv.data("pagenum",page);
-		   var appdiv = $('#application');
-		   var home = $('#application').data('home') + $('#application').data('apphome');
-		   var componenthome = appdiv.data('componenthome');
-
-		   console.log("Loading page: #" + page +" - " + home);
+	   stopautoscroll = true; 
+	   var session = resultsdiv.data("hitssessionid");
+	   page = page + 1;
+	   resultsdiv.data("pagenum",page);
+	   var appdiv = $('#application');
+	   var home = $('#application').data('home') + $('#application').data('apphome');
+	   var componenthome = appdiv.data('componenthome');
+	   var link = componenthome + "/results/stackedgallery.html";
+	   var collectionid = $('#resultsdiv').data("collectionid");
+	   var params = {
+		"hitssessionid":session,
+		"page":page,
+		"oemaxlevel":"1"
+		};
+		if (collectionid) {
+			params.collectionid = collectionid;
+		}
+	   console.log("Loading page: #" + page +" - " + link);
 		   
-		   var link = componenthome + "/results/stackedgallery.html";
+		   
 	//			   	async: false,
 
 		   $.ajax({
@@ -875,7 +1012,7 @@ checkScroll = function()
 			      withCredentials: true
 			   	},
 			   	cache: false,
-			   	data: {hitssessionid:session,page:page,oemaxlevel:"1"},
+			   	data: params,
 				success: function(data) 
 			   	{
 				   var jdata = $(data);
@@ -912,28 +1049,19 @@ gridResize = function()
 		fixedheight = 200;
 	}
 	fixedheight = parseInt(fixedheight);
-	var cellpadding = grid.data("cellpadding");
-	if( cellpadding == null)
-	{
-		cellpadding = 8;  //this has to be twice what is in results.css
-	}
-	cellpadding = parseInt(cellpadding);
 	
 	var totalwidth = 0;
 	var rownum = 0;
-
 	var totalavailablew = grid.width();
 	
 	//Two loops, one to make rows and one to render cells
 	var sofarusedw = 0;
 	var sofarusedh = 0;
 	
-	var row = [];
+	var row = new Array();
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		cell.css("margin",cellpadding/2 + "px");
-		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");
 		w = parseInt(w);
@@ -943,35 +1071,31 @@ gridResize = function()
 			w = fixedheight;
 			h = fixedheight;
 		}
-		var a = w / h;  
+		var a = (w) / (h);  
 		cell.data( "aspect",a);
-		//console.log("Aspect" + cell.data("aspect"));
-		var neww = Math.floor( fixedheight * a );
+		var neww = a * fixedheight;
+		cell.data("targetw",Math.ceil(neww));
 		var isover = sofarusedw + neww;
-		if( isover > totalavailablew )
+		if( isover > totalavailablew )  //Just to make a row
 		{
 			//Process previously added cell
-			computeRow(row,fixedheight,totalavailablew,sofarusedw,cellpadding);
-			row = [];
+			trimRowToFit(fixedheight,row,totalavailablew);
+			row = new Array();
 			sofarusedw = 0;
 			rownum = rownum + 1;
 		}
-		sofarusedw = sofarusedw + neww;// + cellpadding;
+		sofarusedw = sofarusedw + neww;
 		row.push( cell );		
 		cell.data( "rownum",rownum);
 	});
-	$.each( row, function()
-			{
-				var div = this;
-				var a = div.data("aspect");
-				div.css("line-height",fixedheight + "px"); 
-				div.height(fixedheight);
-				$("img.imagethumb",div).height(fixedheight);
-				var neww = fixedheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));
-	});
 	
-	//console.log("Resized grid");
+	if (row.length>1) {
+		trimRowToFit(fixedheight,row,totalavailablew);
+	}
+	
+	resizecolumns();
+
+	
 	checkScroll();
 	
 }
@@ -981,22 +1105,50 @@ A = W / H
 H = W / A
 W = A * H
 */
-computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
+trimRowToFit = function(targetheight,row,totalavailablew)
 {
-			var growthratiow = (totalavailablew - sofarusedw) / sofarusedw;
-			$.each( row, function()
-			{
-				var div = this;
-				var a = div.data("aspect");
-				var oldw = a * fixedheight;
-				var ratiow = oldw + (oldw * growthratiow); //Here is the magic
-				var newheight = Math.floor(ratiow / a); //There cells should all be the same height
-				div.css("line-height",newheight + "px"); 
-				div.height(newheight);
-				$("img.imagethumb",div).height(newheight);
-				var neww = newheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));  //The 1 is for rounding errors
-			});
+
+	var totalwidthused = 0;
+	$.each( row, function()
+	{
+		var div = this;
+		var usedw = div.data("targetw");
+		totalwidthused = totalwidthused + usedw ;
+	});
+    var existingaspect = targetheight / totalwidthused; //Existing aspec ratio
+	var overwidth = totalwidthused - totalavailablew;
+	var changeheight = existingaspect * overwidth;
+	var fixedheight = targetheight - changeheight;
+	
+	//The overwidth may not be able to be divided out evenly depending on number of 
+	var totalwused = 0;
+	$.each( row, function()
+	{
+		var div = this;
+		div.css("line-height",fixedheight + "px"); 
+		div.css("height",fixedheight + "px");
+		$("img.imagethumb",div).height(fixedheight);
+		
+		var a = div.data("aspect");
+		var neww = (fixedheight) * a ;
+		
+		neww = Math.round(neww);//make sure we dont round too high across lots of widths
+		div.css("width",neww + "px");
+		
+		totalwused = totalwused + neww;		
+	});
+	
+	if( totalwused != totalavailablew ) //Deal with fraction of a pixel
+	{
+		//We have a fraction of a pixel to add to last item
+		var toadd = totalavailablew - totalwused;
+		var div = row[row.length-1];
+		var w = div.width();
+		w = w + toadd;
+		div.css("width",w + "px");
+	}
+	
+			
 }
 	
 
@@ -1018,6 +1170,9 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		$(this).closest(".bottomtab").addClass("tabselected");
 		var div = $("#main-media-viewer");
 		var options = div.data();
+		
+		options.pageheight =  $(window).height() - 100;
+
 		var assettab = $(this).data("assettab");
 		
 		
@@ -1026,12 +1181,6 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		{
 				options.collectionid = collectionid;
 		}
-		
-		
-		
-		
-		
-		
 		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
@@ -1042,6 +1191,9 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
+			    //Update AssetID
+			    var assetid = $("#multieditpanel").data("assetid");
+			    $("#main-media-viewer").data("assetid",assetid);
 				$(window).trigger("tabready");
 			});
 		}
@@ -1052,6 +1204,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			{
 				$(window).trigger("tabready");
 			});
+			
 			saveProfileProperty("assetopentab",assettab,function(){});
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
@@ -1074,8 +1227,3 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		}
 		
 	});
-	
-	
-	
-	
-	

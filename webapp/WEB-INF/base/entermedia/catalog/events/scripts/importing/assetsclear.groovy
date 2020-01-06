@@ -2,7 +2,6 @@ package importing
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.scanner.HotFolderManager
 import org.entermediadb.asset.search.AssetSearcher
 import org.entermediadb.asset.sources.AssetSourceManager
 import org.openedit.Data

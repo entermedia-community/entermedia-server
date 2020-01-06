@@ -10,6 +10,7 @@
  "id": "${hit.id}",
  "sourcepath": "${hit.sourcepath}",
  "annotated":false,
+ "assettype":"${hit.assettype}",
  "name": "${hit.name}"
  } 
 #end

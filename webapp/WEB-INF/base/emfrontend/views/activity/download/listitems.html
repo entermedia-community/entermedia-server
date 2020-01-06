@@ -1,4 +1,36 @@
 <div >
+	#set( $downloadall = false)
+	
+	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
+
+#foreach( $item in $orderitems )
+	#set( $publishqueueid = $item.get("publishqueueid"))
+	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
+
+	#if( $publishqueue.publishdestination == "0" || $publishqueue.publishdestination == "pushhttp")   ##download with the browser
+	
+		#if( $order.orderstatus == "error" )
+			#set( $downloadall = false)
+		#else	
+			#set( $presetid = $publishqueue.get("presetid") )
+			#if( $presetid == "0")
+					#set( $downloadall = true)
+			#else
+					#set( $downloadall = true)
+			#end
+		#end	
+	#elseif( $publishqueue.publishdestination == "1" )
+			#if( $destination.publishtype == "aspera")
+			#if( $item.status == "complete" || $item.status == "delivered" )
+				#set( $downloadall = true)
+			#end
+		#end	
+	#end	
+#end
+	#if($downloadall )
+		<div style="float:right; margin:20px 40px;"> <a class="btn" style="margin-right:10px;" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a></div>
+	#end	
+
 	<table id="shared-asset-table" class="striped download-table" >
 
 #set( $downloadall = false)
@@ -111,6 +143,7 @@
 	
 </table>
 #if($downloadall )
-	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><br/><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a></div>
+		<div style="float:right; margin:20px 40px;"> <a class="btn" style="margin-right:10px;" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a></div>
 #end	
+
 </div>

@@ -1,0 +1,97 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title> EM Share</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=10">
+  <meta name="keywords" content=""/>
+  <meta name="description" content=""/>
+  <meta http-equiv="imagetoolbar" CONTENT="no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  
+  <meta name="MSSmartTagsPreventParsing" content="TRUE" />  
+  <meta name="robots" content="noindex">
+
+   	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery-3.3.1.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/liveajax/liveajax.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery.validation/jquery.validate.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/bootstrap.bundle.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/popper.min.js">  </script>
+	
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />
+    
+<script>
+jQuery(document).ready(function() 
+{ 
+//var mediadburl = "http://localhost:8080/site/mediadb"
+var mediadburl = "https://openinstitute.org/site/mediadb"
+var entermediakey = "apiusermd5420e30b30f809e600873d0f29690f309b170eb0db0e6";
+
+var collectionid = getUrlParameter("collectionid");
+	console.log("request data");
+	jQuery.ajax({
+		type: "POST",
+		url: mediadburl + "/services/module/librarycollection/viewassets.json?id=" + collectionid,
+		async: false,
+		data: JSON.stringify( {
+                'entermedia.key': entermediakey
+              }),
+        contentType: "text/plain" ,      
+		error: function(data, status, err) {
+			console.log('from error:', data);
+		},
+		success: function(data) {
+			console.log("Got data back",data);
+			var imgurl = mediadburl + "/services/module/asset/downloads/preset/";			
+
+			$.each(data, function(index, asset) 
+			{			
+				$("#stuff").append('<div class="media">');
+				if( asset.assettype == "video")
+				{
+					$("#stuff").append('<iframe src="' + mediadburl + '/services/module/asset/players/play/' + asset.id + '.html" width="550" height="400" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true"></iframe>');
+				}
+				else
+				{
+					var url = imgurl + asset.sourcepath + "/image730x480cropped.jpg";
+				
+					$("#stuff").append('<img class="d-flex mr-3" src="' + url + '">    <div class="media-body"><p class="card-text">' + asset.name + '</p></div>');				
+				}
+				$("#stuff").append('</div><hr/>');
+			});
+				
+			$(window).trigger( "resize" );
+			
+		},
+		failure: function(errMsg) {
+			alert(errMsg);
+		}
+	});
+});
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+</script>
+
+</head>
+<body>
+
+<div class="container" id="stuff" >
+
+</div>
+
+</body>
+</html>

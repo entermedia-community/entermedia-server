@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -24,6 +26,7 @@ import org.entermediadb.asset.Category;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
@@ -49,7 +52,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 		}
 		return fieldFileUtils;
 	}
-
+	public boolean isHotFolder()
+	{
+		return true;
+	}
 	public void setFileUtils(FileUtils inFileUtils)
 	{
 		fieldFileUtils = inFileUtils;
@@ -98,12 +104,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 		
 		cmd.add("s3://" + getBucket() + "/" + awskey );
 		cmd.add(file.getAbsolutePath());
+		
 		ExecResult res = getExec().runExec("aws", cmd,true);
 		if( !res.isRunOk() )
 		{
 			
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
 		}
+		
 		//How do we set the timestamp? From the asset?
 		return file;
 	}
@@ -257,7 +265,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	@Override
+	public void refresh( ) 
+	{
+		MultiValued currentConfig = (MultiValued) getMediaArchive().getData("hotfolder", getConfig().getId());
+		setConfig(currentConfig);
+	}
+	
 	@Override
 	public void saveConfig()
 	{
@@ -301,6 +316,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public int importAssets(String inBasepath)
 	{
+		refresh();
+		saveConfig();
+		
 		List cmd = new ArrayList();
 		//aws s3 cp file.txt s3://
 		cmd.add("s3api");
@@ -317,18 +335,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add(getBucket());
 		//2017-08-03T23
 		String since = getConfig().get("lastscanstart");
+		Date sinceDate = null; 
 		if( since != null)
 		{
-			cmd.add("--query");
-			//2013-09-17T00:55:03.000Z //Amazon
-			//"yyyy-MM-dd'T'HH:mm:ssZ"  https://developers.google.com/gmail/markup/reference/datetime-formatting
-			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(since);//, "yyyy-MM-dd'T'HH:mm:ssZ");
-			
-			SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-			since = dateFormatGmt.format(date);
-			
-			cmd.add("Contents[?LastModified > '" + since + "']");
+			sinceDate = DateStorageUtil.getStorageUtil().parseFromStorage(since);//, "yyyy-MM-dd'T'HH:mm:ssZ");
 		}
 		Date started = new Date();
 		
@@ -340,6 +350,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 		String out = res.getStandardOut();
 		if( out.startsWith("[]"))	
 		{
+
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());
 			return 0;
@@ -353,24 +364,23 @@ public class S3CmdAssetSource extends BaseAssetSource
 			//log.info(out);
 			Object parsed = new JSONParser().parse(out);
 			/*
-			 
-			 "NextToken": "eyJNYXJrZXIiOiAiMTgwMjA4L0NhcHR1cmUvMTgwMjA4XzAwNDIuTkVGIn0=", 
-    "Contents": [
-        {
-            "LastModified": "2018-07-24T15:02:14.000Z", 
-            "ETag": "\"3fa04f8eb0bb5852d0d24f6b6eb206b2\"", 
-            "StorageClass": "STANDARD", 
-            "Key": "180208/180208.cosessiondb", 
-            "Owner": {
-                "DisplayName": "cory", 
-                "ID": "515e06f26dc591bc438c596a2618c7f9028137adf01423b285610d59a09b18db"
-            }, 
-            "Size": 2486272
-        }, 
+			 	"NextToken": "eyJNYXJrZXIiOiAiMTgwMjA4L0NhcHR1cmUvMTgwMjA4XzAwNDIuTkVGIn0=", 
+			    "Contents": [
+			        {
+			            "LastModified": "2018-07-24T15:02:14.000Z", 
+			            "ETag": "\"3fa04f8eb0bb5852d0d24f6b6eb206b2\"", 
+			            "StorageClass": "STANDARD", 
+			            "Key": "180208/180208.cosessiondb", 
+			            "Owner": {
+			                "DisplayName": "cory", 
+			                "ID": "515e06f26dc591bc438c596a2618c7f9028137adf01423b285610d59a09b18db"
+			            }, 
+			            "Size": 2486272
+			        }, 
 			 */
 			//save assets
-			ImportResult result = saveParsedAssets(parsed);
-			int counted = result.count + importPagesOfAssets(result.token);
+			ImportResult result = saveParsedAssets(parsed, sinceDate);
+			int counted = result.count + importPagesOfAssets(result.token, sinceDate);
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());
 			
@@ -390,7 +400,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 		int count;
 	}
 	
-	protected ImportResult saveParsedAssets(Object inParsed)
+	protected ImportResult saveParsedAssets(Object inParsed, Date sinceDate)
 	{
 		ImportResult result = new ImportResult();
 		
@@ -405,12 +415,15 @@ public class S3CmdAssetSource extends BaseAssetSource
 		{
 			assets = (Collection)inParsed; //One result
 		}
-		result.count = importAssets(assets);
+		if (assets != null) 
+		{
+			result.count = importAssets(assets, sinceDate);
+		}
 
 		return result;
 	}
 
-	protected int importPagesOfAssets(String token) throws ParseException
+	protected int importPagesOfAssets(String token, Date sinceDate) throws ParseException
 	{
 		int counted = 0;
 		while( token != null)
@@ -439,16 +452,16 @@ public class S3CmdAssetSource extends BaseAssetSource
 			}
 			String out2 = res2.getStandardOut();
 			JSONObject parsed2 = (JSONObject)new JSONParser().parse(out2);
-			ImportResult result = saveParsedAssets(parsed2);
+			ImportResult result = saveParsedAssets(parsed2, sinceDate);
 			token = result.token;
 			counted = counted + result.count;
 		}
 		return counted;
 	}
 
-	protected int importAssets(Collection inAssets)
+	protected int importAssets(Collection inAssets, Date sinceDate)
 	{
-		log.info("Importing " + inAssets.size() + " assets");
+		
 		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
 		List tosave = new ArrayList(inAssets.size());
 		
@@ -457,8 +470,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
 			Map json = (Map) iterator.next();
+			String lastmod = (String)json.get("LastModified");
+			Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ss");
+			if (sinceDate != null && edited.before(sinceDate))
+			{
+				continue;
+			}
 			/*
-			     "LastModified": "2018-07-24T15:02:14.000Z", 
+			"LastModified": "2018-07-24T15:02:14.000Z", 
             "ETag": "\"3fa04f8eb0bb5852d0d24f6b6eb206b2\"", 
             "StorageClass": "STANDARD", 
             "Key": "180208/180208.cosessiondb", 
@@ -495,8 +514,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 					}
 				}
 				asset.setValue("filesize",newsize);
-				String lastmod = (String)json.get("LastModified");
-				Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ssZ");
+				
 				asset.setValue("assetmodificationdate", edited);
 				asset.setValue("assetaddeddate", new Date());
 				
@@ -516,8 +534,13 @@ public class S3CmdAssetSource extends BaseAssetSource
 				
 				tosave.add(asset);
 		}
-		assetsearcher.saveAllData(tosave, null);
-		getMediaArchive().firePathEvent("importing/assetscreated",null,tosave);
+		
+		if (!tosave.isEmpty()) 
+		{
+			assetsearcher.saveAllData(tosave, null);
+			getMediaArchive().firePathEvent("importing/assetscreated",null,tosave);
+			log.info("Imported " + tosave.size() + " assets");
+		}
 		return tosave.size();
 		
 	}

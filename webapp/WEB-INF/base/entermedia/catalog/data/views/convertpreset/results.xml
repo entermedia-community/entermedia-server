@@ -2,6 +2,7 @@
 	<property id="name" />
 	<property id="type" />
 	<property id="generatedoutputfile" />
+	<property id="systemdefinedpreset" />
 	<property id="onimport" />
 		<property id="inputtype"/>
 	

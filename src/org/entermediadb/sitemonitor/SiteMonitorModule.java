@@ -15,15 +15,15 @@ public class SiteMonitorModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		DiskManager diskManager = (DiskManager)getModuleManager().getBean(catalogid,"diskManager");
-		StatManager statManager = (StatManager)getModuleManager().getBean(catalogid,"statManager");
+//		StatManager statManager = (StatManager)getModuleManager().getBean(catalogid,"statManager");
 		MediaArchive archive = getMediaArchive(inReq);
 
 		List<DiskPartition> partitions = diskManager.getPartitionsStats(archive);
 		inReq.putPageValue("partitions", partitions);
 
-		List<Stat> stats = statManager.getStats(archive);
+/*		List<Stat> stats = statManager.getStats(archive);
 		inReq.putPageValue("stats", stats);
-		
+*/		
 		Random rnd = new Random();
 		Long random = Math.abs(System.currentTimeMillis() - rnd.nextLong());
 		inReq.putPageValue("random", random.toString());

@@ -147,9 +147,9 @@ writer.writeNext(headers);
 		}
 		catch( Throwable ex)
 		{
-			log.error("Could not process row " + rowcount, ex );
+			log.error("Could not process row " + rowcount);
 			writer.flush();
-			output.write("Could not process row " + rowcount + " " + ex );
+			//output.write("Could not process row " + rowcount + " " + ex );
 			//output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );
 			writer.flush();
 		}

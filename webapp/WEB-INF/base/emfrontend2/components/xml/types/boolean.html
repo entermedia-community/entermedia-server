@@ -1,0 +1,3 @@
+<div class="form-check">
+<input name="${detail.getId()}.value" class="form-check-input #if($detail.isRequired() && !$multiedit) required #end"  id="${detail.getId()}.value" #if( "true" == $val ) checked #end size="8" type="checkbox" onChange="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" value="true" />								
+</div>

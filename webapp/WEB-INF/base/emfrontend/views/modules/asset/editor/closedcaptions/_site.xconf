@@ -3,7 +3,7 @@
 	<property name="clientroot">/${applicationid}/views/modules/asset/editor/closedcaptions</property>
 	<property name="hidepreview">true</property>
 	<property name="fullwidth">true</property>
-	<path-action name="MediaArchiveModule.getAsset"  />
+	
 	<path-action name="TimelineModule.loadCaptionEditor" />
 	<style id="closedcaptionplayercss" href="/${applicationid}/theme/styles/timeline/timeslider.css" />
 	<style id="videoplayer-css" href="/${applicationid}/theme/styles/timeline/timeline.css" />

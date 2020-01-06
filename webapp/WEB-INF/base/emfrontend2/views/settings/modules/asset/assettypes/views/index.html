@@ -4,10 +4,11 @@
 	#set($typesearcher = $searcherManager.getSearcher("$catalogid", "assettype"))
 	#set($type = $typesearcher.searchById($assettype))
 
-	<div class="ui-widget emdetaileditorbox commentbox no-top-margin">
-	<div class="ui-widget-header"><span class="widget-header-title">[[Properties]]</span>
-	</div>	
-	<div class="ui-widget-content" id="editlayout">
+	<ul class="emsettingslist">
+		<li class="header no-sort" id="views-header" >
+	    	<span id="name">[[Properties]]</span>
+	    </li>
+	<li id="editlayout" class="singlecontainer" style="height: auto; padding-bottom:10px;">
 
 		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/modules/asset/assettypes/views/modifytype.html">
 			<input type="hidden" name="assettype" value="$type.id"/>
@@ -21,14 +22,13 @@
 			$context.putPageValue("details", $details)
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
-			<a class="btn btn-sm btn-primary" style="margin-right: 10px;" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
+			<a class="btn btn-sm btn-primary" style="margin: 10px;" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
 #if( $type )
 <a class="btn btn-sm btn-danger red" onclick="return confirm('[[Are you sure you want to delete]] $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
 #end			
 		</form>
-	</div>	
-	</div>
-<br>
+	</li>	
+	</ul>
 #else
 	[[Please select an Asset Type]]
 #end

@@ -1,10 +1,12 @@
-<div id="createmediapanellayout" class="createmediapanel">
-
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
-<div class="row no-gutters" style="">
+<div id="createmediapanellayout" class="createmediapanel" style="#if(!$collectionid) padding-top:30px; border-top:0; #end">
+
+
+<div class="row no-gutters" style="border-top:1px solid #999;" >
    <div class="col-3">
+	<div class="createmediasidebar"> 
    	<div class="createmedia-tab createmedia-selected">
   		<a class="ajax createmedia-btn"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID">
       <div class="createmedia-icon"><img  src="$home$apphome/components/createmedia/upload/add.png" class="img-fluid"></div>
@@ -65,6 +67,7 @@
    </div> 
   #end  
   </div>
+   </div>
   <div class="col-9">
   		<div class="createmediacontent"  id="createmediapanel">
     	$pages.include("$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID")

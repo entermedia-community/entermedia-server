@@ -3,13 +3,12 @@
 <div id="hiddenoverlay">
 
   <div class="playerarea" >
-	#if( $asset)
-			$pages.include("$apphome/components/mediaviewer/fullscreen/currentasset.html",$context)
-	#else
-	<div id="main-media-container" > [[Loading]]... 
-	</div>		
-	#end		
+##	#if( $asset)
+##			$pages.include("$componenthome/mediaviewer/fullscreen/currentasset.html",$context)
+##	#else
+	<div id="main-media-container" > [[Loading]]...</div>		
+##	#end		
   </div>
   
-  <div class="overlay-close largeicon"><span title="[[Esc to Close]]" class="fas fa-window-close""></span></div>		
+  <div class="overlay-close largeicon"><span title="[[Esc to Close]]" class="fas fa-window-close"></span></div>		
 </div>

@@ -71,7 +71,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if(inParent== null || inParent.getId() == null) {
 			return new ArrayList();
 		}
-		Collection hits = query().exact("parentid", inParent.getId()).search();
+		HitTracker hits = query().exact("parentid", inParent.getId()).search();
+		hits.enableBulkOperations();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
@@ -93,30 +94,38 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
 	public void reindexInternal() throws OpenEditException
 	{
-		getXmlCategoryArchive().clearCategories();
-		getCacheManager().clear("category");
-		
-		HitTracker tracker = query().all().sort("categorypath").search();
-		tracker.enableBulkOperations();
-		
-		List tosave = new ArrayList();
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		setReIndexing(true);
+		try
 		{
-			Data hit = (Data) iterator.next();
-			//log.info(hit.get("categorypath"));
-			ElasticCategory data = (ElasticCategory)loadData(hit);
-			tosave.add(data);
-			if( tosave.size() > 1000)
+			getXmlCategoryArchive().clearCategories();
+			getCacheManager().clear("category");
+			
+			HitTracker tracker = query().all().sort("categorypath").search();
+			tracker.enableBulkOperations();
+			
+			List tosave = new ArrayList();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				updateIndex(tosave,null);
-				tosave.clear();
-				getCacheManager().clear("category");
+				Data hit = (Data) iterator.next();
+				//log.info(hit.get("categorypath"));
+				ElasticCategory data = (ElasticCategory)loadData(hit);
+				tosave.add(data);
+				if( tosave.size() > 1000)
+				{
+					updateIndex(tosave,null);
+					tosave.clear();
+					getCacheManager().clear("category");  //TODO: Why do we do this?
+				}
 			}
+			updateIndex(tosave,null);
+			
+			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
+			getCacheManager().clear("category");
 		}
-		updateIndex(tosave,null);
-		
-		//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
-		getCacheManager().clear("category");
+		finally
+		{
+			setReIndexing(false);
+		}
 	}
 
 	public void reIndexAll() throws OpenEditException 
@@ -201,7 +210,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //	}
 	
 	@Override
-	protected void createContentBuilder(PropertyDetails details, Data inData)
+	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
 	{
 		ElasticCategory category = null;
 		if( inData instanceof ElasticCategory)
@@ -212,7 +221,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		{
 			category = (ElasticCategory)loadData(inData);
 		}
-		super.createContentBuilder(details,inData);
+		super.saveToElasticSearch(inDetails,inData, delete,inUser);
 		Collection values = (Collection)category.getMap().getValue("parents");
 		boolean edited = false;
 		if( values == null)
@@ -230,7 +239,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}	
 		if( edited )
 		{
-			super.createContentBuilder(details,inData);
+			super.saveToElasticSearch(inDetails,inData, delete, inUser);
 		}
 		
 	}
@@ -247,7 +256,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			{
 				root = (Category)createNewData();
 				root.setId("index");
-				root.setName("Index");
+				root.setName("All");
 			}
 			else
 			{
@@ -391,7 +400,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	{
 		//For the path to be saved we might need to force category?
 		
-		super.saveData((Category)inData, inUser);
+		super.saveData(inData, inUser);
 		setIndexId(-1);
 //		cat = (ElasticCategory)cat.getParentCategory();
 //		if( cat == null)
@@ -428,8 +437,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public synchronized Category createCategoryPath(String inPath)
 	{
-		
-		if( inPath.length() == 0 || inPath.equals("Index"))
+		if( inPath.length() == 0 || inPath.equals(getRootCategory().getName()))
 		{		
 			return getRootCategory();
 		}
@@ -457,8 +465,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			Category parentcategory = createCategoryPath(parent);
 			if( parentcategory != null)
 			{
-				parentcategory.addChild(found);
+				found.setParentCategory(parentcategory);
+				//log.info(parentcategory.isDirty());
+				//parentcategory.addChild(found);
 				saveData(found);
+				//log.info(parentcategory.isDirty());
+
+				
 			}
 		}
 		return found;
@@ -475,6 +488,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		delete(root, null);
 		
 		
+		
+	}
+
+	@Override
+	public void clearCategories()
+	{
+		clearIndex();
+		getXmlCategoryArchive().clearCategories();
+		getCacheManager().clear("category");
 		
 	}
 	

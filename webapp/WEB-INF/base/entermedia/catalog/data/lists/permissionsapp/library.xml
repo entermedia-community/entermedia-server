@@ -1,4 +1,12 @@
 <permissions name="Library Permissions">
+
+	<permission id="copycategory" permissiontype="library" name="Copy Categories into Collections" description="Enables users to auto-populate collections" ordering="255"/>
+	<permission id="addtofavorites" permissiontype="library" name="Add files to favorites" description="Enables users to add files to their favorites collection" ordering="256"/>
+	<permission id="viewcategorynavcollections" permissiontype="library" name="View Folders in Collections" description="Enables users to view folders inside collections" ordering="257"/>
+	<permission id="searchjoins" permissiontype="library" name="Enable advanced search joins" description="Enables users to search fields from Collections and Libraries when searching assets" ordering="258"/>
+	<permission id="forcebasiccollections" permissiontype="library" name="Forces a simple, stripped down view of collections" description="Forces a more simplistic view of collections for users" ordering="259"/>
+	<permission id="editallcollections" permissiontype="library" name="Edit All Collections" description="Edit All Collections" ordering="560"/>
+
 	<permission id="asseteditorlibraries" permissiontype="library" name="Pick Library For Asset" description="Enables access to the asset library picking." ordering="500" />
 	<permission id="asseteditorpickanylibrary" permissiontype="library" name="Pick Any Library" description="Asset can be added to any library." ordering="505" />
 	<permission id="viewopencollections" permissiontype="library" name="Open Collections" description="Enables a list of open collections on the sidebar." ordering="515"/>
@@ -8,16 +16,12 @@
 	<permission id="showcollectionpicker" permissiontype="library" name="Show Collection Picker" description="Show Collections picker in header area" ordering="523"/>
 	<permission id="assetannotate" permissiontype="library" name="Annotations" description="allows annotations" ordering="525"/>
 	
+	<permission id="viewsavedcollections" permissiontype="library" name="Saved Collections" description="Allow users to view and edit their saved collections" ordering="526"/>
+	<permission id="viewfeaturedcollections" permissiontype="library" name="View Featured Collections" description="Show featured collections to users" ordering="527"/>
 	
 	<permission id="exportcollection" permissiontype="library" name="Export Collection" description="Move assets in a collection into a Library" ordering="530"/>
 	<permission id="sharecollection" permissiontype="library" name="Share Collection" description="Email Links to a Collection" ordering="535"/>
 	<permission id="importworkspace" permissiontype="library" name="Import Workspace" description="Import Workspace files from remote" ordering="525"/>
-	<permission id="copycategory" permissiontype="library" name="Copy Categories into Collections" description="Enables users to auto-populate collections" ordering="255"/>
-		<permission id="addtofavorites" permissiontype="library" name="Add files to favorites" description="Enables users to add files to their favorites collection" ordering="255"/>
-			<permission id="viewcategorynavcollections" permissiontype="library" name="View Folders in Collections" description="Enables users to view folders inside collections" ordering="255"/>
-			<permission id="searchjoins" permissiontype="library" name="Enable advanced search joins" description="Enables users to search fields from Collections and Libraries when searching assets" ordering="255"/>
-	<permission id="forcebasiccollections" permissiontype="library" name="Forces a simple, stripped down view of collections" description="Forces a more simplistic view of collections for users" ordering="255"/>
-		<permission id="editcollection" permissiontype="library" name="Edit All Collections" description="Edit All Collections" ordering="530"/>
 	
 </permissions>
 	 

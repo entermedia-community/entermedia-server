@@ -1,5 +1,6 @@
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $collectionid = $context.getRequestParameter("collectionid") )
+$context.putPageValue("collectionid",$collectionid) 
 #set( $rendertype = $mediaarchive.getMediaRenderType($asset))
 #set( $playertype = $mediaarchive.getMediaPlayerType($asset))
 #if( !$playertype )
@@ -9,11 +10,11 @@
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-#set( $index = $dialoghits.indexOfId($asset.id))
+#set( $index = $hits.indexOfId($asset.id))
 #set( $previous = false )
-#set( $previous = $dialoghits.previous($index))
+#set( $previous = $hits.previous($index))
 #set( $next = false )
-#set( $next = $dialoghits.next($index))  
+#set( $next = $hits.next($index))  
 
 ##This is used to make a readonly version for mediadb
 #set( $previewonly = $context.getPageValue("previewonly"))
@@ -21,40 +22,40 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
-#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 
 #set( $opentab = $userprofile.get("assetopentab"))
-#if( !$opentab)
-	#if( $canmetadatageneral )
-		#set( $opentab = "viewproperties")
-	#else
-		#set( $opentab = "viewpreview")
-	#end
+
+#if( $opentab != "viewpreview" && $canviewmetadatageneral )
+	#set( $opentab = "viewproperties")
+#else
+	#set( $opentab = "viewpreview")
 #end
 
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
+	$context.putPageValue("ismulti",$ismulti)
 #end
 
-#if($opentab == "viewactions")
- #set( $opentabactions = $userprofile.get("assetopentabactions"))
+## #if($opentab == "viewactions")
+## 	#set( $opentabactions = $userprofile.get("assetopentabactions"))
 
- #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
-	#if( $rendertype != "video")
-		#set( $opentab = "viewproperties")
-		#set( $opentabactions = false)
-	#end
- #end
-#end
+## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
+##	#if( $rendertype != "video")
+##		#set( $opentab = "viewproperties")
+##		#set( $opentabactions = false)
+##	#end
+## #end
+## #end
+
 $context.putPageValue("opentab",$opentab)
 
-
- 
-
-
-$dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
-#set( $hitssessionid = $dialoghits.getSessionId())
+#set( $hitssessionid = $hits.getSessionId())
+$context.putPageValue("hitssessionid",$hitssessionid)
 <div id="main-media-container">
+
+$pages.include("$componenthome/mediaviewer/fullscreen/currentassettabs.html",$context)
+
 <div id="main-media-viewer" 
 data-opentab="$opentab" 
 data-hitssessionid="$hitssessionid" 
@@ -63,12 +64,11 @@ data-oemaxlevel="1"
 data-editable="$caneditasset" 
 data-assetid="$asset.id" data-next="$!next.getId()" 
 data-previous="$!previous.getId()"
-data-previouspage="$!dialoghits.idOnPreviousPage()" 
-data-nextpage="$!dialoghits.idOnNextPage()"
+data-previouspage="$!hits.idOnPreviousPage()" 
+data-nextpage="$!hits.idOnNextPage()"
 data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
- >
+ ><div id="mainmedianotifications"></div>
 
- 
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -112,268 +112,6 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 		#end
 	#end
 	
-</div>
-<div id="footerbase">
-	<div id="footermenu">
-		<ul>
-			
-			<li class="footermenu">
-				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
-				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
-				
-			</li>
-			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
-				<a class="expandmenu assetpreview assettab" 
-					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
-					data-assettab="viewpreview"
-					title="[[View $asset]]" >
-				<i class="fas fa-expand"></i> [[Viewer]] 
-				</a>
-			 </il>
-			 #if( !$previewonly && $canmetadatageneral )
-			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
-				<a class="expandmenu assettab" 
-					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]"
-					data-assettab="viewproperties" >
-				<i class="fas fa-info-circle"></i> [[Properties]]  
-				</a>
-			</li>
-			#end
-							#if (!$ismulti)
-
-							
-				<div class="hidemulti">
-						$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
-			</div>
-						#end
-			
-			#if (!$ismulti)
-				#if( !$previewonly )
-					#if ($canviewcomments || $canassetannotate)
-					 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
-						<a class="expandmenu assettab" 
-							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
-							data-assettab="viewcollaborate" >
-						<i class="fas fa-comment-alt"></i> [[Collaborate]] 
-						</a>
-					</li>
-					#end
-				#end
-			#end
-			#if ( $canshareasset && !$ismulti )
-            <li class="footermenu bottomtab hidemulti">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
-			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
-			   <ul class="dropdown-menu">
-   							#if ($canpublish)
-	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
-	                       </li>
-	                       	#end
-	                       	#if( $canemaillink )
-	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
-	                       </li>
-	                       	#end
-	                       	#if( $canembedasset && !$multi)
-	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Embed]]</a>
-	                       </li>
-	                       	#end
-	                       	#if ( $canaddtoproject )
-							<li id="add-to-collection">
-								<a class="dropdown-item ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
-							</li>
-							#end
-             </ul>
-             </li>
-             #end
-    		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
-			#if($candownload && $asset.getFileFormat()  == "pdf")
-			<li class="footermenu bottomtab" >
-			    <a data-assetid="${asset.id}" target="_new" href="$!cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
-	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
-	            </a>
-            </li> 
-			#end
-			#if (!$ismulti)
-			#if($candownload || $canconvert || $candownloadfpo)
-				<li class="footermenu bottomtab hidemulti" >		
-					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
-					   <ul class="dropdown-menu">
-						#if( !$cdnprefix )
-							#set( $cdnprefix = $context.siteRoot )
-						#end
-								
-						 #if($candownload)	
-						 			
-							<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")">[[Original File]]</a></li>
-						#end
-						
-						#if($canconvert || $candownloadfpo)
-
-						#if( $rendertype )
-						#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-						#set( $results = $searcher.query().exact("inputtype",$rendertype).sort("ordering").named("convertpresets").search($context) )
-						#end
-						
-							#foreach($result in $results )						
-									#set($ok = false)
-						#if($canconvert && $candownloadfpo)
-							#set($ok = true) 
-						#elseif ($canconvert && $result.watermark != "true")
-							#set($ok = true) 
-						#elseif($candownloadfpo && $result.watermark == "true")
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && $candownload)
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && !$candownload)
-							#set($ok = false) 
-						#end
-						#if($ok)
-									
-									#set($url = $mediaarchive.asLinkToDownload($asset,$librarycol.id, $result))
-									
-								<li><a href="$url">$result.name</a></li>
-									
-									#end
-							#end
-						#end
-					</ul>
-				  </li>
-			 #end
-            #end
-						
-			#if($user && ( !$previewonly 	&& !$ismulti))
-			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentabactions) tabselected #end">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
-			   <span class="fas fa-edit"></span>
-			   <span class="bottomtabactionstext"> 
-			   ##TODO Create a table for actions
-			   #if ($opentabactions=='conversions')
-			   		[[Conversions]]
-			   #elseif ($opentabactions=='timeline')
-			   		[[Timeline]]
-			   #elseif ($opentabactions=='closedcaptions')
-			   		[[Closed Captions]]
-			   #elseif ($opentabactions=='categorize')
-			   		[[Categories]]
-			   #elseif ($opentabactions=='map')
-			   		[[Map]]
-			   #elseif ($opentabactions=='attachments')
-			   		[[Attachments]]
-			   #elseif ($opentabactions=='assethistory')
-			   		[[History]]
-			   #else
-			   	[[Actions]]
-			   #end
-			   </span>
-			   </a>
-			   <ul class="dropdown-menu">
-
-			   
-		    	#if( !$ismulti && $canviewconversions   && $canviewassetedit)
-			   	<li>
-			   	<a class="assettab #if($opentabactions=='conversions') dropdown-current #end" 
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
-						data-assettab="viewactions"
-						data-assettabactions="conversions"
-						data-assettabname="[[Conversions]]" >
-					[[Conversions]] 
-					</a>
-			   	</li>
-			   	#end
-			   	#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
-			   		#if($canviewtimeline)
-			   			<li>
-					   	<a class="assettab #if($opentabactions=='timeline') dropdown-current #end" 
-								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
-								data-assettab="viewactions"
-								data-assettabactions="timeline"
-								data-assettabname="[[Timeline]]" >
-							[[Timeline]]
-							</a>
-					   	</li>
-			   		#end
-			   		#if($canviewclosedcaptions)
-			   			<li>
-					   	<a class="assettab #if($opentabactions=='closedcaptions') dropdown-current #end" 
-								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
-								data-assettab="viewactions"
-								data-assettabactions="closedcaptions"
-								data-assettabname="[[Closed Captions]]" >
-							[[Closed Captions]]
-							</a>
-					   	</li>
-			   		#end
-			   	#end
-		    	#if(!$ismulti && $canviewmap)
-			   	<li>
-			   	<a class="assettab #if($opentabactions=='map') dropdown-current #end" 
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
-						data-assettab="viewactions"
-						data-assettabactions="map"
-						data-assettabname="[[Map]]" >
-					[[Map]] 
-					</a>
-			   	</li>
-			   	#end
-			   	
-		    	#if( !$ismulti && $canviewattachments )
-			   	<li>
-			   	<a class="assettab #if($opentabactions=='attachments') dropdown-current #end" 
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
-						data-assettab="viewactions"
-						data-assettabactions="attachments"
-						data-assettabname="[[Attachments]]" >
-					[[Attachments]] 
-					</a>
-			   	</li>
-			   	#end
-		    	#if( !$ismulti && $canconverthistory )
-			   	<li>
-			   		<a class="assettab #if($opentabactions=='assethistory') dropdown-current #end" 
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
-						data-assettab="viewactions"
-						data-assettabactions="assethistory"
-						data-assettabname="[[History]]" >
-					[[History]] 
-					</a>
-			   	</li>
-			   	#end
-		    	#if( $candeleteasset )
-                 <li>
-					#if ( $ismulti )
-						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
-	                     [[Delete Selected Assets]]</a>
-	                    #end 
-                    #else
-                     <a class="emdialog"   href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionid">
-	                     [[Delete Asset]]</a>
-                     #end
-                     </a>
-                 </li>
-                 #end
-                #if( $canmultiedit )
-                #if($dialoghits.getSelectedHits().size() > 1)
-                 <li>
-                 	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
-						data-link="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
-						data-assettab="multiedit">
-					[[Multiedit]]  $dialoghits.getSelectedHits().size()
-					</a>
-                 </li>
-                 #end
-                 #end
-				</ul>
-		    </li>
-		    #end
-    
-		</ul>
-	</div>
 </div>
 </div>
 
