@@ -36,6 +36,7 @@ public class EmailErrorHandler implements ErrorHandler
 	protected String fieldRecipientList;
 	protected String fieldServer;
 	protected String fieldFrom;
+	protected String fieldFromName;
 	
 	protected boolean fieldConsumeErrors;
 	protected PageManager fieldPageManager;
@@ -79,7 +80,7 @@ public class EmailErrorHandler implements ErrorHandler
 			
 			String[] recepients = (String[])emails.toArray(new String[emails.size()]);
 			
-			postMail.postMail(recepients,subject,null,message,getFrom());
+			postMail.postMail(recepients,subject,null,message,getFrom(), getFromName());
 		}
 		catch (Exception e)
 		{
@@ -269,10 +270,20 @@ public class EmailErrorHandler implements ErrorHandler
 	{
 		return fieldFrom;
 	}
-
+	
 	public void setFrom(String inFrom)
 	{
 		fieldFrom = inFrom;
+	}
+	
+	public String getFromName()
+	{
+		return fieldFromName;
+	}
+	
+	public void setFromName(String inFromName)
+	{
+		fieldFromName = inFromName;
 	}
 
 	public UserManager getUserManager()
@@ -310,7 +321,7 @@ public class EmailErrorHandler implements ErrorHandler
 			
 			String[] recepients = (String[])emails.toArray(new String[emails.size()]);
 			
-			postMail.postMail(recepients,inSubject,null,inMessage,getFrom());
+			postMail.postMail(recepients,inSubject,null,inMessage,getFrom(), getFromName());
 		}
 		catch (Exception e)
 		{

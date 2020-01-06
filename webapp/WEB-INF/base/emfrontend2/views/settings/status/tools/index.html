@@ -1,27 +1,5 @@
 <h3>Server Status </h3>
 
-<p>
-<a class="btn btn-sm btn-primary" href="mappingerrors.html" id="tools-view-errors">[[View Known Mapping Conflicts]]</a>
-</p>
-
-<p>
-<a class="btn btn-sm btn-primary" href="validateall.html" id="tools-fix-errors">[[Validate All Mapping Schema]]</a>
-</p>
-
-<p>
-<a class="btn btn-sm btn-primary" href="reloadall.html" id="tools-fix-errors">[[Reindex]]</a>
-</p>
-
-
-<!--
-<p>
-[[Knapsack is used to create JSON based backups that can be moved between servers]].
-<br>
-<a class="btn btn-sm" href="./knapsack.html" id="tools-view-knapsack">[[View Knapsack]]</a>
-</p>
--->
-
-<h3>[[Data Management]]</h3>
 
 <p>
 [[Node ID]]: $mediaarchive.getNodeManager().getLocalNodeId()
@@ -30,6 +8,29 @@
 [[Cluster ID]]: $mediaarchive.getNodeManager().getLocalClusterId()
 <Br>
 </p>
+
+<p>
+<a class="btn btn-sm btn-primary" href="clearcaches.html" id="tools-reload-lists">[[Clear Cached Data]]</a>
+</p>
+
+<p><a class="btn btn-sm btn-primary emdialog" 
+ data-width="500" data-hidefooter="true"   href="makemasterconfirm.html">Change Asset Master</a></p>
+
+
+<h3>[[Data Management]]</h3>
+
+<p>
+<a class="btn btn-sm btn-primary" href="reindexall.html" id="tools-fix-errors">[[Reindex]]</a>
+</p>
+
+<p>
+<a class="btn btn-sm btn-primary" href="mappingerrors.html" id="tools-view-errors">[[View Any Mapping Conflicts]]</a>
+</p>
+
+<p><a class="btn btn-sm btn-primary emdialog" data-hidefooter="true" data-width="500"  href="viewmappings.html?searchtype=$key">View Elastic Mappings</a></p>
+
+
+
 <p>
 <a class="btn btn-sm btn-primary" href="reloadlists.html" id="tools-reload-lists">[[Reload lists]]</a>
 <br>
@@ -43,18 +44,15 @@
 [[Snapshots are used by ElasticSearch to store and restore database state]].
 </p>
 
-<a class="btn btn-sm btn-primary" href="clearcaches.html" id="tools-reload-lists">[[Clear Cached Data]]</a>
-<br>
 
-
-
-<hr>
+<h3>[[Authentication]]</h3>
 
 #if($mediaarchive.getData("oauthprovider", "google").enabled == "true")
 <h3>Google Drive Connectivity</h3>
 
 <a class="btn btn-sm btn-primary" href="$apphome/views/settings/google/connect.html">Connect Google Drive and Admin</a>
 #end
+
 <h3>[[Search Logs]]</h3>
 
 <a class="btn btn-sm  btn-primary" href="togglesearchlogs.html" id="tools-lof-search">

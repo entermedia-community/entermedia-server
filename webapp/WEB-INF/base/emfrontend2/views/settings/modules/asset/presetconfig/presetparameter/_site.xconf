@@ -1,0 +1,9 @@
+<page>
+	<property name="searchtype">presetparameter</property>
+
+	<path-action name="DataEditModule.loadSearcherForEdit" >
+	</path-action>
+	<property name="searchhome">/${applicationid}/views/settings/modules/asset/presetconfig/presetparameter</property>
+	
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
+</page>

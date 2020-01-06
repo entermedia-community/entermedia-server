@@ -1,55 +1,63 @@
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set($auto = $context.getRequestParameter("autorun"))
+<div id="emresultscontent" >
 
-<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
-   <div class="ui-widget-header">[[Copy Existing Folders]]</div>
-   <div class="ui-widget-content">
-	
 
-<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
-	action="$home$apphome/components/createmedia/copycategory/createnew.html">
-    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
-#if($auto == "true")
-<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
-
+#if(!$hidefilters)
+	$pages.include("$apphome/components/filters/filters-selected.html", $context)
 #end
-    <a #if($auto == "true") style="display: none;" #end class="ajax btn" id="poptrigger" targetdivinner="auto-pop"  
-			  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" ><i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
+#set( $colleftwidth = $userprofile.get("colleftwidth"))
+    #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+<div class="pushcontent" style="#if($leftbarstatus!=false && $colleftwidth) margin-left:${colleftwidth}px;#end">
+<div id="resultsdiv">
 	
-   <a class="emdialog btn" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
-    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Select Additional Categories]]</a>
+	<h3 class="collection-config-title">[[Copy Existing Folders]]</h3>
+	<div style="padding:0 20px;">
+	<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
+		action="$home$apphome/components/createmedia/copycategory/createnew.html">
+	    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
+	#if($auto == "true")
+	<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
 	
-	<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
+	#end
+	    <a #if($auto == "true") style="display: none;" #end class="ajax btn" id="poptrigger" targetdivinner="auto-pop"  
+				  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" >
+				  	<i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
 
+		
+	   <a class="emdialog btn btn-primary" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Select Additional Categories]]</a>
+		
+		<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
 	
-	<div class="inner-content" style="width: 90%; " id="autocategoriespicked">
-	$pages.include("$apphome/components/createmedia/copycategory/picked.html",$context)	
+		
+		<div class="inner-content" id="autocategoriespicked">
+		$pages.include("$apphome/components/createmedia/copycategory/picked.html",$context)	
+		</div>
+		<div id="auto-pop" ></div>
+		<br><br>
+		<input class="btn btn-primary" type="submit" value="[[Import]]" />	
+	</form>
 	</div>
-	<div id="auto-pop" style="width: 90%; "></div>
-	<br><br>
-	<input class="btn" type="submit" value="Import" />	
-
 </div>
-	
-	
-	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
-
+</div>
+	##<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+</div>
 	<script type="text/javascript">
-	jQuery(".auto-remove").livequery("click", function() {
+	lQuery(".auto-remove").livequery("click", function() {
 		var catid = jQuery(this).data('categoryid');
 		
 		jQuery("#auto-" + catid).remove();
 		
 		
 	});
-	
 
-	
-	
+	##TODO: Move this sompleace else or use jquery more
+	jQuery(document).ready(function(){
+		jQuery("#poptrigger").trigger("click");
+	});
+
 	</script>		
-
-
-	</div>
-
 	
-	
+
+

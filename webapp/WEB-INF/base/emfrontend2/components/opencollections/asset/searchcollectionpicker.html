@@ -17,12 +17,12 @@
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
-		##<input id="submitcollectionid" type="hidden" name="collectionid" />
+
 		<input type="hidden" name="assetid" value="$!asset.id" />
-		<table>
+		<table  width="100%">
 		<tr>
-		<td width="100%">
-		<div  class="row inlinesearch" >
+		<td>
+		<div class="row inlinesearch" >
 		$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
 			<div class="col">
@@ -36,12 +36,7 @@
 			#end
 		</div>	
 		</td>
-		#if($canaddnewcollection)
-		<td >
-			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" data-targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
-				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId&assetid=$asset.id">[[New Collection]]</a>
-		</td>
-		#end
+		
 		</tr>
 		</table>
 	</form>
@@ -52,8 +47,17 @@
 	</div>
 	
 	</div>
+	
+	#if($canaddnewcollection)
+       <a  class="emdialog" 
+       	title="[[Create New Collection]]" 
+       	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&assetid=$!asset.id&targetdiv=assetcategoryresults&library.value=$!library.getId()">
+       	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+    #end
 </div>	
-	<form id="colelectform" class="ajaxform"  data-targetdiv="assetcategoryresults" 
+	<form id="colelectform" 
+		class="ajaxform"  
+		data-targetdiv="assetcategoryresults" 
 		action="$home$apphome/components/categories/asset/listassetcollections.html">
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />

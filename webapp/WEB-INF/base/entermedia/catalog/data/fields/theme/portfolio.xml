@@ -491,11 +491,16 @@
   <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Settings Menu Selection Color 
     <name> 
       <language id="de"><![CDATA[Einstellungen Menüauswahl Farbe]]></language>  
-      <language id="en"><![CDATA[Settings Menu Selection Color]]></language>  
+      <language id="en"><![CDATA[Settings Menu Selection Background]]></language>  
       <language id="es"><![CDATA[Selección de ajustes de color para el menú]]></language>  
       <language id="fr"><![CDATA[Menu Paramètres de sélection des couleurs]]></language> 
     </name> 
-  </property>  
+  </property>
+  <property id="settingsmenuselectioncolortext" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Settings Menu Selection Color 
+    <name> 
+      <language id="en"><![CDATA[Settings Menu Selection Text Color]]></language>  
+    </name> 
+  </property>    
   <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean" datatype="boolean" keyword="false" filter="false">Disable Shadows Around Header and Content 
     <name>
       <language id="de"><![CDATA[deaktivieren Schatten um Header und Inhalt]]></language>

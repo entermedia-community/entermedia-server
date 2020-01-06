@@ -1,0 +1,4 @@
+<presets>
+<!--      <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
+ -->
+ </presets>                                                                                                                                                                                                    

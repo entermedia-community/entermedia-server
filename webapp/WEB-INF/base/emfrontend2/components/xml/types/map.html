@@ -3,9 +3,11 @@
 #set ($view = $context.getRequestParameter('view')) 
 <!--  This would have the point details in it -->
 
-      <p style="text-align: right; margin-bottom: 10px;">
+      <p style="margin-bottom: 10px;">
+		<label>[[Address]]:</label>
         <input type="text" size="60" id="${detail.id}_address" class="form-control form-control-sm"  />
-        <input class="btn btn-sm btn-primary" type="button" id="${detail.id}_search" value="Search"  />
+		
+        <input class="btn btn-sm btn-primary" type="button" id="${detail.id}_search" value="[[Search]]"  />
       </p>
      
 
@@ -20,16 +22,12 @@
    #if ($lat && $lng)
    	#set($lanlng = "$lat,$lng")
    #end
-   <div class="container-fluid">
-   <div class="row no-gutters">
-   <div class="col-md-6">
+   
    <div class="float-left assetpanel-content-label">[[Position]]:</div>
-    <div class="float-left"><input type="text" id="${detail.id}_latandlong" class="form-control" size="40" name="${detail.id}.value" value="$!latlng"/>
-    </div>
+    <div class="float-left">
+		<input type="text" id="${detail.id}_latandlong" class="form-control" size="40" name="${detail.id}.value" value="$!latlng"/>
    </div>
-   </div>
-   </div>
-
+   
 <script type="text/javascript">
 
 function getLatLngFromString(ll) {
@@ -37,12 +35,12 @@ function getLatLngFromString(ll) {
     return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
 }
 
-initialize = function() 
-{
+var geocoder;
+
+initialize = function() {
 var parentheight = $(".assetpanel-geomap").height();
 if (typeof parentheight !== 'undefined') {
 	var mapheight = (jQuery(".assetpanel-geomap").height()-110);
-	
 	jQuery('#${detail.id}_map').height(mapheight);
 }
 #if($latandlong)
@@ -64,7 +62,7 @@ if (typeof parentheight !== 'undefined') {
     }
   });
 
-     var marker = new google.maps.Marker({
+  var marker = new google.maps.Marker({
 		position: getLatLngFromString('$lat,$lng'),
 		draggable: true, 
 		bounds: true,
@@ -76,62 +74,50 @@ if (typeof parentheight !== 'undefined') {
      });
      
      
-     google.maps.event.addListener(marker, 'dragend', function(event)
+   google.maps.event.addListener(marker, 'dragend', function(event)
 	    {
 	    	console.log(marker.getPosition());
             jQuery('#${detail.id}_latandlong').val(marker.getPosition().lat()+ "," + marker.getPosition().lng());
-		});
+	});
 
 
 	jQuery('#${detail.id}_search').click(dosearch);
-	jQuery('#${detail.id}_address').keypress(function(e)
-	{
-		if (e.keyCode == 13) 
-		{
+	
+	jQuery('#${detail.id}_address').keypress(function(e) {
+		if (e.keyCode == 13) {
 			dosearch()
 		}
 	});
+	
+	geocoder = new google.maps.Geocoder();
 			
 		
 }
 
-dosearch = function () 
-{
+dosearch = function () {
 	var address = jQuery('#${detail.id}_address').val();
-
-	$('#${detail.id}_map').gmap('search', { 'address': address }, function(results, status) 
-	{
-	    if ( status === 'OK' ) 
-	    {
-	    	$('#${detail.id}_map').gmap('clear', 'markers');
-	    	
-	    	$('#${detail.id}_map').gmap('addMarker', 
-	          {
-	    		'position': results[0].geometry.location, 
-	    		'draggable': true, 
-	    		'bounds': true
-	    	  }).dragend(function(event) 
-	    	  		{
-	    		 	
-	    		  
-	              
-	              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
-	                
+	var postalCode = jQuery('#${detail.id}_postalCode').val();
+	if (address!=null) {
+		$('#${detail.id}_map').gmap('search', { 'address': address }, function(results, status) {
+		    if ( status === 'OK' ) {
+		    	$('#${detail.id}_map').gmap('clear', 'markers');
+		    	$('#${detail.id}_map').gmap('addMarker', 
+		          {
+		    		'position': results[0].geometry.location, 
+		    		'draggable': true, 
+		    		'bounds': true
+		    	  }).dragend(function(event) {
+		              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
 	    	  		}
-	    	  ).click(function() 
-	    	   {
-	    		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
-	    	});
-
-	    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
-	       $('#${detail.id}_map').gmap('option', 'zoom', 12);
-
- 		
-          jQuery('#${detail.id}_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
-
-	    }
-	});
+		    	  );
 	
+		    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
+		        $('#${detail.id}_map').gmap('option', 'zoom', 12);
+	            jQuery('#${detail.id}_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
+	
+		    }
+		});
+	}
 }
 
 initialize(); //Onload?

@@ -1,8 +1,8 @@
 <page>
 	<property name="section">settings</property>
 	<property name="sectiontitle">Settings</property>
-	<style id="settings" href="/${applicationid}/theme/styles/pages/settings.css" />
-    <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/>
+	<!-- <style id="settings" href="/${applicationid}/theme/styles/pages/settings.css" />  -->
+    <!-- <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/> -->
 
 	<property name="usemap">false</property>
 	

@@ -102,7 +102,7 @@ public class ElasticAssetTest  extends BaseEnterMediaTest
 		
 		 getMediaArchive().getAssetSearcher().saveData(asset);
 		 asset = getMediaArchive().getAsset("talent");
-		 Collection savedtalents = asset.getObjects("talents");
+		 Collection savedtalents = asset.getValues("talents");
 		 assertTrue(savedtalents.size() > 0);
 	}
 	

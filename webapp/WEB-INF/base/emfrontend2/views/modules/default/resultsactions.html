@@ -1,58 +1,64 @@
 #set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
-#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
-
+#set($moduleid = $module.id)
+#set($defaultview = $userprofile.getDefaultViewForModule($module.id) )
 
 #set($resulttype = $userprofile.get("${module.id}-display"))
 #if(!$resulttype)
-#set($resulttype = "table")
+	#set($resulttype = "table")
 #end
 
-
-
-<div id="sub-nav" class="search-views emsubnav">
-<ul class="resultsnav">
-<li><a href="$home${content.searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a></li>
-#if($content.showactions)
-	$pages.include("$content.searchhome/selectionactions.html")
-#end
-#if($hits.hasSelections() )
-<li id="moduleselections">		$pages.include("${content.searchhome}/selections/selected.html",$context)
-</li>
-#end
-</ul>
+#set($searchhome = $page.get("searchhome") )
 
 #set( $edit = $context.getRequestParameter("editheader"))
 #if( !$edit || $edit == "false")
 	#set( $edit = false)
 #end
+
+
+<div id="sub-nav" class="search-views emsubnav">
+#if(!$edit)
+	<ul class="resultsnav">
+	<li>
+	<a href="$home${searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a></li>
+	#if($content.showactions)
+		$pages.include("$searchhome/selectionactions.html")
+	#end
+	#if($hits.hasSelections() )
+	<li id="moduleselections">		
+		$pages.include("${searchhome}/selections/selected.html",$context)
+	</li>
+	#end
+	</ul>
+#end
+
 <ul class="resultsnavright">
 	#if( $canedittablecolumns )
-	#if( !$edit )
-		<li>	
-			 
-				<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$content.searchhome/results.html?searchtype=${module.id}t&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1"> <i class="fas fa-edit"></i></a>
-		</li>
-	#else
-		<li> 
-				<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$content.searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><i class="fas fa-times"></i></a>
-		</li>
-		<li class="resultsnavtitem">
-				<div id="column-editor">
-					<div id="column-editor-content">
-						#set ($alldetails = $searcher.getUserPropertyDetails() )
-						<select  class="addremovecolumns form-control" name="addcolumn" >
-							<option>[[Add Column]]</option>
-							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
-							#end
-						</select>
-						
+		#if( !$edit )
+			<li>	
+				 
+				<a class="ajax edit-icon" id="table-editor" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
+			</li>
+		#else
+			<li> 
+					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
+			</li>
+			<li class="resultsnavtitem">
+					<div id="column-editor">
+						<div id="column-editor-content">
+							#set ($alldetails = $searcher.getUserPropertyDetails() )
+							<select  class="addremovecolumns form-control" name="addcolumn" >
+								<option>[[Add Column]]</option>
+								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+								#end
+							</select>
+							
+						</div>
 					</div>
-				</div>
-		</li>
-	#end
+			</li>
+		#end
 	#end
 
-	#if(!$edit || $edit == "false" && $content.isPropertyTrue("enablemap") )
+	#if(!$edit && $content.isPropertyTrue("enablemap") )
 	<li class="resultsnavtitem">
 		<div style="position: relative;">
 			<a class="table-edit-close">
@@ -79,11 +85,11 @@
 	#end
 
 </ul>
-
+</div>
 
 <script type="text/javascript">
 	//This should be moved out of here
 	function refreshSelections() {
-		jQuery('#moduleselections').load("$content.searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
+		jQuery('#moduleselections').load("$searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
 	}
 </script>

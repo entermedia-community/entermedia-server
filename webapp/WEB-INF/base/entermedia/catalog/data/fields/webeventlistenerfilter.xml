@@ -9,6 +9,14 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
+  <property id="name" index="true" multilanguage="true" filter="false" deleted="false" editable="true" stored="true" sortable="true" keyword="false">
+    <name>
+      <language id="de"><![CDATA[Identität]]></language>
+      <language id="en"><![CDATA[Name]]></language>
+      <language id="es"><![CDATA[Nombre]]></language>
+      <language id="fr"><![CDATA[Identité]]></language>
+    </name>
+  </property>
   <property id="webeventlistener" editable="true" index="true" stored="true" datatype="list" > 
     <name> 
       <language id="en"><![CDATA[Listener]]></language>  

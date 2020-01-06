@@ -1,17 +1,12 @@
+
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
         <div class="carousel-inner">
+        #if ($hits)
             <div class="carousel-items">
-            	
-            	  #if ( $asset.id.startsWith("multiedit:") )
-				        #set  ( $ismultimode = true)
-				   #else
-				    	#set  ( $ismultimode = false)     
-				    #end
 				#set( $selectedindex = 1)
-				$!dialoghis.setPage($dialoghits.pageOfId($asset.id))
-				#foreach($hit in $dialoghits.getPageOfHits())
-					#set( $count = $dialoghits.getPage()+-1 )
-					#set( $count = $count*$dialoghits.getHitsPerPage() )	
+				#foreach($hit in $hits.getPageOfHits())
+					#set( $count = $hits.getPage()+-1 )
+					#set( $count = $count*$hits.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
         			#if($asset.id == $hit.id )
@@ -36,18 +31,26 @@
                     #elseif($hit.assettitle)
                         #set($hitcaption = $hit.assettitle)
                     #end
-				<div class="gallery-thumb #if( $ismultimode && $dialoghits.isSelected($hit.id)) selected-asset #end " id="gallery-${hit.id}">
+				   <div class="gallery-thumb 
+				   		#if( $ismulti && $hits.isSelected($hit.id))
+				   		 selected-asset 
+				   		#elseif($hit.id == $asset.id )
+				   		 selected-asset 
+				   		#end
+				   		"
+				   		id="gallery-${hit.id}">
         		
         			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hitcaption}"   href="#" >
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
-						$pages.include("$apphome/components/results/thumbnails/small.html",$context) 
-						$pages.include("$apphome/components/results/badges.html", $context)	
+						$context.putPageValue("thumbsize", "carousel")
+						$pages.include("$componenthome/results/thumbnails/small.html",$context) 
+						$pages.include("$componenthome/results/badges.html", $context)	
           			</a>
           			<div class="gallery-item-title">
-          			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
+          			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
  					<label for="selectionbox_${hit.id}" class="">${hitcaption}</label>
  					</div>
         		
@@ -55,11 +58,14 @@
       			</div>
      			#end
           </div>
+          #end
         </div>
     </div>
+    #if($hits)
     <ol class="carousel-indicators">
             <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
-            <li style="padding:4px; width:120px;" >$selectedindex [[of]] $dialoghits.size()</li>
+            <li style="padding:4px; width:120px;" >$hits.getPage() [[of]] $hits.getTotalPages()</li>
             <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
     </ol>
+    #end
     

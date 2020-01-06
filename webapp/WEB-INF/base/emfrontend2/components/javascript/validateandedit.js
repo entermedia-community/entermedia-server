@@ -89,6 +89,62 @@ $(document).ready(function()
 	    
 	});
 	*/ 
+	
+	lQuery(".force-validate-inputs").livequery(function() 
+	{
+		var theform = $(this).closest("form");
+
+		theform.on("click", function() {
+			theform.valid();
+		});
+
+		$.validator.setDefaults({
+			ignore : ".ignore"
+		});
+
+		theform.validate({
+			ignore : ".ignore"
+		});
+
+	});
+	
+	$.validator.addClassRules("validateNumber", {
+	     number: true
+	});
+	
+	$.validator.setDefaults({
+	    errorPlacement: function(error, element) {
+	    	var elementid = element.attr('id');
+	    	var elementparent = $("#" + $.escapeSelector(elementid)).closest(".emdatafieldvalue");
+	    	if(elementparent.length != 0) {
+	    		//elementparent = $("#" + $.escapeSelector(elementid));
+	    		error.insertAfter(elementparent);
+	    	}
+	    	
+	    	
+	    }
+	});
+
+	lQuery(".inlinesave").livequery("click", function()
+	{
+			var queryString = $(this).closest('.inlinedata').formSerialize(); 
+            var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
+            var targetselect = $(this).data("targetselect");
+            //debugger;
+			$.getJSON(url, queryString, function(data) {
+				$('#' + targetselect).append($('<option>', {
+				    value: data.id,
+				    text: data.name
+				}));
+				$("#" + targetselect).val(data.id);
+				
+			});
+			$(this).closest(".modal").modal('hide');
+			
+		});
+	
+	//End of init
+	
 });
 
 

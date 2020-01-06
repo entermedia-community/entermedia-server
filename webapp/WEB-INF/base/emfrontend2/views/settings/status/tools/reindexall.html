@@ -1,5 +1,12 @@
-<p>[[Reindex is complete]]:</p>
-
-#foreach( $table in $tables )
-$table<br.>
+<p>Reindexing</p>
+	
+#if($mappingerror)
+	$pages.include("./mappingerrors.html")
 #end
+
+#if($exception)
+	[[There was an exception]] <br>$exception
+#else
+	[[Full reindex is complete in]] $time [[seconds]]
+#end	
+

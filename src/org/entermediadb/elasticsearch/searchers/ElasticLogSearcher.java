@@ -3,14 +3,18 @@ package org.entermediadb.elasticsearch.searchers;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
 public class ElasticLogSearcher extends BaseElasticSearcher  {
 
 	
-	
-	
+	/**
+	 * @override
+	 */
+	protected boolean isTrackEdits()
+	{
+		return false;
+	}
 	
 	
 	

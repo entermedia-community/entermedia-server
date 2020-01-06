@@ -1,0 +1,43 @@
+{
+	"response":
+		{
+		    "status":#if($hits.isEmpty())"empty"#elseif($hits)"ok"#else"missinghits"#end
+		    #if( $hits )
+		    ,"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"catalogid" : "$searcher.getCatalogId()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitssessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( ${foreach.count} != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( ${foreach.count} != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+			#end
+		}
+	#if( $hits )
+	  "results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		{#set($item = $mediaarchive.getOriginalContent($hit) ) 
+		"id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
+		"filename": #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" : #jesc($item.getLastModified() ) 
+		}
+		#end
+  	]
+    #end		
+}

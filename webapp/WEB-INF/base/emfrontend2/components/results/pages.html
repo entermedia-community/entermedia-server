@@ -1,16 +1,26 @@
 #if( $hits && $hits.getTotalPages() >  1  )
-	#if($categorycarousel == "true" && $category)
-		#set($categoryid = $category)
-	#else
-		#set($categoryid = "")
+
+##	#if($categorycarousel == "true" && $category)
+##		#set($categoryid = $category)
+##	#else
+##		#set($categoryid = "")
+##	#end
+
+	#if ($category)
+		#set($categoryid = $category.getId())
 	#end
-	
-	#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!categoryid&oemaxlevel=1&resultstype=$!resultstype")
+	#set($resultsPage = "$home$apphome/views/search/index.html")
+	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage")
+	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+	#if($module)
+		#set($resultsPage = "$resultsPage&module=$module")
+	#end
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
-	#set($targetdiv = "main")
+	#set($targetdiv = "filteredresults")
 	
+	 
 	
 	<div class="pages">
 		<ul>

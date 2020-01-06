@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[ID]]></language> 
     </name> 
   </property>
- <property id="operation" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true">New
+  <property id="operation" index="true" indextype="not_analyzed" stored="true">  
     <name>
       <language id="de"><![CDATA[Betrieb]]></language>
       <language id="en"><![CDATA[Operation]]></language>

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<page>  
+	<page-action name="DataEditModule.search" >
+		<property name="searchtype">librarycollection</property>
+		<property name="sortby">name</property>
+	</page-action>
+	<page-action name="DataEditModule.loadPageOfSearch" />
+</page>

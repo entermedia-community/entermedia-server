@@ -5,6 +5,7 @@ package org.entermediadb.elasticsearch.searchers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 {
 	private static final Log log = LogFactory.getLog(ElasticUserSearcher.class);
 	protected XmlUserArchive fieldXmlUserArchive;
-
+	private User NULLUSER = new BaseUser();
+	
 	@Override
 	public Data createNewData()
 	{
@@ -110,9 +112,40 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	 */
 	public User getUser(String inAccount)
 	{
-		User user = (User)searchById(inAccount);
-		return user;
+		return getUser(inAccount,false);
 	}
+	@Override
+	public User getUser(String inAccount, boolean inCached)
+	{
+		if( inAccount == null)
+		{
+			return null;
+		}
+		if( inCached)
+		{
+			User user = (User)getCacheManager().get("usercache",inAccount);
+			if( user == null)
+			{
+				user = (User)searchById(inAccount);
+				if( user == null)
+				{
+					user = NULLUSER;
+				}
+				getCacheManager().put("usercache", inAccount, user);
+			}
+			if( user == NULLUSER)
+			{
+				return null;
+			}
+			return user;
+		}
+		else
+		{
+			User user = (User)searchById(inAccount);
+			return user; 
+		}
+	}
+
 
 	protected GroupSearcher getGroupSearcher()
 	{
@@ -124,6 +157,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public User getUserByEmail(String inEmail)
 	{
 		User target = null;
+		//TODO: lower case it?
 		Data record = (Data)query().startsWith("email", inEmail).searchOne();
 		if(record != null){
 			target = (User) loadData(record);
@@ -150,11 +184,15 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		saveAllData(userstosave,inUser);
 	}
 	public void saveAllData(Collection<Data> inAll, User inUser)
-	
 	{
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
+			if( user.getValue("creationdate") == null )
+			{
+				user.setValue("creationdate", new Date() );
+			}
 			getXmlUserArchive().saveUser(user);
+			getCacheManager().remove("usercache",user.getId());
 		}
 		super.saveAllData(inAll, inUser);
 	
@@ -162,7 +200,13 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 
 	public void saveData(Data inData, User inUser)
 	{
-		getXmlUserArchive().saveUser((User)inData);
+		User tosave = (User)inData;
+		if( tosave.getValue("creationdate") == null )
+		{
+			tosave.setValue("creationdate", new Date() );
+		}
+		getXmlUserArchive().saveUser(tosave);
+		getCacheManager().remove("usercache",inData.getId());
 
 		super.saveData(inData, inUser); //update the index
 	}
@@ -180,11 +224,13 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		}
 		super.delete(user, inUser); //delete the index
 		getXmlUserArchive().deleteUser(user);
+		getCacheManager().remove("usercache",user.getId());
+
 	}
-	
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	@Override
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
-		super.updateIndex(inContent, inData, inDetails);
+		super.updateIndex(inContent, inData, inDetails,inUser);
 		User user = null;
 		if(!(inData instanceof User)){
 			user = (User) loadData(inData);
@@ -234,7 +280,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			//Old indexes did not contain the password
 			user = getXmlUserArchive().loadUser(user, getGroupSearcher());
 			if(user != null &&  user.getPassword() != null){
-				createContentBuilder(getPropertyDetails(), user);
+				saveToElasticSearch(getPropertyDetails(), user, false,user);
 			} else{
 				if(user != null) {
 				log.info("User " + user.getId() + " Had no password.  Please set one.");
@@ -279,4 +325,5 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	{
 		return getXmlUserArchive().decryptPassword(inUser);
 	}
+
 }

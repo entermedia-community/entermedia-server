@@ -259,7 +259,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	
 	public Collection<Category> getCategories()
 	{
-		return (Collection<Category>) getValue("category-exact");
+		Collection values = (Collection<Category>) getValue("category-exact");
+		return values;
 	}
 
 	/**
@@ -409,11 +410,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return getMap().getDate(inField, inDateFormat);
 	}
 
-	public Collection getObjects(String inField)
-	{
-		Collection values = (Collection)getValue(inField);
-		return values;
-	}
+//	public Collection getObjects(String inField)
+//	{
+//		Collection values = (Collection)getValue(inField);
+//		return values;
+//	}
 	
 	public boolean isRelated(Asset inAsset)
 	{

@@ -57,15 +57,16 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	//vpm.restrictions should contain the values of UserRestrictions and UserRestInstruction seperated by ','
 	//
-	private static Map UserRestInstruction = new HashMap(); //rightsusageinstructions 
-	private static Map UserRestrictions = new HashMap();   //restrictions
-	private static Map RightCodes = new HashMap();  
+	private static Map<String, String> UserRestInstruction = new HashMap<String, String>(); //rightsusageinstructions 
+	private static Map<String, String> UserRestrictions = new HashMap<String, String>();   //restrictions
+	private static Map<String, String> RightCodes = new HashMap<String, String>();  
 	static {
 		UserRestInstruction.put("1", "Nouvelles seulement");
 		UserRestInstruction.put("2", "Utilisation unique");
 		UserRestInstruction.put("3", "Émission spécifique");
 		UserRestInstruction.put("4", "Utilisation équitable seulement");
 		UserRestInstruction.put("5", "Utilisation éditoriale seulement");
+		UserRestInstruction.put("6", "Respecter le contexte d'origine");
 		
 		UserRestrictions.put("1", "Aucune");
 		UserRestrictions.put("2", "Oui");
@@ -296,18 +297,22 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		setAssetDate(inArchive, inAsset, elem);
 		setField(inAsset, elem, "asset.retentionPolicy", vizoneretention);
 		setField(inAsset, elem, "asset.owner", "Img");
-		String restrictionVal = getRestrictionValue(inAsset);
 		
+		String restrictionVal = getRestrictionValue(inAsset);
 		if (restrictionVal != null) {
 			setField(inAsset, elem, "vpm.restrictions", restrictionVal);
 		}
 		
         String rightsCode = (String)RightCodes.get(inAsset.get("restrictions"));
-		
 		if (rightsCode != null) {
 			setField(inAsset, elem, "asset.rightsCode", rightsCode);
 		}
 
+		String rightsComment = (String)getRightsComment(inAsset);
+		if (rightsComment != null) {
+			setField(inAsset, elem, "asset.rightsComment", rightsComment);
+		}
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, 7);  // number of days to add
@@ -393,15 +398,27 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	
 	private String getRestrictionValue(Asset inAsset) {
-		String rest_val = (String)UserRestrictions.get(inAsset.get("restrictions"));
-		String right_val = (String)UserRestInstruction.get(inAsset.get("rightsusageinstructions"));
+		String rest_val = UserRestrictions.get(inAsset.get("restrictions"));
+		String right_val = "";
+		String rightsusageinstructions = inAsset.get("rightsusageinstructions");
+		if (rightsusageinstructions != null) {
+			String[] rightsusageinstructionsList = rightsusageinstructions.split("\\|");
+			for (int idx = 0; idx< rightsusageinstructionsList.length; idx++) {
+				String rightUsage = UserRestInstruction.get(rightsusageinstructionsList[idx]);
+				right_val = right_val + rightUsage + ",";
+			}
+			if (right_val.length() > 0) {
+				right_val = right_val.substring(0, right_val.length()-1);
+			}
+			
+		}
 		String term_val = (String)inAsset.get("rightsusageterms");
 		//log.info("*** getRestrictionValue: "+rest_val +" , "+right_val +" , "+term_val);
 		
 		String ret = "";
 		if (rest_val != null) 
 			ret = rest_val + "-";
-		if (right_val != null) 
+		if (right_val.length() > 0) 
 			ret = ret + right_val + "-";
 		if (term_val != null) 
 			ret = ret + term_val + "-";
@@ -418,6 +435,26 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		} else if (right_val != null) {
 			return right_val;
 		}*/
+		return null;
+	}
+	
+	private String getRightsComment(Asset inAsset) {
+		String cr_val = (String)inAsset.get("copyrightnotice");
+		String source_val = (String)inAsset.get("source");
+		log.info("*** getRightsComment cr_val: "+cr_val +" , source_val: "+source_val);
+		
+		String ret = "";
+		if (cr_val != null) 
+			ret = cr_val + " - ";
+		if (source_val != null) 
+			ret = ret + source_val + " - ";
+		
+		
+		if (ret.length() > 3) {
+			ret = ret.substring(0, ret.length()-3);
+			return ret;
+		}
+		
 		return null;
 	}
 

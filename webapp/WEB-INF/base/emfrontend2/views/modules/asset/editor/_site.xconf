@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
+	<property name="searchtype">${module}</property>
+
 	<path-action name="AssetEditModule.loadAssetFromSelection"/>
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>
@@ -25,6 +27,7 @@
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">
 		<or>
+			<userprofile property="editallassets" equals="true" />
 			<action name="AssetControlModule.canViewAsset" />
 			<action name="OrderModule.canViewAsset"/>
 		</or>
@@ -50,7 +53,6 @@
 	
 	<permission name="editasset">
 		<or>
-			<group name="administrators" />
 			<userprofile property="editallassets" equals="true" />
 			<action name="AssetControlModule.canEditAsset" />
 		</or>

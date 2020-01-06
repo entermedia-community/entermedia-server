@@ -34,4 +34,12 @@
       <language id="fr"><![CDATA[Date de publication]]></language>
     </name>
   </property> 
+  
+  
+   <property id="existsonpush" datatype="boolean" index="true" stored="true" editable="true" filter="true"  type="boolean">
+   Asset exists on push
+  </property>  
+  
+  
+  
 </page>

@@ -1,0 +1,24 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $action = "$home$apphome/views/modules/librarycollection/createcollection.html")
+	
+<form name="adder" id="adder" class="validate-inputs" action="$action">
+	<input type="hidden" name="save" value="true" />
+	<input type="hidden" name="searchtype" value="$searchtype" />
+	<input type="hidden" name="field" value="owner" />
+	<input type="hidden" name="owner.value" value="$!user.getId()" />
+	
+	#set( $pdata = $context.getParameterData())
+	$context.putPageValue("data",$pdata)
+	
+	<input type="hidden" name="field" value="rootcategory" />
+	<input type="hidden" name="rootcategory.value" value="$!pdata.rootcategory" />
+	
+	#set( $collectionroot = $context.getRequestParameter("collectionroot"))
+	#if($collectionroot)
+		<input type="hidden" name="collectionroot" value="$collectionroot" />
+	#end
+	
+	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
+	$context.putPageValue("view","${searchtype}/${searchtype}addnew")	
+	$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+</form>

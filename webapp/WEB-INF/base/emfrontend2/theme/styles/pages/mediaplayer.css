@@ -379,9 +379,7 @@ color: #fff;
 
 #footerbase { 
 	height:32px;
-	position: absolute;
-	width: 100%;
-	bottom:0px;
+	
 	/*opacity: 0.8;*/
 	background-color: #333;
 }
@@ -401,12 +399,12 @@ color: #fff;
 #footermenu li.footermenu {
 	font-size: 1rem;
 	color:#fff;
-	line-height:32px;
+	height: 32px;
 	font-weight: normal;
 	float:left;
 	display:block;
 }
-#footermenu .gotoarrows { font-size: 1.6rem; padding: 0 2px; cursor:pointer; }
+#footermenu .gotoarrows { font-size: 1.6rem; line-height: 25px; padding: 0 2px; cursor:pointer; }
 #footermenu .goleftclick { padding-left: 8px;}
 #footermenu .gorightclick { padding-right: 8px;}
 #footermenu .gotoarrows { color:#777;} 
@@ -417,18 +415,23 @@ color: #fff;
 
 
 #footermenu li a {
-	color: white;	
+	color: #efefef;	
 	display:block;
+	line-height: 32px;
 }
 #footermenu .expandmenu {
 	padding:0 20px;
 }
-#footermenu li.tabselected a.expandmenu,
-#footermenu .expandmenu:hover {
+#footermenu li.tabselected {
+	background-color: #ccc;
+	
+}
+#footermenu li a:hover,
+#footermenu li.tabselected a {
 	text-decoration: none;
-		background-color: #ccc;
 	color: #212529;
 }
+
 #footermenu li.bottomtab .assetpreview {
     overflow: hidden; 
     text-overflow: ellipsis;
@@ -480,5 +483,62 @@ body.widthless1000 #pdf-thumbnail-sidebar
 
 }
 
+.assettab
+{
+	cursor: pointer;
+}
+.media-presets { padding-top:10px;}
+.media-presets-sidebar {
+	background-color:#CCCCCC;
+	height: 100%;
+	
+}
+.media-presets-sidebar h3 {
+	color: #bbb;
+    padding: 5px 10px 7px;
+    background-color: #333;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+	margin:0;
+	}
+.media-presets-sidebar-content {
+	padding:10px;
+	color:#333;
+}
+.mediapreset {
+	background-color:#CeCeCe;
+	border:2px solid #CeCeCe;
+	width:220px;
+	height: 220px;
+	text-align:center;
+	line-height: 1;
+	float:left;
+	margin:0 6px 6px 0;
+	color:#333;
+	
+}
+.mediapreset:hover
+ {
+	border:2px solid #56994C;
+}
+.mediapresetselected
+ {
+	border:2px solid #56994C;
+}
+.mediapreset a.mediapresetcontainer {
+	display:blocK;
+	padding:20px 10px 10px;
+	
+}
+.mediapreset-image {
+	height: 165px;
+}
+.mediapreset img {
+	border:2px solid #fff;
+	max-width:180px; 
+	max-height: 165px;
+}
 
-
+.embedcopytext textarea {
+	visibility: hidden;	
+}

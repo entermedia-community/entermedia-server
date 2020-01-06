@@ -71,6 +71,10 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 				log.info("Archived asset to ${newpage.getContentItem().getAbsolutePath()}");
 				asset.setFolder(fullpath.isFolder());
 				asset.setValue("retentionstatus","archived");
+				
+				//TODO: By default users should not see these any more. Add a permission that filters in "retentionstatus","archived"
+				
+				
 				asset.setValue("archivesourcepath",newsourcepath);
 			}
 			else

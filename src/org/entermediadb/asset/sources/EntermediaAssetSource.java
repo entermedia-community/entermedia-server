@@ -53,29 +53,28 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Override
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
-		return getPullManager().getOriginalDocumentStream(getMediaArchive(), inAsset);
+		return getPullManager().getOriginalPuller().getOriginalDocumentStream(getMediaArchive(), inAsset);
 	}
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
-
-		return getPullManager().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
+		//log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
+		return getPullManager().getOriginalPuller().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
 
 	@Override
 	public boolean handles(Asset inAsset)
 	{
-
-		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
-		String clusterid = inAsset.get("mastereditclusterid");
-
-		if (clusterid != null && !clusterid.equals(localid))
-		{
-			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
-			return true;
-		}
 		return false;
+//		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
+//		String clusterid = inAsset.get("mastereditclusterid");
+//
+//		if (clusterid != null && !clusterid.equals(localid))
+//		{
+//			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
+//			return true;
+//		}
+//		return false;
 	}
 
 	@Override
@@ -121,9 +120,11 @@ public class EntermediaAssetSource extends BaseAssetSource
 	}
 
 	@Override
+	@Deprecated
 	public int importAssets(String inBasepath)
 	{
-		return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true);
+		//return (int) getPullManager().processPullQueue(getMediaArchive(), "asset", true,null);
+		throw new OpenEditException("Not impletmented");
 	}
 
 	@Override

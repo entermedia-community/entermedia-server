@@ -6,6 +6,8 @@
 {
 	"response":
 		{
-			"status":"$error"
+			"status":"$error",
+			"height": $asset.height, 
+			"width" : $asset.width
 		}
 }

@@ -1,14 +1,22 @@
-#set( $root = "$home$apphome/components/upload/types/html5")
+#set( $root = "$home$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
+
 #if( !$collectionid && $nodeID ) 
     #set($category = $mediaarchive.getData("category",$nodeID))
 	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
-#if( $librarycol )
+#if (!$librarycol)
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+	#end
+#end
+#if( $librarycol && !$collectioinid)
     #set($collectionid = $librarycol.getId())
 #end
+$context.putPageValue("librarycol",$librarycol)
+
 <div class="container-fluid">
 <div class="row">
     <div  class="col-4 col-upload-left">
@@ -46,7 +54,7 @@
     <div  class="col-8 col-upload-right" >
 
 <form id="uploaddata" name="wizard" onSubmit="return false;"
-				    action="$root/finish.html" class="validate"  >
+				    action="$root/finish.html" class="force-validate-inputs"  >
 		<div id="uploadmetadata">
 		
 		
@@ -62,49 +70,34 @@
 		    </div>
 		    
 		    <div  class="ui-widget-content"> 
-				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid && !$nodeID) 
-				##TODO - Add library filtering here..
-				<div class="inputformrow">
-					<div class="emdatafield">[[Choose Collection]]</div>
-					<div class="emdatafieldvalue ">
-						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" 
-							data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
-							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
-							#if( $librarycol )
-							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
-							#end
-						</select>
-					</div>
-					<hr>
-				</div>
-			#end
 
-					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-					
-					#if( $collectionid)
-						$context.putPageValue("view","asset/multipleuploadcollection")	
-						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
-						$!context.setRequestParameter("libraries.value",$collection.library)
-						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
-						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid"/>
-
-					#else
+				#if( $nodeID)
+						$!context.setRequestParameter("libraries.value",$!librarycol.library)
+						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
+						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+				#else		 
 				
-					#end
-
-					#if($nodeID)
+					#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+						$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+					#end	
+					
+				#end				
+				
+				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+				
+				#if($nodeID)
 						<input type="hidden" name="field" value="category" />
-						<input type="hidden" name="category.value" value="$nodeID"/>
+						<input id="nodeid" type="hidden" name="category.value" value="$nodeID"/>
+				#end
+
+                    #if($collectionid || $nodeid)
+						$context.putPageValue("view","asset/multipleuploadcollection")	
+					#else
+						$context.putPageValue("view","asset/multipleupload")	
 					#end
-
-                                        #if($collectionid || $nodeid)
-					$context.putPageValue("view","asset/multipleuploadcollection")	
-
-#else
-					$context.putPageValue("view","asset/multipleupload")	
-#end
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-				##have the cancel delete these assets?
+					
+					##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
 				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
 		        	</div>
@@ -117,20 +110,8 @@
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Upload Queue]]</div>
 		    <div  class="ui-widget-content">
-					
-					#if( $collectionid ) 
-                        #set($href = "$home$apphome/views/modules/librarycollection/media/${collectionid}.html?sortby=assetaddeddateDown")
-                        #if ($nodeID)
-						    #set( $href = $href + "&nodeID=$nodeID")
-					    #end
-					#elseif($nodeID)
-                         #set($href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown")
-                         #set( $href = $href + "&nodeID=$nodeID")
-                    #else
-                        #set($href = "$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown")
-					#end
-					
-					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="$href"> [[View Upload]]</a>	 
+
+					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="#"> [[View Upload]]</a>	 
 					<ul id="up-files-list-completed" class="up-files-list" >
 					</ul>	
 			</div>
@@ -142,12 +123,41 @@
 
 <script>
 $(document).ready(function() 
-		{ 
+{ 
 			
 	$("#upload_field").val('');
 	var allfiles = new Array();
 	$("#up-files-list").empty();
-	//console.log('clean');
-		});
+
+	$("#viewassetsbtn").click(function(e)
+	{
+		e.preventDefault();
+		var collectionid = $("#currentcollection").val();
+		var nodeid = $("#nodeid").val();
+		
+	    var href = null;
+	    if(collectionid)
+	    {
+	    	href = "$home$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
+	    	if( nodeid)
+	    	{
+	    		href = href + "&nodeID=" + nodeid;
+	    	}
+	    }
+	    else if( nodeid)
+		{
+	         href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+		}
+	    else
+	    {
+	        href = "$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
+		}
+	    document.location.href = href;
+		
+	});
+	
+
+	
+});
 
 </script>

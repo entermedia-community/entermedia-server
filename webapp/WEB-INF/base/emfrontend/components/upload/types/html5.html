@@ -60,7 +60,7 @@
 				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
 				##TODO - Add library filtering here..
 				<div class="inputformrow">
-					<div class="emdatafield">[[Choose Collection]]</div>
+					<div class="emdatafield">[[Choose Library]]</div>
 					<div class="emdatafieldvalue ">
 						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
@@ -68,21 +68,35 @@
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context))</option>
 							#end
 						</select>
+						#if($canaddnewcollection)
+							<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" ><img src="$apphome/theme/images/icons/addgray.png"></a>
+	             		#end
 					</div>
 					<hr>
 				</div>
-			#end
+				#end
 
 					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 					
-					#if( $collectionid)
+				#if( $collectionid)
 						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
 						$!context.setRequestParameter("libraries.value",$collection.library)
+						#set($collection = $mediaarchive.getData("librarycollection",$collectionid))
+			<div class="uploadcollection">
+			<span class="emdatafield">
+						[[Collection]]
+				</span>
+				<div id="detail_longcaption" class="emdatafieldvalue ">
+						<strong>$collection</strong>
+				</div>
+				<hr>
+			 
+			</div>
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
-					#else
+				#else
 				
-					#end
+				#end
 
 					#set( $nodeId = $context.getRequestParameter("nodeID") )
 					#if($nodeId)

@@ -14,11 +14,12 @@
 		<div id="edit-data">	
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 		</div>
+		<div style="padding:10px">
 		<input class="btn btn-sm btn-primary right" type="submit" value="[[Save]]" />
 		<a class="btn btn-sm btn-danger red" style="margin-left: 10px;" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
-		
-		<div id="messagearea">$!message
+		<div id="messagearea">$!message</div>
 		</div>
+		
 		</form>
 	</div>
 </div>

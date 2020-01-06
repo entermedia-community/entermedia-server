@@ -19,6 +19,15 @@ $!request.getAttribute( "oe-exception")
 			<label for="password">[[Password]]</label>
 			<input class="form-control" id="password" name="password" type="password" />
 			</div>
+			#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
+			<input type="hidden" name="field" value="googlekeystring"/>
+			<div class="form-group">
+			<label for="Google Key">[[Two Factor Authenticator Key]]</label>
+			<input class="form-control" id="googleauth" name="googlekeystring.value" type="text" />
+			</div>
+			<a href="$home$content.loginroot/getkey.html">[[If you haven't yet generated a two factor key, click here]]</a>
+			#end
+			
 			<div class="form-group">
 			<input class="btn btn-sm btn-primary float-right" name="submit" type="submit" id="login-submit" value="[[Login]]" />
 			</div>

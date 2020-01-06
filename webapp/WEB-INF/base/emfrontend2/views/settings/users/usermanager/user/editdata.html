@@ -49,9 +49,7 @@
 
 			<div class="ui-widget-actions">
 			<a href="#" class="btn btn-sm btn-primary" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
-			<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Edit Password]]</a>
 			#if($canactasotherusers)
-			<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
 			<a class="btn btn-sm btn-danger red" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
 			#end
 		    </div>

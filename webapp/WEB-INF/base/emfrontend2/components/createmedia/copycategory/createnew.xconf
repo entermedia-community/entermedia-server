@@ -2,6 +2,6 @@
 	<path-action name="ProjectModule.addCategoryToCollection"/>
 	<path-action name="ProjectModule.addAssetsToCollection"/>
 	
-		<path-action name="ProjectModule.redirectToCollection"/>
+	<path-action name="ProjectModule.redirectToCollectionRoot"/>
 	
 </page>

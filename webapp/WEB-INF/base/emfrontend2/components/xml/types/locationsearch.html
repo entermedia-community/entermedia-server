@@ -9,9 +9,9 @@
 
 <span id="datevalue${inputid}" >
 #if( $val.isEmpty() )
-	<input class="defaulttext" name="${inputid}.value"  id="${inputid}"  size="8" type="text">
+	<input name="${inputid}.value"  id="${inputid}" placeholder="[[Address or Zip code]]" size="17" type="text">
 #else
-	<input name="${inputid}.value"  id="${inputid}" value="$!val" size="8" type="text">
+	<input name="${inputid}.value"  id="${inputid}" value="$!val" size="10" type="text">
 
 #end	
 	$!term.getParameter("maperror")

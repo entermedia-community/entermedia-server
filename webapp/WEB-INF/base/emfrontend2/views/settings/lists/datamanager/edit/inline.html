@@ -6,12 +6,14 @@
 			#set( $foundview = $searcher.getPropertyDetailsArchive().getView(${searcher.searchType},"${searcher.searchType}/${searcher.searchType}addnew"))
 			#if( $foundview )
 				#set( $view = "${searcher.searchType}/${searcher.searchType}addnew")
+			#else
+				#set( $view = "default/addnew")
 			#end
 		#end
 		$context.putPageValue("view", $view)
 		#set( $targetselect = $context.getRequestParameter("update" ) )
 		
-		<form id="inlinedata" name="dataeditor"   >
+		<form class="inlinedata" name="dataeditor"   >
 			<input name="save" type="hidden" value="true" />
 			<input name="id" type="hidden" value="$!data.id" />
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -19,7 +21,7 @@
 			<input name="origURL"  type="hidden" value="$!origURL" />
 		<div id="edit-data">	
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-		<input id="inlinesave" class="btn btn-sm btn-primary float-right" style="" type="button" value="[[Save]]" />
+		<input id="" data-targetselect="$targetselect" class="btn btn-sm btn-primary float-right inlinesave"  type="button" value="[[Save]]" />
 
 		</div>
 		<div id="messagearea">$!message
@@ -34,31 +36,5 @@
 		$(document).on("keypress", "form", function(event) { 
 		    return event.keyCode != 13;
 		});
-		
-		
-		
-		jQuery("#inlinesave").on("click", function(){
-			var queryString = $('#inlinedata').formSerialize(); 
-            //var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json?" + queryString;
-            var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
-            var targetselect = "$targetselect";
-            //debugger;
-			$.getJSON(url, queryString, function(data) {
-				$('#' + targetselect).append($('<option>', {
-				    value: data.id,
-				    text: data.name
-				}));
-				$("#" + targetselect).val(data.id);
-				
-			});
-			
-			jQuery(".modal").modal('hide');
-			
-		}
-		
-		);
-		
-	
-
 		
 		</script>

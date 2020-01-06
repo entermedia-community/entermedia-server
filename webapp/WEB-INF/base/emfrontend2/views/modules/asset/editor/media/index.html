@@ -1,0 +1,193 @@
+<div id="asset-editor-container" class="h-100">
+<h2>[[Media Files]]</h2>
+<div class="assetpanel-editorinner">
+
+
+
+
+
+
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+
+
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($newpreset = $context.findValue("newpreset"))
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+$context.putPageValue("results", $results)
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+
+#set($currentpreset = $context.getRequestParameter("currentpreset"))
+
+
+
+<div class="row no-gutters" style="height: calc(100% - 40px)">
+	<div class="col">
+	
+						
+	
+##	#if($caneditasset)
+##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+##	   href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
+##
+##	#end
+
+		<div class="media-presets">
+		#foreach ($result in $results)
+			
+			$context.putPageValue("presetdata",$result)
+			#set($presetdata = $result)
+			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+			#if(!$cancrop)
+				#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+					#set($show = false)
+				#else
+				
+					#set($show = true)
+				#end
+			#else
+				#set($show = true)
+			#end
+		
+			#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
+				
+				#if($currentpreset == $result.id)
+					#set($current = $result)
+				#end
+				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+				#set($height = $mathtool.toInteger($dimension.getHeight()))
+				#set($width = $mathtool.toInteger($dimension.getWidth()))
+				
+				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
+				
+				<div class="mediapreset #if($current.id==$result.id) mediapresetselected #end">
+				<a href="$home$apphome/views/modules/asset/editor/media/index.html?currentpreset=$!{result.id}&assetid=$asset.id"
+				   	class="ajax mediapresetcontainer"
+					targetdivinner="asset-editor-container" data-oemaxlevel="1"
+					title="$result.name">
+					<div class="mediapreset-image">
+						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
+					</div>
+					</a>
+					<div>
+						<a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
+						   title="[[Download]] $result.generatedoutputfile">
+							$result.name <i class="fas fa-download"></i>
+						</a>
+					</div>
+					
+				</div>
+				
+			#end
+		
+		#end  ##foreach
+		<div class="clearfix"></div>
+		<hr>
+		
+		##make it submit for on file selected
+			<form id="uploadform" 
+			class="ajaxform inline-form" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" 
+			action="$home${apphome}/views/modules/asset/editor/media/customthumb.html">
+			#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+		#if( !$cdnprefix )
+			#set( $cdnprefix = $context.siteRoot )
+		#end
+		#if($candownload)	
+			<a class="btn btn-sm btn-primary" 
+			href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"
+			style="margin-right:5px;"
+			title="[[Download]] $asset.name"
+			><i class="fas fa-download"></i> [[Download Original]]</a>
+		#end
+##	<span class="btn btn-sm btn-secondary btn-default btn-file">
+##	[[Upload]] 
+##	<input type="file" name="file.0" id="file0-file" onchange='$("#uploadform").submit();'>
+##	</span>
+##	<span id="file0-file-info" style="font-size:90%"></span>
+	##[[Replace Image]]:<input type="file" size="50" name="file.0">
+	<input type="hidden" name="unzip" value="false" />
+	<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+	<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+		</form>
+		</div>
+	</div>
+	<div class="col-md-3">
+		#if($current)
+			#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $current.id))
+			#set($height = $mathtool.toInteger($dimension.getHeight()))
+			#set($width = $mathtool.toInteger($dimension.getWidth()))
+			#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+			<div class="media-presets-sidebar">
+			<h3>[[File]]</h3>
+			<div class="media-presets-sidebar-content">
+				<a class="btn btn-xs btn-secondary emdialog"
+					href="$home$apphome/views/modules/asset/editor/media/presetsaveas.html?presetid=$current.id&assetid=$asset.id"
+					data-noesc="true" 
+					title="[[Copy Media]]"
+				>[[Save as...]]</a>
+				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+					targetdivinner="asset-editor-container" 
+					data-oemaxlevel="1" 
+				>[[Delete]]</a>
+			#set($cancrop = $conversionUtil.canCrop($catalogid, $current.id, $asset.id))
+				#if($cancrop)
+				##change to use filename not presetid
+				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+					targetdivinner="asset-editor-container" 
+					data-oemaxlevel="1" 
+				href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${current.id}">[[Crop]]</a>
+				#end
+			</div>
+			<h3>[[Details]]</h3>
+			<div class="media-presets-sidebar-content">
+			<strong>[[Name]]:</strong> $current.name<br>
+			<strong>[[Width]]:</strong> $!{width}px<br>
+			<strong>[[Height]]:</strong> $!{height}px<br>
+			#if ($aspectratio)
+			<strong>[[Aspect]]:</strong> $aspectratio</span>
+			#end
+			</div>
+			<h3>[[Share]]</h3>
+			<div class="media-presets-sidebar-content" style="position:relative">
+				##<a class="btn btn-xs btn-secondary" 
+				##    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($current.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $current))?includemetadata=true">[[Download]]</a>
+				#if($canembedasset)
+				<a class="btn btn-xs btn-secondary embedbtn copytoclipboard " 
+					id="${current.id}-btn" 
+					data-targetdiv="embedalert"
+					data-copytext="${current.id}-embed"
+					data-isshowing="false"
+					data-embedtext="" 
+					href="">[[Link]]</a>
+					<input style="position:absolute; top:-1000px;" id="${current.id}-embed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
+				<a class="btn btn-xs btn-secondary embedbtn copytoclipboard " 
+					id="${current.id}-obtn" 
+					data-targetdiv="embedalert"
+					data-copytext="${current.id}-oembed"
+					data-isshowing="false" 
+					href="">[[oEmbed]]</a>
+					<input style="position:absolute; top:-1000px;" id="${current.id}-oembed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${current.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
+					<div class="alert alert-success" id="embedalert" role="alert" style="position: absolute; top:10px; display:none;">[[Copied to Clipboard]]</div>
+				
+				#end
+			
+				
+			</div>
+			</div>
+		#end
+	</div>
+</div>
+
+
+
+</div>
+</div>
+
+
+

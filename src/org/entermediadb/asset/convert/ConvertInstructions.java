@@ -657,7 +657,7 @@ public class ConvertInstructions
 		{
 			setWatermark(Boolean.valueOf(watermark));
 		}
-
+        
 		watermark = getProperty("canshowunwatermarkedassets");
 		if (watermark != null)
 		{
@@ -667,7 +667,7 @@ public class ConvertInstructions
 				setWatermark(false);
 			} 
 		} else {
-			//setWatermark(true);
+			//setWatermark(false);
 		}
 
 		

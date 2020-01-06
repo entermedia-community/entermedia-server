@@ -1,39 +1,42 @@
 <div id="eventeditpage">
-<div  class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">Properties</div>
-<div  class="ui-widget-content" > 
- 
+<h3>[[Event Properties]]</h3> 
 <form action="save.html">
 <table class="table table-striped settings-table" cellpadding="5">
-<tr><td>Name:</td><td><input type="text" class="form-control" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
-<tr><td>Period:</td><td><input type="text" class="form-control" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
-<tr><td>Starting:</td><td><input type="text" class="form-control" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
-<tr><td>Enabled:</td><td><input name="enabled" class="form-control"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
+<tr><td style="width:180px;">[[Name]]:</td><td><input type="text" class="form-control" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
+<tr><td>[[Period]]:</td><td><input type="text" class="form-control form-control-sm" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+<tr><td>[[Starting]]:</td><td><input type="text" class="form-control  form-control-sm" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
+<tr>
+	<td>[[Enabled]]:</td>
+	<td>
+		<div class="form-check">
+			<input name="enabled" class="form-check-input"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/>
+		</div>
+	</td>
+</tr>
 #if( $pathevent)
-<tr><td>Event URL:</td><td>$!pathevent.getPage().getPath()</td></tr>
+<tr><td>[[Event URL]]:</td><td>$!pathevent.getPage().getPath()</td></tr>
 <input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
 #else
-<tr><td>Event URL:</td><td><input name="eventpath"  class="form-control" size="50" value="/${catalogid}/events/FOLDER/NAME.html"/></td></tr>
+<tr><td>[[Event URL]]:</td><td><input name="eventpath"  class="form-control" size="50" value="/${catalogid}/events/FOLDER/NAME.html"/></td></tr>
 #end
 #if ( $pathevent.getFormattedLastRun()  )
-<tr><td>Last ran on: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
+<tr><td>[[Last ran on]]: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
 #end 
 </table>
 
-<input class="btn" type="submit" value="[[Save]]"/>
+<input class="btn btn-primary" type="submit" value="[[Save]]" style="margin-right:10px;"/>
 
  <a class="btn btn-sm btn-primary ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
  <a class="btn btn-sm btn-secondary emdialog" href="$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> 
-&nbsp;&nbsp;<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
+&nbsp;&nbsp;<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
 </form>
 
-</div>
-</div>
 
-<div class="edit-permissions">
+<div class="edit-permissions" style="padding:10px; margin-top:20px; background-color: #f1f1f1;">
 $pages.include("$apphome/views/settings/events/triggers/edit/log.html")
 </div>
+<hr>
 <p>
-<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
+<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
 </p>
 </div>

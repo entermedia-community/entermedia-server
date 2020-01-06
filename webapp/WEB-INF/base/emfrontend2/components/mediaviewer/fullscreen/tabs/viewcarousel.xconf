@@ -1,0 +1,12 @@
+<page>
+	
+	<page-action name="DataEditModule.loadHitsWrapped"  >
+	</page-action>
+	<page-action name="DataEditModule.setHitsPageSize">
+	</page-action>	
+	<page-action name="DataEditModule.setPageById">
+		<property name="pagevalue">asset</property>
+	</page-action>
+
+
+</page>

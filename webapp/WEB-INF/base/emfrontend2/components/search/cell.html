@@ -14,8 +14,10 @@
 $context.putPageValue('data', $data )
 $context.putPageValue('val', $val )
 
-
-#set ($viewtype = $detail.viewType)
+#set($viewtype = $context.getPageValue('viewtype'))
+#if (!$viewtype)
+	#set ($viewtype = $detail.viewType)
+#end
 
 #if (!$viewtype)
 	#set ($viewtype = $detail.dataType)
@@ -25,5 +27,5 @@ $context.putPageValue('val', $val )
 	#set ($viewtype = "default")
 #end
 
-$pages.include("/system/components/xml/typesreadonly/${viewtype}.html?viewonly=true", $context)
+$pages.include("$apphome/components/xml/typesreadonly/${viewtype}.html?viewonly=true", $context)
 

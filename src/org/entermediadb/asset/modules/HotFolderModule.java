@@ -1,7 +1,8 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
 
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.sources.AssetSource;
@@ -17,7 +18,16 @@ public class HotFolderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);		
 		Collection folders = archive.getAssetManager().getAssetSources();
-		inReq.putPageValue("sources", folders);
+		Collection hotfolders = new ArrayList();
+		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+			if( source.isHotFolder() )
+			{
+				hotfolders.add(source);
+			}
+		}
+		inReq.putPageValue("sources", hotfolders);
 	}	
 	
 	public AssetSource loadSource(WebPageRequest inReq)  throws Exception

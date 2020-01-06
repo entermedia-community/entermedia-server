@@ -37,9 +37,7 @@
 		#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
 		#set( $text = $link.name)
 		
-		##if($pname == "canmetadatageneral" &&  $caneditmetadatageneral == "false")
-		#if($link.id == "metadatageneral"  &&  $caneditmetadatageneral == "false" && $canviewmetadatageneral=="true")
-			#set($text = "View Metadata") ##change label
+		#if($link.id == "metadatageneral"  &&  ($caneditmetadatageneral || $canviewmetadatageneral ))
             #set( $permission = true)
 		#end
 
@@ -66,9 +64,9 @@
 			#elseif ($link.id == "assetpermissions")
 				#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
 			#elseif ($link.id == "metadatageneral")
-				#if($canmetadatageneral)
+				#if($caneditmetadatageneral)
 					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}&edit=true&cemg=$canmetadatageneral")
-				#else
+				#elseif($canviewmetadatageneral)
 					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 				#end
 			#end

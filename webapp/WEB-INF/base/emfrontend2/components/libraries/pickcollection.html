@@ -7,7 +7,7 @@
 		
 	#if( $canshowlibrarypicker )
 				<div class="librarypicker">
-					<form class="form-inline ajaxform" data-targetdiv="collectionpickerinner" action="$home$apphome/components/libraries/pickcollection.html">
+					<form class="form-inline ajaxform " data-targetdiv="collectionpickerinner" action="$home$apphome/components/libraries/pickcollection.html">
 						<input type="hidden" name="oemaxlevel" value="5" />
 						
 						#set( $detail = $searcher.getDetail("library"))
@@ -36,7 +36,7 @@
 					</div>
 	#end
 				<div class="collectionpicker">
-					<form  action="$home$apphome/views/modules/librarycollection/media/index.html" class="form-inline">
+					<form  action="$home$apphome/views/modules/librarycollection/media/index.html" class="form-inline autosubmitform">
 						<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 						#set( $detail = $searcher.getDetail("name"))
 						#set( $text = $detail.getText($context))
@@ -54,7 +54,7 @@
 						
 						
 						#if($canaddnewcollection)
-							<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
+							<a id="collectionidadd" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
 						#end
 					</form>
 				</div>

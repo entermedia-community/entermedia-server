@@ -22,7 +22,7 @@
 	<i class="fas fa-caret-down"></i></a>
 		<div class="dropdown-menu">
 			#if($caneditdata)
-			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  #set( $link = "$home$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
@@ -41,7 +41,11 @@
 
 
 <div>
-#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+	#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#else
+	#set( $leftbarstatus = false)
+#end
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 #set( $module = $content.module)
 

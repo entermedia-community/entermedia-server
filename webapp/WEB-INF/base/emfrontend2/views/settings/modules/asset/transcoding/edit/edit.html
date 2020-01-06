@@ -11,6 +11,12 @@
 #end
 $context.putPageValue("view", $view)
 
+#if( $data.guid )
+<a class="btn btn-sm btn-secondary" style="margin-right:10px" 
+	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.guid}'>
+[[View Parameters]]
+</a>	<br><br>
+#end
 
 <form id="dataeditor-settings" name="dataeditor-settings" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
@@ -20,20 +26,21 @@ $context.putPageValue("view", $view)
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
 	$pages.include("$apphome/components/xml/detaileditor.html", $context)
-<div class="ui-widget-actions">
+	
+	
+<div id="controlpanel" class="ui-widget-actions"  #if($data.systemdefinedpreset == "true" )style="display:none" #end>
 <a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
 <a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
-<a class="btn btn-sm btn-secondary" style="margin-right:10px" 
-	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.id}'>
-[[View Parameters]]
-</a>	
-
-
 <a class="btn  btn-sm btn-danger red"  href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		[[Delete]]
 	</span></a>
 </div>
+</div>
+#if( $data.systemdefinedpreset == "true" )
+[[Cannot change system defined presets]] <a href="#" onclick='$("#controlpanel").toggle();return false;' style="text-decoration: underline;">edit anyways</a>
+#end
+
 <br>
 <div id="messagearea">$!message
 </div>

@@ -125,7 +125,12 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		HitTracker existing = getInitialSearchResults();
 		SearchQuery q = existing.getSearchQuery().copy();
-		q.setSortBy("id");
+		if(existing.getSearchQuery().getSortBy() != null) {
+			q.setSortBy(existing.getSearchQuery().getSortBy());
+		} else {
+			q.setSortBy("id");
+
+		}
 
 		HitTracker selecteddata = getMediaArchive().getAssetSearcher().search(q);
 		if (existing.isAllSelected())

@@ -3,6 +3,8 @@ package org.entermediadb.google;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.json.simple.JSONObject;
+
 import com.google.gson.JsonObject;
 
 public class Results
@@ -45,7 +47,7 @@ public void setResultToken(String inToken)
 	fieldResultToken = inToken;
 }
 
-public void addFolder(JsonObject inFolder)
+public void addFolder(JSONObject inFolder)
 {
 	if( fieldFolders == null)
 	{
@@ -53,7 +55,7 @@ public void addFolder(JsonObject inFolder)
 	}
 	fieldFolders.add(inFolder);
 }
-public void addFile(JsonObject inFile)
+public void addFile(JSONObject inFile)
 {
 	if( fieldFiles == null)
 	{

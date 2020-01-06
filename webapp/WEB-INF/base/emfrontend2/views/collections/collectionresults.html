@@ -1,0 +1,11 @@
+$context.putPageValue("hits",$hits)
+	#if( $hits.isEmpty() )
+	
+	#else	
+		<div id="emresultscontent" >		
+			$pages.include("${apphome}/views/collections/pages.html", $context)
+			<div class="clearfix"></div>
+			$pages.include("${apphome}/components/collections/cards.html", $context)
+			
+		</div>
+	#end

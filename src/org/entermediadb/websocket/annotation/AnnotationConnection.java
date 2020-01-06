@@ -169,6 +169,10 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 				//obj.put("stuff", "array of annotations");
 				//remoteEndpointBasic.sendText(message);
 				getAnnotationManager().annotationAdded(this, map, message, catalogid, assetid);
+			} 
+			else if ("removeall".equals(command))
+			{
+				getAnnotationManager().annotationsRemoved(this, map, message, catalogid, assetid);
 			}
 		}
 		catch (Exception e)

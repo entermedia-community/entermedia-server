@@ -10,15 +10,8 @@
 				<property name="searchtype">${module}</property>
 	</path-action>
 	
-	<path-action name="ProjectModule.redirectToCollection"/>
-	
-	<path-action name="DataEditModule.loadData" >
-			<pageval>librarycol</pageval>
-			<idname>id</idname>
-			<searchtype>librarycollection</searchtype>
-    </path-action>
-	
-	
+	<path-action name="ProjectModule.redirectToCollectionRoot"/>
+		
 	<property name="save">true</property>
 
 			

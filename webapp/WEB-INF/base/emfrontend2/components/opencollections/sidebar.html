@@ -1,21 +1,29 @@
 #if ( $canviewopencollections)
+#if(!$userprofile.minimizeopencollectionscontent || $userprofile.minimizeopencollectionscontent == "false")
+	#set($minimized = true)
+#else
+	#set($minimized = false)
+#end
 <div id="left-col-opencollections-container">
 <div class="sidebar-component" id="left-col-opencollections" >
 	<div  class=" sidebar-component-header sidetoggle"
 		data-target="opencollectionscontent">
 		<i class="fas 
-		#if($userprofile.minimizeopencollectionscontent == "false") 
+		#if($minimized) 
 				 fa-caret-down 
 		  	#else 
 		  		 fa-caret-right 
 		  	#end 
 		 caret"></i>
 		<span>[[Recent Collections]]</span>
-		<span class="float-right component-actions" #if($userprofile.minimizeopencollectionscontent == "true") style="display: none;" #end>
+		<span class="float-right component-actions" 
+		#if(!$minimized == "true") style="display: none;" #end>
 			<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" data-width="900" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fas fa-search"></i></a>
 		</span>
 	</div>
-	<div  class="sidebar-component-content"  id="opencollectionscontent" #if($userprofile.minimizeopencollectionscontent == "true") style="display: none;" #end>
+	<div  class="sidebar-component-content"  
+		  id="opencollectionscontent" 
+ 		  #if(!$minimized) style="display: none;" #end>
 
 	<div class="opencollections">
 	<ul>
@@ -31,7 +39,7 @@
 				data-targetdiv="left-col-opencollections"
 			>
 				<div class="collectionrow collectionrowfavorite">
-					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
 					 	class="collectionbox #if ($selected ) selected #end favorite"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
@@ -51,7 +59,7 @@
 				data-targetdiv="left-col-opencollections"
 			>
 				<div class="collectionrow">
-					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
 					 	class="collectionbox #if ($selected ) selected #end"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">

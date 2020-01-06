@@ -1,12 +1,14 @@
+
 #if( $hits && $hits.getTotalPages() >  1  )
 	
 	#set($module = $content.module)
-	#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearcher().getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html")
+	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearcher().getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	#set($targetdiv = "dialogsearchresults")
 	<div class="resultstablenav">
-	<div id="pages" class="pages">
+	<div id="assetpickerpages" class="pages">
 		<ul>
 			#if( $hits.prevPage() )
 				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left"></span></a></li>

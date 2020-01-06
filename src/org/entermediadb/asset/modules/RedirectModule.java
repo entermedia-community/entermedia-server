@@ -57,6 +57,10 @@ public class RedirectModule extends BaseMediaModule {
 			String root = inReq.findValue("redirectroot");
 			log.info("redirect root was" + root);
 		
+			if(root == null) {
+				return;
+			}
+			
 			if (!root.equals(base)) {
 				return;
 			}
@@ -81,6 +85,9 @@ public class RedirectModule extends BaseMediaModule {
 		}
 	}
 	
+	
+	
+	
 	public void virtualHost(WebPageRequest inReq) {
 		String skipredirect = inReq.findValue("skipvirtualhost");
 		if(Boolean.parseBoolean(skipredirect)){
@@ -92,7 +99,7 @@ public class RedirectModule extends BaseMediaModule {
 
 			String base = utils.siteRoot() + utils.relativeHomePrefix();
 			base = toSubdomain(base);
-			log.info("normalized base was" + base);
+			//log.info("normalized base was" + base);
 			String catalogid = inReq.findValue("catalogid");
 
 			Searcher searcher = getHostSearcher(catalogid);

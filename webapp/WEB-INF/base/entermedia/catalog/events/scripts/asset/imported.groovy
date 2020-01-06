@@ -36,7 +36,7 @@ public void init()
 				{
 					foundretention = true;
 				}
-				if( asset.getValue(field) == null )
+				if( asset.getValue(field) == null || "editstatus".equals(field) )
 				{	
 					String value = row.get("fieldvalue");
 					asset.setProperty(field,value);

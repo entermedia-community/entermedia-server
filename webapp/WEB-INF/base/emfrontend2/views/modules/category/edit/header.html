@@ -18,20 +18,20 @@
 	      	[[No assets are associated]]
 	      	#end
       	#end
+      <div>
+		#foreach( $parent in $data.getParentCategoriesFrom(1))
+		#if( ${foreach.count} > 1) \ #end
+		<a  href="$home$apphome/views/modules/category/edit/edit.html?id=${parent.id}&viewid=categorygeneral&viewpath=category/categorygeneral&hitssessionid=hitscategorymedia/catalogs/public&searchtype=category&detailsreadonly=true&preview=true">$parent</a>
+		#end
+		</div>          
       </div>       
 
 
 </div>
-<div style="margin-left: 100px">
-#foreach( $parent in $data.getParentCategoriesFrom(1))
-#if( ${foreach.count} > 1) \ #end
-<a  href="$home$apphome/views/modules/category/edit/edit.html?id=${parent.id}&viewid=categorygeneral&viewpath=category/categorygeneral&hitssessionid=hitscategorymedia/catalogs/public&searchtype=category&detailsreadonly=true&preview=true">$parent</a>
-#end
-</div>          
 
 <div class="editholder">
-              <img style="padding-left: 15px;" src="$apphome/theme/images/toggle.png" class="sidetoggle" data-target="left-col">
+##<img style="padding-left: 15px;" src="$apphome/theme/images/toggle.png" class="sidetoggle" data-target="left-col">
 
-<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype">[[Edit]]</a>
+##<a id="editboxlink" class="" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype">[[Edit]]</a>
 
 </div>

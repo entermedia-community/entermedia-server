@@ -16,7 +16,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 <div class="hidenoselect2results">
 
 
-<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"   multiple="multiple" class="listtags #if($detail.isRequired() && !$multiedit) required #end" data-searchfield="$searchfield"
+<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"   multiple="multiple" class="listtags #if($detail.isRequired() && !$multiedit) required #end " data-searchfield="$searchfield"
  data-searchtype="$searcher.getSearchType()" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort" data-placeholder="[[Search]]" style="width: 250px">
 #foreach($vtag in $vals)
 #if($vtag && $vtag != "")

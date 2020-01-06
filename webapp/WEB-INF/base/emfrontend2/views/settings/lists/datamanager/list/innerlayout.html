@@ -22,10 +22,10 @@
 
 #set( $datatab = $content.datatab )
 <div class="tabnav">
-<a class="#if( $datatab == "data") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1&page=1">[[Data]]</a>
-<a class="#if( $datatab == "properties") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">[[Customize Fields]]</a>
-<a class="#if( $datatab == "views") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/views/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=2">[[Customize Views]]</a>
-<a class="#if( $datatab == "elastic") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/elastic/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=2">[[Elastic System Info]]</a>
+<a class="#if( $datatab == "data") current #end ajax" data-resize="true" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1&page=1">[[Data]]</a>
+<a class="#if( $datatab == "properties") current #end ajax" data-resize="true" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">[[Customize Fields]]</a>
+<a class="#if( $datatab == "views") current #end ajax" data-resize="true" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/views/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=2">[[Customize Views]]</a>
+<a class="#if( $datatab == "elastic") current #end ajax" data-resize="true" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/elastic/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=2">[[Elastic System Info]]</a>
 
 
 </div>
@@ -39,7 +39,7 @@
 
 ## <a class="btn" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
 
-<div id="datamanager-workarea">
+<div id="datamanager-workarea" style="padding-bottom:30px;">
 	<div id="propertyEditPanel">
 		$pages.streamContent()
 	</div>

@@ -253,7 +253,7 @@
   vertical-align: top;
   box-sizing: border-box;
   color: #fff;
-  background-color: #000;
+  background-color: transparent;
   position: relative;
   padding: 0;
   font-size: 10px;
@@ -354,7 +354,7 @@ body.vjs-full-window {
 .vjs-no-js {
   padding: 20px;
   color: #fff;
-  background-color: #000;
+  background-color: transparent;
   font-size: 18px;
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
@@ -902,7 +902,7 @@ body.vjs-full-window {
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
-  background-color: #000000;
+  background-color: transparent;
   cursor: pointer;
   margin: 0;
   padding: 0;

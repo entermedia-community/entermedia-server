@@ -37,6 +37,8 @@ $context.putPageValue("view", $view)
 
 </div>
 </div>
+
+
 #if($data && $data.id)
 <h2>[[Preset Parameters]]</h2>
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
@@ -55,9 +57,7 @@ $context.putPageValue("view", $view)
 #set( $fieldexternalvalue = $id )
 $context.putPageValue("canedittable", $caneditdata)
 
-#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparameter/edit&viewpath=presetparameter/edit&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
-
-##set( $args = "$args&editorpath=${content.searchhome}/edit/edit.html?id=$id")
+#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparameter&viewpath=presetparameter/edit&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
 #end

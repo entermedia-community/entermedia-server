@@ -1,4 +1,5 @@
 ##TODO: Show the right tab
 #set( $opentab = $userprofile.get("assetopentab"))
-
-$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html",$context)
+<div id="multieditpanel" class="h-100" data-assetid="$asset.getId()">
+$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html",$context)
+</div>

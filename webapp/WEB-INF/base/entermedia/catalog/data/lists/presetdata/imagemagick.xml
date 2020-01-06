@@ -1,5 +1,6 @@
 <properties>
   <preset id="imagethumb" >Small Thumbnail</preset>
+  <preset id="imagethumbpng" >Small Thumbnail PNG</preset>
   <preset id="imagemedium" >Image Medium</preset>
   <preset id="imagemediumsmall" >Image Medium Small</preset>
   <preset id="imagepreview" >Preview Extra Large</preset>

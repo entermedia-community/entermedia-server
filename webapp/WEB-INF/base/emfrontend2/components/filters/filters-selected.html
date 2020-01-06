@@ -1,3 +1,5 @@
+#set($hitssessionid =$hits.getSessionId())
+#set( $module = $content.module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -6,19 +8,12 @@
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
-#if( !$librarycol )
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
-        #set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-        #set($collectionid = $librarycol.getId())
-	#end
-#end
 
 #if( $librarycol )	
 	$context.putPageValue("librarycol",$librarycol)
 #end
 
-#if( $librarycol )	
+#if($librarycol )	
 <div class="collection-header">
 
 	<div class="collection-header-back">
@@ -34,40 +29,54 @@
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
 	
 	<div class="card card-mini card-collections">
-		<a href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}&clearselection=true" title="${librarycol}">
-	 	<div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+		
+		<a href="$home$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">
+	 	<div class="card-collections-thumb" style='background-image: url("#uuencode(${link})")'></div>
 	 	</a>
 	</div>
 	
 	<div class="collection-header-name">
-	<h1>${librarycol}</h1>
+	<h1><a href="$home$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">${librarycol}</a></h1>
 	</div>
+	
+	#if( $canviewsavedcollections )
+		<div class="collection-header-actions">
+		$pages.include("$apphome/components/librarycollection/togglelike.html",$context)
+		</div>
+	#end
 
 	<div class="collection-header-actions">
 	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
-	<i class="fas fa-caret-down"></i></a>
+	<i class="fas fa-bars"></i></a>
 		<div class="dropdown-menu">
+		 	#if(!$canforcebasiccollections)
+		 	#if($cansharecollection )
+			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+		 	#end
+		 	#end
+		 	#if( $canaddnewcollection)
+					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Collection]]</a>
+			#end
 			#if($caneditcollection)
 			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
+			  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
+			  #set( $link = "$home$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
+			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+              #if($librarycol.get('library'))
+				  #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+				  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
+			  #end
 			  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
-                          #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
-			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
-
-
 		   	#else
 			   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 			 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
 			#end
-		 	#if($cansharecollection && !$librarycol.isVisibility("3") )
-			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
-			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
-		 	#end
 		</div>
 	</div>
 	
@@ -78,14 +87,20 @@
 
 <div class="filtered #if( $librarycol ) filteredinresults #end">
 #if( $hits.getSearchQuery().hasMainInput() )
-<strong>[[Searching for]]:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
+	#if($librarycol)
+		[[Searching within]]: <strong><em>$librarycol</em> </strong> for:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+	#else
+		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+	#end
 #end
 ##TODO Loop over the view and show them here if they match
 
 #if( !$librarycol &&  $category )
+	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 	<a
 	href="$home$apphome/views/modules/asset/index.html?clearselection=true"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
+	#end
 #end
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 
@@ -104,8 +119,14 @@
 
 <a href="$href"
 	class="badge badge-light">$term.getDetail(): 
-	#foreach( $val in $term.getValueCollection() ) 
-		#if( $foreach.count > 1) or #end
+	#foreach( $val in $term.getValueCollection() )
+		
+	 	#if ($term.getDetail().getId() == "keywords")
+			#if( $foreach.count > 1) [[and]] #end
+		#else
+			#if( $foreach.count > 1) [[or]] #end
+		#end
+		
 		#if($term.getDetail().isList())
 			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
 		#elseif($term.getDetail().isBoolean())
@@ -136,14 +157,15 @@
 		 
 	#end <i class="fas fa-times"></i></a>
 #end
-#if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
+
+#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 	#if( $librarycol )
 		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
 	#else
 		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
 	#end
 	#if ($nodeID)
- 		#set($href = $href + "&nodeID=${nodeID}")
+ 		#set($href = $href + "&nodeID=$!{nodeID}")
 	#end
 	<a class="clearfilters" href="$href">[[Clear]]</a>
 #end

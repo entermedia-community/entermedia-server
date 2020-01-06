@@ -161,7 +161,8 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		if( !fieldFileUtils.isLegalFilename(inItem.getPath()))
 		{
-			log.info("Path is not web friendly.  Will have archivepath set");
+			if(log.isDebugEnabled())
+				log.debug("Path is not web friendly.  Will have archivepath set." + inItem.getPath());
 			//return true;
 		}
 
@@ -410,7 +411,7 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		public void processFile(ContentItem inContent, User inUser)
 		{
-			Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, getMediaArchive(), inUser);
+			Asset asset = createAssetIfNeeded(inContent, getMediaArchive(), inUser);
 			if( asset != null)
 			{
 				getAssetsToSave().add(asset);
@@ -419,6 +420,13 @@ public class AssetPathProcessor extends PathProcessor
 					saveImportedAssets(inUser);
 				}
 			}
+		}
+
+
+		protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser)
+		{
+			Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, inMediaArchive, inUser);
+			return asset;
 		}
 
 

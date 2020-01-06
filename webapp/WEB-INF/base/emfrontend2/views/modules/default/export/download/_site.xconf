@@ -5,7 +5,7 @@
 	<page-action name="ProfileModule.loadUserProfile" alltypes="true"/>
 	
 	<page-action name="Script.run" alltypes="true" >
-		<script>./generatecsv.groovy</script>
+		<script>/${catalogid}/events/scripts/modules/generatecsv.groovy</script>
 	</page-action>
 	
 	<generator name="velocity"/>

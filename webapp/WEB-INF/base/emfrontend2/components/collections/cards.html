@@ -1,14 +1,14 @@
-#foreach( $hit in $hits )
+#foreach( $hit in $hits.getPageOfHits() )
 	#if($hit.collectionimage)
-#set($asset = $mediaarchive.getAsset($hit.collectionimage))
-#else
-  #set( $asset = $mediaarchive.query("asset").match("category",$hit.rootcategory).searchOne() )
-#end
-	  #set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+		#set($asset = $mediaarchive.getAsset($hit.collectionimage))
+	#else
+  		#set( $asset = $mediaarchive.query("asset").match("category",$hit.rootcategory).searchOne() )
+	#end
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
 	<div class="card card-mini card-collections">
-	<a href="$apphome/views/modules/librarycollection/media/index.html?collectionid=${hit.id}&clearselection=true&assetclearresults=true&assetclearselection=true&clearfilters=true" 
+	<a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
 	   title="$hit.name">
-	 <div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	 <div class="card-collections-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'></div>
 	 <div class="card-name collectionbox">$hit.name</div>
 	 </a>
 	</div>

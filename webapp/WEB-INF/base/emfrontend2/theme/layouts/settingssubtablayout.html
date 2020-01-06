@@ -11,10 +11,16 @@
 		#set( $query = $searcher.createSearchQuery() )
 		#set( $null = $query.addExact("parentid", $parentid ))
 		$!query.addSortBy("ordering")
-		#foreach($screen in $searcher.cachedSearch($context,$query) )
-		<li #if( $subtab == "$screen.id" ) class="current" #end>
-			<a  href="$home$apphome${screen.path}">#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end </a>
-		</li>
+		#set($tabs = $searcher.cachedSearch($context,$query))
+		#if($tabs)
+			#foreach($screen in $tabs )
+			<li #if( $subtab == "$screen.id" ) class="current" #end>
+				<a  href="$home$apphome${screen.path}">#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
+				</a>
+			</li>
+			#end
+		#else
+		<li class="current"><a href="">$!subtab</a></li>
 		#end
 	</ul>
 </div>

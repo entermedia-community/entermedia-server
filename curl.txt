@@ -60,7 +60,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AWSudkEOitp-LpW3ZyZX' | python -mjson.tool
 
 
-curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AWxThKyEX1lT2im69SSK' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:b0173a11_f45e_4be6_9465_b5985d023382' | python -mjson.tool
 
@@ -100,6 +100,19 @@ curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
   "explain" : true
 }'| python -mjson.tool
 
+
+curl -XGET http://localhost:9200/assets_catalog/_search -d '{
+  "query" : {
+    "range" : {
+      "emrecordstatus.recordmodificationdate" : {
+        "from" : "2019-11-26T06:40:43.096Z",
+        "to" : null,
+        "include_lower" : true,
+        "include_upper" : true
+      }
+    }
+  }
+}'| python -mjson.tool
 
 curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
   "from" : 0,
@@ -196,88 +209,6 @@ curl -XDELETE 'http://localhost:9200/assets_catalog/lock/AWSutPnzs12lHoNKThY8'
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
-
-
-curl -XGET "http://localhost:9200/assets_catalog/asset/_search' -d '{
-  "from" : 0,
-  "size" : 50,
-  "query" : {
-    "bool" : {
-      "must" : [ {
-        "wildcard" : {
-          "keywords" : "*new*"
-        }
-      }, {
-        "bool" : {
-          "should" : [ {
-            "match" : {
-              "viewasset" : {
-                "query" : "true",
-                "type" : "boolean"
-              }
-            }
-          }, {
-            "match" : {
-              "viewasset" : {
-                "query" : "library_avrtm63d0olgviybqvht",
-                "type" : "boolean"
-              }
-            }
-          }, {
-            "match" : {
-              "viewasset" : {
-                "query" : "group_visualdata",
-                "type" : "boolean"
-              }
-            }
-          }, {
-            "match" : {
-              "viewasset" : {
-                "query" : "group_administrators",
-                "type" : "boolean"
-              }
-            }
-          }, {
-            "match" : {
-              "viewasset" : {
-                "query" : "user_admin",
-                "type" : "boolean"
-              }
-            }
-          } ]
-        }
-      } ]
-    }
-  },
-  "explain" : false,
-  "aggregations" : {
-    "libraries" : {
-      "terms" : {
-        "field" : "libraries",
-        "size" : 10
-      }
-    },
-    "assettype" : {
-      "terms" : {
-        "field" : "assettype",
-        "size" : 10
-      }
-    },
-    "fileformat" : {
-      "terms" : {
-        "field" : "fileformat",
-        "size" : 10
-      }
-    },
-    "editstatus" : {
-      "terms" : {
-        "field" : "editstatus",
-        "size" : 10
-      }
-    }
-  }
-}' 
-1 hits in: 0.002 seconds]
 
 
 curl -XPOST localhost:9200/temp2 -d '{
@@ -446,6 +377,7 @@ Get a single field def:
 _mapping/article/field/title
 curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
 
+curl -XGET  'http://localhost:9200/entermediadb_catalog/_mapping/field/sourcepath?pretty=true'  
 
 
 <!-- Run this in a 2 or 3 node cluster -->
@@ -460,8 +392,47 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
 curl -XGET 'http://localhost:9200/_cat/master?v' 
 
 curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
-    "transient" : {
+    "persistent" : {
         "cluster.routing.allocation.disk.watermark.low" : "5gb",
         "cluster.routing.allocation.disk.watermark.high" : "2gb"
     }
 }'
+
+
+
+curl -XGET 'http://localhost:9200/_analyze' -d '
+{
+  "analyzer": "standard",
+  "text": "Text to analyze"
+}
+'| python -mjson.tool
+
+
+
+curl -XGET 'http://localhost:9200/assets_catalog/_analyze' -d '
+{
+  "analyzer": "lowersnowball",
+  "text": "HL_06_19_42_DRY.wav"
+}
+'| python -mjson.tool
+
+
+
+curl -XGET 'localhost:9200/assets_catalog/asset/_explain' -d '{
+      "query" : {
+"match" : {
+    "description" : {
+      "query" : "HL_1993_07_05.pdf",
+      "type" : "boolean",
+      "analyzer" : "lowersnowball"
+    }
+  }       
+
+
+
+      }
+}'
+
+
+
+

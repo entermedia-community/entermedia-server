@@ -526,7 +526,11 @@ public class UserManagerModule extends BaseMediaModule
 
 	protected User getUser( WebPageRequest inReq ) throws OpenEditException
 	{
-		String username = inReq.getRequiredParameter( USERNAME_PARAMETER );
+		String username = inReq.getRequestParameter( USERNAME_PARAMETER );
+		if( username == null)
+		{
+			username = inReq.getRequiredParameter( "userid" );
+		}
 		User user = null;
 
 		try
@@ -1409,8 +1413,17 @@ public class UserManagerModule extends BaseMediaModule
 			getSearcherManager().getSearcher("system", "user").saveData(user, inReq.getUser());
 			
 		}
-		
-		
 	}
 	
+	public void loadUserByFolder(WebPageRequest inReq)
+	{
+		String selecteduser = inReq.getRequestParameter("userid");
+		if( selecteduser == null)
+		{
+			String path = inReq.getPath();
+			selecteduser = PathUtilities.extractDirectoryName(path);
+		}
+		User user = getUserManager(inReq).getUser(selecteduser);
+		inReq.putPageValue("selecteduser", user);
+	}
 }

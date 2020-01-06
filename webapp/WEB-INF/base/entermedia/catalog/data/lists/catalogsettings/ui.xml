@@ -3,6 +3,7 @@
 		
 	<property id="show_add_media_on_nav" value="true">Show Add Media Button On Header</property>
 
+	<property id="stackedgalleryfield" value="assetttitle">Field to show on hover on the stacked gallery view</property>
 
 
 </properties>

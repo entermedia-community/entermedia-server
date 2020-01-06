@@ -17,11 +17,18 @@
 	<property id="groups" stored="true" index="true" type="list"   viewtype="multiselect"  listid="group" editable="false">Groups</property>
 	<property id="refreshtoken" stored="true" index="true" editable="true">Google Refresh Token</property>
 	<property id="httprefreshtoken" stored="true" index="true" editable="true">Google temporary Token</property>
+	<property id="firebasetokenid" stored="true" index="true" editable="true">Firebase ID</property>
 	<property id="clientid" stored="true" index="true" editable="true">Google Client ID</property>
 	<property id="accesstokentime" type="date" stored="true" index="true" editable="true">Access Token Time</property>
 	<property id="expiresin" type="long" stored="true" index="true" editable="true">Access Token expiry time</property>
 	<property id="lastlogin" type="date" stored="true" index="true" editable="true">Last Login Date</property>
-	<property id="creationdate" type="date" stored="true" index="true" editable="true">Creation DAte</property>
+	<property id="creationdate" type="date" stored="true" index="true" editable="true">Creation Date</property>
+	
+	<property id="assetportrait" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="userprofiles/${id}">
+        <name> 
+      	<language id="en"><![CDATA[Profile]]></language> 
+    	</name> 
+    </property>
 
 <!--  Custom fields -->
 

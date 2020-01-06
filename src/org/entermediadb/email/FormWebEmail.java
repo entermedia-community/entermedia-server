@@ -3,6 +3,7 @@ package org.entermediadb.email;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -25,7 +26,9 @@ public class FormWebEmail extends WebEmail
 		{
 			try
 			{
-				fieldPostMail.postMail(getTo(),getSubject(),null,getBody().toString(),getFrom());
+				String from = getFrom();
+				String fromname = getFromName();
+				fieldPostMail.postMail(getTo(),getSubject(),null,getBody().toString(),from, fromname);
 			}
 			catch (MessagingException ex)
 			{

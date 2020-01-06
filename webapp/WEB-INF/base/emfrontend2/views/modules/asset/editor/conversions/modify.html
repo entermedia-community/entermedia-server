@@ -1,22 +1,33 @@
-#set( $status = $conversionUtil.getConversionStatus($catalogid,$asset.id,$presetdata.id))
+#set( $status = $conversionUtil.getConversionStatusData($catalogid,$asset.id,$presetdata.id))
 #set( $task = $conversionUtil.getConversionTask($mediaarchive,$asset.id,$presetdata.id))
 ##File Name: $presetdata.generatedoutputfile
 #set( $date = $task.getValue("completed") )
-<span class="h3e">
-	$status $!context.getDateTime($date)
-	#if( $task.errordetails ) <pre>$task.errordetails</pre>#end
+<td class="text-center">
+<span class="conversionstatus_$!status.getId()">
+	#if($status.getId()=='retry' || $status.getId()=='new' )
+		<i class="fas fa-spinner fa-spin"></i>
+	#end
+	$status.getName()
 </span>
+</td>
+<td>
+<span>
+ 	$!context.getDateTime($date)
+</span>
+	#if( $task.errordetails ) 
+		<div class="conversionerrortext">$task.errordetails</div>
+	#end
 
 
 #set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.generatedoutputfile}" )
-<span class="h3e">
+<span class="">
 $pages.include("$home$apphome/views/modules/asset/editor/conversions/attachmenthistory/revisionslink.html?editPath=$editPath&assetid=${asset.id}&sourcepath=$asset.sourcepath", $context)
 </span>
 
 ##set($pagemanager = $mediaarchive.getPageManager())
 ##set($previewpath = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg")
 ##set($page = $pagemanager.getPage($previewpath, $context))
-
+</td>
 
 
 		

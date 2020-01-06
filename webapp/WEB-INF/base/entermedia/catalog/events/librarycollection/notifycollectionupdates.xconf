@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Send Collection Notifications</property>	
+	<property name="virtual">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/notifycollectionupdates.groovy</script>
+	</path-action>
+	<property name="period">5m</property>	
+</page>

@@ -2,9 +2,9 @@
 [
 #foreach ($res in $suggestions)#set( $s = $res.get('synonyms'))
 #if( ${foreach.count} > 1 ),#end
-{"label": "$!jsonUtil.escape("$s ($res.get('hitcount'))")", "value": "$!jsonUtil.escape($s)"}
+{"label": "$!jsonUtil.escape("$s #if(($res.hitcount))#end")", "value": "$!jsonUtil.escape($s)"}
 #end
 ]
 
-##{"label": "$s.replace($q,"<b>$q</b>") ($res.get('hitcount'))", "value": "$s"}
+##{"label": "$s.replace($q,"<b>$q</b>") #if(($res.hitcount))#end)", "value": "$s"}
 ## {"label": "Dog (2)", "value","Dog"}

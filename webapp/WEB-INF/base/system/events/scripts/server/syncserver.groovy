@@ -37,8 +37,8 @@ public void runit()
 	Page oldbase = pm.getPage("/WEB-INF/base/");
 	Page backupbase = pm.getPage("/WEB-INF/baseold/");
 	
-	Page newlib = pm.getPage("/WEB-INF/temp/basenew/WEB-INF/base/");
-	Page newbase = pm.getPage("/WEB-INF/temp/libnew/WEB-INF/lib/");	
+	Page newlib = pm.getPage("/WEB-INF/temp/libnew/WEB-INF/lib/");
+	Page newbase = pm.getPage("/WEB-INF/temp/basenew/WEB-INF/base/");	
 	if(backuplib.exists()) {
 		pm.removePage(backuplib);
 	}

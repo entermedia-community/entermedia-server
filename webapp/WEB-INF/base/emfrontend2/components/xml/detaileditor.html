@@ -15,12 +15,9 @@ $context.putPageValue("longform",false)
 
 
 #if(!$view)
-
-#if($viewid)
+	#if($viewid)
 		#set($view = "${searcher.searchType}/${viewid}")
-
-#end
-
+	#end
 #end
 
 
@@ -32,7 +29,7 @@ $context.putPageValue("longform",false)
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
 	#if( !$details)
-		[[No details available for this view.  Please configure your view settings.]]
+		[[No details available for this view]] ($view). [[Please configure your view settings.]]
 
 	#end
 #else
@@ -88,7 +85,7 @@ $context.putPageValue("longform",false)
 				#end
 			</td>
 			
-			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end" >
+			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end emdatafieldtype" >
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE
@@ -119,6 +116,8 @@ $context.putPageValue("longform",false)
 			</tr>
 		#end
 	#end	
+	
+	
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")

@@ -35,7 +35,7 @@ public class ElasticAutoCompleteSearcher extends BaseElasticSearcher implements 
 		if( inTracker.size() > 0)
 		{
 			Data word = createNewData();
-			word.setId(inWord);
+			word.setId(inWord.toLowerCase());  //THIS makes them only save one copy
 			word.setProperty("synonyms",inWord );
 			word.setProperty("hitcount", String.valueOf( inTracker.size() ) );
 			word.setProperty("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );

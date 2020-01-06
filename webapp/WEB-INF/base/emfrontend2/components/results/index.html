@@ -1,4 +1,8 @@
 #set( $module = $content.module)
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+$context.putPageValue("module", $module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -7,23 +11,31 @@
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
+
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
+	#if($module=="librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
 
 #if( $librarycol )	
-	$context.putPageValue("librarycol",$librarycol)
+	$context.putPageValue("librarycol", $librarycol)
 #end
 
+#if($module=="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
+
+	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
+
+#else
 
 <div id="emresultscontent" >
     #if(!$hidefilters)
-        $pages.include("$componenthome/filters/filters-selected.html", $context)
+        $pages.include("$apphome/components/filters/filters-selected.html", $context)
     #end
-	<div class="pushcontent">
+    #set( $colleftwidth = $userprofile.get("colleftwidth"))
+    #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+	<div class="pushcontent" style="#if($leftbarstatus!=false && $colleftwidth) margin-left:${colleftwidth}px;#end">
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			$context.putPageValue("showhover", "false")
@@ -77,3 +89,4 @@
 		#end
 	</div>	
 </div>
+#end

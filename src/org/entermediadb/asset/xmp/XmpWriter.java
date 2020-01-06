@@ -36,17 +36,17 @@ public class XmpWriter {
 		List<String> com = new ArrayList<String>();
 		com.add("-" + inTag + "=" + inValue);
 		com.add(inFile.getAbsolutePath());
-		return runExec(com);
+		return runExec(com).isRunOk();
 	}
 
 	protected String runExecWithOutput(List<String> inCom) throws OpenEditException {
-		ExecResult result = getExec().runExec("exiftool", inCom);
+		ExecResult result = getExec().runExec("exiftool", inCom, true);
 		return result.getStandardOut();
 	}
 
-	protected boolean runExec(List<String> inCom) throws OpenEditException {
-		ExecResult result = getExec().runExec("exiftool", inCom);
-		return result.isRunOk();
+	protected ExecResult runExec(List<String> inCom) throws OpenEditException {
+		ExecResult result = getExec().runExec("exiftool", inCom, true);
+		return result;
 	}
 
 	public void addSaveKeywords(Collection<String> inKeywords, List<String> inComm) throws Exception {
@@ -86,11 +86,21 @@ public class XmpWriter {
 			
 			addSaveKeywords(inAsset.getKeywords(), comm);
 			comm.add(path);
-			ok = runExec(comm);
+			ExecResult result  = runExec(comm);
 			if(ok) {
 				inAsset.setValue("assetmodificationdate", inItem.lastModified()); //This needs to be set or it will keep thinking it's changed
+				inAsset.setValue("xmperror", false); //This needs to be set or it will keep thinking it's changed
+				
 				inArchive.saveAsset(inAsset);
 
+			} else {
+				inAsset.setValue("xmperror", true); //This needs to be set or it will keep thinking it's changed
+				String error = result.getStandardError();
+				String output = result.getStandardOut();
+				inAsset.setValue("xmperrormessage", error);
+				inAsset.setValue("xmpoutput", output);
+
+				inArchive.saveAsset(inAsset);
 			}
 			
 		} finally {
@@ -126,11 +136,11 @@ public class XmpWriter {
 			removekeywords.add("-Subject="); // This only works on a line by
 												// itself
 			removekeywords.add(path);
-			ok = runExec(removekeywords);
+			ok = runExec(removekeywords).isRunOk();
 			if (ok) {
 				addSaveKeywords(inAsset.getKeywords(), comm);
 				comm.add(path);
-				ok = runExec(comm);
+				ok = runExec(comm).isRunOk();
 			}
 		} finally {
 			inArchive.fireMediaEvent("savingoriginalcomplete", "asset", inAsset.getSourcePath(), props, null);

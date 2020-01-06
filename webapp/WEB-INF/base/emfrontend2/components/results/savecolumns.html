@@ -1,6 +1,11 @@
 #set($searchtype = $searcher.getSearchType() )
+#set($moduleid = $context.getRequestParameter("moduleid"))
 #if( $searchtype == "asset")
-$pages.include("$componenthome/results/table.html")
+	$pages.include("$componenthome/results/table.html")
 #else
-$pages.include("$apphome/views/modules/${searchtype}/results.html")
+	#if($moduleid)
+		$pages.include("$apphome/views/modules/${searchtype}/results.html")
+	#else
+		$pages.include("$apphome/components/table/results.html")
+	#end
 #end

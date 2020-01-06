@@ -12,6 +12,8 @@
 	<property id="display" />
 	<property id="singlepage" />
 	<property id="enforceaspectratio" />
+	<property id="systemdefinedpreset" />
+	
 	<property id="outputfile" />
 </properties>
 

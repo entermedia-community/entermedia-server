@@ -425,7 +425,16 @@ public abstract class BaseAssetSource implements AssetSource
 		
 		getWebServer().saveMounts(configs);
 	}
+	
+	public void refresh( ) 
+	{
+		
+	}
 
+	public boolean isHotFolder()
+	{
+		return false;
+	}
 
 
 	protected Repository createRepo(String inType)

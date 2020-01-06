@@ -1,3 +1,5 @@
+#set($searchfield = $detail.getId() )
+
 #if($filternode)
 	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
 	#ifnull($viewpermission)
@@ -10,10 +12,11 @@
 			#if ($filternode.children.size() > 10)
 				<select id="${fieldname}select2" 
 						name="${fieldname}.value" 
-						class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
+						class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 						listid="${fieldname}filter" 
 						data-listid="${fieldname}filter" 
 						data-searchtype= '$searchtype'
+						data-searchfield="$searchfield"
 						onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
 						data-allowclear="false">
 					<option value=""></option>
@@ -26,7 +29,7 @@
 				#foreach($entry in $filternode.children)
 				<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 				##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
-				<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+				<input class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 				<label for="$entry.getId()${fieldname}_val"> $entry.getText($context) </label>
 				</a>
 				#end

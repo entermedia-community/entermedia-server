@@ -9,6 +9,14 @@
       <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
     </name> 
   </property>  
+  <property id="operation" index="true" indextype="not_analyzed" stored="true">  
+    <name> 
+      <language id="de"><![CDATA[Betrieb]]></language>  
+      <language id="en"><![CDATA[Operation]]></language>  
+      <language id="es"><![CDATA[Operación]]></language>  
+      <language id="fr"><![CDATA[Opération]]></language> 
+    </name> 
+  </property>    
   <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
     <name> 
       <language id="de"><![CDATA[Source-Pfad]]></language>  

@@ -10,7 +10,18 @@ public class ElasticSearchQuery extends SearchQuery
 {	
 	
 	public AbstractAggregationBuilder fieldAggregationBuilder;
+	protected String fieldAggregationJson;
 	
+	public String getAggregationJson()
+	{
+		return fieldAggregationJson;
+	}
+
+	public void setAggregationJson(String inAggregationJson)
+	{
+		fieldAggregationJson = inAggregationJson;
+	}
+
 	public AbstractAggregationBuilder getAggregation()
 	{
 		return fieldAggregationBuilder;
@@ -18,6 +29,8 @@ public class ElasticSearchQuery extends SearchQuery
 
 	public void setAggregation(Object inAggregationBuilder)
 	{
+		
+		
 		fieldAggregationBuilder = (AbstractAggregationBuilder) inAggregationBuilder;
 		setEndUserSearch(true);
 	}

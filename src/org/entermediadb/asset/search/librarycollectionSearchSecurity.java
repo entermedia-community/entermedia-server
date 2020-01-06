@@ -40,7 +40,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		{
 			SearchQuery child = inSearcher.query()
 					.all()
-					.notgroup("collectiontype", Arrays.asList("0","2"))
+					.notgroup("collectiontype", Arrays.asList("0","2","3"))
 					.getQuery();
 			inQuery.addChildQuery(child);
 			inQuery.setSecurityAttached(true);
@@ -72,7 +72,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				//.notgroup("parentcategories", catshidden)
-				.notgroup("collectiontype", Arrays.asList("0","2"))
+				.notgroup("collectiontype", Arrays.asList("0","2","3"))
 				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000

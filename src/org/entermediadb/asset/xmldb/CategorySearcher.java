@@ -19,4 +19,6 @@ public interface CategorySearcher extends Searcher
 	void deleteCategoryTree(Category inChild);
 
 	List findChildren(Category inElasticCategory);
+	
+	void clearCategories();
 }

@@ -3,7 +3,6 @@ package org.entermediadb.events;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +14,6 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.scanner.Parse;
 import org.entermediadb.asset.util.TimeCalculator;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
@@ -27,6 +25,7 @@ import org.openedit.error.ErrorHandler;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
@@ -229,7 +228,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		if (event != null)
 		{ 
 //			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
-			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
+			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this, getDefaultUser());
 //			{
 				getRunningTasks().push(runner);
 				runner.runBlocking(); //this will remove it again
@@ -387,17 +386,11 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 //		{
 //			catalogid = "system";
 //		}
-		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
-//		//UserManager usermanager = (UserManager)getModuleManager().getBean(catalogid,"userManager");
-		if( user == null)
-		{
-			throw new OpenEditException("No such user: admin");
-		}
+
 		
 		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
 		{
 			PathEvent event = (PathEvent) iterator.next();
-			event.setUser(user);
 			
 			if (event.isEnabled())
 			{
@@ -481,8 +474,8 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 		//loadTask(event);
-		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
-		event.setUser(user);
+//		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
+//		event.setUser(user);
 
 		getPathEvents().add(event);
 		return event;
@@ -607,6 +600,20 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		loadPathEvents();
 		loadTasks();
 		reloadScheduler();
+	}
+
+	public User getDefaultUser()
+	{
+		
+		
+			
+			UserSearcher searcher = (UserSearcher) getSearcherManager().getSearcher(getCatalogId(), "user");
+			
+			return searcher.getUser("admin", true);
+	
+		
+		
+		
 	}
 	
 	

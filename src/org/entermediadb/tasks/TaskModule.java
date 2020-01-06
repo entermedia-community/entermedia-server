@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,14 +22,19 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.projects.LibraryCollection;
+import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.users.Group;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class TaskModule extends BaseMediaModule
 {
@@ -45,14 +51,20 @@ public class TaskModule extends BaseMediaModule
 			return;
 		}
 		String id = "tasks" + collection.getId();
+		if (collection.getCategory() == null) 
+		{
+			log.info("Collection have not category");
+			return;
+		}
 		Category cat = archive.getCategory(id);
 		if( cat == null)
 		{
 			cat = (Category)archive.getCategorySearcher().createNewData();
 			cat.setId(id);
+			cat.setName("Tasks");
 			collection.getCategory().addChild(cat);
-			cat.setName("Inbox");
 			archive.getCategorySearcher().saveData(cat);
+			
 		}
 	}
 	
@@ -69,22 +81,31 @@ public class TaskModule extends BaseMediaModule
 		
 		HitTracker all = (HitTracker)inReq.getPageValue("goalhits");
 		
-		if( all == null)
-		{
+		//if( all == null)
+		//{
 			SearchQuery userq = searcher.addStandardSearchTerms(inReq);
 			if( userq == null) 
 			{
 				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(500).exact("collectionid", collection.getId());
-				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+				builder.orgroup("projectstatus", "open|critical|completed");
+				
+				//Within 6 months?
+				Date old = DateStorageUtil.getStorageUtil().addDaysToDate(new Date(), 30*-6);
+				builder.after("creationdate",old);
+				
 				userq = builder.getQuery();
-				Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
-				if( filter != null && !filter.isEmpty())
-				{
-					userq.addOrsGroup("goaltrackercolumn", filter);
-				}
+				//Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+//				if( filter != null && !filter.isEmpty())
+//				{
+//					userq.addOrsGroup("goaltrackercolumn", filter);
+//				}
+			}
+			else if( !userq.contains("collectionid"))
+			{
+				userq.addExact("collectionid", collection.getId());
 			}
 			all = searcher.cachedSearch(inReq, userq);
-		}
+		//}
 		if( all == null)
 		{
 			return;
@@ -132,7 +153,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			String p = (String) iterator.next();
 			List values = (List)priorities.get(p);
-			Collections.sort(values);
+			if( !values.isEmpty())
+			{
+				Collections.sort(values);
+				Collections.reverse(values);
+			}
 			inReq.putPageValue("goalhits" + p, values);
 		}
 		return priorities;
@@ -171,7 +196,7 @@ public class TaskModule extends BaseMediaModule
 		return priorities;
 	}	
 	
-	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek, String collectionid)
+	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek)
 	{
 		List week = new ArrayList();
 		Date today = new Date();
@@ -209,7 +234,7 @@ public class TaskModule extends BaseMediaModule
 		}	
 		for (Iterator iterator = week.iterator(); iterator.hasNext();)
 		{
-			List values = (List ) iterator.next();
+			List values = (List) iterator.next();
 			Collections.sort(values, new Comparator<ProjectGoal>()
 			{
 				@Override
@@ -227,6 +252,14 @@ public class TaskModule extends BaseMediaModule
 							{
 								return date2.compareTo(date1);
 							}
+						}
+						else if( status1.equals("active"))
+						{
+							return 1;
+						}
+						else if( status2.equals("active"))
+						{
+							return -1;
 						}
 						else if( status1.equals("critical"))
 						{
@@ -390,58 +423,78 @@ public class TaskModule extends BaseMediaModule
 				inReq.putPageValue("selectedgoal", goal);
 				inReq.putPageValue("goal", goal);
 			}
-		}
-			
-		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-		
-		//		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		}		
+	}
+	public void loadTasksForGoal(WebPageRequest inReq)
+	{
+		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
 		if( goal != null)
 		{
-			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-			//Legacy: Make sure all tasks have parents
-			List tosave = new ArrayList();
-			Collection values = goal.getValues("countdata");
-			if( values == null)
+			loadTasksForGoal(inReq,goal);
+		}
+	}
+
+	protected void loadTasksForGoal(WebPageRequest inReq, MultiValued goal)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+		QueryBuilder query = tasksearcher.query().exact("projectgoal", goal.getId());
+		String onlyopen = inReq.getRequestParameter("onlyopen");
+		if( Boolean.parseBoolean(onlyopen))
+		{
+			query.not("taskstatus", "3");
+		}
+		
+		HitTracker tasks = query.search();
+		//Legacy: Make sure all tasks have parents
+		Set tosave = new HashSet();
+		Collection values = goal.getValues("countdata");
+		if( values == null)
+		{
+			values = new ArrayList();
+		}
+		Collection alltaskids = new ArrayList(values);
+		Collection extrataskids = new ArrayList(values);
+		for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+		{
+			MultiValued existigtask = (MultiValued) iterator.next();
+			if( existigtask.getValue("projectdepartmentparents") == null)
 			{
-				values = new ArrayList();
-			}
-			Collection alltaskids = new ArrayList(values);
-			Collection extrataskids = new ArrayList(values);
-			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
-			{
-				MultiValued existigtask = (MultiValued) iterator.next();
-				if( existigtask.getValue("projectdepartmentparents") == null)
+				Category child = archive.getCategory(existigtask.get("projectdepartment"));
+				if( child != null)
 				{
-					Category child = archive.getCategory(existigtask.get("projectdepartment"));
-					if( child != null)
-					{
-						existigtask.setValue("projectdepartmentparents",child.getParentCategories());
-						tosave.add(existigtask);
-					}
-				}
-				extrataskids.remove(existigtask.getId());
-				if(!alltaskids.contains(existigtask.getId()))
-				{
-					alltaskids.add(existigtask.getId());
+					existigtask.setValue("projectdepartmentparents",child.getParentCategories());
+					tosave.add(existigtask);
 				}
 			}
-			alltaskids.removeAll(extrataskids);
-			if( !alltaskids.equals(values))
+			if( existigtask.getValue("collectionid") == null)
 			{
-				goal.setValue("countdata",alltaskids);
-				archive.saveData("projectgoal", goal);
+				existigtask.setValue("collectionid",goal.getValue("collectionid"));
+				tosave.add(existigtask);
 			}
 			
-			tasksearcher.saveAllData(tosave, null);
-			TaskList goaltasks = new TaskList(goal,tasks);
-			inReq.putPageValue("tasklist", goaltasks);
-			inReq.putPageValue("tasks", goaltasks.getSortedTasks());
-			if( goal.getValue("projectstatus") == null)
+			extrataskids.remove(existigtask.getId());
+			if(!alltaskids.contains(existigtask.getId()))
 			{
-				goal.setValue("projectstatus","open");
-				archive.saveData("projectgoal", goal);
+				alltaskids.add(existigtask.getId());
 			}
-		}	
+		}
+		alltaskids.removeAll(extrataskids);
+		if( !alltaskids.equals(values))
+		{
+			goal.setValue("countdata",alltaskids);
+			archive.saveData("projectgoal", goal);
+		}
+		
+		tasksearcher.saveAllData(tosave, null);
+		TaskList goaltasks = new TaskList(goal,tasks);
+		inReq.putPageValue("tasklist", goaltasks);
+		inReq.putPageValue("tasks", goaltasks.getSortedTasks());
+		if( goal.getValue("projectstatus") == null)
+		{
+			goal.setValue("projectstatus","open");
+			archive.saveData("projectgoal", goal);
+		}
 	}
 	
 	public void checkGoalCount(WebPageRequest inReq)
@@ -518,6 +571,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			return;
 		}
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			throw new OpenEditException("No collection id found");
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
 		Data goal = (Data)goalsearcher.searchById(goalid);
@@ -527,6 +585,7 @@ public class TaskModule extends BaseMediaModule
 		
 		Data task = tasksearcher.createNewData(); //TODO: Cjheck for existing
 		task.setValue("projectgoal",goal.getId());
+		task.setValue("collectionid",collectionid);
 		task.setValue("projectdepartment",categoryid);
 		
 		task.setValue("projectdepartmentparents",cat.getParentCategories());
@@ -777,12 +836,8 @@ public class TaskModule extends BaseMediaModule
 	public void loadDashboard(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if( collection == null)
-		{
-			log.info("Collection not found");
-			return;
-		}
+		String collectionid =  inReq.getRequestParameter("collectionid");
+
 		//Search for all tasks with updated dates?
 		GregorianCalendar cal = new GregorianCalendar();
 		String monthsback = inReq.getRequestParameter("monthsback");
@@ -807,9 +862,13 @@ public class TaskModule extends BaseMediaModule
 		
 		Date onemonth = cal.getTime();
 
-		String rootid = "tasks" + collection.getId();
-		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
-				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+		//String rootid = "tasks" + collection.getId();
+		QueryBuilder q = tasksearcher.query();
+		if( !collectionid.equals("*") )
+		{
+				q.exact("collectionid",collectionid);
+		}
+		HitTracker all = q.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
 		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -821,8 +880,12 @@ public class TaskModule extends BaseMediaModule
 		
 		inReq.putPageValue("completed", completed);		
 		
-		HitTracker alltickets = archive.query("projectgoal")
-				.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
+		QueryBuilder gq = archive.query("projectgoal");
+		if( !collectionid.equals("*") )
+		{
+				gq.exact("collectionid",collectionid);
+		}
+		HitTracker alltickets = gq.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
 		
 		for (Iterator iterator = alltickets.iterator(); iterator.hasNext();)
 		{
@@ -854,7 +917,7 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("users", users);
 
 	}
-	
+	//Old?
 	public void loadTaskByStatus(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -872,8 +935,8 @@ public class TaskModule extends BaseMediaModule
 		{
 			status = "1";
 		}
-		String rootid = "tasks" + collection.getId();
-		HitTracker all = tasksearcher.query().exact("taskstatus",status).exact("projectdepartmentparents",rootid ).search();
+		//String rootid = "tasks" + collection.getId();
+		HitTracker all = tasksearcher.query().exact("taskstatus",status).exact("collectionid",collection.getId()).search();
 		Map byperson = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
@@ -1010,34 +1073,77 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("projectgoal");
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if( collection == null)
-		{
-			log.info("Collection not found");
-			return;
-		}
-	
-		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		
 		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
-		if( seeuser == null || seeuser.isEmpty())
-		{
-			seeuser = inReq.getUserName();
+		
+		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
+				
+		QueryBuilder builder = searcher.query();
+		Collection userprojects = new HashSet();;
+		//if user is agent?
+		if( seeuser != null) {
+				builder.match("userlikes", seeuser);
 		}
-		builder.match("userlikes", seeuser);
-		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		//String collectionid= "*";
+		if (collectionid != null) 
+		{
+			userprojects.add(collectionid);
+		}
+		else 
+		{
+			if( !isAgent ) 
+				{
+					//search only in project the user belongs
+					String currentuser = inReq.getUserName();
+					Collection allprojectsuser = archive.query("librarycollectionusers").
+							exact("followeruser",currentuser).
+							exact("ontheteam","true").search();
+					if(allprojectsuser.size()<1)
+					{
+						return;
+					}
+					for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+					{
+						Data librarycol = (Data)iterator.next();
+						String colid = librarycol.get("collectionid");
+						if( colid != null)
+						{
+							userprojects.add(colid);
+						}
+					}
+				}
+		}
+		
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		
+		builder.orgroup("projectstatus", "open|critical");
 		HitTracker likesopen = builder.search();
+		
 		//sort users by date?
 		GregorianCalendar thismonday = new GregorianCalendar();
 		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		thismonday.set(Calendar.MINUTE, 0);
 		thismonday.set(Calendar.HOUR, 0);
-		builder = searcher.query().exact("collectionid", collection.getId());
-		builder.match("userlikes", seeuser);
+		builder = searcher.query();
+		if(userprojects != null) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		if( seeuser != null)
+		{
+			builder.match("userlikes", seeuser);
+		}
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		builder.after("resolveddate", thismonday.getTime());
 		HitTracker likesclosed = builder.search();
 
+		inReq.putPageValue("selecteduser",archive.getUser(seeuser));
+		
 		List all = new ArrayList();
 		for (Iterator iterator = likesopen.iterator(); iterator.hasNext();)
 		{
@@ -1057,7 +1163,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			selectedday0 = 0; //monday
 		}
-		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0, collection.getId());
+		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0);
 //		List types = new ArrayList();
 //		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
 //		{
@@ -1071,24 +1177,35 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("selectedday0", selectedday0);
 		inReq.putPageValue("week", week);
 		
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		
 		builder.match("userlikes", "*");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalpriority = builder.search().size();
 		
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalopen = builder.search().size();
 
-		builder = searcher.query().exact("collectionid", collection.getId());
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		int totalclosed = builder.search().size();
-
-		
+			
 		inReq.putPageValue("totallikes", totalpriority);
 		inReq.putPageValue("totalopen", totalopen);
 		inReq.putPageValue("totalclosed", totalclosed);
-		
 	
 	}
 
@@ -1106,7 +1223,218 @@ public class TaskModule extends BaseMediaModule
 		selectedgoal.setValue("projectstatus","completed");
 		
 		archive.saveData("projectgoal",selectedgoal);
+		addStatus(archive, selectedgoal,inReq.getUserName());
 
+		inReq.putPageValue("goal",selectedgoal);
+		Map params = new HashMap();
+		params.put("dataid", selectedgoal.getId());
+		archive.fireGeneralEvent(inReq.getUser(),"projectgoal","saved", params);
 	}
+
+	public void savedGoal(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String goalid = inReq.getRequestParameter("dataid");
+		if( goalid == null )
+		{
+			goalid = inReq.getRequestParameter("id");  //legacy
+		}
+		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
+
+		addStatus(archive, selectedgoal,inReq.getUserName());
+		
+		recalculateSessions(archive, selectedgoal, inReq.getUserName());
+		
+		
+	}
+
+	protected void recalculateSessions(MediaArchive inArchive, MultiValued inSelectedgoal, String inUserName)
+	{
+		String collectionid = inSelectedgoal.get("collectionid");
+		ProjectManager manager = inArchive.getProjectManager();
+		manager.recalculateSessions(collectionid);
+		
+	}
+
+	public void  recalculateSessions(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.findValue("collectionid");
+		
+		Searcher collectionsearcher = archive.getSearcher("librarycollection");
+		HitTracker cols;
+		if(collectionid != null) {
+			cols = collectionsearcher.fieldSearch("id", collectionid);
+		} else {
+			cols = collectionsearcher.getAllHits();
+		}
+		for (Iterator iterator = cols.iterator(); iterator.hasNext();)
+		{
+			Data object = (Data) iterator.next();
+			archive.getProjectManager().recalculateSessions(object.getId());
+			
+		}
+		
+	}
+	
+	
+	
+	protected void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
+	{
+		
+		Collection userids = new HashSet();
+		Collection likes = selectedgoal.getValues("userlikes");
+		if (likes != null) 
+		{
+			userids.addAll(likes);
+		}
+			String owner = selectedgoal.get("owner");
+		if( owner != null)
+		{
+			userids.add(owner);
+		}
+		
+
+		String collectionid = selectedgoal.get("collectionid");
+		//Find all the users
+		Collection team = archive.query("librarycollectionusers").
+				exact("collectionid",collectionid).
+				exact("ontheteam","true").search();
+
+		for (Iterator iterator = team.iterator(); iterator.hasNext();)
+		{
+			Data follower = (Data)iterator.next();
+			String userid = follower.get("followeruser");
+			if( userid != null)
+			{
+				userids.add(userid);
+			}
+		}		
+		
+		Group agents = archive.getGroup("agents");
+		if( agents != null)
+		{
+			Collection users = archive.getUserManager().getUsersInGroup(agents);
+			for (Iterator iterator = users.iterator(); iterator.hasNext();)
+			{
+				Data auser = (Data)iterator.next();
+				userids.add(auser.getId());
+			}
+		}
+		
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", selectedgoal.getId()).exact("userid", userid).searchOne();
+
+			String existingstatus = (String)selectedgoal.get("projectstatus");
+			if( status == null)
+			{
+				status = (MultiValued)archive.getSearcher("statuschanges").createNewData();
+				status.setValue("goalid",selectedgoal.getId());
+				status.setValue("userid",userid);
+				status.setValue("previousstatus",existingstatus);
+			}
+			else
+			{
+//				String previous = status.get("previousstatus");
+//				if( !existingstatus.equals(previous))
+//				{
+//					status.setValue("previousstatus",existingstatus);
+					status.setValue("notified",false);
+//				}
+			}
+			status.setValue("collectionid",collectionid);
+			status.setValue("date",new Date());
+			status.setValue("editedbyid",editedby);
+			
+			tosave.add(status);
+		}
+		archive.saveData("statuschanges", tosave);
+	}
+	
+	public void clearNotify(WebPageRequest inReq)
+	{
+		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").exact("notified","false").
+				exact("userid", inReq.getUserName()).sort("dateDown");
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid != null)
+		{
+			query.exact("collectionid",collectionid);
+		}
+		Collection results = query.search();
+		inReq.putPageValue("recentactivities",results);
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = results.iterator(); iterator.hasNext();)
+		{
+			Data status = (Data) iterator.next();
+			status.setValue("notified",true);
+			tosave.add(status);
+		}
+		getMediaArchive(inReq).getSearcher("statuschanges").saveAllData(tosave,null);
+	}
+	
+	public void showRecentActivity(WebPageRequest inReq)
+	{
+		QueryBuilder query = getMediaArchive(inReq).query("statuschanges").
+				exact("userid", inReq.getUserName()).sort("dateDown");
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid != null)
+		{
+			query.exact("collectionid",collectionid);
+		}
+		Collection results = query.search();
+		inReq.putPageValue("recentactivities",results);
+	}
+	
+	public void createGoalFromMessage(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String messageid = inReq.getRequestParameter("messageid");
+		Searcher chatsearcher = archive.getSearcher("chatterbox");
+
+		Data message = (Data)chatsearcher.searchById(messageid);
+		
+		String topic = message.get("channel");
+		String content = message.get("message");
+		String collectionid = inReq.getRequestParameter("collectionid");
+
+		Searcher searcher = archive.getSearcher("projectgoal");
+		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", messageid).searchOne();
+		if( goal == null)
+		{
+			goal = (MultiValued)searcher.createNewData();
+			goal.setValue("goaltrackercolumn", topic);
+			goal.setValue("tickettype", "chat");
+			goal.setValue("ticketlevel", "1");
+			goal.setValue("projectstatus", "open");
+			goal.setValue("creationdate",new Date());
+			goal.setValue("collectionid", collectionid);
+			goal.setValue("chatparentid", messageid);
+			goal.addValue("userlikes",inReq.getUserName());
+			goal.setValue("owner", inReq.getUserName());
+			goal.addValue("details",content);
+			if( content != null && content.length() > 70)
+			{
+				content = content.substring(0,70) + "...";
+			}
+			User user = archive.getUser(message.get("user"));
+			if( user != null)
+			{
+				goal.setName(user.getScreenName() + ": " + content);
+			}
+			else
+			{
+				goal.setName("Anonymous : " + content);				
+			}
+			searcher.saveData(goal);
+			addStatus(archive, goal,inReq.getUserName());
+		}
+		inReq.putPageValue("chat",message);
+	}
+	
 	
 }

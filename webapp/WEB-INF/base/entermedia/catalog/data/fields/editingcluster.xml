@@ -19,10 +19,10 @@
   </property>  
   <property id="baseurl" index="true" stored="true" editable="true"  >
     <name>
-      <language id="de"><![CDATA[URL]]></language>
-      <language id="en"><![CDATA[URL]]></language>
-      <language id="es"><![CDATA[URL]]></language>
-      <language id="fr"><![CDATA[URL]]></language>
+      <language id="de"><![CDATA[Base URL]]></language>
+      <language id="en"><![CDATA[Base URL]]></language>
+      <language id="es"><![CDATA[Base URL]]></language>
+      <language id="fr"><![CDATA[Base URL]]></language>
     </name>
   </property> 
   <property id="entermediakey" index="true" stored="true" editable="true"  >
@@ -35,7 +35,7 @@
   </property> 
   <property id="clustername" index="true" stored="true" editable="true"  >
     <name>
-      <language id="en"><![CDATA[Cluster Name]]></language>
+      <language id="en"><![CDATA[Remote Master Cluster ID]]></language>
     </name>
   </property> 
  
@@ -56,12 +56,41 @@
       <language id="en"><![CDATA[Previous Error Date]]></language>
     </name>
   </property> 
+  <property id="skipgenerated" index="true" stored="true" editable="true" datatype="boolean" >
+    <name>
+      <language id="en"><![CDATA[Don't Pull Generated Media]]></language>
+    </name>  
+  </property>
 
-
+  <property id="lastpulldateoriginals" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Originals Sync Date]]></language>  
+    </name> 
+  </property>  
   
-  <property id="skipgenerated" index="true" stored="true" editable="true" datatype="boolean" >Don't download generated files</property>
-  <property id="skiporiginal" index="true" stored="true" editable="true" datatype="boolean" >Don't download original files</property>
+  <property id="lasterrormessageorginals" index="true" stored="true" editable="true"  >
+    <name>
+      <language id="en"><![CDATA[Original Sync Error]]></language>
+    </name>
+  </property> 
 
+  <property id="lasterrordateoriginals" index="true" stored="true" editable="true" datatype="date" viewtype="time"  >
+    <name>
+      <language id="en"><![CDATA[Orignals Error Date]]></language>
+    </name>
+  </property> 
+  <property id="pulloriginals" index="true" stored="true" editable="true" datatype="boolean" >
+    <name>
+      <language id="en"><![CDATA[Pull All Original Media]]></language>
+    </name>  
+  </property>
+  <property id="pushoriginals" index="true" stored="true" editable="true" datatype="boolean" >
+    <name>
+      <language id="en"><![CDATA[Push All Original Media]]></language>
+    </name>  
+  </property>
+
+  <property id="enabled" index="true" stored="true" editable="true" datatype="boolean" >Enabled</property>
   
   
 </properties>

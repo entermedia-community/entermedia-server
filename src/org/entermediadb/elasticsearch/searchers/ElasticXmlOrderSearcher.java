@@ -4,6 +4,7 @@ import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
+import org.openedit.users.User;
 
 public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 {
@@ -28,9 +29,11 @@ public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 //	}
 	
 	
-	protected void createContentBuilder(PropertyDetails details, Data inData) {
+	@Override
+	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
+	{
 		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-		super.createContentBuilder(details, inData);
+		super.saveToElasticSearch(inDetails, inData, delete, inUser);
 	}
 	
 }

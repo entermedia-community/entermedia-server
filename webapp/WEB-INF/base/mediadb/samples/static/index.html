@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title> EM Share</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=10">
+  <meta name="keywords" content=""/>
+  <meta name="description" content=""/>
+  <meta http-equiv="imagetoolbar" CONTENT="no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  
+  <meta name="MSSmartTagsPreventParsing" content="TRUE" />  
+  <meta name="robots" content="noindex">
+
+   	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery-3.3.1.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/liveajax/liveajax.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/jquery.validation/jquery.validate.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/bootstrap.bundle.min.js">  </script>
+	<script type="text/javascript" src="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/js/popper.min.js">  </script>
+	
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="https://entermediadb.org/entermediadb/app/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css" />
+    
+<script>
+jQuery(document).ready(function() 
+{
+ 
+//var mediadburl = "http://localhost:8080/site/mediadb"
+//var libraryid = "collectives";
+
+var mediadburl = "https://openinstitute.org/site/mediadb"
+var libraryid = "AWrBXnMANjyARyxuxhOA";  //Metro East Station
+
+var entermediakey = "apiusermd5420e30b30f809e600873d0f29690f309b170eb0db0e6";
+
+	console.log("request data");
+	jQuery.ajax({
+		type: "POST",
+		url: mediadburl + "/services/module/librarycollection/search",
+		async: false,
+		data: JSON.stringify(
+			{
+			  "entermedia.key": entermediakey,
+			  "page": "1",
+			  "hitsperpage": "20",
+			  "query": {
+			    "terms": [
+			      {
+			        "field": "library",
+			        "operator": "exact",
+			        "value": libraryid
+			      }
+			    ]
+			  }
+			}
+		),
+    	contentType: "application/json; charset=utf-8", //This causes CORS to preflight
+		error: function(data, status, err) {
+			console.log('from error:', data);
+		},
+		success: function(json) {
+			console.log("Got data back",json);
+			var imgurl = mediadburl + "/services/module/asset/downloads/preset/";			
+			var size = json.response.totalhits;
+			if( size == 0)
+			{
+				$("#results").append('No collections found');
+			}
+			$.each(json.results, function(index, collection) 
+			{			
+				$("#results").append('<div class="media">');
+				$("#results").append('<a href="showfeed.html?collectionid=' + collection.id + '">' + collection.name + '</a>');
+				$("#results").append('</div><hr/>');
+			});
+				
+			$(window).trigger( "resize" );
+			
+		},
+		failure: function(errMsg) {
+			alert(errMsg);
+		}
+	});
+});
+
+</script>
+
+</head>
+<body>
+
+
+<div class="card" style="margin:100px;">
+  <div class="card-header">
+Static HTML Example
+  </div>
+  <div class="card-body">
+    <p class="card-text">Select a channel</p>
+	<div class="container" id="results" ></div>
+
+  </div>
+</div>
+
+
+</body>
+</html>

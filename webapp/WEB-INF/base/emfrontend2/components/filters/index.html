@@ -1,3 +1,4 @@
+#set( $module = $content.module)
 #if ($editfilters)
 	#set( $edit = true )
 #elseif( !$editfilters)
@@ -9,7 +10,7 @@
 
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($collectionid)
+	#if($module=="librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
@@ -39,14 +40,15 @@
 	
 
 	
-	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="main" method="POST"  
+	<form  	name="filterform" id="filterform" class="autosubmitform filterform em-widget-content" 
+			data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
 		data-oemaxlevel="2" 
 		action="$home$apphome/views/modules/librarycollection/search.html" 
 	#else
 		data-oemaxlevel="1" 
 		action="$home$apphome/views/search/search.html" 
-	#end
+	#end 
 	>
 	#if( $librarycol)
 		<input name="collectionid" type="hidden" value="$librarycol.getId()">
@@ -95,24 +97,18 @@
 
 	##FILTERS
 		
-		#foreach( $detail in $details)
-		
+		#foreach( $detail in $details)   
 			$context.putPageValue("detail", $detail)
 			$context.putPageValue("searchform", true)
 			#if ($detail.isLeaf())
 				#if ($detail.isFilter())
-					
 					#set($filternode = $userfiltervalues.get($detail.id))
 					$context.putPageValue("filternode",$filternode)
 					#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))
-						
 						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 					#end	
-					
 				#else
-					
-						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
-					
+					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 				#end
 			#else
 				$pages.include("/${applicationid}/components/filters/section.html", $context)
@@ -128,8 +124,8 @@
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 			#if($nodeID && $nodeID != $librarycol.rootcategory) 
-				<input type="hidden" name="category.value" value="$nodeID" />
-				<input type="hidden" name="nodeID" value="$nodeID" />
+				<input type="hidden" name="category.value" value="$!nodeID" />
+				<input type="hidden" name="nodeID" value="$!nodeID" />
 			#else
 				<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
 			#end
@@ -143,13 +139,15 @@
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
-			<input type="hidden" name="nodeID" value="$nodeID" />
+			<input type="hidden" name="nodeID" value="$!nodeID" />
 		#end
 		
 
+		<input type="hidden" name="${searcher.getSearchType()}endusersearch" value="true"/>
 	
 		<input type="hidden" name="customproperty" value="userinputsearch"/>
 		<input type="hidden" name="userinputsearch.value" value="true"/>
+		<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>
 					
 				    
 					

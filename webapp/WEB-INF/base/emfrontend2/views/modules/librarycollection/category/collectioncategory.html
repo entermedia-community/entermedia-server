@@ -16,7 +16,7 @@
 #end
 
 ##Sidebars
-#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+#if($librarycol && $canviewcategorynavcollections)
 	#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
 #else
 	#set( $leftbarstatus = false)

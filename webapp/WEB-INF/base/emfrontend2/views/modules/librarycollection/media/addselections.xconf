@@ -3,5 +3,5 @@
 <path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
-<path-action name="ProjectModule.redirectToCollection"/>
+<path-action name="ProjectModule.redirectToCollectionRoot"/>
 </page>

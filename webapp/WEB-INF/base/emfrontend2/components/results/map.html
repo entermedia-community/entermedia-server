@@ -1,3 +1,4 @@
+<div id="emresultscontainer">
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
 data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()"
 data-collectionid="$!librarycol.getId()"
@@ -8,14 +9,14 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
 	$pages.include("$componenthome/results/header.html",$context) 
 #end
-
+#set($hits = $hits.copy() )
 #set( $n = $hits.setHitsPerPage(1000))
 
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
 #if( $geofilter)
 <div style="padding:10px;background:#eee;">
-##look in the search for this map terms? #set( $found = $term.getParameter("formatted_address") )
-#set( $found = $geofilter.getParameter("formatted_address") )
+##look in the search for this map terms? #set( $found = $term.getValue("formatted_address") )
+#set( $found = $geofilter.getValue("formatted_address") )
 Found $hits.size() results searching within $geofilter.getDistance() [[meters]] of $!found  
 </div>
 #end
@@ -53,4 +54,5 @@ $('#map').gmap({
 });
     </script>
 <div id="map" align style="width: 100%; height: 750px;"></div>
+</div>
 </div>

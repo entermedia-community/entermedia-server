@@ -21,9 +21,14 @@ public void runExport(){
 	searcher = searcherManager.getSearcher(catalogid, searchtype);
 	boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
 	String[] detaillist = context.getRequestParameters("detail");
+	
 	Collection details = searcher.getDetailsForView("${searchtype}/resultstable",context.getUserProfile());
-
-	if(details == null){
+    if(details == null) {
+		details = searcher.getDetailsForView("${searchtype}/${searchtype}resultstable",context.getUserProfile());
+	}
+	
+	
+	if(details == null || !friendly){
 		details = searcher.getPropertyDetails();
 	}
 
@@ -34,7 +39,12 @@ public void runExport(){
 	for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	{
 		PropertyDetail detail = (PropertyDetail) iterator.next();
+		if(friendly) {
 		headers[count] = detail.getText(context);
+		} else {
+			headers[count] = detail.getId();
+			
+		}
 		count++;
 	}
 	writer.writeNext(headers);
@@ -56,11 +66,26 @@ public void runExport(){
 			String value = tracker.get(detail.getId());
 			//do special logic here
 			if(detail.isList() && friendly){
-				Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
+				valuelist = tracker.getValues(detail.getId());
+				StringBuffer endval = new StringBuffer();
+				valuelist.each {
+					Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), it);
 
-				if(remote != null){
-					value= remote.getName();
+					if(remote != null){
+						
+						endval.append(remote.getName());
+					
+						if(it != valuelist.last()) {
+							endval.append(" | ");
+						}
+
+					} else {
+						endval.append("Not Found: " + it  + " " + detail.getListCatalogId() + " " + detail.getListId());
+					}
 				}
+				
+				value = endval.toString()
+				
 			}
 			String render = detail.get("render");
 			if(render != null)

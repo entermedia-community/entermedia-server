@@ -1,5 +1,6 @@
 
 <projectstatuss>
+  <projectstatus id="active">Active</projectstatus>
   <projectstatus id="open">Open</projectstatus>
   <projectstatus id="critical">Critical</projectstatus>
   <projectstatus id="closed">Closed</projectstatus>

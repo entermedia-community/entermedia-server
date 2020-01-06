@@ -1,16 +1,16 @@
 #set( $editroot = $context.findValue("editroot"))
 #set( $scriptpath = $context.getRequestParameter("scriptpath"))
 #set( $script = $pages.getPage("$scriptpath") )
-<div style="background: #f7f7f7; border: 1px solid #ddd; padding: 20px 30px 10px 30px; border-radius: 5px; margin-bottom: 20px;">
+<div style="background: #f7f7f7; border: 1px solid #ddd; padding: 20px 30px 10px 30px; border-radius: 5px; margin: 20px 0;">
 
 <form name="save" class="ajaxform" targetdiv="scriptlist" method="post" action="$home$editroot/scriptsave.html?oemaxlevel=1">
-	<input class="field" name="scriptpath" value="$script.getPath()"/> <span style="margin-left: 10px; font-weight: bold;">[[Script File Name]]</span>
-	<textarea spellcheck="false" style="width: 97%; height: 450px; overflow: scroll; white-space: pre;" name="scriptcode">$script.getContent()</textarea>
-	<p>
+	<label><strong>[[Script File Name]]:</strong></label>
+	<input class="form-control" name="scriptpath" value="$script.getPath()"/> 
+	<textarea spellcheck="false" style="margin-top:20px; width: 100%; height: 450px; overflow: scroll; white-space: pre;" name="scriptcode">$script.getContent()</textarea>
+	<p style="padding-top: 20px;">
 		<input type="submit" class="btn btn-sm btn-primary small" value="[[Save]]">
-			
-        <a id="cancel-edit" style="cursor: pointer; margin-right: 5px;" class="btn btn-sm btn-primary right">[[Cancel]]</a>
-		<a class="btn btn-sm btn-secondary" target="_new" href="$home$editroot/run.html?oemaxlevel=1&scriptpath=$scriptpath">[[Debug]]</a>
+        <a id="cancel-edit" style="margin-right: 10px;" class="btn btn-sm btn-secondary">[[Cancel]]</a>
+		<a class="btn btn-sm btn-primary" target="_new" href="$home$editroot/run.html?oemaxlevel=1&scriptpath=$scriptpath">[[Debug]]</a>
 		<a href="$home$dataroot/import/scriptdelete.html?filename=$script.getName()" class="btn btn-sm btn-danger right">[[Delete]]</a>
     </p>
 </form>	

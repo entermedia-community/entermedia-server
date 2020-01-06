@@ -1,4 +1,4 @@
-
+<h2 style="padding:20px 10px">[[Users Management]]</h2>
 #set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
 $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", $user))	
 <div id="usersearchresultspanel">

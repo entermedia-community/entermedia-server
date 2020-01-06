@@ -66,9 +66,30 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		//			ext = newext.toLowerCase();
 		//		}
 		List<String> com = createCommand(inStructions);
+		//resize then cut off edges so end up with a square image
+		int finalwidth = -1;
+		int finalheight = -1;
 
 		if (inStructions.getMaxScaledSize() != null)
 		{
+			finalwidth = inStructions.getMaxScaledSize().width;
+			finalheight = inStructions.getMaxScaledSize().height;
+			String emautoheight = inStructions.get("emautoheight");
+			if( emautoheight != null )
+			{
+				int width = asset.getInt("width");
+				int height = asset.getInt("height");
+				if (width > 0 && height > 0 && height > width)
+				{
+					float  aspect = (float)height / (float)width;
+					if( aspect > 1.3f )  //portrait mode
+					{
+						String percent = emautoheight.substring(0,emautoheight.length() - 1);
+						int percentint = Integer.parseInt(percent);
+						finalheight = Math.round(  (float)finalheight +  ((float)finalheight * ((float)percentint/100f)));
+					}
+				}
+			}	
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
 			if ("eps".equalsIgnoreCase(ext) || "pdf".equalsIgnoreCase(ext) || "ai".equalsIgnoreCase(ext))
 			{
@@ -78,7 +99,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				{
 					// calculate output width
 					int height = asset.getInt("height");
-					double ratio = height / width;
+					//double ratio = height / width;
 
 					int prefw = inStructions.getMaxScaledSize().width;
 					int prefh = inStructions.getMaxScaledSize().height;
@@ -113,13 +134,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					}
 				}
 			}
-			if (!inStructions.isCrop())
+			
+			if (!inStructions.isCrop())  //not a crop!
 			{
 				com.add("-resize");
 				String prefix = null;
 				String postfix = null;
-				prefix = String.valueOf(inStructions.getMaxScaledSize().width);
-				postfix = String.valueOf(inStructions.getMaxScaledSize().height);
+				prefix = String.valueOf(finalwidth);
+				postfix = String.valueOf(finalheight);
 				
 				String resizestring = prefix + "x" + postfix;
 				Boolean fillarea = Boolean.parseBoolean(inStructions.get("minsize"));
@@ -158,14 +180,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		if (inStructions.isCrop())
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
-			//resize then cut off edges so end up with a square image
+					
 			if (!croplast)
 			{
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
-				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append(finalwidth);
 				resizestring.append("x");
-				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append(finalheight);
 				resizestring.append("^");
 				com.add(resizestring.toString());
 			}
@@ -180,7 +202,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			String cropwidth = inStructions.get("cropwidth");
 			if (cropwidth == null)
 			{
-				cropwidth = String.valueOf(inStructions.getMaxScaledSize().getWidth());
+				cropwidth = String.valueOf(finalwidth);
 			}
 			cropString.append(cropwidth);
 			cropString.append("x");
@@ -188,7 +210,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 			if (cropheight == null)
 			{
-				cropheight = String.valueOf(inStructions.getMaxScaledSize().getHeight());
+				cropheight = String.valueOf(finalheight);
 			}
 			cropString.append(cropheight);
 
@@ -221,7 +243,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				StringBuffer resizestring = new StringBuffer();
 				resizestring.append(inStructions.getMaxScaledSize().width);
 				resizestring.append("x");
-				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append(finalheight);
 				resizestring.append("^");
 				com.add(resizestring.toString());
 			}
