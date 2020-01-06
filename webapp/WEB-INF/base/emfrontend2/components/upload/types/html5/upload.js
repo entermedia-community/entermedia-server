@@ -216,7 +216,15 @@ $(document).ready(function()
     				   	  var finishaction = form.data("finishaction");
     				   	  form.attr("action",finishaction);
     				   	  //TODO remove the last file?
-    				   	  form.submit();
+    				   	  //form.submit();
+							
+							var targetdiv = form.data("finishtargetdiv");
+							form.ajaxSubmit({
+								type : "get",
+								target : "#" + $.escapeSelector(targetdiv) 
+							});
+						  
+
     				   }			   
     				   
     				   //$("#uploadsfinishedtrigger").trigger("submit");
@@ -226,9 +234,39 @@ $(document).ready(function()
 	         }
 	     });
 	});
+	
+	//Detect Youtube Link
+	$("#uploaddescription").on("keyup", function() {
+		var input = $("#uploaddescription");
+		var inputtext = input.val();
+		var targetdiv = input.data("targetdiv");
+		var targeturl = home+"/collective/channel/addnewlink.html";
+		delay(function () {
+			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
+		    if(inputtext.match(p)){
+				var videoURL = inputtext.match(p)[0];
+				var videoID = inputtext.match(p)[3];
+				var removelink = inputtext.replace(p, "");
+				input.val(removelink);
+				
+				$("#"+targetdiv).load(targeturl+'?videoID='+videoID);
+		    }            
+			else {
+			}
+        	            
+    	}, 500);
+	
+	});
+	
 }); 
 	
-
+var delay = (function () {
+    var timer = 0;
+    return function (callback, ms) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
 
 function bytesToSize(bytes, precision)
 {  
