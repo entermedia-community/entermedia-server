@@ -3,10 +3,8 @@
 <root>
   <property id="name" />
   <property id="library" />
-  <property id="notes" />
   <property id="owner" />
   <property id="rootcategory" />
   <property id="featuredcollection" />
-     <property id="collectionimage" />
-  
+  <property id="collectionimage" />
 </root>
