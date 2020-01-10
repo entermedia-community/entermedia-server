@@ -13,27 +13,30 @@ $!query.addSortBy("ordering")
 
 
 
-<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" class="emsettingslist" data-searchtype="view" data-field="ordering">
+<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" 
+	class="emsettingslist listsort" 
+	data-searchtype="view" 
+	data-field="ordering">
         <li class="header no-sort">[[Editing Boxes]]</li>
         #if ($systemdefined != "true")
         <li class="no-sort subheader" id="addeditbox" >
-        	<a class="btn btn-xs btn-primary ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a>
+        	<a class="btn btn-xs btn-primary ajax" 
+        		targetdivinner="addeditbox" 
+        		href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a>
         </li>
         #end
       
     #foreach( $target in $views)
 	    #set($sortid = $target.id.replaceAll("_", "||"))
-        <li id="view_$sortid" data-ordering="${view.ordering}" class=" #if($viewid == $target.id) current #end " byassettype="$!target.byassettype">
-           
-            #if( ($target.byassettype && $target.byassettype == "true") )
-            	
-                #set( $viewpath = "${moduleid}/assettype/${assettype}/$target.id")
+        <li id="view_$sortid" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
+        	#if( ($target.byassettype && $target.byassettype == "true") )
+            	#set( $viewpath = "${moduleid}/assettype/${assettype}/$target.id")
             #else
                 #set( $viewpath = "${moduleid}/$target.id")
             #end
             <a class="sortableitem" href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath&assettype=$!assettype">
             <span class="drag-and-drop"></span>$context.getText($target.toString())</a>
-            <a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&assettype=$!assettype">
+            <a class="ajax delete-row" targetdiv="viewlist" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&assettype=$!assettype">
 			<i class="fas fa-times"></i></a>
         </li>
     

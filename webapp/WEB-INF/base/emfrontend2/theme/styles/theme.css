@@ -1894,7 +1894,7 @@ td.checkbox input, th.firstheader input {
 	border:1px dashed #999;
 }
 
-#details .emtree ul li div span input[type="text"] {
+.detailarea-details .emtree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
     font-size: 11px;
     margin-top: -2px;
@@ -3207,15 +3207,13 @@ label.error {
     display: table;
     width: 100%;
 }
-#details {
+.detailarea-details {
    /* display: table-cell;*/
     vertical-align: top;
-    margin-left:155px;
+   /* margin-left:155px;*/
+   padding:10px;
 }
-#details h2 {
-	padding:10px 5px;
-}
-#details h2 a {
+.detailarea-details h2 a {
 	color:#2790B0;
 }
 #detailarea {

@@ -1598,6 +1598,8 @@ var resizecolumns = function() {
                 var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
                 var column = $(this);
                 var fieldid = column.data("fieldid");
+				var apphome = app.data("home") + app.data("apphome");
+
                 if ( column.hasClass('currentsort') ) 
                 {
                     if ( column.hasClass('up') ) {
@@ -1611,7 +1613,7 @@ var resizecolumns = function() {
                    column.addClass("up");
                    args.sortby=fieldid + 'Up';
                 }
-                $('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html',args);
+                $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
         });
 
 	function replaceAll(str, find, replace) {

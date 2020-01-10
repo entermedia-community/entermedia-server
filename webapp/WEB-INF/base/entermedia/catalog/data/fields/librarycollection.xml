@@ -167,6 +167,14 @@
       <language id="en"><![CDATA[Automatic Tagging]]></language>  
     </name> 
   </property>  
- 
+
+  <property id="notes" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Notes 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
  
 </properties>

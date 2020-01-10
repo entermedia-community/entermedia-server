@@ -7,13 +7,13 @@
 
 
 #if ($urlutils)
-	#set ( $sourcepath = $urlutils.encode($sourcepath))
-	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+	#set ( $source = $urlutils.encode($source))
+	#set ( $source = $source.replace("%2F", "/") )
 	#set ( $thumb = $urlutils.encode($thumb))
-	#set ( $thumb = $thumb	.replace("%2F", "/"))
+	#set ( $thumb = $thumb.replace("%2F", "/"))
 #end
 
-#if($sourcepath)
+#if($source)
 	#if($thumbsize != "mediumplus" && $thumbsize != "postsize")
 		$pages.include("$componenthome/results/thumbnails/image.html", $context)	
 	#else

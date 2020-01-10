@@ -50,7 +50,7 @@ $context.putPageValue("searchhome",$searchhome)
 					      <div id="detailarea" class="h-100">
 					        
 					           #if($content.isPropertyTrue("batchedit"))
-									<div id="details">
+									<div id="details" class="detailarea-details">
 					                     $pages.includeContent() 
 					
 									</div>
@@ -67,7 +67,7 @@ $context.putPageValue("searchhome",$searchhome)
 						                	## $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
 										</div>
 									#end
-						                <div id="details" class="h-100" style="padding:20px 20px; #if($views.size()<=1) margin-left:0; #end">
+						                <div id="details" class="detailsarea-details h-100" style="padding:20px 20px; #if($views.size()<=1) margin-left:0; #end">
 						                     $pages.includeContent()
 						                     <div class="clearfix"></div>
 						                </div>
