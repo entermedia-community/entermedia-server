@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +56,91 @@ public class XmpWriter {
 			addKeyword(key, inComm);
 		}
 	}
+	
+	public boolean saveId(MediaArchive inArchive, Asset inAsset)
+	{
+		ContentItem item = inArchive.getOriginalContent(inAsset);
+		
+		boolean ok = confirmId(inArchive, inAsset, item);
+
+		if( ok )
+		{
+			return ok;
+		}
+		List comm = createCommand(inArchive,true);
+		comm.add("-entermediaexif=" + inAsset.getId());
+		comm.add(item.getAbsolutePath());
+		Map props = new HashMap();
+		props.put("absolutepath", item.getAbsolutePath());
+		inArchive.fireMediaEvent("savingoriginal", "asset", inAsset.getSourcePath(), props, null);
+
+		try
+		{
+			ExecResult result  = runExec(comm);
+			
+			if(result.isRunOk()) 
+			{
+				inAsset.setValue("assetmodificationdate", item.lastModified()); //This needs to be set or it will keep thinking it's changed
+				inAsset.setValue("xmperror", false); //This needs to be set or it will keep thinking it's changed
+				ok = confirmId(inArchive, inAsset, item);
+				
+				return ok;
+			} 
+			else
+			{
+				inAsset.setValue("xmperror", true); //This needs to be set or it will keep thinking it's changed
+				String error = result.getStandardError();
+				String output = result.getStandardOut();
+				inAsset.setValue("xmperrormessage", error);
+				inAsset.setValue("xmpoutput", output);
+			
+				inArchive.saveAsset(inAsset);
+			}
+			
+		} finally {
+			inArchive.fireMediaEvent("savingoriginalcomplete", "asset", inAsset.getSourcePath(), props, null);
+		}
+		return false;
+		
+	}
+
+	protected boolean confirmId(MediaArchive inArchive, Asset inAsset, ContentItem item)
+	{
+		List comm = createCommand(inArchive,false);
+		comm.add(item.getAbsolutePath());
+		
+		ExecResult result = getExec().runExec("exiftool", comm, true);
+
+		if (!result.isRunOk())
+		{
+			String error = result.getStandardError();
+			log.info("error " + error);
+			return false;
+		}
+		String numberinfo = result.getStandardOut();
+		if (numberinfo == null)
+		{
+			log.info("Exiftool found " + inAsset.getSourcePath() + " returned null");
+		}
+		else
+		{
+			log.debug("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length());
+		}
+		int indexof = numberinfo.indexOf("Entermediaexif");
+		if( indexof != -1)
+		{
+			int end = numberinfo.indexOf("\n",indexof);
+			String val = numberinfo.substring(indexof + "entermediaexif".length() + 20, end);
+			if( val != null)
+			{
+				if( inAsset.getId().equals(val))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public boolean saveMetadata(MediaArchive inArchive, ContentItem inItem, Asset inAsset, HashMap inExtraDetails)
 			throws Exception {
@@ -63,9 +150,9 @@ public class XmpWriter {
 		Map props = new HashMap();
 		props.put("absolutepath", path);
 		inArchive.fireMediaEvent("savingoriginal", "asset", inAsset.getSourcePath(), props, null);
-		boolean ok = false;
+		boolean ok = true;
 		try {
-			List<String> comm = createCommand(inArchive);
+			List<String> comm = createCommand(inArchive,true);
 //			if(clearkeywords) {
 //				comm.add("-Subject=");
 //				comm.add("-subject=");
@@ -76,24 +163,25 @@ public class XmpWriter {
 //
 //
 //			}
-			 comm = createCommand(inArchive);
+			comm = createCommand(inArchive,true);
 			comm.add("-Keywords=");
 			comm.add("-Subject=");
 			comm.add("-XMP-dc:Subject=");
 			addSaveFields(inArchive, inAsset, comm, inExtraDetails);
 			
-
-			
 			addSaveKeywords(inAsset.getKeywords(), comm);
+			
 			comm.add(path);
 			ExecResult result  = runExec(comm);
-			if(ok) {
+			
+			if(result.isRunOk()) {
 				inAsset.setValue("assetmodificationdate", inItem.lastModified()); //This needs to be set or it will keep thinking it's changed
 				inAsset.setValue("xmperror", false); //This needs to be set or it will keep thinking it's changed
 				
 				inArchive.saveAsset(inAsset);
 
 			} else {
+				ok = false;
 				inAsset.setValue("xmperror", true); //This needs to be set or it will keep thinking it's changed
 				String error = result.getStandardError();
 				String output = result.getStandardOut();
@@ -131,7 +219,7 @@ public class XmpWriter {
 		inArchive.fireMediaEvent("savingoriginal", "asset", inAsset.getSourcePath(), props, null);
 		boolean ok = false;
 		try {
-			List<String> comm = createCommand(inArchive);
+			List<String> comm = createCommand(inArchive,true);
 			List removekeywords = new ArrayList(comm);
 			removekeywords.add("-Subject="); // This only works on a line by
 												// itself
@@ -148,16 +236,19 @@ public class XmpWriter {
 		return ok;
 	}
 
-	protected List<String> createCommand(MediaArchive inArchive) {
+	protected List<String> createCommand(MediaArchive inArchive, boolean save) {
 		List<String> comm = GenericsUtil.createList();
 		Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
 		if (etConfig.exists()) {
 			comm.add("-config");
 			comm.add(etConfig.getContentItem().getAbsolutePath());
 		}
-		comm.add("-overwrite_original");
-		comm.add("-n");
-		comm.add("-m");
+		if(save )
+		{
+			comm.add("-overwrite_original");
+			comm.add("-n");
+			comm.add("-m");
+		}
 		return comm;
 	}
 

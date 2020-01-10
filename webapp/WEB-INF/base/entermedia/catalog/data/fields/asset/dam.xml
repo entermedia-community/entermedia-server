@@ -745,7 +745,7 @@
   </property>   
    <property id="emiderror" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
     <name>
-      <language id="en"><![CDATA[EnterMedia ID could not be stored in XMP]]></language>
+      <language id="en"><![CDATA[EnterMedia ID error saving]]></language>
     </name>
   </property>   
   
