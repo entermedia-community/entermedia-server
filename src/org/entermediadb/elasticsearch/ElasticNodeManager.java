@@ -402,7 +402,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
 					Date date = new Date(recent.startTime());
 					Calendar yesterday = new GregorianCalendar();
-					yesterday.add(Calendar.DAY_OF_YEAR, -1); 
+					
+					MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
+					int hours = 24;
+					String setting  = archive.getCatalogSettingValue("snapshot_max_period_hours");
+					if( setting != null )
+					{
+						hours = Integer.parseInt(setting);
+					}
+					yesterday.add(Calendar.HOUR_OF_DAY, 0 - hours); 
 					yesterday.add(Calendar.MINUTE,15); //has it been 23 hours and 45 minutes
 					if (date.after(yesterday.getTime()))
 					{
