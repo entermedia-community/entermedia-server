@@ -1,7 +1,7 @@
 $!request.getAttribute( "oe-exception")
 <div class="col4 login-form" >
 	#if($user)
-		<p>[[You are logged in as]] $user</p>		
+		<div class="alert alert-info">[[You are logged in as]] <strong>$user</strong></div>		
 	#end
 		#set($loginok = $context.findValue("loginokpage") )
 		
@@ -36,7 +36,9 @@ $!request.getAttribute( "oe-exception")
 				$context.removePageValue("oe-exception")
 			#end
 		</form>
-		<p class="note" style="margin-top: 26px; margin-bottom: 10px;"><a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a></p>
+		<p class="login-otherlinks">
+			<a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a>
+		</p>
 		$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 		
 </div>	
