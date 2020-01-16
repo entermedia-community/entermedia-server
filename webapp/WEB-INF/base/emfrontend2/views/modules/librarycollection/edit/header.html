@@ -5,7 +5,7 @@
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
 #end
-<div id="default-top" class="clearfix" style=" border-top: 1px solid #ddd;">
+<div id="default-top" class="clearfix" style="display:table-row">
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))

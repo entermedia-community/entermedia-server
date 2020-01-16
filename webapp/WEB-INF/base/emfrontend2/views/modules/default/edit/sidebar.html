@@ -29,14 +29,12 @@ $context.putPageValue("view", $viewpath)
 
                   <li class="#if( $editing ) current #end projects-$target.id" byassettype="$!target.byassettype">
 					#if( $target.rendertable )
-			        	<a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
-	                    	<span class="icon"></span>
-							<span class="text"> $target</span>
+			        	<a class="" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+							<i class="fas fa-pen"></i> $target
 						</a>
                   	#else
-                      	<a class="tab" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
-                        	<span class="icon"></span>
-							<span class="text"> $target</span>
+                      	<a class="" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+                        	<i class="fas fa-pen"></i> $target
 						</a>
                     #end
                   </li>
