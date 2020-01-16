@@ -571,6 +571,11 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
 	}
 
-	
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		log.info("Asset Reindex started optimized:" + isOptimizeReindex());
+		super.reindexInternal();
+	}
 
 }
