@@ -187,7 +187,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	
 	public boolean shoudSkipField(String inKey)
 	{
-		if(inKey.equals("category-exact") || inKey.equals("category")){
+		if(inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description"))
+		{
 			return true;
 		}
 		return super.shoudSkipField(inKey);
