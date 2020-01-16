@@ -53,7 +53,19 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected IntCounter fieldIntCounter;
 	protected OutputFiller filler = new OutputFiller();
 
+	protected boolean fieldOptimizeReindex = true;
+	public boolean isOptimizeReindex()
+	{
+		return fieldOptimizeReindex;
+	}
+
+	public void setOptimizeReindex(boolean inOptimizeReindex)
+	{
+		fieldOptimizeReindex = inOptimizeReindex;
+	}
+
 	protected boolean fieldIncludeFullText = true;
+	
 	protected int fieldFullTextCap = 25000;
 	
 	public int getFullTextCap()
@@ -198,7 +210,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	{
 		try
 		{
-			if( !(inData instanceof Asset)) //Low level performance fix
+			if( isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
 			{
 				MultiValued values = (MultiValued)inData;
 				saveArray(inContent, "category",values.getValues("category"));
