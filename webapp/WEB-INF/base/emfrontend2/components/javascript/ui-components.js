@@ -1628,58 +1628,61 @@ var resizecolumns = function() {
 		{
 		var sortable = $(this);
 		var path = sortable.data("path");
-		
-		sortable.sortable({
-			axis: 'y',
-			cancel: ".no-sort",
-		    update: function (event, ui) 
-		    {
-				//debugger;
-		        var data = sortable.sortable('serialize');
-		        data = replaceAll(data,"viewid[]=","|");
-		        data = replaceAll(data,"&","");
-		        data = data.replace("|","");
-		        var args = {};
-		        args.items = data;
-		        args.viewpath = sortable.data("viewpath");
-		        args.searchtype = sortable.data("searchtype");
-		        args.assettype = sortable.data("assettype");
-		        args.viewid = sortable.data("viewid");
-		        $.ajax({
-		            data: args,
-		            type: 'POST',
-		            url: path 		            
-		        });
-		    },
-	        stop: function (event, ui) 
-	        {
-	            //db id of the item sorted
-	            //alert(ui.item.attr('plid'));
-	            //db id of the item next to which the dragged item was dropped
-	            //alert(ui.item.prev().attr('plid'));
-	        }
-	     });   
+		if (typeof sortable.sortable == "function") {
+			sortable.sortable({
+				axis: 'y',
+				cancel: ".no-sort",
+			    update: function (event, ui) 
+			    {
+					//debugger;
+			        var data = sortable.sortable('serialize');
+			        data = replaceAll(data,"viewid[]=","|");
+			        data = replaceAll(data,"&","");
+			        data = data.replace("|","");
+			        var args = {};
+			        args.items = data;
+			        args.viewpath = sortable.data("viewpath");
+			        args.searchtype = sortable.data("searchtype");
+			        args.assettype = sortable.data("assettype");
+			        args.viewid = sortable.data("viewid");
+			        $.ajax({
+			            data: args,
+			            type: 'POST',
+			            url: path 		            
+			        });
+			    },
+		        stop: function (event, ui) 
+		        {
+		            //db id of the item sorted
+		            //alert(ui.item.attr('plid'));
+		            //db id of the item next to which the dragged item was dropped
+		            //alert(ui.item.prev().attr('plid'));
+		        }
+		     });   
+		}
 	});
-	
-	$('.listsort').sortable({
+	var listtosort = $('.listsort');
+	if (typeof listtosort.sortable == "function") {
+		listtosort.sortable({
+				  
+				axis: 'y',
+				cancel: ".no-sort",
+			    stop: function (event, ui) {
 			  
-			axis: 'y',
-			cancel: ".no-sort",
-		    stop: function (event, ui) {
-		  
-				var path = $(this).data("path");
-				
-		    	
-		        var data = $(this).sortable('serialize');
-		        
-		        // POST to server using $.post or $.ajax
-		        $.ajax({
-		            data: data,
-		            type: 'POST',
-		            url: path 		            
-		        });
-		    }
-	});
+					var path = $(this).data("path");
+					
+			    	
+			        var data = $(this).sortable('serialize');
+			        
+			        // POST to server using $.post or $.ajax
+			        $.ajax({
+			            data: data,
+			            type: 'POST',
+			            url: path 		            
+			        });
+			    }
+		});
+	}
 	
 	//Sidebar Custom Width
 	lQuery(".col-left-resize").livequery(function()	{

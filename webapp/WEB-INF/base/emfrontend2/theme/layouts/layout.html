@@ -45,7 +45,7 @@
         </style> 
     #end
 </head>
-<body id="embody" showadmintoolbar="$canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end>
+<body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end>
 
    #if ( $browser.isMSIE() )	
        <!--[if lte IE 8]> 
