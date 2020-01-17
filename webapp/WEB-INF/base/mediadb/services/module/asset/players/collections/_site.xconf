@@ -3,5 +3,9 @@
 	
 	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
     
+    
+    <script id="videojs" src="/${applicationid}/components/javascript/videojs/video.min.js" />
+	<style  id="videojs-css"  href="/${applicationid}/components/javascript/videojs/video-js.css" />
+    
 	 
 </page>
