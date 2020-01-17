@@ -221,7 +221,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			
 				return;
 			}
-			Asset asset = (Asset) inData;
+			Asset asset = (Asset) loadData(inData);
 		
 			String fileformat = asset.getFileFormat();
 			if (fileformat != null)
