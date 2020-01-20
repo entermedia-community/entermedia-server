@@ -222,9 +222,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			log.error(e);
-			e.printStackTrace();
+			log.error("Could not parse: " , e);
 		}
 	}
 
