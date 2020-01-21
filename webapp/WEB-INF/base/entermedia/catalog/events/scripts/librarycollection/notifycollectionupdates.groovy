@@ -70,11 +70,18 @@ public void init()
 	String	appid =  mediaArchive.getCatalogSettingValue("events_notify_collective_app");
 	String template = "/" + appid + "/theme/emails/collective-update-event.html";
 	//Loop over the remaining topics
-	for (String useerid in usertopics.keySet())
+	try
 	{
-		List topicmods = usertopics.get(useerid);
-		User followeruser = mediaArchive.getUser(useerid);
-		if (followeruser != null && followeruser.getEmail() != null) {
+		for (String useerid in usertopics.keySet())
+		{
+			List topicmods = usertopics.get(useerid);
+			User followeruser = mediaArchive.getUser(useerid);
+			if (followeruser == null || followeruser.getEmail() == null) 
+			{
+				log.info("Invalid User or no email address " + useerid);
+				continue;
+			}
+				
 			WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
 			if( topicmods.size() > 1)
 			{
@@ -97,10 +104,11 @@ public void init()
 			templatemail.send(objects);
 			log.info("Chat Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
 		}
-		else {
-			log.info("User with no email address " + followeruser.getName());
-		}
-	}
+	} 
+	catch (Exception ex)
+	{
+		log.error("Could not process " ,ex);
+	}	
 	
 	notificationsent.setValue("value", started);
 	mediaArchive.saveData("catalogsettings",notificationsent);
