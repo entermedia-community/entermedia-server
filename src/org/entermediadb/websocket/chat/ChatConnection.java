@@ -199,7 +199,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
 				//receiveLogin(map); 
-				String userid = (String) map.get("userid");
+				//String userid = (String) map.get("userid");
+				String userid = String.valueOf(map.get("userid"));
 				setUserId(userid);
 			}
 			else if("messagereceived".equals(command)){

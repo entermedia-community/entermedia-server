@@ -74,27 +74,32 @@ public void init()
 	{
 		List topicmods = usertopics.get(useerid);
 		User followeruser = mediaArchive.getUser(useerid);
-		WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
-		if( topicmods.size() > 1)
-		{
-			templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+		if (followeruser != null && followeruser.getEmail() != null) {
+			WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
+			if( topicmods.size() > 1)
+			{
+				templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+			}
+			else
+			{
+				Data oneitem = topicmods.iterator().next();
+				Data collection = mediaArchive.getCachedData("librarycollection", oneitem.get("collectionid") );
+				Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
+				templatemail.setSubject("[EM] " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
+			}
+			Map objects = new HashMap();
+			objects.put("topicmods",topicmods);
+			objects.put("followeruser",followeruser);
+			objects.put("apphome","/" + appid);
+			objects.put("mediaarchive",mediaArchive);
+			objects.put("messagessince",since);
+			
+			templatemail.send(objects);
+			log.info("Chat Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
 		}
-		else
-		{
-			Data oneitem = topicmods.iterator().next();
-			Data collection = mediaArchive.getCachedData("librarycollection", oneitem.get("collectionid") );
-			Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
-			templatemail.setSubject("[EM] " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
+		else {
+			log.info("User with no email address " + followeruser.getName());
 		}
-		Map objects = new HashMap();
-		objects.put("topicmods",topicmods);
-		objects.put("followeruser",followeruser);
-		objects.put("apphome","/" + appid);
-		objects.put("mediaarchive",mediaArchive);
-		objects.put("messagessince",since);
-		
-		templatemail.send(objects);
-		log.info("Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
 	}
 	
 	notificationsent.setValue("value", started);
