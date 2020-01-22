@@ -36,6 +36,10 @@ public void init()
 			asset.setValue("emiderror","false");
 			tosave.add(asset);
         }
+		else
+		{
+			asset.setValue("emiderror","true");
+		}
         if(tosave.size() > 1000) {
             searcher.saveAllData(tosave, null);
             tosave.clear();
