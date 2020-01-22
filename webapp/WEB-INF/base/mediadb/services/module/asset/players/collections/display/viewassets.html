@@ -3,9 +3,9 @@ data-hitssessionid="$hits.getSessionId()"
 data-pagenum="$hits.getPage()"  
 data-totalpages="$hits.getTotalPages()"
 data-collectionid="$!librarycol.getId()"
+data-previewonly="true"
 >
-#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
-$context.putPageValue("showtoolbar",  $showtoolbar)
+
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 $context.putPageValue("showtoolbar", "false")
 
@@ -45,7 +45,7 @@ $context.putPageValue("showtoolbar", "false")
 		#set( $next = $hits.next($index))       
         
 		<div class="float-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}" data-assetid="$hit.id" data-next="$!next.getId()" data-previous="$!previous.getId()" data-width="$assetwidth" data-height="$assetheight">
-		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
+		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id"  href="#">
 		    	    <div class="grid-thumbimage"> 
 		    	    	#if(!$type || $type =="audio")
 		    	    		#set( $type = "mime" )
