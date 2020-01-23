@@ -2196,7 +2196,9 @@ public class MediaArchive implements CatalogEnabled
 		try
 		{
 			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription());
-			webmail.setRecipient(to);
+			if (to != null) {
+				webmail.setRecipient(to);
+			}
 		}
 		catch (UnsupportedEncodingException e)
 		{

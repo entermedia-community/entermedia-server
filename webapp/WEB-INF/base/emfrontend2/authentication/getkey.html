@@ -1,9 +1,9 @@
 <div class="form-container" >
-
+<h1 class="page-title">[[Two Factor Authentication]]</h1>
 $!request.getAttribute( "oe-exception")
-<div class="col4 login-form" >
+<div class="login-form" >
 	#if($user)
-		<p>[[You are logged in as]] $user</p>		
+		<div class="alert alert-info">[[You are logged in as]] <strong>$user</strong></div>		
 	#end
 		#set($loginok = $context.findValue("loginokpage") )
 		
@@ -31,7 +31,9 @@ $!request.getAttribute( "oe-exception")
 				$context.removePageValue("oe-exception")
 			#end
 		</form>
-		
+		<p class="login-otherlinks">
+		<a href="login.html" title="[[Back to login page]]">Back to Login Page</a>
+		</p>
 </div>	
 </div>
 	<script language="JavaScript" >

@@ -70,32 +70,45 @@ public void init()
 	String	appid =  mediaArchive.getCatalogSettingValue("events_notify_collective_app");
 	String template = "/" + appid + "/theme/emails/collective-update-event.html";
 	//Loop over the remaining topics
-	for (String useerid in usertopics.keySet())
+	try
 	{
-		List topicmods = usertopics.get(useerid);
-		User followeruser = mediaArchive.getUser(useerid);
-		WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
-		if( topicmods.size() > 1)
+		for (String useerid in usertopics.keySet())
 		{
-			templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+			List topicmods = usertopics.get(useerid);
+			User followeruser = mediaArchive.getUser(useerid);
+			if (followeruser == null || followeruser.getEmail() == null) 
+			{
+				log.info("Invalid User or no email address " + useerid);
+				continue;
+			}
+				
+			WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
+			if( topicmods.size() > 1)
+			{
+				templatemail.setSubject("[EM] " + topicmods.size() + " Topic Notifications"); //TODO: Translate
+			}
+			else
+			{
+				Data oneitem = topicmods.iterator().next();
+				Data collection = mediaArchive.getCachedData("librarycollection", oneitem.get("collectionid") );
+				Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
+				templatemail.setSubject("[EM] " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
+			}
+			Map objects = new HashMap();
+			objects.put("topicmods",topicmods);
+			objects.put("followeruser",followeruser);
+			objects.put("apphome","/" + appid);
+			objects.put("mediaarchive",mediaArchive);
+			objects.put("messagessince",since);
+			
+			templatemail.send(objects);
+			log.info("Chat Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
 		}
-		else
-		{
-			Data oneitem = topicmods.iterator().next();
-			Data collection = mediaArchive.getCachedData("librarycollection", oneitem.get("collectionid") );
-			Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
-			templatemail.setSubject("[EM] " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
-		}
-		Map objects = new HashMap();
-		objects.put("topicmods",topicmods);
-		objects.put("followeruser",followeruser);
-		objects.put("apphome","/" + appid);
-		objects.put("mediaarchive",mediaArchive);
-		objects.put("messagessince",since);
-		
-		templatemail.send(objects);
-		log.info("Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
-	}
+	} 
+	catch (Exception ex)
+	{
+		log.error("Could not process " ,ex);
+	}	
 	
 	notificationsent.setValue("value", started);
 	mediaArchive.saveData("catalogsettings",notificationsent);

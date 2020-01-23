@@ -10,8 +10,8 @@
         #end
        
     
-        <div id="eml-tab-subnav">
-     
+        <div id="eml-tab-subnav" style="display:table-row;">
+     	
         <ul style="text-align: center;">
                    #set($indexOf = $hits.indexOfId($data.id))
         #set($showIndex = $indexOf + 1)
@@ -22,19 +22,19 @@
             #set( $thispage = $content.getDirectoryName() )
             
                     #if($previous)
-                         <li><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${previous.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${previous.id}&hitssessionid=${hitssessionid}&$viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end><<</a></li>
+                         <li><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${previous.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${previous.id}&hitssessionid=${hitssessionid}&$viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end><i class="fas fa-angle-double-left"></i></a></li>
                     #end
                          <li><a href="$home$content.searchhome/index.html?&hitssessionid=${hitssessionid}">$hits.size() [[Results]]</a></li>
                       
                     #if($next)
                         $context.putPageValue("hits", $hits)
-                        <li style="float: right;"><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end>>></a></li>
+                        <li style="float: right;" class="subnavrightitem">
+                        <a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end><i class="fas fa-angle-double-right"></i></a>
+                        </li>
                     #end
                     
             #end    
- 
-
-
         </ul>
+        <div class="clearfix"></div>
         </div>
         

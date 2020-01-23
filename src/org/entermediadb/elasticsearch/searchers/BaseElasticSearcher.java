@@ -2265,7 +2265,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if (propid.equals("description"))
+				String key = detail.getId();
+				if (key == null)
+				{
+					continue;
+				}
+				if (shoudSkipField(key))
+				{
+					continue;
+				}
+				if (propid.equals("description")) //All tables need this?
 				{
 					Object value = inData.getValue(propid);
 					if (value == null)
@@ -2278,12 +2287,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 					}
 					inContent.field(propid, value);
-					continue;
-				}
-
-				String key = detail.getId();
-				if (key == null)
-				{
 					continue;
 				}
 				Object value = inData.getValue(key);
@@ -2308,10 +2311,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				//					}
 				//				}	
 
-				if (shoudSkipField(key))
-				{
-					continue;
-				}
 				if (detail.isBadge() && value != null)
 				{
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);

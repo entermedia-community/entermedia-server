@@ -12,4 +12,6 @@
 	<permission name="viewmediaviewer">
 		<boolean value="true" />
 	</permission>
+	
+	
 </page>

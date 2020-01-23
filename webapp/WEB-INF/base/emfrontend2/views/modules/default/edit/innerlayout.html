@@ -21,11 +21,12 @@
 
 #set( $searchhome = $context.findValue("searchhome") )
 $context.putPageValue("searchhome",$searchhome)
-<div id="searchplugin"  class="h-100" > 
-        <div class="module-inner h-100" >
-            <div id="resultsdiv"  class="h-100" >
-                <div id="emresultscontent"   class="h-100" >
-                    <div id="resultsarea"   class="h-100" >
+<div id="searchplugin"> 
+        <div class="module-inner" >
+            <div id="resultsdiv">
+                <div id="emresultscontent">
+                    <div id="resultsarea" style="">
+                    	<div  style="display:table;width:100%;">
 						#if(!$hits)
 						        #set($hitsname = $context.getRequestParameter('hitsname'))
 						        #set($hits = $context.getPageValue($hitsname))
@@ -46,11 +47,11 @@ $context.putPageValue("searchhome",$searchhome)
 						
 						$pages.include("${searchhome}/edit/actions.html", $context)
 						$pages.include("${searchhome}/edit/header.html", $context)
-						  
-					      <div id="detailarea" class="h-100">
-					        
+						</div>
+						<div style="display:table;width:100%;border-spacing: 0px;border-bottom:1px solid #bbb;"> 
+					      <div id="detailarea" style="display:table-row">
 					           #if($content.isPropertyTrue("batchedit"))
-									<div id="details" class="detailarea-details">
+									<div id="details" class="detailarea-details  detailarea-details-open">
 					                     $pages.includeContent() 
 					
 									</div>
@@ -62,19 +63,23 @@ $context.putPageValue("searchhome",$searchhome)
 						            
 						            #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
 						            #if($views.size()>1)
-										<div id="de-side-nav" class="open h-100">
+										<div id="de-side-nav" class="open">
 						                	$pages.include("${searchhome}/edit/sidebar.html",$context)
 						                	## $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
 										</div>
 									#end
-						                <div id="details" class="detailsarea-details h-100" style="padding:20px 20px; #if($views.size()<=1) margin-left:0; #end">
+						                <div id="details" class="detailsarea-details  detailarea-details-open">
+						                	<div class="clearfix"></div>
+						                	<div style="min-height:220px; padding:20px 20px 20px;">
 						                     $pages.includeContent()
 						                     <div class="clearfix"></div>
+						                     </div>
 						                </div>
 						           
 								#end
 					        
-					     </div>	               
+					     </div>	  
+					     </div>             
                      </div>
                 </div>
             </div>

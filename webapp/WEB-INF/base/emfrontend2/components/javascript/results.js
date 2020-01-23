@@ -343,6 +343,10 @@ $(document).ready(function(url,params)
 				params.collectionid = collectionid;
 			}
 		}
+		if(resultsdiv.data("previewonly")==true)
+			{
+			params.previewonly="true";
+			}
 		
 		window.location.hash = 'asset-'+assetid;
 		

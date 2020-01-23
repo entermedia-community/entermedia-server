@@ -25,55 +25,49 @@
 $context.putPageValue("searchhome",$searchhome)
 <div id="searchplugin">
         <div class="module-inner">
-                
             <div id="resultsdiv">
                 <div id="emresultscontent">
-                    
                     <div id="resultsarea">
-                        <div id="resultslist">
-
-				#if(!$hits)
-				        #set($hitsname = $context.getRequestParameter('hitsname'))
-				        #set($hits = $context.getPageValue($hitsname))
-				#end
-				
-				#if(!$hits)
-				        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
-				        #if($hitssessionid)
-				            #set($hits = $context.getSessionValue($hitssessionid))
-				        #end
-				#end
-				#if(!$hits)
-				#set($hits = $context.getPageValue($content.hitsname))
-				#end
-				
-				$context.putPageValue("hits", $hits)
-				#set( $moduleid = $context.findValue("module") )
-				
-				$pages.include("${searchhome}/edit/actions.html", $context)
-				$pages.include("${searchhome}/edit/header.html", $context)
-  
-   
-  
-      <div id="detailarea">
-        <div id="de-table">
-           #if($content.isPropertyTrue("batchedit"))
-				<div id="details"  class="detailarea-details">
-                     $pages.includeContent() 
-
-				</div>
-			#else
-	            $pages.includeContent()
-			#end
-        </div>
-     </div>	               
-                              
-                        </div>
-                    </div>
-                    
-                </div>
+                        <div  style="display:table;width:100%;">
+							#if(!$hits)
+							        #set($hitsname = $context.getRequestParameter('hitsname'))
+							        #set($hits = $context.getPageValue($hitsname))
+							#end
+							
+							#if(!$hits)
+							        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+							        #if($hitssessionid)
+							            #set($hits = $context.getSessionValue($hitssessionid))
+							        #end
+							#end
+							#if(!$hits)
+							#set($hits = $context.getPageValue($content.hitsname))
+							#end
+							
+							$context.putPageValue("hits", $hits)
+							#set( $moduleid = $context.findValue("module") )
+							
+							$pages.include("${searchhome}/edit/actions.html", $context)
+							$pages.include("${searchhome}/edit/header.html", $context)
+  						</div>
+   						<div  style="display:table;width:100%;">
+  						      <div id="detailarea">
+						        <div id="de-table">
+						           #if($content.isPropertyTrue("batchedit"))
+										<div id="details"  class="detailarea-details">
+											<div class="clearfix"></div>
+						                     $pages.includeContent() 
+						
+										</div>
+									#else
+							            $pages.includeContent()
+									#end
+						        </div>
+						     </div>	               
+                        </div>      
+                       </div>
+                   </div>
             </div>
-
         </div>
     </div>
 

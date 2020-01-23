@@ -5,7 +5,7 @@
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
 #end
-<div id="default-top" class="clearfix">
+<div id="default-top" class="clearfix" style="display:table-row;">
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 
       <div class="main-info">
@@ -29,9 +29,7 @@
 
 </div>
 
-<div class="editholder">
+##<div class="editholder">
 ##<img style="padding-left: 15px;" src="$apphome/theme/images/toggle.png" class="sidetoggle" data-target="left-col">
-
 ##<a id="editboxlink" class="" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype">[[Edit]]</a>
-
-</div>
+##</div>

@@ -53,7 +53,19 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected IntCounter fieldIntCounter;
 	protected OutputFiller filler = new OutputFiller();
 
+	protected boolean fieldOptimizeReindex = true;
+	public boolean isOptimizeReindex()
+	{
+		return fieldOptimizeReindex;
+	}
+
+	public void setOptimizeReindex(boolean inOptimizeReindex)
+	{
+		fieldOptimizeReindex = inOptimizeReindex;
+	}
+
 	protected boolean fieldIncludeFullText = true;
+	
 	protected int fieldFullTextCap = 25000;
 	
 	public int getFullTextCap()
@@ -187,7 +199,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	
 	public boolean shoudSkipField(String inKey)
 	{
-		if(inKey.equals("category-exact") || inKey.equals("category")){
+		if(inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description"))
+		{
 			return true;
 		}
 		return super.shoudSkipField(inKey);
@@ -197,7 +210,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	{
 		try
 		{
-			if( !(inData instanceof Asset)) //Low level performance fix
+			if( isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
 			{
 				MultiValued values = (MultiValued)inData;
 				saveArray(inContent, "category",values.getValues("category"));
@@ -208,7 +221,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			
 				return;
 			}
-			Asset asset = (Asset) inData;
+			Asset asset = (Asset) loadData(inData);
 		
 			String fileformat = asset.getFileFormat();
 			if (fileformat != null)
@@ -558,6 +571,11 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
 	}
 
-	
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		log.info("Asset Reindex started optimized:" + isOptimizeReindex());
+		super.reindexInternal();
+	}
 
 }
