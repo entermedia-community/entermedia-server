@@ -18,9 +18,10 @@
 			$pages.include("$apphome/services/module/asset/players/collections/tree.html")		
 		</div>
 		<div class="col-md-10" style="border:2px;margin-left: -1px; border-left: 1px solid #e2eff4;" >
-			
-		  		$pages.include("$apphome/services/module/asset/players/collections/display/viewassets.html", $context)
-		  	
+			<div id="searchlayout">
+		  		##$pages.include("$apphome/services/module/asset/players/collections/display/viewassets.html", $context)
+		  		$pages.include("$componenthome/results/stackedgallery.html", $context)
+		  	</div>
 		</div>
 		</div>
 	</div>
