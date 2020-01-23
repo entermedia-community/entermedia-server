@@ -55,7 +55,7 @@
 			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
 		 	#end
 		 	#end
-		 	#if( $canaddnewcollection)
+		 	#if( $canaddnewcollection || $cancopycollection)
 					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Collection]]</a>
 			#end
 			#if($caneditcollection)
