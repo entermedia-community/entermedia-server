@@ -1898,7 +1898,10 @@ td.checkbox input, th.firstheader input {
 .emtree ul li div.treerow.dragoverselected {
 	border:1px dashed #999;
 }
-
+.detailarea {
+	background-color:#fff;
+	position:relative;
+}
 .detailarea-details .emtree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
     font-size: 11px;
@@ -3223,6 +3226,9 @@ label.error {
 .detailarea-details-open {
 	display:table-cell;
 	background-color:#fff;
+}
+.detailarea-details h3 {
+	margin-top:0px;
 }
 .detailarea-details h2 a {
 	color:#2790B0;
