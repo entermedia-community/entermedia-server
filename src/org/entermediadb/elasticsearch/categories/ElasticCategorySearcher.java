@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -359,8 +360,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
 		if( response.isExists() )
 		{
+			Map source = response.getSource();
+			if( isDeleted(source))
+			{
+				return null;
+			}
 			ElasticCategory data = (ElasticCategory) createNewData();
-			data.setProperties(response.getSource());
+			data.setProperties(source);
 			//data.
 			//copyData(data, typed);
 			data.setId(inValue);

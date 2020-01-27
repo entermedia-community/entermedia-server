@@ -127,65 +127,79 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	public void reIndexAll() throws OpenEditException
 	{
-		if (isReIndexing())
-		{
-			return; //TODO: Make a lock so that two servers startin up dont conflict?
-		}
-		setReIndexing(true);
 		try
 		{
-			getMediaArchive().getAssetArchive().clearAssets();
-			//For now just add things to the index. It never deletes
-
-			//Someone is forcing a reindex
-			//deleteOldMapping();
+			setOptimizeReindex(false);
 			putMappings();
-
-			//this is for legacy support
-			final List tosave = new ArrayList(500);
-
-			PathProcessor processor = new PathProcessor()
-			{
-				public void processFile(ContentItem inContent, User inUser)
-				{
-					if (!inContent.getName().equals(getDataFileName()))
-					{
-						return;
-					}
-					String sourcepath = inContent.getPath();
-					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
-					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
-					tosave.add(asset);
-					if (tosave.size() == 500)
-					{
-						updateIndex(tosave, null);
-						log.info("reindexed " + getExecCount());
-						tosave.clear();
-					}
-					incrementCount();
-				}
-			};
-			processor.setRecursive(true);
-			processor.setRootPath(getPathToData());
-			processor.setPageManager(getPageManager());
-			processor.setIncludeMatches("*.xml");
-			processor.process();
-			updateIndex(tosave, null);
-			log.info("reindexed " + processor.getExecCount());
-			flushChanges();
-			
-			//super.reIndexAll();//Old elastic data
-			
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
+			getMediaArchive().getCategorySearcher().clearCategories();
+			super.reindexInternal();
 		}
 		finally
 		{
-			setReIndexing(false);
+			setOptimizeReindex(true);
 		}
 	}
+//	public void reIndexAll() throws OpenEditException
+//	{
+//		if (isReIndexing())
+//		{
+//			return; //TODO: Make a lock so that two servers startin up dont conflict?
+//		}
+//		setReIndexing(true);
+//		try
+//		{
+//			getMediaArchive().getAssetArchive().clearAssets();
+//			//For now just add things to the index. It never deletes
+//
+//			//Someone is forcing a reindex
+//			//deleteOldMapping();
+//			putMappings();
+//
+//			//this is for legacy support
+//			final List tosave = new ArrayList(500);
+//
+//			PathProcessor processor = new PathProcessor()
+//			{
+//				public void processFile(ContentItem inContent, User inUser)
+//				{
+//					if (!inContent.getName().equals(getDataFileName()))
+//					{
+//						return;
+//					}
+//					String sourcepath = inContent.getPath();
+//					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
+//					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
+//					tosave.add(asset);
+//					if (tosave.size() == 500)
+//					{
+//						updateIndex(tosave, null);
+//						log.info("reindexed " + getExecCount());
+//						tosave.clear();
+//					}
+//					incrementCount();
+//				}
+//			};
+//			processor.setRecursive(true);
+//			processor.setRootPath(getPathToData());
+//			processor.setPageManager(getPageManager());
+//			processor.setIncludeMatches("*.xml");
+//			processor.process();
+//			updateIndex(tosave, null);
+//			log.info("reindexed " + processor.getExecCount());
+//			flushChanges();
+//			
+//			//super.reIndexAll();//Old elastic data
+//			
+//		}
+//		catch (Exception e)
+//		{
+//			throw new OpenEditException(e);
+//		}
+//		finally
+//		{
+//			setReIndexing(false);
+//		}
+//	}
 
 	/**
 	 * @deprecated Need to simplify

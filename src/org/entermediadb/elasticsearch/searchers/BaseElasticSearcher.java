@@ -2779,18 +2779,24 @@ public class BaseElasticSearcher extends BaseSearcher
 				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
 				if (response.isExists())
 				{
+					Map source = response.getSource();
+					if( isDeleted(source))
+					{
+						return null;
+					}
+					
 					Data data = null;
 					if (getNewDataName() != null)
 					{
 						data = createNewData();
 						// copyData(data, typed);
-						updateData(response.getSource(), data);
+						updateData(source, data);
 					}
 					else
 					{
 						SearchHitData sdata = new SearchHitData(this);
 						sdata.setPropertyDetails(getPropertyDetails());
-						sdata.setSearchData(response.getSource());
+						sdata.setSearchData(source);
 						data = sdata;
 						// data.setProperties(response.getSource());
 						//updateData(response.getSource(), data);
@@ -2810,6 +2816,20 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 		return super.searchByField(inField, inValue);
+	}
+
+	protected boolean isDeleted(Map source)
+	{
+		Map  status  = (Map)source.get("emrecordstatus");
+		if( status != null)
+		{
+			Object deleted = status.get("recorddeleted");
+			if( deleted != null && Boolean.parseBoolean(String.valueOf( deleted) ) )
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected void copyData(Data data, Data typed)
