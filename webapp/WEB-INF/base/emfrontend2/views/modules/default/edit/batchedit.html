@@ -1,15 +1,9 @@
 #if ( $hits.getSelectionSize() == 0 )
-
-<p>You must select at least once item to use this feature.</p>
-	
+	<p>You must select at least once item to use this feature.</p>
 #else
-
-
-
 <h3>[[Batch Edit]] - [[Editing]] $hits.getSelectionSize() [[records]]</h3>
 
 <div class="alert alert-warning">[[Be aware, there is no undo capability]].</div>
-
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )

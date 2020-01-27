@@ -2254,15 +2254,7 @@
 	<bean id="webPageRequest" class="org.openedit.BaseWebPageRequest"  scope="prototype">
 		<property name="localeManager"><ref bean="localeManager"/></property>
 	</bean>
-	<bean id="localeManager" class="org.openedit.util.LocaleManager">
-		<property name="textLabelManager"><ref bean="textLabelManager"/></property>
-	</bean>
 	
-	<bean id="textLabelManager" class="org.openedit.page.manage.TextLabelManager"  >
-		<property name="pageManager"><ref bean="pageManager"/></property>
-	    <property name="localeManager"><ref bean="localeManager"/></property>
-	    <property name="translator"><ref bean="translator"/></property>
-	</bean>
 
 	<bean id="UserPostModule" class="org.entermediadb.userpost.UserPostModule">
 	</bean>

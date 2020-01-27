@@ -27,7 +27,9 @@
 		<div class="listbox">
 		<a class="listrow group" href="$home$usermanagerhome/groups/modifygroup.html?groupid=$group.id">
 			$group</a>
-		<a class="ajax delete-row" targetdiv="groupeditor" href="$home$usermanagerhome/user/editgroups.html?groupid=$group.id&removeUsernames=$selectedUser.getUserName()&username=$selectedUser.id"></a>
+		<a class="ajax delete-row" targetdiv="groupeditor" href="$home$usermanagerhome/user/editgroups.html?groupid=$group.id&removeUsernames=$selectedUser.getUserName()&username=$selectedUser.id">
+		<i class="fas fa-times"></i>
+		</a>
 		</div>
 	#end
 </div>

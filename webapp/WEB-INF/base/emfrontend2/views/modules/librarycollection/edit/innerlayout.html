@@ -1,9 +1,10 @@
 #set( $moduleid = $context.findValue("module") )
 #set($viewid = $context.findValue("viewid"))
-
 #set($viewpath = $context.findValue("viewpath"))
-
-
+#set($savedid = $context.getRequestParameter("id"))
+#if ($savedid.startsWith("multiedit:"))
+	$content.setValue("batchedit","true")
+#end
 #if( !$viewid )
 
 	#set($ismodule = $searcherManager.getData($catalogid, "module", $moduleid ) )
@@ -51,9 +52,9 @@ $context.putPageValue("searchhome",$searchhome)
 							$pages.include("${searchhome}/edit/header.html", $context)
   						</div>
   						<div style="display:table;width:100%;">
- 					      <div id="detailarea">
+ 					      <div id="detailarea" class="detailarea">
 					        <div id="de-table">
-					           #if($content.isPropertyTrue("batchedit"))
+					           #if($content.isPropertyTrue("batchedit") || $savedid.startsWith("multiedit:")) 
 									<div id="details" class="detailarea-details">
 					                     $pages.includeContent() 
 					

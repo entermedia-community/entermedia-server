@@ -68,6 +68,12 @@ public class ProjectModule extends BaseMediaModule
 	
 	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
 	{
+		LibraryCollection collection = loadCollection(inReq);
+		String collectionid = collection.getId(); 
+		if (collectionid != null && collectionid.startsWith("multiedit:")) {
+			return;
+		}
+		
 		String collectionroot = inReq.getRequestParameter("collectionroot");
 		if( collectionroot == null)
 		{
@@ -78,7 +84,7 @@ public class ProjectModule extends BaseMediaModule
 			throw new OpenEditException("collectionroot not set");
 		}
 		String finalpath = "";
-		LibraryCollection collection = loadCollection(inReq);
+		
 		
 		if (collectionroot.endsWith(".html")) 
 		{
@@ -86,6 +92,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		else 
 		{
+			
 			finalpath = collectionroot + "/" + collection.getId() + "/index.html";
 		}
 		
