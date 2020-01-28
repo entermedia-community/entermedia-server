@@ -92,7 +92,11 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 				sort = inPageRequest.findValue("asset" + "sortby");
 				search.setSortBy(sort);
 			}
-			
+			String value = inPageRequest.findValue("assetclearfilters");
+			if( value != null)
+			{
+				inPageRequest.setRequestParameter("assetclearfilters", value);
+			}
 			HitTracker res = cachedSearch(inPageRequest, search);	
 			return res;
 		}
