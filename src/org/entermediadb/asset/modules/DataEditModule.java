@@ -404,25 +404,35 @@ String viewbase = null;
 
 	public void addProperty(WebPageRequest inReq) throws Exception
 	{
-		String fieldName = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = loadSearcherForEdit(inReq);
-		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
-		PropertyDetail detail = new PropertyDetail();
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype);
+		
 		String label = inReq.getRequestParameter("newproperty");
 		if (label == null)
 		{
 			label = "New";
 		}
-		detail.setId(label.toLowerCase().replace(" ", ""));
-		detail.setName(label);
-		String catid = inReq.findValue("catalogid");
-		detail.setCatalogId(catid);
-		detail.setEditable(true);
-		detail.setIndex(true);
-		detail.setStored(true);
-		details.addDetail(detail);
-
-		searcher.getPropertyDetailsArchive().savePropertyDetail(detail, fieldName, inReq.getUser());
+		String id = label.toLowerCase().replace(" ", "");
+		
+		PropertyDetail detail = details.getDetail(id);
+		if( detail != null)
+		{
+			detail.setDeleted(false);
+		}
+		else
+		{
+			detail = new PropertyDetail();
+			detail.setId(id);
+			detail.setName(label);
+			String catid = inReq.findValue("catalogid");
+			detail.setCatalogId(catid);
+			detail.setEditable(true);
+			detail.setIndex(true);
+			detail.setStored(true);
+			details.addDetail(detail);
+		}
+		searcher.getPropertyDetailsArchive().savePropertyDetail(detail, searchtype, inReq.getUser());
 		loadProperties(inReq);
 		//tuan
 		inReq.putPageValue("property", detail);
@@ -908,7 +918,18 @@ String viewbase = null;
 			return null;
 		}
 		List all = searcher.getProperties();
-		inReq.putPageValue("properties", all);
+		
+		List notdeleted = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if( !detail.isDeleted())
+			{
+				notdeleted.add(detail);
+			}
+		}
+		Collections.sort(notdeleted);
+		inReq.putPageValue("properties", notdeleted);
 		inReq.putPageValue("details", searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searcher.getSearchType()));
 
 		return all;
