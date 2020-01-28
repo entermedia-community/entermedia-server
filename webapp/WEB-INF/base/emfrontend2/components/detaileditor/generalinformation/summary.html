@@ -31,7 +31,7 @@ $context.putPageValue("showalllanguagevalues",true)
 								   data-targetdiv="edit-${target.getId()}"
 								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
 							#end</h4>
-								 
+							$context.putPageValue("clearfilters","true")	 
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end

@@ -1,4 +1,4 @@
-#set($hitssessionid =$hits.getSessionId())
+#set($hitssessionid = $hits.getSessionId())
 #set( $module = $content.module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
@@ -23,7 +23,7 @@
 	#if($librarycol.collectionimage)
 		#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
 	#else
-		#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+		#set($asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
 	#end
 
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
@@ -50,10 +50,10 @@
 	<i class="fas fa-bars"></i></a>
 		<div class="dropdown-menu">
 		 	#if(!$canforcebasiccollections)
-		 	#if($cansharecollection )
-			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
-			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
-		 	#end
+			 	#if($cansharecollection )
+				 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+				 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+			 	#end
 		 	#end
 		 	#if( $canaddnewcollection || $cancopycollection)
 					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Collection]]</a>
@@ -83,12 +83,10 @@
 </div>
 #end
 
-
-
 <div class="filtered #if( $librarycol ) filteredinresults #end">
-#if( $hits.getSearchQuery().hasMainInput() )
+#if( $hits.getSearchQuery().hasMainInput())
 	#if($librarycol)
-		[[Searching within]]: <strong><em>$librarycol</em> </strong> for:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#else
 		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#end
@@ -105,64 +103,66 @@
 		
 	<a
 	href="$href"
-	class="badge badge-light">$category <i class="fas fa-times"></i></a>
+	class="badge badge-light"
+	title="[[Clear Category]]">$category <i class="fas fa-times"></i></a>
 	#end
 #end
+
+
 #set( $terms = $userfilters.getFilteredTerms($hits) )
-
 #foreach( $term in $terms)
-
-
-#if( $librarycol )
-	#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
-	
-#else
-	#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
-#end
-#if ($nodeID)
- 	#set($href = $href + "&nodeID=${nodeID}")
-#end
-
-<a href="$href"
-	class="badge badge-light">$term.getDetail(): 
-	#foreach( $val in $term.getValueCollection() )
+	#if( $librarycol )
+		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 		
-	 	#if ($term.getDetail().getId() == "keywords")
-			#if( $foreach.count > 1) [[and]] #end
-		#else
-			#if( $foreach.count > 1) [[or]] #end
-		#end
-		
-		#if($term.getDetail().isList())
-			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
-		#elseif($term.getDetail().isBoolean())
-			#if($term.getValue() == "true")
-				[[True]]
+	#else
+		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+	#end
+	#if ($nodeID)
+	 	#set($href = $href + "&nodeID=${nodeID}")
+	#end
+
+	<a href="$href"
+		class="badge badge-light"
+		title="[[Clear]] $term.getDetail()">$term.getDetail(): 
+		#foreach( $val in $term.getValueCollection() )
+			
+		 	#if ($term.getDetail().getId() == "keywords")
+				#if( $foreach.count > 1) [[and]] #end
 			#else
-				[[False]]
-			#end
-		#elseif($term.getDetail().isDate())
-			#set($op = $term.operation)
-			#if($op == "afterdate")
-				[[After]]:
-			#elseif($op == "beforedate")
-				[[Before]]:
-			#elseif($op == "betweendates")
-				[[Between]]:
+				#if( $foreach.count > 1) [[or]] #end
 			#end
 			
-            $term.getValue()
-		#else
-            #if($term.getValue())
-                $term.getValue()
-            #elseif($val)
-                $val
-            #end
-		#end
-		
-		 
-	#end <i class="fas fa-times"></i></a>
+			#if($term.getDetail().isList())
+				$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
+			#elseif($term.getDetail().isBoolean())
+				#if($term.getValue() == "true")
+					[[True]]
+				#else
+					[[False]]
+				#end
+			#elseif($term.getDetail().isDate())
+				#set($op = $term.operation)
+				#if($op == "afterdate")
+					[[After]]:
+				#elseif($op == "beforedate")
+					[[Before]]:
+				#elseif($op == "betweendates")
+					[[Between]]:
+				#end
+				
+	            $term.getValue()
+			#else
+	            #if($term.getValue())
+	                $term.getValue()
+	            #elseif($val)
+	                $val
+	            #end
+			#end
+			
+			 
+		#end <i class="fas fa-times"></i></a>
 #end
+
 
 #if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 	#if( $librarycol )
@@ -173,6 +173,6 @@
 	#if ($nodeID)
  		#set($href = $href + "&nodeID=$!{nodeID}")
 	#end
-	<a class="clearfilters" href="$href">[[Clear]]</a>
+	<a class="clearfilters" href="$href" title="[[Cear Filters]]">[[Clear]]</a>
 #end
 </div>
