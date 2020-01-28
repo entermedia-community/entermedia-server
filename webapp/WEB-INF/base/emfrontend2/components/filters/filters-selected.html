@@ -95,10 +95,16 @@
 #end
 ##TODO Loop over the view and show them here if they match
 
-#if( !$librarycol &&  $category )
+#if( $category )
 	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
+		#if( $librarycol )
+			#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
+		#else
+			#set($href = "$home$apphome/views/modules/asset/index.html?clearselection=true")
+		#end
+		
 	<a
-	href="$home$apphome/views/modules/asset/index.html?clearselection=true"
+	href="$href"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
 	#end
 #end
