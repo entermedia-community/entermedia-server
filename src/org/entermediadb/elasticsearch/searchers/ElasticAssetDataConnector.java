@@ -133,6 +133,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			putMappings();
 			getMediaArchive().getCategorySearcher().clearCategories();
 			super.reindexInternal();
+			log.info(getSearchType() + " Reindex complete");
 		}
 		finally
 		{

@@ -458,7 +458,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			@Override
 			public int compare(SnapshotInfo inO1, SnapshotInfo inO2)
 			{
-				return (int) (inO1.startTime() - inO2.startTime());
+				return String.valueOf(inO1.startTime()).compareTo( String.valueOf(inO2.startTime()));
 			}
 		});
 		Collections.reverse(results);
