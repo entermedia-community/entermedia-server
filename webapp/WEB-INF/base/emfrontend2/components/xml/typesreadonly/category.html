@@ -15,6 +15,6 @@
 #elseif( $val)
 	#set( $row = $mediaarchive.getCategory($val) )
     #if( $row )
-      <a href="$home$apphome/views/modules/asset/showcategory.html?selectedcategory=${row.getId()}&nodeID=${row.id}">#esc($row.getName())</a>
+      <a href="$home$apphome/views/modules/asset/showcategory.html?selectedcategory=${row.getId()}&nodeID=${row.id}&clearfilters=true">#esc($row.getName())</a>
     #end 
 #end	

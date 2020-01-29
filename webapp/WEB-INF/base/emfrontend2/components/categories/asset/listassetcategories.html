@@ -32,11 +32,14 @@
 		<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
 		#foreach( $parent in $category.getParentCategoriesFrom(1))
 			#if( ${foreach.count} > 1) \ #end
-			<a style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
+			<a style="padding:0px 4px 4px 4px;" 
+				href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
 		#end
 		</div>
 		#if( $caneditassetcategories )
-		 	<a class="ajax list-delete"  data-targetdiv="assetcategoryresults" href="$home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
+		 	<a class="ajax list-delete"  
+		 		data-targetdiv="assetcategoryresults" 
+		 		href="$home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
 		 	<i class="fas fa-times"></i></a>
 	 	#end
 		</div>
