@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="expirationperiod" editable="true" list="false" index="true" stored="true" keyword="false" filter="false" sortable="true">Expiration Type 
+    <name> 
+      <language id="de"><![CDATA[Ablauf Art]]></language>  
+      <language id="en"><![CDATA[Expiration Type]]></language>  
+      <language id="es"><![CDATA[Tipo de caducidad]]></language>  
+      <language id="fr"><![CDATA[Type d&#39;expiration]]></language> 
+    </name> 
+  </property>  
+  <property id="monitoringdatefield" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Negotiator/Agency 
+    <name> 
+      <language id="de"><![CDATA[Verhandler / Agentur]]></language>  
+      <language id="en"><![CDATA[Negotiator / Agency]]></language>  
+      <language id="es"><![CDATA[Negociador / Agencia]]></language>  
+      <language id="fr"><![CDATA[Négociateur / Agence]]></language> 
+    </name> 
+  </property>  
+  <property id="updatefield" datatype="date" format="MM/dd/yyyy" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Expiration Date 
+    <name> 
+      <language id="de"><![CDATA[Haltbarkeitsdatum]]></language>  
+      <language id="en"><![CDATA[Expiration Date]]></language>  
+      <language id="es"><![CDATA[Fecha de caducidad]]></language>  
+      <language id="fr"><![CDATA[Date d&#39;expiration]]></language> 
+    </name> 
+  </property>  
+  <property id="updatefieldvalue" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Asset ID
+    <name>
+      <language id="de"><![CDATA[Asset-ID]]></language>
+      <language id="en"><![CDATA[Asset ID]]></language>
+      <language id="es"><![CDATA[Identificación del activo]]></language>
+      <language id="fr"><![CDATA[ID Item]]></language>
+    </name>
+  </property> 
+  <property id="eventpath" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">
+    <name> 
+      <language id="de"><![CDATA[Verhandler / Agentur]]></language>  
+      <language id="en"><![CDATA[Negotiator / Agency]]></language>  
+      <language id="es"><![CDATA[Negociador / Agencia]]></language>  
+      <language id="fr"><![CDATA[Négociateur / Agence]]></language> 
+    </name> 
+  </property>  
+
+
+</properties>

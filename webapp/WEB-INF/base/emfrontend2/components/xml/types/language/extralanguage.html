@@ -19,6 +19,7 @@
 			#end
 		</select>
 	</div>
+
 	<div class="languageinput">
 		#if($languagecode!='') 
 			#set($language_textbox = ${detailid} + "." + $languagecode) 
@@ -34,6 +35,10 @@
 		#if($val && $val.length() > 200)
 			#set($textarearows = 5)
 		#end
+		 #if(!$val && $searchform )
+			#set($textarearows = 1)
+		#end
+		
 		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($val)</textarea>
 		
 	</div>
