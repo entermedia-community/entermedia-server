@@ -26,7 +26,7 @@
 	#set($regions = $searcher.search($query))
 
 	<div class="info" >
-		<h2>Send All Available Conversions to Fatwire</h2>
+		<h3>[[Send All Available Conversions to Fatwire]]</h3>
 		<form id="submit-all-form-${asset.id}" method="post" action="$home$apphome/views/modules/asset/editor/conversions/sendalltofatwirecomplete.html">
 			<input type="hidden" id="assetid" name="assetid" value="$asset.id"/>
 			<table border="0">
@@ -45,7 +45,7 @@
 						</td>
 					#end
 					<td>
-						<input id="submit-all-btn-${asset.id}" style="margin: 0 20px 20px;" class="thickbox btn" type="button" value="Send to Fatwire" />
+						<input id="submit-all-btn-${asset.id}" style="margin: 0 20px 20px;" class="btn btn-sm btn-primary" type="button" value="Send to Fatwire" />
 					</td>
 					<td>
 						<div id="submit-all-target-${asset.id}" style="margin: 0 20px 20px;">

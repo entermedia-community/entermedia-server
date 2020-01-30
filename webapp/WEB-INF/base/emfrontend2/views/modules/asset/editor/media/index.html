@@ -2,14 +2,8 @@
 <h2>[[Media Files]]</h2>
 <div class="assetpanel-editorinner">
 
-
-
-
-
-
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
-
 
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($newpreset = $context.findValue("newpreset"))
@@ -126,22 +120,23 @@ $context.putPageValue("results", $results)
 			<div class="media-presets-sidebar">
 			<h3>[[File]]</h3>
 			<div class="media-presets-sidebar-content">
-				<a class="btn btn-xs btn-secondary emdialog"
-					href="$home$apphome/views/modules/asset/editor/media/presetsaveas.html?presetid=$current.id&assetid=$asset.id"
-					data-noesc="true" 
-					title="[[Copy Media]]"
-				>[[Save as...]]</a>
-				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-					targetdivinner="asset-editor-container" 
-					data-oemaxlevel="1" 
-				>[[Delete]]</a>
-			#set($cancrop = $conversionUtil.canCrop($catalogid, $current.id, $asset.id))
-				#if($cancrop)
-				##change to use filename not presetid
-				<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-					targetdivinner="asset-editor-container" 
-					data-oemaxlevel="1" 
-				href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${current.id}">[[Crop]]</a>
+				##<a class="btn btn-xs btn-secondary emdialog"
+				##	href="$home$apphome/views/modules/asset/editor/media/presetsaveas.html?presetid=$current.id&assetid=$asset.id"
+				##	data-noesc="true" 
+				##	title="[[Copy Media]]"
+				##>[[Save as...]]</a>
+				
+				##<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+				##	targetdivinner="asset-editor-container" 
+				##	data-oemaxlevel="1">[[Delete]]</a>
+				
+				#set($cancrop = $conversionUtil.canCrop($catalogid, $current.id, $asset.id))
+				#if($caneditasset && $cancrop)
+					##change to use filename not presetid
+					<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
+						targetdivinner="asset-editor-container" 
+						data-oemaxlevel="1" 
+					href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${current.id}">[[Crop]]</a>
 				#end
 			</div>
 			<h3>[[Details]]</h3>

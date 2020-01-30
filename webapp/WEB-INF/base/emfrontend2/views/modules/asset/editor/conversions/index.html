@@ -26,23 +26,22 @@
 	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
    	   href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 	<hr>
+
+	<form id="uploadform" class="ajaxform" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+		<span class="btn btn-sm btn-secondary btn-default btn-file">
+		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
+		</span>
+		<span id="file0-file-info" style="font-size:90%"></span>
+		##[[Replace Image]]:<input type="file" size="50" name="file.0">
+		<input type="hidden" name="unzip" value="false" />
+		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+		<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
+	</form>
+	<hr>
 #end
 
-
-
-<form id="uploadform" class="ajaxform" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
-	<span class="btn btn-sm btn-secondary btn-default btn-file">
-	    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
-	</span>
-	<span id="file0-file-info" style="font-size:90%"></span>
-	##[[Replace Image]]:<input type="file" size="50" name="file.0">
-	<input type="hidden" name="unzip" value="false" />
-	<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
-	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
-	<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
-	<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
-</form>
-<hr>
 </div>
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($newpreset = $context.findValue("newpreset"))
@@ -140,7 +139,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#end
 		
 		##UPLOAD
-		#if( $presetdata.id != "0" )
+		#if($caneditasset &&  $presetdata.id != "0" )
 			<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
 		#end
 		#if($isready)
@@ -223,11 +222,12 @@ $(document).ready(function(){
 </script>
 
 $context.putPageValue("asset",$asset)
-#if($newpreset)
-	$context.putPageValue("omitpreset",$newpreset)
+#if($caneditasset)
+	#if($newpreset)
+		$context.putPageValue("omitpreset",$newpreset)
+	#end
+	$pages.include("$home$apphome/views/modules/asset/editor/conversions/createnewconversion.html", $context)
 #end
-
-$pages.include("$home$apphome/views/modules/asset/editor/conversions/createnewconversion.html", $context)
 
 <script>
 $(document).ready(function(){
@@ -243,16 +243,13 @@ $(document).ready(function(){
 });
 </script>
 
-<hr>
-<p>
-[[You can specify custom width, height or formats. For example, a large PDF]]:
-</p>
-<p>
-	<i>
-	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
-	
-</p>
-
+#if($caneditasset)
+	<hr>
+	<p>[[You can specify custom width, height or formats. For example, a large PDF]]:</p>
+	<p><i>
+		$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
+	</p>
+#end
 
 </div>
 <div class="col-md-4">
