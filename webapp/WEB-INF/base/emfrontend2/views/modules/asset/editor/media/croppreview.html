@@ -9,7 +9,11 @@
 	#set($assetheight = $numberutils.toInt($asset.height))
 	
 	##set a few constants
-	#set($min_display = 1024.0)
+	#if($assetwidth > $assetheight)
+		#set($min_display = 1024.0)
+	#else
+		#set($min_display = 768.0)
+	#end	
 	#set($width_offset = 138.0)
 	#set($bf_img_width = $min_display)
 	#set($bf_img_height = $min_display)
@@ -90,17 +94,14 @@
 	##set crop link
 	#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
 	
-	$displaywidth : $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
+	##Max: $displaywidth WxH: $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
 	
 	<h2>
 	<a href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=$asset.id"
 		class="ajax" style="color:#fefefe;"
 		title="[[Asset Files]]"
 	   	targetdivinner="asset-editor-container" data-oemaxlevel="1"><i class="fas fa-caret-left" style="font-size: .8em;"></i></a>
-	[[Asset Files Crop]]</h2>
-	
-		
-			
+	[[Media Crop]] $width x $height</h2>
 		<div id="croptool">
 			<div class="jc-demo-box">
 					#set( $savetoall = $context.getRequestParameter("savetoall"))
@@ -131,13 +132,10 @@
 						<h3>[[Crop Preview]]</h3>
 						<div id="preview-panel" class="display-container" >
 							
-							<div class="preview-container">
+							<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
 								<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
 							</div>
 							<div class="media-presets-sidebar-content">
-							<div class="preview-labels">
-								<span id="dimension"></span>
-							</div>
 							 <div class="text-left">
 								
 							    <div>
@@ -196,8 +194,8 @@
 			e.preventDefault();
 			var id = $(this).attr("id");
 			if (id == "targetimg"){
-				$(this).width(${img_width});
-				$(this).height(${img_height});
+				//$(this).width(${img_width});
+				//$(this).height(${img_height});
 				$(this).css("display","none");
 				$(this).css("visibility","hidden");
 				prepareCropUtil(${img_width},${img_height});
@@ -217,7 +215,6 @@
 				keySupport: false,
 				onChange: updatePreview,
 				onSelect: updatePreview,
-				minSize: [xsize,ysize],
 				#if( $forceaspect)
 				aspectRatio: xsize / ysize,
 				#end
@@ -230,11 +227,20 @@
 				//$('#preview-panel').appendTo(this.ui.holder);
 			});
 			/*
-						trueSize: [1024,768]
+						trueSize: [550 x 3501024,768]
 			*/			
 			function updatePreview(c){
 				
-				if (parseInt(c.w) > 0){
+				if (parseInt(c.w) > 0)
+				{
+					$(".preview-container").width(c.w);
+					$(".preview-container").height(c.h);
+			    	$("#preview-image").css({
+			          	marginLeft: '-' + Math.round(c.x) + 'px',
+			          	marginTop: '-' + Math.round(c.y) + 'px'
+			        });
+					
+					/*
 			    	var rx = xsize / c.w;
 			    	var ry = ysize / c.h;
 			    	$("#preview-image").css({
@@ -245,7 +251,7 @@
 			        });
 			    	rx = ${width} / c.w;
 			    	ry = ${height} / c.h;
-			    	
+			    	*/
 			  	}
 				
 			  	var x1 = Math.round(c.x),
@@ -260,7 +266,7 @@
 			  	$('#y2').val(y2);
 			  	$('#w').val(w);
 			  	$('#h').val(h); 
-			  	$('#dimension').text(w+"x"+h);
+			  	//$('#dimension').text(w+"x"+h);
 			};
 		}
 		
