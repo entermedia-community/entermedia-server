@@ -119,7 +119,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String hasheight = instructions.get("cropheight");
 		//if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024)) {
-		if( originalheight != null && originalwidth != null)
+		if(hasheight != null && originalheight != null && originalwidth != null)
 		{
 			//input will be the original
 			boolean wide = true;

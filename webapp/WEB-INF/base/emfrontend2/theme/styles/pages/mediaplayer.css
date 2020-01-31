@@ -489,13 +489,13 @@ body.widthless1000 #pdf-thumbnail-sidebar
 }
 .media-presets { padding-top:10px;}
 .media-presets-sidebar {
-	background-color:#CCCCCC;
+	background-color:#e1e1e1;
 	height: 100%;
 	
 }
 .media-presets-sidebar h3 {
-	color: #bbb;
-    padding: 5px 10px 7px;
+	color: #ccc;
+    padding: 6px 10px;
     background-color: #333;
     text-transform: uppercase;
     font-size: 1.1rem;
@@ -506,8 +506,8 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	color:#333;
 }
 .mediapreset {
-	background-color:#CeCeCe;
-	border:2px solid #CeCeCe;
+	background-color:#bebebe;
+	border:2px solid #bebebe;
 	width:220px;
 	height: 220px;
 	text-align:center;
@@ -519,22 +519,31 @@ body.widthless1000 #pdf-thumbnail-sidebar
 }
 .mediapreset:hover
  {
-	border:2px solid #56994C;
+	border:2px solid #333;
+	background-color:#d1d1d1;
 }
 .mediapresetselected
  {
-	border:2px solid #56994C;
+	border:2px solid #333;
+	background-color:#e1e1e1;
 }
 .mediapreset a.mediapresetcontainer {
 	display:blocK;
-	padding:20px 10px 10px;
+	padding:10px 10px 10px;
 	
+}
+.mediapreset-name {
+	text-overflow: ellipsis;
+	 white-space: nowrap;
+	 width:100%;
+	 overflow: hidden;
+	 padding-bottom:10px;
 }
 .mediapreset-image {
 	height: 165px;
 }
 .mediapreset img {
-	border:2px solid #fff;
+	border:2px solid #ccc;
 	max-width:180px; 
 	max-height: 165px;
 }
@@ -542,3 +551,59 @@ body.widthless1000 #pdf-thumbnail-sidebar
 .embedcopytext textarea {
 	visibility: hidden;	
 }
+
+
+.croptool-maincol {
+	float:left; 
+	max-width:820px
+}
+
+.croptool-sidebar {
+	float:left; 
+	margin-left:10px;
+	width:300px; 
+	padding-bottom:20px;
+}
+
+@media (min-width: 1200px) {
+	.croptool-maincol {
+		max-width:820px
+	}
+	
+	.croptool-sidebar {
+		width:325px;
+		overflow: hidden;
+		}
+}
+
+
+@media (min-width: 1680px) {
+	.croptool-maincol {
+		max-width:1040px
+	}
+	
+	.croptool-sidebar {
+		width:430px
+		}
+	.media-presets-sidebar-content {
+		padding:13px;
+	}
+}
+
+@media (min-width: 1900px) {
+	.croptool-maincol {
+		max-width:1240px
+	}
+	
+	.croptool-sidebar {
+		width:580px
+		}
+	.media-presets-sidebar-content {
+		padding:15px;
+	}
+}
+
+
+
+
+
