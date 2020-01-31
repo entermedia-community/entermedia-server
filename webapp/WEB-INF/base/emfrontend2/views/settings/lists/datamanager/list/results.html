@@ -8,13 +8,12 @@ $context.putPageValue("hits",$datalist)
 #else
   	#set( $details = $searcher.getSearchProperties($user) )
 #end
-$context.putPageValue("details",$details) 
-  
-  
+#if(!$details)  
 #set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
 #set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
 #if(!$details)
 	#set( $details = $searcher.getStoredProperties() )
+#end
 #end
 $context.putPageValue("details",$details) 
 
