@@ -13,7 +13,7 @@ $!query.addSortBy("ordering")
 
 
 
-<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" 
+<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering&sortprefix=view_" 
 	class="emsettingslist listsort" 
 	data-searchtype="view" 
 	data-field="ordering">
@@ -27,8 +27,8 @@ $!query.addSortBy("ordering")
         #end
       
     #foreach( $target in $views)
-	    #set($sortid = $target.id.replaceAll("_", "||"))
-        <li id="view_$sortid" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
+	    #set($sortid = $target.id) ##.replaceAll("_", "||"))
+        <li id="$sortid" data-stuff="hey" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
         	#if( ($target.byassettype && $target.byassettype == "true") )
             	#set( $viewpath = "${moduleid}/assettype/${assettype}/$target.id")
             #else

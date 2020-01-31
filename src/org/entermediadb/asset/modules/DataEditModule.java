@@ -1768,12 +1768,12 @@ String viewbase = null;
 		Searcher searcher = loadSearcher(inReq);
 		String field = inReq.getRequestParameter("field");
 
-		String[] id2 = inReq.getRequestParameters("view[]");
+		String[] ids = inReq.getRequestParameters("ids");
 		ArrayList valuestosave = new ArrayList();
-		for (int i = 0; i < id2.length; i++)
+		for (int i = 0; i < ids.length; i++)
 		{
-			String dataid = id2[i];
-			dataid = dataid.replace("||", "_");//This is because of how jquery UI collects the values.
+			String dataid = ids[i];
+			//dataid = dataid.replace("||", "_");//This is because of how jquery UI collects the values.
 			Data item = (Data) searcher.searchById(dataid);
 			item.setProperty(field, String.valueOf(i));
 			valuestosave.add(item);

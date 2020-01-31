@@ -1670,13 +1670,21 @@ var resizecolumns = function() {
 			    stop: function (event, ui) {
 			  
 					var path = $(this).data("path");
-					
 			    	
-			        var data = $(this).sortable('serialize');
-			        
+			        var data = "";
+
+			       // var ids = new Array();
+			        $(this).find('li').each(function(index) 
+			        {
+			        	if( !$(this).hasClass("no-sort"))
+			        	{
+			        		var id = $(this).attr("id");
+			        		data = data + "ids=" + id + "&";
+			        	}
+					});
 			        // POST to server using $.post or $.ajax
 			        $.ajax({
-			            data: data,
+			        	data: data,
 			            type: 'POST',
 			            url: path 		            
 			        });

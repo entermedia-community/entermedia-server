@@ -57,9 +57,8 @@ $context.putPageValue("searchhome",$searchhome)
 									</div>
 								#else
 
-									#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false") )
-									#set($views = $viewsearcher.search($query))
-									$context.putPageValue("views",$views)
+					#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").sort("orderingUp").search($context) )
+					$context.putPageValue("views",$views)
 						            
 						            #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
 						            #if($views.size()>1)
