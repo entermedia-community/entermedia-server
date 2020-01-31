@@ -124,24 +124,38 @@ uiload = function() {
 	});
 	lQuery("select.select2").livequery(function() {
 		var input = $(this);
+		var dropdownParent = $("body");
+
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		} 
+		var parent = theinput.closest(".modal-dialog");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
 		var allowClear = $(this).data('allowclear');
 		if (allowClear == undefined)  {
 			allowClear = true;
 		}
 		input.select2({
-			allowClear : allowClear
+			allowClear : allowClear,
+			dropdownParent : dropdownParent
 		});
 	});
 
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
 		var dropdownParent = $("body");
+
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		} 
 		var parent = theinput.closest(".modal-dialog");
 		if (parent.length) {
 			dropdownParent = parent;
-			// console.log("found modal parent, skipping");
-			// https://github.com/select2/select2-bootstrap-theme/issues/41
-		} else {
+		}
             //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
 			var placeholder = theinput.data('placeholder');
 			if (!placeholder) {
@@ -160,7 +174,7 @@ uiload = function() {
 				dropdownParent : dropdownParent,
 			});
 		
-		}
+		
 
 	});
 
@@ -819,6 +833,16 @@ uiload = function() {
 			.livequery(
 					function() {
 						var theinput = $(this);
+						var dropdownParent = $("body");
+
+						var parent = theinput.closest("#main-media-container");
+						if (parent.length) {
+							dropdownParent = parent;
+						} 
+						var parent = theinput.closest(".modal-dialog");
+						if (parent.length) {
+							dropdownParent = parent;
+						}
 						var searchtype = theinput.data('searchtype');
 						var searchfield = theinput.data('searchfield');
 						var catalogid = theinput.data('listcatalogid');
@@ -843,6 +867,7 @@ uiload = function() {
 											tags : true,
 											placeholder : defaulttext,
 											allowClear : allowClear,
+											dropdownParent : dropdownParent,
 											selectOnBlur : true,
 											delay : 150,
 											minimumInputLength : 1,
@@ -1082,15 +1107,15 @@ uiload = function() {
 							}
 
 							var dropdownParent = $("body");
-							var parent = theinput.closest(".modal-content");
-							//var parent = theinput.parent();
+
+							var parent = theinput.closest("#main-media-container");
 							if (parent.length) {
 								dropdownParent = parent;
-								// console.log("found modal parent");
-							} else {
-								// console.log("use body parent");
-                            }
-                            // var value = theinput.val();
+							} 
+							var parent = theinput.closest(".modal-dialog");
+							if (parent.length) {
+								dropdownParent = parent;
+							}
                             
                             var allowClear = theinput.data('allowclear');
                             if (allowClear == undefined)  {

@@ -10,7 +10,7 @@
 #end
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="$!val"  type="hidden" >
  <br/>
-<input type="text" class="datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
+<input type="text" class="form-control datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
 
 
 
@@ -28,11 +28,11 @@
 	#set($minute =  $context.getMinutes($val))
 #end
 
-[[Time]]:  <select class="hour" name="${detail.id}.hour">
+[[Time]]:  <select class="form-control-sm hour" name="${detail.id}.hour" style="width:65px;">
 		#foreach($val in [0..23])
 		<option value="#if($val < 10)0#end$val" #if($hour == $val || $hour == "0$val")) selected #end >#if($val < 10)0#end$val</option>
 		#end
-	</select> : <select class="minute" name="${detail.id}.minute">
+	</select> : <select class="form-control-sm minute" name="${detail.id}.minute" style="width:65px;">
 		#foreach($val in [0..59])
 		<option value="#if($val < 10)0#end$val" #if($minute == $val || $minute == "0$val")) selected #end>#if($val < 10)0#end$val</option>
 		#end
