@@ -197,13 +197,12 @@
 	</li>
 #end
 </ul>
-<ul  class="emsettingslist sortviews" data-viewid="$viewid" data-catalogid="$catalogid" data-searchtype="$moduleid" data-assettype="$assettype" data-viewpath="$viewpath" data-path="$home$viewsroot/saveview.html">
+<ul  class="emsettingslist listsort" data-path="$home$viewsroot/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid" >
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
 				#set( $pid = "${element.searchType}.${element.id}")
-				##set( $pid = $pid.replace("_","")) 
-				<li id="viewid_$pid" > 
+				<li id="$pid" > 
 					#if( $canviewsettings )
 					<a class="sortableitem" href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype"><span class="drag-and-drop"></span> ${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	

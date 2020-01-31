@@ -1700,8 +1700,7 @@ String viewbase = null;
 		//XmlFile file = (XmlFile)loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
-		String items = inReq.getRequestParameter("items");
-		String[] sorted = MultiValued.VALUEDELMITER.split(items);
+		String[] sorted = inReq.getRequestParameters("ids");
 		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		XmlFile file = (XmlFile) loadView(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
@@ -1733,7 +1732,11 @@ String viewbase = null;
 		//log.info(catalogid + type + items);
 
 	}
-
+/**
+ * @deprecated @see saveView
+ * @param inReq
+ * @throws Exception
+ */
 	public void moveFieldInView(WebPageRequest inReq) throws Exception
 	{
 		XmlFile file = (XmlFile) loadView(inReq);
