@@ -3,9 +3,16 @@
 	#set($cdnprefix = $context.siteRoot )
 #end
 
-
 #set($presetid = $context.getRequestParameter("currentpreset"))
 #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $presetid))
+
+#set($cancrop = false)
+#if($canviewassetedit || $caneditasset)
+	#set($cancrop = $conversionUtil.canCrop($catalogid, $presetid, $asset.id))
+#else
+	#set($cancrop = false)
+#end
+
 #if($presetid)
 	#set($width = $dimension.getWidth())
 	#set($height = $dimension.getHeight())
@@ -118,7 +125,7 @@
 								data-targetdiv="asset-editor-container" 
 								action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
 					#end    
-					
+					#if($cancrop)
 					<div class="croptool-maincol" >
 						<div style="background-color: #333; padding:5px 8px 5px 5px; ">
 							<div style=" overflow-x:auto;">
@@ -131,6 +138,7 @@
 							</div>
 						</div>
 					</div>
+					#end
 					<div class="croptool-sidebar">
 						<div class="media-presets-sidebar">
 							#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $current.id))
@@ -192,22 +200,23 @@
 							
 						
 						
-						
-						<h3>[[Crop Preview]]</h3>
-						<div style="padding:5px">
-						<div id="preview-panel" class="display-container" style="overflow-x:auto;">
-							<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
-								<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
-							</div>
-							
-						</div>
-						</div>
-						<div class="media-presets-sidebar-content">
-							 <div class="text-left">
-								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Crop]]"  />
+						#if($cancrop)
+							<h3>[[Crop Preview]]</h3>
+							<div style="padding:5px">
+							<div id="preview-panel" class="display-container" style="overflow-x:auto;">
+								<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
+									<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
+								</div>
+								
 							</div>
 							</div>
-						</div>
+							<div class="media-presets-sidebar-content">
+								 <div class="text-left">
+									<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Crop]]"  />
+								</div>
+								</div>
+							</div>
+						#end
 					</div>
 					
 					<div class="clearfix"></div>

@@ -85,11 +85,10 @@ $context.putPageValue("results", $results)
 
 		</div>
 	
-	
+	<hr>
 	
 	
 	#if($current)
-	
 		$context.putPageValue("current",$current)
 		$pages.include("$apphome/views/modules/asset/editor/media/croppreview.html",$context)
 	#end
