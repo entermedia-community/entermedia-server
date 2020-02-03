@@ -64,9 +64,13 @@ public class ChatManager implements CatalogEnabled
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastmodified").createNewData();
 			status.setValue("chattopicid", channelid);
 			//String collectionid, 
-			MultiValued topic = (MultiValued)getMediaArchive().getData("collectiveproject",channelid);
-			Collection collections = topic.getValues("parentcollectionid");
-			status.setValue("collectionid", collections);
+			MultiValued topic = (MultiValued) getMediaArchive().getData("collectiveproject", channelid);
+			if (topic != null)
+			{
+
+				Collection collections = topic.getValues("parentcollectionid");
+				status.setValue("collectionid", collections);
+			}
 		}
 		status.setValue("datemodified", new Date());
 		getMediaArchive().saveData("chattopiclastmodified", status);
@@ -82,10 +86,14 @@ public class ChatManager implements CatalogEnabled
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastchecked").createNewData();
 			status.setValue("chattopicid", channelid);
 			status.setValue("userid", inUserId);
-			MultiValued topic = (MultiValued)getMediaArchive().getData("collectiveproject",channelid);
-			Collection collections = topic.getValues("parentcollectionid");
-			status.setValue("collectionid", collections);
-			
+			MultiValued topic = (MultiValued) getMediaArchive().getData("collectiveproject", channelid);
+			if (topic != null)
+			{
+				Collection collections = topic.getValues("parentcollectionid");
+				status.setValue("collectionid", collections);
+
+			}
+
 		}
 		status.setValue("datechecked", new Date());
 		getMediaArchive().saveData("chattopiclastchecked", status);
@@ -156,14 +164,14 @@ public class ChatManager implements CatalogEnabled
 				}
 			}
 		}
-		
+
 		Set collectionids = new HashSet();
 		for (Iterator iterator = modifiedtopics.values().iterator(); iterator.hasNext();)
 		{
 			Data expiredlastmod = (Data) iterator.next();
 			collectionids.add(expiredlastmod.get("collectionid"));
 		}
-		
+
 		//What is left has not been viewed... TODO: Deal with empty topics? put welcome message.. Please enter chat
 		return collectionids;
 
