@@ -61,19 +61,50 @@ $context.putPageValue("results", $results)
 				
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
+				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $result.id))
+				#set($height = $mathtool.toInteger($dimension.getHeight()))
+				#set($width = $mathtool.toInteger($dimension.getWidth()))
+				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+				#set($details = "
+				[[Name]]: <strong>$result.name</strong><br>
+				[[Width]]: <strong>$!{width}px</strong><br>
+				[[Height]]: <strong>$!{height}px</strong>
+				")
+				#if ($aspectratio)
+				#set($details = "$details [[Aspect]]: <strong>$aspectratio</strong>")
+				#end
 				
 				<div class="mediapreset #if($current.id==$result.id) mediapresetselected #end">
-				<a href="$home$apphome/views/modules/asset/editor/media/index.html?currentpreset=$!{result.id}&assetid=$asset.id"
-				   	class="ajax mediapresetcontainer"
-					targetdivinner="asset-editor-container" data-oemaxlevel="1"
-					title="$result.name">
+					
 					<div class="mediapreset-name" >$result.name</div>
 					<div class="mediapreset-image">
 						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
 					</div>
-					</a>
-					
-					
+					<div class="mediapreset-actions">
+					##Download
+					<a class="btn btn-xs btn-primary" 
+					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($current.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
+					    title="[[Download]] $result.name"><i class="fas fa-download"></i></a>
+					    
+					 ##Crop
+					 #set($cancrop = $conversionUtil.canCrop($catalogid, $result.id, $asset.id)) 
+					 #if($caneditasset && $cancrop) 
+						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
+							targetdivinner="asset-editor-container"  
+							data-oemaxlevel="1"  
+							href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${result.id}"
+							title="[[Crop]] $result.name"><i class="fas fa-crop"></i></a> 
+					 #end
+					 
+					 ##Share
+					 #if($canembedasset)
+						<a class="btn btn-xs btn-primary emdialog" 
+					    	href="$home$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${result.id}"
+					    	data-noesc="true"
+					    	data-hidefooter="true"
+					    	title="[[Share]] $result.name"><i class="fas fa-share"></i></a>
+					 #end
+					</div>
 				</div>
 				
 			#end
@@ -84,16 +115,7 @@ $context.putPageValue("results", $results)
 		
 
 		</div>
-	
-	<hr>
-	
-	
-	#if($current)
-		$context.putPageValue("current",$current)
-		$pages.include("$apphome/views/modules/asset/editor/media/croppreview.html",$context)
-	#end
-	
-	
+
 	
 			##make it submit for on file selected
 			<form id="uploadform" 

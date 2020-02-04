@@ -1,0 +1,29 @@
+#set($presetid = $context.getRequestParameter("presetid"))
+#set($preset = $mediaarchive.getData("convertpreset", $presetid))
+
+<h5>[[Embed Link]]
+<a class="copytoclipboard btn btn-xxs btn-light" 
+	id="${presetid}-btn" 
+	data-targetdiv="embedalert"
+	data-copytext="${presetid}-embed"
+	data-isshowing="false"
+	title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+</h5>
+	<p class="hyphenate">
+	$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${preset.generatedoutputfile}&oemaxlevel=1",$context)
+	<input style="position:absolute; top:-1000px;" id="${presetid}-embed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${preset.generatedoutputfile}&oemaxlevel=1",$context)" >
+	</p>
+<h5>[[oEmbed Link]]
+<a href="#" 
+	class="copytoclipboard btn btn-xxs btn-light"
+	id="${presetid}-obtn" 
+	data-targetdiv="embedalert"
+	data-copytext="${presetid}-oembed"
+	data-isshowing="false"
+	title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>		
+</h5>
+<p class="hyphenate">
+	$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${presetid}&outputfile=${preset.generatedoutputfile}&oemaxlevel=1",$context)
+	<input style="position:absolute; top:-1000px;" id="${presetid}-oembed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${presetid}&outputfile=${preset.generatedoutputfile}&oemaxlevel=1",$context)" >
+	</p>
+<div class="alert alert-success" id="embedalert" role="alert" style="position: absolute; top:10px; display:none;">[[Copied to Clipboard]]</div>

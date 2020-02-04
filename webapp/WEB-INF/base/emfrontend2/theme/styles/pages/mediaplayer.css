@@ -537,15 +537,27 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	 white-space: nowrap;
 	 width:100%;
 	 overflow: hidden;
-	 padding-bottom:10px;
+	 padding:10px 0;
 }
 .mediapreset-image {
-	height: 165px;
+	height: 155px;
+	overflow:hidden;
 }
 .mediapreset img {
 	border:2px solid #ccc;
-	max-width:180px; 
-	max-height: 165px;
+	max-width:170px; 
+	max-height: 150px;
+}
+.mediapreset .mediapreset-actions a {
+	opacity: .2;
+	margin-right:5px;
+}
+.mediapreset:hover .mediapreset-actions a {
+	opacity: 1;
+	
+}
+.mediapreset .mediapreset-actions a .fas {
+	font-weight: 600;
 }
 
 .embedcopytext textarea {

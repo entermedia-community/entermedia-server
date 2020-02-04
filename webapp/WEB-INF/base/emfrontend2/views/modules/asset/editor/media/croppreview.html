@@ -3,7 +3,7 @@
 	#set($cdnprefix = $context.siteRoot )
 #end
 
-#set($presetid = $context.getRequestParameter("currentpreset"))
+#set($presetid = $context.getRequestParameter("presetid"))
 #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $presetid))
 
 #set($cancrop = false)
@@ -14,6 +14,7 @@
 #end
 
 #if($presetid)
+	#set($preset = $mediaarchive.getData("convertpreset", $presetid))
 	#set($width = $dimension.getWidth())
 	#set($height = $dimension.getHeight())
 	#set($width = $numberutils.createDouble("$width").intValue())
@@ -108,7 +109,15 @@
 	#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
 	
 	##Max: $displaywidth WxH: $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
-	
+<h2>[[Media Files]]</h2>
+<h5 style="margin-bottom:15px;">
+<a
+class="ajax"
+targetdivinner="asset-editor-container"  
+data-oemaxlevel="1"  
+href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=${asset.id}"
+title="[[Back to Media Files]]"
+><i class="fas fa-angle-double-left"></i>  [[Media Files]]</a> | <span style="color:#bbb;">[[Croping]]: $preset.name</span></h5>	
 	<div id="croptool">
 			<div class="jc-demo-box">
 					#set( $savetoall = $context.getRequestParameter("savetoall"))
@@ -141,82 +150,21 @@
 					#end
 					<div class="croptool-sidebar">
 						<div class="media-presets-sidebar">
-							#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $current.id))
-							#set($height = $mathtool.toInteger($dimension.getHeight()))
-							#set($width = $mathtool.toInteger($dimension.getWidth()))
-							#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-							
-							##<h3>[[File]]</h3>
-							##<div class="media-presets-sidebar-content">
-								##<a class="btn btn-xs btn-secondary emdialog"
-								##	href="$home$apphome/views/modules/asset/editor/media/presetsaveas.html?presetid=$current.id&assetid=$asset.id"
-								##	data-noesc="true" 
-								##	title="[[Copy Media]]"
-								##>[[Save as...]]</a>
-								##<a class="btn btn-xs btn-secondary previewcrop-btn ajax"
-								##	targetdivinner="asset-editor-container" 
-								##	data-oemaxlevel="1">[[Delete]]</a>
-							##</div>
-							
-							<h3>[[Share]]</h3>
-							<div class="media-presets-sidebar-content" style="position:relative">
-								<a class="btn btn-sm btn-primary" 
-								    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($current.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $current))?includemetadata=true">[[Download]]</a>
-								
-
-						
-								#if($canembedasset)
-								<a class="btn btn-sm btn-secondary embedbtn copytoclipboard " 
-									id="${current.id}-btn" 
-									data-targetdiv="embedalert"
-									data-copytext="${current.id}-embed"
-									data-isshowing="false"
-									data-embedtext="" 
-									href="">[[Link]]</a>
-									<input style="position:absolute; top:-1000px;" id="${current.id}-embed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/embed.html?assetid=${asset.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
-								<a class="btn btn-sm btn-secondary embedbtn copytoclipboard " 
-									id="${current.id}-obtn" 
-									data-targetdiv="embedalert"
-									data-copytext="${current.id}-oembed"
-									data-isshowing="false" 
-									href="">[[oEmbed]]</a>
-									<input style="position:absolute; top:-1000px;" id="${current.id}-oembed" value="$pages.include("$home$apphome/views/modules/asset/editor/media/oembed.html?assetid=${asset.id}&ouputpreset=${current.id}&outputfile=${current.generatedoutputfile}&oemaxlevel=1",$context)" >
-									<div class="alert alert-success" id="embedalert" role="alert" style="position: absolute; top:10px; display:none;">[[Copied to Clipboard]]</div>
-								
-								#end
-							
-								
-							</div>
-							<h3>[[Details]]</h3>
-							<div class="media-presets-sidebar-content">
-							[[Name]]: <strong>$current.name</strong><br>
-							[[Width]]: <strong>$!{width}px</strong><br>
-							[[Height]]: <strong>$!{height}px</strong><br>
-							#if ($aspectratio)
-							[[Aspect]]: <strong>$aspectratio</strong>
-							#end
+						<h3>[[Crop Preview]]</h3>
+						<div style="padding:5px">
+						<div id="preview-panel" class="display-container" style="overflow-x:auto;">
+							<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
+								<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
 							</div>
 							
-							
-						
-						
-						#if($cancrop)
-							<h3>[[Crop Preview]]</h3>
-							<div style="padding:5px">
-							<div id="preview-panel" class="display-container" style="overflow-x:auto;">
-								<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
-									<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
-								</div>
-								
+						</div>
+						</div>
+						<div class="media-presets-sidebar-content">
+							 <div class="text-left">
+								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Crop]]"  />
 							</div>
 							</div>
-							<div class="media-presets-sidebar-content">
-								 <div class="text-left">
-									<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Crop]]"  />
-								</div>
-								</div>
-							</div>
-						#end
+						</div>
 					</div>
 					
 					<div class="clearfix"></div>
