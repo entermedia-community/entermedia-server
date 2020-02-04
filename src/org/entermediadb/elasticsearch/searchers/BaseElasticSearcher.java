@@ -2203,9 +2203,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!detail.isDeleted())
+				if (!detail.isDeleted())  //TODO: Dont pass in deleted to begin with
 				{
-					allprops.add(detail.getId());
+					allprops.add(detail.getId());  //We need to make a copy anyways
 				}
 			}
 			if (!allprops.contains("description"))
