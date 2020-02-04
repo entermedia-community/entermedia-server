@@ -2498,10 +2498,15 @@ label.error {
 	line-height: 2;
 	padding:5px;
 }
-.assetpanel-content-inside a {
+.assetpanel-content-breadcrumb {
+	color:#ddd;
+	font-size:1.3rem;
+	margin-bottom:15px;
+}
+.assetpanel-content-breadcrumb a {
 	color:#efefef;
 }
-.assetpanel-content-inside a:hover {
+.assetpanel-content-breadcrumb a:hover {
 	color:#fff;
 }
 @media (min-width: 992px) {
