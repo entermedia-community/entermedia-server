@@ -2854,6 +2854,16 @@ label.error {
 }
 
 .alert-save {    
+	
+	color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    paddint-top:10px;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1;
+    
+    
     width: 300px;
     height:50px;
     position:absolute;
@@ -3882,7 +3892,7 @@ span.drag-and-drop {
 }
 #folders .folder {
     background: url('../images/folder.png') 15px 8px no-repeat;
-    padding:20px 140px 0 0;
+    padding:20px 0 0 0;
     height: 102px;
     position: relative;
 }
@@ -4081,8 +4091,7 @@ form .field {
 }
 .fields label {
     display: block;
-    margin: 20px 0 0 0;
-    font-weight: bold;
+ 
 }
 .fields .note {
     color: #666;
@@ -4107,16 +4116,16 @@ form .field {
 .fields .field.short {
     width: 300px;
 }
-.fields input[type="checkbox"] {
+.fieldsX input[type="checkbox"] {
     margin: 20px 0 0 0;
 }
-.fields input[type="checkbox"] + span {
+.fieldsX input[type="checkbox"] + span {
     margin-left: 5px;
 }
-.fields input[type="checkbox"]:checked + span {
+.fieldsX input[type="checkbox"]:checked + span {
     color: #28bb03;
 }
-.fields input[type="checkbox"] + span + .note {
+.fieldsX input[type="checkbox"] + span + .note {
     margin: 5px 0 20px 0;
 }
 #between {

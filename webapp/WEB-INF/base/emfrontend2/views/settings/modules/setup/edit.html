@@ -1,34 +1,62 @@
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="$home$apphome/views/settings/modules/setup/save.html" target="_top">
-	
-<h3>[[Hot Folder]]</h3>
 #set( $id = $context.getRequestParameter("id") )
+<table class="settings-table table table-striped">
+	<tr id="inputarea_name">
+		<td class="emdatafield">
+	 	[[Module Name]]
+		</td>
+			
+		<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+			<div class="emfield-default">
+				<input type="hidden" name="field" value="name" />
+				<input class="form-control form-control-sm short required" name="name.value" value ="$!data.name" />
+				<span style="color:gray;font-style:italic;font-size:.9em;">[[Module nickname.]]</span>
+			</div>
+			
+		</td>
+		</tr>
+		#if( !$id )
+			<tr id="inputarea_name">
+				<td class="emdatafield">
+					[[Module Id]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input class="form-control form-control-sm short required" name="id" value ="$!data.id" />
+					<div class="note">[[lower case, singular, no spaces]]</div>
+				</td>
+			</tr>
+			
+		#end
+		#if($id)
+			<input type="hidden" name="id" value="$!id" />
+			<tr id="inputarea_name">
+				<td class="emdatafield">
+					[[Tab on Navigation]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="showonnav" />
+					<div class="form-check">
+					<input name="showonnav.value" class="form-check-input " type="checkbox" #if( $!data.showonnav == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
+			<tr id="inputarea_name">
+				<td class="emdatafield">
+					[[Tab Order]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="ordering" />
+					<input name="ordering.value" type="text" size="1" value="$!data.ordering" class="form-control form-control-sm" />
+				</td>
+			</tr>
+			#end
+	
+	</table>
 
 
-<label>[[Module Name]]</label>
-<input type="hidden" name="field" value="name" />
-<input class="form-control form-control-sm short required" name="name.value" value ="$!data.name" />
-<div class="note">[[Module nickname.]]</div>
 
 
-##<input type="hidden" name="field" value="publicface" />
-##<div class="note"> <input class="short" name="publicface.value" type="checkbox" value ="$!data.publicface" /> [[Deploy a public facing application for this module.]]</div>
 
-#if( !$id )
-<label>[[Module Id]]</label>
-<input class="form-control form-control-sm short required" name="id" value ="$!data.id" />
-<div class="note">[[lower case, singular, no spaces]]</div>
-#else
-<input type="hidden" name="id" value="$!id" />
-
-<input type="hidden" name="field" value="showonnav" />
-<span>Tab on Navigation</span>&nbsp;&nbsp;&nbsp;<input name="showonnav.value" type="checkbox" #if( $!data.showonnav == "true") checked #end value="true" />  
-<div class="clearfix" />
-<br>
-<input type="hidden" name="field" value="ordering" />
-<span>Tab Order</span>&nbsp;&nbsp;&nbsp;<input name="ordering.value" type="text" size="1" value="$!data.ordering" />  
-<div class="clearfix" />
-
-#end
 
 
 ##<input type="hidden" name="field" value="showactions" />
@@ -37,7 +65,7 @@
 
 <input name="reloadprofile" type="hidden" value="true" />
 
-<input style="margin-top: 40px;" class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
+<input style="margin-top: 20px;" class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
 
 
 </form>
