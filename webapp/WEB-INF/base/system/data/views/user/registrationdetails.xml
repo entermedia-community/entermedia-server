@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+  <property id="firstname" required="true"/>
+  <property id="lastname" required="true"/>
+  <property id="termsandconditions" required="true">I agree to the terms and conditions</property>
+  <property id="firstName"/>
+  <property id="lastName"/>
+  <property id="email" required="true" viewtype="matched"/>
+  <property id="password" editable="true"/>
+</root>
