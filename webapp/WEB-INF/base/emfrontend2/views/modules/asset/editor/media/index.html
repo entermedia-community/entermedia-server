@@ -9,8 +9,7 @@
 #end
 <div class="">
 #set($mediadbappid=$mediaarchive.getMediaDbId())
-
-#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+#set($type = $mediaarchive.getMediaRenderType($asset.fileformat))
 #set($newpreset = $context.findValue("newpreset"))
 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
@@ -36,7 +35,7 @@ $context.putPageValue("results", $results)
 		<div class="media-presets">
 		#foreach ($result in $results)
 			
-			$context.putPageValue("presetdata",$result)
+			$context.putPageValue("presetdata", $result)
 			#set($presetdata = $result)
 			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 			#if(!$cancrop)
@@ -76,9 +75,9 @@ $context.putPageValue("results", $results)
 				
 				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
 					
-					<div class="mediapreset-name" >$result.name</div>
+					<div class="mediapreset-name" title="$result.name" >$result.name</div>
 					<div class="mediapreset-image">
-						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
+						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" alt="$result.name" />
 					</div>
 					<div class="mediapreset-actions">
 					##Download

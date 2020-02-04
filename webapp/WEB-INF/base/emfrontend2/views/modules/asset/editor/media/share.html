@@ -1,5 +1,16 @@
 #set($presetid = $context.getRequestParameter("presetid"))
 #set($preset = $mediaarchive.getData("convertpreset", $presetid))
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+
+<div style="float:left; width:190px; text-align:center; border-right:1px solid #efefef; padding:10px 5px; margin-right:12px;">
+<div class="mediapreset-image">
+	<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($preset.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
+	</div>
+</div>
 
 <h5>[[Embed Link]]
 <a class="copytoclipboard btn btn-xxs btn-light" 
