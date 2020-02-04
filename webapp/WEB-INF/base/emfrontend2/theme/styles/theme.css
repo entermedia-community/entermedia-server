@@ -4058,14 +4058,14 @@ form .field {
     -moz-border-radius: 10px;
     border-radius: 10px;
     font-size: 16px;
-    padding: 8px;
+    padding: 5px;
     width: 260px;
     margin-bottom: 10px;
     margin-top: 5px;
     border: 1px solid #CCC;
 }
 .fields {
-    padding: 10px 30px 20px;
+    padding: 10px 0;
 }
 .fields .note + input.btn {
     margin-top: 20px;

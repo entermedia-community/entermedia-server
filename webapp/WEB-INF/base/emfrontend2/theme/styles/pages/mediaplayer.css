@@ -537,13 +537,13 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	 white-space: nowrap;
 	 width:100%;
 	 overflow: hidden;
-	 padding:10px 0;
+	 padding:10px 5px;
 }
 .mediapreset-image {
 	height: 155px;
 	overflow:hidden;
 }
-.mediapreset img {
+.mediapreset-image img {
 	border:2px solid #ccc;
 	max-width:170px; 
 	max-height: 150px;
