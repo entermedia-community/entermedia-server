@@ -122,9 +122,9 @@ uiload = function() {
 			$('#module-list').show();
 		}
 	});
-	/*
+	
 	lQuery("select.select2").livequery(function() {
-		var input = $(this);
+		var theinput = $(this);
 		var dropdownParent = $("body");
 
 		var parent = theinput.closest("#main-media-container");
@@ -144,7 +144,7 @@ uiload = function() {
 			dropdownParent : dropdownParent
 		});
 	});
-	*/
+	
 
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
