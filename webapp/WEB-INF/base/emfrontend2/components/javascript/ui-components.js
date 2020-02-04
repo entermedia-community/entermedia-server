@@ -1548,6 +1548,8 @@ uiload = function() {
 			theform.trigger("submit");
 		}
 	});
+	
+	$('[data-toggle="tooltipb"]').tooltip()
 
 }// uiload
 

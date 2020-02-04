@@ -1,17 +1,14 @@
-#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set($xmledithome = $context.getPageProperty("xmledithome"))
 $context.putPageValue("xmledithome",$xmledithome)
-
 #if($detail.dataType == "searchjoin" )
-	#set ($viewtype = "searchjoin" )
+	#set($viewtype = "searchjoin" )
 #else
-	#set ($viewtype = $detail.viewType)
+	#set($viewtype = $detail.viewType)
 #end
 #if (!$viewtype)
-	#set ($viewtype = $detail.dataType)
+	#set($viewtype = $detail.dataType)
 #end
 #if (!$viewtype || $viewtype== "text")
 	#set ($viewtype = "default")
 #end
-
-
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)

@@ -5,14 +5,11 @@
 ## $searcherManager
 #set( $highlights = $data.getHighlights($detail.id) )
 #if($highlights && $!highlights.isEmpty() )
-
 <ul class="highlightlist list-unstyled " >
 #foreach($item in $highlights)
 <li>$item</li>
 #end
 </ul>
-
-
 #else
 <div class="emdatafieldreadonly">
 #if(!$val && $detail.rendermask && $data)
@@ -20,7 +17,6 @@
 	#esc( $label )
 #elseif($detail.isMultiLanguage())
 		#set($map = $data.getValue($detail.getId()))
-		
 		#if( $showalllanguagevalues )
 			#set($languages = $mediaarchive.getList("locale"))
 			#foreach($locale in $languages)
@@ -40,12 +36,7 @@
 		#if($lval) $keyid:$lval <br>#end 
 	#end		
 #else
-    
     #esc($!val)	
-    
 #end
 </div>
 #end
-
-
-

@@ -125,20 +125,19 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 #foreach( $detail in $resultdetail )
-<td class="editfield highlightMe tablecell-$detail.id" halign="right">
-   <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
-		#set($val = false)	
-		#set( $val =  $cell.get($detail.id) )
-      	#if( !$val && $detail.render )	
-			#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
-		#end	
-		#if( !$val )
-			#set($val = "")	
-		#end		
-              $context.putPageValue('val',  $val)
-	
-              $context.putPageValue('detail',  $detail)
-              $pages.include("${searchhome}/cell.html", $context)    
+<td class="editfield highlightMe tablecell-$detail.id">
+#set($val = false)	
+#set( $val =  $cell.get($detail.id) )
+    	#if( !$val && $detail.render )	
+	#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+#end	
+#if( !$val )
+	#set($val = "")	
+#end		
+$context.putPageValue('val',  $val)
+$context.putPageValue('detail',  $detail)
+   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
+        $pages.include("${searchhome}/cell.html", $context)
     </div>
 </td>
 #end
