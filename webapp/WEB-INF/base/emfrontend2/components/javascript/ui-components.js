@@ -131,7 +131,7 @@ uiload = function() {
 		if (parent.length) {
 			dropdownParent = parent;
 		} 
-		var parent = theinput.closest(".modal-dialog");
+		var parent = theinput.parents(".modal.in:first");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
@@ -149,15 +149,15 @@ uiload = function() {
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
 		var dropdownParent = $("body");
-
 		var parent = theinput.closest("#main-media-container");
 		if (parent.length) {
 			dropdownParent = parent;
-		} 
-		var parent = theinput.closest(".modal-dialog");
+		}
+		var parent = theinput.parents(".modal.in:first");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
+	
             //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
 			var placeholder = theinput.data('placeholder');
 			if (!placeholder) {
@@ -173,7 +173,7 @@ uiload = function() {
 				placeholder : placeholder,
 				allowClear : allowClear,
 				minimumInputLength : 0,
-				dropdownParent : dropdownParent,
+				dropdownParent : dropdownParent
 			});
 		
 		
@@ -836,12 +836,11 @@ uiload = function() {
 					function() {
 						var theinput = $(this);
 						var dropdownParent = $("body");
-
 						var parent = theinput.closest("#main-media-container");
 						if (parent.length) {
 							dropdownParent = parent;
 						} 
-						var parent = theinput.closest(".modal-dialog");
+						var parent = theinput.parents(".modal.in:first");
 						if (parent.length) {
 							dropdownParent = parent;
 						}
@@ -1114,11 +1113,11 @@ uiload = function() {
 							if (parent.length) {
 								dropdownParent = parent;
 							} 
-							var parent = theinput.closest(".modal-dialog");
+							var parent = theinput.parents(".modal.in:first");
 							if (parent.length) {
 								dropdownParent = parent;
 							}
-                            
+                           
                             var allowClear = theinput.data('allowclear');
                             if (allowClear == undefined)  {
                                 allowClear = true;

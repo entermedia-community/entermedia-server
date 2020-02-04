@@ -486,7 +486,7 @@ select + .select2-container {
 }
 .modal-open .select2-container,
 #main-media-container .select2-container {
-	z-index: 10002;
+	z-index: 25005;
 }
 .assetpanel-container .select2-container--open {
 	z-index:10003;
