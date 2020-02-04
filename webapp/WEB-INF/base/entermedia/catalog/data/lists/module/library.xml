@@ -1,4 +1,4 @@
 <properties>
   <property id="library"  href="/views/modules/library/index.html">Libraries</property>
-  <property id="librarycollection" showonav="true" ordering="2"  href="/views/modules/librarycollection/index.html">Collections</property>
+  <property id="librarycollection" showonnav="true" ordering="1"  href="/views/modules/librarycollection/index.html">Collections</property>
 </properties>
