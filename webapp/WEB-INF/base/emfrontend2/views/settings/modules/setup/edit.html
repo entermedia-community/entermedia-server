@@ -21,7 +21,7 @@
 <input type="hidden" name="id" value="$!id" />
 
 <input type="hidden" name="field" value="showonnav" />
-<span>Tab on Navigation</span>&nbsp;&nbsp;&nbsp;<input name="showonnav.value" type="checkbox" value="$!data.showonnav" />  
+<span>Tab on Navigation</span>&nbsp;&nbsp;&nbsp;<input name="showonnav.value" type="checkbox" #if( $!data.showonnav == "true") checked #end value="true" />  
 <div class="clearfix" />
 <br>
 <input type="hidden" name="field" value="ordering" />
