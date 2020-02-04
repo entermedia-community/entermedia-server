@@ -32,6 +32,11 @@
       <language id="fr"><![CDATA[Editable]]></language> 
     </name> 
   </property>  
+  
+  <property id="deleted" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Deleted  </property>  
+  
+  
+  
   <property id="internalfield" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Internal use 
     <name> 
       <language id="de"><![CDATA[interne Benutzung]]></language>  
@@ -72,7 +77,7 @@
       <language id="fr"><![CDATA[Obligatoire]]></language> 
     </name> 
   </property>  
-  <property id="index" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Searchable 
+  <property id="index" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >
     <name> 
       <language id="de"><![CDATA[durchsuchbar]]></language>  
       <language id="en"><![CDATA[Searchable]]></language>  
@@ -109,6 +114,7 @@
       <language id="fr"><![CDATA[Utilisé dans les mots-clés]]></language> 
     </name> 
   </property>  
+  
   <property id="filter" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Used in Filters 
     <name> 
       <language id="de"><![CDATA[in Filtern verwendet]]></language>  
@@ -116,7 +122,8 @@
       <language id="es"><![CDATA[Se utiliza en los filtros]]></language>  
       <language id="fr"><![CDATA[Utilisé dans les Filtres]]></language> 
     </name> 
-  </property>  
+  </property>
+     
   <property id="multilanguage" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Mutlilanguage Enabled 
     <name> 
       <language id="de"><![CDATA[Mutlilanguage aktiviert]]></language>  
@@ -254,6 +261,9 @@
   
   </property>  
   <property id="xmpmask"  editable="true" stored="true" index="true" keyword="false" filter="false" >XMP Mask
+  </property>  
+  
+    <property id="highlight" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Include Text Highlighting 
   </property>  
   
   

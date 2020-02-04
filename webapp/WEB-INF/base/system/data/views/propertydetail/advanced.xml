@@ -1,0 +1,29 @@
+<properties >
+
+	<property id="stored" />
+	<property id="deleted" />	
+	<property id="externalid" />	
+	<property id="keyword" />	
+	<property id="filter" />	
+	<property id="multilanguage" />	
+	<property id="filtercount" />	
+	<property id="note" />	
+	<property id="listid" />	
+	<property id="listcatalogid" />	
+	<property id="sort" />	
+	<property id="foreignkeyid" />	
+	<property id="dependson" />	
+	<property id="dependsonvalue" />	
+	<property id="regex" />
+	<property id="rendermask" />	
+	<property id="autocreatefromexif" />	
+	<property id="writenametoexif" />	
+	<property id="xmpmask"  />
+	<property id="indextype" />	
+	<property id="analyzer"  />
+	<property id="isbadge" type="boolean" />
+	<property id="wordpressfield"    />
+		<property id="highlight"    />
+	
+	
+</properties>
