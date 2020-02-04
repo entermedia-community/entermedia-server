@@ -122,6 +122,7 @@ uiload = function() {
 			$('#module-list').show();
 		}
 	});
+	/*
 	lQuery("select.select2").livequery(function() {
 		var input = $(this);
 		var dropdownParent = $("body");
@@ -143,6 +144,7 @@ uiload = function() {
 			dropdownParent : dropdownParent
 		});
 	});
+	*/
 
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
