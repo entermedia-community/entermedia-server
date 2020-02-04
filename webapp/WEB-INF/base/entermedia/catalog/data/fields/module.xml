@@ -52,6 +52,21 @@
     </name>
   </property> 
   
+  <property id="showonnav" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Show as Tab]]></language>  
+    </name> 
+  </property> 
+   <property id="ordering" editable="true" index="true" type="number" stored="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Bestellung]]></language>  
+      <language id="en"><![CDATA[Tab Ordering]]></language>  
+      <language id="es"><![CDATA[Ordenando]]></language>  
+      <language id="fr"><![CDATA[Commande]]></language> 
+    </name> 
+  </property>  
+  
+  
   <!--  Dasta Merge -->
   
     <property id="href" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
