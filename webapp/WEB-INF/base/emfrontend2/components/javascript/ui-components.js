@@ -139,7 +139,7 @@ uiload = function() {
 		if (allowClear == undefined)  {
 			allowClear = true;
 		}
-		input.select2({
+		theinput.select2({
 			allowClear : allowClear,
 			dropdownParent : dropdownParent
 		});

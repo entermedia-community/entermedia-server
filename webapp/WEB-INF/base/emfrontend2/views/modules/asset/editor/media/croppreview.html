@@ -110,14 +110,15 @@
 	
 	##Max: $displaywidth WxH: $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
 <h2>[[Media Files]]</h2>
-<h5 style="margin-bottom:15px;">
+<div class="assetpanel-content-breadcrumb">
 <a
 class="ajax"
 targetdivinner="asset-editor-container"  
 data-oemaxlevel="1"  
 href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=${asset.id}"
 title="[[Back to Media Files]]"
-><i class="fas fa-angle-double-left"></i>  [[Media Files]]</a> | <span style="color:#bbb;">[[Croping]]: $preset.name</span></h5>	
+><i class="fas fa-angle-double-left"></i>  [[Media Files]]</a> | <span style="color:#bbb;">[[Croping]]: $preset.name</span>
+</div>	
 	<div id="croptool">
 			<div class="jc-demo-box">
 					#set( $savetoall = $context.getRequestParameter("savetoall"))
