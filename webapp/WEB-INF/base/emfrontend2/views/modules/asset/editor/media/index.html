@@ -74,7 +74,7 @@ $context.putPageValue("results", $results)
 				#set($details = "$details [[Aspect]]: <strong>$aspectratio</strong>")
 				#end
 				
-				<div class="mediapreset #if($current.id==$result.id) mediapresetselected #end">
+				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
 					
 					<div class="mediapreset-name" >$result.name</div>
 					<div class="mediapreset-image">
@@ -83,7 +83,7 @@ $context.putPageValue("results", $results)
 					<div class="mediapreset-actions">
 					##Download
 					<a class="btn btn-xs btn-primary" 
-					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($current.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
+					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
 					    title="[[Download]] $result.name"><i class="fas fa-download"></i></a>
 					    
 					 ##Crop
@@ -102,7 +102,7 @@ $context.putPageValue("results", $results)
 					    	href="$home$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${result.id}"
 					    	data-noesc="true"
 					    	data-hidefooter="true"
-					    	title="[[Share]] $result.name"><i class="fas fa-share"></i></a>
+					    	title="[[Share]] $result.name"><i class="fas fa-share-alt"></i></a>
 					 #end
 					</div>
 				</div>
