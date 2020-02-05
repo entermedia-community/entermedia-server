@@ -156,7 +156,13 @@
       <language id="fr"><![CDATA[listid]]></language> 
     </name> 
   </property>  
-  <property id="foreignkeyid" editable="true" stored="true" index="true" keyword="false" filter="false" >Foreign Key 
+  <property id="listfilterid" editable="true" stored="true" index="true" >
+    <name> 
+      <language id="en"><![CDATA[List Filter ID]]></language>  
+    </name>  
+  </property>  
+  
+  <property id="foreignkeyid" editable="true" stored="true" index="true" keyword="false" filter="false" >Foreign List Key 
     <name> 
       <language id="de"><![CDATA[Unbekannter Schlüssel]]></language>  
       <language id="en"><![CDATA[Foreign Key]]></language>  
@@ -164,7 +170,7 @@
       <language id="fr"><![CDATA[Clé étrangère]]></language> 
     </name> 
   </property>  
-  <property id="dependson" editable="true" stored="true" index="true" keyword="false" filter="false" >Depends On Field 
+  <property id="dependson" editable="true" stored="true" index="true" keyword="false" filter="false" >UI Depends On Field 
     <name> 
       <language id="de"><![CDATA[abhängig von Feld]]></language>  
       <language id="en"><![CDATA[Depends On Field]]></language>  
@@ -172,7 +178,7 @@
       <language id="fr"><![CDATA[Dépend du champ]]></language> 
     </name> 
   </property>  
-  <property id="dependsonvalue" editable="true" stored="true" index="true" keyword="false" filter="false" >Depends on Value 
+  <property id="dependsonvalue" editable="true" stored="true" index="true" keyword="false" filter="false" >UI Depends on Value 
     <name> 
       <language id="de"><![CDATA[abhängig von Wert]]></language>  
       <language id="en"><![CDATA[Depends on Value]]></language>  
@@ -190,7 +196,7 @@
    </property>  
   
   
-  
+<!--   
   <property id="regex" editable="true" stored="true" index="true" keyword="false" filter="false" >Regex 
     <name> 
       <language id="de"><![CDATA[Regex]]></language>  
@@ -198,7 +204,8 @@
       <language id="es"><![CDATA[expresiones regulares]]></language>  
       <language id="fr"><![CDATA[Regex]]></language> 
     </name> 
-  </property>  
+  </property>
+ -->    
   <property id="rendermask" editable="true" stored="true" index="true" keyword="false" filter="false" >Render Mask 
     <name> 
       <language id="de"><![CDATA[render-Maske]]></language>  
@@ -265,6 +272,7 @@
   
     <property id="highlight" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Include Text Highlighting 
   </property>  
-  
+
+
   
 </properties>

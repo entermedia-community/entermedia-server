@@ -50,8 +50,17 @@
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
 	#set ($query = $lsearcher.parse($squery))
 #else
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.addMatches("id", "*"))
+	#set ($listfilterid = $detail.get("listfilterid") ) ##has to have same column name in both tables
+	#if( $listfilterid)
+		#set( $remotevalue  = $data.get($listfilterid) )
+		#if( $remotevalue)
+			#set($query = $lsearcher.query().exact($listfilterid,$remotevalue).getQuery() )
+		#end	
+	#end	
+	#ifnull ($query)
+		#set ($query = $lsearcher.createSearchQuery())
+		#set ($o = $query.addMatches("id", "*")) 
+	#end	
 #end
 
 $query.setSortBy($detail.getDefaultSort())
