@@ -327,6 +327,10 @@ public abstract class BaseAssetSource implements AssetSource
 	@Override
 	public String getName()
 	{
+		if( getConfig() == null)
+		{
+			return null;
+		}
 		return getConfig().getName();
 	}
 	@Override
