@@ -133,12 +133,17 @@ public class ConvertStatusModule extends BaseMediaModule
 			Double cropwidth = Double.parseDouble(instructions.get("cropwidth"));
 			Double x1 = Double.parseDouble(instructions.get("x1"));
 			Double y1 = Double.parseDouble(instructions.get("y1"));
-			
-			Double scalefactor;
-			if(wide) {
-				scalefactor = 1024/originalwidth;
-			} else {
-				scalefactor = 768/originalheight;
+
+			Double scalefactor = 1d;
+
+			//Scale down to deal with big images
+			if(originalwidth > 1024d && wide) 
+			{
+				scalefactor = 1024d/originalwidth;
+			}
+			else if( originalheight > 768d)
+			{
+				scalefactor = 768d/originalheight;
 			}
 
 			cropheight = cropheight/scalefactor;

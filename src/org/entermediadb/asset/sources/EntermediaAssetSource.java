@@ -18,6 +18,10 @@ import org.openedit.users.User;
 public class EntermediaAssetSource extends BaseAssetSource
 {
 
+	public EntermediaAssetSource()
+	{
+		// TODO Auto-generated constructor stub
+	}
 	protected ModuleManager fieldModuleManager;
 	protected PullManager fieldPullManager;
 	private static final Log log = LogFactory.getLog(EntermediaAssetSource.class);
