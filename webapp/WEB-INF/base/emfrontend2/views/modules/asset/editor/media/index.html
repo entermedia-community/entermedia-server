@@ -20,13 +20,8 @@
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
 $context.putPageValue("results", $results)
 
-
-
-
-
 #set($currentpreset = $context.getRequestParameter("currentpreset"))
-
-					
+		
 	
 ##	#if($caneditasset)
 ##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
@@ -62,18 +57,7 @@ $context.putPageValue("results", $results)
 				
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
-				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $result.id))
-				#set($height = $mathtool.toInteger($dimension.getHeight()))
-				#set($width = $mathtool.toInteger($dimension.getWidth()))
-				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-				#set($details = "
-				[[Name]]: <strong>$result.name</strong><br>
-				[[Width]]: <strong>$!{width}px</strong><br>
-				[[Height]]: <strong>$!{height}px</strong>
-				")
-				#if ($aspectratio)
-				#set($details = "$details [[Aspect]]: <strong>$aspectratio</strong>")
-				#end
+				
 				
 				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
 					

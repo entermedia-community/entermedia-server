@@ -166,6 +166,28 @@ title="[[Back to Media Files]]"
 							</div>
 							</div>
 						</div>
+						
+						<div class="media-presets-sidebar">
+						<h3>[[DETAILS]]</h3>
+						<div class="media-presets-sidebar-content">
+						
+						
+						#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $presetid))
+						#set($height = $mathtool.toInteger($dimension.getHeight()))
+						#set($width = $mathtool.toInteger($dimension.getWidth()))
+						#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+						#set($details = "
+						[[Name]]: <strong>$preset.name</strong><br>
+						[[Width]]: <strong>$!{width}px</strong><br>
+						[[Height]]: <strong>$!{height}px</strong>
+						")
+						#if ($aspectratio)
+						#set($details = "$details <br>[[Aspect]]: <strong>$aspectratio</strong>")
+						#end
+						$details
+						</div>
+						</div>
+								
 					</div>
 					
 					<div class="clearfix"></div>
