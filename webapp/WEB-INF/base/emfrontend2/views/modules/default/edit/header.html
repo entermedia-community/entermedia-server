@@ -14,22 +14,25 @@
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
       #if ($details)
       <div class="main-info">
+        <div class="primary">
+          $module
+        </div>
       	#foreach($detail in $details)     	
         	#if($detail.isList())
-        	    #set($val = $searcherManager.getData($catalogid, "${detail.id}", $val))
+            	#set($val = $data.getValue($detail.id))
+        	    #set($val = $mediaarchive.getData($detail.listid, $val))
+            	#set($linkmodule = $mediaarchive.getData("module",$detail.listid)) 
         	#else
             	#set($val = $data.getValue($detail.id))
+            	#set($linkmodule = false)
             #end
-            #if(${foreach.count} == 1)
-		        <div class="primary">
-		          $module / #text($val)
-		        </div>
-			#else   
         	<div class="secondary">
-            	#text( $val )
+            	$detail.getName(): #text( $val )
+            	#if( $linkmodule)
+            	 <a target="_blank"  href="$applink/views/modules/$linkmodule.getId()/index.html"><i class="fas fa-external-link-alt"></i></a>
+            	#end
         	</div>
-        	#end
-	   		 #set($val = "")
+    		#set($val = "")
 	    #end
       	</div>
       #end
