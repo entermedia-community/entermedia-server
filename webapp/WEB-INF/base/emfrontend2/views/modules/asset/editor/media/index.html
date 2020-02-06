@@ -1,3 +1,8 @@
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
 <div id="asset-editor-container" class="h-100">
 <h2>[[Media Files]]</h2>
 #if($candownload)	
@@ -15,12 +20,9 @@
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
 $context.putPageValue("results", $results)
 
-#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
-#if(!$cdnprefix )
-	#set($cdnprefix = $context.siteRoot )
-#end
 
-#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+
+
 
 #set($currentpreset = $context.getRequestParameter("currentpreset"))
 
