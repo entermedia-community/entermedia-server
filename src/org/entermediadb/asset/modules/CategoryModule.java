@@ -447,6 +447,10 @@ public class CategoryModule extends BaseMediaModule
 		if( tosave != null)
 		{
 			String text = inReq.getRequestParameter("edittext");
+			if( text != null)
+			{
+				text = text.trim();
+			}
 			tosave.setName(text);
 			archive.getCategorySearcher().saveCategory(tosave);
 		}

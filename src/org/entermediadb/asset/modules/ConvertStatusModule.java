@@ -99,7 +99,7 @@ public class ConvertStatusModule extends BaseMediaModule
         
 		instructions.setForce(true);
 		
-		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getPath() + "/" + preset.get("generatedoutputfile"));
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
 		
 		
 //		//TODO: Re-enamble version control
