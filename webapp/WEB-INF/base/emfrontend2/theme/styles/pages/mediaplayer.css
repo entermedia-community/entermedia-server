@@ -491,6 +491,7 @@ body.widthless1000 #pdf-thumbnail-sidebar
 .media-presets-sidebar {
 	background-color:#e1e1e1;
 	height: 100%;
+	margin-bottom: 15px;
 	
 }
 .media-presets-sidebar h3 {
