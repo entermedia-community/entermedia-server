@@ -207,8 +207,11 @@ public class ChatServer
 				public void run() 
 				{
 					ChatManager manager = getChatManager(catalogid);
-					String channelid = (String)inMap.get("channel");
-					manager.updateChatTopicLastModified(channelid);
+					Object channelid = inMap.get("channel");
+					if( channelid != null)
+					{
+						manager.updateChatTopicLastModified(String.valueOf( channelid) );
+					}
 				}
 			});
 			
