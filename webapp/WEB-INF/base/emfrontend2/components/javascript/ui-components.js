@@ -131,7 +131,7 @@ uiload = function() {
 		if (parent.length) {
 			dropdownParent = parent;
 		} 
-		var parent = theinput.parents(".modal.in:first");
+		var parent = theinput.parents(".modal-content");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
@@ -153,7 +153,7 @@ uiload = function() {
 		if (parent.length) {
 			dropdownParent = parent;
 		}
-		var parent = theinput.parents(".modal.in:first");
+		var parent = theinput.parents(".modal-content");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
@@ -840,7 +840,7 @@ uiload = function() {
 						if (parent.length) {
 							dropdownParent = parent;
 						} 
-						var parent = theinput.parents(".modal.in:first");
+						var parent = theinput.parents(".modal-content");
 						if (parent.length) {
 							dropdownParent = parent;
 						}
@@ -1113,7 +1113,7 @@ uiload = function() {
 							if (parent.length) {
 								dropdownParent = parent;
 							} 
-							var parent = theinput.parents(".modal.in:first");
+							var parent = theinput.parents(".modal-content");
 							if (parent.length) {
 								dropdownParent = parent;
 							}
