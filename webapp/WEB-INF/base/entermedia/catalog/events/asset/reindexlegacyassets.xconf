@@ -1,0 +1,6 @@
+<page>
+	<property name="eventname">Reindex legacy (data.xml) assets</property>	
+
+<path-action name="MediaArchiveModule.reindexLegacyAssets"/>
+<property name="virual">true</property>
+</page>
