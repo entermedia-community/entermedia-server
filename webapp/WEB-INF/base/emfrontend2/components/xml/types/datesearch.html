@@ -17,9 +17,7 @@
 	<input name="${inputname}end.value" class="" id="datevalue${inputid}after"  size="8" type="text">
 	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
 #else
-	#set( $op = $term.getParameter("op") )
-
-	
+	#set( $op = $term.getValue("dateop") )
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control custom-select">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>

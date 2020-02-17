@@ -155,8 +155,11 @@ public class ChatServer
 						ChatConnection chatConnection = (ChatConnection) iterator.next();
 						if( chatConnection.getUserId() != null)
 						{
-							String channelid = (String)inMap.get("channel");
-							manager.updateChatTopicLastChecked(channelid,  chatConnection.getUserId());
+							Object channelid = inMap.get("channel");
+							if( channelid != null)
+							{
+								manager.updateChatTopicLastChecked(String.valueOf(channelid),  chatConnection.getUserId());
+							}
 						}						
 					}	
 				}
@@ -207,8 +210,11 @@ public class ChatServer
 				public void run() 
 				{
 					ChatManager manager = getChatManager(catalogid);
-					String channelid = (String)inMap.get("channel");
-					manager.updateChatTopicLastModified(channelid);
+					Object channelid = inMap.get("channel");
+					if( channelid != null)
+					{
+						manager.updateChatTopicLastModified(String.valueOf( channelid) );
+					}
 				}
 			});
 			

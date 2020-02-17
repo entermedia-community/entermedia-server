@@ -3,7 +3,9 @@ package org.entermediadb.asset.modules;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,8 +22,10 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageAction;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathProcessor;
 
 public class MediaArchiveModule extends BaseMediaModule
 {
@@ -378,5 +382,47 @@ public class MediaArchiveModule extends BaseMediaModule
 		}
 		return asset;
 	}
+	
+	
+	public void reindexLegacyAssets(WebPageRequest inReq) {
+		
+		//this is for legacy support
+		final List tosave = new ArrayList(500);
+		MediaArchive archive = getMediaArchive(inReq);
+		String datapath = "/WEB-INF/data/" + archive.getCatalogId() + "/assets";
+		
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				if (!inContent.getName().equals("data.xml"))
+				{
+					return;
+				}
+				String sourcepath = inContent.getPath();
+				sourcepath = sourcepath.substring(datapath.length() + 1, sourcepath.length() - "data.xml".length() - 1);
+				Asset asset = archive.getAssetArchive().getAssetBySourcePath(sourcepath);
+				tosave.add(asset);
+				if (tosave.size() == 500)
+				{
+					archive.getAssetSearcher().updateIndex(tosave);
+					log.info("reindexed " + getExecCount());
+					tosave.clear();
+				}
+				incrementCount();
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(datapath);
+		processor.setPageManager(getPageManager());
+		processor.setIncludeMatches("*.xml");
+		processor.process();
+		archive.getAssetSearcher().updateIndex(tosave);
+		log.info("reindexed " + processor.getExecCount());
+
+	
+	}
+	
+	
 }
 

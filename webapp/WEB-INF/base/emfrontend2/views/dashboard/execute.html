@@ -1,7 +1,13 @@
 #if($reportsearcher)
 	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
-#set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+	#set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+	$context.putPageValue("view", $view)
+	$context.putPageValue("searcher", $reportsearcher)
+	$context.putPageValue("usestartswith",true)
+	$context.putPageValue("caneditlists",false)
+
 #if($details.size() > 0)
+
 
 <form action="executefinish.html">
 	<input type= "hidden" name="reportid" value="$data.id"/>

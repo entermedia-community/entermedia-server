@@ -2,7 +2,7 @@
 <projectstatuss>
   <projectstatus id="active">Active</projectstatus>
   <projectstatus id="open">Open</projectstatus>
-  <projectstatus id="critical">Critical</projectstatus>
+  <projectstatus id="critical">Urgent</projectstatus>
   <projectstatus id="closed">Closed</projectstatus>
   <projectstatus id="completed">Completed</projectstatus>
 </projectstatuss>

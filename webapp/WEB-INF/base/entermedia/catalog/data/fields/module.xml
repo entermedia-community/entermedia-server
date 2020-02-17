@@ -26,14 +26,7 @@
       <language id="fr"><![CDATA[Auteur]]></language> 
     </name> 
   </property>  
-  <property id="publicface" index="true" type="boolen" stored="true" keyword="true" editable="false" filter="false" sortable="true">Public Facing 
-    <name> 
-      <language id="de"><![CDATA[öffentlich zugänglichen]]></language>  
-      <language id="en"><![CDATA[Public Facing]]></language>  
-      <language id="es"><![CDATA[Orientada hacia el público]]></language>  
-      <language id="fr"><![CDATA[Accessible au public]]></language> 
-    </name> 
-  </property>  
+ 
   <!-- Extra stuff? -->  
   <property id="upgradeURL" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Upgrade URL 
     <name> 

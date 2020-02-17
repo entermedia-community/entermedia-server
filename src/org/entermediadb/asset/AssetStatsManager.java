@@ -68,13 +68,14 @@ public class AssetStatsManager
 
 		change.setProperty("assetid",inAsset.getId());
 	
+		long assetviews = 0;
 		String views = inAsset.get("assetviews");
 		if( views != null )
 		{
-			long assetviews = Long.parseLong(views);
-			assetviews++;
-			inAsset.setProperty("assetviews",String.valueOf(assetviews)); //this will be overridden 
-		}
+			assetviews = Long.parseLong(views);
+		}	
+		assetviews++;
+		inAsset.setProperty("assetviews",String.valueOf(assetviews)); //this will be overridden later
 
 		getEventManager().fireEvent(change);
 	}

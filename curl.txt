@@ -70,6 +70,9 @@ curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVPN6HCf8OKe
 
 curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:63a8f05b_090f_4fcc_b7e4_c9032912942d' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/system/user/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XGET 'http://localhost:9200/system/user/_search?q=id:cburkey' | python -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/assets_catalog/projectgoal/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 curl -XGET 'http://localhost:9200/media_catalogs_public/conversiontask/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
@@ -210,6 +213,15 @@ curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	
 
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
 
+curl -XPOST localhost:9200/system/_forcemerge?max_num_segments=5
+
+curl -XPUT localhost:9200/system/_settings -d '
+{
+ "index" : {
+  "number_of_replicas":0,
+  "auto_expand_replicas": false
+ }
+}'| python -mjson.tool
 
 curl -XPOST localhost:9200/temp2 -d '{
     "settings" : {

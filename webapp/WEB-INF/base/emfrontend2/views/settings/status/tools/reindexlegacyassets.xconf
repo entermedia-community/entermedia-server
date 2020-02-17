@@ -1,0 +1,4 @@
+<page>
+<path-action name="MediaArchiveModule.reindexLegacyAssets"/>
+<property name="virual">true</property>
+</page>
