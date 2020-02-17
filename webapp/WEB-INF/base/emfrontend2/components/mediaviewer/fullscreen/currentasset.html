@@ -24,10 +24,18 @@ $context.putPageValue("cdn",$cdnprefix)
 #end
 
 #set( $opentab = $userprofile.get("assetopentab"))
+#set( $opentabactions = $userprofile.get("assetopentabactions"))
+#if($opentab == "viewactions" && $opentabactions == "media")
+	#set( $opentabactions = $userprofile.get("assetopentabactions"))
+		## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
+		##	#if( $rendertype != "video")
+		##		#set( $opentab = "viewproperties")
+		##		#set( $opentabactions = false)
+		##	#end
+		## #end
+#end
 
-#if( $opentab != "viewpreview" && $canviewmetadatageneral )
-	#set( $opentab = "viewproperties")
-#else
+#if( !$canviewmetadatageneral )
 	#set( $opentab = "viewpreview")
 #end
 
@@ -37,8 +45,8 @@ $context.putPageValue("cdn",$cdnprefix)
 	$context.putPageValue("ismulti",$ismulti)
 #end
 
-## #if($opentab == "viewactions")
-## 	#set( $opentabactions = $userprofile.get("assetopentabactions"))
+#if($opentab == "viewactions" && $opentabactions == "media")
+ 	#set( $opentabactions = $userprofile.get("assetopentabactions"))
 
 ## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
 ##	#if( $rendertype != "video")
@@ -46,9 +54,11 @@ $context.putPageValue("cdn",$cdnprefix)
 ##		#set( $opentabactions = false)
 ##	#end
 ## #end
-## #end
+
+#end
 
 $context.putPageValue("opentab",$opentab)
+$context.putPageValue("opentabactions",$opentabactions)
 
 #set( $hitssessionid = $hits.getSessionId())
 $context.putPageValue("hitssessionid",$hitssessionid)
