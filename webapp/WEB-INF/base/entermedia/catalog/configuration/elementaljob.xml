@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <input>
+    <file_input>
+      <uri>$inputpath</uri>
+    </file_input>
+  </input>
+  <priority>33</priority>
+  <avsync_enable>true</avsync_enable>
+  <avsync_pad_trim_audio>true</avsync_pad_trim_audio>
+  <output_group>
+    <order>1</order>
+    <file_group_settings>
+      <destination>
+        <uri>$outputpath</uri>
+      </destination>
+    </file_group_settings>
+    <type>file_group_settings</type>
+    <output>
+      <stream_assembly_name>stream_assembly_0</stream_assembly_name>
+      <extension>my-ext</extension>
+      <name_modifier>suffix-here</name_modifier>
+      <order>1</order>
+      <preset>entermedia_web_preview</preset>
+    </output>
+  </output_group>
+  <stream_assembly>
+    <name>stream_assembly_0</name>
+    <preset>$elementalpreset</preset>
+  </stream_assembly>
+</job>

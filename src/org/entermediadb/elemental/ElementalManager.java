@@ -9,27 +9,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.net.HttpSharedConnection;
+import org.openedit.BaseWebPageRequest;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
+import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
+import org.openedit.util.RequestUtils;
 import org.openedit.util.XmlUtil;
 
 
@@ -153,7 +153,9 @@ public class ElementalManager implements CatalogEnabled
 		inMethod.setHeader("X-Auth-User", elementaluser );
 		inMethod.setHeader("X-Auth-Expires", String.valueOf(time));
 		inMethod.setHeader("X-Auth-Key", finalkey );
-		
+		log.info("X-Auth-User = " + elementaluser );
+		log.info("X-Auth-Expires = " + String.valueOf(time));
+		log.info("X-Auth-Key ="  + finalkey );
 		
 	}
 
@@ -173,9 +175,15 @@ public class ElementalManager implements CatalogEnabled
 		try
 		{
 			HttpResponse resp = getClient().sharedExecute(method);
-			String xml = EntityUtils.toString(resp.getEntity());
-		//	Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			log.info(resp.getStatusLine());
+			String xml = EntityUtils.toString(resp.getEntity());
+			log.info(xml);
+			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
+			
+			//If job is done
+			
+			
+			//16x9  540p
 			
 			
 		}
@@ -196,7 +204,7 @@ public class ElementalManager implements CatalogEnabled
 	{
 		if(fieldRootPath == null)
 		{
-			fieldRootPath = "/mnt/Meld/Playback/";
+			fieldRootPath = "/mnt/Meld/Playback";
 		}
 		return fieldRootPath;
 	}
@@ -208,52 +216,44 @@ public class ElementalManager implements CatalogEnabled
 
 	public Element createJob(ConvertInstructions inStructions)
 	{
+		if( true ) return null;
+		
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
-		
-//		<?xml version="1.0" encoding="UTF-8"?>
-//		<job>
-//		  <input>
-//		    <file_input>
-//		        <uri>/data/server/elemental.mov</uri>
-//		    </file_input>
-//		  </input>
-//		  <profile>1</profile>
-//		</job>
-		
 		
 		///mnt/Meld-Playback/temp/18955.mp4  Input test file
 		
 		///mnt/Meld-Playback/temp-out 
 		
 		ContentItem item = inStructions.getInputFile(); 
+		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");
 		
-		String preset = inStructions.getProperty("preset");
-		Element job = DocumentHelper.createElement("job");
-		Element input = job.addElement("input");
-		Element file = input.addElement("file_input");
-		Element uri = file.addElement("uri");
-		//uri.setText("/mnt/Meld/Playback/temp/18955.mp4");  //Input
-		uri.setText(item.getAbsolutePath());
-		//uri.setText(SOME URI);
-		Element og = job.addElement("output_group");
-		og.addElement("file_output_group").addElement("destination").addElement("uri").setText(getRootPath()  + "/" + inStructions.getAssetSourcePath() );
-		og.addElement("output").addElement("preset").setText(preset);
-		//	job.addElement("preset").setText(preset);
-	//	job.addElement("destination").addElement("uri").setText("/mnt/Meld-Playback/temp-out");
-	//	job.addElement("profile").setText("1");
+		User user = (User) getMediaArchive().getData("user","admin");
+		UserProfile profile = (UserProfile) getMediaArchive().getData("userprofile","admin");
+		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
+
+		String outputpath = getRootPath()  + "/" + inStructions.getAssetSourcePath();
+		context.putPageValue("inputpath",item.getAbsolutePath());
+		context.putPageValue("outputpath",outputpath);
 		
+		String elementalpresetname = inStructions.getProperty("elementalpresetname");
+		context.putPageValue("elementalpresetname",elementalpresetname);
+		
+		
+		context.getPageStreamer().render();
+		String jobsubmit = context.getWriter().toString();
+		
+		log.info("Sending job xml: " + jobsubmit);
 		
 		String addr = elementalroot + "/api/jobs";
 		HttpPost method = new HttpPost(addr);
+		
 		setHeaders(method, "/jobs");
-		String asXML = job.asXML();
-		StringEntity params = new StringEntity(asXML, "UTF-8");
+		StringEntity params = new StringEntity(jobsubmit, "UTF-8");
+		params.setContentType("application/xml");
 		method.setEntity(params);
-		log.info("Sending job xml: " + asXML);
 		try
 		{
 			HttpResponse response2 = getClient().sharedExecute(method);
-			
 			
 			//String xml = EntityUtils.toString(response2.getEntity());
 			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
@@ -262,7 +262,8 @@ public class ElementalManager implements CatalogEnabled
 			int status = sl.getStatusCode();
 			if (status >= 400)
 			{
-				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+				log.error("error from server " + status + "  " + sl.getReasonPhrase());
+				return null;
 			}
 			//https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html
 //			{
@@ -275,14 +276,15 @@ public class ElementalManager implements CatalogEnabled
 //				      "queue": "string",
 //				      "userMetadata": {
 //				      },
+			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
+
 			job.addAttribute("jobid", "someid");
+			return job;
 		}
 		catch (Exception e)
 		{
 			throw new OpenEditException (e);
 		}
-		
-		return job;
 		
 	}
 	
