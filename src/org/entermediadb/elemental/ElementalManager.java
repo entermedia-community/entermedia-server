@@ -197,26 +197,9 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 
-	public String fieldRootPath;
-	
-	
-	public String getRootPath()
-	{
-		if(fieldRootPath == null)
-		{
-			fieldRootPath = "/mnt/Meld/Playback";
-		}
-		return fieldRootPath;
-	}
-
-	public void setRootPath(String inRootPath)
-	{
-		fieldRootPath = inRootPath;
-	}
-
 	public Element createJob(ConvertInstructions inStructions)
 	{
-		if( true ) return null;
+		//if( true ) return null;
 		
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		
@@ -231,7 +214,8 @@ public class ElementalManager implements CatalogEnabled
 		UserProfile profile = (UserProfile) getMediaArchive().getData("userprofile","admin");
 		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
 
-		String outputpath = getRootPath()  + "/" + inStructions.getAssetSourcePath();
+		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath();
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
 		
