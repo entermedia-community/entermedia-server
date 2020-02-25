@@ -1,7 +1,4 @@
- <div class="row">
- <div class="col-md-12">
- 
-   <ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
+<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
 
 
 
@@ -19,7 +16,7 @@
 			#foreach($categoryid in $foundcategories)
 			#set($category  = $mediaarchive.getCategory($categoryid))
 
-			<li id="auto-${categoryid}" class="categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath() </a>
 				<div class="collectionIcons">
 					<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
@@ -28,13 +25,14 @@
 		#end
 
 #foreach($asset in $assets)
-			<li id="auto-${asset.id}" class=" categorydraggable ui-draggable ui-draggable-handle collectionBox">
+			<li id="auto-${asset.id}" class=" collectionBox">
 
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
 				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
 					#if($canquickdownload)
 						#set($dlink = $mediaarchive.asLinkToOriginal($asset))
 							<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")">
+							<i class="fas fa-download"></i>&nbsp;
 							<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
 							</a>
 					#else
@@ -50,12 +48,9 @@
 	
 						
 			</li>
-		#end
-		
-		</ul>
-
-   </div>
- </div>
+		#end	
+</ul>
+<div class="clearfix"></div>
    
    <script type="text/javascript">
    jQuery("#select-all").on("click", function () {
