@@ -1613,7 +1613,7 @@ var resizecolumns = function() {
 		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	}
 	else {
-		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
+		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	}
 	
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)")
