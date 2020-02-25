@@ -19,6 +19,10 @@
 
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
+
+#if( $hit.previewstatus != "complete"))
+	<p>[[Video preview conversion pending]]</p>
+#else
 	<video id="videoplayerfull" class="video-js" width="480" height="320"
 		poster='#esc($thumb)'
 		#if( $autoplay && $autoplay == "true") autoplay #end
@@ -40,6 +44,7 @@
       		#end
       	#end
 	</video>
+#end	
 </div>
 <script>
 	var myPlayer = videojs('videoplayerfull');
