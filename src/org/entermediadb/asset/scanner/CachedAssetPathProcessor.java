@@ -71,13 +71,15 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 					Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(foldersourcepath);
 					if( asset != null)
 					{
-						continue; //TODO: Check mod
+						processFile(subitem, inUser);
+						continue; 
 					}
 					//Ok if its a folder then do a search, cached asset results and start processing
 					loadCache(foldersourcepath);
 					process(subitem,inUser);
 					fieldSizeCache.clear();
-					log.info("CacheSaves: " + cachesaves);
+					System.gc(); 
+					log.info("GC complete. CacheSaves: " + cachesaves);
 				}
 				else if (acceptFile(subitem))
 				{
@@ -96,12 +98,11 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	protected void loadCache(String inFoldersourcepath)
 	{
 		cachesaves = 0;
-		fieldSizeCache.clear();
 		HitTracker allchildren = getMediaArchive().query("asset").or().startsWith("sourcepath", inFoldersourcepath).startsWith("archivesourcepath", inFoldersourcepath).search(); //This may not be needed
-		allchildren.enableBulkOperations();
-		log.info("Loading: " + allchildren.size() );
+		allchildren.setHitsPerPage(99999);
+		log.info("Loading Cache: " + allchildren.size() );
 
-		for (Iterator iterator = allchildren.iterator(); iterator.hasNext();)
+		for (Iterator iterator = allchildren.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			MultiValued asset = (MultiValued) iterator.next();
 			long longval = asset.getLong("filesize");
