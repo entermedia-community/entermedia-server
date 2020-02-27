@@ -53,7 +53,8 @@ public void init(){
 		Searcher assets = archive.getAssetSearcher();
 		SearchQuery query = assets.createSearchQuery();
 		query.addSortBy("sourcepath");
-		query.addContains("description", searchstring);
+		//query.addContains("description", searchstring);
+		query.addContains("sourcepath", searchstring);  //Search Only Sourcepat (Folder/Filename) Not Metadata
 		//log.info("Searching for assets contains = " +  searchstring);
 	
 		rootcats.each{

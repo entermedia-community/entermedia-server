@@ -19,6 +19,6 @@
 	"url": "$!{src}",
 	"htmlOLD": "[caption]<img src=\"${src}\" alt=\"$!{asset.headline}\" />$!{asset.headline}[/caption]",
 	"html2": "<figure><img src=\"${src}\" alt=\"$!{asset.headline}\" /><figcaption>$!{asset.headline}</figcaption></figure>",
-	"html": "<div><img src=\"${src}\" alt=\"$!{asset.headline}\" /><div style=\"\"><em>$!{asset.headline}</em></div></div>"
+	"html": "<div><img src=\"${src}\" alt=\"$!{asset.headline}\" /><div style=\"img-caption\"><em>$!{asset.headline}</em></div></div>"
 }
 #end
