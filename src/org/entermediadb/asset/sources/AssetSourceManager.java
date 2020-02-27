@@ -3,6 +3,7 @@ package org.entermediadb.asset.sources;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.util.TimeParser;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
@@ -24,6 +26,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class AssetSourceManager implements CatalogEnabled
 {
@@ -373,37 +376,50 @@ public class AssetSourceManager implements CatalogEnabled
 //			String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 			String name = source.getName();
 //			String path = base + "/" + name ;
+			if( !source.isEnabled() )
+			{
+				//inLog.info("Hot folder not enabled " + name);
+				continue;
+			}
+			if( source.getConfig() != null)
+			{
+				String periodString = source.getConfig().get("runwithinperiod");
+				if( periodString != null)
+				{
+					long period = new TimeParser().parse(periodString);
+					Date laststarted = DateStorageUtil.getStorageUtil().parseFromObject(source.getConfig().getValue("lastscanstart"));
+					if( laststarted  != null)
+					{
+						if( laststarted.getTime() + period > System.currentTimeMillis())
+						{
+							long remaining = System.currentTimeMillis() - laststarted.getTime() + period;
+							inLog.info(name+ ", will scan again within: " + remaining/1000D + " seconds ");
+							continue;
+						}
+					}
+				}
+			}
 			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + source.getId(), "HotFolderManager");
 			if( lock == null)
 			{
 				inLog.info("Hot folder is already in lock table: " + name);
 				continue;
 			}
+			inLog.info("Hot folder import started: " + name);
+
 			try
 			{
-				if( !source.isEnabled() )
-				{
-					//inLog.info("Hot folder not enabled " + name);
-					continue;
-				}
-				inLog.info("Hot folder import started: " + name);
-	
-				try
-				{
-					//pullGit(path,1);
-					int found = source.importAssets(null); 
-					inLog.info("Hot folder: " + name + ", imported " + found + " assets");
-					
-					//TODO: Clear empty hot folder if enabled
-					
-					
-				}
-				catch( Exception ex)
-				{
-					inLog.error("Could not process Hot folder " + name ,ex);
-					log.error("Could not process Hot folder " + name,ex);
-				}
-				
+				//pullGit(path,1);
+				long starttime = System.currentTimeMillis();
+				int found = source.importAssets(null); 
+				long timetook = System.currentTimeMillis() - starttime;
+				inLog.info("Hot folder: " + name + ", imported " + found + " assets within:" + timetook/1000D + " seconds");
+				//TODO: Clear empty hot folder if enabled
+			}
+			catch( Exception ex)
+			{
+				inLog.error("Could not process Hot folder " + name ,ex);
+				log.error("Could not process Hot folder " + name,ex);
 			}
 			finally
 			{

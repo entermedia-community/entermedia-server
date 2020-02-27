@@ -17,6 +17,11 @@
       <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
+  <property id="foldersourcepath" internalfield="false" index="true" stored="true" editable="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Folder Path]]></language>  
+    </name> 
+  </property>  
   <property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="text" listid="category" type="list" >Exact Categories 
     <name> 
       <language id="de"><![CDATA[Kategorien]]></language>  

@@ -45,6 +45,7 @@ import org.openedit.users.User;
 import org.openedit.util.IntCounter;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathProcessor;
+import org.openedit.util.PathUtilities;
 
 public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements DataConnector
 {
@@ -214,7 +215,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	
 	public boolean shoudSkipField(String inKey)
 	{
-		if(inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description"))
+		if(inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
 		{
 			return true;
 		}
@@ -232,6 +233,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				saveArray(inContent, "category-exact",values.getValues("category-exact"));
 				String desc = values.get("description");
 				inContent.field("description", desc);
+				setFolderPath(inData, inContent);
 				super.updateIndex(inContent, inData, inDetails,inUser);
 			
 				return;
@@ -287,6 +289,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			//This is for saving and loading.
 			saveArray(inContent, "category-exact",asset.getCategories());
 			//populatePermission(inContent, asset, "viewasset");
+			setFolderPath(asset, inContent);
+			
 
 		}
 		catch (Exception ex)
@@ -297,6 +301,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			}
 			throw new OpenEditException(ex);
 		}
+	}
+
+	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
+	{
+		String foldersourcepath = PathUtilities.extractDirectoryPath(asset.getSourcePath());
+		inContent.field("foldersourcepath", foldersourcepath);				
 	}
 
 	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException

@@ -148,6 +148,11 @@
   <property id="accesstokentime" type="date" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Token Creation Time 
    
   </property>  
+  <property id="runwithinperiod" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Target Period]]></language>  
+    </name> 
+  </property>  
     
   <!-- Move to system settings -->  
   <!--    

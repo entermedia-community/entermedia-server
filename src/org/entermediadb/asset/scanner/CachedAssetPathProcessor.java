@@ -71,15 +71,11 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 					Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(foldersourcepath);
 					if( asset != null)
 					{
-						processFile(subitem, inUser);
+						//processFile(subitem, inUser);
 						continue; 
 					}
 					//Ok if its a folder then do a search, cached asset results and start processing
-					loadCache(foldersourcepath);
 					process(subitem,inUser);
-					fieldSizeCache.clear();
-					System.gc(); 
-					log.info("GC complete. CacheSaves: " + cachesaves);
 				}
 				else if (acceptFile(subitem))
 				{
@@ -92,15 +88,28 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 			processFile(item, inUser);
 		}
 		saveImportedAssets(inUser);
+		System.gc(); 
+
+	}
+	
+	@Override
+	protected void processAssetFolder(ContentItem inInput, User inUser)
+	{
+		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
+		
+		loadCache(foldersourcepath);
+		cachesaves = 0;
+		super.processAssetFolder(inInput, inUser);
+		log.info("foldersourcepath complete. CacheSaves: " + cachesaves);
+		fieldSizeCache.clear();
 
 	}
 	
 	protected void loadCache(String inFoldersourcepath)
 	{
-		cachesaves = 0;
-		HitTracker allchildren = getMediaArchive().query("asset").or().startsWith("sourcepath", inFoldersourcepath).startsWith("archivesourcepath", inFoldersourcepath).search(); //This may not be needed
+		HitTracker allchildren = getMediaArchive().query("asset").exact("foldersourcepath",inFoldersourcepath).search(); 
 		allchildren.setHitsPerPage(99999);
-		log.info("Loading Cache: " + allchildren.size() );
+		log.info("Loading Cache: " + allchildren.size() + " on " + inFoldersourcepath );
 
 		for (Iterator iterator = allchildren.getPageOfHits().iterator(); iterator.hasNext();)
 		{
