@@ -109,7 +109,10 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	{
 		HitTracker allchildren = getMediaArchive().query("asset").exact("foldersourcepath",inFoldersourcepath).search(); 
 		allchildren.setHitsPerPage(99999);
-		log.info("Loading Cache: " + allchildren.size() + " on " + inFoldersourcepath );
+		if( allchildren.size() > 5000)
+		{
+			log.info("Loading extra LARGE Cache: " + allchildren.size() + " on " + inFoldersourcepath );
+		}
 
 		for (Iterator iterator = allchildren.getPageOfHits().iterator(); iterator.hasNext();)
 		{
