@@ -305,7 +305,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
 	{
-		String foldersourcepath = PathUtilities.extractDirectoryPath(asset.getSourcePath());
+		String archivesourcepath = asset.get("archivesourcepath"); 
+		if( archivesourcepath == null)
+		{
+			archivesourcepath = asset.getSourcePath();
+		}
+		String foldersourcepath = PathUtilities.extractDirectoryPath(archivesourcepath);
 		inContent.field("foldersourcepath", foldersourcepath);				
 	}
 
