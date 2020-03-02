@@ -42,6 +42,7 @@ public void init() {
 		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
 
 		snapshotsearcher.saveData(snapshot);
+		
 		boolean configonly = Boolean.valueOf( snapshot.getValue("configonly") );
 		export(mediaarchive, site, snapshot, configonly);
 		snapshot.setValue("snapshotstatus", "complete");
@@ -78,6 +79,8 @@ public void init() {
 public void export(MediaArchive mediaarchive,Data inSite, Data inSnap, boolean configonly)
 {
 	String folder = inSnap.get("folder");
+	
+	
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
 
@@ -112,7 +115,9 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap, boolean c
 		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/site");
 		mediaarchive.getPageManager().copyPage(site, target);
 	}
-
+	log.info("Manager Exporting " + mediaarchive.getCatalogId() + " folder: " + folder + " path:" + site.getContentItem().getAbsolutePath());
+	
+	
 
 	//	Collection apps = mediaarchive.getList("app");
 	//	for(Data app in apps)

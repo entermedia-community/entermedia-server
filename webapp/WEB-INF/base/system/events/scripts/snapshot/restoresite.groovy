@@ -68,7 +68,12 @@ public void init() {
 		try
 		{
 			boolean configonly = Boolean.valueOf( snapshot.getValue("configonly") );
-			log.info("restoring: " + site.get("rootpath") + " config="  + configonly);
+
+			//("restoring: " + site.get("rootpath") + " config="  + configonly);
+			
+			String logstring = String.format("restoring: %s config= %s ", site.get("rootpath"), configonly);
+			log.info(logstring);
+			
 			restore(mediaarchive, site,snapshot,configonly);
 			snapshot.setValue("snapshotstatus", "complete");
 		}
@@ -167,6 +172,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	if( sitefolder.exists() )
 	{
 		Page target = mediaarchive.getPageManager().getPage(site.get("rootpath"));
+		log.info("Restoring site and fixing path " + target.getContentItem().getAbsolutePath() + " catalogid: " + catalogid);
 		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(sitefolder, target);
 
