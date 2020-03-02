@@ -177,13 +177,12 @@ public class ElementalManager implements CatalogEnabled
 			HttpResponse resp = getClient().sharedExecute(method);
 			log.info(resp.getStatusLine());
 			String xml = EntityUtils.toString(resp.getEntity());
-			log.info(xml);
+			log.info("Status got back: " + xml);
 			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			
 			//If job is done
-			
-			
-			//16x9  540p
+			result.setComplete(true);
+			result.setOk(true);
 			
 			
 		}
@@ -261,8 +260,18 @@ public class ElementalManager implements CatalogEnabled
 //				      "userMetadata": {
 //				      },
 			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
-
-			job.addAttribute("jobid", "someid");
+	
+			Element jobresp = getXmlUtil().getXml(body, "UTF-8");
+			String id = jobresp.element("input").elementText("id");
+/**
+ * 
+			<job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package" version="2.13.1.403404">
+			  <input>
+			    <active>false</active>
+			    <filter_enable>Disable</filter_enable>
+			    <id>1363</id>
+**/
+			job.addAttribute("jobid", id);
 			return job;
 		}
 		catch (Exception e)

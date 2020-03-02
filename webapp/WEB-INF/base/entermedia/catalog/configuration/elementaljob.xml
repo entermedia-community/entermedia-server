@@ -21,11 +21,11 @@
       <extension>my-ext</extension>
       <name_modifier>suffix-here</name_modifier>
       <order>1</order>
-      <preset>entermedia_web_preview</preset>
+      <preset>$elementalpresetname</preset>
     </output>
   </output_group>
   <stream_assembly>
     <name>stream_assembly_0</name>
-    <preset>$elementalpreset</preset>
+    <preset>$elementalpresetname</preset>
   </stream_assembly>
 </job>

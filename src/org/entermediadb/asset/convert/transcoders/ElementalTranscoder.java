@@ -10,13 +10,21 @@ import org.openedit.Data;
 public class ElementalTranscoder extends BaseTranscoder
 {
 
-	
-
-
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
+		if( inStructions.getConversionTask() == null)
+		{
+			//Must be done with a queue
+			ConvertResult result = new ConvertResult();
+			result.setComplete(false);
+			result.setOk(true);
+			return result;
+		}
 		ElementalManager manager = (ElementalManager) inStructions.getMediaArchive().getBean("elementalManager");
+
+		//Get the task
+		//inStructions.getC
 		Element job = manager.createJob(inStructions);
 		
 		//Wait for it to finish?

@@ -20,6 +20,9 @@ public class ConvertInstructions
 {
 	protected MediaArchive fieldMediaArchive;
 	protected Data fieldConvertPreset;
+	protected Data fieldConversionTask;
+	
+
 	protected int fieldPageNumber = 1; //This is 1 based
 	protected int fieldRotation = 360;
 	protected Map<String, String> fieldProperties;
@@ -765,7 +768,15 @@ public class ConvertInstructions
 		setProperty("outputrendertype", inType);
 	}
 
-	
+	public Data getConversionTask()
+	{
+		return fieldConversionTask;
+	}
+
+	public void setConversionTask(Data inConversionTask)
+	{
+		fieldConversionTask = inConversionTask;
+	}	
 
 	
 }

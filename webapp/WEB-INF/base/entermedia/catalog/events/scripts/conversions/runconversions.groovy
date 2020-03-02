@@ -312,8 +312,14 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 				props.put("isforced","true");
 			}
 		}
-
+		String externalid = inTask.get("externalid");
+		if( externalid != null)
+		{
+			props.put("externalid",externalid); //TIGO
+		}
+		
 		ConvertInstructions inStructions = manager.createInstructions(inAsset,inPreset,props);
+		inStructions.setConversionTask(inTask);
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
