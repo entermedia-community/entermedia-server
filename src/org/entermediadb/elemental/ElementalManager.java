@@ -29,6 +29,7 @@ import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.XmlUtil;
 
@@ -180,9 +181,13 @@ public class ElementalManager implements CatalogEnabled
 		
 		String outputname = inStructions.getOutputFile().getName();
 		
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + outputname;
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/";
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
+		
+		context.putPageValue("name_modifier",PathUtilities.extractPageName(outputname));
+		context.putPageValue("extension",inStructions.getOutputExtension());
+		
 		
 		String elementalpresetname = inStructions.getProperty("elementalpresetname");
 		context.putPageValue("elementalpresetname",elementalpresetname);

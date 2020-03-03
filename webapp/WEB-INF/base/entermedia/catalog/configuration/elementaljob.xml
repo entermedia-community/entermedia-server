@@ -18,8 +18,8 @@
     <type>file_group_settings</type>
     <output>
       <stream_assembly_name>stream_assembly_0</stream_assembly_name>
-      <extension>my-ext</extension>
-      <name_modifier>suffix-here</name_modifier>
+      <extension>$extension</extension>
+      <name_modifier>$name_modifier</name_modifier>
       <order>1</order>
       <preset>$elementalpresetname</preset>
     </output>
