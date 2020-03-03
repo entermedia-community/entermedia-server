@@ -43,7 +43,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		ContentItem inOutFile = inStructions.getOutputFile();
 		String outputpath = inOutFile.getAbsolutePath();
 
-		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(),true);
+		ContentItem inputFile = inStructions.getInputFile();
+		String tmpinput = PathUtilities.extractPageType(inputFile.getPath(),true);
 		boolean maintaintransparency = inStructions.isTransparencyMaintained(tmpinput);
 
 		String ext = null;
