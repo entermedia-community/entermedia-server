@@ -437,7 +437,10 @@ public class TimelineModule extends BaseMediaModule
 
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 		Collection hits = captionsearcher.query().or().exact("transcribestatus", "inprogress").exact("transcribestatus", "needstranscribe").search();
-		log.info("Transcribing: " + hits.size() );
+		if( !hits.isEmpty() )
+		{
+			log.info("Transcribing: " + hits.size() );
+		}
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data track = (Data) iterator.next();
