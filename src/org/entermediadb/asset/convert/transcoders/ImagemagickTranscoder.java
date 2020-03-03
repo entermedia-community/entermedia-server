@@ -10,6 +10,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.Data;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
@@ -444,4 +445,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		return com;
 	}
 
+	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions )
+	{
+		//This should not happen
+		log.info("Should not need to check status on imagemagic... maybe use missinginput?" + inStructions.getAssetSourcePath() + " " + inStructions.getProperties());
+		ConvertResult status = new ConvertResult();
+		status.setComplete(true);
+		status.setOk(true);
+		return status;
+	}
+	
 }
