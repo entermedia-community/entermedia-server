@@ -181,7 +181,16 @@ public class ElementalManager implements CatalogEnabled
 			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
 			String type = elem.getName();
 			//"errors" "complete"
-			if( type.equals("errors") ) 
+			boolean iserror = false;
+			if( type.equals("errors"))
+			{
+				iserror = true;
+			}
+			else if( elem.elementText("status").equals("error"))
+			{
+				iserror = true;
+			}
+			if( iserror ) 
 			{
 				//			<errors>
 				//			  <error type="ActiveRecord::RecordNotFound">Couldn't find Job with id=1456</error>
@@ -192,6 +201,32 @@ public class ElementalManager implements CatalogEnabled
 			else 
 			{
 				//If job is done
+				
+				/**
+				 * <job href="/jobs/1451">
+  <node>aes.metroeast.org</node>
+  <user_data/>
+  <active_input_id>0</active_input_id>
+  <submitted>2020-03-03 13:11:20 -0800</submitted>
+  <priority>33</priority>
+  <status>error</status>
+  <pct_complete>0</pct_complete>
+  <average_fps>0.0</average_fps>
+  <elapsed>0</elapsed>
+  <start_time>2020-03-03 13:11:21 -0800</start_time>
+  <errored_time>2020-03-03 13:11:24 -0800</errored_time>
+  <elapsed_time_in_words>00:00:00</elapsed_time_in_words>
+  <error_messages>
+    <error>
+      <code>1056</code>
+      <created_at>2020-03-03T13:11:24-08:00</created_at>
+      <message>Failed to initialize pipeline [Unable to create output directory [/mnt/Meld/DAM/generated/Ingest]].  (IS)</message>
+    </error>
+  </error_messages>
+</job>
+
+				 */
+				
 				result.setComplete(true);
 				result.setOk(true);
 			}
