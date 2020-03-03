@@ -159,6 +159,99 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 
+	public Element createJob(ConvertInstructions inStructions)
+	{
+		//if( true ) return null;
+		
+		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
+		
+		///mnt/Meld-Playback/temp/18955.mp4  Input test file
+		
+		///mnt/Meld-Playback/temp-out 
+		
+		ContentItem item = inStructions.getInputFile(); 
+		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");
+		
+		User user = (User) getMediaArchive().getData("user","admin");
+		UserProfile profile = (UserProfile) getMediaArchive().getData("userprofile","admin");
+		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
+
+		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
+		
+		String outputname = inStructions.getOutputFile().getName();
+		
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + outputname;
+		context.putPageValue("inputpath",item.getAbsolutePath());
+		context.putPageValue("outputpath",outputpath);
+		
+		String elementalpresetname = inStructions.getProperty("elementalpresetname");
+		context.putPageValue("elementalpresetname",elementalpresetname);
+		
+		
+		context.getPageStreamer().render();
+		String jobsubmit = context.getWriter().toString();
+		
+		log.info("Sending job xml: " + jobsubmit);
+		
+		String addr = elementalroot + "/api/jobs";
+		HttpPost method = new HttpPost(addr);
+		
+		setHeaders(method, "/jobs");
+		StringEntity params = new StringEntity(jobsubmit, "UTF-8");
+		params.setContentType("application/xml");
+		method.setEntity(params);
+		try
+		{
+			HttpResponse response2 = getClient().sharedExecute(method);
+			
+			//String xml = EntityUtils.toString(response2.getEntity());
+			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
+			log.info("Got this back:" + body);
+			StatusLine sl = response2.getStatusLine();
+			int status = sl.getStatusCode();
+			if (status >= 400)
+			{
+				log.error("error from server " + status + "  " + sl.getReasonPhrase());
+				return null;
+			}
+			//https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html
+//			{
+//				  "jobs": [
+//				    {
+//				      "arn": "string",
+//				      "id": "string",
+//				      "createdAt": "string",
+//				      "jobTemplate": "string",
+//				      "queue": "string",
+//				      "userMetadata": {
+//				      },
+			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
+	
+			Element jobresp = getXmlUtil().getXml(body, "UTF-8");
+			
+			String href = jobresp.attributeValue("href");
+			
+			String id = href.substring("/jobs/".length());
+/**
+ * 
+			<job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package" version="2.13.1.403404">
+			  <input>
+			    <active>false</active>
+			    <filter_enable>Disable</filter_enable>
+			    <id>1363</id>
+**/
+			job.addAttribute("jobid", id);
+			return job;
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException (e);
+		}
+		
+	}
+	
+
+	
 	public ConvertResult updateJobStatus(Data inTask)
 	{
 		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
@@ -242,94 +335,6 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 
-	public Element createJob(ConvertInstructions inStructions)
-	{
-		//if( true ) return null;
-		
-		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
-		
-		///mnt/Meld-Playback/temp/18955.mp4  Input test file
-		
-		///mnt/Meld-Playback/temp-out 
-		
-		ContentItem item = inStructions.getInputFile(); 
-		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");
-		
-		User user = (User) getMediaArchive().getData("user","admin");
-		UserProfile profile = (UserProfile) getMediaArchive().getData("userprofile","admin");
-		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
-
-		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath();
-		context.putPageValue("inputpath",item.getAbsolutePath());
-		context.putPageValue("outputpath",outputpath);
-		
-		String elementalpresetname = inStructions.getProperty("elementalpresetname");
-		context.putPageValue("elementalpresetname",elementalpresetname);
-		
-		
-		context.getPageStreamer().render();
-		String jobsubmit = context.getWriter().toString();
-		
-		log.info("Sending job xml: " + jobsubmit);
-		
-		String addr = elementalroot + "/api/jobs";
-		HttpPost method = new HttpPost(addr);
-		
-		setHeaders(method, "/jobs");
-		StringEntity params = new StringEntity(jobsubmit, "UTF-8");
-		params.setContentType("application/xml");
-		method.setEntity(params);
-		try
-		{
-			HttpResponse response2 = getClient().sharedExecute(method);
-			
-			//String xml = EntityUtils.toString(response2.getEntity());
-			String body = IOUtils.toString(response2.getEntity().getContent(), "UTF-8");
-			log.info("Got this back:" + body);
-			StatusLine sl = response2.getStatusLine();
-			int status = sl.getStatusCode();
-			if (status >= 400)
-			{
-				log.error("error from server " + status + "  " + sl.getReasonPhrase());
-				return null;
-			}
-			//https://docs.aws.amazon.com/mediaconvert/latest/apireference/jobs.html
-//			{
-//				  "jobs": [
-//				    {
-//				      "arn": "string",
-//				      "id": "string",
-//				      "createdAt": "string",
-//				      "jobTemplate": "string",
-//				      "queue": "string",
-//				      "userMetadata": {
-//				      },
-			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
-	
-			Element jobresp = getXmlUtil().getXml(body, "UTF-8");
-			
-			String href = jobresp.attributeValue("href");
-			
-			String id = href.substring("/jobs/".length());
-/**
- * 
-			<job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package" version="2.13.1.403404">
-			  <input>
-			    <active>false</active>
-			    <filter_enable>Disable</filter_enable>
-			    <id>1363</id>
-**/
-			job.addAttribute("jobid", id);
-			return job;
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException (e);
-		}
-		
-	}
-	
 
 	
 
