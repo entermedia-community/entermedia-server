@@ -179,11 +179,22 @@ public class ElementalManager implements CatalogEnabled
 			String xml = EntityUtils.toString(resp.getEntity());
 			log.info("Status got back: " + xml);
 			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
-			
-			//If job is done
-			result.setComplete(true);
-			result.setOk(true);
-			
+			String type = elem.getName();
+			//"errors" "complete"
+			if( type.equals("errors") ) 
+			{
+				//			<errors>
+				//			  <error type="ActiveRecord::RecordNotFound">Couldn't find Job with id=1456</error>
+				//			</errors>
+				result.setOk(false);
+				result.setError(xml);
+			}
+			else 
+			{
+				//If job is done
+				result.setComplete(true);
+				result.setOk(true);
+			}
 			
 		}
 		catch (Exception e)
@@ -262,7 +273,10 @@ public class ElementalManager implements CatalogEnabled
 			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
 	
 			Element jobresp = getXmlUtil().getXml(body, "UTF-8");
-			String id = jobresp.element("input").elementText("id");
+			
+			String href = jobresp.attributeValue("href");
+			
+			String id = href.substring("/jobs/".length());
 /**
  * 
 			<job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package" version="2.13.1.403404">
