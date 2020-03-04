@@ -25,6 +25,17 @@ public class ElementalTranscoder extends BaseTranscoder
 			result.setOk(true);
 			return result;
 		}
+		
+		if( inStructions.getOutputFile().exists() && inStructions.getOutputFile().getLength() > 0 )
+		{
+			//TODO: Handle forced true
+			log.info("Output file already created: " + inStructions.getAssetSourcePath() );
+			ConvertResult result = new ConvertResult();
+			result.setComplete(true);
+			result.setOk(true);
+			return result;			
+		}
+		
 		ElementalManager manager = (ElementalManager) inStructions.getMediaArchive().getBean("elementalManager");
 
 		//Get the task
