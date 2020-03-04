@@ -135,15 +135,24 @@ public class ConvertStatusModule extends BaseMediaModule
 			Double y1 = Double.parseDouble(instructions.get("y1"));
 
 			Double scalefactor = 1d;
-
-			//Scale down to deal with big images
-			if(originalwidth > 1024d && wide) 
-			{
-				scalefactor = 1024d/originalwidth;
+			
+			Double croppreviewwidth = 1024d;
+			if (instructions.get("cropprevieww") != null) {
+				croppreviewwidth = Double.parseDouble(instructions.get("cropprevieww"));
 			}
-			else if( originalheight > 768d)
+			Double croppreviewheight = 768d;
+			if (instructions.get("croppreviewh") != null) {
+				Double.parseDouble(instructions.get("croppreviewh"));
+			}
+			//Scale down to deal with big images
+			if(originalwidth > croppreviewwidth && wide) 
 			{
-				scalefactor = 768d/originalheight;
+				//scalefactor = 1024d/originalwidth;
+				scalefactor = croppreviewwidth/originalwidth;
+			}
+			else if( originalheight > croppreviewheight)
+			{
+				scalefactor = croppreviewheight/originalheight;
 			}
 
 			cropheight = cropheight/scalefactor;

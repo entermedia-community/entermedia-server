@@ -76,6 +76,7 @@
 		#set($img_width = $img_width * $display_factor)
 		#set($img_height = $img_height * $display_factor)
 	#end
+	
 	##round to int
 	#set($img_width = $numberutils.createDouble("${img_width}").intValue())
 	#set($img_height = $numberutils.createDouble("${img_height}").intValue())
@@ -213,6 +214,11 @@ title="[[Back to Media Files]]"
 				    <input type="hidden" name="force.value" value="true"/>
 				    <input type="hidden" name="assetid.value" value="${asset.id}"/>
 				    <input type="hidden" name="assetid" value="${asset.id}"/>
+				    
+				    <input type="hidden" name="field" value="cropprevieww"/>
+				    <input type="hidden" name="cropprevieww.value" id="cropprevieww" value=""/>
+				    <input type="hidden" name="field" value="croppreviewh"/>
+				    <input type="hidden" name="croppreviewh.value" id="croppreviewh" value=""/>
 				   
 				</form>
 				
@@ -235,6 +241,8 @@ title="[[Back to Media Files]]"
 			if (id == "targetimg"){
 				//$(this).width(${img_width});
 				//$(this).height(${img_height});
+				$("#cropprevieww").val($(this).width());
+				$("#croppreviewh").val($(this).height());
 				$(this).css("display","none");
 				$(this).css("visibility","hidden");
 				prepareCropUtil(${img_width},${img_height});
