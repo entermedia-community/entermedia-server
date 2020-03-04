@@ -19,7 +19,6 @@
     <output>
       <stream_assembly_name>stream_assembly_0</stream_assembly_name>
       <extension>$extension</extension>
-      <name_modifier>$name_modifier</name_modifier>
       <order>1</order>
       <preset>$elementalpresetname</preset>
     </output>

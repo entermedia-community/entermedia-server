@@ -181,11 +181,11 @@ public class ElementalManager implements CatalogEnabled
 		
 		String outputname = inStructions.getOutputFile().getName();
 		
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/";
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + PathUtilities.extractPageName(outputname);
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
 		
-		context.putPageValue("name_modifier",PathUtilities.extractPageName(outputname));
+//		context.putPageValue("name_modifier",);
 		context.putPageValue("extension",inStructions.getOutputExtension());
 		
 		
