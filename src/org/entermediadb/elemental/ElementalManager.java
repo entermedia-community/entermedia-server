@@ -29,6 +29,7 @@ import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.XmlUtil;
 
@@ -159,44 +160,6 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 
-	public ConvertResult updateJobStatus(Data inTask)
-	{
-		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
-		String addr = elementalroot + "/api/jobs/" + inTask.get("externalid") + "/status";
-
-		String jobid =  inTask.get("externalid");
-		log.info("found " + jobid);
-		HttpGet method = new HttpGet(addr);
-		
-		
-		setHeaders(method, "/jobs/" + jobid + "/status");
-		ConvertResult result = new ConvertResult();
-		
-		try
-		{
-			HttpResponse resp = getClient().sharedExecute(method);
-			log.info(resp.getStatusLine());
-			String xml = EntityUtils.toString(resp.getEntity());
-			log.info(xml);
-			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
-			
-			//If job is done
-			
-			
-			//16x9  540p
-			
-			
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-		
-		return result;
-		
-		
-	}
-
 	public Element createJob(ConvertInstructions inStructions)
 	{
 		//if( true ) return null;
@@ -215,9 +178,16 @@ public class ElementalManager implements CatalogEnabled
 		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
 
 		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath();
+		
+		String outputname = inStructions.getOutputFile().getName();
+		
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + PathUtilities.extractPageName(outputname);
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
+		
+//		context.putPageValue("name_modifier",);
+		context.putPageValue("extension",inStructions.getOutputExtension());
+		
 		
 		String elementalpresetname = inStructions.getProperty("elementalpresetname");
 		context.putPageValue("elementalpresetname",elementalpresetname);
@@ -261,8 +231,21 @@ public class ElementalManager implements CatalogEnabled
 //				      "userMetadata": {
 //				      },
 			Element job = getXmlUtil().getXml(jobsubmit, "UTF-8");
-
-			job.addAttribute("jobid", "someid");
+	
+			Element jobresp = getXmlUtil().getXml(body, "UTF-8");
+			
+			String href = jobresp.attributeValue("href");
+			
+			String id = href.substring("/jobs/".length());
+/**
+ * 
+			<job href="/jobs/1362" product="Elemental Server + Audio Normalization Package + HEVC Package" version="2.13.1.403404">
+			  <input>
+			    <active>false</active>
+			    <filter_enable>Disable</filter_enable>
+			    <id>1363</id>
+**/
+			job.addAttribute("jobid", id);
 			return job;
 		}
 		catch (Exception e)
@@ -272,6 +255,91 @@ public class ElementalManager implements CatalogEnabled
 		
 	}
 	
+
+	
+	public ConvertResult updateJobStatus(Data inTask)
+	{
+		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
+		String addr = elementalroot + "/api/jobs/" + inTask.get("externalid") + "/status";
+
+		String jobid =  inTask.get("externalid");
+		log.info("found " + jobid);
+		HttpGet method = new HttpGet(addr);
+		
+		
+		setHeaders(method, "/jobs/" + jobid + "/status");
+		ConvertResult result = new ConvertResult();
+		
+		try
+		{
+			HttpResponse resp = getClient().sharedExecute(method);
+			log.info(resp.getStatusLine());
+			String xml = EntityUtils.toString(resp.getEntity());
+			log.info("Status got back: " + xml);
+			Element elem = getXmlUtil().getXml(xml, "UTF-8");
+			String type = elem.getName();
+			//"errors" "complete"
+			boolean iserror = false;
+			if( type.equals("errors"))
+			{
+				iserror = true;
+			}
+			else if( elem.elementText("status").equals("error"))
+			{
+				iserror = true;
+			}
+			if( iserror ) 
+			{
+				//			<errors>
+				//			  <error type="ActiveRecord::RecordNotFound">Couldn't find Job with id=1456</error>
+				//			</errors>
+				result.setOk(false);
+				result.setError(xml);
+			}
+			else 
+			{
+				//If job is done
+				
+				/**
+				 * <job href="/jobs/1451">
+  <node>aes.metroeast.org</node>
+  <user_data/>
+  <active_input_id>0</active_input_id>
+  <submitted>2020-03-03 13:11:20 -0800</submitted>
+  <priority>33</priority>
+  <status>error</status>
+  <pct_complete>0</pct_complete>
+  <average_fps>0.0</average_fps>
+  <elapsed>0</elapsed>
+  <start_time>2020-03-03 13:11:21 -0800</start_time>
+  <errored_time>2020-03-03 13:11:24 -0800</errored_time>
+  <elapsed_time_in_words>00:00:00</elapsed_time_in_words>
+  <error_messages>
+    <error>
+      <code>1056</code>
+      <created_at>2020-03-03T13:11:24-08:00</created_at>
+      <message>Failed to initialize pipeline [Unable to create output directory [/mnt/Meld/DAM/generated/Ingest]].  (IS)</message>
+    </error>
+  </error_messages>
+</job>
+
+				 */
+				
+				result.setComplete(true);
+				result.setOk(true);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		
+		return result;
+		
+		
+	}
+
 
 	
 

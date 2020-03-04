@@ -249,6 +249,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	}
 
 	ConvertInstructions inStructions = manager.createInstructions(inAsset,inPreset,props);
+	inStructions.setConversionTask(inTask);
 	
 	//inStructions.setOutputExtension(inPreset.get("extension"));
 	//log.info( inStructions.getProperty("guid") );
@@ -257,7 +258,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 //		inStructions.setOutputExtension(extension);
 
 	//new submitted retry missinginput
-	if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
+	if("new".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
 	{
 		//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 //			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);

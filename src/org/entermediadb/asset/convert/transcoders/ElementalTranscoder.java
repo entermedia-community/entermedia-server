@@ -1,5 +1,7 @@
 package org.entermediadb.asset.convert.transcoders;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
@@ -9,14 +11,35 @@ import org.openedit.Data;
 
 public class ElementalTranscoder extends BaseTranscoder
 {
-
-	
-
+	private static final Log log = LogFactory.getLog(ElementalTranscoder.class);
 
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
+		if( inStructions.getConversionTask() == null)
+		{
+			log.info("Skipping conversion without task " + inStructions.getAssetSourcePath());
+			//Must be done with a queue
+			ConvertResult result = new ConvertResult();
+			result.setComplete(false);
+			result.setOk(true);
+			return result;
+		}
+		
+		if( inStructions.getOutputFile().exists() && inStructions.getOutputFile().getLength() > 0 )
+		{
+			//TODO: Handle forced true
+			log.info("Output file already created: " + inStructions.getAssetSourcePath() );
+			ConvertResult result = new ConvertResult();
+			result.setComplete(true);
+			result.setOk(true);
+			return result;			
+		}
+		
 		ElementalManager manager = (ElementalManager) inStructions.getMediaArchive().getBean("elementalManager");
+
+		//Get the task
+		//inStructions.getC
 		Element job = manager.createJob(inStructions);
 		
 		//Wait for it to finish?

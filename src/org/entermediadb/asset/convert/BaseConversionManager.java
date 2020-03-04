@@ -347,7 +347,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
 	{
 		MediaTranscoder transcoder = findTranscoder(inStructions);
-		return transcoder.convert(inStructions);
+		return transcoder.updateStatus(inTask,inStructions);
 	}
 	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
 	{
