@@ -181,11 +181,11 @@ public class ElementalManager implements CatalogEnabled
 		
 		String outputname = inStructions.getOutputFile().getName();
 		
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + PathUtilities.extractPageName(outputname);
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + ;
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
 		
-//		context.putPageValue("name_modifier",);
+		context.putPageValue("name_modifier",);
 		context.putPageValue("extension",inStructions.getOutputExtension());
 		
 		
@@ -276,7 +276,7 @@ public class ElementalManager implements CatalogEnabled
 			log.info(resp.getStatusLine());
 			String xml = EntityUtils.toString(resp.getEntity());
 			log.info("Status got back: " + xml);
-			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
+			Element elem = getXmlUtil().getXml(xml, "UTF-8");
 			String type = elem.getName();
 			//"errors" "complete"
 			boolean iserror = false;
