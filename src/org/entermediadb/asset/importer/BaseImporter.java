@@ -84,62 +84,60 @@ public class BaseImporter extends EnterMediaObject
 			{
 				rowNum++;
 
-				Data target = null;
-				String idCell = trow.get("id");
-				if(fieldStripPrefix){
-					if(idCell.startsWith(getPrefix())){
+				Data target = findExistingRecord(trow);
+				if( target == null)
+				{
+					String idCell = trow.get("id");
+					if(fieldStripPrefix){
+						if(idCell.startsWith(getPrefix()))
+						{
 							idCell = idCell.substring(getPrefix().length(), idCell.length());
+						}
+					}
 					
-					}
-				}
-				
-				PropertyDetail parent = getSearcher().getDetail("_parent");
-				String parentid = null;
-				if (parent != null)
-				{
-					parentid = trow.get("_parent");
-					if (parentid != null)
-					{
-						target = findExistingData(idCell, parentid);
-					}
-				}
-
-				if (target == null && idCell != null && idCell.trim().length() > 0)
-				{
-					target = findExistingData(idCell, null);
-				}
-
-				if (target == null)
-				{
-					target = getSearcher().createNewData();
-					target.setId(idCell);
+					PropertyDetail parent = getSearcher().getDetail("_parent");
+					String parentid = null;
 					if (parent != null)
 					{
-						target.setProperty("_parent", parentid);
+						parentid = trow.get("_parent");
+						if (parentid != null)
+						{
+							target = findExistingData(idCell, parentid);
+						}
 					}
-				}
-
-				else if (isMakeId())
-				{
-					target = getSearcher().createNewData();
-					idCell = getSearcher().nextId();
-				}
-				else
-				{
-					//target = findExistingRecord(trow);
+	
+					if (target == null && idCell != null && idCell.trim().length() > 0)
+					{
+						target = findExistingData(idCell, null);
+					}
+	
 					if (target == null)
 					{
-						continue;
+						target = getSearcher().createNewData();
+						target.setId(idCell); //could be null
+						if (parent != null)
+						{
+							target.setProperty("_parent", parentid);
+						}
 					}
+					else if (isMakeId())
+					{
+						target = getSearcher().createNewData();
+						idCell = getSearcher().nextId();
+					}
+					target.setId(idCell);  //could be null
+				}
+				if (target == null)
+				{
+					continue;
 				}
 
 				addProperties(trow, target);
-				target.setId(idCell);
 				data.add(target);
-				if (data.size() == 10000)
+				if (data.size() == 3000)
 				{
 					getSearcher().saveAllData(data, context.getUser());
-					log.info("imported 1000");
+					log.info("imported 3000");
 					data.clear();
 				}
 			}
