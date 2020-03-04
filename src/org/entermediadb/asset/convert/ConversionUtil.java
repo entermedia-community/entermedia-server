@@ -56,7 +56,7 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public boolean canCrop(String inCatalogId, String inPresetId, String inAssetId) throws Exception{
+	public boolean canCrop(MediaArchive inArchive, String inCatalogId, String inPresetId, String inAssetId) throws Exception{
 		//log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
 		boolean canCrop = false;
 		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
@@ -105,6 +105,9 @@ public class ConversionUtil {
 				String num = asset.get("width");
 				if (num!=null) num = num.trim();
 				assetwidth = (double) Integer.parseInt(num);
+				if (assetwidth<=0) {
+					return false;
+				}
 			}catch (Exception e){
 				log.warn("Exception caught parsing asset width, assetid="+asset.getId()+", width="+asset.get("width")+", defaulting value to 0");
 			}
@@ -113,11 +116,20 @@ public class ConversionUtil {
 				String num = asset.get("height");
 				if (num!=null) num = num.trim();
 				assetheight = (double) Integer.parseInt(num);
+				if (assetheight<=0) {
+					return false;
+				}
 			}catch (Exception e){
 				log.warn("Exception caught parsing asset height, assetid="+asset.getId()+", height="+asset.get("height")+", defaulting value to 0");
 			}
+			
 			double cropwidth = cropDimension.getWidth();
 			double cropheight = cropDimension.getHeight();
+			String cancropsmallerimages = inArchive.getCatalogSettingValue("cropsmallerimages");
+			if (Boolean.parseBoolean(cancropsmallerimages)) {
+				return true; //Always allow to crop
+			}
+
 			canCrop = (cropwidth <= assetwidth && cropheight <= assetheight);
 		}
 		//log.info("Can image be cropped? "+canCrop);

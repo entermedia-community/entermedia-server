@@ -8,7 +8,7 @@
 
 #set($cancrop = false)
 #if($canviewassetedit || $caneditasset)
-	#set($cancrop = $conversionUtil.canCrop($catalogid, $presetid, $asset.id))
+	#set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetid, $asset.id))
 #else
 	#set($cancrop = false)
 #end
@@ -135,8 +135,10 @@ title="[[Back to Media Files]]"
 								method="post" 
 								data-targetdiv="asset-editor-container" 
 								action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
-					#end    
+					#end
+					
 					#if($cancrop)
+					
 					<div class="croptool-maincol" >
 						<div style="background-color: #333; padding:5px 8px 5px 5px; ">
 							<div style=" overflow-x:auto;">

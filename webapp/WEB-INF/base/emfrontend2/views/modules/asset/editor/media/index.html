@@ -77,7 +77,7 @@ $context.putPageValue("results", $results)
 					    title="[[Download]] $result.name"><i class="fas fa-download"></i></a>
 					    
 					 ##Crop
-					 #set($cancrop = $conversionUtil.canCrop($catalogid, $result.id, $asset.id)) 
+					 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $result.id, $asset.id)) 
 					 #if($caneditasset && $cancrop) 
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  
