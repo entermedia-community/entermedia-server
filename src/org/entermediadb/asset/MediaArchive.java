@@ -1107,7 +1107,8 @@ public class MediaArchive implements CatalogEnabled
 				//				}
 				String type = PathUtilities.extractPageType(inContent.getPath());
 				String fileformat = getMediaRenderType(type);
-				if ("image".equals(fileformat))
+				// 3-5-2020 - Cristobal M. -  Added video to delete video.mp4 
+				if ("image".equals(fileformat) || "video".equals(fileformat))
 				{
 					Page page = getPageManager().getPage(inContent.getPath());
 					getPageManager().removePage(page);
