@@ -8,6 +8,10 @@
 	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
 #if (!$librarycol)
+	#if(!$collectioinid)
+		#set($collectioinid = $userprofile.get("lastselectedcollection"))
+	#end
+
 	#if($collectionid)
 		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 	#end
@@ -15,6 +19,9 @@
 #if( $librarycol && !$collectioinid)
     #set($collectionid = $librarycol.getId())
 #end
+
+
+
 $context.putPageValue("librarycol",$librarycol)
 
 <div class="container-fluid">
