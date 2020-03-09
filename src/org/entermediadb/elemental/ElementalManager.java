@@ -29,6 +29,7 @@ import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.XmlUtil;
 
@@ -180,9 +181,13 @@ public class ElementalManager implements CatalogEnabled
 		
 		String outputname = inStructions.getOutputFile().getName();
 		
-		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + outputname;
+		String outputpath = generatedroot  + "/" + inStructions.getAssetSourcePath() + "/" + PathUtilities.extractPageName(outputname);
 		context.putPageValue("inputpath",item.getAbsolutePath());
 		context.putPageValue("outputpath",outputpath);
+		
+//		context.putPageValue("name_modifier",);
+		context.putPageValue("extension",inStructions.getOutputExtension());
+		
 		
 		String elementalpresetname = inStructions.getProperty("elementalpresetname");
 		context.putPageValue("elementalpresetname",elementalpresetname);
@@ -271,7 +276,7 @@ public class ElementalManager implements CatalogEnabled
 			log.info(resp.getStatusLine());
 			String xml = EntityUtils.toString(resp.getEntity());
 			log.info("Status got back: " + xml);
-			Element elem = getXmlUtil().getXml(resp.getEntity().getContent(), "UTF-8");
+			Element elem = getXmlUtil().getXml(xml, "UTF-8");
 			String type = elem.getName();
 			//"errors" "complete"
 			boolean iserror = false;
@@ -293,8 +298,18 @@ public class ElementalManager implements CatalogEnabled
 			}
 			else 
 			{
-				//If job is done
-				
+				result.setOk(true);
+				//If job is done?
+				if( elem.elementText("status").equals("complete"))
+				{
+					result.setComplete(true);					
+				}
+				else
+				{
+					 String percent  = elem.elementText("pct_complete");
+					 log.info("Job number: " + jobid + " is " + percent + "% complete");
+					 result.setComplete(false);	
+				}
 				/**
 				 * <job href="/jobs/1451">
   <node>aes.metroeast.org</node>
@@ -320,8 +335,6 @@ public class ElementalManager implements CatalogEnabled
 
 				 */
 				
-				result.setComplete(true);
-				result.setOk(true);
 			}
 			
 		}

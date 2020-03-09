@@ -1,0 +1,3 @@
+<page>
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayoutimages.html</inner-layout>
+</page>

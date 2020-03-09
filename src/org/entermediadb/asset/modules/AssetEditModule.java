@@ -796,6 +796,10 @@ public class AssetEditModule extends BaseMediaModule
 			Collection tracker = saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
 		}
+		if( currentcollection != null && inReq.getUserProfile() != null)
+		{
+			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
+		}
 	}
 
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)

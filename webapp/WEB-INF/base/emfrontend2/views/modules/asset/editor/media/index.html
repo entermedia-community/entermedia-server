@@ -58,12 +58,17 @@ $context.putPageValue("results", $results)
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 				
+				#set($mediaurl = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)")
 				
 				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
 					
 					<div class="mediapreset-name" title="$result.name" >$result.name</div>
 					<div class="mediapreset-image">
-						<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" alt="$result.name" />
+						<a href="$home$apphome/views/modules/asset/editor/media/preview.html?previewimg=$mediaurl"
+							class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
+							title="$!result.name">
+							<img src="$mediaurl?_=$mathutil.getRandomValue(9999)" alt="$result.name" />
+						</a>
 					</div>
 					<div class="mediapreset-actions">
 					##Download
@@ -72,7 +77,7 @@ $context.putPageValue("results", $results)
 					    title="[[Download]] $result.name"><i class="fas fa-download"></i></a>
 					    
 					 ##Crop
-					 #set($cancrop = $conversionUtil.canCrop($catalogid, $result.id, $asset.id)) 
+					 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $result.id, $asset.id)) 
 					 #if($caneditasset && $cancrop) 
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  

@@ -17,7 +17,7 @@
 		"firstname": "$!user.firstName",
 		"lastname" : "$!user.lastName",
 		"email" : "$!user.email",
-		"userid":"${user.id}"
+		"userid":"${user.id}",
 		"screenname" : "$!user.getScreenName()"
 #end
 	}
