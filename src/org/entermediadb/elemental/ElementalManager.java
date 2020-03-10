@@ -298,8 +298,18 @@ public class ElementalManager implements CatalogEnabled
 			}
 			else 
 			{
-				//If job is done
-				
+				result.setOk(true);
+				//If job is done?
+				if( elem.elementText("status").equals("complete"))
+				{
+					result.setComplete(true);					
+				}
+				else
+				{
+					 String percent  = elem.elementText("pct_complete");
+					 log.info("Job number: " + jobid + " is " + percent + "% complete");
+					 result.setComplete(false);	
+				}
 				/**
 				 * <job href="/jobs/1451">
   <node>aes.metroeast.org</node>
@@ -325,8 +335,6 @@ public class ElementalManager implements CatalogEnabled
 
 				 */
 				
-				result.setComplete(true);
-				result.setOk(true);
 			}
 			
 		}

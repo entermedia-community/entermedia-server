@@ -1169,10 +1169,10 @@ public class UserManagerModule extends BaseMediaModule
 	public Question loadQuestion(WebPageRequest inReq) throws OpenEditException
 	{
 		Question q = (Question)inReq.getSessionValue("question");
-		if( inReq.getSessionValue("answer") != null || inReq.getUser() != null )
-		{
-			return q; //already authenticated as a person
-		}
+//		if( inReq.getSessionValue("answer") != null || inReq.getUser() != null )
+//		{
+//			return q; //already authenticated as a person
+//		}
 		if( q != null)
 		{
 			return q; //already picked one
