@@ -18,7 +18,7 @@ public void init(){
 	Searcher searcher = archive.getSearcher("librarycollection");
 
 	List rows = new ArrayList();
-	String csvpath = "/${catalogid}/imports/ALF_ALL_ALL.txt";
+	String csvpath = "/${catalogid}/imports/ALF2.txt";
 
 
 	Page upload = archive.getPageManager().getPage(csvpath);
@@ -29,11 +29,13 @@ public void init(){
 	
 	Reader reader = upload.getReader();
 	try{
-		CSVReader read = new CSVReader(reader, (char)'\t');
+		Integer li = 1;
+		CSVReader read = new CSVReader(reader, (char)'\t', true);
 		String[] headers = read.readNext();
 		String[] line;
 		while ((line = read.readNext()) != null){
 			String id = line[2];
+			//log.info("Line:"+li+" Id " + id);
 			Data collection = searcher.searchById(id);
 			if(collection == null) {
 				collection = searcher.createNewData();
@@ -45,19 +47,19 @@ public void init(){
 			}
 			collection.setValue("library", "products");
 			if(line.length >=37) {
-			collection.setValue("projectdescription", line[36]);
-			collection.setValue("title", line[9]);
-			collection.setValue("subtitle", line[10]);
-			collection.setValue("genre", line[16]);
-			collection.setValue("level", line[21]);
-			collection.setValue("series", line[20]);
-			collection.setValue("keywords", line[26]);
+				collection.setValue("projectdescription", line[36]);
+				collection.setValue("title", line[9]);
+				collection.setValue("subtitle", line[10]);
+				collection.setValue("genre", line[16]);
+				collection.setValue("level", line[21]);
+				collection.setValue("series", line[20]);
+				collection.setValue("keywords", line[26]);
 			} else {
-				//log.info("Incomplete row " + line);
+				log.info("CSV Import, incomplete row line " + li +" id: "+id);
 			}
 			
 			rows.add(collection);
-			
+			li++;
 			if(rows.size() > 10000){
 				searcher.saveAllData(rows, null);
 				rows.clear();

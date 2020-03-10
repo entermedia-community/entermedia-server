@@ -43,6 +43,8 @@ public class CSVReader implements Parser {
     private int skipLines;
 
     private boolean linesSkiped;
+    
+    private boolean strictquotes;
 
     /** The default separator to use if none is supplied to the constructor. */
     public static final char DEFAULT_SEPARATOR = ',';
@@ -57,6 +59,11 @@ public class CSVReader implements Parser {
      * The default line to start reading.
      */
     public static final int DEFAULT_SKIP_LINES = 0;
+    
+    /**
+     * Prevents unclosed quotes, in a no multiline CSV
+     * */
+    public static final boolean DEFAULT_STRICT_QUOTES = false;
     
     public CSVReader() 
     {	
@@ -85,10 +92,14 @@ public class CSVReader implements Parser {
     }
     //Used for Groovy since it treats '' as strings
     public CSVReader(Reader reader, String separator, String quotechar) {
-        this(reader, separator.charAt(0), quotechar.charAt(0), DEFAULT_SKIP_LINES);
+        this(reader, separator.charAt(0), quotechar.charAt(0), DEFAULT_SKIP_LINES, DEFAULT_STRICT_QUOTES);
     }
     
-
+    //Used for Groovy with strict quotes
+    public CSVReader(Reader reader, char separator, Boolean strictquotes) {
+        this(reader, separator, DEFAULT_QUOTE_CHARACTER, DEFAULT_SKIP_LINES, strictquotes);
+    }
+    
     /**
      * Constructs CSVReader with supplied separator and quote char.
      * 
@@ -100,7 +111,7 @@ public class CSVReader implements Parser {
      *            the character to use for quoted elements
      */
     public CSVReader(Reader reader, char separator, char quotechar) {
-        this(reader, separator, quotechar, DEFAULT_SKIP_LINES);
+        this(reader, separator, quotechar, DEFAULT_SKIP_LINES, DEFAULT_STRICT_QUOTES);
     }
     
     /**
@@ -115,7 +126,7 @@ public class CSVReader implements Parser {
      * @param line
      *            the line number to skip for start reading 
      */
-    public CSVReader(Reader reader, char separator, char quotechar, int line) {
+    public CSVReader(Reader reader, char separator, char quotechar, int line, boolean strictquotes) {
     	if( reader != null)
     	{
     		this.br = new BufferedReader(reader);
@@ -123,6 +134,7 @@ public class CSVReader implements Parser {
         this.separator = separator;
         this.quotechar = quotechar;
         this.skipLines = line;
+        this.strictquotes = strictquotes;
     }
 
     /**
@@ -215,9 +227,15 @@ public class CSVReader implements Parser {
         	if (inQuotes) {
                 // continuing a quoted section, reappend newline
                 sb.append("\n");
-                nextLine = getNextLine();
-                if (nextLine == null)
-                    break;
+                //3-5-2020 - Cristobal M - No quoted Multiline support, most common unclosed quotes.
+                if (strictquotes) {
+                	break;
+                }
+            	nextLine = getNextLine();
+            	if (nextLine == null) {
+            		break;
+            	}
+
             }
             for (int i = 0; i < nextLine.length(); i++) {
 
@@ -251,6 +269,7 @@ public class CSVReader implements Parser {
                 }
             }
         } while (inQuotes);
+
         tokensOnThisLine.add(sb.toString());
         return (String[]) tokensOnThisLine.toArray(new String[0]);
 
