@@ -37,9 +37,19 @@ public class BaseImporter extends EnterMediaObject
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
 
+	protected boolean fieldAddNewData = true;
 	
 	
-	
+	public boolean isAddNewData()
+	{
+		return fieldAddNewData;
+	}
+
+	public void setAddNewData(boolean inAddNewData)
+	{
+		fieldAddNewData = inAddNewData;
+	}
+
 	public String getPrefix() {
 		return fieldPrefix;
 	}
@@ -111,7 +121,7 @@ public class BaseImporter extends EnterMediaObject
 						target = findExistingData(idCell, null);
 					}
 	
-					if (target == null)
+					if (isAddNewData() && target == null)
 					{
 						target = getSearcher().createNewData();
 						target.setId(idCell); //could be null
@@ -125,7 +135,11 @@ public class BaseImporter extends EnterMediaObject
 						target = getSearcher().createNewData();
 						idCell = getSearcher().nextId();
 					}
-					target.setId(idCell);  //could be null
+					if (target == null)
+					{
+						continue;
+					}
+					target.setId(idCell); 
 				}
 				if (target == null)
 				{
