@@ -284,26 +284,29 @@ public class PresetCreator
 				{
 					return;						
 				}
-				Asset target = (Asset)inArchive.getAssetSearcher().searchById(asset.getId()); 
-				if( founderror)
+				Asset target = (Asset)inArchive.getAssetSearcher().searchById(asset.getId());
+				if( target != null )
 				{
-					target.setProperty("importstatus","error");
-					target.setProperty("previewstatus","3");
-				}
-				else
-				{
-					target.setProperty("importstatus","complete");
-					if( assetconversions.size() > 0)
+					if( founderror)
 					{
-						target.setProperty("previewstatus","2");
+						target.setProperty("importstatus","error");
+						target.setProperty("previewstatus","3");
 					}
-					else if( !"exif".equals(existingpreviewstatus) )  //Is this used?
+					else if( target != null)
 					{
-						target.setProperty("previewstatus","mime");  //Set it to mime most of the time
+						target.setProperty("importstatus","complete");
+						if( assetconversions.size() > 0)
+						{
+							target.setProperty("previewstatus","2");
+						}
+						else if( !"exif".equals(existingpreviewstatus) )  //Is this used?
+						{
+							target.setProperty("previewstatus","mime");  //Set it to mime most of the time
+						}
 					}
+					inArchive.saveAsset(target, null);
+					inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
 				}
-				inArchive.saveAsset(target, null);
-				inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
 				inArchive.fireSharedMediaEvent("importing/importcomplete");
 			}
 		}

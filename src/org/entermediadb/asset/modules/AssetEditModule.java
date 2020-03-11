@@ -29,6 +29,7 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.entermediadb.projects.ProjectManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -49,6 +50,9 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
+
+import model.assets.AssetTypeManager;
+import model.assets.LibraryManager;
 
 public class AssetEditModule extends BaseMediaModule
 {

@@ -41,7 +41,7 @@ public void init()
 			}
 			archive.saveAssets assetsToSave;
 			archive.firePathEvent("importing/assetsimported",user,assetsToSave);
-			log.info("metadata reading complete");
+			//log.info("metadata reading complete");
 			
 		
 }
