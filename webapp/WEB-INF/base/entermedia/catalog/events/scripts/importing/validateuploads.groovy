@@ -15,7 +15,10 @@ public void init()
 		
 		Searcher searcher = archive.getAssetSearcher();
 		//HitTracker assets = searcher.getAllHits();
-		HitTracker assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
+
+		//Use this to check on  
+		
+				HitTracker assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
 		assets.enableBulkOperations();
 		assets.setHitsPerPage(100);
 		List assetsToSave = new ArrayList();
