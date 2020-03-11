@@ -45,9 +45,12 @@ public class FireBase {
 		//message.put("channel_id","my_channel_id");
 		JSONObject data = new JSONObject();
 		data.put("collectionid",inChannel);
+		if(inUser != null)
+		{
 		data.put("userid",inUser.getId()); 
 		data.put("useremail",inUser.getEmail()); 
 		data.put("userlabel",inUser.getScreenName()); 
+		}
 		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String value = (String)extraData.get(key);

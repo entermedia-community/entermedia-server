@@ -919,6 +919,7 @@ public class GoogleManager implements CatalogEnabled
 		return queue;
 	}
 
+	// For Push Notifications
 	public void notifyTopic(final String inChannel,final  User inUser,final  String inSubject, final String inMessage, final Map inExtraData)
 	{
 		//TODO: Dont spam the channel. Send the first one. Then wait 20min for the rest
