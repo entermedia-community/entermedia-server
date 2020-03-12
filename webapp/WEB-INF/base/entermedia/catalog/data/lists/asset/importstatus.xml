@@ -55,6 +55,6 @@
 		<language id="en"><![CDATA[Invalid Format]]></language>
 		</name>
 	</property>
-	
+	<!-- This is a legacy file.  Not used anymore -->
 </properties>
   

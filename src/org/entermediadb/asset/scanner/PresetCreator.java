@@ -120,6 +120,14 @@ public class PresetCreator
 				rendertype = "image";   //assume jpg thumbnail was downloaded
 			}
 		}
+		
+		String validformat = asset.get("importstatus");
+		if( "invalidformat".equals(validformat))
+		{
+			//Mime icon
+			return Collections.emptyList();
+			
+		}
 		if(rendertype==null)
 		{
 			//Mime icon
@@ -249,6 +257,12 @@ public class PresetCreator
 	
 	public void checkAssetConversions(MediaArchive inArchive, Data asset, Collection assetconversions )
 	{
+		String validformat = asset.get("importstatus");
+		if( "invalidformat".equals(validformat))
+		{
+			return;
+		}
+		
 		String existingpreviewstatus = asset.get("previewstatus");
 		if( log.isDebugEnabled() )
 		{

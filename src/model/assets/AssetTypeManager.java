@@ -19,6 +19,7 @@ import org.openedit.util.PathUtilities;
 
 public class AssetTypeManager extends EnterMediaObject
 {
+
 	public void saveAssetTypes(Collection<Data> inAssets, boolean force)
 	{
 		MediaArchive mediaarchive = (MediaArchive) context.getPageValue("mediaarchive");//Search for all files looking for videos
@@ -50,8 +51,38 @@ public class AssetTypeManager extends EnterMediaObject
 
 		}
 		saveAssets(searcher, tosave);
+		validateAssetTypes(mediaarchive,inAssets);
 	}
 
+	public void validateAssetTypes(MediaArchive mediaarchive, Collection<Data> inAssets)
+	{
+		//Read the fileformat and validate the extention to that type
+		//MediaArchive archive = getMediaArchive(inReq);
+		
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String detected = data.get("detectedfileformat");
+			if( detected != null)
+			{
+				//Make sure they match?
+				if( detected.toLowerCase().endsWith("exe") )
+				{
+					String fileformat = data.get("fileformat");
+					if( !fileformat.equals("exe"))
+					{
+						Asset asset = (Asset)mediaarchive.getAssetSearcher().loadData(data);
+						asset.setValue("importstatus", "invalidformat");
+						asset.setValue("fileformat", "exe");
+						asset.setValue("assettype", "none");
+						asset.setProperty("previewstatus","mime");
+						mediaarchive.saveAsset(asset);
+					}
+				}
+			}
+		}
+	}	
+	
 	protected Asset checkCustomFields(MediaArchive inArchive, Data inHit, Asset loadedAsset)
 	{
 		return loadedAsset;

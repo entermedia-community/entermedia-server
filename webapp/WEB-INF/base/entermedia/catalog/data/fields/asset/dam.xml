@@ -279,9 +279,13 @@
       <language id="fr"><![CDATA[Format du fichier]]></language> 
     </name> 
   </property>
-   <property id="detectedfileformat"  index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  sortable="true">Detected File Format 
-   
-  </property>    
+  <property id="detectedfileformat" externalid="File Type" index="true" editable="true" stored="true" indextype="not_analyzed" filter="false" keyword="false"> 
+    <name>
+      <language id="en"><![CDATA[Detected File Format]]></language>
+    </name>
+  </property> 
+
+
   <property id="filesize"  index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size"  editable="false" type="number">File Size 
     <name> 
       <language id="de"><![CDATA[Dateigröße]]></language>  

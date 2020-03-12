@@ -15,6 +15,7 @@
 	<property id="dng"  synctags="true"  rendertype="image" creator="imagemagick">DNG</property>
 	<property id="eps"  synctags="true"  rendertype="image" creator="imagemagick">EPS</property>
 	<property id="exe"  synctags="true"  >EXE</property>
+	<property id="win32 exe"  synctags="true"  >Win32 EXE</property>
 	<property id="flv"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">FLV</property>
 	<property id="gif"  synctags="true"  rendertype="image" creator="imagemagick">GIF</property>
 	<property id="indd"  synctags="true"  rendertype="image" creator="imagemagick">INDD</property>

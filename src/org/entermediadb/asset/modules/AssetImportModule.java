@@ -20,43 +20,8 @@ public class AssetImportModule  extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(AssetImportModule.class);
 
-	public void validateAssetExtention(WebPageRequest inReq)
-	{
-		//Read the fileformat and validate the extention to that type
-		MediaArchive archive = getMediaArchive(inReq);
-		Collection hits = loadAssetHits(archive, inReq);
-		if( hits == null)
-		{
-			log.error("No hits found");
-			return;
-		}
-		
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			String detected = data.get("detectedfileformat");
-			if( detected != null)
-			{
-				String fileformat = data.get("fileformat");
-				//Make sure they match?
-				if( detected.contains("exe") )
-				{
-					String isnone = data.get("assettype");
-					if( isnone != null && !isnone.equals("none"))
-					{
-						Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
-						asset.setValue("importstatus", "invalidformat");
-						asset.setValue("assettype", null);
-						archive.saveAsset(asset);
-					}
-				}
-			}
-		}
-		
-		
-	}
 	
-	public void readProjectData(WebPageRequest inReq)
+	public void assetsImported(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection hits = loadAssetHits(archive, inReq);
