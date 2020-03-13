@@ -926,13 +926,21 @@ public class GoogleManager implements CatalogEnabled
 		getExecutorManager().execute( new Runnable() {
 			
 			@Override
-			public void run() {
-				MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
-				final Data authinfo = archive.getData("oauthprovider", "google");
-
-				String accesstoken = getAccessToken(authinfo);
-				FireBase base = new FireBase();
-				base.notifyTopic(accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
+			public void run() 
+			{
+				try
+				{
+					MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+					final Data authinfo = archive.getData("oauthprovider", "google");
+	
+					String accesstoken = getAccessToken(authinfo);
+					FireBase base = new FireBase();
+					base.notifyTopic(accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
+				}
+				catch (Throwable ex)
+				{
+					log.error(ex);
+				}
 			}
 		});
 	}
