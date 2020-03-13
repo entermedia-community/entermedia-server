@@ -1489,7 +1489,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String json = search.toString();
 			log.info(toId(inCatalogId) + "/_search' -d '" + json + "' \n");
 		}
-
+		log.info("Found these changes: " + hits.size() + " since " + inAfter);
 		//hits.setSearcherManager(getSearcherManager());
 		//hits.setSearcher(this);
 		//hits.setSearchQuery(inQuery);

@@ -1,6 +1,6 @@
 <page>
 
-	<property name="eventname">Pull2 Data changes</property>
+	<property name="eventname">Pull2 All Data</property>
 	<property name="eventdescription">Check for data changes from remote Nodes</property>	
 	<path-action name="SyncModule.pullRemoteChanges" />
 	<property name="period">30s</property>
