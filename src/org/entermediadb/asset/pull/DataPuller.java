@@ -251,7 +251,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		StringBuffer debugurl = new StringBuffer();
 		debugurl.append("?");
 		debugurl.append("entermedia.key=");
-		debugurl.append(params.get("entermedia.key"));
+		debugurl.append(node.get("entermediakey"));
 		debugurl.append("&lastpullago=");
 		String last = params.get("lastpullago");
 
