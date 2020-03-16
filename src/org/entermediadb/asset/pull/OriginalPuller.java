@@ -521,11 +521,13 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		
 		//Only upload our own files. Because otherwise it might try and download stuff
 		
-		HitTracker recentuploads = inArchive.query("asset").after("assetaddeddate", inPulldate).
+		HitTracker recentuploads = inArchive.query("asset").after("assetmodificationdate", inPulldate).
 				exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").search();
 		
 		recentuploads.enableBulkOperations();
 		recentuploads.setHitsPerPage(100);  //No timeouts
+		
+		log.info("Uploading " + recentuploads.size() + " locally edited files");
 		if (recentuploads.isEmpty())
 		{
 			return;

@@ -12,51 +12,13 @@ import model.assets.LibraryManager
 
 
 
-public void readProjectData()
+public void init()
 {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	Collection hits = context.getPageValue("hits");
-	if( hits == null)
-	{
-		String ids = context.getRequestParameter("assetids");
-		if( ids == null)
-		{
-		   log.info("AssetIDS required");
-		   return;
-		}
-		Searcher assetsearcher = mediaArchive.getAssetSearcher();
-		SearchQuery q = assetsearcher.createSearchQuery();
-		String assetids = ids.replace(","," ");
-		q.addOrsGroup( "id", assetids );
 	
-		hits = assetsearcher.search(q);
-	}
-	//Set the asset type
-	AssetTypeManager manager = new AssetTypeManager();
-	manager.context = context;
-	manager.log = log;
-	manager.saveAssetTypes(hits, true);
-
-	//TODO: Move this to AssetUtilities
-//	boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
-//	if(assigncategory) {
-//		hits.each{
-//			Asset current = it;
-//			Category defaultcat = mediaArchive.getCategorySearcher().createCategoryPath(current.sourcePath);
-//			
-//			current.clearCategories();
-//			current.addCategory(defaultcat);
-//			mediaArchive.saveAsset(current, context.getUser());
-//		}
-//	}	
-	
-	//Look for collections and libraries
-	LibraryManager librarymanager = new LibraryManager();
-	librarymanager.log = log;
-	librarymanager.assignLibraries(mediaArchive, hits);
 
 }
 
-readProjectData();
+init();
 
 

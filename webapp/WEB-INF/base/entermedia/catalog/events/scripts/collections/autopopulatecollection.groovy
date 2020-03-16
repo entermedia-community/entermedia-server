@@ -54,13 +54,18 @@ public void init(){
 		SearchQuery query = assets.createSearchQuery();
 		query.addSortBy("sourcepath");
 		//query.addContains("description", searchstring);
-		query.addContains("sourcepath", searchstring);  //Search Only Sourcepat (Folder/Filename) Not Metadata
-		//log.info("Searching for assets contains = " +  searchstring);
-	
+		query.addContains("name", searchstring);  //Search Only Filename
+		log.info("Searching assets contains = " +  searchstring + " for Collection: " + name);
+		
 		rootcats.each{
 			query.addNot("category", it);
 		}
+		
+		//log.info(query.toFriendly());
+		
+		
 		HitTracker hits = assets.search(query);
+		//log.info(hits.getSearchQuery().getTerms());
 		
 		context.putPageValue("assets", hits);
 		

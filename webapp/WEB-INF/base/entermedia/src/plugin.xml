@@ -2277,5 +2277,7 @@
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
 		
+	<bean id="AssetImportModule" class="org.entermediadb.asset.modules.AssetImportModule">
+	</bean>
 		
 </beans>

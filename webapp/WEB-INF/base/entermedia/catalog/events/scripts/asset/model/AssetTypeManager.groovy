@@ -10,6 +10,8 @@ import org.openedit.data.Searcher.*
 import org.openedit.hittracker.HitTracker
 import org.openedit.util.PathUtilities
 
+//@deprecated use the Java version
+
 public class AssetTypeManager extends EnterMediaObject {
 	public void saveAssetTypes(Collection inAssets, boolean force) {
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos

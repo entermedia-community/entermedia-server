@@ -50,5 +50,11 @@
 		<language id="en"><![CDATA[Error]]></language>
 		</name>
 	</property>
+	<property id="invalidformat" >
+		<name>
+		<language id="en"><![CDATA[Invalid Format]]></language>
+		</name>
+	</property>
+	<!-- This is a legacy file.  Not used anymore -->
 </properties>
   

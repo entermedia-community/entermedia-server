@@ -100,7 +100,10 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 		loadCache(foldersourcepath);
 		cachesaves = 0;
 		super.processAssetFolder(inInput, inUser);
-		log.info("foldersourcepath complete. CacheSaves: " + cachesaves);
+		if( log.isDebugEnabled())
+		{
+			log.debug("foldersourcepath complete. CacheSaves: " + cachesaves);
+		}
 		fieldSizeCache.clear();
 
 	}
