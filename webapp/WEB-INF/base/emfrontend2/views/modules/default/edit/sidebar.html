@@ -5,7 +5,7 @@
 #set($viewonly = $context.getRequestParameter("preview" ) )
     
 $context.putPageValue("view", $viewpath)
-#set($hitssessionid = $context.findValue("hitssessionid"))
+<!-- #set($hitssessionid = $context.findValue("hitssessionid")) -->
 #set ($lastselected = $content.module )
 #if(!$lastselected)
     #set($lastselected = $userprofile.last_selected_module )
