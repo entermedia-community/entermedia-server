@@ -5,7 +5,7 @@
 #set($viewonly = $context.getRequestParameter("preview" ) )
     
 $context.putPageValue("view", $viewpath)
-<!-- #set($hitssessionid = $context.findValue("hitssessionid")) -->
+#set($hitssessionid = $context.findValue("hitssessionid"))
 #set ($lastselected = $content.module )
 #if(!$lastselected)
     #set($lastselected = $userprofile.last_selected_module )
@@ -29,14 +29,13 @@ $context.putPageValue("view", $viewpath)
 
                   <li class="#if( $editing ) current #end projects-$target.id" byassettype="$!target.byassettype">
 					#if( $target.rendertable )
-			        	<a class="" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&searchtype=$moduleid">
-							<!-- &hitssessionid=${hitssessionid} -->
+			        	<a class="" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+							
 							<i class="fas fa-pen"></i> $target
 						</a>
                   	#else
-                      	<a class="" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&searchtype=$moduleid">
+                      	<a class="" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
                         	<i class="fas fa-pen"></i> $target
-                        	<!-- &hitssessionid=${hitssessionid} -->
 						</a>
                     #end
                   </li>
