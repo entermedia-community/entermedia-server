@@ -872,10 +872,10 @@ html, body, #application {
   cursor: pointer;
 }
 .filter-box .select2-container {
-	z-index:2;
+	z-index:1;
 }
 .filter-box .select2-container--open {
-	z-index:3;
+	z-index:2;
 }
 .filter-box-options select.form-control:not([size]):not([multiple]) {
 	height: calc(1.8rem);
