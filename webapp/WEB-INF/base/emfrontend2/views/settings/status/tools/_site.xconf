@@ -3,5 +3,5 @@
 <page>
 
 	<property name="subtab">tools</property>
-	<permission name="view"><blank/></permission>
+
 </page>
