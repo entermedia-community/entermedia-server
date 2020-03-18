@@ -1092,12 +1092,14 @@ public class MediaArchive implements CatalogEnabled
 		{
 			public void processFile(ContentItem inContent, User inUser)
 			{
-				//getPageManager().removePage(page);
-				if (inContent.getName().startsWith("customthumb"))
+				if( everything)
 				{
+					getPageManager().getRepository().remove(inContent);
+					
 					return;
 				}
-				if (!everything && inContent.getName().equals("image1024x768.jpg"))
+				//getPageManager().removePage(page);
+				if (inContent.getName().startsWith("customthumb") || inContent.getName().equals("image1024x768.jpg"))
 				{
 					return;
 				}
@@ -1107,19 +1109,21 @@ public class MediaArchive implements CatalogEnabled
 				//				}
 				String type = PathUtilities.extractPageType(inContent.getPath());
 				String fileformat = getMediaRenderType(type);
-				// 3-5-2020 - Cristobal M. -  Added video to delete video.mp4 
-				if ("image".equals(fileformat) || "video".equals(fileformat))
-				{
+				if (!"default".equals(fileformat)) { //For fulltext.txt files
 					Page page = getPageManager().getPage(inContent.getPath());
 					getPageManager().removePage(page);
 				}
 
 			}
 		};
+		
 		processor.setRecursive(true); //Should this be tr
 		processor.setRootPath(path);
 		processor.setPageManager(getPageManager());
 		processor.process();
+		ContentItem original = getOriginalContent(inAsset);
+		//Rerun Metadata
+		getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(MediaArchive.this, original, inAsset );
 
 	}
 

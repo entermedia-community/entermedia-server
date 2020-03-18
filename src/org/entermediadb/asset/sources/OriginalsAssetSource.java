@@ -152,7 +152,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 			ContentItem item = getOriginalContent(asset);
 			getMediaArchive().removeGeneratedImages(asset,true);
 
-			getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, asset);
+			//getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, asset);
 			asset.setProperty("editstatus", "1");
 			asset.setProperty("importstatus", "reimported");
 			asset.setProperty("previewstatus", "converting");
