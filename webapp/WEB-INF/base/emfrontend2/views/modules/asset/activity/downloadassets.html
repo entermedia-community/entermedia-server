@@ -101,10 +101,10 @@
 							#set($ok = false) 
 						#end
 						#if($ok)
-						<option value="$preset.id">$preset
+						<option value="$preset.id" #if($preset.id == "0") selected #end>$preset
+						</option>
 						#end
 						#set($ok = false)
-						</option>
 					#end
 				</select>
 				#else
