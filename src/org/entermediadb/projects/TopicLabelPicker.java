@@ -35,7 +35,7 @@ public class TopicLabelPicker
 		if( values != null)
 		{
 			for (Iterator iterator = values.iterator(); iterator.hasNext();) {
-				String id = (String) iterator.next();
+				String id = (String)iterator.next();
 				if( !id.equals(getLibraryCollection().getId()))
 				{
 					//Look it up?
