@@ -36,13 +36,15 @@ public class TopicLabelPicker
 		{
 			for (Iterator iterator = values.iterator(); iterator.hasNext();) {
 				String id = (String)iterator.next();
-				if( !id.equals(getLibraryCollection().getId()))
+				if(id != null && !id.equals(getLibraryCollection().getId()))
 				{
 					//Look it up?
 					org.openedit.Data other = getArchive().getCachedData("librarycollection",id);
-					String userid = (String)other.getValue("owner");
-					User otherUser = getArchive().getUser(userid);
-					return otherUser.getScreenName();
+					if (other != null) {
+						String userid = (String)other.getValue("owner");
+						User otherUser = getArchive().getUser(userid);
+						return otherUser.getScreenName();
+					}
 				}
 			}
 		}
