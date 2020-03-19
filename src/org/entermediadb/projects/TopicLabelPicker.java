@@ -36,7 +36,7 @@ public class TopicLabelPicker
 		{
 			for (Iterator iterator = values.iterator(); iterator.hasNext();) {
 				String id = (String)iterator.next();
-				if( !id.equals(getLibraryCollection().getId()))
+				if(id != null && !id.equals(getLibraryCollection().getId()))
 				{
 					//Look it up?
 					org.openedit.Data other = getArchive().getCachedData("librarycollection",id);
