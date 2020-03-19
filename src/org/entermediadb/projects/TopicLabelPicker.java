@@ -40,9 +40,11 @@ public class TopicLabelPicker
 				{
 					//Look it up?
 					org.openedit.Data other = getArchive().getCachedData("librarycollection",id);
-					String userid = (String)other.getValue("owner");
-					User otherUser = getArchive().getUser(userid);
-					return otherUser.getScreenName();
+					if (other != null) {
+						String userid = (String)other.getValue("owner");
+						User otherUser = getArchive().getUser(userid);
+						return otherUser.getScreenName();
+					}
 				}
 			}
 		}
