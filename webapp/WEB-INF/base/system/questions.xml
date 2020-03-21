@@ -1,12 +1,13 @@
+
 <questions>
-<question id="1" text="4+5=" answer="nine" />
-<question id="2" text="2+5=" answer="seven" />
-<question id="3" text="1+5=" answer="six" />
-<question id="4" text="4+4=" answer="eight" />
-<question id="5" text="4+3=" answer="seven" />
-<question id="6" text="4+2=" answer="six" />
-<question id="7" text="0+5=" answer="five" />
-<question id="8" text="1+2=" answer="three" />
-<question id="9" text="2+3=" answer="five" />
-<question id="10" text="1+1=" answer="two" />
+<question id="1" text="four plus five is" answer="nine" />
+<question id="2" text="two plus five is" answer="seven" />
+<question id="3" text="one plus five is" answer="six" />
+<question id="4" text="four plus four is" answer="eight" />
+<question id="5" text="four plus three is" answer="seven" />
+<question id="6" text="four plus two is" answer="six" />
+<question id="7" text="zero plus five is" answer="five" />
+<question id="8" text="one plus two is" answer="three" />
+<question id="9" text="two plus three is" answer="five" />
+<question id="10" text="one plus one is" answer="two" />
 </questions>
