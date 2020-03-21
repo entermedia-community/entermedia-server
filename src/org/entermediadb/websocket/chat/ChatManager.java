@@ -1,6 +1,7 @@
 package org.entermediadb.websocket.chat;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -103,6 +104,11 @@ public class ChatManager implements CatalogEnabled
 	public Set loadChatTopicLastChecked(String inCollectionId, String inUserId)
 	{
 		//First get all the topics
+		if(inUserId == null)
+		{
+			return Collections.EMPTY_SET;
+		}
+			
 		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").exact("collectionid", inCollectionId).search();
 
 		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
