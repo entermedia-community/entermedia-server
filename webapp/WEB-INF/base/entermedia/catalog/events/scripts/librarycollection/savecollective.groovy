@@ -36,10 +36,14 @@ public void init()
 	mediaArchive.getProjectManager().getRootCategory(mediaArchive,collection);
 	
 	BaseSearcher colectivesearcher = mediaArchive.getSearcher("collectiveproject");
-	Data newproject = colectivesearcher.createNewData();
-	newproject.setName("General");
-	newproject.setValue("parentcollectionid",collection.getId());
-	colectivesearcher.saveData( newproject );
+	Data newproject =colectivesearcher.query().exact("parentcollectionid",collection.getId()).match("name","General").searchOne();
+	if( newproject == null)
+	{
+		newproject = colectivesearcher.createNewData();
+		newproject.setName("General");
+		newproject.setValue("parentcollectionid",collection.getId());
+		colectivesearcher.saveData( newproject );
+	}
 	context.putPageValue("librarycol",collection);
 }
 
