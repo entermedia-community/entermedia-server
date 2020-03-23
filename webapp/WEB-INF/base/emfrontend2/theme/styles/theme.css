@@ -5088,3 +5088,7 @@ a.collectionlike,a.collectionsaved
 	padding:5px;
 	margin-bottom:20px;
 }
+
+.ajaxprogress {
+	display:none;
+}
