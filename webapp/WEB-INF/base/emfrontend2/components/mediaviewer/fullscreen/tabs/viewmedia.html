@@ -1,0 +1,21 @@
+<div class="assetpanel-container">
+<div class="assetpanel-sidebar">
+	$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
+</div>
+<div class="assetpanel-content">
+	<div class="assetpanel-content-inside">
+		#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/views/modules/asset/editor/media/index.html"))
+	
+		<div class="assetpanel-editor">
+		#foreach( $script in $targetpage.getScriptPaths(true) )
+			<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
+		#end
+		#foreach( $style in $targetpage.getStylePaths(true) )
+			<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$home#end$style" />
+		#end
+		$pages.include($targetpage, $context)
+		</div>
+	</div>
+	
+</div>
+</div>

@@ -39,11 +39,10 @@
 			#if (!$ismulti)
 				#if( !$previewonly )
 					#if( !$ismulti && $canviewconversions )
-				   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewactions' && $opentabactions=='media') tabselected #end">
+				   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewmedia')tabselected #end">
 				   	<a class="expandmenu assettab " 
-							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=media" title="[[Media]]"
-							data-assettab="viewactions"
-							data-assettabactions="media"
+							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html" title="[[Media]]"
+							data-assettab="viewmedia"
 							data-assettabname="[[Media]]" >
 						<i class="fas fa-images"></i>  [[Media]]  
 						</a>
