@@ -21,7 +21,8 @@
 $context.putPageValue("results", $results)
 
 #set($currentpreset = $context.getRequestParameter("currentpreset"))
-		
+	
+	
 	
 ##	#if($caneditasset)
 ##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
@@ -34,6 +35,7 @@ $context.putPageValue("results", $results)
 			
 			$context.putPageValue("presetdata", $result)
 			#set($presetdata = $result)
+			
 			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 			#if(!$cancrop)
 				#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
@@ -44,6 +46,10 @@ $context.putPageValue("results", $results)
 				#end
 			#else
 				#set($show = true)
+			#end
+			
+			#if($presetdata.outputextension != "jpg")
+				#set($show = false)
 			#end
 		
 			#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
