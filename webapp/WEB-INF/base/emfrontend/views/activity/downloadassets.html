@@ -97,6 +97,10 @@
 						#if($preset.id == "0" && !$candownload)
 							#set($ok = false) 
 						#end
+						##Hide if display = false in preset
+						#if($preset.id != "0" && $preset.getValue("display")=="false")
+							#set($ok = false) 
+						#end
 						#if($ok)
 						<option value="$preset.id" #if($preset.id == "0") selected #end>$preset
 						</option>
