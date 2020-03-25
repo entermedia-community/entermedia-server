@@ -25,15 +25,6 @@ $context.putPageValue("cdn",$cdnprefix)
 
 #set( $opentab = $userprofile.get("assetopentab"))
 #set( $opentabactions = $userprofile.get("assetopentabactions"))
-#if($opentab == "viewactions" && $opentabactions == "media")
-	#set( $opentabactions = $userprofile.get("assetopentabactions"))
-		## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
-		##	#if( $rendertype != "video")
-		##		#set( $opentab = "viewproperties")
-		##		#set( $opentabactions = false)
-		##	#end
-		## #end
-#end
 
 #if( !$canviewmetadatageneral )
 	#set( $opentab = "viewpreview")
@@ -43,18 +34,6 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
 	$context.putPageValue("ismulti",$ismulti)
-#end
-
-#if($opentab == "viewactions" && $opentabactions == "media")
- 	#set( $opentabactions = $userprofile.get("assetopentabactions"))
-
-## #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
-##	#if( $rendertype != "video")
-##		#set( $opentab = "viewproperties")
-##		#set( $opentabactions = false)
-##	#end
-## #end
-
 #end
 
 $context.putPageValue("opentab",$opentab)
@@ -96,6 +75,8 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 		#end
 	#elseif($opentab == "viewproperties")
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html")
+	#elseif($opentab == "viewmedia")
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html")
 	#elseif($opentab == "viewcollaborate")
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html")
 	#elseif($opentab == "multiedit")
