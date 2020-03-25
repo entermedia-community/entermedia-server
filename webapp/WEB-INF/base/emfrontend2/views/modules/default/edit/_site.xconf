@@ -6,6 +6,12 @@
  	 <searchtype>${module}</searchtype>
   </path-action>
 
+	<path-action name="DataEditModule.loadData" >
+			<searchtype>${module}</searchtype>
+    </path-action>
+    <path-action name="Admin.loadPermissions"/>
+
+
 	<property name="detailtab">${module}metadatageneral</property>
 	<property name="detailsubtab">${module}metadatageneral</property>
 

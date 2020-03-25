@@ -6,6 +6,12 @@
 			<property name="searchtype">${module}</property>
 	</path-action>
 	
+	<path-action name="DataEditModule.loadData" >
+			<searchtype>${module}</searchtype>
+    </path-action>
+    <path-action name="Admin.loadPermissions"/>
+	
+	
 	<path-action name="DataEditModule.loadPageOfSearch" >
 				<property name="searchtype">${module}</property>
 	</path-action>

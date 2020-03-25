@@ -1,3 +1,5 @@
+package librarycollection;
+
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.location.Position
 import org.entermediadb.projects.*

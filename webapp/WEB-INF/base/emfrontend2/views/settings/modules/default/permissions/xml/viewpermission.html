@@ -19,6 +19,8 @@
 			 Permission = <input name="condition.${traverse}.value" value="$!filter.permission" />
 		#elseif($filter.type == "PageProperty"  || $filter.type == "PageValue" )
 			Page Value  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
+		#elseif($filter.type == "DataProperty" )
+			Data Value  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.value" />
 		#elseif($filter.type == "SettingsGroup"  )
 			#set( $roles = $searcherManager.getList($catalogid,"settingsgroup") ) 
 			Role <select name="condition.${traverse}.value">

@@ -9,6 +9,7 @@
 	<property id="userprofile">Role Value</property>	
 	<!--  property id="permission">User Permission</property -->	
 	<property id="action">Action</property>	
+	<property id="dataproperty">Data Property</property>	
 	<property id="referer">Referrer</property>	
 	<property id="pageproperty">xconf Property</property>	
 	<property id="pagevalue">Page Value</property>	
