@@ -1185,7 +1185,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		{
 				options.collectionid = collectionid;
 		}
-		
+		 
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
 			saveProfileProperty("assetopentab",assettab,function(){});
@@ -1208,8 +1208,10 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 			{
 				$(window).trigger("tabready");
 			});
-			
-			saveProfileProperty("assetopentab",assettab,function(){});
+			//save to profile only pewview, properties and media
+			if (assettab=='viewproperties' || assettab=='viewmedia') {
+				saveProfileProperty("assetopentab",assettab,function(){});
+			}
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
 				$(this).addClass("dropdown-current");
@@ -1217,7 +1219,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 				if (label) {
 					$('.bottomtabactionstext').text(label);
 				}
-				saveProfileProperty("assetopentabactions",assettabactions,function(){});
+				//saveProfileProperty("assetopentabactions",assettabactions,function(){});
 			}
 			var assettabtable = $(this).data("assettabtable");
 			if (assettabtable) {
@@ -1226,7 +1228,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 				if (label) {
 					$('.bottomtabactionstext').text(label);
 				}
-				saveProfileProperty("assetopentabassettable",assettabtable,function(){});
+				//saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
 		}
 		

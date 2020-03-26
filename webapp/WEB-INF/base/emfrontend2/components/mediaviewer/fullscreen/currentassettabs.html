@@ -145,10 +145,10 @@
             #end
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
-			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentabactions && $opentabactions!='media') tabselected #end">
+			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>
-			   <span class="bottomtabactionstext"> 
+			   <span class="bottomtabactionstext">
 			   ##TODO Create a table for actions
 			   #if ($opentabactions=='conversions')
 			   		[[Conversions]]
