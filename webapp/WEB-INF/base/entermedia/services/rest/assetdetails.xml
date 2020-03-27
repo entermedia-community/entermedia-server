@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<rsp stat="ok">
+<rsp #if( $asset )stat="ok" #else stat="notfound" #end>
+
+#if( $asset )
+
 #set($details = $searcher.getDetailsForView("asset/restassetdetails", $user))
 #foreach( $detail in $details )
 #set( $value = false )
@@ -39,4 +42,7 @@
 #end
 <preview>$preview</preview>
 <original>$home$cataloghome/downloads/originals/$asset.sourcePath/$asset.name</original>
+
+#end
+
 </rsp>
