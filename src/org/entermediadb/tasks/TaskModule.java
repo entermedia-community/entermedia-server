@@ -1121,7 +1121,7 @@ public class TaskModule extends BaseMediaModule
 			goalbuilder.orgroup("collectionid", userprojects);
 		}
 		
-		goalbuilder.orgroup("projectstatus", "active|open|critical");
+		goalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
 		HitTracker goalresults = goalbuilder.search();
 		
 		//sort users by date?
