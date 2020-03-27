@@ -1,14 +1,1 @@
-#set ($catalogid = $context.getRequestParameter('catalogid'))
-#set ($searchtype = $context.getRequestParameter('searchtype')) ##product
-#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
-#set ($view = $context.getRequestParameter('view')) 
-<!--  This would have the point details in it -->
-
- #if(!$hit)
- #set($hit = $data)
- #end
-
-  #set($latandlong = $data.getValue("$detail.id"))
-   #set( $lat = $!data.getValue("${detail.id}_lat") )
-   #set( $lng = $!data.getValue("${detail.id}_lng") )
-   $lat $lng
+$val
