@@ -393,6 +393,7 @@ public class AssetEditModule extends BaseMediaModule
 	public void deleteAssets(WebPageRequest inContext) throws OpenEditException
 	{
 		AssetEditor editor = getAssetEditor(inContext);
+		int deleted = 0;
 		String[] assetIds = inContext.getRequestParameters("assetid");
 		if (assetIds == null)
 		{
@@ -424,6 +425,7 @@ public class AssetEditModule extends BaseMediaModule
 							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 						}
 						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
+						deleted++;
 						log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
 					}
 				}
@@ -448,11 +450,14 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 					}
+					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 					log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
 				}
 			}
 		}
+		inContext.putPageValue("rowsedited", String.valueOf(deleted));
+
 	}
 
 	/*
