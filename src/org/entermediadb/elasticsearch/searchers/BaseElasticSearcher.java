@@ -1922,13 +1922,17 @@ public class BaseElasticSearcher extends BaseSearcher
 				return;
 			}
 			Map status = (Map) inData.getValue("emrecordstatus");
-			if(status == null) {
-				status = new HashMap();
-			}
 			if (isReIndexing())
 			{
-				content.field("emrecordstatus", status);
+				if( status != null ) 
+				{
+					content.field("emrecordstatus", status);
+				}
 				return;
+			}
+			if(status == null) 
+			{
+				status = new HashMap();
 			}
 
 			String localClusterId = getElasticNodeManager().getLocalClusterId();
@@ -2682,23 +2686,25 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void delete(Data inData, User inUser)
 	{
-		Map recordstatus = (Map) inData.getValue("emrecordstatus");
-		if( recordstatus != null)
-		{
-			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-			saveToElasticSearch(details, inData, true, inUser);
-		}
-		else
-		{
-			String id = inData.getId();
-			//log.info(id.length());
-			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-			if (inData.get("_parent") != null)
-			{
-				delete.setParent(inData.get("_parent"));
-			}
-			delete.setRefresh(true).execute().actionGet();
-		}
+		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+		saveToElasticSearch(details, inData, true, inUser);
+
+		//Map recordstatus = (Map) inData.getValue("emrecordstatus");
+
+//		if( recordstatus != null)
+//		{
+//		}
+//		else
+//		{
+//			String id = inData.getId();
+//			//log.info(id.length());
+//			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+//			if (inData.get("_parent") != null)
+//			{
+//				delete.setParent(inData.get("_parent"));
+//			}
+//			delete.setRefresh(true).execute().actionGet();
+//		}
 		clearIndex();
 		
 	}
