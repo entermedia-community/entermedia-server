@@ -24,7 +24,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #end
 
 #set( $opentab = $userprofile.get("assetopentab"))
-#set( $opentabactions = $userprofile.get("assetopentabactions"))
+#set( $opentabactions = "")
 
 #if( !$canviewmetadatageneral )
 	#set( $opentab = "viewpreview")
@@ -63,9 +63,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 	#end
 	
 	#if($opentab == "viewpreview")
-		##$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
-		
 		#if( $next )
 			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
 			#if( $preloadtype == "image")
