@@ -1836,6 +1836,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
@@ -1921,7 +1922,18 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				return;
 			}
+			
 			Map status = (Map) inData.getValue("emrecordstatus");
+			/*
+			if(status == null) {
+				status = new HashMap();
+			}
+			if (isReIndexing())
+			{
+				content.field("emrecordstatus", status);
+				return;
+			}
+			*/
 			if (isReIndexing())
 			{
 				if( status != null ) 
