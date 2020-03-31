@@ -2,6 +2,7 @@
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 $context.putPageValue("collectionid",$collectionid) 
 #set( $rendertype = $mediaarchive.getMediaRenderType($asset))
+$context.putPageValue("rendertype",$rendertype)
 #set( $playertype = $mediaarchive.getMediaPlayerType($asset))
 #if( !$playertype )
 	No template for $playertype
