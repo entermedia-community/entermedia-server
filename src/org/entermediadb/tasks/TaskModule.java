@@ -1072,20 +1072,158 @@ public class TaskModule extends BaseMediaModule
 	public void loadTickets(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		
+		String seeuser = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
+		
+		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
+				
+		QueryBuilder builder = searcher.query();
+		Collection userprojects = new HashSet();;
+		//if user is agent?
+		if( seeuser != null) {
+				builder.match("userlikes", seeuser);
+		}
+		
+		String collectionid = inReq.getRequestParameter("collectionid");
+		//String collectionid= "*";
+		if (collectionid != null) 
+		{
+			userprojects.add(collectionid);
+		}
+		else 
+		{
+			if( !isAgent ) 
+				{
+					//search only in project the user belongs
+					String currentuser = inReq.getUserName();
+					Collection allprojectsuser = archive.query("librarycollectionusers").
+							exact("followeruser",currentuser).
+							exact("ontheteam","true").search();
+					if(allprojectsuser.size()<1)
+					{
+						return;
+					}
+					for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
+					{
+						Data librarycol = (Data)iterator.next();
+						String colid = librarycol.get("collectionid");
+						if( colid != null)
+						{
+							userprojects.add(colid);
+						}
+					}
+				}
+		}
+		
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		
+		builder.orgroup("projectstatus", "open|critical");
+		HitTracker likesopen = builder.search();
+		
+		//sort users by date?
+		GregorianCalendar thismonday = new GregorianCalendar();
+		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		thismonday.set(Calendar.MINUTE, 0);
+		thismonday.set(Calendar.HOUR, 0);
+		builder = searcher.query();
+		if(userprojects != null) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		if( seeuser != null)
+		{
+			builder.match("userlikes", seeuser);
+		}
+		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		builder.after("resolveddate", thismonday.getTime());
+		HitTracker likesclosed = builder.search();
+
+		inReq.putPageValue("selecteduser",archive.getUser(seeuser));
+		
+		List all = new ArrayList();
+		for (Iterator iterator = likesopen.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			all.add( searcher.loadData(data) );
+		}
+		for (Iterator iterator = likesclosed.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			all.add( searcher.loadData(data) );
+		}
+		//log.info(builder.getQuery().toQuery() + " " + likes.size());
+		GregorianCalendar todayc = new GregorianCalendar();
+		int selectedday1 = todayc.get(Calendar.DAY_OF_WEEK);
+		int selectedday0 = selectedday1 - 2; //zero based  
+		if( selectedday0 < 0 || selectedday0 > 5)
+		{
+			selectedday0 = 0; //monday
+		}
+		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0);
+//		List types = new ArrayList();
+//		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String id = (String) iterator.next();
+//			Data type = archive.getData("tickettype",id);
+//			types.add(type);
+//		}
+//		Collections.sort(types);
+		//inReq.putPageValue("tickets", tickets);
+		//inReq.putPageValue("tickettypes", types);
+		inReq.putPageValue("selectedday0", selectedday0);
+		inReq.putPageValue("week", week);
+		
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		
+		builder.match("userlikes", "*");
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalpriority = builder.search().size();
+		
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalopen = builder.search().size();
+
+		builder = searcher.query();
+		if(userprojects.size()>0) 
+		{
+			builder.orgroup("collectionid", userprojects);
+		}
+		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		int totalclosed = builder.search().size();
+			
+		inReq.putPageValue("totallikes", totalpriority);
+		inReq.putPageValue("totalopen", totalopen);
+		inReq.putPageValue("totalclosed", totalclosed);
+	
+	}
+	public void loadUserTickets(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
 		
 		String staffid = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 		
 		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
 				
-		QueryBuilder goalbuilder = goalsearcher.query();
+		QueryBuilder opengoalbuilder = goalsearcher.query();
 		Collection userprojects = new HashSet();;
 		
 		if( staffid != null) 
 		{
-			goalbuilder.match("userlikes", staffid);
+			opengoalbuilder.match("userlikes", staffid);
 			inReq.putPageValue("selecteduser",archive.getUser(staffid));
-
 		}
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
@@ -1118,77 +1256,19 @@ public class TaskModule extends BaseMediaModule
 		
 		if(userprojects != null && !userprojects.isEmpty()) 
 		{
-			goalbuilder.orgroup("collectionid", userprojects);
+			opengoalbuilder.orgroup("collectionid", userprojects);
 		}
-		
-		goalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
-		HitTracker goalresults = goalbuilder.search();
-		
-		//sort users by date?
-		GregorianCalendar thismonday = new GregorianCalendar();
-		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		thismonday.set(Calendar.MINUTE, 0);
-		thismonday.set(Calendar.HOUR, 0);
-		goalbuilder = goalsearcher.query();
-		goalbuilder.orgroup("projectstatus", Arrays.asList("closed","completed"));
-		goalbuilder.after("resolveddate", thismonday.getTime());
-		HitTracker likesclosed = goalbuilder.search();
+		opengoalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
+		//closedgoalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
+		HitTracker opengoalresults = opengoalbuilder.search();
 
 		List opentickets = new ArrayList();
-		for (Iterator iterator = goalresults.iterator(); iterator.hasNext();)
+		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			opentickets.add( goalsearcher.loadData(data) );
 		}
 		inReq.putPageValue("opentickets", opentickets);
-
-		List all = new ArrayList(opentickets);
-		for (Iterator iterator = likesclosed.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			all.add( goalsearcher.loadData(data) );
-		}
-		//log.info(builder.getQuery().toQuery() + " " + likes.size());
-		GregorianCalendar todayc = new GregorianCalendar();
-		int selectedday1 = todayc.get(Calendar.DAY_OF_WEEK);
-		int selectedday0 = selectedday1 - 2; //zero based  
-		if( selectedday0 < 0 || selectedday0 > 5)
-		{
-			selectedday0 = 0; //monday
-		}
-		List week = sortIntoDates(inReq, archive, all, thismonday, selectedday0);
-		inReq.putPageValue("selectedday0", selectedday0);
-		inReq.putPageValue("week", week);
-		
-		goalbuilder = goalsearcher.query();
-		if(userprojects.size()>0) 
-		{
-			goalbuilder.orgroup("collectionid", userprojects);
-		}
-		
-		goalbuilder.match("userlikes", "*");
-		goalbuilder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		int totalpriority = goalbuilder.search().size();
-		
-		goalbuilder = goalsearcher.query();
-		if(userprojects.size()>0) 
-		{
-			goalbuilder.orgroup("collectionid", userprojects);
-		}
-		goalbuilder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		int totalopen = goalbuilder.search().size();
-
-		goalbuilder = goalsearcher.query();
-		if(userprojects.size()>0) 
-		{
-			goalbuilder.orgroup("collectionid", userprojects);
-		}
-		goalbuilder.orgroup("projectstatus", Arrays.asList("closed","completed"));
-		int totalclosed = goalbuilder.search().size();
-			
-		inReq.putPageValue("totallikes", totalpriority);
-		inReq.putPageValue("totalopen", totalopen);
-		inReq.putPageValue("totalclosed", totalclosed);
 	
 	}
 

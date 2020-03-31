@@ -1836,6 +1836,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
@@ -1921,7 +1922,18 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				return;
 			}
+			
 			Map status = (Map) inData.getValue("emrecordstatus");
+			/*
+			if(status == null) {
+				status = new HashMap();
+			}
+			if (isReIndexing())
+			{
+				content.field("emrecordstatus", status);
+				return;
+			}
+			*/
 			if (isReIndexing())
 			{
 				if( status != null ) 
@@ -2687,24 +2699,25 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void delete(Data inData, User inUser)
 	{
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		saveToElasticSearch(details, inData, true, inUser);
 
-		//Map recordstatus = (Map) inData.getValue("emrecordstatus");
+		Map recordstatus = (Map) inData.getValue("emrecordstatus");
 
-//		if( recordstatus != null)
-//		{
-//		}
-//		else
-//		{
-//			String id = inData.getId();
-//			//log.info(id.length());
-//			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-//			if (inData.get("_parent") != null)
-//			{
-//				delete.setParent(inData.get("_parent"));
-//			}
-//			delete.setRefresh(true).execute().actionGet();
-//		}
+		if( recordstatus != null)
+		{
+			saveToElasticSearch(details, inData, true, inUser);
+		}
+		else
+		{
+			//We should not do this as much for some tables
+			String id = inData.getId();
+			//log.info(id.length());
+			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+			if (inData.get("_parent") != null)
+			{
+				delete.setParent(inData.get("_parent"));
+			}
+			delete.setRefresh(true).execute().actionGet();
+		}
 		clearIndex();
 		
 	}

@@ -224,7 +224,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 					value = getSearchData().get(inId + "_int");
 					if(value != null && value instanceof Map){
 						LanguageMap map = new LanguageMap((Map) value);
-						if(map.keySet().size() == 1){
+						if(map.keySet().size() == 1){  //TODO: Not needed
 							return map.get("en");
 						} else{
 							return map.toString();

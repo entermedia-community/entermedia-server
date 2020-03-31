@@ -513,7 +513,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			{
 				return null;
 			}
-			Asset asset = createAssetFromResponse(response.getId(), response.getSource());
+			Map source = response.getSource();
+			if( isDeleted(source))
+			{
+				return null;
+			}
+			Asset asset = createAssetFromResponse(response.getId(), source);
 			return asset;
 			// String path = (String)response.getSource().get("sourcepath");
 
