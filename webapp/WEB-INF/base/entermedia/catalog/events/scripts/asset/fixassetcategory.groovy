@@ -1,7 +1,6 @@
 package asset
 
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.*
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
 
@@ -9,7 +8,7 @@ public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
-	HitTracker hits = archive.query("asset").startsWith("sourcepath", "net").search();
+	HitTracker hits = archive.query("asset").startsWith("sourcepath", "netshare/").search();
 	hits.enableBulkOperations();
 		
 	int saved = 0;

@@ -215,18 +215,27 @@ public class UserProfileManager
 		userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
 
 		log.info("Checking modules for " + inUserName + " catalog:" + inCatalogId);
-		
-		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
 		List<Data> okmodules = new ArrayList<Data>();
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		if( inUserName != null && !inUserName.equals("anonymous"))
 		{
-			Data module = (Data) iterator.next();
-			// MediaArchive archive = getMediaArchive(cat.getId());
-			WebPageRequest catcheck = inReq.getPageStreamer().canDoPermissions("/" + appid + "/views/modules/" + module.getId());
-			Boolean canview = (Boolean) catcheck.getPageValue("canview");
-			if (canview != null && canview)
+			Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
+			if( userprofile.isInRole("administrator"))
 			{
-				okmodules.add(module);
+				okmodules.addAll(modules);
+			}
+			else
+			{
+				for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+				{
+					Data module = (Data) iterator.next();
+					// MediaArchive archive = getMediaArchive(cat.getId());
+					WebPageRequest catcheck = inReq.getPageStreamer().canDoPermissions("/" + appid + "/views/modules/" + module.getId());
+					Boolean canview = (Boolean) catcheck.getPageValue("canview");
+					if (canview != null && canview)
+					{
+						okmodules.add(module);
+					}
+				}
 			}
 		}
 		userprofile.setModules(okmodules);
