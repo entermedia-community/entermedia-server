@@ -52,7 +52,7 @@ public void runit()
 		Data status =  mediaArchive.getData("projectstatus",projectgoal.get("projectstatus") );
 		if( status != null )
 		{
-			 subject = subject + " " + status.getName() + " Goal";
+			 subject = subject + " " + status.getName("en") + " Goal";
 		}
 		else
 		{
