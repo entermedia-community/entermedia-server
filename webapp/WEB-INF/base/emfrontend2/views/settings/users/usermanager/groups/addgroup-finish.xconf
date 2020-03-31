@@ -2,5 +2,4 @@
 
 <page>
 	<page-action name="User.createGroup" />
-	<property name="oemaxlevel">1</property>
 </page>

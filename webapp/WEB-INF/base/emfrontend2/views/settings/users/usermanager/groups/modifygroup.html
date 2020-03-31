@@ -1,49 +1,35 @@
 #if($group)
-$context.putSessionValue( "propertycontainer", $group )
-$context.putPageValue( "groupName", $group.name )
-$context.putPageValue( "groupid", $group.id)
-#set( $groupName = $group.name )
+	#set( $groupName = $group.name )
 
-<!--  under em -->
-<div class="row">
-<div class="col-md-8">
-<div class="ui-widget commentbox no-top-margin" style="overflow: hidden;">
-    <div class="ui-widget-header"><span class="widget-header-title">$groupName</span></div>
-    <div class="ui-widget-content emselectmenu">
-		
-			<h4>[[Members]]</h4>
-			
-				<div id="usersearchresultspanel">
-					$pages.include("$usermanagerhome/groups/userresults.html",$context)   
-					<hr class="hr2">
-					<h4>[[Add Members]]</h4>  
-					$pages.include("$usermanagerhome/groups/addremoveaccount.html",$context)     
-				</div>
-				<hr class="hr2">
-		        <div id="groupeditarea" style="margin: 15px 0;">
-		            <div id="groupeditareasaved"></div>
-		                #set( $groupsearcher = $searcherManager.getSearcher($catalogid,"group") )
-						<h4>[[Group Properties]]</h4>
-		                <form class="ajaxform" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
-		                    <input type="hidden" name="id" value="$group.id"/>
-		                    <input type="hidden" name="save" value="true"/>
-		                    <input type="hidden" name="searchtype" value="group"/>
-		                    
-		                    $context.putPageValue("searcher", $groupsearcher)	
-		                    $context.putPageValue("view", "group/groupedit")	
-		                    $context.putPageValue("data", $group)	
-		                    
-		                    $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-		                    
-		                    <p>
-		                    	<a class="btn btn-sm btn-primary" style="margin-right: 10px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
-		                    	<a class="btn btn-sm btn-danger red"  href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
-		                    </p>
-		                </form>
-		    	</div>
+	<div id="metadataeditarea">
+		<ul class="" style="border-right:1px solid #aaa; border-bottom:1px solid #aaa">
+		<li class="header no-sort" id="views-header" >
+	    	<span id="name">[[Properties]]</span>
+	    </li>
+	    <li id="editlayout" class="singlecontainer" style="height: auto; padding-bottom:10px;">
+	        <div id="groupeditarea" style="">
+	            <div id="groupeditareasaved"></div>
+	                #set( $groupsearcher = $searcherManager.getSearcher($catalogid,"group") )
+	                <form class="" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
+	                    <input type="hidden" name="id" value="$group.id"/>
+	                    <input type="hidden" name="groupid" value="$group.id"/>
+	                    <input type="hidden" name="save" value="true"/>
+	                    <input type="hidden" name="searchtype" value="group"/>
+	                    
+	                    $context.putPageValue("searcher", $groupsearcher)	
+	                    $context.putPageValue("view", "group/groupedit")	
+	                    $context.putPageValue("data", $group)	
+	                    
+	                    $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+	                    
+	                    <p>
+	                    	<a class="btn btn-sm btn-primary" style="margin: 10px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
+	                    	<a class="btn btn-sm btn-danger red" style="margin:10px;"  href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
+	                    </p>
+	                </form>
+	    	</div>
+		</li>
+		</ul>
 	</div>
-</div>
-
-	</div>
-</div>
 #end
+

@@ -1,5 +1,5 @@
-#set ( $groupname = $context.getRequestParameter( 'groupname' ) )
-<div class="common-success alert-save-top alert-success fader">
-	[[Group]]: $groupname [[added]].
-</div>
-$pages.include("$usermanagerhome/groups/searchgroups.html")
+#if(!$groupid)
+	#set($groupid = $context.getRequestParameter("groupid"))
+#end
+<div class="alert-primary alert-save alert-save-top fader">[[Saved Ok]]</div>
+$pages.include("./index.html?groupid=$!gropuid", $context)

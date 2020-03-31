@@ -281,7 +281,11 @@ ul.list-group.list-group-hover li:hover,
 .table-striped tr.emrowselected:nth-of-type(odd),
 .uploadcollection
 {
-	background-color: #c9e8f2;
+	background-color: #c9e8f2!important;
+}
+.emsettingslist li.nohover,
+.emsettingslist li.nohover:hover {
+	background-color: #fff!important;
 }
 .dropdown-item:focus, .dropdown-item:hover {
     color: #333;
