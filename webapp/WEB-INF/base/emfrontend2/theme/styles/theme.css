@@ -283,6 +283,10 @@ ul.list-group.list-group-hover li:hover,
 {
 	background-color: #c9e8f2!important;
 }
+.emsettingslist li.nohover,
+.emsettingslist li.nohover:hover {
+	background-color: #fff!important;
+}
 .dropdown-item:focus, .dropdown-item:hover {
     color: #333;
     background-color: #ccc;
