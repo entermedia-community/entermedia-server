@@ -175,7 +175,7 @@ public class GroovyScriptRunner implements ScriptRunner
 			} 
 			catch (Exception e) 
 			{
-				log.error(e);
+				log.error("Could not run script: " + inScript.getPage().getPath(), e);
 				throw new OpenEditException(e, inScript.getPage().getPath() );
 			}
 		
