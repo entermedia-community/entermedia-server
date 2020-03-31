@@ -223,9 +223,11 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				syncUpLocalDataChanges(inArchive,node,pulldate,trimmed, connection);
 				
 				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
-				
-				node.setValue("lastpulldate", now);
-				getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				if( totalcount > -1)
+				{
+					node.setValue("lastpulldate", now);
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+				}
 
 			}
 			catch (Throwable ex)
@@ -555,8 +557,10 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				details.put("sourcepath", sourcepath);
 				JSONArray files = new JSONArray();
 				
-				Asset asset = archive.getAsset(data.getId());
-				Map editstatus = asset.getEmRecordStatus();
+				
+				//Asset asset = archive.getAsset(data.getId());
+				data.setPropertyDetails(archive.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype));
+				Map editstatus = data.getEmRecordStatus();
 				String mastereditclusterid = (String)editstatus.get("mastereditclusterid");
 				
 				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
@@ -670,7 +674,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
 					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					return;
+					throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
 				}
 				//The server will return a list of files it needs
 				JSONObject json = inConnection.parseJson(response2);
