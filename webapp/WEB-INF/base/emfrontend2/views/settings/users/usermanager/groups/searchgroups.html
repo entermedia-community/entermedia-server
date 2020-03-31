@@ -3,15 +3,14 @@
 $context.putPageValue("hits",$datalist)	
 $context.putPageValue("details",$searcher.getIndexProperties())	
 
-<div id="groupsearchpanel" style="padding:20px 0">
-<div class="container-fluid">
-<div class="row">
+<div id="groupsearchpanel" style="padding:10px 0">
+
+<div class="row no-gutters">
 	<div class="col-md-4">
 		$pages.include("$usermanagerhome/groups/results.html?oeview=groupname", $context)
 	</div>
 	<div class="col-md-6">
 		$pages.include("$usermanagerhome/groups/addgroup.html", $context)
 	</div>
-</div>
 </div>
 </div>

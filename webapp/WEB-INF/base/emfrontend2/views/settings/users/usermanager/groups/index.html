@@ -1,1 +1,23 @@
-<p>[[Please select a group]]</p>
+#if(!$groupid)
+	#set($groupid = $context.getRequestParameter("groupid"))
+#end
+$context.putPageValue("groupid", $groupid)
+
+
+<h2>[[Groups Management]]</h2>
+<div id="table-container">
+	<div id="side-nav-inner">
+		<div id="viewlist">
+			
+			$pages.include("$usermanagerhome/groups/results.html?oeview=groupname", $context)
+			<div  class="ui-widget-actions">
+				<a class="btn btn-small btn-primary ajax" targetdiv="workarea" href='$home$apphome/views/settings/users/usermanager/groups/addgroup.html'>[[Add New]]</a>
+			</div>		
+		</div>
+	</div>
+	<div id="workarea">
+		$pages.include("$usermanagerhome/groups/modifygroup.html?gropuid=$groupid", $context)
+	</div>
+	<div class="clearfix"></div>
+</div>
+

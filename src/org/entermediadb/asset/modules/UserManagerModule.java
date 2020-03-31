@@ -949,6 +949,10 @@ public class UserManagerModule extends BaseMediaModule
 
 		}
 		
+		if ( name == null) {
+			return null;
+		}
+		
 		Group group = null;
 
 		try
