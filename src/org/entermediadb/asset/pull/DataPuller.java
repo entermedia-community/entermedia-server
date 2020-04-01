@@ -99,25 +99,33 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
 								String tmpfilename = PathUtilities.extractFileName(endpath);
 								String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
-								HttpResponse genfile = inConnection.sharedPost(path, inParams);
-								StatusLine filestatus = genfile.getStatusLine();
-								if (filestatus.getStatusCode() != 200)
+								CloseableHttpResponse genfile = null;
+								try
 								{
-									log.error("Could not download generated " + filestatus + " " + path);
-									throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+									genfile = inConnection.sharedPost(path, inParams);
+									StatusLine filestatus = genfile.getStatusLine();
+									if (filestatus.getStatusCode() != 200)
+									{
+										log.error("Could not download generated " + filestatus + " " + path);
+										throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+									}
+	
+									//Save to local file
+									log.info("Saving :" + endpath + " URL:" + path);
+									InputStream stream = genfile.getEntity().getContent();
+									//Change the timestamp to match
+									File tosave = new File(found.getAbsolutePath());
+									tosave.getParentFile().mkdirs();
+									FileOutputStream fos = new FileOutputStream(tosave);
+									filler.fill(stream, fos);
+									filler.close(stream);
+									filler.close(fos);
+									tosave.setLastModified(datetime);
 								}
-
-								//Save to local file
-								log.info("Saving :" + endpath + " URL:" + path);
-								InputStream stream = genfile.getEntity().getContent();
-								//Change the timestamp to match
-								File tosave = new File(found.getAbsolutePath());
-								tosave.getParentFile().mkdirs();
-								FileOutputStream fos = new FileOutputStream(tosave);
-								filler.fill(stream, fos);
-								filler.close(stream);
-								filler.close(fos);
-								tosave.setLastModified(datetime);
+								finally
+								{
+									inConnection.release(genfile);
+								}
 							}
 						}
 					}
@@ -680,11 +688,11 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
 				}
-				log.info("Got back this " + sl.getStatusCode());
+				//log.info("Got back this " + sl.getStatusCode());
 
 				//The server will return a list of files it needs
 				JSONObject json = inConnection.parseJson(response2);
-				log.info("Data returned:" + params.toJSONString() );
+				//log.info("Data returned:" + params.toJSONString() );
 				
 				String remotecatalogid = (String)json.get("catalogid");
 				Collection toupload = (Collection)json.get("fileuploads");
@@ -707,14 +715,21 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 						tosendparams.put("catalogid", inArchive.getCatalogId());
 						tosendparams.put("savepath", localpath);
 						tosendparams.put("file.0", tosend);
-													
-						CloseableHttpResponse resp = inConnection.sharedMimePost(urlpath,tosendparams);
-
-						if (resp.getStatusLine().getStatusCode() != 200)
+						CloseableHttpResponse resp = null;
+						try
 						{
-							//error
-							//reportError();
-							throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+							resp = inConnection.sharedMimePost(urlpath,tosendparams);
+	
+							if (resp.getStatusLine().getStatusCode() != 200)
+							{
+								//error
+								//reportError();
+								throw new OpenEditException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+							}
+						}
+						finally
+						{
+							inConnection.release(resp);
 						}
 					}	
 				}

@@ -588,6 +588,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					inRemoteNode.setValue("lasterrordateoriginals", new Date());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
 					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/receiveoriginalschanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					inConnection.release(response2);
 					return;
 				}
 				//The server will return a list of files it needs
@@ -625,13 +626,21 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						tosendparams.put("savepath", localpath);
 						tosendparams.put("file.0", tosend);
 													
-						CloseableHttpResponse resp = inConnection.sharedMimePost(urlpath,tosendparams);
-
-						if (resp.getStatusLine().getStatusCode() != 200)
+						CloseableHttpResponse resp = null;
+						try
 						{
-							//error
-							//reportError();
-							throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+							resp = inConnection.sharedMimePost(urlpath,tosendparams);
+	
+							if (resp.getStatusLine().getStatusCode() != 200)
+							{
+								//error
+								//reportError();
+								throw new RuntimeException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+							}
+						}
+						finally
+						{
+							inConnection.release(resp);
 						}
 					}	
 				}
