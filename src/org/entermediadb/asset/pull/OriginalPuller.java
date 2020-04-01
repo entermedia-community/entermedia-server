@@ -424,6 +424,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
 				{
+					connection.release(response2);
 					throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 				}
 				remotechanges = connection.parseJson(response2);

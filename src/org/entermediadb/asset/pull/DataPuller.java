@@ -686,6 +686,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
 					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					inConnection.release(response2);
 					throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
 				}
 				//log.info("Got back this " + sl.getStatusCode());

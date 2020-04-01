@@ -2,6 +2,7 @@
 	<property id="id" editable="true">ID</property>
 	<property id="name" editable="true" stored="true" index="true">Name</property>	
 	<property id="rootpath" editable="true" stored="true" index="true">Root Path</property>	
+	<property id="excludepaths" editable="true" stored="true" index="true" viewtype="multiselect" >Exclude Paths</property>	
 	<property id="catalogid" editable="true" listid="catalog" datatype="list" stored="true" index="true">Catalog</property>	
 	<property id="lastsnapshot" listid="sitesnapshot" datatype="list" editable="true" stored="true" index="true">Last Snapshot</property>	
 	<property id="domains" editable="true" stored="true" index="true">Domains</property>	
