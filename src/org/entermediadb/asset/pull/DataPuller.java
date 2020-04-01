@@ -670,7 +670,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			if (url != null)
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
-				
+				log.info("Sending data changes to server " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 				StatusLine sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
@@ -680,8 +680,11 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 					throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
 				}
+				log.info("Got back this " + sl.getStatusCode());
+
 				//The server will return a list of files it needs
 				JSONObject json = inConnection.parseJson(response2);
+				log.info("Data returned:" + params.toJSONString() );
 				
 				String remotecatalogid = (String)json.get("catalogid");
 				Collection toupload = (Collection)json.get("fileuploads");
@@ -698,6 +701,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
 						ContentItem item = inArchive.getContent(reallocalpath);
 						File tosend = new File(item.getAbsolutePath());
+						log.info("Sending this file:" + tosend.length() + " " + tosend.getAbsolutePath() );
 
 						JSONObject tosendparams = new JSONObject(fileinfo);
 						tosendparams.put("catalogid", inArchive.getCatalogId());
