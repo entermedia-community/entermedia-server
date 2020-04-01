@@ -137,7 +137,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
 	{
 
-		Lock lock = inArchive.getLockManager().lockIfPossible("processAllPull", "processAllPull");
+		Lock lock = inArchive.getLockManager().lockIfPossible("processPull", this.getClass().getCanonicalName() );
 		if (lock == null)
 		{
 			log.info("Pull is already running");
@@ -212,14 +212,18 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				inLog.info(node.getName() + " checking since " + pulldate);
 
 				long totalcount = downloadAllData(inArchive, connection, node, params);
-				
+
+				inLog.info(node.getName() + " imported " + totalcount);
+
 				//uploadChanges... 
 				ElasticNodeManager manager = (ElasticNodeManager) inArchive.getNodeManager();
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
 				
 				String remotemastereditid = node.get("clustername");
 				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid,localchanges);
-				
+
+				inLog.info(node.getName() + " syncup local changes" + localchanges.size());
+
 				syncUpLocalDataChanges(inArchive,node,pulldate,trimmed, connection);
 				
 				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
