@@ -371,7 +371,7 @@ uiload = function() {
 						if (targetdiv) {
 							$("#" + $.escapeSelector(targetdiv)).html(data);
 						}
-						 
+						form.append(data); 
 						// $("#" + targetdiv).replaceWith(data);
 					},
 					success : function(result, status, xhr, $form) 
@@ -400,6 +400,16 @@ uiload = function() {
 		                	hideOverlayDiv(getOverlay());
 		                }
 						$(window).trigger( "resize" );
+
+		                if (form.hasClass("autoreloadsource")) 
+		                {
+		                    var link = form.data("openedfrom")
+		                    if( link)
+		                    {
+		                    	window.location.replace(link); 
+		                    }
+		                }
+
 					},
 					data : data
 				});
@@ -492,7 +502,8 @@ uiload = function() {
 			var name = element.prop("name");
 			options[name] = element.val();
 		}
-
+		var openfrom = window.location.href;
+		
 		//openemdialog
 		var urlbar = dialog.data("urlbar");
 		if( urlbar )
@@ -513,13 +524,16 @@ uiload = function() {
 			if (noesc != null && noesc == true) {
 				 modalkeyboard = false;
 			}
-			modaldialog.modal({
+			var modalinstance = modaldialog.modal({
 				keyboard : modalkeyboard,
 				backdrop : true,
 				closeExisting: false,
 				"show" : true
 			});
-						
+				
+			var firstform = $('form', modaldialog);
+			firstform.data("openedfrom", openfrom);
+			
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
 			if (justok != null) {
@@ -540,7 +554,7 @@ uiload = function() {
 			var focuselement = dialog.data("focuson");
 
 			if (focuselement) {
-				console.log(focuselement);
+				//console.log(focuselement);
 				var elmnt = document.getElementById(focuselement);
 				elmnt.scrollIntoView();
 			} else {
