@@ -1,0 +1,9 @@
+
+<ul>
+#foreach( $cat in $selectedprofile.getViewCategories() )
+	<li> 
+	<a href="$applink/views/modules/asset/showcategory.html?selectedcategory=AXEc62ofO19c9I1OeZuj&nodeID=${cat.id}">
+	$cat.getCategoryPath()</a>	
+	</li>
+#end
+</ul>

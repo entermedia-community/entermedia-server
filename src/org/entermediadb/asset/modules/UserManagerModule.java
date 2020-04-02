@@ -21,6 +21,7 @@ import org.entermediadb.modules.admin.users.PasswordMismatchException;
 import org.entermediadb.modules.admin.users.PropertyContainerManipulator;
 import org.entermediadb.modules.admin.users.Question;
 import org.entermediadb.modules.admin.users.QuestionArchive;
+import org.entermediadb.users.UserProfileManager;
 import org.openedit.BaseWebPageRequest;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -32,6 +33,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageAction;
 import org.openedit.page.Permission;
 import org.openedit.page.XconfConfiguration;
+import org.openedit.profile.UserProfile;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.users.Group;
 import org.openedit.users.User;
@@ -1429,5 +1431,26 @@ public class UserManagerModule extends BaseMediaModule
 		}
 		User user = getUserManager(inReq).getUser(selecteduser);
 		inReq.putPageValue("selecteduser", user);
+	}
+	
+	protected UserProfileManager getProfileManager(String inCatalogId)
+	{
+		return (UserProfileManager)getModuleManager().getBean(inCatalogId,"userProfileManager");
+	}
+	
+	public void showUserCategories(WebPageRequest inReq)
+	{
+		String selecteduser = inReq.getRequestParameter("userid");
+		
+		String inCatalogId = inReq.findValue("catalogid");
+		UserProfileManager manager = getProfileManager(inCatalogId);
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String applicationid = inReq.findValue("applicationid");
+		
+		UserProfile selectedprofile = manager.loadUserProfile(archive,applicationid,selecteduser);
+		inReq.putPageValue("selectedprofile",selectedprofile);
+		
 	}
 }

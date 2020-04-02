@@ -2,6 +2,7 @@ package org.entermediadb.users;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
@@ -64,15 +66,16 @@ public class UserProfileManager
 
 	public UserProfile loadUserProfile(WebPageRequest inReq, String inCatalogId, String inUserName)
 	{
-
+		String appid = inReq.findValue("applicationid");
+		if(appid == null)
+		{
+			return null;
+		}
 		if (inUserName == null)
 		{
 			inUserName = "anonymous";
 		}
-		String appid = inReq.findValue("applicationid");
-		if(appid == null){
-			return null;
-		}
+		
 		UserProfile userprofile = loadProfile(inReq, inCatalogId, appid, inUserName);
 
 		if( userprofile != null)
@@ -132,7 +135,7 @@ public class UserProfileManager
 				inReq.putPageValue("userprofile", userprofile);
 				return userprofile;
 			}
-			userprofile = readProfileOptions(inReq, inUserName, appid, mediaArchive);
+			userprofile = loadUserProfile(mediaArchive, appid,inUserName);
 			inReq.putPageValue("userprofile", userprofile);
 			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 		}
@@ -143,72 +146,10 @@ public class UserProfileManager
 
 		return userprofile;
 	}
-
-	protected UserProfile readProfileOptions(WebPageRequest inReq, String inUserName, String appid, MediaArchive mediaArchive)
+	
+	/*  TODO: User module query filter to filter the list like we do libraries
+	protected void loadModules(UserProfile inProfile)
 	{
-		String inCatalogId = mediaArchive.getCatalogId();
-		UserProfile userprofile;
-		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
-		userprofile = (UserProfile) searcher.searchById(inUserName);
-		if(userprofile == null)
-		{
-			userprofile = (UserProfile) searcher.searchByField("userid", inUserName);
-		}
-		
-		if( userprofile != null )
-		{
-			userprofile.setCatalogId(inCatalogId);
-			if( userprofile.get("userid") != null)
-			{
-				String dataid = userprofile.getId();
-				if(!inUserName.equals(dataid))
-				{
-					searcher.delete(userprofile, null);
-					userprofile.setSourcePath(inUserName);
-					userprofile.setId(inUserName);
-					
-				}
-				userprofile.setProperty("userid", null);
-				searcher.saveData(userprofile, inReq.getUser());
-			}
-		}
-		User user = getUserManager(inCatalogId).getUser(inUserName);
-		if (userprofile == null)
-		{
-			userprofile = (UserProfile) searcher.createNewData();
-			userprofile.setId(inUserName);
-			if (inUserName.equals("admin"))
-			{
-				userprofile.setProperty("settingsgroup", "administrator");
-			}
-			else if( user != null && !"anonymous".equals(inUserName))
-			{
-				String profiletype = mediaArchive.getCatalogSettingValue("defaultrole");
-				if(profiletype == null) {
-					profiletype = "users";
-				}
-				
-				userprofile.setProperty("settingsgroup", profiletype);
-			}
-			else
-			{
-				userprofile.setProperty("settingsgroup", "guest");
-			}
-			userprofile.setSourcePath(inUserName);
-			userprofile.setCatalogId(inCatalogId);
-			try
-			{
-				saveUserProfile(userprofile);
-			}
-			catch( Exception ex)
-			{
-				log.error(ex);
-			}
-		}
-		userprofile.setUser(user);
-		userprofile.setSourcePath(inUserName);
-		userprofile.setCatalogId(inCatalogId);
-
 		//Must be set before we run actions below
 		inReq.putPageValue("userprofile", userprofile);
 
@@ -239,11 +180,138 @@ public class UserProfileManager
 			}
 		}
 		userprofile.setModules(okmodules);
+	}
+	*/
+	public UserProfile loadUserProfile(MediaArchive mediaArchive, String appid,String inUserName)
+	{
+		String inCatalogId = mediaArchive.getCatalogId();
+		UserProfile userprofile;
+		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
+		userprofile = (UserProfile) searcher.searchById(inUserName);
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) searcher.searchByField("userid", inUserName);
+		}
+		
+		if( userprofile != null )
+		{
+			userprofile.setCatalogId(inCatalogId);
+			if( userprofile.get("userid") != null)
+			{
+				String dataid = userprofile.getId();
+				if(!inUserName.equals(dataid))
+				{
+					searcher.delete(userprofile, null);
+					userprofile.setSourcePath(inUserName);
+					userprofile.setId(inUserName);
+					
+				}
+				userprofile.setProperty("userid", null);
+				searcher.saveData(userprofile, null);
+			}
+		}
+		User user = getUserManager(inCatalogId).getUser(inUserName);
+		if (userprofile == null)
+		{
+			userprofile = (UserProfile) searcher.createNewData();
+			userprofile.setId(inUserName);
+			if (inUserName.equals("admin"))
+			{
+				userprofile.setProperty("settingsgroup", "administrator");
+			}
+			else if( user != null && !"anonymous".equals(inUserName))
+			{
+				String profiletype = mediaArchive.getCatalogSettingValue("defaultrole");
+				if(profiletype == null) {
+					profiletype = "users";
+				}
+				userprofile.setProperty("settingsgroup", profiletype);
+			}
+			else
+			{
+				userprofile.setProperty("settingsgroup", "guest");
+			}
+			userprofile.setSourcePath(inUserName);
+			userprofile.setCatalogId(inCatalogId);
+			try
+			{
+				saveUserProfile(userprofile);
+			}
+			catch( Exception ex)
+			{
+				log.error(ex);
+			}
+		}
+		userprofile.setUser(user);
+		userprofile.setSourcePath(inUserName);
+		userprofile.setCatalogId(inCatalogId);
 		loadLibraries(userprofile, inCatalogId);
+		
+		if( user != null)
+		{
+			if( userprofile.hasPermission("viewsettings"))
+			{
+				HitTracker modules  = mediaArchive.query("module").all().
+					/*orgroup("viewgroups", user.getGroups()).
+					match("viewroles", userprofile.getSettingsGroup().getId()).
+					match("viewusers", inUserName)*/
+					search();
+					///log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
+				userprofile.setModules(modules);
+			}
+			else
+			{
+				HitTracker modules  = mediaArchive.query("module").or().
+					exact("securityenabled", false).
+					orgroup("viewgroups", user.getGroups()).
+					match("viewroles", userprofile.getSettingsGroup().getId()).
+					match("viewusers", inUserName)
+					.search();
+					//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
+				userprofile.setModules(modules);
+			}
+		}
+		else
+		{
+			userprofile.setModules(Collections.EMPTY_LIST);
+		}
 		return userprofile;
 	}
 
 	protected void loadLibraries(UserProfile inUserprofile, String inCatalogId)
+	{
+		Set<Category> okcategories = findCategoriesForUser(inCatalogId, inUserprofile);
+
+		
+		//Load all the collections they have rights to based okcategories + their parents
+		//categories+parents
+		//lava loop over every collection and mesh 		
+		inUserprofile.setViewCategories(okcategories);
+		//inUserprofile.setCollectionIds(new ArrayList());
+		/*
+		if( !inUserprofile.hasPermission("viewsettings"))
+		{
+			if( !okcategories.isEmpty() )
+			{
+				Collection<String> okcollectionids = new ArrayList<String>();
+				HitTracker found = mediaArchive.query("librarycollection").all().search();
+				found.enableBulkOperations();
+				for (Iterator iterator = found.iterator(); iterator.hasNext();)
+				{
+					Data collection = (Data) iterator.next();
+					Category root = mediaArchive.getCategory(collection.get("rootcategory"));
+					if( root != null && root.hasParentCategory(okcategories) )
+					{
+						okcollectionids.add(collection.getId());
+					}
+				}
+				inUserprofile.setCollectionIds(okcollectionids);
+			}
+		}
+		*/
+	}
+
+	public Set<Category> findCategoriesForUser(String inCatalogId, UserProfile inUserprofile)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "category");
 
@@ -297,34 +365,7 @@ public class UserProfileManager
 		}
 		
 		loadUsers(mediaArchive, inUserprofile, okcategories);
-
-		
-		//Load all the collections they have rights to based okcategories + their parents
-		//categories+parents
-		//lava loop over every collection and mesh 		
-		inUserprofile.setViewCategories(okcategories);
-		//inUserprofile.setCollectionIds(new ArrayList());
-		/*
-		if( !inUserprofile.hasPermission("viewsettings"))
-		{
-			if( !okcategories.isEmpty() )
-			{
-				Collection<String> okcollectionids = new ArrayList<String>();
-				HitTracker found = mediaArchive.query("librarycollection").all().search();
-				found.enableBulkOperations();
-				for (Iterator iterator = found.iterator(); iterator.hasNext();)
-				{
-					Data collection = (Data) iterator.next();
-					Category root = mediaArchive.getCategory(collection.get("rootcategory"));
-					if( root != null && root.hasParentCategory(okcategories) )
-					{
-						okcollectionids.add(collection.getId());
-					}
-				}
-				inUserprofile.setCollectionIds(okcollectionids);
-			}
-		}
-		*/
+		return okcategories;
 	}
 
 	protected void loadUsers(MediaArchive mediaArchive, UserProfile inUserprofile, Set<Category> okcategories)
