@@ -1,5 +1,5 @@
 #set($selectedlibraryid = $context.getRequestParameter("libraryid"))
-#set( $libraries = $mediaarchive.query("library").exact("privatelibrary","false").enduser(true).sort("name").search($context) )
+#set( $libraries = $mediaarchive.query("library").all().enduser(true).sort("name").search($context) )
 
 #if($canviewfeaturedcollections && !$selectedlibraryid)
 #set($selectedlibraryid = "featured")
