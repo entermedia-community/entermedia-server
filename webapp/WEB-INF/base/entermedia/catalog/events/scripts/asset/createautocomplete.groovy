@@ -60,17 +60,19 @@ public void init(){
 		if (tags != null ) {
 			assetTags.addAll(tags);
 		}
-		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
-		assetTags.add("\"" + parentfolder + "\"");
-		assetTags.add("\"" + asset.getName() + "\"");
+		//assetTags.add("\"" + asset.getName() + "\"");
 		
 		Data word = autocompletesearcher.createNewData();
 		word.setId(text.toLowerCase());  //THIS makes them only save one copy
-		word.setValue("synonyms", text);
+		word.setValue("synonyms", "\"" + text + "\"");
 		word.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
 		word.setValue("synonymsenc",text); //This can be removed if you change the search term to match		
 		word.setValue("autopopulated",true);
 		toSave.add(word);
+
+//		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
+//		assetTags.add("\"" + parentfolder + "\"");
+
 		if (toSave.size() > 1000)
 		{
 			autocompletesearcher.saveAllData(toSave, user);
