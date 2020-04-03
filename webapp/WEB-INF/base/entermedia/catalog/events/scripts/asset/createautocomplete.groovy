@@ -2,6 +2,7 @@ package asset;
 
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.search.AssetSearcher
+import org.graalvm.compiler.debug.PathUtilities
 import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.Searcher
@@ -60,6 +61,9 @@ public void init(){
 		if (tags != null ) {
 			assetTags.addAll(tags);
 		}
+		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
+		assetTags.add(parentfolder);
+		assetTags.add(asset.getName());
 		
 		Data word = autocompletesearcher.createNewData();
 		word.setId(text.toLowerCase());  //THIS makes them only save one copy
@@ -74,6 +78,9 @@ public void init(){
 			toSave.clear();
 		}
 	}
+	
+	
+	
 	autocompletesearcher.saveAllData(toSave, user);
 	toSave.clear();
 	
