@@ -136,15 +136,15 @@ return catid;
 				return null;
 			}
 			Object values = super.getValues(inKey);
-			if( values == null) //Must not be in the index yet
-			{
+//			if( values == null) //Must not be in the index yet
+//			{
 				Category root = getCategory();
 				if( root == null)
 				{
 					return null;
 				}
 				values = root.getParentCategories();
-			}
+//			}
 			return values;
 		}
 		return super.getValue(inKey);

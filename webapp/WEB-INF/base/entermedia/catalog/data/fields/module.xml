@@ -68,4 +68,37 @@
     </name>
   </property>
   
+  
+  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user"     type="list">Users 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[Users]]></language>  
+      <language id="es"><![CDATA[usuarios]]></language>  
+      <language id="fr"><![CDATA[Utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group"    type="list">Groups 
+    <name> 
+      <language id="de"><![CDATA[Gruppen]]></language>  
+      <language id="en"><![CDATA[Groups]]></language>  
+      <language id="es"><![CDATA[grupos]]></language>  
+      <language id="fr"><![CDATA[Groupes]]></language> 
+    </name> 
+  </property>  
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
+    <name>
+      <language id="de"><![CDATA[Rollen]]></language>
+      <language id="en"><![CDATA[Roles]]></language>
+      <language id="es"><![CDATA[Roles]]></language>
+      <language id="fr"><![CDATA[Rôles]]></language>
+    </name>
+  </property> 
+  <property id="securityenabled" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Security Enabled]]></language>  
+    </name> 
+  </property> 
+  
+  
+  
 </properties>

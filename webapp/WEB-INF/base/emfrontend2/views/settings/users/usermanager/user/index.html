@@ -11,6 +11,11 @@
 	<div class="col-md-3">
 	$pages.include("$content.usermanagerhome/user/editgroups.html")
 	$pages.include("$content.usermanagerhome/user/editrole.html")
+
+	<div style="margin-bottom:8px;">
+		<a href="$home$content.usermanagerhome/user/viewcategorypermissions.html?userid=$selectedUser.id" class="emdialog btn btn-sm btn-secondary" data-cancelsubmit="true">[[View Asset Permissions]]</a>
+	</div>
+
 	
 	#if($canactasotherusers)
 	<div style="margin-bottom:8px;">

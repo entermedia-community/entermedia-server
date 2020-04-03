@@ -1,0 +1,19 @@
+<h2>Searching</h2>
+
+<ul>
+<li>[[View Deleted Assets]] = $selectedprofile.hasPermission("hidedeletedassets")
+<li>[[Show Pending Assets]] = $selectedprofile.hasPermission("showpendingassets")
+<li>[[Edit/View All Assets]] = $selectedprofile.hasPermission("editallassets")
+</ul>
+
+<h2>Visible Categories</h2>
+<ul>
+#if( $selectedprofile.hasPermission("viewsettings" ) ) <li> [[Administrator: All Categories Visible]] </li>#end
+#foreach( $cat in $selectedprofile.getViewCategories() )
+	<li> 
+	<a href="$applink/views/modules/asset/showcategory.html?selectedcategory=AXEc62ofO19c9I1OeZuj&nodeID=${cat.id}">
+	$cat.getCategoryPath()</a>	
+	</li>
+#end
+</ul>
+</p>

@@ -6,14 +6,6 @@
 #set($presetid = $context.getRequestParameter("presetid"))
 #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid, $presetid))
 
-#set($cancrop = false)
-#if($canviewassetedit || $caneditasset)
-	#set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetid, $asset.id))
-#else
-	#set($cancrop = false)
-#end
-
-#if($presetid)
 	#set($preset = $mediaarchive.getData("convertpreset", $presetid))
 	#set($width = $dimension.getWidth())
 	#set($height = $dimension.getHeight())
@@ -110,8 +102,11 @@
 	#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
 	
 	##Max: $displaywidth WxH: $width x $height fw:$factorwidth fh:$factorheight - $preview_img_width x $preview_img_height
+
 <h2>[[Media Files]]</h2>
 <div class="assetpanel-content-breadcrumb">
+
+
 <a
 class="ajax"
 targetdivinner="asset-editor-container"  
@@ -119,29 +114,28 @@ data-oemaxlevel="1"
 href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=${asset.id}"
 title="[[Back to Media Files]]"
 ><i class="fas fa-angle-double-left"></i>  [[Media Files]]</a> | <span style="color:#bbb;">[[Croping]]: $preset.name</span>
+
+								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Save]]"  />
+
+
 </div>	
 	<div id="croptool">
 			<div class="jc-demo-box">
-					#set( $savetoall = $context.getRequestParameter("savetoall"))
-					#if( $savetoall)
-					    <form id="coords" 
-					    		class="coords ajaxform" 
-					    		method="post"  
-					    		targetdiv="asset-editor-container" 
-					    		action="$home$apphome/views/modules/asset/editor/media/cropcustom.html">
-					#else
-						<form id="coords" 
-								class="coords ajaxform" 
-								method="post" 
-								data-targetdiv="asset-editor-container" 
-								action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
-					#end
+
+	<form id="coords" 
+			class="coords ajaxform" 
+			method="post" 
+			data-targetdiv="asset-editor-container" 
+			action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
+
+				<table>
+					<tr>
+					<td valign="top">
 					
-					#if($cancrop)
 					
-					<div class="croptool-maincol" >
+						<div class="croptool-maincolX" >
 						<div style="background-color: #333; padding:5px 8px 5px 5px; ">
-							<div style=" overflow-x:auto;">
+							<div >
 								<div style="text-align:center;">
 								<div class="display-full" style="margin: 0 auto; padding:5px;" >
 									<img id="targetimg" class="targetimg" src="$cropinputlink" alt="[[Crop Area]]" style="display:none; " />
@@ -150,13 +144,13 @@ title="[[Back to Media Files]]"
 								</div>
 							</div>
 						</div>
-					</div>
-					#end
-					<div class="croptool-sidebar">
+						</div>
+					</td>
+					<td valign="top">
 						<div class="media-presets-sidebar">
 						<h3>[[Crop Preview]]</h3>
 						<div style="padding:5px">
-						<div id="preview-panel" class="display-container" style="overflow-x:auto;">
+						<div id="preview-panel" class="display-container" >
 							<div class="preview-container" style="width:${width}px;height:${height}px;text-align: left;">
 								<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
 							</div>
@@ -164,10 +158,7 @@ title="[[Back to Media Files]]"
 						</div>
 						</div>
 						<div class="media-presets-sidebar-content">
-							 <div class="text-left">
-								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Crop]]"  />
-							</div>
-							</div>
+						</div>
 						</div>
 						
 						<div class="media-presets-sidebar">
@@ -191,7 +182,9 @@ title="[[Back to Media Files]]"
 						</div>
 						</div>
 								
-					</div>
+					</td>
+					</tr>
+					</table>
 					
 					<div class="clearfix"></div>
 		
@@ -221,15 +214,11 @@ title="[[Back to Media Files]]"
 				    <input type="hidden" name="cropprevieww.value" id="cropprevieww" value=""/>
 				    <input type="hidden" name="field" value="croppreviewh"/>
 				    <input type="hidden" name="croppreviewh.value" id="croppreviewh" value=""/>
-				   
-				</form>
-				
-				
-				
+				 </form> 
 			</div>
 			
 		</div>
-		
+	
 		#set($preview_img_height_offset = $preview_img_height + 36 )
 		#set($preview_img_width_offset = $img_width + 16 )
 		#set($preview_info_width_offset = $img_width + 24)
@@ -282,14 +271,15 @@ title="[[Back to Media Files]]"
 				
 				if (parseInt(c.w) > 0)
 				{
+					/*
 					$(".preview-container").width(c.w);
 					$(".preview-container").height(c.h);
 			    	$("#preview-image").css({
 			          	marginLeft: '-' + Math.round(c.x) + 'px',
 			          	marginTop: '-' + Math.round(c.y) + 'px'
 			        });
+					*/
 					
-					/*
 			    	var rx = xsize / c.w;
 			    	var ry = ysize / c.h;
 			    	$("#preview-image").css({
@@ -298,9 +288,7 @@ title="[[Back to Media Files]]"
 			          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
 			          	marginTop: '-' + Math.round(ry * c.y) + 'px'
 			        });
-			    	rx = ${width} / c.w;
-			    	ry = ${height} / c.h;
-			    	*/
+			    	
 			  	}
 				
 			  	var x1 = Math.round(c.x),
@@ -381,4 +369,3 @@ title="[[Back to Media Files]]"
 		}
 		
 		</style>
-#end
