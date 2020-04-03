@@ -62,7 +62,7 @@ public void init(){
 		}
 		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
 		assetTags.add(parentfolder);
-		assetTags.add(asset.getName());
+		assetTags.add("\"" + asset.getName() + "\"");
 		
 		Data word = autocompletesearcher.createNewData();
 		word.setId(text.toLowerCase());  //THIS makes them only save one copy
