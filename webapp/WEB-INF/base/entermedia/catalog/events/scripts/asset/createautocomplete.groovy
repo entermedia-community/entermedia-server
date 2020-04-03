@@ -2,7 +2,6 @@ package asset;
 
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.search.AssetSearcher
-import org.graalvm.compiler.debug.PathUtilities
 import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.Searcher

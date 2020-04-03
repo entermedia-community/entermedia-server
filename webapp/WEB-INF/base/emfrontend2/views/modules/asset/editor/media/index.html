@@ -64,7 +64,7 @@ $context.putPageValue("results", $results)
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 				
-				#set($mediaurl = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)")
+				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)")
 				
 				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
 					
