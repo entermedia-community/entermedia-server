@@ -61,7 +61,7 @@ public void init(){
 			assetTags.addAll(tags);
 		}
 		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
-		assetTags.add(parentfolder);
+		assetTags.add("\"" + parentfolder + "\"");
 		assetTags.add("\"" + asset.getName() + "\"");
 		
 		Data word = autocompletesearcher.createNewData();
