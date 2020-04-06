@@ -309,6 +309,37 @@ public class IdManager
 		
 	}
 	
+	public Number nextNumber(String inType){
+		
+		UniqueId counter = lock(inType);
+		
+		Long current = null;
+		try
+		{
+			Object val = counter.getValue("countvalue");
+			if(val instanceof Integer){
+				current = ((Integer)val).longValue();
+			} 
+			if(val instanceof Long){
+				current = (Long) val;
+			}
+			if(current == null){
+				current = 1L;
+			}
+			
+			current++;
+			counter.setValue("countvalue", current);
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		finally{
+			release(counter);
+		}
+		return current;
+		
+	}
 	
 	
 	
