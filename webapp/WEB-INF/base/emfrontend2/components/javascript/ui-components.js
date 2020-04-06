@@ -187,17 +187,17 @@ uiload = function() {
 
 	});
 
-	lQuery("input.select2editable").livequery(function() {
+	lQuery(".select2editable").livequery(function() {
 		var input = $(this);
 		var arr = new Array(); // [{id: 0, text: 'story'},{id: 1, text:
 								// 'bug'},{id: 2, text: 'task'}]
 
-		var ulid = input.data("optionsul");
+		
 
-		var options = $("#" + ulid + " li");
+		var options = $(this).find('option');
 
 		if (!options.length) {
-			return;
+//			return;
 		}
 
 		options.each(function() {
@@ -224,11 +224,12 @@ uiload = function() {
 				}
 			},
 			multiple : false,
-			data : arr
-		});
-		/*
+			tags: true	
+			
+		})
 		.on('select2:select', function (e) {
-			if ($(this).hasClass("autosubmited")) {
+			var thevalue = $(this).val();
+			if (thevalue != '' && $(this).hasClass("autosubmited")) {
 				var theform =$(this).parents("form")
 				if (theform.hasClass("autosubmitform")) {
 					theform.trigger("submit");
@@ -236,7 +237,7 @@ uiload = function() {
 			}
         	
     	});
-		*/
+		
 	});
 
 	lQuery("select.ajax").livequery('change', function(e) {
