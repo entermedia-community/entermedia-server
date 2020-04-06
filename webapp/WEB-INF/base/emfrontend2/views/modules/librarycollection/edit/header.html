@@ -7,7 +7,7 @@
 #end
 <div id="default-top" class="clearfix" style="display:table-row">
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
+	#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
       <div class="main-info" style="padding-bottom: 20px;">

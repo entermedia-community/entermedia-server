@@ -50,60 +50,85 @@ public void init(){
 	
 	Set<String> assetTags = new HashSet();
 	HitTracker assets = searcher.getAllHits();
+	assets.enableBulkOperations();
 	List toSave= new ArrayList();
+	int saves = 0;
 	assets.each 
 	{ 
-		MultiValued asset = it;
-		String text = asset.get("name");
-		Collection tags = asset.getValues("keywords");
-		
-		if (tags != null ) {
-			assetTags.addAll(tags);
-		}
-		//assetTags.add("\"" + asset.getName() + "\"");
-		
-		Data word = autocompletesearcher.createNewData();
-		word.setId(text.toLowerCase());  //THIS makes them only save one copy
-		word.setValue("synonyms", "\"" + text + "\"");
-		word.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
-		word.setValue("synonymsenc",text); //This can be removed if you change the search term to match		
-		word.setValue("autopopulated",true);
-		toSave.add(word);
-
-//		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
-//		assetTags.add("\"" + parentfolder + "\"");
-
-		if (toSave.size() > 1000)
+		try
 		{
-			autocompletesearcher.saveAllData(toSave, user);
-			toSave.clear();
+			MultiValued asset = it;
+			String text = asset.get("name");
+			Collection tags = asset.getValues("keywords");
+			
+			if (tags != null ) {
+				assetTags.addAll(tags);
+			}
+			//assetTags.add("\"" + asset.getName() + "\"");
+			
+			Data word = autocompletesearcher.createNewData();
+			word.setId(text.toLowerCase());  //THIS makes them only save one copy
+			word.setValue("synonyms", "\"" + text + "\"");
+			word.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
+			word.setValue("synonymsenc",text); //This can be removed if you change the search term to match		
+			word.setValue("autopopulated",true);
+			toSave.add(word);
+	
+	//		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
+	//		assetTags.add("\"" + parentfolder + "\"");
+	
+			if (toSave.size() > 3000)
+			{
+				autocompletesearcher.saveAllData(toSave, user);
+				saves = saves + toSave.size();
+				toSave.clear();
+			}
 		}
+		catch ( Exception ex)
+		{
+			log.error("Could not save:" + it,ex);
+		}	
 	}
 	
-	
-	
 	autocompletesearcher.saveAllData(toSave, user);
+
+	saves = saves + toSave.size();
+	log.info("Added filenames " + saves);
+	
+
 	toSave.clear();
+	
+	log.info("Saving tags now " + assetTags.size());
 	
 	assetTags.each
 	{
 		String text = it;
 
-		Data word = autocompletesearcher.createNewData();
-		word.setId(text.toLowerCase());  //THIS makes them only save one copy
-		word.setValue("synonyms", text);
-		word.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
-		word.setValue("synonymsenc",text); //This can be removed if you change the search term to match
-		word.setValue("autopopulated",true);
-		toSave.add(word);
-		if (toSave.size() > 1000)
+		try
 		{
-			autocompletesearcher.saveAllData(toSave, user);
-			toSave.clear();
+			Data word = autocompletesearcher.createNewData();
+			word.setId(text.toLowerCase());  //THIS makes them only save one copy
+			word.setValue("synonyms", text);
+			word.setValue("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
+			word.setValue("synonymsenc",text); //This can be removed if you change the search term to match
+			word.setValue("autopopulated",true);
+			toSave.add(word);
+			if (toSave.size() > 3000)
+			{
+				autocompletesearcher.saveAllData(toSave, user);
+				toSave.clear();
+			}
 		}
+		catch ( Exception ex)
+		{
+			log.error("Could not tag save:" + it,ex);
+		}
+
 
 	}
 	autocompletesearcher.saveAllData(toSave, user);
+	log.info("Compelte save" + assetTags.size());
+	
 }
 
 init();
