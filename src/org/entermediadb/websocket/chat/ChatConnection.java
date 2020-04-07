@@ -205,7 +205,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			}
 			else if("messagereceived".equals(command)){
 			
-				getChatServer().saveMessage(map);
+				String content = getChatServer().saveMessage(map);
+				map.put("content", content);
 				getChatServer().broadcastMessage(map);
 				
 			}

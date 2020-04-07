@@ -1499,5 +1499,9 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("chat",message);
 	}
 	
+	public void loadTicketReport(WebPageRequest inReq) throws Exception
+	{
+		//var date = new Date();
+	}
 	
 }

@@ -105,6 +105,8 @@ function connect() {
         message.id = id;
         var existing = jQuery("#chatter-message-" + id);
         if(existing.length){
+        	$(existing).find(".chat-msg").html(message.content);
+        	
         	return;
         }
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
