@@ -1501,7 +1501,7 @@ public class TaskModule extends BaseMediaModule
 	
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
-		var date = new Date();
+		//var date = new Date();
 	}
 	
 }
