@@ -78,22 +78,29 @@ public class ProfileModule extends MediaArchiveModule
 		// inReq.getUserProfile().getValues("view_assets_tableresults");
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.getRequestParameter("searchtype");
+		String view = "";
 		if( searchtype == null || "asset".equals(searchtype))
 		{
 			searchtype = "asset";
+			view = "resultstable";
 		}
-		String view = "";
-		if (inReq.findValue("viewid") != null)
-		{
-			view = inReq.findValue("viewid");
+		else {
+			if (inReq.findValue("viewid") != null)
+			{
+				view = inReq.findValue("viewid");
+			}
+			else 
+			{
+				view = searchtype + "resultstable";
+			}
 		}
-		else 
-		{
-			view = searchtype + "resultstable";
-		}
-		String viewpath = searchtype + "/" + view;
+		String viewpath = searchtype + "/" + view; 
 		
 		List details = archive.getAssetSearcher().getDetailsForView(viewpath, inReq.getUserProfile());
+		
+		if(details == null) {
+			return;
+		}
 
 		int target = details.size();
 		PropertyDetail detail = null;
