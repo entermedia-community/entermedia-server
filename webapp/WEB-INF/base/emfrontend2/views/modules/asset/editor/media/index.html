@@ -36,75 +36,77 @@ $context.putPageValue("results", $results)
 			$context.putPageValue("presetdata", $result)
 			#set($presetdata = $result)
 			
-			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
-			#if(!$cancrop)
-				#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
-					#set($show = false)
-				#else
-				
-					#set($show = true)
-				#end
-			#else
+			##Exists?
+			#set($exists = $conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $presetdata.id))
+
+			##Can be shown?
+			#set($show = false)			
+			#if($presetdata.outputextension == "jpg" || $presetdata.outputextension == "png")
 				#set($show = true)
 			#end
-			
-			#if($presetdata.outputextension != "jpg")
-				#set($show = false)
-			#end
-		
-			#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
 				
-				#if($currentpreset == $result.id)
-					#set($current = $result)
+			#if($exists && $show)
+			
+				#if($currentpreset == $presetdata.id)
+					#set($current = $presetdata)
 				#end
-				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+				
+				##CanCrop
+				#set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetdata.id, $asset.id))
+				
+				## #if(!$cancrop)
+				##	#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+				##		#set($show = false)
+				##	#else
+				##		#set($show = true)
+				##	#end
+				## #end
+		
+				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetdata.id))
 				#set($height = $mathtool.toInteger($dimension.getHeight()))
 				#set($width = $mathtool.toInteger($dimension.getWidth()))
 				
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
+				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$presetdata.id, "imagelocation"))
 				
-				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)")
+				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)")
 				
-				<div class="mediapreset #if($result.id==$result.id) mediapresetselected #end">
+				<div class="mediapreset #if($presetdata.id==$presetdata.id) mediapresetselected #end">
 					
-					<div class="mediapreset-name" title="$result.name" >$result.name</div>
+					<div class="mediapreset-name" title="$!presetdata.name" >$!presetdata.name</div>
 					<div class="mediapreset-image">
 						<a href="$home$apphome/components/asseteditor/preview.html?previewimg=$mediaurl"
 							class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
-							title="$!result.name">
-							<img src="$mediaurl?_=$mathutil.getRandomValue(9999)" alt="$result.name" />
+							title="$!presetdata.name">
+							<img src="$mediaurl?_=$mathutil.getRandomValue(9999)" alt="$!presetdata.name" />
 						</a>
 					</div>
 					<div class="mediapreset-actions">
 					##Download
 					<a class="btn btn-xs btn-primary" 
-					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($result.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $result))?includemetadata=true"
-					    title="[[Download]] $result.name"><i class="fas fa-download"></i></a>
+					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $presetdata))?includemetadata=true"
+					    title="[[Download]] $!presetdata.name"><i class="fas fa-download"></i></a>
 					    
 					 ##Crop
-					 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $result.id, $asset.id)) 
 					 #if($caneditasset && $cancrop) 
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  
 							data-oemaxlevel="1"  
-							href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${result.id}"
-							title="[[Crop]] $result.name"><i class="fas fa-crop"></i></a> 
+							href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
 					 #end
 					 
 					 ##Share
 					 #if($canembedasset)
 						<a class="btn btn-xs btn-primary emdialog" 
-					    	href="$home$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${result.id}"
+					    	href="$home$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
 					    	data-noesc="true"
 					    	data-hidefooter="true"
-					    	title="[[Share]] $result.name"><i class="fas fa-share-alt"></i></a>
+					    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>
 					 #end
 					</div>
 				</div>
-				
 			#end
-		
 		#end  ##foreach
 		<div class="clearfix"></div>
 		
