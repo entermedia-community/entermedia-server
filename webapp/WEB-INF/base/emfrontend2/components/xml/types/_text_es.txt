@@ -1,22 +1,28 @@
 #
-#Fri Mar 29 09:59:00 CST 2019
+#Tue Apr 07 17:58:14 CST 2020
 No\ values\ found=No se encontraron valores
 New=Nuevo
-chars\ less=Caracteres menos
 Please\ enter=Por favor escribe
+chars\ less=Caracteres menos
 chars\ more=Chars m\u00E1s
-No\ results=No hay resultados
 Remove=retirar
 Add\ New=A\u00F1adir nuevo
+Over=encima
+Remove\ Asset\ Selected=Eliminar activo seleccionado
+Clear\ Selection=Selecci\u00F3n clara
+Search=Buscar
+limit\ reached=l\u00EDmite alcanzado
+Pick\ Categories=Escoja Categor\u00EDas
+or=o
+No\ results=No hay resultados
 Add\ Language=Agregar idioma
 View=Ver
 Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
+Browse=Vistazo
 entry=entrada
-Over=encima
 entries=Entradas
 You\ can\ only\ select=S\u00F3lo puede seleccionar
 Searching=buscando
-Search=Buscar
 Loading\ more\ results=Cargando m\u00E1s resultados
+Choose\ a\ File=Escoge un archivo
 Enter\ comma\ separated\ tags=Introducir etiquetas separadas por comas
-Pick\ Categories=Escoja Categor\u00EDas

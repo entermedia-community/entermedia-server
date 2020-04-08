@@ -1,9 +1,10 @@
 #
-#Fri Mar 29 09:56:02 CST 2019
+#Tue Apr 07 17:58:11 CST 2020
 New=Nuevo
 No\ values\ found=No se encontraron valores
 No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No hay datos disponibles para esta vista . Por favor configure las opciones
 Add\ New\ $detail=A\u00F1adir nuevo detalle de $
 404\ on\ view=404 en la vista
+Edit=Editar
 Add\ New=Agregar nuevo
 required=requerido
