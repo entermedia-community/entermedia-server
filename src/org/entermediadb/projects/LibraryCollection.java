@@ -205,7 +205,10 @@ return catid;
 	}
 
 	
-	
+	public String getWebName()
+	{
+		return getName().replaceAll(" ", "-");
+	}
 	
 
 }
