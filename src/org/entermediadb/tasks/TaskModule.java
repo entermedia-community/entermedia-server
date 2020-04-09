@@ -1,6 +1,7 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;  
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1498,10 +1499,16 @@ public class TaskModule extends BaseMediaModule
 		}
 		inReq.putPageValue("chat",message);
 	}
-	
+	public void autoIdTickets()
+	{
+		
+	}
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
-		//var date = new Date();
+		Date todaysDate = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");  
+	    String strDate = formatter.format(todaysDate); 
+		inReq.putPageValue("date",strDate);
 	}
 	
 }
