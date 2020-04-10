@@ -1,0 +1,11 @@
+#
+#Tue Apr 07 18:38:34 CST 2020
+Create\ New\ Collection=Crear nueva colecci\u00F3n
+Recently\ Opened=Recientemente inaugurado
+Find\ Collections=Encuentra colecciones
+Saved\ Collections=Colecciones guardadas
+Featured\ Collections=Colecciones destacadas
+Featured=Destacados
+All\ Collections=Todas las colecciones
+Collections=Colecciones
+Add\ New\ Collection=Agregar nueva colecci\u00F3n

@@ -1,0 +1,14 @@
+#
+#Tue Apr 07 18:38:44 CST 2020
+Table=Mesa
+Custom\ Export=Exportaci\u00F3n personalizada
+Add\ New=A\u00F1adir nuevo
+Export\ results=Exportar resultados
+Add\ Column=A\u00F1adir columna
+Results=Resultados
+Search=Buscar
+Delete\ Selected\ Items=Eliminar elementos seleccionados
+Download\ Assets=Descargar activos
+Batch\ Edit=Edici\u00F3n por lotes
+Map=Mapa
+Export\ results\ (friendly)=Resultados de exportaci\u00F3n (amigable)
