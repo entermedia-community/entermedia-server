@@ -194,6 +194,23 @@ public class HttpSharedConnection
 		return elem;
 	}
 
+
+	public String parseText(CloseableHttpResponse inCreaterequest)
+	{
+		try
+		{
+			return EntityUtils.toString(inCreaterequest.getEntity());
+		}
+		catch (Throwable e) 
+		{
+			throw new OpenEditException(e);
+		}
+		finally
+		{
+			release(inCreaterequest);
+		}
+	}
+
 	public JSONObject parseJson(CloseableHttpResponse resp) 
 	{
 		try {
@@ -318,6 +335,7 @@ public class HttpSharedConnection
     	cookie.setExpiryDate(cal.getTime());
     	cookieStore.addCookie(cookie);
 	}
+
 	
 	
 }
