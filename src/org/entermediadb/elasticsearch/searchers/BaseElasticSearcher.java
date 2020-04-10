@@ -2021,7 +2021,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 			{
 				Data object = (Data) iterator.next();
-				delete(object, inUser);
+				try
+				{
+					delete(object, inUser);
+				}
+				catch( Exception ex)
+				{
+					log.error("Could not delete " + object,ex);
+				}
 			}
 			return;
 		}
