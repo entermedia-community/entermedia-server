@@ -1837,7 +1837,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			try
 			{
-
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
