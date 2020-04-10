@@ -175,13 +175,16 @@ public class ChatServer
 		Searcher chats = archive.getSearcher("chatterbox");
 		Object channel = inMap.get("channel");
 		String userid = (String)inMap.get("user").toString();
-		Data lastOne = chats.query().exact("channel",channel.toString()).sort("dateDown").searchOne();
+		
+		long now = System.currentTimeMillis() - 60*1000;
+		Data lastOne = chats.query().exact("channel",channel.toString()).after("date",new Date(now)).sort("dateDown").searchOne();
 		Data chat = null;
 		String newmessage = String.valueOf( inMap.get("content") );
 		/*
 		 * Check for previous user, if previous user is the same combine last message
 		 * content with new message.
 		 */
+	
 		if(lastOne != null)
 		{
 			String lastUserId = lastOne.get("user"); 
