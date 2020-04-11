@@ -1837,7 +1837,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			try
 			{
-
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
@@ -2021,7 +2020,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 			{
 				Data object = (Data) iterator.next();
-				delete(object, inUser);
+				try
+				{
+					delete(object, inUser);
+				}
+				catch( Exception ex)
+				{
+					log.error("Could not delete " + object,ex);
+				}
 			}
 			return;
 		}
