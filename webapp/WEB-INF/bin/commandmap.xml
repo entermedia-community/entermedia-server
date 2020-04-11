@@ -20,4 +20,12 @@
 		<qt-faststart>.\ffmpeg\qt-faststart.exe</qt-faststart>
 		<unlock>.\unlocker\unlocker.exe</unlock>
 	</commandmap>
+	<commandmap os="MAC OS X">
+		<commandbase>./WEB-INF/bin/mac</commandbase>
+		<exiftoolthumb>./exiftoolthumb.sh</exiftoolthumb>
+		<convert>/usr/local/bin/convert</convert>
+		<composite>/usr/local/bin/composite</composite>
+		<ffmpeg>/usr/local/bin/ffmpeg</ffmpeg>
+		<qt-faststart>./qt-faststart</qt-faststart>
+	</commandmap>
 </commandmaps>
