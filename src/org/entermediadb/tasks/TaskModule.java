@@ -1505,10 +1505,10 @@ public class TaskModule extends BaseMediaModule
 	}
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
-		Date todaysDate = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");  
-	    String strDate = formatter.format(todaysDate); 
-		inReq.putPageValue("date",strDate);
+		long ago = System.currentTimeMillis() - 12*60*60*1000;
+		Date todaysDate = new Date(ago);
+		inReq.putPageValue("date",todaysDate);
+
 	}
 	
 }
