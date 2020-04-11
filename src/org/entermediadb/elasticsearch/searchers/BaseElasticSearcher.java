@@ -64,7 +64,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.index.query.TermsQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -79,6 +78,7 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.cluster.IdManager;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
@@ -191,6 +191,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		fieldReIndexing = inReIndexing;
 	}
 
+	/**
+	 * @deprecated not used
+	 * @return
+	 */
 	public boolean isAutoIncrementId()
 	{
 		return fieldAutoIncrementId;
@@ -1833,7 +1837,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			try
 			{
-
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
@@ -2017,7 +2020,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 			{
 				Data object = (Data) iterator.next();
-				delete(object, inUser);
+				try
+				{
+					delete(object, inUser);
+				}
+				catch( Exception ex)
+				{
+					log.error("Could not delete " + object,ex);
+				}
 			}
 			return;
 		}
@@ -2463,6 +2473,13 @@ public class BaseElasticSearcher extends BaseSearcher
 
 						}
 					}
+					if( value == null && detail.isViewType("autoincrement"))
+					{
+						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+
+						val = manager.nextNumber(getSearchType() + "_" + detail.getId());
+					}
+					
 					inContent.field(key, val);
 				}
 				else if (detail.isMultiValue() || detail.isList())

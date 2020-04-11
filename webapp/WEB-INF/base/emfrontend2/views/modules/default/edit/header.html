@@ -1,6 +1,7 @@
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
 #set( $moduleid = $context.findValue("module") )
+
 #set($searchtype = $context.getRequestParameter("searchtype"))
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
@@ -10,7 +11,7 @@
 <div id="default-top" style="display:table-row" >
 
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
+	#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
       #if ($details)
       <div class="main-info">

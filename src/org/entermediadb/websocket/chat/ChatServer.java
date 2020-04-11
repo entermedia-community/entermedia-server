@@ -167,19 +167,46 @@ public class ChatServer
 		}
 	}
 
-	public void saveMessage(final JSONObject inMap)
+	public String saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
 		log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
-		Data chat = chats.createNewData();
-		chat.setValue("date", new Date());
-		chat.setValue("message", inMap.get("content"));
+		Object channel = inMap.get("channel");
 		String userid = (String)inMap.get("user").toString();
-		chat.setValue("user", userid);
-		chat.setValue("channel", inMap.get("channel"));
-		chat.setValue("channeltype", inMap.get("channeltype"));
+		
+		long now = System.currentTimeMillis() - 60*1000;
+		Data lastOne = chats.query().exact("channel",channel.toString()).after("date",new Date(now)).sort("dateDown").searchOne();
+		Data chat = null;
+		String newmessage = String.valueOf( inMap.get("content") );
+		/*
+		 * Check for previous user, if previous user is the same combine last message
+		 * content with new message.
+		 */
+	
+		if(lastOne != null)
+		{
+			String lastUserId = lastOne.get("user"); 
+			if( lastUserId.contentEquals(userid))
+			{
+				chat = lastOne;
+				String combined = lastOne.get("message");
+				combined = combined + "<br>" + newmessage;
+				lastOne.setValue("message",combined);
+			}
+		}
+		if( chat == null)
+		{
+			chat = chats.createNewData();
+			chat.setValue("date", new Date());
+			chat.setValue("user", userid);
+			chat.setValue("channel", channel);
+			chat.setValue("channeltype", inMap.get("channeltype"));
+			chat.setValue("message", newmessage);
+			
+		}
+		
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 		
@@ -210,7 +237,7 @@ public class ChatServer
 				public void run() 
 				{
 					ChatManager manager = getChatManager(catalogid);
-					Object channelid = inMap.get("channel");
+					Object channelid = channel;
 					if( channelid != null)
 					{
 						manager.updateChatTopicLastModified(String.valueOf( channelid) );
@@ -219,6 +246,7 @@ public class ChatServer
 			});
 			
 		}
+		return chat.get("message");
 	}
 
 	public ExecutorManager getExecutorManager(String inCatalogId)

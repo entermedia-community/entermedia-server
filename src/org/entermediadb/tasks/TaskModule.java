@@ -1,6 +1,7 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;  
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1498,6 +1499,16 @@ public class TaskModule extends BaseMediaModule
 		}
 		inReq.putPageValue("chat",message);
 	}
-	
+	public void autoIdTickets()
+	{
+		
+	}
+	public void loadTicketReport(WebPageRequest inReq) throws Exception
+	{
+		long ago = System.currentTimeMillis() - 12*60*60*1000;
+		Date todaysDate = new Date(ago);
+		inReq.putPageValue("date",todaysDate);
+
+	}
 	
 }

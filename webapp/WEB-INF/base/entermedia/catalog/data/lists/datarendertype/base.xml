@@ -3,6 +3,7 @@
 		<type id="autocompletefulltext"   >Auto Complete Keywords</type>
 		<type id="boolean"  >Boolean</type>
 		<type id="number"  >Number</type>
+		<type id="autoincrement"  >Auto Increment</type>
 		<type id="long"  >Long</type>
 		<type id="double"  >Double</type>
 		<type id="date"  >Date</type>

@@ -125,10 +125,12 @@ uiload = function() {
 	
 	lQuery("select.select2").livequery(function() {
 		var theinput = $(this);
-		var dropdownParent = $("body");
 		var dropdownParent = theinput.data('dropdownparent');
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
+		}
+		else {
+			dropdownParent = $(this).parent();
 		}
 		var parent = theinput.closest("#main-media-container");
 		if (parent.length) {
@@ -151,10 +153,12 @@ uiload = function() {
 
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
-		var dropdownParent = $("body");
 		var dropdownParent = theinput.data('dropdownparent');
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
+		}
+		else {
+			dropdownParent = $(this).parent();
 		}
 		var parent = theinput.closest("#main-media-container");
 		if (parent.length) {
@@ -187,17 +191,17 @@ uiload = function() {
 
 	});
 
-	lQuery("input.select2editable").livequery(function() {
+	lQuery(".select2editable").livequery(function() {
 		var input = $(this);
 		var arr = new Array(); // [{id: 0, text: 'story'},{id: 1, text:
 								// 'bug'},{id: 2, text: 'task'}]
 
-		var ulid = input.data("optionsul");
+		
 
-		var options = $("#" + ulid + " li");
+		var options = $(this).find('option');
 
 		if (!options.length) {
-			return;
+//			return;
 		}
 
 		options.each(function() {
@@ -224,11 +228,12 @@ uiload = function() {
 				}
 			},
 			multiple : false,
-			data : arr
-		});
-		/*
+			tags: true	
+			
+		})
 		.on('select2:select', function (e) {
-			if ($(this).hasClass("autosubmited")) {
+			var thevalue = $(this).val();
+			if (thevalue != '' && $(this).hasClass("autosubmited")) {
 				var theform =$(this).parents("form")
 				if (theform.hasClass("autosubmitform")) {
 					theform.trigger("submit");
@@ -236,7 +241,7 @@ uiload = function() {
 			}
         	
     	});
-		*/
+		
 	});
 
 	lQuery("select.ajax").livequery('change', function(e) {
@@ -856,10 +861,12 @@ uiload = function() {
 			.livequery(
 					function() {
 						var theinput = $(this);
-						var dropdownParent = $("body");
 						var dropdownParent = theinput.data('dropdownparent');
 						if (dropdownParent && $("#" + dropdownParent).length) {
 							dropdownParent = $("#" + dropdownParent);
+						}
+						else {
+							dropdownParent = $(this).parent();
 						}
 						var parent = theinput.closest("#main-media-container");
 						if (parent.length) {
@@ -1132,10 +1139,13 @@ uiload = function() {
 										+ "&defaultvalueid=" + defaultvalueid;
 							}
 							
-							var dropdownParent = $("body");
+							
 							var dropdownParent = theinput.data('dropdownparent');
 							if (dropdownParent && $("#" + dropdownParent).length) {
 								dropdownParent = $("#" + dropdownParent);
+							}
+							else {
+								dropdownParent = $(this).parent();
 							}
 							var parent = theinput.closest("#main-media-container");
 							if (parent.length) {

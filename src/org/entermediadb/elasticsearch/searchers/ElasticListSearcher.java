@@ -95,6 +95,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
 				Data hit = (Data) iterator2.next();
+				if( hit.getId() == null || hit.getId().isEmpty())
+				{
+					continue;
+				}
 				Data real = (Data) loadData(hit);
 				tosave.add(real);
 				if(tosave.size() > 1000)
@@ -135,7 +139,11 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			log.info("settings " + settings.size() + " " + getSearchType());
 			for (Iterator iterator = settings.iterator(); iterator.hasNext();) 
 			{
-				ElementData data = (ElementData)iterator.next();					
+				ElementData data = (ElementData)iterator.next();	
+				if( data.getId() == null || data.getId().isEmpty())
+				{
+					continue;
+				}
 				toindex.add(data); //loadData? nah
 				//log.info(data.getName());
 				if( toindex.size() > 1000)

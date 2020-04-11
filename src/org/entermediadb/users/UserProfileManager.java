@@ -261,12 +261,15 @@ public class UserProfileManager
 			}
 			else
 			{
-				HitTracker modules  = mediaArchive.query("module").or().
-					exact("securityenabled", false).
-					orgroup("viewgroups", user.getGroups()).
-					match("viewroles", userprofile.getSettingsGroup().getId()).
-					match("viewusers", inUserName)
-					.search();
+				QueryBuilder builder = mediaArchive.query("module").or().
+				exact("securityenabled", false).
+				orgroup("viewgroups", user.getGroups()).
+				match("viewusers", inUserName);
+				if(userprofile.getSettingsGroup() != null)
+				{
+					builder.match("viewroles", userprofile.getSettingsGroup().getId());
+				}
+				HitTracker modules  = builder.search();
 					//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(modules);
 			}
