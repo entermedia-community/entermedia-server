@@ -388,9 +388,13 @@ public class ProjectModule extends BaseMediaModule
 		}
 		if( collection == null)
 		{
-			log.error("No collection id found");
+			log.error("No collection id found on " + inReq.getPath());
 		}
-		inReq.putPageValue("librarycol", collection);
+		if(collection != null)
+		{
+			inReq.putPageValue("librarycol", collection);
+			inReq.putPageValue("library", collection.getLibrary());
+		}
 		return collection;
 	}
 	
