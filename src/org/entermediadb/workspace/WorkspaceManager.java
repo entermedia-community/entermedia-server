@@ -165,32 +165,7 @@ public class WorkspaceManager
 	public void saveModule(String catalogid, String appid, Data module) throws Exception
 	{
 		/** APP STUFF **/
-		String mid = module.getId();
-		String basepath = "default";
-		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
-		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
-		PageSettings homesettings = home.getPageSettings();
-		PageSettings modulesettings = settings.getPageSettings();
-		if( mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
-		{
-			basepath = mid;
-			homesettings.removeProperty("fallbackdirectory");
-			modulesettings.removeProperty("fallbackdirectory");
-		}
-		else
-		{
-			homesettings.setProperty("module", module.getId());
-			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/modules/" + basepath);
-			homesettings.putProperty(prop);
-	
-			modulesettings.setProperty("module", module.getId());
-			prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/settings/modules/" + basepath);
-			modulesettings.putProperty(prop);
-		}		
-		getPageManager().getPageSettingsManager().saveSetting(homesettings);
-		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
+		String mid = createModuleFallbacks(appid, module);
 		if( !mid.equals("asset") )
 		{
 			/** DATABASE STUFF **/
@@ -232,6 +207,37 @@ public class WorkspaceManager
 		//getPageManager().clearCache();
 				
 		
+	}
+
+	public String createModuleFallbacks(String appid, Data module)
+	{
+		String mid = module.getId();
+		String basepath = "default";
+		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
+		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
+		PageSettings homesettings = home.getPageSettings();
+		PageSettings modulesettings = settings.getPageSettings();
+		if( mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
+		{
+			basepath = mid;
+			homesettings.removeProperty("fallbackdirectory");
+			modulesettings.removeProperty("fallbackdirectory");
+		}
+		else
+		{
+			homesettings.setProperty("module", module.getId());
+			PageProperty prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + appid + "/views/modules/" + basepath);
+			homesettings.putProperty(prop);
+	
+			modulesettings.setProperty("module", module.getId());
+			prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + appid + "/views/settings/modules/" + basepath);
+			modulesettings.putProperty(prop);
+		}		
+		getPageManager().getPageSettingsManager().saveSetting(homesettings);
+		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
+		return mid;
 	}
 
 	protected void createMediaDbModule(String inCatalogId, Data inModule)
