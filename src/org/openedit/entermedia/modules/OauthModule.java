@@ -474,7 +474,18 @@ public class OauthModule extends BaseMediaModule
 
 				getEventManager().fireEvent(event);
 			}
-
+			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
+			if( sendTo == null)
+			{
+				sendTo = inReq.findValue("applink");
+				if( sendTo == null)
+				{
+					sendTo = "/" + inReq.findValue("applicationid");
+				}
+				sendTo = sendTo + "/index.html";
+			}
+			inReq.redirect(sendTo);
+			
 		}
 
 	}
