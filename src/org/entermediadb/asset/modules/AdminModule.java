@@ -365,13 +365,16 @@ public class AdminModule extends BaseMediaModule
 			}
 		}
 		
-		if (account == null && email == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
+		if (account == null && email == null && inReq.getRequest() != null)
 		{
-			String referrer = inReq.getRequest().getHeader("REFERER");
-			if (referrer != null && !referrer.contains("authentication") && referrer.startsWith(inReq.getSiteRoot()))
-
+			String sendTo = inReq.getRequestParameter("loginokpage");
+			if( sendTo != null)
+			{
+				sendTo = inReq.getRequest().getHeader("REFERER");
+			}
+			if (sendTo != null && !sendTo.contains("authentication") && sendTo.startsWith(inReq.getSiteRoot()) && (sendTo.endsWith("html") || sendTo.endsWith("jpg")) )
 			{ //the original page someone might have been on
-				inReq.putSessionValue("fullOriginalEntryPage", referrer);
+				inReq.putSessionValue("fullOriginalEntryPage", sendTo);
 			}
 		}
 		else
@@ -470,7 +473,6 @@ public class AdminModule extends BaseMediaModule
 	{
 		User inUser = inAReq.getUser();
 		boolean userok = false;
-		String sendTo = inReq.getRequestParameter("loginokpage");
 		String maxcounts = inReq.findValue("maxfailedloginattemps");
 
 		int maxattemps = 5;
@@ -547,24 +549,10 @@ public class AdminModule extends BaseMediaModule
 			inReq.putSessionValue(catalogid + "user", inUser);
 			createUserSession(inReq);
 			// user is now logged in
-			String sendToOld = (String) inReq.getSessionValue("fullOriginalEntryPage");
-			if (sendTo == null || sendTo.trim().length() == 0)
+			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
+			if (sendTo == null)
 			{
-
-				if (inReq.getRequest() != null)
-				{
-					String referrer = inReq.getRequest().getHeader("REFERER");
-					if (sendToOld != null && !sendToOld.equals(referrer))
-					{
-						sendTo = sendToOld;
-					}
-					inReq.removeSessionValue("originalEntryPage");
-					inReq.removeSessionValue("fullOriginalEntryPage");
-				}
-			}
-			String appid = inReq.findValue("applicationid");
-			if (sendTo == null || !sendTo.startsWith("/" + appid))
-			{
+				String appid = inReq.findValue("applicationid");
 				if (appid != null)
 				{
 					sendTo = "/" + appid + "/index.html";
@@ -574,7 +562,6 @@ public class AdminModule extends BaseMediaModule
 					sendTo = "/index.html";
 				}
 			}
-
 			savePasswordAsCookie(inUser, inReq);
 			String cancelredirect = inReq.findValue("cancelredirect");
 			if (!Boolean.parseBoolean(cancelredirect))
