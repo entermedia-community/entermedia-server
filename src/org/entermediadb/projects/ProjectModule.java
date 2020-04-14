@@ -388,7 +388,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		if( collection == null)
 		{
-			log.error("No collection id found on " + inReq.getPath());
+			//log.error("No collection id found on " + inReq.getPath());
 		}
 		if(collection != null)
 		{
