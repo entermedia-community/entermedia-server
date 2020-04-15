@@ -15,7 +15,12 @@
 	<div class="" id="mediadbcontent">	
 		<div class="row no-gutters">
 	  	<div class="col-md-2" style="position:inherit;border-right: 1px solid #e2eff4;">
-			$pages.include("$apphome/services/module/asset/players/collections/tree.html")		
+	  		#set($treeurl = "$apphome/services/module/asset/players/collections/tree.html")
+	  		#set($nodeID = $context.getRequestParameter("nodeID"))
+	  		#if (!$nodeID)
+	  			#set($treeurl = "$treeurl?clearselection=true")
+	  		#end
+			$pages.include($treeurl, $context)		
 		</div>
 		<div class="col-md-10" style="border:2px;margin-left: -1px; border-left: 1px solid #e2eff4;" >
 			<div id="searchlayout">

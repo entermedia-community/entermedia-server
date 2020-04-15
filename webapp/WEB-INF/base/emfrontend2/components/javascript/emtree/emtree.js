@@ -116,7 +116,14 @@ $(document).ready(function()
             }
         }
         else {
-            reloadurl = prefix;
+        	var customprefix= tree.data('customurlprefix');
+    		if(customprefix)
+    		{
+    			reloadurl = customprefix;
+    		}
+    		else {
+    			reloadurl = prefix;
+    		}
         }
 
 		reloadurl = reloadurl + "?nodeID="+ nodeid;
@@ -124,23 +131,16 @@ $(document).ready(function()
 		{
 			reloadurl = reloadurl + "&collectionid=" + collectionid; 
 		}
-	
-		var customprefix=jQuery("#treedetails").data('customprefix');
-		if(customprefix)
-		{
-			prefix = customprefix;
-		}	
 		
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
 		{
 			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
 		}
-		if(!customprefix)
+		
 		//Update Address Bar
-		{
-			history.pushState({}, null, reloadurl);
-		}
+		history.pushState({}, null, reloadurl);
+		
 		var options = 	{
 					'oemaxlevel':maxlevel,
 					'tree-name':tree.data("treename"),

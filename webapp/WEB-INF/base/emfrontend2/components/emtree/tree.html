@@ -121,6 +121,7 @@
 #set( $postfix = $context.getRequestParameter("url-postfix" ) )
 #set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 #set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
+#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
 
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
 	<div id="${treename}tree" class="emtree emtree-widget" 
@@ -132,6 +133,7 @@
 		data-url-postfix="$!postfix" 
 		data-targetdiv="$!targetdiv" 
 		data-maxlevelclick="$!maxlevelclick"
+		data-customurlprefix="$!customurlprefix"
 		>
 			<ul  class="open" >
 			#showtreecategories2($rootcategory, 1)

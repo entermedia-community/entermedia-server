@@ -1,4 +1,6 @@
 <page>
 
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/category/showcategory.html</inner-layout>
+	
 	
 </page>
