@@ -5,7 +5,8 @@
     #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=1" )
 	#if ($context.treeurlprefix)
 		#set( $link = "${link}&url-prefix=${context.treeurlprefix}" )
-	#end
-    #set( $link = "${link}&url-prefix=$apphome/views/modules/librarycollection/showcategory.html" )
+	#else
+    	#set( $link = "${link}&url-prefix=$apphome/views/modules/librarycollection/showcategory.html" )
+    #end
 	$pages.include($link, $context)
 </div>

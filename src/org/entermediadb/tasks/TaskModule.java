@@ -1505,7 +1505,7 @@ public class TaskModule extends BaseMediaModule
 	}
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
-		long ago = System.currentTimeMillis() - 12*60*60*1000;
+		long ago = System.currentTimeMillis() - 24*60*60*1000;
 		Date todaysDate = new Date(ago);
 		inReq.putPageValue("date",todaysDate);
 

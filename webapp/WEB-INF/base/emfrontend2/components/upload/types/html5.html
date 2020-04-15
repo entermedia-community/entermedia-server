@@ -117,7 +117,7 @@ $context.putPageValue("librarycol",$librarycol)
 		    <div  class="ui-widget-header">[[Upload Queue]]</div>
 		    <div  class="ui-widget-content">
 
-					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="#"> [[View Upload]]</a>	 
+					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="#" data-customviewupload="$!customviewupload"> [[View Upload]]</a>	 
 					<ul id="up-files-list-completed" class="up-files-list" >
 					</ul>	
 			</div>
@@ -142,7 +142,16 @@ $(document).ready(function()
 		var nodeid = $("#nodeid").val();
 		
 	    var href = null;
-	    if(collectionid)
+	    var customviewupload = $(this).data("customviewupload");
+	    if(customviewupload)
+	    	{
+	    		href= customviewupload + "?collectionid=" + collectionid;
+	    		if( nodeid)
+		    	{
+		    		href = href + "&nodeID=" + nodeid;
+		    	}
+	    	}
+	    else if(collectionid)
 	    {
 	    	href = "$home$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
 	    	if( nodeid)
@@ -158,6 +167,7 @@ $(document).ready(function()
 	    {
 	        href = "$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
 		}
+	    
 	    document.location.href = href;
 		
 	});

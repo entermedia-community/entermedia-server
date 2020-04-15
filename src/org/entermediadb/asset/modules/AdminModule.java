@@ -351,12 +351,6 @@ public class AdminModule extends BaseMediaModule
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
 		
-		if( account == null && email == null)
-		{
-			//log.debug
-			return;
-		}
-		
 		String password = inReq.getRequestParameter("password");
 
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
@@ -376,6 +370,8 @@ public class AdminModule extends BaseMediaModule
 			{ //the original page someone might have been on
 				inReq.putSessionValue("fullOriginalEntryPage", sendTo);
 			}
+			
+			return;
 		}
 		else
 		{

@@ -1,14 +1,10 @@
 #set($rootcategory = $mediaarchive.getProjectManager().getRootCategory($mediaarchive, $librarycol.getId()))
- <div id="treedetails" data-customprefix="$apphome/services/module/asset/players/collections/display/category/showcategory.html" >
-	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;"> 
-	#set( $link = "$apphome/components/emtree/tree.html")
-	#set( $link = "${link}?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree" )
-	#set( $link = "${link}&url-prefix=$apphome/services/module/asset/players/collections/display/category/$librarycol.getId()/index.html&targetdiv=searchlayout" )
-	$pages.include($link,$context)
-	</div>
-
- 
- 
+<div class="assetdropcategory assetdropcategorymove" style="padding:0px;"> 
+#set( $link = "$apphome/components/emtree/tree.html")
+#set( $link = "${link}?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree" )
+#set( $link = "${link}&targetdiv=searchlayout" )
+#set( $link = "${link}&url-prefix=$apphome/services/module/asset/players/collections/display/category/${librarycol.getId()}.html" )
+$pages.include($link,$context)
 </div>
 
 

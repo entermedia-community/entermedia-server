@@ -14,5 +14,5 @@
 
 	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
 
-<inner-layout/>
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/gallery.html</inner-layout>
 </page>

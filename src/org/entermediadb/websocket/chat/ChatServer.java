@@ -176,7 +176,7 @@ public class ChatServer
 		Object channel = inMap.get("channel");
 		String userid = (String)inMap.get("user").toString();
 		
-		long now = System.currentTimeMillis() - 60*1000;
+		long now = System.currentTimeMillis() - 9*1000;
 		Data lastOne = chats.query().exact("channel",channel.toString()).after("date",new Date(now)).sort("dateDown").searchOne();
 		Data chat = null;
 		String newmessage = String.valueOf( inMap.get("content") );

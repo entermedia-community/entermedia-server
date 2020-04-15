@@ -128,7 +128,7 @@ public class DataEditModule extends BaseMediaModule
 			{
 				hits = searcher.getAllHits(inReq);
 			}
-			log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+			//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
 			if (hits != null)
 			{
 				String name = inReq.findValue("hitsname");

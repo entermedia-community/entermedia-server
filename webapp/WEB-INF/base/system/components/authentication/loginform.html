@@ -21,13 +21,12 @@
 
 <div class="col" style=" padding:45px 0px 0 45px; border-left:1px solid #999; max-width:500px; ">
 		
-		#set($loginok = $context.findValue("loginokpage") )
+		<!-- #set($loginok = $context.findValue("loginokpage") ) -->
 		
 
 	<p class="note">[[Administrator login:]]</p>
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
-			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
 			<div class="form-group">
 			<label for="accountname">[[Email or Username]]</label>
 			<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off"
