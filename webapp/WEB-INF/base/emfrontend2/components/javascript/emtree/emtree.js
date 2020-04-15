@@ -296,27 +296,32 @@ $(document).ready(function()
 				
 				var collectionid = node.data("collectionid");
 				var postfix = "";
-				if( collectionid )
-				{
-					//postfix = "&collectionid=" + collectionid;
-					var url = tree.data("home") + "/views/modules/librarycollection/components/upload/add/start.html";
-					if(collectionid){
-						//url = url + "&collectionid=" + collectionid;
-                    }
+				
+				var customurladdmedia = tree.data("customurladdmedia");
+				if (customurladdmedia) {
+					var url = customurladdmedia;
                     var maxlevel = 1;
 					gotopage(tree,node,maxlevel,url);
-					
-					//document.location.href = url; 
-				
 				}
-				else
-				{
-					var url = tree.data("home") + "/views/modules/asset/components/upload/add/start.html";
-                    var maxlevel = 1;
-
-					gotopage(tree,node,maxlevel,url);
-				
-					//document.location.href = url; 
+				else {
+					if( collectionid )
+					{
+						var url = tree.data("home") + "/views/modules/librarycollection/components/upload/add/start.html";
+						if(collectionid){
+							//url = url + "&collectionid=" + collectionid;
+	                    }
+	                    var maxlevel = 1;
+						gotopage(tree,node,maxlevel,url);
+					}
+					else
+					{
+						var url = tree.data("home") + "/views/modules/asset/components/upload/add/start.html";
+	                    var maxlevel = 1;
+	
+						gotopage(tree,node,maxlevel,url);
+					
+						//document.location.href = url; 
+					}
 				}
 				$(".treerow").removeClass("cat-current");
 				$("#"+nodeid+"_row > .treerow").addClass("cat-current");

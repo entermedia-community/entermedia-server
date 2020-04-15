@@ -122,6 +122,7 @@
 #set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 #set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
 #set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
+#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
 
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
 	<div id="${treename}tree" class="emtree emtree-widget" 
@@ -134,6 +135,9 @@
 		data-targetdiv="$!targetdiv" 
 		data-maxlevelclick="$!maxlevelclick"
 		data-customurlprefix="$!customurlprefix"
+		#if( $canviewupload || $canviewcategoryupload)
+			data-customurladdmedia="$!customurladdmedia"
+		#end
 		>
 			<ul  class="open" >
 			#showtreecategories2($rootcategory, 1)
@@ -146,7 +150,6 @@
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
     <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
     #if( $canviewupload || $canviewcategoryupload)
-      	
       	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
       	<li class="divider"></li>
     #end
