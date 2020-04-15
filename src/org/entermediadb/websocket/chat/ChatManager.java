@@ -143,6 +143,10 @@ public class ChatManager implements CatalogEnabled
 
 	public Collection loadCollectionsModified(Collection inCollections, String inUserId)
 	{
+		if(inUserId == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		Collection alltopicsmodified = getMediaArchive().query("chattopiclastmodified").orgroup("collectionid", inCollections).search();
 
 		HashMap<String, Data> modifiedtopics = new HashMap<String, Data>();
