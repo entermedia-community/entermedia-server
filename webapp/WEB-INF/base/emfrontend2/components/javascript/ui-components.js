@@ -517,6 +517,12 @@ uiload = function() {
 		}
 		modaldialog.load(link, options, function() {
 			if (width) {
+				
+				if( width >  $(window).width() )
+				{
+					width =  $(window).width();
+				}
+				
 				$(".modal-lg").css("min-width", width + "px");
 			}
 			if (maxwidth) {
