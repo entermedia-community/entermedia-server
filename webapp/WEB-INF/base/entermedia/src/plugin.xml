@@ -2279,5 +2279,9 @@
 		
 	<bean id="AssetImportModule" class="org.entermediadb.asset.modules.AssetImportModule">
 	</bean>
+
+	<bean id="PayPalModule" class="org.entermediadb.modules.paypal.PayPalModule">
+	</bean>
+
 		
 </beans>

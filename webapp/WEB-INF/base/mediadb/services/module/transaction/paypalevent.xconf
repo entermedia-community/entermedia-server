@@ -1,0 +1,6 @@
+<page>
+	<path-action name="PayPalModule.payEventReceived" alltypes="true" />
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+</page>
