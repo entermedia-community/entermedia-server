@@ -1,0 +1,9 @@
+<page>
+
+	<path-action name="DataEditModule.loadDataForEdit">
+		<property name="searchtype">chatterbox</property>
+	</path-action>
+
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+
+</page>

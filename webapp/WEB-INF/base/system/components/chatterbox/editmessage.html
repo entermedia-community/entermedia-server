@@ -1,0 +1,8 @@
+<form class="ajaxform" id="messageedit" data-targetdiv="chatter-message-$data.id" name="messageedit" action="$applink/components/chatterbox/messagesave.html">
+			
+			<input type="hidden" name="id" value="$data.getId()"/>
+			<input type="hidden" name="save" value="true"/>
+			$context.putPageValue("view", "chatterbox/messageedit")	
+			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+
+</form>

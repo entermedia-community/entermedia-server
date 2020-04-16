@@ -56,6 +56,14 @@ public class DataEditModule extends BaseMediaModule
 
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
 
+	public  Data loadDataForEdit(WebPageRequest inReq) throws Exception
+	{
+		org.openedit.data.Searcher searcher = loadSearcher(inReq);
+		inReq.putPageValue("searcher", searcher);
+		Data data = loadData(inReq);
+		return data;
+	}
+	
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
