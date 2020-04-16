@@ -1824,12 +1824,18 @@ public class ProjectManager implements CatalogEnabled
 		if (collection != null)
 		{
 			builder.exact("librarycollection", collection.getId());
+			if(	!canEditCollection(inReq, collection))
+			{
+				builder.exact("exclusivecontent", false);
+			}
 		}
 		else
 		{
+			builder.exact("exclusivecontent", false);
 			if (selectedlibrary == null || selectedlibrary.equals("*"))
 			{
 				builder.all();
+				
 			}
 			else
 			{
@@ -1847,8 +1853,6 @@ public class ProjectManager implements CatalogEnabled
 		{
 			builder.exact("collectiveproject", topic);
 		}
-		boolean exclusive = Boolean.parseBoolean(inReq.findValue("exclusiveonly"));
-		builder.match("exclusivecontent", String.valueOf(exclusive));
 
 		topuploads = builder.sort("uploaddateDown").search();
 		inReq.putPageValue("topuploads", topuploads);
