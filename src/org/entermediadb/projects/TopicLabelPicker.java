@@ -43,7 +43,16 @@ public class TopicLabelPicker
 					if (other != null) {
 						String userid = (String)other.getValue("owner");
 						User otherUser = getArchive().getUser(userid);
-						return otherUser.getScreenName();
+						
+						if(otherUser != null) {
+						
+							return otherUser.getScreenName();
+						}
+						else {
+							return userid;
+						}
+						
+						
 					}
 				}
 			}
