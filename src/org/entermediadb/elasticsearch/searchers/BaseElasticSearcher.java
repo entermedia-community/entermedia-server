@@ -823,17 +823,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("type", "boolean");
 		}
-		else if (detail.isDataType("number"))
+		else if (detail.isDataType("number") || detail.isDataType("long"))
 		{
 			jsonproperties = jsonproperties.field("type", "long");
 		}
 		else if (detail.isDataType("double"))
 		{
 			jsonproperties = jsonproperties.field("type", "double");
-		}
-		else if (detail.isDataType("long"))
-		{
-			jsonproperties = jsonproperties.field("type", "long");
 		}
 		else if (detail.isDataType("geo_point"))
 		{

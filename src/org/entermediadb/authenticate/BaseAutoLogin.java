@@ -80,7 +80,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 				
 				Data age  = getSearcherManager().getCachedData("system", "systemsettings", "cookie_expiration_age");
 				int maxage = Integer.MAX_VALUE;
-				if( age != null)
+				if( age != null && age.get("value") != null && !age.get("value").isEmpty())
 				{
 					//how many seconds a given cookie should be
 					maxage = Integer.parseInt(age.get("value"));
