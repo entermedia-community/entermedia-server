@@ -85,7 +85,5 @@ $invalue
 #end
 #end
 #end
-#macro(date $inData $inField)
-$context.getDate($inData.getDate($inField))
-#end
+#macro(date $inData $inField)$context.getDate($inData.getDate($inField))#end
 
