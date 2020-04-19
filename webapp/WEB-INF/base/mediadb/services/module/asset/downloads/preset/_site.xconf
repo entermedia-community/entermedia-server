@@ -8,6 +8,13 @@
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preset</property>
 	<property name="sourcepathhasfilename">true</property>	
 	<generator name="convertArchiveDocument"/>
+	
+	<path-action name="Admin.autoLogin" alltypes="true" cancel="true"/>	
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true" cancel="true"/>
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true" cancel="true"/>
+	<path-action name="Admin.loadPermissions"  alltypes="true" cancel="true" />
+	<path-action name="Admin.allowViewing" alltypes="true" forbid="true" cancel="true" />	
+	
 </page>
 
 

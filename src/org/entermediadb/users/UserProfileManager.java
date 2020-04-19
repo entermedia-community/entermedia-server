@@ -78,18 +78,6 @@ public class UserProfileManager
 		
 		UserProfile userprofile = loadProfile(inReq, inCatalogId, appid, inUserName);
 
-		if( userprofile != null)
-		{
-			String lastviewedapp = userprofile.get("lastviewedapp");
-			if(lastviewedapp == null || !appid.equals(lastviewedapp) )
-			{
-				if( !appid.endsWith("mediadb"))
-				{
-					userprofile.setProperty("lastviewedapp", appid);
-					saveUserProfile(userprofile);
-				}	
-			}
-		}
 		return userprofile;
 	}
 
@@ -136,6 +124,7 @@ public class UserProfileManager
 				return userprofile;
 			}
 			userprofile = loadUserProfile(mediaArchive, appid,inUserName);
+
 			inReq.putPageValue("userprofile", userprofile);
 			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 		}
@@ -233,13 +222,14 @@ public class UserProfileManager
 			}
 			userprofile.setSourcePath(inUserName);
 			userprofile.setCatalogId(inCatalogId);
+						
 			try
 			{
 				saveUserProfile(userprofile);
 			}
 			catch( Exception ex)
 			{
-				log.error(ex);
+				log.error("Error saving " + inUserName ,ex);
 			}
 		}
 		userprofile.setUser(user);
@@ -278,6 +268,24 @@ public class UserProfileManager
 		{
 			userprofile.setModules(Collections.EMPTY_LIST);
 		}
+		String lastviewedapp = userprofile.get("lastviewedapp");
+		if(lastviewedapp == null || !appid.equals(lastviewedapp) )
+		{
+			if( !appid.endsWith("mediadb"))
+			{
+				userprofile.setProperty("lastviewedapp", appid);
+				try
+				{
+					saveUserProfile(userprofile);
+				}
+				catch( Exception ex)
+				{
+					log.error("Error saving " + inUserName ,ex);
+				}
+			}	
+		}
+
+		
 		return userprofile;
 	}
 
