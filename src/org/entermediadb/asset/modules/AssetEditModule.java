@@ -1969,8 +1969,10 @@ public class AssetEditModule extends BaseMediaModule
 
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
 			Asset current = archive.getAssetBySourcePath(sourcepath);
+			//log.info(current.getId());
 			//This will create a new one if current was null.
 			 current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
+			 log.info(current.getId());
 			archive.saveAsset(current, inReq.getUser());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
