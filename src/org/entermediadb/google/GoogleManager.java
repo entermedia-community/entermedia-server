@@ -733,16 +733,18 @@ public class GoogleManager implements CatalogEnabled
 		headers.put("authorization", "Bearer " + accesstoken);
 
 		JSONObject json = getConnection().getJson(geturl,headers);
-
-		//chek the size of the file
-		Object existingsize = json.get("size");
-		if( existingsize == null)
+		if( json != null)
 		{
-			
-		}
-		if (file.length() == Long.parseLong( existingsize.toString() ) )
-		{
-			return json;
+			//chek the size of the file
+			Object existingsize = json.get("size");
+			if( existingsize == null)
+			{
+				
+			}
+			if (file.length() == Long.parseLong( existingsize.toString() ) )
+			{
+				return json;
+			}
 		}
 
 		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";

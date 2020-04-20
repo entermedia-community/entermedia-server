@@ -215,6 +215,10 @@ public class HttpSharedConnection
 	{
 		try {
 
+			if (resp.getStatusLine().getStatusCode() == 404)
+			{
+				return null;
+			}
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
 				String returned = EntityUtils.toString(resp.getEntity());

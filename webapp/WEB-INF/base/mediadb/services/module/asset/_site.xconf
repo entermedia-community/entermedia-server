@@ -20,7 +20,5 @@
 			<userprofile property="viewallassets" equals="true" />
 	</permission>
 	
-	<path-action name="PageValue.loadPageVariable" bean="conversionUtil"  alltypes="true" />
-
 
 </page>
