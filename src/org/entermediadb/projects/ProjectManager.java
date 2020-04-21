@@ -1826,7 +1826,6 @@ public class ProjectManager implements CatalogEnabled
 		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
 
 		QueryBuilder builder = getMediaArchive().query("userupload");
-		HitTracker collections = null;
 		HitTracker topuploads = null;
 
 		if (collection != null)
@@ -1847,6 +1846,8 @@ public class ProjectManager implements CatalogEnabled
 			}
 			else
 			{
+				HitTracker collections = null;
+
 				//get all the collections for this Library
 				collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
 				//log.info("done" + collections.size());
@@ -1854,6 +1855,11 @@ public class ProjectManager implements CatalogEnabled
 				{
 					builder.orgroup("librarycollection", collections);
 				}
+				else
+				{
+					builder.exact("librarycollection", "NONE");
+				}
+				
 			}
 		}
 		String topic = inReq.getRequestParameter("topic");
