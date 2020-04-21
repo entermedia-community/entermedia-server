@@ -15,6 +15,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.util.URLUtilities;
 
 public class ChatManager implements CatalogEnabled
 {
@@ -185,5 +186,13 @@ public class ChatManager implements CatalogEnabled
 		//What is left has not been viewed... TODO: Deal with empty topics? put welcome message.. Please enter chat
 		return collectionids;
 
+	}
+	
+	public String escapeMessage(String inMessage) {
+		
+		String escaped = URLUtilities.xmlEscape(inMessage);
+		escaped = escaped.replaceAll("&lt;br&gt;", "<br>");
+		return escaped;
+		
 	}
 }

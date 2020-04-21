@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page> 
+ <property id="name" index="true" multilanguage="false" filter="false" keyword="true" editable="true" stored="true" sortable="true" > 
+    <name> 
+      <language id="de"><![CDATA[Identität]]></language>  
+      <language id="en"><![CDATA[File Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Identité]]></language> 
+    </name> 
+  </property> 
   <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
     <name> 
       <language id="de"><![CDATA[All Fields]]></language>  

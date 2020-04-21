@@ -17,17 +17,19 @@ public void init()
 	Searcher librarysearcher = mediaArchive.getSearcher("library");
 	log.info("User is: " + user.getId() );
 
-	
-	Data library = librarysearcher.searchById("collectives");
-	if( library == null)
+	if( collection.getLibrary() == null)
 	{
-		library = librarysearcher.createNewData();
-		library.setId("collectives");
-		library.setValue("owner", "admin");
-		library.setName("Collectives");
-		librarysearcher.saveData(library);
-	}
-	collection.setValue("library",library.getId());
+		Data library = librarysearcher.searchById("collectives");
+		if( library == null)
+		{
+			library = librarysearcher.createNewData();
+			library.setId("collectives");
+			library.setValue("owner", "admin");
+			library.setName("Collectives");
+			librarysearcher.saveData(library);
+		}
+		collection.setValue("library",library.getId());
+	}	
 	if( collection.get("owner") == null )
 	{
 		collection.setValue("owner",user.getId());
