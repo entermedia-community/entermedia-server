@@ -1,10 +1,9 @@
 #ifnull($hit)
 	#set ($hit = $asset)
 #end
-
-#set( $source = $mediaarchive.asLinkToPreview($hit,"video.mp4")) 
-#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
-##set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480.jpg"))
+$hit
+#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
+#set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
 
 #set( $embed = $context.getRequestParameter("embed") )
 #set( $autoplay = $context.getRequestParameter("autoplay") )
@@ -14,25 +13,18 @@
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
-
-	
-
+	<script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script>
+	<link href="$applink/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
-
-#if( $hit.previewstatus != "complete"))
-	<p>[[Video preview conversion pending]]</p>
-#else
-	<video id="videoplayerfull" class="video-js" width="480" height="320"
-		poster='#esc($thumb)'
-		#if( $autoplay && $autoplay == "true") autoplay #end
+	<video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="position: relative;width: 100%!important; height: 100%!important;"
+		poster='$thumb'
 		#if( $loop && $loop == "true") loop #end
-		controls
-		preload="auto"
-		data-setup=''>
-		<source type="video/mp4" src="#esc($source)">
+		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
+		>
+		<source type="video/mp4" src="$source">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-		<source type="video/flash" src="mp4:#esc($short)">
+		<source type="video/flash" src="mp4:$short">
      	#if( $tracks && !$tracks.isEmpty() )
       		#foreach( $track in $tracks)
      		 <track 
@@ -44,8 +36,7 @@
       		#end
       	#end
 	</video>
-#end	
 </div>
 <script>
-	var myPlayer = videojs('videoplayerfull');
+var myPlayer = videojs('video-$hit.id');
 </script>

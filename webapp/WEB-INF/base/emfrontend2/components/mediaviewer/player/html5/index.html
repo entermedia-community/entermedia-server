@@ -1,7 +1,8 @@
+##THIS IS OLD
 #ifnull($hit)
 	#set ($hit = $asset)
 #end
-
+$hit
 #set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
 
@@ -13,8 +14,8 @@
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
-	<script id="videojs" src="$apphome/components/javascript/videojs/7.2.4/video.js"></script>
-	<link href="$apphome/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
+	<script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script>
+	<link href="$applink/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
 	<video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="position: relative;width: 100%!important; height: 100%!important;"
