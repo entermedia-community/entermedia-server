@@ -1815,6 +1815,14 @@ public class ProjectManager implements CatalogEnabled
 	{
 		//See if we have a station
 		String selectedlibrary = inReq.getRequestParameter("libraryid");
+		if( selectedlibrary == null)
+		{
+			Data library = (Data) inReq.getPageValue("library");
+			if( library != null)
+			{
+				selectedlibrary = library.getId();
+			}
+		}
 		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
 
 		QueryBuilder builder = getMediaArchive().query("userupload");
