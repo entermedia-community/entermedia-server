@@ -1232,7 +1232,7 @@ uiload = function() {
 															id : "_addnew_"
 														};
 														rows
-																.unshift(addnewdata);
+															.unshift(addnewdata);
 													}
 												}
 												// addnew
@@ -1288,11 +1288,154 @@ uiload = function() {
 
 							});
 						}
-					});
+	});
+	//-
+	//List autocomplete multiple and accepting new options
+	lQuery("select.listautocompletemulti")
+	.livequery(
+			function() // select2
+			{
+				var theinput = $(this);
+				var searchtype = theinput.data('searchtype');
+				if (searchtype != undefined) 
+				{
+					var searchfield = theinput.data('searchfield');
+					var catalogid = theinput.data('listcatalogid');
 
+					var foreignkeyid = theinput.data('foreignkeyid');
+					var sortby = theinput.data('sortby');
+
+					var defaulttext = theinput.data('showdefault');
+					if (!defaulttext) {
+						defaulttext = "Search";
+					}
+					var defaultvalue = theinput.data('defaultvalue');
+					var defaultvalueid = theinput
+							.data('defaultvalueid');
+
+					var url = apphome
+							+ "/components/xml/types/autocomplete/datasearch.txt?catalogid="
+							+ catalogid + "&field=" + searchfield
+							+ "&operation=contains&searchtype="
+							+ searchtype;
+					if (defaultvalue != undefined) {
+						url = url + "&defaultvalue=" + defaultvalue
+								+ "&defaultvalueid=" + defaultvalueid;
+					}
+					
+					
+					var dropdownParent = theinput.data('dropdownparent');
+					if (dropdownParent && $("#" + dropdownParent).length) {
+						dropdownParent = $("#" + dropdownParent);
+					}
+					else {
+						dropdownParent = $(this).parent();
+					}
+					var parent = theinput.closest("#main-media-container");
+					if (parent.length) {
+						dropdownParent = parent;
+					} 
+					var parent = theinput.parents(".modal-content");
+					if (parent.length) {
+						dropdownParent = parent;
+					}
+                   
+                    var allowClear = theinput.data('allowclear');
+                    if (allowClear == undefined)  {
+                        allowClear = true;
+                    }
+					theinput
+							.select2({
+								theme : "bootstrap4",
+								placeholder : defaulttext,
+								allowClear : allowClear,
+								minimumInputLength : 0,
+								tags:true,
+								dropdownParent : dropdownParent,
+								ajax : { // instead of writing the
+											// function to execute the
+											// request we use Select2's
+											// convenient helper
+									url : url,
+									dataType : 'json',
+									data : function(params) {
+										var fkv = theinput.closest(
+												"form").find(
+												"#list-" + foreignkeyid
+														+ "value")
+												.val();
+										if (fkv == undefined) {
+											fkv = theinput
+													.closest("form")
+													.find(
+															"#list-"
+																	+ foreignkeyid)
+													.val();
+										}
+										var search = {
+											page_limit : 15,
+											page : params.page
+										};
+										search[searchfield + ".value"] = params.term; // search
+																						// term
+										if (fkv) {
+											search["field"] = foreignkeyid; // search
+																			// term
+											search["operation"] = "matches"; // search
+																				// term
+											search[foreignkeyid
+													+ ".value"] = fkv; // search
+																		// term
+										}
+										if (sortby) {
+											search["sortby"] = sortby; // search
+																		// term
+										}
+										return search;
+									},
+									processResults : function(data,
+											params) { // parse the
+														// results into
+														// the format
+														// expected by
+														// Select2.
+										var rows = data.rows;
+										return {
+											results : rows,
+											pagination : {
+												more : false
+											// (params.page * 30) <
+											// data.total_count
+											}
+										};
+									}
+								},
+								escapeMarkup : function(m) {
+									return m;
+								},
+								templateResult : select2formatResult,
+								templateSelection : select2Selected
+							});
+
+					// TODO: Remove this?
+					theinput.on("change", function(e) {
+						if (e.val == "") // Work around for a bug
+											// with the select2 code
+						{
+							var id = "#list-" + theinput.attr("id");
+							$(id).val("");
+						} 
+				});
+			}
+	});
+	
+
+	
 	lQuery(".sidebarsubmenu").livequery("click", function(e) {
 		e.stopPropagation();
 	});
+	
+	
 
 	lQuery("#mainimageholder")
 			.livequery(

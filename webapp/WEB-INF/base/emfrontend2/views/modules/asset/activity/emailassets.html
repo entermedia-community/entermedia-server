@@ -1,6 +1,6 @@
 <div class="em-rounded">
 #if( $order.userid != $user.getId() )
-Invalid order 
+[[Invalid order]] 
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
