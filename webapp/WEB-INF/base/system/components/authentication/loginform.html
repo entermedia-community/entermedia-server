@@ -1,30 +1,31 @@
 <div class="row justify-content-md-center" style="margin-top: 90px; ">
 
+
+
+#if($user)
+	<p class="text-center"><strong>[[You are currently logged in as]] $user (<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
+#end
+
 #if( $content.allowguestregistration == "true")
 	#set( $allowguest =  true)
 #else
 	#set( $allowguest =  false)
 #end
+#set($providers = $mediaarchive.getList("oauthprovider"))
 
-
-<div class="col-md-3">
-
-#if($user)
-	<p class="text-center"><strong>[[You are currently logged in as]] $user (<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
-#end
-		
-		<p class="text-center"><strong>Create Account and Sign-in with</strong></p>
+#if( $allowguest && $providers )
+<div class="col-md-3" style="border-right:1px solid #999;  ">
+		<p class="text-center"><strong>[[Create Account and Sign-in with]]</strong></p>
         <div style="margin: 30px 0 0 0px;">
 		$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 		</div>
 </div>
+#end
 
-<div class="col" style=" padding:45px 0px 0 45px; border-left:1px solid #999; max-width:500px; ">
+<div class="col" style=" max-width:500px; padding:40px 0px 0 40px; ">
 		
-		<!-- #set($loginok = $context.findValue("loginokpage") ) -->
-		
+		 ##set($loginok = $context.findValue("loginokpage") ) 
 
-	<p class="note">[[Administrator login:]]</p>
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<div class="form-group">

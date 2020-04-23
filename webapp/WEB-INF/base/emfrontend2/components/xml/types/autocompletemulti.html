@@ -24,13 +24,14 @@
 #set( $valueid = "list-${detailid}${idcount}value")
 <select name="${detail.getId()}.value"  
 		id="$valueid"  
-		class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
+		class="listautocompletemulti form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
 		data-searchfield="$searchfield" 
 		data-searchtype="$detail.listId" 
 		data-listcatalogid="$detail.listCatalogId" 
 		data-foreignkeyid="$!detail.foreignkeyid" 
 		data-placeholder="$detail.getText($context)" 
-		data-sortby="$!detail.sort">
+		data-sortby="$!detail.sort"
+		multiple="multiple">
 #if( $foundrow )
   <option value="$!val" selected="selected">#esc($label)</option>
 #end

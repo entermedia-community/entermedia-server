@@ -11,6 +11,16 @@
 	style="margin-right:5px;"
 	title="[[Download]] $asset.name"
 	><i class="fas fa-download"></i> [[Download Original]]</a>
+	
+	#if($canshowadmintoolbar)
+			<a class="btn btn-xs btn-secondary previewcrop-btn" 
+				data-oemaxlevel="1"  
+				target="_new"
+				href="$home/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
+				title="[[File Manager]]"><i class="fas fa-upload"></i></a> 
+	#end
+	
+	
 #end
 <div class="">
 #set($mediadbappid=$mediaarchive.getMediaDbId())
@@ -95,7 +105,6 @@ $context.putPageValue("results", $results)
 							href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
 							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
 					 #end
-					 
 					 ##Share
 					 #if($canembedasset)
 						<a class="btn btn-xs btn-primary emdialog" 
@@ -107,9 +116,11 @@ $context.putPageValue("results", $results)
 					</div>
 				</div>
 			#end
-		#end  ##foreach
+		#end  
+
+
+
 		<div class="clearfix"></div>
-		
 		
 
 		</div>

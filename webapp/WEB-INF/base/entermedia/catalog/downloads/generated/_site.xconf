@@ -6,6 +6,14 @@
 	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
 	<property name="assetrootfolder">/${catalogid}/downloads/generated</property>
 	
+			
+	<path-action name="Admin.autoLogin" alltypes="true" cancel="true"/>	
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true" cancel="true"/>
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true" cancel="true"/>
+	<path-action name="Admin.loadPermissions"  alltypes="true" cancel="true" />
+	<path-action name="Admin.allowViewing" alltypes="true" forbid="true" cancel="true" />	
+	
+	
 </page>
 
 

@@ -7,5 +7,6 @@
 		<boolean value="true" />
 	</permission>	
 	<property name="watermarkplacement">tile</property>
+	
 		
 </page>

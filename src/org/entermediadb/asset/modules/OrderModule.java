@@ -295,6 +295,22 @@ public class OrderModule extends BaseMediaModule
 		String[] fields = inReq.getRequestParameters("field");
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+		
+		String[] sharewithemail = inReq.getRequestParameters("sharewithemail.value");
+		String sharewithemail_plain = "";
+		if (sharewithemail != null) {
+			if (sharewithemail.length == 1) {
+				sharewithemail_plain = sharewithemail[0];
+			}
+			else {
+				for (int j = 0; j < sharewithemail.length; j++) {
+					sharewithemail_plain += sharewithemail[j] + ", ";
+				}
+				sharewithemail_plain = sharewithemail_plain.substring(0, sharewithemail_plain.length() - 2);
+			}
+			inReq.setRequestParameter("sharewithemail.values", sharewithemail_plain);
+		}
+		
 
 		Collection tosave = new ArrayList(Arrays.asList(fields));
 		tosave.remove("status");
