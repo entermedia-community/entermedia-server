@@ -60,6 +60,14 @@ function chatterbox() {
 		//jQuery("#chatter-msg").val("");
 	});
 
+	lQuery(".chatter-save").livequery("click", function(){
+		var button = jQuery(this);
+		var form = button.closest(".chatter-edit-form");
+		var chatdiv = form.find(".chatter-msg-edit");
+		var text = chatdiv.html();
+		form.find(".chatter-msg-input").val(text);
+		form.trigger("submit");
+	});
 	chatopen=true;
 	
 	

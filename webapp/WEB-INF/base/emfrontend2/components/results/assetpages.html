@@ -1,0 +1,20 @@
+#if( $hits && $hits.getTotalPages() >  1  )
+
+	#if ($category)
+		#set($categoryid = $category.getId())
+	#end
+	#set($resultsPage = "$home$apphome/views/search/index.html")
+	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage")
+	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&resultstype=$!resultstype")
+	#if($module)
+		#set($resultsPage = "$resultsPage&module=$module")
+	#end
+	#set($resultsPage = "$resultsPage&pageposition")
+
+
+	$context.putPageValue("resultsPage",$resultsPage)
+	$context.putPageValue("targetdiv","filteredresults")
+	$context.putPageValue("oemaxlevel","1")
+	$pages.include("$apphome/components/results/positions.html",$context)	
+	
+#end
