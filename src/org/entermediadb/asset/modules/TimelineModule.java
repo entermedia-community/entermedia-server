@@ -193,10 +193,12 @@ public class TimelineModule extends BaseMediaModule
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 		Asset asset = getAsset(inReq);
-		
-		Collection tracks = captionsearcher.query().exact("assetid", asset.getId()).sort("sourcelang").search(inReq);
-		inReq.putPageValue("tracks", tracks);
-		inReq.putPageValue("captionsearcher", captionsearcher);
+		if( asset != null)
+		{
+			Collection tracks = captionsearcher.query().exact("assetid", asset.getId()).sort("sourcelang").search(inReq);
+			inReq.putPageValue("tracks", tracks);
+			inReq.putPageValue("captionsearcher", captionsearcher);
+		}
 		
 	}
 	

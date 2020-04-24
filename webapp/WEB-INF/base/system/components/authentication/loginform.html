@@ -1,4 +1,4 @@
-<div class="row justify-content-md-center" style="margin-top: 90px; ">
+<div class="row justify-content-md-center" style="margin: 90px 0; ">
 
 
 
@@ -13,16 +13,18 @@
 #end
 #set($providers = $mediaarchive.getList("oauthprovider"))
 
-#if( $allowguest && $providers )
-<div class="col-md-3" style="border-right:1px solid #999;  ">
+#if( $providers )
+<div class="col-md-3" style="border-right:1px solid #999;  padding:95px 0px 0 40px; ">
+		#if( $allowguest )
 		<p class="text-center"><strong>[[Create Account and Sign-in with]]</strong></p>
-        <div style="margin: 30px 0 0 0px;">
+		#end
+        <div style="text-align: center;">
 		$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 		</div>
 </div>
 #end
 
-<div class="col" style=" max-width:500px; padding:40px 0px 0 40px; ">
+<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
 		
 		 ##set($loginok = $context.findValue("loginokpage") ) 
 

@@ -1,0 +1,49 @@
+##needs 	$hits $resultsPage  $targetdiv
+
+#set($total = $hits.getTotalPages() )
+#if( $total > 1)
+
+<ul class="posresultsnavright">
+		<li class="resultpages">
+		 <ul>
+			#set( $befores = $hits.linksBefore() )
+			#if(!$befores.isEmpty() && $befores.get(0)>1)
+				<li><a class="ajax" data-targetdiv="$targetdiv" data-updateurl="true" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >$total</a></li>	
+			    <li class="ellipsis">...</li>
+			#end
+			#foreach( $before in $befores )
+				#set( $pos = $hits.toPosition($before) )
+				<li><a class="ajax" data-targetdiv="$targetdiv" data-updateurl="true"  data-oemaxlevel="$oemaxlevel"  href="$resultsPage=$pos" >$pos</a></li>		
+			#end
+			#set($pos = $hits.toPosition($hits.getPage()))
+			<li class="current"><a  class="ajax" data-targetdiv="$targetdiv" data-updateurl="true"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$pos" >$pos</a></li>
+			#set( $afters = $hits.linksAfter() )
+			#foreach( $after in $afters )
+				#set( $pos = $hits.toPosition($after) )
+				<li><a  class="ajax" data-targetdiv="$targetdiv" data-updateurl="true" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$pos">$pos</a></li>		
+			#end
+			#set($size=${afters.size()})
+			#set( $size = $size - 1 )
+			#if($size>0  )
+				#if ($afters.get($size)< $hits.getTotalPages() )
+					<li class="ellipsis">...</li>
+					#if($hits.size() < 9999)
+                      <li><a  class="ajax" data-targetdiv="$targetdiv" data-updateurl="true" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >1</a></li>	
+                     #end
+				#end
+			#end
+			#if( $hits.prevPage() )
+				<li class="pagenav"><a class="ajax" data-targetdiv="$targetdiv"  data-updateurl="true"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.toPosition($hits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
+			#end
+			#if ( $hits.nextPage() )
+				<li class="pagenav"><a id="next" class="ajax" data-updateurl="true" data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdiv"  href="$resultsPage=$hits.toPosition($hits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
+			#end
+		</ul>
+	 </li>
+	 <li class="textheader">
+			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
+	</li>			
+	 
+</ul>
+<div class="clearfix"></div>	 
+#end	
