@@ -75,8 +75,13 @@ public void runit()
 		{	
 			projectgoal.setValue("notifiedteam",true);
 			mediaArchive.saveData("projectgoal",projectgoal);
-		}	
-		manager.notifyTopic(collectionid, aUser, subject, message, extra);
+		}
+		
+		String lastUserId = projectgoal.get("lasteditedby");
+		User lastUser = mediaArchive.getUser(lastUserId);
+		
+		manager.notifyTopic(collectionid, lastUser, subject, message, extra);
+		
 	}
 
 }

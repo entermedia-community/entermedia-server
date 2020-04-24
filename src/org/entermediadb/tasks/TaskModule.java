@@ -1285,7 +1285,7 @@ public class TaskModule extends BaseMediaModule
 		Collection users = selectedgoal.getValues("userlikes");
 		selectedgoal.setValue("resolveusers",users);
 		selectedgoal.setValue("projectstatus","completed");
-		
+		selectedgoal.setValue("lastmodifiedby", inReq.getUser());
 		archive.saveData("projectgoal",selectedgoal);
 		addStatus(archive, selectedgoal,inReq.getUserName());
 
