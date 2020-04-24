@@ -1859,7 +1859,6 @@ public class ProjectManager implements CatalogEnabled
 				{
 					builder.exact("librarycollection", "NONE");
 				}
-				
 			}
 		}
 		String topic = inReq.getRequestParameter("topic");
@@ -1868,7 +1867,7 @@ public class ProjectManager implements CatalogEnabled
 			builder.exact("collectiveproject", topic);
 		}
 
-		topuploads = builder.sort("uploaddateDown").search();
+		topuploads = builder.named("topuploads").hitsPerPage(3).sort("uploaddateDown").search(inReq);
 		inReq.putPageValue("topuploads", topuploads);
 
 	}
