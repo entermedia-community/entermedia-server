@@ -32,11 +32,11 @@
                      #end
 				#end
 			#end
-			#if ( $hits.nextPage() )
-				<li class="pagenav"><a id="next" class="ajax" data-updateurl="true" data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdiv"  href="$resultsPage=$hits.toPosition($hits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
-			#end
 			#if( $hits.prevPage() )
 				<li class="pagenav"><a class="ajax" data-targetdiv="$targetdiv"  data-updateurl="true"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.toPosition($hits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
+			#end
+			#if ( $hits.nextPage() )
+				<li class="pagenav"><a id="next" class="ajax" data-updateurl="true" data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdiv"  href="$resultsPage=$hits.toPosition($hits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
 			#end
 		</ul>
 	 </li>
