@@ -134,6 +134,8 @@ public class ChatModule extends BaseMediaModule {
 
 		archive.saveData("chatterbox", chat);
 		
+		inReq.putPageValue("chat",chat);
+		
 		
 	}
 }
