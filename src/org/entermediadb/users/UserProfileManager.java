@@ -99,7 +99,7 @@ public class UserProfileManager
 			if (forcereload == false && userprofile != null)
 			{
 				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-				if( index.equals(userprofile.getIndexId()) )
+				if( index.equals(userprofile.getSettingsGroupIndexId()) )
 				{
 					inReq.putPageValue("userprofile", userprofile);
 					return userprofile;
@@ -118,7 +118,7 @@ public class UserProfileManager
 			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 
-			if( forcereload == false && userprofile != null && index.equals(userprofile.getIndexId()) )
+			if( forcereload == false && userprofile != null && index.equals(userprofile.getSettingsGroupIndexId()) )
 			{
 				inReq.putPageValue("userprofile", userprofile);
 				return userprofile;
@@ -284,7 +284,8 @@ public class UserProfileManager
 				}
 			}	
 		}
-
+		String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
+		userprofile.setSettingsGroupIndexId(index);
 		
 		return userprofile;
 	}
