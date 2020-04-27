@@ -131,9 +131,7 @@ public class ChatModule extends BaseMediaModule {
 		String message = inReq.getRequestParameter("chatter-msg");
 		chat.setValue("message",message);
 		inReq.setRequestParameter("channel",channel);
-
 		archive.saveData("chatterbox", chat);
-		
 		inReq.putPageValue("chat",chat);
 		
 		
