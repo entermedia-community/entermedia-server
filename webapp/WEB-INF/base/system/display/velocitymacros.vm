@@ -86,4 +86,5 @@ $invalue
 #end
 #end
 #macro(date $inData $inField)$context.getDate($inData.getDate($inField))#end
-
+#macro(dash $intext)#set( $text = $url_util.xmlEscape($intext) )
+$text.replaceAll(" ","-")#end
