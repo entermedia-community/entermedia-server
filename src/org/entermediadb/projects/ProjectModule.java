@@ -34,8 +34,10 @@ import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.servlet.SiteData;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.URLUtilities;
 
 public class ProjectModule extends BaseMediaModule 
 {
@@ -1449,5 +1451,18 @@ Server ProjectModule.uploadFile
 		labels.setLibraryCollection(collection);
 		inReq.putPageValue("topiclabels", labels);
 	}
-	
+
+	public void loadLibraryByDomain(WebPageRequest inReq)
+	{
+		URLUtilities utils = (URLUtilities)inReq.getPageValue("url_util");
+		if( utils != null)
+		{
+			String subdomain = utils.getSubDomain();
+			MediaArchive archive = getMediaArchive(inReq);
+			
+			//Cache
+			Data library = archive.getCachedData("library", subdomain);
+			inReq.putPageValue("library",library);
+		}
+	}
 }
