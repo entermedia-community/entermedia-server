@@ -1631,14 +1631,14 @@ uiload = function() {
 				
 			});
 			$("#filterstoggle").show( "fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			
 		}
 		else {
 			//open
 			$("#filterstoggle").hide("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
@@ -1647,7 +1647,7 @@ uiload = function() {
 			});
 			
 		}
-	
+		
 		return false;
 	});
 	//Left Column Toggle
@@ -1661,7 +1661,7 @@ uiload = function() {
             $(".col-main").removeClass("leftopen");
             $(".pushcontent").css("margin-left",0);
             $("#lefttoggle").show("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			saveProfileProperty("leftbarstatus",false,function(){
 				
@@ -1679,12 +1679,13 @@ uiload = function() {
             	$(".pushcontent").css("margin-left", colleftwidth+"px");
             }
             $("#lefttoggle").hide("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			saveProfileProperty("leftbarstatus",true,function(){
 				
 			});
 		}
+		
 		return false;
 	});
 	
@@ -1716,6 +1717,7 @@ uiload = function() {
 			}
 			});
 		}
+		$(window).trigger("resize");
 	});
 	
 
@@ -1804,7 +1806,19 @@ var resizecolumns = function() {
 	}
 	
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)")
-	
+}
+
+
+var resizegallery = function() {
+	var container = $("#emslidesheet");
+	if (container.length) {
+		var containerw = container.width();
+		var boxes = Math.floor(containerw/230);
+		var boxw = Math.floor(containerw/boxes)-12;
+		$("#emslidesheet .emthumbbox").width(boxw);
+		
+	}
+}
 	//Moved From settings.js
 	
 	lQuery('#datamanager-workarea th.sortable').livequery("click",function()
@@ -1990,13 +2004,15 @@ var resizecolumns = function() {
 	});
 		
 	
-}
+
 
 $(document).ready(function() {
 	uiload();
 	resizecolumns();
+	resizegallery();
 });
 
 $(window).on('resize',function(){
 	resizecolumns();
+	resizegallery();
 });
