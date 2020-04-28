@@ -359,18 +359,18 @@ public class AdminModule extends BaseMediaModule
 			}
 		}
 		
+		String sendTo = inReq.getRequestParameter("loginokpage");
+		if( sendTo == null)
+		{
+			sendTo = inReq.getRequest().getHeader("REFERER");
+		}
+		if (sendTo != null && !sendTo.contains("authentication") && sendTo.startsWith(inReq.getSiteRoot()) && (sendTo.endsWith("html") || sendTo.endsWith("jpg")) )
+		{ //the original page someone might have been on
+			inReq.putSessionValue("fullOriginalEntryPage", sendTo);
+		}
+		
 		if (account == null && email == null && inReq.getRequest() != null)
 		{
-			String sendTo = inReq.getRequestParameter("loginokpage");
-			if( sendTo != null)
-			{
-				sendTo = inReq.getRequest().getHeader("REFERER");
-			}
-			if (sendTo != null && !sendTo.contains("authentication") && sendTo.startsWith(inReq.getSiteRoot()) && (sendTo.endsWith("html") || sendTo.endsWith("jpg")) )
-			{ //the original page someone might have been on
-				inReq.putSessionValue("fullOriginalEntryPage", sendTo);
-			}
-			
 			return;
 		}
 		else
