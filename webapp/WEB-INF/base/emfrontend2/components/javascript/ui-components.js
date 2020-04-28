@@ -1623,37 +1623,36 @@ uiload = function() {
 
 	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
-		
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
 			$(".col-main").removeClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",false,function(){
-				
+				saveProfileProperty("filtersbarstatus",false,function(){
 			});
 			$("#filterstoggle").show( "fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			
 		}
 		else {
 			//open
 			$("#filterstoggle").hide("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",true,function(){
-				
 			});
-			
 		}
-	
 		return false;
 	});
+	
 	//Left Column Toggle
 	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
 		var colleftwidth = $("#col-left").data("colleftwidth");
+		if (!$.isNumeric(colleftwidth)) {
+			colleftwidth = $("#col-left").width();
+		}
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
 			$("#col-left").removeClass("leftopen");
@@ -1661,7 +1660,7 @@ uiload = function() {
             $(".col-main").removeClass("leftopen");
             $(".pushcontent").css("margin-left",0);
             $("#lefttoggle").show("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			saveProfileProperty("leftbarstatus",false,function(){
 				
@@ -1669,7 +1668,6 @@ uiload = function() {
 		}
 		else {
 			//open
-            
             $("#col-left").addClass("leftopen");
             if (colleftwidth) {
             	$("#col-left").css("width", colleftwidth);
@@ -1679,12 +1677,13 @@ uiload = function() {
             	$(".pushcontent").css("margin-left", colleftwidth+"px");
             }
             $("#lefttoggle").hide("fast", function() {
-				$(document).trigger( "domchanged" );
+				$(document).trigger( "resize" );
   			});
 			saveProfileProperty("leftbarstatus",true,function(){
 				
 			});
 		}
+		
 		return false;
 	});
 	
@@ -1716,6 +1715,7 @@ uiload = function() {
 			}
 			});
 		}
+		$(window).trigger("resize");
 	});
 	
 
@@ -1737,7 +1737,61 @@ uiload = function() {
 		}
 	});
 	
-	$('[data-toggle="tooltipb"]').tooltip()
+	$('[data-toggle="tooltipb"]').tooltip();
+	
+	
+	//Sidebar Custom Width
+	lQuery(".col-left-resize").livequery(function()	{
+		var slider = $(this);
+		var column = $(this).closest(".col-left");
+		var content = $(".pushcontent");
+		
+		var clickspot;
+		var startwidth;
+		var width;
+		
+		
+		slider.on("mousedown", function(event) {
+			if (!clickspot) {
+				clickspot = event;
+				startwidth = column.width();
+				return false;
+			}
+			
+		});
+		$(window).on("mouseup", function(event)
+		{
+			if( clickspot )
+			{
+				clickspot = false;
+				if (width != "undefined") {
+					saveProfileProperty("colleftwidth",width,function(){
+						$(document).trigger("resize");
+					});
+				}
+				return false;
+			}
+		});
+		$(window).on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				width = 0;
+				var changeleft = event.pageX - clickspot.pageX;
+				width = startwidth + changeleft;
+				if( width < 220 )
+				{
+					width = 220;
+				}
+				column.width(width);
+				column.data("colleftwidth",width);
+				$(".pushcontent").css("margin-left",width+"px");
+				event.preventDefault();
+				$(document).trigger("resize");
+				return false;
+			}	
+		});	
+	});
 
 }// uiload
 
@@ -1803,200 +1857,152 @@ var resizecolumns = function() {
 		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	}
 	
-	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)")
-	
-	//Moved From settings.js
-	
-	lQuery('#datamanager-workarea th.sortable').livequery("click",function()
-	      {
-	      		var table = $("#main-results-table");
-                var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
-                var column = $(this);
-                var fieldid = column.data("fieldid");
-				var apphome = app.data("home") + app.data("apphome");
-
-                if ( column.hasClass('currentsort') ) 
-                {
-                    if ( column.hasClass('up') ) {
-						args.sortby=fieldid + 'Down';
-                    } else {
-                    	args.sortby=fieldid + 'Up';
-                    }	         
-                } else {
-                    $('#datamanager-workarea th.sortable').removeClass('currentsort');
-                   column.addClass('currentsort');
-                   column.addClass("up");
-                   args.sortby=fieldid + 'Up';
-                }
-                $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
-        });
-
-	function replaceAll(str, find, replace) {
-		find = escapeRegExp(find);
-	    return str.replace(new RegExp(find, 'g'), replace);
-	}
-	
-	function escapeRegExp(str) {
-	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-	}
-	lQuery('.sortviews').livequery(function()
-		{
-		var sortable = $(this);
-		var path = sortable.data("path");
-		if (typeof sortable.sortable == "function") {
-			sortable.sortable({
-				axis: 'y',
-				cancel: ".no-sort",
-			    update: function (event, ui) 
-			    {
-					//debugger;
-			        var data = sortable.sortable('serialize');
-			        data = replaceAll(data,"viewid[]=","|");
-			        data = replaceAll(data,"&","");
-			        data = data.replace("|","");
-			        var args = {};
-			        args.items = data;
-			        args.viewpath = sortable.data("viewpath");
-			        args.searchtype = sortable.data("searchtype");
-			        args.assettype = sortable.data("assettype");
-			        args.viewid = sortable.data("viewid");
-			        $.ajax({
-			            data: args,
-			            type: 'POST',
-			            url: path 		            
-			        });
-			    },
-		        stop: function (event, ui) 
-		        {
-		            //db id of the item sorted
-		            //alert(ui.item.attr('plid'));
-		            //db id of the item next to which the dragged item was dropped
-		            //alert(ui.item.prev().attr('plid'));
-		        }
-		     });   
-		}
-	});
-	var listtosort = $('.listsort');
-	if (typeof listtosort.sortable == "function") {
-		listtosort.sortable({
-				  
-				axis: 'y',
-				cancel: ".no-sort",
-			    stop: function (event, ui) {
-			  
-					var path = $(this).data("path");
-			    	
-			        var data = "";
-
-			       // var ids = new Array();
-			        $(this).find('li').each(function(index) 
-			        {
-			        	if( !$(this).hasClass("no-sort"))
-			        	{
-			        		var id = $(this).attr("id");
-			        		data = data + "ids=" + id + "&";
-			        	}
-					});
-			        // POST to server using $.post or $.ajax
-			        $.ajax({
-			        	data: data,
-			            type: 'POST',
-			            url: path 		            
-			        });
-			    }
-		});
-	}
-	
-	//Sidebar Custom Width
-	lQuery(".col-left-resize").livequery(function()	{
-		var slider = $(this);
-		var column = $(this).closest(".col-left");
-		var content = $(".pushcontent");
-		
-		var clickspot;
-		var startwidth;
-		var width;
-		
-		
-		slider.on("mousedown", function(event) {
-			if (!clickspot) {
-				clickspot = event;
-				startwidth = column.width();
-				return false;
-			}
-			
-		});
-		$(window).on("mouseup", function(event)
-		{
-			if( clickspot )
-			{
-				clickspot = false;
-				if (width != "undefined") {
-					saveProfileProperty("colleftwidth",width,function(){
-						$(document).trigger("domchanged");
-					});
-				}
-				return false;
-			}
-		});
-		slider.on("mouseleaveXX", function(event)
-		{
-			if( clickspot )
-			{
-			clickspot = false;
-			if (width != "undefined") {
-				saveProfileProperty("colleftwidth",width,function(){
-					$(document).trigger("domchanged");
-				});
-			}
-			return false;
-			}
-		});
-		$(window).on("mousemove", function(event)
-		{
-			if( clickspot )
-			{
-				width = 0;
-				var changeleft = event.pageX - clickspot.pageX;
-				width = startwidth + changeleft;
-				if( width < 220 )
-				{
-					width = 220;
-				}
-				column.width(width);
-				column.data("colleftwidth",width);
-				$(".pushcontent").css("margin-left",width+"px");
-				event.preventDefault();
-				return false;
-			}	
-		});	
-	});
-	
-	
-	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
-		  e.preventDefault();
-		  e.stopPropagation();
-		  var btn = $(this);
-		  var copytextcontainer = btn.data("copytext");
-		  var copyText = $("#"+copytextcontainer);
-	      copyText.select();
-		  document.execCommand("copy");
-		  var alertdiv = btn.data("targetdiv");
-		  if (alertdiv) {
-			  console.log(alertdiv);
-			  $("#"+alertdiv).show().fadeOut(2000);
-		  }
-		  
-	});
-		
-	
+	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
 }
+
+
+var resizegallery = function() {
+	var container = $("#emslidesheet");
+	if (container.length) {
+		var containerw = container.width();
+		var boxes = Math.floor(containerw/230);
+		var boxw = Math.floor(containerw/boxes)-12;
+		$("#emslidesheet .emthumbbox").width(boxw);
+		
+	}
+}
+
+
+
+
+//Moved From settings.js
+lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
+  		var table = $("#main-results-table");
+        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
+        var column = $(this);
+        var fieldid = column.data("fieldid");
+		var apphome = app.data("home") + app.data("apphome");
+
+        if ( column.hasClass('currentsort') ) 
+        {
+            if ( column.hasClass('up') ) {
+				args.sortby=fieldid + 'Down';
+            } else {
+            	args.sortby=fieldid + 'Up';
+            }	         
+        } else {
+            $('#datamanager-workarea th.sortable').removeClass('currentsort');
+           column.addClass('currentsort');
+           column.addClass("up");
+           args.sortby=fieldid + 'Up';
+        }
+        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
+});
+
+function replaceAll(str, find, replace) {
+	find = escapeRegExp(find);
+    return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+	
+lQuery('.sortviews').livequery(function()
+	{
+	var sortable = $(this);
+	var path = sortable.data("path");
+	if (typeof sortable.sortable == "function") {
+		sortable.sortable({
+			axis: 'y',
+			cancel: ".no-sort",
+		    update: function (event, ui) 
+		    {
+				//debugger;
+		        var data = sortable.sortable('serialize');
+		        data = replaceAll(data,"viewid[]=","|");
+		        data = replaceAll(data,"&","");
+		        data = data.replace("|","");
+		        var args = {};
+		        args.items = data;
+		        args.viewpath = sortable.data("viewpath");
+		        args.searchtype = sortable.data("searchtype");
+		        args.assettype = sortable.data("assettype");
+		        args.viewid = sortable.data("viewid");
+		        $.ajax({
+		            data: args,
+		            type: 'POST',
+		            url: path 		            
+		        });
+		    },
+	        stop: function (event, ui) 
+	        {
+	            //db id of the item sorted
+	            //alert(ui.item.attr('plid'));
+	            //db id of the item next to which the dragged item was dropped
+	            //alert(ui.item.prev().attr('plid'));
+	        }
+	     });   
+	}
+});
+	
+var listtosort = $('.listsort');
+if (typeof listtosort.sortable == "function") {
+	listtosort.sortable({
+			axis: 'y',
+			cancel: ".no-sort",
+		    stop: function (event, ui) {
+		  
+				var path = $(this).data("path");
+		    	
+		        var data = "";
+
+		       // var ids = new Array();
+		        $(this).find('li').each(function(index) 
+		        {
+		        	if( !$(this).hasClass("no-sort"))
+		        	{
+		        		var id = $(this).attr("id");
+		        		data = data + "ids=" + id + "&";
+		        	}
+				});
+		        // POST to server using $.post or $.ajax
+		        $.ajax({
+		        	data: data,
+		            type: 'POST',
+		            url: path 		            
+		        });
+		    }
+	});
+}
+	
+	
+lQuery( ".copytoclipboard" ).livequery("click", function(e) {
+	  e.preventDefault();
+	  e.stopPropagation();
+	  var btn = $(this);
+	  var copytextcontainer = btn.data("copytext");
+	  var copyText = $("#"+copytextcontainer);
+      copyText.select();
+	  document.execCommand("copy");
+	  var alertdiv = btn.data("targetdiv");
+	  if (alertdiv) {
+		  console.log(alertdiv);
+		  $("#"+alertdiv).show().fadeOut(2000);
+	  }
+	  
+});
+		
+	
+
 
 $(document).ready(function() {
 	uiload();
 	resizecolumns();
+	resizegallery();
 });
 
 $(window).on('resize',function(){
 	resizecolumns();
+	resizegallery();
 });
