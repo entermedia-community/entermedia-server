@@ -610,13 +610,6 @@ span.glyphicon-triangle-left.overlay-nav {
     width:220px;
 }
 
-.col-main.leftopen .emgallery .emthumbbox,
-.col-main.filtersopen .emgallery .emthumbbox { 
-	width:220px;
-}
-.col-main.leftopen.filtersopen .emgallery .emthumbbox {
-	width:220px;
-}
 
 .emgallery .emthumbimage {
 	position:relative;
@@ -631,7 +624,6 @@ span.glyphicon-triangle-left.overlay-nav {
 
 .emgallery .gallery-caption {
     text-align: left;
-    
     border-top: 1px solid #ddd;
     margin: 0;
     padding: 2px 10px;
