@@ -12,10 +12,8 @@
 #set( $sharelink = "$prefix$home$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true")
 #end
 
-<div>
-<strong>[[Select code then right click to copy!!!!!!]]</strong>
-</div>
 #if ( $cansharetosocialmedia  && !$multi)
+<h5>[[Social Networks]]</h5>
 		##set ( $sharelink = "$context.siteRoot$home$apphome/views/share/viewer.html?sourcepath=$asset.sourcepath&embed=true" )
 		<div id="share">
 			<!-- AddThis Button BEGIN -->
@@ -64,7 +62,13 @@
 <!-- AddThis Button END -->
 		</div>
 #end
-<textarea class="embedlinktextarea form-control" type=text onclick="this.select();" readonly="readonly" rows="6" cols="45">
+<h5>[[Embed]] 
+		<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="embedcode" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+			</h5> 
+<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="6" cols="45">
 #if( $type == "audio" )
 <iframe src="$sharelink" width="350" height="150" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
 #else 
@@ -75,6 +79,19 @@
 <hr>
 <div style="position:relative;">
 	<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+	
+	#set( $mediaviewerlink = "$prefix$home$apphome/views/modules/asset/index.html#asset-${asset.getId()}")
+	<h5>[[Media Viewer]]
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="mediaviewerlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</h5> 
+	<p class="hyphenate">
+	<a href="$mediaviewerlink">$mediaviewerlink</a>
+	<input style="position:absolute; top:-1000px;" id="mediaviewerlink" value="$mediaviewerlink" />
+	</p>
+	
 	#set( $collectionid = $context.getRequestParameter("collectionid"))
 	#if( $collectionid )
 		
