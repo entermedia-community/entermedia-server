@@ -284,4 +284,14 @@ public String percent(String inVal){
 	{
 	      return (d > (int) d) ? (int) d + 1 : (int) d;
 	 }
+	
+	public String subtract(Object inOne, Object inTwo)
+	{
+		double d1 = Double.parseDouble(inOne.toString());
+		double d2 = Double.parseDouble(inTwo.toString());
+		double sub = d1 - d2;
+		String val = toString(sub,2);
+		return val;
+	}
+	
 }

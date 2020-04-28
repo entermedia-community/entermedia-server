@@ -153,18 +153,6 @@ public abstract class BaseAssetSource implements AssetSource
 
 
 
-	protected String getSourcePath(Asset inAsset)
-	{
-		String alternative = inAsset.get("archivesourcepath");
-		if( alternative == null)
-		{
-			alternative = inAsset.getSourcePath();
-		}
-		return alternative;
-	}
-
-
-
 	public FolderMonitor getFolderMonitor()
 	{
 		return fieldFolderMonitor;
@@ -342,7 +330,7 @@ public abstract class BaseAssetSource implements AssetSource
 	
 	protected File getFile(Asset inAsset)
 	{
-		String sp = getSourcePath(inAsset);
+		String sp = inAsset.getPath();
 		sp = sp.substring(getFolderPath().length() + 1);
 		String abpath = getExternalPath() + "/" + sp;
 		String primaryname = inAsset.getPrimaryFile();

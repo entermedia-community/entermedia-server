@@ -29,6 +29,8 @@ public class FireBase {
 		//https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages
 		
 		//https://firebase.google.com/docs/cloud-messaging/http-server-ref
+		
+		//TODO: Add to catalog settings
 		HttpPost post = new HttpPost("https://fcm.googleapis.com/v1/projects/entermediadb-177816/messages:send");
 		post.setHeader("Content-type", "application/json");
 		post.setHeader("Authorization", "Bearer " + inToken); //"AIzaSyBSxxxxsXevRq0trDbA9mhnY_2jqMoeChA"
@@ -47,9 +49,9 @@ public class FireBase {
 		data.put("collectionid",inChannel);
 		if(inUser != null)
 		{
-		data.put("userid",inUser.getId()); 
-		data.put("useremail",inUser.getEmail()); 
-		data.put("userlabel",inUser.getScreenName()); 
+			data.put("userid",inUser.getId()); 
+			data.put("useremail",inUser.getEmail()); 
+			data.put("userlabel",inUser.getScreenName()); 
 		}
 		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();

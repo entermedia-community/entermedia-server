@@ -830,8 +830,12 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public String getPath()
 	{
-		String archivesourcepath = get("archivesourcepath"); 
-		return archivesourcepath != null ? archivesourcepath : getSourcePath();
+		String alternative = get("archivesourcepath");
+		if( alternative == null)
+		{
+			alternative = getSourcePath();
+		}
+		return alternative;
 	}
 
 	public void removeChildCategory(Category inCatParent)

@@ -45,91 +45,6 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(OriginalPuller.class);
 
-	//Used by both pulls
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated)
-	{
-		String url = node.get("baseurl");
-		try
-		{
-			Map response = (Map) parsed.get("response");
-
-			Collection generated = (Collection) parsed.get("generated");
-			if (generated == null || generated.isEmpty())
-			{
-				return;
-			}
-			for (Iterator iterator2 = generated.iterator(); iterator2.hasNext();)
-			{
-				Map changed = (Map) iterator2.next();
-				String sourcepath = (String) changed.get("sourcepath");
-				//List generated media and compare it
-								
-				if (!skipgenerated)
-				{
-					Collection files = (Collection) changed.get("files");
-					if (files != null)
-					{
-						if (files.isEmpty())
-						{
-							log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
-							return;
-						}
-						for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
-						{
-							Map filelisting = (Map) iterator3.next();
-							//Compare timestamps
-							//String lastmodified = (String) filelisting.get("lastmodified");
-							long datetime = (long) filelisting.get("lastmodified");
-							String genpath = (String) filelisting.get("localpath");
-							String remotecatalogid = (String) response.get("catalogid");
-							String generatefolder = remotecatalogid + "/generated";
-							String endpath = genpath.substring(genpath.indexOf(generatefolder) + generatefolder.length());
-							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated" + endpath;
-							ContentItem found = inArchive.getContent(savepath);
-
-							if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
-							{
-								log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
-
-								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
-								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-								String tmpfilename = PathUtilities.extractFileName(endpath);
-								String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
-								HttpResponse genfile = inConnection.sharedPost(path, inParams);
-								StatusLine filestatus = genfile.getStatusLine();
-								if (filestatus.getStatusCode() != 200)
-								{
-									log.error("Could not download generated " + filestatus + " " + path);
-									throw new OpenEditException("Could not download generated " + filestatus + " " + path);
-								}
-
-								//Save to local file
-								log.info("Saving :" + endpath + " URL:" + path);
-								InputStream stream = genfile.getEntity().getContent();
-								//Change the timestamp to match
-								File tosave = new File(found.getAbsolutePath());
-								tosave.getParentFile().mkdirs();
-								FileOutputStream fos = new FileOutputStream(tosave);
-								filler.fill(stream, fos);
-								filler.close(stream);
-								filler.close(fos);
-								tosave.setLastModified(datetime);
-							}
-						}
-					}
-				}
-			}
-		}
-		catch (Exception ex)
-		{
-			log.error("Could not download files " + url, ex);
-			if (ex instanceof OpenEditException)
-			{
-				throw (OpenEditException) ex;
-			}
-			throw new OpenEditException(ex);
-		}
-	}
 	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
 		Data node = loadMasterDataForAsset(inArchive, inAsset);
@@ -253,12 +168,6 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		}
 
 	}
-
-	
-	
-
-	
-	
 
 	//Send in pages
 	
@@ -435,7 +344,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
 				}
 
-				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
+				//JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 				
 				counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
 			}
@@ -477,7 +386,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 					//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
 					String sourcepath = (String) filelisting.get("sourcepath");
-					String tmpfilename = PathUtilities.extractFileName(sourcepath);
+					
+					//TODO: This does not seem right for folder based assets 
 					String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/originals/" + sourcepath + "/" + found.getName());
 					HttpResponse genfile = inConnection.sharedGet(path);
 					StatusLine filestatus = genfile.getStatusLine();
@@ -565,17 +475,24 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					details.put("id",asset.getId());
 					details.put("sourcepath",asset.getSourcePath());
 					details.put("isfolder",asset.isFolder());
-					
-					ContentItem item = inArchive.getOriginalContent(asset);
-					String originalspath = item.getPath();
-					details.put("path",item.getPath());
-					details.put("filename",item.getName());
-					String starts = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
-					originalspath = originalspath.substring(starts.length());
-					details.put("originalspath",originalspath);
-					details.put("filesize",String.valueOf(item.getLength()));
-					details.put("filedate",item.getLastModified());
-					
+
+					//Make an array of original files
+					JSONArray array = new JSONArray();	
+					details.put("files",array);
+					if( asset.isFolder() )
+					{
+						Collection items = inArchive.listOriginalFiles(asset.getPath());
+						for (Iterator iterator = items.iterator(); iterator.hasNext();)
+						{
+							ContentItem item = (ContentItem) iterator.next();
+							addFileToArray(inArchive, array, item);
+						}
+					}
+					else
+					{
+						ContentItem item = inArchive.getOriginalContent(asset);
+						addFileToArray(inArchive, array, item);
+					}
 					results.add(details);
 				}
 				finaldata.put("results", results);
@@ -595,7 +512,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				//The server will return a list of files it needs
 				JSONObject json = inConnection.parseJson(response2);
 				
-				Map responseheader = (Map)json.get("response");
+				Map responseheader = (Map)json.get("response");  //These are files they want us to send them
 				
 				String status = (String)responseheader.get("status");
 				if( status.equals("error"))
@@ -611,14 +528,14 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				if( toupload != null)
 				{
 					//TODO: Use pagination to do a few at a time
+					String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
 					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 					{
 						JSONObject fileinfo = (JSONObject) iterator.next();
-						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
 						
-						String localpath = (String)fileinfo.get("path"); //On the remote machie
+						String localpath = (String)fileinfo.get("path"); //Path on the remote machie
 						
-						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
+						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());  //May not be needed
 						ContentItem item = inArchive.getContent(reallocalpath);
 						File tosend = new File(item.getAbsolutePath());
 
@@ -655,8 +572,23 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		
 	}
 
+	protected void addFileToArray(MediaArchive inArchive, JSONArray inArray, ContentItem item)
+	{
+		JSONObject detail = new JSONObject();
+		detail.put("isfolder",item.isFolder());
+		String originalspath = item.getPath();
+		detail.put("path",item.getPath());
+		detail.put("filename",item.getName());
+		String starts = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
+		originalspath = originalspath.substring(starts.length());
+		detail.put("originalspath",originalspath);
+		detail.put("filesize",String.valueOf(item.getLength()));
+		detail.put("filedate",item.getLastModified());
+		inArray.add(detail);
+	}
+
 	/**
-	 * Send a list of files I have and see if you need em
+	 * STEP 1 Send a list of files I have and see if you need em
 	 * @param inArchive
 	 * @param inJsonRequest
 	 * @return
@@ -675,29 +607,35 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		for (Iterator iterator = results.iterator(); iterator.hasNext();)
 		{
 			JSONObject originaldata = (JSONObject) iterator.next();
-			String assetsouercepath = (String)originaldata.get("sourcepath");
+			//String assetsouercepath = (String)originaldata.get("sourcepath");
 			
 			String remotemasterclusterid = (String) originaldata.get("mastereditclusterid");
 //			if( inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
 //			{
-//				log.info("Dont download non-master generated files?");
+//				log.info("Skipping originals download on non-master generated files?");
 //				continue;
-//			}
-			
-			///TODO: See if we have a copy already
-			//long longedited = Long.parseLong((String)originaldata.get("filedate"));
-			long size = Long.parseLong((String)originaldata.get("filesize"));
-			String originalpath = (String) originaldata.get("path");
-			
-			String savepath  = originalpath.replace(remotecatalogid, inArchive.getCatalogId());
-			ContentItem found = inArchive.getContent(savepath);
+//			}  Wait we need these to work
 
-			if (!found.exists() || found.getLength() != size)
+			JSONArray files = (JSONArray)originaldata.get("files");
+			if(files != null)
 			{
-				//download it
-				JSONObject contentdetails = new JSONObject();
-				contentdetails.put("path",originalpath);
-				toupload.add(contentdetails);
+				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();)
+				{
+					JSONObject contentfile = (JSONObject) iterator2.next();
+					long size = Long.parseLong((String)contentfile.get("filesize"));
+					String originalpath = (String) contentfile.get("path");
+					
+					String savepath  = originalpath.replace(remotecatalogid, inArchive.getCatalogId());
+					ContentItem found = inArchive.getContent(savepath);
+		
+					if (!found.exists() || found.getLength() != size)  //Missing files
+					{
+						//download it
+						JSONObject contentdetails = new JSONObject();
+						contentdetails.put("path",originalpath);  //This is their path name
+						toupload.add(contentdetails);
+					}
+				}
 			}
 		}
 

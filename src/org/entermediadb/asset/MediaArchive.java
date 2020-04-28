@@ -1967,6 +1967,14 @@ public class MediaArchive implements CatalogEnabled
 		return children;
 	}
 	
+	public Collection<ContentItem> listOriginalFiles(String  inSourcePath)
+	{
+		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inSourcePath + "/";
+		Collection<ContentItem> children = new ArrayList();
+		findItems(path, children);
+		return children;
+	}
+
 	
 
 	protected void findItems(String path, Collection<ContentItem> children)

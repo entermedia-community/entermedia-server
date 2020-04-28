@@ -67,7 +67,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
-		String alternative = getSourcePath(inAsset);
+		String alternative = inAsset.getPath();
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )

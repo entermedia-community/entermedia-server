@@ -11,7 +11,7 @@
 #else
 	#set( $genname = $preset.get("generatedoutputfile") )
 	#if($genname)
-		#set( $link = "$home/$catalogid/downloads/preset/${asset.sourcePath}/${genname}")
+		#set( $link = "$home/$catalogid/downloads/preset/${asset.getSourcePath()}/${genname}")
 		<path>$link</path>
 	#else
 		<msg>Error: unable to find preset or generatedoutputfile of preset id $context.findValue("presetid")</msg>

@@ -128,6 +128,14 @@ public class UserProfileManager
 			inReq.putPageValue("userprofile", userprofile);
 			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 		}
+		catch( OpenEditException ex)
+		{
+			if( userprofile != null)
+			{
+				inReq.putPageValue("userprofile", userprofile); //Better to grab something than nothing
+				log.error("Could not lock user profile table " + inUserName);
+			}
+		}
 		finally
 		{
 			mediaArchive.releaseLock(lock);
