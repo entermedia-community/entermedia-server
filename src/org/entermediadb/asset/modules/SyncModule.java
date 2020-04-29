@@ -211,6 +211,8 @@ public class SyncModule extends BaseMediaModule
 		ScriptLogger logger = (ScriptLogger) inReq.getPageValue("log");
 
 		pullManager.getDataPuller().pull(archive, logger);
+		archive.fireGeneralEvent(inReq.getUser(), "cluster", "pulloriginals", null);
+		
 
 	}
 	public void pullRecentUploads(WebPageRequest inReq)
