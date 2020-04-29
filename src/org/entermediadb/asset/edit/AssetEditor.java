@@ -3,6 +3,7 @@ package org.entermediadb.asset.edit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
@@ -16,6 +17,7 @@ import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.ValuesMap;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
 
 public class AssetEditor
@@ -180,6 +182,14 @@ public class AssetEditor
 				Page tempLocation = pageManager.getPage(oldAssets.getPath() + ".tmp");
 				pageManager.movePage(oldAssets, tempLocation);
 				pageManager.movePage(tempLocation, newAssets);
+				//Set new assetmodificationdate time?
+				if( newAssets.getContentItem() instanceof FileItem)
+				{
+					long lastmod = newAssets.getContentItem().getLastModified();
+					lastmod = lastmod + 2000; //Change this a little so the DB notices the change for pull
+					((FileItem)newAssets.getContentItem()).getFile().setLastModified(lastmod);
+					inAsset.setValue("assetmodificationdate", new Date(lastmod));
+				}
 			}
 			else
 			{
@@ -198,6 +208,10 @@ public class AssetEditor
 			inAsset.setPrimaryFile(oldAssets.getName());
 		}
 		inAsset.setFolder(true);
+		
+		//inAsset.setValue("assetmodificationdate", new Date());
+		
+		
 		getMediaArchive().saveAsset(inAsset, inUser);
 		getMediaArchive().getAssetArchive().clearAssets();
 

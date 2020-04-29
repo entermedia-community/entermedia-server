@@ -475,6 +475,15 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 					details.put("id",asset.getId());
 					details.put("sourcepath",asset.getSourcePath());
 					details.put("isfolder",asset.isFolder());
+					if( asset.isFolder() )
+					{
+						details.put("parentsourcepath",asset.getPath());
+					}
+					else
+					{
+						String parentsourcepath = PathUtilities.extractDirectoryPath(asset.getPath());
+						details.put("parentsourcepath",asset.getPath());
+					}
 
 					//Make an array of original files
 					JSONArray array = new JSONArray();	
@@ -609,7 +618,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			JSONObject originaldata = (JSONObject) iterator.next();
 			//String assetsouercepath = (String)originaldata.get("sourcepath");
 			
-			String remotemasterclusterid = (String) originaldata.get("mastereditclusterid");
+			//String remotemasterclusterid = (String) originaldata.get("mastereditclusterid");
 //			if( inArchive.getNodeManager().getLocalClusterId().equals(remotemasterclusterid))
 //			{
 //				log.info("Skipping originals download on non-master generated files?");
@@ -617,6 +626,17 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 //			}  Wait we need these to work
 
 			JSONArray files = (JSONArray)originaldata.get("files");
+			
+			//Make sure this is a folder. If its a file then move it
+			String parentsourcepath = (String)originaldata.get("parentsourcepath");
+			ContentItem folderfound = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + parentsourcepath);
+			if( folderfound.exists() && !folderfound.isFolder() )
+			{
+				String name = PathUtilities.extractFileName(parentsourcepath);
+				ContentItem dest = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + parentsourcepath + "/" + name + "/");
+				inArchive.getPageManager().getRepository().move(folderfound, dest);
+			}
+			
 			if(files != null)
 			{
 				for (Iterator iterator2 = files.iterator(); iterator2.hasNext();)

@@ -1358,7 +1358,10 @@ public class MediaArchive implements CatalogEnabled
 	public void fireGeneralEvent(User inUser, String inSearchType, String inAction, Map inParams)
 	{
 		WebEvent event = new WebEvent();
-		event.setProperties(inParams);
+		if( inParams != null)
+		{
+			event.setProperties(inParams);
+		}
 		event.setSearchType(inSearchType);
 
 		event.setCatalogId(getCatalogId());
