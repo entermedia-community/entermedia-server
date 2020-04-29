@@ -1793,7 +1793,128 @@ uiload = function() {
 		});	
 	});
 
+
+	//Moved From settings.js
+	lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
+	  		var table = $("#main-results-table");
+	        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
+	        var column = $(this);
+	        var fieldid = column.data("fieldid");
+			var apphome = app.data("home") + app.data("apphome");
+	
+	        if ( column.hasClass('currentsort') ) 
+	        {
+	            if ( column.hasClass('up') ) {
+					args.sortby=fieldid + 'Down';
+	            } else {
+	            	args.sortby=fieldid + 'Up';
+	            }	         
+	        } else {
+	            $('#datamanager-workarea th.sortable').removeClass('currentsort');
+	           column.addClass('currentsort');
+	           column.addClass("up");
+	           args.sortby=fieldid + 'Up';
+	        }
+	        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
+	});
+	
+	function replaceAll(str, find, replace) {
+		find = escapeRegExp(find);
+	    return str.replace(new RegExp(find, 'g'), replace);
+	}
+	
+	function escapeRegExp(str) {
+	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	}
+		
+	lQuery('.sortviews').livequery(function()
+		{
+		var sortable = $(this);
+		var path = sortable.data("path");
+		if (typeof sortable.sortable == "function") {
+			sortable.sortable({
+				axis: 'y',
+				cancel: ".no-sort",
+			    update: function (event, ui) 
+			    {
+					//debugger;
+			        var data = sortable.sortable('serialize');
+			        data = replaceAll(data,"viewid[]=","|");
+			        data = replaceAll(data,"&","");
+			        data = data.replace("|","");
+			        var args = {};
+			        args.items = data;
+			        args.viewpath = sortable.data("viewpath");
+			        args.searchtype = sortable.data("searchtype");
+			        args.assettype = sortable.data("assettype");
+			        args.viewid = sortable.data("viewid");
+			        $.ajax({
+			            data: args,
+			            type: 'POST',
+			            url: path 		            
+			        });
+			    },
+		        stop: function (event, ui) 
+		        {
+		            //db id of the item sorted
+		            //alert(ui.item.attr('plid'));
+		            //db id of the item next to which the dragged item was dropped
+		            //alert(ui.item.prev().attr('plid'));
+		        }
+		     });   
+		}
+	});
+		
+	var listtosort = $('.listsort');
+	if (typeof listtosort.sortable == "function") {
+		listtosort.sortable({
+				axis: 'y',
+				cancel: ".no-sort",
+			    stop: function (event, ui) {
+			  
+					var path = $(this).data("path");
+			    	
+			        var data = "";
+	
+			       // var ids = new Array();
+			        $(this).find('li').each(function(index) 
+			        {
+			        	if( !$(this).hasClass("no-sort"))
+			        	{
+			        		var id = $(this).attr("id");
+			        		data = data + "ids=" + id + "&";
+			        	}
+					});
+			        // POST to server using $.post or $.ajax
+			        $.ajax({
+			        	data: data,
+			            type: 'POST',
+			            url: path 		            
+			        });
+			    }
+		});
+	}
+		
+		
+	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
+		  e.preventDefault();
+		  e.stopPropagation();
+		  var btn = $(this);
+		  var copytextcontainer = btn.data("copytext");
+		  var copyText = $("#"+copytextcontainer);
+	      copyText.select();
+		  document.execCommand("copy");
+		  var alertdiv = btn.data("targetdiv");
+		  if (alertdiv) {
+			  console.log(alertdiv);
+			  $("#"+alertdiv).show().fadeOut(2000);
+		  }
+		  
+	});
+		
+
 }// uiload
+
 
 
 
@@ -1871,128 +1992,6 @@ var resizegallery = function() {
 		
 	}
 }
-
-
-
-
-//Moved From settings.js
-lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
-  		var table = $("#main-results-table");
-        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
-        var column = $(this);
-        var fieldid = column.data("fieldid");
-		var apphome = app.data("home") + app.data("apphome");
-
-        if ( column.hasClass('currentsort') ) 
-        {
-            if ( column.hasClass('up') ) {
-				args.sortby=fieldid + 'Down';
-            } else {
-            	args.sortby=fieldid + 'Up';
-            }	         
-        } else {
-            $('#datamanager-workarea th.sortable').removeClass('currentsort');
-           column.addClass('currentsort');
-           column.addClass("up");
-           args.sortby=fieldid + 'Up';
-        }
-        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
-});
-
-function replaceAll(str, find, replace) {
-	find = escapeRegExp(find);
-    return str.replace(new RegExp(find, 'g'), replace);
-}
-
-function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-}
-	
-lQuery('.sortviews').livequery(function()
-	{
-	var sortable = $(this);
-	var path = sortable.data("path");
-	if (typeof sortable.sortable == "function") {
-		sortable.sortable({
-			axis: 'y',
-			cancel: ".no-sort",
-		    update: function (event, ui) 
-		    {
-				//debugger;
-		        var data = sortable.sortable('serialize');
-		        data = replaceAll(data,"viewid[]=","|");
-		        data = replaceAll(data,"&","");
-		        data = data.replace("|","");
-		        var args = {};
-		        args.items = data;
-		        args.viewpath = sortable.data("viewpath");
-		        args.searchtype = sortable.data("searchtype");
-		        args.assettype = sortable.data("assettype");
-		        args.viewid = sortable.data("viewid");
-		        $.ajax({
-		            data: args,
-		            type: 'POST',
-		            url: path 		            
-		        });
-		    },
-	        stop: function (event, ui) 
-	        {
-	            //db id of the item sorted
-	            //alert(ui.item.attr('plid'));
-	            //db id of the item next to which the dragged item was dropped
-	            //alert(ui.item.prev().attr('plid'));
-	        }
-	     });   
-	}
-});
-	
-var listtosort = $('.listsort');
-if (typeof listtosort.sortable == "function") {
-	listtosort.sortable({
-			axis: 'y',
-			cancel: ".no-sort",
-		    stop: function (event, ui) {
-		  
-				var path = $(this).data("path");
-		    	
-		        var data = "";
-
-		       // var ids = new Array();
-		        $(this).find('li').each(function(index) 
-		        {
-		        	if( !$(this).hasClass("no-sort"))
-		        	{
-		        		var id = $(this).attr("id");
-		        		data = data + "ids=" + id + "&";
-		        	}
-				});
-		        // POST to server using $.post or $.ajax
-		        $.ajax({
-		        	data: data,
-		            type: 'POST',
-		            url: path 		            
-		        });
-		    }
-	});
-}
-	
-	
-lQuery( ".copytoclipboard" ).livequery("click", function(e) {
-	  e.preventDefault();
-	  e.stopPropagation();
-	  var btn = $(this);
-	  var copytextcontainer = btn.data("copytext");
-	  var copyText = $("#"+copytextcontainer);
-      copyText.select();
-	  document.execCommand("copy");
-	  var alertdiv = btn.data("targetdiv");
-	  if (alertdiv) {
-		  console.log(alertdiv);
-		  $("#"+alertdiv).show().fadeOut(2000);
-	  }
-	  
-});
-		
 	
 
 
