@@ -73,6 +73,18 @@ function chatterbox() {
 		form.trigger("submit");
 		
 	});
+	
+	
+	lQuery("a.ajax-edit-msg").livequery('click', function(e) {
+		 e.stopPropagation();
+	     e.preventDefault();
+	     runajaxonthis($(this),e);
+	    // scrollToEdit($(this));
+	});
+	
+	
+	
+	
 	chatopen=true;
 	
 	
@@ -85,9 +97,19 @@ function scrollToChat()
 	var inside = $('.chatterbox-body-inside');
 	if( inside.length > 0 )
 	{
-		inside.animate({ scrollTop: inside.get(0).scrollHeight}, 500); 
+		inside.animate({ scrollTop: inside.get(0).scrollHeight}, 300); 
 	}
-	
+}
+
+function scrollToEdit(msg)
+{
+	var inside = $('.chatterbox-body-inside');
+	console.log(msg.offset());
+	console.log(inside.get(0).scrollHeight);
+	if( inside.length > 0 )
+	{
+		//inside.animate({ scrollTop: inside.get(0).scrollHeight}, 300); 
+	}
 }
 
 function connect() {
