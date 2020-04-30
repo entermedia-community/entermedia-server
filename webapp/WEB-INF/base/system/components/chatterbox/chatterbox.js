@@ -78,16 +78,18 @@ function chatterbox() {
 	lQuery("a.ajax-edit-msg").livequery('click', function(e) {
 		 e.stopPropagation();
 	     e.preventDefault();
-	     runajaxonthis($(this),e);
-	    // scrollToEdit($(this));
+
+	     var targetDiv = $(this).data("targetdiv");
+	     var options = $(this).data();
+	     var nextpage = $(this).attr('href');
+	     $.get(nextpage, options, function(data) 
+	 			{
+	 				var cell = findclosest($(this),"#" + targetDiv); 
+	 				cell.replaceWith(data);
+	 				scrollToEdit(targetDiv);
+	 	 });
 	});
-	
-	
-	
-	
 	chatopen=true;
-	
-	
 }
 
 
@@ -101,15 +103,10 @@ function scrollToChat()
 	}
 }
 
-function scrollToEdit(msg)
+function scrollToEdit(targetDiv)
 {
-	var inside = $('.chatterbox-body-inside');
-	console.log(msg.offset());
-	console.log(inside.get(0).scrollHeight);
-	if( inside.length > 0 )
-	{
-		//inside.animate({ scrollTop: inside.get(0).scrollHeight}, 300); 
-	}
+	var messagecontainer = $("#" + targetDiv);
+	messagecontainer.get(0).scrollIntoView();
 }
 
 function connect() {
