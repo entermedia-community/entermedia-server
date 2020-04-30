@@ -26,6 +26,7 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseData;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -1457,12 +1458,29 @@ Server ProjectModule.uploadFile
 		URLUtilities utils = (URLUtilities)inReq.getPageValue("url_util");
 		if( utils != null)
 		{
-			String subdomain = utils.getSubDomain();
+			String subdomain = utils.getDomain();
 			MediaArchive archive = getMediaArchive(inReq);
-			
+			Data library = (Data)archive.getCacheManager().get("domaincache",subdomain);
+			if( library == BaseData.NULL)
+			{
+				return;
+			}
+			else if(library != null)
+			{
+				inReq.putPageValue("library",library);
+				return;				
+			}
 			//Cache
-			Data library = archive.getCachedData("library", subdomain);
-			inReq.putPageValue("library",library);
+			library = archive.query("library").exact("communitysubdomain", subdomain).searchOne();
+			if( library == null)
+			{
+				library = BaseData.NULL;
+			}
+			else
+			{
+				inReq.putPageValue("library",library);
+			}
+			archive.getCacheManager().put("domaincache",subdomain,library);
 		}
 	}
 }
