@@ -1458,9 +1458,9 @@ Server ProjectModule.uploadFile
 		URLUtilities utils = (URLUtilities)inReq.getPageValue("url_util");
 		if( utils != null)
 		{
-			String subdomain = utils.getDomain();
+			String domain = utils.getDomain();
 			MediaArchive archive = getMediaArchive(inReq);
-			Data library = (Data)archive.getCacheManager().get("domaincache",subdomain);
+			Data library = (Data)archive.getCacheManager().get("domaincache",domain);
 			if( library == BaseData.NULL)
 			{
 				return;
@@ -1471,7 +1471,7 @@ Server ProjectModule.uploadFile
 				return;				
 			}
 			//Cache
-			library = archive.query("library").exact("communitysubdomain", subdomain).searchOne();
+			library = archive.query("library").startsWith("communitysubdomain", domain).searchOne();
 			if( library == null)
 			{
 				library = BaseData.NULL;
@@ -1480,7 +1480,7 @@ Server ProjectModule.uploadFile
 			{
 				inReq.putPageValue("library",library);
 			}
-			archive.getCacheManager().put("domaincache",subdomain,library);
+			archive.getCacheManager().put("domaincache",domain,library);
 		}
 	}
 }
