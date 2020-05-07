@@ -14,7 +14,7 @@
     #set( $hideOverlay = $context.getRequestParameter("hideOverlay") )
     <form name="deleteoption" id="deleteoption" action="$deleteurl" class="#if($hideOverlay) ajaxform autocloseform autohideOverlay #end">
 	    <input name="hitssessionid" value='$!context.getRequestParameter("hitssessionid")' type="hidden" />
-	    <input name="targetdiv" value="$!collectionid" type="hidden" />
+	    <input name="targetdiv" value="$!collectionid" type="hidden" /> 
 	    <input name="collectionid" value="$!collectionid" type="hidden" />
 	    #set( $nodeID = $context.getRequestParameter("nodeID") )
 	    <input name="nodeID" value="$!nodeID" type="hidden" />

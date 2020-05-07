@@ -748,15 +748,15 @@ $(document).ready(function(url,params)
 	});
 	
 	
-	lQuery(".resultsassetselection input.selectionbox").livequery("change", function(e) 
+	lQuery(".resultsselection input.selectionbox").livequery("change", function(e) 
 	{
 		var clicked = $(this);
 		var dataid = $(clicked).data('dataid');
 		var data = $('#resultsdiv').data();
 		
 		data['dataid'] = dataid;
-		
-		refreshdiv( componenthome + "/results/toggle.html", data);
+		var targetdiv = componenthome + "/results/toggle.html";
+		refreshdiv( targetdiv, data);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -868,7 +868,6 @@ $(document).ready(function(url,params)
 	
 	lQuery('th.sortable').livequery('click', function(){
             var id = $(this).attr('sortby');
-            debugger;
             var resultsdiv = $(this).data("targetdiv");
             if (resultsdiv) {
             	resultsdiv = $("#"+resultsdiv);
