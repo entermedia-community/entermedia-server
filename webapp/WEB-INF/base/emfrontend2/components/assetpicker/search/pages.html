@@ -1,13 +1,11 @@
-
 #if( $hits && $hits.getTotalPages() >  1  )
-	
 	#set($module = $content.module)
 	#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html")
 	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearcher().getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	#set($targetdiv = "dialogsearchresults")
-	<div class="resultstablenav">
+	
 	<div id="assetpickerpages" class="pages">
 		<ul>
 			#if( $hits.prevPage() )
@@ -43,6 +41,5 @@
 		</ul>
 	</div>
 	<div class="clearfix"></div>
-	</div>
 #end
 

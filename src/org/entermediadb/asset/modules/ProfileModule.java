@@ -78,22 +78,15 @@ public class ProfileModule extends MediaArchiveModule
 		// inReq.getUserProfile().getValues("view_assets_tableresults");
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.getRequestParameter("searchtype");
-		String view = "";
+		String view = inReq.getRequestParameter("viewid");
 		if( searchtype == null || "asset".equals(searchtype))
 		{
 			searchtype = "asset";
+		}
+		if( view == null && "asset".equals(searchtype))
+		{
 			view = "resultstable";
-		}
-		else {
-			if (inReq.findValue("viewid") != null)
-			{
-				view = inReq.findValue("viewid");
-			}
-			else 
-			{
-				view = searchtype + "resultstable";
-			}
-		}
+		} 
 		String viewpath = searchtype + "/" + view; 
 		
 		List details = archive.getAssetSearcher().getDetailsForView(viewpath, inReq.getUserProfile());
@@ -146,13 +139,24 @@ public class ProfileModule extends MediaArchiveModule
 	public void addRemoveColumn(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-
 		UserProfile userProfile = inReq.getUserProfile();
+		
+		String searchtype = inReq.getRequestParameter("searchtype");
+		String view = inReq.getRequestParameter("viewid");
+		if( searchtype == null || "asset".equals(searchtype))
+		{
+			searchtype = "asset";
+		}
+		if( view == null && "asset".equals(searchtype))
+		{
+			view = "resultstable";
+		} 
+		String viewpath = searchtype + "/" + view; 
 
 		String add = inReq.getRequestParameter("addcolumn");
 		if (add != null)
 		{
-			List details = archive.getAssetSearcher().getDetailsForView("asset/resultstable", userProfile);
+			List details = archive.getAssetSearcher().getDetailsForView(viewpath, userProfile);
 			boolean exists = false;
 			if( details != null)
 			{
@@ -176,7 +180,7 @@ public class ProfileModule extends MediaArchiveModule
 					ids.add(detail.getId());
 				}
 				ids.add(add);
-				userProfile.setValues("view_asset_resultstable", ids);
+				userProfile.setValues("view_" + searchtype + "_" + view, ids);
 				getUserProfileManager().saveUserProfile(userProfile);
 			}
 		}
@@ -184,7 +188,7 @@ public class ProfileModule extends MediaArchiveModule
 		String remove = inReq.getRequestParameter("removecolumn");
 		if (remove != null)
 		{
-			List details = archive.getAssetSearcher().getDetailsForView("asset/resultstable", userProfile);
+			List details = archive.getAssetSearcher().getDetailsForView(viewpath, userProfile);
 			Collection ids = new ArrayList();
 			for (Iterator iterator = details.iterator(); iterator.hasNext();)
 			{
@@ -194,7 +198,7 @@ public class ProfileModule extends MediaArchiveModule
 					ids.add(detail.getId());
 				}
 			}
-			userProfile.setValues("view_asset_resultstable", ids);
+			userProfile.setValues("view_" + searchtype + "_" + view, ids);
 			getUserProfileManager().saveUserProfile(userProfile);
 		}
 	}

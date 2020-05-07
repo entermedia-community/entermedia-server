@@ -848,7 +848,15 @@ $(document).ready(function(url,params)
 	lQuery('select.addremovecolumns').livequery("change",function()
 	{
 		var selectedval = $(this).val();
-        var resultsdiv = $(this).closest("#resultsdiv");
+        var resultsdiv = $(this).data("targetdiv");
+
+        if (resultsdiv) {
+        	resultsdiv = $("#"+resultsdiv);
+        }
+        else {
+        	resultsdiv = $(this).closest("#resultsdiv");
+        }
+	
 		var options = resultsdiv.data();
 		var searchhome = resultsdiv.data('searchhome');
 		$.get(searchhome + "/addremovecolumns.html?oemaxlevel=1&editheader=true&addcolumn=" + selectedval,options, function(data) 
@@ -860,9 +868,14 @@ $(document).ready(function(url,params)
 	
 	lQuery('th.sortable').livequery('click', function(){
             var id = $(this).attr('sortby');
-            var resultsarea = "#resultsdiv";
-            
-            var resultsdiv = $(this).closest("#resultsdiv");
+            debugger;
+            var resultsdiv = $(this).data("targetdiv");
+            if (resultsdiv) {
+            	resultsdiv = $("#"+resultsdiv);
+            }
+            else {
+            	resultsdiv = $(this).closest("#resultsdiv");
+            }
 			var searchhome = resultsdiv.data('searchhome');
 			var sessionid = resultsdiv.data("hitssessionid");
 			var searchtype = resultsdiv.data("searchtype");

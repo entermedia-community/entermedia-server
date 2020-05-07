@@ -1354,6 +1354,10 @@ html, body, #application {
 .emdata th:last-of-type {
 	border-right: 0 none;
 }
+.emdata tbody tr:hover,
+.table-hover tbody tr:hover {
+	color:#fff;
+}
 #main-results-table .autoresize-inner {
     overflow-x: auto;
 }
