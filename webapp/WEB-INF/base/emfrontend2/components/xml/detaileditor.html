@@ -64,7 +64,7 @@ $context.putPageValue("longform",false)
 	## #set( $val = $context.getRequestParameter($target))
 			
 	#if( !$val)
-		#set( $val = "${data.get($detail.getId())}" )
+		#set( $val = $!{data.get($detail.getId())} )
 	#end
 	
 	$!context.putPageValue("detail",$detail)
