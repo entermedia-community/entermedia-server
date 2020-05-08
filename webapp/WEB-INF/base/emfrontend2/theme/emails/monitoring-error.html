@@ -1,13 +1,13 @@
 <h3>[[Monitoring Alert]]</h3>
 <hr>
-<strong>[[The following instance has entered an error state]]:  <a href="$instance.instanceurl">$instance.name</a></strong>
+<strong>[[The following instance has entered an error state]]:  <a href="$monitored.instanceid">$monitored.instanceid</a></strong>
 
 <br/><br/>
 
 <h4>[[Errors]]:</h4>
 <ul>
 #if($monitored.isreachable == "false")
-	<li>[[The instance seems to be down]]: <a href="$instance.instanceurl">$instance.name ($instance.instanceurl)</a></li>
+	<li>[[The instance seems to be down]]: <a href="$monitored.monitoringurl">$monitored.instanceid ($monitored.monitoringurl)</a></li>
 #end
 
 #if($monitored.isssl == "true")
@@ -40,6 +40,8 @@
 	#end
 #end
 </ul>
+<h5>[[Trace Result]]:</h5>
+<p>$traceresult</p>
 
 <p>
 [[Monitor]]:<a href="https://monitoring.entermediadb.org/entermediadb/emshare2/views/modules/entermedia_instances_monitor/index.html">https://monitoring.entermediadb.org/entermediadb/emshare2/views/modules/entermedia_instances_monitor/index.html</a>
