@@ -1691,8 +1691,10 @@ String viewbase = null;
 	public void deleteSelections(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
-		String name = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
+		//String name = inReq.getRequestParameter("hitssessionid");
+		//HitTracker hits = (HitTracker) inReq.getSessionValue(name);
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 
 		Collection todelete = hits.getSelectedHitracker();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)

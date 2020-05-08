@@ -405,7 +405,6 @@ uiload = function() {
 		                	hideOverlayDiv(getOverlay());
 		                }
 						$(window).trigger( "resize" );
-
 		                if (form.hasClass("autoreloadsource")) 
 		                {
 		                    var link = form.data("openedfrom")
@@ -544,7 +543,6 @@ uiload = function() {
 				
 			var firstform = $('form', modaldialog);
 			firstform.data("openedfrom", openfrom);
-			
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
 			if (justok != null) {

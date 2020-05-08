@@ -7,15 +7,15 @@ $context.putPageValue("hits",$hits)
 		#set( $searcher = $mediaarchive.getSearcher("asset") )
 		$context.putPageValue("searcher",$searcher)
 		#set ($details = $searcher.getDetailsForView("asset/picker", $userprofile))
-		<form  class="autosubmit"  data-targetdiv="assetsearchresults" action="$home$apphome/components/assetpicker/search/searchassetresults.html">
-		
-
+		<form  class="autosubmit"
+				style="margin-bottom:10px;"
+			  data-targetdiv="assetsearchresults" 
+			  action="$home$apphome/components/assetpicker/search/searchassetresults.html">
 			<div class="row inlinesearch">
 			#foreach( $detail in $details)
 				<div class="col">
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-	
 				</div>
 			#end
 			</div>

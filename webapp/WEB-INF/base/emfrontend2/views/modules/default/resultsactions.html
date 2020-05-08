@@ -14,13 +14,14 @@
 	#set( $edit = false)
 #end
 
-
-<div id="sub-nav" class="search-views emsubnav">
+<div id="resultsheader">
+<div id="sub-nav" class="search-views emsubnav sub-nav-$moduleid">
 #if(!$edit)
 	<ul class="resultsnav">
 	<li>
-	<a href="$home${searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a></li>
-	#if($content.showactions)
+	<a href="$home${searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$hits.getSessionId()">[[Add New]]</a>
+	</li> 
+	#if($content.showactions && $hits.hasSelections())
 		$pages.include("$searchhome/selectionactions.html")
 	#end
 ##	#if($hits.hasSelections() )
@@ -86,10 +87,11 @@
 
 </ul>
 </div>
+</div>
 
-<script type="text/javascript">
-	//This should be moved out of here
-	function refreshSelections() {
-		jQuery('#moduleselections').load("$searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
-	}
-</script>
+##<script type="text/javascript">
+##	//This should be moved out of here
+##	function refreshSelections() {
+##		jQuery('#moduleselections').load("$searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
+##	}
+##</script>

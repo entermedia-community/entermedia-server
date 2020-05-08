@@ -28,6 +28,11 @@
 #set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
 #set($targetdiv = "resultsdiv")
 
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
+
 <div>
 <table style="float:right;">
 <tr>
@@ -35,12 +40,6 @@
 		$pages.include("${apphome}/components/table/pages.html", $context)
 	</td>
 	<td class="edit-columns">	
-	
-				#set( $edit = $context.getRequestParameter("editheader"))
-				#if( !$edit || $edit == "false")
-				#set( $edit = false)
-				#end
-			
 				<div >
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
@@ -76,19 +75,18 @@
 <div class="tableholder">
 	#set( $xmledithome = "$apphome/components/xml")    
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
-	#set( $edit = $context.getRequestParameter("editheader"))
-	#if( !$edit || $edit == "false")
-		#set( $edit = false)
-	#end
 	
 	<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable" >
 		<thead>
 		<tr class="tableheader">
 		#foreach( $detail in $details )
 		
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
+		<th  class="#if($edit)sortable editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
 					
-			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
+			<div id="$detail.id" 
+				hitssessionid="$hits.getSessionId()"  
+				editing="$edit" 
+				class="#if($edit) headerdraggable headerdroppable #end"> 
 					#text( $detail.name )
 					#if( $edit)
 						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
@@ -116,6 +114,7 @@
 						#if($detail.render)
 							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
 						#end
+						
 						$context.putPageValue("detail",$detail)
 						$context.putPageValue("val",$val)
 						$pages.include("$xmledithome/detailreadonly.html", $context)
