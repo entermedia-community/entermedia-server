@@ -1356,7 +1356,7 @@ html, body, #application {
 }
 .emdata tbody tr:hover,
 .table-hover tbody tr:hover {
-	color:#fff;
+	color:royalblue;
 }
 #main-results-table .autoresize-inner {
     overflow-x: auto;
