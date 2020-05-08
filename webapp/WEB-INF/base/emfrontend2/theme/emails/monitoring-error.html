@@ -1,13 +1,13 @@
 <h3>[[Monitoring Alert]]</h3>
 <hr>
-<strong>[[The following instance has entered an error state]]:  <a href="$monitored.instanceid">$monitored.instanceid</a></strong>
+<strong>[[The following instance has entered an error state]]:  <a href="$monitored.instanceid">$instance.name</a></strong>
 
 <br/><br/>
 
 <h4>[[Errors]]:</h4>
 <ul>
 #if($monitored.isreachable == "false")
-	<li>[[The instance seems to be down]]: <a href="$monitored.monitoringurl">$monitored.instanceid ($monitored.monitoringurl)</a></li>
+	<li>[[The instance seems to be down]]: <a href="$monitored.monitoringurl">$instance.name ($monitored.monitoringurl)</a></li>
 #end
 
 #if($monitored.isssl == "true")
