@@ -1,7 +1,7 @@
 #set( $inparent = $context.getRequestParameter("inparent"))
 		#if($filter.type == "Group" )
-			Group =
-			<select name="condition.${traverse}.value">
+			[[Group]] =
+			<select name="condition.${traverse}.value" class="form-control form-control-sm">
 				<option value="">[[select a group]]</option>
 				#foreach( $group in $groups )
 					#if ($filter.value && $group.id == $filter.value)
@@ -12,18 +12,18 @@
 				#end
 			</select>	
 		#elseif($filter.type == "User" )
-			Username = 
-		    <input name="condition.${traverse}.value" value="$!filter.value" />
+			[[Username]] = 
+		    <input name="condition.${traverse}.value" value="$!filter.value" class="form-control form-control-sm" />
 		    #if( !$filter.value ) Any Authenticated User #end
 		#elseif($filter.type == "Permission" )
-			 Permission = <input name="condition.${traverse}.value" value="$!filter.permission" />
+			 [[Permission]] = <input name="condition.${traverse}.value" value="$!filter.permission" class="form-control form-control-sm" />
 		#elseif($filter.type == "PageProperty"  || $filter.type == "PageValue" )
-			Page Value  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
+			[[Page Value]]  <input name="condition.${traverse}.property" value="$!filter.property" class="form-control form-control-sm" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" class="form-control form-control-sm" />
 		#elseif($filter.type == "DataProperty" )
-			Data Value  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.value" />
+			[[Data Value]] <input name="condition.${traverse}.property" value="$!filter.property" class="form-control form-control-sm" />=<input name="condition.${traverse}.value" value="$!filter.value" class="form-control form-control-sm" />
 		#elseif($filter.type == "SettingsGroup"  )
 			#set( $roles = $searcherManager.getList($catalogid,"settingsgroup") ) 
-			Role <select name="condition.${traverse}.value">
+			[[Role]] <select name="condition.${traverse}.value" class="form-control form-control-sm">
 				<option value="">[[select a role]]</option>
 				#foreach( $type in $roles )
 					#if ($type.id == $filter.getValue())
@@ -34,10 +34,10 @@
 				#end
 			</select>				
 		#elseif($filter.type == "UserProfile"  )
-			Role Permission  
+			[[Role Permission]]  
 			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") )
 			#set( $section = "sdf" )
-			<select name="condition.${traverse}.name">
+			<select name="condition.${traverse}.name" class="form-control form-control-sm">
 				<option value="">[[select a role]]</option>
 				#foreach( $type in $types )
 					#if($section !=  $type.get("permissiontype") )
@@ -53,17 +53,17 @@
 			</select>	
 			 = true <input type="hidden" name="condition.${traverse}.value" value="true" />
 		#elseif($filter.type == "And" )
-			And:
+			[[And]]:
 		#elseif($filter.type == "Action" )
-			Action: <input name="condition.${traverse}.value" value="$!filter.getActionName()" size="40" />
+			[[Action]]: <input name="condition.${traverse}.value" value="$!filter.getActionName()" size="40" class="form-control form-control-sm" />
 		#elseif($filter.type == "Or" )
-			Or:
+			[[Or]]:
 		#elseif($filter.type == "Not" )
-			Not: 
+			[[Not]]: 
 		#elseif($filter.type == "UserProfile" )
 			  $filter.toString()
 		#elseif($filter.type == "Boolean" )
-			<select name="condition.${traverse}.value">
+			<select name="condition.${traverse}.value" class="form-control form-control-sm">
 				<option value="true" #if($!filter.isTrue()) selected #end>[[True]]</option>
 				<option value="false" #if(!$!filter.isTrue()) selected #end>[[False]]</option>
 			</select>
