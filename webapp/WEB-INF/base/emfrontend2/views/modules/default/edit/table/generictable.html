@@ -1,12 +1,13 @@
 #set ($searchtype = $context.getRequestParameter("searchtype"))
+#set ($searchhome = $context.getRequestParameter("searchhome"))
+$context.putPageValue("searchhome", $searchhome)
+
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set ($parentid = $context.getRequestParameter("parentid"))
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-#set( $edit  = $context.getRequestParameter("edit"))
-#set( $candelete = "true")
-
-
+#set ($edit  = $context.getRequestParameter("edit"))
+#set ($candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
 #if( !$viewid )
@@ -18,7 +19,6 @@
 #if( !$viewpath )
 	#set( $viewpath = $context.getRequestParameter("view"))
 #end
-
 
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
@@ -72,6 +72,7 @@
 		$context.putPageValue("view", $viewpath)
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		$context.putPageValue("searcher", $searcher)
+		
 		#set( $data = $searcher.searchById($id) )
 		$context.putPageValue("data", $data)
 		

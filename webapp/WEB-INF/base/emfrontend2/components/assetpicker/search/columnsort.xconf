@@ -1,4 +1,4 @@
 <page>
  <path-action name="DataEditModule.changeSort"/> 
- <inner-layout />
+ <path-action name="DataEditModule.loadHits"/> 
 </page>

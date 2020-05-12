@@ -1,21 +1,25 @@
-<div id="edit$permission.name" style="background-color: rgb(253,252,220); padding:10px;" >
+<div id="edit$permission.name" class="form-inline">
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 
 #set( $list = $searcherManager.getList("system","conditiontypes"))
 
 #set( $traverse = $context.getRequestParameter("traverse"))
-
-<p><strong>[[Add Condition]]:</strong><p>	
-	<select name="selecttype$permission.name" id="selecttype$permission.name" class="form-control" style="width:200px; float:left; margin-left:5px;" >
+<label>[[Add Condition]]:</label>
+<div class="form-group mx-sm-3">
+	
+	<select name="selecttype$permission.name" id="selecttype$permission.name" class="form-control form-control-sm" >
 			<option value="">[[select a type]]</option>
 		#foreach( $condition in $list)
 			<option value="$condition.id">$condition.name</option>
 		#end
 	</select>
-	<input class="btn btn-sm btn-primary" type="button" onclick="addCondition('$permission.name','$!traverse');" value="[[Ok]]" />
+</div>
+<input class="btn btn-sm btn-primary" type="button" onclick="addCondition('$permission.name','$!traverse');" value="[[Ok]]" />
+<div class="clearix"></div>
+</div>
 
-<script language="javascript">
+<script >
 
 	addCondition = function(inName, inTraverse )
 	{
@@ -25,6 +29,4 @@
 	}
 	//The parent javascript has showpath
 </script>
-<div class="clearix"></div>
-</div>
 	

@@ -53,17 +53,20 @@ $context.putPageValue("longform",false)
 <div class="oeinputform validate-inputs detaileditor">
 <div id="allerrors">
 </div>
-<table class="settings-table table table-striped">
 
+
+<table class="settings-table table table-striped">
  #foreach( $detail in $details )
- 
 	#set($val = false)
-	#set($target = "${detail.id}.value")
-	#set( $val = $context.getRequestParameter($target))		
+	
+	##When is need it? - Its Breaking saving Tags.
+	## #set($target = "${detail.id}.value")
+	## #set( $val = $context.getRequestParameter($target))
+			
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
-
+	
 	$!context.putPageValue("detail",$detail)
 	
 	

@@ -26,7 +26,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 #else
 	#set( $readonly = true)
 #end
-
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 	<input type="hidden" name="hitsname" value="hits"/>
 
@@ -35,13 +34,21 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 <div id="messagearea"> </div>
 
-<div id="emselectable" >
+<div id="emselectable" 
+		class="emselectable" 
+		data-view="$viewpath"
+		data-viewid="$viewid" 
+		data-id="$!id"
+		data-searchtype="$searchtype" 
+		data-searchhome="$!searchhome"
+		data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" 
+		#if($viewid)data-targetdiv="${viewid}editor"#end>
 
 
 <table class="table table-striped table-hover" id="main-results-table" data-resultsarea="resultsarea" data-hitssessionid="$!hits.sessionId">
 
 <thead>
-<tr id="tableheader" >
+<tr id="tableheader" class="tableheader" >
 #if($content.isPropertyTrue("showactions"))
 
 	<th class="firstheader" id="th-checkbox">
@@ -52,9 +59,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
     	    <ul class="select-dropdown" style="display: none;">
-    	        <li><a class="ajax selectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">Select This Page</a></li>
-    	        <li><a class="ajax  selectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">Select All Results</a></li>
-    	        <li><a class="ajax  deselectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">Deselect All</a></li>
+    	        <li><a class="ajax selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
+    	        <li><a class="ajax  selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
+    	        <li><a class="ajax  deselectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
     	    </ul>
     	</div>
     	</div>
@@ -111,7 +118,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     
 #if($content.isPropertyTrue("showactions"))
 
-	<td class="borderedcell checkbox" noclick="true"> 
+	<td class="borderedcell checkbox resultsselection" noclick="true"> 
 		
 <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${cell.id})) checked #end data-dataid="${cell.id}" />
 

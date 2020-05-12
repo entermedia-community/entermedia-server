@@ -126,14 +126,16 @@ public class ChatModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String chatid = inReq.getRequestParameter("chatid");
+		String message = inReq.getRequestParameter("chatter-msg");
+		
 		Data chat = archive.getData("chatterbox",chatid);
 		String channel = chat.get("channel");
-		String message = inReq.getRequestParameter("chatter-msg");
-		chat.setValue("message",message);
+		if (message != null) {
+			chat.setValue("message",message);
+			archive.saveData("chatterbox", chat);
+		}
 		inReq.setRequestParameter("channel",channel);
-		archive.saveData("chatterbox", chat);
 		inReq.putPageValue("chat",chat);
-		
 		
 	}
 }

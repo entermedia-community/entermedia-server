@@ -50,7 +50,7 @@ $context.putPageValue("module", $module)
 
 
 <div id="resultsheader">
-<div id="sub-nav" class="emsubnav">
+<div id="sub-nav" class="emsubnav sub-nav-$module">
 	<ul class="resultsnav">
 		#set ($enabled = false)
 		#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)

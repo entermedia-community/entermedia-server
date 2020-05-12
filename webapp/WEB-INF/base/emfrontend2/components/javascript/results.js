@@ -748,15 +748,15 @@ $(document).ready(function(url,params)
 	});
 	
 	
-	lQuery(".resultsassetselection input.selectionbox").livequery("change", function(e) 
+	lQuery(".resultsselection input.selectionbox").livequery("change", function(e) 
 	{
 		var clicked = $(this);
 		var dataid = $(clicked).data('dataid');
 		var data = $('#resultsdiv').data();
 		
 		data['dataid'] = dataid;
-		
-		refreshdiv( componenthome + "/results/toggle.html", data);
+		var targetdiv = componenthome + "/results/toggle.html";
+		refreshdiv( targetdiv, data);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -848,7 +848,15 @@ $(document).ready(function(url,params)
 	lQuery('select.addremovecolumns').livequery("change",function()
 	{
 		var selectedval = $(this).val();
-        var resultsdiv = $(this).closest("#resultsdiv");
+        var resultsdiv = $(this).data("targetdiv");
+
+        if (resultsdiv) {
+        	resultsdiv = $("#"+resultsdiv);
+        }
+        else {
+        	resultsdiv = $(this).closest("#resultsdiv");
+        }
+	
 		var options = resultsdiv.data();
 		var searchhome = resultsdiv.data('searchhome');
 		$.get(searchhome + "/addremovecolumns.html?oemaxlevel=1&editheader=true&addcolumn=" + selectedval,options, function(data) 
@@ -859,25 +867,35 @@ $(document).ready(function(url,params)
 
 	
 	lQuery('th.sortable').livequery('click', function(){
-            var id = $(this).attr('sortby');
-            var resultsarea = "#resultsdiv";
+            var id = $(this).data('sortby');
+            var resultsdiv =  "";
+            var searchome="";
+            var options="";
+            var moduletable = $(this).closest("#emselectable");;
+            if (moduletable && moduletable.data("targetdiv")) {
+            	resultsdiv = $("#"+moduletable.data("targetdiv"));
+            	searchhome = moduletable.data('searchhome');
+    			options = moduletable.data();
+            }
+            else {
+            	resultsdiv = $(this).closest("#resultsdiv");
+            	searchhome = resultsdiv.data('searchhome');
+    			options = resultsdiv.data();
+            }
             
-            var resultsdiv = $(this).closest("#resultsdiv");
-			var searchhome = resultsdiv.data('searchhome');
-			var sessionid = resultsdiv.data("hitssessionid");
-			var searchtype = resultsdiv.data("searchtype");
-			var viewid = resultsdiv.data("viewid");
-            
+			//var columnsort = searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid=' + sessionid;
+			var columnsort = searchhome + '/columnsort.html?oemaxlevel';
+			
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                    $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
                 } else {
-                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
+                    $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up', options);
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewid='+viewid + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
             }
         }
     );

@@ -1,28 +1,110 @@
 #set($hits = $pickerhits)
-<div id="dialogsearchresults">
-<div id="emresultscontent">
+$context.putPageValue("hits",$hits)
 
+#set( $componenthome = "$home$apphome/components/assetpicker/search")
 #set( $searcher = $mediaarchive.getSearcher("asset") )
-$context.putPageValue("searcher",$searcher)
-#set ($details = $searcher.getDetailsForView("asset/pickerresults", $userprofile))
+$context.putPageValue("searcher", $searcher)
+#set( $viewid = "pickerresults" )
+#set ($details = $searcher.getDetailsForView("asset/$viewid", $userprofile))
 
+
+<div id="dialogsearchresults" data-searchhome="$componenthome" data-viewid="$!viewid">
+<div id="emresultscontent">
 $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","$apphome/views/assets/")
 $context.putPageValue("viewpostfix",".html")
-$pages.include("./pages.html", $context)
+
+
+#set($resultsLink = "$componenthome/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
+#set($targetdiv = "dialogsearchresults")
+
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+	#set( $edit = false)
+#end
+
+<div class="resultstablenav">
+<table style="float:right;">
+<tr>
+	<td>
+		#if( !$edit ) 
+			$pages.include("./pages.html", $context)
+		#end
+	</td>
+	<td class="edit-columns">	
+		<div >
+			#if( $canedittablecolumns )
+			<div id="table-edit-outside">
+				#if( !$edit ) 
+				<a class="ajax edit-icon" 
+					targetdiv="$targetdiv" 
+					href="${resultsLink}&editheader=true"
+					title="[[Edit Results Table Columns]]">
+					<i class="fas fa-edit"></i>
+				</a>
+				#else 
+					<div id="column-editor-content">
+						#set ($alldetails = $searcher.getUserPropertyDetails() )
+						<select  class="addremovecolumns form-control form-control-sm" 
+							name="addcolumn" data-targetdiv="$targetdiv" >
+							<option>[[Add Column]]</option>
+							#foreach( $detail in $alldetails) 
+								<option value="$detail.id">$detail.getText($context)</option>
+							#end
+						</select>
+						
+						<a class="ajax table-edit-close" 
+							targetdiv="$targetdiv" 
+							href="${resultsLink}">
+							<i class="fas fa-times"></i>
+						</a>
+					</div>
+				#end
+			</div>
+			#end
+		</div>
+	</td>
+	</tr>			
+</table>
+<div class="clearfix"></div>
+</div>
+
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
-
 #set( $action = $context.getRequestParameter("actionurl") ) 
-#set( $targetdiv = $context.getRequestParameter("targetdiv") )
-
 <div id="" class="" style="min-height: 450px"  >
-
 <table  id="assetpicker-results-table" class="emdata table table-striped table-hover" >
 	<tr class="tableheader" >
 	<th>[[Preview]]</th>
 	#foreach( $detail in $details )
-	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
+	##<th class="#if($edit)sortable editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
+	<th  class="#if($edit) sortable editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" 
+		id="th-$detail.id" sortby="$detail.id"
+		>
+					
+			<div id="$detail.id" 
+				hitssessionid="$hits.getSessionId()"  
+				editing="$edit" 
+				class="#if($edit)headerdraggable headerdroppable #end"
+				data-targetdiv="$targetdiv"> 
+					#text( $detail.name )
+					#if( $edit)
+						<a class="baseemenableonhover ajax edit-table-header" 
+							targetdivinner="$targetdiv" 
+							href="$componenthome/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id&viewid=$!viewid"
+							title="[[Remove Column]]">
+							<i class="fas fa-times"></i></a>
+					
+					#elseif ($sortby.startsWith($detail.getId()))
+			 				#if($sortby.endsWith("Up"))
+			 					#set($sorticon="up")
+			 				#else
+			 					#set($sorticon="down")
+			 				#end	
+			 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
+					#end
+			</div>
+		 </th>
 	#end
 	</tr>
 	<tbody ng-foreach="hit in dataresults">
@@ -34,12 +116,13 @@ $pages.include("./pages.html", $context)
 				</td>
 				#foreach( $detail in $details)
 					<td style="padding:4px;">
-						#set( $val = "$!hit.get($detail.id)" )
+						#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
 						#if($detail.render)
 							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
 						#end
 						$context.putPageValue("detail",$detail)
 						$context.putPageValue("val",$val)
+						$!context.putPageValue("data",$hit)
 						$pages.include("$xmledithome/detailreadonly.html", $context)
 					</td>
 				#end	

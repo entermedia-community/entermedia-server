@@ -1354,16 +1354,20 @@ html, body, #application {
 .emdata th:last-of-type {
 	border-right: 0 none;
 }
+.emdata tbody tr:hover,
+.table-hover tbody tr:hover {
+	color:royalblue;
+}
 #main-results-table .autoresize-inner {
     overflow-x: auto;
 }
-#main-results-table th.sortable {
+.tableheader th.sortable {
 	cursor:pointer;
 }
-#main-results-table th.sortable.currentsort {
-    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.15);
+.tableheader th.sortable.currentsort {
+    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.5);
 }
-#main-results-table th.sortable div span.sorticon {
+.tableheader th.sortable div span.sorticon {
     font-size: 16px;
     float: right;
     margin-top: 5px;
@@ -3743,8 +3747,8 @@ table.greytxt {
     cursor: pointer;
 }
 #views-settings {
-    font-size: 12px;
     color: #444;
+    font-weight: normal;
     margin-bottom: -10px;
 }
 #views-settings .inner {
@@ -3752,12 +3756,6 @@ table.greytxt {
     border: 1px solid #15566B;
     padding: 15px 15px 5px 15px;
     border-radius: 5px;
-}
-#views-settings .inner form div {
-    margin: 5px 0 0 0;
-}
-#views-settings .inner form .checkbox {
-    margin: 5px 0 15px 0;
 }
 #views-settings .field {
     padding: 5px 8px;
@@ -3793,7 +3791,7 @@ table.greytxt {
 #views-settings {
     margin: 11px 0 0 0;
     padding: 10px 0 0 0;
-    width: 617px;
+    width: 100%;
     border-top: 1px dashed rgba(255,255,255,0.6);
 }
 #views-settings label {

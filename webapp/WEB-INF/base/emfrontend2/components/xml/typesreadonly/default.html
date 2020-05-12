@@ -3,6 +3,7 @@
 ## $searcher
 ## $val
 ## $searcherManager
+
 #set( $highlights = $data.getHighlights($detail.id) )
 #if($highlights && $!highlights.isEmpty() )
 <ul class="highlightlist list-unstyled " >
@@ -14,8 +15,8 @@
 <div class="emdatafieldreadonly">
 #if(!$val && $detail.rendermask && $data)
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
-	#esc( $label )
-#elseif($detail.isMultiLanguage())
+	#esc( $label ) 
+#elseif($detail.isMultiLanguage()) 
 		#set($map = $data.getValue($detail.getId()))
 		#if( $showalllanguagevalues )
 			#set($languages = $mediaarchive.getList("locale"))

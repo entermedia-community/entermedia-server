@@ -823,8 +823,16 @@ onloadselectors = function()
 							var node = $(this);
 							var destination = this.id;
 							
-							var rdiv = $("#resultsdiv");
-							var options = rdiv.data();
+					        var resultsdiv = $(this).data("targetdiv");
+
+					        if (resultsdiv) {
+					        	resultsdiv = $("#"+resultsdiv);
+					        }
+					        else {
+					        	resultsdiv = $(this).closest("#resultsdiv");
+					        }
+							var searchhome = resultsdiv.data('searchhome');
+							var options = resultsdiv.data();
 							options.source = source;
 							options.destination = destination;
 				
@@ -837,9 +845,9 @@ onloadselectors = function()
 							options.editheader = editing;
 							
 							console.log(options.moduleid);
-							$.get(apphome + "/components/results/savecolumns.html", options, function(data) {
-								var cell = findclosest(rdiv, "#resultsdiv");
-								cell.replaceWith(data);
+							$.get(searchhome + "/savecolumns.html", options, function(data) {
+								var cell = findclosest(resultsdiv, "#resultsdiv");
+								resultsdiv.replaceWith(data);
 							})
 							/*
 							$("#resultsdiv").load(apphome + "/components/results/savecolumns.html",

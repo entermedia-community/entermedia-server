@@ -26,7 +26,7 @@
         #set ( $systemdefined = $context.findValue("systemdefined") )
         
     #if( $canviewsettings )   
-	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$context.getText($view) [[Settings]]</a>
+	<a class="tooltip float-right btn btn-sm" title="$context.getText($view) [[Settings]]" id="setup-view"><i class="fas fa-cog"></i></a>
 	#end
 	
 	   #if($view.byassettype == "true" )
@@ -49,78 +49,115 @@
 	    <div class="inner clearfix">
 	    
         <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+            <div class="form-group">
             <input type="hidden" name="field" value="name" />
-            <div>[[View Name]]</div>
-            <input class="field" name="name.value" value="$view.name" >
-	 		<div class="checkbox">
-                <input type="checkbox" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
-                [[Use Asset Type]]
-            	<input type="hidden" value="byassettype" name="field" />
+            <label>[[View Name]]</label>
+            <input class="form-control" name="name.value" value="$view.name" />
             </div>
-
-           	<input type="hidden" value="rendertype" name="field" />
-            <div class="checkbox">
-                [[Custom Render Type]]
-            	<select name="rendertype.value" class="form-control form-control-sm">
-            		<option value="default"></option>
-            		<option value="table" #if($view.rendertable) selected #end>[[One to Many]]</option>
-            		<option value="external" #if($view.rendertype == "external") selected #end>[[One to One]]</option>
-            	</select>
+            
+            <div class="form-group">
+		 		<div class="form-check">
+	                <input type="checkbox" class="form-check-input" id="byassettype.value" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
+	                <label class="form-check-label" for="byassettype.value">[[Use Asset Type]]</label>
+	            	<input type="hidden" value="byassettype" name="field" />
+	            </div>
             </div>
-
+            
+			<div class="form-group">
+           		
+           			<input type="hidden" value="rendertype" name="field" />
+	                <label>[[Custom Render Type]]</label>
+	            	<select name="rendertype.value" class="form-control form-control-sm">
+	            		<option value="default"></option>
+	            		<option value="table" #if($view.rendertable) selected #end>[[One to Many]]</option>
+	            		<option value="external" #if($view.rendertype == "external") selected #end>[[One to One]]</option>
+	            	</select>
+	            
+            </div>
+            
+			<div class="form-group">
 			##what is this? TODO remove it
-   			<div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
-                [[Show on registration section]]  
+				<div class="form-check">
+   				<input id="showonregistration.value" class="form-check-input" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
+                <label class="form-check-label" for="showonregistration.value">[[Show on registration section]]  </label>
             	<input type="hidden" value="showonregistration" name="field" />
-
+            	</div>
             </div>
 
-	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
-                [[System View?]]
+			<div class="form-group">
+				<div class="form-check">
+	    		<input id="systemdefined.value" class="form-check-input" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
+                <label class="form-check-label" for="systemdefined.value">[[System View?]]</label>
             	<input type="hidden" value="systemdefined" name="field" />
-
-            </div>
-  <div class="checkbox"><input id="systemdefined" type="checkbox" name="printview.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
-                [[Print View?]]
-            	<input type="hidden" value="printview" name="field" />
-
-            </div>
-                <div>[[External Table]]</div>
-            	<input type="hidden" value="rendertable" name="field" />
-                <input class="field" name="rendertable.value" value="$!view.rendertable" >
-
-                <div>[[External ID]]</div>
-            	<input type="hidden" value="renderexternalid" name="field" />
-                <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
-
-
-		<div class="clearfix"></div>
-
-            <div id="rendertableoptions">
+				</div>
             
-            <div class="checkbox">
-            	<input type="hidden" value="linktomodule" name="field" />
-                <input type="checkbox" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
-   		 		[[Link to Module]]
-			</div>
-    	<div>[[Render Table Default Sort]]</div>
-				<input type="hidden" value="rendersort" name="field" />
-                <input class="field" name="rendersort.value" value="$!view.rendersort" >
-				<div>[[Render Table Custom View]]</div>
-				<input type="hidden" value="rendercustomview" name="field" />
-                <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
-
             </div>
-            #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn btn-sm btn-secondary" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
-<div id="permissionedit"></div>
+            <div class="form-group">
+            	<div class="form-check">
+  					<input id="printview.value" class="form-check-input" type="checkbox" name="printview.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
+	                <label class="form-check-label" for="printview.value">[[Print View?]]</label>
+	            	<input type="hidden" value="printview" name="field" />
+					</div>
             
-            <div class="hr" style="margin: 5px 0 0 0"></div>
-            <input class="btn btn-sm btn-primary" style="margin-top: 10px;" type="submit" value="[[Save]]" />
+            </div>
+            
+            <div class="row">
+            	<div class="col-md-6">
+		            <div class="form-group">
+		                <label>[[External Table]]</label>
+		            	<input type="hidden" value="rendertable" name="field" />
+		                <input class="field" name="rendertable.value" value="$!view.rendertable" >
+					</div>
+				</div>
+				<div class="col">
+					<div class="form-group">
+		                <label>[[External ID]]</label>
+		            	<input type="hidden" value="renderexternalid" name="field" />
+		                <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" />
+					</div>
+				</div>
+            </div>
+		
+
+        <div id="rendertableoptions">
+	            <div class="form-group">
+	            <div class="form-check">
+	            	<input type="hidden" value="linktomodule" name="field" />
+	                <input type="checkbox" class="form-check-input" id="linktomodule.value" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
+	   		 		<label class="form-check-label" for="linktomodule.value">[[Link to Module]]</label>
+				</div>
+				</div>
+				<div class="row">
+            	<div class="col-md-6">
+					<div class="form-group">
+			    		<label>[[Render Table Default Sort]]</label>
+						<input type="hidden" value="rendersort" name="field" />
+		                <input class="field" name="rendersort.value" value="$!view.rendersort" >
+		            </div>
+		        </div>
+		        <div class="col">
+		            <div class="form-group">
+						<label>[[Render Table Custom View]]</label>
+						<input type="hidden" value="rendercustomview" name="field" />
+		                <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
+					</div>
+				</div>
+				</div>
+          </div>
+         	<div class="form-group">
+            <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
             #if($candevelop)
-            <a class="btn btn-sm btn-primary" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
+            	<a class="btn btn-sm btn-primary" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
+            
+            #set($editpath = $context.findValue("editPath"))
+          <a class="ajax btn btn-sm btn-secondary float-right" 
+          		targetdiv="permissionedit" 
+          		href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+          </div>
         </form>
+          
+		  <div id="permissionedit"></div>
 	    </div>
     </div>
     <script>
