@@ -106,6 +106,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 									StatusLine filestatus = genfile.getStatusLine();
 									if (filestatus.getStatusCode() != 200)
 									{
+										//Cant PULL asset status
 										log.error("Could not download generated " + filestatus + " " + path);
 										throw new OpenEditException("Could not download generated " + filestatus + " " + path);
 									}

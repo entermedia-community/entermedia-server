@@ -678,6 +678,7 @@ public class AdminModule extends BaseMediaModule
 		inReq.removePageValue("userprofile");
 		getCookieEncryption().removeCookie(inReq,AutoLoginProvider.ENTERMEDIAKEY);
 		getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
+		getCookieEncryption().removeCookie(inReq,"JSESSIONID"); //Added this to try and logout of all the sub-domains
 		
 
 		String referrer = inReq.getRequestParameter("editingPath");
