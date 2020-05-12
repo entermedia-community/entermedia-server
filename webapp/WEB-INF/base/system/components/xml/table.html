@@ -53,9 +53,9 @@
 #if( $existingrecords && $existingrecords.size() > 0 )
 <table id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
-	<tr id="tableheader">
+	<tr id="tableheader" class="tableheader">
 	#foreach( $detail in $details )
-	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
+	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">$detail.text</th>
 	#end
 	#if($candelete && $candelete == true && $showdelete == "true")
 	<th></th>

@@ -1361,13 +1361,13 @@ html, body, #application {
 #main-results-table .autoresize-inner {
     overflow-x: auto;
 }
-#main-results-table th.sortable {
+.tableheader th.sortable {
 	cursor:pointer;
 }
-#main-results-table th.sortable.currentsort {
-    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.15);
+.tableheader th.sortable.currentsort {
+    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.5);
 }
-#main-results-table th.sortable div span.sorticon {
+.tableheader th.sortable div span.sorticon {
     font-size: 16px;
     float: right;
     margin-top: 5px;

@@ -34,13 +34,21 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 <div id="messagearea"> </div>
 
-<div id="emselectable" >
+<div id="emselectable" 
+		class="emselectable" 
+		data-view="$viewpath"
+		data-viewid="$viewid" 
+		data-id="$!id"
+		data-searchtype="$searchtype" 
+		data-searchhome="$!searchhome"
+		data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" 
+		#if($viewid)data-targetdiv="${viewid}editor"#end>
 
 
 <table class="table table-striped table-hover" id="main-results-table" data-resultsarea="resultsarea" data-hitssessionid="$!hits.sessionId">
 
 <thead>
-<tr id="tableheader" >
+<tr id="tableheader" class="tableheader" >
 #if($content.isPropertyTrue("showactions"))
 
 	<th class="firstheader" id="th-checkbox">

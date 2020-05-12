@@ -1,11 +1,11 @@
 ##Why is this here? Looks like a duplicate of types/table.html
 
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
-
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
-#set( $candelete = $context.getRequestParameter("candelete")) 
-
-
+#set( $candelete = $context.getRequestParameter("candelete"))
+#if(!$searchhome)
+	#set( $searchhome = $context.findValue("searchhome"))
+#end
 #set( $viewid = $context.getRequestParameter("viewid"))
 #set( $viewpath = $context.getRequestParameter("viewpath"))
 #if( !$viewpath )
@@ -18,6 +18,9 @@
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+
+##For module Editing tables
+#set ($id = $context.getRequestParameter("id"))
 
 #set( $moduleid = $context.findValue("module") )
 
@@ -46,7 +49,15 @@
 <div id="${searchtype}_table" class="tableholder">
     
 #if($candelete != "false")
-<div id="emselectable" class="emselectable" data-view="$viewpath" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
+<div id="emselectable" 
+		class="emselectable" 
+		data-view="$viewpath"
+		data-viewid="$viewid" 
+		data-id="$!id"
+		data-searchtype="$searchtype" 
+		data-searchhome="$!searchhome"
+		data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" 
+		#if($viewid)data-targetdiv="${viewid}editor"#end>
 #end
 
 #set($selectedid = $context.getRequestParameter("selectedid"))
@@ -54,9 +65,20 @@
 #if( $existingrecords && $existingrecords.size() > 0 )
 <table id="main-results-table" class="emdata table table-striped table-hover"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
-	<tr id="tableheader">
+	<tr id="tableheader" class="tableheader">
 	#foreach( $detail in $details )
-	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
+	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
+	$detail.text
+	#set( $sortby = $existingrecords.getSearchQuery().getSortBy() )
+	#if ($sortby.startsWith($detail.getId()))
+			#if($sortby.endsWith("Up"))
+				#set($sorticon="up")
+			#else
+				#set($sorticon="down")
+			#end	
+			&nbsp;&nbsp;&nbsp;<span class="sorticon fas fa-caret-$sorticon"></span>
+	#end
+	</th>
 	#end
 	#if($candelete && $candelete == true && $showdelete == "true")
 	<th></th>
@@ -102,7 +124,7 @@
 
 
     <script>
-        $('th.sortable').on({
+        $('th.sortableX').on({
             click: function(){
                 var id = $(this).attr('id');
                 var path = "$home$apphome/components/xml/columnsort.html?$args&sortby="

@@ -26,7 +26,7 @@
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 	
-		<th  class="sortable #if($edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" sortby="$detail.id">
+		<th  class="sortable #if($edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
