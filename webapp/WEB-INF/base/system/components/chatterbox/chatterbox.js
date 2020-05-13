@@ -131,6 +131,7 @@ function connect() {
     	
     	var app = jQuery("#application");
     	var apphome = app.data("home") + app.data("apphome");
+    	var user = app.data("user");
         var message = JSON.parse(event.data);
         var channel = message.channel;
         var id = message.messageid;
@@ -140,7 +141,7 @@ function connect() {
         	$(existing).find(".chat-msg").html(message.content);
         	
         	return;
-        }
+        }	
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
 		var listarea = chatter.find(".chatterbox-message-list")
 		var url = chatter.data("rendermessageurl");
@@ -155,7 +156,12 @@ function connect() {
 		});
 	
         scrollToChat();
-        play();
+        
+        /*Check if you are the sender*/
+        if(message.user != user){
+        	play();
+        }
+        
     }; 
 
 }
