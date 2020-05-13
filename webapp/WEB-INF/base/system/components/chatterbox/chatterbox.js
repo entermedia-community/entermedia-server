@@ -131,7 +131,7 @@ function connect() {
     	
     	var app = jQuery("#application");
     	var apphome = app.data("home") + app.data("apphome");
-    	var user = app.data("user");
+    	
         var message = JSON.parse(event.data);
         var channel = message.channel;
         var id = message.messageid;
@@ -158,6 +158,7 @@ function connect() {
         scrollToChat();
         
         /*Check if you are the sender*/
+        var user = app.data("user");
         if(message.user != user){
         	play();
         }

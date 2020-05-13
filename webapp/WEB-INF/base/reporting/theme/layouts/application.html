@@ -1,4 +1,4 @@
-<div id="application"  data-catalogid="$catalogid" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">   
+<div id="application"  data-user="$!user.getId()" data-catalogid="$catalogid" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">   
    #if($testbench.showbanner == "true")
     <div>
     #if($pages.doesExist("$apphome/theme/images/${userprofile.organization}.png"))
