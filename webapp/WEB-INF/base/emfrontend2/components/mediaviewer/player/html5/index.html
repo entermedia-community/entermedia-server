@@ -14,10 +14,12 @@
 #set( $catalogid = $asset.catalogId )
 
 	<script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script>
-	<link href="$applink/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
-##Add back full screen button, Autoplay and escape handling
-<div id="playarea-$hit.id" class="player">
-	<video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="position: relative;width: 100%!important; height: 100%!important;"
+	<link href="$applink/components/javascript/videojs/7.2.4/video-js.min.css" rel="stylesheet">
+
+	<div id="playarea-$hit.id" class="player" style="background-color: #000;">
+	<video id="video-$hit.id" 
+		class="video-js vjs-default-skin vjs-big-play-centered" 
+		style="width: 100%!important; height: 100%!important;"
 		poster='$thumb'
 		#if( $loop && $loop == "true") loop #end
 		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'

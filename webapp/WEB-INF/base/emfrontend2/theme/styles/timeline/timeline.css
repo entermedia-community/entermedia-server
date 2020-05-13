@@ -325,7 +325,7 @@ position: relative;
 }
 
 
-video {
+.video-tl {
     max-width: 100%;
     max-height: 420px;
 }

@@ -137,24 +137,20 @@ span.emdropshadow {
     flex: 1;
 }
 
-
-.playerarea .player
-{
-	height:100%;
-	width:100%;
-	background-size: 100% auto;
-}
-
 .playerarea .player {
+	margin:5% auto;
 	padding:20px;
-	max-height: 100%;
-	height: 100%;
-    justify-content: space-between;
+	display:inline-block;
 }
+
 .player .video-js {
-    position: relative;
-    min-width: 100%!important;
-    min-height: 100%!important;
+position: relative; 
+min-width: 100%; 
+min-height: 100%;
+width: auto; 
+height: auto; 
+background-color: black;
+background-size: cover; 
 }
 
 div#hiddenoverlay .playerarea {
