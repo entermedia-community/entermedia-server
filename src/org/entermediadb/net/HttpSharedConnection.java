@@ -21,6 +21,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -197,9 +198,19 @@ public class HttpSharedConnection
 
 	public String parseText(CloseableHttpResponse inCreaterequest)
 	{
+		String errormessage = null;
 		try
 		{
-			return EntityUtils.toString(inCreaterequest.getEntity());
+			StatusLine statusLine = inCreaterequest.getStatusLine();
+			if (statusLine.getStatusCode() != 200)
+			{
+				String returned = EntityUtils.toString(inCreaterequest.getEntity());
+				errormessage = "HTTP Error:" + statusLine.getStatusCode() + ":" + statusLine.getReasonPhrase() + " Body: \n" + returned;
+			}
+			else
+			{
+				return EntityUtils.toString(inCreaterequest.getEntity());
+			}
 		}
 		catch (Throwable e) 
 		{
@@ -209,6 +220,7 @@ public class HttpSharedConnection
 		{
 			release(inCreaterequest);
 		}
+		throw new OpenEditException(errormessage);
 	}
 
 	public JSONObject parseJson(CloseableHttpResponse resp) 
