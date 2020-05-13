@@ -3747,8 +3747,8 @@ table.greytxt {
     cursor: pointer;
 }
 #views-settings {
-    font-size: 12px;
     color: #444;
+    font-weight: normal;
     margin-bottom: -10px;
 }
 #views-settings .inner {
@@ -3756,12 +3756,6 @@ table.greytxt {
     border: 1px solid #15566B;
     padding: 15px 15px 5px 15px;
     border-radius: 5px;
-}
-#views-settings .inner form div {
-    margin: 5px 0 0 0;
-}
-#views-settings .inner form .checkbox {
-    margin: 5px 0 15px 0;
 }
 #views-settings .field {
     padding: 5px 8px;
@@ -3797,7 +3791,7 @@ table.greytxt {
 #views-settings {
     margin: 11px 0 0 0;
     padding: 10px 0 0 0;
-    width: 617px;
+    width: 100%;
     border-top: 1px dashed rgba(255,255,255,0.6);
 }
 #views-settings label {

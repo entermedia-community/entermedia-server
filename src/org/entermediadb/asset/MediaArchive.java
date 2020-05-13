@@ -1972,9 +1972,17 @@ public class MediaArchive implements CatalogEnabled
 	
 	public Collection<ContentItem> listOriginalFiles(String  inSourcePath)
 	{
-		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inSourcePath + "/";
+		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inSourcePath;
 		Collection<ContentItem> children = new ArrayList();
-		findItems(path, children);
+		ContentItem item   = getContent(path);
+		if( item.isFolder())
+		{
+			findItems(path, children);
+		}
+		else
+		{
+			children.add(item);
+		}
 		return children;
 	}
 
