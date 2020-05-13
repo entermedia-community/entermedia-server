@@ -1893,8 +1893,15 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return;
 		}
+		if(properties.getUploadItems().size() == 0) {
+			return;
+		}
 		String searchtype = inReq.findValue("searchtype");
 		String id = inReq.getRequestParameter("id");
+		if(id == null) {
+			id = inReq.getRequestParameter("id.value");
+		}
+		
 		final String currentcollection = inReq.getRequestParameter("collectionid");
 
 		Data target = null;
