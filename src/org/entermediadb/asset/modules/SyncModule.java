@@ -3,10 +3,12 @@ package org.entermediadb.asset.modules;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
 import org.entermediadb.asset.push.PushManager;
@@ -21,6 +23,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 public class SyncModule extends BaseMediaModule
@@ -301,16 +304,29 @@ public class SyncModule extends BaseMediaModule
 		{
 			String mastereditid = archive.getNodeManager().getLocalClusterId();
 
-			hits = archive.query("asset").after("assetaddeddate", ago).
-					exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").search();
+			SearchQuery basequery = archive.query("asset").exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").getQuery();
+			
+			SearchQuery orquery = archive.query("asset").or().after("assetaddeddate", ago).after("assetmodificationdate", ago).getQuery();
+			basequery.addChildQuery(orquery);
+			
+			hits = archive.getSearcher("asset").search(basequery);
 			hits.enableBulkOperations();
+			if( !hits.isEmpty() )
+			{
+				log.info("Listed " + hits.size()  + " changes ");
+			}
 		}
 		if (page != null)
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
+		
+		PullManager pullManager = getPullManager(archive.getCatalogId());
+		JSONArray array = pullManager.getOriginalPuller().listOriginalFiles(archive,hits);	
+		
 		inReq.putPageValue("searcher", archive.getAssetSearcher());		
 		inReq.putPageValue("hits", hits);
+		inReq.putPageValue("results", array);
 	}
 	
 	public void receiveOriginalsChanges(WebPageRequest inReq)

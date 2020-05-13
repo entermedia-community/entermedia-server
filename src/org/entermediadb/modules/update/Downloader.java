@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,7 +15,6 @@ import java.net.URLConnection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -25,10 +23,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.entermediadb.net.HttpSharedConnection;
 import org.openedit.OpenEditException;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
@@ -37,6 +37,22 @@ public class Downloader
 {
 	private static final Log log = LogFactory.getLog(Downloader.class);
 
+	HttpSharedConnection fieldSharedConnections;
+	
+	public HttpSharedConnection getSharedConnections()
+	{
+		if (fieldSharedConnections == null)
+		{
+			fieldSharedConnections = new HttpSharedConnection();
+		}
+
+		return fieldSharedConnections;
+	}
+
+	public void setSharedConnections(HttpSharedConnection inSharedConnections)
+	{
+		fieldSharedConnections = inSharedConnections;
+	}
 
 	public void download(String inUrl, String inAbsoluteFilePath) throws OpenEditException
 	{
@@ -162,39 +178,42 @@ public class Downloader
 
 	public String downloadToString(String inUrl)
 	{
-		StringWriter out = null;
-		InputStream in = null;
-		try
-		{
-			URL url = new URL(inUrl);
-			URLConnection con = url.openConnection();
-			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
-
-			con.setConnectTimeout(15 * 1000);
-			con.setReadTimeout(15 * 1000);
-			con.setUseCaches(false);
-			con.connect();
+//		StringWriter out = null;
+//		InputStream in = null;
+//		try
+//		{
+			CloseableHttpResponse response = getSharedConnections().sharedGet(inUrl);
+			String text = getSharedConnections().parseText(response);
+			
+//			URL url = new URL(inUrl);
+//			URLConnection con = url.openConnection();
+//			con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
+//
+//			con.setConnectTimeout(15 * 1000);
+//			con.setReadTimeout(15 * 1000);
+//			con.setUseCaches(false);
+//			con.connect();
 
 			//*** create new output file
 			//*** make a growable storage area to read into 
-			out = new StringWriter();
-			//*** read in url connection stream into input stream
-			in = con.getInputStream();
-			//*** fill output stream
-			new OutputFiller().fill(new InputStreamReader(in), out);
-			return out.toString();
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			//*** close output stream
-			FileUtils.safeClose(out);
-			//*** close input stream
-			FileUtils.safeClose(in);
-		}
+//			out = new StringWriter();
+//			//*** read in url connection stream into input stream
+//			in = con.getInputStream();
+//			//*** fill output stream
+//			new OutputFiller().fill(new InputStreamReader(in), out);
+			return text;
+//		}
+//		catch (Exception ex)
+//		{
+//			throw new OpenEditException(ex);
+//		}
+//		finally
+//		{
+//			//*** close output stream
+//			FileUtils.safeClose(out);
+//			//*** close input stream
+//			FileUtils.safeClose(in);
+//		}
 	}
 
 	public File download(URL url, File dstFile)
