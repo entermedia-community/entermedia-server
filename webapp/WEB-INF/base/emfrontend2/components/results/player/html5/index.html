@@ -15,15 +15,14 @@
 
 	
 ##Add back full screen button, Autoplay and escape handling
-<div class="text-center">
+<div class="player-outer">
 <div id="playarea-$hit.id" class="player">
 
 	<video id="video-$hit.id" 
 			class="video-js vjs-default-skin vjs-big-play-centered" 
-			style="position: relative;"
-		poster='$thumb'
-		#if( $loop && $loop == "true") loop #end
-		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
+			poster='$thumb'
+			#if( $loop && $loop == "true") loop #end
+			data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
 		> 
 		<source type="video/mp4" src="$source">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
