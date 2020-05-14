@@ -426,7 +426,7 @@ public class AssetEditModule extends BaseMediaModule
 						}
 						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 						deleted++;
-						log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
+						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
 					}
 				}
 				catch (Exception e)
@@ -452,7 +452,7 @@ public class AssetEditModule extends BaseMediaModule
 					}
 					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
-					log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
+					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
 				}
 			}
 		}
