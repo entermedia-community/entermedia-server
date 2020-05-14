@@ -11,14 +11,16 @@ public void init() {
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	
 	Asset deleting = mediaArchive.getAsset(dataid);
+	
+	
 	if(Boolean.valueOf( deleting.getValue("duplicate") ) )
 	{
 		//Search for guid
 		String md5 = deleting.getValue("md5hex");
-		Collection hits = mediaArchive.query("asset").match("md5hex", md5).search();
-		if( hits.size() == 2)
+		Collection duplicatedhits = mediaArchive.query("asset").match("md5hex", md5).search();
+		if( duplicatedhits.size() == 2)
 		{
-			for(Data asset in hits)
+			for(Data asset in duplicatedhits)
 			{
 				if( !dataid.equals( asset.getId()  ) )
 				{
@@ -30,18 +32,10 @@ public void init() {
 		}
 	
 	}
-	
 }
 
-init();
-
-
-
-
-
-
 public checkViz(){
-	log.info("Starting Pre-Deletion Event");
+	log.info("Starting Viz0ne Pre-Deletion Event (Deleting)");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
 	String assetids = context.getRequestParameter("assetids");
@@ -71,5 +65,11 @@ public checkViz(){
 	
 }
 
-checkViz();
+init();
+//VizOne Disabled
+//checkViz();
+
+
+
+
 
