@@ -1,7 +1,7 @@
 #ifnull($hit)
 	#set ($hit = $asset)
 #end
-$hit
+
 #set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
 
@@ -13,15 +13,17 @@ $hit
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
-	<script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script>
-	<link href="$applink/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
+	
 ##Add back full screen button, Autoplay and escape handling
+<div class="player-outer">
 <div id="playarea-$hit.id" class="player">
-	<video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="position: relative;width: 100%!important; height: 100%!important;"
-		poster='$thumb'
-		#if( $loop && $loop == "true") loop #end
-		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
-		>
+
+	<video id="video-$hit.id" 
+			class="video-js vjs-default-skin vjs-big-play-centered" 
+			poster='$thumb'
+			#if( $loop && $loop == "true") loop #end
+			data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
+		> 
 		<source type="video/mp4" src="$source">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
 		<source type="video/flash" src="mp4:$short">
@@ -36,6 +38,7 @@ $hit
       		#end
       	#end
 	</video>
+</div>
 </div>
 <script>
 var myPlayer = videojs('video-$hit.id');

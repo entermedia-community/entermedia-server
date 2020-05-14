@@ -136,34 +136,50 @@ span.emdropshadow {
 .playerarea a.imageplayer {
     flex: 1;
 }
-
-
-.playerarea .player
-{
-	height:100%;
-	width:100%;
-	background-size: 100% auto;
-}
-
-.playerarea .player {
-	padding:20px;
-	max-height: 100%;
+.playerarea .player-outer {
+	padding:20px 0;
 	height: 100%;
-    justify-content: space-between;
 }
+.playerarea .player {
+	margin:0 auto;
+	width:100%;
+}
+
+.player {
+
+/*
+min-width: 100%; 
+min-height: 100%;
+width: auto; 
+height: auto;*/ 
+background-size: cover; 
+width:100%;
+height: 80%;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .player .video-js {
-    position: relative;
-    min-width: 100%!important;
-    min-height: 100%!important;
+	margin:0 auto;
+	width:90%;
+	height: 100%;
 }
+
+@media (min-width: 1480px) {
+.player .video-js  {
+	width:80%;
+	}
+}
+
+
 
 div#hiddenoverlay .playerarea {
-
 	float: left;
 	width: 80%;
-
 }
-
 
 
 /* STACKED VIEW OVERLAY */
