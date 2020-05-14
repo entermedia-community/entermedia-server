@@ -45,11 +45,14 @@ public class GoogleModule extends BaseMediaModule
 	public void createUserInFirebase(WebPageRequest inReq) throws Exception
 	{
 		User user = inReq.getUser();
+		
 		if( user != null)
 		{
 			String value = getMediaArchive(inReq).getUserManager().getEnterMediaKey(user);
+			
 			inReq.putPageValue("entermediakey", value);
 			inReq.putPageValue("user", user);
+			
 			
 			//update Firebase		
 			getGoogleManager(inReq).createFireBaseUser(user);
