@@ -699,7 +699,9 @@ public class AdminModule extends BaseMediaModule
 	public void autoLogin(WebPageRequest inReq) throws OpenEditException
 	{
 		createUserSession(inReq);
-		if (inReq.getUser() != null)
+		String forceAuto = inReq.findValue("forceautologin");
+		
+		if (inReq.getUser() != null && !Boolean.parseBoolean(forceAuto))
 		{
 			return;
 		}
