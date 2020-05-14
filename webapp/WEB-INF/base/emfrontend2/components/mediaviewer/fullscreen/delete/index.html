@@ -1,6 +1,7 @@
 <div style="margin: 0px;">
-    <p>[[Are you sure you want to delete]] <strong> 
-    	#if($data.size() > 1 ) 
+    <p>[[Are you sure you want to delete]] <strong>
+     
+    	#if($data.size() && $data.size() > 1 ) 
     		$data.size() [[assets]]
     	#else 
     		1 [[asset]]
