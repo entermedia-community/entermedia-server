@@ -17,6 +17,7 @@
 		"firstname": "$!user.firstName",
 		"lastname" : "$!user.lastName",
 		"email" : "$!user.email",
+		"firebasepassword" : "$!user.firebasepassword",
 		"userid":"${user.id}",
 		"screenname" : "$!user.getScreenName()"
 #end

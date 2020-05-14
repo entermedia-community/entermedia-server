@@ -53,6 +53,7 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.UserSearcher;
+import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.HttpMimeBuilder;
@@ -1047,31 +1048,27 @@ public class GoogleManager implements CatalogEnabled
 			throw new OpenEditException("Firebase apikey not set");
 		}
 
-		String password = getMediaArchive().getUserManager().decryptPassword(inUser);
+//		String password = getMediaArchive().getUserManager().decryptPassword(inUser);
 
 		String firebasepassword = inUser.get("firebasepassword");
-		if( firebasepassword != null)
+		if( firebasepassword == null)
+		{
+			createFirebaseUser(apikey,inUser);
+		}
+		else
 		{
 			String token = logIntoFirebase(apikey,inUser,firebasepassword);
 			if( token == null)
 			{
 				//maybe user is deleted?
-				createFirebaseUser(apikey,inUser,password);
-		 		inUser.setValue("firebasepassword", password);
-		 		getMediaArchive().getUserManager().saveUser(inUser);
+				createFirebaseUser(apikey,inUser);
 			}
-			else if( !password.equals(firebasepassword ) )
-			{
-				updatePasswordOn(apikey,inUser,token,password);
-		 		inUser.setValue("firebasepassword", password);
-		 		getMediaArchive().getUserManager().saveUser(inUser);
-			}
-		}
-		else
-		{
-			createFirebaseUser(apikey,inUser,password);
-	 		inUser.setValue("firebasepassword", password);
-	 		getMediaArchive().getUserManager().saveUser(inUser);
+//			else if( !password.equals(firebasepassword ) )
+//			{
+//				updatePasswordOn(apikey,inUser,token,password);
+//		 		inUser.setValue("firebasepassword", password);
+//		 		getMediaArchive().getUserManager().saveUser(inUser);
+//			}
 		}
 	}
 
@@ -1116,11 +1113,13 @@ public class GoogleManager implements CatalogEnabled
  		String idtoken = (String)json.get("idToken");
 	}
 		
-	protected void createFirebaseUser(String apikey, User inUser, String password)
+	protected void createFirebaseUser(String apikey, User inUser)
 	{
 		JSONObject createrequest = new JSONObject();		
 		createrequest.put("email",inUser.getEmail());
-		createrequest.put("password",password);	
+		
+		String firebasepassword = new PasswordGenerator().generate();
+		createrequest.put("password",firebasepassword);	
 		createrequest.put("returnSecureToken",true);
 			
 		String createurl = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + apikey;
@@ -1135,6 +1134,10 @@ public class GoogleManager implements CatalogEnabled
  			return;
 		}
  		JSONObject json  = getConnection().parseJson(createresp);
+ 		
+ 		inUser.setProperty("firebasepassword", firebasepassword);
+ 		getMediaArchive().getUserManager().saveUser(inUser);
+ 		
 // 		String idtoken = (String)json.get("idToken");
 	}
 

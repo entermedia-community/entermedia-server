@@ -8,6 +8,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.google.GoogleManager;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 
@@ -47,12 +48,18 @@ public class GoogleModule extends BaseMediaModule
 		User user = inReq.getUser();
 		if( user != null)
 		{
+			//update Firebase		
+			getGoogleManager(inReq).createFireBaseUser(user);
 			String value = getMediaArchive(inReq).getUserManager().getEnterMediaKey(user);
 			inReq.putPageValue("entermediakey", value);
 			inReq.putPageValue("user", user);
+			String firebasepassword = user.get("firebasepassword");
+			if( firebasepassword == null)
+			{
+				throw new OpenEditException("No password found");
+			}
+			inReq.putPageValue("firebasepassword", firebasepassword);
 			
-			//update Firebase		
-			getGoogleManager(inReq).createFireBaseUser(user);
 		}
 	}	
 	
