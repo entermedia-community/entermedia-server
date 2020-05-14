@@ -10,7 +10,10 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 
 public init(){
-	log.info("Starting Pre-Deletion Event");
+	/*
+	 * Predeleting Handled on deleting.groovy
+	 * 
+	log.info("Starting Pre-Deletion Event (Delete)");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
 	String assetids = context.getRequestParameter("assetids");
@@ -35,7 +38,9 @@ public init(){
 			
 		}
 		
-	}	
+	}
+	
+	*/
 	
 }
 
