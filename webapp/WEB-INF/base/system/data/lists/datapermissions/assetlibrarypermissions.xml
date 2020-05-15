@@ -1,0 +1,39 @@
+<permissions name="Collection Asset Permissions">
+	
+	<permission moduleid="librarycollection" permission="editcollection" id="libraryeditcollection" permissiontype="library" name="Edit Collection" description="Overrides the default edit permissions for collections" ordering="202" />
+	
+	<permission moduleid="asset" permission="multidelete" id="librarymultidelete" permissiontype="library" name="Multi-Delete" description="Enables removal of selected assets, and the option to remove the original." ordering="306"/>
+	<permission moduleid="asset" permission="multiedit" id="librarymultiedit" permissiontype="library" name="Multiple Files" description="Enables various actions across multiple assets simultaneously." ordering="304" />
+	<permission moduleid="asset" permission="viewcategoryupload"  id="libraryviewcategoryupload" permissiontype="library" name="Upload Assets" description="Enables the upload of assets into collections" ordering="308" />
+	
+	
+	<permission moduleid="asset" permission="editasset" id="libraryeditasset" permissiontype="library" name="Edit Assets" description="Allow editing of assets in this collection" ordering="304" />                                                  
+	<permission moduleid="asset" permission="viewcategoryupload" id="libraryviewcategoryupload" permissiontype="library" name="Upload Files" description="Enables the upload of assets into categories" ordering="308" />
+	<permission moduleid="asset" permission="deleteasset" id="librarydeleteasset" permissiontype="library" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="305"/>
+	<permission moduleid="asset" permission="emaillink" id="libraryemaillink" permissiontype="library" name="Email" description="Allow email a link to an internal asset." ordering="412"/>
+	<permission moduleid="asset" permission="publish" id="librarypublish" permissiontype="library" name="Publish" description="Allow Publishing assets to a specified set of servers." ordering="416"/>
+	<permission moduleid="asset" permission="shareasset" id="libraryshareasset" permissiontype="library" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="410"/>
+	<permission moduleid="asset" permission="sharetosocialmedia" id="librarysharetosocialmedia" permissiontype="library" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="420"/>
+	<permission moduleid="asset" permission="viewconversions" id="libraryviewconversions" permissiontype="library" name="Conversions" description="View Conversions and Cropping Tool" ordering="332"/>
+	<permission moduleid="asset" permission="embedasset" id="libraryembedasset" permissiontype="library" name="Embedding" description="Provides HTML code to embed assets." ordering="414"/>
+	<permission moduleid="asset" permission="quickpublish" id="libraryquickpublish" permissiontype="library" name="Quick Publish" description="Enables the quick publish menu." ordering="418"/>
+	<permission moduleid="asset" permission="viewmap" id="libraryviewmap" permissiontype="library" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="335"/>
+    <permission moduleid="asset" permission="viewassetedit" id="libraryviewassetedit" permissiontype="library" name="Cropping" description="Enables cropping" ordering="333" />
+    <permission moduleid="asset" permission="viewmetadatageneral" id="libraryviewmetadatageneral" permissiontype="library" name="View  Metadata" description="View Metadata Summary" ordering="362" />
+    <permission moduleid="asset" permission="viewattachments" id="libraryviewattachments" permissiontype="library" name="Attachments" description="Enables access to attachments associated with an asset." ordering="334"/>
+	<permission moduleid="asset" permission="viewcomments" id="libraryviewcomments" permissiontype="library" name="View Comments" description="Enables Collaboration Tool" ordering="386"/>
+	<permission moduleid="asset" permission="comment" id="librarycomment" permissiontype="library" name="Add Comments" description="Enables Collaboration Tool" ordering="387"/>
+	<permission moduleid="asset" permission="deletecomment" id="librarydeletecomment" permissiontype="library" name="Delete Comments" description="Enables Collaboration Tool" ordering="388"/>
+	<permission moduleid="asset" permission="showbadge" id="libraryshowbadge" permissiontype="library" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="392" />
+    <permission moduleid="asset" permission="viewtimeline" id="libraryviewtimeline" permissiontype="library" name="Video Timeline" description="Enables access to Video Timeline tool" ordering="338" />
+	<permission moduleid="asset" permission="viewclosedcaptions" id="libraryviewclosedcaptions" permissiontype="library" name="Closed Captions" description="Enables access to Closed Caption tool" ordering="339" />
+    <permission moduleid="asset" permission="convert"  id="libraryconvert" permissiontype="library" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="324"/>
+	<permission moduleid="asset" permission="download"  id="librarydownload" permissiontype="library" name="Download Original" description="Enables downloading of the original asset." ordering="322"/>
+	<permission moduleid="asset" permission="downloadfpo"  id="librarydownloadfpo" permissiontype="library" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="326"/>
+	<permission moduleid="asset" permission="showpendingassets"   id="libraryshowpendingassets" permissiontype="library" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="312"/>
+	<permission moduleid="asset" permission="showunwatermarkedassets"   id="libraryshowunwatermarkedassets" permissiontype="library" name="Un-Watermark Assets" description="Allow assets to be viewed without Watermarks" ordering="327"/>
+		
+	
+</permissions>
+
+	
