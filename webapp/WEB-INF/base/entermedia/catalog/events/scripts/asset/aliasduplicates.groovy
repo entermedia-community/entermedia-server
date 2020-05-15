@@ -47,6 +47,7 @@ public void init()
 			}
 			else
 			{
+				//Load Next
 				currentasset = searcher.loadData( duplicate );
 			}
 		}

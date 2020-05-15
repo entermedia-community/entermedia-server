@@ -1123,7 +1123,8 @@ public class MediaArchive implements CatalogEnabled
 		processor.process();
 		ContentItem original = getOriginalContent(inAsset);
 		//Rerun Metadata
-		getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(MediaArchive.this, original, inAsset );
+		//Why read metadata on deletion?
+		//getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(MediaArchive.this, original, inAsset );
 
 	}
 

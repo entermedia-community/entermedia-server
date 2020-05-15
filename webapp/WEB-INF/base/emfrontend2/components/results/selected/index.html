@@ -22,7 +22,7 @@
 					href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()">
 						[[Show All Results]]</a>
 		#end		
-		#if( $hits.getSelectionSize() > 0)
+		#if( $hits.getSelectionSize() && $hits.getSelectionSize() > 0)
 		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none&collectionid=$!librarycol.getId()">[[Deselect All]]</a>
 		#end
 	</div>
@@ -71,7 +71,7 @@
 			   title="[[Add to Favorites]]"  
 			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
-		#if ($canmultiedit && $hits.getSelectionSize() > 1)
+		#if ($canmultiedit && $hits.getSelectionSize() && $hits.getSelectionSize() > 1)
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
 		#end
