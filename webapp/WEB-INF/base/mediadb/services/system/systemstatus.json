@@ -1,13 +1,6 @@
 {
 	"response":
 	{
-	    "status":"ok",
-	    "uid": $random
-	},
-	"partitions":[	
-			#foreach( $partition in $partitions )
-				#if( ${foreach.count} != 1 ), #end
-				{"name":"$partition.name","totalcapacity": $partition.totalCapacity, "freepartitionspace": $partition.freePartitionSpace, "usablepartitionspace": $partition.usablePartitionSpace }
-			#end 
-	]
+	    "status":"$status"
+	}
 }

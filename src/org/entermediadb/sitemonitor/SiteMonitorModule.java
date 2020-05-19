@@ -28,4 +28,18 @@ public class SiteMonitorModule extends BaseMediaModule
 		Long random = Math.abs(System.currentTimeMillis() - rnd.nextLong());
 		inReq.putPageValue("random", random.toString());
 	}
+	
+	public void checkStatus(WebPageRequest inReq)
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		String health = archive.getNodeManager().getClusterHealth();
+		if (health.equals("GREEN") || health.equals("YELLOW")) {
+			inReq.putPageValue("status", "ok");
+		}
+		else {
+			inReq.putPageValue("status", "error");
+			
+		}
+	}
 }
