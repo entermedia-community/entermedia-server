@@ -169,6 +169,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 		Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
 		Data node = null;
+		
+		inLog.info("Scanning " + nodes.size() + " nodes ");
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			try
