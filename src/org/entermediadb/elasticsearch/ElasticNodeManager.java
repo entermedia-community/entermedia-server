@@ -1091,20 +1091,23 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					ok = false;
 					//get this mapping and show all mapping info
-					BaseElasticSearcher elasticsearcher = (BaseElasticSearcher) searcher;
-					String error = "Could not map " + searcher.getSearchType();
-					XContentBuilder source = elasticsearcher.buildMapping();
-					try
+					if( searcher instanceof BaseElasticSearcher)
 					{
-						String out = JsonOutput.prettyPrint(source.string());
-						error = error + " with mapping of : <pre class='errordump'>" + out + "</pre><br>";
+						BaseElasticSearcher elasticsearcher = (BaseElasticSearcher) searcher;
+						String error = "Could not map " + searcher.getSearchType();
+						XContentBuilder source = elasticsearcher.buildMapping();
+						try
+						{
+							String out = JsonOutput.prettyPrint(source.string());
+							error = error + " with mapping of : <pre class='errordump'>" + out + "</pre><br>";
+						}
+						catch (IOException e)
+						{
+							log.error("Mapping ", e);
+						}
+						error = error + " existing mapping " + showAllExistingMapping(inCatalogId, tempindex);
+						throw new OpenEditException(error); //real error
 					}
-					catch (IOException e)
-					{
-						log.error("Mapping ", e);
-					}
-					error = error + " existing mapping " + showAllExistingMapping(inCatalogId, tempindex);
-					throw new OpenEditException(error); //real error
 				}
 				searcher.setAlternativeIndex(null);
 			}
