@@ -55,7 +55,6 @@ saveProfileProperty = function(property, value,onsuccess) {
 }
 
 
-
 setSessionValue = function(key, value) {
 	app = $("#application");
 	home =  app.data("home");

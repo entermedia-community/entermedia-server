@@ -1,0 +1,95 @@
+#set ($searchtype = $context.getRequestParameter("searchtype"))
+#set ($searchhome = $context.getRequestParameter("searchhome"))
+$context.putPageValue("searchhome", $searchhome)
+
+#set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set ($parentid = $context.getRequestParameter("parentid"))
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+#set($viewid = $context.getRequestParameter("viewid"))
+#if( !$viewid )
+    #set( $viewid = $context.getRequestParameter("view"))
+#end
+
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("view"))
+#end
+
+#set ($editpath = $context.getRequestParameter("editorpath"))
+#if(!$editpath)
+	#set( $editpath = "${page.directory}/generictablesave.html" )
+#end
+
+#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+
+#set ($id = $context.getRequestParameter("id"))
+
+$context.putPageValue("view", $viewpath)
+#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+$context.putPageValue("searcher", $searcher)
+
+#set( $data = $searcher.searchById($id) )
+$context.putPageValue("data", $data)
+
+#set( $viewdata = $searcher.getViewData($viewid) )
+<div id="${viewid}editor" >
+<h4>$!context.getText($viewdata) </h4>
+
+<div id="default-fields">
+	#if( $viewdetailspath )
+	
+		#set($themodule = false )
+		#set($themodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+		<div style="padding: 10px;">
+				<a href="$home$viewdetailspath${id}.html">
+				<div class="largeicon" title="[[see more details]]"><i class="fas fa-external-link-alt"></i> [[View In $themodule]]	</div> 
+				</a>
+		</div>
+	#end
+	<form id="dataeditor" 
+		  name="dataeditor" 
+		  class="force-validate-inputs ajaxform"
+		  data-targetdiv="${viewid}editor" 
+		  method="post"  
+		  action="$editpath" 
+		  enctype="multipart/form-data">
+    	<input name="save" type="hidden" value="true" />
+    	
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="parentid" type="hidden" value="$!parentid" />
+    	<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+    	<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
+    	
+   		<input type="hidden" name="field" value="$fieldexternalid" />
+		<input type="hidden" name="${fieldexternalid}.value" type="hidden" value="$parentid" />
+		<input type="hidden" name="parentid" value="$parentid" />
+    	
+    	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+    	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="view" type="hidden" value="$viewpath" />
+    	<input name="hitssessionid" type="hidden" value="$hits.sessionId" />
+    	<input name="viewpath" type="hidden" value="$viewpath" />
+    	<input name="origURL"  type="hidden" value="$!origURL" />
+	#if($caneditdata)
+		$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+	#else
+		$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+	#end
+	#if($caneditdata)
+	    <input class="btn btn-sm btn-primary float-left" type="submit" value="[[Save]]" />
+	#end
+
+	  ##$pages.include("/$applicationid/components/detaileditor/generic.html?$args&targetdiv=${viewid}editor&view=$viewpath&module=$themodule",$context)
+	
+	#if($id && ($caneditdata || $candelete))	
+		<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]" style="" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+	#end
+	</form>
+</div>
+</div>
+
+

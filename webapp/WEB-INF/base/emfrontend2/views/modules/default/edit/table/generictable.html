@@ -7,6 +7,8 @@ $context.putPageValue("searchhome", $searchhome)
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #set ($edit  = $context.getRequestParameter("edit"))
+
+##Always can delete?
 #set ($candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
@@ -22,12 +24,13 @@ $context.putPageValue("searchhome", $searchhome)
 
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
-	#set( $editpath = "${page.directory}/generictablesave.html" )
+	#set( $editpath = "${page.directory}/generictableedit.html" )
 #end
 
+##Table Row Link
 #set($link = $context.getRequestParameter("selectlink"))
 #if( !$link )
-	#set( $link = "${page.directory}/generictablesave.html" )
+	#set( $link = "${page.directory}/generictableedit.html" )
 #end
 
 #set($jumptomodule = $context.getRequestParameter("jumptomodule"))
@@ -35,7 +38,7 @@ $context.putPageValue("searchhome", $searchhome)
 #set ($id = $context.getRequestParameter("id"))
 
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
 
 #set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 
@@ -52,7 +55,7 @@ $context.putPageValue("searchhome", $searchhome)
 
 #if( $showit )
 <div id="${viewid}editor" >
-	#if( !$edit || $edit == "false")
+
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		#set( $viewdata = $searcher.getViewData($viewid) )
 		<h4>$!context.getText($viewdata) </h4>
@@ -62,40 +65,13 @@ $context.putPageValue("searchhome", $searchhome)
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 			<div class="addnew-generic">
-			<a class="btn btn-sm btn-primary ajax"  href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
+			<a class="btn btn-sm btn-primary ajax"  
+			href="$home$editpath?$argsnoid&oemaxlevel=1" 
+			targetdiv="${viewid}editor">[[Add New]]</a>
 			</div>
 		#end
 	
-	#else
 	
-	
-		$context.putPageValue("view", $viewpath)
-		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
-		$context.putPageValue("searcher", $searcher)
-		
-		#set( $data = $searcher.searchById($id) )
-		$context.putPageValue("data", $data)
-		
-		<div id="default-fields">
-
-		#if( $viewdetailspath )
-		
-		#set($themodule = false )
-		#set($themodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
-		<div style="padding: 10px;">
-				<a href="$home$viewdetailspath${id}.html">
-				<div class="largeicon" title="[[see more details]]"><i class="fas fa-external-link-alt"></i> [[View In $themodule]]	</div> 
-				</a>
-		</div>
-		#end
-		  $pages.include("/$applicationid/components/detaileditor/generic.html?$args&targetdiv=${viewid}editor&view=$viewpath&module=$themodule",$context)
-		</div>
-		
-		<div style="margin-top:-40px">  ##TODO: Move this to the detaileditor/generic
-			<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]" style="" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-		</div>
-	
-	#end
 </div>
 <div class="clearfix"></div>
 #else ##showit
