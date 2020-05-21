@@ -1,8 +1,9 @@
 <page>
+	
+	<path-action name="JsonAdminModule.preprocess" />
+	<property name="emaillayout">/${applicationid}/authentication/sendmagiclinkemail.html</property>
+	<path-action name="Admin.emailPasswordReminder" />
 	<permission name="view">
 		<blank/>
 	</permission>
-	<path-action name="JsonAdminModule.preprocess" />
-	<path-action name="Admin.emailPasswordReminder" />
-
 </page>
