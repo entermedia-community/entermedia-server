@@ -3,13 +3,19 @@
     #set( $viewid = $context.getRequestParameter("view"))
 #end
 
-
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
 
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#set ($parentid = $context.getRequestParameter("parentid"))
+
+#set( $args = "id=$!parentid&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "$args&searchhome=$!{searchhome}/edit")
+
 #if($viewdata.rendercustomview)
-	$pages.include("$content.searchhome/edit/table/${viewdata.rendercustomview}.html", $context)
+	$pages.include("$content.searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
 #else
-	$pages.include("$content.searchhome/edit/table/generictable.html", $context)
+	$pages.include("$content.searchhome/edit/table/generictable.html?$args", $context)
 
 #end
