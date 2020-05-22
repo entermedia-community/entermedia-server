@@ -1,29 +1,16 @@
-#set( $categoryid = $context.getRequestParameter("categoryid"))
-#set( $category = $mediaarchive.getCategory($categoryid))
-#set( $moduleid = $context.findValue("module") )
-
-
-<div id="crumbs" class="breadcrumbs">
-<div class="category">		
-	#if($moduleid=='librarycollection')
-	<i class="fas fa-th-large"></i> 
-	#end			
-	#foreach( $parent in $category.getParentCategoriesFrom(1))
+#if( !$selcategory && $librarycol ) 
+#set( $selcategory = $librarycol.getCategory() )
+#end
+<div style="padding-left: 40px">
+<Br> Path:
+<span id="crumbs" class="breadcrumbs">
+<span class="category">		
+	#foreach( $parent in $selcategory.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
 	#end
+</span>
 
-	#if( !$librarycol)
-		#set($collection = $mediaarchive.getSearcher("librarycollection").query().match("rootcategory",$categoryid).searchOne())
-		#if($collection)
-			<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="opencollection-btn" >[[Open Collection]]</span></a>
-		#end
-	#end
-
+</span>
 
 </div>
-
-</div>
-#if($librarycol.projectstatus)
-<strong> ($mediaarchive.getData("projectstatus", $librarycol.projectstatus))</strong>
-#end
