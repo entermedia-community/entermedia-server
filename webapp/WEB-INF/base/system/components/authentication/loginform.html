@@ -11,8 +11,8 @@
 #else
 	#set( $allowguest =  false)
 #end
-#set($providers = $mediaarchive.getList("oauthprovider"))
 
+#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 #if( $providers )
 <div class="col-md-3" style="border-right:1px solid #999;  padding:95px 0px 0 40px; ">
 		#if( $allowguest )
