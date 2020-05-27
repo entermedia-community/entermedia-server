@@ -1940,6 +1940,7 @@ public class AssetEditModule extends BaseMediaModule
 			HashMap variables = new HashMap();
 			variables.put("userid", inReq.getUser().getId());
 			variables.put("id", id);
+			variables.put("filename", item.getName());
 			if (target != null)
 			{
 				variables.put("data", target);
@@ -1956,11 +1957,16 @@ public class AssetEditModule extends BaseMediaModule
 
 				}
 			}
-			if (sourcepath == null)
+			String path = "";
+			if (sourcepath != null)
 			{
-				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName());
+				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
 			}
-			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
+			else {
+				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName());
+				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
+			}
+			
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 			path = path.replace("//", "/");
 
