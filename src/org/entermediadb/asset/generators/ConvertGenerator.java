@@ -109,7 +109,14 @@ public class ConvertGenerator extends FileGenerator
 			}
 			else
 			{
-				name = inPage.getName();
+				String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
+				String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
+				if( type.length() > 3)
+				{
+					type = type.substring(0,3);
+				}
+				name = label + "." + type;
+				
 			}
 		}
 		String themeprefix = inReq.findValue("themeprefix");
@@ -118,9 +125,6 @@ public class ConvertGenerator extends FileGenerator
 		//log.info("canforcewatermarks" + all.get("canforcewatermarks"));
 
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
-		
-		
-		
 		
 		if( result.isComplete() )
 		{
