@@ -9,20 +9,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.upload.FileUpload;
-import org.entermediadb.asset.upload.FileUploadItem;
-import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.net.HttpSharedConnection;
@@ -32,17 +26,12 @@ import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
-import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
-import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -53,8 +42,6 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpSharedConnection inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated)
 	{
 		String url = node.get("baseurl");
-		try
-		{
 			Map response = (Map) parsed.get("response");
 
 			Collection generated = (Collection) parsed.get("generated");
@@ -83,64 +70,65 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 							Map filelisting = (Map) iterator3.next();
 							//Compare timestamps
 							//String lastmodified = (String) filelisting.get("lastmodified");
-							long datetime = (long) filelisting.get("lastmodified");
-							String genpath = (String) filelisting.get("localpath");
-							String remotecatalogid = (String) response.get("catalogid");
-							String generatefolder = remotecatalogid + "/generated";
-							String endpath = genpath.substring(genpath.indexOf(generatefolder) + generatefolder.length());
-							String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated" + endpath;
-							ContentItem found = inArchive.getContent(savepath);
+							downloadOneGeneratedFile(inArchive, inConnection, inParams, url, response, filelisting);
 
-							if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
-							{
-								log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
-
-								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
-								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-								String tmpfilename = PathUtilities.extractFileName(endpath);
-								String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
-								CloseableHttpResponse genfile = null;
-								try
-								{
-									genfile = inConnection.sharedPost(path, inParams);
-									StatusLine filestatus = genfile.getStatusLine();
-									if (filestatus.getStatusCode() != 200)
-									{
-										//Cant PULL asset status
-										log.error("Could not download generated " + filestatus + " " + path);
-										throw new OpenEditException("Could not download generated " + filestatus + " " + path);
-									}
-	
-									//Save to local file
-									log.info("Saving :" + endpath + " URL:" + path);
-									InputStream stream = genfile.getEntity().getContent();
-									//Change the timestamp to match
-									File tosave = new File(found.getAbsolutePath());
-									tosave.getParentFile().mkdirs();
-									FileOutputStream fos = new FileOutputStream(tosave);
-									filler.fill(stream, fos);
-									filler.close(stream);
-									filler.close(fos);
-									tosave.setLastModified(datetime);
-								}
-								finally
-								{
-									inConnection.release(genfile);
-								}
-							}
 						}
 					}
 				}
 			}
-		}
-		catch (Exception ex)
+	}
+	protected void downloadOneGeneratedFile(MediaArchive inArchive, HttpSharedConnection inConnection, Map inParams, String url, Map response, Map filelisting)
+	{
+		long datetime = (long) filelisting.get("lastmodified");
+		String genpath = (String) filelisting.get("localpath");
+		String remotecatalogid = (String) response.get("catalogid");
+		String generatefolder = remotecatalogid + "/generated";
+		String endpath = genpath.substring(genpath.indexOf(generatefolder) + generatefolder.length());
+		String savepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated" + endpath;
+		ContentItem found = inArchive.getContent(savepath);
+
+		if (!found.exists() || !FileUtils.isSameDate(found.getLastModified(), datetime))
 		{
-			log.error("Could not download files " + url, ex);
-			if (ex instanceof OpenEditException)
+			log.info("Found change: " + found.getLastModified() + " !=" + datetime + " on " + found.getAbsolutePath());
+
+			//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
+			//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
+			String tmpfilename = PathUtilities.extractFileName(endpath);
+			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
+			CloseableHttpResponse genfile = null;
+			try
 			{
-				throw (OpenEditException) ex;
+				genfile = inConnection.sharedPost(path, inParams);
+				StatusLine filestatus = genfile.getStatusLine();
+				if (filestatus.getStatusCode() != 200)
+				{
+					//Cant PULL asset status
+					log.error("Could not download generated " + filestatus + " " + path);
+					throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+				}
+				//Save to local file
+				log.info("Saving :" + endpath + " URL:" + path);
+				try
+				{
+					InputStream stream = genfile.getEntity().getContent();
+					//Change the timestamp to match
+					File tosave = new File(found.getAbsolutePath());
+					tosave.getParentFile().mkdirs();
+					FileOutputStream fos = new FileOutputStream(tosave);
+					filler.fill(stream, fos);
+					filler.close(stream);
+					filler.close(fos);
+					tosave.setLastModified(datetime);
+				}
+				catch (Exception ex)
+				{
+					log.error("Could not download file " + url + " " + filelisting, ex);
+				}
 			}
-			throw new OpenEditException(ex);
+			finally
+			{
+				inConnection.release(genfile);
+			}
 		}
 	}
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
