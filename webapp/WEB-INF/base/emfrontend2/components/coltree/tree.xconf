@@ -1,0 +1,13 @@
+<page>
+
+	<page-action name="ProjectModule.getCategoryCollectionCache" />
+	
+	<property name="treeModel">libraryTreeModel</property>
+	
+	<page-action name="CategoryModule.getCatalogTree" />
+	
+	<page-action name="CategoryModule.selectNodes" />
+	
+
+	<inner-layout/>
+</page>

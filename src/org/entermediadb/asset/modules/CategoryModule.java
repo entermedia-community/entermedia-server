@@ -104,8 +104,14 @@ public class CategoryModule extends BaseMediaModule
 				main = archive.getCategoryArchive().getRootCategory();
 				
 			}
+			String treeModel = inRequest.findValue("treeModel");
+			if( treeModel == null)
+			{
+				treeModel = "categoryTreeModel";
+			}
+			
 			//TODO: Use Spring
-			CatalogWebTreeModel model = new CatalogWebTreeModel( );
+			CatalogWebTreeModel model = (CatalogWebTreeModel)archive.getBean(treeModel);//new CatalogWebTreeModel( );
 			model.setMediaArchive(archive);
 			model.setCatalogId(archive.getCatalogId());
 			model.setRoot(main);

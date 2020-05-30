@@ -2283,5 +2283,11 @@
 	<bean id="PayPalModule" class="org.entermediadb.modules.paypal.PayPalModule">
 	</bean>
 
+	<bean id="categoryTreeModel" class="org.entermediadb.asset.links.CatalogWebTreeModel"  scope="prototype">
+	</bean>
+
+	<bean id="libraryTreeModel" class="org.entermediadb.projects.LibraryWebTreeModel"  scope="prototype">
+	</bean>
+
 		
 </beans>
