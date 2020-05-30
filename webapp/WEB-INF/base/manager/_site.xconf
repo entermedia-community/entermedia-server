@@ -56,6 +56,7 @@
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   
   <inner-layout>${themeprefix}/layouts/application.html</inner-layout>
+		<property name="skipvirtualhost">true</property>
 
 
 </page>
