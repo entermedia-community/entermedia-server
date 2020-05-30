@@ -1,0 +1,184 @@
+#set( $treename = $context.getRequestParameter("tree-name") )
+#set( $webtree = $context.getPageValue($treename) )
+
+#set( $showinput = $webtree.getTreeRenderer().isAllowSelections() )
+#set( $editable = $webtree.getTreeRenderer().isEditable() )
+#set( $model = $webtree.getModel() )
+#set( $render = $webtree.getTreeRenderer() )
+
+#set( $adding = $context.getRequestParameter("adding" ) )
+
+#if($selectednodes)
+	$!webtree.getTreeRenderer().selectNodes($selectednodes)
+#end
+
+#macro(showcoltreecategories2 $cat $depth) 
+		#set($children = $model.getChildren($cat))
+		#if( $children.size() > 0)
+			#set( $haschildren = true)
+		#else
+			#set( $haschildren = false)
+		#end
+		#set( $open = $haschildren)
+		#set( $expanded = $webtree.isExpanded($cat) )
+		#set( $isselected = $render.isNodeSelected($cat))
+		
+		
+		##Collection
+		#set( $collectionid = $categoryCollectionCache.findCollectionId($cat))
+		#set( $isCollectionRoot = $categoryCollectionCache.isCollectionRoot($cat))
+		
+		#if($collectionid)   
+			#set( $iscollection = true )
+		#else
+			#set( $iscollection = false  )
+		#end	
+		<li id="${cat.id}_row" 
+			class="noderow categorydraggable" 
+			data-nodeid="$cat.id" 
+			data-depth="$depth" 
+			data-categoryname="$cat.name" 
+			data-collectionid="$!collectionid"
+			 > 
+			#set( $checked = $render.isIdSelected($cat.id) )
+			#set ( $padding = (10 * ($depth - 1)) + 5 )
+			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end #if($expanded) expanded #end" 
+			     style="padding-left: ${padding}px" title="id: $cat.id">
+				#if($haschildren)
+					<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
+				#end 
+				<div id="${cat.id}_display" 
+					 class="cat-name #if($isCollectionRoot) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
+					 title="$cat.getCategoryPath()"
+					  >
+				#if($cat.hasCountData())
+					#if( $cat.getCounts() > 0)
+						<b>$cat.name</b> 
+					#else
+						$cat.name  
+					#end
+					<b class="cat-count"> 
+					($cat.getCount())
+					</b> 
+				#else
+					$cat.name  
+				#end
+                </div>
+				
+				#if($caneditcategorytree || $caneditcategories)
+				    <a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
+                #end
+                
+                #if( $canviewupload || $canviewcategoryupload)
+                    <a href="#" class="cat-options cat-uploadfromtree" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+                #end
+			</div>
+		#if($haschildren && $expanded)
+		   <ul class="open" > <!-- Open with $cat.name $children.size() -->
+			#foreach( $subcategory in $children) 
+				#set ( $newdepth = $depth + 1) ##weird bug when this was above the loop 3 = 1 + 1
+				#showcoltreecategories2($subcategory, $newdepth)
+		    #end
+		   </ul>  <!-- Close on $cat.name $children.size() -->
+		#end
+		</li>
+		
+#end
+
+#set( $toggle = $context.getRequestParameter("toggle" ) )
+#if( $toggle && $toggle == "true" )
+	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
+	#set( $target = $webtree.getModel().getChildById($nodeid) )
+
+	$!webtree.getTreeRenderer().toggleNode($target)
+
+	#set( $depths = $context.getRequestParameter("depth" ) )
+	#set( $depth = 0 )
+	#set( $depth = $depth.parseInt($depths) )
+	#showcoltreecategories2($target, $depth)
+
+#elseif( $adding && $adding == "true" )
+	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
+	#set( $target = $webtree.getModel().getChildById($nodeid) )
+	$!webtree.getTreeRenderer().expandNode($target)
+	#set( $depths = $context.getRequestParameter("depth" ) )
+	#set( $depth = 0 )
+	#set( $depth = $depth.parseInt($depths) )
+	#showcoltreecategories2($target, $depth)
+	
+#else
+	#if($category && $content.isPropertyTrue("searchcategory") )
+		$render.setSelectedNode($category)
+#end
+
+#set( $top = $context.getRequestParameter("treetoplocation") )
+#set( $left = $context.getRequestParameter("treeleftlocation") )
+
+#set( $prefix = $context.getRequestParameter("url-prefix" ) )
+#set( $postfix = $context.getRequestParameter("url-postfix" ) )
+#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
+#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
+#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
+#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
+
+<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
+	<div id="${treename}tree" class="emtree emtree-widget" 
+		data-home="$home$apphome" 
+		data-treename="$treename" 
+		data-rootnodeid="$rootcategory.getId()"
+		data-editable="$editable" 
+		data-url-prefix="$!prefix" 
+		data-url-postfix="$!postfix" 
+		data-targetdiv="$!targetdiv" 
+		data-maxlevelclick="$!maxlevelclick"
+		data-customurlprefix="$!customurlprefix"
+		#if( $canviewupload || $canviewcategoryupload)
+			data-customurladdmedia="$!customurladdmedia"
+		#end
+		>
+		<ul  class="open" >
+		#showcoltreecategories2($rootcategory, 1)
+		</ul>
+	</div>
+</div>
+
+#if($caneditcategorytree || $editcategories || $canviewcategoryupload)
+
+<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
+    <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
+    #if( $canviewupload || $canviewcategoryupload)
+      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
+      	<li class="divider"></li>
+    #end
+    #if( $editable && $caneditcategorytree  )
+    	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Folder]]</a></li>
+    #end
+	#if( $editable && $caneditcategorytree )
+		#if($canaddnewcollection) 
+      		<li><a id="createcollection" tabindex="-1" href="#" class="dropdown-item">[[Create Collection]]</a></li>
+      		<li class="divider"></li>
+    	#end
+      	
+      	<li><a id="renamenode" tabindex="-1" href="#" class="dropdown-item">[[Rename]]</a></li>
+      	<li><a id="deletenode" tabindex="-1" href="#" class="dropdown-item">[[Delete]]</a></li>
+      	
+	#end      
+     	#if( $editable && $caneditcategorytree )
+     
+      <li><a id="nodeproperties" href="#" data-hidefooter="true" class="dropdown-item">[[Properties]]</a></li>
+      
+      #end
+##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Copy]]</a></li>
+##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Cut]]</a></li>      
+##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Paste]]</a></li>
+    </ul>
+    
+
+    
+     #if($canaddnewcollection)
+		<a id="collectionidaddbycategory" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
+	#end
+  </div>
+  #end
+#end
+

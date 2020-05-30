@@ -1,0 +1,17 @@
+#
+#Thu Mar 28 09:40:01 CST 2019
+Delete=Borrar
+add=a\u00F1adir
+Cut=Cortar
+Paste=Pegar
+Add\ Media=A\u00F1adir medios
+Upload=Subir
+Properties=propiedades
+Expand\ =Expandir
+Rename=Rebautizar
+Copy=Dupdo
+Create\ Collection=Crear colecci\u00F3n
+Create=Crear
+Open\ Collection=Colecci\u00F3n abierta
+Add\ Collection=A\u00F1adir colecci\u00F3n
+Add\ Child=A\u00F1adir ni\u00F1o
