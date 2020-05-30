@@ -45,22 +45,22 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String outputpath = inOutFile.getAbsolutePath();
 
 		ContentItem inputFile = inStructions.getInputFile();
-		String tmpinput = PathUtilities.extractPageType(inputFile.getPath(),true);
-		boolean maintaintransparency = inStructions.isTransparencyMaintained(tmpinput);
 
-		String ext = null;
+		String ext = PathUtilities.extractPageType(inputFile.getPath(),true);
+
 		if(asset != null)
 		{
-			if( tmpinput == null)
+			if( ext == null)
 			{
-				tmpinput = asset.getFileFormat();
+				ext = asset.getFileFormat();
 			}
-			ext = asset.getDetectedFileFormat();
 			if (ext == null)
 			{
-				ext = tmpinput;
+				ext = asset.getDetectedFileFormat();
 			}
 		}
+		
+		boolean maintaintransparency = inStructions.isTransparencyMaintained(ext);
 		//File inputFile = new File(input.getContentItem().getAbsolutePath());
 		//		String newext = PathUtilities.extractPageType( input.getPath() );
 		//		if( newext != null && newext.length()> 1)
@@ -119,11 +119,16 @@ public class ImagemagickTranscoder extends BaseTranscoder
 						outputw = prefw;
 					}
 
+					float defaultdensity = 300;
+					if (width > 100000 || height > 100000) 
+					{
+						defaultdensity  = 100;
+					}
 					if (width < outputw)
 					{
 						//for small input files we want to scale up the density
 						float density = ((float) outputw / (float) width) * 300f;
-						density = Math.max(density, 300);
+						density = Math.max(density, defaultdensity);
 						density = Math.min(density, 900);
 						String val = String.valueOf(Math.round(density));
 						com.add(0, val);
@@ -131,7 +136,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					}
 					else
 					{
-						com.add(0, "300");
+						com.add(0, String.valueOf(defaultdensity));
 						com.add(0, "-density");
 					}
 				}
@@ -291,13 +296,13 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		if (!maintaintransparency)
 		{
-			if ("eps".equals(tmpinput) 
-					|| "pdf".equals(tmpinput) 
-					|| "ps".equals(tmpinput)
-					|| "psd".equals(tmpinput)
-					|| "ai".equals(tmpinput)
-					|| "tif".equals(tmpinput)
-					|| "tiff".equals(tmpinput)
+			if ("eps".equals(ext) 
+					|| "pdf".equals(ext) 
+					|| "ps".equals(ext)
+					|| "psd".equals(ext)
+					|| "ai".equals(ext)
+					|| "tif".equals(ext)
+					|| "tiff".equals(ext)
 					)
 			{
 				setValue("colorspace", "sRGB", inStructions, com);

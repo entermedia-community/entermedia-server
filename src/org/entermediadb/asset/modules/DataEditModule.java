@@ -1395,7 +1395,7 @@ String viewbase = null;
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher == null)
 		{
-			log.error("Null Searcher");
+			log.debug("Null Searcher");
 			return null;
 		}
 		String hitsname = inReq.findValue("hitsname");
@@ -1444,7 +1444,7 @@ String viewbase = null;
 		}
 		else
 		{
-			log.error("Null Hits");
+			log.debug("Null Hits " + inReq.getPath());
 		}
 
 		return hits;
