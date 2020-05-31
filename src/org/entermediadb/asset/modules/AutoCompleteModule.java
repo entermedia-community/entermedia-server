@@ -358,7 +358,6 @@ public class AutoCompleteModule extends DataEditModule
 		JsonUtil util = (JsonUtil) searcher.getSearcherManager().getModuleManager().getBean("jsonUtil");
 		inReq.putPageValue("jsonUtil", util);
 		
-		SearchQuery query = searcher.createSearchQuery();
 		String field = inReq.getRequestParameter("field");
 
 		String searchString = inReq.getRequestParameter(field + ".value");
@@ -370,19 +369,22 @@ public class AutoCompleteModule extends DataEditModule
 		{
 			searchString = inReq.getRequestParameter("term");
 		}
-		
-		query.addStartsWith("synonymsenc", searchString);
-		query.setSortBy("hitsDown");
-
-		//	log.info("searching in : " + searcher.getCatalogId() +"/" + searcher.getSearchType() + "/" + searchString);
-
-		HitTracker wordsHits = searcher.cachedSearch(inReq, query);
-		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		if( searchString != null)
 		{
-			inReq.setCancelActions(true);
+			SearchQuery query = searcher.createSearchQuery();
+			query.addStartsWith("synonymsenc", searchString);
+			query.setSortBy("hitsDown");
+	
+			//	log.info("searching in : " + searcher.getCatalogId() +"/" + searcher.getSearchType() + "/" + searchString);
+			HitTracker wordsHits = searcher.cachedSearch(inReq, query);
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
+				inReq.setCancelActions(true);
+			}
+			inReq.putPageValue("searchstring", searchString);
+			return wordsHits;
 		}
-		inReq.putPageValue("searchstring", searchString);
-		return wordsHits;
+		return null;
 	}
 	
 	
@@ -448,5 +450,17 @@ public class AutoCompleteModule extends DataEditModule
 			logger.info("Updated " + tosave.size() );
 		}
 	}
-	
+
+	public HitTracker suggestTopics(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String value = inReq.getRequestParameter("description.value");
+		if( value != null)
+		{
+			HitTracker hits = archive.query("emtopics").contains("emkeywords", value ).search();
+			inReq.putPageValue("topichits",hits);
+			return hits;
+		}
+		return null;
+	}
 }
