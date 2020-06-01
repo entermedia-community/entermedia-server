@@ -1,0 +1,15 @@
+<div class="emgrid-content">
+        	 <h3>$hit.getSearchHit().getType()</h3>
+        	 #set( $assettype = $mediaarchive.getMediaRenderType($hit.fileformat))
+        	 
+        	 
+	        <div class="emgridcell-assetimage">
+	        $pages.include("$componenthome/results/thumbnails/${assettype}.html", $context)
+	        </div>
+	        <div class="emgridcell-description">
+	        <strong>$!hit.name</strong>
+	        </div>
+	        <div class="emgridcell-actions">
+	         <i class="far fa-heart"></i>
+	        </div>
+        </div>

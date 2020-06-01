@@ -4,19 +4,13 @@ $modulehits.size() [[Results Found]]
 	data-colwidth="300">
 
 #foreach( $hit in $modulehits)
-	#set($hittype = $hit.getSearchHit().getType())
-     <div class="emgridcell emgridcell-$hittype" style="width:270px; min-height: 180px; ">
-        <div class="emgrid-content">
-        	 <h3>$hittype</h3>
-        	 <h4>$hit.name</h4>
-	        <div class="emgridcell-description">
-	        ##$hit.highlight
-	        $hit.description
-	        </div>
-	        <div class="emgridcell-actions">
-	         <i class="far fa-heart"></i>
-	        </div>
-        </div>
+	#set($type = $hit.getSearchHit().getType())
+     <div class="emgridcell emgridcell-$type" style="width:270px; min-height: 180px; ">
+     	#if ($type != "asset")
+     		#set($type = "default")
+     	#end
+     	$context.putPageValue("hit", $hit)
+        $pages.include("$apphome/components/grid/types/${type}.html", $context)
      </div>
 #end     
 </div>

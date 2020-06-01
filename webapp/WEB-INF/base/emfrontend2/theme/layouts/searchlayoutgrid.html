@@ -46,10 +46,12 @@ $context.putPageValue("sidebarcomponent", $sidebarcomponent)
 	 <div id="maincontent" class="col-main col-content-main">
 	
 	
-	 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-     #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+	 #set( $sidebarwidthX = $userprofile.get("sidebarwidth"))
+     #set( $sidebarcomponentX = $userprofile.get("sidebarcomponent"))
 
-	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+	<div class="pushcontentX pushcontent-fullwidth 
+	##if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end
+	" 
 		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 			<div id="emresultscontainer" >
 				#if($module == "asset")
