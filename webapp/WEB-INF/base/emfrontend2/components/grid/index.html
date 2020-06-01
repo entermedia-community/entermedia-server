@@ -1,17 +1,21 @@
- $modulehits.size()
+$modulehits.size() [[Results Found]]
 
-<div id="galleryimg" class="gridview emgrid" data-colwidth="300" 
-style="margin-bottom: 30px; ">
+<div id="galleryimg" class="emgrid" 
+	data-colwidth="300">
 
 #foreach( $hit in $modulehits)
-     <div class="hiddenli emgridcell" style="width:270px; ">
-        <div style="background-color: #ff0000; display:block;
-        	 min-height:180px; padding:1px;">
-        	 <h3>$hit.getSearchHit().getType()</h3>
-        <h3 style="font-size:.6em;">$hit.name</h3>
-        <p>$hit.highlight
-        $hit.description
-        </p>
+	#set($hittype = $hit.getSearchHit().getType())
+     <div class="emgridcell emgridcell-$hittype" style="width:270px; min-height: 180px; ">
+        <div class="emgrid-content">
+        	 <h3>$hittype</h3>
+        	 <h4>$hit.name</h4>
+	        <div class="emgridcell-description">
+	        ##$hit.highlight
+	        $hit.description
+	        </div>
+	        <div class="emgridcell-actions">
+	         <i class="far fa-heart"></i>
+	        </div>
         </div>
      </div>
 #end     

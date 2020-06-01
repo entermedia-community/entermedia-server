@@ -1,12 +1,40 @@
 .emgrid {
-	margin: 0;
+	margin: 0 0 30px 0;
     padding: 0;
     list-style: none;
     position: relative;
 }
 
-.gridview div.emgridcell {
+.emgridcell {
 	margin: 0;
 	position: absolute;
-	overlay:hidden;
+	overflow: hidden;
+	border:2px solid #999;
+	border-radius: .25rem;
 }
+.emgrid-content {
+	position:relative;
+	height: 100%;
+}
+.emgridcell h3 {
+	text-align:center;
+	margin:0 0 10px;
+}
+
+.emgridcell h4 {
+	font-size: 0.9rem;
+	font-weight: bold;
+	padding:0 8px;
+	}
+.emgridcell-description {
+	padding:8px;
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+.emgridcell-actions {
+	height: 24px;
+	padding-right:12px;
+	text-align: right;
+}
+
+
