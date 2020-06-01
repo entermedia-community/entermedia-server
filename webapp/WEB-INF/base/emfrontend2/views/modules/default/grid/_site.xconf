@@ -1,16 +1,15 @@
 <page>
-	<inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>	
+	<inner-layout>/${applicationid}/theme/layouts/searchlayoutgrid.html</inner-layout>	
 	
 
 	<path-action name="DataEditModule.loadPageOfSearch" >
 		<property name="hitsname">modulehits</property>
 	</path-action>
 
-	<path-action name="DataEditModule.loadOrSearch" >
+	<path-action name="DataEditModule.search" >
 		<property name="searchtype">${module}</property>
 		<property name="hitsname">modulehits</property>
 	</path-action>
-
 	
 <!--
     TODO: Make this an extension?

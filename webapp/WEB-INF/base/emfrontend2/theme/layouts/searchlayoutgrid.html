@@ -1,0 +1,64 @@
+#set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeid"))
+#end
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("category.value"))
+	#end
+	#if(!$categoryid && $nodeID)
+		#set($categoryid = $nodeID)
+    #end
+    #if(!$categoryid)
+        #set($categoryid = "index")
+        #set($nodeID = "index")
+    #end
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+		#if(!$nodeID)
+			#set($nodeID = $categoryid)
+		#end
+	#end
+#else
+	#set($categoryid = $category.getId())
+#end
+
+##Sidebars
+#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+#if(!$sidebarcomponent)
+	#set( $sidebarcomponent = "")
+#end
+
+$context.putPageValue("sidebarcomponent", $sidebarcomponent)
+
+<div id="searchlayout" 
+	 class="cols-main #if ($module) cols-$module #end searchlayout2" 
+	 data-nodeID="$!nodeID" data-collectionid="$!collectionid" data-module="asset"
+	 data-hitssessionid="$!hits.sessionId" data-searchtype="asset" data-hitsperpage="$!hits.hitsPerPage">
+	#if( $module == "asset") 
+	 $pages.include("$apphome/components/sidebars/index.html",$context)
+	#end
+	
+	 <div id="maincontent" class="col-main col-content-main">
+	
+	
+	 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+     #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+
+	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+			<div id="emresultscontainer" >
+				#set( $hits = $modulehits)
+		    	$pages.include("$componenthome/results/index.html",$context) 
+			</div>		
+	</div>
+</div>
+
+</div>
+
+
+
