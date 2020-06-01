@@ -47,6 +47,13 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//search.toString()
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, 1000);
 		hits.enableBulkOperations();
+		
+		hits.setSearcherManager(getSearcherManager());
+		hits.setIndexId(getIndexId());
+		hits.setSearcher(this);
+		hits.setSearchQuery(inQuery);
+
+		
 		return hits;
 	}
 	
@@ -68,7 +75,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 			{
 				Data data = (Data) iterator.next();
 				String show = data.get("showonsearch");
-				if( Boolean.parseBoolean(show)) //Permission check?
+				if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
 				{
 					searchmodules.add(data.getId());
 				}
