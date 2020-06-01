@@ -791,7 +791,7 @@
     </name> 
   </property>
 
-  <property id="assettopic" index="true" stored="true" editable="true" viewtype="multiselect" filter="true"  datatype="list"  type="list">
+  <property id="assettopic" index="true" stored="true" editable="true" viewtype="multiselect" filter="true"  listid="trackedtopics" datatype="list"  type="list">
     <name> 
       <language id="en"><![CDATA[Topic]]></language>  
     </name> 
