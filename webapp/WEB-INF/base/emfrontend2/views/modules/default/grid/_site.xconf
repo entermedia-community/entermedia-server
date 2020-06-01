@@ -1,8 +1,4 @@
 <page>
 	
-	
-	<inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
 
-	<style id="gridview" href="/${applicationid}/components/javascript/grid/grid.css" />
-	
 </page>
