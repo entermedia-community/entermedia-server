@@ -38,5 +38,9 @@
       <language id="es"><![CDATA[logo]]></language>
       <language id="fr"><![CDATA[logo]]></language>
     </name>
-  </property> 
+  </property>
+  
+  <property id="description" index="true" editable="false" >Project Search</property>
+  
+   
 </properties>
