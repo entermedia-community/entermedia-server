@@ -3,7 +3,7 @@ $modulehits.size() [[Results Found]]
 <div id="galleryimg" class="emgrid" 
 	data-colwidth="300">
 
-#foreach( $hit in $modulehits)
+#foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
      <div class="emgridcell emgridcell-$type" style="width:270px; min-height: 180px; ">
      	#if ($type != "asset")
