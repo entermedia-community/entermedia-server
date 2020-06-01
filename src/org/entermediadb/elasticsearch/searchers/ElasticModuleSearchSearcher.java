@@ -45,9 +45,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		search.setRequestCache(true);
 
 		//search.toString()
-		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, 1000);
-		hits.enableBulkOperations();
-		
+		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, 80);
 		hits.setSearcherManager(getSearcherManager());
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
