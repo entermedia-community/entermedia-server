@@ -18,7 +18,7 @@
     </name> 
   </property>  
   
-  <property id="projectnotes" index="true" stored="true" editable="true" keyword="true" filter="false" sortable="true">
+  <property id="longcaption" index="true" stored="true" editable="true" keyword="true" filter="false" sortable="true">
     <name> 
       <language id="en"><![CDATA[Notes]]></language>  
     </name> 
