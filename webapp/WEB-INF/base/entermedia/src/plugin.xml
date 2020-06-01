@@ -1713,6 +1713,10 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="cacheManager">
+			<ref bean="timedCacheManager" />
+		</property>
+		
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>		

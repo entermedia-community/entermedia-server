@@ -2147,7 +2147,7 @@ String viewbase = null;
 		
 	}
 	
-	
+/*	
 	public void moduleSearch(WebPageRequest inReq) throws Exception
 	{
 		String clear = inReq.getRequestParameter(resolveSearchType(inReq) + "clearresults");
@@ -2160,10 +2160,15 @@ String viewbase = null;
 		{
 			//hits = search(inReq);
 			Searcher searcher = loadSearcher(inReq);
-			hits = searcher.getAllHits(inReq);
+			//hits = searcher.getAllHits(inReq);
+			SearchQuery q = searcher.createSearchQuery();
+			inReq
+			q.addContains("description", value);
+			searcher.search(q);
+			
 		}
 
 	}
-	
+*/
 
 }
