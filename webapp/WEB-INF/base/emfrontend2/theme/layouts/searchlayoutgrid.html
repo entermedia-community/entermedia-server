@@ -52,8 +52,13 @@ $context.putPageValue("sidebarcomponent", $sidebarcomponent)
 	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
 		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 			<div id="emresultscontainer" >
-				#set( $hits = $modulehits)
-		    	$pages.include("$componenthome/results/index.html",$context) 
+				#if($module == "asset")
+					#set( $hits = $modulehits)
+					$context.putPageValue("hits",$hits)
+			    	$pages.include("$componenthome/results/index.html",$context) 
+				#else
+		    		$pages.include("/${applicationid}/views/grid/all.html")
+				#end	    	
 			</div>		
 	</div>
 </div>
