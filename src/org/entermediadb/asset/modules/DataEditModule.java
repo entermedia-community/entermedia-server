@@ -2148,6 +2148,22 @@ String viewbase = null;
 	}
 	
 	
+	public void moduleSearch(WebPageRequest inReq) throws Exception
+	{
+		String clear = inReq.getRequestParameter(resolveSearchType(inReq) + "clearresults");
+		HitTracker hits = null;
+		if (!Boolean.parseBoolean(clear))
+		{
+			hits = loadHits(inReq);
+		}
+		if (hits == null)
+		{
+			//hits = search(inReq);
+			Searcher searcher = loadSearcher(inReq);
+			hits = searcher.getAllHits(inReq);
+		}
+
+	}
 	
 
 }
