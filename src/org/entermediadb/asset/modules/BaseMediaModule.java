@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -273,10 +274,27 @@ public class BaseMediaModule extends BaseModule
 
 		} else {
 			return  (UserManager) getModuleManager().getBean( "userManager");
-
 		}
-
-		
 	}
 	
+	public Data loadModule(WebPageRequest inReq)
+	{
+		String moduleid = inReq.findValue("module");
+		
+		if(moduleid == null && inReq.getUserProfile() != null)
+		{
+			moduleid = inReq.getUserProfile().get("last_selected_module");
+		}
+		if(moduleid == null)
+		{
+			moduleid = "modulesearch";
+		}
+
+		Data moduledata = getMediaArchive(inReq).getCachedData("module", moduleid);
+		if( moduledata != null)
+		{
+			inReq.putPageValue("module", moduledata);
+		}
+		return moduledata;
+	}
 }
