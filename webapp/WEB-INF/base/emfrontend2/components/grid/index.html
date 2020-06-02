@@ -1,11 +1,13 @@
 $modulehits.size() [[Results Found]]
-
+<div  class="emgridcontainer">
 <div id="galleryimg" class="emgrid" 
 	data-colwidth="300">
 
+$context.putPageValue("thumbsize", "mediumplus" )
+
 #foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
-     <div class="emgridcell emgridcell-$type" style="width:270px; min-height: 180px; ">
+     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 200px; ">
      	#if ($type != "asset")
      		#set($type = "default")
      	#end
@@ -16,3 +18,4 @@ $modulehits.size() [[Results Found]]
 </div>
             
 <div class="clearfix"></div>
+</div>

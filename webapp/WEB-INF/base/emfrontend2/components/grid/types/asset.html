@@ -1,9 +1,10 @@
 <div class="emgrid-content">
-        	 <h3>$hit.getSearchHit().getType()</h3>
+        	 
         	 #set( $assettype = $mediaarchive.getMediaRenderType($hit.fileformat))
         	 
+        	 <h3>$assettype</h3>
         	 
-	        <div class="emgridcell-assetimage">
+	        <div class="emgridcell-assetimage" data-width="$!{hit.width}" data-height="$!{hit.height}">
 	        $pages.include("$componenthome/results/thumbnails/${assettype}.html", $context)
 	        </div>
 	        <div class="emgridcell-description">
@@ -12,4 +13,4 @@
 	        <div class="emgridcell-actions">
 	         <i class="far fa-heart"></i>
 	        </div>
-        </div>
+</div>

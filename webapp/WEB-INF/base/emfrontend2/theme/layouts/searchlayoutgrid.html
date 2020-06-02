@@ -54,6 +54,7 @@ $context.putPageValue("sidebarcomponent", $sidebarcomponent)
 	" 
 		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 			<div id="emresultscontainer" >
+				
 				#if($module == "asset")
 					#set( $hits = $modulehits)
 					$context.putPageValue("hits",$hits)
