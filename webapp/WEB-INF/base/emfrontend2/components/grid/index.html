@@ -1,0 +1,23 @@
+$modulehits.size() [[Results Found]]
+<div  class="emgridcontainer">
+<div id="galleryimg" class="emgrid" 
+	data-colwidth="300">
+
+$context.putPageValue("thumbsize", "mediumplus" )
+
+#foreach( $hit in $modulehits.getPageOfHits())
+	#set($type = $hit.getSearchHit().getType())
+     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 200px; ">
+     	#if ($type == "asset" || $type == "project" || $type == "task" || $type == "people")
+     		#set($includetype = $type)
+     	#else
+     		#set($includetype = "default")
+     	#end
+     	$context.putPageValue("hit", $hit)
+        $pages.include("$apphome/components/grid/types/${includetype}.html", $context)
+     </div>
+#end     
+</div>
+            
+<div class="clearfix"></div>
+</div>

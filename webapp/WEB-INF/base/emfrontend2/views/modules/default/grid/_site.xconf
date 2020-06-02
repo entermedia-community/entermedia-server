@@ -1,8 +1,19 @@
 <page>
+	<inner-layout>/${applicationid}/theme/layouts/searchlayoutgrid.html</inner-layout>	
 	
-	
-	<inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
 
-	<style id="gridview" href="/${applicationid}/components/javascript/grid/grid.css" />
+	<path-action name="DataEditModule.loadPageOfSearch" >
+		<property name="hitsname">modulehits</property>
+	</path-action>
+
+	<path-action name="DataEditModule.search" >
+		<property name="searchtype">${module}</property>
+		<property name="hitsname">modulehits</property>
+	</path-action>
 	
+<!--
+    TODO: Make this an extension?
+	<path-action name="SavedQueryModule.addPreviousSearch"/>
+-->
+
 </page>

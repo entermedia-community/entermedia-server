@@ -1706,7 +1706,23 @@
 		<property name="checkVersions"><value>false</value></property>
 	</bean>
 	
-	
+	<bean id="elasticModuleSearchSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticModuleSearchSearcher" scope="prototype">
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="cacheManager">
+			<ref bean="timedCacheManager" />
+		</property>
+		
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>		
+		<property name="refreshSaves"><value>false</value></property>
+		<property name="checkVersions"><value>false</value></property>
+	</bean>
 	
 	<bean id="elasticLogSearcher"
 		class="org.entermediadb.elasticsearch.searchers.ElasticLogSearcher"

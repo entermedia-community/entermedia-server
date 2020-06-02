@@ -1,11 +1,68 @@
-.gridview {
-	margin: 0;
+.emgridcontainer {
+	margin:0 20px 30px 0;
+}
+.emgrid {
+	margin:0;
     padding: 0;
     list-style: none;
     position: relative;
 }
 
-.gridview li {
+.emgridcell {
 	margin: 0;
-	position: absolute;
+	overflow: hidden;
+	position:absolute;
+	border:2px solid #888;
+	border-radius: .40rem;
+	box-shadow:1px 1px 3px 0 rgba(0,0,0,0.2);
+	visibility: hidden;
+}
+.emgrid-content {
+	position:relative;
+	height: 100%;
+}
+.emgridcell h3 {
+	text-align:center;
+	margin:0 0 10px;
+	font-size:1.1rem;
+	padding:5px 0;
+}
+
+.emgridcell h4 {
+	font-size: 0.9rem;
+	font-weight: bold;
+	padding:0 8px;
+	}
+.emgridcell-name {
+	margin:8px;
+	margin-bottom: 10px;
+	overflow: hidden;
+	line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    white-space: nowrap;
+}
+.emgridcell-description {
+	margin:8px;
+	margin-bottom: 10px;
+	line-height: 1.5;
+	}
+.emgridcell-assetimage {
+	text-align: center;
+	padding:0 8px;
+	}
+
+.emgridcell-actions {
+	height: 24px;
+	padding-right:12px;
+	text-align: right;
+}
+
+.emgridcell-project h3 {
+	color:#228BE6;
+}
+
+.emgridcell-task h3 {
+	color:#ED1D25;
 }

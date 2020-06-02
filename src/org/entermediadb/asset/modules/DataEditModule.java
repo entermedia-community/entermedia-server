@@ -1876,17 +1876,6 @@ String viewbase = null;
 		inData.setProperty(inKey, values.toString());
 	}
 
-	public void loadModule(WebPageRequest inReq)
-	{
-		String moduleid = inReq.findValue("module");
-		if (moduleid != null)
-		{
-
-			inReq.putPageValue("module", moduleid);
-
-		}
-	}
-
 	public void loadCorrectViewForUser(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
@@ -2147,7 +2136,28 @@ String viewbase = null;
 		
 	}
 	
-	
-	
+/*	
+	public void moduleSearch(WebPageRequest inReq) throws Exception
+	{
+		String clear = inReq.getRequestParameter(resolveSearchType(inReq) + "clearresults");
+		HitTracker hits = null;
+		if (!Boolean.parseBoolean(clear))
+		{
+			hits = loadHits(inReq);
+		}
+		if (hits == null)
+		{
+			//hits = search(inReq);
+			Searcher searcher = loadSearcher(inReq);
+			//hits = searcher.getAllHits(inReq);
+			SearchQuery q = searcher.createSearchQuery();
+			inReq
+			q.addContains("description", value);
+			searcher.search(q);
+			
+		}
+
+	}
+*/
 
 }

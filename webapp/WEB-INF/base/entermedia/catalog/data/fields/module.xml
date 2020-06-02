@@ -49,6 +49,11 @@
     <name> 
       <language id="en"><![CDATA[Show as Tab]]></language>  
     </name> 
+  </property>
+  <property id="showonsearch" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Show on Search]]></language>  
+    </name> 
   </property> 
    <property id="ordering" editable="true" index="true" type="number" stored="true" keyword="false" filter="false" sortable="true"> 
     <name> 
