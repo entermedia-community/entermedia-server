@@ -203,7 +203,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				String userid = String.valueOf(map.get("userid"));
 				setUserId(userid);
 			}
-			else if("messagereceived".equals(command)){
+			else if("messagereceived".equals(command) || "notify".equals(command)){
 			
 				String content = getChatServer().saveMessage(map);
 				map.put("content", content);
@@ -221,6 +221,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				getChatServer().rejectAsset(map);
 				getChatServer().broadcastMessage(map);
 				
+			}
+			else {
+				getChatServer().broadcastMessage(map);
+
 			}
 
 		} catch (Exception e) {
