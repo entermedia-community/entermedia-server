@@ -8,12 +8,13 @@ $(document).ready(function()
             var grid = $( this );
             var colwidth = parseInt(grid.data("colwidth"));
             //get colum width divide by div width
-            var colcount = grid.width() / colwidth; 
+            var colcount = grid.width() / colwidth;
             colcount = Math.floor(colcount);
-            console.log(colcount);
+            console.log(grid.width());
+            
             //adjust the colwidth to spread out the extra space
             var remainder = grid.width() - (colcount * colwidth);
-            colwidth = colwidth + remainder/colcount;
+            colwidth = colwidth + (remainder/colcount);
             
             var columns = [];
             for(var i=0;i<colcount;i++)
@@ -26,14 +27,28 @@ $(document).ready(function()
 	        this.children( ".emgridcell" ).each(function() 
 	        {
       	        var cell = $(this);
-      	        cell.css("width",colwidth-10 + "px");
+      	        var cellpadding = 12;
+      	        cell.css("width",colwidth-cellpadding + "px");
+      	        
+      	        var cellimage = cell.find('.emgridcell-assetimage');
+      	        
+      	        if (cellimage.length > 0)
+  	        	{
+  	        		var imgwidth = cellimage.data("width");
+  	        		var imgheight = cellimage.data("height");
+  	        		var setimgheight = colwidth*(imgheight/imgwidth);
+  	        		cellimage.find(".imagethumb").css("height", setimgheight+'px');
+  	        	}
+      	        
       	        var curheight = columns[col];
       	        var cellheight = cell.height();
+      	        
       	        cell.css("top",curheight + "px");
-      	        columns[col] = curheight + cellheight + 10;
+      	        columns[col] = curheight + cellheight + cellpadding;
       	        //left
-      	        var left = colwidth * col + 10;
+      	        var left = colwidth * col;
       	        cell.css("left",left + "px");
+      	        cell.css("visibility","visible");
       	        col++;
       	        if( col == colcount)
       	        {
