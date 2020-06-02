@@ -8,11 +8,13 @@ $context.putPageValue("thumbsize", "mediumplus" )
 #foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
      <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 200px; ">
-     	#if ($type != "asset")
-     		#set($type = "default")
+     	#if ($type == "asset" || $type == "project" || $type == "task")
+     		#set($includetype = $type)
+     	#else
+     		#set($includetype = "default")
      	#end
      	$context.putPageValue("hit", $hit)
-        $pages.include("$apphome/components/grid/types/${type}.html", $context)
+        $pages.include("$apphome/components/grid/types/${includetype}.html", $context)
      </div>
 #end     
 </div>

@@ -33,16 +33,21 @@
 	font-weight: bold;
 	padding:0 8px;
 	}
-.emgridcell-description {
+.emgridcell-name {
 	margin:8px;
 	margin-bottom: 10px;
 	overflow: hidden;
 	line-height: 1.5;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 190px;
+    
     white-space: nowrap;
 }
+.emgridcell-description {
+	margin:8px;
+	margin-bottom: 10px;
+	line-height: 1.5;
+	}
 .emgridcell-assetimage {
 	text-align: center;
 	padding:0 8px;
@@ -54,4 +59,10 @@
 	text-align: right;
 }
 
+.emgridcell-project h3 {
+	color:#228BE6;
+}
 
+.emgridcell-task h3 {
+	color:#ED1D25;
+}
