@@ -2314,7 +2314,13 @@ public class MediaArchive implements CatalogEnabled
 		return null;
 	}	
 
-	
+	public String asLinkToPreview(String inId, String inGeneratedName) {
+		Data asset = getAsset(inId);
+		if(asset != null) {
+			return asLinkToPreview(asset	, inGeneratedName);
+		}
+		return null;
+	}
 	public String asLinkToPreview(Data inAsset, String inGeneratedName) {
 		
 		return asLinkToPreview(inAsset, null, inGeneratedName);
