@@ -1,46 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<properties lazy-init="true"> 
-  <property id="id" index="true" stored="true" editable="true"  keyword="false" filter="false" sortable="true">Id 
+<properties> 
+  <property id="id" index="true" editable="true" stored="true" searchtype="project" sortable="true" filter="false" keyword="false"> 
     <name> 
-      <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[Id]]></language>  
-      <language id="es"><![CDATA[Carné de identidad]]></language>  
-      <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="name" index="true" stored="true" editable="true"  keyword="true" filter="false" sortable="true">Name 
+  <property id="name" index="true" editable="true" stored="true" searchtype="project" sortable="true" keyword="true" internalfield="false" isbadge="false" required="false" filter="false" multilanguage="false" highlight="false" deleted="false" autocreatefromexif="false" writenametoexif="false">New 
     <name> 
-      <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
-  </property>  
-  
-  <property id="longcaption" index="true" stored="true" editable="true" keyword="true" filter="false" sortable="true">
-    <name> 
-      <language id="en"><![CDATA[Notes]]></language>  
-    </name> 
-  </property>  
-  <property id="folder" index="true" stored="true" editable="true" note="Top level folder name ie projects/1234"  keyword="false" filter="false" sortable="true">Folder Name 
-    <name> 
-      <language id="de"><![CDATA[Ordnernamen]]></language>  
-      <language id="en"><![CDATA[Folder Name]]></language>  
-      <language id="es"><![CDATA[Nombre de la carpeta]]></language>  
-      <language id="fr"><![CDATA[Nom de dossier]]></language> 
-    </name> 
-  </property>  
-  <property id="projectlogo" legacy="logo" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list"  keyword="false"  sortable="true">logo
+  </property>
+    
+  <property id="longcaption" index="true" internalfield="false" editable="true" sortable="true" multilanguage="false" highlight="false" deleted="false" stored="true" keyword="true">
     <name>
-      <language id="de"><![CDATA[logo]]></language>
-      <language id="en"><![CDATA[logo]]></language>
-      <language id="es"><![CDATA[logo]]></language>
-      <language id="fr"><![CDATA[logo]]></language>
+      <language id="en"><![CDATA[Caption]]></language>
     </name>
   </property>
-  
-  <property id="description" index="true" editable="false" >Project Search</property>
-  
-   
+
+  <property id="date" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" filter="false" datatype="date" keyword="false" writenametoexif="false"> 
+    <name>
+      <language id="en"><![CDATA[Date]]></language>
+    </name>
+  </property>  
+  <property id="folder" index="true" note="" editable="true" stored="true" searchtype="project" sortable="true" filter="false" keyword="false">
+  <name> 
+      <language id="en"><![CDATA[Folder Name]]></language>  
+      <language id="es"><![CDATA[Nombre de la carpeta]]></language>  
+    </name> 
+  </property>  
+  <property id="projectlogo" index="true" legacy="logo" internalfield="false" editable="true" viewtype="asset" sortable="true" listid="asset" datatype="list" stored="true" searchtype="project" keyword="false"> 
+    <name> 
+      <language id="en"><![CDATA[logo]]></language>  
+    </name> 
+  </property>  
+  <property id="sourcepath"> 
+    <name> 
+      <language id="en"><![CDATA[SourcePath]]></language> 
+    </name> 
+  </property>
+    <property id="description" index="true" internalfield="true" editable="false" isbadge="false" required="false" filter="false" multilanguage="false" highlight="false" deleted="false" autocreatefromexif="false" keyword="false" writenametoexif="false">New 
+    <name> 
+      <language id="en"><![CDATA[Description]]></language> 
+    </name> 
+  </property>  
+    
 </properties>
