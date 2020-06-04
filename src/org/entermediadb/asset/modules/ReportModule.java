@@ -50,7 +50,10 @@ public class ReportModule extends DataEditModule
 		
 		inReq.putPageValue("report", report);
 		inReq.putPageValue("data", report);
-
+		if( report == null)
+		{
+			return null;
+		}
 		String searchtype = report.get("searchtype");
 		//String catalogid = inReq.getUserProfileValue("reportcatalogid");
 		String catalogid = archive.getCatalogId();
