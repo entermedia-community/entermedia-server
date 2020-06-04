@@ -1,6 +1,4 @@
 <page>
 	<page-action name="DataEditModule.loadFacetsForUser">
 	</page-action>
-	<property name="searchtype">asset</property>
-		
 </page>
