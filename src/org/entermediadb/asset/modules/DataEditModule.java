@@ -2095,8 +2095,12 @@ String viewbase = null;
 			if (query.isEndUserSearch())
 			{
 				UserFilters filters = loadUserFilters(inReq);
+				if( filters == null)
+				{
+					return;
+				}
 				Map values = filters.getFilterValues(hits);
-				inReq.putPageValue("userfiltervalues", values);
+				inReq.putPageValue(name+"userfiltervalues", values); 
 				filters.flagUserFilters(hits);
 			}
 		}	
@@ -2105,7 +2109,16 @@ String viewbase = null;
 
 	public UserFilters loadUserFilters(WebPageRequest inReq)
 	{
-		Searcher searcher = loadSearcher(inReq);
+		String searchtype = resolveSearchType(inReq);
+		if( searchtype == null)
+		{
+			searchtype = inReq.findValue("module");
+		}
+		Searcher searcher = getSearcherManager().getSearcher(resolveCatalogId(inReq), searchtype);
+		if( searcher == null)
+		{
+			return null;
+		}
 		String key = searcher.getSearchType()+ searcher.getCatalogId() + "userFilters";
 		UserFilters filters = (UserFilters) inReq.getSessionValue(key);
 		if (filters == null)

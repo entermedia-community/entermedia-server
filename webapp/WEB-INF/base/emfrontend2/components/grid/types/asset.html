@@ -10,7 +10,20 @@
 	        <div class="emgridcell-name">
 	        <strong>$!hit.name</strong>
 	        </div>
+	        #set($count=0)
+	        #if ($hit.keywords)
+	        <div class="emgridcell-keywords">
+		        #foreach ($tag in $hit.keywords.split("\s*\|\s*"))
+		        	#if($count<3)
+					<a class="badge badge-light" 
+					href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+					#set($count=$count+1)
+					#end
+				#end
+			</div>
+			#end
 	        <div class="emgridcell-actions">
+	        
 	         <i class="far fa-heart"></i>
 	        </div>
 </div>

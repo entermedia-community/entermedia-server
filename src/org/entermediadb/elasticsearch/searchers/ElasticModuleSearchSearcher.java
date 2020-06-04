@@ -8,8 +8,10 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -28,6 +30,18 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		
 		search.setTypes(searchmodules);
+
+		//Auto added from advancedfilter
+	//	AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
+
+		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
+//
+//		AggregationBuilder b = AggregationBuilders.terms("tags_count").field("keywords");
+//		SumBuilder sum = new SumBuilder("assettype_sum");
+//		sum.field("filesize");
+//		b.subAggregation(sum);
+	//	search.addAggregation(b);
+
 		search.setRequestCache(false);  //What does this do?
 
 		BoolQueryBuilder terms = buildTerms(inQuery);

@@ -8,7 +8,8 @@
     $context.putPageValue("searcher", $usersearcher)	 
     $context.putPageValue("view", "user/useredit")	
     $context.putPageValue("data", $owner)
-    	
+    
+    
     <div id="default-fields">
     $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
    
@@ -20,26 +21,23 @@
        <input type="hidden" name="orderid" value="$order.id"/>
        <input type="hidden" name="sourcepath" value="$order.sourcepath"/>      
      </tr>
-    
-    
+   </table> 
+   
     #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
     #foreach( $detail in $details )
      #if($detail.isEditable())
     	<input type="hidden" name="field" value="$detail.id" />
       #end
     #end
-    
-
-    
-    
-   </table> 
    
-    $context.putPageValue("searcher", $searcher)	 
+    $context.putPageValue("searcher", $ordersearcher)	 
     $context.putPageValue("view", "order/vieworder")	
     $context.putPageValue("data", $order)
-       $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
-   
-   
+    
+    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
+    
+    
+
     
     
     	<div style="float: right; padding:10px 0 20px;">
@@ -49,7 +47,7 @@
       ##      <input class="btn" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
   
         </div>
-        <span id="itemsaved"></span>
+        <div id="itemsaved"></div>
         <span id="itemsent"></span>
     #if($orderitems)
     <h2>[[Assets]]</h2>
@@ -106,8 +104,7 @@
 
 lQuery("#approveall").livequery("click", function (e) {
 	jQuery("#itemsave .statusfield").val("approved");
-	$("#itemsave #list-checkoutstatus").val("approved").trigger("change", true);
-	
+	$("#itemsave #checkoutstatusvalue").val("approved").trigger("change", true);
 		e.preventDefault();
 	jQuery("#itemsave").trigger("submit");
 	return false;
