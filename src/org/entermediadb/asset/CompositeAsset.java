@@ -436,6 +436,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 
 	public void setValue(String inKey, Object inValue)
 	{
+		if ("emrecordstatus".equals(inKey))
+		{
+			return;//ignore
+		}
+
 		if (inValue == null)
 		{
 			inValue = "";

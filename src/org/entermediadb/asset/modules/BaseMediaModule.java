@@ -92,7 +92,7 @@ public class BaseMediaModule extends BaseModule
 	{
 		String applicationid = loadApplicationId(inReq);
 
-		String moduleid = inReq.findValue("module");
+		String moduleid = inReq.getContentProperty("module");
 		
 		String componenthome = null;
 		if(moduleid == null)

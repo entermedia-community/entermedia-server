@@ -8,7 +8,8 @@ import org.entermediadb.net.HttpSharedConnection
 import org.openedit.Data
 import org.openedit.data.QueryBuilder
 import org.openedit.hittracker.HitTracker
-
+import org.apache.bsf.util.JavaUtils
+import java.util.Date;
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
@@ -31,6 +32,15 @@ public void runit()
 	QueryBuilder query = mediaArchive.getAssetSearcher().query().exact("googletagged", "false").exact("importstatus", "complete");
 
 	String systemwidetagging = mediaArchive.getCatalogSettingValue("systemwidetagging");
+	/*Google vision date filter*/
+	String googlevisionstartdate = mediaArchive.getCatalogSettingValue("google_api_start_date");
+	if (googlevisionstartdate == null)
+	{
+		googlevisionstartdate = "01/01/2000";
+	}
+	DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+	Date date = format.parse(googlevisionstartdate);
+	
 	if( !Boolean.parseBoolean(systemwidetagging))
 	{
 		Collection cats = new HashSet();
@@ -48,7 +58,7 @@ public void runit()
 			log.info("No collections are marked as automatic");
 			return;
 		}
-		query.orgroup("category", cats);
+		query.orgroup("category", cats).after("assetaddeddate",date);
 	}	
 	HitTracker hits = query.search();
 	
