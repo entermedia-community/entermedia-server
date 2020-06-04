@@ -1,5 +1,5 @@
 .emgridcontainer {
-	margin:0 20px 30px 0;
+	margin:0 20px 30px 15px;
 }
 .emgrid {
 	margin:0;
@@ -12,7 +12,7 @@
 	margin: 0;
 	overflow: hidden;
 	position:absolute;
-	border:2px solid #888;
+	border:1px solid #ccc;
 	border-radius: .40rem;
 	box-shadow:1px 1px 3px 0 rgba(0,0,0,0.2);
 	visibility: hidden;
@@ -34,7 +34,7 @@
 	padding:0 8px;
 	}
 .emgridcell-name {
-	margin:8px;
+	margin:8px 8px 4px 8px;
 	margin-bottom: 10px;
 	overflow: hidden;
 	line-height: 1.5;
@@ -66,3 +66,10 @@
 .emgridcell-task h3 {
 	color:#ED1D25;
 }
+
+.emgridcell-keywords {
+	padding:5px;
+	
+}
+.emgridcell-keywords .badge {font-size:0.75rem;}
+

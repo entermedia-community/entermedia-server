@@ -37,6 +37,8 @@ $(document).ready(function()
   	        		var imgheight = cellimage.data("height");
   	        		var setimgheight = colwidth*(imgheight/imgwidth);
   	        		cellimage.find(".imagethumb").css("height", setimgheight+'px');
+  	        		
+  	        		cellimage.find(".videothumb").css("height", setimgheight+'px');
   	        	}
       	        
       	        var curheight = columns[col];
@@ -74,4 +76,10 @@ $(document).ready(function()
 		var thegrid = $(this);
 		thegrid.emgrid();
 	});
+	
+	$(window).on('resize',function(){
+		var thegrid = $('.emgrid');
+		thegrid.emgrid();
+	});
+	
 });

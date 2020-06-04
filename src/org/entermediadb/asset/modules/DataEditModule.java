@@ -2096,7 +2096,7 @@ String viewbase = null;
 			{
 				UserFilters filters = loadUserFilters(inReq);
 				Map values = filters.getFilterValues(hits);
-				inReq.putPageValue("userfiltervalues", values);
+				inReq.putPageValue(name+"userfiltervalues", values); 
 				filters.flagUserFilters(hits);
 			}
 		}	
