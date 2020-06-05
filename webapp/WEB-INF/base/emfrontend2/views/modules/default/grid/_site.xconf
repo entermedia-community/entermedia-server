@@ -6,6 +6,8 @@
 		<property name="hitsname">modulehits</property>
 	</path-action>
 
+<!-- Each module needs a projectadvancedfilter.xml in its views folder -->
+
 	<path-action name="DataEditModule.search" >
 		<property name="searchtype">${module}</property>
 		<property name="hitsname">modulehits</property>

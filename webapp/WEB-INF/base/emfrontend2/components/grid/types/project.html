@@ -2,8 +2,10 @@
         	 <h3><i class="fas fa-tasks"></i> $hit.getSearchHit().getType()</h3>
         	 <h4>$hit.name</h4>
 	        <div class="emgridcell-description">
-	        	$hit.longcaption
+	        	$!hit.longcaption
 	        </div>
+	        	        $pages.include("$componenthome/grid/tags.html",$context)
+	        
 	        <div class="emgridcell-actions">
 	         <i class="far fa-heart"></i>
 	        </div>

@@ -32,7 +32,8 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		search.setTypes(searchmodules);
 
 		//Auto added from advancedfilter
-	//	AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
+		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
+		search.addAggregation(b);
 
 		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
 //
@@ -40,7 +41,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 //		SumBuilder sum = new SumBuilder("assettype_sum");
 //		sum.field("filesize");
 //		b.subAggregation(sum);
-	//	search.addAggregation(b);
+//		search.addAggregation(b);
 
 		search.setRequestCache(false);  //What does this do?
 
@@ -52,7 +53,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		search.setQuery(terms);
 		// search.
 		addSorts(inQuery, search);
-		addFacets(inQuery, search);
+		//addFacets(inQuery, search);
 
 		addSearcherTerms(inQuery, search);
 		addHighlights(inQuery, search);

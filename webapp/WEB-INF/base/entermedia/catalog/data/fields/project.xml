@@ -12,7 +12,9 @@
     </name> 
   </property>
     
-  <property id="longcaption" index="true" internalfield="false" editable="true" sortable="true" multilanguage="false" highlight="false" deleted="false" stored="true" keyword="true">
+  <property id="longcaption" index="true" internalfield="false" 
+  editable="true" sortable="true" multilanguage="false" highlight="false" 
+  deleted="false" stored="true" keyword="true">
     <name>
       <language id="en"><![CDATA[Caption]]></language>
     </name>
@@ -39,13 +41,9 @@
       <language id="en"><![CDATA[SourcePath]]></language> 
     </name> 
   </property>
-    <property id="description" index="true" internalfield="true" editable="false" isbadge="false" required="false" filter="false" multilanguage="false" highlight="false" deleted="false" autocreatefromexif="false" keyword="false" writenametoexif="false">New 
-    <name> 
-      <language id="en"><![CDATA[Description]]></language> 
-    </name> 
-  </property>  
-    
-      <property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags" filter="true"   sortable="true">Tags 
+  <property id="keywords" viewtype="tageditor" keyword="true" defaultoperation="andgroup" 
+  index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags" 
+  filter="true"   sortable="true">
     <name> 
       <language id="de"><![CDATA[Tags]]></language>  
       <language id="en"><![CDATA[Tags]]></language>  
