@@ -189,6 +189,11 @@ public class JsonAssetModule extends BaseJsonModule {
 		{
 			//Create a page for this path
 			String importpath = (String)vals.get("folderimportpath");
+			File checkfile = new File(importpath);
+			if( !checkfile.exists())
+			{
+				throw new OpenEditException("Could not find or did not have access to " + importpath);
+			}
 			Collection hotfolders = archive.getList("hotfolder");
 			boolean foundmatch = false;
 			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();)
