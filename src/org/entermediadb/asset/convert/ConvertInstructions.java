@@ -56,12 +56,17 @@ public class ConvertInstructions
 		fieldOutputStream = inOutputStream;
 	}
 
+	/**
+	 * @deprecated streaming should be a property
+	 * @return
+	 */
 	public boolean isStreaming() {
-		return fieldStreaming;
+		String output = getProperty("streaming");
+		return Boolean.parseBoolean(output);
 	}
 
-	public void setStreaming(boolean fieldStreaming) {
-		this.fieldStreaming = fieldStreaming;
+	public void setStreaming(boolean inStreaming) {
+		setProperty("streaming",String.valueOf( inStreaming));
 	}
 
 	public ConvertInstructions copy(Data inNewPreset)
@@ -136,7 +141,8 @@ public class ConvertInstructions
 
 	public ContentItem findOutputFile()
 	{
-		if(isStreaming()) {
+		if(isStreaming()) 
+		{
 			return null;
 		}
 		StringBuffer path = new StringBuffer();

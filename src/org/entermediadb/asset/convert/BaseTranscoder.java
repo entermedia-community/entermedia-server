@@ -118,7 +118,7 @@ public abstract class BaseTranscoder implements MediaTranscoder
 	@Override
 	public ConvertResult convertIfNeeded(ConvertInstructions inStructions)
 	{
-		if( inStructions.isForce() || inStructions.getOutputFile().getLength() < 2)
+		if( inStructions.isForce() || inStructions.isStreaming() || inStructions.getOutputFile().getLength() < 2)
 		{
 			//Be aware that if you force ImageMagick to convert this may have the
 			//same input and output and zero out the file

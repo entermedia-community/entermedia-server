@@ -37,6 +37,8 @@
 	<property id="3gp"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">3GP</property>
 	<property id="mxf"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"  >MXF</property>
 	
+	<property id="m3u8"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"  >HLS Playlist</property>
+	
 	<property id="mp4"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"  >MPEG 4 mp4</property>
 	<property id="m4v"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"   >MPEG 4 m4v</property>
 	<property id="mpg"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg" >MPEG 2</property>
