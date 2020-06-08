@@ -1,44 +1,50 @@
-##THIS IS OLD
-#ifnull($hit)
-	#set ($hit = $asset)
-#end
-#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
-#set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
+##THIS IS OLD #ifnull($hit) #set ($hit = $asset) #end #set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg")) #set( $embed = $context.getRequestParameter("embed") ) #set(
+$autoplay = $context.getRequestParameter("autoplay") ) #set( $loop = $context.getRequestParameter("loop") ) #set( $mediadbappid = $mediaarchive.getMediaDbId() ) #set( $root = "$!prefix$home$page.directory") #set( $catalogid = $asset.catalogId ) #set(
+$source360 = $mediaarchive.asLinkToPreview($asset, "video3.m3u8")) #set( $source720 = $mediaarchive.asLinkToPreview($asset, "video7.m3u8")) #set( $source1080 = $mediaarchive.asLinkToPreview($asset, "video1.m3u8"))
 
-#set( $embed = $context.getRequestParameter("embed") )
-#set( $autoplay = $context.getRequestParameter("autoplay") )
-#set( $loop = $context.getRequestParameter("loop") )
 
-#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-#set( $root = "$!prefix$home$page.directory")	
-#set( $catalogid = $asset.catalogId )
+<!-- <script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script> -->
+<script id="videojs" src="$applink/components/javascript/videojs/7.8.2/video.min.js"></script>
+<script id="videojs" src="$applink/components/javascript/videojs-contrib-hls/videojs-contrib-hls.min.js"></script>
+<script id="videojs" src="$applink/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.js"></script>
 
-	<script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script>
-	<link href="$applink/components/javascript/videojs/7.2.4/video-js.min.css" rel="stylesheet">
+<link href="$applink/components/javascript/videojs/7.8.2/video-js.min.css" rel="stylesheet">
+<link href="$applink/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.css" rel="stylesheet">
 
-	<div id="playarea-$hit.id" class="player" style="background-color: #000;">
-	<video id="video-$hit.id" 
-		class="video-js vjs-default-skin vjs-big-play-centered" 
-		style="width: 100%!important; height: 100%!important;"
-		poster='$thumb'
-		#if( $loop && $loop == "true") loop #end
-		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
-		>
+<div id="playarea-$hit.id" class="player" style="background-color: #000;">
+    <video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="width: 100%!important; height: 100%!important;" poster='$thumb' #if( $loop && $loop=="true" ) loop #end data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'>
 		<source type="video/mp4" src="$source">
-		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-		<source type="video/flash" src="mp4:$short">
-     	#if( $tracks && !$tracks.isEmpty() )
-      		#foreach( $track in $tracks)
-     		 <track 
-     		 	label="$track.sourcelang subtitles" 
-     		 	kind="subtitles" 
-     		 	srclang="$track.sourcelang" 
-      			src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-      		#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
-      		#end
-      	#end
-	</video>
+			#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+			<source type="video/flash" src="mp4:$short">
+				#if( $tracks && !$tracks.isEmpty() )
+				#foreach( $track in $tracks)
+				<track 
+				label="$track.sourcelang subtitles" 
+				kind="subtitles" 
+				srclang="$track.sourcelang" 
+				src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+				#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+				#end
+				#end
+			</video> 
+			
+			#if( $videos && !videos.isEmpty() )
+    		<video id="videohls" class="video-js vjs-default-skin" width="600">				
+				#foreach( $video in $videos)
+				<source src="$video.url" type="application/x-mpegURL" label="$vid.label" />
+				#end				
+			</video> 
+			#end
 </div>
 <script>
-var myPlayer = videojs('video-$hit.id');
+    var myPlayer = videojs('video-$hit.id');
+    videojs('videohls', {
+        controls: true,
+        plugins: {
+            videoJsResolutionSwitcher: {
+                default: 'high',
+                dynamicLabel: true
+            }
+        }
+    });
 </script>
