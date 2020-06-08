@@ -1,5 +1,8 @@
 package asset
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
@@ -8,9 +11,7 @@ import org.entermediadb.net.HttpSharedConnection
 import org.openedit.Data
 import org.openedit.data.QueryBuilder
 import org.openedit.hittracker.HitTracker
-import org.apache.bsf.util.JavaUtils
-import java.util.Date;
-import java.text.*
+
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 

@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.modules.DataEditModule;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
@@ -22,6 +25,7 @@ import org.openedit.profile.UserProfile;
 
 public class ElasticUserFilters implements UserFilters
 {
+	private static final Log log = LogFactory.getLog(ElasticUserFilters.class);
 
 	protected UserProfile fieldUserProfile;
 	protected Map fieldValues;
@@ -148,7 +152,11 @@ public class ElasticUserFilters implements UserFilters
 					 * We want to keep a broad selection of filter so that people can choose more than one
 					 */
 					HitTracker all = (HitTracker)inSearcher.query().facets(facets)
-							.attachSecurity(inReq).freeform("description", inQuery.getMainInput()).search();
+							.attachSecurity(inReq).freeform("description", inQuery.getMainInput()).hitsPerPage(2).search();
+					if( all.isEmpty() )
+					{
+						log.debug(" has no data to filter. DO you have a description field?");
+					}
 					values.fieldValues = all.getFilterOptions();
 				}	
 				else

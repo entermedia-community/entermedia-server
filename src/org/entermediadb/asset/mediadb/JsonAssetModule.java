@@ -30,10 +30,9 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
-
-import com.google.gson.JsonObject;
 
 import groovy.json.JsonSlurper;
 
@@ -171,7 +170,8 @@ public class JsonAssetModule extends BaseJsonModule {
 		}
 		
 
-		if (properties.getFirstItem() != null) {
+		if (properties.getFirstItem() != null) 
+		{
 			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/"
 					+ properties.getFirstItem().getName();
 			path = path.replace("//", "/");
@@ -180,10 +180,42 @@ public class JsonAssetModule extends BaseJsonModule {
 			// THis will append the filename to the source path
 			asset = importer.createAssetFromPage(archive, false, inReq.getUser(), newfile, id);
 		}
-
-		if (asset == null && vals.get("fetchURL") != null) {
+		else if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
 					sourcepath, (String) vals.get("importfilename"), id);
+			
+		} 
+		else if ( vals.get("folderimportpath") != null)
+		{
+			//Create a page for this path
+			String importpath = (String)vals.get("folderimportpath");
+			File checkfile = new File(importpath);
+			if( !checkfile.exists())
+			{
+				throw new OpenEditException("Could not find or did not have access to " + importpath);
+			}
+			Collection hotfolders = archive.getList("hotfolder");
+			boolean foundmatch = false;
+			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();)
+			{
+				Data hotfolder = (Data) iterator.next();
+				String path = hotfolder.get("externalpath");
+				if( importpath.startsWith(path))
+				{
+					String ending = importpath.substring(path.length());
+					String subfolder = hotfolder.get("subfolder");
+					sourcepath = subfolder +  ending;
+					String contentpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
+					Page item = archive.getPageManager().getPage(contentpath);
+					asset = importer.createAssetFromPage(archive, true, inReq.getUser(), item, id);
+					foundmatch = true;
+					break;
+				}
+			}
+			if( !foundmatch)
+			{
+				throw new OpenEditException("Could not find matching hotfolder for " + importpath);
+			}
 			
 		}
 		
