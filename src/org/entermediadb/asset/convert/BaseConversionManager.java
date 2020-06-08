@@ -160,13 +160,12 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
 		ConvertInstructions instructions = createInstructions(inAsset, inSourcePath, inExportName, inSettings);
-		ContentItem output = instructions.getOutputFile();
-		if( output.getLength() < 2 )
+		if( instructions.isStreaming() || instructions.getOutputFile().getLength() < 2 )
 		{
 			return createOutput(instructions);
 		}
 		ConvertResult result = new ConvertResult();
-		result.setOutput(output);
+		result.setOutput(instructions.getOutputFile());
 		result.setOk(true);
 		result.setComplete(true);
 		result.setInstructions(instructions);

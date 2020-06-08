@@ -42,9 +42,10 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		
 		if( streams != null )
 		{
-			inStructions.getAsset().setValue("hlsstreams", streams);
+			String[] vals = MultiValued.VALUEDELMITER.split(streams);
+			inStructions.getAsset().setValue("hlsstreams", Arrays.asList(vals));
 			inStructions.getMediaArchive().saveAsset(inStructions.getAsset());
-			result = createHlsOutput(inStructions, streams);
+			result = createHlsOutput(inStructions, vals);
 		}
 		else
 		{
@@ -55,7 +56,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 
 
 	
-	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String streams)
+	protected ConvertResult createHlsOutput(ConvertInstructions inStructions, String[] streams)
 	{
 		
 		long timeout = inStructions.getConversionTimeout();
@@ -65,7 +66,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		comm.add(inputpage.getAbsolutePath());
 		comm.add("-y");
 
-		String[] vals = MultiValued.VALUEDELMITER.split(streams);
 		StringBuffer path = new StringBuffer();
 		path.append("/WEB-INF/data");
 		path.append(inStructions.getMediaArchive().getCatalogHome());
@@ -73,9 +73,9 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		path.append(inStructions.getAssetSourcePath());
 		path.append("/video.m3u8");
 		
-		for (int i = 0; i < vals.length; i++)
+		for (int i = 0; i < streams.length; i++)
 		{
-			String height = vals[i];
+			String height = streams[i];
 			String fullpath = path.toString() + "/" + height + "/video.m3u8";
 			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);//inStructions.getOutputFile().getAbsolutePath(); //video.hls 
 			new File(item.getAbsolutePath()).getParentFile().mkdirs();

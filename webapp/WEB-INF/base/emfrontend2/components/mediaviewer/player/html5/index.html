@@ -1,6 +1,6 @@
-##THIS IS OLD #ifnull($hit) #set ($hit = $asset) 
+#ifnull($hit) #set ($hit = $asset) 
 #end 
-#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
+#set( $source = $mediaarchive.asLinkToPreview($asset,"video.m3u8")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg")) 
 #set( $embed = $context.getRequestParameter("embed") )
 #set( $autoplay = $context.getRequestParameter("autoplay") ) 
@@ -17,33 +17,34 @@
 <link href="$applink/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.css" rel="stylesheet">
 
 <div id="playarea-$hit.id" class="player" style="background-color: #000;">
+		#set($streams = $hit.getValues("hlsstreams"))
+
 	<video id="video-$hit.id" class="video-js vjs-default-skin vjs-big-play-centered" style="width: 100%!important; height: 100%!important;" poster='$thumb' #if( $loop && $loop=="true" ) loop #end data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'>
-		<source type="video/mp4" src="$source">
+		#if( $streams )
+			#foreach( $size in $streams)
+			<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
+			#end				
+		#else	
+			<source type="video/mp4" src="$source">
 			#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
 			<source type="video/flash" src="mp4:$short">
-				#if( $tracks && !$tracks.isEmpty() )
+			#if( $tracks && !$tracks.isEmpty() )
 				#foreach( $track in $tracks)
-				<track 
-				label="$track.sourcelang subtitles" 
-				kind="subtitles" 
-				srclang="$track.sourcelang" 
-				src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-				#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+					<track 
+					label="$track.sourcelang subtitles" 
+					kind="subtitles" 
+					srclang="$track.sourcelang" 
+					src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+					#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
 				#end
-				#end
-			</video> 
-			
-			#if( $videos && !videos.isEmpty() )
-			<video id="videohls" class="video-js vjs-default-skin" width="600">				
-				#foreach( $video in $videos)
-				<source src="$video.url" type="application/x-mpegURL" label="$vid.label" />
-				#end				
-			</video> 
 			#end
+		#end	
+	</video> 
+			
 		</div>
 		<script>
-			var myPlayer = videojs('video-$hit.id');
-			videojs('videohls', {
+			
+			videojs('video-$hit.id', {
 				controls: true,
 				plugins: {
 					videoJsResolutionSwitcher: {

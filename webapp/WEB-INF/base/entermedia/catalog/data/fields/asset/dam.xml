@@ -797,6 +797,14 @@
       <language id="en"><![CDATA[Topic]]></language>  
     </name> 
   </property> 
+
+  <property id="hlsstreams" index="true" stored="true" internalfield="false" 
+  editable="true" viewtype="multiselect" filter="true"  datatype="list"  type="list">
+    <name> 
+      <language id="en"><![CDATA[HLS Streams Available]]></language>  
+    </name> 
+  </property>
+
   
   
 </page>
