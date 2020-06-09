@@ -11,6 +11,9 @@
 	<generator name="generatedMediaGenerator"/>
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/generatedpreview</property>
 
+	<property name="exportnameinpath">false</property>
+
+
 	<permission name="view">
 		<boolean value="true" />
 	</permission>	

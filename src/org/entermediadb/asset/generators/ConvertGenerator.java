@@ -49,7 +49,7 @@ public class ConvertGenerator extends FileGenerator
 		String catalogid = inReq.findValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");
-
+		
 		if (sourcePath == null)
 		{
 			sourcePath = archive.getSourcePathForPage(inReq);
@@ -60,13 +60,13 @@ public class ConvertGenerator extends FileGenerator
 		}
 		catch (UnsupportedEncodingException e)
 		{
-		throw new OpenEditException(e);
+			throw new OpenEditException(e);
 		}
 		String collectionid = inReq.findValue("collectionid");
-		if(collectionid != null) {
+		if(collectionid != null) 
+		{
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
 			log.info("Final Source Path: " + sourcePath);
-
 		}
 		
 //		outputype = outputype.toLowerCase();
@@ -101,22 +101,22 @@ public class ConvertGenerator extends FileGenerator
 		String name = inPage.get("exportname");
 		if( name == null)
 		{
-			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
-			if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
-			{
-				name = inPage.getDirectoryName();
-				sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
-			}
-			else
-			{
-				String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
-				String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
-				if( type.length() > 3)
+				//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
+				if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
 				{
-					type = type.substring(0,3);
+					name = inPage.getDirectoryName();
+					sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
 				}
-				name = label + "." + type;
-				
+				else
+				{
+					String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
+					String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
+					if( type.length() > 3)
+					{
+						type = type.substring(0,3);
+					}
+					name = label + "." + type;
+				}
 			}
 		}
 		String themeprefix = inReq.findValue("themeprefix");
