@@ -31,6 +31,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
@@ -214,7 +215,17 @@ public class JsonAssetModule extends BaseJsonModule {
 			}
 			if( !foundmatch)
 			{
-				throw new OpenEditException("Could not find matching hotfolder for " + importpath);
+				ContentItem item = new FileItem(new File(importpath));
+				
+				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/"
+						+ PathUtilities.extractFileName(importpath);  //Right?
+				destpath = destpath.replace("//", "/");
+
+				Page destitem = archive.getPageManager().getPage(destpath);
+				archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
+				
+				asset = importer.createAssetFromPage(archive, true, inReq.getUser(), destitem, id);
+				
 			}
 			
 		}

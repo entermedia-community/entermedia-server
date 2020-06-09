@@ -1,6 +1,7 @@
 #ifnull($hit) #set ($hit = $asset) 
 #end 
 #set( $source = $mediaarchive.asLinkToPreview($asset,"video.m3u8")) 
+#set( $sourcemp4 = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg")) 
 #set( $embed = $context.getRequestParameter("embed") )
 #set( $autoplay = $context.getRequestParameter("autoplay") ) 
@@ -25,32 +26,31 @@
 			<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
 			#end				
 		#else	
-			<source type="video/mp4" src="$source">
-			#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+			<source type="video/mp4" src="$sourcemp4">
+			#set( $short = $url_util.getPathUtilities().extractPagePath($sourcemp4) )
 			<source type="video/flash" src="mp4:$short">
-			#if( $tracks && !$tracks.isEmpty() )
-				#foreach( $track in $tracks)
-					<track 
-					label="$track.sourcelang subtitles" 
-					kind="subtitles" 
-					srclang="$track.sourcelang" 
-					src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-					#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
-				#end
-			#end
 		#end	
+		#if( $tracks && !$tracks.isEmpty() )
+			#foreach( $track in $tracks)
+				<track 
+				label="$track.sourcelang subtitles" 
+				kind="subtitles" 
+				srclang="$track.sourcelang" 
+				src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+				#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+			#end
+		#end
 	</video> 
 			
-		</div>
-		<script>
-			
-			videojs('video-$hit.id', {
-				controls: true,
-				plugins: {
-					videoJsResolutionSwitcher: {
-						default: 'high',
-						dynamicLabel: true
-					}
-				}
-			});
-		</script>
+</div>
+<script>
+	videojs('video-$hit.id', {
+		controls: true,
+		plugins: {
+			videoJsResolutionSwitcher: {
+				default: 'high',
+				dynamicLabel: true
+			}
+		}
+	});
+</script>

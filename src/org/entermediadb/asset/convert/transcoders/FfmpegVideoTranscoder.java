@@ -73,28 +73,34 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		path.append(inStructions.getAssetSourcePath());
 		path.append("/video.m3u8");
 		
+		boolean createdone = false;
 		for (int i = 0; i < streams.length; i++)
 		{
 			String height = streams[i];
 			String fullpath = path.toString() + "/" + height + "/video.m3u8";
-			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);//inStructions.getOutputFile().getAbsolutePath(); //video.hls 
-			new File(item.getAbsolutePath()).getParentFile().mkdirs();
-			append(comm,height, item.getAbsolutePath());
+			ContentItem item = inStructions.getMediaArchive().getContent(fullpath);//inStructions.getOutputFile().getAbsolutePath(); //video.hls
+			if( !item.exists())
+			{
+				new File(item.getAbsolutePath()).getParentFile().mkdirs();
+				append(comm,height, item.getAbsolutePath());
+				createdone = true;
+			}
 		}
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 		ConvertResult result = new ConvertResult();
-		ExecResult execresult = getExec().runExec("avconv", comm, true,timeout);
-		result.setOk(execresult.isRunOk());
-		if (!execresult.isRunOk())
+		if(createdone)
 		{
-			String output = execresult.getStandardError();
-			result.setError("Error: " + output);
-			return result;
+				ExecResult execresult = getExec().runExec("avconv", comm, true,timeout);
+				result.setOk(execresult.isRunOk());
+				if (!execresult.isRunOk())
+				{
+					String output = execresult.getStandardError();
+					result.setError("Error: " + output);
+					return result;
+				}
 		}
-		else
-		{
-			result.setComplete(true);
-		}
+		result.setOk(true);
+		result.setComplete(true);
 		return result;
 	}
 

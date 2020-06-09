@@ -66,6 +66,9 @@ public class VideoConversionManager extends BaseConversionManager
 		}
 		
 		//Do the video conversion first. Then do the standard image conversion
+		
+		//TODO: Make sure 1080 HLS is done first and use that instead
+		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
 		ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(),preset);
 		if( proxyinstructions.getInputFile() == null)

@@ -67,7 +67,12 @@ public class VideoCacheLoader implements InputLoader
 		if (input == null || input.getLength() < 2 )
 		{
 			//TODO: Save the fact that we used a cached file
-			return null;
+			//try HLS?
+			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.m3u8/1080/video.m3u8");
+			if (input == null || input.getLength() < 2 )
+			{
+				return null;
+			}
 		}
 		else
 		{
