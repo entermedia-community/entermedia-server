@@ -101,22 +101,21 @@ public class ConvertGenerator extends FileGenerator
 		String name = inPage.get("exportname");
 		if( name == null)
 		{
-				//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
-				if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
+			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
+			if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
+			{
+				name = inPage.getDirectoryName();
+				sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
+			}
+			else
+			{
+				String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
+				String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
+				if( type.length() > 3)
 				{
-					name = inPage.getDirectoryName();
-					sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
+					type = type.substring(0,3);
 				}
-				else
-				{
-					String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
-					String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
-					if( type.length() > 3)
-					{
-						type = type.substring(0,3);
-					}
-					name = label + "." + type;
-				}
+				name = label + "." + type;
 			}
 		}
 		String themeprefix = inReq.findValue("themeprefix");
