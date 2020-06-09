@@ -805,7 +805,7 @@
     </name> 
   </property>
 
-  <property id="folderimportpath" index="true"  internalfield="true" >
+  <property id="importpath" index="true"  internalfield="true" >
     <name> 
       <language id="en"><![CDATA[Import Path>]]></language> 
     </name> 
