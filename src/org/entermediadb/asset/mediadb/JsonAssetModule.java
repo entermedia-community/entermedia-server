@@ -186,10 +186,10 @@ public class JsonAssetModule extends BaseJsonModule {
 					sourcepath, (String) vals.get("importfilename"), id);
 			
 		} 
-		else if ( vals.get("folderimportpath") != null)
+		else if ( vals.get("importpath") != null)
 		{
 			//Create a page for this path
-			String importpath = (String)vals.get("folderimportpath");
+			String importpath = (String)vals.get("importpath");
 			File checkfile = new File(importpath);
 			if( !checkfile.exists())
 			{
@@ -525,7 +525,10 @@ public class JsonAssetModule extends BaseJsonModule {
 
 	}
 	
-	
+	/**
+	 * @deprecated only works within app. Use createAsset
+	 * @param inReq
+	 */
 
 	public void importAssetJson(WebPageRequest inReq) {
 		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
