@@ -157,11 +157,33 @@ function connect() {
 	
         scrollToChat();
         
-        /*Check if you are the sender*/
+        /*Check if you are the sender, play sound and notify.*/
         var user = app.data("user");
         if(message.user != user){
         	play();
-        }
+        
+        	/*Desktop notifications - mando*/
+		    function showNotification() 
+			{
+				const notification = new Notification(message.user, {
+					body: message.content,
+					icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
+				});
+				
+			}
+			
+			/*Check for permissions and ask.*/
+			if (Notification.permission === "granted") {
+				showNotification();
+			} else if (Notification.permission !== "denied") {
+				Notification.requestPermission().then(permission => {
+					if (permission === "granted"){
+						showNotification();
+					}
+				});
+			}
+    	}
+    	
         
     }; 
 
