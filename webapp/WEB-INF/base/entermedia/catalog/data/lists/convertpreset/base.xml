@@ -21,7 +21,7 @@
 
 
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->
-    <preset id="videohls" guid="videohls" systemdefinedpreset="true" display="true" generatedoutputfile="video.hls"  outputfile="video.m3u8" outputextension="m3u8"  fileexportformat="${shortfilename}proxy.m3u8" transcoderid="ffmpeg" extension="m3u8"  inputtype="video" onimport="false" ordering="0">Video HLS</preset>
+    <preset id="videohls" guid="videohls" systemdefinedpreset="true" display="true" generatedoutputfile="video.m3u8"  outputfile="video.m3u8" outputextension="m3u8"  fileexportformat="${shortfilename}proxy.m3u8" transcoderid="ffmpeg" extension="m3u8"  inputtype="video" onimport="false" ordering="0">Video HLS</preset>
     <preset id="previewffmpeg" guid="ffmpeg480p" systemdefinedpreset="true" display="true" generatedoutputfile="video.mp4"  outputfile="video.mp4" outputextension="mp4"  fileexportformat="${shortfilename}proxy.mp4" transcoderid="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="0">Video MP4 Preview</preset>
     <preset id="previewflv" guid="ffmpegpreviewmp4" systemdefinedpreset="true" display="true" generatedoutputfile="video720x480.flv" outputextension="flv"  fileexportformat="${shortfilename}.flv" transcoderid="ffmpeg" extension="mp4" inputtype="video" ordering="07">Video FLV</preset>
     <preset id="2" guid="ffmpeg720p"  systemdefinedpreset="true" display="true" generatedoutputfile="video1280x720.avi" outputextension="avi"  fileexportformat="${shortfilename}HQ.avi" transcoderid="ffmpeg" inputtype="video" extension="avi" ordering="08">Video HQ AVI</preset>

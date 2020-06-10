@@ -85,6 +85,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				append(comm,height, item.getAbsolutePath());
 				createdone = true;
 			}
+			inStructions.setOutputFile(item);  //Keep going up
 		}
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 		ConvertResult result = new ConvertResult();
