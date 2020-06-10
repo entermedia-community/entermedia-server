@@ -2,13 +2,14 @@
 	#set ($hit = $asset)
 #end
 
-#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
-#set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
-
+#set( $source = $mediaarchive.asLinkToGenerated($asset,"video.m3u8")) 
+#set( $sourcemp4 = $mediaarchive.asLinkToGenerated($asset,"video.mp4")) 
+#set( $streams = $hit.getValues("hlsstreams"))
+#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
+#set( $autoplay = $context.getRequestParameter("autoplay") ) 
+#set( $loop = $context.getRequestParameter("loop") ) 
 #set( $embed = $context.getRequestParameter("embed") )
-#set( $autoplay = $context.getRequestParameter("autoplay") )
-#set( $loop = $context.getRequestParameter("loop") )
-
+#set( $assetidpostfix = $context.getPageValue("assetidpostfix"))
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
@@ -18,28 +19,42 @@
 <div class="player-outer">
 <div id="playarea-$hit.id" class="player">
 
-	<video id="video-$hit.id" 
+	<video id="videoviewer-$hit.id$!assetidpostfix" 
 			class="video-js vjs-default-skin vjs-big-play-centered" 
 			poster='$thumb'
 			#if( $loop && $loop == "true") loop #end
 			data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
 		> 
-		<source type="video/mp4" src="$source">
-		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-		<source type="video/flash" src="mp4:$short">
-     	#if( $tracks && !$tracks.isEmpty() )
-      		#foreach( $track in $tracks)
-     		 <track 
-     		 	label="$track.sourcelang subtitles" 
-     		 	kind="subtitles" 
-     		 	srclang="$track.sourcelang" 
-      			src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-      		#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
-      		#end
-      	#end
+			#if( $streams )
+					#foreach( $size in $streams)
+					<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
+					#end				
+				#else	
+					<source type="video/mp4" src="$sourcemp4"  label="$!hit.width">
+					#set( $short = $url_util.getPathUtilities().extractPagePath($sourcemp4) )
+					<source type="video/flash" src="mp4:$short"  label="$!hit.width">
+				#end	
+				#if( $tracks && !$tracks.isEmpty() )
+					#foreach( $track in $tracks)
+						<track 
+						label="$track.sourcelang subtitles" 
+						kind="subtitles" 
+						srclang="$track.sourcelang" 
+						src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+						#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+					#end
+				#end
 	</video>
 </div>
 </div>
 <script>
-var myPlayer = videojs('video-$hit.id');
-</script>
+			videojs('videoviewer-$hit.id$!assetidpostfix', {
+				controls: true,
+				plugins: {
+					videoJsResolutionSwitcher: {
+						default: 'high',
+						dynamicLabel: true
+					}
+				}
+			});
+		</script>

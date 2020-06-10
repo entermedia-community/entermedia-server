@@ -23,8 +23,8 @@
 
 .vjs-resolution-button .vjs-resolution-button-label {
   pointer-events: none;
-  font-size: 1.5em;
-  line-height: 2;
+  font-size: 1.2em;
+  line-height: 2.5;
   position: absolute;
   top: 0;
   left: 0;
@@ -41,7 +41,7 @@
 
 .vjs-resolution-button .vjs-menu {
   left: 0;
-  bottom: 2em;
+  bottom: 1em;
 }
 
 .vjs-resolution-button .vjs-menu li {
@@ -55,6 +55,6 @@
   background-color: rgba(43,51,63,.7);
   position: absolute;
   width: 100%;
-  bottom: -1;
+  bottom: 0.5em;
   max-height: 15em;
 }

@@ -2,8 +2,8 @@
 	#set ($hit = $asset)
 #end
 
-#set( $source = $mediaarchive.asLinkToPreview($asset,"video.m3u8")) 
-#set( $sourcemp4 = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
+#set( $source = $mediaarchive.asLinkToGenerated($asset,"video.m3u8")) 
+#set( $sourcemp4 = $mediaarchive.asLinkToGenerated($asset,"video.mp4")) 
 #set( $streams = $hit.getValues("hlsstreams"))
 #set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
 #set( $autoplay = $context.getRequestParameter("autoplay") ) 
@@ -14,12 +14,6 @@
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
-#if ($urlutils)
-	#set ( $source = $urlutils.encode($source))
-	#set ( $source = $source.replace("%2F", "/") )
-	#set ( $thumb = $urlutils.encode($thumb))
-	#set ( $thumb = $thumb.replace("%2F", "/"))
-#end
 
 #if($source)
 	#if($thumbsize != "mediumplus" && $thumbsize != "postsize")
@@ -40,9 +34,9 @@
 					<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
 					#end				
 				#else	
-					<source type="video/mp4" src="$sourcemp4">
+					<source type="video/mp4" src="$sourcemp4" label="$!hit.width">
 					#set( $short = $url_util.getPathUtilities().extractPagePath($sourcemp4) )
-					<source type="video/flash" src="mp4:$short">
+					<source type="video/flash" src="mp4:$short" label="$!hit.width">
 				#end	
 				#if( $tracks && !$tracks.isEmpty() )
 					#foreach( $track in $tracks)
