@@ -166,7 +166,7 @@ function connect() {
         	/*Desktop notifications - mando*/
 		    function showNotification() 
 			{
-				const notification = new Notification("New message from " + message.name, {
+				const notification = new Notification(message.name + " in " + message.topic, {
 					body: message.content,
 					icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
 				});
