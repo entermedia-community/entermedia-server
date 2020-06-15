@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-
   <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
   <property name="section">home</property>
   <property name="title">EnterMedia Manager</property>
@@ -30,21 +29,25 @@
 		<group name="administrators" />
 	</permission>
 
-  <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
-  <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.11.4.min.js"/>
-  <script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
-  
+<!-- Jquery -->
+	<script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
+	<script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.min.js"/>
+	<style id="jqueryui" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css"/>
+	<script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js"/>
+	
+	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
+	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
+	<script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
+	<script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js"/>
+	  
   <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
   
   <style id="jplayer-css"  href="/${applicationid}/theme/jplayer/premium.pixels/premium-pixels.css"/>
   <script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
   <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
   
-  <script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
-  <script id="liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
-  <script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
   <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
-  <script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js">     </script>
+
   <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
   <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
@@ -56,7 +59,6 @@
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   
   <inner-layout>${themeprefix}/layouts/application.html</inner-layout>
-		<property name="skipvirtualhost">true</property>
-
-
+  
+  <property name="skipvirtualhost">true</property>
 </page>
