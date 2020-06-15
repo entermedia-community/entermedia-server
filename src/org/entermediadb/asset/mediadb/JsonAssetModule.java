@@ -216,23 +216,19 @@ public class JsonAssetModule extends BaseJsonModule {
 			if( !foundmatch)
 			{
 				ContentItem item = new FileItem(new File(importpath));
-				
-				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/"
-						+ PathUtilities.extractFileName(importpath);  //Right?
+				if( sourcepath.endsWith("/"))
+				{
+					sourcepath = sourcepath + "/" + PathUtilities.extractFileName(importpath);
+				}
+				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;  
 				destpath = destpath.replace("//", "/");
 
 				Page destitem = archive.getPageManager().getPage(destpath);
 				archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
 				
 				asset = importer.createAssetFromPage(archive, true, inReq.getUser(), destitem, id);
-				
 			}
-			
 		}
-		
-		
-		
-		
 
 		if (asset == null && vals.get("localPath") != null) {
 			// log.info("HERE!!!");
