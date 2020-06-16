@@ -1,6 +1,6 @@
 <page>
 
-	
+	<property name="allowframes">true</property>
 	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
     
     

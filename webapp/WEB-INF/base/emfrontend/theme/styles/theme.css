@@ -7219,3 +7219,8 @@ li.resultmenuitem {
   display: flex;
   flex-direction: column;
 }
+
+.loginform {
+	float:none;
+	margin: 0 auto;
+}
