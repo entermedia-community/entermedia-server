@@ -36,7 +36,7 @@
     <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
 
 
-    <preset id="widesscreencrop" guid="imagewidesscreencrop"  systemdefinedpreset="true" generatedoutputfile="image1920x500cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}1920x500cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" enforceaspectratio="true" >Widescreen Banner Crop</preset>
+    <preset id="widesscreencrop" guid="imagewidesscreencrop"  systemdefinedpreset="false" generatedoutputfile="image1920x500cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}1920x500cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="false"  ordering="05" enforceaspectratio="true" >Widescreen Banner Crop</preset>
 
 
 
