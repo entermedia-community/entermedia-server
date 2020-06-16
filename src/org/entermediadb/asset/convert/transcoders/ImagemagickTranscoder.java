@@ -436,13 +436,19 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			prefix = "dng:";
 		}
 		String absolutePath = inStructions.getInputFile().getAbsolutePath();
+		
+		String pages = "";
+		if (page>0) 
+		{
+			pages = "["+page+"]";
+		}
 		if (isOnWindows())
 		{
-			com.add("\"" + prefix + absolutePath + "[" + page + "]\"");
+			com.add("\"" + prefix + absolutePath + pages + "\"");
 		}
 		else
 		{
-			com.add(prefix + absolutePath + "[" + page + "]");
+			com.add(prefix + absolutePath + pages);
 		}
 		com.add("-limit");
 		com.add("thread");
