@@ -134,6 +134,7 @@ function connect() {
     	
         var message = JSON.parse(event.data);
         console.log(message);
+        console.log(chatconnection);
         var channel = message.channel;
         var id = message.messageid;
         message.id = id;
@@ -158,9 +159,9 @@ function connect() {
 	
         scrollToChat();
         
-        /*Check if you are the sender, play sound and notify.*/
+        /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
         var user = app.data("user");
-        if(message.user != user){
+        if(message.user != user && message.topic != message.user){
         	play();
         
         	/*Desktop notifications - mando*/
@@ -173,7 +174,7 @@ function connect() {
 				
 			}
 			
-			/*Check para permissions and ask.*/
+			/*Check para permissions and ask.*/ 
 			if (Notification.permission === "granted") {
 				showNotification();
 			} else if (Notification.permission !== "denied") {
@@ -258,6 +259,30 @@ function play(){
 	
 }
 
+function registerServiceWorker() {
+	  navigator.serviceWorker.register("/sw.js").then(function(swRegistration) {
+	    //you can do something with the service wrker registration (swRegistration)
+	  });
+	}
+
+function isPushNotificationSupported() {
+	  return "serviceWorker" in navigator && "PushManager" in window;
+	}
+
+function createNotificationSubscription() {
+	  //wait for service worker installation to be ready, and then
+	  return navigator.serviceWorker.ready.then(function(serviceWorker) {
+	    // subscribe and return the subscription
+	    return serviceWorker.pushManager
+	    .subscribe({
+	      userVisibleOnly: true
+	    })
+	    .then(function(subscription) {
+	      console.log("User is subscribed.", subscription);
+	      return subscription;
+	    });
+	  });
+	}
 
 
 

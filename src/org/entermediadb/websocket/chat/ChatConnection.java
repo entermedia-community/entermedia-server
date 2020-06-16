@@ -208,7 +208,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			else if("messagereceived".equals(command) || "notify".equals(command)){
 			
 				String content = getChatServer().saveMessage(map);
-				/* add user info to JSON message object- mando 6/11/2020 */
+				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 				String collectionid = (String)map.get("collectionid").toString();
