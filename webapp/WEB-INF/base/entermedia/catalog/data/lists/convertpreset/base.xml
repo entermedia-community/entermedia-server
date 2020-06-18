@@ -2,8 +2,8 @@
     <preset id="0"  transcoderid="original"  inputtype="all" ordering="00">Original Format</preset>
      <preset id="attachments"  transcoderid="original"  inputtype="all" ordering="01" attachments="true">Attachments</preset>
  
-    <preset id="largeimage" guid="imagepreview" systemdefinedpreset="true" generatedoutputfile="image1024x768.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}L.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02" enforceaspectratio="true">Image Large</preset>
-    <preset id="mediumimage" guid="imagemedium" systemdefinedpreset="true" generatedoutputfile="image550x350.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image|document" onimport="true" ordering="03" enforceaspectratio="true">Image Medium</preset>
+    <preset id="largeimage" guid="imagepreview" systemdefinedpreset="true" generatedoutputfile="image1024x768.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}L.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="01" enforceaspectratio="true">Image Large</preset>
+    <preset id="mediumimage" guid="imagemedium" systemdefinedpreset="true" generatedoutputfile="image550x350.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image|document" onimport="true" ordering="02" enforceaspectratio="true">Image Medium</preset>
     <preset id="mediumimagesmall" guid="imagemediumsmall" systemdefinedpreset="true" generatedoutputfile="image300x300.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}M.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="03" enforceaspectratio="true">Image Medium Small</preset>
     <preset id="thumbimage" guid="imagethumb"  systemdefinedpreset="true"	generatedoutputfile="image200x200.jpg" outputextension="jpg" singlepage="true" display="true" fileexportformat="${shortfilename}S.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image|document|video" onimport="true"  ordering="04" enforceaspectratio="true">Image Thumbnail</preset>
     <preset id="thumbimagepng" guid="imagethumbpng"  systemdefinedpreset="true" generatedoutputfile="image200x200.png" outputextension="png" singlepage="true" display="true" fileexportformat="${shortfilename}S.png" transcoderid="imagemagick" 
@@ -36,7 +36,7 @@
     <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
 
 
-    <preset id="widesscreencrop" guid="imagewidesscreencrop"  systemdefinedpreset="true" generatedoutputfile="image1920x500cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}1920x500cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" enforceaspectratio="true" >Widescreen Banner Crop</preset>
+    <preset id="widesscreencrop" guid="imagewidesscreencrop"  systemdefinedpreset="false" generatedoutputfile="image1920x500cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}1920x500cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="false"  ordering="06" enforceaspectratio="true" >Widescreen Banner Crop</preset>
 
 
 
