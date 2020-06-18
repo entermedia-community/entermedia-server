@@ -4,7 +4,15 @@
 #else #set ( $urlenc = $urlutils.encode($asset.sourcepath)) 
 	#set ( $urlenc = $urlenc.replace("%2F", "/") ) 
 #end
-#set($tpath = $mediaarchive.asLinkToPreview($asset, $librarycol.id, "image1024x768.jpg"))
+
+#set($imagesize = "image1024x768.jpg")
+
+#if($useoriginal)
+	#set($tpath = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($asset))
+#else
+	#set($tpath = $mediaarchive.asLinkToPreview($asset, $librarycol.id, $imagesize))
+#end
+
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))
