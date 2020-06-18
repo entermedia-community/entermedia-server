@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import java.awt.*;
+import java.awt.TrayIcon.MessageType;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
@@ -249,6 +252,29 @@ public class ChatServer
 		return chat.get("message");
 	}
 
+	/* Desktop notificationsss */
+	
+
+    public void displayTray(String message) throws AWTException {
+        //Obtain only one instance of the SystemTray object
+        SystemTray tray = SystemTray.getSystemTray();
+        
+        String chatmessage = message;
+        //If the icon is a file
+        Image image = Toolkit.getDefaultToolkit().createImage("\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
+        //Alternative (if the icon is on the classpath):
+        //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
+
+        TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
+        //Let the system resize the image if needed
+        trayIcon.setImageAutoSize(true);
+        //Set tooltip text for the tray icon
+        trayIcon.setToolTip("EntermediaNotifications");
+        tray.add(trayIcon);
+
+        trayIcon.displayMessage("EntermediaDB", chatmessage, MessageType.NONE);
+    }
+	
 	public ExecutorManager getExecutorManager(String inCatalogId)
 	{
 		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
