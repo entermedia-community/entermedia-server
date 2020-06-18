@@ -1,21 +1,14 @@
 function receivePushNotification(event) {
-  console.log("[Service Worker] Push Received.");
+  console.log("push received");
 
-  //const { image, tag, url, title, text } = event.data.json();
-  const notificationText = event.data.text();
-  const title = "A brand new notification!"
+  
+  const message = event.data.text();
+  const title = message.name + " in " + message.topic;
 
   const options = {
     //data: url,
-    data: "something you want to send within the notification, such an URL to open"
-    //body: text,
     body: notificationText
-    //icon: image,
-    vibrate: [200, 100, 200],
-    //tag: tag,
-    //image: image,
-    badge: "https://spyna.it/icons/favicon.ico",
-    actions: [{ action: "Detail", title: "View", icon: "https://via.placeholder.com/128/ff0000" }]
+    icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
   };
   //call the method showNotification to show the notification
   event.waitUntil(self.registration.showNotification(title, options));
