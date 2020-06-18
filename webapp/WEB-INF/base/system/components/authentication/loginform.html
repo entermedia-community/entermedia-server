@@ -24,11 +24,11 @@
 </div>
 #end
 
-<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
+<div class="col-md-8 loginform" style=" max-width:500px; padding:40px 0px 0 40px; ">
 		
 		 ##set($loginok = $context.findValue("loginokpage") ) 
 
-		<div class="hr"></div>
+		
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<div class="form-group">
 			<label for="accountname">[[Email or Username]]</label>

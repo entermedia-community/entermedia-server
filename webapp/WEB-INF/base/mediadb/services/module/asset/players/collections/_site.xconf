@@ -1,6 +1,6 @@
 <page>
 
-	
+	<property name="allowframes">true</property>
 	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
     
 	<script id="videojs" src="/${applicationid}/components/javascript/videojs/7.8.2/video.js" />

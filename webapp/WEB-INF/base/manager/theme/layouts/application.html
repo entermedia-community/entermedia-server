@@ -23,6 +23,7 @@
 ##                            <a href="$home$apphome${screen.path}">$screen</a>
 ##                        </li>
 ##                 #end
+			#if($user)
 		     <ul>
 		     #set( $app = $content.get("managersection"))
                  <li><a #if( $app == "sites") class="current" #end href="$home$apphome/views/sites/index.html">Sites</a></li>
@@ -37,6 +38,7 @@
 ##		         <li><a href="$home$apphome/views/update/upload/index.html">Uploads</a></li>
 
 		     </ul>
+		     #end
 
 		</div>
 		<div id="errordiv"></div>
@@ -45,7 +47,7 @@
 		  $pages.includeContent()
 		</div>
 		<div id="footer" class="col12 clearfix">
-			<p>[[Powered by EnterMedia]] | <a href="http://www.entermediasoftware.com">www.entermediasoftware.com</a></p>
+			<p>[[Powered by EnterMedia]] | <a href="http://entermediadb.org">entermediadb.org</a></p>
 		</div>
 	</div>
 </div>
