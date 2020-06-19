@@ -126,6 +126,7 @@ function connect() {
     }
     
     keepAlive(); 
+    
        
     chatconnection.onmessage = function(event) {
     	
@@ -134,7 +135,7 @@ function connect() {
     	
         var message = JSON.parse(event.data);
         console.log(message);
-        console.log(chatconnection);
+        
         var channel = message.channel;
         var id = message.messageid;
         message.id = id;
@@ -159,10 +160,15 @@ function connect() {
 	
         scrollToChat();
         
+        registerServiceWorker();
+        
         /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
         var user = app.data("user");
         if(message.user != user && message.topic != message.user){
         	play();
+        	
+        	
+        	createNotificationSubscription();
         
         	/*Desktop notifications - mando*/
 		    function showNotification() 
@@ -178,6 +184,9 @@ function connect() {
 			if (Notification.permission === "granted") {
 				showNotification();
 			} else if (Notification.permission !== "denied") {
+				
+				createNotificationSubscription();
+				
 				Notification.requestPermission().then(permission => {
 					if (permission === "granted"){
 						showNotification();
@@ -191,7 +200,7 @@ function connect() {
 
 }
 
-
+/*--------------Begin Functions List--------------*/
 function reloadAll(){
 
 	var app = jQuery("#application");
@@ -259,12 +268,20 @@ function play(){
 	
 }
 
+
+/*-------Start Push and Notification --------*/
+const pushServerPublicKey = "BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
+
 function registerServiceWorker() {
-	  navigator.serviceWorker.register("/sw.js").then(function(swRegistration) {
-	    //you can do something with the service wrker registration (swRegistration)
-	  });
+	  navigator.serviceWorker.register("sw.js")
 	}
 
+function initializePushNotifications() {
+	  
+	  return Notification.requestPermission(function(result) {
+	    return result;
+	  });
+	}
 function isPushNotificationSupported() {
 	  return "serviceWorker" in navigator && "PushManager" in window;
 	}
@@ -275,10 +292,14 @@ function createNotificationSubscription() {
 	    // subscribe and return the subscription
 	    return serviceWorker.pushManager
 	    .subscribe({
-	      userVisibleOnly: true
+	      userVisibleOnly: true,
+	      applicationServerKey: pushServerPublicKey
 	    })
 	    .then(function(subscription) {
+	    	// send this to Entermedia backend with a user id
+	    	// 'subscription' == PushSubscription (object)
 	      console.log("User is subscribed.", subscription);
+	      console.log(subscription.endpoint);
 	      return subscription;
 	    });
 	  });
