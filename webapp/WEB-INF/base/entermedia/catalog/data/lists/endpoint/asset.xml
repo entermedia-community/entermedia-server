@@ -129,4 +129,19 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
           </samplerequest>
 </endpoint>  
 
+
+<endpoint id="assetdetails" name="Get Asset Details" url="/${applicationid}/services/module/asset/assetdetails" docsection="moduleasset" caption="Get Asset Details" httpmethod="POST" uploadfile="false"> 
+    <samplerequest><![CDATA[{  
+    "id":"101"
+     }]]>
+          </samplerequest>
+</endpoint>
+
+<endpoint id="deletedetails" name="Delete Asset" url="/${applicationid}/services/module/asset/deleteassets" docsection="moduleasset" caption="Delete Asset" httpmethod="POST" uploadfile="false"> 
+    <samplerequest><![CDATA[{  
+    "id":"101"
+     }]]>
+          </samplerequest>
+</endpoint>
+
 </endpoints>

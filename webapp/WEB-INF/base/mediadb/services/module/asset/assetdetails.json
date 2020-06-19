@@ -1,13 +1,12 @@
-#set($details = $searcher.getDetailsForView("asset/restassetdetails", $user))
+#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/restassetdetails", $user))
 {
   "response":
       {
         "status":#if( $asset )"ok" #else "notfound" #end,
-        "id":"$asset.id"
+        "id":"$!asset.id"
       }
-  ,
   #if($asset)
-  "data":#json($asset $details),
+  ,"data":#json($asset $details),
   	#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 	#if(!$prefix)
 		#set( $prefix = $context.siteRoot ) 
