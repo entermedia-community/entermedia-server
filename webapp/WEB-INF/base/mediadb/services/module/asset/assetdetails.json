@@ -1,0 +1,49 @@
+#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/restassetdetails", $user))
+{
+  "response":
+      {
+        "status":#if( $asset )"ok" #else "notfound" #end,
+        "id":"$!asset.id"
+      }
+  #if($asset)
+  ,"data":#json($asset $details),
+  	#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+	#if(!$prefix)
+		#set( $prefix = $context.siteRoot ) 
+	#end
+	#set( $cataloghome = $mediaarchive.getCatalogHome() )
+	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+	#if( $type == "default" )
+		#set ($ext = $hit.fileformat)
+		#set ($thumb = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
+	#else
+		#set( $thumb = "$prefix$cataloghome/downloads/preview/thumb/$asset.sourcePath/thumb.jpg")
+	#end
+	"thumb":"#esc($thumb)",
+	#if(  $type == "video" )
+		#set( $streams = $asset.getValues("hlsstreams"))
+		#if( $streams )
+			"preview": {
+			#foreach( $size in $streams)
+			#set( $preview = "$prefix$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/$size/video.m3u8")
+			"$size":"#esc($preview)",
+			#end
+			},
+		#else
+			#set( $preview = "$prefix$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/video.mp4")
+			"preview":"#esc($preview)",
+		#end
+	#else
+		#if( $type == "image" || $type == "document")
+			#set( $preview = "$prefix$home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
+		#elseif( $type == "audio" )
+			#set( $preview = "$prefix$home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
+		#end
+		"preview":"#esc($preview)",
+	#end
+	#set( $downloadlink = "$prefix$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+	"original":"#esc($downloadlink)"
+	#end
+}
+
+

@@ -7,6 +7,14 @@ $context.putPageValue("cdn",$cdnprefix)
 	<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 #end
 
+#if($asset.fileformat=="gif")
+	#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+	#if(!$cdnprefix )
+		#set($cdnprefix = $context.siteRoot )
+	#end
+	$context.putPageValue("cdnprefix", $cdnprefix)
+	$context.putPageValue("useoriginal", "true")
+#end
 
 $pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
 	
