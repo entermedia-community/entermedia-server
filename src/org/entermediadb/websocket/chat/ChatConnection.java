@@ -1,6 +1,7 @@
 package org.entermediadb.websocket.chat;
 
 import java.io.StringReader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +33,17 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected ChatServer fieldChatServer;
 	protected String fieldSessionID;
 	protected String fieldUserId;
+	protected Collection fieldNotifyTopics;
 	
+	public Collection getNotifyTopics()
+	{
+		return fieldNotifyTopics;
+	}
 	
+	public void setNotifyTopics(Collection inNotifyTopics)
+	{
+		fieldNotifyTopics = inNotifyTopics;
+	}
 	public String getUserId()
 	{
 		return fieldUserId;
