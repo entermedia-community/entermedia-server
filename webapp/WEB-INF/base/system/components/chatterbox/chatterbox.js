@@ -116,13 +116,16 @@ function connect() {
     $(window).on('unload beforeunload', function() {
           sessionStorage.closedLastTab = '1';
     });
-    
+
+	var app = jQuery("#application");
+	var userid = app.data("user");
     var protocol = location.protocol;
 
+    var url = "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID + "&userid=" + userid;
     if (protocol === "https:") {
-    	chatconnection = new WebSocket("wss://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID);	
+    	chatconnection = new WebSocket("wss://" +location.host + url );	
     } else{
-    	chatconnection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID );
+    	chatconnection = new WebSocket("ws://" +location.host  + url );
     }
     
     keepAlive(); 

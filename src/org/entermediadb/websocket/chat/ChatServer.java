@@ -16,6 +16,12 @@
  */
 package org.entermediadb.websocket.chat;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,13 +30,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import java.awt.*;
-import java.awt.TrayIcon.MessageType;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -139,15 +143,23 @@ public class ChatServer
 	public void broadcastMessage(JSONObject inMap)
 	{
 		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-		{
-			ChatConnection chatConnection = (ChatConnection) iterator.next();
-			chatConnection.sendMessage(inMap);
-			
-		}	
+		String collectionid = String.valueOf(inMap.get("collectionid"));
 		String catalogid = (String) inMap.get("catalogid");
+
 		if( catalogid != null)
 		{
+			if( collectionid != null)
+			{
+				ProjectManager projectmanager = getProjectManager(catalogid);
+				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				{
+					ChatConnection chatConnection = (ChatConnection) iterator.next();
+					if( projectmanager.canViewCollection(chatConnection.getUserId(),collectionid) )
+					{
+						chatConnection.sendMessage(inMap);
+					}
+				}	
+			}
 			ChatManager manager = getChatManager(catalogid);
 			getExecutorManager(catalogid).execute( new Runnable() {
 				@Override
@@ -284,6 +296,12 @@ public class ChatServer
 	public ChatManager getChatManager(String inCatalogId)
 	{
 		ChatManager queue = (ChatManager) getModuleManager().getBean(inCatalogId, "chatManager");
+		return queue;
+	}
+
+	public ProjectManager getProjectManager(String inCatalogId)
+	{
+		ProjectManager queue = (ProjectManager) getModuleManager().getBean(inCatalogId, "projectManager");
 		return queue;
 	}
 

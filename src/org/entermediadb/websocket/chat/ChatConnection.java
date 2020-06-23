@@ -125,18 +125,19 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //       }
 		log.info(session.getId());
 		Map props = endpointConfig.getUserProperties();
-		HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
-		User user = (User) current.getServletContext().getAttribute("user");
-		if( user != null)
-		{
-			setUserId(user.getId());
-		}
+		//HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
+		//String key  = (String)session.getRequestParameterMap().get("entermedia.key");
+		//This does not work?
+		//User user = (User) current.getServletContext().getAttribute("user");
+//		if( user != null)
+//		{
+//			setUserId(user.getId());
+//		}
 		String query = session.getQueryString();
 		Map params = getQueryMap(query);
 		
 		fieldSessionID = (String) params.get("sessionid");
-		
-		
+		fieldUserId = (String) params.get("userid"); //TODO: Replace with entermediakey
 		
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
 		if (modulemanager == null) {
@@ -215,7 +216,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				String userid = String.valueOf(map.get("userid"));
 				setUserId(userid);
 			}
-			else if("messagereceived".equals(command) || "notify".equals(command)){
+			else if("messagereceived".equals(command) || "notify".equals(command))
+			{
 			
 				String content = getChatServer().saveMessage(map);
 				/* add user info to JSON message object- mando 6/11/2020*/

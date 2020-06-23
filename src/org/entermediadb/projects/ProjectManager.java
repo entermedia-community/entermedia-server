@@ -25,6 +25,7 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
+import org.entermediadb.users.UserProfileManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -1375,14 +1376,20 @@ public class ProjectManager implements CatalogEnabled
 	public boolean canViewCollection(WebPageRequest inReq, LibraryCollection collection)
 	{
 		User user = inReq.getUser();
+		UserProfile profile = inReq.getUserProfile();
+		boolean found = canViewCollection(user, profile,collection);
+		return found;
+	}
+	public boolean canViewCollection(User inUser, UserProfile inProfile, LibraryCollection collection)
+	{
 		if (collection != null)
 		{
 			String ownerid = collection.get("owner");
-			if (ownerid != null && ownerid.equals(inReq.getUserName()))
+			if (ownerid != null && inUser != null && ownerid.equals(inUser.getUserName()))
 			{
 				return true;
 			}
-			if (user != null && user.isInGroup("administrators"))
+			if (inUser != null && inUser.isInGroup("administrators"))
 			{
 				// dont filter since its the admin
 				return true;
@@ -1400,10 +1407,9 @@ public class ProjectManager implements CatalogEnabled
 			Category root = collection.getCategory();
 			if (root != null)
 			{
-				UserProfile profile = inReq.getUserProfile();
-				if (profile != null && profile.getViewCategories() != null)
+				if (inProfile != null && inProfile.getViewCategories() != null)
 				{
-					for (Category cat : profile.getViewCategories())
+					for (Category cat : inProfile.getViewCategories())
 					{
 						if (root.hasParent(cat.getId()))
 						{
@@ -1413,29 +1419,8 @@ public class ProjectManager implements CatalogEnabled
 				}
 			}
 			return false;
-
-			// //Check the library permissions?
-			// Data library = getMediaArchive().getData("library",
-			// collection.get("library"));
-			// if( library != null)
-			// {
-			// Category cat = getRootCategory(getMediaArchive(), inCollectionid);
-			//
-			// UserProfile profile = inReq.getUserProfile();
-			// if( profile != null && profile.getViewCategories() != null)
-			// {
-			// for(String catid : profile.getViewCategories())
-			// {
-			// if( cat.hasParent(catid) )
-			// {
-			// return true;
-			// }
-			// }
-			// }
-			//
-			// }
 		}
-		if (user == null)
+		if (inUser == null)
 		{
 			return false;
 		}
@@ -1994,6 +1979,21 @@ public class ProjectManager implements CatalogEnabled
 			getMediaArchive().saveData("librarycollection", col);
 		}	
 		return col;
+	}
+
+	public UserProfileManager getUserProfileManager()
+	{
+		return (UserProfileManager)getMediaArchive().getBean("userProfileManager");
+	}
+	
+	public boolean canViewCollection(String inUserId, String inCollectionid)
+	{
+		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		User user = getMediaArchive().getUser(inUserId);
+		UserProfile profile = getUserProfileManager().getUserProfile(getMediaArchive().getCatalogId(), inUserId);
+		boolean found = canViewCollection(user, profile , collection);
+
+		return found;
 	}
 
 }

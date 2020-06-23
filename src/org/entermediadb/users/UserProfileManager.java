@@ -63,7 +63,10 @@ public class UserProfileManager
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-
+	public UserProfile getUserProfile(String inCatalogId, String inUserName)
+	{
+		return loadProfile((WebPageRequest)null, inCatalogId, (String) null, inUserName);
+	}
 	public UserProfile loadUserProfile(WebPageRequest inReq, String inCatalogId, String inUserName)
 	{
 		String appid = inReq.findValue("applicationid");
@@ -92,25 +95,29 @@ public class UserProfileManager
 		{
 			forcereload = Boolean.parseBoolean( inReq.findValue("reloadprofile"));
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-			if( userprofile == null)
+		}
+		if( userprofile == null)
+		{
+			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
+		}
+		if (forcereload == false && userprofile != null)
+		{
+			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
+			if( index.equals(userprofile.getSettingsGroupIndexId()) )
 			{
-				userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
-			}
-			if (forcereload == false && userprofile != null)
-			{
-				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-				if( index.equals(userprofile.getSettingsGroupIndexId()) )
+				if (inReq != null)
 				{
 					inReq.putPageValue("userprofile", userprofile);
-					return userprofile;
-				}	
-			}
-
-			if (inCatalogId == null)
-			{
-				return null;
-			}
+				}
+				return userprofile;
+			}	
 		}
+
+		if (inCatalogId == null)
+		{
+			return null;
+		}
+
 		Lock lock = null;
 		try
 		{
@@ -120,19 +127,27 @@ public class UserProfileManager
 
 			if( forcereload == false && userprofile != null && index.equals(userprofile.getSettingsGroupIndexId()) )
 			{
-				inReq.putPageValue("userprofile", userprofile);
+				if (inReq != null)
+				{
+					inReq.putPageValue("userprofile", userprofile);
+				}
 				return userprofile;
 			}
 			userprofile = loadUserProfile(mediaArchive, appid,inUserName);
-
-			inReq.putPageValue("userprofile", userprofile);
+			if (inReq != null)
+			{
+				inReq.putPageValue("userprofile", userprofile);
+			}
 			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 		}
 		catch( OpenEditException ex)
 		{
 			if( userprofile != null)
 			{
-				inReq.putPageValue("userprofile", userprofile); //Better to grab something than nothing
+				if (inReq != null)
+				{
+					inReq.putPageValue("userprofile", userprofile); //Better to grab something than nothing\
+				}
 				log.error("Could not lock user profile table " + inUserName);
 			}
 		}
@@ -276,21 +291,24 @@ public class UserProfileManager
 		{
 			userprofile.setModules(Collections.EMPTY_LIST);
 		}
-		String lastviewedapp = userprofile.get("lastviewedapp");
-		if(lastviewedapp == null || !appid.equals(lastviewedapp) )
+		if ( appid != null )
 		{
-			if( !appid.endsWith("mediadb"))
-			{
-				userprofile.setProperty("lastviewedapp", appid);
-				try
+				String lastviewedapp = userprofile.get("lastviewedapp");
+				if(lastviewedapp == null || !appid.equals(lastviewedapp) )
 				{
-					saveUserProfile(userprofile);
+					if( !appid.endsWith("mediadb"))
+					{
+						userprofile.setProperty("lastviewedapp", appid);
+						try
+						{
+							saveUserProfile(userprofile);
+						}
+						catch( Exception ex)
+						{
+							log.error("Error saving " + inUserName ,ex);
+						}
+					}	
 				}
-				catch( Exception ex)
-				{
-					log.error("Error saving " + inUserName ,ex);
-				}
-			}	
 		}
 		String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 		userprofile.setSettingsGroupIndexId(index);
