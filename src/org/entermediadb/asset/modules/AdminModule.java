@@ -42,6 +42,7 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
 import org.openedit.users.authenticate.PasswordGenerator;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
@@ -535,6 +536,10 @@ public class AdminModule extends BaseMediaModule
 			//					
 			//				}
 			//			}
+			
+			//LastLogin set
+			String time = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+			inUser.setProperty("lastlogin", String.valueOf(time));
 
 			inReq.removeSessionValue("userprofile");
 			//inReq.putSessionValue("user", inUser);
