@@ -13,6 +13,8 @@ function chatterbox() {
 	}	
 	
 	connect();
+	chatconnection.send(json);
+	
 	
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
@@ -166,21 +168,9 @@ function connect() {
         var user = app.data("user");
         if(message.user != user && message.topic != message.user){
         	play();
-        	
-        	
-        	createNotificationSubscription();
-        
-        	/*Desktop notifications - mando*/
-		    function showNotification() 
-			{
-				const notification = new Notification(message.name + " in " + message.topic, {
-					body: message.content,
-					icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
-				});
-				
-			}
 			
 			/*Check para permissions and ask.*/ 
+		    
 			if (Notification.permission === "granted") {
 				showNotification();
 			} else if (Notification.permission !== "denied") {
@@ -201,6 +191,17 @@ function connect() {
 }
 
 /*--------------Begin Functions List--------------*/
+
+/*Desktop notifications - mando*/
+function showNotification() 
+{
+	const notification = new Notification(message.name + " in " + message.topic, {
+		body: message.content,
+		icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
+	});
+	
+}
+
 function reloadAll(){
 
 	var app = jQuery("#application");
