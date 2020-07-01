@@ -748,7 +748,6 @@ public class MediaArchive implements CatalogEnabled
 		if (assetrootfolder != null && assetrootfolder.length() < inPage.getPath().length())
 		{
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
-
 			String orig = inPage.get("sourcepathhasfilename");
 			if (Boolean.parseBoolean(orig))
 			{
@@ -760,6 +759,12 @@ public class MediaArchive implements CatalogEnabled
 				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 				//sourcePath = sourcePath + "/";
 			}
+			if( inPage.getPath().endsWith("video.m3u8"))
+			{
+				//This could be cut off TODO: make generic somehow
+				sourcePath = sourcePath.substring(0,sourcePath.indexOf("video.m3u8") - 1);
+			}
+
 		}
 		return sourcePath;
 	}
@@ -2439,6 +2444,30 @@ public class MediaArchive implements CatalogEnabled
 
 		return finalroot;
 
+	}
+
+	public String asLinkToGenerated(Data inAsset, String inGeneratedName)
+	{
+		if (inAsset == null)
+		{
+			return null;
+		}
+		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		String sourcepath = inAsset.getSourcePath();
+
+		if (cdnprefix == null)
+		{
+			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+			cdnprefix = rutil.getSiteRoot();
+			if (cdnprefix.contains("localhost"))
+			{
+				cdnprefix = "";
+			}
+		}
+		String downloadroot = "/services/module/asset/downloads/";
+		String	finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName;
+		finalroot = URLUtilities.urlEscape(finalroot);
+		return finalroot;
 	}
 
 	public String asLinkToDownload(Data inAsset, Data inPreset)

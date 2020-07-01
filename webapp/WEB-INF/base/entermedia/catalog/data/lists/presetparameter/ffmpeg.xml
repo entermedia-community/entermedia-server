@@ -1,5 +1,10 @@
 <properties>
 
+
+  <parameter id="videohls1" parameterdata="videohls" value="360|720|1080" >hlsstreams</parameter> 
+  <parameter id="videohls2" parameterdata="videohls" value="true" >useoriginalasinput</parameter> 
+  <parameter id="videohls3" parameterdata="videohls" value="true" >streaming</parameter> 
+
   <parameter id="ffmpegpreviewmp41" parameterdata="ffmpegpreviewmp4" value="640" >prefwidth</parameter> 
   <parameter id="ffmpegpreviewmp42" parameterdata="ffmpegpreviewmp4" value="360" >prefheight</parameter> 
   <parameter id="ffmpegpreviewmp44" parameterdata="ffmpegpreviewmp4" value="libx264" >vcodec</parameter> 

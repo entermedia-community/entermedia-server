@@ -1,4 +1,5 @@
 <properties>
+  <preset id="videohls"  >Video HLS</preset>
   <preset id="ffmpegpreviewmp4"  >FFMMPEG 640x360 MP4</preset>
   <preset id="ffmpeg480p"  >FFMMPEG 480p MP4</preset>
   <preset id="ffmpeg720p"  >FFMMPEG 720p MP4</preset>

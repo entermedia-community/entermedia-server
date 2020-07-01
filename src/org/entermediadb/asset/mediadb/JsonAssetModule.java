@@ -31,6 +31,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
@@ -133,6 +134,13 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
+		String importpath = (String)vals.get("importpath");
+		if( importpath != null)
+		{
+			String filename = PathUtilities.extractFileName(importpath);
+			vals.put("filename", filename);
+		}
+		
 		Asset asset = null;
 		String sourcepath = null;
 		String id = null;
@@ -185,10 +193,9 @@ public class JsonAssetModule extends BaseJsonModule {
 					sourcepath, (String) vals.get("importfilename"), id);
 			
 		} 
-		else if ( vals.get("folderimportpath") != null)
+		else if ( importpath != null)
 		{
 			//Create a page for this path
-			String importpath = (String)vals.get("folderimportpath");
 			File checkfile = new File(importpath);
 			if( !checkfile.exists())
 			{
@@ -214,14 +221,20 @@ public class JsonAssetModule extends BaseJsonModule {
 			}
 			if( !foundmatch)
 			{
-				throw new OpenEditException("Could not find matching hotfolder for " + importpath);
+				ContentItem item = new FileItem(new File(importpath));
+				if( sourcepath.endsWith("/"))
+				{
+					sourcepath = sourcepath + PathUtilities.extractFileName(importpath);
+				}
+				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;  
+				destpath = destpath.replace("//", "/");
+
+				Page destitem = archive.getPageManager().getPage(destpath);
+				archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
+				
+				asset = importer.createAssetFromPage(archive, true, inReq.getUser(), destitem, id);
 			}
-			
 		}
-		
-		
-		
-		
 
 		if (asset == null && vals.get("localPath") != null) {
 			// log.info("HERE!!!");
@@ -257,6 +270,7 @@ public class JsonAssetModule extends BaseJsonModule {
 			remaining.remove("categorypath");
 			remaining.remove("category-exact");
 			remaining.remove("category");
+			remaining.remove("sourcepath");
 			populateJsonData(remaining, searcher, asset);
 			
 			Map categories = (Map)request.get("category");
@@ -514,7 +528,10 @@ public class JsonAssetModule extends BaseJsonModule {
 
 	}
 	
-	
+	/**
+	 * @deprecated only works within app. Use createAsset
+	 * @param inReq
+	 */
 
 	public void importAssetJson(WebPageRequest inReq) {
 		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");

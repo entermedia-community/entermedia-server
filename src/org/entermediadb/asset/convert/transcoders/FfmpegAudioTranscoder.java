@@ -23,8 +23,9 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-		if(!inStructions.isStreaming()) {
-		result.setOutput(inStructions.getOutputFile());
+		if(!inStructions.isStreaming()) 
+		{
+			result.setOutput(inStructions.getOutputFile());
 		}
 		Asset asset = inStructions.getAsset();
 		ContentItem input = inStructions.getInputFile();

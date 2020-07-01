@@ -56,12 +56,15 @@ public class ConvertInstructions
 		fieldOutputStream = inOutputStream;
 	}
 
+	/**
+	 */
 	public boolean isStreaming() {
-		return fieldStreaming;
+		String output = getProperty("streaming");
+		return Boolean.parseBoolean(output);
 	}
 
-	public void setStreaming(boolean fieldStreaming) {
-		this.fieldStreaming = fieldStreaming;
+	public void setStreaming(boolean inStreaming) {
+		setProperty("streaming",String.valueOf( inStreaming));
 	}
 
 	public ConvertInstructions copy(Data inNewPreset)
@@ -136,9 +139,6 @@ public class ConvertInstructions
 
 	public ContentItem findOutputFile()
 	{
-		if(isStreaming()) {
-			return null;
-		}
 		StringBuffer path = new StringBuffer();
 		//legacy for people who want to keep their images in the old location
 		String prefix = getProperty("pathprefix");
@@ -160,77 +160,70 @@ public class ConvertInstructions
 		{
 			path.append(postfix);
 		}
-	//		String cachefilename = get("cachefilename");
-	//		if( cachefilename != null)
-	//		{
-	//			path.append(cachefilename);
-	//			return getMediaArchive().getContent( path.toString() );
-	//		}
-	
-	//		if( "pdf".equals(getOutputExtension()) )
-	//		{
-	//			path.append("document");
-	//		}
-	//		else
-	//		{
 			
-			String output = getProperty("outputfile");
-			if( output != null && !output.isEmpty())
+		String output = getProperty("outputfile");
+		if( output != null && !output.isEmpty())
+		{
+			path.append( output );
+		}
+		else if( !isStreaming())
+		{
+			String rendertype = getOutputRenderType();
+			path.append( rendertype );				
+			if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
 			{
-				path.append( output );
-			}
-			else
-			{
-				String rendertype = getOutputRenderType();
-				path.append( rendertype );
-				
-				//path.append(getCacheName()); //part of filename
-		//		}
-				if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
+				Dimension maxScaledSize = getMaxScaledSize();
+				if (maxScaledSize != null) // If either is set then
 				{
-					Dimension maxScaledSize = getMaxScaledSize();
-					if (maxScaledSize != null) // If either is set then
-					{
-						path.append(Math.round(maxScaledSize.getWidth()));
-						path.append("x");
-						path.append(Math.round(maxScaledSize.getHeight()));
-					}
-					if (getPageNumber() > 1)
-					{
-						path.append("page");
-						path.append(getPageNumber());
-					}
+					path.append(Math.round(maxScaledSize.getWidth()));
+					path.append("x");
+					path.append(Math.round(maxScaledSize.getHeight()));
 				}
-				if(getProperty("timeoffset") != null)
+				if (getPageNumber() > 1)
 				{
-					path.append("offset");
-					path.append(getProperty("timeoffset"));
-				}
-				if(isWatermark())
-				{				
-					if( rendertype.equals("image") || rendertype.equals("document"))
-					{						
-						path.append("wm");
-					}
-				}
-				String frame = getProperty("frame");
-				if( frame != null)
-				{
-					path.append("frame" + frame );
-				}
-		
-				if(getProperty("colorspace") != null){
-					path.append(getProperty("colorspace"));
-				}
-				if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
-				{
-					path.append("cropped");
-				}
-				if (getOutputExtension() != null)
-				{
-					path.append("." + getOutputExtension());
+					path.append("page");
+					path.append(getPageNumber());
 				}
 			}
+			if(getProperty("timeoffset") != null)
+			{
+				path.append("offset");
+				path.append(getProperty("timeoffset"));
+			}
+			if(isWatermark())
+			{				
+				if( rendertype.equals("image") || rendertype.equals("document"))
+				{						
+					path.append("wm");
+				}
+			}
+			String frame = getProperty("frame");
+			if( frame != null)
+			{
+				path.append("frame" + frame );
+			}
+	
+			if(getProperty("colorspace") != null){
+				path.append(getProperty("colorspace"));
+			}
+			if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
+			{
+				path.append("cropped");
+			}
+			if (getOutputExtension() != null)
+			{
+				path.append("." + getOutputExtension());
+			}
+		}
+		else
+		{
+			String name = get("generatedoutputfile");
+			if( name == null)
+			{
+				name = "streaming.bin";
+			}
+			path.append(name);
+		}
 		return getMediaArchive().getContent( path.toString() );
 	}
 	

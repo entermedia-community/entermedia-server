@@ -9,6 +9,14 @@
 	
 	<cache-mapping url-pattern='*.gif'  expires='1h'/>
   	<cache-mapping url-pattern='*.jpg'       expires='25h'/>
+  	
+  	<session-config>
+        <cookie-config>
+		<http-only>true</http-only>
+		<secure>true</secure>
+		</cookie-config>
+	</session-config>
+  	
 
 	<filter>
 	  <filter-name>gzip</filter-name>

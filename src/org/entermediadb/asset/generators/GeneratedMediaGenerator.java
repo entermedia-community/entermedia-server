@@ -41,9 +41,16 @@ public class GeneratedMediaGenerator extends FileGenerator
 		String assetrootfolder = inPage.get("assetrootfolder");
 
 		path = inPage.getPath().substring(assetrootfolder.length());
-		path = PathUtilities.extractDirectoryPath(path);
-		// make sure your path tacks a filename on the end.
+		//Not used
+		String include = inPage.get("assetrootfolder");
 
+		// make sure your path tacks a filename on the end.
+		String hasexportname = inPage.get("exportnameinpath");
+		if( Boolean.parseBoolean( hasexportname) )
+		{
+			path = PathUtilities.extractDirectoryPath(path);
+		}
+		
 		// Try the contentitem first. If misssing try a fake page
 		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + path);
 		Page output = null;

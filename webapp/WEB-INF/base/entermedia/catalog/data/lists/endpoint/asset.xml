@@ -121,7 +121,7 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
 <endpoint id="importasset" name="Import Local File" url="/${applicationid}/services/module/asset/create" docsection="moduleasset" caption="Import new local file to DAM" httpmethod="POST" uploadfile="false"> 
     <samplerequest><![CDATA[{  
     "id":"101",  
-    "folderimportpath":"/mnt/Marketing/somefile.mov",
+    "importpath":"/mnt/Marketing/somefile.mov",
      "assettype": "article",     "keywords": ["animals","bird"],        
      "longcaption": "TEST",      "creator":{  
       	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   

@@ -49,7 +49,7 @@ public class ConvertGenerator extends FileGenerator
 		String catalogid = inReq.findValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");
-
+		
 		if (sourcePath == null)
 		{
 			sourcePath = archive.getSourcePathForPage(inReq);
@@ -60,13 +60,13 @@ public class ConvertGenerator extends FileGenerator
 		}
 		catch (UnsupportedEncodingException e)
 		{
-		throw new OpenEditException(e);
+			throw new OpenEditException(e);
 		}
 		String collectionid = inReq.findValue("collectionid");
-		if(collectionid != null) {
+		if(collectionid != null) 
+		{
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
 			log.info("Final Source Path: " + sourcePath);
-
 		}
 		
 //		outputype = outputype.toLowerCase();
@@ -116,7 +116,6 @@ public class ConvertGenerator extends FileGenerator
 					type = type.substring(0,3);
 				}
 				name = label + "." + type;
-				
 			}
 		}
 		String themeprefix = inReq.findValue("themeprefix");
