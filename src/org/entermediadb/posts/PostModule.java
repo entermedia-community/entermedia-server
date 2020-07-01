@@ -42,7 +42,7 @@ public class PostModule extends BaseMediaModule
 			String mode = inReq.getUser().get("oe_edit_mode");
 			if("postedit".equals(mode))
 			{
-				post = (PostData) searcher.createNewData();
+				post = (Data) searcher.createNewData();
 				//post.setValue("siteid", siteid);
 				post.setValue("sourcepath", sourcepath);
 				post.setValue("maincontent", "");
