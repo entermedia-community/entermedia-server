@@ -16,16 +16,20 @@
  */
 package org.entermediadb.websocket.chat;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import java.awt.*;
-import java.awt.TrayIcon.MessageType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +44,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.ExecutorManager;
+
 
 public class ChatServer
 {
@@ -125,46 +130,83 @@ public class ChatServer
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			String oldid = chatConnection.getSessionId();
-			if(oldid.equals(sessionid)) {
+			if (oldid.equals(sessionid))
+			{
 				toremove.add(chatConnection);
 			}
 		}
 
 		connections.removeAll(toremove);
-		
+
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
 
+	public int getTotalSessionsByUser()
+	{
+		
+		return getConnectedUsers().size();
+	}
+	
+	public List  getConnectedUsers() {
+		ArrayList users = new ArrayList();
+		
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+		{
+			ChatConnection connection = (ChatConnection) iterator.next();
+			if(connection.getUserId() != null && !users.contains(connection.getUserId()) ) {
+			users.add(connection.getUserId());
+			}
+		}
+		return users;
+	}
+	
+
+	public boolean isUserConnected(String inId)
+	{
+
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+		{
+			ChatConnection connection = (ChatConnection) iterator.next();
+			if (inId.equals(connection.getUserId()))
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
+
 	public void broadcastMessage(JSONObject inMap)
 	{
-		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
+		log.info("Sending " + inMap.toJSONString() + " to " + connections.size() + "Clients");
 		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
-			
-		}	
+
+		}
 		String catalogid = (String) inMap.get("catalogid");
-		if( catalogid != null)
+		if (catalogid != null)
 		{
 			ChatManager manager = getChatManager(catalogid);
-			getExecutorManager(catalogid).execute( new Runnable() {
+			getExecutorManager(catalogid).execute(new Runnable()
+			{
 				@Override
-				public void run() 
+				public void run()
 				{
 					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 					{
 						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						if( chatConnection.getUserId() != null)
+						if (chatConnection.getUserId() != null)
 						{
 							Object channelid = inMap.get("channel");
-							if( channelid != null)
+							if (channelid != null)
 							{
-								manager.updateChatTopicLastChecked(String.valueOf(channelid),  chatConnection.getUserId());
+								manager.updateChatTopicLastChecked(String.valueOf(channelid), chatConnection.getUserId());
 							}
-						}						
-					}	
+						}
+					}
 				}
 			});
 		}
@@ -177,29 +219,29 @@ public class ChatServer
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
 		Object channel = inMap.get("channel");
-		String userid = (String)inMap.get("user").toString();
-		
-		long now = System.currentTimeMillis() - 9*1000;
-		Data lastOne = chats.query().exact("channel",channel.toString()).after("date",new Date(now)).sort("dateDown").searchOne();
+		String userid = (String) inMap.get("user").toString();
+
+		long now = System.currentTimeMillis() - 9 * 1000;
+		Data lastOne = chats.query().exact("channel", channel.toString()).after("date", new Date(now)).sort("dateDown").searchOne();
 		Data chat = null;
-		String newmessage = String.valueOf( inMap.get("content") );
+		String newmessage = String.valueOf(inMap.get("content"));
 		/*
-		 * Check for previous user, if previous user is the same combine last message
-		 * content with new message.
+		 * Check for previous user, if previous user is the same combine last
+		 * message content with new message.
 		 */
-	
-		if(lastOne != null)
+
+		if (lastOne != null)
 		{
-			String lastUserId = lastOne.get("user"); 
-			if( lastUserId.contentEquals(userid))
+			String lastUserId = lastOne.get("user");
+			if (lastUserId.contentEquals(userid))
 			{
 				chat = lastOne;
 				String combined = lastOne.get("message");
 				combined = combined + "<br>" + newmessage;
-				lastOne.setValue("message",combined);
+				lastOne.setValue("message", combined);
 			}
 		}
-		if( chat == null)
+		if (chat == null)
 		{
 			chat = chats.createNewData();
 			chat.setValue("date", new Date());
@@ -207,74 +249,75 @@ public class ChatServer
 			chat.setValue("channel", channel);
 			chat.setValue("channeltype", inMap.get("channeltype"));
 			chat.setValue("message", newmessage);
-			
+
 		}
-		
+
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
-		
+
 		User user = archive.getUser(userid);
-		String assetid = (String)inMap.get("assetid");
-		if( assetid != null)
+		String assetid = (String) inMap.get("assetid");
+		if (assetid != null)
 		{
-			Asset asset = archive.getAsset( assetid);
-			if( asset != null && !asset.isPropertyTrue("haschat"))
+			Asset asset = archive.getAsset(assetid);
+			if (asset != null && !asset.isPropertyTrue("haschat"))
 			{
 				asset.setValue("haschat", true);
 				archive.saveAsset(asset);
 			}
-			archive.fireMediaEvent("assetchat", user,asset );
+			archive.fireMediaEvent("assetchat", user, asset);
 		}
 		else
 		{
 			Map params = new HashMap(chat.getProperties());
 			params.remove("user");
-			Object collectionid = inMap.get( "collectionid" );
-			if( collectionid != null)
+			Object collectionid = inMap.get("collectionid");
+			if (collectionid != null)
 			{
-				params.put("collectionid",String.valueOf(collectionid));
+				params.put("collectionid", String.valueOf(collectionid));
 			}
-			archive.fireGeneralEvent(user,"chatterbox","saved", params);
-			getExecutorManager(catalogid).execute( new Runnable() {
+			archive.fireGeneralEvent(user, "chatterbox", "saved", params);
+			getExecutorManager(catalogid).execute(new Runnable()
+			{
 				@Override
-				public void run() 
+				public void run()
 				{
 					ChatManager manager = getChatManager(catalogid);
 					Object channelid = channel;
-					if( channelid != null)
+					if (channelid != null)
 					{
-						manager.updateChatTopicLastModified(String.valueOf( channelid) );
+						manager.updateChatTopicLastModified(String.valueOf(channelid));
 					}
 				}
 			});
-			
+
 		}
 		return chat.get("message");
 	}
 
 	/* Desktop notificationsss */
-	
 
-    public void displayTray(String message) throws AWTException {
-        //Obtain only one instance of the SystemTray object
-        SystemTray tray = SystemTray.getSystemTray();
-        
-        String chatmessage = message;
-        //If the icon is a file
-        Image image = Toolkit.getDefaultToolkit().createImage("\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
-        //Alternative (if the icon is on the classpath):
-        //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
+	public void displayTray(String message) throws AWTException
+	{
+		//Obtain only one instance of the SystemTray object
+		SystemTray tray = SystemTray.getSystemTray();
 
-        TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
-        //Let the system resize the image if needed
-        trayIcon.setImageAutoSize(true);
-        //Set tooltip text for the tray icon
-        trayIcon.setToolTip("EntermediaNotifications");
-        tray.add(trayIcon);
+		String chatmessage = message;
+		//If the icon is a file
+		Image image = Toolkit.getDefaultToolkit().createImage("\"https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png\"");
+		//Alternative (if the icon is on the classpath):
+		//Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
 
-        trayIcon.displayMessage("EntermediaDB", chatmessage, MessageType.NONE);
-    }
-	
+		TrayIcon trayIcon = new TrayIcon(image, "Tray Demo");
+		//Let the system resize the image if needed
+		trayIcon.setImageAutoSize(true);
+		//Set tooltip text for the tray icon
+		trayIcon.setToolTip("EntermediaNotifications");
+		tray.add(trayIcon);
+
+		trayIcon.displayMessage("EntermediaDB", chatmessage, MessageType.NONE);
+	}
+
 	public ExecutorManager getExecutorManager(String inCatalogId)
 	{
 		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(inCatalogId, "executorManager");
@@ -287,7 +330,6 @@ public class ChatServer
 		return queue;
 	}
 
-			
 	public void approveAsset(JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
@@ -306,7 +348,7 @@ public class ChatServer
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("messagetype", "approved");
-		chat.setValue("channeltype","asset"); 
+		chat.setValue("channeltype", "asset");
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 
@@ -329,7 +371,7 @@ public class ChatServer
 		chat.setValue("message", inMap.get("content"));
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
-		chat.setValue("channeltype","asset"); 
+		chat.setValue("channeltype", "asset");
 		chat.setValue("messagetype", "rejected");
 		chat.setValue("collectionid", collectionid);
 		chats.saveData(chat);

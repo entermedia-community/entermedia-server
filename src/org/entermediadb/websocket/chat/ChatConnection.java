@@ -2,6 +2,8 @@ package org.entermediadb.websocket.chat;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +21,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 
@@ -34,6 +35,19 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected String fieldSessionID;
 	protected String fieldUserId;
 	protected Collection fieldNotifyTopics;
+	protected Date fieldConnectionTime;
+	public String getChannel()
+	{
+		return fieldChannel;
+	}
+
+	public void setChannel(String inChannel)
+	{
+		fieldChannel = inChannel;
+	}
+
+	protected String fieldChannel;
+	
 	
 	public Collection getNotifyTopics()
 	{
@@ -106,15 +120,18 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	@Override
 	public void onOpen(Session session, EndpointConfig endpointConfig) {
-		// javax.servlet.http.HttpSession http =
-		// (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
+		 javax.servlet.http.HttpSession http =
+		 (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
 
-//       Enumeration<String> enuma = http.getAttributeNames();
-//       while(enuma.hasMoreElements())
-//       {
-//           System.out.println(enuma.nextElement());
-//       }
-
+       Enumeration<String> enuma = http.getAttributeNames();
+       while(enuma.hasMoreElements())
+       {
+           String nextElement = enuma.nextElement();
+		System.out.println(nextElement);
+		System.out.println(http.getAttribute(nextElement));
+           
+       }
+       fieldConnectionTime = new Date();
 //        
 //       if( getModuleManager() == null)
 //       {
@@ -127,6 +144,12 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		Map props = endpointConfig.getUserProperties();
 		HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
 		User user = (User) current.getServletContext().getAttribute("user");
+		if(user == null) {
+			user = (User) http.getAttribute("chatuser");
+		}
+		if(user == null) {
+			user = (User) http.getAttribute("systemuser");
+		}
 		if( user != null)
 		{
 			setUserId(user.getId());
@@ -213,7 +236,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				//receiveLogin(map); 
 				//String userid = (String) map.get("userid");
 				String userid = String.valueOf(map.get("userid"));
+				if(!(userid == null || "null".equals(userid))) {
 				setUserId(userid);
+				}
 			}
 			else if("messagereceived".equals(command) || "notify".equals(command)){
 			
