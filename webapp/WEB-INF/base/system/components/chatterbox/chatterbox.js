@@ -167,12 +167,10 @@ function connect() {
         
         /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
         var user = app.data("user");
-        if(message.user != user && message.topic != message.user){
+        if(message.user != user){
+
         	play();
         	
-        	
-        	createNotificationSubscription();
-        
         	/*Desktop notifications - mando*/
 		    function showNotification() 
 			{

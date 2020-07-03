@@ -11,7 +11,6 @@
 #set( $mediadbappid = $mediaarchive.getMediaDbId() ) 
 #set( $root = "$!prefix$home$page.directory") #set( $catalogid = $asset.catalogId ) 
 
-<!-- <script id="videojs" src="$applink/components/javascript/videojs/7.2.4/video.js"></script> -->
 <script id="videojs" src="$applink/components/javascript/videojs/7.8.2/video.min.js"></script>
 <script id="videojs" src="$applink/components/javascript/videojs-contrib-hls/videojs-contrib-hls.min.js"></script>
 <script id="videojs" src="$applink/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.js"></script>
@@ -19,7 +18,7 @@
 <link href="$applink/components/javascript/videojs/7.8.2/video-js.min.css" rel="stylesheet">
 <link href="$applink/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.css" rel="stylesheet">
 
-<div id="playarea-$hit.id" class="player" style="background-color: #000;">
+<div id="playarea-$hit.id" class="player">
 	<video id="video-$hit.id" 
 			class="video-js vjs-default-skin vjs-big-play-centered" 
 			style="width: 100%!important; height: 100%!important;" 
