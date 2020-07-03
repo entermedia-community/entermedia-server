@@ -1,5 +1,6 @@
 <properties>
-  <property id="asset" showonnav="true" ordering="2"  href="/views/modules/assets/index.html">Assets</property>
+  <property id="asset" showonnav="true" ordering="2" 
+  showonsearch="true" href="/views/modules/assets/index.html">Assets</property>
      <data id="asseteditLog">
     <name><![CDATA[Asset Edit History]]></name>
   </data>

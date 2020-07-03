@@ -2296,7 +2296,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if (propid.equals("description")) //All tables need this?
+				if (propid.equals("description")) //This field must be defined by user first. or it will continue above
 				{
 					Object value = inData.getValue(propid);
 					if (value == null)

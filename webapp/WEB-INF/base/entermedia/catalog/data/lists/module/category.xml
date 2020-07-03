@@ -1,5 +1,10 @@
 <properties>
-  <property id="category"  href="/views/modules/category/index.html">Categories</property>
+  
+  <property id="category" 
+  
+  showonsearch="true"
+  
+   href="/views/modules/category/index.html">Categories</property>
     
   
 </properties>

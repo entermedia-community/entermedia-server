@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="name" index="true" stored="true" editable="true"  > 
+  <property id="name" index="true" stored="true" editable="true" keyword="true"   > 
     <name> 
       <language id="de"><![CDATA[Kollektion]]></language>  
       <language id="en"><![CDATA[Collection Name]]></language>  
@@ -100,7 +100,7 @@
       <language id="fr"><![CDATA[Type de projet]]></language> 
     </name> 
   </property>  
-  <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html"   >Project Description 
+  <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html"  keyword="true"  > 
     <name> 
       <language id="de"><![CDATA[Projektbeschreibung]]></language>  
       <language id="en"><![CDATA[Project Description]]></language>  
@@ -176,5 +176,15 @@
       <language id="fr"><![CDATA[Remarques]]></language> 
     </name> 
   </property>  
+
+ <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
+    <name> 
+      <language id="de"><![CDATA[All Fields]]></language>  
+      <language id="en"><![CDATA[All Fields]]></language>  
+      <language id="es"><![CDATA[Todos]]></language>  
+      <language id="fr"><![CDATA[Tous les champs]]></language> 
+    </name> 
+  </property>  
+ 
  
 </properties>

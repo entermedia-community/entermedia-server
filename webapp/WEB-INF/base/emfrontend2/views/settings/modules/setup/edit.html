@@ -40,6 +40,17 @@
 					</div>
 				</td>
 			</tr>
+	        <tr id="inputarea_name">
+				<td class="emdatafield">
+					[[Enable Search]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="showonsearch" />
+					<div class="form-check">
+					<input name="showonsearch.value" class="form-check-input " type="checkbox" #if( $!data.showonsearch == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
 			<tr id="inputarea_name">
 				<td class="emdatafield">
 					[[Tab Order]]
