@@ -8,7 +8,7 @@ $context.putPageValue("thumbsize", "mediumplus" )
 #foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
      <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 200px; ">
-     	#if ($type == "asset" || $type == "project" || $type == "task" || $type == "people")
+     	#if ($type == "asset" || $type == "project" || $type == "task" || $type == "people" || $type =="librarycollection" || $type=="category")
      		#set($includetype = $type)
      	#else
      		#set($includetype = "default")
