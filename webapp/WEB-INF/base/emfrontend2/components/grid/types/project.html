@@ -1,5 +1,6 @@
-<div class="emgrid-content">
-        	 <h3><i class="fas fa-tasks"></i> $hit.getSearchHit().getType()</h3>
+#set($type = $hit.getSearchHit().getType())
+<div class="emgrid-content emgrid-type-$type">
+        	 <h3><i class="fas fa-tasks"></i> $type</h3>
         	 <h4>$hit.name</h4>
 	        <div class="emgridcell-description">
 	        	$!hit.longcaption
