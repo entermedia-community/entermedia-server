@@ -16,16 +16,40 @@
 	border-radius: .40rem;
 	box-shadow:1px 1px 3px 0 rgba(0,0,0,0.2);
 	visibility: hidden;
+	background-color: #fff;
 }
 .emgrid-content {
 	position:relative;
 	height: 100%;
 }
 .emgridcell h3 {
-	text-align:center;
-	margin:0 0 10px;
+	
+	margin:0 0 10px;;
 	font-size:1.1rem;
-	padding:5px 0;
+	padding:8px 0 8px 8px;
+	
+	background-color: #ddd; /*Default*/
+}
+
+.emgrid-type-asset h3 {
+	background-color: #94B86E;
+	color:#fff;
+}
+.emgrid-type-asset-video h3 {
+	background-color: #94280E;
+}
+
+.emgrid-type-librarycollection h3 {
+	background-color: #6DADBD;
+	color:#fff;
+}
+.emgrid-type-category h3 {
+	background-color: #FFB848;
+	color:#fff;
+}
+.emgrid-type-project h3 {
+	background-color: #E25856;
+	color:#fff;
 }
 
 .emgridcell h4 {
