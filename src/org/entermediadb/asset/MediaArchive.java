@@ -1801,7 +1801,15 @@ public class MediaArchive implements CatalogEnabled
 		catch (NumberFormatException e)
 		{
 		} //not handled
-		int minutes = allSeconds > 60 ? allSeconds / 60 : 0;
+		int minutes = 0;
+		if( allSeconds == 60)
+		{
+			minutes = 1;
+		}
+		else
+		{
+			minutes = allSeconds > 60 ? allSeconds / 60 : 0;
+		}
 		int seconds = allSeconds % 60;
 		String min = minutes > 0 ? String.valueOf(minutes) : "";
 		String sec = seconds >= 10 ? String.valueOf(seconds) : seconds > 0 ? "0" + String.valueOf(seconds) : "00";

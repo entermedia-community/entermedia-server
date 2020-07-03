@@ -2104,7 +2104,6 @@ String viewbase = null;
 				filters.flagUserFilters(hits);
 			}
 		}	
-
 	}
 
 	public UserFilters loadUserFilters(WebPageRequest inReq)

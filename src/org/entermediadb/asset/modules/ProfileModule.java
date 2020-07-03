@@ -386,12 +386,12 @@ public class ProfileModule extends MediaArchiveModule
 	}
 	public void saveProperties(WebPageRequest inReq)
 	{
-		String[] fields = inReq.getRequestParameters("field");
+		String[] fields = inReq.getRequestParameters("propertyfield");
 		UserProfile prof = loadUserProfile(inReq);
 
 		if (fields == null)
 		{
-			String field = inReq.getCurrentAction().getChildValue("field");
+			String field = inReq.getCurrentAction().getChildValue("propertyfield");
 			String value = inReq.getCurrentAction().getChildValue(field + ".value");
 			String oldval = prof.get(field);
 			if( oldval == value || (oldval != null && oldval.equals(value)) )
@@ -401,9 +401,9 @@ public class ProfileModule extends MediaArchiveModule
 
 			if( field != null && value != null)
 			{
-				inReq.setRequestParameter("field", field );
+				inReq.setRequestParameter("propertyfield", field );
 				inReq.setRequestParameter(field + ".value", value );
-				fields = inReq.getRequestParameters("field");
+				fields = inReq.getRequestParameters("propertyfield");
 			}
 			else
 			{

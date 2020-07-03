@@ -47,7 +47,7 @@ saveProfileProperty = function(property, value,onsuccess) {
 	
 	jQuery.ajax(
 			{
-				url:  apphome + "/components/userprofile/saveprofileproperty.html?field=" + property + "&" + property + ".value=" + value,
+				url:  apphome + "/components/userprofile/saveprofileproperty.html?propertyfield=" + property + "&" + property + ".value=" + value,
 				success: onsuccess
 			}
 		);

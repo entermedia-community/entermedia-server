@@ -1,1 +1,5 @@
+#if(!$val && $detail.rendermask && $data)
+	#set($val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $data.properties))
+#end
+
 $!mediaarchive.formatMinutesAndSeconds($val)
