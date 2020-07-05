@@ -131,15 +131,15 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 	public void onOpen(Session session, EndpointConfig endpointConfig)
 	{
 		javax.servlet.http.HttpSession http = (javax.servlet.http.HttpSession) session.getUserProperties().get("javax.servlet.http.HttpSession");
-
-		Enumeration<String> enuma = http.getAttributeNames();
-		while (enuma.hasMoreElements())
-		{
-			String nextElement = enuma.nextElement();
-			System.out.println(nextElement);
-			System.out.println(http.getAttribute(nextElement));
-
-		}
+//
+//		Enumeration<String> enuma = http.getAttributeNames();
+//		while (enuma.hasMoreElements())
+//		{
+//			String nextElement = enuma.nextElement();
+//			System.out.println(nextElement);
+//			System.out.println(http.getAttribute(nextElement));
+//
+//		}
 		fieldConnectionTime = new Date();
 		//        
 		//       if( getModuleManager() == null)
