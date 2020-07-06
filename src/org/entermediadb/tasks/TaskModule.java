@@ -553,7 +553,9 @@ public class TaskModule extends BaseMediaModule
 	
 	public void addGoalToCategory(WebPageRequest inReq)
 	{
+		String completedby = inReq.getRequestParameter("completedby");
 		String goalid = inReq.getRequestParameter("goalid");
+		String comment = inReq.getRequestParameter("comment");
 		if( goalid== null)
 		{
 			goalid = inReq.getRequestParameter("id");
@@ -588,12 +590,21 @@ public class TaskModule extends BaseMediaModule
 		task.setValue("projectgoal",goal.getId());
 		task.setValue("collectionid",collectionid);
 		task.setValue("projectdepartment",categoryid);
-		
+		/* Added completedby and comment to goal saving */
+		task.setValue("completedby", completedby );
 		task.setValue("projectdepartmentparents",cat.getParentCategories());
 		
 		task.setValue("creationdate",new Date());
 		
 		task.setName(cat.getName()); //TODO: Support comments
+		
+		/* Set staff member on ticket to staff member from task */
+		Collection found = goal.getValues("userlikes");
+		if( !found.contains(completedby))
+		{
+			found.add(completedby);
+			goal.setValue("userlikes",found );
+		}
 		
 		List goalids = (List)cat.getValues("countdata");
 		if( goalids == null)
@@ -617,7 +628,7 @@ public class TaskModule extends BaseMediaModule
 		archive.getCategorySearcher().saveData(cat);
 		//Add to array on category
 		tasksearcher.saveData(task);
-		addComment(archive, task.getId(), inReq.getUser(),"0",null);
+		addComment(archive, task.getId(), inReq.getUser(),"0",comment);
 		
 		if( goal.getValue("projectstatus") == null)
 		{
