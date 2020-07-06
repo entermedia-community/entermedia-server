@@ -105,6 +105,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					//Cant PULL asset status
 					log.error("Could not download generated " + filestatus + " " + path);
 					//throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+					return;
 				}
 				//Save to local file
 				log.info("Saving :" + endpath + " URL:" + path);
