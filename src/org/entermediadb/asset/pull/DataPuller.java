@@ -104,7 +104,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					//Cant PULL asset status
 					log.error("Could not download generated " + filestatus + " " + path);
-					throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+					//throw new OpenEditException("Could not download generated " + filestatus + " " + path);
 				}
 				//Save to local file
 				log.info("Saving :" + endpath + " URL:" + path);
@@ -648,13 +648,6 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		return toupload;
 	}
 
-	/**
-	 * Should this be in realtime? Maybe we should have as database journal to
-	 * track local edits and push them out slowly...yes!
-	 * 
-	 * @param inType
-	 * @param inAssetIds
-	 */
 	protected void syncUpLocalDataChanges(MediaArchive inArchive, Data inRemoteNode, Date inSince, HitTracker inLocalchanges, HttpSharedConnection inConnection)
 	{
 		//Push up any and all data changes with details on the files it has.
