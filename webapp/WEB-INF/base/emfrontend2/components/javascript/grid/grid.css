@@ -23,10 +23,9 @@
 	height: 100%;
 }
 .emgridcell h3 {
-	
 	margin:0 0 10px;;
 	font-size:1.1rem;
-	padding:8px 0 8px 8px;
+	padding:8px 0 8px 12px;
 	
 	background-color: #ddd; /*Default*/
 }
@@ -36,15 +35,18 @@
 	color:#fff;
 }
 .emgrid-type-asset-video h3 {
-	background-color: #94280E;
+	background-color: #E51E25;
+}
+.emgrid-type-asset-document h3 {
+	background-color: #164EA1;
 }
 
 .emgrid-type-librarycollection h3 {
-	background-color: #6DADBD;
+	background-color: #16A7BA;
 	color:#fff;
 }
 .emgrid-type-category h3 {
-	background-color: #FFB848;
+	background-color: #37383A;
 	color:#fff;
 }
 .emgrid-type-project h3 {
@@ -97,3 +99,5 @@
 }
 .emgridcell-keywords .badge {font-size:0.75rem;}
 
+
+.gridresultscount { padding:5px 0; font-size:.9rem;}
