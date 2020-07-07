@@ -52,15 +52,18 @@ public class ConvertGenerator extends FileGenerator
 		
 		if (sourcePath == null)
 		{
-			sourcePath = archive.getSourcePathForPage(inReq);
+			sourcePath = archive.getSourcePathForPage(inReq); //This already is decoded
 		}
-		try
+		else
 		{
-			sourcePath = URLDecoder.decode(sourcePath, "UTF-8");
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			throw new OpenEditException(e);
+			try
+			{
+				sourcePath = URLDecoder.decode(sourcePath, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				throw new OpenEditException(e);
+			}
 		}
 		String collectionid = inReq.findValue("collectionid");
 		if(collectionid != null) 

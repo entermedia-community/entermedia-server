@@ -74,7 +74,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			long size = inAsset.getLong("filesize");
 			if (item.getLength() != size)
 			{
-				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + inArchive.asLinkToOriginal(inAsset);
+				finalurl = URLUtilities.urlEscape(finalurl);
 				Map params = new HashMap();
 				finalurl = finalurl.concat("?entermedia.key=" + node.get("entermediakey"));
 
@@ -128,7 +129,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		try
 		{
 			String url = inMasterData.get("baseurl");
-			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+			String finalurl = url + inArchive.asLinkToOriginal(inAsset);
+			finalurl = URLUtilities.urlEscape(finalurl);
 			Map params = new HashMap();
 			HttpResponse genfile = connection.sharedPost(finalurl, params);
 			return genfile.getEntity().getContent();
