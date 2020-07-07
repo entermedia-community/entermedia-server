@@ -1,15 +1,15 @@
+<div id="resultsdiv">
 <div  class="emgridcontainer">
 <div class="gridresultscount">
 $modulehits.size() [[Results Found]]
 </div>
-<div id="galleryimg" class="emgrid" 
-	data-colwidth="220">
+<div id="galleryimg" class="emgrid" data-colwidth="220">
 
 $context.putPageValue("thumbsize", "mediumplus" )
 
 #foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
-     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 200px; ">
+     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 80px; ">
      	#if ($type == "asset" || $type == "project" || $type == "task" || $type == "people" || $type =="librarycollection" || $type=="category")
      		#set($includetype = $type)
      	#else
@@ -22,4 +22,5 @@ $context.putPageValue("thumbsize", "mediumplus" )
 </div>
             
 <div class="clearfix"></div>
+</div>
 </div>

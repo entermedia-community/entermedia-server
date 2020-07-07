@@ -13,21 +13,31 @@
 	overflow: hidden;
 	position:absolute;
 	border:1px solid #ccc;
-	border-radius: .40rem;
+	border-radius: .20rem;
 	box-shadow:1px 1px 3px 0 rgba(0,0,0,0.2);
 	visibility: hidden;
 	background-color: #fff;
 }
+.emgridcell-category {
+	border:none;
+	box-shadow: none;
+	visibility: hidden;
+	background-color: transparent;
+}
+
 .emgrid-content {
 	position:relative;
 	height: 100%;
 }
 .emgridcell h3 {
-	margin:0 0 10px;;
-	font-size:1.1rem;
-	padding:8px 0 8px 12px;
+	margin:0;
+	font-size:0.9rem;
+	padding:6px 0 8px 6px;
 	
 	background-color: #ddd; /*Default*/
+	overflow: hidden;
+	white-space:nowrap; 
+  text-overflow:ellipsis;
 }
 
 .emgrid-type-asset h3 {
@@ -53,7 +63,39 @@
 	background-color: #E25856;
 	color:#fff;
 }
+.emgrid-type-category {
+	color:#333666;
+}
+.emgrid-type-category .gridcategory-icon {
+	text-align: center;
+	padding:10px;
+	font-size:4.5rem;
+	line-height: 4rem;
+	
+}
+.gridcategory-name {
+	text-align: center;
+	font-size:1rem;
+		overflow: hidden;
+	white-space:nowrap; 
+  text-overflow:ellipsis;
+}
+.emgrid-type-category:hover {
+	color:#000
+}
 
+.griditem-tools {
+	position:absolute;
+	top:35px;
+	right:5px;
+	display:none;
+}
+.emgrid-content:hover  .griditem-tools {
+	display: block;
+	}
+.emgrid-type-category .griditem-tools {
+	top:0;
+}
 .emgridcell h4 {
 	font-size: 0.9rem;
 	font-weight: bold;
@@ -76,9 +118,15 @@
 	}
 .emgridcell-assetimage {
 	text-align: center;
-	padding:0 8px;
+	padding:0;
+	min-height: 100px;
 	}
-
+.emgridcell-assetimage .videoplay-button {
+	font-size:4rem;
+}
+.emgriddcell-withkeywords {
+	min-height: 135px;
+}
 .emgridcell-actions {
 	height: 24px;
 	padding-right:12px;
@@ -94,10 +142,15 @@
 }
 
 .emgridcell-keywords {
-	padding:5px;
+	position:absolute;
+	bottom:0px;
+	padding:10px 10px 5px;
 	
 }
-.emgridcell-keywords .badge {font-size:0.75rem;}
+.emgridcell-keywords .badge {font-size:0.75rem; background-color: #e9eae7;}
+
+
+.emrowselected .resultsselection {display:block;}
 
 
 .gridresultscount { padding:5px 0; font-size:.9rem;}

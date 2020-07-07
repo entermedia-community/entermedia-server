@@ -1,6 +1,6 @@
 #set($type = $hit.getSearchHit().getType())
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-<div class="emgrid-content emgrid-type-$type emgrid-type-asset-$rendertype">        	 
+<div class="emgrid-content emgrid-type-$type emgrid-type-asset-$rendertype resultsassetcontainer">        	 
         	 
         	 <h3>
         	 #if($rendertype == "image")
@@ -16,16 +16,20 @@
         	 #else
         	 <i class="fas fa-file"></i>
         	 #end
-        	 </h3>
-	        <div class="emgridcell-assetimage" data-width="$!{hit.width}" data-height="$!{hit.height}">
-	        $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+        	 $!hit.name
+        	 </h3> 
+	        <div class="emgridcell-assetimage #if ($hit.keywords) emgriddcell-withkeywords #end" data-width="$!{hit.width}" data-height="$!{hit.height}">
+		        $context.putPageValue("type", $rendertype)
+		        #if ($rendertype == "video")
+		        	#set($rendertype="videothumbnail")
+		        	
+		        #end
+		        $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	        </div>
-	        <div class="emgridcell-name">
-	        <strong>$!hit.name</strong>
-	        </div>
+
 	        $pages.include("$componenthome/grid/tags.html",$context)
-	        <div class="emgridcell-actions">
 	        
-	         <i class="far fa-heart"></i>
+	        <div class="griditem-tools resultsselection">
+	        <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
 	        </div>
 </div>
