@@ -123,6 +123,7 @@ $(document).ready(function()
 						$("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
+		        div.removeClass("uploaddragenter");
 		    }
 		);
 	
@@ -158,6 +159,9 @@ $(document).ready(function()
 				$("#up-files-list-completed").prepend(completed);
 				$("#completed-uploads").show();
 	        	 
+				$("#upload-start").hide();
+				$("#upload-completed").show();
+				
 	             return true;
 	        	 //Loop over all the files. add rows
 	        	 //alert("start");
