@@ -36,6 +36,7 @@ import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
+import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -2563,6 +2564,11 @@ public class MediaArchive implements CatalogEnabled
 	public Group getGroup(String inGid)
 	{
 		return getUserManager().getGroup(inGid);
+	}
+	public UserNotifyManager getUserNotifyManager()
+	{
+		UserNotifyManager manager = (UserNotifyManager) getModuleManager().getBean(getCatalogId(), "userNotifyManager");
+		return manager;
 	}
 
 }

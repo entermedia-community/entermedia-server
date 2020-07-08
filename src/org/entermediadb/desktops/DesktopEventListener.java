@@ -5,6 +5,7 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
+import org.json.simple.JSONObject;
 
 public interface DesktopEventListener
 {
@@ -22,7 +23,8 @@ public interface DesktopEventListener
 
 	public void openAsset(MediaArchive inArchive, Asset inAsset);
 	
-	
 	public void sendCommand(MediaArchive inArchive, Map inCommandData);
+
+	public Map sendCommandAndWait(MediaArchive inArchive, JSONObject inCommand);
 
 }
