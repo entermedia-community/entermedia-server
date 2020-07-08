@@ -99,15 +99,21 @@ $(document).ready(function()
 		    function(e) {
 		        e.preventDefault();
 		        e.stopPropagation();
+		        div.addClass("uploaddragenter");
 		    }
 		)
 		div.on( 'dragenter',
 		    function(e) {
 		        e.preventDefault();
 		        e.stopPropagation();
+		        div.addClass("uploaddragenter");
 		    }
 		)
-		
+		div.on( 'dragleave',
+		    function(e) {
+		        div.removeClass("uploaddragenter");
+		    }
+		)
 		div.on( 'drop',
 		    function(e){
 		        if(e.originalEvent.dataTransfer){

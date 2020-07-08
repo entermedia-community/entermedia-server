@@ -4,7 +4,9 @@
 
 #set( $title = $context.getRequestParameter("dialogtitle"))
 
-<div class="modal-dialog modal-lg" id="searcharea" >
+#set( $customdialogclass = $context.getRequestParameter("customdialogclass"))
+
+<div class="modal-dialog modal-lg #if($customdialogclass) modal-$customdialogclass #end" id="searcharea" >
 	<div class="modal-content">
 	
 	<div class="modal-header">

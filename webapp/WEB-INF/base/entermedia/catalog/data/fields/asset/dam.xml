@@ -679,9 +679,7 @@
       <language id="en"><![CDATA[Timeline]]></language>  
     </name> 
   </property>  
-  
-  
-  
+
   <property id="audiobitrate"  index="true" internalfield="false" editable="true" isbadge="false" required="false"  multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
     <name>
       <language id="en"><![CDATA[Audio Bit Rate]]></language>
