@@ -2,6 +2,7 @@ package org.entermediadb.websocket.mediaboat;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,12 +39,22 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	protected StringEncryption fieldStringEncrytion;
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCurrentConnectionId;
+	protected long transactionid;
+	protected Map fieldTransactions = null; 
+	protected Object lockObject = new Object();
 	
 	public String getCurrentConnectionId()
 	{
 		return fieldCurrentConnectionId;
 	}
-
+	protected Map getTransactions()
+	{
+		if (fieldTransactions == null)
+		{
+			fieldTransactions = new HashMap(); //expire this sometimes
+		}
+		return fieldTransactions;
+	}
 	public void setCurrentConnectionId(String inCurrentConnectionId)
 	{
 		fieldCurrentConnectionId = inCurrentConnectionId;
@@ -207,6 +218,20 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			JSONObject map = (JSONObject)getJSONParser().parse(new StringReader(message));
 			String command = (String)map.get("command");
 			getDesktop().setLastCommand(command);
+			
+			String transactionid = (String)map.get("transactionid");
+			if( transactionid != null)
+			{
+				getTransactions().put(transactionid,map);
+				log.info("Upload saved transaction " + transactionid);
+				synchronized (lockObject)
+				{
+					log.info("notify.before " + transactionid);
+					lockObject.notify();					
+					log.info("notify.done " + transactionid);
+				}
+			}
+			
 			if ("login".equals(command)) //Return all the annotation on this asset
 			{
 				receiveLogin(map);
@@ -226,8 +251,6 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 				String foldername = (String)map.get("foldername");
 				getDesktop().addEditedCollection(foldername);
 			}
-			
-			
 		}
 		catch (Exception e)
 		{
@@ -259,7 +282,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		//authenticated
 		String keyorpasswordentered = (String)map.get("entermedia.key");
 		User user = (User)getSearcherManager().getData("system", "user", username);
-		if( user == null)
+		if( user == null) //TODO: Authenticate key (with expiration)
 		{
 			JSONObject authenticated = new JSONObject();
 			authenticated.put("command", "authenticatefail");
@@ -306,7 +329,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		try
 		{
 			String command = (String)json.get("command");
-			json.put("connectionid",getCurrentConnectionId());
+			//json.put("connectionid",getCurrentConnectionId());
 			remoteEndpointBasic.sendText(json.toJSONString());
 			log.info("sent " + command + " to  " + getCurrentConnectionId() );
 		}
@@ -419,7 +442,53 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		sendMessage(command);
 		
 	}
+	public Map sendCommandAndWait(MediaArchive inArchive, JSONObject inCommand)
+	{
+		try
+		{
+			String command = (String)inCommand.get("command");
+			transactionid++;
+			String thistransaction = System.currentTimeMillis() + "_" + String.valueOf(transactionid);
+			inCommand.put("transactionid",thistransaction);
+			remoteEndpointBasic.sendText(inCommand.toJSONString());
+			//log.info("sent " + command + " to  " + getCurrentConnectionId() );
+			
+			long waittill= System.currentTimeMillis() + 60000; //1 minute max
+			Map response = null;
+			synchronized (lockObject)
+			{
+				do
+				{
+					response = getTransctionsById(thistransaction);   //TODO use notify with timeout
+					if( response == null)
+					{
+						long wait = waittill - System.currentTimeMillis();
+						if( wait > 0)
+						{
+							log.info("wait " + thistransaction);
+							lockObject.wait(wait);	
+							log.info("continue from wait" + thistransaction);
+						}
+					}
+					log.info( (response != null) + " and " + (System.currentTimeMillis() < waittill) );
+				} while (response == null && System.currentTimeMillis() < waittill);
+			}	
+			if( response == null)
+			{
+				log.error("Never got back a transaction " + thistransaction);
+			}
+			return response;
+		}
+		catch (Exception e)
+		{
+			log.error(e);
+		}
+		return null;
+	}
 
-	
-
+	protected Map getTransctionsById(String inThistransaction)
+	{
+		Map res =  (Map)getTransactions().get(inThistransaction);
+		return res;
+	}
 }

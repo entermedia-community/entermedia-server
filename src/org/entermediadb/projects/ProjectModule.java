@@ -1483,4 +1483,18 @@ Server ProjectModule.uploadFile
 			archive.getCacheManager().put("domaincache",domain,library);
 		}
 	}
+	
+	public void uploadRemoteFolderCache(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		
+		Map params = inReq.getJsonRequest();
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		String rootfolder = (String)params.get("rootfolder");
+		Map folderdetails = (Map)params.get("folderdetails");
+		desktop.addLocalFileCache(archive, inReq.getUserName(), rootfolder, folderdetails);
+		
+		//TODO: See error
+	}
 }

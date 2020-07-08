@@ -1,13 +1,18 @@
 #if ($canviewmap)
-#set( $key = $mediaarchive.getCatalogSettingValue("google-maps-key"))
-#if( $key )
-#if($detail)
-<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=$key&callback=${detail.id}_map" > </script>
-#else
-<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=$key" > </script>
-#end
-#else
-<script type="text/javascript"   src="https://maps.google.com/maps/api/js?sensor=false" > </script>
-#end
-<script type="text/javascript"  src="$apphome/components/javascript/jquery.ui.map.full.min.js">   </script>
-#end
+
+##are we on an asset or search results of map?
+#set($resultview = $userprofile.get("resultview"))
+#if( $resultview == "map")
+	#set( $key = $mediaarchive.getCatalogSettingValue("google-maps-key"))
+	#if( $key )
+	#if($detail)
+	<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=$key&callback=${detail.id}_map" > </script>
+	#else
+	<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=$key" > </script>
+	#end
+	#else
+	<script type="text/javascript"   src="https://maps.google.com/maps/api/js?sensor=false" > </script>
+	#end
+	<script type="text/javascript"  src="$apphome/components/javascript/jquery.ui.map.full.min.js">   </script>
+	#end
+#end	

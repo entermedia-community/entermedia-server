@@ -2,25 +2,41 @@ package org.entermediadb.desktops;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
+import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.json.simple.JSONObject;
-import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.cache.CacheManager;
 
 public class Desktop
 {
+	private static final Log log = LogFactory.getLog(Desktop.class);
 	protected DesktopEventListener fieldListener;
 	protected boolean fieldBusy;
+	CacheManager fieldLocalFileCache;
 	
+	public CacheManager getLocalFileCache()
+	{
+		return fieldLocalFileCache;
+	}
+
+	public void setLocalFileCache(CacheManager inLocalFileCache)
+	{
+		fieldLocalFileCache = inLocalFileCache;
+	}
+
 	public boolean isBusy()
 	{
 		return fieldBusy;
@@ -231,4 +247,58 @@ public class Desktop
 		getDesktopListener().sendCommand(inArchive, inCommand);
 		
 	}
+	
+	//Put this in a tree model. Have it reload the tree until its rendered entirely
+	public Map listLocalFiles(MediaArchive inArchive, String inAbsPath)
+	{	
+		Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
+		if( files == Collections.EMPTY_MAP)
+		{
+			return null;
+		}
+		else
+		{
+			return files;
+		}
+	}
+	public Map getLocalFiles(MediaArchive inArchive, String inAbsPath)
+	{	
+		Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
+		if( files == null)
+		{
+			files= Collections.EMPTY_MAP;
+			getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, files);
+			//put temporary list in the cache
+			JSONObject command = new JSONObject();
+			command.put("command", "addlocalfilestocache");
+			command.put("fullpath", inAbsPath);
+			command.put("mediadbid", inArchive.getMediaDbId());
+			command.put("targetdiv", "localfiles");
+			Map response = getDesktopListener().sendCommandAndWait(inArchive, command);
+			if( response != null)
+			{
+				files  = (Map)response.get("folderdetails");
+			}	
+			getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, files);
+		}
+		if( files == Collections.EMPTY_MAP)
+		{
+			return null;
+		}
+		else
+		{
+			return files;
+		}
+	}
+
+	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)
+	{	
+		getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, inFiles);
+
+//		JSONObject command = new JSONObject();
+//		command.put("command", "uireload");
+//		command.put("reloaddiv", "localfiles");
+//		inArchive.getUserNotifyManager().sentNotifications(inUserId, command);
+		
+	}	
 }

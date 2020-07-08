@@ -2222,6 +2222,7 @@
  	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="localFileCache"><ref bean="timedCacheManager"/></property>
  	</bean>
 
 	<bean id="ChatModule" class="org.entermediadb.websocket.chat.ChatModule" >
@@ -2303,6 +2304,17 @@
 	</bean>
 
 	<bean id="libraryTreeModel" class="org.entermediadb.projects.LibraryWebTreeModel"  scope="prototype">
+	</bean>
+
+	<bean id="userNotifyManager" class="org.entermediadb.websocket.usernotify.UserNotifyManager" >
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+		<property name="stringEncryption">
+			<ref bean="stringEncryption" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		
 	</bean>
 
 		
