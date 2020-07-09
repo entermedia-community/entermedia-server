@@ -99,15 +99,21 @@ $(document).ready(function()
 		    function(e) {
 		        e.preventDefault();
 		        e.stopPropagation();
+		        div.addClass("uploaddragenter");
 		    }
 		)
 		div.on( 'dragenter',
 		    function(e) {
 		        e.preventDefault();
 		        e.stopPropagation();
+		        div.addClass("uploaddragenter");
 		    }
 		)
-		
+		div.on( 'dragleave',
+		    function(e) {
+		        div.removeClass("uploaddragenter");
+		    }
+		)
 		div.on( 'drop',
 		    function(e){
 		        if(e.originalEvent.dataTransfer){
@@ -117,6 +123,7 @@ $(document).ready(function()
 						$("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
+		        div.removeClass("uploaddragenter");
 		    }
 		);
 	
@@ -152,6 +159,9 @@ $(document).ready(function()
 				$("#up-files-list-completed").prepend(completed);
 				$("#completed-uploads").show();
 	        	 
+				$("#upload-start").hide();
+				$("#upload-completed").show();
+				
 	             return true;
 	        	 //Loop over all the files. add rows
 	        	 //alert("start");
