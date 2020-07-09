@@ -883,6 +883,10 @@ public class BaseCategory extends BaseData implements Category
 	{
 		return fieldParentCategory != null;
 	}
+	public boolean hasLoadedChildren()
+	{
+		return fieldChildren != null;
+	}
 	
 	public boolean hasCountData()
 	{

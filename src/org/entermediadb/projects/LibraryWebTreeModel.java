@@ -12,12 +12,12 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
-import org.entermediadb.asset.links.CatalogWebTreeModel;
+import org.entermediadb.asset.links.CategoryWebTreeModel;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.QueryBuilder;
 
-public class LibraryWebTreeModel extends CatalogWebTreeModel implements CatalogEnabled
+public class LibraryWebTreeModel extends CategoryWebTreeModel implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(LibraryWebTreeModel.class);
 	

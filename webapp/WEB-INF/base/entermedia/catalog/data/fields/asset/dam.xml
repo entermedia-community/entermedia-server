@@ -449,7 +449,6 @@
     </name> 
     <property id="cliplabel" index="true" keyword="true" stored="true" editable="true" >
     <name> 
-    
       <language id="en"><![CDATA[Clip Label]]></language>  
     </name> 
     </property>
@@ -458,6 +457,39 @@
   </property>
   
 
+  <property id="faceprofiles" index="true" keyword="false" stored="true" editable="true" datatype="nested" > 
+     <name> 
+      <language id="en"><![CDATA[Face Profiles]]></language>  
+    </name> 
+    
+    <property id="facedata" index="true" indextype="not_analyzed" keyword="true" stored="true" editable="true" >
+    <name> 
+      <language id="en"><![CDATA[Face Data]]></language>  
+    </name> 
+    </property>
+	<property id="faceprofilegroup" index="true" stored="true" viewtype="multiselect" editable="true" datatype="list" type="list"> 
+	    <name> 
+	      <language id="en"><![CDATA[Face Profile Group]]></language>  
+	    </name> 
+	</property>  
+  </property>
+
+  <property id="facescancomplete" internalfield="false" datatype="boolean" index="true" stored="true" editable="true" filter="true"  type="boolean">
+    <name> 
+      <language id="en"><![CDATA[Face Detect Complete]]></language>  
+    </name> 
+  </property>  
+  <property id="facehasprofile" internalfield="false" datatype="boolean" index="true" stored="true" editable="true" filter="true"  type="boolean">
+    <name> 
+      <language id="en"><![CDATA[Face Has Face]]></language>  
+    </name> 
+  </property>  
+
+  <property id="facematchcomplete" internalfield="false" datatype="boolean" index="true" stored="true" editable="true" filter="true"  type="boolean">
+    <name> 
+      <language id="en"><![CDATA[Face Match Complete]]></language>  
+    </name> 
+  </property>  
   
 
   

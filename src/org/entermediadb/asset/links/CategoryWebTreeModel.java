@@ -20,9 +20,9 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.util.RequestUtils;
 
-public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
+public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnabled
 {
-	private static final Log log = LogFactory.getLog(CatalogWebTreeModel.class);
+	private static final Log log = LogFactory.getLog(CategoryWebTreeModel.class);
 
 	protected UserProfile fieldUserProfile;
 	protected Set fieldHiddenCatalogs;
@@ -85,7 +85,7 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 		fieldPageManager = inPageManager;
 	}
 
-	public CatalogWebTreeModel()
+	public CategoryWebTreeModel()
 	{
 		setRoot(null);
 	}

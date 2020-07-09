@@ -793,8 +793,25 @@ public class BaseElasticSearcher extends BaseSearcher
 		//CHECK TIMECODE
 		if (detail.isDataType("objectarray"))
 		{
-
 			jsonproperties = jsonproperties.field("type", "object");
+			//"type": "nested",
+			
+			jsonproperties.startObject("properties");
+			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail child = (PropertyDetail) iterator.next();
+				jsonproperties = jsonproperties.startObject(child.getId());
+				configureDetail(child, jsonproperties);
+				jsonproperties = jsonproperties.endObject();
+			}
+			jsonproperties.endObject();
+
+			return;
+
+		}
+		else if (detail.isDataType("nested"))
+		{
+			jsonproperties = jsonproperties.field("type", "nested");
 			jsonproperties.startObject("properties");
 			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
 			{
@@ -1873,6 +1890,10 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			catch (Throwable ex)
 			{
+				if( ex instanceof OpenEditException)
+				{
+					throw (OpenEditException)ex;
+				}
 				throw new OpenEditException(ex);
 
 			}
@@ -2338,7 +2359,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
 
-				if (value != null && detail.isDataType("objectarray"))
+				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested") ))
 				{
 					if (!(value instanceof Collection))
 					{
@@ -2960,7 +2981,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 					}
 				}
-				else if (det.isDataType("objectarray"))
+				else if (det.isDataType("objectarray") || det.isDataType("nested"))
 				{
 					Object values = inData.getValue(det.getId());
 					if (values != null && values instanceof String)
@@ -3174,7 +3195,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(type);
 			if (detail != null)
 			{
-				if (detail.isDataType("objectarray"))
+				if (detail.isDataType("objectarray") || detail.isDataType("nested"))
 				{
 					Object childdata = inData.get(type);
 					if (childdata instanceof List)

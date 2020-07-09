@@ -263,42 +263,43 @@ public class Desktop
 	}
 	public Map getLocalFiles(MediaArchive inArchive, String inAbsPath)
 	{	
-		Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
-		if( files == null)
-		{
-			files= Collections.EMPTY_MAP;
-			getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, files);
+		//Map files = (Map) getLocalFileCache().get("desktopcache" + getUserId(),inAbsPath);
 			//put temporary list in the cache
 			JSONObject command = new JSONObject();
 			command.put("command", "addlocalfilestocache");
 			command.put("fullpath", inAbsPath);
 			command.put("mediadbid", inArchive.getMediaDbId());
-			command.put("targetdiv", "localfiles");
 			Map response = getDesktopListener().sendCommandAndWait(inArchive, command);
+			Map files = null;
 			if( response != null)
 			{
 				files  = (Map)response.get("folderdetails");
 			}	
-			getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, files);
-		}
-		if( files == Collections.EMPTY_MAP)
-		{
-			return null;
-		}
-		else
-		{
 			return files;
-		}
 	}
 
-	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)
-	{	
-		getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, inFiles);
+	public Map getTopLevelFolders(MediaArchive inMediaArchive)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "gettoplevelfolders");
+		command.put("mediadbid", inMediaArchive.getMediaDbId());
+		Map response = getDesktopListener().sendCommandAndWait(inMediaArchive, command);
+		Map files = null;
+		if( response != null)
+		{
+			files  = (Map)response.get("folderdetails");
+		}	
+		return files;
+	}
 
-//		JSONObject command = new JSONObject();
-//		command.put("command", "uireload");
-//		command.put("reloaddiv", "localfiles");
-//		inArchive.getUserNotifyManager().sentNotifications(inUserId, command);
-		
-	}	
+//	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)
+//	{	
+//		getLocalFileCache().put("desktopcache" + getUserId(),inAbsPath, inFiles);
+//
+////		JSONObject command = new JSONObject();
+////		command.put("command", "uireload");
+////		command.put("reloaddiv", "localfiles");
+////		inArchive.getUserNotifyManager().sentNotifications(inUserId, command);
+//		
+//	}	
 }

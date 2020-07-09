@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true"  >Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" keyword="true"   > 
+    <name> 
+      <language id="de"><![CDATA[Kollektion]]></language>  
+      <language id="en"><![CDATA[Collection Name]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="creationdate" index="true" stored="true" editable="true"  type="date" datatype="date" >
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Created Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[Date de création]]></language> 
+    </name> 
+  </property>  
+   <property id="collectionimage" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="collections/${id}">Image</property>  
+
+  <property id="automatictagging"  index="true" datatype="boolean"  editable="true" >
+    <name> 
+      <language id="en"><![CDATA[Automaticaly Tagged]]></language>  
+    </name> 
+  </property>  
+
+  <property id="notes" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
+
+ <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">
+    <name> 
+      <language id="de"><![CDATA[All Fields]]></language>  
+      <language id="en"><![CDATA[All Fields]]></language>  
+      <language id="es"><![CDATA[Todos]]></language>  
+      <language id="fr"><![CDATA[Tous les champs]]></language> 
+    </name> 
+  </property>  
+  <property id="keywords" viewtype="tageditor" keyword="true" defaultoperation="andgroup" index="true" stored="true" 
+  		editable="true" indextype="analyzed" analyzer="tags" filter="true"   sortable="true">Tags 
+    <name> 
+      <language id="de"><![CDATA[Tags]]></language>  
+      <language id="en"><![CDATA[Tags]]></language>  
+      <language id="es"><![CDATA[Etiquetas]]></language>  
+      <language id="fr"><![CDATA[Tags]]></language> 
+    </name> 
+  </property>  
+ 
+ 
+</properties>

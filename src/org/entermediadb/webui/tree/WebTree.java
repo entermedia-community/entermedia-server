@@ -172,11 +172,6 @@ public class WebTree implements Serializable
 	public void setTreeRenderer(TreeRenderer inTreeRenderer)
 	{
 		fieldTreeRenderer = inTreeRenderer;
-		if ( fieldModel != null && inTreeRenderer != null)
-		{
-    		getTreeRenderer().expandNode( getModel().getRoot() );
-		}
-
 	}
 
 	public String toString()

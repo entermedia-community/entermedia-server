@@ -211,6 +211,8 @@ curl -XDELETE 'http://localhost:9200/assets_catalog/lock/AWSutPnzs12lHoNKThY8'
 
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AXM1Gsk7XgDCG44Jhh6d' | python -mjson.tool
+
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
 
 curl -XPOST localhost:9200/system/_forcemerge?max_num_segments=5

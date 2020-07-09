@@ -39,21 +39,20 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	protected StringEncryption fieldStringEncrytion;
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCurrentConnectionId;
-	protected long transactionid;
-	protected Map fieldTransactions = null; 
-	protected Object lockObject = new Object();
+	protected TransactionQueue fieldTransactionQueue;
 	
+	public TransactionQueue getTransactionQueue()
+	{
+		if (fieldTransactionQueue == null)
+		{
+			fieldTransactionQueue = new TransactionQueue();
+		}
+
+		return fieldTransactionQueue;
+	}
 	public String getCurrentConnectionId()
 	{
 		return fieldCurrentConnectionId;
-	}
-	protected Map getTransactions()
-	{
-		if (fieldTransactions == null)
-		{
-			fieldTransactions = new HashMap(); //expire this sometimes
-		}
-		return fieldTransactions;
 	}
 	public void setCurrentConnectionId(String inCurrentConnectionId)
 	{
@@ -219,19 +218,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			String command = (String)map.get("command");
 			getDesktop().setLastCommand(command);
 			
-			String transactionid = (String)map.get("transactionid");
-			if( transactionid != null)
-			{
-				getTransactions().put(transactionid,map);
-				log.info("Upload saved transaction " + transactionid);
-				synchronized (lockObject)
-				{
-					log.info("notify.before " + transactionid);
-					lockObject.notify();					
-					log.info("notify.done " + transactionid);
-				}
-			}
-			
+			getTransactionQueue().onMessage(map);
 			if ("login".equals(command)) //Return all the annotation on this asset
 			{
 				receiveLogin(map);
@@ -444,51 +431,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 	public Map sendCommandAndWait(MediaArchive inArchive, JSONObject inCommand)
 	{
-		try
-		{
-			String command = (String)inCommand.get("command");
-			transactionid++;
-			String thistransaction = System.currentTimeMillis() + "_" + String.valueOf(transactionid);
-			inCommand.put("transactionid",thistransaction);
-			remoteEndpointBasic.sendText(inCommand.toJSONString());
-			//log.info("sent " + command + " to  " + getCurrentConnectionId() );
-			
-			long waittill= System.currentTimeMillis() + 60000; //1 minute max
-			Map response = null;
-			synchronized (lockObject)
-			{
-				do
-				{
-					response = getTransctionsById(thistransaction);   //TODO use notify with timeout
-					if( response == null)
-					{
-						long wait = waittill - System.currentTimeMillis();
-						if( wait > 0)
-						{
-							log.info("wait " + thistransaction);
-							lockObject.wait(wait);	
-							log.info("continue from wait" + thistransaction);
-						}
-					}
-					log.info( (response != null) + " and " + (System.currentTimeMillis() < waittill) );
-				} while (response == null && System.currentTimeMillis() < waittill);
-			}	
-			if( response == null)
-			{
-				log.error("Never got back a transaction " + thistransaction);
-			}
-			return response;
-		}
-		catch (Exception e)
-		{
-			log.error(e);
-		}
-		return null;
-	}
-
-	protected Map getTransctionsById(String inThistransaction)
-	{
-		Map res =  (Map)getTransactions().get(inThistransaction);
-		return res;
+		Map map = getTransactionQueue().sendCommandAndWait(remoteEndpointBasic, inCommand);
+		return map;
 	}
 }

@@ -11,7 +11,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.links.CatalogTreeRenderer;
-import org.entermediadb.asset.links.CatalogWebTreeModel;
+import org.entermediadb.asset.links.CategoryWebTreeModel;
 import org.entermediadb.links.Link;
 import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
@@ -109,7 +109,7 @@ public class CategoryModule extends BaseMediaModule
 			{
 				treeModel = "categoryTreeModel";
 			}
-			CatalogWebTreeModel model = (CatalogWebTreeModel)getModuleManager().getBean(archive.getCatalogId(), treeModel, false);
+			CategoryWebTreeModel model = (CategoryWebTreeModel)getModuleManager().getBean(archive.getCatalogId(), treeModel, false);
 			model.setMediaArchive(archive);
 			model.setCatalogId(archive.getCatalogId());
 			model.setRoot(main);
@@ -128,6 +128,13 @@ public class CategoryModule extends BaseMediaModule
 			String postfix = inRequest.findValue( "url-postfix" );
 			renderer.setUrlPostfix(postfix );
 			webTree.setTreeRenderer(renderer);
+
+			String autoexpand = inRequest.findValue( "autoexpand" );
+			if( autoexpand == null || Boolean.parseBoolean(autoexpand) )
+			{
+				renderer.expandNode( webTree.getModel().getRoot() );
+			}
+
 			String home = (String) inRequest.getPageValue( "home" );
 			renderer.setHome(home);
 			String iconHome = (String) inRequest.findValue( "iconhome" );

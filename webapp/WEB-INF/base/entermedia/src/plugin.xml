@@ -19,7 +19,7 @@
 		</property>
 		<property name="autoLoginProviders">
 			<list>
-				<ref bean="autoLoginWithCookie" />
+				<ref 	bean="autoLoginWithCookie" />
 				<ref bean="autoLoginByHeader" />
 				<ref bean="autoLoginLti" />
 				<ref bean="autoLoginByToken" />
@@ -2300,10 +2300,13 @@
 	<bean id="PayPalModule" class="org.entermediadb.modules.paypal.PayPalModule">
 	</bean>
 
-	<bean id="categoryTreeModel" class="org.entermediadb.asset.links.CatalogWebTreeModel"  scope="prototype">
+	<bean id="categoryTreeModel" class="org.entermediadb.asset.links.CategoryWebTreeModel"  scope="prototype">
 	</bean>
 
 	<bean id="libraryTreeModel" class="org.entermediadb.projects.LibraryWebTreeModel"  scope="prototype">
+	</bean>
+
+	<bean id="desktopTreeModel" class="org.entermediadb.desktops.DesktopWebTreeModel"  scope="prototype">
 	</bean>
 
 	<bean id="userNotifyManager" class="org.entermediadb.websocket.usernotify.UserNotifyManager" >
@@ -2316,6 +2319,14 @@
 		</property>
 		
 	</bean>
+
+	<bean id="faceDetectManager"
+		class="org.entermediadb.asset.facedetect.FaceDetectManager" scope="prototype">
+		<property name="exec">
+			<ref bean="exec" />
+		</property>
+	</bean>
+
 
 		
 </beans>
