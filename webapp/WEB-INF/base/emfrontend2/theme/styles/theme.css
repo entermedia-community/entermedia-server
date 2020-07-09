@@ -4940,14 +4940,14 @@ a.collectionbox.favorite
     position: relative;
     -ms-flex: 0 1 auto;
     flex: 0 1 auto;
-    width: 30px;
-    height: 20px;
+    width: 35px;
+    height: 25px;
     margin-right: 3px;
     margin-left: 3px;
     text-indent: 0px;
     text-align:center;
-    background-color: rgba(255,255,255,.4);
-	cursor:auto;
+    background-color: rgba(255,255,255,.3);
+	cursor:pointer;
 }
 .carousel-indicators .arrowenabled
 {
