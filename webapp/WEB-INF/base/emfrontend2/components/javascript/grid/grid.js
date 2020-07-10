@@ -10,7 +10,7 @@ $(document).ready(function()
             //get colum width divide by div width
             var colcount = grid.width() / colwidth;
             colcount = Math.floor(colcount);
-           console.log( grid.width());
+           
             //adjust the colwidth to spread out the extra space
             var remainder = grid.width() - (colcount * colwidth);
             colwidth = colwidth + (remainder/colcount);
