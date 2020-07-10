@@ -1,7 +1,9 @@
 <page>
-	<property name="eventname">Face Scan</property>	
+	<property name="eventname">Facial Recognition</property>	
 	<path-action name="Script.run" alltypes="true" >
 		<script>/${catalogid}/events/scripts/asset/facescan.groovy</script>
 	</path-action>
+	<property name="enabled">true</property>
+	<property name="period">5m</property>
 
 </page>

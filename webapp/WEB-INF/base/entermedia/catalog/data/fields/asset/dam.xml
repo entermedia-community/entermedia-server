@@ -467,7 +467,7 @@
       <language id="en"><![CDATA[Face Data]]></language>  
     </name> 
     </property>
-	<property id="faceprofilegroup" index="true" stored="true" viewtype="multiselect" editable="true" datatype="list" type="list"> 
+	<property id="faceprofilegroup" index="true" indextype="not_analyzed" stored="true" viewtype="multiselect" editable="true" datatype="list" type="list"> 
 	    <name> 
 	      <language id="en"><![CDATA[Face Profile Group]]></language>  
 	    </name> 

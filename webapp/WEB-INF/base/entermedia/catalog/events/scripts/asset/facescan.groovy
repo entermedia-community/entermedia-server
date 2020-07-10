@@ -9,7 +9,7 @@ public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
-	HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("assettype","photo").search();
+	HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").exact("assettype","photo").search();
 	hits.enableBulkOperations();
 		
 	int saved = 0;
@@ -34,6 +34,11 @@ public void init()
 	archive.saveAssets(tosave);
 	saved = saved +  tosave.size();
 	log.info("saved " + saved);
+	
+	if( saved > 1)
+	{
+		archive.fireMediaEvent("facecompare", context.getUser());
+	}
 	
 }
 

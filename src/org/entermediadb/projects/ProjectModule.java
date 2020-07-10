@@ -1483,7 +1483,7 @@ Server ProjectModule.uploadFile
 			archive.getCacheManager().put("domaincache",domain,library);
 		}
 	}
-	
+	/*
 	public void uploadRemoteFolderCache(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1497,4 +1497,5 @@ Server ProjectModule.uploadFile
 		
 		//TODO: See error
 	}
+	*/
 }

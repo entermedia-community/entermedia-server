@@ -1057,6 +1057,27 @@ public class BaseElasticSearcher extends BaseSearcher
 			or.mustNot(find);
 			return or;
 		}
+		else if( inDetail.getId().contains("."))
+		{
+			String[] ids = inDetail.getId().split("\\.");
+			find = QueryBuilders.nestedQuery(ids[0], find);
+			/*
+			  "nested": {
+	            "path": "faceprofiles",
+	             "query": {
+                     "bool": {
+                        "must": [
+                           {
+                              "term": {
+                                 "faceprofiles.faceprofilegroup":"AXM5Gn6zvm9C1jY32Xy5"
+                              }
+                           }
+                        ]
+                     }
+                  }
+          		}
+			 */
+		}
 
 		return find;
 	}
