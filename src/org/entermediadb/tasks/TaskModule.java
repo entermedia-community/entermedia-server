@@ -439,7 +439,7 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-		QueryBuilder query = tasksearcher.query().exact("projectgoal", goal.getId());
+		QueryBuilder query = tasksearcher.query().match("projectgoal", goal.getId());
 		String onlyopen = inReq.getRequestParameter("onlyopen");
 		if( Boolean.parseBoolean(onlyopen))
 		{
@@ -559,6 +559,12 @@ public class TaskModule extends BaseMediaModule
 		if( goalid== null)
 		{
 			goalid = inReq.getRequestParameter("id");
+		}
+		if( goalid== null) {
+			Data savedgoal = inReq.getData();
+			if (savedgoal != null) {
+				goalid = savedgoal.getId();
+			}
 		}
 		if( goalid == null)
 		{
