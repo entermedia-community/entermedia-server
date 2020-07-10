@@ -1,0 +1,9 @@
+<page>
+    <page-action name="DataEditModule.loadData" >
+			<pageval>faceprofilegroup</pageval>
+			
+			<searchtype>faceprofilegroup</searchtype>
+    </page-action>
+    
+    <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+</page>
