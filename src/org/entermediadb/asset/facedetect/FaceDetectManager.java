@@ -191,7 +191,7 @@ public class FaceDetectManager
 	
 	public void combineGroups()
 	{
-		//TODO: Go over all the groups and see if any two have common asset profiles. Then put them into one of the groups. If the remaining has no more hits delete it
+		//TODO: Go over all the groups and see if any two have common asset profiles. Then put them into one of the groups. If the remaining has no more hits delete it	
 	}
 	
 	protected boolean checkHit(MediaArchive inArchive, Asset inAsset, Data hit, List<ValuesMap> pictures, List<ValuesMap> profiles) throws ParseException

@@ -9,7 +9,7 @@ public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
-	HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").exact("assettype","photo").search();
+	HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").search();
 	hits.enableBulkOperations();
 		
 	int saved = 0;
