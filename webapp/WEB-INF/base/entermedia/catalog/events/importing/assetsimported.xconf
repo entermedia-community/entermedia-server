@@ -1,7 +1,10 @@
 <page>
 	<property name="eventname">Assets Imported</property>	
 	<path-action name="AssetImportModule.assetsImported" />
+	
+	<!-- TODO We should create an importscomplete event for dealing with a group of assets... completing together -->
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsimportedcustom.html"  allowduplicates="true"/>
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html"  allowduplicates="true"/>	
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/facescan.html"  allowduplicates="true"/>	
 </page>

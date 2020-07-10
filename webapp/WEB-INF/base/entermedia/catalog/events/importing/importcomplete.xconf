@@ -1,11 +1,12 @@
 <page>
 	<property name="eventname">Import Complete</property>	
-	
+		
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
 	
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/archivefiles.html" allowduplicates="true" />
-		<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/applygooglevision.html"  allowduplicates="true"/>
-			<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/applygoogletranscode.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/applygooglevision.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/applygoogletranscode.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/facescan.html"  allowduplicates="true"/>
 	
 	
 </page>

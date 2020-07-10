@@ -321,7 +321,7 @@ public class PresetCreator
 					inArchive.saveAsset(target, null);
 					inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
 				}
-				inArchive.fireSharedMediaEvent("importing/importcomplete");
+				inArchive.fireSharedMediaEvent("importing/importcomplete"); //TODO: add importscomplete for when we have saved a number of items
 			}
 		}
 	}

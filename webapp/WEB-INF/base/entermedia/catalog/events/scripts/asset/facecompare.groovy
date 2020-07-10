@@ -24,7 +24,7 @@ public void init()
 	int found = 0;
 	for(Data hit in hits)
 	{
-		Asset asset = archive.getAssetSearcher().loadData(hit);
+		Asset asset = archive.getAsset(hit.getId());//make sure we have fresh profilegroup data
 		if( manager.matchFaces(archive, asset) )
 		{
 			log.info("Got a match on " + asset.getName());
