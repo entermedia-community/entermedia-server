@@ -1509,10 +1509,9 @@ public class TaskModule extends BaseMediaModule
 		}
 		inReq.putPageValue("chat",message);
 	}
-	public void autoIdTickets()
-	{
-		
-	}
+	
+	
+	
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
 		long ago = System.currentTimeMillis() - 24*60*60*1000;
