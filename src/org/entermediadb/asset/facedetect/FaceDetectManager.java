@@ -103,7 +103,7 @@ public class FaceDetectManager
 			long start = System.currentTimeMillis();
 			//getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
 			getRunningProfileProcess();
-			String jsonresults = getRunningProfileProcess().runExecStream(input.getAbsolutePath());
+			String jsonresults = getRunningProfileProcess().runExecStream(input.getAbsolutePath(),60000);
 			long end = System.currentTimeMillis();
 			double total = (end - start) / 1000.0;
 			log.info("faceprofile Done in:"+total);
@@ -222,10 +222,11 @@ public class FaceDetectManager
 		
 			String finaljson = "{" + picturetocompare.toString() + " , " + profilesjson + "}";
 			
-			String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",6000); //EXTRA new line To account for new lines inside json
+			String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
 			if( jsonresults == null)
 			{
-				jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",6000); //EXTRA new line To account for new lines inside json
+				//TODO: Find out why the first ones always fail
+				jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
 				if( jsonresults == null)
 				{				
 					throw new OpenEditException("Match should not be null for " + finaljson);
