@@ -284,12 +284,12 @@ public class Desktop
 		command.put("command", "gettoplevelfolders");
 		command.put("mediadbid", inMediaArchive.getMediaDbId());
 		Map response = getDesktopListener().sendCommandAndWait(inMediaArchive, command);
-		Map files = null;
-		if( response != null)
-		{
-			files  = (Map)response.get("folderdetails");
-		}	
-		return files;
+//		Map files = null;
+//		if( response != null)
+//		{
+//			files  = (Map)response.get("childfolders");
+//		}	
+		return response;
 	}
 
 //	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)

@@ -61,7 +61,7 @@ public class DesktopWebTreeModel  extends CategoryWebTreeModel implements Catalo
 				Map filesandfolders = null;
 				if( inCat == getRoot() )
 				{
-					filesandfolders = desktop.getTopLevelFolders(getMediaArchive());					
+					filesandfolders = desktop.getTopLevelFolders(getMediaArchive());
 				}
 				else
 				{
@@ -73,7 +73,7 @@ public class DesktopWebTreeModel  extends CategoryWebTreeModel implements Catalo
 					log.error("No data found for " + inPath);
 					return null;
 				}
-				Collection folders = (Collection)filesandfolders.get("childfolders");
+				Collection 	folders = (Collection)filesandfolders.get("childfolders");
 				for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 				{
 					Map details = (Map) iterator.next();
