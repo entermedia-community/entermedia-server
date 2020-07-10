@@ -12,9 +12,10 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 	//new Assets
-	HitTracker hits = archive.query("asset").exact("facehasprofile",true).exact("facematchcomplete", false).exact("importstatus","complete").exact("assettype","photo").search();
+	HitTracker hits = archive.query("asset").exact("facehasprofile",true).exact("facematchcomplete", false).exact("importstatus","complete").search();
 	hits.enableBulkOperations();
 
+	log.info("Checking " + hits.size() + " photos");
 	//test
 //	RunningProcess fieldRunningCompareProcess = new RunningProcess();
 //	fieldRunningCompareProcess.setExecutorManager(new ExecutorManager());

@@ -8,7 +8,7 @@
       <language id="fr"><![CDATA[Documents]]></language>  
     </name> 
   </property>  
-  <property id="photo" extensions="jpg png" ordering="0">
+  <property id="photo" extensions="jpg jpeg tiff gif png" ordering="0">
     <name>
       <language id="de"><![CDATA[Fotos]]></language>
       <language id="en"><![CDATA[Photos]]></language>

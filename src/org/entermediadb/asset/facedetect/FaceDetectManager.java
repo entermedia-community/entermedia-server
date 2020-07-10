@@ -159,7 +159,7 @@ public class FaceDetectManager
 			boolean foundmatch = false;
 			List<ValuesMap> pictures = createListMap((Collection)inAsset.getValue("faceprofiles"));
 			//Search all the other assets minus myself
-			HitTracker 	hits = inArchive.query("asset").exact("facehasprofile",true).exact("assettype","photo").not("id",inAsset.getId()).search();
+			HitTracker 	hits = inArchive.query("asset").exact("facehasprofile",true).not("id",inAsset.getId()).search();
 			hits.enableBulkOperations();
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{

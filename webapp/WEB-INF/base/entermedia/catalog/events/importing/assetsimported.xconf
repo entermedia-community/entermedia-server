@@ -6,5 +6,7 @@
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsimportedcustom.html"  allowduplicates="true"/>
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html"  allowduplicates="true"/>	
-	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/facescan.html"  allowduplicates="true"/>	
+<!--
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/facescan.html"  allowduplicates="true"/>
+-->
 </page>
