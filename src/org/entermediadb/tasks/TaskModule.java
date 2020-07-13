@@ -610,6 +610,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			found.add(completedby);
 			goal.setValue("userlikes",found );
+			archive.saveData("projectgoal", goal);
 		}
 		
 		List goalids = (List)cat.getValues("countdata");
