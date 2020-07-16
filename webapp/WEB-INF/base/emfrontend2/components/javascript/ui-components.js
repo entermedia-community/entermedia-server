@@ -15,7 +15,7 @@ function getRandomColor() {
 
 uiload = function() {
 	// https://github.com/select2/select2/issues/600
-	$.fn.select2.defaults.set("theme", "bootstrap4");
+	//$.fn.select2.defaults.set("theme", "bootstrap4");
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {
 	}; // Select2 on Modals
 	
