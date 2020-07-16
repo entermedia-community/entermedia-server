@@ -1,12 +1,8 @@
 #foreach( $script in $content.getScriptPaths() )
-	
-	<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
 	#if($script=="/assets/mediaapp/components/javascript/jquery-3.3.1.min.js")
-		<script>
-	  	if (!window.jQuery) {
-	    	window.$ = window.jQuery = require('./src/assets/jquery-3.3.1.min.js');
-	  	}
-		</script>
+		<script src="/assets/mediaapp/components/javascript/jquery-3.3.1.min.js" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
+	#else
+		<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script"></script>
 	#end
 #end
 
