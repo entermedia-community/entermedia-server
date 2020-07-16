@@ -598,6 +598,9 @@ public class TaskModule extends BaseMediaModule
 		task.setValue("projectdepartment",categoryid);
 		/* Added completedby and comment to goal saving */
 		task.setValue("completedby", completedby );
+		task.setValue("comment", comment);
+		task.setValue("taskstatus", 0);
+		
 		task.setValue("projectdepartmentparents",cat.getParentCategories());
 		
 		task.setValue("creationdate",new Date());
