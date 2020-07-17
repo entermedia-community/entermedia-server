@@ -429,6 +429,7 @@ public class TaskModule extends BaseMediaModule
 	public void loadTasksForGoal(WebPageRequest inReq)
 	{
 		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
+		
 		if( goal != null)
 		{
 			loadTasksForGoal(inReq,goal);
@@ -673,6 +674,7 @@ public class TaskModule extends BaseMediaModule
 	public void saveTaskStatus(WebPageRequest inReq)
 	{
 		String taskid = inReq.getRequestParameter("taskid");
+		String taskcomment = inReq.getRequestParameter("comment");
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Data task = (Data)tasksearcher.searchById(taskid);
@@ -707,6 +709,8 @@ public class TaskModule extends BaseMediaModule
 		{
 			task.setValue("completedby", completedby);
 		}
+		
+		task.setValue("comment",taskcomment);
 		
 		tasksearcher.saveData(task);	
 		inReq.putPageValue("task", task);
