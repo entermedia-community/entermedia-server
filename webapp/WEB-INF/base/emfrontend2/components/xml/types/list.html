@@ -31,11 +31,16 @@
 ##optional things to filter the list
 #set ($foreignkeyid = $detail.get("foreignkeyid") )
 
-#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
-
 #set ($squery = $detail.query )
 
-#if ($foreignkeyid && $foreignkeyvalue)  ##Old code. We dont do this anymore?
+#if ($foreignkeyid)  ##Old code. We dont do this anymore?
+
+	#if( !$foreignkeyvalue )
+		#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
+	#end
+	#if( !$foreignkeyvalue )
+		#set ($foreignkeyvalue = $context.getRequestParameter($foreignkeyid))
+	#end
 	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
 	
 	#if( $foreigndetail && $foreigndetail.listid )
@@ -46,6 +51,12 @@
 	#set ($query = $lsearcher.createSearchQuery())
 	#set ($o = $query.setAndTogether(false))
 	#set ($o = $query.addExact($foreignfield, $foreignkeyvalue))
+
+	#if( $foreignkeyid)
+		<script type="text/javascript">
+			addListListener("$foreignkeyid", "${fieldname}");
+		</script>
+	#end
 	
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
 	#set ($query = $lsearcher.parse($squery))
@@ -85,12 +96,6 @@ $query.setSortBy($detail.getDefaultSort())
 
 #set( $valueid = "$fieldname" )
 #if($types)
-	#if( $foreignkeyid)
-		<script type="text/javascript">
-			addListListener("$foreignkeyid", "${fieldname}");
-		</script>
-	#end
-	
 	<select name="${fieldname}.value" 
 			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 			listid="$listid" 
