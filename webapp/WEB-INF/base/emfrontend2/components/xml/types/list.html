@@ -74,7 +74,7 @@ $query.setSortBy($detail.getDefaultSort())
 	#set ($value = $val)
 #end
 #ifnull ($value)
-	#set ($value = $detail.defaultvalue)
+	#set ($value = $context.replaceProperty($detail.defaultvalue) )
 #end
 
 #set($searchfield = $detail.getId() )
