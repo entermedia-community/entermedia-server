@@ -1,22 +1,25 @@
-
-##required: catalogid, searchtype, view, fieldname
+##required: catalogid, detail, view, fieldname
 ##optional: value, foreignkeyid and foreignkeyvalue
 
 #set ($catalogidother = $context.getRequestParameter('catalogid'))
 #if($catalogidother)
 	#set ($catalogid = $catalogidother)
 #end
-#if(!$searchtype)
-	#set ( $searchtype = $context.getRequestParameter("searchtype") )
-#end
+
 #ifnull ($fieldname)
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #end
 #set ($view = $context.getRequestParameter('view')) 
 ##we need to load up the existing detail object
 
-#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
+	#if(!$searchtype)
+		#set ( $searchtype = $context.getRequestParameter("searchtype") )
+	#end
+	#if( !$searchtype)
+		searchtype not found!
+	#end
+	#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
 #end
@@ -25,57 +28,38 @@
 #set( $listid = $detail.getListId())
 #set( $csslistid = "listdetail_$fieldname")
 
+#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
+
 <div id="$csslistid" class="listdetailpicker">
 
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
-##optional things to filter the list
-#set ($foreignkeyid = $detail.get("foreignkeyid") )
 
-#set ($squery = $detail.query )
+##require both 
+#set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
 
-#if ($foreignkeyid)  ##Old code. We dont do this anymore?
-
-	#if( !$foreignkeyvalue )
-		#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
-	#end
-	#if( !$foreignkeyvalue )
-		#set ($foreignkeyvalue = $context.getRequestParameter($foreignkeyid))
-	#end
-	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
+#if( $listfilterid)
+	#set( $listfilterdetail = $originalsearcher.getDetailForView($view, $listfilterid, $user) )
 	
-	#if( $foreigndetail && $foreigndetail.listid )
-		#set( $foreignfield = $foreigndetail.listid )
-	#else
-		#set( $foreignfield = $foreignkeyid )
-	#end
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.setAndTogether(false))
-	#set ($o = $query.addExact($foreignfield, $foreignkeyvalue))
-
-	#if( $foreignkeyid)
-		<script type="text/javascript">
-			addListListener("$foreignkeyid", "${fieldname}");
-		</script>
-	#end
-	
-#elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
-	#set ($query = $lsearcher.parse($squery))
-#else
-	##New way to do this?
-	#set ($listfilterid = $detail.get("listfilterid") ) ##has to have same column name in both tables
-	#if( $listfilterid)
+	<script type="text/javascript">
+		##this is to list to the parent and to update itself fieldname
+		addListListener("$listfilterid", "${fieldname}");
+	</script>
+	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
+	#if(!$remotevalue)
 		#set( $remotevalue  = $data.get($listfilterid) )
-		#if(!$remotevalue)
-			#set ($remotevalue = $context.replaceProperty($detail.defaultvalue) )
+	#end		
+	#if(!$remotevalue)
+		#set ($remotevalue = $context.replaceProperty($detail.defaultvalue) )  ##not used much
+	#end
+	#if( $remotevalue)
+		#set($foreignkeyid = $detail.get("foreignkeyid") )   ##remove column that we search on. Use the value here
+		#if( !$foreignkeyid)
+			#set($foreignkeyid = $listfilterid)
 		#end
-		#if( $remotevalue)
-			#set($query = $lsearcher.query().exact($listfilterid,$remotevalue).getQuery() )
-		#end	
-	#end	
-	#ifnull ($query)
-		#set ($query = $lsearcher.createSearchQuery())
-		#set ($o = $query.addMatches("id", "*")) 
-	#end	
+		#set($query = $lsearcher.query().exact($foreignkeyid,$remotevalue).getQuery() )
+	#end
+#else
+	#set($query = $lsearcher.query().all().getQuery() )
 #end
 
 $query.setSortBy($detail.getDefaultSort())
@@ -101,9 +85,9 @@ $query.setSortBy($detail.getDefaultSort())
 			listid="$listid" 
 			id="${valueid}value"
 			data-listid="$listid" 
-			data-searchtype= '$searchtype'
+			data-searchtype= '$listid'
 			data-searchfield="$searchfield"
-        	onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+        	onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searcher.getSearchType()','$!view','$fieldname');"
         	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")

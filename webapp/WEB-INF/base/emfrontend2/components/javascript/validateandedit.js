@@ -213,7 +213,7 @@ addListListener = function( inParentFieldName, inFieldName )
 //parent = businesscategory, child = lob, field = product
 updatelisteners = function(catalogid, searchtype,view , fieldname)
 {
-	var val = $("#list-" + fieldname).val();
+	var val = $("#" + fieldname + "value").val();
 	//validate(catalogid, searchtype, view , fieldname);
 
 	var node = findOrAddNode(fieldname);
@@ -235,9 +235,9 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			
 			var rendertype = $("#" + div).data("rendertype");
 			if(rendertype == "multiselect"){
-				$("#" + div).load(apphome + '/components/xml/multiselect.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+				$("#" + div).load(apphome + '/components/xml/types/multiselect.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 			} else{
-				$("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+				$("#" + div).load(apphome + '/components/xml/types/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 			}
 		}
 	}
