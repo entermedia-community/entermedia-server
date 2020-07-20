@@ -16,10 +16,10 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
 
-			$context.putPageValue("searcher", $userProfileSearcher)	 
-			$context.putPageValue("view", "userprofile/edit")	
-			##$context.putPageValue("data", $userprofile)
-			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+	$context.putPageValue("searcher", $userProfileSearcher)	 
+	$context.putPageValue("view", "userprofile/edit")	
+	##$context.putPageValue("data", $userprofile)
+	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 
 <div class="hr" style="margin: 20px 0; padding: 0;"></div>
 <input class="btn btn-primary btn-sm" type="submit" value="[[Create]]" >
@@ -30,7 +30,35 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 </div>
 
 
-##<script language="JavaScript" type="text/javascript">
+<script language="JavaScript" type="text/javascript">
+//email.value
+		
+		jQuery(document).ready(function() 
+		{ 
+		
+			$("#adduser").validate({
+				ignore: ".ignore",
+			  rules: {
+				  'email.value': {
+				  required: true,
+				  email: true,
+				  duplicatedemail: false,
+				  remote: "verifyemail.html"
+				}
+			  },
+			  messages: {
+				  'email.value': {
+				  remote: "Email already Exists."
+				}
+			  },
+			  submitHandler: function(form){
+		        $('form input[type=submit]').attr('disabled', 'disabled');
+		        form.submit();
+				}
+			});
+		});
+</script>
+
 ##<!--
 ##mailingSameAsOffice = function()
 ##{
@@ -44,4 +72,3 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 ##jQuery("#adduser #mailingsameasoffice\\.value")[0].onchange = mailingSameAsOffice;
 ##	
 ##-->
-##</script>
