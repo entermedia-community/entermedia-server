@@ -35,7 +35,7 @@
 
 #set ($squery = $detail.query )
 
-#if ($foreignkeyid && $foreignkeyvalue)
+#if ($foreignkeyid && $foreignkeyvalue)  ##Old code. We dont do this anymore?
 	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
 	
 	#if( $foreigndetail && $foreigndetail.listid )
@@ -50,9 +50,13 @@
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
 	#set ($query = $lsearcher.parse($squery))
 #else
+	##New way to do this?
 	#set ($listfilterid = $detail.get("listfilterid") ) ##has to have same column name in both tables
 	#if( $listfilterid)
 		#set( $remotevalue  = $data.get($listfilterid) )
+		#if(!$remotevalue)
+			#set ($remotevalue = $context.replaceProperty($detail.defaultvalue) )
+		#end
 		#if( $remotevalue)
 			#set($query = $lsearcher.query().exact($listfilterid,$remotevalue).getQuery() )
 		#end	
