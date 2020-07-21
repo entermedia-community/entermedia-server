@@ -168,12 +168,14 @@ public class ChatServer
 					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 					{
 						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						if( chatConnection.getUserId() != null)
+						String connectedUser = chatConnection.getUserId(); 
+						if( connectedUser != null)
 						{
 							Object channelid = inMap.get("channel");
-							if( channelid != null)
+							String connectionTopic = chatConnection.getChannelId();  //Current Connection Channel
+							if( channelid != null && channelid.equals(connectionTopic))
 							{
-								manager.updateChatTopicLastChecked(String.valueOf(channelid),  chatConnection.getUserId());
+								manager.updateChatTopicLastChecked(String.valueOf(channelid),  connectedUser);
 							}
 						}						
 					}	

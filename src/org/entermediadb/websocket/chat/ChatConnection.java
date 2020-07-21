@@ -33,6 +33,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected ChatServer fieldChatServer;
 	protected String fieldSessionID;
 	protected String fieldUserId;
+	protected String fieldChannelId;
 	protected Collection fieldNotifyTopics;
 	
 	public Collection getNotifyTopics()
@@ -47,6 +48,16 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	public String getUserId()
 	{
 		return fieldUserId;
+	}
+
+	public void setChannelId(String inChannelId)
+	{
+		fieldChannelId = inChannelId;
+	}
+	
+	public String getChannelId()
+	{
+		return fieldChannelId;
 	}
 
 	public void setUserId(String inUserId)
@@ -88,6 +99,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	}
 
 	protected StringBuffer fieldBufferedMessage;
+	
 
 	@Override
 	public void onError(Session session, Throwable throwable) {
@@ -138,6 +150,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		
 		fieldSessionID = (String) params.get("sessionid");
 		fieldUserId = (String) params.get("userid"); //TODO: Replace with entermediakey
+		
+		fieldChannelId = (String) params.get("channel");
 		
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
 		if (modulemanager == null) {
@@ -208,13 +222,15 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
 			
-			//log.info("Command was: " + command);
+			log.info("Command was: " + command);
 			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
 				//receiveLogin(map); 
 				//String userid = (String) map.get("userid");
 				String userid = String.valueOf(map.get("userid"));
 				setUserId(userid);
+				String channelid = String.valueOf(map.get("channel"));
+				setChannelId(channelid);
 			}
 			else if("messagereceived".equals(command) || "notify".equals(command))
 			{

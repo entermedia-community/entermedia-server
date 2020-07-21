@@ -82,7 +82,7 @@ public class ChatManager implements CatalogEnabled
 	//TODO: Do this while messages are coming in
 	public synchronized void updateChatTopicLastChecked(String channelid, String inUserId)
 	{
-		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).exact("userid", inUserId).searchOne();
+		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastchecked").exact("chattopicid", channelid).match("userid", inUserId).searchOne();
 		if (status == null)
 		{
 			status = (MultiValued) getMediaArchive().getSearcher("chattopiclastchecked").createNewData();

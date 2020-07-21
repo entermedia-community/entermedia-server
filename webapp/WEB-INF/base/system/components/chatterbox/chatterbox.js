@@ -120,8 +120,15 @@ function connect() {
 	var app = jQuery("#application");
 	var userid = app.data("user");
     var protocol = location.protocol;
-
+    
     var url = "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID + "&userid=" + userid;
+    
+  //Get the channel
+    var channel = jQuery(".chatterbox").data("channel");
+    if (channel != null) {
+    	url = url + '&channel='+channel;
+    }
+    
     if (protocol === "https:") {
     	chatconnection = new WebSocket("wss://" +location.host + url );	
     } else{
@@ -240,6 +247,10 @@ function keepAlive() {
     	
     	var userid = jQuery(".chatterbox").data("user"); //TODO: Use app?
     	command.userid =  userid;
+    	
+    	var chatter = jQuery('.chatterbox').data("channel");
+    	command.channel = chatter;
+    	
     	var json = JSON.stringify(command);
     	chatconnection.send(json);  
     }
