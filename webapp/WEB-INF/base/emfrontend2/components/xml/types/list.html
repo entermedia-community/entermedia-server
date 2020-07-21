@@ -62,7 +62,10 @@
 	#set($query = $lsearcher.query().all().getQuery() )
 #end
 
-$query.setSortBy($detail.getDefaultSort())
+#if($query)
+	$query.setSortBy($detail.getDefaultSort())
+#end
+
 ####$lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
 
