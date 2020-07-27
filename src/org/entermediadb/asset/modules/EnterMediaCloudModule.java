@@ -4,11 +4,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
@@ -59,6 +59,10 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		JSONObject params = new JSONObject();
 		params.put("userid",userid);
 		params.put("entermedia.key",userkey); //This should be expiring
+
+		String collectionid = inReq.getRequestParameter("collectionid");
+		params.put("collectionid",collectionid);
+		
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)
@@ -77,15 +81,27 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			if( user == null)
 			{
 				user = userManager.createUser(null, null);
-						user.setEmail(email);
+				user.setEmail(email);
 				user.setEnabled(true);
 			}
 			user.setFirstName((String)data.get("firstname"));
 			user.setLastName((String)data.get("lastname"));
 			userManager.saveUser(user);
+
+			String catalogid = inReq.findValue("catalogid");
+
+			Searcher profilesearcher = getSearcherManager().getSearcher(catalogid, "userprofile");
 			
+			UserProfile userprofile = (UserProfile)profilesearcher.query().exact("userid",user.getId()).searchOne();
+			if( userprofile == null)
+			{
+				userprofile = (UserProfile) profilesearcher.createNewData();
+				userprofile.setId(user.getId());
+				userprofile.setProperty("settingsgroup", "administrator"); //dependant on what what we get back from our site. On Team?
+				profilesearcher.saveData(userprofile);
+			}
 			inReq.putSessionValue("systemuser", user);
-			inReq.putSessionValue(inReq.findValue("catalogid") + "user", user);
+			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 		}
 		else

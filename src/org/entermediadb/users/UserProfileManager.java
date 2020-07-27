@@ -228,7 +228,7 @@ public class UserProfileManager
 			userprofile = (UserProfile) searcher.createNewData();
 			userprofile.setId(inUserName);
 			if (inUserName.equals("admin"))
-			{
+			{	
 				userprofile.setProperty("settingsgroup", "administrator");
 			}
 			else if( user != null && !"anonymous".equals(inUserName))
