@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<page>
+	<path-action name="Admin.authenticate" />
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	<path-action name="User.loadUserProperties" />	
+</page>

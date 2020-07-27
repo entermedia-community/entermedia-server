@@ -3,7 +3,10 @@
 {
     "status":"ok",
     "userid":"$user.id",
-    "defaultcolor":"$user.defaultcolor"
+    "screenname":"$user.screenname",
+    "firstname":"$user.firstName",
+    "lastname":"$user.lastName",
+    "email":"$user.email"
 }
 #else
 {

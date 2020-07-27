@@ -15,7 +15,7 @@
 				<value>index.shtml</value>
 				<value>index.jsp</value>
 				<value>index.php</value>
-			</list>
+				</list>
 		</property>
 		<property name="autoLoginProviders">
 			<list>
@@ -2325,6 +2325,9 @@
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
+	</bean>
+
+	<bean id="EnterMediaCloudModule" class="org.entermediadb.asset.modules.EnterMediaCloudModule" >
 	</bean>
 
 
