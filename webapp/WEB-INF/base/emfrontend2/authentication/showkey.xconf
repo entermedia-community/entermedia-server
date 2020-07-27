@@ -1,6 +1,6 @@
 <page>
 
-<path-action name="Admin.generateKey"/>
+<path-action name="Admin.loadTemporaryKey"/>
 <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
 
 </page>

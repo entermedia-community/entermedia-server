@@ -1363,28 +1363,29 @@ public class AdminModule extends BaseMediaModule
 //			if(sitename == null) {
 //				sitename = inReq.getSiteRoot();
 //			}
-			if(sitename == null) {
+			if(sitename == null) 
+			{
 				sitename="Entermedia";
 			}
 			
 			String qr = GoogleAuthenticatorQRGenerator.getOtpAuthURL(sitename, user.getEmail(), key);
 			inReq.putPageValue("qrcode", qr);
-			
-			
-			
 		}
-		
-		else {
+		else 
+		{
 			inReq.putPageValue("invalid", "Sorry, couldn't login.  Please try again.");
-
-			
 		}
-		
-		
-		
-		
 	}
-	
-	
-	
+
+	public void loadTemporaryKey(WebPageRequest inReq)
+	{
+		//PasswordHelper passwordHelper = getPasswordHelper(inReq);
+		String clear = inReq.getUser().getPassword() + TIMESTAMP + String.valueOf(System.currentTimeMillis());
+		
+		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(clear);
+		String key = inReq.getUserName() + "md542" + passenc;
+
+		inReq.putPageValue("tempentermediakey",key);
+
+	}
 }
