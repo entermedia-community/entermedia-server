@@ -43,6 +43,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		String userkey = inReq.getRequestParameter("entermediacloudkey");
 		if(userkey == null)
 		{
+			log.info("No key found " + userkey);
 			return;
 		}
 		String userid = userkey.substring(0,userkey.indexOf("md5"));
