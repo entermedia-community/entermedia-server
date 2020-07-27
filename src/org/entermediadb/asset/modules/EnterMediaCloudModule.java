@@ -46,8 +46,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		//TODO: Make this configurabl
 		
 		
-		//String base = "https://entermediadb.org/entermediadb/mediadb";
-		String base = "http://localhost:8080/entermediadb/mediadb";
+		String base = "https://entermediadb.org/entermediadb/mediadb";
+		//String base = "http://localhost:8080/entermediadb/mediadb";
 		
 		String url = base + "/services/authentication/showinfo.json";
 			
