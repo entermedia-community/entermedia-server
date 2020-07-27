@@ -41,6 +41,10 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		
 		//TODO: Make this expire
 		String userkey = inReq.getRequestParameter("entermediacloudkey");
+		if(userkey == null)
+		{
+			return;
+		}
 		String userid = userkey.substring(0,userkey.indexOf("md5"));
 		
 		//TODO: Make this configurabl
