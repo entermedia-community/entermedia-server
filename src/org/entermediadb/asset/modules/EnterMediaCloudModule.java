@@ -76,13 +76,15 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			User user = userManager.getUserByEmail(email);
 			if( user == null)
 			{
-				user = userManager.createUser(userid, null);
-				user.setEmail(email);
+				user = userManager.createUser(null, null);
+						user.setEmail(email);
+				user.setEnabled(true);
 			}
 			user.setFirstName((String)data.get("firstname"));
 			user.setLastName((String)data.get("lastname"));
 			userManager.saveUser(user);
 			
+			inReq.putSessionValue("systemuser", user);
 			inReq.putSessionValue(inReq.findValue("catalogid") + "user", user);
 			inReq.putPageValue("user", user);
 		}
