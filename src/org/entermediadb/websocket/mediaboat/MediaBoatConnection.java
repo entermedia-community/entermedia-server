@@ -267,7 +267,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		getDesktop().setListener(this);
 		getDesktopManager().setDesktop(getDesktop());
 		//authenticated
-		String keyorpasswordentered = (String)map.get("entermedia.key");
+		String keyonly = (String)map.get("entermedia.key");
 		User user = (User)getSearcherManager().getData("system", "user", username);
 		if( user == null) //TODO: Authenticate key (with expiration)
 		{
@@ -277,27 +277,22 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			sendMessage(authenticated);
 			return;
 		}
-		String key = getStringEncrytion().getEnterMediaKey(user);
+		boolean ok = getStringEncrytion().verifyEnterMediaKey(user, user.getPassword(), keyonly);
 
-		if( !key.equals(keyorpasswordentered))
+		if(!ok)
 		{
 			//check password
-			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
-			if( !keyorpasswordentered.equals(clearpassword))
-			{
-		   		JSONObject authenticated = new JSONObject();
-		   		authenticated.put("command", "authenticatefail");
-		   		authenticated.put("reason", "Password did not match");
-				sendMessage(authenticated);
-				return;
-			}
+	   		JSONObject authenticated = new JSONObject();
+	   		authenticated.put("command", "authenticatefail");
+	   		authenticated.put("reason", "Key was not validated or was expired");
+			sendMessage(authenticated);
 		}
 		String connectionid = (String)map.get("connectionid");
 		setCurrentConnectionId(connectionid);
 		
 		JSONObject authenticated = new JSONObject();
 		authenticated.put("command", "authenticated");
-		authenticated.put("entermedia.key", key);
+		authenticated.put("entermedia.key", keyonly);  //TODO: Refresh every 24hours
 		
 		Collection existing = (Collection)map.get("existingcollections");
 		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
@@ -305,7 +300,6 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			String name = (String) iterator.next();
 			//Looup this users collections by name?
 			getDesktop().addEditedCollection(name);
-			
 		}
 		
 		sendMessage(authenticated);
