@@ -572,6 +572,11 @@ public class TaskModule extends BaseMediaModule
 			log.error("No goals");
 			return;
 		}
+		if( completedby == null)
+		{
+			log.error("No user completedby");
+			return;
+		}
 		String categoryid = inReq.getRequestParameter("targetcategoryid");
 		if( categoryid == null)
 		{
