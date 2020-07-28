@@ -59,7 +59,6 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 public class AdminModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(AdminModule.class);
-	protected static final String TIMESTAMP = "tstamp";
 
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
@@ -236,7 +235,7 @@ public class AdminModule extends BaseMediaModule
 					{
 						if (tsenc.startsWith("DES:"))
 							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
-						passenc += TIMESTAMP + tsenc;
+						passenc += StringEncryption.TIMESTAMP + tsenc;
 					}
 					else
 					{
@@ -348,6 +347,7 @@ public class AdminModule extends BaseMediaModule
 	 */
 	public void login(WebPageRequest inReq) throws Exception
 	{
+		String entermediakey = inReq.getRequestParameter("entermediakey");
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
 		
@@ -369,12 +369,16 @@ public class AdminModule extends BaseMediaModule
 			inReq.putSessionValue("fullOriginalEntryPage", sendTo);
 		}
 		
-		if (account == null && email == null && inReq.getRequest() != null)
+		if (entermediakey == null && account == null && email == null && inReq.getRequest() != null)
 		{
 			return;
 		}
 		else
 		{
+			if( entermediakey != null)
+			{
+				account = entermediakey.substring(0,entermediakey.indexOf("md5"));
+			}
 			UserManager userManager = getUserManager(inReq);
 			User user = null;
 			if( account == null)
@@ -404,6 +408,10 @@ public class AdminModule extends BaseMediaModule
 					user = userManager.createGuestUser(account, tmppassword, groupname);
 					log.info("Username not found. Creating guest user.");
 				}
+			}
+			if( password == null)
+			{
+				password = entermediakey;
 			}
 			if (password == null)
 			{
@@ -443,7 +451,7 @@ public class AdminModule extends BaseMediaModule
 				ok = true;
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;
-				inReq.putPageValue("entermediakey", value);
+				inReq.putPageValue("entermediakey", value); //TODO: Remove this, its slow
 				inReq.putSessionValue(aReq.getCatalogId() + "user", user);
 				inReq.putPageValue("user", user);
 			}
@@ -1379,13 +1387,33 @@ public class AdminModule extends BaseMediaModule
 
 	public void loadTemporaryKey(WebPageRequest inReq)
 	{
-		//PasswordHelper passwordHelper = getPasswordHelper(inReq);
-		String clear = inReq.getUser().getPassword() + TIMESTAMP + String.valueOf(System.currentTimeMillis());
-		
-		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(clear);
-		String key = inReq.getUserName() + "md542" + passenc;
+		StringEncryption encoder = getUserManager(inReq).getStringEncryption();
 
-		inReq.putPageValue("tempentermediakey",key);
+		String foruser = inReq.getRequestParameter("username");
+		if( foruser != null)
+		{
+			Object canUpload = inReq.getPageValue("caneditusersgroups");
+			if( !Boolean.parseBoolean(String.valueOf(canUpload)))
+			{
+				throw new OpenEditException("No permissions to view keys of other users");
+			}
+		}
+		if( foruser == null)
+		{
+			foruser = inReq.getUserName();
+		}
+		User user = getUserManager(inReq).getUser(foruser);
+		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(user.getPassword());
+		String entermediakey = inReq.getUser().getId() + "md542" + passenc;
+
+		String tsenc = encoder.encrypt(String.valueOf(new Date().getTime()));
+		if (tsenc.startsWith("DES:"))
+		{
+			tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+		}
+		entermediakey = entermediakey + StringEncryption.TIMESTAMP + tsenc;
+
+		inReq.putPageValue("tempentermediakey",entermediakey);
 
 	}
 }

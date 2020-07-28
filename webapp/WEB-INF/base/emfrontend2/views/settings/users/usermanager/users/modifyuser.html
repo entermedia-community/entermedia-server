@@ -48,11 +48,17 @@
 		<div class="embutton">
 			<a href="deleteuserconfirm.html?usertodelete=$userName">[[Delete User]]</a>
 		</div>
+
+		<a class="btn btn-sm btn-light emdialog" href="./showkey.html?username=$userName">Generate Temporary Key</a>
+
 				<br/>
 				<br/>
 				#if($pages.doesExist("$home/$applicationid/users/$userName/index.html"))
 					<div class="embutton"><a href="$home/$applicationid/users/$userName/index.html">[[View Home Page]]</a></div>
 				#end
+				
+				
+				
 		</td>
 		
 	</tr>
