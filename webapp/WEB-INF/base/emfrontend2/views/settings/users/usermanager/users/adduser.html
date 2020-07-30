@@ -32,7 +32,10 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 <script language="JavaScript" type="text/javascript">
 //email.value
-		
+		jQuery.validator.addMethod("validId", function(value, element) {
+  		return this.optional( element ) || /^[a-zA-Z0-9]+$/.test( value );
+		}, 'Please enter a unique string/numeric Id.');
+
 		jQuery(document).ready(function() 
 		{ 
 		
@@ -44,6 +47,9 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 				  email: true,
 				  duplicatedemail: false,
 				  remote: "verifyemail.html"
+				},
+				'id.value':{
+					validId:true
 				}
 			  },
 			  messages: {
@@ -59,16 +65,3 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 		});
 </script>
 
-##<!--
-##mailingSameAsOffice = function()
-##{
-##	jQuery("#adduser #mailingstreet\\.value")[0].value = jQuery("#adduser #officestreet\\.value")[0].value;
-##	jQuery("#adduser #mailingcity\\.value")[0].value = jQuery("#adduser #officecity\\.value")[0].value;
-##	jQuery("#adduser #mailingstate\\.value")[0].value = jQuery("#adduser #officestate\\.value")[0].value;
-##	jQuery("#adduser #mailingzip\\.value")[0].value = jQuery("#adduser #officezip\\.value")[0].value;
-##	jQuery("#adduser #mailingcountry\\.value")[0].value = jQuery("#adduser #officecountry\\.value")[0].value;
-##}
-##
-##jQuery("#adduser #mailingsameasoffice\\.value")[0].onchange = mailingSameAsOffice;
-##	
-##-->
