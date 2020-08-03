@@ -2052,6 +2052,14 @@ String viewbase = null;
 			hits = searcher.getAllHits(inReq);
 //			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
 		}
+//		String name = inReq.findValue("hitsname");
+//		if( name == null)
+//		{
+//			name = "hits";
+//		}
+//		inReq.putPageValue(name, hits);
+//		inReq.putSessionValue(hits.getSessionId(), hits);
+
 
 	}
 

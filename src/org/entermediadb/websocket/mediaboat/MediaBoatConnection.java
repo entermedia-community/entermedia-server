@@ -223,6 +223,15 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			{
 				receiveLogin(map);
 			}	
+			else if ("renew_entermediakey".equals(command)) //Return all the annotation on this asset
+			{
+				String newkey = getStringEncrytion().getTempEnterMediaKey(getDesktop().getUser());
+				JSONObject authenticated = new JSONObject();
+				authenticated.put("command", "renew_completed");
+				authenticated.put("entermedia.key", newkey);  //TODO: Refresh every 24hours
+				
+				sendMessage(authenticated);
+			}	
 			else if ("folderedited".equals(command)) //Return all the annotation on this asset
 			{
 				String foldername = (String)map.get("foldername");
@@ -259,7 +268,8 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	protected void receiveLogin(JSONObject map)
 	{
 		String username = (String)map.get("username");
-		getDesktop().setUserId(username);
+		User user = (User)getSearcherManager().getData("system", "user", username);
+		getDesktop().setUser(user);
 		getDesktop().setDesktopId((String)map.get("desktopid"));
 		getDesktop().setHomeFolder((String)map.get("homefolder"));
 		getDesktop().setLastCompletedPercent(100);
@@ -268,7 +278,6 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		getDesktopManager().setDesktop(getDesktop());
 		//authenticated
 		String keyonly = (String)map.get("entermedia.key");
-		User user = (User)getSearcherManager().getData("system", "user", username);
 		if( user == null) //TODO: Authenticate key (with expiration)
 		{
 			JSONObject authenticated = new JSONObject();

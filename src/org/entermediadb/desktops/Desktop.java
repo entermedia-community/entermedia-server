@@ -15,10 +15,10 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
-import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.json.simple.JSONObject;
 import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
+import org.openedit.users.User;
 
 public class Desktop
 {
@@ -57,18 +57,22 @@ public class Desktop
 		return fieldListener;
 	}
 
-	protected String fieldUserId;
+	protected User fieldUser;
 
 	public String getUserId()
 	{
-		return fieldUserId;
+		return getUser().getId();
 	}
 
-	public void setUserId(String inUserId)
+	public void setUser(User inUser)
 	{
-		fieldUserId = inUserId;
+		fieldUser = inUser;
 	}
 
+	public User getUser()
+	{
+		return fieldUser;
+	}
 	public String getDesktopId()
 	{
 		return fieldDesktopId;

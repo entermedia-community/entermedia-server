@@ -1403,17 +1403,11 @@ public class AdminModule extends BaseMediaModule
 			foruser = inReq.getUserName();
 		}
 		User user = getUserManager(inReq).getUser(foruser);
-		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(user.getPassword());
-		String entermediakey = inReq.getUser().getId() + "md542" + passenc;
 
-		String tsenc = encoder.encrypt(String.valueOf(new Date().getTime()));
-		if (tsenc.startsWith("DES:"))
-		{
-			tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
-		}
-		entermediakey = entermediakey + StringEncryption.TIMESTAMP + tsenc;
+		String entermediakey = encoder.getTempEnterMediaKey(user);
 
 		inReq.putPageValue("tempentermediakey",entermediakey);
 
 	}
+
 }

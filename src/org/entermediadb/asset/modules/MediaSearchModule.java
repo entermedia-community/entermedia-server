@@ -59,10 +59,23 @@ public class MediaSearchModule extends BaseMediaModule
 		inReq.putPageValue("category",category);
 		inReq.putPageValue("selectedcategory",category);
 		
-		HitTracker hits = archive.getAssetSearcher().loadHits(inReq);
+		String searchtype = resolveSearchType(inReq);
+		if( searchtype == null)
+		{
+			searchtype = "asset";
+		}
+		
+		HitTracker hits = archive.getSearcher(searchtype).loadHits(inReq);
 		if (hits == null)
 		{
-			hits = archive.getAssetSearcher().searchCategories(inReq, category);
+			if( searchtype.equals("asset"))
+			{
+				hits = archive.getAssetSearcher().searchCategories(inReq, category);
+			}
+			else
+			{
+				hits  = archive.query( searchtype).match("catagory",category.getId()).search(inReq);
+			}
 			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
 		}
 		else if( hits.getSearchQuery().getDetail("category") == null)
@@ -92,8 +105,10 @@ public class MediaSearchModule extends BaseMediaModule
 	}
 	
 	
-	
-	
+	/**
+	 * @param inPageRequest
+	 * @throws Exception
+	 */
 	
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
@@ -102,16 +117,24 @@ public class MediaSearchModule extends BaseMediaModule
 		inPageRequest.putPageValue("category",category);
 		inPageRequest.putPageValue("selectedcategory",category);
 		
-		
 		String exact = inPageRequest.findValue("exact-search");
 		HitTracker tracker = null;
+		
+		
+		String searchtype = resolveSearchType(inPageRequest);
+		if( searchtype == null)
+		{
+			searchtype = "asset";
+		}
+		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
-			tracker = archive.getAssetSearcher().query().exact("category-exact",category.getId()).search(inPageRequest);
+			tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
 		}
 		else
 		{
-			tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
+			tracker = archive.getSearcher(searchtype).query().exact("category",category.getId()).search(inPageRequest);
+			//tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
 		}
 		if( tracker != null)
 		{
@@ -125,14 +148,25 @@ public class MediaSearchModule extends BaseMediaModule
 				tracker.setPage(1);
 
 		}
+		
+		
+//		if (tracker != null)
+//		{
+//			String name = inPageRequest.findValue("hitsname");
+//			inPageRequest.putPageValue(name, tracker);
+//			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
+//		}
+
+		
 		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
 		if( prefs != null)
 		{
 			prefs.setProperty("lastcatalog", archive.getCatalogId());
 			//prefs.save();
 		}
-		if(category != null && tracker != null) {
-		tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
+		if(category != null && tracker != null) 
+		{
+			tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
 		}
 
 	}
