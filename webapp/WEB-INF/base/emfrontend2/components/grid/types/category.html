@@ -1,12 +1,11 @@
-#set($type = $hit.getSearchHit().getType())
-<div class="emgrid-content emgrid-type-$type">
-	<div class="gridcategory-icon">
-        	<i class="far fa-folder"></i>
+<div class="emgrid-content emgrid-type-category">
+	<div class="gridcategory-icon" style="font-size:5em;text-align:center;">
+        	<i class="far fa-folder" ></i>
      </div>
-     <div class="gridcategory-name">
+     <div class="gridcategory-name" style="text-align:center;">
      	$!hit.name
      </div>
      <div class="griditem-tools">
-     <a href="" class="btn btn-xs btn-light btn-gridtool">[[Open]]</a>
+     <a href="$applink/views/modules/modulesearch/categorysearch.html?nodeID=$hit.getId()" class="btn btn-xs btn-light btn-gridtool">[[Open]]</a>
      </div>
 </div>

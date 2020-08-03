@@ -1,13 +1,29 @@
 <div id="resultsdiv">
 <div  class="emgridcontainer">
-<div class="gridresultscount">
-
-$modulehits.size() [[Results Found]]
-</div>
-<div id="galleryimg" class="emgrid" data-colwidth="220">
 
 $context.putPageValue("thumbsize", "mediumplus" )
 
+#if( $category && $category.hasChildren())
+<div id="galleryimg" class="emgrid" data-colwidth="220">
+	#foreach( $hit in $category.getChildren())
+		#set($type = "category")
+	     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 80px; ">
+	     	$context.putPageValue("hit", $hit)
+	        $pages.include("$apphome/components/grid/types/category.html", $context)
+	     </div>
+	#end     
+</div>
+#end
+
+#if( $modulehits.isEmpty() && $category && $category.hasChildren())
+
+#else
+<div class="gridresultscount">
+$modulehits.size() [[Results Found]]
+</div>
+#end
+
+<div id="galleryimg" class="emgrid" data-colwidth="220">
 #foreach( $hit in $modulehits.getPageOfHits())
 	#set($type = $hit.getSearchHit().getType())
      <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 80px; ">

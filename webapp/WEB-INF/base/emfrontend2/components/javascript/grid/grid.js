@@ -23,7 +23,7 @@ $(document).ready(function()
             //debugger;
             var col = 0;
 	    	
-	        this.children( ".emgridcell" ).each(function() 
+            grid.children( ".emgridcell" ).each(function() 
 	        {
       	        var cell = $(this);
       	        var cellpadding = 12;
@@ -73,13 +73,18 @@ $(document).ready(function()
 	}( jQuery ));
 	
 	lQuery(".emgrid").livequery(function() {
-		var thegrid = $(this);
-		thegrid.emgrid();
+        $( ".emgrid" ).each(function(){
+        	$(this).emgrid();
+        } );
 	});
 	
 	$(window).on('resize',function(){
-		var thegrid = $('.emgrid');
-		thegrid.emgrid();
+		//var thegrid = $('.emgrid');
+		//thegrid.emgrid();
+        $( ".emgrid" ).each(function(){
+        	$(this).emgrid();
+        } );
+
 	});
 	
 });
