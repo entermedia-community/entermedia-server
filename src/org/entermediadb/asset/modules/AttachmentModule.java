@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.entermediadb.asset.Asset;
@@ -10,8 +12,13 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
+import org.openedit.util.PathUtilities;
 
 public class AttachmentModule extends BaseMediaModule
 {
@@ -92,34 +99,62 @@ public class AttachmentModule extends BaseMediaModule
 		}
 		String firstfile = null;
 
-		for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
+		if( properties.getUploadItems() != null)
 		{
-			if (!asset.isFolder())
+			for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
 			{
-				AssetEditor editor = (AssetEditor) getModuleManager().getBean("assetEditor");
-				editor.setMediaArchive(archive);
-				editor.makeFolderAsset(asset, inReq.getUser());
+				if (!asset.isFolder())
+				{
+					AssetEditor editor = (AssetEditor) getModuleManager().getBean("assetEditor");
+					editor.setMediaArchive(archive);
+					editor.makeFolderAsset(asset, inReq.getUser());
+				}
+				String folder = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + asset.getSourcePath();
+				if (!folder.endsWith("/"))
+				{
+					folder = folder + "/";
+				}
+				FileUploadItem item = (FileUploadItem) iterator.next();
+				String name = item.getName();
+	
+				if (firstfile == null)
+				{
+					firstfile = name;
+					String fieldname = item.getFieldName();
+					//remove file. 
+					fieldname = fieldname.replace("file.", "");
+					inReq.setRequestParameter(fieldname + ".value", firstfile);
+	
+				}
+				String finalpath = folder + name;
+				properties.saveFileAs(item, finalpath, inReq.getUser());
 			}
-			String folder = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + asset.getSourcePath();
-			if (!folder.endsWith("/"))
+		}
+		
+		String importpath = (String)inReq.getRequestParameter("importpath");
+		if( importpath != null)
+		{
+			File checkfile = new File(importpath);
+			if( !checkfile.exists())
 			{
-				folder = folder + "/";
+				throw new OpenEditException("Could not find or did not have access to " + importpath);
 			}
-			FileUploadItem item = (FileUploadItem) iterator.next();
-			String name = item.getName();
+			ContentItem item = new FileItem(new File(importpath));
 
-			if (firstfile == null)
+			String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + asset.getSourcePath();
+			if (!destpath.endsWith("/"))
 			{
-				firstfile = name;
-				String fieldname = item.getFieldName();
-				//remove file. 
-				fieldname = fieldname.replace("file.", "");
-				inReq.setRequestParameter(fieldname + ".value", firstfile);
-
+				destpath = destpath + "/";
 			}
-			String finalpath = folder + name;
-			properties.saveFileAs(item, finalpath, inReq.getUser());
-		}		
+			destpath = destpath + checkfile.getName();
+
+			Page destitem = archive.getPageManager().getPage(destpath);
+			archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
+			
+			firstfile = checkfile.getName();
+			
+		}
+		
 		getAttachmentManager().processAttachments(archive, asset, true);
 
 		//inReq.putPageValue("newattachments", newattachments);
