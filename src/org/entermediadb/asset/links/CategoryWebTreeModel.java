@@ -358,7 +358,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 
 	public Object findNodeById(Object inRoot, String inId)
 	{
-		String test = getId(inRoot);
+		//String test = getId(inRoot);
 //		if (test.equals(inId))
 //		{
 //			return inRoot;

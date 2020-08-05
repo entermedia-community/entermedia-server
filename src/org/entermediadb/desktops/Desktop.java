@@ -271,7 +271,7 @@ public class Desktop
 			//put temporary list in the cache
 			JSONObject command = new JSONObject();
 			command.put("command", "addlocalfilestocache");
-			command.put("fullpath", inAbsPath);
+			command.put("abspath", inAbsPath);
 			command.put("mediadbid", inArchive.getMediaDbId());
 			Map response = getDesktopListener().sendCommandAndWait(inArchive, command);
 			Map files = null;

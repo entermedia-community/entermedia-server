@@ -15,6 +15,7 @@ import org.entermediadb.asset.links.CategoryWebTreeModel;
 import org.entermediadb.links.Link;
 import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
+import org.entermediadb.webui.tree.WebTreeModel;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -66,6 +67,45 @@ public class CategoryModule extends BaseMediaModule
 			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
+		
+		if( root == null)
+		{
+			root = inRequest.findValue(name + "root");
+		}
+		if( root  == null )
+		{
+			root = inRequest.findValue("root");
+		}
+
+		Category main = archive.getCategory( root );
+		if ( main == null)
+		{
+			log.error("No such category named " + root);
+			main = archive.getCategorySearcher().getRootCategory();
+		}
+		
+		WebTreeModel model;
+		if( webTree != null)
+		{
+			model = webTree.getModel();
+		}
+		else
+		{
+			String treeModel = inRequest.findValue("treemodel");
+			if( treeModel == null)
+			{
+				treeModel = "categoryTreeModel";
+			}
+			CategoryWebTreeModel amodel = (CategoryWebTreeModel)getModuleManager().getBean(archive.getCatalogId(), treeModel, false);
+			amodel.setMediaArchive(archive);
+			amodel.setCatalogId(archive.getCatalogId());
+			amodel.setRoot(main);
+			amodel.setCategorySearcher(archive.getCategorySearcher());
+			amodel.setUserProfile(inRequest.getUserProfile());
+			amodel.setRequestUtils(getRequestUtils());			
+			model = amodel;
+		}
+
 		String reload = inRequest.getRequestParameter("reloadtree");
 
 		if( root != null && webTree != null && !root.equals( webTree.getRootId() ) )
@@ -77,6 +117,7 @@ public class CategoryModule extends BaseMediaModule
 			webTree = null;
 			inRequest.removeSessionValue("reloadcategorytree");
 		}
+		
 		if( Boolean.parseBoolean(reload))
 		{
 			webTree = null;
@@ -88,34 +129,6 @@ public class CategoryModule extends BaseMediaModule
 				return null;
 			}
 			log.info("No Category in Session, creating new " + treeid);
-			if( root == null)
-			{
-				root = inRequest.findValue(name + "root");
-			}
-			if( root  == null )
-			{
-				root = inRequest.findValue("root");
-			}
-
-			Category main = archive.getCategory( root );
-			if ( main == null)
-			{
-				log.error("No such category named " + root);
-				main = archive.getCategoryArchive().getRootCategory();
-				
-			}
-			String treeModel = inRequest.findValue("treeModel");
-			if( treeModel == null)
-			{
-				treeModel = "categoryTreeModel";
-			}
-			CategoryWebTreeModel model = (CategoryWebTreeModel)getModuleManager().getBean(archive.getCatalogId(), treeModel, false);
-			model.setMediaArchive(archive);
-			model.setCatalogId(archive.getCatalogId());
-			model.setRoot(main);
-			model.setCategorySearcher(archive.getCategorySearcher());
-			model.setUserProfile(inRequest.getUserProfile());
-			model.setRequestUtils(getRequestUtils());
 			webTree = new WebTree(model);
 			webTree.setName(name);
 			webTree.setId(treeid);

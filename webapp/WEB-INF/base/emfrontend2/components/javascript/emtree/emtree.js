@@ -7,8 +7,7 @@ $(document).ready(function()
 			var node = $(this).closest('.noderow');
 			var nodeid = node.data('nodeid');
 			var depth = node.data('depth');
-			$('.emtree ul li div').removeClass('selected');
-			
+			tree.find('ul li div').removeClass('selected');
 			
 			var home = $(this).closest(".emtree").data("home");
 			
