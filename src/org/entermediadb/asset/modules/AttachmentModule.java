@@ -99,16 +99,17 @@ public class AttachmentModule extends BaseMediaModule
 		}
 		String firstfile = null;
 
+		if (!asset.isFolder())
+		{
+			AssetEditor editor = (AssetEditor) getModuleManager().getBean("assetEditor");
+			editor.setMediaArchive(archive);
+			editor.makeFolderAsset(asset, inReq.getUser());
+		}
+
 		if( properties.getUploadItems() != null)
 		{
 			for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
 			{
-				if (!asset.isFolder())
-				{
-					AssetEditor editor = (AssetEditor) getModuleManager().getBean("assetEditor");
-					editor.setMediaArchive(archive);
-					editor.makeFolderAsset(asset, inReq.getUser());
-				}
 				String folder = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + asset.getSourcePath();
 				if (!folder.endsWith("/"))
 				{
