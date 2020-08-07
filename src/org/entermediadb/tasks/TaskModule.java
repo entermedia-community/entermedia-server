@@ -589,7 +589,11 @@ public class TaskModule extends BaseMediaModule
 		String collectionid = inReq.getRequestParameter("collectionid");
 		if( collectionid == null)
 		{
-			throw new OpenEditException("No collection id found");
+			collectionid = inReq.getRequestParameter("collectionid.value");
+			if( collectionid == null)
+			{
+				throw new OpenEditException("No collection id found");
+			}
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
