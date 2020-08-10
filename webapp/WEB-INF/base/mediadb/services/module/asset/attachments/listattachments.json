@@ -1,4 +1,8 @@
+#set ($status = "ok")
 {
+ "response":{
+     "status":"$status"
+ },
  "sessionid":"$!attachments.sessionId",
  "page":"$!attachments.page",
  "pages":"$!attachments.totalPages",
