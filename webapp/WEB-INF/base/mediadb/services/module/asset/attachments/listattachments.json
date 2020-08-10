@@ -4,6 +4,7 @@
  "pages":"$!attachments.totalPages",
  "totalsize":"$!attachments.size()",
  "primaryfile":"$!asset.getMediaName()",
+ "id":"$!asset.id",
  "attachments":[
   #foreach( $hit in $attachments )
 	#if( ${foreach.count} != 1), #end 
