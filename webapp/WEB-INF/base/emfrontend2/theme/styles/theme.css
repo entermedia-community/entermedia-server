@@ -260,7 +260,11 @@ ul.list-group.list-group-striped li:nth-of-type(odd){
 .table .trdisabled {
 	background-color:#cacaca;
 }
-
+.table-hover.table-dark  tbody tr:hover
+{
+	background-color: #d4edda!important;
+	color:royalblue;
+}
 /*TR Hovers*/
 tr.emborderhover td,
 .table-hover tbody tr:hover,
