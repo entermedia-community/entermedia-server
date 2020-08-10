@@ -572,6 +572,7 @@ public class TaskModule extends BaseMediaModule
 			log.error("No goals");
 			return;
 		}
+		inReq.putPageValue("goalid", goalid);
 		if( completedby == null)
 		{
 			log.error("No user completedby");
@@ -587,6 +588,7 @@ public class TaskModule extends BaseMediaModule
 			return;
 		}
 		String collectionid = inReq.getRequestParameter("collectionid");
+		
 		if( collectionid == null)
 		{
 			collectionid = inReq.getRequestParameter("collectionid.value");
@@ -595,6 +597,7 @@ public class TaskModule extends BaseMediaModule
 				throw new OpenEditException("No collection id found");
 			}
 		}
+		inReq.putPageValue("collectionid", collectionid);
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
 		Data goal = (Data)goalsearcher.searchById(goalid);
