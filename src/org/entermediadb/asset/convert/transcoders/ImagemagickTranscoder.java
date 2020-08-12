@@ -316,10 +316,19 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					String profilepath = null;
 					if(inStructions.getImageProfile() != null) {
 						profilepath = inStructions.getImageProfile().getContentItem().getAbsolutePath();
+						setValue("profile", profilepath, inStructions, com);
+						Boolean websafecolors = Boolean.parseBoolean(inStructions.get("websafecolors"));
+						if (websafecolors) 
+						{
+							//forces tinyRGB profile for websafecolors
+							com.add("-profile"); 
+							com.add(getPathtoProfile());
+						}
 					} else {
 						profilepath = getPathtoProfile();
+						setValue("profile", profilepath, inStructions, com);
 					}
-					setValue("profile", profilepath, inStructions, com);
+					
 				
 			}
 		}
