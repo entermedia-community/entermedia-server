@@ -903,9 +903,11 @@ String viewbase = null;
 			 */
 			HitTracker hits = searcher.loadPageOfSearch(inReq);
 			inReq.putPageValue("searcher", searcher);
+			
 			if (hits != null)
 			{
-				inReq.putPageValue(hits.getHitsName(), hits);
+				String hitsname = hits.getHitsName();
+				inReq.putPageValue(hitsname, hits);
 			}
 		}
 	}

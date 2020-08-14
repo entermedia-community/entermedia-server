@@ -1,0 +1,19 @@
+#if($type=="asset")
+	#if($rendertype == "image")
+		<i class="fas fa-image"></i>
+	#elseif($rendertype == "video")
+		<i class="fas fa-play"></i>
+	#elseif($rendertype == "document")
+		#if($hit.fileformat == "pdf")
+			<i class="fas fa-file-pdf"></i>
+		#else
+			<i class="fas fa-file"></i>
+		#end
+	#else
+		<i class="fas fa-file"></i>
+	#end
+#elseif($type=="category")
+	<i class="fas fa-folder"></i>
+#else
+
+#end

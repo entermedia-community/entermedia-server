@@ -1,0 +1,40 @@
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>[[Name]]</th>
+			<th>[[Type]]</th>
+			<th>[[Description]]</th>
+			<th>[[Keywords]]</th>
+			<th>[[Date]]</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+	#foreach( $hit in $modulehits.getPageOfHits())
+		$context.putPageValue("hit", $hit)
+		#set($type = $hit.getSearchHit().getType())
+		#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+		$context.putPageValue("type", $type)
+		$context.putPageValue("rendertype", $rendertype)
+		<tr class="emtablerow-$type">
+	     	#if ($type == "asset" || $type == "project" || $type == "task" || $type == "people" || $type =="librarycollection" || $type=="category")
+	     		#set($includetype = $type)
+	     	#else
+	     		#set($includetype = "default")
+	     	#end
+	     	
+	        <td></td>
+	        <td>$pages.include("$componenthome/finder/icon.html",$context) $hit.getName()</td>
+	        <td>$type</td>
+	        <td>$hit.getLongdescription()</td>
+	        <td>$pages.include("$componenthome/finder/tags.html",$context)</td>
+	        <td>$hit.getRecordmodificationdate()</td>
+	     </tr>
+		#end 
+	</tbody>
+	
+	
+</table>
+</div>
