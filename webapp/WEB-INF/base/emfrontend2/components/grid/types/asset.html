@@ -24,7 +24,9 @@
 		        	#set($rendertype="videothumbnail")
 		        	
 		        #end
+		        <a class="stackedplayer" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		        $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		        </a>
 	        </div>
 
 	        $pages.include("$componenthome/grid/tags.html",$context)
