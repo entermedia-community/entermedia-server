@@ -2201,9 +2201,13 @@ String viewbase = null;
 				Data module = archive.getCachedData("module", type);
 				found.add(module);
 			}
-			values.add(data);
+			if(values.size()<4)
+			{
+				values.add(data);
+			}
+			
 		}
-		inReq.putPageValue("organizedModule",found);
+		inReq.putPageValue("organizedModules",found);
 		inReq.putPageValue("organizedHits",bytypes);
 	}
 	
