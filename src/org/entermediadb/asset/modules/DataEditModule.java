@@ -2183,7 +2183,8 @@ String viewbase = null;
 
 	public void organizeHits(WebPageRequest inReq) throws Exception
 	{
-		HitTracker hits = loadHits(inReq);
+		String HitsName = inReq.findValue("hitsname");
+		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
 		Map bytypes = new HashMap();
 		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
