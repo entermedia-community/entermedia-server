@@ -2185,7 +2185,9 @@ String viewbase = null;
 	{
 		String HitsName = inReq.findValue("hitsname");
 		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
+		List found = new ArrayList();
 		Map bytypes = new HashMap();
+		MediaArchive archive = getMediaArchive(inReq);
 		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
@@ -2196,11 +2198,13 @@ String viewbase = null;
 			{
 				values = new ArrayList();
 				bytypes.put(type,values);
+				Data module = archive.getCachedData("module", type);
+				found.add(module);
 			}
 			values.add(data);
 		}
-		//List organizedTypes = new ArrayList(bytypes.keySet());
-		inReq.putPageValue("organizedHitsMap",bytypes);
+		inReq.putPageValue("organizedModule",found);
+		inReq.putPageValue("organizedHits",bytypes);
 	}
 	
 }
