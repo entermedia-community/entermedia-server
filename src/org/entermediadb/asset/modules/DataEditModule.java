@@ -16,13 +16,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
-import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.CompositeData;
@@ -2182,4 +2181,25 @@ String viewbase = null;
 	}
 */
 
+	public void organizeHits(WebPageRequest inReq) throws Exception
+	{
+		HitTracker hits = loadHits(inReq);
+		Map bytypes = new HashMap();
+		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
+		{
+			SearchHitData data = (SearchHitData) iterator.next();
+			String type = data.getSearchHit().getType();
+			
+			Collection values = (Collection) bytypes.get(type);
+			if( values == null)
+			{
+				values = new ArrayList();
+				bytypes.put(type,values);
+			}
+			values.add(data);
+		}
+		//List organizedTypes = new ArrayList(bytypes.keySet());
+		inReq.putPageValue("organizedHitsMap",bytypes);
+	}
+	
 }
