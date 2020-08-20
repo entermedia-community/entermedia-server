@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  <property name="fallbackdirectory">/WEB-INF/base/emfrontend2</property>
   <property name="section">home</property>
   <property name="title">EnterMedia Manager</property>
   <property name="catalogid">system</property>
@@ -42,9 +42,11 @@
 	  
   <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
   
-  <style id="jplayer-css"  href="/${applicationid}/theme/jplayer/premium.pixels/premium-pixels.css"/>
-  <script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
-  <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
+	<!-- Bootstrap -->
+	<script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
+	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
+	<style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<style id="fonts-css"  href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css"/>
   
   <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
 

@@ -1267,6 +1267,17 @@
 		</property>
 	</bean>
 	
+	<bean id="googleCaptcha" class="org.entermediadb.email.GoogleCaptcha" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="postMail"><ref bean="postMail" /></property>
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
 	<bean id="ThemeModule" class="org.entermediadb.asset.modules.ThemeModule" >
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
