@@ -875,7 +875,11 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String collectionid =  inReq.getRequestParameter("collectionid");
-
+		
+		if(collectionid == null) 
+		{
+			collectionid = "*";
+		}
 		//Search for all tasks with updated dates?
 		GregorianCalendar cal = new GregorianCalendar();
 		String monthsback = inReq.getRequestParameter("monthsback");
