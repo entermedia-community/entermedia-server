@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -12,6 +14,7 @@ import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
+import org.entermediadb.asset.modules.DataEditModule;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -20,6 +23,8 @@ import org.openedit.hittracker.SearchQuery;
 
 public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 {
+	private static final Log log = LogFactory.getLog(ElasticModuleSearchSearcher.class);
+
 	//search only modules as specified on the search terms in the query
 	@Override
 	public HitTracker search(SearchQuery inQuery)
@@ -65,7 +70,8 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
-
+		
+		log.info("Found " + hits.size() + " for " + inQuery.toFriendly()) ;
 		
 		return hits;
 	}
