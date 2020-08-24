@@ -3,7 +3,6 @@ package org.entermediadb.websocket.chat;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -265,7 +264,13 @@ public class ChatConnection extends Endpoint implements MessageHandler.Partial<S
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 				String collectionid = (String) map.get("collectionid");
 				/* Get first name */
-				String userid = (String) map.get("user");
+				Object userval = map.get("user");
+				String userid = null;
+				if(userval!= null) {
+				userid= userval.toString();
+
+				}
+				
 				String name = archive.getUser(userid).getFirstName();
 				/* Get project name and save as topic for notification */
 				Object library = archive.getData("librarycollection", collectionid);
