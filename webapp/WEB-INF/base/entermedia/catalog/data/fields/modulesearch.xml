@@ -26,6 +26,12 @@
       <language id="es"><![CDATA[Etiquetas]]></language>  
       <language id="fr"><![CDATA[Tags]]></language> 
     </name> 
+  </property>
+  
+  <property id="ibmfundingsource" index="true" stored="true" editable="true" keyword="true" datatype="number" filter="true"> 
+    <name> 
+	  <language id="en"><![CDATA[Sponsor]]></language>  
+	</name> 
   </property>  
   
 </properties>
