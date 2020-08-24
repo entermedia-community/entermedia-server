@@ -1,0 +1,65 @@
+#set($organizationid = $context.getRequestParameter("collectionid"))
+#if( $errorcode )
+	#if($errorcode=="1")
+		<h1>Error on submit</h1>
+		Invalid Submission. Please  <a href='./createsite.html?collectionid=$!organizationid' style="text-decoration:underline">try again</a>
+	#end
+	#if($errorcode=="2" || $errorcode=="3" )
+		<h1>New Instance Delayed!</h1>
+		<p>Sorry, we are currently experiencing high demand for New Instances. We will deploy your instance and will let you know when is ready.</p> 
+		<p>Please contact the EnterMedia Support Team at <a href='mailto:help@entermediadb.org' style="text-decoration:underline" >help@entermediadb.org</a> if you are in a hurry.</p>
+	#end
+#else
+
+<h1 class="text-center">[[Deploying Instance]]</h1>
+	
+<div id="loading">
+<div class="row">
+	
+	<div class="col-sm-8" style="padding-top:60px; color:#5BA14F; line-height:1.5;">
+		<h3>[[You are less than 30 seconds away from exploring your carefully crafted media database]]...</h3>
+		<p>[[Do not reload your browser until process ends.]]</p>
+	</div>
+	<div class="col-sm-4"><img src="/entermediadb/theme/img/loadingem.gif" class="img-fluid"></div>
+</div>
+</div>
+
+<div id="loaded" style="display:none; padding-top:40px;">
+	#if($userurl)
+		<h2 style="color:#5BA14F; margin-bottom:30px;">[[Your Media Database is ready]]!</h2>
+		<p>[[Your instance URL]]: <strong>${userurl}</strong><br>
+		[[Username]]: <strong>admin</strong><br>
+		[[Password]]: <strong>admin</strong></p>
+		<form action="${userurl}/assets/emshare2/authentication/login.html" method="post">
+			<input type="hidden" name="accountname" value="admin" />
+			<input type="hidden" name="password" value="admin" />
+			<input type="hidden" name="loginokpage" value="/assets/emshare2/" />
+			  <button id="senddata" type="submit" class="btn btn-primary">
+			    [[Go To Your EnterMedia Instance]]
+			  </button>
+		</form>
+		<div style="padding-top:20px; font-size:90%; color:#333;">
+		<hr>
+		##<p>The default trial period is 30 days. After 30 days, the site will automatically be archived unless an extension has been approved.</p>
+	#else
+	<p>Something whent wrong.  Please contact <a href='mailto:help@entermediadb.org'>EnterMedia Support Team</a>.</p>
+	#end
+</div>
+
+
+<script>
+jQuery(document).ready(function() 
+{ 
+	function magic() {
+		$('#loading').delay(6000).fadeOut('slow').promise().done(function(){
+			$('#loaded').delay(2000).fadeIn('slow');
+		});
+		
+	}
+	setTimeout(function(){
+	  magic();
+	}, 20000);
+
+});
+</script>
+#end
