@@ -357,7 +357,6 @@ public class HttpSharedConnection
 		getSharedHeaders().add(header);
 	}
 
-	
 	public void addSharedCookie(String domain, String inKey,String inVal)
 	{
 		BasicClientCookie cookie = new BasicClientCookie(inKey, inVal);
@@ -369,6 +368,10 @@ public class HttpSharedConnection
     	cookieStore.addCookie(cookie);
 	}
 
-	
+
+	public void clearSharedHeaders()
+	{
+		fieldSharedHeaders = null;
+	}
 	
 }
