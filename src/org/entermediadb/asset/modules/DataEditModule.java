@@ -2201,7 +2201,7 @@ String viewbase = null;
 				Data module = archive.getCachedData("module", type);
 				found.add(module);
 			}
-			if(values.size()<4)
+			//if(values.size()<4)
 			{
 				values.add(data);
 			}
