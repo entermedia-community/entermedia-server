@@ -557,6 +557,12 @@ public class TaskModule extends BaseMediaModule
 		String completedby = inReq.getRequestParameter("completedby");
 		String goalid = inReq.getRequestParameter("goalid");
 		String comment = inReq.getRequestParameter("comment");
+		String taskstatus = inReq.getRequestParameter("taskstatus");
+		
+		if(taskstatus==null)
+		{
+			taskstatus = "0";
+		}
 		if( goalid== null)
 		{
 			goalid = inReq.getRequestParameter("id");
@@ -612,7 +618,7 @@ public class TaskModule extends BaseMediaModule
 		/* Added completedby and comment to goal saving */
 		task.setValue("completedby", completedby );
 		task.setValue("comment", comment);
-		task.setValue("taskstatus", 0);
+		task.setValue("taskstatus", taskstatus);
 		
 		task.setValue("projectdepartmentparents",cat.getParentCategories());
 		
