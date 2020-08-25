@@ -1,0 +1,157 @@
+##set($organizationid = $context.getRequestParameter("collectionid"))
+#set($selectedUser = $user)
+##set( $organization = $mediaarchive.query("librarycollectionusers").exact("collectionid", $organizationid).exact("followeruser",$selectedUser.getId()).exact("ontheteam","true").searchOne() )
+		<form class="ajaxform autocloseform showwaiting autoreloadsource" action="/entermediadb/app/authentication/loginformdialog.html" method="post" id="createsiteform">
+		<div class="card card-login mx-auto mt-5">
+		  <div class="card-header">
+		  <strong>[[Customize your Server]]</strong>
+		  </div>
+		  <div class="card-body">
+			
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="user">[[Instance Name]]</label>
+						<input class="form-control" id="instancename" name="instancename" type="text" placeholder="[[Instance Name]]" value="" required data-msg="[[Please enter Instance name]].">
+						
+					</div>
+				</div>
+						<div class="col-sm-6">
+					<div class="form-group">
+						<label for="user">[[Industry]]</label>
+						
+						<select class="form-control" name="organization_type" required data-msg="[[Please enter your Organization Industria Type]].">
+						<option value="accounting">[[Accounting]] </option>
+						<option value="educational">[[Educational]] </option>
+						<option value="entretainment">[[Entertainment]]</option> 
+						<option value="food">[[Food]]</option> 
+						<option value="healthcare">[[Heath Care]]</option>
+						<option value="manufacturing">[[Manufacturing]]</option>
+						<option value="marketingsales">[[Marketing & Sales]]</option>
+						<option value="realestate">[[Real Estate]]</option>
+						<option value="telecomunications">[[Telecommunications]]</option>
+						<option value="transport">[[Transport]]</option>
+						<option value="technology">[[Technology]]</option>
+						<option value="other">[[Other]]</option>
+						</select>
+						
+					</div>
+				</div>
+		
+		 	</div>
+			
+		  
+					<div class="form-group">
+						<label for="user">Preferred Instance URL prefix</label>
+						<input class="form-control" id="organization_url" name="organization_url" type="text" placeholder="URL*" value=""  required>
+						
+					</div>
+		
+					<div class="form-group">
+						<label for="user">[[Select a Region to deploy your trial server]]</label>
+						
+						<select class="form-control" name="region" required data-msg="[[Please select a region]].">
+						#set( $servers = $mediaarchive.query("entermedia_servers").exact("allownewinstances", "true").search() )
+						#if ($servers)
+							#foreach( $server in $servers )
+								#if($server.maxinstance > $server.currentinstances)
+									#set( $region = $mediaarchive.query("server_region").match("id", $server.server_region).searchOne() )
+									<option value="$server.server_region">$region</option>
+								#end
+							#end
+						#end
+						</select>
+					</div>
+	
+			
+						<a id="btn-next" class="emdialog btn btn-sm btn-primary" href="$applink/authentication/loginformdialog.html">Next</a>
+					<div id="deploywarning" style="display:none; padding-left:10px;"><em>[[Please be patient, we will start deploying your instance now...]]</em></div>
+			</div>
+		   
+		  </div>
+		</div>
+		<input type="hidden" name="collectionid" value="$organizationid">
+		</form>
+		
+		<script>
+		
+		var rf = function()
+		{
+			niceURI = $("#instancename").val().toLowerCase().replace(/[^a-zA-Z0-9-_]/g, '');
+			$("#organization_url").val(niceURI.substring(0, 24));
+			
+		
+		}
+		jQuery.validator.addMethod("subdomainvalid", function(value, element) {
+			return this.optional(element) || /^[a-zA-Z0-9\-]+$/i.test(value);
+		}, "Only Alphanumeric with no spaces please");
+		
+		jQuery(document).ready(function() 
+		{ 
+			$("#instancename").on("keyup",function()
+			{
+				rf();
+			});
+			$("#organization_url").on("keyup",function()
+			{
+				//rfv();
+			});
+		
+			
+			$("#createsiteform").validate({
+				ignore: ".ignore",
+			  rules: {
+				organization_url: {
+				  required: true,
+				  maxlength: 20,
+				 subdomainvalid: true,
+				  remote: "verifyurl.html"
+				},
+				hiddenRecaptcha: {
+					 required: function() {
+						 if(grecaptcha.getResponse() == '') {
+							 return true;
+						 } else {
+							 return false;
+						 }
+					 }
+				}
+			  },
+			  messages: {
+				organization_url: {
+				  remote: "That URL is already taken, please try a different URL."
+				}
+			  },
+			  submitHandler: function(form){
+		        $('form input[type=submit]').attr('disabled', 'disabled');
+		        form.submit();
+				}
+			});
+		
+			$("#senddata").on("click", function() 
+			{
+			 	$(this).toggleClass('active');
+			 	$("#deploywarning").show();
+			 	var postData = $(this).serializeArray();
+			    var formURL = $(this).attr("action");
+			    jQuery.ajax(
+			    {
+			        url : formURL,
+			        type: "POST",
+			        data : postData,
+			        success:function(data, textStatus, jqXHR) 
+			        {
+			           //data: return data from server
+			           console.log( jqXHR );
+			           console.log( data );
+			        },
+			        error: function(jqXHR, textStatus, errorThrown) 
+			        {
+			            //if fails      
+			        }
+		    	});
+			 });
+		
+		});
+		</script>
+ 
