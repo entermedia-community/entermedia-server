@@ -36,10 +36,14 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		
 		search.setTypes(searchmodules);
 
-		//Auto added from advancedfilter
+		//TODO: Auto added from advancedfilter
 		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		search.addAggregation(b);
 
+		b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(100);
+		search.addAggregation(b);
+
+		
 		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
 //
 //		AggregationBuilder b = AggregationBuilders.terms("tags_count").field("keywords");
