@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beannameXXX="transientSearcher"> 
+  <property id="synonyms" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">A Word 
+    <name> 
+      <language id="de"><![CDATA[ein Wort]]></language>  
+      <language id="en"><![CDATA[A Word]]></language>  
+      <language id="es"><![CDATA[Una palabra]]></language>  
+      <language id="fr"><![CDATA[Un mot]]></language> 
+    </name> 
+  </property>  
+  <property id="hitcount" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Hit Count 
+    <name> 
+      <language id="de"><![CDATA[Trefferanzahl]]></language>  
+      <language id="en"><![CDATA[Hit Count]]></language>  
+      <language id="es"><![CDATA[Cantidad de aciertos]]></language>  
+      <language id="fr"><![CDATA[Nb]]></language> 
+    </name> 
+  </property>  
+  <property id="timestamp" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Time Stamp 
+    <name> 
+      <language id="de"><![CDATA[Zeitstempel]]></language>  
+      <language id="en"><![CDATA[Time Stamp]]></language>  
+      <language id="es"><![CDATA[Time Stamp]]></language>  
+      <language id="fr"><![CDATA[Time Stamp]]></language> 
+    </name> 
+  </property>  
+  <property id="synonymsenc" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Singular 
+    <name> 
+      <language id="de"><![CDATA[Singular]]></language>  
+      <language id="en"><![CDATA[Singular]]></language>  
+      <language id="es"><![CDATA[Singular]]></language>  
+      <language id="fr"><![CDATA[Singulier]]></language> 
+    </name> 
+  </property>  
+  <property id="hits" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Hits Sortable
+    <name>
+      <language id="de"><![CDATA[Hits sortierbar]]></language>
+      <language id="en"><![CDATA[Hits Sortable]]></language>
+      <language id="es"><![CDATA[Golpea Sortable]]></language>
+      <language id="fr"><![CDATA[Hits Sortable]]></language>
+    </name>
+  </property> 
+  <property id="autopopulated" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" datatype="boolean">
+    <name>
+      <language id="en"><![CDATA[Auto Populated]]></language>  
+    </name> 
+  </property>  
+</properties>

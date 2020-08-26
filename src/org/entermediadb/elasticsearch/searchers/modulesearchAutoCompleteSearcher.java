@@ -21,9 +21,9 @@ import org.openedit.OpenEditException;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
-public class ElasticModuleSearchSearcher extends BaseElasticSearcher
+public class modulesearchAutoCompleteSearcher extends BaseElasticSearcher
 {
-	private static final Log log = LogFactory.getLog(ElasticModuleSearchSearcher.class);
+	private static final Log log = LogFactory.getLog(modulesearchAutoCompleteSearcher.class);
 
 	//search only modules as specified on the search terms in the query
 	@Override
@@ -40,20 +40,12 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		search.addAggregation(b);
 
-		b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(500); 
-		search.addAggregation(b);
-
-		b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" + ".exact").size(100); //Used for type aheads
+		b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" + ".exact").size(100);
 		search.addAggregation(b);
 
 		
-		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
-//
-//		AggregationBuilder b = AggregationBuilders.terms("tags_count").field("keywords");
-//		SumBuilder sum = new SumBuilder("assettype_sum");
-//		sum.field("filesize");
-//		b.subAggregation(sum);
-//		search.addAggregation(b);
+		//b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(100);
+		//search.addAggregation(b);
 
 		search.setRequestCache(false);  //What does this do?
 
@@ -68,7 +60,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//addFacets(inQuery, search);
 
 		addSearcherTerms(inQuery, search);
-		addHighlights(inQuery, search);
+		//addHighlights(inQuery, search);
 		search.setRequestCache(true);
 
 		//search.toString()
@@ -79,6 +71,11 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		hits.setSearchQuery(inQuery);
 		
 		log.info("Found " + hits.size() + " for " + inQuery.toFriendly()) ;
+		
+		
+		hits.getFilterOptions();
+		
+		
 		
 		return hits;
 	}

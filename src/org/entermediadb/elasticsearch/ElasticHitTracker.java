@@ -45,7 +45,7 @@ public class ElasticHitTracker extends HitTracker
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
 	protected SearcherManager fieldSearcherManager;
-	protected List fieldTopfacets ;
+	protected List<FilterNode> fieldTopfacets ;
 	
 	
 	
@@ -225,13 +225,13 @@ public class ElasticHitTracker extends HitTracker
 					
 					if(fieldTopfacets == null && response.getAggregations() != null ) 
 					{
-						fieldTopfacets = new ArrayList();
+						fieldTopfacets = new ArrayList<FilterNode>();
 						loadFilterOptions(response); //This will load the data
 					    getSearcheRequestBuilder().setAggregations(new HashMap());
 					}
 					else
 					{
-						fieldTopfacets = new ArrayList();
+						fieldTopfacets = new ArrayList<FilterNode>();
 					    getSearcheRequestBuilder().setAggregations(new HashMap());
 					}
 				}
@@ -241,13 +241,11 @@ public class ElasticHitTracker extends HitTracker
 	}
 	
 	
-	public List getFilterOptions()
+	public List<FilterNode> getFilterOptions()
 	{
-		
 		if (fieldTopfacets == null)
 		{
 			getSearchResponse(0);//This will cause the aggregations to be loaded
-			
 		}
 
 		return fieldTopfacets;

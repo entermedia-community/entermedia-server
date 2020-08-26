@@ -29,6 +29,7 @@
 	<bean id="emailSearcher" bean="elasticDataSearcher" />
 	<bean id="uploadqueueSearcher" bean="elasticDataSearcher" />
 	<bean id="assetAutoCompleteSearcher" bean="assetAutoCompleteElasticSearcher" />
+	<bean id="modulesearchAutoCompleteSearcher" bean="elasticAutoCompleteSearcher" />
 	<bean id="dynamicLogSearcher" bean="elasticLogSearcher" />
 
 	<bean id="nodeManager" bean="elasticNodeManager" />

@@ -376,6 +376,9 @@ public class AutoCompleteModule extends DataEditModule
 			query.setSortBy("hitsDown");
 	
 			//	log.info("searching in : " + searcher.getCatalogId() +"/" + searcher.getSearchType() + "/" + searchString);
+			
+			//defaults to hits name of "$suggestions"
+			
 			HitTracker wordsHits = searcher.cachedSearch(inReq, query);
 			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
 			{
