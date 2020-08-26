@@ -234,7 +234,7 @@ uiload = function() {
 		.on('select2:select', function (e) {
 			var thevalue = $(this).val();
 			if (thevalue != '' && $(this).hasClass("autosubmited")) {
-				var theform =$(this).parents("form")
+				var theform =$(this).parent("form")
 				if (theform.hasClass("autosubmitform")) {
 					theform.trigger("submit");
 				}
@@ -1276,7 +1276,7 @@ uiload = function() {
 									if (theinput.hasClass("selectautosubmit")) {
 										if (selectedid) {
 											//var theform = $(this).closest("form");
-											var theform =$(this).parents("form")
+											var theform =$(this).parent("form")
 											if (theform.hasClass("autosubmitform")) {
 												theform.trigger("submit");
 											}
