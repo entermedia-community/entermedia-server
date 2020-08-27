@@ -132,9 +132,14 @@ public class FileUpload
 		}
 
 		String type = inContext.getRequest().getContentType();
-		if (type == null || !type.startsWith("multipart"))
+		if (type == null && type.startsWith("application/json"))
 		{
-			addAlreadyUploaded(inContext, upload);
+			inContext.getJsonRequest(); //This will read in the body and setup the parameters
+			return upload;
+		}
+		else if (type == null || !type.startsWith("multipart"))
+		{
+			//Old Stuff addAlreadyUploaded(inContext, upload);
 			return upload;
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
