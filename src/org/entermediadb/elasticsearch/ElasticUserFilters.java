@@ -114,7 +114,12 @@ public class ElasticUserFilters implements UserFilters
 			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
 				FilterNode filterNode = (FilterNode) iterator.next();
-				options.put(filterNode.getPropertyDetail().getId(), filterNode);
+				PropertyDetail detail = filterNode.getPropertyDetail();
+				if (detail == null) {
+					log.error("Filter got Null property:" + filterNode.getName());
+				} else {
+					options.put(detail.getId(), filterNode);
+				}
 			}
 		}
 		return options;
