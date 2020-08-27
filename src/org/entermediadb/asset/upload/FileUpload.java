@@ -132,7 +132,7 @@ public class FileUpload
 		}
 
 		String type = inContext.getRequest().getContentType();
-		if (type == null && type.startsWith("application/json"))
+		if (type != null && type.startsWith("application/json"))
 		{
 			inContext.getJsonRequest(); //This will read in the body and setup the parameters
 			return upload;
