@@ -6,12 +6,20 @@
       <language id="en"><![CDATA[categories]]></language> 
     </name> 
   </property>  
-  <property id="caption" index="true" filter="false" legacy="description" editable="true" stored="true" sortable="true" keyword="false">New
+  <property id="caption" index="true" filter="false" legacy="description" editable="true" stored="true" sortable="true" keyword="false">New 
+    <name> 
+      <language id="de"><![CDATA[Description]]></language>  
+      <language id="en"><![CDATA[Description]]></language>  
+      <language id="es"><![CDATA[descripción]]></language>  
+      <language id="fr"><![CDATA[Description]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
     <name>
-      <language id="de"><![CDATA[Description]]></language>
-      <language id="en"><![CDATA[Description]]></language>
-      <language id="es"><![CDATA[descripción]]></language>
-      <language id="fr"><![CDATA[Description]]></language>
+      <language id="de"><![CDATA[Id]]></language>
+      <language id="en"><![CDATA[Id]]></language>
+      <language id="es"><![CDATA[Id]]></language>
+      <language id="fr"><![CDATA[Id]]></language>
     </name>
   </property>
 </properties>

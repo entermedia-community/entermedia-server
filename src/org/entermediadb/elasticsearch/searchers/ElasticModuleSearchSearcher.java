@@ -68,7 +68,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//addFacets(inQuery, search);
 
 		addSearcherTerms(inQuery, search);
-		addHighlights(inQuery, search);
+		//addHighlights(inQuery, search);
 		search.setRequestCache(true);
 
 		//search.toString()

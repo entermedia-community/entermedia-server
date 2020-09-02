@@ -333,7 +333,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isHighlight())
 			{
-				search.addHighlightedField(detail.getId(), 80);
+				search.addHighlightedField(detail.getId(), 60);
 			}
 		}
 

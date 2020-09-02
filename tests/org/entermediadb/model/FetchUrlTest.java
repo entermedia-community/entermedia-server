@@ -1,5 +1,8 @@
 package org.entermediadb.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
@@ -39,4 +42,25 @@ public class FetchUrlTest extends BaseEnterMediaTest
 
 		//they are all attachments to the main folder
 	}
+	
+	public void testReplace()
+	{
+		String text = "Hey abc this code ABC";
+		String input = "Abc";
+		
+		 Pattern p = Pattern.compile(input,
+		            Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+		
+		 Matcher match = p.matcher(text);
+//		 if( match.groupCount() == 0)
+//		 {
+//			 
+//		 }
+		 String fixed = match.replaceAll("<em>$0</em>");
+		 
+		 int start = fixed.indexOf("<em>");
+		 assertTrue( start > -1);
+
+	}
+	
 }

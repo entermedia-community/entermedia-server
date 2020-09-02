@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -641,5 +642,25 @@ public class ElasticHitTracker extends HitTracker
 		selecteddata.setHitsPerPage(getHitsPerPage());
 		return selecteddata;
 	}
+
+//	public String highlight(Object inHit, String inField, int size)
+//	{
+//		if( inHit instanceof SearchHitData )
+//		{
+//			StringBuffer out = new StringBuffer();
+//			SearchHitData data = (SearchHitData)inHit;
+//			List rows = data.getHighlights(inField);
+//			if( rows != null)
+//			{
+//				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
+//				{
+//					String row = (String) iterator.next();
+//					out.append(row);
+//					out.append(" ");
+//				}
+//			}
+//			return out.toString(); //TODO: Clean up
+//		}
+//}
 	
 }
