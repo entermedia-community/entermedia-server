@@ -55,8 +55,9 @@
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
   <script id="results" src="/${applicationid}/components/javascript/results.js"/>
   
-  <script id="select2" src="/${applicationid}/components/javascript/select2/js/select2.js"/>
-  <style id="select2-css" href="/${applicationid}/components/javascript/select2/css/select2.css"/>  
+	<script id="select2" src="/${applicationid}/components/javascript/select2/4.0.6/js/select2.full.js"/>
+	<style  id="select2-css" href="/${applicationid}/components/javascript/select2/4.0.6/css/select2.css"/>
+	
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   
