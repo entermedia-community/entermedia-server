@@ -1,5 +1,6 @@
 package org.entermediadb.model;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -79,7 +80,9 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		TranscodeTools manager = archive.getTranscodeTools();
 
 		ConversionManager videotool = manager.getManagerByFileFormat("mp4");
-		ConvertInstructions instructions1 = videotool.createInstructions(archive.getAsset("101"), "video.mp4");
+		Asset asset = archive.getAsset("101");
+		assertTrue("Asset is missing",asset != null);
+		ConvertInstructions instructions1 = videotool.createInstructions(asset, "video.mp4");
 		instructions1.setForce(true);
 		
 		ConvertResult result = videotool.createOutput(instructions1);
@@ -89,7 +92,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		assertTrue(result.getOutput().getLength() > 0);
 		assertEquals("mp4", PathUtilities.extractPageType(result.getOutput().getPath()));
 
-		ConvertInstructions instructions = videotool.createInstructions(archive.getAsset("101"), "image1024x768.jpg");
+		ConvertInstructions instructions = videotool.createInstructions(asset, "image1024x768.jpg");
 	//	instructions.setForce(true);
 		//instructions.setAssetSourcePath("users/admin/101");
 
