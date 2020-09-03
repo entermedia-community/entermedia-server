@@ -1,3 +1,4 @@
+<div id="snapshotdetails">
 #set( $siteid = $context.getRequestParameter("siteid") )
 #set ($site = $searcherManager.getData("system","site",$siteid))
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
@@ -35,3 +36,4 @@
 		</form>				
 	</div>
 #end
+</div>

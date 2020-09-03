@@ -50,11 +50,11 @@
 
 	<div  style="margin-right: 0;padding:20px;">
 	
-		<form class="ajaxform" targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
+		<form class="ajaxform autosubmitform" targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
 			<input type="hidden" id="list-sitevalue" name="siteid" value="$site.id" />  
 			<input type="hidden" name="oemaxlevel" value="1" />
 			#set( $detail = $searcher.getDetail("name"))
-			<select name="selectedsitesnapshot" style="min-width:250px;" class="listautocomplete selectautosubmit " data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
+			<select name="selectedsitesnapshot" style="min-width:250px;" class="form-control-sm listautocomplete autosubmited select2" data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
 				 data-placeholder="$detail.getText($context)" data-sortby="nameDown" data-searchfield="name">
 
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
@@ -69,9 +69,9 @@
 			<a class="mbtn emdialog"  title="[[Save Config]]" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid&configonly=true">[[Create With Config]]</a><br><br><br>
 			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">[[Import]]</a>
 		</div>
-		<div id="snapshotdetails">
+		
 		$pages.include("/manager/views/sites/snapshotdetails.html")
-		</div>
+		
 	
 	</div>	
 </div>
