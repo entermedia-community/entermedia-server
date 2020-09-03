@@ -1166,7 +1166,6 @@ uiload = function() {
                             }
 							theinput
 									.select2({
-										theme : "bootstrap4",
 										placeholder : defaulttext,
 										allowClear : allowClear,
 										minimumInputLength : 0,
