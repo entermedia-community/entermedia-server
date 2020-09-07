@@ -1,3 +1,5 @@
 <servers>
 <server id="net3" listingurl="https://netevolved.com/plugins/netevolved.xml" caption="External community">NetEvolved (Dev)</server>		
+<server id="net4" listingurl="http://localhost:8080/plugins/netevolved.xml" caption="Local Installs">Local</server>		
+
 </servers>
