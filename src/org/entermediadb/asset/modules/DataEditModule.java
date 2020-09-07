@@ -2180,35 +2180,5 @@ String viewbase = null;
 
 	}
 */
-
-	public void organizeHits(WebPageRequest inReq) throws Exception
-	{
-		String HitsName = inReq.findValue("hitsname");
-		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
-		List found = new ArrayList();
-		Map bytypes = new HashMap();
-		MediaArchive archive = getMediaArchive(inReq);
-		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
-		{
-			SearchHitData data = (SearchHitData) iterator.next();
-			String type = data.getSearchHit().getType();
-			
-			Collection values = (Collection) bytypes.get(type);
-			if( values == null)
-			{
-				values = new ArrayList();
-				bytypes.put(type,values);
-				Data module = archive.getCachedData("module", type);
-				found.add(module);
-			}
-			//if(values.size()<4)
-			{
-				values.add(data);
-			}
-			
-		}
-		inReq.putPageValue("organizedModules",found);
-		inReq.putPageValue("organizedHits",bytypes);
-	}
 	
 }
