@@ -45,6 +45,9 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 
 		b = AggregationBuilders.terms("ibmfilename").field("ibmfilename" + ".exact").size(100); //Used for type aheads
 		search.addAggregation(b);
+		
+		b = AggregationBuilders.terms("trackedtopics").field("trackedtopics").size(10); 
+		search.addAggregation(b);
 
 		
 		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
