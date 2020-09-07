@@ -9,6 +9,7 @@
 	<property name="wardir" location="${build}/wartmp"/>
 	<property name="webinf" location="WEB-INF"/>
 	<property name="workdir" location="${build}/unpacked" />
+	<property name="remotehome" value="http://dev.ijsolutions.ca/jenkins/job" />
 
 	<target name="clean">
 		<!-- do nothing -->
@@ -17,7 +18,7 @@
 	<target name="update-dependencies" depends="clean">
 		<delete dir="${build}"/>
 		<mkdir dir="${build}"/>
-		<get src="http://dev.entermediasoftware.com/jenkins/job/@BRANCH@entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
+		<get src="${remotehome}/@BRANCH@entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
 	</target>
 
 	<target name="unwar" depends="update-dependencies">
