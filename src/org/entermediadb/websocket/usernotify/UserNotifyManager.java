@@ -134,7 +134,7 @@ public class UserNotifyManager
 //			message = message.replaceAll("null", "\"null\"");
 			String command = (String)map.get("command");
 			//getDesktop().setLastCommand(command);
-			if ("login".equals(command) || inConnection.getUserId() == null) //Return all the annotation on this asset
+			if ("login".equals(command)) //Return all the annotation on this asset
 			{
 				receiveLogin(inConnection,map);
 			}	
