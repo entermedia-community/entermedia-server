@@ -1,4 +1,4 @@
-<p>[[Notifications for User]]: $followeruser</p>
+<p>[[Notifications for User ]]: $followeruser</p>
 
 
 #foreach( $topicmod in $topicmods)
@@ -9,7 +9,7 @@
 #set( $collection = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 #set( $topic = $mediaarchive.getCachedData("collectiveproject",$topicid) )
 <div>
-	<a href="$context.siteRoot$apphome/collective/community/index.html?collectionid=${collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
+	<a href="$context.siteRoot$applink/collective/community/index.html?collectionid=${collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
 	
 	#set( $messages = $mediaarchive.query("chatterbox").exact("channel",$topicid).after("date",$messagessince).sort("date").search() )
 	#foreach($chat in $messages)
