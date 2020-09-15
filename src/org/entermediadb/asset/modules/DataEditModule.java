@@ -22,6 +22,7 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.CompositeData;
@@ -2096,23 +2097,29 @@ String viewbase = null;
 		{
 			name= "hits";
 		}
-
-		HitTracker hits = (HitTracker)inReq.getPageValue(name);
-		if( hits != null)
+		String[] types = MultiValued.VALUEDELMITER.split(name);
+		for (int i = 0; i < types.length; i++)
 		{
-			SearchQuery query = hits.getSearchQuery();
-			if (query.isEndUserSearch())
+			String one  = types[i];
+			HitTracker hits = (HitTracker)inReq.getPageValue(one);
+			if( hits != null && hits.getUserFilterValues() == null)
 			{
-				UserFilters filters = loadUserFilters(inReq);
-				if( filters == null)
+				SearchQuery query = hits.getSearchQuery();
+				if (query.isEndUserSearch())
 				{
-					return;
+					UserFilters filters = loadUserFilters(inReq);
+					if( filters == null)
+					{
+						return;
+					}
+					Map values = filters.getFilterValues(hits);
+					inReq.putPageValue(one+"userfiltervalues", values);
+					filters.flagUserFilters(hits);
+					
+					hits.setUserFilterValues(values);
 				}
-				Map values = filters.getFilterValues(hits);
-				inReq.putPageValue(name+"userfiltervalues", values); 
-				filters.flagUserFilters(hits);
 			}
-		}	
+		}
 	}
 
 	public UserFilters loadUserFilters(WebPageRequest inReq)
