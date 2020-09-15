@@ -4,6 +4,11 @@
 <path-action name="DataEditModule.search">
 	<searchtype>${module}</searchtype>
 </path-action>
+
+<path-action name="DataEditModule.loadFacetsForUser">
+</path-action>	
+
+
 <page-action name="ProfileModule.saveProperties"/>
 <property name="tab">profile</property>
 
