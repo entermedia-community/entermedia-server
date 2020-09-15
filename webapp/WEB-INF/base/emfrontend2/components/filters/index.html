@@ -110,7 +110,7 @@
 			$context.putPageValue("searchform", true)
 			#if ($detail.isLeaf())
 				#if ($detail.isFilter())
-					#set($filternode = $hitsuserfiltervalues.get($detail.id))
+					#set($filternode = $hits.getUserFilterValue($detail.id))
 					$context.putPageValue("filternode",$filternode)
 					#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))
 						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
