@@ -40,6 +40,16 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		search.addAggregation(b);
 
+		b = AggregationBuilders.terms("ibmsdl_source_type").field("ibmsdl_source_type").size(20); 
+		search.addAggregation(b);
+
+		b = AggregationBuilders.terms("ibmentitycompany").field("ibmentitycompany").size(20); 
+		search.addAggregation(b);
+
+		b = AggregationBuilders.terms("ibmentitypeople").field("ibmentitypeople").size(20); 
+		search.addAggregation(b);
+
+		
 		b = AggregationBuilders.terms("ibmfundingSource").field("ibmfundingSource").size(500); 
 		search.addAggregation(b);
 
