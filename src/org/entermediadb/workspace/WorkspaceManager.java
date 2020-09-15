@@ -214,6 +214,9 @@ public class WorkspaceManager
 		String mid = module.getId();
 		String basepath = "default";
 		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
+		
+		//TODO: Can we remove this one day?
+		
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
 		PageSettings homesettings = home.getPageSettings();
 		PageSettings modulesettings = settings.getPageSettings();
