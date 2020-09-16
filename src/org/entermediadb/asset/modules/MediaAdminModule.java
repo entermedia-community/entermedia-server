@@ -775,4 +775,30 @@ public class MediaAdminModule extends BaseMediaModule
 		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
 
 	}
+
+
+	public void createModulePath(WebPageRequest inReq)  throws Exception
+	{
+		String moduleid = inReq.findValue("moduleid");
+		if( moduleid == null)
+		{
+			moduleid = PathUtilities.extractDirectoryName( inReq.getPath() ); 
+			if( inReq.getPath().endsWith("/views/modules/" + moduleid + "/index.html"))
+			{
+				String applicationid = inReq.findValue("applicationid");
+				Page item = getPageManager().getPage("/" + applicationid + "/views/modules/" + moduleid + "/_site.xconf");
+				if( !item.exists() )
+				{
+					String catalogid = inReq.findValue("catalogid");
+					Data module = getSearcherManager().getData(catalogid, "module", moduleid);
+		
+					getWorkspaceManager().saveModule(catalogid, applicationid, module);
+					getPageManager().clearCache();
+				}			
+			}	
+
+		}
+		
+	}
+
 }

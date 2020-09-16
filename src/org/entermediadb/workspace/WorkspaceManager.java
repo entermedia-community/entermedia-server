@@ -204,7 +204,6 @@ public class WorkspaceManager
 			createTable(catalogid, module.getId(), module.getId());
 		}
 		
-		//getPageManager().clearCache();
 				
 		
 	}
