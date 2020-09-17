@@ -3,6 +3,7 @@ package org.entermediadb.elasticsearch.searchers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.entermediadb.asset.modules.DataEditModule;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -36,6 +38,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		
 		search.setTypes(searchmodules);
 
+		/*
 		//TODO: Auto added from advancedfilter
 		AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords" + ".exact").size(100);
 		search.addAggregation(b);
@@ -58,7 +61,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		
 		b = AggregationBuilders.terms("trackedtopics").field("trackedtopics").size(10); 
 		search.addAggregation(b);
-
+	*/
 		
 		//AggregationBuilder b = AggregationBuilders.terms("keywords").field("keywords");
 //
@@ -71,7 +74,9 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		search.setRequestCache(false);  //What does this do?
 
 		BoolQueryBuilder terms = buildTerms(inQuery);
-		
+
+		addFacets(inQuery,search);
+
 		TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
 		terms.mustNot(deleted);
 		
