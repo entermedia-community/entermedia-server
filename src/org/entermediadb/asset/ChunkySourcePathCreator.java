@@ -39,7 +39,7 @@ public class ChunkySourcePathCreator implements SourcePathCreator
 		StringBuffer sourcepath = new StringBuffer();
 		
 		//cut off the last part of the id +3
-		for (int i = 0; i < inStoragePath.length(); i++)
+		for (int i = 0; i < cleanedup.length(); i++)
 		{
 			if( i > 0 && (i % getSplitSize()) == 0)
 			{
