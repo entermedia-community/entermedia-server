@@ -52,7 +52,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
-	protected OutputFiller filler = new OutputFiller();
 
 	protected boolean fieldOptimizeReindex = true;
 	public boolean isOptimizeReindex()
@@ -63,30 +62,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	public void setOptimizeReindex(boolean inOptimizeReindex)
 	{
 		fieldOptimizeReindex = inOptimizeReindex;
-	}
-
-	protected boolean fieldIncludeFullText = true;
-	
-	protected int fieldFullTextCap = 25000;
-	
-	public int getFullTextCap()
-	{
-		return fieldFullTextCap;
-	}
-
-	public void setFullTextCap(int inFullTextCap)
-	{
-		fieldFullTextCap = inFullTextCap;
-	}
-
-	public boolean isIncludeFullText()
-	{
-		return fieldIncludeFullText;
-	}
-
-	public void setIncludeFullText(boolean inIncludeFullText)
-	{
-		fieldIncludeFullText = inIncludeFullText;
 	}
 
 	public Data createNewData()
@@ -395,30 +370,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
-			if (isIncludeFullText() && Boolean.parseBoolean(asset.get("hasfulltext")))
-			{
-				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/assets/" + asset.getSourcePath() + "/fulltext.txt");
-				if (item.exists())
-				{
-					Reader input = null;
-					try
-					{
-						input = new InputStreamReader(item.getInputStream(), "UTF-8");
-						StringWriter output = new StringWriter();
-						filler.setMaxSize(getFullTextCap());
-						filler.fill(input, output);
-						fullDesc.append(output.toString());
-					}
-					catch (IOException ex)
-					{
-						log.error(ex);
-					}
-					finally
-					{
-						filler.close(input);
-					}
-				}
-			}
+			populateFullText(asset, fullDesc);
 		}
 //		if (fullDesc.length() > getFullTextCap())
 //		{

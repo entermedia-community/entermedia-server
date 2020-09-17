@@ -1,6 +1,9 @@
 package org.entermediadb.elasticsearch.searchers;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -100,11 +103,16 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
+import org.openedit.util.OutputFiller;
 
 import groovy.json.JsonOutput;
+
+
 
 public class BaseElasticSearcher extends BaseSearcher
 {
@@ -124,6 +132,54 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected long fieldIndexId = System.currentTimeMillis();
 	protected CacheManager fieldCacheManager;
 	protected ArrayList<String> fieldSearchTypes;
+	protected boolean fieldIncludeFullText = true;
+	protected OutputFiller fieldFiller;
+	protected PageManager fieldPageManager;
+	public PageManager getPageManager()
+	{
+		if (fieldPageManager == null)
+		{
+			fieldPageManager = (PageManager)getModuleManager().getBean("pageManager");
+		}
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager pageManager)
+	{
+		fieldPageManager = pageManager;
+	}
+	
+	
+	protected OutputFiller getFiller()
+	{
+		if (fieldFiller == null)
+		{
+			fieldFiller = new OutputFiller();
+		}
+		return fieldFiller;
+	}
+	protected int fieldFullTextCap = 25000;
+	
+	public int getFullTextCap()
+	{
+		return fieldFullTextCap;
+	}
+
+	public void setFullTextCap(int inFullTextCap)
+	{
+		fieldFullTextCap = inFullTextCap;
+	}
+
+	public boolean isIncludeFullText()
+	{
+		return fieldIncludeFullText;
+	}
+
+	public void setIncludeFullText(boolean inIncludeFullText)
+	{
+		fieldIncludeFullText = inIncludeFullText;
+	}
+
 
 	public ArrayList<String> getSearchTypes()
 	{
@@ -2345,6 +2401,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						StringBuffer desc = new StringBuffer();
 						populateKeywords(desc, inData, inDetails);
+						//populateFullText(inData, desc);
+
 						if (desc.length() > 0)
 						{
 							value = desc.toString();
@@ -3326,4 +3384,33 @@ public class BaseElasticSearcher extends BaseSearcher
 		return hits;
 	}
 
+	protected void populateFullText(Data data, StringBuffer fullDesc)
+	{
+		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
+		{
+			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "/" + data.getSourcePath() + "/fulltext.txt");
+			if (item.exists())
+			{
+				Reader input = null;
+				try
+				{
+					input = new InputStreamReader(item.getInputStream(), "UTF-8");
+					StringWriter output = new StringWriter();
+					getFiller().setMaxSize(getFullTextCap());
+					getFiller().fill(input, output);
+					fullDesc.append(output.toString());
+				}
+				catch (IOException ex)
+				{
+					log.error(ex);
+				}
+				finally
+				{
+					getFiller().close(input);
+				}
+			}
+		}
+	}
+
+	
 }

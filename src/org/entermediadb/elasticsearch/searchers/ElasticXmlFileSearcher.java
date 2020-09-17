@@ -47,7 +47,6 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 	protected String fieldPrefix;
 	protected String fieldDataFileName;
 	protected SourcePathCreator fieldSourcePathCreator;
-	protected PageManager fieldPageManager;
 	protected IntCounter fieldIntCounter;
 //	GetMappingsRequest find = new GetMappingsRequest().types(getSearchType()); 
 //	GetMappingsResponse found = admin.indices().getMappings(find).actionGet();
@@ -97,16 +96,6 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 //	GetMappingsResponse found = admin.indices().getMappings(find).actionGet();
 //	if( !found.isContextEmpty())
 
-
-	public PageManager getPageManager()
-	{
-		return fieldPageManager;
-	}
-
-	public void setPageManager(PageManager pageManager)
-	{
-		fieldPageManager = pageManager;
-	}
 
 	public String getPathToData()
 	{//		GetMappingsRequest find = new GetMappingsRequest().types(getSearchType()); 

@@ -89,14 +89,22 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//addHighlights(inQuery, search);
 		search.setRequestCache(true);
 
+		if (!inQuery.isIncludeDescription())
+		{
+			search.setFetchSource(null, "description");
+		}
+		long start = System.currentTimeMillis();
+		
 		//search.toString()
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, 80);
 		hits.setSearcherManager(getSearcherManager());
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
+		hits.size(); //load it up
+		long end = System.currentTimeMillis();
 		
-		log.info("Found " + hits.size() + " for " + inQuery.toFriendly()) ;
+		log.info("Found " + hits.size() + " in " + ((end-start)) + " milli-seconds for " + search) ;
 		
 		return hits;
 	}

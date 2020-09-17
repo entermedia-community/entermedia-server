@@ -125,15 +125,20 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	}
 
 	
-	
-
-	
-	
 	@Override
 	public Object getValue(String inId) {
 		if (inId == null) {
 			return null;
 		}
+
+		if ("fulltext".equals(inId))
+		{
+			if (getSearcher() != null)
+			{
+				return getSearcher().getFulltext(this);
+			}
+		}
+
 		Object svalue = getMap().getObject(inId);
 		if( svalue == ValuesMap.NULLVALUE)
 		{
