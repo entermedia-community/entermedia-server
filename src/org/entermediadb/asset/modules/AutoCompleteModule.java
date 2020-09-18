@@ -460,7 +460,9 @@ public class AutoCompleteModule extends DataEditModule
 		String value = inReq.getRequestParameter("description.value");
 		if( value != null)
 		{
-			HitTracker hits = archive.query("trackedtopics").contains("keywords", value ).search();
+			//Search trackedtopics and anything else that is a list within modulesearch 
+			HitTracker hits = archive.query("modulesearchkeyword").startsWith("name", value ).sort("name").search();
+			//HitTracker hits = archive.query("trackedtopics").contains("keywords", value ).search();
 			inReq.putPageValue("topichits",hits);
 			return hits;
 		}

@@ -18,6 +18,15 @@
     </name> 
   </property>
   
+  <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
+    <name> 
+      <language id="de"><![CDATA[All Fields]]></language>  
+      <language id="en"><![CDATA[All Fields]]></language>  
+      <language id="es"><![CDATA[Todos]]></language>  
+      <language id="fr"><![CDATA[Tous les champs]]></language> 
+    </name> 
+  </property> 
+  
   <property id="keywords" viewtype="tageditor" keyword="true" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags" filter="true"   sortable="true">Tags 
     <name> 
       <language id="de"><![CDATA[Tags]]></language>  

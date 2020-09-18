@@ -21,7 +21,7 @@
 	<bean id="categoryArchive" bean="elasticCategoryArchive" />
 	<bean id="librarycollectionSearcher" bean="elasticLibraryCollectionSearcher" />
 	<bean id="modulesearchSearcher" bean="elasticModuleSearchSearcher" />
-
+	<bean id="modulesearchkeywordSearcher" bean="elasticModuleSearchKeywordSearcher" />
 
 
 	<!--  Little used -->

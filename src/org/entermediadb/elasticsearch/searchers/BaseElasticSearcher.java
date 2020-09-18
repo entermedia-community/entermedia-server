@@ -3384,6 +3384,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		return hits;
 	}
 
+	@Override
+	public Object getFulltext(Data inSearchHitData)
+	{
+		StringBuffer out = new StringBuffer();
+		populateFullText(inSearchHitData, out);
+		return out.toString();
+	}
+	
 	protected void populateFullText(Data data, StringBuffer fullDesc)
 	{
 		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
