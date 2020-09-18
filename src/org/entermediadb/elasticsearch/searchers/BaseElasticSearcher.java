@@ -2799,11 +2799,16 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
 		log.info("Deleted all records database " + getSearchType());
-		// DeleteByQueryRequestBuilder delete =
-		// getClient().prepareDeleteByQuery(toId(getCatalogId()));
-		// delete.setTypes(getSearchType());
-		// delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
-		HitTracker all = getAllHits();
+//		 DeleteByQueryRequestBuilder delete =
+//		 getClient().prepareDeleteByQuery(toId(getCatalogId()));
+//		 delete.setTypes(getSearchType());
+//		 delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
+		
+		org.openedit.data.QueryBuilder q = query().all();
+		
+		q.getQuery().setIncludeDeleted(true);
+		
+		HitTracker all = q.search();
 		all.enableBulkOperations();
 		deleteAll(all, inUser);
 
@@ -2817,20 +2822,22 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		if( recordstatus != null)
 		{
-			saveToElasticSearch(details, inData, true, inUser);
-		}
-		else
-		{
-			//We should not do this as much for some tables
-			String id = inData.getId();
-			//log.info(id.length());
-			DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-			if (inData.get("_parent") != null)
+			if( inUser == null)
 			{
-				delete.setParent(inData.get("_parent"));
+				saveToElasticSearch(details, inData, true, inUser);
+				clearIndex();
+				return;
 			}
-			delete.setRefresh(true).execute().actionGet();
 		}
+		//We should not do this as much for some tables
+		String id = inData.getId();
+		//log.info(id.length());
+		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+		if (inData.get("_parent") != null)
+		{
+			delete.setParent(inData.get("_parent"));
+		}
+		delete.setRefresh(true).execute().actionGet();
 		clearIndex();
 		
 	}
@@ -3396,7 +3403,8 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
 		{
-			ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "/" + data.getSourcePath() + "/fulltext.txt");
+			String path = "/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "/" + data.getSourcePath() + "/fulltext.txt";
+			ContentItem item = getPageManager().getRepository().getStub(path);
 			if (item.exists())
 			{
 				Reader input = null;
