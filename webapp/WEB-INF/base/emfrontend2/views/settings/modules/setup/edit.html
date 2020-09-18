@@ -1,7 +1,7 @@
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="$home$apphome/views/settings/modules/setup/save.html" target="_top">
 #set( $id = $context.getRequestParameter("id") )
 <table class="settings-table table table-striped">
-	<tr id="inputarea_name">
+	<tr>
 		<td class="emdatafield">
 	 	[[Module Name]]
 		</td>
@@ -16,7 +16,7 @@
 		</td>
 		</tr>
 		#if( !$id )
-			<tr id="inputarea_name">
+			<tr>
 				<td class="emdatafield">
 					[[Module Id]]
 				</td>
@@ -29,7 +29,7 @@
 		#end
 		#if($id)
 			<input type="hidden" name="id" value="$!id" />
-			<tr id="inputarea_name">
+			<tr>
 				<td class="emdatafield">
 					[[Tab on Navigation]]
 				</td>
@@ -40,7 +40,7 @@
 					</div>
 				</td>
 			</tr>
-	        <tr id="inputarea_name">
+	        <tr>
 				<td class="emdatafield">
 					[[Enable Search]]
 				</td>
@@ -51,7 +51,7 @@
 					</div>
 				</td>
 			</tr>
-			<tr id="inputarea_name">
+			<tr>
 				<td class="emdatafield">
 					[[Tab Order]]
 				</td>
