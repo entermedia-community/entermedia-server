@@ -3,6 +3,7 @@ package org.entermediadb.asset.search;
 import java.io.File;
 import java.util.Collection;
 
+import org.entermediadb.data.FullTextLoader;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -13,7 +14,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public interface DataConnector extends CatalogEnabled
+public interface DataConnector extends CatalogEnabled, FullTextLoader
 {
 	public Data getDataBySourcePath(String inSourcePath);
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);

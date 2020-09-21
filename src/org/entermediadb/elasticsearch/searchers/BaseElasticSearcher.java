@@ -82,6 +82,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.IdManager;
+import org.entermediadb.data.FullTextLoader;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
@@ -114,7 +115,7 @@ import groovy.json.JsonOutput;
 
 
 
-public class BaseElasticSearcher extends BaseSearcher
+public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 {
 
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
@@ -3392,11 +3393,11 @@ public class BaseElasticSearcher extends BaseSearcher
 	}
 
 	@Override
-	public Object getFulltext(Data inSearchHitData)
+	public String getFulltext(Data inSearchHitData)
 	{
 		return getFulltext(inSearchHitData,getSearchType());
 	}
-	public Object getFulltext(Data inSearchHitData, String type)
+	public String getFulltext(Data inSearchHitData, String type)
 	{
 		StringBuffer out = new StringBuffer();
 		populateFullText(inSearchHitData,  type, out);

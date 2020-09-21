@@ -370,7 +370,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
-			populateFullText(asset, fullDesc);
+			populateFullText(asset,getSearchType(),fullDesc);
 		}
 //		if (fullDesc.length() > getFullTextCap())
 //		{

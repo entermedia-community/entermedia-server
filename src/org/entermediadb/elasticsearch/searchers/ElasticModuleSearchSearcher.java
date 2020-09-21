@@ -89,6 +89,11 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//addHighlights(inQuery, search);
 		//search.setRequestCache(true);
 
+		if( inQuery.getMainInput() != null)
+		{
+			//TODO: If we are doing a simple search then add in the fav results first?
+		}
+		
 		if (!inQuery.isIncludeDescription())
 		{
 			search.setFetchSource(null, "description");

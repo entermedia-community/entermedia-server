@@ -2,8 +2,47 @@ curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "quer
 
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/insights_catalog/insight_product/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XGET 'http://localhost:9200/insights_catalog/insight_project_mip/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+insight_project_mip
+
+
+{
+  "from" : 0,
+  "size" : 1000,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "bool" : {
+          "should" : [ {
+            "wildcard" : {
+              "description" : "*produc*"
+            }
+          }, {
+            "match" : {
+              "description" : {
+                "query" : "Produc",
+                "type" : "phrase_prefix",
+                "max_expansions" : 75
+              }
+            }
+          } ]
+        }
+      },
+      "must_not" : {
+        "term" : {
+          "emrecordstatus.recorddeleted" : true
+        }
+      }
+    }
+  },
+  "explain" : false,
+  "_source" : {
+    "includes" : [ ],
+    "excludes" : [ "description" ]
+  },
+  "aggregations_binary" : "OikKBfr7"
+}
 
 INFO: media_catalogs_public/lock/_search' -d '{
   "from" : 0,

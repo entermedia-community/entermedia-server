@@ -16,6 +16,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.data.FullTextLoader;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
 import org.json.simple.JSONObject;
@@ -36,7 +37,7 @@ import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
 
-public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
+public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, FullTextLoader
 {
 	static final Log log = LogFactory.getLog(BaseAssetSearcher.class);
 	protected static final String CATALOGIDX = "catalogid";
@@ -564,6 +565,17 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 			return ((BaseElasticSearcher)getDataConnector()).getExistingMapping();			
 		}
 		return "not implemented";
+	}
+
+	public String getFulltext(Data inSearchHitData)
+	{
+		return getDataConnector().getFulltext(inSearchHitData);
+	}
+
+	@Override
+	public String getFulltext(Data inSearchHitData, String inType)
+	{
+		return getDataConnector().getFulltext(inSearchHitData, inType);
 	}	
 	
 }
