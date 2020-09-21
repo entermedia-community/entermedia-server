@@ -3005,7 +3005,7 @@ public class BaseElasticSearcher extends BaseSearcher
 							Object object = (Object) iterator.next();
 							if (object instanceof String)
 							{
-								Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) object);
+								Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(), (String) object);
 								if (data != null && data.getName() != null)
 								{
 									inFullDesc.append(data.getName());
@@ -3020,7 +3020,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else if(prop instanceof String)
 					{
-						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) prop);
+						Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(), (String) prop);
 						if (data != null && data.getName() != null)
 						{
 							inFullDesc.append(data.getName());
