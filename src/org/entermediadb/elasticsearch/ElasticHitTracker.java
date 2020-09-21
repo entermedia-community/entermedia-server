@@ -26,6 +26,7 @@ import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -386,10 +387,10 @@ public class ElasticHitTracker extends HitTracker
 		}
 		SearchHit hit = hits[indexlocation];
 		
-		Searcher searcher = getSearcher();
+		BaseElasticSearcher searcher = (BaseElasticSearcher)getSearcher();
 		if( searcher == null && getSearcherManager() != null)
 		{
-			searcher = getSearcherManager().getSearcher(getCatalogId(), hit.getType());
+			searcher = (BaseElasticSearcher)getSearcherManager().getSearcher(getCatalogId(), hit.getType());
 		}
 		SearchHitData data = new SearchHitData(hit, searcher);
 

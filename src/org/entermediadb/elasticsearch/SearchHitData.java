@@ -14,6 +14,7 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.highlight.HighlightField;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -34,26 +35,26 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	protected Map fieldSearchData;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
-	protected Searcher fieldSearcher;
+	protected BaseElasticSearcher fieldSearcher;
 
 	public SearchHitData()
 	{
 	}
-	public SearchHitData(SearchHit inHit, Searcher inSearcher) {
+	public SearchHitData(SearchHit inHit, BaseElasticSearcher inSearcher) {
 		setSearchHit(inHit);
 		setSearcher(inSearcher);
 	}
 
-	public SearchHitData(Searcher inSearcher)
+	public SearchHitData(BaseElasticSearcher inSearcher)
 	{
 		setSearcher(inSearcher);
 	}
-	public Searcher getSearcher()
+	public BaseElasticSearcher getSearcher()
 	{
 		return fieldSearcher;
 	}
 
-	public void setSearcher(Searcher inSearcher)
+	public void setSearcher(BaseElasticSearcher inSearcher)
 	{
 		fieldSearcher = inSearcher;
 	}
@@ -135,7 +136,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		{
 			if (getSearcher() != null)
 			{
-				return getSearcher().getFulltext(this);
+				return getSearcher().getFulltext(this,getSearchHit().getType());
 			}
 		}
 

@@ -3394,16 +3394,20 @@ public class BaseElasticSearcher extends BaseSearcher
 	@Override
 	public Object getFulltext(Data inSearchHitData)
 	{
+		return getFulltext(inSearchHitData,getSearchType());
+	}
+	public Object getFulltext(Data inSearchHitData, String type)
+	{
 		StringBuffer out = new StringBuffer();
-		populateFullText(inSearchHitData, out);
+		populateFullText(inSearchHitData,  type, out);
 		return out.toString();
 	}
 	
-	protected void populateFullText(Data data, StringBuffer fullDesc)
+	protected void populateFullText(Data data, String datatype, StringBuffer fullDesc)
 	{
 		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
 		{
-			String path = "/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "/" + data.getSourcePath() + "/fulltext.txt";
+			String path = "/WEB-INF/data/" + getCatalogId() + "/" + datatype + "/" + data.getSourcePath() + "/fulltext.txt";
 			ContentItem item = getPageManager().getRepository().getStub(path);
 			if (item.exists())
 			{
