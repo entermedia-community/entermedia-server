@@ -137,7 +137,19 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		{
 			if (getSearcher() != null)
 			{
-				return ((FullTextLoader)getSearcher()).getFulltext(this,getSearchHit().getType());
+				if( getSearchHit() == null)
+				{
+					log.info("Missing search hit");
+					return ((FullTextLoader)getSearcher()).getFulltext(this);
+				}
+				else
+				{
+					return ((FullTextLoader)getSearcher()).getFulltext(this,getSearchHit().getType());
+				}
+			}
+			else
+			{
+				log.info("Missing searcher");
 			}
 		}
 

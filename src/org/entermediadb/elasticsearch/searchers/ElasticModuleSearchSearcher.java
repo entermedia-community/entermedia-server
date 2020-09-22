@@ -123,22 +123,18 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	
 	protected String[] listSearchModules()
 	{
-		String[] allmodules = (String[])getCacheManager().get("modulesearch","all");
-		if( allmodules == null)
+		Collection<Data> modules = getSearcherManager().getList(getCatalogId(), "module");
+		Collection searchmodules = new ArrayList();
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 		{
-			Collection<Data> modules = getSearcherManager().getList(getCatalogId(), "module");
-			Collection searchmodules = new ArrayList();
-			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+			Data data = (Data) iterator.next();
+			String show = data.get("showonsearch");
+			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
 			{
-				Data data = (Data) iterator.next();
-				String show = data.get("showonsearch");
-				if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
-				{
-					searchmodules.add(data.getId());
-				}
+				searchmodules.add(data.getId());
 			}
-			allmodules = (String[])searchmodules.toArray(new String[searchmodules.size()]);
 		}
+		String[] allmodules = (String[])searchmodules.toArray(new String[searchmodules.size()]);
 		return allmodules;
 	}
 	@Override
