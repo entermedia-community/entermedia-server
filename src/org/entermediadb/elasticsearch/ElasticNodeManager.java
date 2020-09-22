@@ -1036,7 +1036,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			reindexhistory.setValue("details", "Errrored: " + e);
 
 			reindexlogs.saveData(reindexhistory);
-			log.error("Could not reindex " + searchtype);
+			log.error("Could not reindex " + searchtype, e);
 			if (newindex != null)
 			{
 				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();

@@ -387,10 +387,10 @@ public class ElasticHitTracker extends HitTracker
 		}
 		SearchHit hit = hits[indexlocation];
 		
-		BaseElasticSearcher searcher = (BaseElasticSearcher)getSearcher();
+		Searcher searcher = (Searcher)getSearcher();
 		if( searcher == null && getSearcherManager() != null)
 		{
-			searcher = (BaseElasticSearcher)getSearcherManager().getSearcher(getCatalogId(), hit.getType());
+			searcher = getSearcherManager().getSearcher(getCatalogId(), hit.getType());
 		}
 		SearchHitData data = new SearchHitData(hit, searcher);
 
