@@ -131,51 +131,56 @@ public class ElasticUserFilters implements UserFilters
 	}
 	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery, WebPageRequest inReq)
 	{
-		if (inQuery.getMainInput() != null)
+		
+		//Return everything most of the time. 
+		
+		String input = inQuery.getMainInput();
+		if( input == null)
 		{
-			String key = inSearcher.getSearchType() + inQuery.getMainInput();
-			IndexValues values = (IndexValues)getValues().get(key);
-			if( 	values == null || 
-					!values.fieldIndexId.equals( inSearcher.getIndexId() ) || 
-					values.isExpired() ) //|| true)
+			input = "*";
+		}
+		
+		String key = inSearcher.getSearchType() + inQuery.getMainInput();
+		IndexValues values = (IndexValues)getValues().get(key);
+		log.info("Loadedd from cache " + key + " = " + values);
+		if( values == null || 
+				!values.fieldIndexId.equals( inSearcher.getIndexId() ) || 
+				values.isExpired()  
+				 )
+		 //|| true)
+		{
+			values = new IndexValues();
+			values.fieldIndexId = inSearcher.getIndexId();
+			List<PropertyDetail> view = getFilterView(inSearcher);
+			if( view != null && !view.isEmpty() )
 			{
-				values = new IndexValues();
-				values.fieldIndexId = inSearcher.getIndexId();
-				List<PropertyDetail> view = getFilterView(inSearcher);
-				if( view != null && !view.isEmpty() )
+				List facets = new ArrayList<PropertyDetail>();
+				for (Iterator iterator = view.iterator(); iterator.hasNext();)
 				{
-					List facets = new ArrayList<PropertyDetail>();
-					for (Iterator iterator = view.iterator(); iterator.hasNext();)
+					PropertyDetail	detail = (PropertyDetail) iterator.next();
+					if( detail.isFilter())
 					{
-						PropertyDetail	detail = (PropertyDetail) iterator.next();
-						if( detail.isFilter())
-						{
-							facets.add(detail);
-						}
+						facets.add(detail);
 					}
-					/**
-					 * We want to keep a broad selection of filter so that people can choose more than one
-					 */
-					HitTracker all = (HitTracker)inSearcher.query().facets(facets)
-							.attachSecurity(inReq).freeform("description", inQuery.getMainInput()).hitsPerPage(2).search();
-					if( all.isEmpty() )
-					{
-						log.debug(" has no data to filter. DO you have a description field?");
-					}
-					values.fieldValues = all.getFilterOptions();
-				}	
-				else
-				{
-					values.fieldValues = java.util.Collections.EMPTY_LIST;
 				}
-				getValues().put(key, values);
+				/**
+				 * We want to keep a broad selection of filter so that people can choose more than one
+				 */
+				HitTracker all = (HitTracker)inSearcher.query().facets(facets)
+						.attachSecurity(inReq).freeform("description", input).hitsPerPage(2).search();
+				if( all.isEmpty() )
+				{
+					log.debug(" has no data to filter. DO you have a description field?");
+				}
+				values.fieldValues = all.getFilterOptions();
+			}	
+			else
+			{
+				values.fieldValues = java.util.Collections.EMPTY_LIST;
 			}
-			return values.fieldValues;
+			getValues().put(key, values);
 		}
-		else
-		{
-			return null;
-		}
+		return values.fieldValues;
 	}
 
 	protected List<PropertyDetail> getFilterView(Searcher inSearcher)
@@ -212,6 +217,10 @@ public class ElasticUserFilters implements UserFilters
 	public void clear(String inSearchType)
 	{
 		getValues().clear();
+	}
+	public void clearOptions(String inSearchType, String inDescription)
+	{
+		getValues().remove(inSearchType + inDescription);
 	}
 
 	@Override

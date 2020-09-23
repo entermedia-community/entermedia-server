@@ -443,14 +443,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				else
 				{
 
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
 					inSearch.addAggregation(b);
 
 				}
 			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
 				inSearch.addAggregation(b);
 			}
 

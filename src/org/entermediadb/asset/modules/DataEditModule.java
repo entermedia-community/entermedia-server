@@ -2102,21 +2102,29 @@ String viewbase = null;
 		{
 			String one  = types[i];
 			HitTracker hits = (HitTracker)inReq.getPageValue(one);
-			if( hits != null && hits.getUserFilterValues() == null)
+			if( hits != null )
 			{
-				SearchQuery query = hits.getSearchQuery();
-				if (query.isEndUserSearch())
+				Map userFilterValues = hits.getUserFilterValues();
+				if( userFilterValues == null)
 				{
-					UserFilters filters = loadUserFilters(inReq);
-					if( filters == null)
+					SearchQuery query = hits.getSearchQuery();
+					if (query.isEndUserSearch())
 					{
-						return;
+						UserFilters filters = loadUserFilters(inReq);
+						if( filters == null)
+						{
+							return;
+						}
+						Map values = filters.getFilterValues(hits, inReq);
+						inReq.putPageValue(one+"userfiltervalues", values);
+						filters.flagUserFilters(hits);
+						
+						hits.setUserFilterValues(values);
 					}
-					Map values = filters.getFilterValues(hits);
-					inReq.putPageValue(one+"userfiltervalues", values);
-					filters.flagUserFilters(hits);
-					
-					hits.setUserFilterValues(values);
+				}
+				else
+				{
+					log.info("Already loaded " + userFilterValues);
 				}
 			}
 		}
