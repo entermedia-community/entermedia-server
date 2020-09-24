@@ -97,7 +97,7 @@ public void init()
 			Map objects = new HashMap();
 			objects.put("topicmods",topicmods);
 			objects.put("followeruser",followeruser);
-			objects.put("apphome","/" + appid);
+			objects.put("applink","/" + appid);
 			objects.put("mediaarchive",mediaArchive);
 			objects.put("messagessince",since);
 			
