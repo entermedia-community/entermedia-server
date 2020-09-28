@@ -178,7 +178,7 @@ $(document).ready(function(url,params)
 			    form.trigger("submit");
 			});
 	
-			$('input[type=text]',form).change( function() 
+			$('input[type=text]',form).not(".datepicker").change( function() 
 			{
 			    form.trigger("submit");
 			});

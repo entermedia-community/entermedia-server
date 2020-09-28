@@ -20,7 +20,8 @@
 #else
 	#set( $op = $term.getOperation() )
 	
-	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control custom-select">
+	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" 
+		class="form-control custom-select">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>
 		<option value="before" #if( $op && $op == "beforedate" )selected #end >[[Before Date]]</option>
@@ -88,8 +89,9 @@
 				//valueblock.style.display='block';
 				//rangeblock.style.display='none';
 				if ($(form).hasClass("autosubmitform")) {
-					$('input[type=text]',form).change( function() 
+					$('input[type=text]',form).change( function(event) 
 					{
+						event.stopPropagation();
 					    form.trigger("submit");
 					});
 				}
@@ -98,10 +100,11 @@
 			{
 				$("#dateinput${inputid}").html(twoinputs);
 				if ($(form).hasClass("autosubmitform")) {
-					$('input[type=text]',form).change( function() 
+					$('input[type=text]',form).change( function(event) 
 					{
 					    //verify both inputs not empty
 					    if ($("#datebefore${inputid}").val() != '' && $("#dateafter${inputid}").val() != '') {
+					    	event.stopPropagation();
 							form.trigger("submit");
 					    }
 					});
