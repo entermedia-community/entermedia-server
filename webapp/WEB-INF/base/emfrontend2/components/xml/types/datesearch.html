@@ -5,6 +5,7 @@
 	#set($inputid="${detail.id}")
 #end
 #set ($inputid = $inputid.replaceAll("/",""))
+#set ($inputid = $inputid.replaceAll("_",""))
 
 #if ($detail.get("daterange")=="true")
 	<input name="operation" type="hidden" value="after" />
@@ -17,7 +18,7 @@
 	<input name="${inputname}end.value" class="" id="datevalue${inputid}after"  size="8" type="text">
 	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
 #else
-	#set( $op = $term.getValue("dateop") )
+	#set( $op = $term.getOperation() )
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control custom-select">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>
@@ -44,6 +45,7 @@
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
 	
+	
 	##Verify filters Value
 	#if(!$after || !$before)
 		#if($val)
@@ -55,15 +57,23 @@
 	
 	
 	<script type="text/javascript">
-		updateDateInput${inputid} = function(value)
+		updateDateInput${inputid} = function(value, initializing = false)
 		{
+			var val = "";
+			var after = "";
+			var before = "";
+			if (initializing){
+				var val = "$val"
+				var after = "$!after";
+				var before = "$!before";
+			}
 			var form = $("#dateinput${inputid}").closest('form');
-			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
-			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
-						<input type="text" class="datepicker form-control" data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
+			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="'+val+'" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
+			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="'+after+'" size="8" type="hidden"> \
+						<input type="text" class="datepicker form-control" data-targetid="dateafter${inputid}" value="'+after+'" size="8" /> \
 						 \
-						<input name="${inputname}.before"  id="datebefore${inputid}" value="$!before" size="8" type="hidden">  \
-						<input type="text" class="datepicker form-control" style="margin-top:5px" data-targetid="datebefore${inputid}" value="$!before" size="8" /> ';
+						<input name="${inputname}.before"  id="datebefore${inputid}" value="'+before+'" size="8" type="hidden">  \
+						<input type="text" class="datepicker form-control" style="margin-top:5px" data-targetid="datebefore${inputid}" value="'+before+'" size="8" /> ';
 
 
 			if( value < 3 )
@@ -102,6 +112,6 @@
 			
 
 		}
-		updateDateInput${inputid}(document.getElementById('operation${inputid}').selectedIndex);
+		updateDateInput${inputid}(document.getElementById('operation${inputid}').selectedIndex, true);
 	</script>
 #end
