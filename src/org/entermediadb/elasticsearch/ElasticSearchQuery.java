@@ -5,6 +5,7 @@ package org.entermediadb.elasticsearch;
 
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 
 public class ElasticSearchQuery extends SearchQuery
 {	
@@ -29,8 +30,6 @@ public class ElasticSearchQuery extends SearchQuery
 
 	public void setAggregation(Object inAggregationBuilder)
 	{
-		
-		
 		fieldAggregationBuilder = (AbstractAggregationBuilder) inAggregationBuilder;
 		setEndUserSearch(true);
 	}
@@ -39,6 +38,5 @@ public class ElasticSearchQuery extends SearchQuery
 	{
 		// TODO Auto-generated constructor stub
 	}
-
 
 }

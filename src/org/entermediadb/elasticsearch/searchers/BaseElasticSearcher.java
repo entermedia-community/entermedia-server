@@ -1421,14 +1421,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			find = QueryBuilders.wildcardQuery(fieldid, valueof);
 		}
-
-		else if (valueof.startsWith("\"") && valueof.endsWith("\""))
-		{
-			valueof.replaceAll("\"", "");
-			MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
-			text.analyzer("lowersnowball");
-			find = text;
-		}
 		else if (inDetail.isBoolean())
 		{
 			find = QueryBuilders.termQuery(fieldid, Boolean.parseBoolean(valueof));
