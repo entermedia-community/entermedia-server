@@ -19,6 +19,7 @@
 	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
 #else
 	#set( $op = $term.getOperation() )
+	
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control custom-select">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>
@@ -33,23 +34,27 @@
 	<span id="dateinput${inputid}" class="dateinputbox" >
 
 	</span>
-	
+	##${inputname}.after -- $hits.getInput("${inputname}.after")
 	#if($hits)
 		#set($after = $hits.getInput("${inputname}.after"))
 		#set($before = $hits.getInput("${inputname}.before"))
-	#elseif($query)
-		#set($after = $query.getInput("${inputname}.after"))
-		#set($before = $query.getInput("${inputname}.before"))
-	#else
+	#end
+	#if(!$after || !$before)
+		#if($query)
+			#set($after = $query.getInput("${inputname}.after"))
+			#set($before = $query.getInput("${inputname}.before"))
+		#end
+	#end
+	#if(!$after || !$before)
 		#set($after = $context.getRequestParameter("${inputname}.after"))
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
 	
-	
 	##Verify filters Value
 	#if(!$after || !$before)
-		#if($val)
-			#set($dates = $val.split("\-"))
+		#set($termvalue = $term.getValue())
+		#if($termvalue)
+			#set($dates = $termvalue.split("\-"))
 			#set($after = $dates[0].trim())
 			#set($before = $dates[1].trim())
 		#end
@@ -59,6 +64,7 @@
 	<script type="text/javascript">
 		updateDateInput${inputid} = function(value, initializing = false)
 		{
+			//debugger;
 			var val = "";
 			var after = "";
 			var before = "";
