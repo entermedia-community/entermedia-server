@@ -102,12 +102,17 @@ public class ElasticUserFilters implements UserFilters
 		if(inHits == null) {
 			return new HashMap();
 		}
-		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery(), inReq);
+		String input = inHits.getSearchQuery().getMainInput();
+		if( input == null || inHits.isEmpty())
+		{
+			input = "*";
+		}
+		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery(), input, inReq);
 		return filterValues;
 	}
-	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery, WebPageRequest inReq)
+	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery, String input, WebPageRequest inReq)
 	{
-		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery, inReq);
+		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery, input, inReq);
 		Map options = new HashMap();
 		if( nodes != null)
 		{
@@ -127,20 +132,25 @@ public class ElasticUserFilters implements UserFilters
 	}
 	public List<FilterNode> getFilterOptions(HitTracker inHits, WebPageRequest inReq)
 	{
-		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery(), inReq);
-	}
-	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery, WebPageRequest inReq)
-	{
-		
-		//Return everything most of the time. 
-		
-		String input = inQuery.getMainInput();
+		String input = inHits.getSearchQuery().getMainInput();
 		if( input == null)
 		{
 			input = "*";
 		}
 		
-		String key = inSearcher.getSearchType() + inQuery.getMainInput();
+		if( inHits.isEmpty() )
+		{
+			input = "*";
+		}
+		
+		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery(), input, inReq);
+	}
+	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery, String input, WebPageRequest inReq)
+	{
+		
+		//Return everything most of the time. 
+		
+		String key = inSearcher.getSearchType() + input;
 		IndexValues values = (IndexValues)getValues().get(key);
 		log.info("Loadedd from cache " + key + " = " + values);
 		if( values == null || 
