@@ -2125,6 +2125,7 @@ String viewbase = null;
 				else
 				{
 					log.info("Already loaded " + userFilterValues);
+					loadUserFilters(inReq); //get it on the session
 				}
 			}
 		}
