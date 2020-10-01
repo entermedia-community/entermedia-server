@@ -94,7 +94,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 			//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
 			String tmpfilename = PathUtilities.extractFileName(endpath);
-			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
+			//String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath + "/" + tmpfilename);
+			String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/generatedpreview" + endpath);
 			CloseableHttpResponse genfile = null;
 			try
 			{
