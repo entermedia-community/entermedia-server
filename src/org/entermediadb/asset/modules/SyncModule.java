@@ -288,6 +288,7 @@ public class SyncModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String sessionid = inReq.getRequestParameter("hitssessionid");
 		String page = inReq.getRequestParameter("page");
+		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 		HitTracker hits = null;
 		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
 		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
@@ -303,27 +304,32 @@ public class SyncModule extends BaseMediaModule
 		if (hits == null)
 		{
 			String mastereditid = archive.getNodeManager().getLocalClusterId();
-
-			SearchQuery basequery = archive.query("asset").exact("emrecordstatus.mastereditclusterid", mastereditid).not("emrecordstatus.deleted", "true").sort("sourcepath").getQuery();
+			/*
+			SearchQuery basequery = archive.query("asset").exact("emrecordstatus.mastereditclusterid", mastereditid).sort("sourcepath").getQuery();
 			
 			SearchQuery orquery = archive.query("asset").or().after("assetaddeddate", ago).after("assetmodificationdate", ago).getQuery();
 			basequery.addChildQuery(orquery);
 			
 			hits = archive.getSearcher("asset").search(basequery);
 			hits.enableBulkOperations();
-			if( !hits.isEmpty() )
-			{
-				log.info("Listed " + hits.size()  + " changes ");
-			}
+			*/
+			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
+			
+		}
+		if( !hits.isEmpty() )
+		{
+			log.info("Listed " + hits.size()  + " changes ");
 		}
 		if (page != null)
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
-		
-		PullManager pullManager = getPullManager(archive.getCatalogId());
-		JSONArray array = pullManager.getOriginalPuller().listOriginalFiles(archive,hits);	
-		
+		JSONArray array = new JSONArray();
+		if (hits.size() > 0) 
+		{
+			PullManager pullManager = getPullManager(archive.getCatalogId());
+			array = pullManager.getOriginalPuller().listOriginalFiles(archive,hits);	
+		}
 		inReq.putPageValue("searcher", archive.getAssetSearcher());		
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("results", array);
