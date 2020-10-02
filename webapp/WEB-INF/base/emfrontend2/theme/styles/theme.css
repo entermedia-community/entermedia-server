@@ -154,7 +154,7 @@ body {
 }
 .select2-selection__choice  /* Selected Tag Style in Select2 Objects*/ 
 {
-	color: #fff!important;
+	color: #fff;
     background-color: #666;
 }
 .table #tableheader {
@@ -891,6 +891,7 @@ html, body, #application {
 .filter-box-options select.form-control:not([size]):not([multiple]) {
 	height: calc(1.8rem);
 }
+/*
 .filter-box-options .form-control,
 .filter-box-options .select2-container--bootstrap4 .select2-selection {
 	background-color: #333!important;
@@ -900,10 +901,16 @@ html, body, #application {
 .filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
 	border-color:#eee  transparent transparent;
 }
-.filter-box-options .select2-container .select2-search--inline .select2-search__field {
+
+.filter-box-options .select2-container .select2-search--inline .select2-search__field,
+.filter-box-options .select2-container--default .select2-selection--multiple,
+.filter-box-options .select2-container--default .select2-selection--single {
 	background-color: #333!important;
 	color:#eee!important;
-	
+	padding:0 2px;
+}*/
+.filter-box-options .select2-container .select2-search--inline .select2-search__field {
+	padding:0 5px;
 }
  .select2-results__option {
     font-size:.8rem;
@@ -919,7 +926,11 @@ html, body, #application {
     padding:0 5px;
 }
 .filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
-	color:#efefef;
+	/*color:#efefef;*/
+}
+.filter-box-options .select2-container--default .select2-selection--multiple .select2-selection__choice,
+.filter-box-options .select2-container--default .select2-selection--multiple .select2-selection__clear {
+	color:#333;
 }
 
 .filter-box-options .select2-container--bootstrap4 .select2-selection__clear {
@@ -1095,7 +1106,9 @@ html, body, #application {
 
 .ui-autocomplete.ui-widget-content {
 	padding:0;
+	z-index: 1000;
 }
+
 .ui-autocomplete .ui-menu-item-wrapper {
 	padding:6px;
 }
@@ -2781,7 +2794,12 @@ label.error {
 	box-shadow: 0 0 0 0.15rem rgba(255,255,255,.15);
 	border-color: #ccc;
 }
-
+.emdatafieldvalue .select2-container--default .select2-selection--multiple .select2-selection__choice {
+	color:#333;
+}
+.emdatafieldvalue  .select2-container .select2-search--inline .select2-search__field {
+	padding:0 5px;
+}
 .assetpanel-editor .emlist a {
 	color:#ccc;
 	text-decoration: none;
