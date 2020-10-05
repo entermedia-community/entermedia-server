@@ -1,12 +1,8 @@
 <page>
-<path-action name="DataEditModule.changeFilters">
-</path-action>
+
 <path-action name="DataEditModule.search">
 	<searchtype>${module}</searchtype>
 </path-action>
-
-<path-action name="DataEditModule.loadSharedFiltersForUser">
-</path-action>	
 
 
 <page-action name="ProfileModule.saveProperties"/>

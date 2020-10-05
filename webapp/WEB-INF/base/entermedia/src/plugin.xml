@@ -2279,13 +2279,6 @@
 	<bean id="NotificationModule" class="org.entermediadb.modules.notification.NotificationModule" >
 	</bean>	
 	
-	
-	<bean id="userFilters" class="org.entermediadb.elasticsearch.ElasticUserFilters" scope="prototype">
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
-		
-	</bean>
-
 	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>

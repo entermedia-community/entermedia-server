@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -187,7 +188,7 @@ public class ElasticHitTracker extends HitTracker
 //						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
 //						added = true;
 //					}
-					if (fieldLastPullTime == -1)
+					if (fieldLastPullTime == -1 && fieldActiveFilterValues == null)
 					{
 						applyFilters(); //this should only be done once
 					}
@@ -221,14 +222,17 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					if(fieldActualFilterValues == null && response.getAggregations() != null ) 
+					if(fieldActiveFilterValues == null && response.getAggregations() != null ) 
 					{
-						fieldActualFilterValues = loadValuesFromResults(response); //This will load the values
+						fieldActiveFilterValues = loadValuesFromResults(response); //This will load the values
 					    getSearcheRequestBuilder().setAggregations(new HashMap());  //this keeps is from loading the same values on page 2,3+ etc
 					}
 					else
 					{
-						fieldActualFilterValues = new HashMap<String,FilterNode>();
+						if( fieldActiveFilterValues == null)
+						{
+							fieldActiveFilterValues = Collections.EMPTY_MAP;
+						}
 					    getSearcheRequestBuilder().setAggregations(new HashMap());
 					}
 				}
@@ -238,14 +242,18 @@ public class ElasticHitTracker extends HitTracker
 	}
 	
 	
-	public  Map<String,FilterNode> getActualFilterValues()
+	public  Map<String,FilterNode> getActiveFilterValues()
 	{
-		if (fieldActualFilterValues == null)
+		if (fieldActiveFilterValues == null)
 		{
-			getSearchResponse(0);//This will cause the aggregations to be loaded
+			getSearchResponse(0);//This will cause the aggregations to be loaded if possible
 		}
-
-		return fieldActualFilterValues;
+		if( fieldActiveFilterValues == Collections.EMPTY_MAP)
+		{
+			return null;
+		}
+		
+		return fieldActiveFilterValues;
 	}
 
 	public  Map<String,FilterNode> loadValuesFromResults(SearchResponse response) //parse em
@@ -527,7 +535,7 @@ public class ElasticHitTracker extends HitTracker
 	public void invalidate()
 	{
 		setIndexId(getIndexId() + 1);
-		fieldActualFilterValues = null;
+		fieldActiveFilterValues = null;
 	}
 
 	public void applyFilters()

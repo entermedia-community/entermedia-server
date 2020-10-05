@@ -73,7 +73,7 @@ public class modulesearchAutoCompleteSearcher extends BaseElasticSearcher
 		log.info("Found " + hits.size() + " for " + inQuery.toFriendly()) ;
 		
 		
-		hits.getActualFilterValues();
+		hits.getActiveFilterValues();
 		
 		
 		

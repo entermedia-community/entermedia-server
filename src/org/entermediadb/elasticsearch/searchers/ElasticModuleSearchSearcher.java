@@ -106,10 +106,10 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
-		hits.size(); //load it up
-		long end = System.currentTimeMillis();
-		
-		log.info("Found " + hits.size() + " in " + ((end-start)) + " milli-seconds for " + search) ;
+//		hits.size(); //load it up
+//		long end = System.currentTimeMillis();
+//		
+//		log.info("Found " + hits.size() + " in " + ((end-start)) + " milli-seconds for " + search) ;
 		
 		return hits;
 	}
