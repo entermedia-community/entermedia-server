@@ -207,7 +207,7 @@ public class JsonAssetModule extends BaseJsonModule {
 			{
 				Data hotfolder = (Data) iterator.next();
 				String path = hotfolder.get("externalpath");
-				if( importpath.startsWith(path))
+				if(path != null && importpath.startsWith(path))
 				{
 					String ending = importpath.substring(path.length());
 					String subfolder = hotfolder.get("subfolder");

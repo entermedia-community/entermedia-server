@@ -18,6 +18,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
@@ -317,31 +318,34 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			//loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
-			for (int page = 2; page <= pages; page++)
+			if (pages>2) 
 			{
-				url = baseurl + "/mediadb/services/cluster/nextalloriginals.json";
-
-				params.put("page", String.valueOf(page));
-				log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
-				response2 = connection.sharedPost(url, params);
-				
-				sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200)
+				for (int page = 2; page <= pages; page++)
 				{
-					connection.release(response2);
-					throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					url = baseurl + "/mediadb/services/cluster/nextalloriginals.json";
+	
+					params.put("page", String.valueOf(page));
+					log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
+					response2 = connection.sharedPost(url, params);
+					
+					sl = response2.getStatusLine();
+					if (sl.getStatusCode() != 200)
+					{
+						connection.release(response2);
+						throw new OpenEditException("Could not load page of data " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+					}
+					remotechanges = connection.parseJson(response2);
+					response = (Map) remotechanges.get("response");
+					ok = (String) response.get("status");
+					if (ok != null && !ok.equals("ok"))
+					{
+						throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
+					}
+	
+					//JSONArray results = (JSONArray)remotechanges.get("results"); //records?
+					
+					counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
 				}
-				remotechanges = connection.parseJson(response2);
-				response = (Map) remotechanges.get("response");
-				ok = (String) response.get("status");
-				if (ok != null && !ok.equals("ok"))
-				{
-					throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
-				}
-
-				//JSONArray results = (JSONArray)remotechanges.get("results"); //records?
-				
-				counted = counted + downloadOriginalFiles(inArchive, connection, node, params,removecatalogid,jsonarray);
 			}
 			return counted;
 		}
@@ -386,7 +390,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						//log.info("Found change: " + found.getLastModified() + " !=" + longedited + " on " + found.getAbsolutePath());
 						//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 						//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-						String sourcepath = (String) filelisting.get("sourcepath");
+						String sourcepath = (String) filelisting.get("originalspath");
 						
 						//TODO: This does not seem right for folder based assets 
 						String path = url + URLUtilities.urlEscape("/mediadb/services/module/asset/downloads/originals/" + sourcepath + "/" + found.getName());
@@ -678,38 +682,45 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		
 		for (Iterator iterator = inHits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
-			Data hit = (Data) iterator.next();
-			String alternative = hit.get("archivesourcepath");
-			if( alternative == null)
+			SearchHitData data = (SearchHitData) iterator.next();
+			String searchtype = data.getSearchHit().getType();
+			if (searchtype.equals("asset")) 
 			{
-				alternative = hit.getSourcePath();
+				//Data hit = (Data) iterator.next();
+				String sourcepath = (String) data.getSearchData().get("sourcepath");
+				String alternative = (String) data.getSearchData().get("archivesourcepath");
+				
+				if( alternative != null)
+				{
+					//alternative = (String)  data.getSearchData().get("archivesourcepath");
+					sourcepath = alternative;
+				}
+				JSONObject object = new JSONObject();
+				object.put("id",(String) data.getSearchData().get("id"));
+				object.put("sourcepath", sourcepath);
+				object.put("isfolder",(Boolean) data.getSearchData().get("isfolder"));
+	
+				/*
+				 
+				   "results":[
+			#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+			{#set($item = $mediaarchive.getOriginalContent($hit) ) 
+			"id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
+			"filename": #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" : #jesc($item.getLastModified() ) 
 			}
-			JSONObject object = new JSONObject();
-			object.put("id",hit.getId());
-			object.put("sourcepath",hit.getSourcePath());
-			object.put("sourcepath",hit.getSourcePath());
-			object.put("isfolder",hit.get("isfolder"));
-
-			/*
-			 
-			   "results":[
-		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-		{#set($item = $mediaarchive.getOriginalContent($hit) ) 
-		"id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath),
-		"filename": #jesc($item.getName()),"path":#jesc($item.getPath()), "lastmodified" : #jesc($item.getLastModified() ) 
-		}
-		#end 
-			  
-			 */
-			JSONArray files = new JSONArray();
-			Collection items = inArchive.listOriginalFiles(alternative);
-			for (Iterator iterator2 = items.iterator(); iterator2.hasNext();)
-			{
-				ContentItem item = (ContentItem) iterator2.next();
-				addFileToArray(inArchive, files, item);
+			#end 
+				  
+				 */
+				JSONArray files = new JSONArray();
+				Collection items = inArchive.listOriginalFiles(sourcepath);
+				for (Iterator iterator2 = items.iterator(); iterator2.hasNext();)
+				{
+					ContentItem item = (ContentItem) iterator2.next();
+					addFileToArray(inArchive, files, item);
+				}
+				object.put("files",files);
+				array.add(object);
 			}
-			object.put("files",files);
-			array.add(object);
 		}
 		return array;
 	}
