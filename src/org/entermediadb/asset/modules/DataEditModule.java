@@ -35,12 +35,13 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.HitTrackerWrapper;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
-import org.openedit.hittracker.UserFilters;
+import org.openedit.hittracker.SharedFilters;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -2090,7 +2091,7 @@ String viewbase = null;
 
 	}
 
-	public void loadFacetsForUser(WebPageRequest inReq) throws Exception
+	public void loadSharedFiltersForUser(WebPageRequest inReq) throws Exception
 	{
 		String name = inReq.findValue("hitsname");
 		if(name == null)
@@ -2104,58 +2105,26 @@ String viewbase = null;
 			HitTracker hits = (HitTracker)inReq.getPageValue(one);
 			if( hits != null )
 			{
-				Map userFilterValues = hits.getUserFilterValues();
+				Map userFilterValues = hits.getSharedFilterValues();
 				if( userFilterValues == null)
 				{
 					SearchQuery query = hits.getSearchQuery();
-					if (query.isEndUserSearch())
+					if (hits.getSharedFilters() != null)
 					{
-						UserFilters filters = loadUserFilters(inReq);
-						if( filters == null)
-						{
-							return;
-						}
-						Map values = filters.getFilterValues(hits, inReq);
+						Map<String, FilterNode> values = hits.getSharedFilters().getSharedValues(hits, inReq);
 						inReq.putPageValue(one+"userfiltervalues", values);
-						filters.flagUserFilters(hits);
-						
-						hits.setUserFilterValues(values);
+						hits.getSharedFilters().flagUserFilters(hits);
+						hits.setSharedFilterValues(values);   //TODO: Move the loading into HitTracker
 					}
 				}
 				else
 				{
-					log.info("Already loaded " + userFilterValues);
-					loadUserFilters(inReq); //get it on the session
+					log.debug("Already loaded " + userFilterValues);
 				}
 			}
 		}
 	}
 
-	public UserFilters loadUserFilters(WebPageRequest inReq)
-	{
-		String searchtype = resolveSearchType(inReq);
-		if( searchtype == null)
-		{
-			searchtype = inReq.findValue("module");
-		}
-		Searcher searcher = getSearcherManager().getSearcher(resolveCatalogId(inReq), searchtype);
-		if( searcher == null)
-		{
-			return null;
-		}
-		String key = searcher.getSearchType()+ searcher.getCatalogId() + "userFilters";
-		UserFilters filters = (UserFilters) inReq.getSessionValue(key);
-		if (filters == null)
-		{
-			filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
-			filters.setUserProfile(inReq.getUserProfile());
-			inReq.putSessionValue(key, filters);
-		}
-		inReq.putPageValue("userfilters", filters);
-
-		return filters;
-	}
-	
 	public void setPageById(WebPageRequest inReq) 
 	{
 		String name = inReq.findValue("hitsname");

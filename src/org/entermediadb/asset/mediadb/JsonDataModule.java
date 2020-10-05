@@ -113,8 +113,11 @@ public class JsonDataModule extends BaseJsonModule
 		
 		if( "true".equals( request.get("showfilters") ) )
 		{
-			List nodes = hits.getFilterOptions();
-			inReq.putPageValue("filteroptions", nodes);
+			Map nodes = hits.getActualFilterValues();
+			if( nodes != null)
+			{
+				inReq.putPageValue("filteroptions", nodes.values());
+			}
 		}
 		
 		inReq.putPageValue("searcher", searcher);

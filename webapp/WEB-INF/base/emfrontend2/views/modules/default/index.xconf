@@ -5,7 +5,7 @@
 	<searchtype>${module}</searchtype>
 </path-action>
 
-<path-action name="DataEditModule.loadFacetsForUser">
+<path-action name="DataEditModule.loadSharedFiltersForUser">
 </path-action>	
 
 

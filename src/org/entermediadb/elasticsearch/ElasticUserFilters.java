@@ -20,10 +20,10 @@ import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
-import org.openedit.hittracker.UserFilters;
+import org.openedit.hittracker.SharedFilters;
 import org.openedit.profile.UserProfile;
 
-public class ElasticUserFilters implements UserFilters
+public class ElasticUserFilters implements SharedFilters
 {
 	private static final Log log = LogFactory.getLog(ElasticUserFilters.class);
 
@@ -43,7 +43,7 @@ public class ElasticUserFilters implements UserFilters
 	class IndexValues
 	{
 		String fieldIndexId;
-		List<FilterNode> fieldValues;
+		Map<String,FilterNode> fieldSharedValues;
 		long fieldCreatedOn = System.currentTimeMillis();
 		public boolean isExpired()
 		{
@@ -90,48 +90,13 @@ public class ElasticUserFilters implements UserFilters
 		fieldUserProfile = inUserProfile;
 	}
 
-//	public void addFilterOptions(Searcher inSearcher, SearchQuery inQuery, List<FilterNode> inFilters)
-//	{
-//		if (inQuery.getMainInput() != null)
-//		{
-//			getCacheManager().put(inQuery.getMainInput(), inFilters);
-//		}
-//	}
-	public Map getFilterValues(HitTracker inHits, WebPageRequest inReq)
+
+	public Map<String,FilterNode> getSharedValues(HitTracker inHits, WebPageRequest inReq)
 	{
 		if(inHits == null) {
 			return new HashMap();
 		}
-		String input = inHits.getSearchQuery().getMainInput();
-		if( input == null || inHits.isEmpty())
-		{
-			input = "*";
-		}
-		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery(), input, inReq);
-		return filterValues;
-	}
-	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery, String input, WebPageRequest inReq)
-	{
-		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery, input, inReq);
-		Map options = new HashMap();
-		if( nodes != null)
-		{
-			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
-			{
-				FilterNode filterNode = (FilterNode) iterator.next();
-				PropertyDetail detail = filterNode.getPropertyDetail();
-				if (detail == null) {
-					log.error("Filter got Null property:" + filterNode.getName());
-				} else {
-					options.put(detail.getId(), filterNode);
-				}
-			}
-		}
-		return options;
 		
-	}
-	public List<FilterNode> getFilterOptions(HitTracker inHits, WebPageRequest inReq)
-	{
 		String input = inHits.getSearchQuery().getMainInput();
 		if( input == null)
 		{
@@ -143,11 +108,10 @@ public class ElasticUserFilters implements UserFilters
 			input = "*";
 		}
 		
-		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery(), input, inReq);
+		return getSharedValues(inHits.getSearcher(), inHits.getSearchQuery(), input, inReq);
 	}
-	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery, String input, WebPageRequest inReq)
+	public Map<String,FilterNode> getSharedValues(Searcher inSearcher, SearchQuery inQuery, String input, WebPageRequest inReq)
 	{
-		
 		//Return everything most of the time. 
 		
 		String key = inSearcher.getSearchType() + input;
@@ -161,18 +125,9 @@ public class ElasticUserFilters implements UserFilters
 		{
 			values = new IndexValues();
 			values.fieldIndexId = inSearcher.getIndexId();
-			List<PropertyDetail> view = getFilterView(inSearcher);
-			if( view != null && !view.isEmpty() )
+			List facets = getFilterViewProperties(inSearcher,"advancedfilter");
+			if( !facets.isEmpty())
 			{
-				List facets = new ArrayList<PropertyDetail>();
-				for (Iterator iterator = view.iterator(); iterator.hasNext();)
-				{
-					PropertyDetail	detail = (PropertyDetail) iterator.next();
-					if( detail.isFilter())
-					{
-						facets.add(detail);
-					}
-				}
 				/**
 				 * We want to keep a broad selection of filter so that people can choose more than one
 				 */
@@ -182,21 +137,39 @@ public class ElasticUserFilters implements UserFilters
 				{
 					log.debug(" has no data to filter. DO you have a description field?");
 				}
-				values.fieldValues = all.getFilterOptions();
+				values.fieldSharedValues = all.getActualFilterValues();
 			}	
 			else
 			{
-				values.fieldValues = java.util.Collections.EMPTY_LIST;
-			}
+				values.fieldSharedValues = java.util.Collections.EMPTY_MAP;
+			}	
 			getValues().put(key, values);
 		}
-		return values.fieldValues;
+		return values.fieldSharedValues;
 	}
 
-	protected List<PropertyDetail> getFilterView(Searcher inSearcher)
+	private List getFilterViewProperties(Searcher inSearcher, String inName)
+	{
+		List<PropertyDetail> view = getFilterView(inSearcher,inName);
+		List facets = new ArrayList<PropertyDetail>();
+		if( view != null && !view.isEmpty() )
+		{
+			for (Iterator iterator = view.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail	detail = (PropertyDetail) iterator.next();
+				if( detail.isFilter())
+				{
+					facets.add(detail);
+				}
+			}
+		}
+		return facets;
+	}
+
+	protected List<PropertyDetail> getFilterView(Searcher inSearcher, String inName)
 	{
 		List<PropertyDetail> view = getPropertyDetailsArchive().getView(  //assetadvancedfilter
-				inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "advancedfilter", getUserProfile());
+				inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + inName, getUserProfile());
 		return view;
 	}
 	public List getFilteredTerms(HitTracker inHits)
@@ -207,7 +180,7 @@ public class ElasticUserFilters implements UserFilters
 		}
 		List terms = new ArrayList();
 		SearchQuery inQuery = inHits.getSearchQuery();
-		List<PropertyDetail> view = getFilterView(inHits.getSearcher());
+		List<PropertyDetail> view = getFilterView(inHits.getSearcher(),"advancedfilter");
 		if( view == null)
 		{
 			return Collections.EMPTY_LIST;
@@ -244,16 +217,23 @@ public class ElasticUserFilters implements UserFilters
 		}
 	}
 
-	@Override
-	public List<FilterNode> getFilterOptions(HitTracker inHits)
+	public Map<String,FilterNode>  loadValuesFromResults(List<FilterNode> nodes)
 	{
-	return getFilterOptions(inHits, null);
-	}
-
-	@Override
-	public Map<String, FilterNode> getFilterValues(HitTracker inHits)
-	{
-	return getFilterValues(inHits, null);
+		Map<String,FilterNode> options = new HashMap();
+		if( nodes != null)
+		{
+			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+			{
+				FilterNode filterNode = (FilterNode) iterator.next();
+				PropertyDetail detail = filterNode.getPropertyDetail();
+				if (detail == null) {
+					log.error("Filter got Null property:" + filterNode.getName());
+				} else {
+					options.put(detail.getId(), filterNode);
+				}
+			}
+		}
+		return options;
 	}
 
 }

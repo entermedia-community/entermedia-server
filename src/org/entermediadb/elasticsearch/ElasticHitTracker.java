@@ -47,10 +47,6 @@ public class ElasticHitTracker extends HitTracker
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
 	protected SearcherManager fieldSearcherManager;
-	protected List<FilterNode> fieldTopfacets ;
-	
-	
-	
 	
 
 	public SearcherManager getSearcherManager()
@@ -225,15 +221,14 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					if(fieldTopfacets == null && response.getAggregations() != null ) 
+					if(fieldActualFilterValues == null && response.getAggregations() != null ) 
 					{
-						fieldTopfacets = new ArrayList<FilterNode>();
-						loadFilterOptions(response); //This will load the data
-					    getSearcheRequestBuilder().setAggregations(new HashMap());
+						fieldActualFilterValues = loadValuesFromResults(response); //This will load the values
+					    getSearcheRequestBuilder().setAggregations(new HashMap());  //this keeps is from loading the same values on page 2,3+ etc
 					}
 					else
 					{
-						fieldTopfacets = new ArrayList<FilterNode>();
+						fieldActualFilterValues = new HashMap<String,FilterNode>();
 					    getSearcheRequestBuilder().setAggregations(new HashMap());
 					}
 				}
@@ -243,23 +238,20 @@ public class ElasticHitTracker extends HitTracker
 	}
 	
 	
-	public List<FilterNode> getFilterOptions()
+	public  Map<String,FilterNode> getActualFilterValues()
 	{
-		if (fieldTopfacets == null)
+		if (fieldActualFilterValues == null)
 		{
 			getSearchResponse(0);//This will cause the aggregations to be loaded
 		}
 
-		return fieldTopfacets;
+		return fieldActualFilterValues;
 	}
 
-
-
-
-
-	public void loadFilterOptions(SearchResponse response) //parse em
+	public  Map<String,FilterNode> loadValuesFromResults(SearchResponse response) //parse em
 	{
-		
+		Map<String,FilterNode> options = new HashMap();
+	
 		//TODO: Should save the response and only load it if someone needs the data
 		if (response.getAggregations() != null)
 		{
@@ -276,63 +268,65 @@ public class ElasticHitTracker extends HitTracker
 					//				Collection<Terms.Bucket> buckets = terms.getBuckets();
 					//				assertThat(buckets.size(), equalTo(3));
 
-					if (f.getBuckets().size() > 0)
+					if (f.getBuckets().isEmpty())
 					{
-						FilterNode parent = new FilterNode();
-						parent.setId(f.getName());
-						parent.setName(f.getName());
-						PropertyDetail detail = getSearcher().getDetail(f.getName());
-						if (detail != null)
-						{
-							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
-							parent.setPropertyDetail(detail);
-						}
-						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
-						{
+						continue;
+					}
+					FilterNode parent = new FilterNode();
+					parent.setId(f.getName());
+					parent.setName(f.getName());
+					PropertyDetail detail = getSearcher().getDetail(f.getName());
+					if (detail != null)
+					{
+						options.put(detail.getId(), parent);
+						parent.setValue("name", detail.getElementData().getLanguageMap("name"));
+						parent.setPropertyDetail(detail);
+					}
+					else
+					{
+						log.info("No such detail for " + f);
+						continue;
+					}
+					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
+					{
+						//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
+						org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
 
-							//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
-							org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
-
-							long count = entry.getDocCount();
-							String term = entry.getKeyAsString();
-							//log.info("term " + parent.getName()  + " \\" + term);
-							FilterNode child = new FilterNode();
-							child.setId(term);
-							child.setPropertyDetail(detail);
-							if (detail != null && detail.isList())
+						long count = entry.getDocCount();
+						String term = entry.getKeyAsString();
+						//log.info("term " + parent.getName()  + " \\" + term);
+						FilterNode child = new FilterNode();
+						child.setId(term);
+						child.setPropertyDetail(detail);
+						if (detail != null && detail.isList())
+						{
+							Data data = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), term);
+							if (data != null)
 							{
-								Data data = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), term);
-								if (data != null)
-								{
-									//child.setName(data.getName());
+								//child.setName(data.getName());
 
-									child.setProperties(data.getProperties());
-								}
-								else
-								{
-									//child.setName(term);
-									continue;
-								}
+								child.setProperties(data.getProperties());
 							}
 							else
 							{
-								child.setName(term);
-
+								//child.setName(term);
+								continue;
 							}
-
-							child.setProperty("count", String.valueOf(count));
-							parent.addChild(child);
 						}
-						fieldTopfacets.add(parent);
+						else
+						{
+							child.setName(term);
+
+						}
+
+						child.setProperty("count", String.valueOf(count));
+						parent.addChild(child);
 					}
 				}
 			}
 		}
-
+		return options;
 	}
-	
-
-	
 	
 	@Override
 	public int indexOfId(String inId)
@@ -533,7 +527,7 @@ public class ElasticHitTracker extends HitTracker
 	public void invalidate()
 	{
 		setIndexId(getIndexId() + 1);
-		fieldFilterOptions = null;
+		fieldActualFilterValues = null;
 	}
 
 	public void applyFilters()
