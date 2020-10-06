@@ -112,10 +112,12 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		-vf scale=w=-2:h=360:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//360p/.m3u8 \
 		-vf scale=w=-2:h=480:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//480p/.m3u8 \
 		-vf scale=w=-2:h=720:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//720p/.m3u8 \
-		-vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \ 
+		-vf scale=w=-2:h=1080:force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k /mnt/hls//1080p/.m3u8 \
+		
+		 :force_original_aspect_ratio=decrease removed because sometimes it gives odd numbers. which isn't compatible with m3u8
 		*/		
 		String command = "-vf scale=w=-2:h=" + inSize;
-		command = command + ":force_original_aspect_ratio=decrease -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
+		command = command + " -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
 		comm.addAll(Arrays.asList(command.split("\\ ")));
 		//Add path
 		comm.add(absoutputpath);
