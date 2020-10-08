@@ -1,3 +1,4 @@
+<div style="padding:0 40px 0 20px;">
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
 	
 <h3>[[Asset Folder]]</h3>
@@ -10,29 +11,34 @@
 	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
 #end
 ##TODO: Use a detail editor here
-
+<div class="form-group">
 <label>[[Nickname]]</label>
 <input type="hidden" name="field" value="name" />
-<input class="form-control" name="name.value" value="$!data.name" />
+<input class="form-control form-control-sm" name="name.value" value="$!data.name" />
 <div class="note">[[Required: Nickname of this hot folder]] </div> 
-
+</div>
 
 $pages.include("./editdetails.html")
 
+<div class="form-group">
 <label>[[Priority]]</label>
 <input type="hidden" name="field" value="ordering" />
-<input class="form-control" name="ordering.value" value="$!data.ordering" />
+<input class="form-control form-control-sm" name="ordering.value" value="$!data.ordering" />
 <div class="note">[[The order of this hot folder. 0-100 Higher comes first]]</div> 
+</div>
 
-<div class="clearfix" style="margin-bottom: 20px;">
+
+<div class="form-group">
 	<input type="hidden" name="field" value="enabled" />
-	<div class="clearfix">
-		<input type="checkbox" style="float: left;" name="enabled.value" value="true" #if($data.getValue("enabled")) checked #end />
-		<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Enable hot folder scanning]]</label>
+	<div class="form-check"> 
+		<input id="enablehotfolder" type="checkbox" class="form-check-input"  name="enabled.value" value="true" #if($data.getValue("enabled")) checked #end />
+		<label for="enablehotfolder" class="form-check-label">[[Enable hot folder scanning]]</label>
 	</div>
 </div>
 
-<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
 
+<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]"  />
+<a href="$apphome/views/settings/modules/asset/hotfolders/index.html" class="btn btn-sm btn-secondary" style="margin-left:10px;">[[Cancel]]</a>
 
 </form>
+</div>

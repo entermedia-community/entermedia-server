@@ -3911,10 +3911,11 @@ span.drag-and-drop {
     padding: 0;
     width: 100%;
     display: block;
+    background: #f7f7f7;
     border-bottom: 1px solid #d4d4d4;
 }
 .fwlist li:nth-child(even) {
-    background: #f7f7f7;
+    background-color: #fff;
 }
 #folders li {
     height: 102px;
@@ -3964,8 +3965,6 @@ span.drag-and-drop {
     background: url('../images/add-icon.png');
 }
 .add a.btn {
-	margin-right:10px;
-	margin-top:40px;
 }
 .cat-folder .cat-name {
     position: relative;
@@ -3985,8 +3984,8 @@ span.drag-and-drop {
     color: #999;
 }
 .folder .last-activity {
-    color: #aaa;
-    font-size: 11px;
+    color: #666;
+    font-size: 0.8rem;
 }
 .monitor {
     background: #eeeeee;
@@ -4065,7 +4064,7 @@ li.add {
     border-bottom:0 none;
 }
 .add a {
-    margin: 38px 20px 0 0;
+ 
 }
 #folders .folder {
 
@@ -4081,7 +4080,7 @@ li.add {
 	float:left;
 }
 .folders-actions {
-	padding-top:30px;
+	padding:30px 20px 0 0 ;
 }
 .folders-name h3 {
 	margin:0;

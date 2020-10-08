@@ -1,6 +1,6 @@
 <div id="editdetails" >
 
-
+<div class="form-group">
 <label>[[Hot Folder Type]]</label>
 <input type="hidden" name="field" value="hotfoldertype" />
 
@@ -17,8 +17,9 @@
 	<option value="$hftype.getId()" #if( $type == "$hftype.getId()") selected #end>$hftype.getName()</option>
 #end	
 </select>
+</div>
+
+
 
 $pages.include("./types/${type}.html")
-
-
 </div>

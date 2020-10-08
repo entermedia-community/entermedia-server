@@ -1,4 +1,23 @@
-
+<div>
+<div class="eml-content-title" style="padding:20px;">
+<div class="float-left">
+	<h2>[[Hot Folders]]</h2>
+</div>
+<div class="float-right">
+		<a class="btn btn-sm btn-primary float-right" style="margin-left:10px;" 
+			href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">[[Add Hot Folder]]</a>
+			
+			#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
+			#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
+			#if( $event.isRunning() )
+				<a class="btn btn-sm btn-primary float-right">[[Scan in Progress]]</a>
+			#else
+				<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">[[Schedule Importing]]</a>
+			#end
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
 <ul id="folders" class="fwlist">
 	#foreach($source in $sources )
 		#set( $folder = $source.getConfig() )
@@ -24,19 +43,6 @@
 	</li>
 	#end
 	
-	<li class="add">
-			
-
-			<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
-			
-			#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
-			#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
-			#if( $event.isRunning() )
-				<a class="btn btn-sm btn-primary float-right">Scan in Progress</a>
-			#else
-				<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
-			#end
-	</li>
 	
 	<!-- 
 	<li class="auto">
