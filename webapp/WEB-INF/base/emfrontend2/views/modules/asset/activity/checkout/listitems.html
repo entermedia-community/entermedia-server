@@ -108,3 +108,9 @@
 	#end
 	
 </table>
+
+#if($downloadall )
+	<div style="text-align:right; padding:10px 0;"> 
+	<a class="btn btn-sm btn-primary" style="" href="$home$apphome/views/modules/asset/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a>
+	</div>
+#end	

@@ -109,7 +109,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					return;
 				}
 				//Save to local file
-				log.info("Saving :" + endpath + " URL:" + path);
+				//log.info("Saving :" + endpath + " URL:" + path);
 				try
 				{
 					InputStream stream = genfile.getEntity().getContent();
@@ -221,12 +221,13 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				HitTracker localchanges = manager.getEditedDocuments(getCatalogId(), pulldate);
 				
 				String remotemastereditid = node.get("clustername");
-				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid,localchanges);
-
-				inLog.info(node.getName() + " syncup local changes" + localchanges.size());
-
-				syncUpLocalDataChanges(inArchive,node,pulldate,trimmed, connection);
+				HitTracker trimmed = removeRemotesMasterNodeEdits(remotemastereditid, localchanges);
 				
+				if(!trimmed.isEmpty()) 
+				{
+					syncUpLocalDataChanges(inArchive,node, pulldate, trimmed, connection);
+					inLog.info(node.getName() + " syncup local changes " + trimmed.size());
+				}
 				inLog.info(node.getName() + " data downloaded " + totalcount + " and uploaded " + trimmed.size() );
 				if( totalcount > -1)
 				{
@@ -664,7 +665,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			if (url != null)
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
-				log.info("Sending data changes to server " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
+				//to much log
+				//log.info("Sending data changes to server " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 				StatusLine sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
