@@ -13,5 +13,6 @@
 	<server id="em9" listingurl="http://dev.entermediasoftware.com/jenkins/job/app-site-manager/lastSuccessfulBuild/artifact/deploy/sitemanager.xml" caption="Installs the Site Manager tools">Site Manager - Plugin Only</server>
 
 	<server id="em10" listingurl="http://dev.entermediasoftware.com/jenkins/job/extension-sql/lastSuccessfulBuild/artifact/deploy/extension-sql.xml" caption="Installs the Extension SQL tools">Extension SQL - Plugin Only</server>
+    <server id="em11" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution_em10dev.xml" caption="Development version of DemoAll site">EnterMediaDB 10 (Dev)</server>	
 		
 </servers>
