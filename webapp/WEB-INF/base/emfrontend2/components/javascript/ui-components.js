@@ -180,7 +180,6 @@ uiload = function() {
                 allowClear = true;
             }
 			theinput = theinput.select2({
-				theme : "bootstrap4",
 				placeholder : placeholder,
 				allowClear : allowClear,
 				minimumInputLength : 0,
@@ -1343,7 +1342,6 @@ uiload = function() {
                     }
 					theinput
 							.select2({
-								theme : "bootstrap4",
 								placeholder : defaulttext,
 								allowClear : allowClear,
 								minimumInputLength : 0,

@@ -6,6 +6,7 @@ import java.util.Random;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.WebPageRequest;
+import org.openedit.hittracker.HitTracker;
 
 public class SiteMonitorModule extends BaseMediaModule
 {
@@ -33,6 +34,8 @@ public class SiteMonitorModule extends BaseMediaModule
 	{
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		//Health Status
 		String health = archive.getNodeManager().getClusterHealth();
 		if (health.equals("GREEN") || health.equals("YELLOW")) {
 			inReq.putPageValue("status", "ok");
@@ -40,6 +43,12 @@ public class SiteMonitorModule extends BaseMediaModule
 		else {
 			inReq.putPageValue("status", "error");
 			
+		}
+		
+		//Asset Counts
+		HitTracker hits = archive.query("asset").search();
+		if (hits.size()>0) {
+			inReq.putPageValue("assetscount", hits.size());
 		}
 	}
 }

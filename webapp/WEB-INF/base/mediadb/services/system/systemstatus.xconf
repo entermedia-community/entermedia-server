@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<path-action name="SiteMonitorModule.checkStatus">
-	</path-action>
+	<path-action name="SiteMonitorModule.checkStatus" />
 	 <permission name="view"><boolean value="true" /></permission>
 </page>

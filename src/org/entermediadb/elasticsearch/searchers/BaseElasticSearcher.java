@@ -1252,6 +1252,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			// find = QueryBuilders.filteredQuery(all, filter);
 
 		}
+		
+		
 		else if ("contains".equals(inTerm.getOperation()))
 		{
 			// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
@@ -1283,6 +1285,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			or.should(phrase);
 			find = or;
 		}
+		else if("missing".equals(inTerm.getOperation())) {
+			find = QueryBuilders.missingQuery(inTerm.getId());
+		}
+		else if("exists".equals(inTerm.getOperation())) {
+			find= QueryBuilders.existsQuery(inTerm.getId());
+		}
+		
 		else if ("startswith".equals(inTerm.getOperation()))
 		{
 			//TODO: Should startswith be exact or analysed phrases? 
@@ -1435,6 +1444,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			find = QueryBuilders.termQuery(fieldid, Boolean.parseBoolean(valueof));
 		}
+		
 		else if (inDetail.isDate())
 		{
 			if ("beforedate".equals(inTerm.getOperation()))

@@ -72,3 +72,38 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 ##jQuery("#adduser #mailingsameasoffice\\.value")[0].onchange = mailingSameAsOffice;
 ##	
 ##-->
+<script language="JavaScript" type="text/javascript">
+//email.value
+		jQuery.validator.addMethod("validId", function(value, element) {
+  		return this.optional( element ) || /^[a-zA-Z0-9]+$/.test( value );
+		}, 'Please enter a unique string/numeric Id.');
+
+		jQuery(document).ready(function() 
+		{ 
+		
+			$("#adduser").validate({
+				ignore: ".ignore",
+			  rules: {
+				  'email.value': {
+				  required: true,
+				  email: true,
+				  duplicatedemail: false,
+				  remote: "verifyemail.html"
+				},
+				'id.value':{
+					validId:true
+				}
+			  },
+			  messages: {
+				  'email.value': {
+				  remote: "Email already Exists."
+				}
+			  },
+			  submitHandler: function(form){
+		        $('form input[type=submit]').attr('disabled', 'disabled');
+		        form.submit();
+				}
+			});
+		});
+</script>
+

@@ -60,9 +60,19 @@ public class ChatModule extends BaseMediaModule
 			ChatManager manager = getChatManager(inReq);
 			manager.updateChatTopicLastChecked(channel, userid);
 		}
+		
+		inReq.getSession().setAttribute("chatuser", inReq.getUser());
 
 	}
 
+	
+	public void loadChatServer(WebPageRequest inReq) {
+		
+				ChatServer server  = (ChatServer) getModuleManager().getBean("system", "chatServer");
+				inReq.putPageValue("chatserver", server);
+	}
+	
+	
 	public void loadLastPageOfChats(WebPageRequest inReq)
 	{
 
