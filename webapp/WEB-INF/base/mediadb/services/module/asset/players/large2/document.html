@@ -2,7 +2,7 @@
 <div class="assetpanel-container">
 <div class="assetpanel-sidebar">
 	
-	#set( $pagenum = $context.getRequestParameter("pagenum") )
+	#set( $pagenum = $context.getRequestParameter("documentpagenum") )
 	
 	#if( !$pagenum)
 	 #set( $pagenum = 1 )
@@ -25,7 +25,7 @@
                  <input  type="hidden" name="hidenav" value="$hidenav" />
                 ## <input type="submit" id="gotopage" class="btn" value="Go" />
                  <a href="#" class="jumpto-left" ><span class="fas fa-caret-left"></span></a>
-                 <input id="pagejumper" name="pagenum" value="$!pagenum" >
+                 <input id="pagejumper" name="documentpagenum" value="$!pagenum" >
                  <a href="#" class="jumpto-right" ><span class="fas fa-caret-right"></span></a>
                  </p>
               </form>
@@ -45,7 +45,7 @@
 			#end			
 			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
-			<img id="mainimage" class="zoomable" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
+			<img id="mainimage" class="zoomable" src="$tpath?documentpagenum=$!pagenum" alt="$!asset.name" />
 		</div>	
 	</div>
 	
