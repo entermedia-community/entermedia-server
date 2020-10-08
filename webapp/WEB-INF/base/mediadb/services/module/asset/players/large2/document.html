@@ -45,15 +45,11 @@
 			#end			
 			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
-			<img id="mainimage" class="zoomable" src="$tpath?documentpagenum=$!pagenum" alt="$!asset.name" />
+			<img id="mainimage" class="zoomable" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
 		</div>	
 	</div>
 	
 </div>
 </div>
-
-
-<div>
-
 </div>
 
