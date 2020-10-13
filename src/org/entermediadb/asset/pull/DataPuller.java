@@ -114,8 +114,19 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					InputStream stream = genfile.getEntity().getContent();
 					//Change the timestamp to match
+					
+					File parentfile = new File(PathUtilities.extractDirectoryPath(found.getAbsolutePath()) ); 
+					if( parentfile.exists() && parentfile.isFile()) //TODO: Remove any old copies from previous syncs so that this is sure to work
+					{ 
+						parentfile.delete();
+						parentfile.mkdirs(); 	
+					}
+					else
+					{
+						parentfile.mkdirs();
+					}
+					
 					File tosave = new File(found.getAbsolutePath());
-					tosave.getParentFile().mkdirs();
 					FileOutputStream fos = new FileOutputStream(tosave);
 					filler.fill(stream, fos);
 					filler.close(stream);

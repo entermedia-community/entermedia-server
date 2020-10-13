@@ -308,6 +308,14 @@ public class TranscodeTools
 			result.setComplete(false);
 			return result;
 		}
+		if( asset.getFileFormat() == null)
+		{
+			result = new ConvertResult();			
+			result.setOk(false);
+			result.setError("No file format found on " + inSourcePath);
+			result.setComplete(false);
+			return result;
+		}
 		manager = getManagerByFileFormat(asset.getFileFormat()); //video input?
 		if( inParameters != null)
 		{
