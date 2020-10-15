@@ -1,8 +1,11 @@
+<div class="form-group">
 <label>[[External Import Path]]</label>
 <input type="hidden" name="field" value="externalpath" />
 <input class="form-control" name="externalpath.value" value="$!data.externalpath" />
 <div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+</div>
 
+<div class="form-group">
 <label>[[Internal Category Path]]</label>
 <input type="hidden" name="field" value="subfolder" />
 #set( $subfolder = $context.getRequestParameter("subfolder"))
@@ -10,32 +13,49 @@
 #set( $subfolder = $!data.subfolder )
 #end
 <input class="form-control" name="subfolder.value" value="$!subfolder" />
-<div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div> 
-
+<div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div>
+</div>
+ 
+<div class="form-group">
 <label>[[Include Filters]]</label>
 <input type="hidden" name="field" value="includes" />
 <textarea class="form-control" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
-<div class="note">[[comma delimited]] *.jpg,*/Completed/*</div> 
+<div class="note">[[comma delimited]] *.jpg,*/Completed/*</div>
+</div> 
 
+
+<div class="form-group">
 <label>[[Exclude Filter]]</label>
 <input type="hidden" name="field" value="excludes" />
 <textarea class="form-control" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
-<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div> 
+<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div>
+</div>
 
+ 
+<div class="form-group">
 <label>[[Attachment Filter]]</label>
 <input type="hidden" name="field" value="attachmenttrigger" />
 <textarea class="form-control" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
-<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div> 
+<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div>
+</div>
 
+ 
+<div class="form-group">
 <label>[[Amazon Bucket Name]]</label>
 <input type="hidden" name="field" value="bucket" />
 <input class="form-control" name="bucket.value" value="$!data.bucket" />
+</div>
 
+
+<div class="form-group">
 <label>[[Amazon Access Key]]</label>
 <input type="hidden" name="field" value="accesskey" />
 <input class="form-control" name="accesskey.value" value="$!data.accesskey" />
+</div>
 
+
+<div class="form-group">
 <label>[[Amazon Secret Key]]</label>
 <input type="hidden" name="field" value="secretkey" />
 <input class="form-control" type="password" name="secretkey.value" autocomplete="new-password"  value="$!data.secretkey" />
-
+</div>

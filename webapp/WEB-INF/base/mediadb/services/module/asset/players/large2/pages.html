@@ -1,7 +1,7 @@
 <div id="stacked-pdf-thumbnail-sidebar" class="hidden-xs">
 
     #set($currentpreview = $context.findValue('currentpreview'))
-    #set($pagenum = $context.findValue('pagenum'))
+    #set($pagenum = $context.findValue('documentpagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
     #set ( $hitssessionid = $context.findValue("hitssessionid"))
     #if( !$currentpreview )
@@ -46,7 +46,7 @@
                         #set( $page = $page + 1)
                         <a href="#" onclick='$("li").removeClass("current");$(this).closest("li").addClass("current");$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
                             <div class="emdropshadow">
-       							<img src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?pagenum=$page" />
+       							<img src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?documentpagenum=$page" />
        						</div>	
                             <div class="pdf-page-number">$page</div>
                         </a>

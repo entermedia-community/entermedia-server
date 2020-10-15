@@ -95,6 +95,10 @@ public class CategoryCollectionCache implements CatalogEnabled
 	}
 	public String findCollectionId(Category inRoot)
 	{
+		if( inRoot == null)
+		{
+			return null;
+		}
 		LibraryCollection collection = findCollection(inRoot);
 		if( collection != null)
 		{
@@ -105,6 +109,10 @@ public class CategoryCollectionCache implements CatalogEnabled
 
 	public boolean isCollectionRoot(Category inRoot)
 	{
+		if( inRoot == null)
+		{
+			return false;
+		}
 		LibraryCollection exists = (LibraryCollection)getCacheManager().get(getCatalogId() + "collectioncache", inRoot.getId());
 		if( exists == NULLCOLLECTION)
 		{

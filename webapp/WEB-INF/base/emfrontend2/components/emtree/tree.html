@@ -12,7 +12,7 @@
 	$!webtree.getTreeRenderer().selectNodes($selectednodes)
 #end
 
-#macro(showtreecategories2 $cat $depth) 
+#macro(showtreecategories2 $cat $depth)
 		#set($children = $model.getChildren($cat))
 		#if( $children.size() > 0)
 			#set( $haschildren = true)
@@ -140,7 +140,11 @@
 		#end
 		>
 			<ul  class="open" >
-			#showtreecategories2($rootcategory, 1)
+			#if( $rootcategory)
+				#showtreecategories2($rootcategory, 1)
+			#else
+				[[No category found]]
+			#end	
 			</ul>
 	</div>
 </div>
