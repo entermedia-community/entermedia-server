@@ -39,6 +39,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	{
 		BaseUser user = (BaseUser)super.createNewData();
 		user.setGroupSearcher(getGroupSearcher());
+		user.setEnabled(true);
 		return user;
 	}
 
