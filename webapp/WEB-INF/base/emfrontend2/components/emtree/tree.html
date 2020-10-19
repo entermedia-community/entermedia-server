@@ -109,7 +109,7 @@
 #else
 	#if($category && $content.isPropertyTrue("searchcategory") )
 		$render.setSelectedNode($category)
-#end
+	#end
 #set($rootcategory = $webtree.getModel().getRoot())
 
 
@@ -143,7 +143,7 @@
 			#ifnull( $rootcategory)
 				[[No category set]]
 			#end
-			#ifnotnull( $rootcategory)
+			#if( $rootcategory)
 				#showtreecategories2($rootcategory, 1)
 			#end	
 			</ul>
@@ -189,4 +189,3 @@
   </div>
   #end
 #end
-
