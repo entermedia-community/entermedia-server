@@ -97,12 +97,12 @@
 
 	##FILTERS
 		
-		#foreach( $detail in $details)   
+	#foreach( $detail in $details)   
 		
 		#set( $viewpermission = $context.getPageValue("canviewfilter${detail.getId()}") )
-		#ifnull($viewpermission)
+		##ifnull($viewpermission)
 			#set( $viewpermission = true)
-		#end
+		##end
 	
 		  #if( $viewpermission )
 		
@@ -121,8 +121,9 @@
 			#else
 				$pages.include("/${applicationid}/components/filters/section.html", $context)
 			#end
+			
 		  #end
-		#end
+	#end
 			
 		
 		#set( $nodeID = $context.getRequestParameter("nodeID"))

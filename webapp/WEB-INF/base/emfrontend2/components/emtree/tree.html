@@ -140,10 +140,11 @@
 		#end
 		>
 			<ul  class="open" >
-			#if( $rootcategory)
+			#ifnull( $rootcategory)
+				[[No category set]]
+			#end
+			#ifnotnull( $rootcategory)
 				#showtreecategories2($rootcategory, 1)
-			#else
-				[[No category found]]
 			#end	
 			</ul>
 	</div>

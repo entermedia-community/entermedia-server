@@ -85,7 +85,7 @@ public class CategoryModule extends BaseMediaModule
 		}
 		
 		WebTreeModel model;
-		if( webTree != null)
+		if( webTree != null && webTree.getModel().getRoot() == main)
 		{
 			model = webTree.getModel();
 		}

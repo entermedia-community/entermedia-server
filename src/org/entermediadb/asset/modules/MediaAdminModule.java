@@ -333,21 +333,7 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		NodeManager nodemanager = (NodeManager)getModuleManager().getBean("system","nodeManager");
 
-		
-		do {
-			
-			try
-			{
-				nodemanager.connectCatalog("system");
-			}
-			catch (Exception e)
-			{
-				log.info("Waiting for system catalog to initialize()");
-			}
-			
-			
-		} while(!nodemanager.containsCatalog("system"));
-		
+		nodemanager.connectoToDatabase();
 		
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 		manager.getPathEvents();
