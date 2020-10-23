@@ -90,25 +90,13 @@ public void init()
 		{
 			log.info("Inside Saving and Deleting " + tosave.size() + " " + todelete.size());
 			searcher.saveAllData(tosave, null);
-			for(Asset oldjunk : todelete)
-			{
-				ContentItem item = archive.getOriginalContent(oldjunk);
-				archive.getPageManager().getRepository().remove(item);
-				log.info("Deduplication deleted " + item.getAbsolutePath());
-				archive.removeGeneratedImages(oldjunk);
-			}
-			searcher.deleteAll(todelete, null)
+			tosave.clear();
+			searcher.deleteAll(todelete, null);
+			todelete.clear();
 		}
 	}
 	log.info("Final Saving and Deleting " + tosave.size() + " " + todelete.size());
 	searcher.saveAllData(tosave, null);
-	for(Asset oldjunk : todelete)
-	{
-		ContentItem item = archive.getOriginalContent(oldjunk);
-		archive.getPageManager().getRepository().remove(item);
-		log.info("Deduplication deleted " + item.getAbsolutePath());
-		archive.removeGeneratedImages(oldjunk);
-	}	
 	searcher.deleteAll(todelete, null)
 		
 }
