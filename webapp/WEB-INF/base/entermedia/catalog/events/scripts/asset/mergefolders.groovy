@@ -14,11 +14,11 @@ import org.openedit.repository.ContentItem
 public void init()
 {
 	
-//	String goodcategory = "2037";
-//	String badcategory = "171";
+	String goodcategory = "2037";  //TODO get from catalog settings
+	String badcategory = "171";
 
-	String goodcategory = "AXVWNpWj_Q05pZusg8dM";
-	String badcategory = "AXKFyLGvrCB6NlUGlukf";
+//	String goodcategory = "AXVWNpWj_Q05pZusg8dM";
+//	String badcategory = "AXKFyLGvrCB6NlUGlukf";
 	
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
@@ -70,9 +70,9 @@ public void init()
 		}
 		
 		String sourcepath = goodone.getSourcePath();
-		if( sourcepath.startsWith("Pictures/") )
+		if( sourcepath.startsWith("Events/") )
 		{
-			sourcepath = "Event and Programs/" + sourcepath.substring("Pictures/".length())
+			sourcepath = "Events and Programs/" + sourcepath.substring("Events/".length())
 			goodone.setSourcePath(sourcepath);
 		}
 		if( !goodone.isFolder())
