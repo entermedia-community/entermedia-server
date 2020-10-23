@@ -6,24 +6,28 @@
 
 #if(${presetdata.id} != "0") 
 
-<a class="btn btn-xs btn-secondary" target="_blank" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?cache=false">[[Preview]]</a>
-<a class="btn btn-xs btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $presetdata))?includemetadata=true">[[Download]]</a>
+#set($url = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile?cache=false")
+<a class="btn btn-xs btn-secondary" target="_blank" href="#urlescape($url)">[[Preview]]</a>
+#set($url = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+<a class="btn btn-xs btn-secondary" href="#urlescape($url)">[[Download]]</a>
 #if($canembedasset)
 <a class="btn btn-xs btn-secondary embedbtn copyembed " 
 	id="${presetdata.id}-btn" 
 	data-targetdivinner="${presetdata.id}-embed"
 	data-isshowing="false" 
 	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">[[Embed]]</a>
+	#set($url = "$home$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=${asset.id}&ouputpreset=${presetdata.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1")
 <a class="btn btn-xs btn-secondary embedbtn copyembed " 
 	id="${presetdata.id}-obtn" 
 	data-targetdivinner="${presetdata.id}-embed"
 	data-isshowing="false" 
-	href="$home$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=${asset.id}&ouputpreset=${presetdata.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">[[oEmbed]]</a>
+	href="#urlescape($url)">[[oEmbed]]</a>
 #end
 
 #else
-<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#uuencode($asset.sourcepath)/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
-<a class="btn  embedbtn copyembed" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" href="$home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=${asset.id}&outputfile=${asset.getMediaName()}&oemaxlevel=1">[[Embed]]</a>
+	#set($url = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$asset.sourcepath/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+	<a class="btn" href="#urlescape($url)">[[Download]]</a>
+	<a class="btn  embedbtn copyembed" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" href="#urlescape($home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=${asset.id}&outputfile=${asset.getMediaName()}&oemaxlevel=1)">[[Embed]]</a>
 #end
 
 

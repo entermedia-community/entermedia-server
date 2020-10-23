@@ -7,7 +7,7 @@
 <h2>[[Media Files]]</h2>
 #if($candownload)	
 	<a class="btn btn-sm btn-primary" 
-	href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"
+	href="#urlescape("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"
 	style="margin-right:5px;"
 	title="[[Download]] $asset.name"
 	><i class="fas fa-download"></i> [[Download Original]]</a>
@@ -79,22 +79,25 @@ $context.putPageValue("results", $results)
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$presetdata.id, "imagelocation"))
 				
-				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)")
+				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")
 				
 				<div class="mediapreset #if($presetdata.id==$presetdata.id) mediapresetselected #end">
 					
 					<div class="mediapreset-name" title="$!presetdata.name" >$!presetdata.name</div>
 					<div class="mediapreset-image">
-						<a href="$home$apphome/components/asseteditor/preview.html?previewimg=$mediaurl"
+						#set($previewurl="$home$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+						<a href="#urlescape($previewurl)"
 							class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
 							title="$!presetdata.name">
-							<img src="$mediaurl?_=$mathutil.getRandomValue(9999)" alt="$!presetdata.name" />
+							#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
+							<img src="#urlescape($imgurl)" alt="$!presetdata.name" />
 						</a>
 					</div>
 					<div class="mediapreset-actions">
 					##Download
-					<a class="btn btn-xs btn-primary" 
-					    href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)/#uuencode($mediaarchive.asExportFileName($asset, $presetdata))?includemetadata=true"
+					#set($downloadurl="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+					<a class="btn btn-xs btn-primary"
+					    href="#urlescape($downloadurl)"
 					    title="[[Download]] $!presetdata.name"><i class="fas fa-download"></i></a>
 					    
 					 ##Crop

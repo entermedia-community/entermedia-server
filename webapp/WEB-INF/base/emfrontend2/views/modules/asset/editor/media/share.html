@@ -8,7 +8,8 @@
 
 <div style="float:left; width:190px; text-align:center; border-right:1px solid #efefef; padding:10px 5px; margin-right:12px;">
 <div class="mediapreset-image">
-	<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($preset.generatedoutputfile)?_=$mathutil.getRandomValue(9999)" />
+	#set($shareurl="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$preset.generatedoutputfile?_=$mathutil.getRandomValue(9999)")
+	<img src="#urlescape($shareurl)" />
 	</div>
 </div>
 

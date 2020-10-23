@@ -25,7 +25,8 @@
 	<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[File Menu]]">[[File]]</a>
     	<ul class="dropdown-menu">
 	 		#if($canprintpreview)
-				<li><a class="print " target="_blank" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="[[Print Preview]]">[[Print]]</a></li>
+	 			#set($printurl = "$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}")
+				<li><a class="print " target="_blank" data-hidefooter="true"  href="#urlescape($printurl)" title="[[Print Preview]]">[[Print]]</a></li>
 			#end
 			#if($candownload || $canconvert || $candownloadfpo)
 				#if( $asset.getId().startsWith("multiedit:") )

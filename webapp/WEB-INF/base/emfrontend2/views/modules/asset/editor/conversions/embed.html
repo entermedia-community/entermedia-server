@@ -6,7 +6,7 @@
 	#set( $prefix = $context.siteRoot )
  #end
 
-##$!{prefix}$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($outputfile)
+##$!{prefix}$home/$mediadbappid/services/module/asset/downloads/preset/#urlescape($asset.sourcepath)/#urlescape($outputfile)
 #set( $src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="4" cols="60">
 $src
