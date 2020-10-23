@@ -17,7 +17,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetSearcher searcher = archive.getAssetSearcher();
 	
-	HitTracker all = searcher.query().exact("duplicate", "true").sort("md5hex").sort("assetaddeddate").search();
+	HitTracker all = searcher.query().exact("duplicate", "true").sort("md5hex").sort("assetaddeddateDown").search();
 	all.enableBulkOperations();
 	HashSet tosave = new HashSet();
 
@@ -37,13 +37,13 @@ public void init()
 			if(hex1.equals(hex2))
 			{
 				Asset older = searcher.loadData(duplicate);
-				for( Category cat : older.getCategories() )
+				for( Category cat : currentasset.getCategories() )
 				{
-					currentasset.addCategory(cat);
+					older.addCategory(cat);
 				}
-				todelete.add(older);
-				currentasset.setValue("duplicate",false);
-				tosave.add(currentasset);
+				todelete.add(currentasset);
+				older.setValue("duplicate",false);
+				tosave.add(older);
 			}
 			else
 			{
