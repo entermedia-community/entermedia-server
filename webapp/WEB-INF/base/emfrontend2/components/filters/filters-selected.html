@@ -23,10 +23,10 @@
 	#if($librarycol.collectionimage)
 		#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
 	#else
-		#set($asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+		#set($asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).exact("previewstatus","2").sort("assetaddeddateDown").searchOne() )
 	#end
 
-	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
 	
 	<div class="card card-mini card-collections">
 		
