@@ -11,6 +11,17 @@
 				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
 				
 			</li>
+			#if($rendertype=="document")
+				#set($totalpages = $numberutils.toInt($asset.pages))
+				#if($totalpages>1)
+					<li class="footermenu mvshowpagestab">
+						<a class="mvshowpages" 
+							title="$totalpages [[Pages]]" >
+						<i class="fas fa-file-alt"></i> 
+						</a>
+					</li>
+				#end
+			#end
 			#if (!$ismulti)
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 

@@ -275,6 +275,7 @@ tr.emborderhover td,
 .sidebar-list li.current ,
 .search-list li:hover, 
 .sidebar-list li:hover,
+.sidebar-collection-list li.current:hover,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
 .emtree .cat-current,
 .filters-sidebar li:hover,
@@ -287,6 +288,14 @@ ul.list-group.list-group-hover li:hover,
 {
 	background-color: #c9e8f2!important;
 }
+.sidebar-collection-list li.current {
+	background-color: #fff!important;
+}
+.sidebar-collection-list li.current a {
+	font-weight: bold;
+	background-color: #fff!important;
+
+	}
 .emsettingslist li.nohover,
 .emsettingslist li.nohover:hover {
 	background-color: #fff!important;
@@ -2501,7 +2510,6 @@ label.error {
 }
 .assetpanel-sidebar {
 	position: fixed;
-    
     top: 0;
     left:-80%;
     display: block!important;
@@ -2538,6 +2546,38 @@ label.error {
 .assetpanel-content-breadcrumb a:hover {
 	color:#fff;
 }
+.assetpanel-document .assetpanel-content {
+	padding:0;
+}
+.assetpanel-sidebar-ontop {
+	position: fixed;
+    top: 0;
+    left:0!important;
+    z-index:1;
+    display: block!important;
+    width: 40%;
+    height: 100%;
+    background-color:#cecece;
+}
+.mvshowpages-toggle {
+	display:none;
+	position:absolute;
+	top:0;
+	right:-24px;
+	background-color: #aaa;
+	border:1px solid #888;
+	color:#666;
+	padding:5px;
+	width:25px;
+	border-bottom-right-radius: 40%;
+}
+.assetpanel-sidebar-ontop .mvshowpages-toggle {
+	display:block;
+	}
+.mvshowpages {
+	padding:0 14px 0 8px;
+	color:#ccc!important;
+}
 @media (min-width: 992px) {
 	.assetpanel-sidebar {
 	    position: absolute;
@@ -2557,6 +2597,9 @@ label.error {
 		min-height: 200px;
 		height: calc(100% - 20px);
 		overflow: hidden;
+	}
+	#footermenu li.footermenu.mvshowpagestab {
+	display:none;
 	}
 }
 
@@ -3049,7 +3092,7 @@ label.error {
 #pdf-thumbnail-sidebar ul li.current a:hover {
 	background-color: #d0e6ef;
 }
-#pdf-thumbnail-sidebar ul li.current:after {
+#pdf-thumbnail-sidebarX ul li.current:after {
     content: '';
     display: block;
     float: left;
@@ -3063,8 +3106,8 @@ label.error {
     padding: 0;
     margin: 0;
 }
-#pdf-thumbnail-sidebar ul li.current:hover:after { 
-	border-left: 12px solid #d0e6ef;
+#pdf-thumbnail-sidebarX ul li.current:hover:after { 
+	/*border-left: 12px solid #d0e6ef;*/
 }
 #pdf-thumbnail-sidebar .next-pages a {
 	display: inline-block;

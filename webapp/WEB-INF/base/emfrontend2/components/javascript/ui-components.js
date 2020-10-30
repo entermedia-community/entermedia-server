@@ -1431,6 +1431,25 @@ uiload = function() {
 	});
 	
 	
+	
+	lQuery(".mvpageclick").livequery("click", function(e) {
+		$(".mvpageslist li").removeClass("current");
+		$(this).closest("li").addClass("current");
+		var pageurl = $(this).data("pageurl");
+		$("#mainimage").attr("src", pageurl);
+		$(".assetpanel-sidebar").removeClass("assetpanel-sidebar-ontop");
+	});
+	
+	lQuery(".mvshowpages").livequery("click", function(e) {
+		$(".assetpanel-sidebar").addClass("assetpanel-sidebar-ontop");
+	});
+	
+	lQuery(".mvshowpages-toggle").livequery("click", function(e) {
+		$(".assetpanel-sidebar").removeClass("assetpanel-sidebar-ontop");
+	});
+	
+	
+	
 
 	lQuery("#mainimageholder")
 			.livequery(
