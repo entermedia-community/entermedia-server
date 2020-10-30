@@ -420,7 +420,12 @@ color: #fff;
 	line-height: 32px;
 }
 #footermenu .expandmenu {
+	padding:0 10px;
+}
+@media (min-width: 992px) {
+	#footermenu .expandmenu {
 	padding:0 20px;
+	}
 }
 #footermenu li.tabselected {
 	background-color: #ccc;

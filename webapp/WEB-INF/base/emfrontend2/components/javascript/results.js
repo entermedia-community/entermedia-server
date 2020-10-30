@@ -1199,9 +1199,11 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		//We have a fraction of a pixel to add to last item
 		var toadd = totalavailablew - totalwused;
 		var div = row[row.length-1];
-		var w = div.width();
-		w = w + toadd;
-		div.css("width",w + "px");
+		if (div) {
+			var w = div.width();
+			w = w + toadd;
+			div.css("width",w + "px");
+		}
 	}
 	
 			
