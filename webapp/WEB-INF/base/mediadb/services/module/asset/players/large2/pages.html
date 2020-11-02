@@ -31,7 +31,7 @@
                 #set( $page = 0)
             #end
 
-            <ul>
+            <ul class="mvpageslist">
                     
                 #set( $start = $page*5) 
                 #set($end = $start + 4)
@@ -44,7 +44,7 @@
                 #foreach( $page in [$start..$end])
                 	<li class="#if ( $page == $currentpreview ) current #end">
                         #set( $page = $page + 1)
-                        <a href="#" onclick='$("li").removeClass("current");$(this).closest("li").addClass("current");$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
+                        <a href="#" class="mvpageclick" data-pageurl="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page">
                             <div class="emdropshadow">
        							<img src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?documentpagenum=$page" />
        						</div>	

@@ -4,6 +4,6 @@
 #if(!$prefix) 
 	#set( $prefix = $context.siteRoot )
  #end
-##$!{prefix}$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($outputfile)
+##$!{prefix}$home/$mediadbappid/services/module/asset/downloads/preset/#urlescape($asset.sourcepath)/#urlescape($outputfile)
 #set( $src = $mediaarchive.asLinkToPreview($asset, null, $outputfile, true))
 $src

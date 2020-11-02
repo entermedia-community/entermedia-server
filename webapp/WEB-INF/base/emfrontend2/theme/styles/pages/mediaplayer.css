@@ -404,7 +404,7 @@ color: #fff;
 	float:left;
 	display:block;
 }
-#footermenu .gotoarrows { font-size: 1.6rem; line-height: 25px; padding: 0 2px; cursor:pointer; }
+#footermenu .gotoarrows { font-size: 1.9rem; line-height: 25px; padding: 0 2px; cursor:pointer; }
 #footermenu .goleftclick { padding-left: 8px;}
 #footermenu .gorightclick { padding-right: 8px;}
 #footermenu .gotoarrows { color:#777;} 
@@ -420,7 +420,12 @@ color: #fff;
 	line-height: 32px;
 }
 #footermenu .expandmenu {
+	padding:0 10px;
+}
+@media (min-width: 992px) {
+	#footermenu .expandmenu {
 	padding:0 20px;
+	}
 }
 #footermenu li.tabselected {
 	background-color: #ccc;

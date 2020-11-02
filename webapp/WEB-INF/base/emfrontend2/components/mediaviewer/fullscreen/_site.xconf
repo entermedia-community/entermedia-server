@@ -20,5 +20,7 @@
 
 	</path-action>
 	
+	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.entermediadb.asset.util.MathUtils"/>
+	
 
 </page>

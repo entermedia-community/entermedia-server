@@ -98,7 +98,8 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 		<tr>
 		<td class="text-center">
-		<img src="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($presetdata.generatedoutputfile)?cache=false"
+		#set($imgurl = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile?cache=false")
+		<img src="#urlescape($imgurl)"
 			  style="max-width:120px; max-height: 80px;" />
 		</td>
 		<td>
