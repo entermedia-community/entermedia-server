@@ -1,0 +1,3 @@
+#
+#Fri Oct 23 10:51:05 CDT 2020
+Sync=Sincronizar
