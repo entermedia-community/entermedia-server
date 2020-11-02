@@ -1446,6 +1446,9 @@ uiload = function() {
 	
 	lQuery(".mvshowpages-toggle").livequery("click", function(e) {
 		$(".assetpanel-sidebar").removeClass("assetpanel-sidebar-ontop");
+		$(".assetpanel-sidebar").addClass("assetpanel-sidebar-hidden");
+		$(".assetpanel-content").addClass("assetpanel-content-full");
+		$(".mvshowpagestab").css("display","block");
 	});
 	
 	

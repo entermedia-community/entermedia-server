@@ -2499,7 +2499,7 @@ label.error {
     color:red;
 }
 #main-media-container { height: 100%;}
-#main-media-viewer { height: calc(100% - 32px);}
+#main-media-viewer { height: calc(100% - 35px);}
 
 /*Asset Panel*/
 .assetpanel-container {
@@ -2560,10 +2560,11 @@ label.error {
     background-color:#cecece;
 }
 .mvshowpages-toggle {
-	display:none;
 	position:absolute;
+	display:none;
 	top:0;
 	right:-24px;
+	z-index:1;
 	background-color: #aaa;
 	border:1px solid #888;
 	color:#666;
@@ -2578,28 +2579,43 @@ label.error {
 	padding:0 14px 0 8px;
 	color:#ccc!important;
 }
+.mvjumpto {
+	display:none;
+}
 @media (min-width: 992px) {
 	.assetpanel-sidebar {
 	    position: absolute;
 	    left:0;
-	    top:0;
 	    width: 190px;
 	
 	  /*  height: calc(100% - 20px);*/
 	}
-	.assetpanel-content {
+		.assetpanel-content {
 		margin-left: 190px;
 		min-height: 200px;
 		overflow: hidden;
 		background-color: #ccc;
 	}
+	.assetpanel-sidebar-hidden {
+		left:-80%;
+	}
+	.assetpanel-content-full {
+	margin:0;
+	}
+	.mvshowpages-toggle {
+		display:block;
+	}
+
 	.assetpanel-content-chatterbox {
 		min-height: 200px;
 		height: calc(100% - 20px);
 		overflow: hidden;
 	}
-	#footermenu li.footermenu.mvshowpagestab {
+	li.footermenu.mvshowpagestab {
 	display:none;
+	}
+	.mvjumpto {
+	display:block;
 	}
 }
 
