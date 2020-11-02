@@ -5,19 +5,14 @@
 <div id="footerbase">
 
 	<div id="footermenu">
-		<ul>
-			<li class="footermenu">
-				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
-				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
-				
-			</li>
+		<ul class="footermenu">
 			#if($rendertype=="document")
 				#set($totalpages = $numberutils.toInt($asset.pages))
 				#if($totalpages>1)
 					<li class="footermenu mvshowpagestab">
 						<a class="mvshowpages" 
 							title="$totalpages [[Pages]]" >
-						<i class="fas fa-file-alt"></i> 
+						<i class="fas fa-bars"></i> 
 						</a>
 					</li>
 				#end
@@ -293,7 +288,12 @@
 				</ul>
 		    </li>
 		    #end
-    
+		</ul>
+		<ul class="footermenu-assetnav">
+		<li class="footermenu">
+				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
+				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
+		</li>
 		</ul>
 	</div>
 </div>

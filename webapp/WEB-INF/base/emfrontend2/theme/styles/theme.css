@@ -3076,7 +3076,7 @@ label.error {
     display: block;
 }
 #pdf-thumbnail-sidebar ul li a .emdropshadow {
-    margin:25px 0;
+    margin:10px 0;
 }
 #pdf-thumbnail-sidebar ul li a .pdf-page-number {
 	overflow: hidden; 
@@ -3190,7 +3190,11 @@ label.error {
 .embedlinktextarea { margin-top:5px; width:100%; }
 
 
-
+@media (min-width: 992px) {
+	#pdf-thumbnail-sidebar ul li a .emdropshadow {
+	    margin:25px 0;
+	}
+}
 
 /*Module: Assets*/
 .asset-menu {

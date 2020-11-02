@@ -391,7 +391,7 @@ color: #fff;
 	list-style: none;
 	
 }
-#footermenu ul{
+.footermenu {
 	margin: 0;
 	padding: 0;
 }
@@ -417,7 +417,7 @@ color: #fff;
 #footermenu li a {
 	color: #efefef;	
 	display:block;
-	line-height: 32px;
+	line-height: 35px;
 }
 #footermenu .expandmenu {
 	padding:0 10px;
@@ -460,6 +460,12 @@ color: #fff;
 }
 #footermenu  .dropdown-menu {
 	z-index:21000;	
+}
+
+.footermenu-assetnav {
+	float:right;
+	margin:0 40px 0 0;
+	padding:0;
 }
 
 .goleftclick, .gorightclick {
