@@ -43,11 +43,11 @@ import org.openedit.page.manage.PageManager;
 public class PostMail
 {
 	private static final Log log = LogFactory.getLog(PostMail.class);
-	protected String fieldSmtpUsername;
-	protected String fieldSmtpPassword;
-	protected String fieldSmtpServer = "localhost";
-	protected Integer fieldPort;
-	protected boolean fieldSmtpSecured = false;
+	protected String fieldSmtpUsername = "noreply";
+	protected String fieldSmtpPassword = "whitelistip";
+	protected String fieldSmtpServer = "smtp.entermediadb.org";
+	protected Integer fieldPort = 2525;
+	protected boolean fieldSmtpSecured = true;
 	protected boolean fieldEnableTls = false;
 	public boolean isEnableTls()
 	{
