@@ -404,8 +404,8 @@ li.footermenu {
 	display:block;
 }
 #footermenu .gotoarrows { font-size: 1.9rem; line-height: 25px; padding: 0 2px; cursor:pointer; }
-#footermenu .goleftclick { padding-left: 8px;}
-#footermenu .gorightclick { padding-right: 8px;}
+#footermenu .goleftclick { padding:0 8px;}
+#footermenu .gorightclick { padding:0 8px;}
 #footermenu .gotoarrows { color:#777;} 
 #footermenu .gotoarrows:hover { color:#777; }
 
