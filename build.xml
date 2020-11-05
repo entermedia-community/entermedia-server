@@ -70,7 +70,7 @@
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
-	<get dest="${build}/tmp/oesite.war" src="${remotehome}/${branch}entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
+	<get dest="${build}/tmp/oesite.war" src="${remotehome}/em10_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
 	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
 	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
 		<fileset dir="${build}/tmp/WEB-INF/lib"	>
@@ -133,11 +133,7 @@
     </javac>
   </target>
   
-  	<!-- 
-		========================================================================
-		Jar classes for the main app, excluding unit tests.
-		========================================================================
-	-->	  
+ 
 	<target name="jar">
 		<mkdir dir="${wardir}/WEB-INF/lib/" />
 		<mkdir dir="${deployDir}/builds/" />
@@ -160,7 +156,6 @@
   	
     <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" target="1.8">
       <classpath>
-<!--      	<fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar"/> -->
         <fileset dir="${lib}" >
             <include name="*.jar"/>
             <include name="compile/*.jar"/>
@@ -176,14 +171,9 @@
   	<echo>JUnit report is located: ${report}/junit.xml</echo>
 	
   	<junit haltonfailure="true" showoutput="true" printsummary="true" fork="true" maxmemory="256m">
-  		<env key="LD_LIBRARY_PATH" path="/home/cburkey/eiiprojects/anthill/libstdc++5:/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/lib" /> 
+  		<env key="LD_LIBRARY_PATH" path="" /> 
   		<sysproperty key="oe.root.path" value="${basedir}/webapp"/>
   	  <classpath>
-  <!--	  <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar"/>
-  	  	<fileset dir="${lib}">
-        <include name="**/*.jar"/>
-      </fileset>
-   -->     
   	  	<fileset dir="${wardir}/WEB-INF/lib/">
         <include name="*.jar"/>
      </fileset>

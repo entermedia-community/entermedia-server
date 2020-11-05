@@ -1,13 +1,4 @@
-<div id="pdfviewer" class="assetpanel-document">
-<div class="assetpanel-container">
-<div class="assetpanel-sidebar">
-
-<a href="#" title="" 
-	class="mvshowpages-toggle">
-	<i class="fas fa-angle-double-left"></i>
-	</a>
-	
-	#set( $pagenum = $context.getRequestParameter("documentpagenum") )
+#set( $pagenum = $context.getRequestParameter("documentpagenum") )
 	
 	#if( !$pagenum)
 	 #set( $pagenum = 1 )
@@ -16,10 +7,18 @@
 	#set( $name = $context.getRequestParameter("name") )
 	#set ( $urlenc = $url_util.encode($asset.sourcepath))
 	#set($totalpages = $numberutils.toInt($asset.pages))
-	
+<div id="pdfviewer" class="assetpanel-document">
+<div class="assetpanel-container">
+<div class="assetpanel-sidebar #if($totalpages<2) assetpanel-sidebar-hidden #end">
+
+<a href="#" title="" 
+	class="mvshowpages-toggle">
+	<i class="fas fa-angle-double-left"></i>
+	</a>
+
 	#if( $totalpages > 1 )
 		$pages.include("/${mediadbappid}/services/module/asset/players/large2/pages.html",$context)
-         <div id="jumpto">
+         <div id="jumpto" class="mvjumpto">
               <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
               	<p><span>[[Jump To Page]] (1 - $totalpages):</span></p>
 				<p>
@@ -39,7 +38,7 @@
 
 	##$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
 </div>
-<div class="assetpanel-content">
+<div class="assetpanel-content #if($totalpages<2) assetpanel-content-full #end">
 	<div class="assetpanel-content-inside">
 		[[Click to drag. Mouse wheel to zoom]]
 		

@@ -109,7 +109,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					return;
 				}
 				//Save to local file
-				//log.info("Saving :" + endpath + " URL:" + path);
+				log.info("Saving:" + endpath);
 				try
 				{
 					InputStream stream = genfile.getEntity().getContent();
@@ -142,6 +142,9 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			{
 				inConnection.release(genfile);
 			}
+		}
+		else {
+			log.info("Skiped: " + endpath + " Exists: " + found.exists() );
 		}
 	}
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
