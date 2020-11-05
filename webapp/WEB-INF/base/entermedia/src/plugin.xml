@@ -2368,5 +2368,10 @@
 
 	<bean id="httpSharedConnection" class="org.entermediadb.net.HttpSharedConnection"  scope="prototype">
 	</bean>
+
+	<bean id="FinderModule" class="org.entermediadb.find.FinderModule" >
+	</bean>
+
+
 		
 </beans>
