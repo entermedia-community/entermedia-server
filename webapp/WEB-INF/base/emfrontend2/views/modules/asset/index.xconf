@@ -18,6 +18,8 @@
 		<property name="searchtype">asset</property>
 	</path-action>	
 	<path-action name="DataEditModule.search" cancel="true"/>
--->	
+	//What is this for?
 	<path-action name="MediaSearchModule.loadHitsCategory"/>
+-->	
 </page>
+
