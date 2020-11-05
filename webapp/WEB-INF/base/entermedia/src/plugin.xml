@@ -229,12 +229,14 @@
 		<property name="smtpPassword">
 			<value></value>
 		</property -->
+		<!--
 		<property name="smtpSecured">
 			<value>false</value>
 		</property>
 		<property name="smtpServer">
 			<value>localhost</value>
 		</property>
+		 -->
 		<!--  property name="port">
 			<value>25</value>
 		</property -->

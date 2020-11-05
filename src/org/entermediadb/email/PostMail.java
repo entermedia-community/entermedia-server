@@ -47,8 +47,10 @@ public class PostMail
 	protected String fieldSmtpPassword = "whitelistip";
 	protected String fieldSmtpServer = "smtp.entermediadb.org";
 	protected Integer fieldPort = 2525;
+	//protected Integer fieldPort = 587;
 	protected boolean fieldSmtpSecured = true;
 	protected boolean fieldEnableTls = false;
+	protected boolean fieldSslEnabled = false;
 	public boolean isEnableTls()
 	{
 		return fieldEnableTls;
@@ -60,7 +62,6 @@ public class PostMail
 	}
 
 	protected PageManager fieldPageManager;
-	protected boolean fieldSslEnabled = false;
 	protected ModuleManager fieldModuleManager;
 
 	public ModuleManager getModuleManager()
