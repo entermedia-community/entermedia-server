@@ -46,11 +46,11 @@ public class PostMail
 	protected String fieldSmtpUsername = "noreply";
 	protected String fieldSmtpPassword = "whitelistip";
 	protected String fieldSmtpServer = "smtp.entermediadb.org";
-	protected Integer fieldPort = 2525;
-	//protected Integer fieldPort = 587;
+	//protected Integer fieldPort = 2525;
+	protected Integer fieldPort = 587;
 	protected boolean fieldSmtpSecured = true;
-	protected boolean fieldEnableTls = false;
-	protected boolean fieldSslEnabled = false;
+	protected boolean fieldEnableTls = true;
+	protected boolean fieldSslEnabled = true;
 	public boolean isEnableTls()
 	{
 		return fieldEnableTls;
