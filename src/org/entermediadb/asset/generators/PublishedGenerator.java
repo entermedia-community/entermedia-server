@@ -83,28 +83,42 @@ public class PublishedGenerator extends FileGenerator
 		String catalogid = inReq.findValue("catalogid");
 
 		String path = null;
-		String assetrootfolder = inPage.get("assetrootfolder");
+		String publishedroot = inPage.get("publishedroot");
 
-		path = inPage.getPath().substring(assetrootfolder.length());
+		path = inPage.getPath().substring(publishedroot.length() + 1);
 
-		String guid = inPage.getPath().substring(assetrootfolder.length());
-		guid = PathUtilities.extractRootDirectory(guid);
-
-		String presetid = PathUtilities.extractFileName( path );
+		
+		String[] paths = path.split("/");
+		String guid = paths[0];
+		String presetid = paths[1];
+		
 		Data dist = getSearcherManager().getCachedData(catalogid, "distribution", guid);
-		Data asset = getSearcherManager().getCachedData(catalogid, "distribution", guid);
+		if (dist == null) {
+			throw new ContentNotAvailableException("Distribution Not Available", path);
+		}
+		Data asset = getSearcherManager().getCachedData(catalogid, "asset", dist.get("assetid"));
+		if (asset == null) {
+			throw new ContentNotAvailableException("Asset Not Available", path);
+		}
 		Data preset = getSearcherManager().getCachedData(catalogid, "convertpreset", presetid);
+		if (preset == null) {
+			throw new ContentNotAvailableException("Distribution Preset Not Available", path);
+		}
 
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
 		
+		inReq.setRequestParameter("sourcepath", asset.getSourcePath());
+		
 		if( presetid.contains("videohls"))
 		{
-			if(inPage.getName().endsWith("player.html") )
+			if(inPage.getName().endsWith("videohls") )
 			{
 				inReq.putPageValue("asset",asset);
+				inReq.putPageValue("mediaarchive",archive);
 				//return an html velocity page
 				String applicationid = inReq.findValue("applicationid");
-				Page player = getPageManager().getPage("/" + applicationid + "/module/asset/players/video/" + inPage.getName());
+				Page player = getPageManager().getPage("/" + applicationid + "/services/module/asset/players/embed/video.html");
+				inReq.getResponse().setContentType("text/html");
 				getVelocityGenerator().generate(inReq, player, inOut);
 				return;
 			}
@@ -115,14 +129,15 @@ public class PublishedGenerator extends FileGenerator
 		}
 		else if( presetid.contains("video"))
 		{
-			String genpath = archive.asLinkToPreview(asset, preset.get("generatedname"));
+			String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
 			Page mp4 = getPageManager().getPage(genpath);
 			getMp4Generator().generate(inReq, mp4, inOut);
 		}
 		else
 		{
-			String genpath = archive.asLinkToPreview(asset, preset.get("generatedname"));
+			String genpath = archive.asLinkToPreview(asset, preset.get("generatedoutputfile"));
 			Page gen = getPageManager().getPage(genpath);
+			inReq.getResponse().setContentType(gen.getMimeType());
 			getConvertGenerator().generate(inReq, gen, inOut);
 		}
 	}

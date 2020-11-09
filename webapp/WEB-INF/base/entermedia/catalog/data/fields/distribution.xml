@@ -2,7 +2,7 @@
 
 <properties beanname="dataSearcher"> 
 
-  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Vote Id 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="true" sortable="true">Vote Id 
     <name> 
       <language id="de"><![CDATA[Abstimmung id]]></language>  
       <language id="en"><![CDATA[GUID]]></language>  
@@ -10,7 +10,7 @@
       <language id="fr"><![CDATA[Identifiant du vote]]></language> 
     </name> 
   </property>  
-  <property id="assetid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+  <property id="assetid" index="true" type="list" viewtype="text" stored="true" keyword="false" filter="false" editable="true" sortable="true">Asset Id 
     <name> 
       <language id="de"><![CDATA[Asset-ID]]></language>  
       <language id="en"><![CDATA[Asset Id]]></language>  
@@ -18,7 +18,7 @@
       <language id="fr"><![CDATA[ID Item]]></language> 
     </name> 
   </property>  
-  <property id="username" index="true" viewtype="user" stored="true" keyword="false" filter="false" editable="false" sortable="true">User Name 
+  <property id="username" index="true" viewtype="user" stored="true" keyword="false" filter="false" editable="true" sortable="true">User Name 
     <name> 
       <language id="de"><![CDATA[Benutzername]]></language>  
       <language id="en"><![CDATA[User Name]]></language>  
@@ -26,7 +26,7 @@
       <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
     </name> 
   </property>  
-  <property id="creationtime" legacy="time" datatype="date" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Time
+  <property id="creationtime" legacy="time" datatype="date" index="true" stored="true" keyword="false" filter="true" editable="false" sortable="true" type="date">Time
     <name>
       <language id="de"><![CDATA[Zeit]]></language>
       <language id="en"><![CDATA[Time]]></language>

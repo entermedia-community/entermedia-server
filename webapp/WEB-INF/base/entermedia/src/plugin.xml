@@ -2383,7 +2383,7 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="velocityGenerator"><ref bean="velocityGenerator"/></property>
 		<property name="mp4Generator"><ref bean="mp4Generator"/></property>
-		<property name="convertGenerator"><ref bean="convertGenerator"/></property>
+		<property name="convertGenerator"><ref bean="ConvertGenerator"/></property>
 	</bean>
 
 
