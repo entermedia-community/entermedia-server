@@ -2374,6 +2374,18 @@
 	<bean id="FinderModule" class="org.entermediadb.find.FinderModule" >
 	</bean>
 
+	<bean id="publishedGenerator" class="org.entermediadb.asset.generators.PublishedGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="velocityGenerator"><ref bean="velocityGenerator"/></property>
+		<property name="mp4Generator"><ref bean="mp4Generator"/></property>
+		<property name="convertGenerator"><ref bean="convertGenerator"/></property>
+	</bean>
+
 
 		
 </beans>

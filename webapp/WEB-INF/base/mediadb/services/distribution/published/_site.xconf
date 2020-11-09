@@ -1,0 +1,7 @@
+<page>
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+	<generator name="publishedGenerator"/>
+	
+</page>

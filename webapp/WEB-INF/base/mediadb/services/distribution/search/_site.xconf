@@ -1,0 +1,17 @@
+<page>
+	<property name="forcelayout">true</property>
+	<layout>/${applicationid}/services/lists/search/layout.json</layout>
+	<property name="virtual">true</property>
+
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	<path-action name="JsonDataModule.handleSearch" alltypes="true"/>
+
+	<property name="alternative_extension">json</property>
+	<property name="searchtyperoot">/${applicationid}/services/lists/search</property>	
+	
+	<permission name="view">
+		<userprofile property="api-search-data" equals="true"  />
+	</permission>
+</page>
+
