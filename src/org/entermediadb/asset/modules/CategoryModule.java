@@ -128,7 +128,7 @@ public class CategoryModule extends BaseMediaModule
 			{
 				return null;
 			}
-			log.info("No Category in Session, creating new " + treeid);
+			log.debug("No Category in Session, creating new " + treeid);
 			webTree = new WebTree(model);
 			webTree.setName(name);
 			webTree.setId(treeid);
@@ -478,7 +478,7 @@ public class CategoryModule extends BaseMediaModule
 			tosave.setName(text);
 			archive.getCategorySearcher().saveCategory(tosave);
 		}
-		getCatalogTree(inReq);
+		//getCatalogTree(inReq);
 	}
 	
 	public void loadCategory(WebPageRequest inContext) throws OpenEditException 
