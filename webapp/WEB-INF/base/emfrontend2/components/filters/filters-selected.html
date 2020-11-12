@@ -108,8 +108,11 @@
 	#end
 #end
 
+##set( $terms = $userfilters.getFilteredTerms($hits) )
 
-#set( $terms = $userfilters.getFilteredTerms($hits) )
+#set( $terms = $hits.getFilteredTerms($context, "advancedfilter") )
+
+
 #foreach( $term in $terms)
 	#if( $librarycol )
 		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
