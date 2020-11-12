@@ -1,15 +1,14 @@
 <page>
 	<property name="forcelayout">true</property>
-	<layout>/${applicationid}/services/distribution/edit/layout.json</layout>
+	<layout>/${applicationid}/services/distribution/delete/layout.json</layout>
 	<property name="virtual">true</property>
 
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
-	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT"/>
-	<path-action name="JsonDataModule.loadData" alltypes="true" method="GET"/>
-	<!-- <path-action name="JsonDataModule.deleteData" alltypes="true" method="DELETE"/> -->
+	<path-action name="JsonDataModule.deleteData" alltypes="true" method="DELETE"/>
+	
 	<property name="alternative_extension">json</property>
-	<property name="searchtyperoot">/${applicationid}/services/distribution/edit</property>
+	<property name="searchtyperoot">/${applicationid}/services/distribution/delete</property>
 	
 	<permission name="view">
 		<or>

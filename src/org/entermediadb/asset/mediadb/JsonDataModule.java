@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -138,6 +139,9 @@ public class JsonDataModule extends BaseJsonModule
 		if( request != null)
 		{
 			String id = (String)request.get("id");
+			if(id == null) {
+				id = (String)inReq.getPageValue("id");
+			}
 			String sourcepath = (String) request.get("sourcepath");
 			newdata.setProperties(request);
 			newdata.setId(id);
@@ -164,9 +168,6 @@ public class JsonDataModule extends BaseJsonModule
 		Searcher searcher = archive.getSearcher(searchtype);
 		String id = getId(inReq);
 
-		log.info("JSON get with ${id} and ${catalogid}");
-		
-
 		Data data = (Data) searcher.searchById(id);
 
 		if(data == null)
@@ -192,9 +193,6 @@ public class JsonDataModule extends BaseJsonModule
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		String id = getId(inReq);
-
-		log.info("JSON get with ${id} and ${catalogid}");
-		
 
 		Data data = (Data) searcher.searchById(id);
 
@@ -249,7 +247,16 @@ public class JsonDataModule extends BaseJsonModule
 
 	}
 	
-
+	public  void getUUID(WebPageRequest inReq) {
+		Map request = inReq.getJsonRequest();
+		String id = (String)request.get("id");
+		if(id == null) {
+			 id = UUID.randomUUID().toString();
+			 inReq.putPageValue("id", id);
+		}
+		
+		
+	}
 	
 	
 }

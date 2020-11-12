@@ -1,20 +1,23 @@
 <page>
 	<property name="forcelayout">true</property>
-	<layout>/${applicationid}/services/lists/create/layout.json</layout>
+	
+	<layout>/${applicationid}/services/distribution/create/layout.json</layout>
+	
 	<property name="virtual">true</property>
 
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
+	
+	<path-action name="JsonDataModule.getUUID" alltypes="true" method="POST"/>
+	
 	<path-action name="JsonDataModule.createData" alltypes="true" method="POST"/>
+	
 	<property name="alternative_extension">json</property>
-	<property name="searchtyperoot">/${applicationid}/services/lists/create</property>
+	
+	<property name="searchtyperoot">/${applicationid}/services/distribution/create</property>
 	
 	<permission name="view">
-		
 			<userprofile property="api-create-data" equals="true"/>
-			
-		
 	</permission>
-	
 </page>
 
