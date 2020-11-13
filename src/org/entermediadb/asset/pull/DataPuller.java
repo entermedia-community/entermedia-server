@@ -62,8 +62,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					{
 						if (files.isEmpty())
 						{
-							log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
-							return;
+							log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());  //Maybe a deleted asset
+							continue;
 						}
 						for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
 						{
