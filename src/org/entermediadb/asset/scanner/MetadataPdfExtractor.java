@@ -38,7 +38,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 		{
 			type = inAsset.get("fileformat");
 		}
-		log.info("Page Type: "+type);
+		
 		if (type != null)
 		{
 			type = type.toLowerCase();
@@ -118,7 +118,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				}
 				catch( Exception ex)
 				{
-					log.error("cant process" , ex);
+					log.info("cant process" , ex);
 					return false;
 				}
 				finally
