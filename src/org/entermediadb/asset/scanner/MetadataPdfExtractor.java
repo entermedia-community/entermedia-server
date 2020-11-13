@@ -99,13 +99,16 @@ public class MetadataPdfExtractor extends MetadataExtractor
 					{
 						String val = results.get("width");
 						inAsset.setProperty("width", val);
+						log.info("PDF width:" + val);
 					}
 					if( inAsset.getInt("height") == 0)
 					{
 						String val = results.get("height");
 						inAsset.setProperty("height", val);
 					}
-					inAsset.setProperty("pages", String.valueOf(results.getPages()));
+					String pages = String.valueOf(results.getPages());
+					inAsset.setProperty("pages", pages);
+					log.info("PDF pages:" + pages);
 					if (inAsset.get("assettitle") == null)
 					{
 						String title  = results.getTitle();
