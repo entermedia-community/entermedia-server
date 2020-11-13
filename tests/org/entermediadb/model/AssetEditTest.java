@@ -124,7 +124,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		asset = findAssetById(category, assetId);
 		assertNotNull(asset);
 
-		getAssetEditor().deleteAsset( asset );
+		getAssetEditor().deleteAsset( asset, user );
 		getCategoryEditor().clearCategories();
 
 		asset = findAssetById(category, assetId);
