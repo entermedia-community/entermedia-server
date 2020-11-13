@@ -38,7 +38,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 		{
 			type = inAsset.get("fileformat");
 		}
-
+		log.info("Page Type: "+type);
 		if (type != null)
 		{
 			type = type.toLowerCase();
@@ -48,6 +48,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 			}
 			if (type.equals("pdf"))
 			{
+				log.info("Extracting Metadata from PDF");
 				PdfParser parser = new PdfParser();
 
 //				ByteArrayOutputStream out = new ByteArrayOutputStream();
