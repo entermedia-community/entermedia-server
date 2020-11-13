@@ -2835,7 +2835,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if( recordstatus != null)
 		{
-			if( inUser == null)
+			if( inUser != null)
 			{
 				saveToElasticSearch(details, inData, true, inUser);
 				clearIndex();

@@ -39,11 +39,11 @@ public class AssetEditor
 		inAsset.addCategory(inCategory);
 	}
 
-	public void deleteAsset(Asset inAsset) throws OpenEditRuntimeException
+	public void deleteAsset(Asset inAsset, User inUser) throws OpenEditRuntimeException
 	{
 		getMediaArchive().removeGeneratedImages(inAsset, true);
 		//Not needed getMediaArchive().getAssetArchive().deleteAsset(inAsset);
-		getMediaArchive().getAssetSearcher().delete(inAsset,null);
+		getMediaArchive().getAssetSearcher().delete(inAsset,inUser);
 
 		//		 if (getCurrentAsset() != null && inAsset.getId().equals(getCurrentAsset().getId()))
 		//		 {
@@ -309,7 +309,7 @@ public class AssetEditor
 		getMediaArchive().removeGeneratedImages(inAsset);
 
 		//remove record
-		deleteAsset(inAsset);
+		deleteAsset(inAsset, inUser);
 
 		//now let's get rid of everything
 		Page data = getPageManager().getPage("/WEB-INF/data/" + inAsset.getCatalogId() + "/assets/" + inAsset.getSourcePath());
