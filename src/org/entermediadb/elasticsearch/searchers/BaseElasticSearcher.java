@@ -2255,7 +2255,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 
 			builder = builder.setSource(content);
-			log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
+			//log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 
 			if (isRefreshSaves())
 			{
