@@ -71,7 +71,7 @@ public class FinderModule extends BaseMediaModule
 //				{
 //
 //				}
-				FilterNode node = hits.findFilterValue("ibmsdl_source_type");
+				FilterNode node = hits.findFilterValue("entitysourcetype");
 
 				
 				// log.info(hits.getHitsPerPage());

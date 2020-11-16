@@ -123,6 +123,10 @@
 	#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
 	#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
 	
+	#set( $searchchildren = $context.getRequestParameter("searchchildren") )
+	#if( !$searchchildren)
+		#set( $searchchildren = true )
+	#end		
 	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
 		<div id="${treename}tree" class="emtree emtree-widget" 
 			data-home="$home$apphome" 
@@ -134,6 +138,7 @@
 			data-targetdiv="$!targetdiv" 
 			data-maxlevelclick="$!maxlevelclick"
 			data-customurlprefix="$!customurlprefix"
+			data-searchchildren="$!searchchildren"
 			#if( $canviewupload || $canviewcategoryupload)
 				data-customurladdmedia="$!customurladdmedia"
 			#end
