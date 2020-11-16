@@ -12,12 +12,12 @@
 					<li class="footermenu mvshowpagestab">
 						<a class="mvshowpages" 
 							title="$totalpages [[Pages]]" >
-						<i class="fas fa-bars"></i> 
+						<i class="fas fa-bars"></i> $totalpages [[Pages]]
 						</a>
 					</li>
 				#end
 			#end
-			#if (!$ismulti)
+			#if (!$ismulti && $canviewmetadatageneral)
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 
 					data-link="$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
@@ -153,7 +153,7 @@
 			#if($user && ( !$previewonly 	&& !$ismulti))
 			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
-			   <span class="fas fa-edit"></span>
+			   <span class="fas fa-edit"></span>  
 			   <span class="bottomtabactionstext">
 			   ##TODO Create a table for actions
 			   #if ($opentabactions=='conversions')

@@ -16,9 +16,7 @@
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))
-<table width="100%" style="height: 100%;">
-<tr>
-<td style="vertical-align: middle; text-align: center;">
+<div id="mainimageholder">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
 	data-name="$asset.name" 
@@ -26,6 +24,4 @@
 	data-height="$!assetheight"
 	src="$tpath"
 	alt="$!asset.name" />
-	</td>
-</tr>
-</table>
+</div>

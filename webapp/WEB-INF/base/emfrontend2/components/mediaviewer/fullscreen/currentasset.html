@@ -25,6 +25,8 @@ $context.putPageValue("cdn",$cdnprefix)
 	#set( $previewonly = false)
 #end
 
+$context.putPageValue("previewonly", $previewonly) 
+
 #set( $opentab = $userprofile.get("assetopentab"))
 #set( $opentabactions = "")
 
