@@ -16,7 +16,7 @@
 	data-targetdivinner="${presetdata.id}-embed"
 	data-isshowing="false" 
 	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">[[Embed]]</a>
-	#set($url = "$home$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=${asset.id}&ouputpreset=${presetdata.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1")
+	#set($url = "$home$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=$!{asset.id}&ouputpreset=${presetdata.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1")
 <a class="btn btn-xs btn-secondary embedbtn copyembed " 
 	id="${presetdata.id}-obtn" 
 	data-targetdivinner="${presetdata.id}-embed"
@@ -27,7 +27,10 @@
 #else
 	#set($url = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$asset.sourcepath/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
 	<a class="btn" href="#urlescape($url)">[[Download]]</a>
-	<a class="btn  embedbtn copyembed" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" href="#urlescape($home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=${asset.id}&outputfile=${asset.getMediaName()}&oemaxlevel=1)">[[Embed]]</a>
+	#set($outputfilename = $asset.getMediaName())
+	#set($urlesc = "$home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=$!{asset.id}&outputfile=$!outputfilename&oemaxlevel=1")
+	<a class="btn  embedbtn copyembed" id="$!{presetdata.id}-btn" targetdivinner="$!{presetdata.id}-embed" 
+		href="#urlescape($urlesc)">[[Embed]]</a>
 #end
 
 
