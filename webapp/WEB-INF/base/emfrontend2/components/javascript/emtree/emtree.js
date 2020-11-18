@@ -153,10 +153,13 @@ $(document).ready(function()
 		{
 			options.collectionid = collectionid;						
 		}	
-		if( appnavtab == "asset")
+		var searchchildren = tree.data("searchchildren");
+		if( appnavtab == "asset")  //for now
         {
-        	options.showchildassets = true;
+			searchchildren = true;
         }
+		options.searchchildren = searchchildren; 
+		
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix,options,	
 				function(data) 

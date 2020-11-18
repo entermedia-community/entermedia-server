@@ -613,7 +613,8 @@ public class ProjectManager implements CatalogEnabled
 			}
 			if (categoryId != null)
 			{
-				if (Boolean.parseBoolean(inReq.getRequestParameter("showchildassets")))
+				String search = inReq.getRequestParameter("searchchildren");
+				if (Boolean.parseBoolean(search))
 				{
 					assetsearch.addExact("category", categoryId);
 				}
