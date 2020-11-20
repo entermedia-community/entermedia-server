@@ -1,38 +1,29 @@
 #set($method = $context.getMethod())
-#if($method == "DELETE")
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+#if($method == "POST")
 {
   "response":
       {
-        "deleted":"true"
+      	#if($data.id)
+      	#set($distributionid= $data.id)
+        "id":"$distributionid",
+        "status" : "ok"
+        #else
+        "status" :"error"
+        #end
       }
-}
-#elseif($method == "PUT")## for updating assets
-{
-  "response":
-      {
-        "id":"$data.id"
-      }
-  ,
-  "data":#json($data $searcher.getPropertyDetails())
-}  
-#elseif($method == "POST")## for creating assets
-{
-  "response":
-      {
-        "id":"$data.id"
-      }
-  ,
-  "data":#json($data $searcher.getPropertyDetails())
-}
-#elseif($method == "GET")
-{
-  "response":
-      {
-        "id":"$data.id"
-      }
-  ,
+ 	#if($distributionid)
+	  ,
+	  "data":#json($data $searcher.getPropertyDetails())
+	  ,
+	  "urls": {
+	  	"largeimage": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/largeimage"
+	  }
+	#end
   
-  "data":#json($data $searcher.getPropertyDetails())
 }
 #else
   {
