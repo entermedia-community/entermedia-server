@@ -20,6 +20,7 @@
 	  "data":#json($data $searcher.getPropertyDetails())
 	  ,
 	  "urls": {
+	  	"baseurl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/",
 	  	"largeimage": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/largeimage"
 	  }
 	#end
