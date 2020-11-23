@@ -418,7 +418,7 @@ public class AssetEditModule extends BaseMediaModule
 							tracker.removeSelection(asset.getId());
 						}
 						editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
-						editor.deleteAsset(asset);
+						editor.deleteAsset(asset, inContext.getUser());
 						String ok = inContext.getRequestParameter("deleteoriginal");
 						if (Boolean.parseBoolean(ok))
 						{
@@ -444,7 +444,7 @@ public class AssetEditModule extends BaseMediaModule
 						tracker.removeSelection(asset.getId());
 					}
 					editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
-					editor.deleteAsset(asset);
+					editor.deleteAsset(asset,inContext.getUser());
 					String ok = inContext.getRequestParameter("deleteoriginal");
 					if (Boolean.parseBoolean(ok))
 					{

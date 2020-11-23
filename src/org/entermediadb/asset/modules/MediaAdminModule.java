@@ -333,21 +333,7 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		NodeManager nodemanager = (NodeManager)getModuleManager().getBean("system","nodeManager");
 
-		
-		do {
-			
-			try
-			{
-				nodemanager.connectCatalog("system");
-			}
-			catch (Exception e)
-			{
-				log.info("Waiting for system catalog to initialize()");
-			}
-			
-			
-		} while(!nodemanager.containsCatalog("system"));
-		
+		nodemanager.connectoToDatabase();
 		
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 		manager.getPathEvents();
@@ -783,7 +769,11 @@ public class MediaAdminModule extends BaseMediaModule
 		if( moduleid == null)
 		{
 			moduleid = PathUtilities.extractDirectoryName( inReq.getPath() ); 
-			if( inReq.getPath().endsWith("/views/modules/" + moduleid + "/index.html"))
+			if( moduleid.equals("edit"))
+			{
+				moduleid = PathUtilities.extractDirectoryName( PathUtilities.extractDirectoryPath(  inReq.getPath() ) );
+			}
+			if( inReq.getPath().endsWith("/views/modules/" + moduleid + "/index.html") || inReq.getPath().contains("/views/modules/" + moduleid + "/edit/addnew") )
 			{
 				String applicationid = inReq.findValue("applicationid");
 				Page item = getPageManager().getPage("/" + applicationid + "/views/modules/" + moduleid + "/_site.xconf");
@@ -793,7 +783,9 @@ public class MediaAdminModule extends BaseMediaModule
 					Data module = getSearcherManager().getData(catalogid, "module", moduleid);
 		
 					getWorkspaceManager().saveModule(catalogid, applicationid, module);
+					getSearcherManager().clear();
 					getPageManager().clearCache();
+					inReq.putPageValue("content", getPageManager().getPage(inReq.getPath()));
 				}			
 			}	
 

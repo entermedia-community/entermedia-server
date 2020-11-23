@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+<endpoint id="searchdistribution" docsection="distribution" name="Search distribution" 
+  	url="/${applicationid}/services/distribution/search/search" caption="Search Distribution." httpmethod="POST"  order="1">
+  	<samplerequest><![CDATA[
+  {
+  "page": "1",
+  "hitsperpage": "20",
+  "query": {
+    "terms": [
+      {
+        "field": "id",
+        "operator": "matches",
+        "value": "AXW9fj8jvGxYDEkmaFkV"
+      }
+    ]
+  }
+  }]]></samplerequest> 
+  </endpoint>
+
+  <endpoint id="createdistribution" docsection="distribution"  name="Create a new distribution" caption="Creates a new distribution request" httpmethod="POST" 
+  		url="/${applicationid}/services/distribution/create/create" order="2"> 
+    <samplerequest><![CDATA[{     
+     "assetid": "12345"   
+      }]]></samplerequest>
+  </endpoint>  
+
+  <endpoint id="editdistribution"  docsection="distribution" name="Edit distribution" 
+  	url="/${applicationid}/services/distribution/edit/edit" httpmethod="PUT" order="3"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "id": "3456", 
+    	    "assetid":"xyz1"
+	        } 
+	      ]]></samplerequest> 
+  </endpoint>  
+  
+  <endpoint id="deletedistribution" docsection="distribution" name="Delete distribution" 
+  	url="/${applicationid}/services/distribution/delete/101"  httpmethod="DELETE" order="4">
+  </endpoint>
+    
+  
+  
+</endpoints>

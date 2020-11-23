@@ -151,6 +151,7 @@ public class avidpublisher extends BasePublisher implements Publisher
 			
 			File source = new File(inputpage.getContentItem().getAbsolutePath());
 			String fullName = source.getName();
+			
 			int idxP = fullName.lastIndexOf('.');
 			if (idxP == -1) {
 				throw new OpenEditException("Source file name error "+source.getAbsolutePath());
@@ -169,9 +170,21 @@ public class avidpublisher extends BasePublisher implements Publisher
 			//	throw new OpenEditException("Destination File already exist in deposit folder "+dest.getAbsolutePath());
 			//}
 			String destFilename = null;
+			int MAX_FILENAME_LENGTH = 77;
+			int BUFFER_FILENAME = 72; //keep the last 5 characters (77-72)
 			try {
 				Path pathSource = FileSystems.getDefault().getPath(inputpage.getContentItem().getAbsolutePath());
 				destFilename = PREFIX_DEST + source.getName();
+				
+				log.info("DEST FILENAME LENGTH IS "+ Integer.toString(destFilename.length()));
+				if (destFilename.length() > MAX_FILENAME_LENGTH){
+					int removechar = destFilename.length() - MAX_FILENAME_LENGTH;
+					
+					String truncdestFilename = destFilename.substring(0, BUFFER_FILENAME) + destFilename.substring(BUFFER_FILENAME + removechar);
+					log.info("REDUCED FILENAME IS "+ truncdestFilename);
+					destFilename = truncdestFilename;
+					
+				}
 				Path pathDest = FileSystems.getDefault().getPath(vaultDirectory, destFilename);
 				log.info("publishAvid copy file "+pathSource+" dest "+pathDest);
 				Files.copy(pathSource, pathDest, StandardCopyOption.REPLACE_EXISTING);
@@ -372,5 +385,4 @@ public class avidpublisher extends BasePublisher implements Publisher
 	
 	
 }
-
 

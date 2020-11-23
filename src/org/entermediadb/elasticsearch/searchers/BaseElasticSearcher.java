@@ -2362,6 +2362,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					continue;
 				}
+				if (propid.equals("entitysourcetype") ) 
+				{
+					inContent.field(propid, getSearchType()); //Cheap workaround for emfinder
+					continue;
+				}
 				if (propid.equals("recordmodificationdate") || propid.equals("mastereditclusterid") || propid.equals("masterrecordmodificationdate") || propid.equals("emrecordstatus"))
 				{
 					continue;
@@ -2835,7 +2840,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if( recordstatus != null)
 		{
-			if( inUser == null)
+			if( inUser != null)
 			{
 				saveToElasticSearch(details, inData, true, inUser);
 				clearIndex();

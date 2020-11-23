@@ -1,9 +1,9 @@
 <div class="page-header">
   <h1>$data </h1>
   URL ($data.httpmethod): 
-  <input id="url" class="form-control" style="width:90%;" type="text" value="$content.replaceProperty( $data.url )" size="50"/> 
+  <input id="url" class="form-control" style="" type="text" value="$content.replaceProperty( $data.url )" size="50"/> 
 </div>
-$!data.caption
+<i>$!data.caption</i>
 <div id="jsontext" style="display: none;">
 #if ($data.samplerequest)
 $data.samplerequest
@@ -15,7 +15,7 @@ $data.samplerequest
 #if($data.httpmethod=="POST" || $data.httpmethod=="PUT")
 #set($displayreq = true)
 #end
-<h2>Request</h2>
+<h2 class="mt-4">Request</h2>
 <textarea name="jsonrequest" #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
 </textarea>
 
@@ -27,9 +27,9 @@ $data.samplerequest
 
 </form>
 
-<input type="button" class="btn btn-default" id="process" value="Execute">
+<input type="button" class="btn btn-primary" id="process" value="Execute">
 
-<h2>[[Formatted and Raw Response]]:</h2>
+<h2 class="mt-4">[[Formatted and Raw Response]]:</h2>
 
 <div id="responsearea" class="row">
 	<div class="col-sm-6">

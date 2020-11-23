@@ -86,7 +86,6 @@ public class ConvertGenerator extends FileGenerator
 //		{
 //			return;
 //		}
-		TranscodeTools transcodetools = archive.getTranscodeTools();
 		Map all = new HashMap(); //TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
@@ -121,11 +120,17 @@ public class ConvertGenerator extends FileGenerator
 				name = label + "." + type;
 			}
 		}
+		extracted(inReq, archive, sourcePath, inPage, name, all, args, inOut);
+	}
+
+	protected void extracted(WebPageRequest inReq, MediaArchive archive, String sourcePath, Page inPage, String name, Map all, Map args, Output inOut)
+	{
 		String themeprefix = inReq.findValue("themeprefix");
 		all.put("themeprefix", themeprefix);
 	//	log.info("canshowunwatermarkedassets" + all.get("canshowunwatermarkedassets"));
 		//log.info("canforcewatermarks" + all.get("canforcewatermarks"));
 
+		TranscodeTools transcodetools = archive.getTranscodeTools();
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		if( result.isComplete() )

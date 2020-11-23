@@ -176,6 +176,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
+		get.setHeader("Accept", "*/*");
 		setCookies(inArchive, get);
 		
 		HttpResponse response = getClient().execute(get);
@@ -233,6 +234,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
 		get.setHeader("Accept-Charset", "UTF-8");
+		get.setHeader("Accept", "*/*");
 		setCookies(inArchive, get);
 
 		HttpResponse response = getClient().execute(get);
@@ -324,6 +326,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
 		method.setHeader("Accept-Charset", "UTF-8");
+		method.setHeader("Accept", "*/*");
 		setCookies(inArchive, method);
 		
 		
@@ -513,6 +516,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
+		get.setHeader("Accept", "*/*");
 		setCookies(inArchive, get);
 		
 		HttpResponse response = getClient().execute(get);
@@ -536,6 +540,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			method.setHeader("Authorization", "Basic " + inAuthString);
 			method.setHeader("Expect", "");
 			method.setHeader("Accept-Charset", "UTF-8");
+			method.setHeader("Accept", "*/*");
 			setCookies(inArchive, method);
 			
 			StringEntity params = new StringEntity(elemRoot.asXML(), "UTF-8");
@@ -591,6 +596,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
 		method.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
+		method.setHeader("Accept", "*/*");
 		
 		setCookies(inArchive, method);
 		
@@ -624,6 +630,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			HttpPut method = new HttpPut(addr);
 			method.setHeader("Authorization", "Basic " + inAuthString);
 			method.setHeader("Expect", "");
+			method.setHeader("Accept", "*/*");
 			setCookies(archive, method);
 			
 			HttpResponse response2 = getClient().execute(method);
@@ -633,6 +640,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			HttpPut upload = new HttpPut(addr2);
 			upload.setHeader("Authorization", "Basic " + inAuthString);
 			upload.setHeader("Expect", "");
+			upload.setHeader("Accept", "*/*");
 			setCookies(archive, upload);
 			
 			FileEntity entity = new FileEntity(new File(inputpage.getContentItem().getAbsolutePath()));
@@ -676,6 +684,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
+		get.setHeader("Accept", "*/*");
 		setCookies(inArchive, get);
 		
 		HttpResponse response = getClient().execute(get);
@@ -717,5 +726,4 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	}
 
 }
-
 

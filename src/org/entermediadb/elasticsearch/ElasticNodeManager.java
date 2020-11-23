@@ -730,15 +730,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//			}
 
 					boolean createdIndex = prepareIndex(health, index);
-					getConnectedCatalogIds().put(inCatalogId, index);
 					if (createdIndex)
 					{
 						if (!res.isExists())
 						{
 							admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
 						}
-
 					}
+					getConnectedCatalogIds().put(inCatalogId, index);
 					//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 					//			List sorted = archive.listSearchTypes();
 					//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
@@ -752,7 +751,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 			}
 		}
-		return false;//Created a ne
+		return true;
 	}
 
 	public boolean prepareIndex(String index)
@@ -1539,6 +1538,60 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			fieldBulkErrors.clear();
 			fieldBulkProcessor = null;
 		}
+	}
+
+	@Override
+	public void connectoToDatabase()
+	{
+		try
+		{
+			connectCatalog("system");
+		}
+		catch( Throwable ex)
+		{
+			log.error("Connection not ready yet", ex);
+		}
+			
+
+		boolean yellowok = false;
+		
+		do {
+			try
+			{
+				AdminClient admin = getClient().admin();
+				ClusterHealthResponse health = admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+
+				if (health.isTimedOut())
+				{
+					log.info("Keep Waiting for yellow status" );
+				}
+				else
+				{
+					yellowok = true;
+				}
+
+			}
+			catch( Throwable ex)
+			{
+				log.error("Trying to init system catalog", ex); //Should never happen
+			}
+			
+			if( !yellowok )
+			{
+				try
+				{
+					Thread.sleep(200);
+				}
+				catch (Exception ex)
+				{
+					//Ignore
+				}
+			}
+			
+		} while(!yellowok);
+		
+		log.info("Connected to system catalog");
+		
 	}
 
 }

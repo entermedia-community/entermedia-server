@@ -1,0 +1,33 @@
+#set($method = $context.getMethod())
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+#if($method == "POST")
+{
+  "response":
+      {
+      	#if($data.id)
+      	#set($distributionid= $data.id)
+        "id":"$distributionid",
+        "status" : "ok"
+        #else
+        "status" :"error"
+        #end
+      }
+ 	#if($distributionid)
+	  ,
+	  "data":#json($data $searcher.getPropertyDetails())
+	  ,
+	  "urls": {
+	  	"baseurl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/",
+	  	"largeimage": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/largeimage"
+	  }
+	#end
+  
+}
+#else
+  {
+  	"error":"Invalid request"
+  }
+#end

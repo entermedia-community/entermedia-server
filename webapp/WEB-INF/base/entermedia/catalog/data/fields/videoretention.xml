@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="user" index="true" viewtype="user" stored="true" type="list"    >
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" index="true" stored="true"  datatype="list"   listid="asset"> 
+    <name> 
+      <language id="en"><![CDATA[Asset]]></language>  
+    </name> 
+  </property>  
+  <property id="didfullscreen" index="true" stored="true"  type="boolean"> 
+    <name> 
+      <language id="en"><![CDATA[Full Screen]]></language>  
+    </name> 
+  </property>  
+  <property id="startviewingtime" type="date" viewtype="time" index="true" stored="true"    >
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[Started Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property> 
+  
+
+  <property id="endviewingtime" type="date" viewtype="time" index="true" stored="true"    >
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[End Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property> 
+	
+  <property id="totalviewingtime" index="true" stored="true"  viewtype="timelength" type="double"> 
+    <name> 
+      <language id="en"><![CDATA[Seconds Viewed]]></language>  
+    </name> 
+  </property>	
+		
+  
+</properties>

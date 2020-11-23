@@ -153,10 +153,13 @@ $(document).ready(function()
 		{
 			options.collectionid = collectionid;						
 		}	
-		if( appnavtab == "asset")
+		var searchchildren = tree.data("searchchildren");
+		if( appnavtab == "asset")  //for now
         {
-        	options.showchildassets = true;
+			searchchildren = true;
         }
+		options.searchchildren = searchchildren; 
+		
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix,options,	
 				function(data) 
@@ -228,7 +231,8 @@ $(document).ready(function()
 		if( event.keyCode == 13 ) 
 	  	{
 	       	//13 represents Enter key
-			var link = tree.data("home") + "/components/emtree/savenode.html?tree-name=" + tree.data("treename") + "&depth=" + node.data('depth');
+			var rootid = tree.data("treename")+"root";
+			var link = tree.data("home") + "/components/emtree/savenode.html?tree-name=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
 			if(nodeid != undefined)
 			{
 				link = link + "&nodeID=" + nodeid;
@@ -247,7 +251,7 @@ $(document).ready(function()
 			node.load(link, {edittext: value},function() 
 			{
 				//Reload tree in case it moved order
-				repaintEmTree(tree);
+				//repaintEmTree(tree);
 			});
 	  	}
 		else if( event.keyCode === 27 ) //esc 
@@ -358,7 +362,7 @@ $(document).ready(function()
 		}	
 		return false;
 	} );
-	lQuery(".treecontext #createnode").livequery('click', function(event) {
+	lQuery(".treecontext #createnode").livequery('click', function(event) { 
 		event.stopPropagation();
 		var node = getNode(this);
 		var tree = node.closest(".emtree");

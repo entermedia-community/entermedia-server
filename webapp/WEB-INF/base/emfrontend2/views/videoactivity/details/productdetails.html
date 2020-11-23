@@ -86,7 +86,7 @@ $!product.descrip													</p>
 											<span class="span3 pull-left">Share</span>
 										
 											#set($sharelink = "$context.siteRoot$apphome/views/facebook/details/productdetails.html?productid=${productid}&cp=${cpid}" )
-											#set($sharelink = "#uuencode($sharelink)" )
+											#set($sharelink = "#urlescape($sharelink)" )
 											<a href="http://www.facebook.com/sharer/sharer.php?u=$sharelink" class="productlink-tray fblike" target="_blank" ></a>	
 											<a href="https://twitter.com/intent/tweet?original_referer=$sharelink&text=$product.name&url=$sharelink" target="_blank"  class="productlink-tray twitter"></a>	
 						

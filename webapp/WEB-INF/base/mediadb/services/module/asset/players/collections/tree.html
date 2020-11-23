@@ -3,6 +3,7 @@
 #set( $link = "$apphome/components/emtree/tree.html")
 #set( $link = "${link}?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree" )
 #set( $link = "${link}&targetdiv=searchlayout" )
+#set( $link = "${link}&searchchildren=true" )
 #set( $link = "${link}&url-prefix=$apphome/services/module/asset/players/collections/display/category/${librarycol.getId()}.html" )
 $pages.include($link,$context)
 </div>

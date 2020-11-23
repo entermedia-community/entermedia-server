@@ -1,3 +1,4 @@
+##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
 #if( !$view )
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
@@ -6,6 +7,13 @@
 #end
 
 #set( $moduleid = $context.findValue("module") )
+
+#if( !$view )
+	#set($viewid = "${moduleid}general")
+#end
+#if( !$viewpath )	
+	#set($viewpath = "${moduleid}/${moduleid}general")
+#end
 
 #set($id = $data.id )
 #if( !$id )
@@ -21,9 +29,6 @@
 #end
 
 $context.putPageValue("viewid", $view.id)
-
-<h4>[[Properties]]</h4>
-
 
 
 <div id="default-fields">

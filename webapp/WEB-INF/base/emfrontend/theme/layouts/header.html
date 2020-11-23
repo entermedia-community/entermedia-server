@@ -37,7 +37,8 @@
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 		#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
 		#foreach( $lang in $languages)
-			<li ><a href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=#uuencode($context.getPathUrl())">$lang </a></li>
+			#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$context.getPathUrl()")
+			<li ><a href="#urlescape($langurl)">$lang </a></li>
 		#end
     </ul> 
 	</li>

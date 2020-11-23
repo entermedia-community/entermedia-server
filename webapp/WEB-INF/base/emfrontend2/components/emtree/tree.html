@@ -109,83 +109,87 @@
 #else
 	#if($category && $content.isPropertyTrue("searchcategory") )
 		$render.setSelectedNode($category)
-#end
-#set($rootcategory = $webtree.getModel().getRoot())
-
-
-
-#set( $top = $context.getRequestParameter("treetoplocation") )
-#set( $left = $context.getRequestParameter("treeleftlocation") )
-
-#set( $prefix = $context.getRequestParameter("url-prefix" ) )
-#set( $postfix = $context.getRequestParameter("url-postfix" ) )
-#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
-#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
-#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
-#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
-
-<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
-	<div id="${treename}tree" class="emtree emtree-widget" 
-		data-home="$home$apphome" 
-		data-treename="$treename" 
-		data-rootnodeid="$rootcategory.getId()"
-		data-editable="$editable" 
-		data-url-prefix="$!prefix" 
-		data-url-postfix="$!postfix" 
-		data-targetdiv="$!targetdiv" 
-		data-maxlevelclick="$!maxlevelclick"
-		data-customurlprefix="$!customurlprefix"
-		#if( $canviewupload || $canviewcategoryupload)
-			data-customurladdmedia="$!customurladdmedia"
-		#end
-		>
-			<ul  class="open" >
-			#if( $rootcategory)
-				#showtreecategories2($rootcategory, 1)
-			#else
-				[[No category found]]
-			#end	
-			</ul>
-	</div>
-</div>
-
-#if($caneditcategorytree || $editcategories || $canviewcategoryupload)
-
-<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
-    <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
-    #if( $canviewupload || $canviewcategoryupload)
-      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
-      	<li class="divider"></li>
-    #end
-    #if( $editable && $caneditcategorytree  )
-    	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Folder]]</a></li>
-    #end
-	#if( $editable && $caneditcategorytree )
-		#if($canaddnewcollection) 
-      		<li><a id="createcollection" tabindex="-1" href="#" class="dropdown-item">[[Create Collection]]</a></li>
-      		<li class="divider"></li>
-    	#end
-      	
-      	<li><a id="renamenode" tabindex="-1" href="#" class="dropdown-item">[[Rename]]</a></li>
-      	<li><a id="deletenode" tabindex="-1" href="#" class="dropdown-item">[[Delete]]</a></li>
-      	
-	#end      
-     	#if( $editable && $caneditcategorytree )
-     
-      <li><a id="nodeproperties" href="#" data-hidefooter="true" class="dropdown-item">[[Properties]]</a></li>
-      
-      #end
-##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Copy]]</a></li>
-##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Cut]]</a></li>      
-##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Paste]]</a></li>
-    </ul>
-    
-
-    
-     #if($canaddnewcollection)
-		<a id="collectionidaddbycategory" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
 	#end
-  </div>
-  #end
-#end
+	
+	#set($rootcategory = $webtree.getModel().getRoot())
 
+	#set( $top = $context.getRequestParameter("treetoplocation") )
+	#set( $left = $context.getRequestParameter("treeleftlocation") )
+	
+	#set( $prefix = $context.getRequestParameter("url-prefix" ) )
+	#set( $postfix = $context.getRequestParameter("url-postfix" ) )
+	#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
+	#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
+	#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
+	#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
+	
+	#set( $searchchildren = $context.getRequestParameter("searchchildren") )
+	#if( !$searchchildren)
+		#set( $searchchildren = true )
+	#end		
+	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
+		<div id="${treename}tree" class="emtree emtree-widget" 
+			data-home="$home$apphome" 
+			data-treename="$treename" 
+			data-rootnodeid="$rootcategory.getId()"
+			data-editable="$editable" 
+			data-url-prefix="$!prefix" 
+			data-url-postfix="$!postfix" 
+			data-targetdiv="$!targetdiv" 
+			data-maxlevelclick="$!maxlevelclick"
+			data-customurlprefix="$!customurlprefix"
+			data-searchchildren="$!searchchildren"
+			#if( $canviewupload || $canviewcategoryupload)
+				data-customurladdmedia="$!customurladdmedia"
+			#end
+			>
+				<ul  class="open" >
+				#ifnull( $rootcategory)
+					[[No category set]]
+				#end
+				#if( $rootcategory)
+					#showtreecategories2($rootcategory, 1)
+				#end	
+				</ul>
+		</div>
+	</div>
+	
+	#if($caneditcategorytree || $editcategories || $canviewcategoryupload)
+	
+	<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
+	    <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
+	    #if( $canviewupload || $canviewcategoryupload)
+	      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
+	      	<li class="divider"></li>
+	    #end
+	    #if( $editable && $caneditcategorytree  )
+	    	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Folder]]</a></li>
+	    #end
+		#if( $editable && $caneditcategorytree )
+			#if($canaddnewcollection) 
+	      		<li><a id="createcollection" tabindex="-1" href="#" class="dropdown-item">[[Create Collection]]</a></li>
+	      		<li class="divider"></li>
+	    	#end
+	      	
+	      	<li><a id="renamenode" tabindex="-1" href="#" class="dropdown-item">[[Rename]]</a></li>
+	      	<li><a id="deletenode" tabindex="-1" href="#" class="dropdown-item">[[Delete]]</a></li>
+	      	
+		#end      
+	     	#if( $editable && $caneditcategorytree )
+	     
+	      <li><a id="nodeproperties" href="#" data-hidefooter="true" class="dropdown-item">[[Properties]]</a></li>
+	      
+	      #end
+	##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Copy]]</a></li>
+	##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Cut]]</a></li>      
+	##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Paste]]</a></li>
+	    </ul>
+	    
+	
+	    
+	     #if($canaddnewcollection)
+			<a id="collectionidaddbycategory" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
+		#end
+	  </div>
+	  #end
+#end

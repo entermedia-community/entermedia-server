@@ -38,7 +38,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 		{
 			type = inAsset.get("fileformat");
 		}
-
+		
 		if (type != null)
 		{
 			type = type.toLowerCase();
@@ -48,6 +48,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 			}
 			if (type.equals("pdf"))
 			{
+				//log.info("Extracting Metadata from PDF");
 				PdfParser parser = new PdfParser();
 
 //				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -104,7 +105,9 @@ public class MetadataPdfExtractor extends MetadataExtractor
 						String val = results.get("height");
 						inAsset.setProperty("height", val);
 					}
-					inAsset.setProperty("pages", String.valueOf(results.getPages()));
+					String pages = String.valueOf(results.getPages());
+					inAsset.setProperty("pages", pages);
+					log.info("PDF pages: " + pages);
 					if (inAsset.get("assettitle") == null)
 					{
 						String title  = results.getTitle();
@@ -117,7 +120,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				}
 				catch( Exception ex)
 				{
-					log.error("cant process" , ex);
+					log.info("cant process" , ex);
 					return false;
 				}
 				finally

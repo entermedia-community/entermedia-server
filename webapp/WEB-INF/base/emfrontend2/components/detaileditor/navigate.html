@@ -21,7 +21,8 @@
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
 								<li >
-									<a class="print " target="_blank" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="[[Print Preview]]">[[Print]]</a>
+									#set($printurl = "$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}")
+									<a class="print " target="_blank" data-hidefooter="true"  href="#urlescape($printurl)" title="[[Print Preview]]">[[Print]]</a>
 								</li>
 								#end
 								#if($candownload || $canconvert || $candownloadfpo)

@@ -1,0 +1,12 @@
+<page>
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+	<property name="virtual">true</property>
+	<property name="publishedroot">/${applicationid}/services/distribution/published</property>
+	
+	<property name="alternative_extension"></property>
+	
+	<generator name="publishedGenerator"/>
+	
+</page>

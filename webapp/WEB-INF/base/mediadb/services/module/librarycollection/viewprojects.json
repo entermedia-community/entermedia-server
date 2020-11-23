@@ -6,6 +6,8 @@
 #set($x = $oids.add("NONE"))
 #set( $searcher = $mediaarchive.getSearcher("searcher") )
 #set( $hits = $mediaarchive.query("librarycollection").ids($oids).sort("name").search() )
+#set( $hits = $mediaarchive.query("librarycollection").ids($oids).sort("name").search() )
+
 $hits.setHitsPerPage(200)
 {
 	"response":
@@ -26,7 +28,13 @@ $hits.setHitsPerPage(200)
 		},
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-		#json($hit $searcher.getPropertyDetails()) 
+			#json($hit $searcher.getPropertyDetails()) 
+			#set( $servers = $mediaarchive.query("entermedia_instances").match("librarycollection", $hit.getId()).search() )
+			, "servers":[
+				#foreach( $server in $servers)
+					#json($server $mediaarchive.getSearcher("entermedia_instances").getPropertyDetails()) 
+				#end		
+			]
 		#end
 		]
 }

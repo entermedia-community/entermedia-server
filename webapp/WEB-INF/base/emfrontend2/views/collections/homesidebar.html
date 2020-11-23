@@ -9,7 +9,7 @@
 				   	href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i> </a>
 				</div>
 				<div class="ui-widget-content categories-widget no-padding-for-real" style="height: calc(100% - 32px); min-height: 250px; border:0;">
-					<ul id="settings-menu" class="sidebar-list">
+					<ul id="settings-menu" class="sidebar-list sidebar-collection-list">
 						#set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
 						
 						#if(!$selectedtab)
@@ -26,7 +26,7 @@
 						
 						
 						<li id="groups"  #if( $selectedtab == "recent")class="current"#end>
-							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> [[Recently Opened]] #if( $usercollections)($usercollections.size())#end</a>
+							<a href="$home$apphome/views/collections/recent.html"><i class="fa fa-folder-open"></i> [[Recent]] #if( $usercollections)($usercollections.size())#end</a>
 						</li>
 						#if( $canviewsavedcollections)
 						<li id="" #if( $selectedtab == "savedcollections")class="current"#end>
@@ -41,7 +41,7 @@
 	                 	style="margin:15px;" 
 	                 	title="[[Add New Collection]]" 
 	                 	href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&library.value=$!library.getId()">
-	                 	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+	                 	<i class="fa fa-plus-square"></i> [[New Collection]]</a>
 							</li>
 	             #end
 					</ul>
