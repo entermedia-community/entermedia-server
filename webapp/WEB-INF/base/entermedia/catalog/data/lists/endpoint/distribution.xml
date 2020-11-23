@@ -37,7 +37,7 @@
   </endpoint>  
   
   <endpoint id="deletedistribution" docsection="distribution" name="Delete distribution" 
-  	url="/${applicationid}/services/ldistribution/delete/101"  httpmethod="DELETE" order="4">
+  	url="/${applicationid}/services/distribution/delete/101"  httpmethod="DELETE" order="4">
   </endpoint>
     
   
