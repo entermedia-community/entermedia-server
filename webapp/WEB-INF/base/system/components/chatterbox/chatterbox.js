@@ -13,7 +13,9 @@ function chatterbox() {
 	}	
 	
 	connect();
-	
+    keepAlive(); //this should be here so it doesn't keep getting requeued.
+    
+
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
 		var chatter = button.closest(".chatterbox");
@@ -135,7 +137,6 @@ function connect() {
     	chatconnection = new WebSocket("ws://" +location.host  + url );
     }
     
-    keepAlive(); 
     
        
     chatconnection.onmessage = function(event) {
