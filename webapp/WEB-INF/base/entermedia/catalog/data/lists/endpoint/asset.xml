@@ -145,7 +145,7 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
 </endpoint>
 
 
-<endpoint id="logvideoview" name="Log Video Statistics" url="/${applicationid}/services/module/asset/logvideoretention.json" docsection="moduleasset" caption="Save Status  on Video View" httpmethod="POST" uploadfile="false"> 
+<endpoint id="logvideoview" name="Log Video Statistics" url="/${applicationid}/services/module/asset/analytics/videolog.json" docsection="moduleasset" caption="Save Status  on Video View" httpmethod="POST" uploadfile="false"> 
     <samplerequest><![CDATA[  
     
     
