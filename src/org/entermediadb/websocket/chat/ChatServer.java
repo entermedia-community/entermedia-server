@@ -146,9 +146,9 @@ public class ChatServer
 		String collectionid = String.valueOf(inMap.get("collectionid"));
 		String catalogid = (String) inMap.get("catalogid");
 
-		if( catalogid != null)
+		if( catalogid != null  )
 		{
-			if( collectionid != null)
+			if( collectionid != null && !"null".equals(collectionid))
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
@@ -158,6 +158,13 @@ public class ChatServer
 					{
 						chatConnection.sendMessage(inMap);
 					}
+				}	
+			} else {
+				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+				{
+					ChatConnection chatConnection = (ChatConnection) iterator.next();
+					chatConnection.sendMessage(inMap);
+					
 				}	
 			}
 			ChatManager manager = getChatManager(catalogid);

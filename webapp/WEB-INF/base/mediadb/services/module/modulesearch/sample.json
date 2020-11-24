@@ -1,0 +1,81 @@
+#set( $filter = $modulehits.findFilterValue("source_type") )
+#set( $hits = $modulehits )
+{
+	"organizedhits":
+	[
+		#foreach($module in $organizedModules)
+		#if( ${foreach.count} != 1 ), #end
+		{
+			"name":"$module.getName()",
+			"id":"$module.getId()",
+			#set($idhits = $organizedHits.get($module.id))
+			#if( $idhits.size() < 7) ##this is safe
+				#set( $count = $idhits.size())
+			#else
+				#set( $count = $filter.getCount($module.id) )
+			#end
+			"samplecount":"$idhits.size()",
+			"totalcount":"$count"
+			,
+			"samples" : [
+				#foreach( $sample in $idhits )
+					#if( ${foreach.count} != 1 ), #end
+					#json($sample $mediaarchive.getSearcher($module.id).getPropertyDetails()) 
+				#end
+			]
+		}	
+		#end
+	],
+	"response":
+		{
+		    "status":"ok",
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( ${foreach.count} != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( ${foreach.count} != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		#json($hit $searcher.getPropertyDetails()) 
+		#end
+		]		
+ #if( $hits.getSearchQuery().hasFilters() )
+ , "filters":[
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( ${foreach.count} != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		{ "id":"$selectedfilter.getId()", "name":#jesc($selectedfilter.getName()) }
+	#end
+  ]	
+#end	
+#if( $filteroptions)		
+, "filteroptions":[
+	#foreach($type in $filteroptions )#if( ${foreach.count} != 1 ), #end
+		#if(!$hits.isChildFacetSelected($type))
+		 {"id":"$type.getId()","name":#jesc($type.getName()),"children":
+		    [
+			#foreach($entry in $type.children)#if( ${foreach.count} != 1 ), #end
+			{"id":"$entry.getId()","name":#jesc($entry.getName()),"count":#jesc($entry.count)}
+			#end
+			]
+		}
+		#end
+	#end
+    ]		
+#end		
+}

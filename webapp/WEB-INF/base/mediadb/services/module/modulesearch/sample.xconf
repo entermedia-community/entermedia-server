@@ -1,0 +1,18 @@
+<page>
+	<property name="virtual">true</property>
+
+	<path-action name="DataEditModule.loadOrSearch" >
+		<property name="searchtype">modulesearch</property>
+		<property name="hitsname">modulehits</property>
+	</path-action>
+		
+	<path-action name="FinderModule.organizeHits">
+		<property name="searchtype">modulesearch</property>
+		<property name="hitsname">modulehits</property>
+	</path-action>
+
+
+	<permission name="view">
+			<user />
+	</permission>
+</page>
