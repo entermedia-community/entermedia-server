@@ -6,7 +6,8 @@
     "screenname":"$user.screenname",
     "firstname":"$user.firstName",
     "lastname":"$user.lastName",
-    "email":"$user.email"
+    "email":"$user.email",
+    "password": "$user.password"
 }
 #else
 {

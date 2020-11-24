@@ -86,6 +86,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			}
 			user.setFirstName((String)data.get("firstname"));
 			user.setLastName((String)data.get("lastname"));
+			user.setPassword((String)data.get("password"));
 			userManager.saveUser(user);
 
 			String catalogid = inReq.findValue("catalogid");
