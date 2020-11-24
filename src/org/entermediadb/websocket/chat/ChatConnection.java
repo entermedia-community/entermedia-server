@@ -239,15 +239,27 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				String collectionid = (String)map.get("collectionid").toString();
+				String collectionid = (String) map.get("collectionid");
 				/* Get first name */
-				String userid = (String)map.get("user").toString();
+				Object userval = map.get("user");
+				String userid = null;
+				if(userval!= null) {
+				userid= userval.toString();
+
+				}
+				
 				String name = archive.getUser(userid).getFirstName();
 				/* Get project name and save as topic for notification */
- 				Object library = archive.getData("librarycollection", collectionid);
- 				String topic = (String)library.toString();
-				/* Add retrieved information to JSON object that is broadcasted. */
-				map.put("topic", topic);
+				Object library = archive.getData("librarycollection", collectionid);
+				if (library != null)
+				{
+					String topic = (String) library.toString();
+					map.put("topic", topic);
+
+				}
+				/*
+				 * Add retrieved information to JSON object that is broadcasted.
+				 */
 				map.put("name", name);
 				map.put("content", content);
 				
