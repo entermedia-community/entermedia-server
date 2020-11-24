@@ -1547,65 +1547,164 @@ uiload = function() {
 								mainimage.addClass('imagezooming');
 							}
 						});
+						
+						
+						var dist1=0;
+						
+						mainimage.on('touchstart', function(e) {
+							var touch = e.touches[0];
+							var div = $(e.target)
+							
+							
+						    if (e.targetTouches.length == 2) {//check if two fingers touched screen
+					            dist1 = Math.hypot( //get rough estimate of distance between two fingers
+					             e.touches[0].pageX - e.touches[1].pageX,
+					             e.touches[0].pageY - e.touches[1].pageY);                  
+					        }
+						    else {
+						    	div.data("touchstartx", touch.pageX);
+								div.data("touchstarty", touch.pageY);	
+						    }
+						});
+						
+						mainimage.on('touchend', function(e) {
+							var touch = e.touches[0];
+							var div = $(e.target)
+							div.removeData("touchstartx");
+							div.removeData("touchstarty");
+						});
+						
+						var touchzoom = 10;
+						var zoomed = false;
+						var ww = window.innerWidth;
+						var wh = window.innerHeight;
+
+						mainimage.on('touchmove', function(e) {
+							var div = $(e.target);
+							//Zoom!
+							 if (e.targetTouches.length == 2 && e.changedTouches.length == 2) {
+					             // Check if the two target touches are the same ones that started
+					           var dist2 = Math.hypot(//get rough estimate of new distance between fingers
+					            e.touches[0].pageX - e.touches[1].pageX,
+					            e.touches[0].pageY - e.touches[1].pageY);
+					            //alert(dist);
+					           var w = mainimage.width();
+					           
+					            if(dist1>dist2) {
+					            	//if fingers are closer now than when they first touched screen, they are pinching
+					            	// Zoom out
+					            	var neww = w - zoom;
+					            	if (neww>50) {
+					            		//not smaller than 50px
+										var newleft = mainimage.position().left
+												+ touchzoom / 2;
+										var newright = newleft+mainimage.width();									
+										if (newleft<(ww/2) && newright>(ww/2)) {
+											mainimage.width(w - touchzoom);
+											mainimage.css({
+												"left" : left + "px"
+											});
+										}
+										zoomed = true;
+					            	}
+					            	else {
+					            		zoomed = false;
+					            	}
+
+					            }
+					            else {//if fingers are further apart than when they first touched the screen, they are making the zoomin gesture
+					            	// Zoom in
+									mainimage.width(w + touchzoom);
+									var left = mainimage.position().left
+											- touchzoom / 2;
+									mainimage.css({
+										"left" : left + "px"
+									});
+									zoomed = true;
+					            }
+							 }
+							 else {
+								 var touch = e.touches[0];
+								 //Move around only when zooming
+								 if (zoomed) {
+									var left = mainimage.position().left;
+									var top = mainimage.position().top;
+									var newtop = left;
+									
+									var startingx = div.data("touchstartx");
+									var startingy = div.data("touchstarty");
+									var diffx = (touch.pageX - startingx)/30; //?
+									var diffy = (touch.pageY - startingy)/30; //?
+									
+									if (Math.abs(diffx) > Math.abs(diffy)) {
+										var change = Math.abs(diffx) / div.width();
+										var newleft = left + diffx;
+										var newright = newleft+mainimage.width();									
+										if (newleft<(ww/2) && newright>(ww/2)) {
+											mainimage.css({
+												"left" : newleft + "px"
+											});
+										}
+									} else {
+										// up/down
+										var change = Math.abs(diffy) / div.height();
+										newtop = top + diffy;
+										mainimage.css({
+											"top" : newtop + "px"
+										});
+									}
+								 }
+								 
+								 /*
+								 //Swipe?
+								 var touch = e.touches[0];
+									var startingx = div.data("touchstartx");
+									var startingy = div.data("touchstarty");
+									var diffx = touch.pageX - startingx;
+									var diffy = touch.pageY - startingy;
+									var swipe = false;
+									if (Math.abs(diffx) > Math.abs(diffy)) {
+										var change = Math.abs(diffx) / div.width();
+										if (change > .2) {
+											if (diffx > 0) {
+												swipe = "swiperight";
+											} else {
+												swipe = "swipeleft";
+											}
+										}
+									} else {
+										// do swipeup and swipedown
+										var change = Math.abs(diffy) / div.height();
+										if (change > .2) {
+											if (diffy > 0) {
+												swipe = "swipedown";
+											} else {
+												swipe = "swipeup";
+											}
+										}
+
+									}
+
+									if (swipe) {
+										//console.log(div);
+										var event = {};
+										event.originalEvent = e;
+										event.preventDefault = function() {
+										};
+										// TODO: Find out why I can't trigger on $(e.target).trigger it
+										// ignores us
+
+										//$("#" + div.attr("id")).trigger(swipe);
+									}
+									*/
+								 }
+						});
+						
+						
 
 					});
 
-	document.addEventListener('touchstart', function(e) {
-		var touch = e.touches[0];
-		var div = $(e.target)
-		div.data("touchstartx", touch.pageX);
-		div.data("touchstarty", touch.pageY);
-	});
-	document.addEventListener('touchend', function(e) {
-		var touch = e.touches[0];
-		var div = $(e.target)
-		div.removeData("touchstartx");
-		div.removeData("touchstarty");
-	});
-
-	document.addEventListener('touchmove', function(e) {
-		var touch = e.touches[0];
-		var div = $(e.target);
-		var startingx = div.data("touchstartx");
-		var startingy = div.data("touchstarty");
-		var diffx = touch.pageX - startingx;
-		var diffy = touch.pageY - startingy;
-		var swipe = false;
-		if (Math.abs(diffx) > Math.abs(diffy)) {
-			var change = Math.abs(diffx) / div.width();
-			if (change > .2) {
-				if (diffx > 0) {
-					swipe = "swiperight";
-				} else {
-					swipe = "swipeleft";
-				}
-			}
-		} else {
-			// do swipeup and swipedown
-			var change = Math.abs(diffy) / div.height();
-			if (change > .2) {
-				if (diffy > 0) {
-					swipe = "swipedown";
-				} else {
-					swipe = "swipeup";
-				}
-			}
-
-		}
-
-		if (swipe) {
-			console.log(div);
-			var event = {};
-			event.originalEvent = e;
-			event.preventDefault = function() {
-			};
-			// TODO: Find out why I can't trigger on $(e.target).trigger it
-			// ignores us
-
-			$("#" + div.attr("id")).trigger(swipe);
-		}
-
-	}, false);
+	
 
 	$("video").each(function() {
 		$(this).append('controlsList="nodownload"')
