@@ -1614,12 +1614,16 @@ uiload = function() {
 					            }
 					            else {//if fingers are further apart than when they first touched the screen, they are making the zoomin gesture
 					            	// Zoom in
-									mainimage.width(w + touchzoom);
-									var left = mainimage.position().left
+									
+									var newleft = mainimage.position().left
 											- touchzoom / 2;
-									mainimage.css({
-										"left" : left + "px"
-									});
+									var newright = newleft+mainimage.width();									
+									if (newleft<(ww/2) && newright>(ww/2)) {
+										mainimage.width(w + touchzoom);
+										mainimage.css({
+											"left" : newleft + "px"
+										});
+									}
 									zoomed = true;
 					            }
 							 }
