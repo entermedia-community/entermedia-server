@@ -32,6 +32,7 @@ $hits.setHitsPerPage(200)
 			#set( $servers = $mediaarchive.query("entermedia_instances").match("librarycollection", $hit.getId()).search() )
 			, "servers":[
 				#foreach( $server in $servers)
+					#if( ${foreach.count} != 1 ), #end
 					#json($server $mediaarchive.getSearcher("entermedia_instances").getPropertyDetails()) 
 				#end		
 			]
