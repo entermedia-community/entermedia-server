@@ -68,7 +68,11 @@
 	    }
 	});
 
-
+	$(window).bind("beforeunload", function() { 
+	    // return inFormOrLink ? "Do you really want to close?" : null;
+		PostMetrics();
+	})
+	
 	player.on('playlistchange', (data) => logMetris(data));
 	player.on('loadstart', (data) => logMetris(data));
 	player.on('waiting', (data) => logMetris(data));
@@ -120,12 +124,14 @@
 	        PostMetrics();
 	    }
 	}
-	var interval = setInterval(() => {
-	    if (metrics.length > 0) {
-	        PostMetrics();
-	        metrics = [];
-	    }
-	}, 5000);
+	    
+	//var interval = setInterval(() => {
+	//    if (metrics.length > 0) {
+	//        PostMetrics();
+	//        metrics = [];
+	//    }
+	//}, 5000);
+	
 	function PostMetrics() {
 	    console.log('metrics', metrics);
 	    videoData = {
