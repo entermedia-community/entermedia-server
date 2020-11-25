@@ -64,12 +64,10 @@
 	            default: 'high',
 	            dynamicLabel: true
 	        },
-	        // eventTracking: true
 	    }
 	});
 
-	$(window).bind("beforeunload", function() { 
-	    // return inFormOrLink ? "Do you really want to close?" : null;
+	$(window).bind("beforeunload", function() {
 		PostMetrics();
 	})
 	
@@ -85,7 +83,7 @@
 	player.on('play', (data) => logMetris(data));
 	player.on('firstplay', (data) => logMetris(data));
 	player.on('pause', (data) => logMetris(data));
-	// player.on('progress', (data) => logMetris(data));
+	## player.on('progress', (data) => logMetris(data));
 	player.on('durationchange', (data) => logMetris(data));
 	player.on('fullscreenchange', (data) => logMetris(data));
 	player.on('error', (data) => logMetris(data));
@@ -95,7 +93,7 @@
 	player.on('stalled', (data) => logMetris(data));
 	player.on('loadedmetadata', (data) => logMetris(data));
 	player.on('loadeddata', (data) => logMetris(data));
-	// player.on('timeupdate', (data) => logMetris(data));
+	## player.on('timeupdate', (data) => logMetris(data));
 	player.on('ratechange', (data) => logMetris(data));
 	player.on('volumechange', (data) => logMetris(data));
 	player.on('texttrackchange', (data) => logMetris(data));
@@ -106,7 +104,6 @@
 	var videoData;
 	var isTracking = false;
 	function logMetris(data) {
-	    // if (isTracking) {
 	    const bufferTimer = player.buffered();
 	    var opt = {
 	        eventType: data.type,
@@ -125,15 +122,14 @@
 	    }
 	}
 	    
-	//var interval = setInterval(() => {
-	//    if (metrics.length > 0) {
-	//        PostMetrics();
-	//        metrics = [];
-	//    }
-	//}, 5000);
+	## var interval = setInterval(() => {
+	##    if (metrics.length > 0) {
+	##        PostMetrics();
+	##        metrics = [];
+	##    }
+	## }, 5000);
 	
 	function PostMetrics() {
-	    console.log('metrics', metrics);
 	    videoData = {
 	        //app: navigator.appCodeName + ' ' + navigator.appName + ' ' + navigator.appVersion,
 	        logid: '', // log id
@@ -149,15 +145,10 @@
 	function PostRequest(data, url) {
 	    var xhr = new XMLHttpRequest();
 	    xhr.open('POST', url, true);
-	    // xhr.open("POST", form.action, true);
 	    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 	    xhr.send(JSON.stringify(data));
-	    // xhr.onloadend = function () {
-	    //     console.log('done');
-	    // };
 	    xhr.onload = () => {
 	        const data = JSON.parse(xhr.responseText);
-	        console.log(data);
 	    };
 	}
 </script>
