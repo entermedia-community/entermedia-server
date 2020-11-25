@@ -20,7 +20,19 @@
 			"samples" : [
 				#foreach( $sample in $idhits )
 					#if( ${foreach.count} != 1 ), #end
-					#json($sample $mediaarchive.getSearcher($module.id).getPropertyDetails()) 
+					{
+						#jsonpartial($sample $mediaarchive.getSearcher($module.id).getPropertyDetails())
+						#if($module.getId() == "asset" && $sample.importstatus == "complete" )
+						, "thumbnailimg": 
+								#if( $hit.previewstatus && $hit.previewstatus == "mime")
+									#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+									#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+								#else
+									#set( $thumbpath =  $mediaarchive.asLinkToPreview($sample,"image200x200.jpg" ) )
+								#end
+								"$thumbpath"
+						#end
+					} 
 				#end
 			]
 		}	
@@ -50,12 +62,7 @@
 					#end
 				]	
 			}
-		},
-	"results":[
-		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-		#json($hit $searcher.getPropertyDetails()) 
-		#end
-		]		
+		}		
  #if( $hits.getSearchQuery().hasFilters() )
  , "filters":[
 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( ${foreach.count} != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
