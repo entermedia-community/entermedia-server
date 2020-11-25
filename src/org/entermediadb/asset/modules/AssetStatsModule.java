@@ -58,9 +58,10 @@ public class AssetStatsModule extends BaseMediaModule
 		Map firstone = (Map)events.get(0);
 		Map lastone = (Map)events.get(events.size()-1);
 		
-		//get the last poistion and subtract anyome someone seeks
-		Integer totalviewingtime = (Integer)lastone.get("position");
-		videolog.setValue("totalviewingtime",totalviewingtime);
+		//TODO: get the last poistion and subtract anyome someone seeks
+		//Double totalviewingtime = (Double)lastone.get("position");
+		String positionstring = lastone.get("position").toString();
+		videolog.setValue("totalviewingtime",positionstring);
 		
 		//TODO: Now subtract any seeks
 		//addAllSeeks(events);
