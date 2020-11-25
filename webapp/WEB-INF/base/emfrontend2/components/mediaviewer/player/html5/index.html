@@ -15,7 +15,7 @@
 #if(!$cdnprefix )
 	#set($cdnprefix = $context.siteRoot )
 #end
-
+#set( $metricEnabled = false )
 
 <script id="videojs" src="$applink/components/javascript/videojs/7.8.2/video.min.js"></script>
 <script id="videojs" src="$applink/components/javascript/videojs-contrib-hls/videojs-contrib-hls.min.js"></script>
@@ -67,88 +67,89 @@
 	    }
 	});
 
-	$(window).bind("beforeunload", function() {
-		PostMetrics();
-	})
-	
-	player.on('playlistchange', (data) => logMetris(data));
-	player.on('loadstart', (data) => logMetris(data));
-	player.on('waiting', (data) => logMetris(data));
-	player.on('canplay', (data) => logMetris(data));
-	player.on('canplaythrough', (data) => logMetris(data));
-	player.on('playing', (data) => logMetris(data));
-	player.on('ended', (data) => logMetris(data));
-	player.on('seeking', (data) => logMetris(data));
-	player.on('seeked', (data) => logMetris(data));
-	player.on('play', (data) => logMetris(data));
-	player.on('firstplay', (data) => logMetris(data));
-	player.on('pause', (data) => logMetris(data));
-	## player.on('progress', (data) => logMetris(data));
-	player.on('durationchange', (data) => logMetris(data));
-	player.on('fullscreenchange', (data) => logMetris(data));
-	player.on('error', (data) => logMetris(data));
-	player.on('suspend', (data) => logMetris(data));
-	player.on('abort', (data) => logMetris(data));
-	player.on('emptied', (data) => logMetris(data));
-	player.on('stalled', (data) => logMetris(data));
-	player.on('loadedmetadata', (data) => logMetris(data));
-	player.on('loadeddata', (data) => logMetris(data));
-	## player.on('timeupdate', (data) => logMetris(data));
-	player.on('ratechange', (data) => logMetris(data));
-	player.on('volumechange', (data) => logMetris(data));
-	player.on('texttrackchange', (data) => logMetris(data));
-	player.on('loadedmetadata', (data) => logMetris(data));
-	player.on('posterchange', (data) => logMetris(data));
-	player.on('textdata', (data) => logMetris(data));
-	var metrics = [];
-	var videoData;
-	var isTracking = false;
-	function logMetris(data) {
-	    const bufferTimer = player.buffered();
-	    var opt = {
-	        eventType: data.type,
-	        position: player.currentTime(),
-	        videoType: player.currentType(),
-	        duration: player.duration(),
-	        isEnd: player.ended(),
-	        isFullScreen: player.isFullscreen(),
-	        bufferPercent: player.bufferedPercent() * 100,
-	        volume: player.volume() * 100,
-	        datetime: Date.now()
-	    }
-	    metrics.push(opt);
-	    if (opt.eventType === 'ended') {
-	        PostMetrics();
-	    }
-	}
-	    
-	## var interval = setInterval(() => {
-	##    if (metrics.length > 0) {
-	##        PostMetrics();
-	##        metrics = [];
-	##    }
-	## }, 5000);
-	
-	function PostMetrics() {
-	    videoData = {
-	        //app: navigator.appCodeName + ' ' + navigator.appName + ' ' + navigator.appVersion,
-	        logid: '', // log id
-	        assetid: '$hit.id', // asset id
-	        app: navigator.userAgent,
-	        platform: navigator.platform,
-	        width: window.innerWidth,
-	        height: window.innerHeight,
-	        events: metrics
-	    }
-	    PostRequest(videoData, baseUrl + applink + "/services/module/asset/analytics/videolog");
-	}
-	function PostRequest(data, url) {
-	    var xhr = new XMLHttpRequest();
-	    xhr.open('POST', url, true);
-	    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-	    xhr.send(JSON.stringify(data));
-	    xhr.onload = () => {
-	        const data = JSON.parse(xhr.responseText);
-	    };
-	}
+	#if($metricEnabled)
+		$(window).bind("beforeunload", function() {
+			PostMetrics();
+		})	
+		player.on('playlistchange', (data) => logMetris(data));
+		player.on('loadstart', (data) => logMetris(data));
+		player.on('waiting', (data) => logMetris(data));
+		player.on('canplay', (data) => logMetris(data));
+		player.on('canplaythrough', (data) => logMetris(data));
+		player.on('playing', (data) => logMetris(data));
+		player.on('ended', (data) => logMetris(data));
+		player.on('seeking', (data) => logMetris(data));
+		player.on('seeked', (data) => logMetris(data));
+		player.on('play', (data) => logMetris(data));
+		player.on('firstplay', (data) => logMetris(data));
+		player.on('pause', (data) => logMetris(data));
+		## player.on('progress', (data) => logMetris(data));
+		player.on('durationchange', (data) => logMetris(data));
+		player.on('fullscreenchange', (data) => logMetris(data));
+		player.on('error', (data) => logMetris(data));
+		player.on('suspend', (data) => logMetris(data));
+		player.on('abort', (data) => logMetris(data));
+		player.on('emptied', (data) => logMetris(data));
+		player.on('stalled', (data) => logMetris(data));
+		player.on('loadedmetadata', (data) => logMetris(data));
+		player.on('loadeddata', (data) => logMetris(data));
+		## player.on('timeupdate', (data) => logMetris(data));
+		player.on('ratechange', (data) => logMetris(data));
+		player.on('volumechange', (data) => logMetris(data));
+		player.on('texttrackchange', (data) => logMetris(data));
+		player.on('loadedmetadata', (data) => logMetris(data));
+		player.on('posterchange', (data) => logMetris(data));
+		player.on('textdata', (data) => logMetris(data));
+		var metrics = [];
+		var videoData;
+		var isTracking = false;
+		function logMetris(data) {
+		    const bufferTimer = player.buffered();
+		    var opt = {
+		        eventType: data.type,
+		        position: player.currentTime(),
+		        videoType: player.currentType(),
+		        duration: player.duration(),
+		        isEnd: player.ended(),
+		        isFullScreen: player.isFullscreen(),
+		        bufferPercent: player.bufferedPercent() * 100,
+		        volume: player.volume() * 100,
+		        datetime: Date.now()
+		    }
+		    metrics.push(opt);
+		    if (opt.eventType === 'ended') {
+		        PostMetrics();
+		    }
+		}
+		    
+		## var interval = setInterval(() => {
+		##    if (metrics.length > 0) {
+		##        PostMetrics();
+		##        metrics = [];
+		##    }
+		## }, 5000);
+		
+		function PostMetrics() {
+		    videoData = {
+		        //app: navigator.appCodeName + ' ' + navigator.appName + ' ' + navigator.appVersion,
+		        logid: '', // log id
+		        assetid: '$hit.id', // asset id
+		        app: navigator.userAgent,
+		        platform: navigator.platform,
+		        width: window.innerWidth,
+		        height: window.innerHeight,
+		        events: metrics
+		    }
+		    PostRequest(videoData, baseUrl + applink + "/services/module/asset/analytics/videolog");
+		}
+		function PostRequest(data, url) {		
+		    var xhr = new XMLHttpRequest();
+		    xhr.open('POST', url, true);
+		    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+		    xhr.send(JSON.stringify(data));
+		    xhr.onload = () => {
+		        const data = JSON.parse(xhr.responseText);
+		    }
+		}
+	#end
 </script>
