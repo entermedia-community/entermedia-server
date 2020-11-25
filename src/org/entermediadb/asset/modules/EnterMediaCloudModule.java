@@ -80,7 +80,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			User user = userManager.getUserByEmail(email);
 			if( user == null)
 			{
-				user = userManager.createUser(null, null);
+				user = userManager.createUser("em" + userid, null);
 				user.setEmail(email);
 				user.setEnabled(true);
 			}
