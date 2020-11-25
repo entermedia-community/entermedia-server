@@ -145,12 +145,39 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
 </endpoint>
 
 
-<endpoint id="logvideoview" name="Log Video Statistics" url="/${applicationid}/services/module/asset/analytics/videolog.json" docsection="moduleasset" caption="Save Status  on Video View" httpmethod="POST" uploadfile="false"> 
-    <samplerequest><![CDATA[  
-    
-    
-    
-    ]]>
+<endpoint id="logvideoview" name="Log Video Statistics" url="/${applicationid}/services/module/asset/analytics/videolog" docsection="moduleasset" caption="Save Status on Video View" httpmethod="POST" uploadfile="false"> 
+    <samplerequest><![CDATA[{
+  "app": "Mozilla/5.0",
+  "platform": "Linux x86_64",
+  "width": "1080",
+  "height": "1920",
+  "logid": "100",
+  "assetid": "101",
+  "events": [
+    {
+      "eventType": "pause",
+      "position": 260.8531801337099,
+      "videoType": "application/x-mpegURL",
+      "duration": 560.7815329999997,
+      "isEnd": false,
+      "isFullScreen": false,
+      "bufferPercent": 5.140831376128788,
+      "volume": 100,
+      "datetime": 1606162742759
+    },
+    {
+      "eventType": "ended",
+      "position": 560.768,
+      "videoType": "application/x-mpegURL",
+      "duration": 560.768,
+      "isEnd": true,
+      "isFullScreen": false,
+      "bufferPercent": 2.0353040829719378,
+      "volume": 100,
+      "datetime": 1606163306979
+    }
+  ]
+}]]>
     </samplerequest>
 </endpoint>
 
