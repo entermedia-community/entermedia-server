@@ -2,5 +2,8 @@
 
 	<path-action name="EnterMediaCloudModule.loginUserWithExpiringKey" />
 	<path-action name="Admin.loadTemporaryKey" />
-
+	<permission name="view">
+	  <blank/>
+	</permission>
+		
 </page>

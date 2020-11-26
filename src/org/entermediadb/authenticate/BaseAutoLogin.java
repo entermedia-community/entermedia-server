@@ -106,7 +106,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 	protected User autoLoginFromMd5Value(WebPageRequest inReq, String uandpass) {
 			//get the password expiry in days
 			int pwd_expiry_in_days = 1;
-			String str = inReq.getPageProperty("temporary_password_expiry");
+			String str = inReq.findValue("temporary_password_expiry");
 			if (str != null && !str.isEmpty())
 			{
 				try
