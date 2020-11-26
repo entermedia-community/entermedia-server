@@ -105,8 +105,9 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		}
 		else
 		{
-			log.info("Could not login user " + userkey);
+			log.info( status + " Could not login user " + userkey);
 		}
+		inReq.putPageValue("status",status);		
 	}
 
 }
