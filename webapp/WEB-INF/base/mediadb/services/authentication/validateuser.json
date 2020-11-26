@@ -1,0 +1,18 @@
+## This should not have HTML in it
+#if($user)
+{
+    "status":"ok",
+    "userid":"$user.id",
+    "screenname":"$user.screenname",
+    "firstname":"$user.firstName",
+    "lastname":"$user.lastName",
+    "email":"$user.email",
+    "password": "$user.password",
+    "isonteam":"$isonteam"
+}
+#else
+{
+	"status":"error",
+	"authenticated":"false"
+}
+#end

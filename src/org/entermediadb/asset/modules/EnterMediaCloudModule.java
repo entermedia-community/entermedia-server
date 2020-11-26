@@ -51,18 +51,16 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		//TODO: Make this configurabl
 		
 		
-		String base = "https://entermediadb.org/entermediadb/mediadb";
-		//String base = "http://localhost:8080/entermediadb/mediadb";
-		
-		String url = base + "/services/authentication/showinfo.json";
-			
 		JSONObject params = new JSONObject();
 		params.put("userid",userid);
 		params.put("entermedia.key",userkey); //This should be expiring
-
+		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);
-		
+
+		String base = "https://entermediadb.org/entermediadb/mediadb";
+		//String base = "http://localhost:8080/entermediadb/mediadb";
+		String url = base + "/services/authentication/validateuser.json";
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)

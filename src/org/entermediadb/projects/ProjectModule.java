@@ -1426,6 +1426,8 @@ Server ProjectModule.uploadFile
 		}
 		String userid = inReq.getUserName();
 		Boolean isOnEditTeam = manager.isOnTeam(collection,userid);
+		inReq.putPageValue("ison_" + collection.getId(),isOnEditTeam);
+		inReq.putPageValue("isonteam",isOnEditTeam);
 		return isOnEditTeam;
 	}
 	
