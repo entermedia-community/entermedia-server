@@ -219,6 +219,11 @@ $(document).ready(function()
     				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');
 
+	        		   if( viewassets.hasClass("autoclick"))
+	        		   {
+	        			   viewassets.trigger("click");
+	        		   }
+	        		   
 					   var form = $( startb.closest("form"));
 					   
     				   if( form.hasClass("autofinishaction") )
