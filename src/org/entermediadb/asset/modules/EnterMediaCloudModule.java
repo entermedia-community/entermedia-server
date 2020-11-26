@@ -66,7 +66,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if (filestatus.getStatusCode() != 200)
 		{
 			//Problem
-			log.info("URL issue " + " " + url + " with " + userkey);
+			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + userkey);
+			return;
 		}
 		JSONObject data = getConnection().parseJson(resp);
 		String status = (String)data.get("status");

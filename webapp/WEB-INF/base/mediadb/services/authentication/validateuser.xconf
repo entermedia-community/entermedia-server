@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <page>
+	<path-action name="JsonAdminModule.preprocess" />
 	<path-action name="Admin.login" />
 	<path-action name="ProjectModule.isOnTeam" />
 	<permission name="view">
