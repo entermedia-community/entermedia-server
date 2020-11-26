@@ -52,8 +52,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		
 		
 		JSONObject params = new JSONObject();
-		params.put("userid",userid);
-		params.put("entermedia.key",userkey); //This should be expiring
+		params.put("accountname",userid);
+		params.put("entermediakey",userkey); //This is an expiring key
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);

@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 
 <page>
-	<path-action name="Admin.authenticate" />
-	<path-action name="User.loadUserProperties" />	
+	<path-action name="Admin.login" />
 	<path-action name="ProjectModule.isOnTeam" />
+	<permission name="view">
+	  <blank/>
+	</permission>
+	
 </page>
