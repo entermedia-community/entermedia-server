@@ -221,8 +221,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			}
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
-			
-			log.info("Command was: " + command);
+			if( command != null && !command.equals("keepalive"))
+			{
+				log.info("Command was: " + command);
+			}
 			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
 				//receiveLogin(map); 

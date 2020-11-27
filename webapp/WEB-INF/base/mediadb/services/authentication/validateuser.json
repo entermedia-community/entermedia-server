@@ -7,10 +7,12 @@
     "status":"not on team",
     #end
     "userid":"$user.id",
+    #if( $user.screenname )
     "screenname":"$user.screenname",
-    "firstname":"$user.firstName",
-    "lastname":"$user.lastName",
-    "email":"$user.email",
+   	#end 
+    "firstname":"$!user.firstName",
+    "lastname":"$!user.lastName",
+    "email":"$!user.email",
     "password": "$user.password",
 }
 #else

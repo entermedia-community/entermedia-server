@@ -75,7 +75,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 			String name = getCookieEncryption().createMd5CookieName(inReq,ENTERMEDIAKEY,true);
 			try
 			{
-				String value = getCookieEncryption().getEnterMediaKey(inUser);
+				String value = getCookieEncryption().getEnterMediaKey(inUser);  ///TODO Change expiration to be 30 days for keys?
 				Cookie cookie = new Cookie(name, value);
 				
 				Data age  = getSearcherManager().getCachedData("system", "systemsettings", "cookie_expiration_age");

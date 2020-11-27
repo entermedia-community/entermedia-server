@@ -217,20 +217,20 @@ public class AdminModule extends BaseMediaModule
 			}
 			else
 			{
-				int days = 0;
-				try
-				{
-					days = Integer.parseInt(expiry);
-				}
-				catch (Exception ee)
-				{
-				}
-				if (days <= 0)
-				{
-					log.info("Temporary password expiry is not formatted correctly - require a number greater than 0.");
-				}
-				else
-				{
+//				int days = 0;
+//				try
+//				{
+//					days = Integer.parseInt(expiry);
+//				}
+//				catch (Exception ee)
+//				{
+//				}
+//				if (days <= 0)
+//				{
+//					log.info("Temporary password expiry is not formatted correctly - require a number greater than 0.");
+//				}
+//				else
+//				{
 					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
 					if (tsenc != null && !tsenc.isEmpty())
 					{
@@ -242,7 +242,7 @@ public class AdminModule extends BaseMediaModule
 					{
 						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 					}
-				}
+//				}
 			}
 		}
 		catch (OpenEditException oex)
