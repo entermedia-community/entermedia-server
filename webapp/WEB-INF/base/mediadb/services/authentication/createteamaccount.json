@@ -12,8 +12,8 @@
 	},
 	"results": 
 	{ 
-#if($entermediakey)
-		"entermediakey": "$entermediakey",
+#if($tempentermediakey)
+		"entermediakey": "$tempentermediakey",
 		"firstname": "$!user.firstName",
 		"lastname" : "$!user.lastName",
 		"email" : "$!user.email",
