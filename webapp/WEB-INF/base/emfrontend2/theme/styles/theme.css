@@ -3284,9 +3284,9 @@ label.error {
 	word-wrap:break-word;
     overflow: hidden;
 }
-.media-player-mini {  }
+.media-player-mini { margin: 0 auto;  }
 .media-player-mini .media-thumbnail {text-align:center; padding: 20px 10px 10px;}
-.media-player-mini .media-info { text-align: left; padding:10px; font-size:90%}
+.media-player-mini .media-info { text-align: center; padding:10px; font-size:90%}
 .media-player-mini .media-info strong { font-size:110%; }
 .media-player-mini .media-info-more { border-top:1px solid #666; padding-top: 10px; margin-top:10px; }
 .media-player-mini .media-info-more p { margin-bottom: 5px; }
@@ -3297,6 +3297,19 @@ label.error {
 .card-box-asset-preview { padding:20px;}
 .card-box-asset-preview ul { list-style: none; margin: 0 0 20px 0; padding: 0;}
 
+.audio-thumb-container 
+{
+	text-align:center; 
+	background-color: #ccc;
+	padding: 10px;
+	max-width: 200px;
+}
+
+.audio-thumb-container .smallname 
+{
+	font-size: .9em;
+	color: #aaa;
+}
 
 .aside-content { margin:0 0 50px;}
 .aside-content .aside-header { height:40px; width: 100%; padding: 10px; margin: 0 0 10px;}

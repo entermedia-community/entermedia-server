@@ -7,6 +7,8 @@
 	<property name="hitsname">collectionhits</property>
 	<property name="virtual">true</property>
 	
+	<property name="collectionidinfilename">true</property>
+	
     <path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
 			<idname>collectionid</idname>

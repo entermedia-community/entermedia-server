@@ -23,10 +23,11 @@
   font-size: 1em;
   font-family: "Helvetica Neue", Helvetica, Arial, "Nimbus Sans L", sans-serif;
   color: #fff;
-  line-height: 1.6;
+  /* line-height: 1.6; */
 }
 .jp-audio.mini {
-    margin: 0 auto;
+    /* width: 120px; */
+    /* margin: 0 auto; */
     padding: 0;
 }
 .jp-audio a {
@@ -277,7 +278,7 @@
   -moz-background-size: 7px 7px;
   -o-background-size: 7px 7px;
   background-size: 7px 7px;
-  background-color: #fcc500;
+  /* background-color: #fcc500; */
   background-repeat: repeat-x;
   background-image: -khtml-gradient(linear, left top, left bottom, from(#fff200), to(#fcc500));
   background-image: -moz-linear-gradient(#fff200, #fcc500);
@@ -288,12 +289,12 @@
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff200', endColorstr='#fcc500', GradientType=0);
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff200', endColorstr='#fcc500', GradientType=0)";
   background-image: linear-gradient(#fff200, #fcc500);
-  background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(0.25, rgba(255, 255, 255, 0.3)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.3)), color-stop(0.75, rgba(255, 255, 255, 0.3)), color-stop(0.75, transparent), to(transparent));
-  background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
+  /* background-image: -webkit-gradient(linear, 0 0, 100% 100%, color-stop(0.25, rgba(255, 255, 255, 0.3)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.3)), color-stop(0.75, rgba(255, 255, 255, 0.3)), color-stop(0.75, transparent), to(transparent)); */
+  /* background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent); */
   background-image: -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
   background-image: -ms-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
   background-image: -o-linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
-  background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
+  /* background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent); */
 }
 /* TIME HOLDER
 ----------------------------------------------- */

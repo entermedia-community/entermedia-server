@@ -1,8 +1,65 @@
+curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
+{
+  "from" : 0,
+  "size" : 1000,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "match_all" : { }
+      },
+      "must_not" : {
+        "term" : {
+          "emrecordstatus.recorddeleted" : true
+        }
+      }
+    }
+  },
+  "explain" : false,
+  "_source" : {
+    "includes" : [ ],
+    "excludes" : [ "description" ]
+  },
+  "aggregations" : {
+    "entitysourcetype" : {
+      "terms" : {
+        "field" : "entitysourcetype",
+        "size" : 50
+      }
+    },
+    "keywords" : {
+      "terms" : {
+        "field" : "keywords.exact",
+        "size" : 100
+      }
+    },
+    "entity_date_breakdown_day" : {
+      "date_histogram" : {
+        "field" : "entity_date",
+        "interval" : "1d",
+        "order" : {
+          "_key" : "desc"
+        }
+      }
+    },
+    "entity_date_breakdown_week" : {
+      "date_histogram" : {
+        "field" : "entity_date",
+        "interval" : "1w",
+        "order" : {
+          "_count" : "desc"
+        }
+      }
+    }
+  }
+ }' | python -mjson.tool
+
 curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/insights_catalog/insight_project_mip/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
+
 
 insight_project_mip
 

@@ -17,7 +17,7 @@
 
 #set ($path = "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")   
 
-    
+<div class="audio-thumb-container" >    
 <div id="jp_container_$!viewer$hit.id" class="jp-audio mini">
     <div class="jp-type-single">
         <div id="jquery_jplayer_$!viewer$hit.id" data-container="jp_container_$!viewer$hit.id"  class="jp-jplayer" data-url="$path"></div>            
@@ -36,4 +36,5 @@
         </div>
     </div>
 </div>
-
+<div class="smallname">$hit.getName()</div>
+</div>

@@ -109,7 +109,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 //		hits.size(); //load it up
 //		long end = System.currentTimeMillis();
 //		
-//		log.info("Found " + hits.size() + " in " + ((end-start)) + " milli-seconds for " + search) ;
+		log.info("Found " + hits.size() + searchmodules +  " onsf: " + search) ;
 		
 		return hits;
 	}

@@ -431,8 +431,14 @@ public class ProjectModule extends BaseMediaModule
 				}
 			}
 		}
-//		if (collectionid == null) 
-//		{
+		if (collectionid == null) 
+		{
+			String collectionidinpath = inReq.getContentProperty("collectionidinfilename");
+			if( Boolean.parseBoolean(collectionidinpath))
+			{
+				collectionid = PathUtilities.extractPageName(inReq.getContentPage().getName());
+			}			
+		}
 //			LibraryCollection coll = loadCollectionFromFolder(inReq);
 //			if (coll != null) {
 //				collectionid = coll.getId();
