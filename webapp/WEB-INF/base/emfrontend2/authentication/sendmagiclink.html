@@ -1,0 +1,23 @@
+<div class="container applicationcontent">
+	<div class="row justify-content-md-center">
+	    <div class="col col-lg-7">
+	    <div class="text-center">
+	    <h1>[[Send Magic Link]]</h1>
+
+			#set( $to = $context.getRequestParameter("to") )	
+			#set( $username = $context.getRequestParameter("username") )
+			
+			<form class="" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+			
+					<p>[[Please click 'Send Link'! Your magic link will be sent to you via e-mail:]]</p>
+					<p><input class="form-control form-control-sm required" type="text" name="to" size="40" style="margin:0 auto; width:300px" placeholder="[[Enter your Email Address]]" required /></p>
+					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" />
+					
+            </form>
+            <div class="text-center note" style="margin-top: 40px; margin-bottom: 10px;">
+        	</div>
+			</div>
+		</div>
+	</div>
+</div>

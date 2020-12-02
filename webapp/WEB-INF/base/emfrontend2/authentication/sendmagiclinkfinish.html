@@ -1,0 +1,28 @@
+<div class="col-md-8 container applicationcontent" style=" max-width:500px; padding:150px 0px 0 40px; ">
+	
+	    <h1 style="text-align:center;">[[Sent! Please check your email & paste key below.]]</h1>
+	    
+	     #set($loginok = $context.findValue("loginokpage") ) 
+
+		<div class="hr"></div>
+		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+			<div class="form-group">
+			<label for="password">[[Paste EM App Key]]</label>
+			<input class="form-control" id="entermediakey" name="entermediakey" />
+			</div>
+			
+			<div class="form-group">
+			<input class="btn btn-sm btn-primary float-right" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+			#if($loginok)
+			#set( $loginok = "$context.siteRoot" + "$loginok")
+			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+			#end
+			</div>
+			#if ( $context.getPageValue("oe-exception") )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+				$context.removeSessionValue("oe-exception")
+			#end
+		</form>   
+
+			
+</div>
