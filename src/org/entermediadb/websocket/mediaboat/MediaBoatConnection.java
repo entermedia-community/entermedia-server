@@ -2,7 +2,7 @@ package org.entermediadb.websocket.mediaboat;
 
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -23,7 +23,9 @@ import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
