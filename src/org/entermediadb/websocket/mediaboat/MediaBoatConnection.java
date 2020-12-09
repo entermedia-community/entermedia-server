@@ -25,6 +25,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
@@ -249,6 +250,14 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 				String foldername = (String)map.get("foldername");
 				getDesktop().addEditedCollection(foldername);
 			}
+			else if( "downloadasset_completed".equals(command)) //Return all the annotation on this asset
+			{
+				String id = (String)map.get("userdownloadid");
+				String catalogid = (String)map.get("catalogid");
+				//Update DB					
+				MediaArchive archive = getMediaArchive(catalogid);
+				getDesktop().setUserDownloadComplete(archive,id);
+			}
 		}
 		catch (Exception e)
 		{
@@ -257,6 +266,17 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			e.printStackTrace();
 		}
 	}
+	
+	public MediaArchive getMediaArchive(String inCatalogid)
+	{
+		if (inCatalogid == null)
+		{
+			return null;
+		}
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(inCatalogid, "mediaArchive");
+		return archive;
+	}
+	
 	/*
 	 * private static void broadcast(String msg) { for (ChatAnnotation client :
 	 * connections) { try { synchronized (client) {
@@ -280,6 +300,10 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		getDesktopManager().setDesktop(getDesktop());
 		//authenticated
 		String keyonly = (String)map.get("entermedia.key");
+		if( keyonly == null)
+		{
+			throw new OpenEditException("Key not found");
+		}
 		if( user == null) //TODO: Authenticate key (with expiration)
 		{
 			JSONObject authenticated = new JSONObject();
@@ -438,5 +462,29 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	{
 		Map map = getTransactionQueue().sendCommandAndWait(remoteEndpointBasic, inCommand);
 		return map;
+	}
+	@Override
+	public void downloadAsset(MediaArchive inArchive, Asset inAsset, Data inUserDownload)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "downloadasset");
+		command.put("catalogid",inArchive.getCatalogId());
+		command.put("mediadbid",inArchive.getMediaDbId());
+		command.put("userdownloadid",inUserDownload.getId());
+		
+		command.put("assetid",inAsset.getId());
+		command.put("filename",inAsset.getName());
+
+		long time = inAsset.getDate("assetmodificationdate").getTime();
+		if (time > 0)
+		{
+			command.put("assetmodificationdate", String.valueOf(time));
+		}
+
+		String urlroot = inArchive.asLinkToOriginal(inAsset);
+		command.put("url",urlroot);
+
+		sendMessage(command);
+		
 	}
 }

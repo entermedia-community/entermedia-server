@@ -6,6 +6,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 
 public interface DesktopEventListener
 {
@@ -20,6 +21,8 @@ public interface DesktopEventListener
 	public void downloadFolders(MediaArchive inArchive,LibraryCollection inCollection, Map inRoot);
 
 	public void replacedWithNewDesktop(Desktop inDesktop);
+
+	public void downloadAsset(MediaArchive inArchive, Asset inAsset, Data inUserDownload);
 
 	public void openAsset(MediaArchive inArchive, Asset inAsset);
 	

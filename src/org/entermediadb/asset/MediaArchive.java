@@ -271,12 +271,13 @@ public class MediaArchive implements CatalogEnabled
 			//Put the sourcepath on there again?
 			inPrimaryImageName = PathUtilities.extractFileName(inSourcePath);
 		}
-		inPrimaryImageName = URLUtilities.encode(inPrimaryImageName);
+		//inPrimaryImageName = URLUtilities.encode(inPrimaryImageName);
 		// TODO: Make this less redundant by making changes to Cumulus to
 		// use a nicer source path such as 1234MyFile.eps.xconf
 		out.append("/");
 		out.append(inPrimaryImageName);
-		return out.toString();
+		String finalroot = URLUtilities.urlEscape(out.toString());
+		return finalroot;
 	}
 
 	/**

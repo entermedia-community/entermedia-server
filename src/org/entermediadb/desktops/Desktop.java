@@ -16,6 +16,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
 import org.openedit.users.User;
@@ -246,6 +247,13 @@ public class Desktop
 		
 	}
 
+	public void downloadAsset(MediaArchive inArchive, Data userdownload)
+	{
+		Asset asset = inArchive.getAsset(userdownload.get("assetid"));
+		getDesktopListener().downloadAsset(inArchive, asset, userdownload);
+		
+	}
+
 	public void sendCommand(MediaArchive inArchive, JSONObject inCommand)
 	{
 		getDesktopListener().sendCommand(inArchive, inCommand);
@@ -294,6 +302,16 @@ public class Desktop
 //			files  = (Map)response.get("childfolders");
 //		}	
 		return response;
+	}
+
+	public void setUserDownloadComplete(MediaArchive inMediaArchive, String inId)
+	{
+		Data userdownload = inMediaArchive.query("userdownloads").id(inId).searchOne();
+		userdownload.setValue("isdownloadcomplete",true);
+		inMediaArchive.saveData("userdownloads",userdownload);
+		
+		
+		
 	}
 
 //	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)
