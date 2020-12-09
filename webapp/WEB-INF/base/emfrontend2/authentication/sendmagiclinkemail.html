@@ -7,7 +7,7 @@
 <p>[[A magic link was requested for]]: $mail</p>
 <div style="margin:10px; padding:15px; background-color:#f0f0f0;">
 
-	#set( $link = "$context.siteRoot$applink/authentication/autologin.html?entermedia.key=$entermediakey" )
+	#set( $link = "$context.siteRoot$applink/workspaces/index.html?entermedia.key=$entermediakey" )
 	#set( $expiry = $context.getPageProperty("temporary_password_expiry"))
 	#set( $days = $numberutils.toInt($expiry))
 	#set ( $calendar = $datetool.getCalendar() )
@@ -16,9 +16,11 @@
 	#set($null = $calendar.add(6, $days))
 	
 	<p>
-	<a href="$link">[[Login Here]]</a>
-	[[Link will expire in 24 hours.]] 
+	<a href="$link">[[Login Here or Copy/Paste key below into app.]]</a>
+	[[Key will expire in 24 hours.]] 
 	</p>
+	<p id="entermediakey" style="text-align:center; font-size:160%;">$entermediakey</p>
+	
 </div>
 
 #if( $context.siteRoot )
@@ -31,3 +33,24 @@
 </p>
 </div>
 </div>
+<script>
+function myFunction() {
+	  /* Get the text field */
+	  var copyText = document.getElementById("entermediakey");
+
+	  
+	  /* Select the text field */
+	  
+	  copyText.select(); 
+	  
+	  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+	  /* Copy the text inside the text field */
+	  document.execCommand("copy");
+
+	  
+	  /* Alert the copied text */
+	  
+	  alert("Copied the text: " + copyText.value);
+	}
+</script>
