@@ -2,7 +2,6 @@ package org.entermediadb.websocket.mediaboat;
 
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import javax.websocket.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
@@ -26,12 +26,11 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
 
-public class MediaBoatConnection  extends Endpoint implements MessageHandler.Partial<String>, DesktopEventListener
+public class MediaBoatConnection extends Endpoint implements MessageHandler.Partial<String>, DesktopEventListener
 {
 	private static final Log log = LogFactory.getLog(MediaBoatConnection.class);
 	private  RemoteEndpoint.Basic remoteEndpointBasic;
@@ -370,6 +369,15 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		
 	}
 
+	public void openCategoryPath(MediaArchive inArchive, String inCategoryPath)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "opencategorypath");
+		command.put("categorypath", inCategoryPath);
+		sendMessage(command);
+		
+	}
+
 	@Override
 	public void downloadFolders(MediaArchive inArchive, LibraryCollection inCollection, Map inRoot)
 	{
@@ -463,6 +471,23 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		Map map = getTransactionQueue().sendCommandAndWait(remoteEndpointBasic, inCommand);
 		return map;
 	}
+	
+	public void downloadCategory(MediaArchive inArchive, Category inCategory, Data inUserDownload, Map inChildren)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "downloadcategory");
+		command.put("rootname", inCategory.getName());
+		command.put("folderdetails", inChildren);
+		command.put("catalogid",inArchive.getCatalogId());
+		command.put("mediadbid",inArchive.getMediaDbId());
+		command.put("userdownloadid",inUserDownload.getId());
+		
+		
+		//command.put("collectionid",inCollection.getId());
+		sendMessage(command);
+	}
+
+	
 	@Override
 	public void downloadAsset(MediaArchive inArchive, Asset inAsset, Data inUserDownload)
 	{

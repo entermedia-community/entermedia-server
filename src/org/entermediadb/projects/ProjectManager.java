@@ -1639,17 +1639,9 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	public Map listAssetMap(String serverPrefix, MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
+	public Map listAssetMap(String serverPrefix, MediaArchive inArchive, Category inCat)
 	{
 		List tosend = new ArrayList();
-
-		String root = inCollection.getCategory().getCategoryPath();
-		String subfolder = inCat.getCategoryPath().substring(root.length());
-		String foldername = inCollection.getName();
-		if (!subfolder.isEmpty())
-		{
-			foldername = foldername + subfolder;
-		}
 
 		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
 		assets.enableBulkOperations();
@@ -1669,7 +1661,7 @@ public class ProjectManager implements CatalogEnabled
 			{
 				primaryImageName = asset.getName();
 			}
-			String savepath = foldername + "/" + primaryImageName;
+			String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
 			map.put("savepath", savepath);
 
 			map.put("filesize", asset.get("filesize"));
@@ -1688,8 +1680,8 @@ public class ProjectManager implements CatalogEnabled
 			subfolders.add(subcat.getName());
 		}
 		Map response = new HashMap();
-		response.put("folder", inCollection.getName());
-		response.put("subpath", subfolder);
+		//response.put("folder", inRootCategory.getName());
+		response.put("subpath", inCat.getCategoryPath());
 		response.put("subfolders", subfolders);
 		response.put("assets", tosend);
 		return response;

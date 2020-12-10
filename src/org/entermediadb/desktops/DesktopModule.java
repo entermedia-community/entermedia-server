@@ -30,15 +30,17 @@ public class DesktopModule extends BaseMediaModule
 		Searcher linksearcher = archive.getSearcher("userdownloads");
 		Data link = linksearcher.createNewData();
 		
+		Asset asset = null;
+		Category cat = null;
 		if( assetid != null)
 		{
-			Asset asset = archive.getAsset(assetid);
+			asset = archive.getCachedAsset(assetid);
 			link.setSourcePath(asset.getSourcePath());
 			link.setValue("assetid",asset.getId());
 		}
 		else
 		{
-			Category cat = archive.getCategory(categoryid);
+			cat = archive.getCategory(categoryid);
 			link.setSourcePath(cat.getSourcePath());
 			link.setValue("categoryid",cat.getId());
 		}
@@ -49,7 +51,14 @@ public class DesktopModule extends BaseMediaModule
 
 		//TODO: Desktop to start download this
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.downloadAsset(archive, link);
+		if(asset != null)
+		{
+			desktop.downloadAsset(archive, link);
+		}
+		else
+		{
+			desktop.downloadCategory(archive, link);
+		}
 //		if( desktop.isBusy())
 //		{
 //			log.info("Desktop still busy");
@@ -71,11 +80,12 @@ public class DesktopModule extends BaseMediaModule
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		if( userdownload.get("assetid") != null)
 		{
-			desktop.openFile(archive, userdownload.get("assetid"));
+			desktop.openAsset(archive, userdownload.get("assetid"));
 		}
 		else
 		{
-			//desktop.openCategory(archive, userdownload.get("categoryid"));			
+			Category cat = archive.getCategory(userdownload.get("categoryid") );
+			desktop.openCategory(archive, cat);			
 		}
 
 	}

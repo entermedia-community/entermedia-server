@@ -240,7 +240,7 @@ public class Desktop
 		getDesktopListener().replacedWithNewDesktop(inDesktop);
 	}
 
-	public void openFile(MediaArchive inArchive, String inAssetid)
+	public void openAsset(MediaArchive inArchive, String inAssetid)
 	{
 		Asset asset = inArchive.getAsset(inAssetid);
 		getDesktopListener().openAsset(inArchive, asset);
@@ -249,11 +249,23 @@ public class Desktop
 
 	public void downloadAsset(MediaArchive inArchive, Data userdownload)
 	{
-		Asset asset = inArchive.getAsset(userdownload.get("assetid"));
+		Asset asset = inArchive.getCachedAsset(userdownload.get("assetid"));
 		getDesktopListener().downloadAsset(inArchive, asset, userdownload);
 		
 	}
 
+	public void downloadCategory(MediaArchive inArchive, Data userdownload)
+	{
+		setBusy(true);
+		
+		Category category = inArchive.getCategory(userdownload.get("categoryid"));
+		//Build one tree. Have the client pull the data for each one till it's done
+		Map children = addChildren(category.getParentCategory().getCategoryPath(),category);
+		getDesktopListener().downloadCategory(inArchive, category, userdownload, children);
+		
+	}
+
+	
 	public void sendCommand(MediaArchive inArchive, JSONObject inCommand)
 	{
 		getDesktopListener().sendCommand(inArchive, inCommand);
@@ -312,6 +324,12 @@ public class Desktop
 		
 		
 		
+	}
+
+	public void openCategory(MediaArchive inArchive, Category inCat)
+	{
+		getDesktopListener().openCategoryPath(inArchive, inCat.getCategoryPath());
+
 	}
 
 //	public void addLocalFileCache(MediaArchive inArchive, String inUserId, String inAbsPath,Map inFiles)

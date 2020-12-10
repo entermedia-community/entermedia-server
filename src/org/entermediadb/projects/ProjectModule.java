@@ -1033,7 +1033,7 @@ public class ProjectModule extends BaseMediaModule
 		
 		Category cat = archive.getCategory(categoryid);
 		
-		Map assets = archive.getProjectManager().listAssetMap(server, archive, collection, cat);
+		Map assets = archive.getProjectManager().listAssetMap(server, archive, cat);
 		inReq.putPageValue("assetmap", new JSONObject(assets));
 		
 	}
@@ -1303,7 +1303,7 @@ Server ProjectModule.uploadFile
 		ProjectManager manager = getProjectManager(inReq);
 
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.openFile(archive, assetid);
+		desktop.openAsset(archive, assetid);
 		Asset asset = getAsset(inReq);
 		
 		
