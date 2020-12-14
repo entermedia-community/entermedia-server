@@ -335,7 +335,10 @@ public class AssetSourceManager implements CatalogEnabled
 		for(Iterator iterator = sources.iterator(); iterator.hasNext();)
 		{
 			AssetSource source = (AssetSource)iterator.next();
-			source.checkForDeleted();
+			if( source.isEnabled() )
+			{
+				source.checkForDeleted();
+			}
 		}
 	}
 	public AssetSource loadSource(Data config)
