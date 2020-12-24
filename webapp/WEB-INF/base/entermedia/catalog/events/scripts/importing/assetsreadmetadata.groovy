@@ -28,6 +28,7 @@ public void init()
 				{
 					ContentItem content = archive.getOriginalContent( asset );
 					reader.populateAsset(archive, content, asset);
+					//asset.setValue("geo_point",null);
 					asset.setProperty("importstatus", "imported");
 					assetsToSave.add(asset);
 					if(assetsToSave.size() == 100)
@@ -39,7 +40,7 @@ public void init()
 					}
 				}
 			}
-			archive.saveAssets assetsToSave;
+			archive.saveAssets( assetsToSave );
 			archive.firePathEvent("importing/assetsimported",user,assetsToSave);
 			//log.info("metadata reading complete");
 			

@@ -805,7 +805,14 @@ public class MediaArchive implements CatalogEnabled
 
 	public void saveAssets(Collection inAssets, User inUser)
 	{
-		getAssetSearcher().saveAllData((Collection<Data>) inAssets, inUser);
+		try
+		{
+			getAssetSearcher().saveAllData((Collection<Data>) inAssets, inUser);
+		}
+		catch (Throwable ex)
+		{
+			log.error("Could not save all, try one",ex);
+		}
 	}
 
 	public synchronized ConvertStatus convertCatalog(User inUser, boolean inForce) throws Exception

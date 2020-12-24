@@ -345,7 +345,6 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					lng = value;
 					//inAsset.setProperty("position_lng", value);
 				}
-
 				else if (getTextFields().contains(key))
 				{
 					foundtextvalues = true;
@@ -422,7 +421,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			}
 		}
 		
-		if(lat != null && lng != null){
+		if(	lat != null	&&
+			lng != null &&
+			lat.contains(".") &&
+			lng.contains(".") 
+		){
+			
 			inAsset.setProperty("geo_point", lat + " , " + lng);
 		}
 		
