@@ -36,6 +36,9 @@ function chatterbox() {
 	    }
 	    chatconnection.send(json);
 	    jQuery("#chatter-msg").val("");
+	    
+	    //scroll down, delay a little?
+	    scrollToChat();
 	});
 
 	lQuery('.chatter-text').livequery("keydown", function(e){
@@ -101,7 +104,7 @@ function scrollToChat()
 	var inside = $('.chatterbox-body-inside');
 	if( inside.length > 0 )
 	{
-		inside.animate({ scrollTop: inside.get(0).scrollHeight}, 300); 
+		inside.animate({ scrollTop: inside.get(0).scrollHeight}, 30); 
 	}
 }
 
@@ -164,12 +167,14 @@ function connect() {
 			url =  apphome + "/components/chatterbox/message.html";
 		}	
 
+        scrollToChat();
+
 		jQuery.get( url, message, function( data ) {
 			listarea.append( data );
 			$(document).trigger("domchanged");
+	        scrollToChat();
 		});
 	
-        scrollToChat();
         
         registerServiceWorker();
         
