@@ -23,8 +23,8 @@
 	<property id="transport.type">netty3</property>    
 -->
 	<property id="discovery.zen.ping.unicast.hosts">localhost</property>
- 	<property id="cluster.routing.allocation.disk.watermark.high">5gb</property>
-	<property id="cluster.routing.allocation.disk.watermark.low">10gb</property>
+ 	<property id="cluster.routing.allocation.disk.watermark.high">1gb</property>
+	<property id="cluster.routing.allocation.disk.watermark.low">5gb</property>
  
  
 </node>
