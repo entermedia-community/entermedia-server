@@ -184,4 +184,21 @@ public class UserProfileModule extends BaseMediaModule
 		AssetSearcher searcher = archive.getAssetSearcher();
 		
 	}
+	
+	public void loadSideBarWidth(WebPageRequest inReq)
+	{
+		String sidebarcomponent = inReq.getContentProperty("sidebarcomponent");
+		if(sidebarcomponent == null && inReq.getUserProfile() != null)
+		{
+			sidebarcomponent = inReq.getUserProfile().get("sidebarcomponent");
+		}
+		String width = "200";
+		if( inReq.getUserProfile() != null)
+		{
+			width = inReq.getUserProfile().get("sidebarwidth");
+		}
+		inReq.putPageValue("sidebarcomponent", sidebarcomponent);
+		inReq.putPageValue("sidebarwidth", width);
+
+	}
 }
