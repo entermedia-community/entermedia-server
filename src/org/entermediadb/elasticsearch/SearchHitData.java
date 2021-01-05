@@ -329,7 +329,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	public String toJsonString()
 	{
 		StringBuffer output = new StringBuffer();
-		output.append("{ \"_id\": \"" + getId() + "\"");
+		output.append("{ \"_id\": \"" + getId() + "\",");
 		output.append(" \"_source\" :");
 		output.append(getSearchHit().getSourceAsString());
 		output.append(" \n}");
