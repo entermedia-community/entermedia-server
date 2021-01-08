@@ -84,8 +84,11 @@ public class UserReport
 			GregorianCalendar completedweek = new GregorianCalendar();
 			completedweek.setTime(completedon);
 			
-			int month = completedweek.get(Calendar.MONTH);
-			if (month==11) { //0 based
+			int weekmonth = completedweek.get(Calendar.WEEK_OF_MONTH);
+			if (weekmonth==1) { 
+				completedweek.setMinimalDaysInFirstWeek(1);
+			}
+			else {
 				completedweek.setMinimalDaysInFirstWeek(7);
 			}
 			
