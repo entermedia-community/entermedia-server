@@ -317,8 +317,17 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DATE, 7);  // number of days to add
-        String dt = sdf.format(c.getTime());
+        String dt = "";
+        if (vizoneretention.equals("oneweek") || vizoneretention.equals("default")) {
+        	c.add(Calendar.DATE, 7);  // number of days to add
+        	dt = sdf.format(c.getTime());
+        } else if (vizoneretention.equals("90")) {
+        	c.add(Calendar.DATE, 90);  // number of days to add
+        	dt = sdf.format(c.getTime());
+        } else {
+        	dt = "";
+        }
+        
         setField(inAsset, elem, "asset.retentionDate", dt);
         
 		HttpPut method = new HttpPut(addr);
@@ -368,6 +377,26 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				}
 				//log.info("*** value.setText: "+val +" for "+key);
 				isKeyExists = true;
+			 
+				if (key.contains("asset.")) {
+					String dict_key = key.replace("asset.","").toLowerCase();
+					String str_id = "urn:vme:frprod:dictionary:" + dict_key + ":" + val;
+					String str_href = "http://mtlbmepvlvos01.cbc-rc.ca/api/metadata/dictionary/~" + dict_key + "/" + val;
+					Element elem_iter_origin = _elem.element("origin");
+					if (elem_iter_origin == null) {
+						log.info("ATTIBUTE IS NEW");
+						Element origin = _elem.addElement("origin");
+						origin.addAttribute("id", str_id);
+						origin.addAttribute("href", str_href);
+					} else {
+						log.info("ATTIBUTE IS MODIFIED");
+						elem_iter_origin.setAttributeValue("id", str_id);
+						elem_iter_origin.setAttributeValue("href", str_href);
+	 
+						
+					}
+				}
+
 			} 
 		}
 		if (!isKeyExists) {
@@ -672,8 +701,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
 
-		String addr = servername + "api/asset/item/" + inAsset.get("vizid");
-		
+		//String addr = servername + "api/asset/item/" + inAsset.get("vizid");
+		String addr = servername + inAsset.get("vizid");
 		
 		
 		//Change URL - 
