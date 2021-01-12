@@ -322,7 +322,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 	    httpPost.setHeaders(
 	    		new Header[] {
 	    				new BasicHeader("content-type", ctValue),
-	    				new BasicHeader("Content-Type", "application/x-www-form-urlencoded"),
+	    				//new BasicHeader("Content-Type", "application/x-www-form-urlencoded"),
 	    				new BasicHeader("Connection", "Keep-Alive"),
 	    				new BasicHeader("Authorization", "Bearer "+accessToken),
 	    				new BasicHeader("Cache-Control", "no-cache"),
