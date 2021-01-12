@@ -590,7 +590,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 					JSONObject contentdetails = new JSONObject();
 					String localpath = item.getPath();
 					//contentdetails.put("filename", item.getName()); //use file path including subfolders
-					String fullfilename = localpath.replace(fullpath,"");
+					String fullfilename = localpath.substring(fullpath.length());
 					contentdetails.put("filename", fullfilename);
 					contentdetails.put("localpath", localpath);
 					contentdetails.put("size", String.valueOf( item.getLength()) );
