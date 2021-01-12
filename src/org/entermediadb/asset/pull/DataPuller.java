@@ -583,11 +583,16 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				Map editstatus = data.getEmRecordStatus();
 				String mastereditclusterid = (String)editstatus.get("mastereditclusterid");
 				
+				String fullpath = "/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/";
+				
 				for (ContentItem item : archive.listGeneratedFiles(sourcepath))
 				{
 					JSONObject contentdetails = new JSONObject();
-					contentdetails.put("filename", item.getName());
-					contentdetails.put("localpath", item.getPath());
+					String localpath = item.getPath();
+					//contentdetails.put("filename", item.getName()); //use file path including subfolders
+					String fullfilename = localpath.replace(fullpath,"");
+					contentdetails.put("filename", fullfilename);
+					contentdetails.put("localpath", localpath);
 					contentdetails.put("size", String.valueOf( item.getLength()) );
 					contentdetails.put("lastmodified", item.getLastModified());
 					contentdetails.put("mastereditclusterid", mastereditclusterid);
@@ -680,7 +685,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			{
 				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
 				//to much log
-				//log.info("Sending data changes to server " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
+				log.info("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
 				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 				StatusLine sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
