@@ -49,20 +49,21 @@ public class GoogleModule extends BaseMediaModule
 		
 		if( user != null)
 		{
+			getGoogleManager(inReq).createFireBaseUser(user);
 			//update Firebase		
 			String value = getMediaArchive(inReq).getUserManager().getEnterMediaKey(user);
 			
 			inReq.putPageValue("entermediakey", value);
 			inReq.putPageValue("user", user);
+			
 			String firebasepassword = user.get("firebasepassword");
 			if( firebasepassword == null)
 			{
 				throw new OpenEditException("No password found");
 			}
 			inReq.putPageValue("firebasepassword", firebasepassword);
+					
 			
-			//update Firebase		
-			getGoogleManager(inReq).createFireBaseUser(user);
 		}
 	}	
 	
