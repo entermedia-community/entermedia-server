@@ -180,8 +180,9 @@ function connect() {
         
         /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
         var user = app.data("user");
+        
         if(message.user != user){
-
+        	
         	play();
         	
         	/*Desktop notifications - mando*/
@@ -189,6 +190,8 @@ function connect() {
 			{
 				const notification = new Notification(message.name + " in " + message.topic, {
 					body: message.content,
+					renotify: false,
+					tag: message.content
 					icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
 				});
 				
