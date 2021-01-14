@@ -167,7 +167,7 @@ function connect() {
 			url =  apphome + "/components/chatterbox/message.html";
 		}	
 
-        scrollToChat();
+//        scrollToChat();
 
 		jQuery.get( url, message, function( data ) {
 			listarea.append( data );
