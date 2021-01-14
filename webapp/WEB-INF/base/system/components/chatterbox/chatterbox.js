@@ -172,7 +172,7 @@ function connect() {
 		jQuery.get( url, message, function( data ) {
 			listarea.append( data );
 			$(document).trigger("domchanged");
-	        scrollToChat();
+//	        scrollToChat();
 		});
 	
         
