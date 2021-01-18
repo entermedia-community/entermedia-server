@@ -643,20 +643,22 @@ public class ProjectManager implements CatalogEnabled
 		if (sort != null)
 		{
 			assetsearch.setSortBy(sort);
-			log.info("Sorting by Category "+ sort);
+			
 		}
-
+		
 		if (assetsearch.getSortBy() == null)
 		{
 			sort = inReq.findValue("asset" + "sortby");
-			assetsearch.setSortBy(sort);
-			log.info("Sorting by custom "+ sort);
+			if (sort != null) {
+				assetsearch.setSortBy(sort);
+			
+			}
 		}
 
 		if (assetsearch.getSortBy() == null)
 		{
 			assetsearch.setSortBy("assetaddeddateDown");
-			log.info("Default sort");
+			
 		}
 		assetsearch.setProperty("collectionid", collectionid);
 		//assetsearch.setHitsName("collectionassets");
