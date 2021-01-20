@@ -225,7 +225,8 @@ public class PostMail
 		{
 			session = Session.getInstance(props);
 		}
-		// session.setDebug(debug);
+		
+		session.setDebug(true);
 
 		// create a message
 		Message msg = new MimeMessage(session);
@@ -321,13 +322,8 @@ public class PostMail
 		// tr.sendMessage(msg, msg.getAllRecipients());
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
-		try {
-			Transport.send(msg);
-	    } catch (MessagingException e) {
-	    	throw new OpenEditException(e);
-	    }
-	
-		
+
+		Transport.send(msg);
 		log.info("sent email " + subject);
 	}
 
