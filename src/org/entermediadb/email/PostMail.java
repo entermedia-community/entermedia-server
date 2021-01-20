@@ -321,8 +321,13 @@ public class PostMail
 		// tr.sendMessage(msg, msg.getAllRecipients());
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
-
-		Transport.send(msg);
+		try {
+			Transport.send(msg);
+	    } catch (MessagingException e) {
+	    	throw new OpenEditException(e);
+	    }
+	
+		
 		log.info("sent email " + subject);
 	}
 
