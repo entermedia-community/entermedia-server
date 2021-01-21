@@ -225,7 +225,8 @@ public class PostMail
 		{
 			session = Session.getInstance(props);
 		}
-		// session.setDebug(debug);
+		
+		session.setDebug(true);
 
 		// create a message
 		Message msg = new MimeMessage(session);

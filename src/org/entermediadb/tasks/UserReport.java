@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.openedit.Data;
@@ -82,6 +83,15 @@ public class UserReport
 			Date completedon = task.getDate("completedon");
 			GregorianCalendar completedweek = new GregorianCalendar();
 			completedweek.setTime(completedon);
+			
+			int weekmonth = completedweek.get(Calendar.WEEK_OF_MONTH);
+			if (weekmonth==1) { 
+				completedweek.setMinimalDaysInFirstWeek(1);
+			}
+			else {
+				completedweek.setMinimalDaysInFirstWeek(7);
+			}
+			
 			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
 			if( week == inWeek)
 			{
