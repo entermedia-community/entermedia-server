@@ -26,7 +26,10 @@
 			"preview": {
 			#foreach( $size in $streams)
 			#set( $preview = "$prefix$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/$size/video.m3u8")
-			"$size":"#esc($preview)",
+			"$size":"#esc($preview)"
+				#if($foreach.count < $streams.size())
+				,
+				#end
 			#end
 			},
 		#else
