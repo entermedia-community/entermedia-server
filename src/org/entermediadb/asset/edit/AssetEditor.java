@@ -260,14 +260,21 @@ public class AssetEditor
 		{
 			inDestSourcePath = inDestSourcePath + "/";
 		}
+		
+		ValuesMap originaldata = new ValuesMap(inAsset.getProperties());
+		//Copy everything but id and sourcepath
+		originaldata.remove("id");
+		originaldata.remove("sourcepath");
+		newasset.setProperties(originaldata);
+		newasset.setCategories(new ArrayList(inAsset.getCategories()));
+		
 		newasset.setSourcePath(inDestSourcePath);
 		newasset.setFolder(inAsset.isFolder());
-		newasset.setProperties(new ValuesMap(inAsset.getProperties()));
-		newasset.setCategories(new ArrayList(inAsset.getCategories()));
 
 		//Copy any images or folders using OE File Manager
-		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + inAsset.getSourcePath(); //If its a folder if will include children
-		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + newasset.getSourcePath();
+		String oldSourcePath = inAsset.getSourcePath(); 
+		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldSourcePath; //If its a folder if will include children
+		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + inDestSourcePath;
 
 		Page oldpage = inArchive.getPageManager().getPage(oldpath);
 		Page newpage = inArchive.getPageManager().getPage(newpath);
@@ -281,7 +288,7 @@ public class AssetEditor
 		{
 			inDestSourcePath = inDestSourcePath + "/";
 		}
-		Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + newasset.getSourcePath());
+		Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inDestSourcePath);
 		if (oldthumbs.exists())
 		{
 			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
