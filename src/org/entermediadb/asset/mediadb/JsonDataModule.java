@@ -47,7 +47,11 @@ public class JsonDataModule extends BaseJsonModule
 		{
 			Map it = (Map)iterator.next();
 			fields.add((String)it.get("field"));
-			String opr = (String)it.get("operator");
+			String opr = (String)it.get("operation");
+			if( opr == null)
+			{
+				opr = (String)it.get("operator");  //legacy
+			}
 			operations.add(opr.toLowerCase());
 			Collection values = (Collection)it.get("values");
 			if( values != null)

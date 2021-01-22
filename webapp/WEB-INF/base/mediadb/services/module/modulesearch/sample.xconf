@@ -1,7 +1,9 @@
 <page>
 	<property name="virtual">true</property>
 
-	<path-action name="DataEditModule.loadOrSearch" >
+	<path-action name="JsonAssetModule.preprocess" />
+
+	<path-action name="DataEditModule.search" >
 		<property name="searchtype">modulesearch</property>
 		<property name="hitsname">modulehits</property>
 	</path-action>

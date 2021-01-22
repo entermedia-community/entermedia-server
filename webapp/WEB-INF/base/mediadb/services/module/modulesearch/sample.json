@@ -15,7 +15,7 @@
 				#set( $count = $filter.getCount($module.id) )
 			#end
 			"samplecount":"$idhits.size()",
-			"totalcount":"$count"
+			"totalcount":"$modulehits.size()"
 			,
 			"samples" : [
 				#foreach( $sample in $idhits )
