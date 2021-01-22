@@ -1,4 +1,5 @@
-#set( $filter = $modulehits.findFilterValue("source_type") )
+#set( $filter = $modulehits.findFilterValue("entitysourcetype") )
+
 #set( $hits = $modulehits )
 {
 	"organizedhits":
@@ -12,10 +13,12 @@
 			#if( $idhits.size() < 7) ##this is safe
 				#set( $count = $idhits.size())
 			#else
-				#set( $count = $filter.getCount($module.id) )
+				#set( $count = $filter.getCount(entitysourcetype) )
 			#end
-			"samplecount":"$idhits.size()",
-			"totalcount":"$modulehits.size()"
+			"samplecount":"$idhits.size()"
+			#if( $count ),
+				"sampletotal":"$count"
+			#end	
 			,
 			"samples" : [
 				#foreach( $sample in $idhits )
@@ -43,6 +46,7 @@
 		    "status":"ok",
 			"page": $hits.getPage(),
 			"pages": $hits.totalPages,
+			"totalhits" : $hits.size(),
 			"hitsessionid": "$hits.getSessionId()",
 			"query":
 			{

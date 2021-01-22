@@ -219,14 +219,21 @@ public class JsonDataModule extends BaseJsonModule
 		if(searchtype == null)
 		{
 			String root  = inReq.getContentProperty("searchtyperoot");
-			String url = inReq.getPath();
-			if(!url.endsWith("/"))
+			if( root != null)
 			{
-				url = url + "/";
+				String url = inReq.getPath();
+				if(!url.endsWith("/"))
+				{
+					url = url + "/";
+				}
+				String ending = url.substring(root.length(), url.length());
+				searchtype = ending.substring(1, ending.indexOf("/",1));
+				searchtype = PathUtilities.extractPageName(searchtype);
 			}
-			String ending = url.substring(root.length(), url.length());
-			searchtype = ending.substring(1, ending.indexOf("/",1));
-			searchtype = PathUtilities.extractPageName(searchtype);
+		}
+		if(searchtype == null)
+		{
+			searchtype = inReq.findValue("searchtype");
 		}
 		return searchtype;
 	}
