@@ -1,0 +1,10 @@
+<page>
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true" />		
+	
+	<path-action name="JsonAssetModule.cloneAsset" alltypes="true" method="POST"/>
+		
+		
+	
+</page>
+

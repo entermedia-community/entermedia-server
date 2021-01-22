@@ -348,6 +348,67 @@ public class JsonAssetModule extends BaseJsonModule {
 		// return result;
 
 	}
+	
+	public void cloneAsset(WebPageRequest inReq) {
+
+		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
+
+		Map inputdata = (Map) inReq.getJsonRequest();
+
+		String catalogid = findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		AssetSearcher searcher = archive.getAssetSearcher();
+
+		String assetid = inReq.getRequestParameter("assetid");
+		if (assetid == null) {
+			return;
+		}
+
+		Asset asset = archive.getAsset(assetid);
+		
+		if (asset == null) {
+			return;
+		}
+		//populateJsonData(inputdata, searcher, asset);
+		
+		//asset.setId(inNewid);
+		String originalSourcepath = asset.getSourcePath();
+		String basepath = "/WEB-INF/data/" + catalogid + "/originals/";
+		
+		ContentItem dest = getPageManager().getContent(basepath + originalSourcepath);
+		int i = 2;
+		String newSourcepath = originalSourcepath;
+		
+		while (dest.exists())
+		{
+			String pagename = PathUtilities.extractPageName(originalSourcepath);
+			String tmppath = originalSourcepath.replace(pagename, pagename + "_" + i);
+			dest = getPageManager().getContent(basepath + tmppath);
+			if (!dest.exists())
+			{
+				newSourcepath = tmppath;
+				break;
+			}
+			i++;
+		}
+		//asset.setSourcePath(originalSourcepath);
+		
+		
+		Asset newasset = archive.getAssetEditor().copyAsset(archive, asset, newSourcepath);
+		
+		//asset.setSourcePath(originalSourcepath);
+		//asset.setId(null);
+		
+		searcher.saveData(newasset, inReq.getUser());
+		archive.fireMediaEvent("assetedited", inReq.getUser(), newasset);
+
+		inReq.putPageValue("newasset", newasset);
+		inReq.putPageValue("newdata", newasset);
+		inReq.putPageValue("searcher", searcher);
+		// return result;
+
+	}
 
 	/*
 	 * public void loadAsset(WebPageRequest inReq) {
