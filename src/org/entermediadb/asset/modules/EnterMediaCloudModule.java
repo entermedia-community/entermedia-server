@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
@@ -57,8 +58,10 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);
-
-		String base = "https://entermediadb.org/entermediadb/mediadb";
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String base = archive.getCatalogSettingValue("portalmediadb");//"https://entermediadb.org/entermediadb/mediadb";
 		//String base = "http://localhost:8080/entermediadb/mediadb";
 		String url = base + "/services/authentication/validateuser.json";
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
