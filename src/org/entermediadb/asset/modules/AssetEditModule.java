@@ -29,7 +29,6 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.entermediadb.projects.ProjectManager;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -50,9 +49,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
-
-import model.assets.AssetTypeManager;
-import model.assets.LibraryManager;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -76,38 +72,23 @@ public class AssetEditModule extends BaseMediaModule
 
 	private static final Log log = LogFactory.getLog(AssetEditModule.class);
 
-	public List<ContentItem> getUploadedPages(WebPageRequest inReq)
+	public UploadRequest getUploadedPages(WebPageRequest inReq)
 	{
-		List contentitems = new ArrayList();
-
-		List unzipped = (List) inReq.getPageValue("unzippedfiles");
-		if (unzipped != null && unzipped.size() > 0)
-		{
-			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
-			{
-				Page page = (Page) iterator.next();
-				contentitems.add(page.getContentItem());
-			}
-		}
-		else
-		{
-			UploadRequest map = (UploadRequest) inReq.getPageValue("uploadrequest");
-			if (map != null)
-			{
-				List uploadItems = map.getUploadItems();
-				if (uploadItems != null)
-				{
-					for (Iterator iterator = uploadItems.iterator(); iterator.hasNext();)
-					{
-						FileUploadItem uploadItem = (FileUploadItem) iterator.next();
-						Page uploaded = uploadItem.getSavedPage();
-						contentitems.add(uploaded.getContentItem());
-					}
-				}
-			}
-		}
-
-		return contentitems;
+		
+//		List unzipped = (List) inReq.getPageValue("unzippedfiles");
+//		if (unzipped != null && unzipped.size() > 0)
+//		{
+//			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
+//			{
+//				Page page = (Page) iterator.next();
+//				contentitems.add(page.getContentItem());
+//			}
+//		}
+//		else
+//		{
+		UploadRequest map = (UploadRequest) inReq.getPageValue("uploadrequest");
+		
+		return map;
 	}
 
 	public boolean makeFolderAsset(WebPageRequest inReq) throws Exception
@@ -571,14 +552,14 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		Asset asset = getAsset(inReq);
-		List<ContentItem> temppages = getUploadedPages(inReq);
+		UploadRequest temppages = getUploadedPages(inReq);
 
 		//copy the temppages in to the originals folder, but first check if this is a folder based asset
 		if (!asset.isFolder())
 		{
 			makeFolderAsset(inReq);
 		}
-		archive.getAssetManager().addNewAsset(asset, temppages);
+		//archive.getAssetManager().addNewAsset(asset, temppages);
 		getAttachmentManager().processAttachments(archive, asset, false);//don't reprocess everything else
 
 		inReq.putPageValue("asset", asset);
@@ -589,8 +570,9 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		Asset asset = getAsset(inReq);
-		List<ContentItem> temppages = getUploadedPages(inReq);
+		UploadRequest uploadRequest = getUploadedPages(inReq);
 
+		/*
 		if (temppages.isEmpty())
 		{
 			throw new OpenEditException("No uploads found");
@@ -603,7 +585,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 
 		archive.getAssetManager().replaceOriginal(asset, temppages);
-
+*/
 		//TODO:Call reimport
 
 		inReq.setRequestParameter("assetids", new String[] { asset.getId() });
@@ -617,7 +599,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
 	{
-		final List<ContentItem> pages = getUploadedPages(inReq);
+		UploadRequest pages = getUploadedPages(inReq);
 		createAssetsFromPages(pages, inReq);
 	}
 
@@ -754,7 +736,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 	}
 
-	protected void createAssetsFromPages(List<ContentItem> inPages, WebPageRequest inReq)
+	protected void createAssetsFromPages(UploadRequest inUploadRequest, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
 		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
@@ -777,11 +759,11 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		boolean assigncategory =  oktoadd;
 		
-		final Map<String, ContentItem> pages = savePages(inReq, archive, inPages);
+		final Map<String, ContentItem> pages = savePages(inReq, archive, inUploadRequest);
 		final User user = inReq.getUser();
 
 		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
-		if (inPages.size() == 0)
+		if (pages.size() == 0)
 		{
 			log.error("No pages uploaded");
 			return;
@@ -817,13 +799,13 @@ public class AssetEditModule extends BaseMediaModule
 		return tracker;
 	}
 
-	protected Map<String, ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive, List<ContentItem> inPages)
+	protected Map<String, ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive,UploadRequest inUploadRequest)
 	{
 		//if we are uploading into a collection?
 		Boolean incollection = inReq.findValue("currentcollection") != null;
 
 		Map pages = new HashMap();
-		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
+		for (Iterator iterator = inUploadRequest.getSavedContentItems().iterator(); iterator.hasNext();)
 		{
 			ContentItem contentitem = (ContentItem) iterator.next();
 
@@ -832,16 +814,19 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				filename = filename.substring(filename.indexOf('_') + 1);
 			}
+			String rootpath = inUploadRequest.getRootPath(contentitem.getPath());
+			String filepath = contentitem.getPath().substring(rootpath.length());					
 
 			String inputsourcepath = inReq.findValue("sourcepath");
 			String assetsourcepath = null;
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 			if (inputsourcepath == null)
 			{
-				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, inArchive, filename);
+				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq, inArchive, filepath);
+				
 				if (assetsourcepath.endsWith("/"))
 				{
-					assetsourcepath = assetsourcepath + contentitem.getName();
+					assetsourcepath = assetsourcepath + filepath;  
 				}
 			}
 			else if (inputsourcepath.endsWith("/")) //EMBridge expects the filename to be added on

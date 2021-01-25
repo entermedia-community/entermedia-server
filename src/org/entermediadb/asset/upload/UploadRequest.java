@@ -45,10 +45,19 @@ public class UploadRequest implements ProgressListener
 	protected String fieldCatalogId;
 	protected String fieldUserName;
 	protected long fieldSoFar;
+	protected Map<String,String> rootPathPerSavedFile = new HashMap();
+	
 	public UploadRequest()
 	{
 		// TODO Auto-generated constructor stub
 	}
+	
+	public String getRootPath(String inSavedPath)
+	{
+		String rootpath = rootPathPerSavedFile.get(inSavedPath);
+		return rootpath;
+	}
+	
 	public long getSoFar()
 	{
 		return fieldSoFar;
@@ -140,7 +149,60 @@ public class UploadRequest implements ProgressListener
 		fieldUploadItems = inUploadItems;
 	}
 	
+	public List<ContentItem>  getSavedContentItems()
+	{
+		List<ContentItem> contentitems = new ArrayList<ContentItem>();
+		List uploadItems = getUploadItems();
+		if (uploadItems != null)
+		{
+			for (Iterator iterator = uploadItems.iterator(); iterator.hasNext();)
+			{
+				FileUploadItem uploadItem = (FileUploadItem) iterator.next();
+				Page uploaded = uploadItem.getSavedPage();
+				contentitems.add(uploaded.getContentItem());
+			}
+		}
+		return contentitems;
+	}
+	
 	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException
+	{
+		String rootpath = getRootPath(home, inReq);
+				
+		String finalpath =  null;
+		//TODO: Ok so on Windows we get passed in \\ in the file name
+		String name = inItem.getName();
+		name = name.replace('\\','/');		
+		name = name.replaceAll("[.][.]",""); //hack check
+//		name = PathUtilities.extractFileName(name);
+//		name = name.replaceAll(" ","");
+		String targetname = inReq.getRequestParameter("targetname");
+		if(targetname != null)
+		{
+			targetname = targetname.replace('\\', '/'); //Not sure I need to do this
+			name = targetname;
+		}
+		
+		if( rootpath.endsWith("/"))
+		{
+			finalpath = rootpath + name;
+		}
+		else
+		{
+			Page page = getPageManager().getPage(rootpath);
+			if ( page.isFolder() ) //upload to an existing folder
+			{
+				finalpath = rootpath + "/" + name;
+			}
+			else
+			{
+				finalpath = rootpath;
+			}
+		}
+		rootPathPerSavedFile.put(finalpath,rootpath);
+		return finalpath;
+	}
+	protected String getRootPath(String home, WebPageRequest inReq) 
 	{
 		String path  = inReq.getContentProperty("path");
 		if( path == null )
@@ -151,51 +213,21 @@ public class UploadRequest implements ProgressListener
 				path = inReq.getRequestParameter("path");
 				if( path == null)
 				{
-					path = inItem.get("path");
+					//path = inItem.get("path");
 				}
 			}		
 		}
 		if (path == null )
 		{
 			long utime = System.currentTimeMillis();
-			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "/" + inItem.getName();
+			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "/" ;//+ inItem.getName();
 			//throw new OpenEditException("No path passed in with the upload");
 		}
 		if( home != null && home.length() > 0 && path.startsWith(home))
 		{
 			path = path.substring(home.length());
 		}
-				
-		String finalpath =  null;
-		//TODO: Ok so on Windows we get passed in \\ in the file name
-		String name = inItem.getName();
-		name = name.replace('\\','/');			
-		name = PathUtilities.extractFileName(name);
-//		name = name.replaceAll(" ","");
-		String targetname = inReq.getRequestParameter("targetname");
-		if(targetname != null)
-		{
-			targetname = targetname.replace('\\', '/'); //Not sure I need to do this
-			name = targetname;
-		}
-		
-		if( path.endsWith("/"))
-		{
-			finalpath = path + name;
-		}
-		else
-		{
-			Page page = getPageManager().getPage(path);
-			if ( page.isFolder() ) //upload to an exising folder
-			{
-				finalpath = path + "/" + name;
-			}
-			else
-			{
-				finalpath = path;
-			}
-		}
-		return finalpath;
+		return path;
 	}
 	public PageManager getPageManager()
 	{

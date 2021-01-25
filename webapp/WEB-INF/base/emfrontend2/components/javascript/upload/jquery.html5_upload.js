@@ -1,7 +1,7 @@
 (function($) {
     jQuery.fn.html5_upload = function(options) {
         function get_file_name(file) {
-            return file.name || file.fileName;
+            return file.webkitRelativePath || file.name || file.fileName;
         }
         function get_file_size(file) {
             return file.size || file.fileSize;
