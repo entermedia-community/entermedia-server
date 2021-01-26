@@ -3,7 +3,6 @@ package org.entermediadb.asset.mediadb;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,20 +24,35 @@ public class JsonDataModule extends BaseJsonModule
 
 	public void handleSearch(WebPageRequest inReq)
 	{
-	
 		//Could probably handle this generically, but I think they want tags, keywords etc.
 
 		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		Map request = inReq.getJsonRequest();
 
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
+		HitTracker hits = null;
+		if( inReq.getJsonRequest() == null)
+		{
+			hits = searcher.getAllHits(inReq);
+		}
+		else
+		{
+			hits = searchByJson(searcher ,inReq);
+		}
+		
+		inReq.putPageValue("searcher", searcher);
 
+	}
+	
+	private HitTracker searchByJson(Searcher inSearcher, WebPageRequest inReq)
+	{
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
+		
+		Map request = inReq.getJsonRequest();
 		
 		Map query = (Map)request.get("query");
 		Collection terms = (Collection)query.get("terms");
@@ -97,9 +111,10 @@ public class JsonDataModule extends BaseJsonModule
 		inReq.setRequestParameter("field", fieldarray);
 		inReq.setRequestParameter("operation", opsarray);
 
-		SearchQuery squery = searcher.addStandardSearchTerms(inReq);
+		SearchQuery squery = inSearcher.addStandardSearchTerms(inReq);
 
-		HitTracker hits = searcher.cachedSearch(inReq, squery);
+		HitTracker hits = inSearcher.cachedSearch(inReq, squery);
+		
 		String hitsperpage = (String)request.get("hitsperpage");
 		
 		if (hitsperpage != null)
@@ -125,10 +140,9 @@ public class JsonDataModule extends BaseJsonModule
 			}
 		}
 		
-		inReq.putPageValue("searcher", searcher);
-
+		return hits;
 	}
-	
+
 	public void createData(WebPageRequest inReq)
 	{
 	
