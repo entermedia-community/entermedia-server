@@ -559,7 +559,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			makeFolderAsset(inReq);
 		}
-		//archive.getAssetManager().addNewAsset(asset, temppages);
+		archive.getAssetManager().addNewAsset(asset, temppages.getSavedContentItems());
 		getAttachmentManager().processAttachments(archive, asset, false);//don't reprocess everything else
 
 		inReq.putPageValue("asset", asset);
@@ -571,8 +571,7 @@ public class AssetEditModule extends BaseMediaModule
 		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		Asset asset = getAsset(inReq);
 		UploadRequest uploadRequest = getUploadedPages(inReq);
-
-		/*
+		List temppages = uploadRequest.getSavedContentItems();
 		if (temppages.isEmpty())
 		{
 			throw new OpenEditException("No uploads found");
@@ -584,9 +583,7 @@ public class AssetEditModule extends BaseMediaModule
 			makeFolderAsset(inReq);
 		}
 
-		archive.getAssetManager().replaceOriginal(asset, temppages);
-*/
-		//TODO:Call reimport
+		archive.getAssetManager().replaceOriginal(asset, temppages); 
 
 		inReq.setRequestParameter("assetids", new String[] { asset.getId() });
 
