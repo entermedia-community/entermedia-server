@@ -13,7 +13,7 @@
 			#if( $idhits.size() < 7) ##this is safe
 				#set( $count = $idhits.size())
 			#else
-				#set( $count = $filter.getCount(entitysourcetype) )
+				#set( $count = $filter.getCount($module.id) )
 			#end
 			"samplecount":"$idhits.size()"
 			#if( $count ),
