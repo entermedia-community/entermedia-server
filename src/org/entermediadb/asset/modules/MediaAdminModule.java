@@ -792,5 +792,22 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		
 	}
-
+	public Data loadHomeModule(WebPageRequest inReq) {
+		String catalogid = inReq.findValue("catalogid");
+		String applicationid = inReq.findValue("applicationid");
+		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav","true").sort("orderingUp").searchOne();
+		String finalpath;
+		
+		if(module.getId().equals("librarycollection")) {
+			finalpath = "/" + applicationid + "/views/collections/index.html";
+		}
+		else {
+			finalpath = "/" + applicationid + "/views/modules/" + module.getId() + "/index.html";
+		}
+		inReq.redirect(finalpath);
+		/*Page requestedPage  = inReq.getPage();
+		
+		requestedPage.setInnerLayout("/" + applicationid + "/theme/layouts/searchlayout2.html");*/
+		return module;
+	}
 }

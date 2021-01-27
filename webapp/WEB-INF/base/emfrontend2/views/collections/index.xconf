@@ -2,6 +2,17 @@
 
 <page>  
 
+    <inner-layout>/${applicationid}/theme/layouts/collectionhomelayout.html</inner-layout>
 
+	<property name="dataroot">/${catalogid}/side/search</property>
+ 	<property name="assetrootfolder">/${catalogid}/assets</property>
+	
+	<property name="hitsname">hits</property>
+		
+	<property name="module">librarycollection</property>
+
+	<path-action name="ProjectModule.loadOpenCollections"/>
+	
+	<path-action name="ProjectModule.listLikedCollections" />
 	
 </page>

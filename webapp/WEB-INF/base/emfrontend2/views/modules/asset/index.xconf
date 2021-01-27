@@ -2,24 +2,10 @@
 
 <page>  
 	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
-
 	<property name="dataroot">/${catalogid}/side/search</property>
  	<property name="assetrootfolder">/${catalogid}/assets</property>
- 	
-	<xpath-action name="DataEditModule.changeFilters">
-		<property name="searchtype">asset</property>
-	</xpath-action>	
-	
-	
 	
 	<property name="hitsname">hits</property>
-<!--
-	<path-action name="DataEditModule.loadOrSearch">
-		<property name="searchtype">asset</property>
-	</path-action>	
-	<path-action name="DataEditModule.search" cancel="true"/>
-	//What is this for?
-	<path-action name="MediaSearchModule.loadHitsCategory"/>
--->	
+	
 </page>
 

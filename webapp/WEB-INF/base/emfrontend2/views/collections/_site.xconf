@@ -13,11 +13,11 @@
 
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	<path-action name="ProjectModule.listLikedCollections" />
-	
+	<!--
 	<path-action name="ProfileModule.saveProperty" allowduplicates="true">
-		<property name="field">last_selected_collectionsearch</property>
-		<property name="last_selected_collectionsearch.value">${selected}</property>
+		<property name="field">last_selected_collectiontab</property>
+		<property name="last_selected_collectiontab.value">${selected}</property>
 	</path-action>
-	
+	-->
 	
 </page>

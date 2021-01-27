@@ -1,0 +1,12 @@
+
+	#set( $selectedtab = $userprofile.get("last_selected_collectionhometab"))
+	
+	#if(!$canviewfeaturedcollections && $selectedtab == "featured")
+		#set( $selectedtab = "allcollections") 
+	#else
+		#if( !$selectedtab || $selectedtab == "allcollections")  
+			#set( $selectedtab = "libraries") 
+		#end
+	#end	 
+	
+	$pages.include("${apphome}/views/collections/${selectedtab}.html", $context)
