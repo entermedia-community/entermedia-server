@@ -110,6 +110,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		else
 		{
 			log.info( status + " Could not login user " + userkey);
+			inReq.setCancelActions(true);
 		}
 		inReq.putPageValue("status",status);		
 	}
