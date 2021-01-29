@@ -65,7 +65,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial3d-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-5.5.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netty-3.10.6.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/pdfbox-app-2.0.6.jar"/>
