@@ -1514,11 +1514,11 @@ Server ProjectModule.uploadFile
 
 		Collection collections = manager.listCollectionsForFollower(inReq.getUser());
 		
-		Collection topics = archive.query("collectiveproject").orgroup("parentcollectionid", collections).search();
+		Collection topics = archive.query("collectiveproject").orgroup("parentcollectionid", collections).hitsPerPage(100).search();
 		
 		Searcher chats = archive.getSearcher("chatterbox");
 	
-		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateUp").search();
+		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateDown").search();
 		inReq.putPageValue("messages", recent);
 		
 		
