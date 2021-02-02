@@ -217,6 +217,11 @@ public class JsonDataModule extends BaseJsonModule
 		if(data == null)
 		{
 			//throw new OpenEditException("Asset was not found!");
+			if( inReq.getResponse() != null)
+			{
+				inReq.getResponse().setStatus(404);
+			}
+			inReq.setCancelActions(true);
 			return;
 		}
 		searcher.delete(data, inReq.getUser());
