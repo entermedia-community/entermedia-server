@@ -1,7 +1,4 @@
 <properties>
-  <property id="headline"/>
-  <property id="longcaption"/>
   <property id="keywords"/>
-  <property id="copyrightstatus"/>
-  <property id="locale"/>
+  <property id="purpose"/>
 </properties>

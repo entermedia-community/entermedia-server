@@ -58,6 +58,14 @@ $context.putPageValue("librarycol",$librarycol)
         
     </div>
     <div  class="col-8 col-upload-right" >
+    
+    #if($collectionid || $nodeid)
+    	#set($viewid = "multipleuploadcollection")
+	#else
+		#set($viewid = "multipleupload")
+	#end
+	#set($view = "asset/$viewid")
+	$context.putPageValue("view", $view)
 
 <form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="force-validate-inputs"  >
@@ -70,7 +78,8 @@ $context.putPageValue("librarycol",$librarycol)
 			
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
-				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
+				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$viewid&viewpath=$view" 
+				 title="[[Edit Metadata Fields]]"><i class="fas fa-cog"></i></a>
 				</span>
 				#end
 		    </div>
@@ -96,17 +105,13 @@ $context.putPageValue("librarycol",$librarycol)
 						<input id="nodeid" type="hidden" name="category.value" value="$nodeID"/>
 				#end
 
-                    #if($collectionid || $nodeid)
-						$context.putPageValue("view","asset/multipleuploadcollection")	
-					#else
-						$context.putPageValue("view","asset/multipleupload")	
-					#end
-					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-					
-					##have the cancel delete these assets?
-			        <div id="uploadinstructionsafter" style="display: none">
-				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
-		        	</div>
+                
+				$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+				
+				##have the cancel delete these assets?
+		        <div id="uploadinstructionsafter" style="display: none">
+			       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
+	        	</div>
 			</div>
 		</div>
 		</div>
