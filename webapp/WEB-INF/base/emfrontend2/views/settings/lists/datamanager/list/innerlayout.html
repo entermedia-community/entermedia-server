@@ -7,7 +7,7 @@
 
 <form action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
-	[[Data Type]]: <select name="searchtype" onchange="submit();">
+	[[Data Type]]: <select name="searchtype" onchange="submit();" >
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
 				<option id="$type" #if($type == $currentsearch) selected #end>$type</option>

@@ -105,7 +105,7 @@ public class ChatManager implements CatalogEnabled
 	public Set loadChatTopicLastChecked(String inCollectionId, String inUserId)
 	{
 		//First get all the topics
-		if(inUserId == null)
+		if(inUserId == null || inCollectionId == null)
 		{
 			return Collections.EMPTY_SET;
 		}
