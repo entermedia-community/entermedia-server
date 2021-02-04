@@ -34,11 +34,16 @@ function chatterbox() {
 	    if(toggle == true){
 	    	jQuery(".chatter-toggle").toggle();
 	    }
-	    chatconnection.send(json);
+	    
+	    if(jQuery("#chatter-msg").val() != "" ){
+		chatconnection.send(json);
 	    jQuery("#chatter-msg").val("");
 	    
 	    //scroll down, delay a little?
 	    scrollToChat();
+		
+		}
+	    
 	});
 
 	lQuery('.chatter-text').livequery("keydown", function(e){
