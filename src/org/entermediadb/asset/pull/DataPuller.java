@@ -556,7 +556,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		JSONArray generated = new JSONArray();
 
 		JSONArray results = new JSONArray();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) //TODO: Add page support
+		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
 			JSONObject indiHit = new JSONObject();
