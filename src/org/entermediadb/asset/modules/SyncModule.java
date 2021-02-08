@@ -261,6 +261,7 @@ public class SyncModule extends BaseMediaModule
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
+		inReq.putSessionValue(hits.getSessionId(), hits);
 	}
 	
 	public void receiveDataChanges(WebPageRequest inReq)
