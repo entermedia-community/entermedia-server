@@ -313,7 +313,9 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
 
+			log.info("Downloading page " + response.get("page") + " of " + response.get("pages") + " pages.");
 			Collection saved = importDataChanges(inArchive, jsonarray);
+
 			//pull in generated 	
 			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
