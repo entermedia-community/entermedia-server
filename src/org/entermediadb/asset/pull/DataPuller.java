@@ -553,7 +553,10 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", hits.getSessionId());
 		response.put("catalogid", archive.getCatalogId());
-		response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
+		if( inSince != null)
+		{
+			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
+		}
 		finaldata.put("response", response);
 		JSONArray generated = new JSONArray();
 
