@@ -1487,7 +1487,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.enableBulkOperations();
 		
-		hits.setHitsPerPage(100);
+		//hits.setHitsPerPage(100);
 		
 		
 		if (getSearcherManager().getShowSearchLogs(inCatalogId))
