@@ -1486,6 +1486,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		//search.toString()
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.enableBulkOperations();
+		
+		//hits.setHitsPerPage(100);
+		
+		
 		if (getSearcherManager().getShowSearchLogs(inCatalogId))
 		{
 			String json = search.toString();

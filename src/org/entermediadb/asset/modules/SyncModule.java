@@ -232,35 +232,43 @@ public class SyncModule extends BaseMediaModule
 	public void loadAllDataChanges(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker hits = null;
+
 		String sessionid = inReq.getRequestParameter("hitssessionid");
 		String page = inReq.getRequestParameter("page");
-		HashSet types = new HashSet();
-		HitTracker hits = null;
-		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
-		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
-		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
-		if( ago == null)
+
+		String lastpullago = inReq.getRequestParameter("lastpullago"); //force them to pick a date
+		Date ago = null;
+		if( lastpullago != null)
 		{
-			throw new OpenEditException("lastpull required");
+			ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 		}
-			
 		if (sessionid != null)
 		{
 			hits = (HitTracker) inReq.getSessionValue(sessionid);
 		}
 		if (hits == null)
 		{
+			if( ago == null)
+			{
+				throw new OpenEditException("lastpull required");
+			}
+			ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
 			hits = manager.getEditedDocuments(archive.getCatalogId(), ago);
 		}
 		if (page != null)
 		{
 			hits.setPage(Integer.parseInt(page));
 		}
+		hits.setSessionId("hitsallchanges");
+		
 		PullManager pullManager = getPullManager(archive.getCatalogId());
 		JSONObject finaldata = pullManager.getDataPuller().createJsonFromHits(archive,ago,hits);
 
 		String jsonString = finaldata.toJSONString();
 		inReq.putPageValue("jsonString", jsonString);
+		inReq.putSessionValue(hits.getSessionId(), hits);
+		
 	}
 	
 	public void receiveDataChanges(WebPageRequest inReq)
@@ -352,6 +360,4 @@ public class SyncModule extends BaseMediaModule
 			inReq.putPageValue("error", ex);
 		}
 	}
-
-
 }

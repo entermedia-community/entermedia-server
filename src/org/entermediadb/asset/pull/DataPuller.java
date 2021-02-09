@@ -313,7 +313,9 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 
 			JSONArray jsonarray = (JSONArray) remotechanges.get("results");
 
+			log.info("Downloading page " + response.get("page") + " of " + response.get("pages") + " pages.");
 			Collection saved = importDataChanges(inArchive, jsonarray);
+
 			//pull in generated 	
 			downloadGeneratedFiles(inArchive, connection, node, params, remotechanges, skipgenerated);
 
@@ -551,12 +553,15 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		response.put("pages", hits.getTotalPages());
 		response.put("hitssessionid", hits.getSessionId());
 		response.put("catalogid", archive.getCatalogId());
-		response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
+		if( inSince != null)
+		{
+			response.put("sincedate", DateStorageUtil.getStorageUtil().formatForStorage(inSince));
+		}
 		finaldata.put("response", response);
 		JSONArray generated = new JSONArray();
 
 		JSONArray results = new JSONArray();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) //TODO: Add page support
+		for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			SearchHitData data = (SearchHitData) iterator.next();
 			JSONObject indiHit = new JSONObject();
