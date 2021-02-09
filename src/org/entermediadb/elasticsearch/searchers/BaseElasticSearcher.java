@@ -2075,10 +2075,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			String localClusterId = getElasticNodeManager().getLocalClusterId();
 			String currentid = null;
-			if(status != null) {
-			 currentid = (String) status.get("mastereditclusterid");
+			if(status != null) 
+			{
+				currentid = (String) status.get("mastereditclusterid");
 			}
-			if (currentid == null && !isReIndexing())
+			if (currentid == null)
 			{
 				currentid = localClusterId;
 			}
