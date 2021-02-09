@@ -139,7 +139,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}
 		try
 		{
-		
+			setReIndexing(true);
+			setOptimizeReindex(false);
 			putMappings(); //We can only try to put mapping. If this failes then they will
 				//need to export their data and factory reset the fields 
 			
@@ -181,6 +182,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		finally
 		{
 			setReIndexing(false);
+			setOptimizeReindex(true);
 		}	
 	}
 	protected void updateChildren(Category inParent, List inTosave)

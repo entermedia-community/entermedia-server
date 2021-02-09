@@ -136,6 +136,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected boolean fieldIncludeFullText = true;
 	protected OutputFiller fieldFiller;
 	protected PageManager fieldPageManager;
+
+	protected boolean fieldOptimizeReindex = true;
+	public boolean isOptimizeReindex()
+	{
+		return fieldOptimizeReindex;
+	}
+
+	public void setOptimizeReindex(boolean inOptimizeReindex)
+	{
+		fieldOptimizeReindex = inOptimizeReindex;
+	}
 	public PageManager getPageManager()
 	{
 		if (fieldPageManager == null)
@@ -2049,9 +2060,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				if( status != null ) 
 				{
 					content.field("emrecordstatus", status);
+					return;
 				}
-				return;
+				if( isOptimizeReindex() )
+				{
+					return; //Dont worry if its not created already
+				}
 			}
+
 			if(status == null) 
 			{
 				status = new HashMap();
@@ -3144,6 +3160,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			try
 			{
 				setReIndexing(true);
+				setOptimizeReindex(false);
+
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
 				ElasticHitTracker allhits = (ElasticHitTracker) getAllHits();
@@ -3170,6 +3188,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			finally
 			{
 				setReIndexing(false);
+				setOptimizeReindex(true);
 			}
 		}
 	}

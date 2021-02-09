@@ -53,17 +53,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
 
-	protected boolean fieldOptimizeReindex = true;
-	public boolean isOptimizeReindex()
-	{
-		return fieldOptimizeReindex;
-	}
-
-	public void setOptimizeReindex(boolean inOptimizeReindex)
-	{
-		fieldOptimizeReindex = inOptimizeReindex;
-	}
-
 	public Data createNewData()
 	{
 		return new Asset(getMediaArchive());
