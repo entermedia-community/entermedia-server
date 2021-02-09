@@ -4,7 +4,7 @@
 #if($user && $entermediakey)
 		"status":"ok",
 #else
-		 "status": "invalidlogin",
+		 "status": "invalidlogin"
 #end		 		
 #if( $user )
 		"user":"${user.id}"

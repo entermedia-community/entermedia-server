@@ -1472,7 +1472,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			search = getClient().prepareSearch();
 		}
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		search.setTypes(synctypes);
+
+		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
+		Collection types = archive.getCatalogSettingValues("sync_data_types");
+		
+		String[] defaulttypes = synctypes;
+		if( types != null)
+		{
+			defaulttypes = (String[])types.toArray(new String[types.size()]);
+		}
+		search.setTypes(defaulttypes);
 
 		if (inAfter == null)
 		{
