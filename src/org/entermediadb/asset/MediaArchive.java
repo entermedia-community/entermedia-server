@@ -355,6 +355,31 @@ public class MediaArchive implements CatalogEnabled
 		return getCatalogHome() + "/downloads/preview/cache/" + inSourcePath + "/preview.jpg";
 	}
 
+	public Collection<Data> asListOfPreviewLinks(Data inAsset)
+	{
+		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
+		
+		if(rendertype == null)
+		{
+			if(inAsset.get("fileformat") == "embedded")
+			{
+				rendertype = "image";   //assume jpg thumbnail was downloaded
+			}
+		}
+
+		Collection<Data> presets = getPresetManager().getPresets(this, rendertype);
+		
+//		Collection<String> links = new ArrayList(presets.size());
+//		for (Iterator iterator = presets.iterator(); iterator.hasNext();)
+//		{
+//			Data convertpreset = (Data) iterator.next();
+//			String generatedname = convertpreset.get("generatedoutputfile");
+//			String link = asLinkToPreview(inAsset, generatedname);
+//			links.add(link);
+//		}
+		return presets;
+	}
+	
 	public int countSeries(String inAssetID) throws OpenEditException
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inAssetID);

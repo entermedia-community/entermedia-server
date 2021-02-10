@@ -32,9 +32,8 @@
 		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
 		{
 			#jsonpartial($hit $searcher.getPropertyDetails()) 
-			#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
 			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
-			#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
+			#set($presets = $mediaarchive.asListOfPreviewLinks($hit) )
 			
 			,"downloads":[
 		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
@@ -43,19 +42,12 @@
 			"id":#jesc($preset.id),	
 			#if( $preset.getId() == "0")
 				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+				"url":"#urlencode($url)"
 			#else
-				#set( $outputfile = "${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
-			"outputfile":"#urlencode($outputfile)",
-				#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
+				#set( $url = $mediaarchive.asLinkToPreview($hit, $preset.get("generatedoutputfile") ) )
+				"url":"#urlencode($url)"
 			#end	
-			#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${hit.sourcepath}/${preset.generatedoutputfile}/"+$mediaarchive.asExportFileName($hit, $preset))
-			"url":"#urlencode($url)",
-			"downloadurl":"#urlencode($downloadurl)",
-			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
-			"iscomplete":"$isready"
 		}
-		
-		
 		#end
 		]
 
