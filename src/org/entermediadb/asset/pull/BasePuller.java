@@ -30,7 +30,7 @@ public abstract class BasePuller
 	protected HitTracker removeRemotesMasterNodeEdits(String masterNodeId, HitTracker inLocalchanges)
 	{
 		HitTracker finallist = new ListHitTracker();
-		
+		finallist.setHitsPerPage(1000);
 		for (Iterator iterator = inLocalchanges.iterator(); iterator.hasNext();)
 		{
 			SearchHitData hit = (SearchHitData) iterator.next();
