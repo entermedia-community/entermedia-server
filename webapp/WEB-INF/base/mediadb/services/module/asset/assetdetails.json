@@ -26,7 +26,7 @@
 			"preview": {
 			#foreach( $size in $streams)
 			#set( $preview = "$prefix$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/$size/video.m3u8")
-			"$size":"#esc($preview)"
+			"$size":"#urlencode($preview)"
 				#if($foreach.count < $streams.size())
 				,
 				#end
@@ -34,7 +34,7 @@
 			},
 		#else
 			#set( $preview = "$prefix$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/video.mp4")
-			"preview":"#esc($preview)",
+			"preview":"#urlencode($preview)",
 		#end
 	#else
 		#if( $type == "image" || $type == "document")
@@ -42,10 +42,10 @@
 		#elseif( $type == "audio" )
 			#set( $preview = "$prefix$home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
 		#end
-		"preview":"#esc($preview)",
+		"preview":"#urlencode($preview)",
 	#end
 	#set( $downloadlink = "$prefix$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
-	"original":"#esc($downloadlink)"
+	"original":"#urlencode($downloadlink)"
 	#end
 }
 
