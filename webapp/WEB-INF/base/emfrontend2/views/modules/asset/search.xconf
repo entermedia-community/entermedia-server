@@ -4,7 +4,7 @@
 	<property name="hitsname">hits</property>
 	<property name="searchtype">asset</property>
 	<path-action name="DataEditModule.loadPageOfSearch" />
-	<property name="sortby">assetaddeddateDown</property>
+	
 
 
 	<path-action name="DataEditModule.search">		

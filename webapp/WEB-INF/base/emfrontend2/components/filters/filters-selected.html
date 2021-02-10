@@ -91,8 +91,10 @@
 		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#end
 #end
-##TODO Loop over the view and show them here if they match
 
+#set($currentSort = $hits.getSearchQuery().getSortBy())
+
+##TODO Loop over the view and show them here if they match
 #if( $category )
 	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 		#if( $librarycol )
@@ -108,6 +110,7 @@
 	#end
 #end
 
+
 ##set( $terms = $userfilters.getFilteredTerms($hits) )
 
 #set( $terms = $hits.getFilteredTerms($context, "advancedfilter") )
@@ -115,13 +118,16 @@
 
 #foreach( $term in $terms)
 	#if( $librarycol )
-		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
+		#set($href = "$home$apphome/views/modules/librarycollection/search.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 		
 	#else
 		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
 	#end
 	#if ($nodeID)
 	 	#set($href = $href + "&nodeID=${nodeID}")
+	#end
+	#if($currentSort)
+		#set($href = $href + "&sortby=${currentSort}")
 	#end
 
 	<a href="$href"

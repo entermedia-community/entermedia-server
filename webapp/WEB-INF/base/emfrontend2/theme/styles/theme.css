@@ -5188,3 +5188,8 @@ a.collectionlike,a.collectionsaved
 .ajaxprogress {
 	display:none;
 }
+
+.filterschangesort {
+	cursor: pointer;
+	line-height: 1.5;
+}

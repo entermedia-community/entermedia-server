@@ -1223,6 +1223,14 @@ String viewbase = null;
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
+			String sort = inReq.getRequestParameter(searcher.getSearchType()+"sortby");
+			if(sort==null) {
+				sort = inReq.getRequestParameter("sortby");
+			}
+			if (inReq.getUserProfile()!=null) {
+				inReq.getUserProfile().setValue(searcher.getSearchType()+"sort", sort);
+				inReq.getUserProfile().save(inReq.getUser());
+			}
 			searcher.changeSort(inReq);
 		}
 	}

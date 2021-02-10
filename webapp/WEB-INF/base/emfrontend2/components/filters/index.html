@@ -38,7 +38,70 @@
 	$context.putPageValue("caneditlists",false)
 				
 	
-
+##SORT
+<form  	name="filtersortform" 
+		id="filtersortform" 
+		class="autosubmitform filterform em-widget-content ajaxform" 
+		data-targetdiv="searchlayout" 
+		method="POST"  
+	#if( $librarycol)
+		data-oemaxlevel="1" 
+		action="$home$apphome/views/modules/librarycollection/columnsort.html" 
+	#else
+		data-oemaxlevel="1" 
+		action="$home$apphome/views/search/columnsort.html" 
+	#end 
+	>
+	#if( $librarycol)
+		<input name="collectionid" type="hidden" value="$librarycol.getId()">
+	#end
+		<input name="searchtype" type="hidden" value="asset">
+		<div class="filter-box">
+			<div class="filter-box-header">
+					<span class="toggle-filter sidetoggle" data-target="filterboxsorting">
+					#set($minimizedfilterbox = true)
+					#if(!$userprofile.minimizefilterboxsorting || $userprofile.minimizefilterboxsorting == "false")
+						#set($minimizedfilterbox = false)
+					#end
+					<i class="caret fas 
+						#if($minimizedfilterbox) 
+							 fa-caret-right 
+					  	#else 
+					  		 fa-caret-down 
+					  	#end"></i>
+					</span> 
+					[[Sort]]
+			</div>
+			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
+				#set ($alldetails = $searcher.getUserPropertyDetails() )
+				<div style="width:145px; display: inline-block;">
+				<select data-sortup="$hits.searchQuery.isSortUp()" 
+						class="form-control form-control-sm select2 autosubmited" 
+						name="sortby" 
+						id="assetsortby" 
+						data-allowclear="false" 
+						style="" >
+					#foreach( $detail in $alldetails)
+						
+						 #if($hits.searchQuery.isSortUp())
+						 	#set($value = "${detail.id}Up")
+						 #else
+						 	#set($value = "${detail.id}Down")
+						 #end
+						<option data-detailid="${detail.id}" 
+								value="$value" 
+								#if($hits.isSortedBy($detail.id)) 
+								selected="selected" 
+								#end>$detail.getText($context)</option>
+					#end
+				</select>
+				</div>
+				<div class=" float-right" ><i class="filterschangesort fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i></div>
+			</div>
+		</div>
+	</form>	
+		
+		
 	
 	<form  	name="filterform" id="filterform" class="autosubmitform filterform em-widget-content" 
 			data-targetdiv="filteredresults" method="POST"  
@@ -60,40 +123,10 @@
 	#else
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
+	
+	
 	$context.putPageValue("idprefix","search")
 	
-	
-	##SORT
-		<div class="filter-box">
-			<div class="filter-box-header">
-					<span class="toggle-filter sidetoggle" data-target="filterboxsorting">
-					#set($minimizedfilterbox = true)
-					#if(!$userprofile.minimizefilterboxsorting || $userprofile.minimizefilterboxsorting == "false")
-						#set($minimizedfilterbox = false)
-					#end
-					<i class="caret fas 
-						#if($minimizedfilterbox) 
-							 fa-caret-right 
-					  	#else 
-					  		 fa-caret-down 
-					  	#end"></i>
-					</span> 
-					[[Sort]]
-			</div>
-			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
-				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<div style="width:145px; display: inline-block;">
-				<select  data-sortup="$hits.searchQuery.isSortUp()" class="form-control form-control-sm select2 autosubmited" name="assetsortby" id="assetsortby" data-allowclear="false" style="" >
-					#foreach( $detail in $alldetails) 
-						<option data-detailid="${detail.id}" value="$detail.id" #if($hits.isSortedBy($detail.id)) selected="selected" #end>$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-				<a href="" class=" float-right" ><i class="filterschangesort fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i></a>
-			</div>
-		</div>
-			
-		
 
 	##FILTERS
 		

@@ -1,0 +1,9 @@
+<page>
+<path-action name="DataEditModule.changeSort"/> 
+<path-action name="DataEditModule.search">		
+	<property name="fireevent">true</property>
+</path-action>
+<path-action name="AutoCompleteModule.updateHits" >
+	<property name="searchtype">asset</property>
+</path-action>
+ </page>

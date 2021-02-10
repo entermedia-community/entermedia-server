@@ -640,26 +640,27 @@ public class ProjectManager implements CatalogEnabled
 		//		}
 
 		String sort = (String) root.findValue("assetsort");
-		if (sort != null)
-		{
-			assetsearch.setSortBy(sort);
-			
-		}
 		
-		if (assetsearch.getSortBy() == null)
+		if (sort == null)
 		{
 			sort = inReq.findValue("asset" + "sortby");
-			if (sort != null) {
-				assetsearch.setSortBy(sort);
-			
-			}
+		}
+		if (sort == null)
+		{
+			sort = inReq.findValue("sortby");
+		}
+		if(sort == null && inReq.getUserProfile()!=null) {
+			sort = inReq.getUserProfileValue("assetsort");
+		}
+		if (sort == null)
+		{
+			sort = "assetaddeddateDown";
+		}
+		if (sort != null) {
+			assetsearch.setSortBy(sort);
 		}
 
-		if (assetsearch.getSortBy() == null)
-		{
-			assetsearch.setSortBy("assetaddeddateDown");
-			
-		}
+
 		assetsearch.setProperty("collectionid", collectionid);
 		//assetsearch.setHitsName("collectionassets");
 
