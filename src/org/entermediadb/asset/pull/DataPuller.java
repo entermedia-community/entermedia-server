@@ -688,69 +688,78 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			String url = inRemoteNode.get("baseurl");
 			if (url != null)
 			{
-				JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
-				//to much log
-				log.info("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
-				CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
-				StatusLine sl = response2.getStatusLine();
-				if (sl.getStatusCode() != 200)
+				int pages = inLocalchanges.getTotalPages();
+				for (int i = 0; i < pages; i++)
 				{
-					inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
-					log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-					inConnection.release(response2);
-					throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
-				}
-				//log.info("Got back this " + sl.getStatusCode());
-
-				//The server will return a list of files it needs
-				JSONObject json = inConnection.parseJson(response2);
-				//log.info("Data returned:" + params.toJSONString() );
-				
-				String remotecatalogid = (String)json.get("catalogid");
-				Collection toupload = (Collection)json.get("fileuploads");
-				if( toupload != null)
-				{
-					//TODO: Use pagination to do a few at a time
-					for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
-					{
-						JSONObject fileinfo = (JSONObject) iterator.next();
-						String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
-						
-						String localpath = (String)fileinfo.get("localpath"); //On the remote machie
-						
-						String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
-						ContentItem item = inArchive.getContent(reallocalpath);
-						File tosend = new File(item.getAbsolutePath());
-						log.info("Sending this file:" + tosend.length() + " " + tosend.getAbsolutePath() );
-
-						JSONObject tosendparams = new JSONObject(fileinfo);
-						tosendparams.put("catalogid", inArchive.getCatalogId());
-						tosendparams.put("savepath", localpath);
-						tosendparams.put("file.0", tosend);
-						CloseableHttpResponse resp = null;
-						try
-						{
-							resp = inConnection.sharedMimePost(urlpath,tosendparams);
-	
-							if (resp.getStatusLine().getStatusCode() != 200)
-							{
-								//error
-								//reportError();
-								throw new OpenEditException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
-							}
-						}
-						finally
-						{
-							inConnection.release(resp);
-						}
-					}	
+					inLocalchanges.setPage(i+1);
+					uploadData(inArchive, inRemoteNode, inSince, inLocalchanges, inConnection, url);
 				}
 			}
 		}
 		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
+		}
+	}
+	protected void uploadData(MediaArchive inArchive, Data inRemoteNode, Date inSince, HitTracker inLocalchanges, HttpSharedConnection inConnection, String url)
+	{
+		JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
+		//to much log
+		log.info("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
+		CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
+		StatusLine sl = response2.getStatusLine();
+		if (sl.getStatusCode() != 200)
+		{
+			inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
+			log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			inConnection.release(response2);
+			throw new OpenEditException("Could not handle remote exception condition " + "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase()  );
+		}
+		//log.info("Got back this " + sl.getStatusCode());
+
+		//The server will return a list of files it needs
+		JSONObject json = inConnection.parseJson(response2);
+		//log.info("Data returned:" + params.toJSONString() );
+		
+		String remotecatalogid = (String)json.get("catalogid");
+		Collection toupload = (Collection)json.get("fileuploads");
+		if( toupload != null)
+		{
+			//TODO: Use pagination to do a few at a time
+			for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
+			{
+				JSONObject fileinfo = (JSONObject) iterator.next();
+				String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
+				
+				String localpath = (String)fileinfo.get("localpath"); //On the remote machie
+				
+				String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
+				ContentItem item = inArchive.getContent(reallocalpath);
+				File tosend = new File(item.getAbsolutePath());
+				log.info("Sending this file:" + tosend.length() + " " + tosend.getAbsolutePath() );
+
+				JSONObject tosendparams = new JSONObject(fileinfo);
+				tosendparams.put("catalogid", inArchive.getCatalogId());
+				tosendparams.put("savepath", localpath);
+				tosendparams.put("file.0", tosend);
+				CloseableHttpResponse resp = null;
+				try
+				{
+					resp = inConnection.sharedMimePost(urlpath,tosendparams);
+
+					if (resp.getStatusLine().getStatusCode() != 200)
+					{
+						//error
+						//reportError();
+						throw new OpenEditException(resp.getStatusLine().getStatusCode() + " Could not upload: " + localpath + " Error: " + resp.getStatusLine().getReasonPhrase() );
+					}
+				}
+				finally
+				{
+					inConnection.release(resp);
+				}
+			}	
 		}
 	}
 
