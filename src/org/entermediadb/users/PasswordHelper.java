@@ -46,7 +46,12 @@ public class PasswordHelper implements Serializable {
 	
 		//TO
 		inContext.setRequestParameter("to", inEmail);
-		inContext.setRequestParameter("subject","Forgotten Password");
+		String subject = inContext.findValue("subject");
+		if( subject == null)
+		{
+			subject = "Forgotten Password";
+		}
+		inContext.setRequestParameter("subject",subject);
 		
 		TemplateWebEmail email = sendMailModule.getPostMail().getTemplateWebEmail();
 		email.setPageManager(inManager);
