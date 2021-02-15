@@ -1,13 +1,18 @@
 <page>
 
 	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
+
 	<property name="defaulttab">mediatab</property>
 	
 	<property name="hitsname">hits</property>
+
 	<property name="virtual">true</property>
 	
-	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+	<property name="assetclearselection">true</property>
 	
+	<property name="assetclearresults">true</property>
+	
+	<path-action name="ProjectModule.loadCollectionFromFolder"/>
 	
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.loadOpenCollections"/>
