@@ -62,6 +62,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		long timeout = inStructions.getConversionTimeout();
 		ContentItem inputpage = inStructions.getInputFile();
 		ArrayList<String> comm = new ArrayList<String>();
+		comm.add("-abort_on");
+		comm.add("empty_output");
 		comm.add("-i");
 		comm.add(inputpage.getAbsolutePath());
 		comm.add("-y");
