@@ -122,6 +122,8 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		}
 
 		//com.add("-deinterlace");
+		com.add("-abort_on");
+		com.add("empty_output");
 		com.add("-i");
 		com.add(input.getAbsolutePath()); // TODO: Might need [0] to pick the
 		// first image only
