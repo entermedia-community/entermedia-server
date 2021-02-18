@@ -39,6 +39,13 @@
 			<label for="password">[[Password]]</label>
 			<input class="form-control" id="password" name="password" type="password" />
 			</div>
+			
+			<div class="float-right note">
+                <a href="$home$content.loginroot/sendpassword.html" style="text-decoration:underline">[[Reset your password]]</a>
+                or
+                <a href="$home$content.loginroot/sendmagiclink.html" class="emdialog" data-hidefooter="true" title="Send Magic Link" style="text-decoration:underline">[[Send magic link]]</a> 
+            </div>
+            <div class="clearfix"></div>
 			#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
 			<input type="hidden" name="field" value="googlekeystring"/>
 			<div class="form-group">
