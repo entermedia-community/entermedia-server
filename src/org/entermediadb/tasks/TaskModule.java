@@ -446,8 +446,13 @@ public class TaskModule extends BaseMediaModule
 		{
 			query.not("taskstatus", "3");
 		}
+		String onlyuser = inReq.getRequestParameter("onlyuser");
+		if( Boolean.parseBoolean(onlyuser))
+		{
+			query.exact("completedby", inReq.getUserName());
+		}
 		
-		HitTracker tasks = query.search();
+		HitTracker tasks = query.search(inReq);
 		//Legacy: Make sure all tasks have parents
 		Set tosave = new HashSet();
 		Collection values = goal.getValues("countdata");
