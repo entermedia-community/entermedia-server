@@ -81,10 +81,11 @@ public class assetSearchSecurity implements SearchSecurity
 				{
 					required = inSearcher.createSearchQuery();
 					required.addNot("editstatus", "7");
-					required.addNot("deleted", "true");
+					//required.addNot("deleted", "true"); //Ian?
 					if (profile != null && profile.isInRole("administrator"))
 					{
 						inQuery.addChildQuery(required); //Short cut
+						addJoins(inPageRequest,inSearcher,inQuery);
 						return inQuery;
 					}
 				}

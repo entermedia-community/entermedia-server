@@ -1271,7 +1271,7 @@ public class TaskModule extends BaseMediaModule
 		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
 				
 		QueryBuilder opengoalbuilder = goalsearcher.query();
-		Collection userprojects = new HashSet();;
+		Collection userprojects = new HashSet();
 		
 		if( staffid != null) 
 		{
