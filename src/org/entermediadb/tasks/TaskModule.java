@@ -32,6 +32,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
 import org.openedit.users.User;
@@ -1277,22 +1278,27 @@ public class TaskModule extends BaseMediaModule
 				
 		QueryBuilder opengoalbuilder = goalsearcher.query();
 		Collection userprojects = new HashSet();
-		
+
+		User selecteduser = null;
 		if( staffid != null) 
 		{
 			opengoalbuilder.match("userlikes", staffid);
-			inReq.putPageValue("selecteduser",archive.getUser(staffid));
+			selecteduser = archive.getUser(staffid);
 		}
 		else
 		{
-			inReq.putPageValue("selecteduser",inReq.getUser());
+			selecteduser = inReq.getUser();
 		}
+		inReq.putPageValue("selecteduser",selecteduser);
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
 		//String collectionid= "*";
 		if (collectionid != null) 
 		{
-			userprojects.add(collectionid);
+			if( !collectionid.equals("*") )
+			{
+				userprojects.add(collectionid);
+			}
 		}
 		else 
 		{
@@ -1307,6 +1313,8 @@ public class TaskModule extends BaseMediaModule
 					exact("ontheteam","true").search();
 			if(allprojectsuser.size()<1)
 			{
+				
+				inReq.putPageValue("opentickets", new ListHitTracker());
 				return;
 			}
 			for (Iterator iterator = allprojectsuser.iterator(); iterator.hasNext();)
