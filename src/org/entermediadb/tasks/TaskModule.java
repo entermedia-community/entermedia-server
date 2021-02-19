@@ -1268,7 +1268,7 @@ public class TaskModule extends BaseMediaModule
 		
 		String staffid = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 		
-		Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
+		//Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
 				
 		QueryBuilder opengoalbuilder = goalsearcher.query();
 		Collection userprojects = new HashSet();
@@ -1277,6 +1277,10 @@ public class TaskModule extends BaseMediaModule
 		{
 			opengoalbuilder.match("userlikes", staffid);
 			inReq.putPageValue("selecteduser",archive.getUser(staffid));
+		}
+		else
+		{
+			inReq.putPageValue("selecteduser",inReq.getUser());
 		}
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
