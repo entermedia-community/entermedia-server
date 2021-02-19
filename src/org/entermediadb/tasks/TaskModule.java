@@ -449,7 +449,12 @@ public class TaskModule extends BaseMediaModule
 		String onlyuser = inReq.getRequestParameter("onlyuser");
 		if( Boolean.parseBoolean(onlyuser))
 		{
-			query.exact("completedby", inReq.getUserName());
+			String selected = inReq.getRequestParameter("goaltrackerstaff");
+			if( selected == null)
+			{
+				selected = inReq.getUserName();
+			}
+			query.exact("completedby", selected);
 		}
 		
 		HitTracker tasks = query.search(inReq);
