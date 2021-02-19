@@ -1288,7 +1288,11 @@ public class TaskModule extends BaseMediaModule
 		else 
 		{
 			//search only in project the user belongs
-			String currentuser = inReq.getUserName();
+			String currentuser = staffid;
+			if( staffid == null)
+			{
+				currentuser = inReq.getUserName(); 
+			}
 			Collection allprojectsuser = archive.query("librarycollectionusers").
 					exact("followeruser",currentuser).
 					exact("ontheteam","true").search();

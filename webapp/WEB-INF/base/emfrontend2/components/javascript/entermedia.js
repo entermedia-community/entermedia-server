@@ -974,8 +974,10 @@ onloadselectors = function()
 				if( ranonce == undefined)
 				{
 					timeout = 500; //Make the first run a quick one
+					//console.log("First" + uid);
 					ranajaxon[uid] = true;
 				}
+				//console.log("more" + timeout);
 				
 				setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
 			}

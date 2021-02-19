@@ -5,6 +5,10 @@ import java.util.concurrent.ExecutorService;
 
 import org.openedit.util.ExecutorManager;
 
+/**
+@Deprecated
+*/
+
 public interface ConvertQueue
 {
 	public ExecutorManager getExecutorManager();
