@@ -3445,6 +3445,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
 		{
+			//Legacy support 
+			if( datatype.equals("asset"))
+			{
+				datatype = "assets"; //TODO: Move everyone over
+			}
+			
 			String path = "/WEB-INF/data/" + getCatalogId() + "/" + datatype + "/" + data.getSourcePath() + "/fulltext.txt";
 			ContentItem item = getPageManager().getRepository().getStub(path);
 			if (item.exists())
