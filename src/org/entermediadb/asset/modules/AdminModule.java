@@ -173,6 +173,15 @@ public class AdminModule extends BaseMediaModule
 				foundUser = (User) getUserManager(inReq).getUser(username);
 			}
 		}
+		Boolean createuser =  Boolean.parseBoolean( inReq.findValue("createuser"));
+		if (foundUser == null && emailaddress != null && createuser) {
+			String	newpassword = new PasswordGenerator().generate();
+			
+			foundUser = (User) getUserManager(inReq).createUser(null, newpassword);
+			foundUser.setEmail(emailaddress.trim().toLowerCase());
+			foundUser.setEnabled(true);
+			getUserManager(inReq).saveUser(foundUser);
+		}
 		if (foundUser != null)
 		{
 			email = foundUser.getEmail();
