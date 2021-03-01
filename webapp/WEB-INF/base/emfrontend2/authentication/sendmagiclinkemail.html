@@ -7,7 +7,7 @@
 <p>[[A magic link was requested for]]: $mail</p>
 <div style="margin:10px; padding:15px; background-color:#f0f0f0;">
 
-	#set( $link = "$context.siteRoot$applink/workspaces/index.html?entermedia.key=$entermediakey" )
+	#set( $link = "$context.siteRoot$applink/index.html?entermedia.key=$entermediakey" )
 	#set( $expiry = $context.getPageProperty("temporary_password_expiry"))
 	#set( $days = $numberutils.toInt($expiry))
 	#set ( $calendar = $datetool.getCalendar() )
