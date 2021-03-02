@@ -35,7 +35,7 @@
 	</div>
 	#end	
 	
-	#set($facets = $hits.getFilterOptions())
+	#set($facets = $hits.getActiveFilterValues())
 	
 	#if( $librarycol)
 		<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">

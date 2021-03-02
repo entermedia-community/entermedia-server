@@ -30,7 +30,7 @@ public void init(){
 	query.addMatches("id", "*");
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
-	hits.getFilterOptions();
+	hits.getActiveFilterValues();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)
 	context.putPageValue("hits", hits)

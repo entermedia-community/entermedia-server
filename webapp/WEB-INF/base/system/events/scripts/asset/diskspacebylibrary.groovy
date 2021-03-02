@@ -32,7 +32,7 @@ public void init(){
 	query.setAggregation(b);
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
-	hits.getFilterOptions();
+	hits.getActiveFilterValues();
 	//StringTerms agginfo = hits.getAggregations().get("fileformat_filesize");
 	context.putPageValue("diskspacehits", hits)
 	context.putPageValue("hits", hits)
