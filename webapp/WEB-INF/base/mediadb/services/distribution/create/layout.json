@@ -7,22 +7,35 @@
 {
   "response":
       {
-      	#if($data.id)
+      #if($data.id)
       	#set($distributionid= $data.id)
         "id":"$distributionid",
         "status" : "ok"
         #else
         "status" :"error"
-        #end
+      #end
       }
  	#if($distributionid)
 	  ,
-	  "data":#json($data $searcher.getPropertyDetails())
-	  ,
-	  "urls": {
-	  	"baseurl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/",
-	  	"largeimage": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/largeimage"
-	  }
+	  "data":#json($data $searcher.getPropertyDetails()),
+	  #set($presets = $mediaarchive.asListOfPreviewLinks($data))
+	  "pre":#jesc($mediaarchive),	  
+	  "presets": [
+	    #foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
+		  {	
+			"name":#jesc($preset.name),	
+			"id":#jesc($preset.id),	
+			#if( $preset.getId() == "0")
+				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+				"url":"#urlencode($url)"
+			#else
+				#set( $url = $mediaarchive.asLinkToPreview($hit, $preset.get("generatedoutputfile") ) )
+				"url":"#urlencode($url)"
+			#end	
+		  }
+	    #end
+	  ]
+	  
 	#end
   
 }
