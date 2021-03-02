@@ -1285,8 +1285,32 @@ public class AdminModule extends BaseMediaModule
 			user = getUserManager(inReq).createGuestUser(null, null, "guest");
 			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
 			user.setProperty("catalogid", catalogid);
+			user.setEnabled(false);
+			getUserManager(inReq).saveUser(user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
+
+		}
+
+	}
+	
+	public void createTempUser(WebPageRequest inReq)
+	{
+		String email = inReq.getRequestParameter(EMAIL);
+		User user = getUserSearcher(inReq).getUserByEmail(email);
+		if (user == null )
+		{
+			Group guest = getGroupSearcher(inReq).getGroup("guest");
+			if (guest == null)
+			{
+				getUserManager(inReq).createGroup("guest", "Guest");
+			}
+
+			user = getUserManager(inReq).createGuestUser(null, null, "guest");
+			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+			user.setProperty("catalogid", catalogid);
+			user.setEnabled(false);
+			getUserManager(inReq).saveUser(user);
 
 		}
 
