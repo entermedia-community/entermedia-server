@@ -1,5 +1,6 @@
 #set($method = $context.getMethod())
 #set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+
 #if(!$cdnprefix )
 	#set($cdnprefix = $context.siteRoot )
 #end
@@ -17,9 +18,12 @@
       }
  	#if($distributionid)
 	  ,
-	  "data":#json($data $searcher.getPropertyDetails()),
-	  #set($presets = $mediaarchive.asListOfPreviewLinks($data))
-	  "pre":#jesc($mediaarchive),	  
+	  #set($assetid = $data.assetid)
+	  "assetid":"$assetid",
+	  ##"data":#json($data $searcher.getPropertyDetails()),
+	  
+	  #set($asset = $mediaarchive.getAsset($assetid) )
+	  #set($presets = $mediaarchive.asListOfPreviewLinks($asset))
 	  "presets": [
 	    #foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
 		  {	
