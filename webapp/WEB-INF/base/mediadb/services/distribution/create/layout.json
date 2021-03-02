@@ -1,5 +1,6 @@
 #set($method = $context.getMethod())
 #set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+
 #if(!$cdnprefix )
 	#set($cdnprefix = $context.siteRoot )
 #end
@@ -7,22 +8,36 @@
 {
   "response":
       {
-      	#if($data.id)
+      #if($data.id)
       	#set($distributionid= $data.id)
         "id":"$distributionid",
         "status" : "ok"
         #else
         "status" :"error"
-        #end
+      #end
       }
  	#if($distributionid)
 	  ,
-	  "data":#json($data $searcher.getPropertyDetails())
-	  ,
-	  "urls": {
-	  	"baseurl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/",
-	  	"largeimage": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/largeimage"
-	  }
+	  #set($assetid = $data.assetid)
+	  "assetid":"$assetid",
+	  ##"data":#json($data $searcher.getPropertyDetails()),
+	  
+	  #set($asset = $mediaarchive.getAsset($assetid) )
+	  #set($presets = $mediaarchive.asListOfPreviewLinks($asset))
+	  "presets": [
+	    #foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
+		  {	
+			"name":#jesc($preset.name),	
+			"id":#jesc($preset.id),	
+			#if( $preset.getId() == "0")
+			   "url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid"
+			#else
+				"url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/$preset.id"
+			#end	
+		  }
+	    #end
+	  ]
+	  
 	#end
   
 }
