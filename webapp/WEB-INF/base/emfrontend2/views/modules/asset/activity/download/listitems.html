@@ -3,7 +3,7 @@
 
 #set( $downloadall = false)
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
 #if( !$cdnprefix )
 #set( $cdnprefix = $context.siteRoot )
 #end
@@ -35,7 +35,7 @@
 		
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			#if(!$type)
-			#set ($type = "none")
+				#set ($type = "none")
 			#end
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
@@ -103,7 +103,7 @@
 		#end	
 		</td>
 	#else
-		<td></td>		
+		<td>$item.get("publishqueueid")</td>		
 		<td style="text-align:right;"><a class="btn btn-sm btn-primary showasset"  data-assetid="$asset.id" href="#" >[[View]]</a></td>
 	#end	
 	</tr>	

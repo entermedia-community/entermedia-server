@@ -78,6 +78,7 @@ $context.putPageValue("module", $module)
 					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
 				#if($canpublish || $canemaillink )				
 						#if( $canemaillink )
+							<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/shareassets.html?hitssessionid=$!hits.getSessionId()" >[[Share Link]]</a>
 							<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
 						#end
 						#if( $canpublish)
