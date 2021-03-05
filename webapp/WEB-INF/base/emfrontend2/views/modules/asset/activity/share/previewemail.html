@@ -8,9 +8,6 @@
 	$pages.include("$apphome/theme/emails/sharetemplate.html",$context)
 </div>
 
-
-	
-
     #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
       <input type="hidden" name="field" value="presetid"/>
 
@@ -32,5 +29,4 @@
 	
 	<input class="btn btn-primary float-right" type="submit" value="[[Send]]" />
 	<a href="$home$apphome/views/modules/asset/activity/delete.html?orderid=$order.id" class="btn btn-secondary float-right" style="margin-right:10px;" >[[Discard]]</a>
-</div>
 </form>

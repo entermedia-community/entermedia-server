@@ -35,7 +35,7 @@ public void init(){
 		log.info("query:" + query.hasFilters());
 		
 			hits.enableBulkOperations();
-	hits.getFilterOptions();
+	hits.getActiveFilterValues();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)
 	context.putPageValue("hits", hits)

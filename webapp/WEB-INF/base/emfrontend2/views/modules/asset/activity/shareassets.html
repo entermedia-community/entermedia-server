@@ -1,0 +1,64 @@
+<div id="sharingcontainerdialog" class="em-rounded">
+#if( $order.userid != $user.getId() )
+[[Invalid order]] 
+#else
+
+	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
+	
+<form class="ajaxform" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" action="$home$apphome/views/modules/asset/activity/shareassets.html">
+#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
+$context.putPageValue("searcher", $searcher)	 
+$context.putPageValue("data", $order)	 
+$context.putPageValue("view", "order/emailform")	
+
+##<input type="hidden" name="view" value="order/emailform"/>
+<input type="hidden" name="searchtype" value="order"/>
+<input type="hidden" name="catalogid" value="$catalogid"/>
+<input type="hidden" name="orderid" value="$order.id"/>
+##<input type="hidden" name="newuserstatus" value="emailrequested"/>
+
+<input type="hidden" name="field" value="publishdestination" />
+<input type="hidden" name="publishdestination.value" value="0" /> ## this should be 0
+
+<input type="hidden" name="field" value="ordertype" />
+<input type="hidden" name="ordertype.value" value="sharelink" />
+<div id="shares">
+
+<div style="position:relative;">
+	<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+	
+	#set( $shareorderlink = "$context.siteRoot$home$apphome/views/modules/asset/activity/share/sharedassets.html?orderid=$order.id")
+	<h5>[[Link]]
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="mediaviewerlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</h5> 
+	<p class="hyphenate">
+	<a href="$shareorderlink">$shareorderlink</a>
+	<input style="position:absolute; top:-1000px;" id="mediaviewerlink" value="$shareorderlink" />
+	</p>
+</div>
+
+<h6>[[Customize]]</h6>
+<table class="table">
+<tr>
+<td>
+[[Sharing]] $orderitems.size() [[assets.]]
+</td>
+<td width="30%" style="text-align: right;">
+	<select class="form-control form-control-sm submitform" name="sharedmedia" id="sharemediatype" data-targetdiv="sharingcontainerdialog">
+		<option value="original" selected="selected">[[Send Original Media]]</option>
+		<option value="preview">[[Send Previews Only]]</option>
+	</select>
+</td>
+</tr>
+</table>
+</div>
+</form>
+#end
+
+
+</div>

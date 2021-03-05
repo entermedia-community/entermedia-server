@@ -26,7 +26,7 @@ public void init(){
 	query.setAggregation(b);
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
-	hits.getFilterOptions();
+	hits.getActiveFilterValues();
 	
 	context.putPageValue("breakdownhits", hits)
 	StringTerms agginfo = hits.getAggregations().get("keywords");

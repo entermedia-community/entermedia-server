@@ -141,6 +141,11 @@ public class OrderModule extends BaseMediaModule
 		if (assets.hasSelections())
 		{
 			Map props = new HashMap();
+			
+			Boolean shareoriginal = Boolean.parseBoolean(inReq.findValue("shareoriginal"));
+			if (shareoriginal) {
+				props.put("presetid", "0");
+			}
 
 			String applicationid = inReq.findValue("applicationid");
 			Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
@@ -153,7 +158,7 @@ public class OrderModule extends BaseMediaModule
 				Asset asset = getMediaArchive(catalogid).getAssetBySourcePath(hit.getSourcePath());
 				if( asset != null)
 				{
-					getOrderManager().addItemToOrder(catalogid, order, asset, null);
+					getOrderManager().addItemToOrder(catalogid, order, asset, props);
 				}
 			}
 			if (order.get("expireson") == null)
@@ -317,6 +322,24 @@ public class OrderModule extends BaseMediaModule
 		fields = (String[])tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
 		searcher.saveData(order, inReq.getUser());
+		return order;
+	}
+	
+	public Order updateSharedOrder(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		if (order != null)
+		{
+			String catalogid = inReq.findValue("catalogid");
+			Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+			
+			HitTracker items = (HitTracker) inReq.getPageValue("orderitems");
+			if (items == null)
+			{
+				items = getOrderManager().findOrderItems(inReq, catalogid, order);
+			}
+
+		}
 		return order;
 	}
 
