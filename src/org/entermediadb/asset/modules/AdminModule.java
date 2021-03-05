@@ -1305,8 +1305,10 @@ public class AdminModule extends BaseMediaModule
 			{
 				getUserManager(inReq).createGroup("guest", "Guest");
 			}
-
-			user = getUserManager(inReq).createGuestUser(null, null, "guest");
+			user = (User)getUserSearcher(inReq).createNewData();
+			//user = getUserManager(inReq).createGuestUser(null, null, "guest");
+			user.setEmail(email);
+			user.addGroup(guest);
 			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
 			user.setProperty("catalogid", catalogid);
 			user.setEnabled(false);
