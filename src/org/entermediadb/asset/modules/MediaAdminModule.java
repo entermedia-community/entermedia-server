@@ -797,14 +797,19 @@ public class MediaAdminModule extends BaseMediaModule
 		String applicationid = inReq.findValue("applicationid");
 		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav","true").sort("orderingUp").searchOne();
 		String finalpath;
-		
+		if(module == null){
+			return null;
+		}
 		if(module.getId().equals("librarycollection")) {
 			finalpath = "/" + applicationid + "/views/collections/index.html";
 		}
 		else {
 			finalpath = "/" + applicationid + "/views/modules/" + module.getId() + "/index.html";
 		}
-		inReq.redirect(finalpath);
+		Page finalp = getMediaArchive(inReq).getPageManager().getPage(finalpath);
+		if(finalp.exists()) {
+			inReq.redirect(finalpath);
+		}
 		/*Page requestedPage  = inReq.getPage();
 		
 		requestedPage.setInnerLayout("/" + applicationid + "/theme/layouts/searchlayout2.html");*/
