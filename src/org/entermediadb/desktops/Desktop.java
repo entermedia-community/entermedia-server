@@ -187,9 +187,9 @@ public class Desktop
 	{
 		Map inParent = new HashMap();
 		inParent.put("name",inCat.getName());
-		String remaining = inCat.getCategoryPath().substring(inRootPath.length());
+		//String remaining = inCat.getCategoryPath().substring(inRootPath.length());
 		inParent.put("categoryid",inCat.getId());
-		inParent.put("subpath",remaining);
+		inParent.put("subpath",inCat.getCategoryPath());
 		
 		Collection inChildren = new ArrayList();
 		inParent.put("children",inChildren);
@@ -260,9 +260,12 @@ public class Desktop
 		
 		Category category = inArchive.getCategory(userdownload.get("categoryid"));
 		//Build one tree. Have the client pull the data for each one till it's done
-		Map children = addChildren(category.getParentCategory().getCategoryPath(),category);
-		getDesktopListener().downloadCategory(inArchive, category, userdownload, children);
-		
+		Category top = category.getParentCategory();
+		if( top != null)
+		{
+			Map children = addChildren(top.getCategoryPath(),category);
+			getDesktopListener().downloadCategory(inArchive, category, userdownload, children);
+		}		
 	}
 
 	
