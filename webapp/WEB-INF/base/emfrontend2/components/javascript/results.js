@@ -720,6 +720,7 @@ $(document).ready(function(url,params)
 
 	//Click on asset
 	var selectStart = null;
+	//Table clicking
 	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -779,6 +780,58 @@ $(document).ready(function(url,params)
 		var assetid = row.data("rowid");
 		
 		showAsset(assetid);
+	});
+	//Gallery clicking
+	lQuery('.emgallery .emthumbimage').livequery('click',function(e)
+	{
+		var clicked = $(this);
+		//click+ctrl
+		if (ctrlPressed) {
+		    var chkbox = clicked.closest(".emboxthumb").find(".selectionbox");
+			if (chkbox) {
+				var ischecked = $(chkbox).prop("checked");
+				if (!ischecked || ischecked == "true") {
+					$(chkbox).prop( "checked", true );	
+				} 
+				else {
+					$(chkbox).prop( "checked", false );
+				}
+				$(chkbox).trigger("change");				
+			}
+			e.preventDefault();
+			e.stopPropagation()
+			return false;
+		} 
+		//click+shift
+		if (e.shiftKey){
+			if (selectStart == null) {
+				selectStart = $(clicked).closest(".emboxthumb");
+			}
+			else {
+				var selectEnd = $(clicked).closest(".emboxthumb");
+				if(selectStart) {
+					$(selectStart).nextUntil($(selectEnd)).each(function() {
+						var chkbox = $(this).find(".selectionbox");
+						if (chkbox) {
+							var ischecked = $(chkbox).prop("checked");
+							if (!ischecked || ischecked == "true") {
+								$(chkbox).prop( "checked", true );	
+							} 
+							else {
+								$(chkbox).prop( "checked", false );
+							}
+							$(chkbox).trigger("change");
+						}
+					});
+					selectStart = null;
+					selectEnd = null;
+				}
+			}
+			e.preventDefault();
+			e.stopPropagation()
+			return false;
+		}
+
 	});
 	
 	
