@@ -69,6 +69,7 @@ $context.putPageValue("module", $module)
 		##		</li>				
 		## #end
 		#if ($resultview != "map")
+		
 			$pages.include("$componenthome/results/selected/index.html",$context)
 
 			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
