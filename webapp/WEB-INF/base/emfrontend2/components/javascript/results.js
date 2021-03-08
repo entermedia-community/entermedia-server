@@ -111,6 +111,8 @@ $(document).ready(function(url,params)
 	{
 		jQuery('input[name=pagetoggle]').prop('checked',true);
 		jQuery('.selectionbox').prop('checked',true);
+		$('.selectionbox').closest("tr").addClass("emrowselected");
+		$('.selectionbox').closest(".emboxthumb").addClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -720,6 +722,7 @@ $(document).ready(function(url,params)
 
 	//Click on asset
 	var selectStart = null;
+	//Table clicking
 	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -780,6 +783,58 @@ $(document).ready(function(url,params)
 		
 		showAsset(assetid);
 	});
+	//Gallery clicking
+	lQuery('.emgallery .emthumbimage').livequery('click',function(e)
+	{
+		var clicked = $(this);
+		//click+ctrl
+		if (ctrlPressed) {
+		    var chkbox = clicked.closest(".emboxthumb").find(".selectionbox");
+			if (chkbox) {
+				var ischecked = $(chkbox).prop("checked");
+				if (!ischecked || ischecked == "true") {
+					$(chkbox).prop( "checked", true );	
+				} 
+				else {
+					$(chkbox).prop( "checked", false );
+				}
+				$(chkbox).trigger("change");				
+			}
+			e.preventDefault();
+			e.stopPropagation()
+			return false;
+		} 
+		//click+shift
+		if (e.shiftKey){
+			if (selectStart == null) {
+				selectStart = $(clicked).closest(".emboxthumb");
+			}
+			else {
+				var selectEnd = $(clicked).closest(".emboxthumb");
+				if(selectStart) {
+					$(selectStart).nextUntil($(selectEnd)).each(function() {
+						var chkbox = $(this).find(".selectionbox");
+						if (chkbox) {
+							var ischecked = $(chkbox).prop("checked");
+							if (!ischecked || ischecked == "true") {
+								$(chkbox).prop( "checked", true );	
+							} 
+							else {
+								$(chkbox).prop( "checked", false );
+							}
+							$(chkbox).trigger("change");
+						}
+					});
+					selectStart = null;
+					selectEnd = null;
+				}
+			}
+			e.preventDefault();
+			e.stopPropagation()
+			return false;
+		}
+
+	});
 	
 	
 	lQuery(".resultsselection input.selectionbox").livequery("change", function(e) 
@@ -810,6 +865,7 @@ $(document).ready(function(url,params)
 		$('input[name=pagetoggle]').prop('checked',false);
 		$('.selectionbox').prop('checked',false); //Not firing the page
 		$('.selectionbox').closest("tr").removeClass("emrowselected");
+		$('.selectionbox').closest(".emboxthumb").removeClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
