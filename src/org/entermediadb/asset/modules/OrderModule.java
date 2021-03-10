@@ -325,19 +325,19 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 	
-	public Order updateSharedOrder(WebPageRequest inReq) throws Exception
+	public Order rebuildShareOrder(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
 		if (order != null)
 		{
 			String catalogid = inReq.findValue("catalogid");
-			Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+			//Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 			
 			HitTracker items = (HitTracker) inReq.getPageValue("orderitems");
-			if (items == null)
-			{
-				items = getOrderManager().findOrderItems(inReq, catalogid, order);
-			}
+			Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+			itemsearcher.deleteAll(items, inReq.getUser());
+
+			//TODO: Update existing items or/and delete old deleted records
 
 		}
 		return order;
@@ -857,16 +857,29 @@ public class OrderModule extends BaseMediaModule
 		return createOrderFromSelections(inReq);
 	}
 
-	public Order createOrderFromAssets(WebPageRequest inReq)
+	public Order loadOrderFromAssets(WebPageRequest inReq)
 	{
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
-		String[] assetids = inReq.getRequestParameters("assetid");
-		Order order = getOrderManager().createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+		String[] selectedids = inReq.getRequestParameters("assetid");
 
-		for (int i = 0; i < assetids.length; i++)
+		List assetids = selectAssets(inReq, selectedids);
+		Order order = getOrderManager().findOrderFromAssets(catalogId,inReq.getUser(),assetids);
+		if( order == null)
 		{
-			String id = assetids[i];
+			order = createOrderFromAssets(inReq);
+		}
+		return order;
+		
+	}
+
+	protected List selectAssets(WebPageRequest inReq, String[] selectedids)
+	{
+		List assetids = new ArrayList();
+		
+		for (int i = 0; i < selectedids.length; i++)
+		{
+			String id = selectedids	[i];
 			if (id.startsWith("multiedit:hits"))
 			{
 				HitTracker hits = (HitTracker) inReq.getSessionValue(id.substring("multiedit:".length()));
@@ -875,19 +888,35 @@ public class OrderModule extends BaseMediaModule
 					for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 					{
 						Data data = (Data) iterator.next();
-						Asset asset = archive.getAssetBySourcePath(data.getSourcePath());
-						getOrderManager().addItemToOrder(catalogId, order, asset, null);
+						assetids.add(data.getId());
 					}
 				}
 			}
 			else
 			{
-				Asset asset = archive.getAsset(id);
-				getOrderManager().addItemToOrder(catalogId, order, asset, null);
+				assetids.add(id);
 			}
+		}
+		return assetids;
+	}
+	public Order createOrderFromAssets(WebPageRequest inReq)
+	{
+		String catalogId = inReq.findValue("catalogid");
+		MediaArchive archive = getMediaArchive(catalogId);
+		String[] selectedids = inReq.getRequestParameters("assetid");
+		Order order = getOrderManager().createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+
+		List assetids = selectAssets(inReq, selectedids);
+
+		for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Asset asset = archive.getAsset(id);
+			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
 
 		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
+		order.setValue("assetids",assetids);
 		inReq.putPageValue("order", order);
 
 		return order;

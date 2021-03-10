@@ -7,7 +7,7 @@
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<form class="ajaxform" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" action="$home$apphome/views/modules/asset/activity/shareassets.html">
+<form class="ajaxform" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" action="$home$apphome/views/modules/asset/activity/shareassetsupdate.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 

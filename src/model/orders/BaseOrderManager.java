@@ -390,6 +390,14 @@ public class BaseOrderManager implements OrderManager {
 		return order;
 	}
 
+	@Override
+	public Order findOrderFromAssets(String inCatId, User inUser, List inAssetids)
+	{
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
+		Order order = (Order)ordersearcher.query().andgroup("assetids", inAssetids).searchOne(); //complete?
+		return order;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#removeItemFromOrder(java.lang.String, org.entermediadb.asset.orders.Order, org.entermediadb.asset.Asset)
 	 */

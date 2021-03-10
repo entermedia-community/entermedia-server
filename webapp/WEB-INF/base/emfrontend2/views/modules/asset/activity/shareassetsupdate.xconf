@@ -1,18 +1,16 @@
 <page>
 
 	<property name="shareoriginal">true</property>
-	<path-action name="OrderModule.loadOrderFromAssets"/>
-	
-	<path-action name="OrderModule.findOrderItems"/>
-	<path-action name="OrderModule.findOrderAssets"/>
-	
-	<path-action name="OrderModule.updateSharedOrder"/>
-	
+	<path-action name="OrderModule.rebuildShareOrder"/>
 	<path-action name="OrderModule.createConversionAndPublishRequest"/>
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html" allowduplicates="true" />
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
+
+	<path-action name="OrderModule.findOrderItems"/>
+	<path-action name="OrderModule.findOrderAssets"/>
 	
 	<path-action name="OrderModule.updatePendingOrders"/>
 	
-	 <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+	
 </page>
