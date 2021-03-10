@@ -7,12 +7,13 @@
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<form class="ajaxform" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" action="$home$apphome/views/modules/asset/activity/shareassetsupdate.html">
+<form class="ajaxform autosubmit" data-targetdiv="sharingcontainerdialog" id="sharingcontainerform" method="post" 
+		action="$home$apphome/views/modules/asset/activity/shareassetsupdate.html">
+<input type="hidden" name="oemaxlevel" value="1"/>
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
 $context.putPageValue("view", "order/emailform")	
-
 ##<input type="hidden" name="view" value="order/emailform"/>
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
@@ -49,7 +50,7 @@ $context.putPageValue("view", "order/emailform")
 [[Sharing]] $orderitems.size() [[assets.]]
 </td>
 <td width="30%" style="text-align: right;">
-	<select class="form-control form-control-sm submitform" name="sharedmedia" id="sharemediatype" data-targetdiv="sharingcontainerdialog">
+	<select class="form-control form-control-sm" name="sharedmedia" id="sharemediatype">
 		<option value="original" selected="selected">[[Send Original Media]]</option>
 		<option value="preview">[[Send Previews Only]]</option>
 	</select>

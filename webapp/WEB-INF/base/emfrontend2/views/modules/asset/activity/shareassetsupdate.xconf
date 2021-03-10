@@ -1,7 +1,6 @@
 <page>
 
-	<property name="shareoriginal">true</property>
-	<path-action name="OrderModule.rebuildShareOrder"/>
+	<path-action name="OrderModule.loadOrder"/>
 	<path-action name="OrderModule.createConversionAndPublishRequest"/>
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html" allowduplicates="true" />
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
