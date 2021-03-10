@@ -2,7 +2,8 @@
 	$pages.include("./previewemail.html")
 #else
 <form class="validate" id="usereditform" method="post" action="$home$apphome/views/modules/asset/activity/share/previewemail.html">
-
+	
+	$context.putPageValue("viewid","asset/sharebyemail")
 	$pages.include("./customformats.html")
 	</form>
 	

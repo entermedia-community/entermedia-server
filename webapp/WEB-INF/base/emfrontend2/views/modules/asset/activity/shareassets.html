@@ -56,6 +56,12 @@ $context.putPageValue("view", "order/emailform")
 </td>
 </tr>
 </table>
+
+#set($customformats= $context.getRequestParameter("sharedmedia"))
+#if($customformats=="preview")
+	$context.putPageValue("viewid","asset/share")
+	$pages.include("./share/customformats.html")
+#end
 </div>
 </form>
 #end
