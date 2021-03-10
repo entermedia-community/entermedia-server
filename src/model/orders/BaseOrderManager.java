@@ -394,7 +394,7 @@ public class BaseOrderManager implements OrderManager {
 	public Order findOrderFromAssets(String inCatId, User inUser, List inAssetids)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
-		Order order = (Order)ordersearcher.query().andgroup("assetids", inAssetids).searchOne(); //complete?
+		Order order = (Order)ordersearcher.query().exact("userid",inUser.getId()).andgroup("assetids", inAssetids).searchOne(); //complete?
 		return order;
 	}
 	
