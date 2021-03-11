@@ -142,10 +142,7 @@ public class OrderModule extends BaseMediaModule
 		{
 			Map props = new HashMap();
 			
-			Boolean shareoriginal = Boolean.parseBoolean(inReq.findValue("shareoriginal"));
-			if (shareoriginal) {
-				props.put("presetid", "0");
-			}
+
 
 			String applicationid = inReq.findValue("applicationid");
 			Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
@@ -333,7 +330,7 @@ public class OrderModule extends BaseMediaModule
 			String catalogid = inReq.findValue("catalogid");
 			//Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 			
-			HitTracker items = (HitTracker) inReq.getPageValue("orderitems");
+			HitTracker items = findOrderItems(inReq);
 			Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 			itemsearcher.deleteAll(items, inReq.getUser());
 
@@ -876,25 +873,42 @@ public class OrderModule extends BaseMediaModule
 	protected List selectAssets(WebPageRequest inReq, String[] selectedids)
 	{
 		List assetids = new ArrayList();
-		
-		for (int i = 0; i < selectedids.length; i++)
-		{
-			String id = selectedids	[i];
-			if (id.startsWith("multiedit:hits"))
+		if(selectedids == null) {
+			String hitssessionid = inReq.getRequestParameter("hitssessionid");
+			HitTracker assets = null;
+			if (hitssessionid != null)
 			{
-				HitTracker hits = (HitTracker) inReq.getSessionValue(id.substring("multiedit:".length()));
-				if (hits != null)
+				assets = (HitTracker) inReq.getSessionValue(hitssessionid);
+				if (assets != null && assets.hasSelections())
 				{
-					for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+					for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
 					{
 						Data data = (Data) iterator.next();
 						assetids.add(data.getId());
 					}
 				}
 			}
-			else
+		}
+		else {
+			for (int i = 0; i < selectedids.length; i++)
 			{
-				assetids.add(id);
+				String id = selectedids	[i];
+				if (id.startsWith("multiedit:hits"))
+				{
+					HitTracker hits = (HitTracker) inReq.getSessionValue(id.substring("multiedit:".length()));
+					if (hits != null)
+					{
+						for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+						{
+							Data data = (Data) iterator.next();
+							assetids.add(data.getId());
+						}
+					}
+				}
+				else
+				{
+					assetids.add(id);
+				}
 			}
 		}
 		return assetids;
@@ -904,6 +918,10 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
+		Boolean shareoriginal = Boolean.parseBoolean(inReq.findValue("shareoriginal"));
+		if (shareoriginal) {
+			inReq.setRequestParameter("presetid", "0");
+		}
 		Order order = getOrderManager().createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
 
 		List assetids = selectAssets(inReq, selectedids);
@@ -914,9 +932,9 @@ public class OrderModule extends BaseMediaModule
 			Asset asset = archive.getAsset(id);
 			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
-
-		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
 		order.setValue("assetids",assetids);
+		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
+		
 		inReq.putPageValue("order", order);
 
 		return order;

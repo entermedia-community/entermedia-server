@@ -3,10 +3,11 @@
 	<property name="shareoriginal">true</property>
 	<path-action name="OrderModule.loadOrderFromAssets"/>
 	
+	
 	<path-action name="OrderModule.findOrderItems"/>
 	<path-action name="OrderModule.findOrderAssets"/>
 	
-	<path-action name="OrderModule.updateSharedOrder"/>
+	
 	
 	<path-action name="OrderModule.createConversionAndPublishRequest"/>
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html" allowduplicates="true" />
