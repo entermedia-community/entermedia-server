@@ -31,38 +31,40 @@ $context.putPageValue("view", "order/emailform")
 	<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
 	
 	#set( $shareorderlink = "$context.siteRoot$home$apphome/views/modules/asset/activity/share/sharedassets.html?orderid=$order.id")
-	<h5>[[Link]]
+	##<h5>[[Sharing]] $orderitems.size() [[assets]]</h5> 
+	<p class="hyphenate">
+	<a href="$shareorderlink" target="_blank">$shareorderlink</a>
+	<br> 
 	<a href="#" 
-			class="copytoclipboard btn btn-xxs btn-light"
+			class="copytoclipboard btn btn-sm btn-info"
 			data-targetdiv="embedalertdialog"
 			data-copytext="mediaviewerlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
-	</h5> 
-	<p class="hyphenate">
-	<a href="$shareorderlink">$shareorderlink</a>
 	<input style="position:absolute; top:-1000px;" id="mediaviewerlink" value="$shareorderlink" />
 	</p>
 </div>
 
-<h6>[[Customize]]</h6>
-<table class="table">
-<tr>
-<td>
-[[Sharing]] $orderitems.size() [[assets.]]
-</td>
-<td width="30%" style="text-align: right;">
-	<select class="form-control form-control-sm" name="sharedmedia" id="sharemediatype">
-		<option value="original" selected="selected">[[Send Original Media]]</option>
+#set($saved = $content.saved)
+#if($saved == "true")
+<div class="alert alert-success fader alert-save alert-save-top " role="alert">
+<strong>[[Saved]]</strong>
+</div>
+#end
+
+#set($customformats= $context.getRequestParameter("changepreview"))
+
+#if( $candownload)
+<div class="float-right">
+	<select class="form-control form-control-sm" name="changepreview" id="sharemediatype">
+		<option></option>
+		<option value="original">[[Send Original Media]]</option>
 		<option value="preview">[[Send Previews Only]]</option>
 	</select>
-</td>
-</tr>
-</table>
-
-#set($customformats= $context.getRequestParameter("sharedmedia"))
-#if($customformats=="preview")
-	$context.putPageValue("viewid","asset/share")
-	$pages.include("./share/customformats.html")
+</div>
 #end
+
+$context.putPageValue("viewid","asset/share")
+$pages.include("./share/customformats.html")
+
 </div>
 </form>
 #end

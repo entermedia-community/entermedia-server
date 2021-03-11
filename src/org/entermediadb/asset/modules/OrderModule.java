@@ -866,6 +866,7 @@ public class OrderModule extends BaseMediaModule
 		{
 			order = createOrderFromAssets(inReq);
 		}
+		inReq.putPageValue("order", order);
 		return order;
 		
 	}
@@ -918,10 +919,9 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
-		Boolean shareoriginal = Boolean.parseBoolean(inReq.findValue("shareoriginal"));
-		if (shareoriginal) {
-			inReq.setRequestParameter("presetid", "0");
-		}
+		
+
+		
 		Order order = getOrderManager().createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
 
 		List assetids = selectAssets(inReq, selectedids);
@@ -932,7 +932,7 @@ public class OrderModule extends BaseMediaModule
 			Asset asset = archive.getAsset(id);
 			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
-		order.setValue("assetids",assetids);
+		order.setValue("orderassetids",assetids);
 		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
 		
 		inReq.putPageValue("order", order);

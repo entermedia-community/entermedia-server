@@ -31,7 +31,7 @@
 			#set( $rootid = $hits.sessionId )
 		#end
 		
-			<a  class="showasset" data-assetid="$asset.id" href="#" alt="$asset" name="$asset" style="text-decoration: none;">
+			##<a  class="showasset" data-assetid="$asset.id" href="#" alt="$asset" name="$asset" style="text-decoration: none;">
 		
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			#if(!$type)
@@ -41,7 +41,7 @@
 			$context.putPageValue("showdetails", "false")
 			$context.putPageValue("thumbsize", "crop")
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
+			##</a>
 	</td>
 	<td class="asset-name">
 	
@@ -85,7 +85,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")">[[Download]]</a>
+					<a class="btn btn-sm btn-primary" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end

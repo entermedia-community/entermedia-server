@@ -211,7 +211,7 @@
    
   </property>
 
-  <property id="assetids" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list"  type="list">
+  <property id="orderassetids" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list"  type="list">
     <name> 
       <language id="en"><![CDATA[AssetIds]]></language>  
     </name> 

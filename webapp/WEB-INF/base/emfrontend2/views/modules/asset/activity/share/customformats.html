@@ -3,7 +3,7 @@
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
 	<div>
-	<p>[[Please choose a download format for each asset.]]</p>
+	
 	<table id="shared-asset-table" class="table table-striped table-hover download-table" width="100%" >
 	<thead>
 		<tr id="" >  
@@ -11,7 +11,7 @@
 			#set($viewid = "asset/share")
 		#end
 		#set($resultdetail = $mediaarchive.getAssetSearcher().getDetailsForView($viewid, $userprofile))
-		<th>[[Preview]]</th>
+		<th width="120px">[[Preview]]</th>
 		<th>[[Name]]</th>
 		
 		#foreach( $detail in $resultdetail )
@@ -24,7 +24,7 @@
 					</div>
 				 </th>  
 		#end
-		<th>[[Format]]</th>
+		<th width="200px">[[Format]]</th>
 		</tr>
 		</thead>
 			#foreach( $item in $orderitems )
@@ -94,8 +94,10 @@
 		  	   	    $presetquery.addSortBy("ordering");
 		  	   	    #set( $results = $presetsearcher.search($presetquery) )
 		 -->
+		 
+		 	
+		 
 		  			<select class="form-control" name="${item.id}.presetid.value">
-		  	   	    <option value="preview">[[Preview Only]]</option>
 		  	   	    #if( $candownload)
 		  	   	    <option value="0">[[Original]]</option>
 					#end
@@ -103,20 +105,20 @@
 		  	    	#foreach ($preset in $results)
 		  	    		#if($preset.display == "true")
 		  	    		#set($cancrop = $conversionUtil.canCrop($catalogid,$preset.id,$asset.id))
-			#if(!$cancrop)
-				#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
-					#set($show = false)
-				#else
-				
-					#set($show = true)
-				#end
-			#else
-				#set($show = true)
-			#end
-		  	    		
+					#if(!$cancrop)
+						#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+							#set($show = false)
+						#else
+						
+							#set($show = true)
+						#end
+					#else
+						#set($show = true)
+					#end
+				  	    		
 		  	    		
 		  	    		#if($show)
-		  	    		<option value="$preset.id">$preset</option>
+		  	    		<option value="$preset.id" #if($item.presetid==$preset.id) selected="selected"#end>$preset</option>
 		  	    		#end
 		  	    		#end
 		  	    	#end
@@ -127,7 +129,6 @@
 			#end
 	
 </table>
-	<div id="itemsave"></div>
-	<input class="btn btn-primary" style="float: right; margin-top: 20px;" type="submit" value="[[Next]]" />
+	
 </div>
 </div>
