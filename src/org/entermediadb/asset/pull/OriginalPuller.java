@@ -322,7 +322,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			{
 				for (int page = 2; page <= pages; page++)
 				{
-					url = baseurl + "/mediadb/services/cluster/nextalloriginals.json";
+					url = baseurl + "/mediadb/services/cluster/pullrecentuploads.json";
 	
 					params.put("page", String.valueOf(page));
 					log.info("next page: " + encoded + "&page=" + page + "&hitssessionid=" + hitssessionid);
