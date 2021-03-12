@@ -410,11 +410,22 @@ public class OriginalsAssetSource extends BaseAssetSource
 		int existed = 0;	
 		int modified = 0;
 		List tosave = new ArrayList();
+		String localClusterId = archive.getNodeManager().getLocalClusterId();
 		for(Object obj: assets)
 		{
 			Data hit = (Data)obj;
 		
 			Asset asset = (Asset)searcher.loadData(hit);
+			
+			//verify we own this asset (cluster)
+			Map emEditStatus = asset.getEmRecordStatus();
+			String clusterid = (String) emEditStatus.get("mastereditclusterid");
+			if (!localClusterId.equals(clusterid))
+			{
+				//Skip it, We do not own this asset
+				continue;
+			}
+			
 			ContentItem item = getOriginalContent(asset);
 			boolean saveit = false;
 			//log.info(item.getPath());
