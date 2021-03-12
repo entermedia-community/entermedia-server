@@ -2956,10 +2956,10 @@ label.error {
 	color: #004085;
     background-color: #cce5ff;
     border-color: #b8daff;
-    paddint-top:10px;
+    padding-top:10px;
     font-size: .9rem;
     font-weight: 400;
-    line-height: 1;
+    line-height: 2;
     
     
     width: 300px;
@@ -5192,4 +5192,7 @@ a.collectionlike,a.collectionsaved
 .filterschangesort {
 	cursor: pointer;
 	line-height: 1.5;
+}
+.download-table th {
+	border-top: 0 none;
 }

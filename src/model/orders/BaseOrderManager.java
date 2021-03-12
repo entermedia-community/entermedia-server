@@ -394,7 +394,7 @@ public class BaseOrderManager implements OrderManager {
 	public Order findOrderFromAssets(String inCatId, User inUser, List inAssetids)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
-		Order order = (Order)ordersearcher.query().exact("userid",inUser.getId()).andgroup("assetids", inAssetids).searchOne(); //complete?
+		Order order = (Order)ordersearcher.query().exact("userid",inUser.getId()).andgroup("orderassetids", inAssetids).searchOne(); //complete?
 		return order;
 	}
 	
@@ -555,11 +555,28 @@ public class BaseOrderManager implements OrderManager {
 
 			//item.getId() + "." + field + ".value"
 			String presetid = orderitemhit.get("presetid");
-			if(presetid == null){
-				presetid = properties.get(orderitemhit.getId() + ".presetid.value");
-				if(presetid == ""){
-					presetid = null;
+
+			String changepreview = inReq.getRequestParameter("changepreview");
+			if (changepreview != null) {
+				if (changepreview.equals("original")) {
+					presetid = "0";
 				}
+				else {
+					if("0".equals(presetid)) {
+						presetid = null;
+					}
+				}
+			}
+			else{
+				String newpresetid = properties.get(orderitemhit.getId() + ".presetid.value");
+				if (newpresetid != null) {
+					presetid = newpresetid;
+				}
+			}
+			if(presetid == ""){
+				presetid = null;
+			}
+			if(presetid == null){
 				String rendertype = null;
 				if( presetid == null)
 				{
@@ -586,13 +603,24 @@ public class BaseOrderManager implements OrderManager {
 					presetid = inReq.findValue("presetid");
 				}
 				
-				
-				
-				if( presetid == null)
-				{
-					throw new OpenEditException("presetid is required");
+				if( presetid == null ) {
+					presetid = "thumbimage";
+					rendertype = archive.getMediaRenderType(asset.getFileFormat());
+					if (rendertype != null) {
+						if(rendertype.equals("image")) {
+			  	   	    	presetid = "largeimage";
+						}
+						else if (rendertype.equals("video")) {
+							presetid = "videohls";
+						}
+						else if (rendertype.equals("document")) {
+							presetid = "largedocumentpreview";
+						}
+					}
 				}
 			}
+			
+				
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 			if (orderItem == null)
 			{

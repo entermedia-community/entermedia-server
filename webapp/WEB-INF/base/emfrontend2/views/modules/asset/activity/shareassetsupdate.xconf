@@ -10,6 +10,8 @@
 	
 	<path-action name="OrderModule.updatePendingOrders"/>
 	
+	<property name="saved">true</property>
+	
 	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
 	
 </page>
