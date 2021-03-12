@@ -386,6 +386,7 @@ public class AdminModule extends BaseMediaModule
 			
 		if (entermediakey == null && account == null && email == null && inReq.getRequest() != null)
 		{
+			log.info("Missing parameters " + entermediakey + " and " + account + " email:" + email );
 			return;
 		}
 		else
