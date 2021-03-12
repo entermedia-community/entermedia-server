@@ -68,7 +68,7 @@ public class VideoConversionManager extends BaseConversionManager
 		//Do the video conversion first. Then do the standard image conversion
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.m3u8");
-		if( preset == null && Boolean.parseBoolean( preset.get("onimport")) )
+		if( preset == null || !Boolean.parseBoolean( preset.get("onimport")) )
 		{
 			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
 		}
