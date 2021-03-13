@@ -62,8 +62,12 @@ public class GoogleModule extends BaseMediaModule
 				throw new OpenEditException("No password found");
 			}
 			inReq.putPageValue("firebasepassword", firebasepassword);
-					
-			
+			inReq.putPageValue("status","ok");
+		}
+		else
+		{
+			log.info("No user logged in");
+			inReq.putPageValue("status","loginfailed");
 		}
 	}	
 	

@@ -210,6 +210,12 @@
     <property id="collectionid" index="true"   stored="true" editable="true"  type="list" viewtype="list" listid="librarycollection">Library Collection
    
   </property>
+
+  <property id="orderassetids" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list"  type="list">
+    <name> 
+      <language id="en"><![CDATA[AssetIds]]></language>  
+    </name> 
+  </property>
   
   
 </properties>

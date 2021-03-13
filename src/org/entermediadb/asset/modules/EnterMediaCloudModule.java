@@ -49,7 +49,9 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		}
 		String userid = userkey.substring(0,userkey.indexOf("md5"));
 		
-		//TODO: Make this configurabl
+		//TODO: Make this configurable
+		
+		log.info("Validate user key: " +userkey + " | user: "+userid);
 		
 		
 		JSONObject params = new JSONObject();

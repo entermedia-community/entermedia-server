@@ -130,6 +130,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 				int split = uandpass.indexOf("md542");
 				if (split == -1)
 				{
+					log.info("invalid key " + uandpass);
 					return null;
 				}
 				String username = uandpass.substring(0, split);
