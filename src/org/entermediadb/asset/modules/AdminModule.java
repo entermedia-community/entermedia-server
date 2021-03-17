@@ -246,6 +246,7 @@ public class AdminModule extends BaseMediaModule
 						if (tsenc.startsWith("DES:"))
 							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
 						passenc += StringEncryption.TIMESTAMP + tsenc;
+						log.info("Key: " + passenc);
 					}
 					else
 					{
@@ -1298,23 +1299,24 @@ public class AdminModule extends BaseMediaModule
 	public void createTempUser(WebPageRequest inReq)
 	{
 		String email = inReq.getRequestParameter(EMAIL);
-		User user = getUserSearcher(inReq).getUserByEmail(email);
-		if (user == null )
-		{
-			Group guest = getGroupSearcher(inReq).getGroup("guest");
-			if (guest == null)
+		if (email != null) {
+			User user = getUserSearcher(inReq).getUserByEmail(email);
+			if (user == null )
 			{
-				getUserManager(inReq).createGroup("guest", "Guest");
+				Group guest = getGroupSearcher(inReq).getGroup("guest");
+				if (guest == null)
+				{
+					getUserManager(inReq).createGroup("guest", "Guest");
+				}
+				user = (User)getUserSearcher(inReq).createNewData();
+				//user = getUserManager(inReq).createGuestUser(null, null, "guest");
+				user.setEmail(email);
+				user.addGroup(guest);
+				String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+				user.setProperty("catalogid", catalogid);
+				user.setEnabled(false);
+				getUserManager(inReq).saveUser(user);
 			}
-			user = (User)getUserSearcher(inReq).createNewData();
-			//user = getUserManager(inReq).createGuestUser(null, null, "guest");
-			user.setEmail(email);
-			user.addGroup(guest);
-			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
-			user.setProperty("catalogid", catalogid);
-			user.setEnabled(false);
-			getUserManager(inReq).saveUser(user);
-
 		}
 
 	}

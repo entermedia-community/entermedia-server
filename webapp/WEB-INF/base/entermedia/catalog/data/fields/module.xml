@@ -10,15 +10,15 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="name" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">File Name 
+  <property id="name" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">
     <name> 
       <language id="de"><![CDATA[Dateiname]]></language>  
-      <language id="en"><![CDATA[File Name]]></language>  
-      <language id="es"><![CDATA[Nombre del archivo]]></language>  
-      <language id="fr"><![CDATA[Nom de fichier]]></language> 
+      <language id="en"><![CDATA[Module Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Nom]]></language> 
     </name> 
   </property>  
-  <property id="author" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Author 
+  <property id="author" index="true" stored="true" keyword="true" editable="true"  filter="false" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Author]]></language>  
       <language id="en"><![CDATA[Author]]></language>  
@@ -36,18 +36,17 @@
       <language id="fr"><![CDATA[URL de mise à niveau]]></language> 
     </name> 
   </property>  
-  <property id="licence" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Upgrade URL
+  <property id="licence" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">
     <name>
-      <language id="de"><![CDATA[Upgrade-uRL]]></language>
-      <language id="en"><![CDATA[Upgrade URL]]></language>
-      <language id="es"><![CDATA[URL de actualización]]></language>
-      <language id="fr"><![CDATA[URL de mise à niveau]]></language>
+      <language id="en"><![CDATA[Licence]]></language>
+      <language id="es"><![CDATA[Licencia]]></language>
     </name>
   </property> 
   
   <property id="showonnav" editable="true" index="true" stored="true" type="boolean" > 
     <name> 
-      <language id="en"><![CDATA[Show as Tab]]></language>  
+      <language id="en"><![CDATA[Show as Tab]]></language>
+      <language id="es"><![CDATA[Mostrar en Nav]]></language>   
     </name> 
   </property>
   <property id="showonsearch" editable="true" index="true" stored="true" type="boolean" > 
@@ -67,9 +66,10 @@
   
   <!--  Dasta Merge -->
   
-    <property id="href" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <property id="href" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">
     <name>
-      <language id="en"><![CDATA[href]]></language>
+      <language id="en"><![CDATA[Href]]></language>
+      <language id="es"><![CDATA[Href]]></language>
     </name>
   </property>
   
