@@ -72,6 +72,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		{
 			//Problem
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + userkey);
+			inReq.setCancelActions(true);
 			return;
 		}
 		JSONObject data = getConnection().parseJson(resp);
