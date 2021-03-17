@@ -45,12 +45,18 @@ public class FinderModule extends BaseMediaModule
 	
 	public void organizeHits(WebPageRequest inReq) 
 	{
+		Collection foundmodules = (Collection)inReq.getPageValue("organizedModules");
+		if( foundmodules != null)
+		{
+			log.info("Modules aready loaded" + inReq.getPage().getPath());
+			return;
+		}
 		String HitsName = inReq.findValue("hitsname");
 		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
 		if( hits != null)
 		{
 			Collection pageOfHits = hits.getPageOfHits();
-			
+			pageOfHits = new ArrayList(pageOfHits); 
 			organizeHits(inReq, hits, pageOfHits);
 		}
 	}
@@ -106,6 +112,22 @@ public class FinderModule extends BaseMediaModule
 									//TODO: Compine results, avoid dups
 									bytypes.put(sourcetype,sthits);
 								}
+							}
+							else
+							{
+								//Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
+								Searcher searcher = archive.getSearcher(sourcetype);
+								if( sourcetype.equals("category"))
+								{
+									sthits = searcher.query().hitsPerPage(maxpossible).exact("parentid","index").sort("name").search();
+								}
+								else
+								{
+									sthits = searcher.query().hitsPerPage(maxpossible).all().sort("name").search();
+								}
+								//TODO: Compine results, avoid dups
+								bytypes.put(sourcetype,sthits);
+								
 							}
 						}
 						if( sthits != null && !sthits.isEmpty())
