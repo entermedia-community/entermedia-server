@@ -99,7 +99,13 @@ public class FinderModule extends BaseMediaModule
 						String sourcetype = filter.getId();
 						int total  = filter.getCount();
 						Collection sthits = bytypes.get(sourcetype);
-						int maxpossible = Math.min(total,targetsize);
+						int max = targetsize;
+						if( sourcetype.equals("asset"))
+						{
+							max = Math.min(total,20);
+						}
+						int maxpossible = Math.min(total,max);
+						
 						if( sthits == null || sthits.size() < maxpossible)
 						{
 							if( !hits.getSearchQuery().isEmpty())
@@ -205,7 +211,13 @@ public class FinderModule extends BaseMediaModule
 				values = new ArrayList();
 				bytypes.put(type,values);
 			}
-			if(values.size()<maxsize)
+			int max = maxsize;
+			if( type.equals("asset"))
+			{
+				max = 20;
+			}
+
+			if(values.size()<max)
 			{
 				values.add(data);
 			}
