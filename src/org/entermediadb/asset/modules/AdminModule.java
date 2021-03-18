@@ -263,6 +263,43 @@ public class AdminModule extends BaseMediaModule
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 
 	}
+	
+	public void getKey(WebPageRequest inReq) {
+		User foundUser = inReq.getUser();
+		if (foundUser == null ) {
+			return;
+		}
+		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
+		passenc = foundUser.getUserName() + "md542" + passenc;
+		try
+		{
+			String expiry = inReq.getPageProperty("temporary_password_expiry");
+			if (expiry == null || expiry.isEmpty())
+			{
+				log.info("Temporary password expiry is not enabled.");
+			}
+			else
+			{
+					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+					if (tsenc != null && !tsenc.isEmpty())
+					{
+						if (tsenc.startsWith("DES:"))
+							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+						passenc += StringEncryption.TIMESTAMP + tsenc;
+					}
+					else
+					{
+						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+					}
+			}
+			inReq.putPageValue("userKey", passenc);
+		}
+		catch (OpenEditException oex)
+		{
+			log.error(oex.getMessage(), oex);
+			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+		}
+	}
 
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{

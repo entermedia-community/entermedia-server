@@ -1874,7 +1874,28 @@ public class ProjectManager implements CatalogEnabled
 		HitTracker hits = getMediaArchive().query("librarycollection").ids(ids).sort("name").search();
 		hits.setHitsPerPage(50);
 		return hits;
-
+	}
+	
+	public Collection listCollectionsOnTeam(User inUser)
+	{
+		Collection workspaces = getMediaArchive().query("librarycollectionusers").exact("ontheteam", "true").exact("followeruser", inUser.getId()).search();
+		Set ids = new HashSet();
+		for (Iterator iterator = workspaces.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ids.add(hit.get("collectionid"));
+		}		
+			    
+		List libraryCollectionIds = new ArrayList();
+		Collection instances = getMediaArchive().query("entermedia_instances").orgroup("librarycollection", ids).search();
+		for (Iterator iterator = instances.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			// hit.get("id")+","+ hit.get("instanceurl")
+			libraryCollectionIds.add(hit);
+		}
+				
+		return libraryCollectionIds;
 	}
 
 	public boolean doesLike(User inUser, LibraryCollection inCollection)
