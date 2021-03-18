@@ -243,7 +243,7 @@ public class FinderModule extends BaseMediaModule
 				for (Iterator iterator2 = ids.iterator(); iterator2.hasNext();)
 				{
 					String id = (String) iterator2.next();
-					uids.add(searchtype + "_" + id);
+					uids.add(id);
 				}
 			}
 		}
@@ -257,7 +257,7 @@ public class FinderModule extends BaseMediaModule
 				query = searcher.createSearchQuery();
 			}
 			query.setName("modulehits");
-			query.addOrsGroup("uid",uids);
+			query.addOrsGroup("id",uids);  //TODO: Filter out duplicates based on type
 			query.setHitsPerPage(1000);
 			HitTracker hits = searcher.cachedSearch(inReq, query);
 			if( hits != null)
