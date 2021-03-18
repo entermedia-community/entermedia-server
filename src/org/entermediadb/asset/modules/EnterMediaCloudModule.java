@@ -104,11 +104,16 @@ public class EnterMediaCloudModule extends BaseMediaModule
 				userprofile = (UserProfile) profilesearcher.createNewData();
 				userprofile.setId(user.getId());
 				userprofile.setProperty("settingsgroup", "administrator"); //dependant on what what we get back from our site. On Team?
-				profilesearcher.saveData(userprofile);
 			}
+			userprofile.setValue("entermediacloudkey",userkey);
+			profilesearcher.saveData(userprofile);
+			
 			inReq.putSessionValue("systemuser", user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
+			
+			
+			
 		}
 		else
 		{
