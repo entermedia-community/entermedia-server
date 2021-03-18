@@ -1878,13 +1878,13 @@ public class ProjectManager implements CatalogEnabled
 	
 	public Collection listCollectionsOnTeam(User inUser)
 	{
-		Collection workspaces = getMediaArchive().query("librarycollectionusers").exact("ontheteam", "true").search();
+		Collection workspaces = getMediaArchive().query("librarycollectionusers").exact("ontheteam", "true").exact("followeruser", inUser.getId()).search();
 		Set ids = new HashSet();
 		for (Iterator iterator = workspaces.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			ids.add(hit.get("collectionid"));
-		}
+		}		
 			    
 		List libraryCollectionIds = new ArrayList();
 		Collection instances = getMediaArchive().query("entermedia_instances").orgroup("librarycollection", ids).search();
