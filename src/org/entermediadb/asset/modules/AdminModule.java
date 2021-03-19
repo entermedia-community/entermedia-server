@@ -1488,8 +1488,11 @@ public class AdminModule extends BaseMediaModule
 			foruser = inReq.getUserName();
 		}
 		User user = getUserManager(inReq).getUser(foruser);
-
-		String entermediakey = encoder.getTempEnterMediaKey(user);
+		String entermediakey = "";
+		if( user != null)
+		{
+			entermediakey = encoder.getTempEnterMediaKey(user);
+		}
 
 		inReq.putPageValue("tempentermediakey",entermediakey);
 
