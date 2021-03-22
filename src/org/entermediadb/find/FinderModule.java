@@ -21,6 +21,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
@@ -105,7 +106,7 @@ public class FinderModule extends BaseMediaModule
 							max = Math.min(total,28);
 						}
 						int maxpossible = Math.min(total,max);
-						
+
 						if( sthits == null || sthits.size() < maxpossible)
 						{
 							if( !hits.getSearchQuery().isEmpty())
@@ -143,6 +144,19 @@ public class FinderModule extends BaseMediaModule
 						}
 					}
 				}
+
+				//Put asset into session
+				HitTracker assets = (HitTracker)bytypes.get("asset");
+				if( assets != null)
+				{
+					assets.setHitsName("hits");
+					assets.setSearcher(archive.getAssetSearcher());
+					assets.setDataSource("asset");
+					assets.setSessionId("hitsasset" + archive.getCatalogId() );
+					log.info(assets.getSessionId());
+					inReq.putSessionValue(assets.getSessionId(), assets);
+				}
+				
 
 				sortModules(foundmodules);
 				log.info("organized Modules: " + foundmodules);
@@ -208,7 +222,7 @@ public class FinderModule extends BaseMediaModule
 			Collection values = (Collection) bytypes.get(type);
 			if( values == null)
 			{
-				values = new ArrayList();
+				values = new ListHitTracker();
 				bytypes.put(type,values);
 			}
 			int max = maxsize;
