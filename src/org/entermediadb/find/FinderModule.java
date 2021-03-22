@@ -102,7 +102,7 @@ public class FinderModule extends BaseMediaModule
 						int max = targetsize;
 						if( sourcetype.equals("asset"))
 						{
-							max = Math.min(total,20);
+							max = Math.min(total,28);
 						}
 						int maxpossible = Math.min(total,max);
 						
@@ -214,7 +214,7 @@ public class FinderModule extends BaseMediaModule
 			int max = maxsize;
 			if( type.equals("asset"))
 			{
-				max = 20;
+				max = 28;
 			}
 
 			if(values.size()<max)
