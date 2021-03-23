@@ -30,6 +30,8 @@ public class FinderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(FinderModule.class);
 
+	private static final int MEDIASAMPLE=25;
+	
 	public void searchByQuery(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -103,7 +105,7 @@ public class FinderModule extends BaseMediaModule
 						int max = targetsize;
 						if( sourcetype.equals("asset"))
 						{
-							max = Math.min(total,28);
+							max = Math.min(total,MEDIASAMPLE);
 						}
 						int maxpossible = Math.min(total,max);
 
@@ -228,7 +230,7 @@ public class FinderModule extends BaseMediaModule
 			int max = maxsize;
 			if( type.equals("asset"))
 			{
-				max = 28;
+				max = MEDIASAMPLE;
 			}
 
 			if(values.size()<max)
