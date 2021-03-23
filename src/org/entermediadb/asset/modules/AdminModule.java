@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.BaseAutoLogin;
+import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
@@ -261,7 +262,16 @@ public class AdminModule extends BaseMediaModule
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
-
+	}
+	
+	public void emailWordPress(WebPageRequest inReq) {
+		String email = inReq.getRequestParameter("to");
+		log.info("email:" + email );
+		try {
+			emailPasswordReminder(inReq);
+		} catch(Exception oex) {
+			log.error(oex.toString());
+		}
 	}
 	
 	public void getKey(WebPageRequest inReq) {
