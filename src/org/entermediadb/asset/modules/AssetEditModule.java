@@ -766,7 +766,7 @@ public class AssetEditModule extends BaseMediaModule
 			return;
 		}
 		String threaded = inReq.findValue("threadedupload");
-		if (Boolean.valueOf(threaded))
+		if (Boolean.valueOf(threaded) & pages.size() > 6)
 		{
 			ExecutorManager manager = (ExecutorManager) getModuleManager().getBean(archive.getCatalogId(), "executorManager");
 
