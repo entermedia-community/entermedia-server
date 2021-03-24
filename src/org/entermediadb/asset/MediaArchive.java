@@ -2446,12 +2446,18 @@ public class MediaArchive implements CatalogEnabled
 			cdnprefix = getCatalogSettingValue("cdn_prefix");
 			if (cdnprefix == null)
 			{
-				RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-				cdnprefix = rutil.getSiteRoot();
+				//RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+				//cdnprefix = rutil.getSiteRoot();
 				//				if (cdnprefix.contains("localhost")) //Prefix no longer used for internal checks
 				//				{
 				//					cdnprefix = "";
 				//				}
+				cdnprefix = getCatalogSettingValue("siteroot");//
+				
+				if( cdnprefix == null)
+				{
+					cdnprefix = "";
+				}
 			}
 		}
 		String sourcepath = inAsset.getSourcePath();
