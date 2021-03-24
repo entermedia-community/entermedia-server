@@ -37,9 +37,14 @@ public class BaseJsonModule extends BaseMediaModule
 		{
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			red.setHeader("Access-Control-Allow-Origin","*");
+			red.setHeader("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS");
+			red.setHeader("Access-Control-Allow-Headers","*");
+			red.setHeader("Access-Control-Allow-Credentials","*");
+			
 			if( inReq.getRequest().getMethod().equals("OPTIONS"))
 			{
 				inReq.setHasRedirected(true);
+				//return 200?
 				log.info("Preflight detected ignoring request");
 			}
 		}	
