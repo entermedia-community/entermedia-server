@@ -2,9 +2,12 @@ package org.entermediadb.asset.mediadb;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -33,12 +36,19 @@ public class BaseJsonModule extends BaseMediaModule
 	public void allowHeaders(WebPageRequest inReq)
 	{
 		HttpServletResponse red = inReq.getResponse();
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
+		Map<String, String> headers = Collections.list(httpRequest.getHeaderNames())
+		    .stream()
+		    .collect(Collectors.toMap(h -> h, httpRequest::getHeader));
+		//log.info(headers);
 		if( red != null)
 		{
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-			String origin = red.getHeader("Origin");
-			if (origin != null)
+			String origin = httpRequest.getHeader("Origin");
+			if (origin != null && inReq.getUser() != null)
 			{
+				
 				red.setHeader("Access-Control-Allow-Origin",origin);
 			}
 			else
