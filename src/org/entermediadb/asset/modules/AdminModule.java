@@ -263,17 +263,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 	}
-	
-	public void emailWordPress(WebPageRequest inReq) {
-		String email = inReq.getRequestParameter("to");
-		log.info("email:" + email );
-		try {
-			emailPasswordReminder(inReq);
-		} catch(Exception oex) {
-			log.error(oex.toString());
-		}
-	}
-	
+		
 	public void getKey(WebPageRequest inReq) {
 		User foundUser = inReq.getUser();
 		if (foundUser == null ) {
@@ -441,7 +431,9 @@ public class AdminModule extends BaseMediaModule
 		{
 			if( entermediakey != null)
 			{
-				account = entermediakey.substring(0,entermediakey.indexOf("md5"));
+				if (entermediakey.indexOf("md5") != -1) {
+					account = entermediakey.substring(0, entermediakey.indexOf("md5"));
+				}
 			}
 			UserManager userManager = getUserManager(inReq);
 			User user = null;
