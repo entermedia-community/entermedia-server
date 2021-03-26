@@ -200,6 +200,7 @@ public class AdminModule extends BaseMediaModule
 			{
 				password = foundUser.getPassword();
 			}
+			foundUser.setEnabled(true);
 			username = foundUser.getUserName();
 		}
 		else
@@ -569,7 +570,7 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("disabled", true);
 					inReq.putPageValue("invaliduser", inUser);
 					getUserManager(inReq).fireUserEvent(inUser, "disabled");
-
+					log.info("User disabled");
 					return false;
 				}
 			}
@@ -616,6 +617,7 @@ public class AdminModule extends BaseMediaModule
 			inReq.putSessionValue(catalogid + "user", inUser);
 			createUserSession(inReq);
 			// user is now logged in
+			log.info("User logged in " + inUser.getId());
 			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
 			if (sendTo == null)
 			{
@@ -1356,7 +1358,6 @@ public class AdminModule extends BaseMediaModule
 				user.addGroup(guest);
 				String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
 				user.setProperty("catalogid", catalogid);
-				user.setEnabled(false);
 				getUserManager(inReq).saveUser(user);
 			}
 		}
