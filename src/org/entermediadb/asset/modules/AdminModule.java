@@ -263,17 +263,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 	}
-	
-	public void emailWordPress(WebPageRequest inReq) {
-		String email = inReq.getRequestParameter("to");
-		log.info("email:" + email );
-		try {
-			emailPasswordReminder(inReq);
-		} catch(Exception oex) {
-			log.error(oex.toString());
-		}
-	}
-	
+		
 	public void getKey(WebPageRequest inReq) {
 		User foundUser = inReq.getUser();
 		if (foundUser == null ) {
