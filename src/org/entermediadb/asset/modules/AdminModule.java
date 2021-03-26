@@ -441,6 +441,7 @@ public class AdminModule extends BaseMediaModule
 			{
 				if( email == null)
 				{
+					log.info("No user id or email found " + account);
 					inReq.putPageValue("oe-exception", "No user id or email found");
 					return;
 				}
@@ -471,11 +472,13 @@ public class AdminModule extends BaseMediaModule
 			}
 			if (password == null)
 			{
-				inReq.putPageValue("oe-exception", "Password cannot be blank");
+				inReq.putPageValue("oe-exception", "Password cannot be blank " + account);
+				log.info(" Password cannot be blank ");
 				return;
 			}
 			if (user == null)
 			{
+				log.info("No user found " + account);
 				inReq.putPageValue("oe-exception", "Invalid Login");
 				return;
 			}
