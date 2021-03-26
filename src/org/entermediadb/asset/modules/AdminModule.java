@@ -431,7 +431,9 @@ public class AdminModule extends BaseMediaModule
 		{
 			if( entermediakey != null)
 			{
-				account = entermediakey.substring(0,entermediakey.indexOf("md5"));
+				if (entermediakey.indexOf("md5") != -1) {
+					account = entermediakey.substring(0, entermediakey.indexOf("md5"));
+				}
 			}
 			UserManager userManager = getUserManager(inReq);
 			User user = null;
