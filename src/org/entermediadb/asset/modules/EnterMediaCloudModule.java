@@ -56,7 +56,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		
 		JSONObject params = new JSONObject();
 		params.put("accountname",userid);
-		params.put("entermediakey",userkey); //This is an expiring key
+		params.put("entermedia.key",userkey); //TODO: Some problem parsing this in NGINX/TOmacat without the .
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);
@@ -72,6 +72,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		{
 			//Problem
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + userkey);
+			inReq.setCancelActions(true);
 			return;
 		}
 		JSONObject data = getConnection().parseJson(resp);
@@ -103,11 +104,16 @@ public class EnterMediaCloudModule extends BaseMediaModule
 				userprofile = (UserProfile) profilesearcher.createNewData();
 				userprofile.setId(user.getId());
 				userprofile.setProperty("settingsgroup", "administrator"); //dependant on what what we get back from our site. On Team?
-				profilesearcher.saveData(userprofile);
 			}
+			userprofile.setValue("entermediacloudkey",userkey);
+			profilesearcher.saveData(userprofile);
+			
 			inReq.putSessionValue("systemuser", user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
+			
+			
+			
 		}
 		else
 		{

@@ -1437,6 +1437,16 @@ Server ProjectModule.uploadFile
 		return isOnEditTeam;
 	}
 	
+	public void listCollectionsOnTeam(WebPageRequest inReq){
+		if(inReq.getUser() == null)
+		{
+			return;
+		}
+		ProjectManager manager = getProjectManager(inReq);
+		Collection workspaces = manager.listCollectionsOnTeam(inReq.getUser());
+		inReq.putPageValue("workspaces", workspaces);				
+	}
+	
 	public void toggleLike(WebPageRequest inReq)
 	{
 			ProjectManager manager = getProjectManager(inReq);

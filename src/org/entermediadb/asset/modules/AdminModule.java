@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.BaseAutoLogin;
+import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
@@ -199,6 +200,7 @@ public class AdminModule extends BaseMediaModule
 			{
 				password = foundUser.getPassword();
 			}
+			foundUser.setEnabled(true);
 			username = foundUser.getUserName();
 		}
 		else
@@ -261,7 +263,43 @@ public class AdminModule extends BaseMediaModule
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
-
+	}
+		
+	public void getKey(WebPageRequest inReq) {
+		User foundUser = inReq.getUser();
+		if (foundUser == null ) {
+			return;
+		}
+		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
+		passenc = foundUser.getUserName() + "md542" + passenc;
+		try
+		{
+			String expiry = inReq.getPageProperty("temporary_password_expiry");
+			if (expiry == null || expiry.isEmpty())
+			{
+				log.info("Temporary password expiry is not enabled.");
+			}
+			else
+			{
+					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+					if (tsenc != null && !tsenc.isEmpty())
+					{
+						if (tsenc.startsWith("DES:"))
+							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+						passenc += StringEncryption.TIMESTAMP + tsenc;
+					}
+					else
+					{
+						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+					}
+			}
+			inReq.putPageValue("userKey", passenc);
+		}
+		catch (OpenEditException oex)
+		{
+			log.error(oex.getMessage(), oex);
+			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+		}
 	}
 
 	public void loadPermissions(WebPageRequest inReq) throws Exception
@@ -394,7 +432,9 @@ public class AdminModule extends BaseMediaModule
 		{
 			if( entermediakey != null)
 			{
-				account = entermediakey.substring(0,entermediakey.indexOf("md5"));
+				if (entermediakey.indexOf("md5") != -1) {
+					account = entermediakey.substring(0, entermediakey.indexOf("md5"));
+				}
 			}
 			UserManager userManager = getUserManager(inReq);
 			User user = null;
@@ -402,6 +442,7 @@ public class AdminModule extends BaseMediaModule
 			{
 				if( email == null)
 				{
+					log.info("No user id or email found " + account);
 					inReq.putPageValue("oe-exception", "No user id or email found");
 					return;
 				}
@@ -432,11 +473,13 @@ public class AdminModule extends BaseMediaModule
 			}
 			if (password == null)
 			{
-				inReq.putPageValue("oe-exception", "Password cannot be blank");
+				inReq.putPageValue("oe-exception", "Password cannot be blank " + account);
+				log.info(" Password cannot be blank ");
 				return;
 			}
 			if (user == null)
 			{
+				log.info("No user found " + account);
 				inReq.putPageValue("oe-exception", "Invalid Login");
 				return;
 			}
@@ -527,7 +570,7 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("disabled", true);
 					inReq.putPageValue("invaliduser", inUser);
 					getUserManager(inReq).fireUserEvent(inUser, "disabled");
-
+					log.info("User disabled");
 					return false;
 				}
 			}
@@ -574,6 +617,7 @@ public class AdminModule extends BaseMediaModule
 			inReq.putSessionValue(catalogid + "user", inUser);
 			createUserSession(inReq);
 			// user is now logged in
+			log.info("User logged in " + inUser.getId());
 			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
 			if (sendTo == null)
 			{
@@ -1314,7 +1358,6 @@ public class AdminModule extends BaseMediaModule
 				user.addGroup(guest);
 				String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
 				user.setProperty("catalogid", catalogid);
-				user.setEnabled(false);
 				getUserManager(inReq).saveUser(user);
 			}
 		}
@@ -1451,8 +1494,11 @@ public class AdminModule extends BaseMediaModule
 			foruser = inReq.getUserName();
 		}
 		User user = getUserManager(inReq).getUser(foruser);
-
-		String entermediakey = encoder.getTempEnterMediaKey(user);
+		String entermediakey = "";
+		if( user != null)
+		{
+			entermediakey = encoder.getTempEnterMediaKey(user);
+		}
 
 		inReq.putPageValue("tempentermediakey",entermediakey);
 

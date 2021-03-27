@@ -85,6 +85,41 @@ public class BaseMediaModule extends BaseModule
 			prefix = profile.replaceUserVariable(prefix);
 		}
 		inReq.putPageValue("themeprefix", prefix);
+		
+		
+		String site = (String)inReq.getPageValue("siteroot");
+		if( site == null)
+		{
+			MediaArchive archive = getMediaArchive(inReq);
+			site = archive.getCatalogSettingValue("siteroot");
+			if( site == null)
+			{
+				site = inReq.getContentProperty("siteRoot");
+				if( site != null)
+				{
+					archive.setCatalogSettingValue("siteroot", site);
+				}
+			}
+		}
+		if( site == null && inReq.getRequest() != null)
+		{
+			StringBuffer ctx = inReq.getRequest().getRequestURL();
+			site = ctx.substring( 0, ctx.indexOf("/", 8) ); //8 comes from https://
+			if( site.startsWith("http://localhost"))
+			{
+				
+			}
+			else
+			{
+				String forcehttp = inReq.findValue("forcehttp");
+				if( !Boolean.parseBoolean(forcehttp))
+				{
+					site = site.replace("http://", "https://");
+				}
+			}
+		}
+		inReq.putPageValue("siteroot",site);
+		
 		return applicationid;
 	}
 

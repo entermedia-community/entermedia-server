@@ -20,10 +20,10 @@
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
     $context.putPageValue("hit",$hit)
     
-    #if($thumbsize == "thumb")
-    $pages.include("$apphome/components/results/thumbnails/image.html",$context)
-    #else
+    #if($thumbsize == "crop")
     $pages.include("$apphome/components/results/thumbnails/small.html",$context)
+    #else
+    $pages.include("$apphome/components/results/thumbnails/image.html",$context)
     #end        
 
 #elseif($publish && $publish.size() >0 )

@@ -30,6 +30,10 @@ $context.putPageValue("previewonly", $previewonly)
 #set( $opentab = $userprofile.get("assetopentab"))
 #set( $opentabactions = "")
 
+#if(!$opentab)
+	#set( $opentab = "viewpreview")
+#end
+
 #if( !$canviewmetadatageneral )
 	#set( $opentab = "viewpreview")
 #end

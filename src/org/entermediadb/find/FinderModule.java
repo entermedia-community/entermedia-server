@@ -21,6 +21,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
@@ -29,6 +30,8 @@ public class FinderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(FinderModule.class);
 
+	private static final int MEDIASAMPLE=25;
+	
 	public void searchByQuery(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -45,12 +48,18 @@ public class FinderModule extends BaseMediaModule
 	
 	public void organizeHits(WebPageRequest inReq) 
 	{
+		Collection foundmodules = (Collection)inReq.getPageValue("organizedModules");
+		if( foundmodules != null)
+		{
+			log.info("Modules aready loaded" + inReq.getPage().getPath());
+			return;
+		}
 		String HitsName = inReq.findValue("hitsname");
 		HitTracker hits = (HitTracker)inReq.getPageValue(HitsName);
 		if( hits != null)
 		{
 			Collection pageOfHits = hits.getPageOfHits();
-			
+			pageOfHits = new ArrayList(pageOfHits); 
 			organizeHits(inReq, hits, pageOfHits);
 		}
 	}
@@ -93,7 +102,13 @@ public class FinderModule extends BaseMediaModule
 						String sourcetype = filter.getId();
 						int total  = filter.getCount();
 						Collection sthits = bytypes.get(sourcetype);
-						int maxpossible = Math.min(total,targetsize);
+						int max = targetsize;
+						if( sourcetype.equals("asset"))
+						{
+							max = Math.min(total,MEDIASAMPLE);
+						}
+						int maxpossible = Math.min(total,max);
+
 						if( sthits == null || sthits.size() < maxpossible)
 						{
 							if( !hits.getSearchQuery().isEmpty())
@@ -107,6 +122,22 @@ public class FinderModule extends BaseMediaModule
 									bytypes.put(sourcetype,sthits);
 								}
 							}
+							else
+							{
+								//Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
+								Searcher searcher = archive.getSearcher(sourcetype);
+								if( sourcetype.equals("category"))
+								{
+									sthits = searcher.query().hitsPerPage(maxpossible).exact("parentid","index").sort("name").search();
+								}
+								else
+								{
+									sthits = searcher.query().hitsPerPage(maxpossible).all().sort("name").search();
+								}
+								//TODO: Compine results, avoid dups
+								bytypes.put(sourcetype,sthits);
+								
+							}
 						}
 						if( sthits != null && !sthits.isEmpty())
 						{
@@ -115,6 +146,19 @@ public class FinderModule extends BaseMediaModule
 						}
 					}
 				}
+
+				//Put asset into session
+				HitTracker assets = (HitTracker)bytypes.get("asset");
+				if( assets != null)
+				{
+					assets.setHitsName("hits");
+					assets.setSearcher(archive.getAssetSearcher());
+					assets.setDataSource("asset");
+					assets.setSessionId("hitsasset" + archive.getCatalogId() );
+					log.info(assets.getSessionId());
+					inReq.putSessionValue(assets.getSessionId(), assets);
+				}
+				
 
 				sortModules(foundmodules);
 				log.info("organized Modules: " + foundmodules);
@@ -180,10 +224,16 @@ public class FinderModule extends BaseMediaModule
 			Collection values = (Collection) bytypes.get(type);
 			if( values == null)
 			{
-				values = new ArrayList();
+				values = new ListHitTracker();
 				bytypes.put(type,values);
 			}
-			if(values.size()<maxsize)
+			int max = maxsize;
+			if( type.equals("asset"))
+			{
+				max = MEDIASAMPLE;
+			}
+
+			if(values.size()<max)
 			{
 				values.add(data);
 			}
@@ -221,7 +271,7 @@ public class FinderModule extends BaseMediaModule
 				for (Iterator iterator2 = ids.iterator(); iterator2.hasNext();)
 				{
 					String id = (String) iterator2.next();
-					uids.add(searchtype + "_" + id);
+					uids.add(id);
 				}
 			}
 		}
@@ -235,7 +285,7 @@ public class FinderModule extends BaseMediaModule
 				query = searcher.createSearchQuery();
 			}
 			query.setName("modulehits");
-			query.addOrsGroup("uid",uids);
+			query.addOrsGroup("id",uids);  //TODO: Filter out duplicates based on type
 			query.setHitsPerPage(1000);
 			HitTracker hits = searcher.cachedSearch(inReq, query);
 			if( hits != null)

@@ -27,18 +27,22 @@
 			<div class="name">
 				<div class="alias" title="Alias">$folder.name
 				#if( $folder.enabled )
-				 <span class="path" >(Enabled: $folder.enabled)</span> 
+				 <span class="path" >([[Enabled]]: $folder.enabled)</span> 
 				#end
 				</div>
 				#if( $folder.subfolder )
-				<div class="path" title="$folder.subfolder">Path: $folder.subfolder</div> 
+				<div class="path" title="$folder.subfolder">[[Path]]: $folder.subfolder</div> 
 				#end
 				
 				
-				<div class="last-activity">Fully Scanned: $!context.getDateTime($folder.lastscanstart)</div>
+				<div class="last-activity">[[Fully Scanned]]: $!context.getDateTime($folder.lastscanstart)</div>
 				
 			</div>
 		</a>
+		#if($folder.hotfoldertype == "googledrive")
+				  <a class="btn" href="$apphome/views/settings/google/connect.html?state=hotfolder${source.id}">Connect Google Drive and Admin</a>
+
+				#end
 		</div>
 	</li>
 	#end

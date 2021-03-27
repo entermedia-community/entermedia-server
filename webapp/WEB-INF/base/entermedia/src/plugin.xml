@@ -2389,5 +2389,9 @@
 	<bean id="DesktopModule" class="org.entermediadb.desktops.DesktopModule" >
 	</bean>
 
+	<bean id="javascriptGenerator" class="org.entermediadb.asset.generators.JavaScriptGenerator">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+	</bean>
+
 		
 </beans>
