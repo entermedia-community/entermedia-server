@@ -53,12 +53,12 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			long mostrecentmod = 0;
 			
-			for (Iterator iterator = rootpage.getScripts().iterator(); iterator.hasNext();)
+			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
 			{		
-				Script script= (Script) iterator.next();
-				if(!skip(script.getSrc()))
+				String script= (String) iterator.next();
+				if(!skip(script))
 				{
-					Page file = getPageManager().getPage(script.getSrc());
+					Page file = getPageManager().getPage(script);
 					long modifield = file.lastModified();
 					if( modifield > mostrecentmod )
 					{
@@ -158,12 +158,12 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			Writer out = new OutputStreamWriter( tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding() );
 			
-			for (Iterator iterator = rootpage.getScripts().iterator(); iterator.hasNext();)
+			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
 			{		
-				Script script= (Script) iterator.next();
-				if(!skip(script.getSrc()))
+				String script= (String) iterator.next();
+				if(!skip(script))
 				{
-					Page infile = getPageManager().getPage(script.getSrc());
+					Page infile = getPageManager().getPage(script);
 					InputStreamReader reader = null;
 					if ( infile.getCharacterEncoding() != null )
 					{
