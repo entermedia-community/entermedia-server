@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
+import org.openedit.config.Script;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
@@ -52,12 +53,12 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			long mostrecentmod = 0;
 			
-			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
+			for (Iterator iterator = rootpage.getScripts().iterator(); iterator.hasNext();)
 			{		
-				String script= (String) iterator.next();
-				if(!skip(script))
+				Script script= (Script) iterator.next();
+				if(!skip(script.getSrc()))
 				{
-					Page file = getPageManager().getPage(script);
+					Page file = getPageManager().getPage(script.getSrc());
 					long modifield = file.lastModified();
 					if( modifield > mostrecentmod )
 					{
@@ -157,12 +158,12 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			Writer out = new OutputStreamWriter( tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding() );
 			
-			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
+			for (Iterator iterator = rootpage.getScripts().iterator(); iterator.hasNext();)
 			{		
-				String script= (String) iterator.next();
-				if(!skip(script))
+				Script script= (Script) iterator.next();
+				if(!skip(script.getSrc()))
 				{
-					Page infile = getPageManager().getPage(script);
+					Page infile = getPageManager().getPage(script.getSrc());
 					InputStreamReader reader = null;
 					if ( infile.getCharacterEncoding() != null )
 					{
