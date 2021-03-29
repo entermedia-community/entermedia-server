@@ -1,0 +1,9 @@
+<page>
+	<path-action name="JsonAdminModule.preprocess" />
+	<path-action name="EnterMediaCloudModule.loginUserWithExpiringKey" />
+	<path-action name="Admin.loadTemporaryKey" />
+	<permission name="view">
+	  <blank/>
+	</permission>
+		
+</page>
