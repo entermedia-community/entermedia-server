@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
+import org.openedit.config.Script;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;

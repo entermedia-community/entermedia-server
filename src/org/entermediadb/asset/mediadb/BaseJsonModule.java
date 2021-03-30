@@ -44,11 +44,11 @@ public class BaseJsonModule extends BaseMediaModule
 		//log.info(headers);
 		if( red != null)
 		{
+			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			String origin = httpRequest.getHeader("Origin");
-			if (origin != null && inReq.getUser() != null)
+			if (origin != null && ( isoptions || inReq.getUser() != null) )
 			{
-				
 				red.setHeader("Access-Control-Allow-Origin",origin);
 			}
 			else
@@ -59,7 +59,7 @@ public class BaseJsonModule extends BaseMediaModule
 			red.setHeader("Access-Control-Allow-Headers","*");
 			red.setHeader("Access-Control-Allow-Credentials","true");
 			
-			if( inReq.getRequest().getMethod().equals("OPTIONS"))
+			if( isoptions )
 			{
 				inReq.setHasRedirected(true);
 				//return 200?

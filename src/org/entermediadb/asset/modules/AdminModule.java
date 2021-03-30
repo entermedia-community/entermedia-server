@@ -262,6 +262,15 @@ public class AdminModule extends BaseMediaModule
 			log.error(oex.getMessage(), oex);
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
+		
+		
+		//Different email template for desktopapp
+		String launchersource = inReq.getRequestParameter("launchersource");
+		if (launchersource.equals("desktopapp")) {
+			String emaillayoutdesktopapp = inReq.getRequestParameter("emaillayoutdesktopapp");
+			inReq.putPageValue("emaillayout", emaillayoutdesktopapp);
+		}
+		
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 	}
 		

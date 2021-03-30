@@ -1,3 +1,13 @@
+
+curl -H "Content-Type: application/json" -XPOST https://emediafinder.com/entermediadb/mediadb/services/authentication/validateuser.json -d '{
+ 	"accountname":"900020",
+	"entermedia.key":"900020md5420800fc0c1150d80810830c20ab3a0e3400e20ed090fbtstamp2olLXOx+PYxTf3Eign+RFQ==",
+	"collectionid":"AXhwKShBEmxK8rD44diz"
+}'| python -mjson.tool
+
+
+
+
 curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
 {
   "from" : 0,
@@ -204,7 +214,7 @@ curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
 }'| python -mjson.tool
 
 
-curl -XGET http://localhost:9200/assets_catalog/_search -d '{
+curl -XPOST https://emediafinder.com/entermediadb/mediadb/services/authentication/validateuser.json -d '{
   "query" : {
     "range" : {
       "emrecordstatus.recordmodificationdate" : {
