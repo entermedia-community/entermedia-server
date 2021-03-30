@@ -405,7 +405,11 @@ public class AdminModule extends BaseMediaModule
 	 */
 	public void login(WebPageRequest inReq) throws Exception
 	{
-		String entermediakey = inReq.getRequestParameter("entermediakey");
+		String entermediakey = inReq.getRequestParameter("entermedia.key");
+		if( entermediakey == null)
+		{
+			entermediakey = inReq.getRequestParameter("entermediakey");
+		}
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
 		
