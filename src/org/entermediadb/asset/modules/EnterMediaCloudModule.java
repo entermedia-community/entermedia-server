@@ -57,6 +57,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		JSONObject params = new JSONObject();
 		params.put("accountname",userid);
 		params.put("entermedia.key",userkey); //TODO: Some problem parsing this in NGINX/TOmacat without the .
+		params.put("entermediakey",userkey);
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);
