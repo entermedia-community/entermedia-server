@@ -3,7 +3,7 @@
 #set($assetid = $context.getRequestParameter("assetid"))
 #set($targetdiv = $context.getRequestParameter("targetdiv"))
 #if ($targetdiv == "uploadcollectionpicker")
-	#set( $action = "$home$apphome/components/upload/types/html5/collectionpickeraddnew.html")
+	#set( $action = "$!siteroot$apphome/components/upload/types/html5/collectionpickeraddnew.html")
 #else 
 	#if( $assetid)
 		#set( $action = "$!siteroot$apphome/components/opencollections/asset/createcollection.html")
@@ -11,6 +11,7 @@
 		#set( $action = "$!siteroot$apphome/components/opencollections/createcollection.html")
 	#end
 #end
+
 <form name="adder" id="adder" class="validate-inputs #if($targetdiv) ajaxform autocloseform #end" 
 		targetdiv="$!{targetdiv}" 
 		action="$action">
