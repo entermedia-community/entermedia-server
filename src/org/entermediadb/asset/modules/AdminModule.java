@@ -266,7 +266,7 @@ public class AdminModule extends BaseMediaModule
 		
 		//Different email template for desktopapp
 		String launchersource = inReq.getRequestParameter("launchersource");
-		if (launchersource.equals("desktopapp")) {
+		if (launchersource != null && launchersource.equals("desktopapp")) {
 			String emaillayoutdesktopapp = inReq.getRequestParameter("emaillayoutdesktopapp");
 			inReq.putPageValue("emaillayout", emaillayoutdesktopapp);
 		}
