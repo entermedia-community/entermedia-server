@@ -1,6 +1,103 @@
-
 $context.putPageValue("showalllanguagevalues",true)
 <div class="tab-pane" id="tabsummarypanel">
 ##TODO: Enforce View Metadata permission
-$pages.include("$componenthome/detaileditor/generalinformation/summary.html",$context)
+#set($hitssessionid = $hits.sessionId )
+#if(!$hitssessionid)
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
+$context.putPageValue("showalllanguagevalues",true)
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+<div class="summarytab">
+<div class="container-fluid ">
+<div class="row">
+		<div class="col-8">
+			<div id="asset-detail-editor">
+			#foreach( $viewpath in $views.keySet() )
+			 
+				#set( $target = $views.get($viewpath) )
+				#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+			        #if("$!permissionvalue" == "" || $permissionvalue == true)
+			     
+					#if( !$target.rendertable )
+						$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+						$context.putPageValue("data",$asset)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						$context.putPageValue("view",$viewpath)
+						
+						<div id="edit-${target.getId()}" class="asset-data-detail asset-data-preview assetpanel-editor-box">
+							#set($collectionid = $context.getRequestParameter("collectionid"))
+							<h4>$context.getText($target.toString()) 
+							#if($caneditasset)
+								<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" 
+								   class="detail-edit-icon float-right ajax btn btn-xs"
+								   data-targetdiv="edit-${target.getId()}"
+								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
+							#end</h4>
+							$context.putPageValue("clearfilters","true")	 
+							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+						</div>
+					#end
+				#end
+                #set($permissionvalue = "")
+				
+			#end
+			
+			</div>
+	</div>					
+		<div class="col-4">
+				#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+		        #if( $ismulti )
+		        
+    				<div class="media-player-mini">
+		                <div class="primary" style="text-align: center; height: 33px; line-height: 33px;">[[Editing across]] $asset.size() [[assets]]</div>
+		        	</div>
+		        
+		        #else
+					$pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
+				#end
+				#set( $libraries = $asset.getLibraries())
+				#if( $libraries.size() > 0)
+    				
+    				<div class="asset-data-detail assetpanel-editor-box" >
+    				  <h4>[[Libraries]]</h4>
+    				  <div class="emlist">
+            				#foreach($library in $libraries)
+            					 #set( $division = $mediaarchive.getData("division",$library.division ) )
+            					 #if($division)
+            					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
+            					 #else
+            					 	#set($ldata = $library.getName($context) )
+            					 #end
+            					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
+            			
+            				#end
+    				  </div>
+    				</div>
+				#end	
+									
+				$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
+				
+				
+				#if( $caneditassetcategories )
+				<div class="asset-data-detail assetpanel-editor-box">
+					<div class="float-left" style="margin-left: 0px;">
+					<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+							   class=" emdialog btn btn-sm btn-primary"
+							   data-hidefooter="true" 
+							   data-noesc="true"
+							   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Collection]]</a>
+							   </div>
+				
+				#if($caneditasset)
+				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+				#end
+				</div>
+				#end
+				
+				
+		</div>	
+</div>
+</div>
+</div>
 </div>
