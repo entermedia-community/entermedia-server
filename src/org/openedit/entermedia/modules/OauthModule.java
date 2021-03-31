@@ -85,29 +85,60 @@ public class OauthModule extends BaseMediaModule
 			if ("google".equals(provider))
 			{
 
-				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
-				//.setRedirectURI("http://localhost:8080/googleauth.html")
-				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
-				String requestedpermissions = inReq.findValue("requestedpermissions");  //TODO: Move this to catalogsettings
-
-				if (requestedpermissions == null)
-				{
-					//requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly"; //Put it in the xocnf
-					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid";
-				}
-
-				String prompt = inReq.findValue("prompt");
-				if (prompt == null)
-				{
-					prompt = "";
-				}
 				String state = inReq.findValue("state");
 				if (state == null)
 				{
 					state = "login";
 				}
+
+				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
+				//.setRedirectURI("http://localhost:8080/googleauth.html")
+				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
+				String requestedpermissions = null;
 				
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("state", state).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
+				String clientid = null;
+				
+				
+				if( state.startsWith("hotfolder"))
+				{
+					String id = state.substring(9);
+					  
+					/*https://www.googleapis.com/auth/admin.directory.user 
+					https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
+					*/
+					requestedpermissions = "https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/drive";
+					authinfo = archive.getData("hotfolder", id);
+					clientid = authinfo.get("accesskey");
+					if( clientid == null)
+					{
+						throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
+					}
+					
+					if( authinfo.get("secretkey") == null)
+					{
+						throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
+					}
+					
+				}
+				else
+				{
+					clientid = authinfo.get("clientid");
+					requestedpermissions = inReq.findValue("requestedpermissions");  //TODO: Move this to catalogsettings
+	
+					if (requestedpermissions == null)
+					{
+						//requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly"; //Put it in the xocnf
+						requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid";
+					}
+				}
+				String prompt = inReq.findValue("prompt");
+				if (prompt == null)
+				{
+					prompt = "";
+				}
+				
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("state", state).setParameter("prompt", prompt)
+						.setClientId(clientid).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
