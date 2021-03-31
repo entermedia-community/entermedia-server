@@ -106,15 +106,15 @@ public class OauthModule extends BaseMediaModule
 					/*https://www.googleapis.com/auth/admin.directory.user 
 					https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
 					*/
-					requestedpermissions = "https://www.googleapis.com/auth/devstorage.full_control https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/drive";
-					authinfo = archive.getData("hotfolder", id);
-					clientid = authinfo.get("accesskey");
+					requestedpermissions = "https://www.googleapis.com/auth/drive";
+					Data folderinfo = archive.getData("hotfolder", id);
+					clientid = folderinfo.get("accesskey");
 					if( clientid == null)
 					{
 						throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
 					}
 					
-					if( authinfo.get("secretkey") == null)
+					if( folderinfo.get("secretkey") == null)
 					{
 						throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
 					}
@@ -232,7 +232,7 @@ public class OauthModule extends BaseMediaModule
 					setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).
 					setParameter("state", "test").setCode(code).buildBodyMessage();
 			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
-			String state = inReq.getRequestParameter("state");
+			String state = inReq.getRequestParameter("state"); 
 			try
 			{
 

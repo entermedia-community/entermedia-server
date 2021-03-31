@@ -341,8 +341,8 @@ public class GoogleManager implements CatalogEnabled
 			
 			if( inType.equals("hotfolder"))
 			{
-				clientid = authinfo.get("accesskey");
-				clientsecret = authinfo.get("secretkey");
+				clientid = config.get("accesskey");
+				clientsecret = config.get("secretkey");
 			}
 			else
 			{
