@@ -1,0 +1,19 @@
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+
+	<ul class="entity-value-list">
+		#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $searcher.searchById($type) )
+		    #if( $row )
+			    #if( $searcher.getDetail("name").isMultiLanguage())
+			    	#set($name = $row.getName($context.getLocale()))
+			    #else
+			    	#set($name = $row)
+			    #end
+			    <li><a href="">$name</a></li>
+		    #end 
+		#end	
+	</ul>

@@ -40,12 +40,14 @@
 	
 	</div>
 		#if( $caneditassetcategories )
+		<div class="folder-list-actions">
 	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
-	   class="detail-edit-icon float-left btn  emdialog"
+	   class="detail-edit-icon btn  emdialog"
 	   data-cancelsubmit="true" 
 	   data-parameterdata="categoryvalues"
 	   data-noesc="true"
 	   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Folder]]</a>
+	   </div>
 	#end
 </div>
 #end

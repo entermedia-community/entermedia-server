@@ -11,4 +11,5 @@ $context.putPageValue("xmledithome",$xmledithome)
 #if (!$viewtype || $viewtype== "text")
 	#set ($viewtype = "default")
 #end
+
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
