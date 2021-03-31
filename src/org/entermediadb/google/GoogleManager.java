@@ -334,9 +334,25 @@ public class GoogleManager implements CatalogEnabled
 		}
 		if (accesstoken == null || force)
 		{
+			String clientid = null;
+			String clientsecret = null;
+			
+			String token = config.get("refreshtoken");
+			
+			if( inType.equals("hotfolder"))
+			{
+				clientid = authinfo.get("accesskey");
+				clientsecret = authinfo.get("secretkey");
+			}
+			else
+			{
+				clientid = authinfo.get("clientid");
+				clientsecret = authinfo.get("clientsecret");				
+			}
+			
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
-					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(config.get("refreshtoken")).
-					setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).
+					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(token).
+					setClientId(clientid).setClientSecret(clientsecret).
 					buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
