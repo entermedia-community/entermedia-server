@@ -774,6 +774,13 @@ public class GoogleManager implements CatalogEnabled
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bucket
+	 * @return
+	 * @throws Exception
+	 */
+	
 	public JSONObject listFiles(String bucket) throws Exception
 	{
 		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
