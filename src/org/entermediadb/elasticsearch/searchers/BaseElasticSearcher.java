@@ -1233,7 +1233,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// find = QueryBuilders.textQuery(fieldid, valueof);
 		// return find;
 		// }
-		if (fieldid.equals("id"))
+		if (fieldid!= null && fieldid.equals("id"))
 		{
 			// valueof = valueof.toLowerCase();
 			if (valueof.equals("*"))
