@@ -13,7 +13,8 @@
 			    #else
 			    	#set($name = $row)
 			    #end
-			    <li><a href="">$name</a></li>
+			    #set($link = "$siteroot$applink/views/modules/$detail.getListId()/index.html")
+			    <li><a href="$link">$name</a></li>
 		    #end 
 		#end	
 	</ul>
