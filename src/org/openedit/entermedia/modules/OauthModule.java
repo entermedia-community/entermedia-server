@@ -223,16 +223,38 @@ public class OauthModule extends BaseMediaModule
 			{
 				redirect = siteroot + "/" + redirect;
 			}
-
+			String state = inReq.getRequestParameter("state"); 
+			String clientid = authinfo.get("clientid");
+			String clientsecret = authinfo.get("clientsecret");
+			if( state.startsWith("hotfolder"))
+			{
+				String id = state.substring(9);
+				  
+				/*https://www.googleapis.com/auth/admin.directory.user 
+				https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
+				*/
+				Data folderinfo = archive.getData("hotfolder", id);
+				clientid = folderinfo.get("accesskey");
+				if( clientid == null)
+				{
+					throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
+				}
+				clientsecret = folderinfo.get("secretkey");
+				if( clientsecret  == null)
+				{
+					throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
+				}
+				
+			}
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 			//GOOGLE
 
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).
-					setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).
+					setClientId(clientid).setClientSecret(clientsecret).setRedirectURI(redirect).
 					setParameter("state", "test").setCode(code).buildBodyMessage();
 			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
-			String state = inReq.getRequestParameter("state"); 
+			
 			try
 			{
 
