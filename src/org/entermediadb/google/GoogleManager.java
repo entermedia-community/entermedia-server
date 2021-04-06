@@ -133,7 +133,7 @@ public class GoogleManager implements CatalogEnabled
 			keepgoing = populateMoreResults(inAccessToken, url, results);
 		}
 		while (keepgoing);
-
+		log.info("Finish listing.");
 		return results;
 	}
 
@@ -141,9 +141,13 @@ public class GoogleManager implements CatalogEnabled
 	{
 		if (results.getResultToken() != null)
 		{
-			fileurl = fileurl + "&pageToken=" + URLEncoder.encode(results.getResultToken(), "UTF-8");
+			fileurl = fileurl + "&pageToken=" + results.getResultToken();
 		}
-		JSONObject json = get(fileurl, inAccessToken);
+		
+		HttpSharedConnection connection = getConnection(); 
+		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
+		JSONObject json = connection.getJson(fileurl);
+		
 		String pagekey = (String)json.get("nextPageToken");
 		if (pagekey != null)
 		{
@@ -172,14 +176,6 @@ public class GoogleManager implements CatalogEnabled
 		return keepgoing;
 	}
 
-	protected JSONObject get(String inFileurl, String inAccessToken) throws Exception
-	{
-		HttpSharedConnection connection = getConnection(); 
-		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
-		JSONObject json = connection.getJson(inFileurl);
-		return json;
-
-	}
 
 	public File saveFile(String inAccessToken, Asset inAsset) throws Exception
 	{
@@ -222,7 +218,7 @@ public class GoogleManager implements CatalogEnabled
 		}
 		finally
 		{
-			getConnection().release(resp);
+			connection.release(resp);
 		}
 		// if( assettype != null && assettype.equals("embedded") )
 		// {
