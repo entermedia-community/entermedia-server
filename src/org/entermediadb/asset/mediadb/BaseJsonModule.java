@@ -31,7 +31,7 @@ import org.openedit.modules.translations.LanguageMap;
 
 public class BaseJsonModule extends BaseMediaModule 
 {
-	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials";
+	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers,access-control-allow-method";
 	private static final Log log = LogFactory.getLog(BaseJsonModule.class);
 	
 	public void allowHeaders(WebPageRequest inReq)
