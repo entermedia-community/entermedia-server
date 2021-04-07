@@ -31,6 +31,7 @@ import org.openedit.modules.translations.LanguageMap;
 
 public class BaseJsonModule extends BaseMediaModule 
 {
+	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials";
 	private static final Log log = LogFactory.getLog(BaseJsonModule.class);
 	
 	public void allowHeaders(WebPageRequest inReq)
@@ -56,14 +57,18 @@ public class BaseJsonModule extends BaseMediaModule
 				red.setHeader("Access-Control-Allow-Origin","*");
 			}
 			red.setHeader("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS");
-			red.setHeader("Access-Control-Allow-Headers","*");
 			red.setHeader("Access-Control-Allow-Credentials","true");
 			
 			if( isoptions )
 			{
+				red.setHeader("Access-Control-Allow-Headers", VALID_HEADERS);
 				inReq.setHasRedirected(true);
 				//return 200?
 				log.info("Preflight detected ignoring request");
+			}
+			else
+			{
+				red.setHeader("Access-Control-Allow-Headers","*");
 			}
 		}	
 		
