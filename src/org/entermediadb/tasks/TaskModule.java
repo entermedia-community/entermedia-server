@@ -457,7 +457,7 @@ public class TaskModule extends BaseMediaModule
 			}
 			query.exact("completedby", selected);
 		}
-		
+		query.sort("creationdate");
 		HitTracker tasks = query.search(inReq);
 		//Legacy: Make sure all tasks have parents
 		Set tosave = new HashSet();
@@ -706,7 +706,17 @@ public class TaskModule extends BaseMediaModule
 		String taskcomment = inReq.getRequestParameter("comment");
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = archive.getSearcher("goaltask");
-		Data task = (Data)tasksearcher.searchById(taskid);
+		Data task = null;
+		if( taskid != null )
+		{
+			task = (Data)tasksearcher.searchById(taskid);
+		}
+		else
+		{
+			task = (Data)tasksearcher.createNewData();		
+			String goalid = inReq.getRequestParameter("goalid");
+			task.setValue("projectgoal",goalid);
+		}
 		String taskstatus = inReq.getRequestParameter("taskstatus");
 		task.setValue("taskstatus", taskstatus);
 
@@ -725,19 +735,34 @@ public class TaskModule extends BaseMediaModule
 			removeCount(archive, task);
 			
 		}
-		else if( taskstatus != null && taskstatus.equals("1"))
+		//else if( taskstatus != null && taskstatus.equals("1"))
+		if( task.getValue("startedby")  == null)
 		{
 			task.setValue("startedby", inReq.getUserName());
-			if( task.getValue("startedon") == null )
-			{
-				task.setValue("startedon", new Date());
-			}	
 		}
+		if( task.getValue("startedon") == null )
+		{
+			task.setValue("startedon", new Date());
+		}	
+		
+		if( task.getValue("creationdate") == null )
+		{
+			task.setValue("creationdate", new Date());
+		}	
+		
+		String projectdepartment = inReq.getRequestParameter("projectdepartment");
+
+		if( projectdepartment != null )
+		{
+			task.setValue("projectdepartment", projectdepartment);
+		}	
+		
 		String completedby = inReq.getRequestParameter("completedby");
 		if( completedby != null)
 		{
-			task.setValue("completedby", completedby);
+			completedby = inReq.getUserName();
 		}
+		task.setValue("completedby", completedby);
 		
 		task.setValue("comment",taskcomment);
 		
@@ -747,7 +772,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			taskstatus = "0";
 		}
-		addComment(archive, taskid, inReq.getUser(),taskstatus, null);
+		//addComment(archive, taskid, inReq.getUser(),taskstatus, null);
 
 	}
 	public void removeTask(WebPageRequest inReq)
@@ -1124,6 +1149,13 @@ public class TaskModule extends BaseMediaModule
 			Data goal =  archive.getData("projectgoal",goalid);
 			inReq.putPageValue("selectedgoal", goal);
 			inReq.putPageValue("task", task);
+		}
+		else
+		{
+			String goalid = inReq.getRequestParameter("goalid");
+			Data goal =  archive.getData("projectgoal",goalid);
+			inReq.putPageValue("selectedgoal", goal);
+
 		}
 		
 	}		

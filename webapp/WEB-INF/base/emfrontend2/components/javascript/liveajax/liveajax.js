@@ -51,6 +51,18 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 		
 		return returned;
     };
+    
+    var oldappend = $.fn.append;
+    $.fn.append = function(arg) 
+    {
+		var returned = oldappend.call($(this),arg);
+		//console.log("Called replacewith on " +	$(this).selector, arg.length );	
+		$(document).trigger("domchanged");
+		
+		return returned;
+    };
+
+
     var oldajaxSubmit = $.fn.ajaxSubmit;
     $.fn.ajaxSubmit = function() 
     {
