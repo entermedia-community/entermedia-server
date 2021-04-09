@@ -758,7 +758,7 @@ public class TaskModule extends BaseMediaModule
 		}	
 		
 		String completedby = inReq.getRequestParameter("completedby");
-		if( completedby != null)
+		if( completedby == null)
 		{
 			completedby = inReq.getUserName();
 		}
