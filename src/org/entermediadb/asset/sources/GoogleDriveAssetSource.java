@@ -194,7 +194,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		if(subfolder == null) {
 			subfolder = getName();
 		}
-		Results r= getGoogleManager().syncAssets(getAccessToken(), subfolder, false);
+		Results r= getGoogleManager().syncAssets(getAccessToken(), subfolder, true);
 		return r.getFiles().size();
 	}
 

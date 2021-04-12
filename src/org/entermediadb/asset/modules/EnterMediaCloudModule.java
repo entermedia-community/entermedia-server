@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
@@ -38,7 +39,12 @@ public class EnterMediaCloudModule extends BaseMediaModule
 	{
 		//createConnection
 		//The adminkey will be defaulted for new sites. Once this is  used once we will want to change the login
-		
+		if(inReq.getUser() != null)
+		{
+			log.info("Already logged in as " + inReq.getUserName());
+			return;
+			
+		}
 		
 		//TODO: Make this expire
 		String userkey = inReq.getRequestParameter("entermediacloudkey");
@@ -57,6 +63,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		JSONObject params = new JSONObject();
 		params.put("accountname",userid);
 		params.put("entermedia.key",userkey); //TODO: Some problem parsing this in NGINX/TOmacat without the .
+		params.put("entermediakey",userkey);
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
 		params.put("collectionid",collectionid);
@@ -112,7 +119,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 			
-			
+			BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(archive.getCatalogId(),"autoLoginWithCookie");
+			autologin.saveCookieForUser(inReq, user);
 			
 		}
 		else

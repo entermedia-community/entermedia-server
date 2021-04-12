@@ -452,7 +452,7 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
    "actions" : [
-       { "remove" : { "index" : "assets_catalog1516394804332", "alias" : "assets_catalog" } }
+       { "remove" : { "index" : "assets_catalog1614100195536", "alias" : "assets_catalog" } }
    ]
 }'
 

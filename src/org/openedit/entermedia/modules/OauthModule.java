@@ -85,29 +85,60 @@ public class OauthModule extends BaseMediaModule
 			if ("google".equals(provider))
 			{
 
+				String state = inReq.findValue("state");
+				if (state == null)
+				{
+					state = "login";
+				}
+
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
 				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
-				String requestedpermissions = inReq.findValue("requestedpermissions");  //TODO: Move this to catalogsettings
-
-				if (requestedpermissions == null)
+				String requestedpermissions = null;
+				
+				String clientid = null;
+				
+				
+				if( state.startsWith("hotfolder"))
 				{
-					//requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly"; //Put it in the xocnf
-					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid";
+					String id = state.substring(9);
+					  
+					/*https://www.googleapis.com/auth/admin.directory.user 
+					https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
+					*/
+					requestedpermissions = "https://www.googleapis.com/auth/drive";
+					Data folderinfo = archive.getData("hotfolder", id);
+					clientid = folderinfo.get("accesskey");
+					if( clientid == null)
+					{
+						throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
+					}
+					
+					if( folderinfo.get("secretkey") == null)
+					{
+						throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
+					}
+					
 				}
-
+				else
+				{
+					clientid = authinfo.get("clientid");
+					requestedpermissions = inReq.findValue("requestedpermissions");  //TODO: Move this to catalogsettings
+	
+					if (requestedpermissions == null)
+					{
+						//requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly"; //Put it in the xocnf
+						requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid";
+					}
+				}
 				String prompt = inReq.findValue("prompt");
 				if (prompt == null)
 				{
 					prompt = "";
 				}
-				String state = inReq.findValue("state");
-				if (state == null)
-				{
-					state = "";
-				}
 				
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("state", state).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("state", state).setParameter("prompt", prompt)
+						.setClientId(clientid).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
@@ -192,14 +223,38 @@ public class OauthModule extends BaseMediaModule
 			{
 				redirect = siteroot + "/" + redirect;
 			}
-
+			String state = inReq.getRequestParameter("state"); 
+			String clientid = authinfo.get("clientid");
+			String clientsecret = authinfo.get("clientsecret");
+			if( state.startsWith("hotfolder"))
+			{
+				String id = state.substring(9);
+				  
+				/*https://www.googleapis.com/auth/admin.directory.user 
+				https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/
+				*/
+				Data folderinfo = archive.getData("hotfolder", id);
+				clientid = folderinfo.get("accesskey");
+				if( clientid == null)
+				{
+					throw new OpenEditException("Need to get clientid from Google Admin as accesskey");
+				}
+				clientsecret = folderinfo.get("secretkey");
+				if( clientsecret  == null)
+				{
+					throw new OpenEditException("Need to get clientsecret from Google Admin as secretkey");
+				}
+				
+			}
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 			//GOOGLE
 
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setParameter("state", "test").setCode(code).buildBodyMessage();
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).
+					setClientId(clientid).setClientSecret(clientsecret).setRedirectURI(redirect).
+					setParameter("state", "test").setCode(code).buildBodyMessage();
 			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
-			String state = inReq.getRequestParameter("state");
+			
 			try
 			{
 
@@ -212,36 +267,51 @@ public class OauthModule extends BaseMediaModule
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
+				
 				String refresh = oAuthResponse.getRefreshToken();
 				
 				inReq.putPageValue("accessToken", accessToken);
 				inReq.putPageValue("refresh", refresh);
 				inReq.putPageValue("oauthresponse", oAuthResponse);
-				boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
-
-				if (refresh != null && systemwide)
-				{
-					authinfo.setValue("refreshtoken", refresh);
-					authinfo.setValue("httprequesttoken", null);
-					archive.getSearcher("oauthprovider").saveData(authinfo);
-
-				}
-
-				OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo").setAccessToken(accessToken).buildQueryMessage();
-
-				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
-				String userinfoJSON = resourceResponse.getBody();
-				JSONParser parser = new JSONParser();
-
-				JSONObject data = (JSONObject) parser.parse(userinfoJSON);
-				String email = (String) data.get("email");
-				String firstname = (String) data.get("given_name");
-				String lastname = (String) data.get("family_name");
-				inReq.putPageValue("googledata", data);
-				inReq.putPageValue("useraccount", email);
-				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
 				
-				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
+				if( state == null || state.equals("login") )
+				{
+					boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
+	
+					if (refresh != null && systemwide)
+					{
+						authinfo.setValue("refreshtoken", refresh);
+						authinfo.setValue("httprequesttoken", null);
+						archive.getSearcher("oauthprovider").saveData(authinfo);
+					}
+	
+					OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo").setAccessToken(accessToken).buildQueryMessage();
+	
+					OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
+					String userinfoJSON = resourceResponse.getBody();
+					JSONParser parser = new JSONParser();
+	
+					JSONObject data = (JSONObject) parser.parse(userinfoJSON);
+					String email = (String) data.get("email");
+					String firstname = (String) data.get("given_name");
+					String lastname = (String) data.get("family_name");
+					inReq.putPageValue("googledata", data);
+					inReq.putPageValue("useraccount", email);
+					boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
+					
+					
+					//Create a new user from Google Login
+					handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
+				}
+				else if( state.startsWith("hotfolder"))
+				{
+					String id = state.substring(9);
+					Data folder = archive.getData("hotfolder", id);
+					folder.setValue("refreshtoken", refresh);
+					folder.setValue("httprequesttoken", null);
+					archive.saveData("hotfolder", folder);
+					
+				}
 
 			}
 			catch (Exception e)

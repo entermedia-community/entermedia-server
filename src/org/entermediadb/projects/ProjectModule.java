@@ -72,6 +72,9 @@ public class ProjectModule extends BaseMediaModule
 	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
 	{
 		LibraryCollection collection = loadCollection(inReq);
+		if(collection == null) {
+			return;
+		}
 		String collectionid = collection.getId(); 
 		if (collectionid != null && collectionid.startsWith("multiedit:")) {
 			return;

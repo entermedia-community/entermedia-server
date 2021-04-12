@@ -46,7 +46,7 @@ public void readAsset(MediaArchive archive, MetaDataReader reader, Asset asset)
 	ContentItem content = archive.getOriginalContent( asset );
 	reader.populateAsset(archive, content, asset);
 	archive.saveAsset(asset, null);
-	log.info("metadata reading complete");
+	log.info("Metadata reading complete. Asset:" + asset.getId());
 
 }
 init();

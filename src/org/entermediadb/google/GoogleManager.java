@@ -118,12 +118,11 @@ public class GoogleManager implements CatalogEnabled
 	{
 		// https://developers.google.com/drive/v3/reference/files/list
 		// https://developers.google.com/drive/v3/web/search-parameters
-		String url = "https://www.googleapis.com/drive/v3/files?orderBy=" + URLEncoder.encode("modifiedTime desc,name") + "&pageSize=1000&fields=*";
-
+		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
 		String search = "'" + inParentId + "' in parents";
-		url = url + "&q=" + URLEncoder.encode(search);
-
+		url = url + "&q=" + search;
 		// TODO: Add date query from the last time we imported
+		log.info("Google Drive URL: "+url);
 
 		Results results = new Results();
 
@@ -134,7 +133,7 @@ public class GoogleManager implements CatalogEnabled
 			keepgoing = populateMoreResults(inAccessToken, url, results);
 		}
 		while (keepgoing);
-
+		log.info("Finish listing.");
 		return results;
 	}
 
@@ -142,15 +141,20 @@ public class GoogleManager implements CatalogEnabled
 	{
 		if (results.getResultToken() != null)
 		{
-			fileurl = fileurl + "&pageToken=" + URLEncoder.encode(results.getResultToken(), "UTF-8");
+			fileurl = fileurl + "&pageToken=" + results.getResultToken();
 		}
-		JSONObject json = get(fileurl, inAccessToken);
+		
+		HttpSharedConnection connection = getConnection(); 
+		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
+		JSONObject json = connection.getJson(fileurl);
+		
 		String pagekey = (String)json.get("nextPageToken");
 		if (pagekey != null)
 		{
 			results.setResultToken(pagekey);
 		}
 		JSONArray files = (JSONArray)json.get("files");
+		log.info("Google Drive, found: "+files.size()+" assets.");
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			JSONObject object = (JSONObject) iterator.next();
@@ -168,19 +172,10 @@ public class GoogleManager implements CatalogEnabled
 				results.addFile(object);
 			}
 		}
-		String keepgoing = (String)json.get("incompleteSearch");
-		return Boolean.parseBoolean(keepgoing);
+		Boolean keepgoing = (Boolean) json.get("incompleteSearch");
+		return keepgoing;
 	}
 
-	protected JSONObject get(String inFileurl, String inAccessToken) throws Exception
-	{
-		Map headers = new HashMap(1);
-		headers.put("authorization", "Bearer " + inAccessToken);
-
-		JSONObject json = getConnection().getJson(inFileurl, headers);
-		return json;
-
-	}
 
 	public File saveFile(String inAccessToken, Asset inAsset) throws Exception
 	{
@@ -191,9 +186,9 @@ public class GoogleManager implements CatalogEnabled
 
 		String url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("googleid") + "?alt=media";
 		HttpRequestBase httpmethod = new HttpGet(url);
-		httpmethod.addHeader("authorization", "Bearer " + inAccessToken);
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(httpmethod);
+		HttpSharedConnection connection = getConnection();
+		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
+		CloseableHttpResponse resp = connection.sharedExecute(httpmethod);
 		try
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
@@ -223,7 +218,7 @@ public class GoogleManager implements CatalogEnabled
 		}
 		finally
 		{
-			getConnection().release(resp);
+			connection.release(resp);
 		}
 		// if( assettype != null && assettype.equals("embedded") )
 		// {
@@ -334,9 +329,25 @@ public class GoogleManager implements CatalogEnabled
 		}
 		if (accesstoken == null || force)
 		{
+			String clientid = null;
+			String clientsecret = null;
+			
+			String token = config.get("refreshtoken");
+			
+			if( inType.equals("hotfolder"))
+			{
+				clientid = config.get("accesskey");
+				clientsecret = config.get("secretkey");
+			}
+			else
+			{
+				clientid = authinfo.get("clientid");
+				clientsecret = authinfo.get("clientsecret");				
+			}
+			
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
-					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(config.get("refreshtoken")).
-					setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).
+					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(token).
+					setClientId(clientid).setClientSecret(clientsecret).
 					buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
@@ -367,6 +378,7 @@ public class GoogleManager implements CatalogEnabled
 	{
 		try
 		{
+			//Load assets from Root
 			Results results = listDriveFiles(inAccessToken, "root");
 			processResults(inAccessToken, inRoot, results, savenow);
 			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
@@ -392,8 +404,12 @@ public class GoogleManager implements CatalogEnabled
 					String foldername = (String)folder.get("name");
 					foldername = foldername.trim();
 					Results folderresults = listDriveFiles(inAccessToken, id);
-					String categorypath = inCategoryPath + "/" + foldername;
-					processResults(inAccessToken, categorypath, folderresults, savenow);
+					Integer assetsfound = folderresults.getFiles().size();
+					if (assetsfound > 0) {
+						String categorypath = inCategoryPath + "/" + foldername;
+						log.info("Found "+assetsfound+" assets at: "+categorypath);
+						processResults(inAccessToken, categorypath, folderresults, savenow);
+					}
 				}
 			}
 		}
@@ -774,6 +790,13 @@ public class GoogleManager implements CatalogEnabled
 
 	}
 
+	/**
+	 * @deprecated
+	 * @param bucket
+	 * @return
+	 * @throws Exception
+	 */
+	
 	public JSONObject listFiles(String bucket) throws Exception
 	{
 		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	

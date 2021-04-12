@@ -30,7 +30,7 @@ public class FinderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(FinderModule.class);
 
-	private static final int MEDIASAMPLE=25;
+	private static final int MEDIASAMPLE=17;
 	
 	public void searchByQuery(WebPageRequest inReq)
 	{

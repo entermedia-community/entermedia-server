@@ -159,7 +159,10 @@ public class HttpSharedConnection
 	}
 	public CloseableHttpResponse sharedGet(String inUrl,Map extraHeaders)
 	{
-		HttpGet method = new HttpGet(URLUtilities.urlEscape(inUrl));
+		String escaped = URLUtilities.urlEscape(inUrl);
+		escaped = escaped.replace("+","%20");
+		//log.info("Escaped URL: "+escaped);	 
+		HttpGet method = new HttpGet(escaped);
 		CloseableHttpResponse response2 = (CloseableHttpResponse) sharedExecute(method);
 		return response2;
 	}

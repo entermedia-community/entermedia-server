@@ -116,6 +116,11 @@ public class BaseMediaModule extends BaseModule
 				{
 					site = site.replace("http://", "https://");
 				}
+				if( site != null)
+				{
+					MediaArchive archive = getMediaArchive(inReq);
+					archive.setCatalogSettingValue("siteroot", site);
+				}
 			}
 		}
 		inReq.putPageValue("siteroot",site);

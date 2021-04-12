@@ -266,7 +266,7 @@ public class AdminModule extends BaseMediaModule
 		
 		//Different email template for desktopapp
 		String launchersource = inReq.getRequestParameter("launchersource");
-		if (launchersource.equals("desktopapp")) {
+		if (launchersource != null && launchersource.equals("desktopapp")) {
 			String emaillayoutdesktopapp = inReq.getRequestParameter("emaillayoutdesktopapp");
 			inReq.putPageValue("emaillayout", emaillayoutdesktopapp);
 		}
@@ -405,7 +405,11 @@ public class AdminModule extends BaseMediaModule
 	 */
 	public void login(WebPageRequest inReq) throws Exception
 	{
-		String entermediakey = inReq.getRequestParameter("entermediakey");
+		String entermediakey = inReq.getRequestParameter("entermedia.key");
+		if( entermediakey == null)
+		{
+			entermediakey = inReq.getRequestParameter("entermediakey");
+		}
 		String account = inReq.getRequestParameter("accountname");
 		String email = inReq.getRequestParameter("email");
 		
@@ -892,116 +896,31 @@ public class AdminModule extends BaseMediaModule
 	 * 
 	 * @param inReq
 	 * @throws OpenEditException
-	 * @deprecated
 	 */
 	public void redirect(WebPageRequest inReq) throws OpenEditException
 	{
-		String path = inReq.findValue("redirectpath"); 
-				if(path == null){
-				inReq.getCurrentAction().getChildValue("redirectpath");
-				}
+		String path = inReq.getCurrentAction().getChildValue("redirectpath");
+		if( path != null)
+		{
+			path = inReq.getContentPage().getPageSettings().replaceProperty(path);
+		}
+		if (path == null)
+		{
+			path = inReq.findValue("redirectpath");
+		}
 		if (path == null)
 		{
 			path = inReq.getPage().get("redirectpath");
-		}
-		
+		}		
 		if (path != null && inReq.getRequest() != null)
 		{
-			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (path.endsWith("/"))
 			{
 				path = path.substring(0, path.length() - 1);
 			}
-			List host = inReq.getCurrentAction().getConfig().getChildren("host");
-			if (host.size() > 0)
+			else if (!inReq.getPath().equals(path))
 			{
-				String server = utils.buildRoot(); //http://localhost:8080/
-				boolean found = false;
-				for (Iterator iterator = host.iterator(); iterator.hasNext();)
-				{
-					Configuration conf = (Configuration) iterator.next();
-					//verify the host
-					String hostval = conf.getValue();
-					log.debug("Checking [" + server + "] starts with [" + hostval + "]");
-					if (server.startsWith(hostval))
-					{
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-				{
-					log.info("Host did not match, was [" + server + "]");
-					return;
-				}
-			}
-			int indestpath = path.indexOf("*"); //http://xyz/*
-			if (indestpath > -1)
-			{
-				//this is a dynamic redirect path
-				//http://xyz/* -> http://xyz/somepage.html
-				//take off a part of the path before the *?
-				String begin = path.substring(0, indestpath);
-
-				String ending = utils.requestPathWithArgumentsNoContext();
-				if (ending.startsWith("/") == true)
-				{
-					ending = ending.substring(1, ending.length());
-				}
-				String server = utils.buildRoot();
-
-				String redirectPath = null;
-				if (path.startsWith("http"))
-				{
-					redirectPath = begin + "/" + PathUtilities.extractFileName(ending);
-				}
-				else
-				{
-					redirectPath = begin + ending; //this does not handle subdirectory redirects
-				}
-
-				if (!redirectPath.equals(server))
-				{
-					inReq.redirectPermanently(redirectPath);
-				}
-				else
-				{
-					throw new OpenEditException("Infinite loop to forward to " + redirectPath);
-				}
-			}
-			else if (path.startsWith("http"))
-			{
-				//		    	String fixedpath = path;
-				//		    	String domain = utils.siteRoot();
-				//		    	if( domain.startsWith("https://") && !fixedpath.startsWith("https://") )
-				//		    	{
-				//		    		fixedpath = "https://" + path.substring("https://".length()-1, path.length()); 
-				//		    	}
-				//		    	if( !fixedpath.startsWith(domain) )
-				//		    	{
-				//		    		//see if it exists locally
-				//		    		if ( inReq.getContentPage().exists() )
-				//		    		{
-				//		    			String newurl = fixedpath + utils.requestPathWithArguments();
-				//		    			inReq.redirectPermanently(newurl);
-				//		    		}
-				//		    		else
-				//		    		{
-
-				//http://localhost:8080/
-				String server = utils.buildRoot();
-				if (!path.startsWith(server))
-				{
-					inReq.redirectPermanently(path);
-				}
-				//		    	}
-			}
-			else
-			{
-				if (!inReq.getPath().equals(path))
-				{
-					inReq.redirectPermanently(path);
-				}
+				inReq.redirect(path);
 			}
 		}
 	}
