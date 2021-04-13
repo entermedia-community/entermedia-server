@@ -266,12 +266,7 @@ public class AdminModule extends BaseMediaModule
 		
 		//Different email template for desktopapp
 		String launchersource = inReq.getRequestParameter("launchersource");
-		if (launchersource != null && launchersource.equals("desktopapp")) {
-			log.info("Desktop app signin request.");
-			String emaillayoutdesktopapp = inReq.getRequestParameter("emaillayoutdesktopapp");
-			inReq.putPageValue("emaillayout", emaillayoutdesktopapp);
-			inReq.putPageValue("emailbody", emaillayoutdesktopapp);
-		}
+		inReq.putPageValue("launchersource", launchersource);
 		
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 	}
