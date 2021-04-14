@@ -1369,31 +1369,33 @@ public class TaskModule extends BaseMediaModule
 		HitTracker opengoalresults = opengoalbuilder.search();
 
 		List opentickets = new ArrayList();
-		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			opentickets.add( goalsearcher.loadData(data) );
-		}
 		inReq.putPageValue("opentickets", opentickets);
 		
 		Map tasklookup = new HashMap();
-		for (Iterator iterator = opentickets.iterator(); iterator.hasNext();)
+		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
 		{
 			Data goal = (Data) iterator.next();
 			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).exact("completedby", currentuser ).sort("creationdateDown").search();
 			Collection found = new ArrayList();
+			boolean hasone = false
 			for (Iterator ta = tasks.iterator(); ta.hasNext();)
 			{
 				Data task = (Data) ta.next();
 				if( currentuser.equals( task.get("completedby")) )
 				{
 					found.add(task);
+					hasone = true;
 				}
 				else if("5".equals( task.get("taskstatus") ))
 				{
 					found.add(task);
 				}
 			}
+			if( !found.isEmpty() && hasone)
+			{
+				opentickets.add( goalsearcher.loadData(goal) );
+			}
+
 		}
 		inReq.putPageValue("tasklookup",tasklookup);
 	}
