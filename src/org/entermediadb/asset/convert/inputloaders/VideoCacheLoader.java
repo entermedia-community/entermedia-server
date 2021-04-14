@@ -30,23 +30,28 @@ public class VideoCacheLoader implements InputLoader
 			{
 				Dimension box = inStructions.getMaxScaledSize();
 
-				if (box.getWidth() < 1025)
+				if (box.getWidth() < 1501)
 				{
 					if (inStructions.getTimeOffset() == null)
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768.jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500.jpg");
+						if(! input.exists() )
+						{
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768.jpg");
+						}
 					}
 					else
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768offset" + inStructions.getTimeOffset() + ".jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500offset" + inStructions.getTimeOffset() + ".jpg");
+						if(! input.exists() )
+						{
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768offset" + inStructions.getTimeOffset() + ".jpg");
+						}
 					}
 					if (!input.exists())
 					{
 						input = null;
 					}
-					
-					
-
 				}
 			}
 			if ((input == null || input.getLength() < 2) )
