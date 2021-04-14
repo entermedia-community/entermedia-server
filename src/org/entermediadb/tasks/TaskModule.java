@@ -1365,7 +1365,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			opengoalbuilder.orgroup("collectionid", userprojects);
 		}
-		opengoalbuilder.not("projectstatus", "closed").not("projectstatus", "completed").sort("projectstatus").sort("creationdateDown");
+		opengoalbuilder.not("projectstatus", "closed").not("projectstatus", "completed").sort("projectstatus").sort("creationdateUp");
 		//closedgoalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
 		HitTracker opengoalresults = opengoalbuilder.search();
 
