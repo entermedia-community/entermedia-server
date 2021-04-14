@@ -1324,6 +1324,11 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("selecteduser",selecteduser);
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
+		String currentuser = staffid;
+		if( staffid == null)
+		{
+			currentuser = inReq.getUserName(); 
+		}
 		//String collectionid= "*";
 		if (collectionid != null) 
 		{
@@ -1335,11 +1340,6 @@ public class TaskModule extends BaseMediaModule
 		else 
 		{
 			//search only in project the user belongs
-			String currentuser = staffid;
-			if( staffid == null)
-			{
-				currentuser = inReq.getUserName(); 
-			}
 			Collection allprojectsuser = archive.query("librarycollectionusers").
 					exact("followeruser",currentuser).
 					exact("ontheteam","true").search();
@@ -1375,7 +1375,27 @@ public class TaskModule extends BaseMediaModule
 			opentickets.add( goalsearcher.loadData(data) );
 		}
 		inReq.putPageValue("opentickets", opentickets);
-	
+		
+		Map tasklookup = new HashMap();
+		for (Iterator iterator = opentickets.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).exact("completedby", currentuser ).sort("creationdateDown").search();
+			Collection found = new ArrayList();
+			for (Iterator ta = tasks.iterator(); ta.hasNext();)
+			{
+				Data task = (Data) ta.next();
+				if( currentuser.equals( task.get("completedby")) )
+				{
+					found.add(task);
+				}
+				else if("5".equals( task.get("taskstatus") ))
+				{
+					found.add(task);
+				}
+			}
+		}
+		inReq.putPageValue("tasklookup",tasklookup);
 	}
 
 	public void resolveTicket(WebPageRequest inReq)
