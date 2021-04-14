@@ -31,8 +31,12 @@
     <div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" ><div class="loadingbar" style="width:30px;"></div></div> 
      </div>
 #elseif($conversions && $conversions.size() == 0)
-    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        <div class="uiinfo	 proxythumb" title="Queing Conversions" ><div class="loadingbar" style="width:20px;"></div></div> 
+    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end data-reloadspeed="6000"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+        <div  title="Queing Conversions" >
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath$!urlparams" border="0"/>
+        </div> 
     </div>
 #else
     <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
