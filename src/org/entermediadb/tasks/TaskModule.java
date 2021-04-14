@@ -1314,7 +1314,7 @@ public class TaskModule extends BaseMediaModule
 		User selecteduser = null;
 		if( staffid != null) 
 		{
-			opengoalbuilder.match("userlikes", staffid);
+			//opengoalbuilder.match("userlikes", staffid);
 			selecteduser = archive.getUser(staffid);
 		}
 		else
