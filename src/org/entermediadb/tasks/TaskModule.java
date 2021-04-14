@@ -1377,7 +1377,7 @@ public class TaskModule extends BaseMediaModule
 			Data goal = (Data) iterator.next();
 			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).exact("completedby", currentuser ).sort("creationdateDown").search();
 			Collection found = new ArrayList();
-			boolean hasone = false
+			boolean hasone = false;
 			for (Iterator ta = tasks.iterator(); ta.hasNext();)
 			{
 				Data task = (Data) ta.next();
