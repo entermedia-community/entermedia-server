@@ -430,8 +430,9 @@ public class TaskModule extends BaseMediaModule
 	public void loadTasksForGoal(WebPageRequest inReq)
 	{
 		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
+		Collection tasks = (Collection)inReq.getPageValue("tasks");
 		
-		if( goal != null)
+		if( goal != null && tasks == null)
 		{
 			loadTasksForGoal(inReq,goal);
 		}
@@ -1375,7 +1376,7 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
 		{
 			Data goal = (Data) iterator.next();
-			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).exact("completedby", currentuser ).sort("creationdateDown").search();
+			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).sort("creationdateDown").search();
 			Collection found = new ArrayList();
 			boolean hasone = false;
 			for (Iterator ta = tasks.iterator(); ta.hasNext();)
@@ -1394,6 +1395,7 @@ public class TaskModule extends BaseMediaModule
 			if( !found.isEmpty() && hasone)
 			{
 				opentickets.add( goalsearcher.loadData(goal) );
+				tasklookup.put(goal.getId(),found);
 			}
 
 		}
