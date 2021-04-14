@@ -2,6 +2,8 @@ package org.entermediadb.desktops;
 
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -13,6 +15,8 @@ import org.openedit.data.Searcher;
 
 public class DesktopModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(DesktopModule.class);
+
 	public ProjectManager getProjectManager(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
@@ -41,6 +45,11 @@ public class DesktopModule extends BaseMediaModule
 		else
 		{
 			cat = archive.getCategory(categoryid);
+			if( cat == null)
+			{
+				log.info("No such category");
+				return;
+			}
 			link.setSourcePath(cat.getSourcePath());
 			link.setValue("categoryid",cat.getId());
 		}

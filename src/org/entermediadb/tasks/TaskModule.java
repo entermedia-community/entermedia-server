@@ -942,7 +942,7 @@ public class TaskModule extends BaseMediaModule
 		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.add(Calendar.DAY_OF_MONTH,days - 1);
+		cal.add(Calendar.DAY_OF_MONTH,days);
 		
 		Date onemonth = cal.getTime();
 

@@ -286,6 +286,28 @@ $(document).ready(function()
 				return false;
 	} );
 
+	lQuery(".treedesktopdownload").livequery('click', function(event) 
+	{
+				event.stopPropagation();
+				var node = getNode(this);
+				var categoryid = node.data('nodeid');
+				var options = {};
+				
+				options.categoryid = categoryid;
+				
+				jQuery.ajax(
+					{
+						url:  apphome + "/components/sidebars/userdownloads/start.html",
+						data: options,
+						success: function() {
+							//Refresh side panel
+							$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+						}
+					}
+				);
+
+	});	
+	
 	lQuery(".treecontext #addmedia, .cat-uploadfromtree").livequery('click', function(event) 
 	{
 				event.stopPropagation();
