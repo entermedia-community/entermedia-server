@@ -758,6 +758,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inUploadRequest);
 		final User user = inReq.getUser();
+		archive.getAssetSearcher();
 
 		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
 		if (pages.size() == 0)
