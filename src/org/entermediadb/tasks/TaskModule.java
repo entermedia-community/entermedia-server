@@ -1385,7 +1385,10 @@ public class TaskModule extends BaseMediaModule
 				if( currentuser.equals( task.get("completedby")) )
 				{
 					found.add(task);
-					hasone = true;
+					if( !"5".equals( task.get("taskstatus") ))
+					{
+						hasone = true;
+					}
 				}
 				else if("5".equals( task.get("taskstatus") ))
 				{
