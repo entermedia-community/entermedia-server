@@ -34,6 +34,37 @@
 									#set( $thumbpath =  $mediaarchive.asLinkToPreview($sample,"image200x200.jpg" ) )
 								#end
 								"$thumbpath"
+						#else 
+							##see if there are assets tagged on this project
+							
+							#set( $hits = $mediaarchive.query("asset").hitsPerPage(4).exact($module.getId(), $sample.getId()).sort("assetaddeddateDown").search() )
+							,"attachedmedia":[
+							#foreach( $assethit in $hits.getPageOfHits())
+								#set( $rendertype = $mediaarchive.getMediaRenderType($assethit.fileformat))
+							  	#if(!$rendertype)
+							 		#set( $rendertype = "mime" )
+							 	#elseif( $rendertype =="video")
+							 		#set( $rendertype = "videothumbnail" )
+							 	#end
+							 	#if( ${foreach.count} != 1 ), #end
+							 	{
+							 		"id": #jesc($assethit.id),
+							 		"rendertype": "$rendertype",
+							 		"name": "$assethit.name",
+									"thumbnailimg": 
+							 		#if( $rendertype == "mime" )
+							 			#set ($mime = $mediaarchive.getMimeTypeIcon($assethit.fileformat))
+										#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+							 		#elseif( $rendertype == "videothumbnail" )
+										#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+							 		#else
+										#set($thumbpath = $mediaarchive.asLinkToPreview($assethit,"image200x200.jpg"))
+							 		#end
+							 		"#urlencode("$thumbpath")"
+							 	}
+							 	
+							#end
+						   ]
 						#end
 					} 
 				#end

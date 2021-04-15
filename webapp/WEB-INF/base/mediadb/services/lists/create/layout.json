@@ -28,7 +28,11 @@
 {
   "response":
       {
+      #if( $data )
         "id":"$data.id"
+      #else
+        "error":"no_record_found"
+      end  
       }
   ,
   
