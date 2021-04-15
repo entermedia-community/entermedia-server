@@ -32,7 +32,7 @@ public void init() {
 			library.setProperty("owner", username);
 		}	
 		
-		String isprivate = Boolean.parseBoolean(library.setValue("privatelibrary"));
+		boolean isprivate = Boolean.parseBoolean(library.get("privatelibrary"));
 		
 		if( !isprivate )
 		{
