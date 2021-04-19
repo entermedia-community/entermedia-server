@@ -7,6 +7,8 @@
 	$!context.putPageValue("thumbsize",$thumbsize)
 #end
 
+
+
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
@@ -31,7 +33,8 @@
     <div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" ><div class="loadingbar" style="width:30px;"></div></div> 
      </div>
 #elseif($conversions && $conversions.size() == 0)
-    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end data-reloadspeed="6000"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end 
+    		data-reloadspeed="3500"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         <div  title="Queing Conversions" >
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
@@ -39,19 +42,33 @@
         </div> 
     </div>
 #else
-    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        #set( $totalcount = $conversions.size() )
+
+    <div id="status$hit.id" class="ajaxstatusXX" #if( $content == $page)data-ajaxrunning="true"#end 
+        		data-reloadspeed="6000"
+     ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+       #set( $totalcount = $conversions.size() )
 
         #if( $conversionsremaining )
         	#set( $remaining = $conversions.size() )
         #else
         	#set( $remaining = $totalcount )
         #end
+
+        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/><br/>
+
         
         #set( $completed = $totalcount - $remaining )
         #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
         #set( $total = $total + 20 )
-        <div class="uiinfo proxythumb" title="Conversions Completed $completed / $totalcount"><div class="loadingbar" style="width:${total}px;"></div></div>
+        <div class="uiinfo proxythumb" title="Conversions Completed $completed / $totalcount">${total}% complete</div>
+
+
+    </div>
+
+        
+        
     </div>
 
 #end
