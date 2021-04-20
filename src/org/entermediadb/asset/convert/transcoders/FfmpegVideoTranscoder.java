@@ -282,7 +282,11 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		 * -acodec pcm_s16le -s vga -ar 44100 -ac 1 pcmmono2k960output2p.avi
 		 */
 		String outpath = null;
-		boolean h264 = outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v");
+		boolean h264 = false;
+		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v"))) {
+			h264 = true;
+		}
+		
 
 		if (h264)
 		{
