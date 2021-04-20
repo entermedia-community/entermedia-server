@@ -18,6 +18,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 public class PresetCreator
@@ -111,6 +112,26 @@ public class PresetCreator
 	
 	public Collection queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean forcererun )
 	{
+		
+		String importstatus = asset.get("importstatus");
+		if( "invalidformat".equals(importstatus))
+		{
+			//Mime icon
+			return Collections.emptyList();
+			
+		}
+		else if ( importstatus.equals("needsmetadata"))
+		{
+			//if it needsmetadata then dont do it now. The upload will run first
+			Asset loaded = (Asset)mediaarchive.getAssetSearcher().loadData(asset);
+			ContentItem dest = mediaarchive.getOriginalContent(loaded);
+			mediaarchive.getAssetImporter().getAssetUtilities().readMetadata(loaded, dest, mediaarchive);
+			asset.setProperty("importstatus", "imported");
+			mediaarchive.saveAsset(loaded);
+
+		}
+		
+		
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 		
 		if(rendertype == null)
@@ -121,13 +142,6 @@ public class PresetCreator
 			}
 		}
 		
-		String validformat = asset.get("importstatus");
-		if( "invalidformat".equals(validformat))
-		{
-			//Mime icon
-			return Collections.emptyList();
-			
-		}
 		if(rendertype==null)
 		{
 			//Mime icon

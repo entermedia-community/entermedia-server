@@ -415,7 +415,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					}
 					else
 					{
-						inAsset.setProperty(property.getId(), value);
+						saveValue(inAsset,property.getId(), value);
 					}
 				}
 			}
@@ -458,11 +458,25 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					continue;
 				}
-				inAsset.setProperty(property.getId(), value);
+				
+				saveValue(inAsset,property.getId(), value);
 			}
 		}
 	}
 
+	protected void saveValue(Asset inAsset, String inName, Object value)
+	{
+		String status = inAsset.get("importstatus");
+		if( status != null && status.equals("needsmetadata"))  //This does not update existing values
+		{
+			//Skip vales that are already set from the upload
+			if( inAsset.getValue(inName) != null)
+			{
+				return;
+			}
+		}
+		inAsset.setValue(inName, value);
+	}
 	protected String processDuration(String value)
 	{
 		if (value.contains("s"))
