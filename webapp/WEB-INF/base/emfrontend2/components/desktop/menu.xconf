@@ -1,9 +1,15 @@
 <page>
 	<inner-layout />
-    <path-action name="DataEditModule.loadData" >
+    <path-action name="DataEditModule.loadData"  allowduplicates="true">
 			<pageval>librarycol</pageval>
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
+    </path-action>
+
+   <path-action name="DataEditModule.loadData" allowduplicates="true">
+			<pageval>category</pageval>
+			<idname>nodeID</idname>
+			<searchtype>category</searchtype>
     </path-action>
 
 	<path-action name="ProjectModule.listConnectedDesktop"/>
