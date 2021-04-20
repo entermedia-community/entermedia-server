@@ -7,5 +7,7 @@
 #end
 
 #foreach( $style in $content.getStylePaths() )
-	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$home#end$style" />
+	#if ($style!="")
+	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$home#end$style"  />
+	#end
 #end
