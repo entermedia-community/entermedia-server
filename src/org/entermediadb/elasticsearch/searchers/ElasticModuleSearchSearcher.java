@@ -149,4 +149,10 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		//return super.initialize();
 		return true;
 	}
+	
+	@Override
+	public boolean hasChanged(HitTracker inTracker)
+	{
+		return true;
+	}
 }
