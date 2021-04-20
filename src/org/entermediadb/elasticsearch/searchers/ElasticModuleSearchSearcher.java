@@ -20,6 +20,7 @@ import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -151,8 +152,16 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	}
 	
 	@Override
-	public boolean hasChanged(HitTracker inTracker)
+	public String getIndexId()
 	{
-		return true;
+		String[] searchmodules = listSearchModules();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < searchmodules.length; i++)
+		{
+			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), searchmodules[i]);
+			buffer.append(searcher.getIndexId());
+		}
+		return buffer.toString();
 	}
+	
 }
