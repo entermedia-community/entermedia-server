@@ -257,7 +257,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				if (node != null)
 				{
 					String message = URLUtilities.fixPath(ex.getMessage());
-					node.setProperty("lasterrormessage", "Could not process sync files " + message);
+					node.setValue("lasterrormessage", "Could not process sync files " + message);
 					node.setValue("lasterrordate", new Date());
 					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 				}
