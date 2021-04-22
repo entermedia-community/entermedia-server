@@ -175,8 +175,18 @@ public abstract class BaseAssetSource implements AssetSource
 			inAsset = getMediaArchive().getAssetBySourcePath(inAsset.getSourcePath());
 		}
 		Asset asset = getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(inAsset, dest, getMediaArchive(), inCreateCategories, sourcepath, inUser);
-		getMediaArchive().getAssetImporter().getAssetUtilities().readMetadata(asset, dest, getMediaArchive());
-		asset.setProperty("importstatus", "imported");
+		
+		String importstatus = (String)asset.get("importstatus");
+		if( importstatus == null || !importstatus.equals("needsmetadata"))
+		{
+			//if it needsmetadata then dont do it now. The upload will run first
+			getMediaArchive().getAssetImporter().getAssetUtilities().readMetadata(asset, dest, getMediaArchive());
+			asset.setProperty("importstatus", "imported");
+		}
+		else
+		{
+			asset.setProperty("importstatus", "needsmetadata");
+		}
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();

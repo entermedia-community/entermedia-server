@@ -276,7 +276,10 @@ tr.emborderhover td,
 .search-list li:hover, 
 .sidebar-list li:hover,
 .sidebar-collection-list li.current:hover,
-.emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
+.emtree .checkbox .field, 
+.emtree .treerow:hover, 
+.emtree .treerow.selected, 
+.emtree .treerow.selected:hover,
 .emtree .cat-current,
 .filters-sidebar li:hover,
 .filters-sidebar-selected li:hover,
@@ -1854,7 +1857,7 @@ td.checkbox input, th.firstheader input {
 }
 .advancedsearchtable label { display: block;}
 
-.advancedsearcheditform { background-color: #333; padding:15px;}
+.advancedsearcheditform { padding:10px; margin:10px 0;}
 .advancedsearcheditform select.form-control:not([size]):not([multiple]) {
 	height: calc(1.8rem)
 }

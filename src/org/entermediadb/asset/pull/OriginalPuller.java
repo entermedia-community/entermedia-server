@@ -263,7 +263,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 				inLog.error("Could not originals process sync files " + ex);
 				if (node != null)
 				{
-					node.setValue("lasterrormessageoriginals", "Could not process originals files " + ex);
+					String message = URLUtilities.fixPath(ex.getMessage());
+					node.setValue("lasterrormessage", "Could not process sync files " + message);
 					node.setValue("lasterrordateoriginals", new Date());
 					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 				}

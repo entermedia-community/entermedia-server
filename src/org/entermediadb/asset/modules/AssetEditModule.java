@@ -758,6 +758,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inUploadRequest);
 		final User user = inReq.getUser();
+		archive.getAssetSearcher();
 
 		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
 		if (pages.size() == 0)
@@ -765,25 +766,26 @@ public class AssetEditModule extends BaseMediaModule
 			log.error("No pages uploaded");
 			return;
 		}
-		String threaded = inReq.findValue("threadedupload");
-		if (Boolean.valueOf(threaded) & pages.size() > 6)
-		{
-			ExecutorManager manager = (ExecutorManager) getModuleManager().getBean(archive.getCatalogId(), "executorManager");
-
-			Runnable runthis = new Runnable()
-			{
-				public void run()
-				{
-					saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
-				}
-			};
-			manager.execute("importing", runthis);
-		}
-		else
-		{
+//		String threaded = inReq.findValue("threadedupload");
+//		if (Boolean.valueOf(threaded) )
+//		{
+//			ExecutorManager manager = (ExecutorManager) getModuleManager().getBean(archive.getCatalogId(), "executorManager");
+//
+//			Runnable runthis = new Runnable()
+//			{
+//				public void run()
+//				{
+//					saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
+//				}
+//			};
+//			manager.execute("importing", runthis);
+//		}
+//		else
+//		{
+			//The uploader sends one at a time anyways
 			Collection tracker = saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
-		}
+//		}
 		if( currentcollection != null && inReq.getUserProfile() != null)
 		{
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);

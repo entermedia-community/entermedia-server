@@ -430,8 +430,9 @@ public class TaskModule extends BaseMediaModule
 	public void loadTasksForGoal(WebPageRequest inReq)
 	{
 		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
+		Collection tasks = (Collection)inReq.getPageValue("tasks");
 		
-		if( goal != null)
+		if( goal != null && tasks == null)
 		{
 			loadTasksForGoal(inReq,goal);
 		}
@@ -942,7 +943,7 @@ public class TaskModule extends BaseMediaModule
 		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.add(Calendar.DAY_OF_MONTH,days - 1);
+		cal.add(Calendar.DAY_OF_MONTH,days);
 		
 		Date onemonth = cal.getTime();
 
@@ -1314,7 +1315,7 @@ public class TaskModule extends BaseMediaModule
 		User selecteduser = null;
 		if( staffid != null) 
 		{
-			opengoalbuilder.match("userlikes", staffid);
+			//opengoalbuilder.match("userlikes", staffid);
 			selecteduser = archive.getUser(staffid);
 		}
 		else
@@ -1324,6 +1325,11 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("selecteduser",selecteduser);
 		
 		String collectionid = inReq.getRequestParameter("collectionid");
+		String currentuser = staffid;
+		if( staffid == null)
+		{
+			currentuser = inReq.getUserName(); 
+		}
 		//String collectionid= "*";
 		if (collectionid != null) 
 		{
@@ -1335,11 +1341,6 @@ public class TaskModule extends BaseMediaModule
 		else 
 		{
 			//search only in project the user belongs
-			String currentuser = staffid;
-			if( staffid == null)
-			{
-				currentuser = inReq.getUserName(); 
-			}
 			Collection allprojectsuser = archive.query("librarycollectionusers").
 					exact("followeruser",currentuser).
 					exact("ontheteam","true").search();
@@ -1364,18 +1365,44 @@ public class TaskModule extends BaseMediaModule
 		{
 			opengoalbuilder.orgroup("collectionid", userprojects);
 		}
-		opengoalbuilder.not("projectstatus", "closed").not("projectstatus", "completed").sort("projectstatus").sort("creationdateDown");
+		opengoalbuilder.not("projectstatus", "closed").not("projectstatus", "completed").sort("projectstatus").sort("creationdateUp");
 		//closedgoalbuilder.orgroup("projectstatus", "active|open|critical").sort("projectstatus").sort("creationdateDown");
 		HitTracker opengoalresults = opengoalbuilder.search();
 
 		List opentickets = new ArrayList();
+		inReq.putPageValue("opentickets", opentickets);
+		
+		Map tasklookup = new HashMap();
 		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
 		{
-			Data data = (Data) iterator.next();
-			opentickets.add( goalsearcher.loadData(data) );
+			Data goal = (Data) iterator.next();
+			Collection tasks = archive.query("goaltask").not("taskstatus", "3").match("projectgoal", goal.getId()).sort("creationdateDown").search();
+			Collection found = new ArrayList();
+			boolean hasone = false;
+			for (Iterator ta = tasks.iterator(); ta.hasNext();)
+			{
+				Data task = (Data) ta.next();
+				if( currentuser.equals( task.get("completedby")) )
+				{
+					found.add(task);
+					if( !"5".equals( task.get("taskstatus") ))
+					{
+						hasone = true;
+					}
+				}
+				else if("5".equals( task.get("taskstatus") ))
+				{
+					found.add(task);
+				}
+			}
+			if( !found.isEmpty() && hasone)
+			{
+				opentickets.add( goalsearcher.loadData(goal) );
+				tasklookup.put(goal.getId(),found);
+			}
+
 		}
-		inReq.putPageValue("opentickets", opentickets);
-	
+		inReq.putPageValue("tasklookup",tasklookup);
 	}
 
 	public void resolveTicket(WebPageRequest inReq)

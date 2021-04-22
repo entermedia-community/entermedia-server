@@ -90,15 +90,17 @@ public class FaceDetectManager
 				
 			if (!"image".equalsIgnoreCase(type) )
 			{
-				return false;
+				inAsset.setValue("facescancomplete","true");
+				return true;
 			}
 		
 			ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg");
 			if( !input.exists() )
 			{
 				//probblem
-				log.info("No thumbnail " + inAsset.getSourcePath());
-				return false;
+				log.debug("No thumbnail " + inAsset.getSourcePath());
+				inAsset.setValue("facescancomplete","true");
+				return true;
 			}
 			long start = System.currentTimeMillis();
 			//getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
