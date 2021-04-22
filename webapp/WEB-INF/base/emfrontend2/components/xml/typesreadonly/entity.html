@@ -1,0 +1,24 @@
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+
+#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+
+#set($entity_module = $detail.getListId())
+
+	<ul class="entity-value-list">
+		#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $searcher.searchById($type) )
+		    #if( $row )
+			    #if( $searcher.getDetail("name").isMultiLanguage())
+			    	#set($name = $row.getName($context.getLocale()))
+			    #else
+			    	#set($name = $row)
+			    #end
+			    #set($entityid = $row.id)
+			    #set($link = "$siteroot$applink/components/gridsample/preview/default.html?id=$entityid&searchtype=$entity_module&hitssessionid=$!hits.sessionId")
+			    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
+		    #end 
+		#end	
+	</ul>
