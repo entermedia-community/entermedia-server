@@ -298,7 +298,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
-			node.setValue("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			String message = URLUtilities.fixPath(sl.getStatusCode() + " " + sl.getReasonPhrase());
+			node.setValue("lasterrormessage", "Could not download " + message);
 			node.setValue("lasterrordate", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("Initial data server error " + sl);
@@ -711,7 +712,8 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
-			inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			String message = URLUtilities.fixPath(sl.getStatusCode() + " " + sl.getReasonPhrase());
+			inRemoteNode.setProperty("lasterrormessage", "Could not push changes " + message);
 			getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(inRemoteNode);
 			log.error("Could not save changes to remote server " + url + "/mediadb/services/cluster/receive/uploadchanges.json " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			inConnection.release(response2);
