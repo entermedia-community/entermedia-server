@@ -1563,4 +1563,10 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("status", true);
 	}
 	
+	public void clearDataCache(WebPageRequest inReq) {
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		mediaArchive.clearAll();
+		inReq.putPageValue("status", "ok");
+	}
+	
 }
