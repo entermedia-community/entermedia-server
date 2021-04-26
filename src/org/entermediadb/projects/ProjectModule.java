@@ -1533,10 +1533,34 @@ Server ProjectModule.uploadFile
 	
 		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateDown").search();
 		inReq.putPageValue("messages", recent);
-		
-		
-		
-		
-		
 	}
+	
+	public void updateCatalogSetting(WebPageRequest inReq)
+	{			
+		String id = inReq.getRequestParameter("id");
+		String label= inReq.getRequestParameter("label");
+		String value= inReq.getRequestParameter("value");
+		if (id == null || id.equals("")) {
+			inReq.putPageValue("status", false);
+			inReq.putPageValue("reason", "id cannot be empty");
+			return;
+		}
+		if (value == null) {
+			inReq.putPageValue("status", false);
+			inReq.putPageValue("reason", "value is null");
+			return;
+		}
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		Searcher instanceSearcher = mediaArchive.getSearcher("catalogsettings");
+		
+		Data catalogSetting = instanceSearcher.query().exact("id", id).searchOne();
+		inReq.putPageValue("id", id);
+		inReq.putPageValue("oldValue", catalogSetting.getValue("value"));
+		catalogSetting.setProperty("label", label);
+		catalogSetting.setProperty("value", value);
+		instanceSearcher.saveData(catalogSetting);
+		inReq.putPageValue("newValue", value);
+		inReq.putPageValue("status", true);
+	}
+	
 }

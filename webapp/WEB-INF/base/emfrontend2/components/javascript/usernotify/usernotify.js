@@ -22,7 +22,16 @@ usernotify = function ()
     var timeout = 1000;  
 
 	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
+	var siteroot = app.data("siteroot");
+	if (siteroot == "undefined")
+		{
+		siteroot = app.data("home");
+		}
+	if (siteroot == "undefined") {
+		console.log("Siteroot notdefined");
+		return;
+	}
+	var apphome =  siteroot + app.data("apphome");
 
 	if(usernotifyopen)
 	{
@@ -59,7 +68,16 @@ usernotify = function ()
 	    
 	    usernotifyconnection.onmessage = function(event) 
 	    {
-	    	var apphome = app.data("home") + app.data("apphome");
+	    	var siteroot = app.data("siteroot");
+	    	if (siteroot == "undefined")
+	    		{
+	    		siteroot = app.data("home");
+	    		}
+	    	if (siteroot == "undefined") {
+	    		console.log("Siteroot notdefined");
+	    		return;
+	    	}
+	    	var apphome =  siteroot + app.data("apphome");
 	    	
 	        var message = JSON.parse(event.data);
 	        console.log("receipbed = " , message);
