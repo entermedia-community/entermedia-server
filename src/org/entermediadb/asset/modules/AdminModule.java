@@ -1426,7 +1426,6 @@ public class AdminModule extends BaseMediaModule
 		}
 
 		inReq.putPageValue("tempentermediakey",entermediakey);
-
 	}
 
 }
