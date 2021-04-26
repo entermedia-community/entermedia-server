@@ -7,7 +7,7 @@
 
 <form action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
-	[[Data Type]]: <select name="searchtype" onchange="submit();" >
+	[[Data Type]]: <select name="searchtype" onchange="submit();" class="form-control" >
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
 				<option id="$type" #if($type == $currentsearch) selected #end>$type</option>
@@ -18,7 +18,7 @@
 #else
 <h2 class="settings-title">$currentsearch</h2>
 #end
-<div class="clearfix"></div>
+
 
 #set( $datatab = $content.datatab )
 <div class="tabnav">
@@ -35,15 +35,23 @@
 		$('.tabnav a').removeClass('current');
 		$(this).addClass('current');
 	})
+	$(document).ready(function() {
+		console.log($( window ).height());
+		var height = $( window ).height();
+		
+		$(".datamanagertable").height(height - 320);
+		$(".datamanagertable").show();
+	})
 </script>
 
 ## <a class="btn" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
 
-<div id="datamanager-workarea" style="padding-bottom:30px;">
+<div id="datamanagerworkarea" class="datamanagerworkarea">
 	<div id="propertyEditPanel">
 		$pages.streamContent()
 	</div>
 </div>
+<div class="clearfix"></div>
 #if($candevelop)
     <a class="btn " href="$home$content.dataroot/list/makedefault.html?searchtype=$searcher.searchType"  >[[Copy to defaults]]</a>
     
