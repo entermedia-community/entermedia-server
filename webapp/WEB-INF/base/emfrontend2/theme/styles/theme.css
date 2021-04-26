@@ -5199,3 +5199,12 @@ a.collectionlike,a.collectionsaved
 .download-table th {
 	border-top: 0 none;
 }
+
+.datamanagerchose {
+	background-color: #efefef;
+	padding:10px 0 15px;
+}
+.datamanagertable {
+	min-height:200px;
+	overflow: auto;
+}
