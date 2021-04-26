@@ -1,0 +1,16 @@
+{
+    #if($status)
+    "status":"ok",
+    "response":
+	{	    
+	    "id":"${id}",
+		
+		"oldSetting": "${oldValue}"
+		"newSetting": "${newValue}"
+				 		
+	}
+    #else
+	"status":"error",
+	"reason":"${reason}"
+	#end	
+}

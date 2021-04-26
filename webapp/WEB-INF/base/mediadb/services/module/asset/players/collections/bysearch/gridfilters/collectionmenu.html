@@ -1,0 +1,68 @@
+#if( $librarycol )
+	#if($librarycol.collectionimage)
+		#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
+	#else
+		#set($asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+	#end
+
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
+	
+	<div class="card card-mini card-collections">
+		<a href="$siteroot$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">
+	 	<div class="card-collections-thumb" style='background-image: url("#uuencode(${link})")'></div>
+	 	</a>
+	 		#if( $canviewsavedcollections )
+		<div class="collection-header-like">
+		$pages.include("$apphome/components/librarycollection/togglelike.html",$context)
+		</div>
+	#end
+	</div>
+	
+	<div>
+	
+	<div class="collection-header-name">
+	<h1><a href="$siteroot$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">${librarycol}</a></h1>
+	</div>
+	
+
+
+	<div class="collection-header-actions">
+	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
+	<i class="fas fa-bars"></i></a>
+		<div class="dropdown-menu">
+		 	#if(!$canforcebasiccollections)
+			 	#if($cansharecollection )
+				 	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+				 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+			 	#end
+		 	#end
+		 	#if( $canaddnewcollection || $cancopycollection)
+					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Collection]]</a>
+			#end
+			#if($caneditcollection)
+			  #set( $link = "$siteroot$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
+			  #set( $link = "$siteroot$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
+			   #set( $link = "$siteroot$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
+			  #set( $link = "$siteroot$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+              #if($librarycol.get('library'))
+				  #set( $link = "$siteroot$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+				  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
+			  #end
+			  #set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+		   	#else
+			   	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+			 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+			#end
+		</div>
+	</div>
+	
+		##$pages.include("$apphome/components/categories/crumbs.html",$context)	
+	</div>
+	
+	
+#end
