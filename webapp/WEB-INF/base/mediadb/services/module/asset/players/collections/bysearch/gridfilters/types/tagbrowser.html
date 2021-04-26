@@ -1,0 +1,50 @@
+$pages.include("$apphome/components/xml/types/select2translations.html",$context)
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#set($searchfield = $detail.getId() )
+#set( $detailid = $detail.getId().replace('.','-') )
+
+#set( $input = $modulehits.getInput("description") )
+
+ 
+##TODO Use $values
+#set( $vals = $val.split("\s*\|\s*") )
+
+		#set( $maxwidth = 100)	
+		#foreach($entry in $filternode.getChildrenByCount() )
+		#set($s = $entry.getText($context) )
+		<a href="$applink/views/modules/$module.id/grid/index.html"  
+					data-oemaxlevel="3"
+					data-searchtype="modulesearch"
+					data-field="$detailid"
+					data-searchfield="$detailid"
+					data-operation="matches"
+					data-targetdiv="searchlayout"
+					data-${detailid}.value="$!s"
+			 	 	class="ajax chartsidebartag">
+				<div class="chartbackground row no-gutters">
+				<div class="col-7" style="text-align:right; padding:0 10px;">			
+				 ##<input type="checkbox" name="" value="$entry.getId()" #if($hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end />
+				 #if( $foreach.count == 1)
+				 	#set( $maxwidth = $entry.count  + 0.0)
+				 #end
+				 #set($barwidth = $entry.count + 0.0 )
+				 #set($barwidth = $barwidth /  $maxwidth )
+				 #set($barwidth = $barwidth  *  80.0)
+				 
+				 ##$apphome/views/topictracker/showreport.html?tag=$s ##old Link			
+				 <span>#esc($s)</span>
+				##<span class="" style="width: ${entry.count}px"></span> 
+			 	</div>
+			 	<div class="col">	
+			 		<div class="filterbar" style="width:${barwidth}%;#if( $input == $s)background-color:#f98f20;#end"></div> 
+				 	##<span>${entry.count}</span>
+			 	</div>
+		   		</div>
+		   		<div class="clearfix"></div>
+		   </a>
+		#end

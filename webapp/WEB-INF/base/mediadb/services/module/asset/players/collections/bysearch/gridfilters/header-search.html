@@ -1,0 +1,71 @@
+#set($hitssessionid = $modulehits.getSessionId())
+##fix module vs moduleid
+#if($module)
+	#if($module.id)
+		#set($moduleid = $module.id)
+	#else
+		#set($moduleid = $module)
+	#end
+#end
+
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+	$context.putPageValue("nodeID",$nodeID)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
+
+
+<div class="filters-container">
+
+<table class="searchbarheadertable">
+<tr>
+##<td style="width:60px; padding-top:30px;">
+###set($modules = $mediaarchive.query("module").exact("showonsearch","true").sort("orderingUp").search($context))
+##<div class="dropdown show">
+##	#if($moduleid)
+##	<a class="btn btn-primary dropdown-toggle moduletoggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+##    	#if($moduleid=="modulesearch") [[All]] #else $module #end
+##	</a>
+##	#end
+##  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+##	#foreach($modulelink in $modules)
+##	    <a class="dropdown-item" href="$applink/views/modules/${modulelink.id}/grid/index.html">$modulelink</a>
+##	#end
+##	</div>
+##</div>
+##</td>
+<td style="padding-top:30px;">
+#if ($canquicksearch || $canshowcollectionpicker || $canshowlibrarypicker)
+	<div class="navbar-quicksearch" id="nav-quicksearch" style="margin: 0 auto;">
+		#if( $canshowcollectionpicker || $canshowlibrarypicker)
+			$pages.include("$apphome/components/libraries/pickcollection.html")
+		#end
+
+		#if ($canquicksearch)
+			$pages.include("$apphome/components/quicksearch/navbar.html")
+		#end
+	</div>
+#end
+</td>
+
+<td style="padding-top:30px;">
+<div class="headerbookmarks">
+<a href="$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true" title="[[Favorites]]"><i class="fas fa-bookmark"></i></a>
+</div>
+</td>
+</tr>
+</table>
+	
+	
+	
+	
+	
+</div>

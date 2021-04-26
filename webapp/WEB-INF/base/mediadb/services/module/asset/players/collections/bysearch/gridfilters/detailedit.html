@@ -1,0 +1,94 @@
+<div id="detail_${detail.id}" class="detailtagcontainer" valign="middle">
+	<div class="form-group">
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+#set( $galleryhome = $content.galleryhome)
+
+		#set( $viewtype = $detail.searchcomponent )
+		
+		#if (!$viewtype)
+			#set( $viewtype = $detail.viewType )
+		#end
+		#if (!$viewtype)
+			#set ($viewtype = $detail.dataType)
+		#end
+		#if (!$viewtype || $viewtype == "text" || $detail.isMultiLanguage() || $viewtype == "textarea" || $viewtype == "html")
+			#set ($viewtype = "default")
+		#end
+		#if ($viewtype == "date")
+			#set ($viewtype = "datesearch")
+		#end
+
+		#if ($viewtype == "multiselect")
+			#set ($viewtype = "list")
+		#end
+		
+		##$viewtype
+		
+		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
+			#if($detail.defaultoperation && $detail.defaultoperation != "")
+				<input name="operation" value="$detail.defaultoperation" type="hidden" />
+			#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
+				<input name="operation" value="matches" type="hidden" />
+			#else
+				<input name="operation" value="startswith" type="hidden" />
+			#end
+		#end
+		
+		#if (!$viewtype || $viewtype == "boolean")
+			#set ($viewtype = "booleansearch")
+		#end
+
+		#if( $hits.getSearchQuery() )
+			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+			#set( $values = $hits.getSearchQuery().getInputs($detail.id) )
+			
+			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+			$context.putPageValue("term",$term)			
+			$context.putPageValue("val",$value)
+			$context.putPageValue("values",$values)
+			$context.putPageValue("data",$hits.getSearchQuery())
+		#end	
+		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
+		<div class="filter-box">
+			<div class="filter-box-header">
+					<div class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
+					<i class="caret fas 
+							#set($minimized = $detail.getId())
+							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
+							#evaluate($preference)
+							#ifnull($selectedpreference)
+								#set($selectedpreference = "true")
+							#end
+							#if($selectedpreference == "true") 
+								 fa-caret-down 
+						  	#else 
+						  		 fa-caret-right 
+						  	#end"></i>
+					
+					$!detail.getText($context)
+					
+					</div> 
+					
+					
+					
+					#if ($edit == "true")
+						<a class="float-right" title="[[Delete Filter]]" href="#" onclick="javascript:deleteFilterField('${detail.getSearchType()}','${detail.id}'); return false;">
+						<i class="fas fa-times"></i>
+						</a>
+					#end
+					 
+					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+			</div>
+			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference == "false") style="display: none;" #end>
+			#if ($detail.isFilter())
+				$pages.include("$galleryhome/gridfilters/types/${viewtype}.html?search=true", $context)
+			#else
+                ##$context.putPageValue("removeclear",true)
+				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
+			#end
+			</div>
+		</div>
+		</div>
+</div>
+
+
