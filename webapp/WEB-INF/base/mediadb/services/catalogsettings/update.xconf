@@ -1,0 +1,9 @@
+<page>
+	
+	<path-action name="JsonAdminModule.preprocess" />
+	<path-action name="ProjectModule.updateCatalogSetting" />
+	
+	<permission name="view">
+		<blank/>
+	</permission>
+</page>
