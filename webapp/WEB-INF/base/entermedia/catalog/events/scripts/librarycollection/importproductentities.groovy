@@ -36,29 +36,29 @@ public void init(){
 		while ((line = read.readNext()) != null){
 			String id = line[2];
 			//log.info("Line:"+li+" Id " + id);
-			Data collection = searcher.searchById(id);
-			if(collection == null) {
-				collection = searcher.createNewData();
+			Data product = searcher.searchById(id);
+			if(product == null) {
+				product = searcher.createNewData();
 				
 				
-				collection.setName(id);
-				collection.setId(id);
+				product.setName(id);
+				product.setId(id);
 				//collection.setValue("rootcategory",id);
 			}
-			collection.setValue("library", "products");
+			product.setValue("library", "products");
 			if(line.length >=37) {
-				collection.setValue("projectdescription", line[36]);
-				collection.setValue("title", line[9]);
-				collection.setValue("subtitle", line[10]);
-				collection.setValue("genre", line[16]);
-				collection.setValue("level", line[21]);
-				collection.setValue("series", line[20]);
-				collection.setValue("keywords", line[26]);
+				product.setValue("projectdescription", line[36]);
+				product.setValue("title", line[9]);
+				product.setValue("subtitle", line[10]);
+				product.setValue("genre", line[16]);
+				product.setValue("level", line[21]);
+				product.setValue("series", line[20]);
+				product.setValue("keywords", line[26]);
 			} else {
 				log.info("CSV Import, incomplete row line " + li +" id: "+id);
 			}
 			
-			rows.add(collection);
+			rows.add(product);
 			li++;
 			if(rows.size() > 10000){
 				searcher.saveAllData(rows, null);
