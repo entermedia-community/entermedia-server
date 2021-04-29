@@ -29,7 +29,7 @@
 </li>
 
 
-#if( $hits.hasSelections() )
+#if( $user && $hits.hasSelections() )
 
 <li class="nav-item dropdown">
 	<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
@@ -87,22 +87,22 @@
 		#if($canprintpreview)
 	    	 <a class="dropdown-item" href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
 		#end
-		#if( $candownload || $canconvert || $candownloadfpo )
+		#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
 			#if( $librarycol )
 				$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
-		#set ($enabled=$hits.getSelectionSize() > 0)
+			#set ($enabled=$hits.getSelectionSize() > 0)
 			
-#if( $enabled )
-	#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-		<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
-	#else
-		<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
-	#end
-#else		
-	<a class="dropdown-item" href="#">[[Download]]</a>
-#end
-#end
+			#if( $enabled )
+				#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+				#else
+					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+				#end
+			#else		
+				<a class="dropdown-item" href="#">[[Download]]</a>
+			#end
+		#end
 
 
 		</div>
