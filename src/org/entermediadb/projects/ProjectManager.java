@@ -2055,5 +2055,17 @@ public class ProjectManager implements CatalogEnabled
 		
 		//TODO: send email to new user?
 	}
+	
+	public List getTeamUsers(String collectionid) {
+		Collection teamUsers = getMediaArchive().query("librarycollectionusers").exact("collectionid", collectionid).exact("ontheteam", "true").search();
+		List users = new ArrayList();
+		for (Iterator iterator = teamUsers.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Data user = getMediaArchive().query("user").exact("id", hit.getValue("followeruser").toString()).searchOne();
+			users.add(user);
+		}
+		return users;
+	}
 
 }

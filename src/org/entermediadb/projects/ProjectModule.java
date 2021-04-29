@@ -1600,4 +1600,22 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("status", true);
 	}
 	
+	public void getTeamUsers(WebPageRequest inReq) {
+		String collectionid = inReq.getRequestParameter("collectionid");
+		inReq.putPageValue("status", false);
+		if (collectionid == null) {
+			inReq.putPageValue("reason", "Invalid Collectionid");
+			return;
+		}
+		ProjectManager projectManager = getProjectManager(inReq);
+		Collection users = projectManager.getTeamUsers(collectionid);
+		if (users == null) {
+			inReq.putPageValue("reason", "Invalid Collectionid");
+			return;
+		}
+		inReq.putPageValue("users", users);
+		inReq.putPageValue("status", true);
+		
+	}
+	
 }
