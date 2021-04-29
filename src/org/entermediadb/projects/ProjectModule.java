@@ -21,22 +21,17 @@ import org.entermediadb.desktops.Desktop;
 import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
-import org.openedit.page.Permission;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.servlet.SiteData;
 import org.openedit.users.User;
+import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -1567,6 +1562,42 @@ Server ProjectModule.uploadFile
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		mediaArchive.clearAll();
 		inReq.putPageValue("status", "ok");
+	}
+	
+	public void addMemberToTeam(WebPageRequest inReq) {		
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid= inReq.getRequestParameter("collectionid");
+		String email = inReq.getRequestParameter("email");
+		
+		if (email == null) {
+			inReq.putPageValue("reason", "You must provide email");
+			return;
+		}
+		email = email.trim().toLowerCase();
+		inReq.putPageValue("status", false);
+		User user = inReq.getUser();
+		if (user == null) {
+			inReq.putPageValue("reason", "Invalid user");
+			return;
+		}
+		
+		ProjectManager projectManager = getProjectManager(inReq);
+		if (collectionid == null) {
+			inReq.putPageValue("reason", "You must provide a collectionid");
+			return;
+		}
+		LibraryCollection collection = projectManager.getLibraryCollection(archive, collectionid);
+		// checking requesting user belongs to team
+		if (collection == null || !projectManager.isOnTeam(collection, user.getId())) {
+			inReq.putPageValue("reason", "Invalid Collectionid");
+			return;
+		}
+		// check if user is already on team
+		User newUser = archive.getUserManager().getUserByEmail(email);		
+		if (!projectManager.isOnTeam(collection, newUser.getId())) {
+			projectManager.addMemberToTeam(inReq);
+		}
+		inReq.putPageValue("status", true);
 	}
 	
 }

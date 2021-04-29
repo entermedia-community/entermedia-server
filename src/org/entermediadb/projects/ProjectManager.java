@@ -44,6 +44,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
@@ -2014,6 +2015,45 @@ public class ProjectManager implements CatalogEnabled
 		boolean found = canViewCollection(user, profile , collection);
 
 		return found;
+	}
+	
+	public void addMemberToTeam(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive();
+		String collectionid= inReq.getRequestParameter("collectionid");
+		String firstName = inReq.getRequestParameter("firstName");
+		String lastName = inReq.getRequestParameter("lastName");
+		String email = inReq.getRequestParameter("email").trim().toLowerCase();
+		
+		User teamuser = archive.getUserManager().getUserByEmail(email);
+		if( teamuser == null)
+		{
+			String	password = new PasswordGenerator().generate();				
+			teamuser = archive.getUserManager().createUser(null, password);
+			teamuser.setFirstName(firstName);
+			teamuser.setLastName(lastName);
+			teamuser.setEmail(email.trim().toLowerCase());
+			teamuser.setEnabled(true);
+			archive.getUserManager().saveUser(teamuser);
+		}
+		log.info("Adding user to team " + teamuser.getId());		
+		
+		Data newUser = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
+		if (newUser != null)
+		{
+			newUser.setValue("ontheteam", true);
+			archive.getSearcher("librarycollectionusers").saveData(newUser);
+		}
+		else
+		{
+			newUser = archive.getSearcher("librarycollectionusers").createNewData();
+			newUser.setValue("collectionid", collectionid);
+			newUser.setValue("followeruser", teamuser.getId());
+			newUser.setValue("ontheteam",true);
+			newUser.setValue("addeddate",new Date());
+			archive.getSearcher("librarycollectionusers").saveData(newUser);
+		}
+		
+		//TODO: send email to new user?
 	}
 
 }
