@@ -264,7 +264,7 @@ public class UserProfileManager
 		{
 			if( userprofile.hasPermission("viewsettings"))
 			{
-				HitTracker modules  = mediaArchive.query("module").all().
+				HitTracker modules  = mediaArchive.query("module").all().sort("name").
 					/*orgroup("viewgroups", user.getGroups()).
 					match("viewroles", userprofile.getSettingsGroup().getId()).
 					match("viewusers", inUserName)*/
@@ -282,6 +282,7 @@ public class UserProfileManager
 				{
 					builder.match("viewroles", userprofile.getSettingsGroup().getId());
 				}
+				builder.sort("name");
 				HitTracker modules  = builder.search();
 					//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(modules);
