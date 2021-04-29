@@ -1594,7 +1594,7 @@ Server ProjectModule.uploadFile
 		}
 		// check if user is already on team
 		User newUser = archive.getUserManager().getUserByEmail(email);		
-		if (!projectManager.isOnTeam(collection, newUser.getId())) {
+		if (newUser == null || !projectManager.isOnTeam(collection, newUser.getId())) {
 			projectManager.addMemberToTeam(inReq);
 		}
 		inReq.putPageValue("status", true);
