@@ -1180,36 +1180,39 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	/*
-	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile)
+	public LibraryCollection loadUserCollection(MediaArchive inArchive, UserProfile inProfile)
 	{
 		User user = inProfile.getUser();
-		Data userlibrary = inArchive.getData("library", user.getId());
-		if (userlibrary != null)
+		Data userlibrary = inArchive.getCachedData("library", "users");
+		if( userlibrary == null)
 		{
-			return userlibrary;
+			userlibrary = inArchive.getSearcher("library").createNewData();
+			userlibrary.setId("users");
+			userlibrary.setName("Users");
+			inArchive.saveData("library", userlibrary );
 		}
+		
+		LibraryCollection usercollection = (LibraryCollection)inArchive.getCachedData("librarycollection", "users-" + user.getId());
+		if( usercollection == null )
+		{
+			usercollection =  (LibraryCollection)inArchive.getSearcher("librarycollection").createNewData();
+			usercollection.setId( "users-" + user.getId());
+			usercollection.setName( user.getScreenName() );
+			usercollection.setValue("library",userlibrary.getId());
+			String folder = "Albums/Users/" + user.getScreenName();
+			Category category = inArchive.createCategoryPath(folder);
+			((MultiValued) category).addValue("viewusers", user.getId());
+			inArchive.getCategorySearcher().saveData(category);
+			
+			usercollection.setValue("rootcategory", category.getId());
+			inArchive.saveData("librarycollection",usercollection);
+			inProfile.getViewCategories().add(category); // Make sure I am in the list of users for the library
+		}
+		inProfile.addValue("opencollections", usercollection.getId());
 
-		userlibrary = inArchive.getSearcher("library").createNewData();
-		userlibrary.setId(user.getUserName());
-		userlibrary.setName(user.getScreenName());
-
-		String folder = "Users/" + user.getScreenName();
-
-		Category librarynode = inArchive.createCategoryPath(folder);
-		((MultiValued) librarynode).addValue("viewusers", user.getId());
-		inArchive.getCategorySearcher().saveData(librarynode);
-		// reload profile?
-		inProfile.getViewCategories().add(librarynode); // Make sure I am in the list of users for the library
-		userlibrary.setValue("viewusers", user.getId());
-		userlibrary.setValue("privatelibrary", true);
-
-		userlibrary.setValue("categoryid", librarynode.getId());
-		inArchive.getSearcher("library").saveData(userlibrary, null);
-
-		return userlibrary;
+		return usercollection;
 	}
-	*/
+
 	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
 	{
 		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
