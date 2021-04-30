@@ -1,4 +1,4 @@
-<div id="categoryresults">
+<div id="categoryresults" class="categoryresults">
 <div id="emresultscontent">
 
 #set( $searcher = $mediaarchive.getSearcher("category") )
@@ -43,7 +43,7 @@ $context.putPageValue("viewpostfix",".html")
 		#end
 	</tbody>
 </table>
-$pages.include("./pages.html",$context)
+$pages.include("$apphome/components/categories/search/pages.html",$context)
 </div>
 </div>
 </div>

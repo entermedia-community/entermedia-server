@@ -33,28 +33,20 @@
 #set( $assetid = $context.getRequestParameter("assetid") )
 
 <div id="search-catgories">
-<table width="100%">
-<tr><td style="width:30%;padding-right:6px;vertical-align: top;">
-	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
-			[[Parent]] 
-		</div>
-    <div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px;overflow-y:auto;width:300px">
+<div class="searchcategories-tree">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer">
         #set( $link = "$apphome/components/emtree/tree.html")
         #set( $link = "${link}?tree-name=dialogCategoryPickerTree&editabletree=true&clearselection=true" )
         #set( $link = "${link}&targetdiv=searchareacontent" )
 		$pages.include($link, $context)  
 	</div>
-</td>
-<td style="vertical-align: top;">
-	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
-			[[Category Search]] 
-	</div>
-	<div id="searchareacontent" > 
+</div>
+<div class="searchcategories-filter">
+	<div id="searchareacontent"> 
 	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index",$context)
 	</div>
+</div>
 
-</td></tr>	
-</table>	
 
 <script>
 
@@ -120,4 +112,5 @@ $(".pickedcategoryform").submit(function(event)
 paintselected();
 
 </script>
+<div class="clearfix"></div>
 </div>	
