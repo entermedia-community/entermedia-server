@@ -111,7 +111,7 @@ $(document).ready(function(url,params)
 	{
 		jQuery('input[name=pagetoggle]').prop('checked',true);
 		jQuery('.selectionbox').prop('checked',true);
-		$('.selectionbox').closest("tr").addClass("emrowselected");
+		$('.selectionbox').closest(".resultsassetcontainer").addClass("emrowselected");
 		$('.selectionbox').closest(".emboxthumb").addClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
@@ -864,7 +864,7 @@ $(document).ready(function(url,params)
 	{
 		$('input[name=pagetoggle]').prop('checked',false);
 		$('.selectionbox').prop('checked',false); //Not firing the page
-		$('.selectionbox').closest("tr").removeClass("emrowselected");
+		$('.selectionbox').closest(".resultsassetcontainer").removeClass("emrowselected");
 		$('.selectionbox').closest(".emboxthumb").removeClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
