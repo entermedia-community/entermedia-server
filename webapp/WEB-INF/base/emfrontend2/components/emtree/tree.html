@@ -132,6 +132,11 @@
 	#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
 	#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
 	
+	#set( $updateAddressBar = $context.getRequestParameter("updateAddressBar" ) )
+	#if(!$updateAddressBar)
+		#set($updateAddressBar="true")
+	#end
+	
 	#set( $searchchildren = $context.getRequestParameter("searchchildren") )
 	#if( !$searchchildren)
 		#set( $searchchildren = true )
@@ -148,6 +153,7 @@
 			data-maxlevelclick="$!maxlevelclick"
 			data-customurlprefix="$!customurlprefix"
 			data-searchchildren="$!searchchildren"
+			data-updateAddressBar="$!updateAddressBar"
 			#if( $canviewupload || $canviewcategoryupload)
 				data-customurladdmedia="$!customurladdmedia"
 			#end

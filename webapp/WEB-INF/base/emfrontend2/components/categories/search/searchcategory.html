@@ -1,5 +1,10 @@
+#if (!$treename)
+	#set( $treename = "dialogCategoryPickerTree" )
+#end
 #set( $action = $context.getRequestParameter("action") ) 
-#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#if (!$targetdiv)
+	#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#end
 #set( $detailid = $context.getRequestParameter("detailid") )
 #if(!$detailid)
 	#set( $detailid = "category") 
@@ -36,8 +41,9 @@
 <div class="searchcategories-tree">
     <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer">
         #set( $link = "$apphome/components/emtree/tree.html")
-        #set( $link = "${link}?tree-name=dialogCategoryPickerTree&editabletree=true&clearselection=true" )
-        #set( $link = "${link}&targetdiv=searchareacontent" )
+        #set( $link = "${link}?tree-name=$treename&editabletree=true&clearselection=true" )
+        #set( $link = "${link}&targetdiv=$!targetdiv&maxlevelclick=$!maxlevelclick&updateAddressBar=false" )
+        
 		$pages.include($link, $context)  
 	</div>
 </div>
@@ -59,6 +65,7 @@ var paintselected = function()
 
 $(document).on("emtreeselect",function(event) 
 {
+	
 	var selectednode = event.nodeid;
 	$("#parentfilter").val(selectednode);
 	//trigger("submit");

@@ -31,10 +31,12 @@ $context.putPageValue("searcher",$searcher)
 	</form>
 
 
+	#if(!$targetresults)
+		#set($targetresults = "$siteroot$apphome/views/categories/index.html")
+	#end
 
 
-
-	<form class="pickedcategoryform emmultivalue" action="$home$apphome/views/categories/index.html">
+	<form class="pickedcategoryform emmultivalue" action="$targetresults">
 		
 		$pages.include("$apphome/components/categories/search/searchpath.html", $context)
 		
