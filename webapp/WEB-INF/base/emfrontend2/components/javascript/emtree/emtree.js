@@ -391,8 +391,11 @@ $(document).ready(function()
 		var link = tree.data("home") + "/components/emtree/create.html?tree-name=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
 		$.get(link, function(data) {
 		    node.append(data).fadeIn("slow");
-			node.find("input").select().focus();
-			$(document).trigger("domchanged");
+		    var theinput = node.find("input");
+			theinput.focus({preventScroll:false});
+			//theinput.select();
+			theinput.focus();
+			//$(document).trigger("domchanged");
 		});
 		return false;
 	} );
