@@ -44,6 +44,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
@@ -1179,36 +1180,39 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	/*
-	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile)
+	public LibraryCollection loadUserCollection(MediaArchive inArchive, UserProfile inProfile)
 	{
 		User user = inProfile.getUser();
-		Data userlibrary = inArchive.getData("library", user.getId());
-		if (userlibrary != null)
+		Data userlibrary = inArchive.getCachedData("library", "users");
+		if( userlibrary == null)
 		{
-			return userlibrary;
+			userlibrary = inArchive.getSearcher("library").createNewData();
+			userlibrary.setId("users");
+			userlibrary.setName("Users");
+			inArchive.saveData("library", userlibrary );
 		}
+		
+		LibraryCollection usercollection = (LibraryCollection)inArchive.getCachedData("librarycollection", "users-" + user.getId());
+		if( usercollection == null )
+		{
+			usercollection =  (LibraryCollection)inArchive.getSearcher("librarycollection").createNewData();
+			usercollection.setId( "users-" + user.getId());
+			usercollection.setName( user.getScreenName() );
+			usercollection.setValue("library",userlibrary.getId());
+			String folder = "Albums/Users/" + user.getScreenName();
+			Category category = inArchive.createCategoryPath(folder);
+			((MultiValued) category).addValue("viewusers", user.getId());
+			inArchive.getCategorySearcher().saveData(category);
+			
+			usercollection.setValue("rootcategory", category.getId());
+			inArchive.saveData("librarycollection",usercollection);
+			inProfile.getViewCategories().add(category); // Make sure I am in the list of users for the library
+		}
+		inProfile.addValue("opencollections", usercollection.getId());
 
-		userlibrary = inArchive.getSearcher("library").createNewData();
-		userlibrary.setId(user.getUserName());
-		userlibrary.setName(user.getScreenName());
-
-		String folder = "Users/" + user.getScreenName();
-
-		Category librarynode = inArchive.createCategoryPath(folder);
-		((MultiValued) librarynode).addValue("viewusers", user.getId());
-		inArchive.getCategorySearcher().saveData(librarynode);
-		// reload profile?
-		inProfile.getViewCategories().add(librarynode); // Make sure I am in the list of users for the library
-		userlibrary.setValue("viewusers", user.getId());
-		userlibrary.setValue("privatelibrary", true);
-
-		userlibrary.setValue("categoryid", librarynode.getId());
-		inArchive.getSearcher("library").saveData(userlibrary, null);
-
-		return userlibrary;
+		return usercollection;
 	}
-	*/
+
 	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
 	{
 		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
@@ -2014,6 +2018,57 @@ public class ProjectManager implements CatalogEnabled
 		boolean found = canViewCollection(user, profile , collection);
 
 		return found;
+	}
+	
+	public void addMemberToTeam(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive();
+		String collectionid= inReq.getRequestParameter("collectionid");
+		String firstName = inReq.getRequestParameter("firstName");
+		String lastName = inReq.getRequestParameter("lastName");
+		String email = inReq.getRequestParameter("email").trim().toLowerCase();
+		
+		User teamuser = archive.getUserManager().getUserByEmail(email);
+		if( teamuser == null)
+		{
+			String	password = new PasswordGenerator().generate();				
+			teamuser = archive.getUserManager().createUser(null, password);
+			teamuser.setFirstName(firstName);
+			teamuser.setLastName(lastName);
+			teamuser.setEmail(email.trim().toLowerCase());
+			teamuser.setEnabled(true);
+			archive.getUserManager().saveUser(teamuser);
+		}
+		log.info("Adding user to team " + teamuser.getId());		
+		
+		Data newUser = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
+		if (newUser != null)
+		{
+			newUser.setValue("ontheteam", true);
+			archive.getSearcher("librarycollectionusers").saveData(newUser);
+		}
+		else
+		{
+			newUser = archive.getSearcher("librarycollectionusers").createNewData();
+			newUser.setValue("collectionid", collectionid);
+			newUser.setValue("followeruser", teamuser.getId());
+			newUser.setValue("ontheteam",true);
+			newUser.setValue("addeddate",new Date());
+			archive.getSearcher("librarycollectionusers").saveData(newUser);
+		}
+		
+		//TODO: send email to new user?
+	}
+	
+	public List getTeamUsers(String collectionid) {
+		Collection teamUsers = getMediaArchive().query("librarycollectionusers").exact("collectionid", collectionid).exact("ontheteam", "true").search();
+		List users = new ArrayList();
+		for (Iterator iterator = teamUsers.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Data user = getMediaArchive().query("user").exact("id", hit.getValue("followeruser").toString()).searchOne();
+			users.add(user);
+		}
+		return users;
 	}
 
 }
