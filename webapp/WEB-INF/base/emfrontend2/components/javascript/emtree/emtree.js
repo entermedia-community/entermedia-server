@@ -256,9 +256,8 @@ $(document).ready(function()
 	  	}
 		else if( event.keyCode === 27 ) //esc 
 	  	{
-			var link = tree.data("home") + "/components/emtree/tree.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + node.data('depth');
-			link = link + "&adding=true";
-			node.load(link); 	  		
+			input.closest(".createnodetree").hide();
+	  		
 	  	}
 	});
 
