@@ -248,7 +248,7 @@ $(document).ready(function()
 					link = link + "&parentNodeID=" + nodeid;
 				}	
 			}
-			node.load(link, {edittext: value},function() 
+			tree.load(link, {edittext: value},function() 
 			{
 				//Reload tree in case it moved order
 				//repaintEmTree(tree);
