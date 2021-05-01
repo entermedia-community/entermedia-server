@@ -1,5 +1,10 @@
+#if (!$treename)
+	#set( $treename = "dialogCategoryPickerTree" )
+#end
 #set( $action = $context.getRequestParameter("action") ) 
-#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#if (!$targetdiv)
+	#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#end
 #set( $detailid = $context.getRequestParameter("detailid") )
 #if(!$detailid)
 	#set( $detailid = "category") 
@@ -33,28 +38,21 @@
 #set( $assetid = $context.getRequestParameter("assetid") )
 
 <div id="search-catgories">
-<table width="100%">
-<tr><td style="width:30%;padding-right:6px;vertical-align: top;">
-	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
-			[[Parent]] 
-		</div>
-    <div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px;overflow-y:auto;width:300px">
+<div class="searchcategories-tree">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer">
         #set( $link = "$apphome/components/emtree/tree.html")
-        #set( $link = "${link}?tree-name=dialogCategoryPickerTree&editabletree=true&clearselection=true" )
-        #set( $link = "${link}&targetdiv=searchareacontent" )
+        #set( $link = "${link}?tree-name=$treename&editabletree=true&clearselection=true" )
+        #set( $link = "${link}&targetdiv=$!targetdiv&maxlevelclick=$!maxlevelclick&updateAddressBar=false" )
+        
 		$pages.include($link, $context)  
 	</div>
-</td>
-<td style="vertical-align: top;">
-	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
-			[[Category Search]] 
-	</div>
-	<div id="searchareacontent" > 
+</div>
+<div class="searchcategories-filter">
+	<div id="searchareacontent"> 
 	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index",$context)
 	</div>
+</div>
 
-</td></tr>	
-</table>	
 
 <script>
 
@@ -67,6 +65,7 @@ var paintselected = function()
 
 $(document).on("emtreeselect",function(event) 
 {
+	
 	var selectednode = event.nodeid;
 	$("#parentfilter").val(selectednode);
 	//trigger("submit");
@@ -120,4 +119,5 @@ $(".pickedcategoryform").submit(function(event)
 paintselected();
 
 </script>
+<div class="clearfix"></div>
 </div>	

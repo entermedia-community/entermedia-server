@@ -49,18 +49,13 @@ $(document).ready(function()
 		{
 			maxlevel = 2;
 		}
-		if(targetdiv ==  undefined || targetdiv == "" )
-		{
-			targetdiv = "searchlayout";
-			maxlevel = 3;
-		}
-        
+		
 		if (treename != undefined && treename.startsWith("dialog"))  //Dialog Tree
 		{
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
 			var depth = node.data('depth');	
-			//Not really needed?
+			//really needed?
 			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
         }
         else {  //Regular Tree
@@ -74,6 +69,7 @@ $(document).ready(function()
 	
     gotopage = function(tree, node, maxlevel, prefix, postfix)
 	{
+    	
 		var treeholder = $("div#categoriescontent");
 		var toplocation =  parseInt( treeholder.scrollTop() );
 		var leftlocation =  parseInt( treeholder.scrollLeft() );
@@ -138,8 +134,9 @@ $(document).ready(function()
 		}
 		
 		//Update Address Bar
-		history.pushState({}, null, reloadurl);
-		
+		if(tree.data("updateaddressbar")) {
+			history.pushState({}, null, reloadurl);
+		}
 		var options = 	{
 					'oemaxlevel':maxlevel,
 					'tree-name':tree.data("treename"),
@@ -164,6 +161,7 @@ $(document).ready(function()
 		jQuery.get(prefix,options,	
 				function(data) 
 				{
+					
 					var cell = jQuery("#" + targetdiv); //view-picker-content
 					//console.log(cell);
 					cell.replaceWith(data);
@@ -248,7 +246,7 @@ $(document).ready(function()
 					link = link + "&parentNodeID=" + nodeid;
 				}	
 			}
-			node.load(link, {edittext: value},function() 
+			tree.load(link, {edittext: value},function() 
 			{
 				//Reload tree in case it moved order
 				//repaintEmTree(tree);
@@ -256,9 +254,8 @@ $(document).ready(function()
 	  	}
 		else if( event.keyCode === 27 ) //esc 
 	  	{
-			var link = tree.data("home") + "/components/emtree/tree.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + node.data('depth');
-			link = link + "&adding=true";
-			node.load(link); 	  		
+			input.closest(".createnodetree").hide();
+	  		
 	  	}
 	});
 
@@ -391,8 +388,11 @@ $(document).ready(function()
 		var link = tree.data("home") + "/components/emtree/create.html?tree-name=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
 		$.get(link, function(data) {
 		    node.append(data).fadeIn("slow");
-			node.find("input").select().focus();
-			$(document).trigger("domchanged");
+		    var theinput = node.find("input");
+			theinput.focus({preventScroll:false});
+			//theinput.select();
+			theinput.focus();
+			//$(document).trigger("domchanged");
 		});
 		return false;
 	} );

@@ -10,23 +10,36 @@ $context.putPageValue("searcher",$searcher)
 		<input type="hidden" name="field" value="parents" />
 		<input type="hidden" name="operation" value="exact" />
 		<input type="hidden" name="parents.value" id="parentfilter" value="$nodeID" />
-		<table class="inlinesearch" style="margin:0 4px 10px;width:100%;" >
+		<table class="inlinesearch" style="width:100%;" >
 			<tr>
-			#foreach( $detail in $details)
-				<td>
-					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-				</td>	
-			#end
+##			#foreach( $detail in $details)
+##				<td>
+##					$context.putPageValue("detail", $detail)
+##					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+##				</td>	
+##			#end
+
+<div class="emsearchfieldrow">
+	<div id="detail_categorypath" align="left" class="emsearchfieldvalue">
+		<input name="field" value="finder/catalog:$view:categorypath" type="hidden">
+		<input name="operation" value="contains" type="hidden">
+		<input type="text" class="form-control detail_categorypath textinput autosubmited " placeholder="[[Search Categories]]" value="" id="categorypath.value" name="categorypath.value">
+	</div>
+</div>
 			</tr>
 		</table>
 	</form>
 
 
-	<form class="pickedcategoryform emmultivalue" action="$home$apphome/views/categories/index.html">
-		<div id="categoryresults">
-			$pages.include("./searchpath.html", $context)
-		</div>
+	#if(!$targetresults)
+		#set($targetresults = "$siteroot$apphome/views/categories/index.html")
+	#end
+
+
+	<form class="pickedcategoryform emmultivalue" action="$targetresults">
+		
+		$pages.include("$apphome/components/categories/search/searchpath.html", $context)
+		
 		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
 		<input name="nodeID" class="emselectedrow" type="hidden" />
 	</form>
