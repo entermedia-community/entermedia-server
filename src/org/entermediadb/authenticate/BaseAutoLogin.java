@@ -118,7 +118,9 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 	
 				}
 				if (pwd_expiry_in_days < 1)
-					pwd_expiry_in_days = 1;//default if malformed
+				{
+					pwd_expiry_in_days = 30;//default if malformed
+				}
 				if (log.isDebugEnabled())
 				{
 					log.debug("Password is set to expire in " + pwd_expiry_in_days + " days");
