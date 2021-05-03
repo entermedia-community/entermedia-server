@@ -54,6 +54,13 @@ public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 				String email = request.getHeader("X-email");
 				UserManager usermanager = getUserManager(inReq);
 				user = usermanager.getUserByEmail(email);
+				if(user == null)
+				{
+					user = (User)usermanager.getUserSearcher().createNewData();
+					user.setEmail(email);
+					user.setEnabled(true);
+					usermanager.saveUser(user);
+				}
 			}
 			else if( type.equals("entermedia") )
 			{
