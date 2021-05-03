@@ -159,7 +159,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		String workspaceid = archive.getCatalogSettingValue("workspace-id");
 		if( workspaceid == null)
 		{
-			archive.setCatalogSettingValue("workspace-id", workspaceid);
+			archive.setCatalogSettingValue("workspace-id", collectionid);
 		}
 		else if( !workspaceid.equals(collectionid) )
 		{
@@ -173,7 +173,14 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		params.put("collectionid",collectionid);
 		
 		String base = archive.getCatalogSettingValue("workspace-provider-mediadb");
+		
+		if( base == null)
+		{
+			inReq.putPageValue("status","workspace-provider-mediadb is not set in catalog settings");
+			return;
+		}
 		String url = base + "/services/authentication/validateuser.json";
+		
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)
