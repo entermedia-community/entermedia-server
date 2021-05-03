@@ -42,6 +42,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if(inReq.getUser() != null)
 		{
 			log.info("Already logged in as " + inReq.getUserName());
+			inReq.putPageValue("status","Already logged in");	
 			return;
 			
 		}
@@ -51,6 +52,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if(userkey == null)
 		{
 			log.info("No key found " + userkey);
+			inReq.putPageValue("status","No key found on request");	
 			return;
 		}
 		String userid = userkey.substring(0,userkey.indexOf("md5"));
@@ -66,9 +68,19 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		params.put("entermediakey",userkey);
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
-		params.put("collectionid",collectionid);
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		String workspaceid = archive.getCatalogSettingValue("workspace-id");
+		if( workspaceid == null)
+		{
+			archive.setCatalogSettingValue("workspace-id", workspaceid);
+		}
+		else if( !workspaceid.equals(collectionid) )
+		{
+			inReq.putPageValue("status","Workspace ID does not match previous collection id");	
+			return;
+		}
+		params.put("collectionid",collectionid);
 		
 		String base = archive.getCatalogSettingValue("portalmediadb");//"https://entermediadb.org/entermediadb/mediadb";
 		//String base = "http://localhost:8080/entermediadb/mediadb";
