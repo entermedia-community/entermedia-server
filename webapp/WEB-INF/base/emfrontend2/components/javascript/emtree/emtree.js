@@ -150,12 +150,13 @@ $(document).ready(function()
 		{
 			options.collectionid = collectionid;						
 		}	
-		var searchchildren = tree.data("searchchildren");
-		if( appnavtab == "asset")  //for now
-        {
-			searchchildren = true;
-        }
-		options.searchchildren = searchchildren; 
+		//var searchchildren = tree.data("searchchildren");
+		//if( appnavtab == "asset")  //for now
+        //{
+		//	searchchildren = true;
+        //}
+		//options.searchchildren = searchchildren; 
+		options.searchchildren = true; 
 		
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix,options,	
