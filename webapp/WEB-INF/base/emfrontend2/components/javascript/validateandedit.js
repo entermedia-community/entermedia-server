@@ -130,13 +130,21 @@ $(document).ready(function()
 			var queryString = $(this).closest('.inlinedata').formSerialize(); 
             var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
             var targetselect = $(this).data("targetselect");
+            var select = $("#" + targetselect);
             //debugger;
 			$.getJSON(url, queryString, function(data) {
-				$('#' + targetselect).append($('<option>', {
-				    value: data.id,
-				    text: data.name
-				}));
-				$("#" + targetselect).val(data.id);
+//				select.append($('<option>', {
+//					selected: true,
+//				    value: data.id,
+//				    text: data.name
+//				}));
+//				
+
+				var newOption = new Option(data.name, data.id, true, true);
+				$('#' + targetselect).append(newOption).trigger('change');
+				
+				//$('#' + targetselect).list2();
+				//$("#" + targetselect).val(data.id);
 				
 			});
 			$(this).closest(".modal").modal('hide');
