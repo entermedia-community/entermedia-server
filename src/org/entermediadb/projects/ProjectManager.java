@@ -614,15 +614,15 @@ public class ProjectManager implements CatalogEnabled
 			}
 			if (categoryId != null)
 			{
-				String search = inReq.getRequestParameter("searchchildren");
-				if (Boolean.parseBoolean(search))
-				{
+//				String search = inReq.getRequestParameter("searchchildren");
+//				if (Boolean.parseBoolean(search))
+//				{
 					assetsearch.addExact("category", categoryId);
-				}
-				else
-				{
-					assetsearch.addExact("category-exact", categoryId);
-				}
+//				}
+//				else
+//				{
+//					assetsearch.addExact("category-exact", categoryId);
+//				}
 			}
 			else
 			{

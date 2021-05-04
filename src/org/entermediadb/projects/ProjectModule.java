@@ -1370,14 +1370,14 @@ Server ProjectModule.uploadFile
 			LibraryCollection librarycol = loadCollection(inPageRequest);
 			
 			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true);
-			if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
-			{
+			//if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
+//			{
 				q.exact("category",category.getId());
-			}
-			else
-			{
-				q.exact("category-exact",category.getId());
-			}
+//			}
+//			else
+//			{
+//				q.exact("category-exact",category.getId());
+//			}
 //			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 //			
 //			if (!caneditdata) 
