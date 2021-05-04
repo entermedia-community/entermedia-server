@@ -1,13 +1,11 @@
 <div id="categoryresults" class="categoryresults">
-<div id="emresultscontentX">
-
 #set( $searcher = $mediaarchive.getSearcher("category") )
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategoryresults", $userprofile))
 $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","$apphome/views/categories/")
 $context.putPageValue("viewpostfix",".html")
-<div  class="tableholder" ">
+<div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
 
 #set( $action = $context.getRequestParameter("actionurl") ) 
@@ -15,12 +13,14 @@ $context.putPageValue("viewpostfix",".html")
 
 <div id="emrowpicker" class="emrowpicker" style="min-height: 400px"  >
 
-<table  id="main-results-table" class="emdata table table-striped table-hover" >
+<table  id="main-results-table" class="emdata table table-striped  table-hover" >
+	<thead>
 	<tr class="tableheader">
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end
 	</tr>
+	</thead>
 	<tbody ng-foreach="hit in dataresults">
 		#foreach( $hit in $hits.getPageOfHits() )
 			<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
@@ -44,7 +44,6 @@ $context.putPageValue("viewpostfix",".html")
 	</tbody>
 </table>
 $pages.include("$apphome/components/categories/search/pages.html",$context)
-</div>
 </div>
 </div>
 </div>
