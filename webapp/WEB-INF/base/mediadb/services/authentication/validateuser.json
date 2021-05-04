@@ -17,7 +17,6 @@
 }
 #else
 {
-	"status":"error",
-	"authenticated":"false"
+	"status":"authenticationproblem"
 }
 #end
