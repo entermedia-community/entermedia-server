@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.google.GoogleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 {
@@ -46,6 +47,19 @@ public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 					{
 						user = manager.createUserIfNeeded(email);
 					}	
+				}
+			}
+			if(type.equals("adminkey") )
+			{
+				String email = request.getHeader("X-email");
+				UserManager usermanager = getUserManager(inReq);
+				user = usermanager.getUserByEmail(email);
+				if(user == null)
+				{
+					user = (User)usermanager.getUserSearcher().createNewData();
+					user.setEmail(email);
+					user.setEnabled(true);
+					usermanager.saveUser(user);
 				}
 			}
 			else if( type.equals("entermedia") )

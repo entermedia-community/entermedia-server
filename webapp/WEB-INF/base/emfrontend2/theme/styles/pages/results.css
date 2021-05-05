@@ -472,8 +472,8 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb
 
 .masonry-grid-cell .grid-gallery-checkbox
 {
-	float: right;  !important;
-	margin: 0;   !important;
+	float: right!important;
+	margin: 0!important;
 }
 
 .overlay-panel {
@@ -925,4 +925,7 @@ max-width:200px;
     max-width: 160px;
 	max-height: 100px;
 }
+
+.emrowselected .resultsselection {display:block;}
+.emrowselected .caption { opacity: 1;}
 

@@ -3,20 +3,21 @@
 #set( $action = "$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid" )
 
 
-
+<div class="datamanagerchose">
 <form style="float: right; margin-top: 4px; margin-right: 20px; min-width:350px" action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
-	##[[Choose Table]]: 
-           <select name="searchtype" onchange="submit();" class="select2" style="min-width:100%;">
+		##[[Choose Table]]: 
+           <select name="searchtype" onchange="submit();" class="select2">
 			<option value="">[[Choose Table]]</option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
 				<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
 			#end
 		#end
-	</select>
+		</select>
 ##<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[Create New Table]]</a>
-</form>
-
+	</form>
+<div class="clearfix"></div>
+</div>
 
 $pages.includeContent()

@@ -17,10 +17,10 @@ $context.putPageValue("hits",$datalist)
 #end
 $context.putPageValue("details",$details) 
 
-<div class="tab" id="data-tab">
+<div class="tab" id="datatab">
 	$pages.include("$apphome/views/settings/lists/datamanager/list/actions.html", $context)
-	<div style="overflow-x:auto;">
-		<div id="emselectable">
+	
+		<div id="emselectable" class="datamanagertable" style="display:none">
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
 		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
 		 <thead>
@@ -75,7 +75,7 @@ $context.putPageValue("details",$details)
 			</form>
 		</div>
 	
-	</div>
+	
 	
 	
 	<div id="pages" style="text-align: left; padding-left: 20px;">

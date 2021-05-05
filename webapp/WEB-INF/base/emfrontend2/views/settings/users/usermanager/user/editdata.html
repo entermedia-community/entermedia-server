@@ -16,6 +16,16 @@
 			<input type="hidden" name="save" value="true"/>
 			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
 			<input type="hidden" name="method" value="edituser"/>
+			#if($selectedUser.id)
+			<div class="inputformrow">
+			<label class="emdatafield">
+				[[Id]]
+			</label>
+			<div>
+				<input type="text" class="form-control form-control-sm" disabled value="$selectedUser.id" />
+			</div>	
+			</div>
+			#end
 			
 			$context.putPageValue("searcher", $userSearcher)	 
 			$context.putPageValue("view", "user/useredit")	

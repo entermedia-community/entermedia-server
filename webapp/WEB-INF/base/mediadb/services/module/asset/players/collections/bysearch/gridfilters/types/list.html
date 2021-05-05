@@ -1,0 +1,83 @@
+#set($searchfield = $detail.getId() )
+#if($filternode)
+		#set( $fieldname = $detail.getId() )
+##		#if ($filternode.children.size() > 100)
+
+
+#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($searchtype = $context.getRequestParameter('searchtype')) ##product
+#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#if(!$fieldname)
+	#set ($fieldname = $detail.getId() )
+#end
+#set ($view = $context.getRequestParameter('view')) 
+
+
+##we need to load up the existing detail object
+#if( !$searcher)
+	#set( $searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+#end
+#if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
+	#set( $detail = $searcher.getDetailForView($view, $fieldname, $user) )
+#end
+
+#set( $listid = $detail.getListId())
+#set( $csslistid = "list-$!detailprefix${detail.id}")
+
+#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
+
+##optional things to filter the list
+#set ($foreignkeyid = $detail.get("foreignkeyid") )
+
+#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
+
+#set ($squery = $detail.query )
+
+	#set ($query = $lsearcher.createSearchQuery())
+	#set ($o = $query.addMatches("id", "*"))
+
+#if ($detail.sort)
+	$query.setSortBy($detail.sort)
+#end
+$lsearcher.addShowOnly($context, $query) 
+
+#set ($types = $lsearcher.search($context, $query))
+#if( !$value )
+	#set ($value = $context.getRequestParameter('value'))
+#end
+##if (!$value)
+##  #set ($value = $context.getRequestParameter("${fieldname}.value"))
+##end
+
+#set( $valueid = "$fieldname" )
+
+#if( !$values )
+    #set($values = $data.getValues($detail.id))
+#end
+
+#set($searchfield = $detail.getId() )
+
+
+
+<div class="filter-box-options-searchbox">
+
+</div>
+##		#else
+			<div class="filter-box-options-scroll">
+				#foreach($entry in $filternode.children)
+					#set( $checked = $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) )
+				<a class="addfilter #if ($first) filter-current #end #if( $checked) filter-selected #end"  
+					data-filtertype="$filternode.getId()" 
+					data-filtervalue="$entry.getId()" 
+					data-filterlabel="$entry.getText($context)" 
+					href="#" title="$entry.getText($context) ($entry.count)">
+					<label for="$entry.getId()${fieldname}_val"> $entry.getText($context) <span class="small">($entry.count)</span></label>
+				</a>
+				#end
+			</div>
+##		#end
+#end 
+
+
+
+	

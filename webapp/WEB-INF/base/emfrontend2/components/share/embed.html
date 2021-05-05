@@ -123,9 +123,9 @@
 	
 	
 	#if( $mediadbappid )
-		#set( $downloadlink = "$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+		#set( $downloadlink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
 	#else
-		#set( $downloadlink = "$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+		#set( $downloadlink = "$siteroot$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
 	#end
 	
 	

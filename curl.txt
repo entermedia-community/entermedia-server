@@ -317,6 +317,10 @@ curl -XGET  'http://localhost:9200/assets_catalog/lock/_mapping?pretty=true'  | 
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 curl -XDELETE 'http://localhost:9200/assets_catalog/lock/AWSutPnzs12lHoNKThY8'
 
+curl -XGET 'http://localhost:9200/assets_catalog/entityproduct/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
+curl -XDELETE 'http://localhost:9200/assets_catalog/entityproduct/AXhA-Anv63GqB4tN_H4v'
+
 
 
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool

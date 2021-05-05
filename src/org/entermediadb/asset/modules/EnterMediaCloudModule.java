@@ -13,6 +13,7 @@ import org.openedit.data.Searcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
+import org.openedit.users.authenticate.PasswordGenerator;
 
 public class EnterMediaCloudModule extends BaseMediaModule
 {
@@ -42,6 +43,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if(inReq.getUser() != null)
 		{
 			log.info("Already logged in as " + inReq.getUserName());
+			inReq.putPageValue("status","Already logged in");	
 			return;
 			
 		}
@@ -51,6 +53,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if(userkey == null)
 		{
 			log.info("No key found " + userkey);
+			inReq.putPageValue("status","No key found on request");	
 			return;
 		}
 		String userid = userkey.substring(0,userkey.indexOf("md5"));
@@ -66,11 +69,21 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		params.put("entermediakey",userkey);
 		//TODO: Make sure this user is part of this collection 
 		String collectionid = inReq.getRequestParameter("collectionid");
-		params.put("collectionid",collectionid);
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		String workspaceid = archive.getCatalogSettingValue("workspace-id");
+		if( workspaceid == null)
+		{
+			archive.setCatalogSettingValue("workspace-id", workspaceid);
+		}
+		else if( !workspaceid.equals(collectionid) )
+		{
+			inReq.putPageValue("status","Workspace ID does not match previous collection id");	
+			return;
+		}
+		params.put("collectionid",collectionid);
 		
-		String base = archive.getCatalogSettingValue("portalmediadb");//"https://entermediadb.org/entermediadb/mediadb";
+		String base = archive.getCatalogSettingValue("workspace-provider-mediadb");//"https://entermediadb.org/entermediadb/mediadb";
 		//String base = "http://localhost:8080/entermediadb/mediadb";
 		String url = base + "/services/authentication/validateuser.json";
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
@@ -131,4 +144,71 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		inReq.putPageValue("status",status);		
 	}
 
+	public void getAdminKey(WebPageRequest inReq)
+	{
+		String userkey = inReq.getRequestParameter("entermediacloudkey");
+		if(userkey == null)
+		{
+			log.info("No key found " + userkey);
+			inReq.putPageValue("status","No key found on request");	
+			return;
+		}
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		String workspaceid = archive.getCatalogSettingValue("workspace-id");
+		if( workspaceid == null)
+		{
+			archive.setCatalogSettingValue("workspace-id", collectionid);
+		}
+		else if( !workspaceid.equals(collectionid) )
+		{
+			inReq.putPageValue("status","Workspace ID does not match previous collection id");	
+			return;
+		}
+
+		JSONObject params = new JSONObject();
+		params.put("entermedia.key",userkey);
+		params.put("entermediakey",userkey);
+		params.put("collectionid",collectionid);
+		
+		String base = archive.getCatalogSettingValue("workspace-provider-mediadb");
+		
+		if( base == null)
+		{
+			inReq.putPageValue("status","workspace-provider-mediadb is not set in catalog settings");
+			return;
+		}
+		String url = base + "/services/authentication/validateuser.json";
+		
+		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
+		StatusLine filestatus = resp.getStatusLine();
+		if (filestatus.getStatusCode() != 200)
+		{
+			//Problem
+			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + userkey);
+			inReq.setCancelActions(true);
+			return;
+		}
+		JSONObject data = getConnection().parseJson(resp);
+		String status = (String)data.get("status");
+		if( "ok".equals(status))
+		{
+			UserManager userManager = (UserManager) getModuleManager().getBean("system", "userManager");
+			
+			User user = userManager.getUser("admin");
+			String password = user.getPassword();
+			if( password.equals("admin") || password.equals("DES:2JPGMLB8Y60=") )
+			{
+				//reset their password to something better
+				String tmppassword = new PasswordGenerator().generate();
+				user.setPassword(tmppassword);
+				
+			}
+			
+			String key = userManager.getStringEncryption().getEnterMediaKey(user);
+			inReq.putPageValue("adminkey",key);
+		}
+		inReq.putPageValue("status",status);
+	}
 }

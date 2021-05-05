@@ -17,7 +17,9 @@
 	
 	<p>
 	<a href="$link">[[Login here or Copy/Paste key below into the App]].</a>
-	[[Key will expire in 24 hours.]] 
+	#if( $calendar )
+	[[Key will expire by]] $context.getDate( $calendar.getTime() ) 
+	#end
 	</p>
 	<p id="entermediakey" style="text-align:center; font-size:120%;">$entermediakey</p>
 	

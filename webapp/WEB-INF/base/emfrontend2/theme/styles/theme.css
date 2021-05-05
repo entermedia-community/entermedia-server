@@ -4066,6 +4066,21 @@ span.drag-and-drop {
     color: #666;
     font-size: 0.8rem;
 }
+
+.searchcategories-tree {
+	float:left;
+	width:30%;
+	padding:6px
+}
+.searchcategories-filter {
+	float:right;
+	width:69%;
+}
+.searchcategories-treecontainer {
+	overflow-y:auto;
+	height: 100%;
+	max-height: 600px;
+}
 .monitor {
     background: #eeeeee;
     border: 1px solid #ccc;
@@ -5198,4 +5213,13 @@ a.collectionlike,a.collectionsaved
 }
 .download-table th {
 	border-top: 0 none;
+}
+
+.datamanagerchose {
+	background-color: #efefef;
+	padding:10px 0 15px;
+}
+.datamanagertable {
+	min-height:200px;
+	overflow: auto;
 }

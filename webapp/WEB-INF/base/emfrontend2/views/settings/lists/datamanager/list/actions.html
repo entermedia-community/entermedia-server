@@ -1,4 +1,4 @@
-<div class="tab-actions clearfix">
+<div class="tab-actions">
         <a class="btn btn-sm btn-secondary ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Add New]]</a>
         <a class="btn btn-sm btn-secondary" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
         <a class="btn btn-sm btn-secondary ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Import]]</a>
@@ -38,7 +38,7 @@
         </form>
          
         <div id="advanced-dm-search" style="display: none;">
-            <form id="simple-dm-search" style="width: 100%" name="search" method="post" action="$home$content.dataroot/list/index.html">
+            <form id="simple-dm-search-h" style="width: 100%" name="search" method="post" action="$home$content.dataroot/list/index.html">
                     $pages.include("/${applicationid}/components/xml/searchfields.html",$context)
                     <input type="hidden" name="catalogid" value="$!searcher.catalogId" />
                     <input type="hidden" name="searchtype" value="$!searcher.searchType" />
