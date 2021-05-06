@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -1428,4 +1429,40 @@ public class AdminModule extends BaseMediaModule
 		inReq.putPageValue("tempentermediakey",entermediakey);
 	}
 
+	public static String VALID_METHODS = "DELETE, HEAD, GET, OPTIONS, POST, PUT";
+	public static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,Authorization,Origin, Content-Type, Accept, X-Email, x-token, x-tokentype";
+
+	public void allowCorsHeaders(WebPageRequest inReq)
+	{
+		HttpServletResponse request = inReq.getResponse();
+		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
+		if( request != null)
+		{
+			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
+			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+			String origin = httpRequest.getHeader("Origin");
+			if (origin != null && ( isoptions || inReq.getUser() != null) )
+			{
+				request.setHeader("Access-Control-Allow-Origin",origin);
+			}
+			else
+			{
+				request.setHeader("Access-Control-Allow-Origin","*");  //This is not useful
+			}
+			request.setHeader("Access-Control-Allow-Credentials","true");
+			request.setHeader("Access-Control-Allow-Methods",VALID_METHODS);
+			request.setHeader("Access-Control-Allow-Headers", VALID_HEADERS);
+          	request.setHeader("Access-Control-Max-Age", "3600");
+			if( isoptions )
+			{
+				inReq.setHasRedirected(true);
+				request.setStatus(200);
+			}
+          	
+		}	
+		
+	}
+	 
+
+	
 }
