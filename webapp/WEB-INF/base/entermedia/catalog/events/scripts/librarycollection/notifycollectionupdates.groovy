@@ -49,7 +49,9 @@ public void init()
 	{
 		String collectionid = topicmod.get("collectionid");
 		String chattopicid = topicmod.get("chattopicid");
-		
+		if(collectionid == null) {
+			continue;
+		}
 		Collection users = mediaArchive.query("librarycollectionusers").exact("collectionid", collectionid).exact("ontheteam", "true").search();
 		for(Data auser in users)
 		{
