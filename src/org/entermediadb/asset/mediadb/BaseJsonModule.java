@@ -31,49 +31,9 @@ import org.openedit.modules.translations.LanguageMap;
 
 public class BaseJsonModule extends BaseMediaModule 
 {
-	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers,access-control-allow-method,content-type";
+//	private static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers,access-control-allow-method,content-type";
 	private static final Log log = LogFactory.getLog(BaseJsonModule.class);
 	
-	public void allowHeaders(WebPageRequest inReq)
-	{
-		HttpServletResponse red = inReq.getResponse();
-		
-		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
-		Map<String, String> headers = Collections.list(httpRequest.getHeaderNames())
-		    .stream()
-		    .collect(Collectors.toMap(h -> h, httpRequest::getHeader));
-		//log.info(headers);
-		if( red != null)
-		{
-			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
-			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
-			String origin = httpRequest.getHeader("Origin");
-			if (origin != null && ( isoptions || inReq.getUser() != null) )
-			{
-				red.setHeader("Access-Control-Allow-Origin",origin);
-			}
-			else
-			{
-				red.setHeader("Access-Control-Allow-Origin","*");
-			}
-			red.setHeader("Access-Control-Allow-Methods","GET, POST, PATCH, PUT, DELETE, OPTIONS");
-			red.setHeader("Access-Control-Allow-Credentials","true");
-			
-			if( isoptions )
-			{
-				red.setHeader("Access-Control-Allow-Headers", VALID_HEADERS);
-				inReq.setHasRedirected(true);
-				//return 200?
-				log.info("Preflight detected ignoring request");
-			}
-			else
-			{
-				red.setHeader("Access-Control-Allow-Headers","*");
-			}
-		}	
-		
-	}
-	 
 	public void preprocess(WebPageRequest inReq)
 	{
 		
@@ -161,9 +121,7 @@ public class BaseJsonModule extends BaseMediaModule
 	}
 
 	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
-	{
-		allowHeaders(inReq);
-		
+	{		
 		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
 		if (inCatalogid == null)
