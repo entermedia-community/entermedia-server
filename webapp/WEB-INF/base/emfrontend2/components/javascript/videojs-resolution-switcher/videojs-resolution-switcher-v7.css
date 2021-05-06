@@ -41,7 +41,8 @@
 
 .vjs-resolution-button .vjs-menu {
   left: 0;
-  bottom: 1em;
+  top: 1em;
+  width:3em;
 }
 
 .vjs-resolution-button .vjs-menu li {
@@ -49,7 +50,6 @@
   font-size: 1em;
   font-family: Arial, Helvetica, sans-serif;
 }
-
 .vjs-menu-button-popup .vjs-menu .vjs-menu-content {
   background-color: #2b333f;
   background-color: rgba(43,51,63,.7);
