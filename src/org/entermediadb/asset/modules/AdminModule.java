@@ -1456,6 +1456,7 @@ public class AdminModule extends BaseMediaModule
 			if( isoptions )
 			{
 				inReq.setHasRedirected(true);
+				inReq.setCancelActions(true);
 				request.setStatus(200);
 			}
           	

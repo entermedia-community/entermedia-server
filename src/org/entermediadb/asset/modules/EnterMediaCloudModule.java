@@ -48,6 +48,13 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			
 		}
 		
+		boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
+		if( isoptions)
+		{
+			//Dont redirect. Wait for CORS to run
+			return;
+		}
+		
 		//TODO: Make this expire
 		String userkey = inReq.getRequestParameter("entermediacloudkey");
 		if(userkey == null)
