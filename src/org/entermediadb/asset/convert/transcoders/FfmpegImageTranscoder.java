@@ -156,7 +156,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		{
 			if(!outputFile.exists() || outputFile.getLength() == 0)
 			{
-				log.info("Thumnail creation failed " + outputpath);
+				log.info("Thumbnail creation failed " + outputpath);
 				result.setOk(false);
 				result.setError("creation failed" );
 			}

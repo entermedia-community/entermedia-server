@@ -789,7 +789,7 @@ public class MediaArchive implements CatalogEnabled
 			if( inPage.getPath().endsWith("video.m3u8"))
 			{
 				//This could be cut off TODO: make generic somehow
-				sourcePath = sourcePath.substring(0,sourcePath.indexOf("video.m3u8") - 1);
+				sourcePath = inPage.getPath().substring(0, inPage.getPath().indexOf("video.m3u8") - 1);
 			}
 
 		}

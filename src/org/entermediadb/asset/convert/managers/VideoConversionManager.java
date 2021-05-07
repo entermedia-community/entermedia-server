@@ -83,8 +83,13 @@ public class VideoConversionManager extends BaseConversionManager
 			return result;
 		}
 		ConvertInstructions instructions2;
-		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","image1024x768.jpg");
-		if( inStructions.getTimeOffset() == null)
+		String defaultpresetoutput = "image1500x1500.jpg";
+		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+		if (preset == null) {
+			defaultpresetoutput = "image1024x768.jpg";
+			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+		}
+		if( preset != null && inStructions.getTimeOffset() == null)
 		{
 			//Now make the input image needed using the video as the input
 			instructions2 = createInstructions(inStructions.getAsset(),preset);
