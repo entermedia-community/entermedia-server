@@ -19,8 +19,10 @@
 		<div class="emthumbimage em$thumbsize assetdraggable"
 			data-assetid="${hit.id}" title="$sourcepath">
 			
-			#if(!$type)
-   	    		#set( $type = "default" )
+   	    	#if(!$type || $type =="audio")
+   	    		#set( $type = "mime" )
+   	    	#elseif( $type =="video")
+   	    		#set( $type = "videothumbnail" )
    	    	#end
 			$pages.include("$componenthome/results/thumbnails/${type}.html", $context)
 			$pages.include("$componenthome/results/badges.html", $context)
