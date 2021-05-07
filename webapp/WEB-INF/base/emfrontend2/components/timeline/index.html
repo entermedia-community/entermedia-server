@@ -1,4 +1,4 @@
-<div id="timelineeditor">
+<div id="timelineeditor" class="actiontabtimeline">
 #set( $clientroot = "/${applicationid}/components/timeline" )
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #if($type == "video")
@@ -10,24 +10,22 @@
 	
 	
 	
-	
-	
-		$pages.include("$clientroot/details/video.html")
-		#set( $timecodejump = $page.get("timecodejump"))
+	$pages.include("$clientroot/details/video.html")
+		
+		
+	#set( $timecodejump = $page.get("timecodejump"))
 
-		<div class="row">
-		<div class="col-sm-12">	
-		<div id="timelineviewer" class="timelineviewer" 
+	<div id="timelineviewer" class="timelineviewer" 
 			data-sourcepath="$asset.sourcepath" 
 			data-assetname="$asset.name" 
 			data-timecodejump="$!timecodejump" 
 			data-mediadb="$mediaarchive.getMediaDbId()" 
 			>
+				
 				$pages.include("$clientroot/timelinedata.html", $context)
+				
 				$pages.include("$clientroot/timeline.html", $context)
-		</div>
-		</div>
-		</div>
+	</div>
 		
 
 #end
