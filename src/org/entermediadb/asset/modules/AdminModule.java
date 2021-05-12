@@ -1430,7 +1430,8 @@ public class AdminModule extends BaseMediaModule
 	}
 
 	public static String VALID_METHODS = "DELETE, HEAD, GET, OPTIONS, POST, PUT";
-	public static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,Authorization,Origin, Content-Type, Accept, X-Email, x-token, x-tokentype";
+	public static String VALID_HEADERS = "x-csrf-token,x-file-name,x-file-size,x-requested-with,cache-control,access-control-allow-credentials,"
+	                                   + "authorization,origin,content-type,accept,x-email,x-token,x-tokentype,access-control-allow-headers";
 
 	public void allowCorsHeaders(WebPageRequest inReq)
 	{
