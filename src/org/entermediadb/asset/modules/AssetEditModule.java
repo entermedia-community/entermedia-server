@@ -1656,9 +1656,10 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(ex);
 
 		Asset asset = getAsset(ex);
-
-		voteForAsset(asset, archive, ex.getUser());
-		loadAssetVotes(ex);
+		if (asset != null) {
+			voteForAsset(asset, archive, ex.getUser());
+			loadAssetVotes(ex);
+		}
 	}
 
 	public void voteForAsset(Asset asset, MediaArchive archive, User inUser)
