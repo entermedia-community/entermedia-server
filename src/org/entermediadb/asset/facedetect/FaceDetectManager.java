@@ -94,7 +94,7 @@ public class FaceDetectManager
 				return true;
 			}
 		
-			ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg");
+			ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
 			if( !input.exists() )
 			{
 				//probblem
