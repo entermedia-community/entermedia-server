@@ -60,8 +60,9 @@
 			<div class="ui-widget-actions">
 			<a href="#" class="btn btn-sm btn-primary" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
 			#if($canactasotherusers)
-			<a class="btn btn-sm btn-danger red" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
+			<a class="btn btn-sm btn-danger red confirm" data-confirm="Are you sure?" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
 			#end
+			<a href="../users/index.html" class="btn btn-secondary btn-sm" style="margin-left:10px;">[[Cancel]]</a>
 		    </div>
 		</form>
 </div>	
