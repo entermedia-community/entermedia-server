@@ -2,10 +2,9 @@
 
 #set( $userSearcher = $searcherManager.getSearcher($catalogid,"user"))
 
-<div style="margin: 20px;">
-<div style="overflow: hidden;" class="ui-widget">
-<div class="ui-widget-header">[[Create New User]]</div>
-<div class="ui-widget-content"> 
+<div style="padding: 20px;">
+<h3>[[Create New User]]</h3>
+<div style="max-width:600px;"> 
 
 <form action="$home$usermanagerhome/users/adduser-finish.html" name="adduser" id="adduser">
 <input type="hidden" name="method" value="adduser"/>
@@ -23,11 +22,12 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 <div class="hr" style="margin: 20px 0; padding: 0;"></div>
 <input class="btn btn-primary btn-sm" type="submit" value="[[Create]]" >
+<a href="index.html" class="btn btn-secondary btn-sm" style="margin-left:10px;">[[Cancel]]</a>
 </form>
+<div class="clearfix"></div>
+</div>
+</div>
 
-</div>
-</div>
-</div>
 
 
 <script language="JavaScript" type="text/javascript">

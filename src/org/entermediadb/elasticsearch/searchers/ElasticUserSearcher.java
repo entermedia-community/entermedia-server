@@ -158,10 +158,12 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public User getUserByEmail(String inEmail)
 	{
 		User target = null;
-		inEmail = inEmail.trim();
-		Data record = (Data)query().or().startsWith("email", inEmail).startsWith("email", inEmail.toLowerCase()).searchOne();
-		if(record != null){
-			target = (User) loadData(record);
+		if (inEmail != null) {
+			inEmail = inEmail.trim();
+			Data record = (Data)query().or().startsWith("email", inEmail).startsWith("email", inEmail.toLowerCase()).searchOne();
+			if(record != null){
+				target = (User) loadData(record);
+			}
 		}
 		return target;
 	}
