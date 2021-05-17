@@ -272,9 +272,7 @@ public class FaceDetectManager
 					}
 					if( !onepicture.containsInValues("faceprofilegroup",groupid) )
 					{
-						Collection pgroups = onepicture.getValues("faceprofilegroup");
-						if( pgroups == null) { pgroups = new ArrayList(); }
-						pgroups.add(groupid);
+						Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
 						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));
 						inAsset.setValue("faceprofiles",pictures);
 						//save asset at the end?
@@ -282,9 +280,7 @@ public class FaceDetectManager
 					}	
 					if( !otherprofile.containsInValues("faceprofilegroup",groupid) )
 					{
-						Collection pgroups = otherprofile.getValues("faceprofilegroup");
-						if( pgroups == null) { pgroups = new ArrayList(); }
-						pgroups.add(groupid);
+						Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
 						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));
 						Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(hit);
 						tosave.setValue("faceprofiles",profiles);
@@ -299,11 +295,14 @@ public class FaceDetectManager
 
 	private List<ValuesMap> createListMap(Collection inValues)
 	{
-		ArrayList copy = new ArrayList(inValues.size());
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		ArrayList copy = new ArrayList();
+		if (inValues != null) 
 		{
-			Map map = (Map) iterator.next();
-			copy.add(new ValuesMap(map));
+			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+			{
+				Map map = (Map) iterator.next();
+				copy.add(new ValuesMap(map));
+			}
 		}
 		return copy;
 	}
