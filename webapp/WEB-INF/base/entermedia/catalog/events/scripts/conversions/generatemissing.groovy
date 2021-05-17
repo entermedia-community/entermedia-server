@@ -18,7 +18,8 @@ public void init()
 		//HitTracker assets = assetsearcher.getAllHits();
 //		SearchQuery q = assetsearcher.createSearchQuery();
 //		q.addOrsGroup("importstatus", "imported reimported");
-		SearchQuery q = assetsearcher.createSearchQuery().append("id", "*");
+		SearchQuery q = assetsearcher.createSearchQuery().append("id", "*")
+        //q.addExact("category","AXf46xDtQtXBgyNMRQ1P");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets =  assetsearcher.search(q);
