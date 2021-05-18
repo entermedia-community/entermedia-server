@@ -306,4 +306,16 @@ public class FaceDetectManager
 		}
 		return copy;
 	}
+	
+	public HitTracker searchForAssets(MediaArchive inArchive, String faceprofilegroupid)
+	{
+		HitTracker tracker = inArchive.query("asset").exact("faceprofiles.faceprofilegroup", faceprofilegroupid).search();
+		return tracker;
+	}
+	
+	
+	
+	
+	
+	
 }

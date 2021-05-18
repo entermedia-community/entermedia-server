@@ -282,7 +282,13 @@ public class MediaSearchModule extends BaseMediaModule
 	}
 	
 	
-	
+	public HitTracker showFaceProfileGroupAssets(WebPageRequest inReq){
+		String faceprofilegroupid = inReq.findValue("faceprofilegroupid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker tracker = archive.query("asset").exact("faceprofiles.faceprofilegroup", faceprofilegroupid).sort("assetaddeddate").search(inReq);
+		return tracker;
 
+	}
 	
 }
