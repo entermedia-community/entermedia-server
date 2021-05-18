@@ -13,7 +13,7 @@
 
 
 #if($useoriginal)
-	#set($tpath = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($asset))
+	#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($asset))
 #else
 	#set($tpath = $mediaarchive.asLinkToPreview($asset, $librarycol.id, $imagesize))
 #end

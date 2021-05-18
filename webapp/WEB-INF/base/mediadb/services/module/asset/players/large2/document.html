@@ -19,7 +19,10 @@
 	#if( $totalpages > 1 )
 		$pages.include("/${mediadbappid}/services/module/asset/players/large2/pages.html",$context)
          <div id="jumpto" class="mvjumpto">
-              <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
+              <form id="jumptoform" class="ajaxform" 
+              		targetdiv="pdfviewer" 
+              		data-totalpages="$totalpages" 
+              		action="$!siteroot$page.getPath()">
               	<p><span>[[Jump To Page]] (1 - $totalpages):</span></p>
 				<p>
                  <input  type="hidden" name="assetid" value="$!asset.getId()" />
