@@ -153,12 +153,30 @@ public class EnterMediaCloudModule extends BaseMediaModule
 
 	public void getAdminKey(WebPageRequest inReq)
 	{
+			UserManager userManager = (UserManager) getModuleManager().getBean("system", "userManager");
+			
+			User user = userManager.getUser("admin");
+			String password = user.getPassword();
+			if( password.equals("admin") || password.equals("DES:2JPGMLB8Y60=") )
+			{
+				//reset their password to something better
+				String tmppassword = new PasswordGenerator().generate();
+				user.setPassword(tmppassword);				
+			}
+			
+			String key = userManager.getStringEncryption().getEnterMediaKey(user);
+			inReq.putPageValue("adminkey",key);
+	}
+	
+	public boolean validateCloudKey(WebPageRequest inReq) {
+		inReq.getJsonRequest();
 		String userkey = inReq.getRequestParameter("entermediacloudkey");
 		if(userkey == null)
 		{
 			log.info("No key found " + userkey);
-			inReq.putPageValue("status","No key found on request");	
-			return;
+			inReq.putPageValue("status","No key found on request");
+			inReq.setCancelActions(true);
+			return false;
 		}
 		String collectionid = inReq.getRequestParameter("collectionid");
 		
@@ -170,8 +188,9 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		}
 		else if( !workspaceid.equals(collectionid) )
 		{
-			inReq.putPageValue("status","Workspace ID does not match previous collection id");	
-			return;
+			inReq.putPageValue("status","Workspace ID does not match previous collection id");
+			inReq.setCancelActions(true);
+			return false;
 		}
 
 		JSONObject params = new JSONObject();
@@ -184,7 +203,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		if( base == null)
 		{
 			inReq.putPageValue("status","workspace-provider-mediadb is not set in catalog settings");
-			return;
+			inReq.setCancelActions(true);
+			return false;
 		}
 		String url = base + "/services/authentication/validateuser.json";
 		
@@ -195,27 +215,23 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			//Problem
 			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + userkey);
 			inReq.setCancelActions(true);
-			return;
+			return false;
 		}
 		JSONObject data = getConnection().parseJson(resp);
 		String status = (String)data.get("status");
-		if( "ok".equals(status))
-		{
-			UserManager userManager = (UserManager) getModuleManager().getBean("system", "userManager");
-			
-			User user = userManager.getUser("admin");
-			String password = user.getPassword();
-			if( password.equals("admin") || password.equals("DES:2JPGMLB8Y60=") )
-			{
-				//reset their password to something better
-				String tmppassword = new PasswordGenerator().generate();
-				user.setPassword(tmppassword);
-				
-			}
-			
-			String key = userManager.getStringEncryption().getEnterMediaKey(user);
-			inReq.putPageValue("adminkey",key);
-		}
 		inReq.putPageValue("status",status);
+		if( "ok".equals(status))
+		{			
+			return true;
+		}
+		inReq.setCancelActions(true);
+		return false;
+	}
+	
+	public void logInAsAdmin(WebPageRequest inReq) {
+		UserManager userManager = (UserManager) getModuleManager().getBean("system", "userManager");
+		
+		User user = userManager.getUser("admin");
+		inReq.putPageValue("user", user);
 	}
 }
