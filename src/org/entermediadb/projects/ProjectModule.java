@@ -1521,6 +1521,10 @@ Server ProjectModule.uploadFile
 		ProjectManager manager = getProjectManager(inReq);
 
 		Collection collections = manager.listCollectionsForFollower(inReq.getUser());
+		if( collections.isEmpty())
+		{
+			collections.add("NONE");
+		}
 		
 		Collection topics = archive.query("collectiveproject").orgroup("parentcollectionid", collections).hitsPerPage(100).search();
 		
