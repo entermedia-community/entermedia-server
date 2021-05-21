@@ -26,9 +26,9 @@
 
 <input class="btn btn-primary" type="submit" value="[[Save]]" style="margin-right:10px;"/>
 
- <a class="btn btn-sm btn-primary ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
+ <a class="btn btn-sm btn-primary ajax" data-targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
  <a class="btn btn-sm btn-secondary emdialog" href="$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> 
-&nbsp;&nbsp;<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
+&nbsp;&nbsp;<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
 </form>
 
 
@@ -37,6 +37,6 @@ $pages.include("$apphome/views/settings/events/triggers/edit/log.html")
 </div>
 <hr>
 <p>
-<a class="btn btn-sm btn-secondary ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
+<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
 </p>
 </div>

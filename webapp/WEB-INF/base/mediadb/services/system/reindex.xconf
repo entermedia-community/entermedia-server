@@ -1,4 +1,0 @@
-<page>
-	<path-action name="JsonDataModule.preprocess" />
-	<path-action name="MediaAdminModule.reindexAll" />
-</page>
