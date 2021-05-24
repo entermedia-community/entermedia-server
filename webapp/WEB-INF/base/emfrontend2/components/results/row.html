@@ -13,14 +13,16 @@
 		data-dataid="${hit.id}" 
 		#if($canquickdownload) style="margin-right: 17px;" #end />
 #if($canquickdownload)
-#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-
-		<a class="btn btn-sm btn-primary" 
-			href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")"
-			style="margin-right:5px;"
-			title="[[Download]] $asset.name"
-			><i class="fas fa-download"></i></a>
-
+	#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+	#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+	#if($collectionid)
+		#set($dlink = "$dlink&collectionid=$!{collectionid}")
+	#end
+	<a class="btn btn-sm btn-primary" 
+		href="$dlink"
+		style="margin-right:5px;"
+		title="[[Download]] $asset.name"
+		><i class="fas fa-download"></i></a>
 #end
 	</td>
 #end	
