@@ -56,7 +56,7 @@ public class UserNotifyManager
 
 	protected void receiveLogin(UserNotifyConnection inConnection, JSONObject map)
 	{
-		String username = (String)map.get("userid");
+		String username = String.valueOf(map.get("userid"));
 		if(username == null)
 		{
 			return;
