@@ -6,24 +6,24 @@
 
 
 <div class="row">
-<div class="col">
-<div style="padding:20px;">
-	<h2>[[Timeline Editor]] </h2>
-	<div id="video-container">
-	<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-		<section id="cuePlayer">
-			<video id="videoclip" class="video-player video-tl" preload="no" controls="true" webkit-playsinline poster="$thumb">
-				<source src="$source" type="video/mp4" />
-				<source src="$webmsource" type="video/webm" />
-			</video>
-	   </section>
+	<div class="col">
+		<div style="padding:20px;">
+			<h2>[[Timeline Editor]] </h2>
+			<div id="video-container">
+			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+				<section id="cuePlayer">
+					<video id="videoclip" class="video-player video-tl" preload="no" controls="true" webkit-playsinline poster="$thumb">
+						<source src="$source" type="video/mp4" />
+						<source src="$webmsource" type="video/webm" />
+					</video>
+			   </section>
+			</div>
+			</div>									
+		</div>
 	</div>
-	</div>									
-</div>
-</div>
-<div class="col-5">
-	<div class="videotimelinecreate">
-	$pages.include("$clientroot/details/edit.html", $context)
+	<div class="col-5">
+		<div class="videotimelinecreate">
+		$pages.include("$clientroot/details/edit.html", $context)
+		</div>
 	</div>
-</div>
 </div>

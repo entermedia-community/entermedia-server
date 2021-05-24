@@ -1,32 +1,27 @@
 <div id="timelineeditor" class="actiontabtimeline">
-#set( $clientroot = "/${applicationid}/components/timeline" )
-#set( $type = $mediaarchive.getMediaPlayerType($asset))
-#if($type == "video")
-	#set( $sourcepath = $asset.sourcepath )
-	#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-	#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
-	#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-	$context.putPageValue("timeline", $timeline)
-	
-	
-	
-	$pages.include("$clientroot/details/video.html")
+	#set( $clientroot = "/${applicationid}/components/timeline" )
+	#set( $type = $mediaarchive.getMediaPlayerType($asset))
+	#if($type == "video")
+		#set( $sourcepath = $asset.sourcepath )
+		#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+		#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+		#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+		$context.putPageValue("timeline", $timeline)
 		
-		
-	#set( $timecodejump = $page.get("timecodejump"))
-
-	<div id="timelineviewer" class="timelineviewer" 
-			data-sourcepath="$asset.sourcepath" 
-			data-assetname="$asset.name" 
-			data-timecodejump="$!timecodejump" 
-			data-mediadb="$mediaarchive.getMediaDbId()" 
-			>
-				
-				$pages.include("$clientroot/timelinedata.html", $context)
-				
-				$pages.include("$clientroot/timeline.html", $context)
-	</div>
-		
-
-#end
+		$pages.include("$clientroot/details/video.html")	
+			
+		#set( $timecodejump = $page.get("timecodejump"))
+	
+		<div id="timelineviewer" class="timelineviewer" 
+				data-sourcepath="$asset.sourcepath" 
+				data-assetname="$asset.name" 
+				data-timecodejump="$!timecodejump" 
+				data-mediadb="$mediaarchive.getMediaDbId()" 
+				>
+			
+			$pages.include("$clientroot/timelinedata.html", $context)
+			
+			$pages.include("$clientroot/timeline.html", $context)
+		</div>
+	#end
 </div>

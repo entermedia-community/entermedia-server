@@ -1,25 +1,22 @@
 <div id="closedcaptioneditor">
-#set( $sourcepath = $asset.sourcepath )
-#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
-#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+	#set( $sourcepath = $asset.sourcepath )
+	#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+	#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+	#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+	#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+	
+	$pages.include("$clientroot/details/video.html",$context)
+	
+	#set( $timecodejump = $context.getRequestParameter("timecodejump"))
 
-
-$pages.include("$clientroot/details/video.html",$context)
-
-
-#set( $timecodejump = $context.getRequestParameter("timecodejump"))
-
-
-
-    <div class="row">
-	<div class="col" style="max-width:130px; font-size:90%;">	
-		<span id="captionstart">00:00.0</span> -
-		<span id="captionend">00:00.0</span>
-	</div>
-	<div class="col" style="padding: 0px;">
-		<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" class="ajaxform" >
+    <div class="row videoclosedcaptioninput">
+	<div class="col" style="font-size:90%;">
+		<div style="float:left; width:160px; padding: 0 0 0 20px;">	
+			<span id="captionstart">00:00.0</span> -
+			<span id="captionend">00:00.0</span>
+		</div>
+		<div style="float:left; width:calc(100% - 320px);">
+			<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" class="ajaxform" >
 			<input type="hidden" name="assetid" value="$asset.id" />
 			<input type="hidden" name="oemaxlevel" value="1" />
 			<input type="hidden" id="timecodestart" name="timecodestart" value="0" />
@@ -31,25 +28,22 @@ $pages.include("$clientroot/details/video.html",$context)
                 value="" 
                 rows="2"
 				style="width:100%;"></textarea>
-		</form>
+			</form>
+		</div>
+		<div style="float:left; width:160px; padding: 0 20px 0 20px;">	
+			##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
+			##	class="btn btn-success btn-sm" style="margin-left:0px;" >[[Play 8s]]</a> 
+			<a id="removetime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-minus"></i></a>
+			<a id="addtime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-plus"></i></a>
+			<a id="removecaption" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-trash"></i></a>
+	    </div>
+    </div>
 	</div>
-	<div class="col" style=" max-width:160px; padding: 0 0 0 20px;">	
-		##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
-		##	class="btn btn-success btn-sm" style="margin-left:0px;" >[[Play 8s]]</a> 
-		<a id="removetime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-minus"></i></a>
-		<a id="addtime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-plus"></i></a>
-		<a id="removecaption" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-trash"></i></a>
-		
-    </div>
-    </div>
-<div class="clearfix"></div>
-<div class="row">
-	<div class="col-sm-12">
-<div class="timelineviewer" >
-		$pages.include("$clientroot/viewcaptions.html",$context)
-</div>
-</div>
-</div>
-
-
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="timelineviewer" >
+			$pages.include("$clientroot/viewcaptions.html",$context)
+			</div>
+		</div>
+	</div>
 </div>

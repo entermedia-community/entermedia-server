@@ -4,8 +4,9 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = "/${applicationid}/components/closedcaptions" )
 
-<div class="row" style="margin-bottom:20px">
-	<div class="col" style="max-width: 550px">
+<div class="row">
+<div class="col">
+<div style="padding:20px;">
 		<div id="video-container" >
 			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
 				<section id='cuePlayer' style="padding:6px;">
@@ -15,7 +16,7 @@
 						  #if( $tracks && !$tracks.isEmpty() )
 					       #foreach( $track in $tracks)
 						      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
-						      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+						      	src="$!siteroot/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
 						      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end />
 					      	#end
 					      #end
@@ -24,7 +25,10 @@
 			</div>									
 		</div>
 	</div>
-	<div class="col-sm-5 col-xl-4" style="max-width: 550px">
-		$pages.include("${clientroot}/details/edit.html", $context)
+	</div>
+	<div class="col-sm-5">
+		<div class="videotimelinecreate">
+			$pages.include("${clientroot}/details/edit.html", $context)
+		</div>
 	</div>
 </div>
