@@ -7,10 +7,13 @@ var initclosedcaptions = function()
 	var themeprefix = app.data("siteroot")	+ app.data("themeprefix");
 
 	var video = $("#videoclip");
+	
+	if (!video.length || video[0] == null) {
+		return;
+	}
+	
 	video = video[0]; 
-	
 	var inTime = video.currentTime;
-	
 	parseTimeToText = function(inTime)
 	{
 			var justseconds = Math.floor(inTime);
