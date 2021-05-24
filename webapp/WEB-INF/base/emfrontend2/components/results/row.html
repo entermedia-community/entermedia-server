@@ -4,26 +4,30 @@
 <tr data-rowid="$hit.id" title="$sourcepath" class="resultsassetcontainer #if($selectedrow) emrowselected #end" >
 #if( $showtoolbar )
 	<td class="borderedcell checkbox resultsselection" noclick="true"> 
-		
-<input type="checkbox" 
+		<input type="checkbox" 
 		class="selectionbox" 
 		name="count" 
 		value="" 
 		#if($selectedrow) checked #end 
 		data-dataid="${hit.id}" 
-		#if($canquickdownload) style="margin-right: 17px;" #end />
-#if($canquickdownload)
-	#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-	#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-	#if($collectionid)
-		#set($dlink = "$dlink&collectionid=$!{collectionid}")
-	#end
-	<a class="btn btn-sm btn-primary" 
-		href="$dlink"
-		style="margin-right:5px;"
-		title="[[Download]] $asset.name"
-		><i class="fas fa-download"></i></a>
-#end
+		#if($canquickdownload) style="margin-right: 1px;" #end />
+		#if($canquickdownload)
+        	#if( $desktop )
+		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+		       	<i class="fas fa-download"> </i>
+		       	</a> 
+	      	#else
+				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+			
+	       	<a href="$dlink" class="btn btn-sm btn-primary" data-assetid="$hit.id" title="[[Download]] $!title">
+	       	<i class="fas fa-download"> </i>
+	       	</a>
+	       	#end
+	    #end
 	</td>
 #end	
 	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
