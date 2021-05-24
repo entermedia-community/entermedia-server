@@ -1,13 +1,19 @@
-#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+#set( $clientroot = "$siteroot/${applicationid}/components/closedcaptions" )
 <div id="captionview"	
-#if( $track.transcribestatus == "needstranscribe" || $track.transcribestatus == "inprogress")  
- class="ajaxstatus" 	ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id" 
-#end
-#if( $track.transcribestatus == "needstranscribe")> <div class="alert alert-primary" role="alert">	[[transcoder uploading audio]] </div>
-#elseif( $track.transcribestatus == "inprogress")> <div class="alert alert-primary" role="alert">	 [[in progress]] ${track.percentcomplete}%  </div>
-#elseif( $track.transcribestatus == "error")> <div class="alert alert-danger" role="alert">	[[error auto transcribing]]  </div>
-#else
->
+	#if( $track.transcribestatus == "needstranscribe" || $track.transcribestatus == "inprogress")  
+	 class="ajaxstatus" data-ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id" 
+	#end
+> 
+#if( $track.transcribestatus == "needstranscribe") 
+	<div class="alert alert-primary" role="alert">	[[transcoder uploading audio]] </div>
+#elseif( $track.transcribestatus == "inprogress") 
+	#set($porcentajecomplete = $track.percentcomplete)
+	#if (!$porcentajecomplete)
+	#set($porcentajecomplete = "0")
+	#end
+	<div class="alert alert-primary" role="alert">	 [[in progress]] $porcentajecomplete%  </div>
+#elseif( $track.transcribestatus == "error") 
+	<div class="alert alert-danger" role="alert">	<i class="fas fa-exclamation-triangle"></i> [[Error auto transcribing]]  </div>
 #end
 
 #set( $clips = $timeline.getClips() )
@@ -15,7 +21,7 @@
 
 <div id="scrollarea" style="width:100%; height: 260px; overflow-y: scroll;">
 <div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()"
-	 data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="width:${padded}px; margin-left:60px;">
+	 data-savelink="$clientroot/saveclips.json" data-assetid="$asset.id" style="width:${padded}px; margin-left:60px;">
 	 
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
@@ -24,7 +30,8 @@
 			data-timecodestart="$clip.getStart()"
 			data-timecodelength="$clip.getLength()">
 			<div class="ruler" >
-				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; cursor: move;position:relative;">
+				<div class="timecell" 
+					style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; cursor: move;position:relative;">
 					<div class="grabresize"></div>
 					<span class="cliptext">#esc($!clip.getLabel())</span>
 				</div>

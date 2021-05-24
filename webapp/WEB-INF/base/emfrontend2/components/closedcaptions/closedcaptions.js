@@ -3,8 +3,8 @@ var initclosedcaptions = function()
 	
 	
 	var app = $("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var themeprefix = app.data("home")	+ app.data("themeprefix");
+	var apphome = app.data("siteroot") + app.data("apphome");
+	var themeprefix = app.data("siteroot")	+ app.data("themeprefix");
 
 	var video = $("#videoclip");
 	video = video[0]; 

@@ -402,69 +402,67 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				Collection captions = new ArrayList();
 				inTrack.setValue("captions", captions);
 				
-				JsonArray results = taskinfo.get("response").getAsJsonObject().get("results").getAsJsonArray();
-				
-				for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
-					JsonObject alternative = (JsonObject) iterator2.next();
-					JsonArray alternatives = (JsonArray) alternative.get("alternatives");
-					for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
-
-						JsonObject data = (JsonObject) iterator.next();
-						//String cliplabel = data.get("transcript").getAsString();
-						JsonArray words = data.get("words").getAsJsonArray();
-						
-						StringBuffer buffer = new StringBuffer();
-						int charcount = 0;
-						
-						
-						JsonObject firstword = (JsonObject) words.get(0);
-						JsonObject lastword = null;
-						
-					
-						
-						
-						for (Iterator iterator3 = words.iterator(); iterator3.hasNext();) {
+				JsonElement resultsElement = taskinfo.get("response").getAsJsonObject().get("results");
+				if (resultsElement != null) {
+					JsonArray results = resultsElement.getAsJsonArray();
+					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
+						JsonObject alternative = (JsonObject) iterator2.next();
+						JsonArray alternatives = (JsonArray) alternative.get("alternatives");
+						for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
+	
+							JsonObject data = (JsonObject) iterator.next();
+							//String cliplabel = data.get("transcript").getAsString();
+							JsonArray words = data.get("words").getAsJsonArray();
 							
-							JsonObject worddata = (JsonObject) iterator3.next();
-							String word = worddata.get("word").getAsString();
-							charcount += word.length();
+							StringBuffer buffer = new StringBuffer();
+							int charcount = 0;
 							
-							if(charcount > 60 || !iterator3.hasNext()){
-								if(!iterator3.hasNext()){
-									buffer.append(word);
-									buffer.append(" ");
-									lastword = worddata;
-
-								}
-								
-														
-								String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
-								String  laststring = lastword.get("endTime").getAsString().replaceAll("s", "");
-
-								
-								
-								double extraoffset = Double.parseDouble(offsetstring);
-								double finaloffset = Double.parseDouble(laststring);
-								
-								Map cuemap = new HashMap();
-								cuemap.put("timecodestart", Math.round((extraoffset) * 1000d));
-								cuemap.put("timecodelength", Math.round((finaloffset - extraoffset) * 1000d)-1);
-								cuemap.put("cliplabel", buffer.toString());
-								captions.add(cuemap);
-								firstword = (JsonObject) worddata;
-								buffer = new StringBuffer();
-								charcount = 0;
-							} 
-							lastword = worddata;
-							buffer.append(word);
-							buffer.append(" ");
+							JsonObject firstword = (JsonObject) words.get(0);
+							JsonObject lastword = null;
 							
+							for (Iterator iterator3 = words.iterator(); iterator3.hasNext();) {
+								
+								JsonObject worddata = (JsonObject) iterator3.next();
+								String word = worddata.get("word").getAsString();
+								charcount += word.length();
+								
+								if(charcount > 60 || !iterator3.hasNext()){
+									if(!iterator3.hasNext()){
+										buffer.append(word);
+										buffer.append(" ");
+										lastword = worddata;
+	
+									}
+									
+															
+									String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
+									String  laststring = lastword.get("endTime").getAsString().replaceAll("s", "");
+	
+									
+									
+									double extraoffset = Double.parseDouble(offsetstring);
+									double finaloffset = Double.parseDouble(laststring);
+									
+									Map cuemap = new HashMap();
+									cuemap.put("timecodestart", Math.round((extraoffset) * 1000d));
+									cuemap.put("timecodelength", Math.round((finaloffset - extraoffset) * 1000d)-1);
+									cuemap.put("cliplabel", buffer.toString());
+									captions.add(cuemap);
+									firstword = (JsonObject) worddata;
+									buffer = new StringBuffer();
+									charcount = 0;
+								} 
+								lastword = worddata;
+								buffer.append(word);
+								buffer.append(" ");
+								
+							}
 						}
 					}
+					
 				}
 				inTrack.setValue("transcribestatus", "complete");
 				inTrack.setValue("completeddate", new Date());
-
 				tracksearcher.saveData(inTrack);
 				
 				inAsset.setValue("closecaptionstatus", "complete");
@@ -476,9 +474,9 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				{
 					Object obj = taskinfo.get("metadata");
 					log.info(obj);
-//					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
-//					inTrack.setValue("percentcomplete", percent);
-//					tracksearcher.saveData(inTrack);
+					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
+					inTrack.setValue("percentcomplete", percent);
+					tracksearcher.saveData(inTrack);
 				}
 				catch(Exception e)
 				{
