@@ -1,8 +1,8 @@
 <div id="closedcaptioneditor">
 	#set( $sourcepath = $asset.sourcepath )
-	#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+	#set( $source = "$siteroot/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 	#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
-	#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+	#set( $thumb = "$siteroot/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 	#set( $clientroot = "/${applicationid}/components/closedcaptions" )
 	
 	$pages.include("$clientroot/details/video.html",$context)
