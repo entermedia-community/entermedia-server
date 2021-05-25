@@ -142,7 +142,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					return false;
 				}
 				String textinfo = resulttext.getStandardOut();
-				parseTextValues(inAsset, details, textinfo);
+				parseTextValues(inAsset, details, textinfo);  //TODO: Do we skip anything already set
 			}
 		}
 		catch (Exception e1)
@@ -427,7 +427,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			lng.contains(".") 
 		){
 			
-			inAsset.setProperty("geo_point", lat + " , " + lng);
+			inAsset.setProperty("geo_point", lat + " , " + lng);  //TODO makesure we dont have junk in here
 		}
 		
 		return foundtextvalues;

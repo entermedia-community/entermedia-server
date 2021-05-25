@@ -114,7 +114,7 @@ public class PresetCreator
 	{
 		
 		String importstatus = asset.get("importstatus");
-		if( "invalidformat".equals(importstatus))
+		if(importstatus == null || "invalidformat".equals(importstatus))
 		{
 			//Mime icon
 			return Collections.emptyList();

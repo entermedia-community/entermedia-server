@@ -305,10 +305,17 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		saveToElasticSearch(details, inData, false, inUser);
 		if (inData.getSourcePath() == null)
 		{
-			log.error( getSearchType() + " Missing sourcepath" + inData);
-			String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId());
-			inData.setSourcePath(sourcepath);
-			saveToElasticSearch(details, inData, false, inUser);
+			if( getSourcePathCreator() == null )
+			{
+				log.error("Could not save sourcepath for " + getSearchType() + " " + inData.getId());
+			}
+			else
+			{
+				log.error( getSearchType() + " Missing sourcepath" + inData);
+				String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId());
+				inData.setSourcePath(sourcepath);
+				saveToElasticSearch(details, inData, false, inUser);
+			}
 		}
 		clearIndex();
 
