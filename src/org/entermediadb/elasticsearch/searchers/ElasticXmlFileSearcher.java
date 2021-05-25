@@ -303,7 +303,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
 		saveToElasticSearch(details, inData, false, inUser);
-		if (inData.getSourcePath() == null)
+		if (inData.getSourcePath() == null && getSourcePathCreator() != null)
 		{
 			log.error( getSearchType() + " Missing sourcepath" + inData);
 			String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId());
