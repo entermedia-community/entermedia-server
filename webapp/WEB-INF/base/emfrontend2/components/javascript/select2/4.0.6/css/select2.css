@@ -197,7 +197,8 @@
     float: right;
     font-weight: bold;
     margin-top: 5px;
-    margin-right: 10px; }
+    margin-right: 5px;
+    color:#444; }
   .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #e4e4e4;
     border: 1px solid #aaa;
@@ -317,7 +318,8 @@
     cursor: pointer;
     float: right;
     font-weight: bold;
-    margin-right: 10px; }
+    margin-right: 10px; 
+    color:#444;}
   .select2-container--classic .select2-selection--single .select2-selection__placeholder {
     color: #999; }
   .select2-container--classic .select2-selection--single .select2-selection__arrow {
