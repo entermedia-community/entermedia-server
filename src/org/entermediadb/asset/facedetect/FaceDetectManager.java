@@ -165,16 +165,16 @@ public class FaceDetectManager
 			hits.enableBulkOperations();
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
-				Data hit = (Data) iterator.next();
+				Data otherasset = (Data) iterator.next();
 				
-				List<ValuesMap> profiles = createListMap((Collection)hit.getValue("faceprofiles"));
-				if( profiles == null)
+				List<ValuesMap> otherprofiles = createListMap((Collection)otherasset.getValue("faceprofiles"));
+				if( otherprofiles == null)
 				{
 					//Should never happen
 					log.error("face missing");
 					continue;
 				}
-				boolean didfoundmatch = checkHit(inArchive, inAsset, hit, pictures, profiles);
+				boolean didfoundmatch = checkHit(inArchive, inAsset, otherasset, pictures, otherprofiles);
 				if( didfoundmatch)
 				{
 					foundmatch = didfoundmatch;
@@ -196,7 +196,7 @@ public class FaceDetectManager
 		//TODO: Go over all the groups and see if any two have common asset profiles. Then put them into one of the groups. If the remaining has no more hits delete it	
 	}
 	
-	protected boolean checkHit(MediaArchive inArchive, Asset inAsset, Data hit, List<ValuesMap> pictures, List<ValuesMap> profiles) throws ParseException
+	protected boolean checkHit(MediaArchive inArchive, Asset inAsset, Data otherasset, List<ValuesMap> thisassetprofiles, List<ValuesMap> otherprofiles) throws ParseException
 	{
 		Searcher groupsearcher =  inArchive.getSearcher("faceprofilegroup");
 
@@ -205,7 +205,7 @@ public class FaceDetectManager
 		//--
 		StringBuffer profilebuffer = new StringBuffer();
 		profilebuffer.append("\"profile\":[");
-		for (Iterator iterator2 = profiles.iterator(); iterator2.hasNext();)
+		for (Iterator iterator2 = otherprofiles.iterator(); iterator2.hasNext();)
 		{
 			Map map = (Map) iterator2.next();
 			String fjsondata = (String)map.get("facedata");
@@ -219,7 +219,7 @@ public class FaceDetectManager
 		profilebuffer.append("]");
 		String profilesjson = profilebuffer.toString();
 		
-		for (Iterator iterator0 = pictures.iterator(); iterator0.hasNext();)
+		for (Iterator iterator0 = thisassetprofiles.iterator(); iterator0.hasNext();)
 		{
 			StringBuffer picturetocompare = new StringBuffer();
 			picturetocompare.append("\"picture\":[");
@@ -228,6 +228,7 @@ public class FaceDetectManager
 			picturetocompare.append(jsondata);
 			picturetocompare.append("]");
 		
+			//Low level comparison using a running process
 			String finaljson = "{" + picturetocompare.toString() + " , " + profilesjson + "}";
 			
 			String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
@@ -248,22 +249,36 @@ public class FaceDetectManager
 			
 			for (int i = 0; i < rowsofresultsdone.size(); i++)
 			{
-				long istrue = (long) rowsofresultsdone.get(i);
+				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
 				if( istrue == 1)
 				{
 					//We have a match!!
 					foundmatch = true;
-					ValuesMap otherprofile = (ValuesMap)profiles.get(i);
+					ValuesMap otherprofile = (ValuesMap)otherprofiles.get(i);
+					
+					//See if either profile already has a group. If so then use that group
 					String groupid = (String)onepicture.get("faceprofilegroup");
 					if( groupid == null)
 					{
-						groupid = (String)otherprofile.get("faceprofilegroup");
+						groupid = (String)otherprofile.get("faceprofilegroup"); 
 					}
+					//New group in between both pictures. Create a new group
 					if( groupid == null)
 					{
 						//Create one
 						Data group = groupsearcher.createNewData();
-						group.setValue("collectionimage", inAsset.getId());
+						
+						//Make sure we use an image that has fewer profiles in it. Fewer is better
+						if(otherprofiles.size() > thisassetprofiles.size() )
+						{
+							group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+						}
+						else
+						{
+							group.setValue("collectionimage", otherasset.getId());
+						}
+						
+						
 						group.setValue("creationdate", new Date());
 						group.setValue("automatictagging", true);
 						
@@ -274,7 +289,7 @@ public class FaceDetectManager
 					{
 						Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
 						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));
-						inAsset.setValue("faceprofiles",pictures);
+						inAsset.setValue("faceprofiles",thisassetprofiles);
 						//save asset at the end?
 						inArchive.saveData("asset",inAsset);
 					}	
@@ -282,8 +297,8 @@ public class FaceDetectManager
 					{
 						Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
 						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));
-						Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(hit);
-						tosave.setValue("faceprofiles",profiles);
+						Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(otherasset);
+						tosave.setValue("faceprofiles",otherprofiles);
 						//save data
 						inArchive.saveData("asset",tosave);
 					}	
