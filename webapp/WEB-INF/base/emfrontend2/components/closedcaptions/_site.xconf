@@ -5,7 +5,7 @@
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="TimelineModule.loadCaptionEditor" />
 	
-	<style id="closedcaptionplayercss" href="/${applicationid}/theme/styles/closedcaption/timeslider.css" />
+	
 	<style id="videoplayer-css" href="/${applicationid}/theme/styles/timeline/timeline.css" />
 	
 	<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />

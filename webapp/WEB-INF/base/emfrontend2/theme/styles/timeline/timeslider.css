@@ -5,7 +5,8 @@
 }
 
 .time-slider {
-    min-height: 32px;
+	float:left;
+    min-height: 52px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -17,7 +18,7 @@
 .time-slider .ruler {
     height: 100%;
     position: relative;
-    
+    padding:0 5px;
     z-index: 1;
 }
 
@@ -71,7 +72,7 @@
     color: #555555;
     text-align: center;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 12px;
+    font-size: 0.9rem;
     font-style: normal;
     font-weight: 400;
     position: absolute;
@@ -95,18 +96,20 @@
 
 .time-slider .timecell {
     min-height: 30px;
-    padding: 10px 0 0 0;
+    padding: 10px 0 10px 0;
     position: absolute;
     text-align: center;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 12px;
+    font-size: 0.9rem;
     font-style: normal;
     font-weight: 500;
-    background-color: #aaab7d;
-    opacity: 0.9;
-    filter: alpha(Opacity=90);
+    background-color: #555;
+    color:#fff;
+    
     z-index: 4;
     border-radius: 4px;
+    
+    word-break: break-word;
 }
 
 .time-slider .timecell.current {

@@ -395,7 +395,12 @@ public class TimelineModule extends BaseMediaModule
 		timeline = new Timeline();
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
-		timeline.setPxWidth(1200);
+		//timeline.setPxWidth(4000);
+		Integer width = (int)mili/85;
+		if (width<1200) {
+			width=1200;
+		}
+		timeline.setPxWidth(width);
 		timeline.loadClips(track,"captions");
 		inReq.putPageValue("timeline", timeline);
 
