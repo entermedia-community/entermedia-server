@@ -2,12 +2,12 @@
 #if(!$cdnprefix )
 	#set($cdnprefix = $context.siteRoot )
 #end
-#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset, true) )
 <div id="asset-editor-container" class="h-100">
 <h2>[[Media Files]]</h2>
 #if($candownload)	
 	<a class="btn btn-sm btn-primary" 
-	href="#urlescape("$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")"
+	href="$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=$!{collectionid}&assetid=$asset.getId()"
 	style="margin-right:5px;"
 	title="[[Download]] $asset.name"
 	><i class="fas fa-download"></i> [[Download Original]]</a>
@@ -79,23 +79,26 @@ $context.putPageValue("results", $results)
 				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$presetdata.id, "imagelocation"))
 				
-				#set($mediaurl = "$home/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")
+				#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")
 				
 				<div class="mediapreset #if($presetdata.id==$presetdata.id) mediapresetselected #end">
 					
 					<div class="mediapreset-name" title="$!presetdata.name" >$!presetdata.name</div>
 					<div class="mediapreset-image">
-						#set($previewurl="$home$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+						#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
 						<a href="#urlescape($previewurl)"
 							class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
 							title="$!presetdata.name">
+							
+							##why not cache=false?
 							#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
+							
 							<img src="#urlescape($imgurl)" alt="$!presetdata.name" />
 						</a>
 					</div>
 					<div class="mediapreset-actions">
 					##Download
-					#set($downloadurl="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+					#set($downloadurl="$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
 					<a class="btn btn-xs btn-primary"
 					    href="#urlescape($downloadurl)"
 					    title="[[Download]] $!presetdata.name"><i class="fas fa-download"></i></a>
@@ -105,13 +108,13 @@ $context.putPageValue("results", $results)
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  
 							data-oemaxlevel="1"  
-							href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+							href="$siteroot/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
 							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
 					 #end
 					 ##Share
 					 #if($canembedasset)
 						<a class="btn btn-xs btn-primary emdialog" 
-					    	href="$home$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+					    	href="$siteroot/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
 					    	data-noesc="true"
 					    	data-hidefooter="true"
 					    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>

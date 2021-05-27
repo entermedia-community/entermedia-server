@@ -1,7 +1,8 @@
 #set ( $urlutils = $context.getPageValue("url_util"))
  #if (!$urlutils)
 	#set ($urlenc = $asset.sourcepath) 
-#else #set ( $urlenc = $urlutils.encode($asset.sourcepath)) 
+#else 
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath)) 
 	#set ( $urlenc = $urlenc.replace("%2F", "/") ) 
 #end
 
@@ -18,15 +19,19 @@
 	#set($tpath = $mediaarchive.asLinkToPreview($asset, $librarycol.id, $imagesize, true))
 #end
 
+#set($tpath = "${tpath}?_=$mathutil.getRandomValue(9999)")
+
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))
 <div id="mainimageholder">
 <img id="main-media" class="emdropshadow  assetdragdrop"
-	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
+	draggable="true" 
+	data-sourcepath="$urlenc" 
+	data-assetid="$asset.id"
 	data-name="$asset.name" 
 	data-width="$!assetwidth"
 	data-height="$!assetheight"
-	src="$tpath"
+	src="${tpath}" 
 	alt="$!asset.name" />
 </div>

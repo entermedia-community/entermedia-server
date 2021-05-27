@@ -1,3 +1,4 @@
 <page>
 <path-action name="MediaArchiveModule.getAsset"  />
+<page-action name="PageValue.loadPageVariable" bean="mathutil" />
 </page>
