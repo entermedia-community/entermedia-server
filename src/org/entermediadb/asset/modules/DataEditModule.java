@@ -33,6 +33,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
@@ -2208,6 +2209,24 @@ String viewbase = null;
 				saved = true;
 			}
 		}
+		else if(entitymodule.equals("faceprofilegroup")) {
+			List<ValuesMap> otherprofiles = createListMap((Collection)asset.getValue("faceprofiles"));
+			Boolean alreadyinprofile = false;
+			for (int i = 0; i < otherprofiles.size(); i++) {
+				ValuesMap profilegroups = (ValuesMap)otherprofiles.get(i);
+				if( profilegroups.containsInValues("faceprofilegroup",entityid) ) {
+					alreadyinprofile = true;
+				}
+			}
+			if (!alreadyinprofile) {
+				List<Map> profilemap = new ArrayList<Map>();
+				Map profile = new HashMap();
+				profile.put("faceprofilegroup", entityid);
+				otherprofiles.add(new ValuesMap(profile));
+				asset.setValue("faceprofiles", otherprofiles);
+				saved = true;
+			}
+		}
 		else {
 			//Defualt entity
 			asset.addValue(entitymodule, entityid);
@@ -2219,6 +2238,20 @@ String viewbase = null;
 			archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 			inPageRequest.putPageValue("added" , "1");
 		}
+	}
+	
+	private List<ValuesMap> createListMap(Collection inValues)
+	{
+		ArrayList copy = new ArrayList();
+		if (inValues != null) 
+		{
+			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+			{
+				Map map = (Map) iterator.next();
+				copy.add(new ValuesMap(map));
+			}
+		}
+		return copy;
 	}
 	
 	
