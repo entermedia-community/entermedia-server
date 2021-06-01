@@ -15,7 +15,9 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -1719,6 +1721,9 @@ String viewbase = null;
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
 		String[] sorted = inReq.getRequestParameters("ids");
+		if (sorted == null) {
+			throw new OpenEditException("Missing sort list ids");
+		}
 		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		XmlFile file = (XmlFile) loadView(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
@@ -2167,5 +2172,54 @@ String viewbase = null;
 
 	}
 */
+	
+	public void addEntityToAsset(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String entitymodule = inPageRequest.getRequestParameter("entitymodule");
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		if (entityid == null || entitymodule == null) 
+		{
+			return;
+		}
+		
+		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		boolean moveentity = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
+			
+		Asset asset = getAsset(inPageRequest);
+		if (asset == null) {
+			log.error("No asset id passed in");
+			return;
+		}
+
+		if( moveentity )
+		{
+			//remove from the other entity
+		}
+		Boolean saved = false;
+		//Use standard in CategoryEditModule?
+		if (entitymodule.equals("librarycollection")) {
+			//rootcategoryid passed
+			String rootcategory = inPageRequest.getRequestParameter("rootcategory");
+			Category c = archive.getCategory(rootcategory);
+			if (c != null) {
+				asset.addCategory(c);
+				saved = true;
+			}
+		}
+		else {
+			//Defualt entity
+			asset.addValue(entitymodule, entityid);
+			saved = true;
+		}
+
+		if (saved) {
+			archive.saveAsset(asset, inPageRequest.getUser());
+			archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+			inPageRequest.putPageValue("added" , "1");
+		}
+	}
+	
 	
 }
