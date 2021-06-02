@@ -3,7 +3,7 @@
        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
        #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
        <div class="emdropshadow">
-       <img class="mimethumb  emnothumbnail" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
+       <img class="mimethumb  emnothumbnail" style="height:64px" src="$siteroot$thumbpath" border="0"/>
        </div>
     #elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
        $pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
@@ -22,7 +22,7 @@
 				#else
 					#set($imagesize = "image110x62cropped.jpg")
 				#end
-		      	#set( $img = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize))  
+		      	#set( $img = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize, true))  
 			#end
 		       <div class="emdropshadow">
 		        <img class="smallthumb assetdragdrop" draggable="true" data-sourcepath="$hit.sourcepath" data-name="$hit.name" src="$img" alt="$!hit.name" border="0" />
