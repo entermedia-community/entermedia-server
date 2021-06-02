@@ -4,8 +4,8 @@
 #set( $depth = $depth.parseInt($depths) )
 #set( $padding = (15 * $depth) )
 
-<li class="noderow categorydraggable createnodetree" data-depth="$depth" >
-	<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="[[Add Folder]]">
+<li class="noderow createnodetree" data-depth="$depth" >
+	<div class="" style="padding-left: ${padding}px" title="[[Add Folder]]">
 	<span id="$!{cat.id}_display" class="name folder"> 
 		<input class="form-control form-control-sm autosavename" data-action="create" style="width:180px;" type="text" placeholder="[[Add Folder]]" />
 	</span>

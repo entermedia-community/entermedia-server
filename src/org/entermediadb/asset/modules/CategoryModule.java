@@ -450,9 +450,15 @@ public class CategoryModule extends BaseMediaModule
 	}
 	public void saveNode(WebPageRequest inReq)
 	{
-		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
+		String catid = null;
 		Category tosave = null;
+		String action = inReq.getRequestParameter("action");
+		
+		if (action.equals("rename")) {
+			catid = inReq.getRequestParameter("nodeID");
+		}
+		
 		if( catid != null)
 		{
 			tosave = archive.getCategory(catid);
