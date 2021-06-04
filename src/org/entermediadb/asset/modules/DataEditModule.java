@@ -2178,9 +2178,9 @@ String viewbase = null;
 	{
 		
 		String entityid = inPageRequest.getRequestParameter("entityid");
-		String entitymodule = inPageRequest.getRequestParameter("entitymodule");
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (entityid == null || entitymodule == null) 
+		if (entityid == null || moduleid == null) 
 		{
 			return;
 		}
@@ -2200,7 +2200,7 @@ String viewbase = null;
 		}
 		Boolean saved = false;
 		//Use standard in CategoryEditModule?
-		if (entitymodule.equals("librarycollection")) {
+		if (moduleid.equals("librarycollection")) {
 			//rootcategoryid passed
 			String rootcategory = inPageRequest.getRequestParameter("rootcategory");
 			Category c = archive.getCategory(rootcategory);
@@ -2209,7 +2209,7 @@ String viewbase = null;
 				saved = true;
 			}
 		}
-		else if(entitymodule.equals("faceprofilegroup")) {
+		else if(moduleid.equals("faceprofilegroup")) {
 			List<ValuesMap> otherprofiles = createListMap((Collection)asset.getValue("faceprofiles"));
 			Boolean alreadyinprofile = false;
 			for (int i = 0; i < otherprofiles.size(); i++) {
@@ -2229,7 +2229,7 @@ String viewbase = null;
 		}
 		else {
 			//Defualt entity
-			asset.addValue(entitymodule, entityid);
+			asset.addValue(moduleid, entityid);
 			saved = true;
 		}
 
