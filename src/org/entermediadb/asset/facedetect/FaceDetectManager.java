@@ -288,15 +288,15 @@ public class FaceDetectManager
 					if( !onepicture.containsInValues("faceprofilegroup",groupid) )
 					{
 						Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
-						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));
-						inAsset.setValue("faceprofiles",thisassetprofiles);
+						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));  //Is this line really needed?
+						inAsset.setValue("faceprofiles",thisassetprofiles); //Save the group id
 						//save asset at the end?
 						inArchive.saveData("asset",inAsset);
 					}	
 					if( !otherprofile.containsInValues("faceprofilegroup",groupid) )
 					{
 						Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
-						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));
+						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));  //Is this line really needed?
 						Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(otherasset);
 						tosave.setValue("faceprofiles",otherprofiles);
 						//save data

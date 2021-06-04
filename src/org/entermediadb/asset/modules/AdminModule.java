@@ -212,66 +212,34 @@ public class AdminModule extends BaseMediaModule
 		}
 		inReq.putPageValue("founduser", foundUser);
 
-		// let the passwordHelper send the password
-		PasswordHelper passwordHelper = getPasswordHelper(inReq);
-
-		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
-		passenc = foundUser.getUserName() + "md542" + passenc;
-
-		//append an encrypted timestamp to passenc
 		try
 		{
-
-			String expiry = inReq.getPageProperty("temporary_password_expiry");
-			if (expiry == null || expiry.isEmpty())
-			{
-				log.info("Temporary password expiry is not enabled.");
-			}
-			else
-			{
-//				int days = 0;
-//				try
-//				{
-//					days = Integer.parseInt(expiry);
-//				}
-//				catch (Exception ee)
-//				{
-//				}
-//				if (days <= 0)
-//				{
-//					log.info("Temporary password expiry is not formatted correctly - require a number greater than 0.");
-//				}
-//				else
-//				{
-					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
-					if (tsenc != null && !tsenc.isEmpty())
-					{
-						if (tsenc.startsWith("DES:"))
-							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
-						passenc += StringEncryption.TIMESTAMP + tsenc;
-						log.info("Key: " + passenc);
-					}
-					else
-					{
-						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
-					}
-//				}
-			}
+			// let the passwordHelper send the password
+			PasswordHelper passwordHelper = getPasswordHelper(inReq);
+	
+			String key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser);
+	
+			//Different email template for desktopapp
+			String launchersource = inReq.getRequestParameter("launchersource");
+			inReq.putPageValue("launchersource", launchersource);
+			
+			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, key, email);
+			inReq.putPageValue("commandSucceeded", "complete");
 		}
 		catch (OpenEditException oex)
 		{
+			inReq.putPageValue("commandSucceeded", "encrypterror");
 			log.error(oex.getMessage(), oex);
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
 		
 		
-		//Different email template for desktopapp
-		String launchersource = inReq.getRequestParameter("launchersource");
-		inReq.putPageValue("launchersource", launchersource);
-		
-		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 	}
 		
+	/**
+	 * @deprecated use 		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
+	 * @param inReq
+	 */
 	public void getKey(WebPageRequest inReq) {
 		User foundUser = inReq.getUser();
 		if (foundUser == null ) {
