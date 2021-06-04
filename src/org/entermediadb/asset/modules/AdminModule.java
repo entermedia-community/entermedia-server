@@ -151,7 +151,7 @@ public class AdminModule extends BaseMediaModule
 		String u = inReq.getRequestParameter(UNAME);
 		if (e == null && u == null)
 		{
-			inReq.putPageValue("commandSucceeded", "didnotexecute");
+			inReq.putPageValue("commandSucceeded", "missingparam");
 			// log.error("Invalid information");
 			return;
 		}
@@ -224,7 +224,7 @@ public class AdminModule extends BaseMediaModule
 			inReq.putPageValue("launchersource", launchersource);
 			
 			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, key, email);
-			inReq.putPageValue("commandSucceeded", "complete");
+			inReq.putPageValue("commandSucceeded", "ok");
 		}
 		catch (OpenEditException oex)
 		{
