@@ -131,7 +131,7 @@
 
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
 	<div id="${treename}tree" class="emtree emtree-widget" 
-		data-home="$home$apphome" 
+		data-home="$siteroot$apphome" 
 		data-treename="$treename" 
 		data-rootnodeid="$rootcategory.getId()"
 		data-editable="$editable" 
@@ -206,7 +206,7 @@
 
     
      #if($canaddnewcollection)
-		<a id="collectionidaddbycategory" href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
+		<a id="collectionidaddbycategory" href="$siteroot$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
 	#end
   </div>
   #end

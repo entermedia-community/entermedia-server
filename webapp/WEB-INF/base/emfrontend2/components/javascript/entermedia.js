@@ -179,7 +179,8 @@ findclosest = function(link,inid)
 runajaxonthis = function(inlink,e)
 {
 	
-	$(".ajaxprogress").show();
+	var ajaxprogress = $(".ajaxprogress"); 
+	ajaxprogress.show();
 	var inText = $(inlink).data("confirm");
 	if(e && inText && !confirm(inText) )
 	{
@@ -241,7 +242,7 @@ runajaxonthis = function(inlink,e)
 			}
 		).always(function()
 		{
-			$(".ajaxprogress").hide();
+			ajaxprogress.hide();
 
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
