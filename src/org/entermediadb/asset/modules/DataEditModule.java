@@ -2254,5 +2254,17 @@ String viewbase = null;
 		return copy;
 	}
 	
+	public void toggleBillingContact(WebPageRequest context) {
+		String collectionid = context.getRequestParameter("collectionid");
+		String userid = context.getRequestParameter("userid");
+		MediaArchive mediaArchive = getMediaArchive(context);
+		Searcher instanceSearcher = mediaArchive.getSearcher("librarycollectionusers");
+		
+		Data teamUser = instanceSearcher.query().exact("collectionid",collectionid).exact("followeruser",userid).searchOne();
+		Boolean oldValue = (Boolean) teamUser.getValue("isbillingcontact");
+		teamUser.setValue("isbillingcontact", !oldValue);
+		instanceSearcher.saveData(teamUser);
+	}
+	
 	
 }

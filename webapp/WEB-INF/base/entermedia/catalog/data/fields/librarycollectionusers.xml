@@ -95,6 +95,10 @@
       <language id="en"><![CDATA[Allow Editing]]></language>  
     </name> 
   </property>  
-  
+   <property id="isbillingcontact"  index="true" stored="true"  type="boolean" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Receive Billing]]></language>  
+    </name> 
+  </property>
 
 </properties>
