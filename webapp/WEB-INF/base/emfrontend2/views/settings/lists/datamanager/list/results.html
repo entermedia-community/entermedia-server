@@ -9,18 +9,19 @@ $context.putPageValue("hits",$datalist)
   	#set( $details = $searcher.getSearchProperties($user) )
 #end
 #if(!$details)  
-#set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
-#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
-#if(!$details)
-	#set( $details = $searcher.getStoredProperties() )
-#end
+	#set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
+	#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
+	#if(!$details)
+		#set( $details = $searcher.getStoredProperties() )
+	#end
 #end
 $context.putPageValue("details",$details) 
+
 
 <div class="tab" id="datatab">
 	$pages.include("$apphome/views/settings/lists/datamanager/list/actions.html", $context)
 	
-		<div id="emselectable" class="datamanagertable" style="display:none">
+		<div id="emselectable" class="datamanagertable">
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
 		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
 		 <thead>
