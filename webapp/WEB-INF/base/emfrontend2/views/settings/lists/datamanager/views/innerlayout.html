@@ -10,8 +10,8 @@
 $context.putPageValue("views", $views)
 #set( $viewsroot = $content.viewsroot )
 <div class="tab" id="field-tab">
-<div class="tab-actions" style="height: 30px;">
-</div>
+##<div class="tab-actions" style="height: 30px;">
+##</div>
 </div>
 
     <div id="table-container" style="padding:20px">
@@ -22,9 +22,9 @@ $context.putPageValue("views", $views)
 			</div>
 		</div>
 		<div id="workarea">
-                    
 			$pages.includeContent()
 		</div>
+		<div class="clearfix"></div>
 	</div>
 
 

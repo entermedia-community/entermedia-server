@@ -5,7 +5,11 @@
 		#set( $view = $context.findValue("editview") )
 		$context.putPageValue("view", $view)
 		
-		<form id="dataeditor" name="dataeditor" method="post" action="$home$content.dataroot/edit/save.html" enctype="multipart/form-data">
+		<form id="dataeditor" name="dataeditor" method="post" 
+				action="$siteroot$content.dataroot/edit/save.html?oemaxlevel=1" 
+				enctype="multipart/form-data"
+				class="ajaxform"
+				data-targetdiv="datamanager-workarea">
 			<input name="save" type="hidden" value="true" />
 			<input name="id" type="hidden" value="$!data.id" />
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -15,8 +19,11 @@
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 		</div>
 		<div style="padding:10px">
-		<input class="btn btn-sm btn-primary right" type="submit" value="[[Save]]" />
-		<a class="btn btn-sm btn-danger red" style="margin-left: 10px;" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
+		<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
+		<a class="btn btn-sm btn-danger ajax"
+			data-targetdivinner="datamanager-workarea" 
+			style="margin-left: 10px;" 
+			href="$siteroot$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id?oemaxlevel=1">[[Delete]]</a>
 		<div id="messagearea">$!message</div>
 		</div>
 		

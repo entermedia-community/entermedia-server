@@ -1,13 +1,17 @@
 #set(  $currentsearch = $context.getRequestParameter("searchtype") ) 
 
-#set( $action = "$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid" )
+#set( $action = "$siteroot$apphome/views/settings/lists/datamanager/list/index.html" )
 
 
 <div class="datamanagerchose">
-<form style="float: right; margin-top: 4px; margin-right: 20px; min-width:350px" action="$action">
+<form style="margin-top: 4px; margin-right: 20px; width:300px;" action="$action"
+		class="ajaxform autosubmitform float-right"
+		data-targetdivinner="datamanagerpage">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
+	<input type="hidden" name="oemaxlevel" value="2"/>
+	<a class="btn btn-sm btn-primary float-right ajax" data-targetdivinner="datamanagerpage" href="$siteroot$apphome/views/settings/lists/datamanager/addtable/index.html?oemaxlevel=1">[[New Table]]</a>
 		##[[Choose Table]]: 
-           <select name="searchtype" onchange="submit();" class="select2">
+           <select name="searchtype" onchange="" class="select2 form-control form-control-sm float-right">
 			<option value="">[[Choose Table]]</option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
@@ -15,9 +19,10 @@
 			#end
 		#end
 		</select>
-##<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[Create New Table]]</a>
+	
 	</form>
 <div class="clearfix"></div>
 </div>
-
-$pages.includeContent()
+<div id="datamanagerpage" stle="padding-bottom:20px;">
+$pages.includeContent()&nbsp;
+</div>

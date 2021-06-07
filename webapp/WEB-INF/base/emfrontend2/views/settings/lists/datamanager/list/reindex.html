@@ -1,5 +1,9 @@
-$pages.include("$content.dataroot/list/index.html")
-
+##$pages.include("$content.dataroot/list/index.html")
+<div style="padding:20px;">
 <p>[[Reindex complete]]</p>
 
-<a href="$home$apphome/views/settings/lists/datamanager/list/index.html?$searcher.getCatalogId()&searchtype=$searcher.getSearchType()">Refresh</a>
+<a href="$siteroot$apphome/views/settings/lists/datamanager/list/index.html?$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&oemaxlevel=1"
+   class="btn btn-sm btn-secondary ajax"
+   data-targetdivinner="datamanager-workarea">[[Refresh]]</a>
+
+</div>

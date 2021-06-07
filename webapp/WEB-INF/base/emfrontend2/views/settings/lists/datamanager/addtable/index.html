@@ -1,25 +1,29 @@
+<div style="margin:10px 20px">
+<h4>[[Create New Table]]</h4>
 
-<div class="tab-actions clearfix" style="position: relative; top: 60px; border-top: 1px solid #ddd;">
-<strong>Create New Table</strong>
-</div>
 
 <div class="fields">
         
-    <form style="margin-top: 80px; margin-left: 20px;" name="Add" action="./addfinish.html">
-        <h3 style="margin-bottom: 5px;">Table Name</h3>
-    
-    <label>[[Table Name]]</label>
-    <input class="field" name="tablename" />
-    <div class="note">[[Singular, spaces are not valid.]]</div> 
-    
+    <form class="ajaxform" name="Add" action="$siteroot$apphome/views/settings/lists/datamanager/addtable/addfinish.html?oemaxlevel=2"
+    		data-targetdiv="datamanagerpage">
+    <div style="width:300px">
+	    <div style="margin-bottom:30px">
+	    <label>[[Table Name]]</label>
+	    <input class="form-control" name="tablename" />
+	    <div class="note">[[Singular, spaces are not valid.]]</div> 
+	    </div>
     
     <label>[[Storage Folder]]</label>
-    <input class="field" name="prefix" />
+    <input class="form-control" name="prefix" />
     <div class="note">[[Plural table name: contacts]]</div>
     
-    
-    <input class="btn" type="submit" value="Create Table" />
-    
+    <div style="padding:20px 0">  
+    <input class="btn btn-sm btn-primary" type="submit" value="[[Create Table]]" />
+    <a class="btn btn-sm btn-secondary ajax" data-targetdivinner="applicationmaincontent" style="margin-left: 10px;" href="$siteroot$apphome/views/settings/lists/datamanager/index.html?oemaxlayout=3">[[Cancel]]</a>
+    </div>
+    </div>
     </form>
+
+</div>
 
 </div>

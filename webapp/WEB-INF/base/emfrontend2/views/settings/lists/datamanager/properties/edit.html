@@ -1,12 +1,16 @@
 #set( $dataroot = $content.dataroot )
 <div class="tab-actions">
-	<strong>[[Editing]] $!property.name</strong>
+	<h4 class="float-left">[[Editing Field]] $!property.name</h4>
 	<div style="float:right">
 	#if($detail.isList() || $detail.isMultiValue())
 		<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">[[Edit Values]]</a>
 	#end
 [[Current Field]]:
-	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
+	<select id="proptomodify" 
+			name="id" 
+			class="form-control form-control-sm ajax"
+			data-href="$siteroot${dataroot}/properties/edit.html?oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()&" 
+			data-targetdiv="datamanager-workarea">
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>
@@ -23,7 +27,10 @@
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )		
 		
-<form id="dataeditor" name="dataeditor" method="post" action="$home$dataroot/properties/save.html" >
+<form id="dataeditor" name="dataeditor" method="post" 
+		action="$siteroot$dataroot/properties/save.html?oemaxlevel=1"
+		data-targetdivinner="datamanager-workarea"
+		class="ajaxform" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -49,19 +56,18 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 </div>
 </div>
 
-<div class="" style="padding:10px 5px;">
+
+
+<div class="" style="padding:10px 10px;">
+<a class="btn btn-sm btn-secondary" style="" id="viewadvanced">[[View Advanced Options]]</a>
+</div>
+
+
+<div class="" style="padding:10px 10px;">
+
 <input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="[[Save]]" />
-
-
-
-#if( $savedok && $origURL )
-<div class="embutton">
-	<a class="btn btn-sm btn-secondary" href="$origURL">[[Go Back]]</a>	
-</div>	
-#end
-
-<a class="btn btn-sm btn-secondary" style="margin-right: 10px;" id="viewadvanced">[[View Advanced Options]]</a>
-<a class="btn btn-sm btn-danger red"  href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
+<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="datamanager-workarea" style="margin-right: 10px;" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Cancel]]</a>	
+<a class="btn btn-sm btn-danger ajax" data-targetdivinner="datamanager-workarea"href="$siteroot$apphome/views/settings/lists/datamanager/properties/remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Delete Field]]</a>
 </div>
 
 </form>
@@ -83,7 +89,7 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 
 	loadPropertyEdit = function(selectedid) {
 
-		jQuery("#propertyEditPanel").load("$home${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+		jQuery("#propertyEditPanel").load("$siteroot${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
 
 </script>
