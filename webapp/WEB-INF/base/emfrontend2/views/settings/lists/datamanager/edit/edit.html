@@ -9,7 +9,7 @@
 				action="$siteroot$content.dataroot/edit/save.html?oemaxlevel=1" 
 				enctype="multipart/form-data"
 				class="ajaxform"
-				data-targetdiv="datamanager-workarea">
+				data-targetdivinner="datamanager-workarea">
 			<input name="save" type="hidden" value="true" />
 			<input name="id" type="hidden" value="$!data.id" />
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -20,10 +20,14 @@
 		</div>
 		<div style="padding:10px">
 		<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
+		<a class="btn btn-sm btn-secondary ajax"
+			data-targetdivinner="datamanager-workarea" 
+			style="margin-left: 10px;" 
+			href="$siteroot$content.dataroot/list/index.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&oemaxlevel=1">[[Cancel]]</a>
 		<a class="btn btn-sm btn-danger ajax"
 			data-targetdivinner="datamanager-workarea" 
 			style="margin-left: 10px;" 
-			href="$siteroot$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id?oemaxlevel=1">[[Delete]]</a>
+			href="$siteroot$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id&oemaxlevel=1">[[Delete]]</a>
 		<div id="messagearea">$!message</div>
 		</div>
 		
