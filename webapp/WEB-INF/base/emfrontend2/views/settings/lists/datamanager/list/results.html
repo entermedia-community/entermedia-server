@@ -23,7 +23,10 @@ $context.putPageValue("details",$details)
 	
 		<div id="emselectable" class="datamanagertable">
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
-		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
+		 data-hitssessionid="$datalist.sessionId" 
+		 data-origURL="$!origURL" 
+		 data-catalogid="$searcher.catalogId" 
+		 data-searchtype="$searcher.searchType" >
 		 <thead>
 			<tr id="tableheader">
 			#set( $sortby = $datalist.getSearchQuery().getSortBy() )
@@ -69,7 +72,7 @@ $context.putPageValue("details",$details)
 			</tr>
 		#end
 		</table>
-			<form name="editrow" action="$home$content.dataroot/edit/edit.html">
+			<form name="editrow" action="$siteroot$content.dataroot/edit/edit.html">
 				<input type="hidden" name="id" id="emselectedrow" />
 				<input type="hidden" name="origURL" id="$!origURL" />
 				<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
@@ -89,11 +92,16 @@ $context.putPageValue("details",$details)
 			&nbsp;&nbsp;
 			
 			#if( $datalist.prevPage() )
-			<a href="$home$content.dataroot/list/results.html?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</b></a>
+			<a href="$siteroot$content.dataroot/list/results.html?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
+				class="ajax"
+				data-targetdivinner="datamanager-workarea" ><b>&lt;&lt;  [[Back]]</b></a>
 			#end
 			
 			#if ( $datalist.nextPage() )
-			<a style="margin-left: 10px;" href="$home$content.dataroot/list/results.html?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt;</b></a>
+			<a style="margin-left: 10px;" 
+				href="$siteroot$content.dataroot/list/results.html?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
+				 class="ajax"
+				data-targetdivinner="datamanager-workarea"><b> [[Forward]] &gt;&gt;</b></a>
 			#end
 		#end
 	</div>
@@ -108,5 +116,14 @@ $context.putPageValue("details",$details)
 </div>
 
 
+<script>
+jQuery(document).ready(function() {
+	adjustdatamanagertable();
+});
 
+adjustdatamanagertable = function() {
+	var height = $( window ).height();
+	$(".datamanagertable").height(height - 320);
+}
+</script>
 
