@@ -275,7 +275,12 @@ var inittimeline = function()
 	
 				var timecodestart = parseFloat( clip.data("timecodestart") );
 				var timecodelength = parseFloat( clip.data("timecodelength") );
-				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,"cliplabel":clip.data("cliplabel")};
+				var timecell = clip.find(".timecell");
+				var toppx = parseInt( timecell.position().top );
+				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,
+						"cliplabel":clip.data("cliplabel"),
+						"verticaloffset" : toppx		
+				};
 				
 				$('#nestedfields input[name="field"]').each(function() {
 					var fieldid = $(this).val();
@@ -350,10 +355,6 @@ var inittimeline = function()
 	//Saved the selected data
 	updateSelectedClip = function()
 	{
-		if( !readyforedit )
-		{
-			return;
-		}
 		var text = $("#cliplabel\\.value").val();
 
 		var selected = $(".selectedclip");

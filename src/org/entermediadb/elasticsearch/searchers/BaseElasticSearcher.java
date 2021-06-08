@@ -3128,8 +3128,44 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 									Object val = map.get(detal.getId());
 									if (val != null)
 									{
-										inFullDesc.append(String.valueOf(val));
-										inFullDesc.append(' ');
+										if( detal.isMultiValue() )
+										{
+											Collection colvalues = null;
+											if (val instanceof Collection)
+											{
+												colvalues = (Collection) val;
+											}
+											else
+											{
+												colvalues = new ArrayList();
+												colvalues.add(val);
+											}
+											//Could  be an collection
+											for (Iterator iterator2 = colvalues.iterator(); iterator2.hasNext();)
+											{
+												String string = (String) String.valueOf(iterator2.next());
+
+												if( detal.isList() )
+												{
+													Data data = (Data) getSearcherManager().getCachedData(detal.getListCatalogId(), detal.getListId(), (String) string);
+													if (data != null && data.getName() != null)
+													{
+														inFullDesc.append(data.getName());
+														inFullDesc.append(' ');
+													}
+												}
+												else
+												{
+													inFullDesc.append(string);
+													inFullDesc.append(' ');
+												}
+											}
+										}
+										else
+										{
+											inFullDesc.append(String.valueOf(val));
+											inFullDesc.append(' ');
+										}
 									}
 								}
 

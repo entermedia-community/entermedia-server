@@ -59,6 +59,8 @@ public class TimelineModule extends BaseMediaModule
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
 		timeline.setPxWidth(1200);
+		//timeline.setPxVertical(inPxVertical);;
+
 		
 //		String selected = inReq.getRequestParameter("timecodejump");
 //		timeline.selectClip(selected);

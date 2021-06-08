@@ -18,6 +18,7 @@ public class Timeline
 	
 	protected long fieldLength;
 	protected int fieldPxWidth;
+
 	protected Collection fieldTicks;
 	protected Collection fieldClips;
 	protected SearcherManager fieldSearcherManager;
@@ -131,6 +132,14 @@ public class Timeline
 		int pxi = (int)Math.round(px);
 		return pxi;
 	}
+	
+	public int getPxVertical(Clip inClip)
+	{
+		int vertical = inClip.getData().getInteger("verticaloffset");
+		return vertical;
+	}
+
+	
 	public double getPxToTimeRatio()
 	{
 		return (double)getPxWidth() / (double)getLength();
