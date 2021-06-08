@@ -1,3 +1,4 @@
+
 var inittimeline = function() 
 {
 	var app = $("#application");
@@ -5,9 +6,13 @@ var inittimeline = function()
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
 	//$("#clipdetails :input").prop('disabled', true);
-	
+
 	var videoclip = $("#videoclip");
 	var video = document.getElementById("videoclip");//videoclip[0];
+
+	var timelinecursor = document.getElementById("timelinecursor");
+
+	
 	
 	function zeroPad(num, numZeros) {
 	    var n = Math.abs(num);
@@ -81,6 +86,9 @@ var inittimeline = function()
 
 	videoclip.on("timeupdate",function(e)
 	{
+		
+		updateCursor(video.currentTime);
+		
 		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
 		{ 
 			copyStartTime();	
@@ -115,6 +123,7 @@ var inittimeline = function()
 		}
 		
 	});
+	
 	lQuery("#timecodestart\\.value").livequery("click",function(e)
 	{
 		//debugger;
@@ -229,14 +238,14 @@ var inittimeline = function()
 		$("#timecodestart\\.value").val(done);
 
 		var lengthtext = $("#timecodelength\\.value").val();
-		if( !lengthtext )
-		{
+		if( !lengthtext ) {
 			$("#timecodelength\\.value").val("5");
 		}		
 
 		updateSelectedClip();	
 		
 		updateDetails();
+		
 		$("#cliplabel\\.value").focus();
 				
 	});
@@ -334,7 +343,8 @@ var inittimeline = function()
 		var ratio = $("#timelinemetadata").data("ratio");
 		var left = start * ratio;
 		cell.css({"left" : left + "px"});
-
+		$("#timelinecursor").css({"left" : left+60 + "px"});
+		
 		var lengthtext = $("#timecodelength\\.value").val();
 		var length = parseTimeFromText(lengthtext);
 		selected.data("timecodelength", length);
@@ -404,6 +414,12 @@ var inittimeline = function()
 		
 		link.attr("href",source);
 		
+	}
+	
+	updateCursor = function(start) {
+		var ratio = $("#timelinemetadata").data("ratio");
+		var left = start * ratio * 1000;
+		$("#timelinecursor").css({"left" : left+60 + "px"});
 	}
 
 /*
@@ -497,6 +513,8 @@ var inittimeline = function()
 				clearSelection();
 				clickspot = event;
 				imageposition = mainimage.position();
+				var left = imageposition.left;
+				$("#timelinecursor").css({"left" : left+60 + "px"});
 				return false;
 			}	
 		});
@@ -519,24 +537,31 @@ var inittimeline = function()
 				clearSelection();
 				
 				var changeleft = clickspot.pageX - event.pageX;
+				var changetop = clickspot.pageY - event.pageY;
 				
 				var left = imageposition.left - changeleft;
-				if( left < 0 )
-				{
+				if( left < 0 ) {
 					left = 0;
 				}
-				//var top = imageposition.top;// - changetop;
-				
 				$(this).css({"left" : left + "px"});
+				
+				var top = imageposition.top - changetop;// - changetop;
+				if (top<0) {
+					top = 0;
+				}
+				$(this).css({"top" : top + "px"});
+			
 				
 				var ratio = $("#timelinemetadata").data("ratio");
 				ratio = parseFloat(ratio);
 				var seconds = left / ratio;
 				
-				console.log("r:"+ratio+" l:"+left+" s:"+seconds);
+				//console.log("r:"+ratio+" l:"+left+" s:"+seconds);
 				var selected = $(".selectedclip");
 				selected.data("timecodestart",seconds);
 				updateDetails();
+				
+				$("#timelinecursor").css({"left" : left+60 + "px"});
 				
 				//set video as well
 				
@@ -562,6 +587,23 @@ var inittimeline = function()
 			
 		}
 	);
+	
+	lQuery("#timelineviewerbackground").livequery("click", function(event)
+		{
+			event.preventDefault();
+			
+			var left = event.pageX - $(this).offset().left;
+			var clicked = left - 60;
+			
+			var ratio = $("#timelinemetadata").data("ratio");
+			var start = (clicked / ratio) / 1000;
+			video.currentTime = start;
+			
+			$("#addnewcopy").trigger("click");
+			
+		}
+	);
+	
 	
 	jQuery(document).on("mousemove", function(event)
 			{
