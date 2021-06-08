@@ -1,0 +1,18 @@
+#set($details =	$detail.getObjectDetails()) 
+$context.putPageValue("details",$details)
+
+timeline:
+
+ #foreach( $detail in $details )
+ 
+ 	<div class="inputformrow">
+		<span class="emdatafield" >
+						$!detail.getText($context)
+		</span>
+	#set( $val = $!{value.get($detail.getId())} )
+	$!val
+ 	</div>
+ #end
+ 
+ 
+ 

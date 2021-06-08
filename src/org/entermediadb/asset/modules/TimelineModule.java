@@ -87,13 +87,17 @@ public class TimelineModule extends BaseMediaModule
 		for (Iterator iterator = clips.iterator(); iterator.hasNext();)
 		{
 			Map clip = (Map) iterator.next();
-			MathUtils.cleanLongTypes(clip);			
+			MathUtils.cleanLongTypes(clip);  //Dont save any doubles or Integers			
 		}
 		log.info(clips);
 		asset.setValue("clips", clips);
 		
 		archive.saveAsset(asset);
 	}
+	/**
+	 * @deprecated  ?
+	 * @param inMap
+	 */
 	public static void cleanTypes(Map inMap)
 	{
 		Collection keys = new ArrayList(inMap.keySet());

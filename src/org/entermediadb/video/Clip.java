@@ -1,5 +1,7 @@
 package org.entermediadb.video;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.openedit.data.ValuesMap;
@@ -45,6 +47,22 @@ public class Clip implements Comparable
 	public Object getValue(String inKey)
 	{
 		return getData().get(inKey);
+	}
+	
+	public Map getOtherDetails()
+	{
+		Map other = new HashMap();
+		for (Iterator iterator = getData().keySet().iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			if( id.equals("cliplabel") || id.equals("timecodestart") ||id.equals("timecodelength") )
+			{
+				continue;
+			}
+			other.put(id,getData().get(id));
+		}
+		
+		return other;
 	}
 	@Override
 	public int compareTo(Object inO)

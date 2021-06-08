@@ -1,9 +1,10 @@
 var inittimeline = function() 
 {
 	var app = $("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var themeprefix = app.data("home")	+ app.data("themeprefix");
+	var siteroot =  app.data("siteroot");
+	var apphome = siteroot + app.data("apphome");
 
+	var readyforedit = false;
 	//$("#clipdetails :input").prop('disabled', true);
 	
 	var videoclip = $("#videoclip");
@@ -169,6 +170,16 @@ var inittimeline = function()
 	{
 		updateSelectedClip();		
 	});
+
+
+	lQuery("#nestedfields select").livequery("change", function()
+	{
+		if( readyforedit )
+		{
+		updateSelectedClip();
+		}
+	});
+			
 	
 	lQuery(".removetime").livequery("click",function(e)
 	{
@@ -257,6 +268,16 @@ var inittimeline = function()
 				var timecodelength = parseFloat( clip.data("timecodelength") );
 				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,"cliplabel":clip.data("cliplabel")};
 				
+				$('#nestedfields input[name="field"]').each(function() {
+					var fieldid = $(this).val();
+					var v = clip.data(fieldid);
+					if( v )
+					{
+						//v = v.replace(",","|");
+						data[fieldid] = v;
+					}
+				});
+				
 	    		clips.push(data);
 	    	});
 	    	
@@ -320,6 +341,10 @@ var inittimeline = function()
 	//Saved the selected data
 	updateSelectedClip = function()
 	{
+		if( !readyforedit )
+		{
+			return;
+		}
 		var text = $("#cliplabel\\.value").val();
 
 		var selected = $(".selectedclip");
@@ -345,11 +370,25 @@ var inittimeline = function()
 			width = 5;
 		}	
 		cell.css({"width" : width + "px"});
+		
+		$('#nestedfields input[name="field"]').each(function() {
+			var fieldid = $(this).val();
+			var select2 = jQuery("#list-" + fieldid);
+			if( select2.length > 0)
+			{
+				//select2.val(null).trigger('change');
+				var textvalues = select2.val().toString();
+				textvalues = textvalues.replace(",","|");
+				selected.data(fieldid,textvalues);  //Convert to |
+			}
+		});	
+		
 		$("#savetimeline").show();
 	}	
 
 	updateDetails = function(jumptoend)
 	{
+		readyforedit = false;
 		
 		var selected = $(".selectedclip");
 		$("#clipdetails").css('display','block');	
@@ -403,6 +442,43 @@ var inittimeline = function()
 		source = source + "&forcedownload=true"; 
 		
 		link.attr("href",source);
+		
+	$('#nestedfields input[name="field"]').each(function() {
+		var fieldid = $(this).val();
+		var values = selected.data(fieldid);
+		
+		var select2 = jQuery("#list-" + fieldid);
+		if( select2.length > 0)
+		{
+			if( values )
+			{
+				select2.val(values.split("|")); //Split? |				
+			}
+			else
+			{
+				select2.val([]);
+				//select2.select2("val", "");
+			}
+			select2.trigger('change'); 
+		}
+		else
+		{
+			//var input = jQuery("list_" + fieldid);
+		}
+		//get this from the 
+	});
+	readyforedit = true;
+		//Load up HTML for details
+//		jQuery.ajax(
+//				{
+//					url:  apphome + "/components/timeline/details/fields.html?id=" + property + "&" + property + ".value=" + value,
+//					success: onsuccess,
+//					xhrFields: {
+//		                withCredentials: true
+//		            },
+//					crossDomain: true
+//				}
+//			);
 		
 	}
 
