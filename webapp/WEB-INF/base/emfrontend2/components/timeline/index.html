@@ -8,9 +8,12 @@
 		#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 		$context.putPageValue("timeline", $timeline)
 		
-		$pages.include("$clientroot/details/video.html")	
-			
-		#set( $timecodejump = $page.get("timecodejump"))
+		
+		<div class="row no-gutter">
+			<div class="col-9">
+				
+				
+				#set( $timecodejump = $page.get("timecodejump"))
 	
 		<div id="timelineviewer" class="timelineviewer" 
 				data-sourcepath="$asset.sourcepath" 
@@ -19,9 +22,37 @@
 				data-mediadb="$mediaarchive.getMediaDbId()" 
 				>
 			
+			<div class="iconbarcontainer">
+			<div class="iconbar" style="width:100%; margin-top:30px; height: 66px; position:relative;">
+			#set( $space = 15*8)	
+			#set( $added = 60)
+			#foreach($block in $timeline.getTicks())
+		
+				#if( $block.showThumb() )
+					<div  style="position:absolute;left: ${added}px; top:2px;">
+					<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
+					</div>
+					#set( $added = $added + $space)
+				#end
+		
+			#end
+			</div>
+			</div>
+			
 			$pages.include("$clientroot/timelinedata.html", $context)
 			
 			$pages.include("$clientroot/timeline.html", $context)
+		
+				
+				
+				</div>
+			</div>
+			<div class="col-3">
+				$pages.include("$clientroot/details/video.html")
+			</div>
 		</div>
+			
+			
+		
 	#end
 </div>

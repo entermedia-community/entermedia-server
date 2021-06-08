@@ -5,7 +5,7 @@ var inittimeline = function()
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
 	//$("#clipdetails :input").prop('disabled', true);
-
+	
 	var videoclip = $("#videoclip");
 	var video = videoclip[0];
 	
@@ -189,6 +189,7 @@ var inittimeline = function()
 	lQuery("#playclip").livequery("click",function(e)
 	{
 		e.preventDefault();
+		
 		var link = $(this);
 		if( link.hasClass("playing") )
 		{
@@ -349,6 +350,7 @@ var inittimeline = function()
 
 	updateDetails = function(jumptoend)
 	{
+		
 		var selected = $(".selectedclip");
 		$("#clipdetails").css('display','block');	
 		//$("#clipdetails :input").prop('disabled', false);
@@ -365,11 +367,11 @@ var inittimeline = function()
 		
 		if( jumptoend )
 		{
-			video.currentTime = decstart + len;
+			video.currentTime = (decstart + len)/1000;
 		}	
 		else if( decstart )
 		{
-			video.currentTime = decstart;
+			video.currentTime = decstart/1000;
 		}
 		$("a.btn-disabled").removeClass("btn-disabled");
 		$("#savetimeline").removeAttr("disabled");
@@ -550,16 +552,29 @@ var inittimeline = function()
 		//console.log(selectedc);
 		selectClip(selectedc);
 	}
+
+	
+	jQuery(document).on("mousemove", function(event)
+			{
+				//console.log(event);
+				return false;
+			});
 	
 	
 };
 
-$(window).on('tabready',function()
+
+
+
+jQuery(document).ready(function()
 {
 	inittimeline();
+	
+	$(window).on('tabready',function()
+	{
+		inittimeline();
+	});
 });
-
-
 
 
 

@@ -1,9 +1,14 @@
+
+
 #set($timeline = $context.getPageValue("timeline"))
 <div id="timeline" class="timelinecontainer">
-	<div id="slider123" class="time-slider" style="height: 45px;">
+	
+	<div id="slider123" class="time-slider" >
+		<a class="btn btn-sm btn-primary" style="position:absolute; top:20px; z-index: 5"><i class="fas fa-plus"></i></a>
 		<div class="ruler" style="height: 66px;">
 		#set( $added = 0)		
 		#set( $space = 15)
+		
 		#foreach($block in $timeline.getTicks())
 
 			<div id="title_${added}"	class="graduation-title"   style="left: ${added}px">$block.getLabel()</div>
@@ -19,26 +24,12 @@
 			#set( $added = $added + $space)
 
 			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+			
 			<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
 
 		#end
 		<div class="bg" style="width:${added}px"></div>
 		</div>
 	</div>
-	<div class="iconbarcontainer">
-	<div class="iconbar" style="width:100%; margin-top:30px; height: 66px; position:relative;">
-	#set( $space = 15*8)	
-	#set( $added = 60)
-	#foreach($block in $timeline.getTicks())
-
-		#if( $block.showThumb() )
-			<div  style="position:absolute;left: ${added}px; top:2px;">
-			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
-			</div>
-			#set( $added = $added + $space)
-		#end
-
-	#end
-	</div>
-	</div>
+	
 </div>

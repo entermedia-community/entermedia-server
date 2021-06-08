@@ -1,6 +1,8 @@
 #set( $clientroot = "/${applicationid}/components/timeline" )
-
-<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" 
+<div class="timelinedatacontainer">
+<div id="timelinemetadata"
+	class="timelinedata" 
+		data-ratio="$timeline.getPxToTimeRatio()" 
 	data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin:0 10px 10px 60px; width:1200px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )
 	#foreach($clip in $clips)
@@ -18,7 +20,7 @@
 		</div>
 	#end
 </div>
-
+</div>
 <div id="templateclip" class="time-slider data-selection" style="height: 45px;display:none;"
 	data-cliplabel='New Clip' 
 	data-timecodestart="0"
