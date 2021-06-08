@@ -199,9 +199,7 @@ var inittimeline = function()
 	lQuery(".addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
-		console.log(video.currentTime);
 		video.currentTime = video.currentTime + 1;
-		console.log(video.currentTime);
 	});
 	lQuery("#removeclip").livequery("click",function(e)
 	{
@@ -250,6 +248,7 @@ var inittimeline = function()
 		template.addClass("selectedclip");
 		$("#timelinemetadata").append(template);
 		template.show();
+		template.css("z-index","6")
 		//This copies the UI into the current selection
 		$("#clipdetails").css('display','block');
 		$("#cliplabel\\.value").val("");
@@ -688,7 +687,7 @@ var inittimeline = function()
 			var start = (clicked / ratio) / 1000;
 			video.currentTime = start;
 			
-			//addNewClip();
+			addNewClip();
 			
 		}
 	);
