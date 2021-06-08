@@ -687,7 +687,7 @@ var inittimeline = function()
 			var start = (clicked / ratio) / 1000;
 			video.currentTime = start;
 			
-			addNewClip();
+			//addNewClip();
 			
 		}
 	);
