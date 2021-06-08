@@ -7,7 +7,7 @@ var inittimeline = function()
 	//$("#clipdetails :input").prop('disabled', true);
 	
 	var videoclip = $("#videoclip");
-	var video = videoclip[0];
+	var video = document.getElementById("videoclip");//videoclip[0];
 	
 	function zeroPad(num, numZeros) {
 	    var n = Math.abs(num);
@@ -553,6 +553,15 @@ var inittimeline = function()
 		selectClip(selectedc);
 	}
 
+	lQuery(".clickjump").livequery("click",function(e)
+		{
+			e.preventDefault();
+			var jump = $(this).data("starttime");
+			jump = parseFloat(jump);
+			video.currentTime = jump;
+			
+		}
+	);
 	
 	jQuery(document).on("mousemove", function(event)
 			{

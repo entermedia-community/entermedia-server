@@ -4,16 +4,19 @@
 <div id="timeline" class="timelinecontainer">
 	
 	<div id="slider123" class="time-slider" >
-		<a class="btn btn-sm btn-primary" style="position:absolute; top:20px; z-index: 5"><i class="fas fa-plus"></i></a>
+	
+		<a id="addnewcopy" href="#" class="btn btn-sm btn-primary" style="position:absolute; top:20px; z-index: 5"><i class="fas fa-plus"></i></a>
 		<div class="ruler" style="height: 66px;">
 		#set( $added = 0)		
 		#set( $space = 15)
+		#set( $firstloop = true)
 		
 		#foreach($block in $timeline.getTicks())
 
 			<div id="title_${added}"	class="graduation-title"   style="left: ${added}px">$block.getLabel()</div>
 			#set( $added = $added + $space)
 
+##if( $firstloop  == true)
 			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
 			#set( $added = $added + $space)
 
@@ -22,10 +25,14 @@
 
 			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
 			#set( $added = $added + $space)
+
+##	#set( $firstloop = false)
+###end
 
 			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
 			
 			<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
+
 
 		#end
 		<div class="bg" style="width:${added}px"></div>
