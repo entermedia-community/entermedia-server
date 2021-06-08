@@ -199,7 +199,9 @@ var inittimeline = function()
 	lQuery(".addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
+		console.log(video.currentTime);
 		video.currentTime = video.currentTime + 1;
+		console.log(video.currentTime);
 	});
 	lQuery("#removeclip").livequery("click",function(e)
 	{
@@ -234,6 +236,12 @@ var inittimeline = function()
 	{
 		e.preventDefault();
 		
+		addNewClip();
+				
+	});
+	
+	
+	addNewClip = function() {
 		//console.log("Make copy");
 		var template = $("#templateclip").clone();
 		var timestamp = new Date().getUTCMilliseconds();
@@ -258,8 +266,9 @@ var inittimeline = function()
 		updateDetails();
 		
 		$("#cliplabel\\.value").focus();
-				
-	});
+	}
+	
+	
 	
 	lQuery("#savetimeline").livequery("click",function(e)
 	{
@@ -671,12 +680,12 @@ var inittimeline = function()
 			
 			var left = event.pageX - $(this).offset().left;
 			var clicked = left - 60;
-			
+			//console.log(left + " c:"+clicked);
 			var ratio = $("#timelinemetadata").data("ratio");
 			var start = (clicked / ratio) / 1000;
 			video.currentTime = start;
 			
-			$("#addnewcopy").trigger("click");
+			//addNewClip();
 			
 		}
 	);
