@@ -1,7 +1,15 @@
 <div class="clipedit" style="width:100%;margin:0px 0 20px;">
 	
 		
-	<div style="border-top:1px solid #efefef;">
+	<div >
+	
+	<div style="padding-left:20px;visibility:hidden" id="warningarea">
+	<a id="savetimeline" href="#" class="btn btn-primary btn-disabled" style="" disabled>[[Save Changes]]</a>
+	##<div id="" class="alert alert-warning " role="alert" style="margin-top:4px;">
+	##  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
+	##</div>
+	</div>
+	
 		<div id="clipdetails" style="padding:20px; display:none ">
 		
 			<textarea class="form-control" name="cliplabel" id="cliplabel.value" value="" style="width:350px;height:60px;margin-bottom:8px;" placeholder="[[Clip Name]]" ></textarea>
@@ -20,15 +28,8 @@
 			<div class="btns">
 ##			<a id="playclip" data-playtext="[[Play]]"  data-stoptext="[[Stop]]"  href="#" class="btn btn-success btn-disabled" ><i class="fas fa-play"></i> [[Play]]</a>
 			<a id="removeclip" href="#" class="btn btn-danger btn-disabled" >[[Remove]]</a>
-			<a id="downloadclip" href="#" class="btn btn-primary btn-disabled">[[Download Clip]]</a>
+##			<a id="downloadclip" href="#" class="btn btn-primary btn-disabled">[[Download Clip]]</a>
 			</div>
 		</div>
-	</div>
-	<div style="padding:10px;">
-	<a id="savetimeline" href="#" class="btn btn-primary btn-disabled" style="float:right" disabled>[[Save Timeline]]</a>
-	##<a id="cancel" href="/$applicationid/components/timeline/index.html?assetid=$asset.getId()&hitssessionid=hitsassetassets/catalog" class="btn btn-secondary btn-disabled ajax" data-targetdiv="timelineeditor" data-oemaxlevel="1" style="float:right;margin-right: 10px;" >[[Cancel]]</a>
-	</div>	
-	<div id="warningarea" class="alert alert-warning " role="alert" style="margin-top:4px;display:none;">
-	  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
 	</div>
 </div>

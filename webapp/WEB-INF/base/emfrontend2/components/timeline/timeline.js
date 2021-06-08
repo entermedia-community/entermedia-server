@@ -319,9 +319,10 @@ var inittimeline = function()
 	       		success: function() 
 	       		{
 	            	//reload page?
-	            	$("#savetimeline").addClass("btn-disabled");
-					$("#savetimeline").attr("disabled", true);
+	            	//$("#savetimeline").addClass("btn-disabled");
+					//$("#savetimeline").attr("disabled", true);
 					$("#clipdetails").css('display','none');
+					$("#warningarea").css('visibility','hidden');
 	       		}
 	    	}); 
 		}
@@ -403,7 +404,7 @@ var inittimeline = function()
 			}
 		});	
 		
-		$("#savetimeline").show();
+		$("#warningarea").css('visibility','visible');
 	}	
 
 	updateDetails = function(jumptoend)
@@ -451,7 +452,9 @@ var inittimeline = function()
 		}
 		clipname = assetName + "-" + clipname + "-"+ start +".mp4";
 		
-		var link = $("#downloadclip");
+/*
+ * 
+ 		var link = $("#downloadclip");
 		
 		var mediadbappid =  $("#timelineviewer").data("mediadb");
 		var sourcepath =  $("#timelineviewer").data("sourcepath");
@@ -462,7 +465,7 @@ var inittimeline = function()
 		source = source + "&forcedownload=true"; 
 		
 		link.attr("href",source);
-		
+*/
 	$('#nestedfields input[name="field"]').each(function() {
 		var fieldid = $(this).val();
 		var values = selected.data(fieldid);
