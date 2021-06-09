@@ -130,7 +130,7 @@ var inittimeline = function()
 		
 	});
 	
-	lQuery("#timecodestart\\.value").livequery("click",function(e)
+	lQuery("#timecodestartX\\.value").livequery("click",function(e)
 	{
 		//debugger;
 		var input = $(this);
@@ -148,7 +148,8 @@ var inittimeline = function()
 		input.addClass("selectedtime");
 			
 	});
-	lQuery("#timecodelength\\.value").livequery("click",function(e)
+	
+	lQuery("#timecodelengthX\\.value").livequery("click",function(e)
 	{
 		//debugger;
 		var input = $(this);
@@ -260,7 +261,7 @@ var inittimeline = function()
 
 		var lengthtext = $("#timecodelength\\.value").val();
 		if( !lengthtext ) {
-			$("#timecodelength\\.value").val("5");
+			$("#timecodelength\\.value").val("10");
 		}		
 
 		updateSelectedClip();	
@@ -295,6 +296,7 @@ var inittimeline = function()
 				
 				$('#nestedfields input[name="field"]').each(function() {
 					var fieldid = $(this).val();
+					console.log("found: " + fieldid)
 					var v = clip.data(fieldid);
 					if( v )
 					{
@@ -595,16 +597,23 @@ var inittimeline = function()
 	lQuery(".timecell").livequery(function()
 	{
 		var mainimage = $(this);
-		var clickspot = false;
+		var clickspot = {};
+		var moving = false;
 		var imageposition;
 		mainimage.on("mousedown", function(event)
 		{
 			if( !$(event.target).hasClass("grabresize") )
 			{
 				clearSelection();
-				clickspot = event;
+				//clickspot = event;
+				moving = true;
+				var xPos = event.pageX - $(this).offset().left;
+				var yPos = event.pageY - $(this).offset().top;
+				clickspot.xPos = xPos;
+				clickspot.yPos = yPos;
 				imageposition = mainimage.position();
 				var left = imageposition.left;
+				//console.log("Starting at: " + xPos);
 				$("#timelinecursor").css({"left" : left+60 + "px"});
 				return false;
 			}	
@@ -612,28 +621,36 @@ var inittimeline = function()
 	
 		mainimage.on("mouseup", function(event)
 		{
-			clickspot = false;
+			clickspot = {};
+			moving = false;
 			return false;
 		});
 		mainimage.on("mouseleave", function(event)
 		{
-			clickspot = false;
+			clickspot = {};
+			moving = false;
 			return false;
 		});
 		
 		mainimage.on("mousemove", function(event)
 		{
-			if( clickspot )
+			if( moving )
 			{
 				clearSelection();
 				
-				var changeleft = clickspot.pageX - event.pageX;
-				var changetop = clickspot.pageY - event.pageY;
+				var xPos = event.pageX - $(this).offset().left;
+				var yPos = event.pageY - $(this).offset().top;
+				
+				var changeleft = clickspot.xPos - xPos;
+				var changetop = clickspot.yPos - yPos;
+				
+				//console.log("csX: " +clickspot.xPos + " eX: " +xPos);
 				
 				var left = imageposition.left - changeleft;
 				if( left < 0 ) {
 					left = 0;
 				}
+				
 				$(this).css({"left" : left + "px"});
 				
 				var top = imageposition.top - changetop;// - changetop;
@@ -682,7 +699,7 @@ var inittimeline = function()
 	lQuery("#timelineviewerbackground").livequery("click", function(event)
 		{
 			event.preventDefault();
-			
+			//console.log("bkg click");
 			var left = event.pageX - $(this).offset().left;
 			var clicked = left - 60;
 			//console.log(left + " c:"+clicked);
@@ -694,13 +711,6 @@ var inittimeline = function()
 			
 		}
 	);
-	
-	
-	jQuery(document).on("mousemove", function(event)
-			{
-				//console.log(event);
-				return false;
-			});
 	
 	
 };

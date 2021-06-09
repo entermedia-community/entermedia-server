@@ -5,11 +5,12 @@
 	data-ratio="$timeline.getPxToTimeRatio()" 
 	data-savelink="$home$clientroot/saveclips.json" 
 	data-assetid="$asset.id" 
-	style="margin:0 10px 10px 60px; width:1200px;">
+	style="margin:0; width:1200px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
-		<div id="slider$index" class="data-selection"  
+		<div id="slider$index" 
+			class="ts-data-selection"  
 			data-cliplabel="#esc($clip.getLabel())"
 			data-timecodestart="$clip.getStart()"
 			data-timecodelength="$clip.getLength()"
@@ -34,14 +35,14 @@
 	#end
 </div>
 </div>
-<div id="templateclip" class="time-slider data-selection" style="height: 45px;display:none;"
-	data-cliplabel='New Clip' 
+<div id="templateclip" class="ts-data-selection" style="height: 45px;display:none;"
+	data-cliplabel='[[New Clip]]' 
 	data-timecodestart="0"
-	data-timecodelength="5">
-	<div class="ruler" >
+	data-timecodelength="10">
+	##<div class="ruler" >
 		<div class="timecell" style="cursor: move;position:relative;">
 			<div class="grabresize"></div>
 			<span class="cliptext">[[New Clip]]</span>
 		</div>
-	</div>
+	##</div>
 </div>	
