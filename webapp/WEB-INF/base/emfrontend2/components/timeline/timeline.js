@@ -1,6 +1,6 @@
-
 var inittimeline = function() 
 {
+	console.log("Timeline init");
 	var app = $("#application");
 	var siteroot =  app.data("siteroot");
 	var apphome = siteroot + app.data("apphome");
@@ -91,8 +91,7 @@ var inittimeline = function()
 		}
 	}
 
-	videoclip.on("timeupdate",function(e)
-	{
+	videoclip.on("timeupdate",function(e) {
 		
 		updateCursor(video.currentTime);
 		
@@ -239,9 +238,7 @@ var inittimeline = function()
 	lQuery("#addnewcopy").livequery("click",function(e)
 	{
 		e.preventDefault();
-		
 		addNewClip();
-				
 	});
 	
 	
@@ -282,7 +279,7 @@ var inittimeline = function()
 		
 		if (!$(this).hasClass("btn-disabled")) {
 			var clips = [];
-	    	$("#timelinemetadata  .data-selection").each(function() 
+	    	$("#timelinemetadata  .ts-data-selection").each(function() 
 	    	{
 				var clip = $(this);
 				//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
@@ -351,7 +348,7 @@ var inittimeline = function()
 	
 	
 	
-	lQuery(".data-selection").livequery("click",function(e)
+	lQuery(".ts-data-selection").livequery("click",function(e)
 	{
 		e.preventDefault();
 		
@@ -361,8 +358,8 @@ var inittimeline = function()
 	
 	selectClip = function(div)
 	{
-		var div = $(div).closest(".data-selection");
-		$(".data-selection").removeClass("selectedclip");
+		var div = $(div).closest(".ts-data-selection");
+		$(".ts-data-selection").removeClass("selectedclip");
 		div.addClass("selectedclip");
 		updateDetails();
 	}
@@ -667,7 +664,7 @@ var inittimeline = function()
 	if( jump )
 	{
 		//$('[data-test="the_exact_value"]')
-		var selectedc = $(".data-selection" + '[data-timecodestart="' + jump + '"]');
+		var selectedc = $(".ts-data-selection" + '[data-timecodestart="' + jump + '"]');
 		//console.log(selectedc);
 		selectClip(selectedc);
 	}

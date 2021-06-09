@@ -30,7 +30,7 @@
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
 		<div id="slider$index" 
-			class="data-selection float-left"
+			class="cc-data-selection float-left"
 			style="left: ${timeline.getPxStart($clip)}px;"  
 			data-cliplabel="#esc($clip.getLabel())" 
 			data-timecodestart="$clip.getStart()"

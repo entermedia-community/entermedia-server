@@ -1,19 +1,21 @@
 var initclosedcaptions = function() 
 {
-	
+	console.log("Closed Caption init");
 	
 	var app = $("#application");
 	var apphome = app.data("siteroot") + app.data("apphome");
 	var themeprefix = app.data("siteroot")	+ app.data("themeprefix");
-
-	var video = $("#videoclip");
 	
-	if (!video.length || video[0] == null) {
+	var videoclip = $("#videoclipcc");
+	var video = document.getElementById("videoclipcc");//videoclip[0];
+	
+	if (video == null) {
 		return;
 	}
 	
-	video = video[0]; 
+	
 	var inTime = video.currentTime;
+	
 	parseTimeToText = function(inTime)
 	{
 			var justseconds = Math.floor(inTime);
@@ -140,15 +142,14 @@ var initclosedcaptions = function()
 		$("#langform").submit();
 	});
 	
-	lQuery("#videoclip").livequery("timeupdate",function(e)
-	{
+	videoclip.on("timeupdate",function(e) {
+		debugger;
 		var link = $("#playtab");
 		if( video.paused )
 		{
 			link.removeClass("playing");
 			starttime = video.currentTime;
-			$("#captionstart").text(parseTimeToText(starttime));
-			$("#timecodestart").val( Math.round(starttime * 1000 ));
+			updateCaptions(starttime);
 		}
 		else if(link.hasClass("playing") )
 		{
@@ -198,15 +199,15 @@ var initclosedcaptions = function()
 		return false;
 	});
 
-	selectClip = function(div)
+	ccselectClip = function(div)
 	{
-		var div = $(div).closest(".data-selection");
-		$(".data-selection").removeClass("selectedclip");
+		var div = $(div).closest(".cc-data-selection");
+		$(".cc-data-selection").removeClass("selectedclip");
 		div.addClass("selectedclip");
-		updateDetails();
+		ccupdateDetails();
 	}
 	
-	updateDetails = function(jumptoend)
+	ccupdateDetails = function(jumptoend)
 	{
 		var selected = $(".selectedclip");
 	
@@ -225,16 +226,30 @@ var initclosedcaptions = function()
 		
 	}
 	
-	lQuery(".data-selection").livequery("click",function(e)
-	{
+	ccupdatecaptions = function(starttime) {
+		$("#captionstart").text(parseTimeToText(starttime));
+		$("#timecodestart").val( Math.round(starttime * 1000 ));
+	}
+	
+	lQuery(".cc-data-selection").livequery("click", function(e)	{
 		e.preventDefault();
-		selectClip(this);
-		updateDetails();
+		ccselectClip(this);
+		ccupdateDetails();
+		ccupdatecaptions(video.currentTime);
 	});	
 };
-console.log("Loaded");
-$(window).on('tabready',function()
+
+
+
+jQuery(document).ready(function()
 {
-	console.log("Loaded.ready");
 	initclosedcaptions();
+	
+	$(window).on('tabready',function()
+	{
+		initclosedcaptions();
+	});
 });
+
+
+
