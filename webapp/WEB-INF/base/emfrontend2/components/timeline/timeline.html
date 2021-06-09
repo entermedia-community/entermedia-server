@@ -3,7 +3,7 @@
 #set($timeline = $context.getPageValue("timeline"))
 <div id="timeline" class="timelinecontainer">
 	
-	<div id="slider123" class="time-slider" >
+	<div class="time-slider" >
 	
 		<a id="addnewcopy" href="#" class="btn btn-sm btn-primary" style="position:absolute; top:20px; z-index: 6"><i class="fas fa-plus"></i></a>
 		<div id="timelinecursor" class="timelinecursor"></div>
@@ -36,7 +36,7 @@
 
 
 		#end
-		<div class="bg" style="width:${added}px"></div>
+		<div class="bg" id="timelinebg" style="width:${added}px"></div>
 		</div>
 		<div style="position:absolute; right:0; top:20px; width:80px; z-index: 6">
 			<a id="removetime" href="#" class="btn btn-primary" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-left"></i></a>

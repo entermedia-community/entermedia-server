@@ -13,6 +13,11 @@ var inittimeline = function()
 
 	var timelinecursor = document.getElementById("timelinecursor");
 
+	//fix container width
+	var tlbg = $("#timelinebg");
+	var tlv = $("#timelineviewer");
+	tlv.width(tlbg.width()+100);
+	
 	
 	
 	function zeroPad(num, numZeros) {
