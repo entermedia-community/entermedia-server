@@ -19,24 +19,24 @@
 #set( $clips = $timeline.getClips() )
 #set( $padded = $timeline.getPxWidth()+60)
 
-<div id="scrollarea" style="width:100%; height: 260px; overflow-y: scroll;">
+
 <div id="timelinemetadata" 
+	class="cctimelinedata"
 	 data-ratio="$timeline.getPxToTimeRatio()"
 	 data-savelink="$clientroot/saveclips.json" 
 	 data-assetid="$asset.id" 
-	 style="width:${padded}px; 
-	 margin-left:60px;">
+	 style="width:${padded}px; height:100%;">
 	 
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
 		<div id="slider$index" 
-			class="time-slider data-selection float-left"
+			class="data-selection float-left"
 			style="left: ${timeline.getPxStart($clip)}px;"  
 			data-cliplabel="#esc($clip.getLabel())" 
 			data-timecodestart="$clip.getStart()"
 			data-timecodelength="$clip.getLength()">
 			<div class="ruler">
-				<div class="timecell" 
+				<div class="timecellcaption" 
 					style=" 
 					width: ${timeline.getPxLength($clip)}px; 
 					cursor: move;position:relative;">
@@ -46,7 +46,6 @@
 			</div>
 		</div>
 	#end
-</div>
 </div>
 
 

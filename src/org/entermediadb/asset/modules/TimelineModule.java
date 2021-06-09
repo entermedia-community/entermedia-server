@@ -402,7 +402,7 @@ public class TimelineModule extends BaseMediaModule
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
 		//timeline.setPxWidth(4000);
-		Integer width = (int)mili/85;
+		Integer width = (int)mili/50;
 		if (width<1200) {
 			width=1200;
 		}

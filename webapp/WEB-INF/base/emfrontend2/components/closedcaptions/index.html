@@ -5,45 +5,53 @@
 	#set( $thumb = "$siteroot/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 	#set( $clientroot = "/${applicationid}/components/closedcaptions" )
 	
-	$pages.include("$clientroot/details/video.html",$context)
-	
 	#set( $timecodejump = $context.getRequestParameter("timecodejump"))
+	
+	<div class="row no-gutters">
+		<div class="col-9">
+				<div class="timelineviewercontainer">
+					<div class="videoclosedcaptioninput"  style="padding:20px 0">
+						<div style="float:left; width:160px; padding: 0 0 0 20px;">	
+							<span id="captionstart">00:00.0</span> -
+							<span id="captionend">00:00.0</span>
+						</div>
+						<div style="float:left; width:calc(100% - 320px);">
+							<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" class="ajaxform" >
+							<input type="hidden" name="assetid" value="$asset.id" />
+							<input type="hidden" name="oemaxlevel" value="1" />
+							<input type="hidden" id="timecodestart" name="timecodestart" value="0" />
+							<input type="hidden" id="timecodelength" name="timecodelength" value="8000" />
+							<textarea  id="captioninput" 
+								name="cliplabel"
+								class="form-control" 
+								placeholder="[[press tab to start/stop and press enter to save]]"
+				                 
+				                rows="2"
+								style="width:100%;"></textarea>
+							</form>
+						</div>
+						<div style="float:left; width:160px; padding: 0 20px 0 20px;">	
+							##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
+							##	class="btn btn-success btn-sm" style="margin-left:0px;" >[[Play 8s]]</a> 
+							<a id="removetime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-minus"></i></a>
+							<a id="addtime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-plus"></i></a>
+							<a id="removecaption" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-trash"></i></a>
+					    </div>
+					    <div class="clearfix"></div>
+					</div>
+					<div class="cctimelineviewer" >
+							$pages.include("$clientroot/viewcaptions.html",$context)
+					</div>
+	
+				</div>
+		</div>
+		<div class="col-3">
+				$pages.include("$clientroot/details/video.html",$context)
+		</div>
+	</div>
+	
+	
 
-    <div class="row videoclosedcaptioninput">
-	<div class="col" style="font-size:90%;">
-		<div style="float:left; width:160px; padding: 0 0 0 20px;">	
-			<span id="captionstart">00:00.0</span> -
-			<span id="captionend">00:00.0</span>
-		</div>
-		<div style="float:left; width:calc(100% - 320px);">
-			<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" class="ajaxform" >
-			<input type="hidden" name="assetid" value="$asset.id" />
-			<input type="hidden" name="oemaxlevel" value="1" />
-			<input type="hidden" id="timecodestart" name="timecodestart" value="0" />
-			<input type="hidden" id="timecodelength" name="timecodelength" value="8000" />
-			<textarea  id="captioninput" 
-				name="cliplabel"
-				class="form-control" 
-				placeholder="[[press tab to start/stop and press enter to save]]"
-                value="" 
-                rows="2"
-				style="width:100%;"></textarea>
-			</form>
-		</div>
-		<div style="float:left; width:160px; padding: 0 20px 0 20px;">	
-			##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
-			##	class="btn btn-success btn-sm" style="margin-left:0px;" >[[Play 8s]]</a> 
-			<a id="removetime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-minus"></i></a>
-			<a id="addtime" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-plus"></i></a>
-			<a id="removecaption" class="btn btn-success btn-sm" style="margin-left:0px;" ><i class="fas fa-trash"></i></a>
-	    </div>
-    </div>
-	</div>
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="timelineviewer" >
-			$pages.include("$clientroot/viewcaptions.html",$context)
-			</div>
-		</div>
-	</div>
 </div>
+
+
