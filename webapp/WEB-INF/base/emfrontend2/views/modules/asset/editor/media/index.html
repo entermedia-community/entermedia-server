@@ -5,23 +5,33 @@
 #set( $originalpath = $mediaarchive.asLinkToOriginal($asset, true) )
 <div id="asset-editor-container" class="h-100">
 <h2>[[Media Files]]</h2>
-#if($candownload)	
-	<a class="btn btn-sm btn-primary" 
-	href="$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=$!{collectionid}&assetid=$asset.getId()"
-	style="margin-right:5px;"
-	title="[[Download]] $asset.name"
-	><i class="fas fa-download"></i> [[Download Original]]</a>
-	
-	#if($canshowadmintoolbar)
-			<a class="btn btn-xs btn-secondary previewcrop-btn" 
+#set($title = $asset.name)
+	#if($candownload)	
+	<div style="padding:10px 0">
+		#if( $desktop )
+        	<a href="#" class="emdesktopdownload btn btn-sm btn-primary" data-assetid="$asset.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"> </i> [[Download Original]]
+        	</a>
+       	#else
+			#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+			#if($collectionid)
+				#set($dlink = "$dlink&collectionid=$!{collectionid}")
+			#end
+        	<a href="$!dlink" class="btn btn-sm btn-primary" data-assetid="$asset.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"></i> [[Download Original]]
+        	</a>
+       	#end
+       	
+		#if($canshowadmintoolbar)
+			<a class="btn btn-sm btn-secondary previewcrop-btn" 
 				data-oemaxlevel="1"  
 				target="_new"
 				href="$home/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
 				title="[[File Manager]]"><i class="fas fa-upload"></i></a> 
+		#end
+		</div>
 	#end
-	
-	
-#end
 <div class="">
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($type = $mediaarchive.getMediaRenderType($asset.fileformat))
