@@ -296,7 +296,6 @@ var inittimeline = function()
 				
 				$('#nestedfields input[name="field"]').each(function() {
 					var fieldid = $(this).val();
-					console.log("found: " + fieldid)
 					var v = clip.data(fieldid);
 					if( v )
 					{
@@ -397,8 +396,9 @@ var inittimeline = function()
 		cell.css({"width" : width + "px"});
 		
 		$('#nestedfields input[name="field"]').each(function() {
+			
 			var fieldid = $(this).val();
-			var select2 = jQuery("#list-" + fieldid);
+			var select2 = jQuery("#list-" + fieldid+"value");
 			if( select2.length > 0)
 			{
 				//select2.val(null).trigger('change');
@@ -471,10 +471,11 @@ var inittimeline = function()
 		link.attr("href",source);
 */
 	$('#nestedfields input[name="field"]').each(function() {
+		
 		var fieldid = $(this).val();
 		var values = selected.data(fieldid);
 		
-		var select2 = jQuery("#list-" + fieldid);
+		var select2 = jQuery("#list-" + fieldid+"value");
 		if( select2.length > 0)
 		{
 			if( values )
