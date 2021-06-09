@@ -8,56 +8,50 @@
 		#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 		$context.putPageValue("timeline", $timeline)
 		
-		
 		<div class="row no-gutters">
 			<div class="col-9">
-				
-				
 				#set( $timecodejump = $page.get("timecodejump"))
-		<div class="timelineviewercontainer">
-		<div id="timelineviewer" 
-				class="timelineviewer" 
-				style=""
-				data-sourcepath="$asset.sourcepath" 
-				data-assetname="$asset.name" 
-				data-timecodejump="$!timecodejump" 
-				data-mediadb="$mediaarchive.getMediaDbId()" 
-				>
+				<div class="timelineviewercontainer">
+					<div id="timelineviewer" 
+							class="timelineviewer" 
+							style=""
+							data-sourcepath="$asset.sourcepath" 
+							data-assetname="$asset.name" 
+							data-timecodejump="$!timecodejump" 
+							data-mediadb="$mediaarchive.getMediaDbId()" 
+							>
+						
+						<div class="iconbarcontainer">
+							<div class="iconbar" style="width:100%; margin-top:30px; height: 66px; position:relative;">
+								#set( $space = 15*8)	
+								#set( $added = 60)
+								#foreach($block in $timeline.getTicks())
+							
+									#if( $block.showThumb() )
+										<a href="#" class="clickjump" data-starttime="$block.getSeconds()">
+										<div  style="position:absolute;left: ${added}px; top:2px;">
+										<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
+										</div>
+										</a>
+										#set( $added = $added + $space)
+									#end
+							
+								#end
+							</div>
+						</div>
+						
+						$pages.include("$clientroot/timelinedata.html", $context)
+						
+						$pages.include("$clientroot/timeline.html", $context)
 			
-			<div class="iconbarcontainer">
-			<div class="iconbar" style="width:100%; margin-top:30px; height: 66px; position:relative;">
-			#set( $space = 15*8)	
-			#set( $added = 60)
-			#foreach($block in $timeline.getTicks())
-		
-				#if( $block.showThumb() )
-					<a href="#" class="clickjump" data-starttime="$block.getSeconds()">
-					<div  style="position:absolute;left: ${added}px; top:2px;">
-					<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
+						<div id="timelineviewerbackground"></div>
 					</div>
-					</a>
-					#set( $added = $added + $space)
-				#end
-		
-			#end
-			</div>
-			</div>
-			
-			$pages.include("$clientroot/timelinedata.html", $context)
-			
-			$pages.include("$clientroot/timeline.html", $context)
-		
-				<div id="timelineviewerbackground"></div>
-				
-				</div>
 				</div>
 			</div>
-			<div class="col-3">
-				$pages.include("$clientroot/details/video.html")
-			</div>
+		<div class="col-3">
+				$pages.include("$clientroot/details/video.html", $context)
 		</div>
-			
-			
-		
+	</div>
+	
 	#end
 </div>

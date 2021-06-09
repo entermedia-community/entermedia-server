@@ -16,7 +16,8 @@ var inittimeline = function()
 	//fix container width
 	var tlbg = $("#timelinebg");
 	var tlv = $("#timelineviewer");
-	tlv.width(tlbg.width()+100);
+	//tlv.width(tlbg.width()+100);
+	tlv.css("min-width", tlbg.width()+140 + "px");
 	
 	
 	

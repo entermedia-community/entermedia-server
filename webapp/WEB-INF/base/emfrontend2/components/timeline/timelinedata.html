@@ -2,12 +2,14 @@
 <div class="timelinedatacontainer">
 <div id="timelinemetadata"
 	class="timelinedata" 
-		data-ratio="$timeline.getPxToTimeRatio()" 
-	data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin:0 10px 10px 60px; width:1200px;">
+	data-ratio="$timeline.getPxToTimeRatio()" 
+	data-savelink="$home$clientroot/saveclips.json" 
+	data-assetid="$asset.id" 
+	style="margin:0 10px 10px 60px; width:1200px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
-		<div id="slider$index" class="time-slider data-selection"  
+		<div id="slider$index" class="data-selection"  
 			data-cliplabel="#esc($clip.getLabel())"
 			data-timecodestart="$clip.getStart()"
 			data-timecodelength="$clip.getLength()"
