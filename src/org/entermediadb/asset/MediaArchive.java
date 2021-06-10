@@ -2609,5 +2609,18 @@ public class MediaArchive implements CatalogEnabled
 		UserNotifyManager manager = (UserNotifyManager) getModuleManager().getBean(getCatalogId(), "userNotifyManager");
 		return manager;
 	}
+	
+	public ArrayList getInvoiceProductList(String invoiceId)
+	{
+		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
+		ArrayList products = (ArrayList)invoice.getValue("productlist");
+		return products;
+	}
+	
+	public String getProductName (String productId) {
+		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
+		String name = (String) product.getValue("name");
+		return name;
+	}
 
 }
