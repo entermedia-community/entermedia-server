@@ -396,7 +396,7 @@ var inittimeline = function()
 		$('#nestedfields input[name="field"]').each(function() {
 			
 			var fieldid = $(this).val();
-			var select2 = jQuery("#list-" + fieldid+"value");
+			var select2 = jQuery("#list-" + fieldid);
 			if( select2.length > 0)
 			{
 				//select2.val(null).trigger('change');
@@ -486,7 +486,7 @@ var inittimeline = function()
 		var fieldid = $(this).val();
 		var values = selected.data(fieldid);
 		
-		var select2 = jQuery("#list-" + fieldid+"value");
+		var select2 = jQuery("#list-" + fieldid);
 		if( select2.length > 0)
 		{
 			if( values )

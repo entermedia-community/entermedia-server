@@ -12,7 +12,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set( $vals = $val.split("\s*\|\s*") )
 
 <select name="${detail.getId()}.value" 
-		id="list-${detailid}${idcount}value" 
+		id="list-${detailid}${idcount}" 
 		multiple="multiple" 
 		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
 		data-searchfield="$searchfield"
