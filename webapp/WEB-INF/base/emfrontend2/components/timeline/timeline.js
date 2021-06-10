@@ -176,12 +176,18 @@ var inittimeline = function()
 	});
 
 
-	lQuery("#timecodestart\\.value").livequery("blur", function()
+	lQuery("#timecodestart\\.value").livequery("keyup", function()
 	{
 		updateSelectedClip();
+		var selected = $(".selectedclip");
+		var decstart = selected.data("timecodestart");
+		decstart = parseFloat(decstart);
+		if (decstart) {
+			updateVideo(decstart/1000);
+		}
 	});
 
-	lQuery("#timecodelength\\.value").livequery("blur", function()
+	lQuery("#timecodelength\\.value").livequery("keyup", function()
 	{
 		updateSelectedClip();		
 	});
@@ -259,11 +265,18 @@ var inittimeline = function()
 		var done = parseTimeToText(video.currentTime);
 		$("#timecodestart\\.value").val(done);
 
-		var lengthtext = $("#timecodelength\\.value").val();
-		if( !lengthtext ) {
-			$("#timecodelength\\.value").val("10");
-		}		
-
+		$("#timecodelength\\.value").val("10");
+		
+		//clean fields
+		$('#nestedfields input[name="field"]').each(function() {
+			var fieldid = $(this).val();
+			var select2 = jQuery("#list-" + fieldid);
+			if( select2.length > 0)
+			{
+				select2.val(null).trigger('change');
+			}
+		});
+		
 		updateSelectedClip();	
 		
 		updateDetails(false);
@@ -408,6 +421,10 @@ var inittimeline = function()
 		
 		$("#warningarea").css('visibility','visible');
 	}	
+	
+	updateVideo = function(start) {
+		video.currentTime = start;
+	}
 
 	updateTime = function(updatevideo)
 	{
@@ -433,7 +450,7 @@ var inittimeline = function()
 //			}	
 			if( decstart )
 			{
-				video.currentTime = decstart/1000;
+				updateVideo(decstart/1000);
 			}
 		}
 
@@ -491,14 +508,25 @@ var inittimeline = function()
 		{
 			if( values )
 			{
-				select2.val(values.split("|")); //Split? |				
+				select2.val(); //Split? |
+				var options = values.split("|");
+				for(var i=0; i< options.length; i++){
+					if (select2.find("option[value='" + options[i] + "']").length) {
+						
+					} else { 
+					    var newOption = new Option(options[i], options[i], true, true);
+					    select2.append(newOption).trigger('change');
+					} 
+				}
+				select2.val(options).trigger('change');
 			}
 			else
 			{
 				select2.val([]);
+				select2.trigger('change');
 				//select2.select2("val", "");
 			}
-			select2.trigger('change'); 
+			 
 		}
 		else
 		{
@@ -635,7 +663,6 @@ var inittimeline = function()
 			clickspot.relativeXPos = event.pageX - parentoffset.left;
 			clickspot.relativeYPos = event.pageY - parentoffset.top;
 			//console.log("Start Moving stuff ",clickspot);
-
 			
 			if( !$(event.target).hasClass("grabresize") )
 			{
