@@ -202,16 +202,34 @@ var inittimeline = function()
 	});
 			
 	
-	lQuery(".removetime").livequery("click",function(e)
+	lQuery("#removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
-		video.currentTime = video.currentTime - 1;
+		var selected = $(".selectedclip");
+		if (selected.length){
+			var current = selected.data("timecodestart");
+			selected.data("timecodestart", current-1000);
+			updateTime(true);
+			updateSelectedClip();
+		}
+		else {
+			video.currentTime = video.currentTime - 1;
+		}
 		
 	});
-	lQuery(".addtime").livequery("click",function(e)
+	lQuery("#addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
-		video.currentTime = video.currentTime + 1;
+		var selected = $(".selectedclip");
+		if (selected.length){
+			var current = selected.data("timecodestart");
+			selected.data("timecodestart", current+1000);
+			updateTime(true);
+			updateSelectedClip();
+		}
+		else {
+			video.currentTime = video.currentTime + 1;
+		}
 	});
 	lQuery("#removeclip").livequery("click",function(e)
 	{
@@ -689,7 +707,7 @@ var inittimeline = function()
 //		});
 	});
 	
-	lQuery("#timelineeditor").livequery(function()
+	lQuery("#timelinemetadata").livequery(function()
 	{
 		$(this).on("mouseup", function(event)
 		{
@@ -790,6 +808,10 @@ var inittimeline = function()
 	lQuery("#timelineviewerbackground").livequery("click", function(event)
 		{
 			event.preventDefault();
+			$(".selectedclip").removeClass("selectedclip");
+			//clean fields
+			$("#clipdetails").hide();
+			
 			//console.log("bkg click");
 			var left = event.pageX - $(this).offset().left;
 			var clicked = left - 60;
