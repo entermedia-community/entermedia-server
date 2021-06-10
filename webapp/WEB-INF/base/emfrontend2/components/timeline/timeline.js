@@ -627,11 +627,11 @@ var inittimeline = function()
 			clickspot.yPos = yPos;
 			selectClip(selectedbox);
 			var parentoffset = jQuery("#timelinemetadata").offset();
-			console.log("Parent position ",parentoffset);
+			//console.log("Parent position ",parentoffset);
 			
 			clickspot.relativeXPos = event.pageX - parentoffset.left;
 			clickspot.relativeYPos = event.pageY - parentoffset.top;
-			console.log("Start Moving stuff ",clickspot);
+			//console.log("Start Moving stuff ",clickspot);
 
 			
 			if( !$(event.target).hasClass("grabresize") )
@@ -641,7 +641,6 @@ var inittimeline = function()
 				resizingbox = false;
 				imageposition = selectedbox.position();
 				var left = imageposition.left;
-				//console.log("Starting at: " + xPos);
 				$("#timelinecursor").css({"left" : left+60 + "px"});
 				return false;
 			}	
@@ -666,8 +665,9 @@ var inittimeline = function()
 		{
 			clickspot = {};
 			selectedbox = null;
+			resizingbox = false;
 			//moving = false;
-			console.log("Release");
+			//console.log("Release");
 			updateDetails(true);
 			return false;
 		});
@@ -680,13 +680,9 @@ var inittimeline = function()
 			}
 			//Slow?
 			//clearSelection();
-			
-//			var changeleft = clickspot.xPos - xPos;
-//			var changetop = clickspot.yPos - yPos;
-			var changeleft = clickspot.xPos - event.pageX ;
-			var changetop = clickspot.yPos - event.pageY;
-			//console.log("Change top ",clickspot,changeleft, changetop )
-			
+		
+			var changeleft =  event.pageX - clickspot.xPos;
+			var changetop =  event.pageY - clickspot.yPos;
 			//console.log("csX: " +clickspot.xPos + " eX: " +xPos);
 
 			var ratio = $("#timelinemetadata").data("ratio");
@@ -694,33 +690,31 @@ var inittimeline = function()
 
 			if( resizingbox )
 			{
-				var width = startwidth + changeleft;
+				var width = startwidth + (changeleft * 1);
 				if( width < 10 )
 				{
 					width = 10;
 				}
-				selectedbox.width(width);
+				console.log(changeleft,width);
+				selectedbox.css("width",width);
 				
 				var miliseconds = (width / ratio );
 				//Slow?
 				var selected = $(".selectedclip");
 				selected.data("timecodelength",miliseconds);
-				updateDetails(false);
+				updateTime(false);
 				//event.preventDefault();
 				return false;
 			}
 			else
 			{
-				var left = clickspot.relativeXPos - changeleft;
-				//console.log("Moving left",clickspot.relativeXPos ,"-", changeleft);
+				var left = clickspot.relativeXPos + changeleft;
 				if( left < 0 ) {
 					left = 0;
 				}
-				
-				
 				selectedbox.css({"left" : left + "px"});
 				
-				var top = clickspot.relativeYPos - changetop;// - changetop;
+				var top = clickspot.relativeYPos + changetop;
 				if (top<0) {
 					top = 0;
 				}
@@ -728,10 +722,6 @@ var inittimeline = function()
 				
 				var seconds = left / ratio;
 				$("#timelinecursor").css({"left" : left+60 + "px"});
-				
-				//set video as well
-				
-				//console.log("r:"+ratio+" l:"+left+" s:"+seconds);
 				var selected = $(".selectedclip");
 				selected.data("timecodestart",seconds);
 				updateTime(true);
