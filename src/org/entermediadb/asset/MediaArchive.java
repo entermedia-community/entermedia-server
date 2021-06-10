@@ -2610,6 +2610,12 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 	
+	public Data getInvoiceById(String invoiceId)
+	{
+		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
+		return invoice;
+	}
+	
 	public ArrayList getInvoiceProductList(String invoiceId)
 	{
 		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
