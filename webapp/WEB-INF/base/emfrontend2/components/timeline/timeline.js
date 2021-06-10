@@ -613,6 +613,7 @@ var inittimeline = function()
 	var selectedbox = null;
 	var resizingbox = false;
 	var startwidth = 10;
+	var parentoffset;
 	
 	lQuery(".timecell").livequery(function()
 	{
@@ -626,7 +627,9 @@ var inittimeline = function()
 			clickspot.xPos = xPos;
 			clickspot.yPos = yPos;
 			selectClip(selectedbox);
-			var parentoffset = jQuery("#timelinemetadata").offset();
+			parentoffset = jQuery("#timelinemetadata").offset();
+			parentoffset.width = jQuery("#timelinemetadata").width();
+			parentoffset.height = jQuery("#timelinemetadata").height();
 			//console.log("Parent position ",parentoffset);
 			
 			clickspot.relativeXPos = event.pageX - parentoffset.left;
@@ -690,13 +693,12 @@ var inittimeline = function()
 
 			if( resizingbox )
 			{
-				var width = startwidth + (changeleft * 1);
+				var width = startwidth + changeleft;
 				if( width < 10 )
 				{
 					width = 10;
 				}
-				console.log(changeleft,width);
-				selectedbox.css("width",width);
+				selectedbox.css("width", width);
 				
 				var miliseconds = (width / ratio );
 				//Slow?
@@ -712,11 +714,17 @@ var inittimeline = function()
 				if( left < 0 ) {
 					left = 0;
 				}
+				if (left > parentoffset.width) {
+					left = parentoffset.width;
+				}
 				selectedbox.css({"left" : left + "px"});
 				
 				var top = clickspot.relativeYPos + changetop;
 				if (top<0) {
 					top = 0;
+				}
+				if (top > parentoffset.height) {
+					top = parentoffset.height;
 				}
 				selectedbox.css({"top" : top + "px"});
 				
