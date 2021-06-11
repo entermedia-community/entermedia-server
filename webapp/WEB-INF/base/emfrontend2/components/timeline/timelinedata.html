@@ -21,7 +21,8 @@
 			#end
 			>
 			##<div class="ruler" >
-				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;cursor: move;">
+				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
+					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div>
 					<span class="cliptext">  #esc($!clip.getValue("cliplabel"))</span>
 				</div>

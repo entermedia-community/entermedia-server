@@ -6,6 +6,7 @@ var inittimeline = function()
 	var apphome = siteroot + app.data("apphome");
 
 	var readyforedit = false;
+	console.log("NOt ready for edit")
 	//$("#clipdetails :input").prop('disabled', true);
 
 	var videoclip = $("#videoclip");
@@ -190,6 +191,7 @@ var inittimeline = function()
 	lQuery("#timecodelength\\.value").livequery("keyup", function()
 	{
 		updateSelectedClip();		
+		
 	});
 
 
@@ -199,6 +201,7 @@ var inittimeline = function()
 		{
 			updateSelectedClip();
 		}
+		console.log("fired");
 	});
 			
 	
@@ -473,11 +476,12 @@ var inittimeline = function()
 		}
 
 	}
+	
 
 	updateDetails = function(updatevideo)
 	{
 		readyforedit = false;
-		
+		console.log("Not ready for edit")
 		updateTime(updatevideo);
 		
 		$("a.btn-disabled").removeClass("btn-disabled");
@@ -552,7 +556,7 @@ var inittimeline = function()
 		}
 		//get this from the 
 	});
-	
+	console.log("ready for edit")
 	readyforedit = true;
 		//Load up HTML for details
 //		jQuery.ajax(
@@ -660,19 +664,32 @@ var inittimeline = function()
 	var resizingbox = false;
 	var startwidth = 10;
 	var parentoffset;
+	var moved = false;
 	
-	lQuery(".timecell").livequery(function()
+	
+	lQuery(".timecell").livequery("mousedown", function(event)
 	{
-		var imageposition;
-		$(this).on("mousedown", function(event)
-		{
+		//$(this).on("mousedown", function(event)
+		//lQuery(this).livequery("mousedown", function(event)
+		//{
+			console.log("clicked!");
 			selectedbox = $(this);
+			selectClip(selectedbox);
+			
+			if( !$(event.target).hasClass("grabresize") && !$(event.target).parent().hasClass("grabmove")  && !$(event.target).hasClass("grabmove")) 
+			{
+				
+				return;
+			}
+			
+			moved = false;
+			
 			startwidth = selectedbox.width();
 			var xPos = event.pageX;
 			var yPos = event.pageY;
 			clickspot.xPos = xPos;
 			clickspot.yPos = yPos;
-			selectClip(selectedbox);
+			
 			parentoffset = jQuery("#timelinemetadata").offset();
 			parentoffset.width = jQuery("#timelinemetadata").width();
 			parentoffset.height = jQuery("#timelinemetadata").height();
@@ -687,7 +704,7 @@ var inittimeline = function()
 				clearSelection();
 				//clickspot = event;
 				resizingbox = false;
-				imageposition = selectedbox.position();
+				var imageposition = selectedbox.position();
 				var left = imageposition.left;
 				$("#timelinecursor").css({"left" : left+60 + "px"});
 				return false;
@@ -697,7 +714,7 @@ var inittimeline = function()
 				resizingbox = true;
 			}
 			
-		});
+		//});
 	
 //		selectedbox.on("mouseleave", function(event)
 //		{
@@ -707,16 +724,25 @@ var inittimeline = function()
 //		});
 	});
 	
-	lQuery("#timelinemetadata").livequery(function()
+	lQuery("#timelineeditor").livequery(function()
 	{
 		$(this).on("mouseup", function(event)
 		{
+			if( selectedbox == null )
+			{
+				return;
+			}
 			clickspot = {};
 			selectedbox = null;
 			resizingbox = false;
 			//moving = false;
 			//console.log("Release");
-			updateDetails(true);
+			if (moved)
+			{
+				updateSelectedClip();
+			}
+			moved = false;
+			//updateDetails(true);
 			return false;
 		});
 		
@@ -726,6 +752,9 @@ var inittimeline = function()
 			{
 				return;
 			}
+			
+			moved = true;
+			
 			//Slow?
 			//clearSelection();
 		
@@ -795,6 +824,15 @@ var inittimeline = function()
 	}
 	*/
 
+	
+	
+	lQuery(".grabmove").livequery("click",function(e)
+			{
+				e.preventDefault();
+				
+			}
+		);
+	
 	lQuery(".clickjump").livequery("click",function(e)
 		{
 			e.preventDefault();
