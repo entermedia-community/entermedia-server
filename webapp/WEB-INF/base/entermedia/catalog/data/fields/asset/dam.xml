@@ -443,17 +443,46 @@
     </name> 
   </property>
   
-   <property id="clips" index="true" keyword="true" stored="true" editable="true" datatype="objectarray" viewtype="timecodetable"> 
+   <property id="clips" index="true" keyword="true" stored="true" editable="true" datatype="nested" viewtype="timeline"> 
     <name> 
       <language id="en"><![CDATA[Clips]]></language>  
     </name> 
-    <property id="cliplabel" index="true" keyword="true" stored="true" editable="true" >
-    <name> 
-      <language id="en"><![CDATA[Clip Label]]></language>  
-    </name> 
-    </property>
-    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
-    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
+	    <property id="cliplabel" index="true" keyword="true" stored="true" editable="true" >
+	    <name> 
+	      <language id="en"><![CDATA[Clip Label]]></language>  
+	    </name> 
+	    </property>
+	    <property id="verticaloffset" index="true" type="number" >Vertical Offset PX</property>
+	    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
+	    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
+	    
+	    //Add tags and entities
+	      <property id="keywords" viewtype="tageditor" keyword="true" defaultoperation="andgroup" index="true" stored="true" 
+  		editable="true" indextype="analyzed" analyzer="tags" filter="true"   sortable="true">Tags 
+		    <name> 
+		      <language id="de"><![CDATA[Tags]]></language>  
+		      <language id="en"><![CDATA[Tags]]></language>  
+		      <language id="es"><![CDATA[Etiquetas]]></language>  
+		      <language id="fr"><![CDATA[Tags]]></language> 
+		    </name> 
+		  </property>  
+			<property id="entityperson" index="true" stored="true" datatype="list"  viewtype="entity"   editable="true" keyword="true">
+			  <name>
+			    <language id="en" > <![CDATA[Person]]> </language>
+			  </name>
+			</property>
+			<property id="entitylocation" index="true" stored="true" datatype="list"  viewtype="entity"   editable="true" keyword="true">
+			  <name>
+			    <language id="en" > <![CDATA[Location]]> </language>
+			  </name>
+			</property>
+			<property id="entityevent" index="true" stored="true" datatype="list"  viewtype="entity"   editable="true" keyword="true" >
+			  <name>
+			    <language id="en" > <![CDATA[Event]]> </language>
+			  </name>
+			</property>
+	    
+	    
   </property>
   
 
