@@ -28,17 +28,20 @@
 	//$("#clipdetails :input").prop('disabled', true);
 
 	var videoclip = $("#videoclip");
-	var video = document.getElementById("videoclip");//videoclip[0];
 
 	var timelinecursor = document.getElementById("timelinecursor");
+	var timelineeditor = $(this);
 
+	var video = timelineeditor.find("video")[0];//videoclip[0];
+	
+	$(".vjs-poster").hide();
+	
 	//fix container width
 	var tlbg = $("#timelinebg");
 	var tlv = $("#timelineviewer");
 	//tlv.width(tlbg.width()+100);
 	tlv.css("min-width", tlbg.width()+140 + "px");
 	
-	var timelineeditor = $(this);
 	var parentoffset = 0;
 	
 	function zeroPad(num, numZeros) {

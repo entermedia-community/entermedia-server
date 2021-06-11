@@ -1,0 +1,27 @@
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = "/${applicationid}/components/timeline" )
+
+		<div id="video-container">
+			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+				<section id="cuePlayer">
+					<video id="videoclip" class="video-player video-tl" preload="no" controls="true" webkit-playsinline poster="$thumb">
+						<source src="$source" type="video/mp4" />
+						<source src="$webmsource" type="video/webm" />
+						#if( $tracks && !$tracks.isEmpty() )
+			       #foreach( $track in $tracks)
+				      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
+				      	src="$!siteroot/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+				      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end />
+			      	#end
+			      #end
+						
+					</video>
+			   </section>
+			</div>
+			</div>
+		<div class="videotimelinecreate">
+		$pages.include("$clientroot/details/edit.html", $context)
+		</div>
