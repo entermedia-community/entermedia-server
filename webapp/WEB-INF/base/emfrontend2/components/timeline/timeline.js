@@ -40,7 +40,7 @@
 	var tlbg = $("#timelinebg");
 	var tlv = $("#timelineviewer");
 	//tlv.width(tlbg.width()+100);
-	tlv.css("min-width", tlbg.width()+140 + "px");
+	tlv.css("min-width", tlbg.width()+40 + "px");
 	
 	var parentoffset = 0;
 	
