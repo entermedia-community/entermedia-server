@@ -27,7 +27,7 @@
 			<a class="btn btn-sm btn-secondary previewcrop-btn" 
 				data-oemaxlevel="1"  
 				target="_new"
-				href="$home/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
+				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
 				title="[[File Manager]]"><i class="fas fa-upload"></i></a> 
 		#end
 		</div>
@@ -46,7 +46,7 @@ $context.putPageValue("results", $results)
 	
 ##	#if($caneditasset)
 ##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
-##	   href="$home$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
+##	   href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
 ##
 ##	#end
 
@@ -118,13 +118,13 @@ $context.putPageValue("results", $results)
 						<a class="btn btn-xs btn-secondary previewcrop-btn ajax" 
 							targetdivinner="asset-editor-container"  
 							data-oemaxlevel="1"  
-							href="$siteroot/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+							href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
 							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
 					 #end
 					 ##Share
 					 #if($canembedasset)
 						<a class="btn btn-xs btn-primary emdialog" 
-					    	href="$siteroot/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+					    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
 					    	data-noesc="true"
 					    	data-hidefooter="true"
 					    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>
@@ -145,7 +145,7 @@ $context.putPageValue("results", $results)
 			##make it submit for on file selected
 			<form id="uploadform" 
 						class="ajaxform inline-form" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" 
-						action="$home${apphome}/views/modules/asset/editor/media/customthumb.html">
+						action="$siteroot${apphome}/views/modules/asset/editor/media/customthumb.html">
 			##	<span class="btn btn-sm btn-secondary btn-default btn-file">
 			##	[[Upload]] 
 			##	<input type="file" name="file.0" id="file0-file" onchange='$("#uploadform").submit();'>
