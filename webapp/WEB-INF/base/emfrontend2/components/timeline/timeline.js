@@ -3,7 +3,7 @@
 	//console.log("Timeline init1", $.fn.videoTimeline);
 	if( $.fn.videoTimeline != null )
 	{
-		console.log("Timeline init skip");
+		console.log("Timeline init skip, already defined");
 		
 		return this;
 	}
