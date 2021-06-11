@@ -5,7 +5,7 @@
 }
 
 .time-slider {
-	float:left;
+	width:100%;
     min-height: 52px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -13,6 +13,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    position:absolute;
 }
 
 .time-slider .ruler {
@@ -69,10 +70,10 @@
     top: 52px;
     width: 120px;
     cursor: default;
-    color: #555555;
+    color: #333;
     text-align: center;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 0.9rem;
+     font-size: 0.9rem;
     font-style: normal;
     font-weight: 400;
     position: absolute;
@@ -91,33 +92,38 @@
     height: 50px;
 }
 
+
+.timelinedatacontainer {
+	background-color: #fff;
+	padding:20px 20px 20px 60px;
+	position:relative;
+}
+
 /* ----- timecells  ----- */
-
-
-.time-slider .timecell {
+.timecell {
     min-height: 30px;
-    padding: 10px 0 10px 0;
+    padding: 10px 3px;
     position: absolute;
     text-align: center;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 0.9rem;
     font-style: normal;
     font-weight: 500;
-    background-color: #555;
+    background-color: #444;
     color:#fff;
     
-    z-index: 4;
+    z-index: 6;
     border-radius: 4px;
     
     word-break: break-word;
 }
 
-.time-slider .timecell.current {
+.timecell.current {
     background-color: #ff6d29;
     border-radius: 4px 0 0 4px;
 }
 
-.time-slider .timecell-event {
+.timecell-event {
     top: 7px;
     height: 36px;
     background-color: transparent;
@@ -127,11 +133,11 @@
     border-radius: 4px;
 }
 
-.time-slider .timecell-event.hover{
+.timecell-event.hover{
     border: 1px dashed #204d74;
 }
 
-.time-slider .timecell-event.moving {
+.timecell-event.moving {
     border-color: #ff0716;
 }
 .clipedit .navbar-nav ul li
@@ -146,16 +152,36 @@
     padding: 0 5px;
  }   
 
-.time-slider .timecell-event.current {
+.timecell-event.current {
     border-right: none;
     border-radius: 4px 0 0 4px;
     cursor: default;
 }
 
 
+
+.timecellcaption {
+	 min-height: 30px;
+    padding: 10px 3px;
+    margin-right:10px;
+    text-align: center;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 500;
+    background-color: #444;
+    color:#fff;
+    
+    z-index: 6;
+    border-radius: 4px;
+    
+    word-break: break-word;
+}
+
+
 /* ----- prompts ----- */
 
-.time-slider .prompts {
+.prompts {
     top: 0;
     left: 0;
     position: relative;
@@ -163,7 +189,7 @@
     width: 100%;
 }
 
-.time-slider .prompts .prompt {
+.prompts .prompt {
     width: 86px;
     height: 40px;
     position: absolute;
@@ -187,7 +213,7 @@
     line-break: auto;
 }
 
-.time-slider .prompts .prompt .body {
+.prompts .prompt .body {
     padding: 3px 8px;
     color: #fff;
     text-align: center;
@@ -195,7 +221,7 @@
     border-radius: 4px;
 }
 
-.time-slider .prompts .prompt .triangle-up {
+.prompts .prompt .triangle-up {
     top: -5px;
     left: 39px;
     position: absolute;
@@ -206,7 +232,7 @@
     border-bottom: 5px solid #000;
 }
 
-.time-slider .prompts .prompt .triangle-down {
+.prompts .prompt .triangle-down {
     top: 40px;
     left: 39px;
     position: absolute;

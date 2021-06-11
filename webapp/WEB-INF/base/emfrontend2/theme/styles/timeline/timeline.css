@@ -1,4 +1,5 @@
-.time-slider.selectedclip .timecell
+.selectedclip .timecell,
+.selectedclip .timecellcaption
 {
 	background-color: #ffab7d;
 	font-weight: bold;
@@ -52,14 +53,6 @@
 	background: #666;
 }
 
-#video-container{
-	background: #060606;
-	 border: 0 solid #DDDDDD;
-	 position: relative;
-}
-
-
-
 .productpanel {
 
   position: absolute; 
@@ -78,27 +71,20 @@
 #video {
 position: relative;
 z-index: 1;
-	
 }
 
 .video-holder{
-position: relative;
+	position: relative;
 }
-
- 
- 
- 
- 
- 
- 
- 
  
 #video-container{
-	background: #060606;
-	 border: 0 solid #DDDDDD;
+	background-color: #333;
+	border-top:2px solid #222;
+	padding:10px;
 	 position: relative;
 	 width:100%;
 }
+
 #video-container video { margin: 0 auto;}
 
 #product-dialog{
@@ -361,17 +347,96 @@ padding-top: 1px;
 
 #top-float{
 	margin: 0 auto;
-	
-	/*
-	background: url("../img/slide_bg.png") repeat;
-	*/
 	background-color:rgba(237,237,237,0.25);
 	z-index: 10;
 	padding: 2% 2% 3%;
 	 width: 27%;
-	    
-	 
-
 }
  
 
+.timelineviewer {
+	width:100%;
+	background-color: #fff;
+	position:relative;
+	padding:10px 0 30px 30px;
+	overflow: hidden;
+}
+
+.cctimelineviewer {
+	width:100%;
+	background-color: #fff;
+	position:relative;
+	padding:20px 10px;
+	overflow-x:auto;
+}
+
+.timelinedata {
+	clear: both;
+	min-height: 400px;
+	position:relative;
+}
+
+.timelineviewercontainer {
+	overflow-x:auto;
+	margin-right:20px;
+}
+
+@media (max-width: 1910px) {
+	.timelineviewercontainer {
+		overflow-x:auto;
+	}
+	.timelinedata {
+		min-height: 350px;
+		height: 100%;
+	}
+	
+}
+
+.videotimelinecreate {
+	background-color: #333;
+	padding:5px 0px 0px 0px;
+	margin:0;
+}
+
+.videotimelinecreate h3 {
+	margin:0 0 20px;
+	font-weight: bold;
+	font-size: 0.95rem;
+	text-transform: uppercase;
+}
+
+
+.videoclosedcaptioninput {
+	
+	padding: 20px 15px;
+	
+}
+
+.timelinecontainer {
+	min-height: 60px;
+	position:relative;
+}
+
+.timelinecursor {
+	position:absolute;
+	left:60px; /*starting*/
+	height: 50px;
+	border-left:1px solid #333;
+	width:1px;
+	z-index:5;
+}
+
+#timelineviewerbackground { position:absolute; width:calc(100% - 40px); height: 100%; top:0; z-index:5;}
+
+
+.cctimelinedata {
+	min-height: 280px;
+} 
+
+
+.clipedit {padding:20px 10px;}
+
+
+.iconbarcontainer {
+	margin-bottom:10px;
+}
