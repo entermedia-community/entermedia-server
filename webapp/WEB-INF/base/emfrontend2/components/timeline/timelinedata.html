@@ -25,6 +25,32 @@
 					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div>
 					<span class="cliptext">  #esc($!clip.getValue("cliplabel"))</span>
+					#if( $other.size() > 1)
+					<span class="clipdetails"> 
+					#foreach($fieldid in $other.keySet())	
+						#set( $v = false )
+						#set( $v = $other.get($fieldid) )
+						#if( $v )
+							#if( $fieldid == "verticaloffset")
+								##skip
+							#elseif( $fieldid == "keywords")
+								<span class="clipdetail"><a href="$apphome/views/modules/modulesearch/index.html?description.value=$v&operation=freeform&field=description" target="_blank" class="entity-dialog">$v</a></span>
+							#elseif( $v)
+								#set( $list = $v.split("\|"))
+								#foreach($row in $list)
+									#set( $val = false )
+									#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
+									#if( $val)
+										<span class="clipdetail"><a href="$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid" class="emdialog entity-dialog">$val</a></span>
+									#else
+									##Missing: $fieldid = $v
+									#end
+								#end
+							#end	 
+						#end	
+					#end
+					</span>
+					#end
 				</div>
 			##</div>
 		</div>
