@@ -29,7 +29,7 @@ if( !jQuery.fn.videoTimeline )
 	//console.log("NOt ready for edit")
 	//$("#clipdetails :input").prop('disabled', true);
 
-	var videoclip = $("#videoclip");
+	//var videoclip = $("#videoclip");
 
 	var timelinecursor = document.getElementById("timelinecursor");
 	var timelineeditor = $(this);
@@ -290,7 +290,7 @@ if( !jQuery.fn.videoTimeline )
 		}
 		//get this from the 
 	});
-	console.log("ready for edit")
+	//console.log("ready for edit")
 	readyforedit = true;
 		//Load up HTML for details
 //		jQuery.ajax(
@@ -400,8 +400,8 @@ if( !jQuery.fn.videoTimeline )
 
 	var moved = false;
 	
-	videoclip.on("timeupdate",function(e) {
-		
+	$(video).on("timeupdate", function(e) {
+		console.log("timeupdate"+video.currentTime);
 		updateCursor(video.currentTime);
 		
 		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
