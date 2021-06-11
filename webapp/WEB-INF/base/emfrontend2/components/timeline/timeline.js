@@ -1,6 +1,24 @@
-var inittimeline = function() 
-{
-	console.log("Timeline init");
+(function ( $ ) {
+
+	//console.log("Timeline init1", $.fn.videoTimeline);
+	if( $.fn.videoTimeline != null )
+	{
+		console.log("Timeline init skip");
+		
+		return this;
+	}
+	//debugger;
+	
+    $.fn.videoTimeline = function( options ) {
+ 
+        // This is the easiest way to have default options.
+        var settings = $.extend({
+            // These are the defaults.
+            color: "#556b2f",
+            backgroundColor: "white"
+        }, options );
+ 
+	//console.log("Timeline init");
 	var app = $("#application");
 	var siteroot =  app.data("siteroot");
 	var apphome = siteroot + app.data("apphome");
@@ -20,7 +38,8 @@ var inittimeline = function()
 	//tlv.width(tlbg.width()+100);
 	tlv.css("min-width", tlbg.width()+140 + "px");
 	
-	
+	var timelineeditor = $(this);
+	var parentoffset = 0;
 	
 	function zeroPad(num, numZeros) {
 	    var n = Math.abs(num);
@@ -92,298 +111,8 @@ var inittimeline = function()
 		}
 	}
 
-	videoclip.on("timeupdate",function(e) {
-		
-		updateCursor(video.currentTime);
-		
-		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
-		{ 
-			copyStartTime();	
-			copyLength();
-			updateSelectedClip();
-		}	
-		var link = $("#playclip");
-				
-		if( video.paused )
-		{
-			link.text(link.data("playtext"));
-			link.removeClass("playing");
-		}
-		else if(link.hasClass("playing") )
-		{
-			//If they pressed the playbutton on the details then stop
-			var selected = $(".selectedclip");
-			var start = selected.data("timecodestart");
-			var length = selected.data("timecodelength");
-			//console.log(video.currentTime , start , length );
-			if( video.currentTime > parseFloat(start) + parseFloat(length) )
-			{
-				video.pause();
-				link.text(link.data("playtext"));
-				link.removeClass("playing");
-			}
-			else
-			{
-				link.text(link.data("stoptext"));
-				link.addClass("playing");				
-			}
-		}
-		
-	});
 	
-	lQuery("#timecodestartX\\.value").livequery("click",function(e)
-	{
-		//debugger;
-		var input = $(this);
-		$("input").removeClass("selectedtime");
-		$("input").removeClass("selectedlength");
-		
-		if( !input.val() )
-		{
-			copyStartTime();
-			updateSelectedClip();
-		}	
-		var selected = $(".selectedclip");
-		var start = selected.data("timecodestart");
-		video.currentTime = parseFloat(start);
-		input.addClass("selectedtime");
-			
-	});
-	
-	lQuery("#timecodelengthX\\.value").livequery("click",function(e)
-	{
-		//debugger;
-		var input = $(this);
-		$(input).removeClass("selectedtime");
-		$(input).removeClass("selectedlength");
-		if( !input.val() )
-		{
-			copyLength();
-			updateSelectedClip();
-		}		
-		var selected = $(".selectedclip");
-		var start = selected.data("timecodestart");
-		var length = selected.data("timecodelength");
-		var millis = parseFloat(start) + parseFloat(length);
-		video.currentTime = millis / 1000;
-		
-		input.addClass("selectedlength");
-		
-	});
-	
-	lQuery("#cliplabel\\.value").livequery("keyup", function()
-	{
-		updateSelectedClip();		
-	});
-
-
-	lQuery("#timecodestart\\.value").livequery("keyup", function()
-	{
-		updateSelectedClip();
-		var selected = $(".selectedclip");
-		var decstart = selected.data("timecodestart");
-		decstart = parseFloat(decstart);
-		if (decstart) {
-			updateVideo(decstart/1000);
-		}
-	});
-
-	lQuery("#timecodelength\\.value").livequery("keyup", function()
-	{
-		updateSelectedClip();		
-		
-	});
-
-
-	lQuery("#nestedfields select").livequery("change", function()
-	{
-		if( readyforedit )
-		{
-			updateSelectedClip();
-		}
-		console.log("fired");
-	});
-			
-	
-	lQuery("#removetime").livequery("click",function(e)
-	{
-		e.preventDefault();
-		var selected = $(".selectedclip");
-		if (selected.length){
-			var current = selected.data("timecodestart");
-			selected.data("timecodestart", current-1000);
-			updateTime(true);
-			updateSelectedClip();
-		}
-		else {
-			video.currentTime = video.currentTime - 1;
-		}
-		
-	});
-	lQuery("#addtime").livequery("click",function(e)
-	{
-		e.preventDefault();
-		var selected = $(".selectedclip");
-		if (selected.length){
-			var current = selected.data("timecodestart");
-			selected.data("timecodestart", current+1000);
-			updateTime(true);
-			updateSelectedClip();
-		}
-		else {
-			video.currentTime = video.currentTime + 1;
-		}
-	});
-	lQuery("#removeclip").livequery("click",function(e)
-	{
-		e.preventDefault();
-		$(".selectedclip").remove();
-	});
-	lQuery("#playclip").livequery("click",function(e)
-	{
-		e.preventDefault();
-		
-		var link = $(this);
-		if( link.hasClass("playing") )
-		{
-			video.pause();
-			link.text(link.data("playtext"));
-			link.removeClass("playing");
-		}
-		else
-		{
-			var selected = $(".selectedclip");
-			var start = selected.data("timecodestart");
-			if (typeof start!== 'undefined') {
-				video.currentTime = parseFloat(start);
-				video.play();
-				link.text(link.data("stoptext"));
-				link.addClass("playing");
-			}
-		}
-	});
-	
-	lQuery("#addnewcopy").livequery("click",function(e)
-	{
-		e.preventDefault();
-		addNewClip();
-	});
-	
-	
-	addNewClip = function() {
-		//console.log("Make copy");
-		var template = $("#templateclip").clone();
-		var timestamp = new Date().getUTCMilliseconds();
-		template.attr("id",timestamp);
-		$(".selectedclip").removeClass("selectedclip");
-		template.addClass("selectedclip");
-		$("#timelinemetadata").append(template);
-		template.show();
-		template.css("z-index","6")
-		//This copies the UI into the current selection
-		$("#clipdetails").css('display','block');
-		$("#cliplabel\\.value").val("");
-		var done = parseTimeToText(video.currentTime);
-		$("#timecodestart\\.value").val(done);
-
-		$("#timecodelength\\.value").val("10");
-		
-		//clean fields
-		$('#nestedfields input[name="field"]').each(function() {
-			var fieldid = $(this).val();
-			var select2 = jQuery("#list-" + fieldid);
-			if( select2.length > 0)
-			{
-				select2.val(null).trigger('change');
-			}
-		});
-		
-		updateSelectedClip();	
-		
-		updateDetails(false);
-		
-		$("#cliplabel\\.value").focus();
-	}
-	
-	
-	
-	lQuery("#savetimeline").livequery("click",function(e)
-	{
-		e.preventDefault();
-		//Grab all the dom... Submit it to a method, render
-		
-		if (!$(this).hasClass("btn-disabled")) {
-			var clips = [];
-	    	$("#timelinemetadata  .ts-data-selection").each(function() 
-	    	{
-				var clip = $(this);
-				//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
-	
-				var timecodestart = parseFloat( clip.data("timecodestart") );
-				var timecodelength = parseFloat( clip.data("timecodelength") );
-				var timecell = clip.find(".timecell");
-				var toppx = parseInt( timecell.position().top );
-				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,
-						"cliplabel":clip.data("cliplabel"),
-						"verticaloffset" : toppx		
-				};
-				
-				$('#nestedfields input[name="field"]').each(function() {
-					var fieldid = $(this).val();
-					var v = clip.data(fieldid);
-					if( v )
-					{
-						//v = v.replace(",","|");
-						data[fieldid] = v;
-					}
-				});
-				
-	    		clips.push(data);
-	    	});
-	    	
-			var assetid = $("#timelinemetadata").data("assetid");
-			var link = $("#timelinemetadata").data("savelink");
-			
-			var data = {"assetid": assetid,"clips":clips};
-			
-			var json = JSON.stringify(data);
-			$.ajax({        
-	       		type: "POST",
-	       		url: link,
-	       		data: json,
-	       		contentType: "application/json; charset=utf-8",
-	    		dataType: "json",
-	       		success: function() 
-	       		{
-	            	//reload page?
-	            	//$("#savetimeline").addClass("btn-disabled");
-					//$("#savetimeline").attr("disabled", true);
-					$("#clipdetails").css('display','none');
-					$("#warningarea").css('visibility','hidden');
-	       		}
-	    	}); 
-		}
-	});
-	
-	lQuery("#removetime").livequery("click",function(e)
-	{
-		e.preventDefault();
-		var link = $(this);
-		video.currentTime = video.currentTime - .5;
-		return false;
-	});
-	
-	lQuery("#addtime").livequery("click",function(e)
-	{
-		e.preventDefault();
-		var link = $(this);
-		video.currentTime = video.currentTime + .5;
-		return false;
-	});
-	
-	
-	
-//	lQuery(".ts-data-selection").livequery("click",function(e)
+//	jQuery(".ts-data-selection").on("click",function(e)
 //	{
 //		e.preventDefault();
 //		selectClip(this);
@@ -598,7 +327,7 @@ var inittimeline = function()
 		$("input").removeClass("selectedlength");
 	}
 
-//	lQuery(".grabresize").livequery(function()
+//	jQuery(".grabresize").on(function()
 //	{
 //		var selectedbox = $(this).closest(".timecell");
 //		var slider = $(this).closest(".time-slider");
@@ -663,17 +392,309 @@ var inittimeline = function()
 	var selectedbox = null;
 	var resizingbox = false;
 	var startwidth = 10;
-	var parentoffset;
+
 	var moved = false;
 	
+	videoclip.on("timeupdate",function(e) {
+		
+		updateCursor(video.currentTime);
+		
+		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
+		{ 
+			copyStartTime();	
+			copyLength();
+			updateSelectedClip();
+		}	
+		var link = $("#playclip");
+				
+		if( video.paused )
+		{
+			link.text(link.data("playtext"));
+			link.removeClass("playing");
+		}
+		else if(link.hasClass("playing") )
+		{
+			//If they pressed the playbutton on the details then stop
+			var selected = $(".selectedclip");
+			var start = selected.data("timecodestart");
+			var length = selected.data("timecodelength");
+			//console.log(video.currentTime , start , length );
+			if( video.currentTime > parseFloat(start) + parseFloat(length) )
+			{
+				video.pause();
+				link.text(link.data("playtext"));
+				link.removeClass("playing");
+			}
+			else
+			{
+				link.text(link.data("stoptext"));
+				link.addClass("playing");				
+			}
+		}
+		
+	});
 	
-	lQuery(".timecell").livequery("mousedown", function(event)
+	jQuery("#timecodestartX\\.value").on("click",function(e)
+	{
+		//debugger;
+		var input = $(this);
+		$("input").removeClass("selectedtime");
+		$("input").removeClass("selectedlength");
+		
+		if( !input.val() )
+		{
+			copyStartTime();
+			updateSelectedClip();
+		}	
+		var selected = $(".selectedclip");
+		var start = selected.data("timecodestart");
+		video.currentTime = parseFloat(start);
+		input.addClass("selectedtime");
+			
+	});
+	
+	jQuery("#timecodelengthX\\.value").on("click",function(e)
+	{
+		//debugger;
+		var input = $(this);
+		$(input).removeClass("selectedtime");
+		$(input).removeClass("selectedlength");
+		if( !input.val() )
+		{
+			copyLength();
+			updateSelectedClip();
+		}		
+		var selected = $(".selectedclip");
+		var start = selected.data("timecodestart");
+		var length = selected.data("timecodelength");
+		var millis = parseFloat(start) + parseFloat(length);
+		video.currentTime = millis / 1000;
+		
+		input.addClass("selectedlength");
+		
+	});
+	
+	jQuery("#cliplabel\\.value").on("keyup", function()
+	{
+		updateSelectedClip();		
+	});
+
+
+	jQuery("#timecodestart\\.value").on("keyup", function()
+	{
+		updateSelectedClip();
+		var selected = $(".selectedclip");
+		var decstart = selected.data("timecodestart");
+		decstart = parseFloat(decstart);
+		if (decstart) {
+			updateVideo(decstart/1000);
+		}
+	});
+
+	jQuery("#timecodelength\\.value").on("keyup", function()
+	{
+		updateSelectedClip();		
+		
+	});
+
+
+	jQuery("#nestedfields select").on("change", function()
+	{
+		if( readyforedit )
+		{
+			updateSelectedClip();
+		}
+		console.log("fired");
+	});
+			
+	
+	jQuery("#removetime").on("click",function(e)
+	{
+		e.preventDefault();
+		var selected = $(".selectedclip");
+		if (selected.length){
+			var current = selected.data("timecodestart");
+			selected.data("timecodestart", current-1000);
+			updateTime(true);
+			updateSelectedClip();
+		}
+		else {
+			video.currentTime = video.currentTime - 1;
+		}
+		
+	});
+	jQuery("#addtime").on("click",function(e)
+	{
+		e.preventDefault();
+		var selected = $(".selectedclip");
+		if (selected.length){
+			var current = selected.data("timecodestart");
+			selected.data("timecodestart", current+1000);
+			updateTime(true);
+			updateSelectedClip();
+		}
+		else {
+			video.currentTime = video.currentTime + 1;
+		}
+	});
+	jQuery("#removeclip").on("click",function(e)
+	{
+		e.preventDefault();
+		$(".selectedclip").remove();
+	});
+	jQuery("#playclip").on("click",function(e)
+	{
+		e.preventDefault();
+		
+		var link = $(this);
+		if( link.hasClass("playing") )
+		{
+			video.pause();
+			link.text(link.data("playtext"));
+			link.removeClass("playing");
+		}
+		else
+		{
+			var selected = $(".selectedclip");
+			var start = selected.data("timecodestart");
+			if (typeof start!== 'undefined') {
+				video.currentTime = parseFloat(start);
+				video.play();
+				link.text(link.data("stoptext"));
+				link.addClass("playing");
+			}
+		}
+	});
+	
+	jQuery("#addnewcopy").on("click",function(e)
+	{
+		e.preventDefault();
+		addNewClip();
+	});
+	
+	
+	addNewClip = function() {
+		//console.log("Make copy");
+		var template = $("#templateclip").clone();
+		var timestamp = new Date().getUTCMilliseconds();
+		template.attr("id",timestamp);
+		$(".selectedclip").removeClass("selectedclip");
+		template.addClass("selectedclip");
+		$("#timelinemetadata").append(template);
+		template.show();
+		template.css("z-index","6")
+		//This copies the UI into the current selection
+		$("#clipdetails").css('display','block');
+		$("#cliplabel\\.value").val("");
+		var done = parseTimeToText(video.currentTime);
+		$("#timecodestart\\.value").val(done);
+
+		$("#timecodelength\\.value").val("10");
+		
+		//clean fields
+		$('#nestedfields input[name="field"]').each(function() {
+			var fieldid = $(this).val();
+			var select2 = jQuery("#list-" + fieldid);
+			if( select2.length > 0)
+			{
+				select2.val(null).trigger('change');
+			}
+		});
+		
+		updateSelectedClip();	
+		
+		updateDetails(false);
+		
+		$("#cliplabel\\.value").focus();
+	}
+	
+	
+	
+	jQuery("#savetimeline").on("click",function(e)
+	{
+		e.preventDefault();
+		//Grab all the dom... Submit it to a method, render
+		
+		if (!$(this).hasClass("btn-disabled")) {
+			var clips = [];
+	    	$("#timelinemetadata  .ts-data-selection").each(function() 
+	    	{
+				var clip = $(this);
+				//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
+	
+				var timecodestart = parseFloat( clip.data("timecodestart") );
+				var timecodelength = parseFloat( clip.data("timecodelength") );
+				var timecell = clip.find(".timecell");
+				var toppx = parseInt( timecell.position().top );
+				var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,
+						"cliplabel":clip.data("cliplabel"),
+						"verticaloffset" : toppx		
+				};
+				
+				$('#nestedfields input[name="field"]').each(function() {
+					var fieldid = $(this).val();
+					var v = clip.data(fieldid);
+					if( v )
+					{
+						//v = v.replace(",","|");
+						data[fieldid] = v;
+					}
+				});
+				
+	    		clips.push(data);
+	    	});
+	    	
+			var assetid = $("#timelinemetadata").data("assetid");
+			var link = $("#timelinemetadata").data("savelink");
+			
+			var data = {"assetid": assetid,"clips":clips};
+			
+			var json = JSON.stringify(data);
+			$.ajax({        
+	       		type: "POST",
+	       		url: link,
+	       		data: json,
+	       		contentType: "application/json; charset=utf-8",
+	    		dataType: "json",
+	       		success: function() 
+	       		{
+	            	//reload page?
+	            	//$("#savetimeline").addClass("btn-disabled");
+					//$("#savetimeline").attr("disabled", true);
+					$("#clipdetails").css('display','none');
+					$("#warningarea").css('visibility','hidden');
+	       		}
+	    	}); 
+		}
+	});
+	
+	jQuery("#removetime").on("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		video.currentTime = video.currentTime - .5;
+		return false;
+	});
+	
+	jQuery("#addtime").on("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		video.currentTime = video.currentTime + .5;
+		return false;
+	});
+	
+	
+	jQuery(".timecell").on("mousedown", function(event)
 	{
 		//$(this).on("mousedown", function(event)
-		//lQuery(this).livequery("mousedown", function(event)
+		//jQuery(this).on("mousedown", function(event)
 		//{
-			console.log("clicked!");
+			//console.log("clicked!",this,timelineeditor);
+			
 			selectedbox = $(this);
+			//event.preventDefault();
+			//event.stopPropagation();
 			selectClip(selectedbox);
 			
 			if( !$(event.target).hasClass("grabresize") && !$(event.target).parent().hasClass("grabmove")  && !$(event.target).hasClass("grabmove")) 
@@ -724,9 +745,7 @@ var inittimeline = function()
 //		});
 	});
 	
-	lQuery("#timelineeditor").livequery(function()
-	{
-		$(this).on("mouseup", function(event)
+		timelineeditor.on("mouseup", function(event)
 		{
 			if( selectedbox == null )
 			{
@@ -746,7 +765,7 @@ var inittimeline = function()
 			return false;
 		});
 		
-		$(this).on("mousemove", function(event)
+		timelineeditor.on("mousemove", function(event)
 		{
 			if( selectedbox == null )
 			{
@@ -809,8 +828,6 @@ var inittimeline = function()
 				updateTime(true);
 			}
 		});
-		
-	});
 
 				/*
 	var jump = $("#timelineviewer").data("timecodejump");
@@ -826,14 +843,14 @@ var inittimeline = function()
 
 	
 	
-	lQuery(".grabmove").livequery("click",function(e)
+	jQuery(".grabmove").on("click",function(e)
 			{
 				e.preventDefault();
 				
 			}
 		);
 	
-	lQuery(".clickjump").livequery("click",function(e)
+	jQuery(".clickjump").on("click",function(e)
 		{
 			e.preventDefault();
 			var jump = $(this).data("starttime");
@@ -843,7 +860,7 @@ var inittimeline = function()
 		}
 	);
 	
-	lQuery("#timelineviewerbackground").livequery("click", function(event)
+	jQuery("#timelineviewerbackground").on("click", function(event)
 		{
 			event.preventDefault();
 			$(".selectedclip").removeClass("selectedclip");
@@ -863,20 +880,17 @@ var inittimeline = function()
 		}
 	);
 	
-	
+
+	return this;
+
 };
 
-
+}( jQuery ));
 
 
 jQuery(document).ready(function()
 {
-	inittimeline();
-	
-	$(window).on('tabready',function()
-	{
-		inittimeline();
-	});
+	jQuery("#timelineeditor").videoTimeline();
 });
 
 
