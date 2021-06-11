@@ -2,11 +2,10 @@
 #set( $clientroot = "/${applicationid}/components/timeline" )
 
 
-		<div id="video-container" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id" style="height: 350px;">
+		<div id="video-container" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id" >
 				##<section style="height: 350px;">
 					$pages.include("$apphome/components/results/player/html5/index.html",$context)
 				##</section>	
-		##	</div>
 		</div>	
 		<div class="videotimelinecreate">
 		$pages.include("$clientroot/details/edit.html", $context)
