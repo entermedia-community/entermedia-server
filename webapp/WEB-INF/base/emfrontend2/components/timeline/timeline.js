@@ -1,3 +1,5 @@
+if( !jQuery.fn.videoTimeline )
+{
 (function ( $ ) {
 
 	//console.log("Timeline init1", $.fn.videoTimeline);
@@ -18,13 +20,13 @@
             backgroundColor: "white"
         }, options );
  
-	//console.log("Timeline init");
+	console.log("Timeline init");
 	var app = $("#application");
 	var siteroot =  app.data("siteroot");
 	var apphome = siteroot + app.data("apphome");
 
 	var readyforedit = false;
-	console.log("NOt ready for edit")
+	//console.log("NOt ready for edit")
 	//$("#clipdetails :input").prop('disabled', true);
 
 	var videoclip = $("#videoclip");
@@ -692,7 +694,7 @@
 	
 	//We need to reinit but make sure we dont double register
 	jQuery(".timecell").off("mousedown");
-	jQuery(".timecell").on("mousedown", function(event)
+	lQuery(".timecell").livequery("mousedown", function(event)
 	{
 		//$(this).on("mousedown", function(event)
 		//jQuery(this).on("mousedown", function(event)
@@ -894,10 +896,11 @@
 
 }( jQuery ));
 
+} //Dont reload
 
 jQuery(document).ready(function()
 {
-	jQuery("#timelineeditor").videoTimeline();
+	$("#timelineeditor").videoTimeline();
 });
 
 
