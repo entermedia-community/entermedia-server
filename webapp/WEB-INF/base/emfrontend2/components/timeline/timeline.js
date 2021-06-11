@@ -1,13 +1,13 @@
 (function ( $ ) {
 
 	//console.log("Timeline init1", $.fn.videoTimeline);
-	if( $.fn.videoTimeline != null )
-	{
-		console.log("Timeline init skip, already defined");
-		
-		return this;
-	}
-	//debugger;
+//	if( $.fn.videoTimeline != null )
+//	{
+//		console.log("Timeline init skip, already defined");
+//		
+//		return this;
+//	}
+//debugger;
 	
     $.fn.videoTimeline = function( options ) {
  
@@ -501,6 +501,7 @@
 	});
 
 
+	//jQuery("#nestedfields select").off("change" )
 	jQuery("#nestedfields select").on("change", function()
 	{
 		if( readyforedit )
@@ -671,6 +672,7 @@
 		}
 	});
 	
+	jQuery("#removetime").off("click");
 	jQuery("#removetime").on("click",function(e)
 	{
 		e.preventDefault();
@@ -679,6 +681,7 @@
 		return false;
 	});
 	
+	jQuery("#addtime").off("click");
 	jQuery("#addtime").on("click",function(e)
 	{
 		e.preventDefault();
@@ -687,7 +690,8 @@
 		return false;
 	});
 	
-	
+	//We need to reinit but make sure we dont double register
+	jQuery(".timecell").off("mousedown");
 	jQuery(".timecell").on("mousedown", function(event)
 	{
 		//$(this).on("mousedown", function(event)
