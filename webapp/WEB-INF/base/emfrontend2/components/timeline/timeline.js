@@ -215,7 +215,6 @@ if( !jQuery.fn.videoTimeline )
 	updateDetails = function(updatevideo)
 	{
 		readyforedit = false;
-		console.log("Not ready for edit")
 		updateTime(updatevideo);
 		
 		$("a.btn-disabled").removeClass("btn-disabled");
@@ -401,7 +400,6 @@ if( !jQuery.fn.videoTimeline )
 	var moved = false;
 	
 	$(video).on("timeupdate", function(e) {
-		console.log("timeupdate"+video.currentTime);
 		updateCursor(video.currentTime);
 		
 		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
@@ -510,7 +508,6 @@ if( !jQuery.fn.videoTimeline )
 		{
 			updateSelectedClip();
 		}
-		console.log("fired");
 	});
 			
 	
@@ -580,7 +577,6 @@ if( !jQuery.fn.videoTimeline )
 	
 	
 	addNewClip = function() {
-		//console.log("Make copy");
 		var template = $("#templateclip").clone();
 		var timestamp = new Date().getUTCMilliseconds();
 		template.attr("id",timestamp);
