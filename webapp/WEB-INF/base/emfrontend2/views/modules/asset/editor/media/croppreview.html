@@ -109,13 +109,13 @@
 
 <a
 class="ajax"
-targetdivinner="asset-editor-container"  
+data-targetdivinner="asset-editor-container"  
 data-oemaxlevel="1"  
-href="$home$apphome/views/modules/asset/editor/media/index.html?assetid=${asset.id}"
+href="$siteroot$apphome/views/modules/asset/editor/media/index.html?assetid=${asset.id}"
 title="[[Back to Media Files]]"
 ><i class="fas fa-angle-double-left"></i>  [[Media Files]]</a> | <span style="color:#bbb;">[[Croping]]: $preset.name</span>
 
-								<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Save]]"  />
+		<input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Save]]"  />
 
 
 </div>	
@@ -126,7 +126,7 @@ title="[[Back to Media Files]]"
 			class="coords ajaxform" 
 			method="post" 
 			data-targetdiv="asset-editor-container" 
-			action="$home$apphome/views/modules/asset/editor/media/cropsubmit.html">
+			action="$siteroot$apphome/views/modules/asset/editor/media/cropsubmit.html">
 
 				<table>
 					<tr>

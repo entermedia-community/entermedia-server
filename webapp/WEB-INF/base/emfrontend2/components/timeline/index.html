@@ -10,8 +10,19 @@
 		
 		<div class="row no-gutters">
 			<div class="col-9">
+			
+			
 				#set( $timecodejump = $page.get("timecodejump"))
 				<div class="timelineviewercontainer">
+					<div class="timelinevieweractions">
+							<a id="addnewcopy" href="#" class="btn btn-sm btn-secondary btn-addnewcopy"><i class="fas fa-plus"></i> [[Add Tag]]</a>
+							<div class="timelineviewerarrows">
+									<a id="removetime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-left"></i></a>
+									<a id="addtime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-right"></i></a>
+							</div>
+					</div>
+				<div class="timelineviewerinside">
+					
 					<div id="timelineviewer" 
 							class="timelineviewer" 
 							style=""
@@ -20,12 +31,9 @@
 							data-timecodejump="$!timecodejump" 
 							data-mediadb="$mediaarchive.getMediaDbId()" 
 							>
-						<div style="position:absolute; right:5px; top:55px; width:80px; z-index: 6">
-							<a id="removetime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-left"></i></a>
-							<a id="addtime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-right"></i></a>
-						</div>
+						
 						<div class="iconbarcontainer">
-							<div class="iconbar" style="width:100%; margin-top:30px; height: 66px; position:relative;">
+							<div class="iconbar" style="width:100%; margin-top:10px; height: 66px; position:relative;">
 								#set( $space = 15*8)	
 								#set( $added = 60)
 								#foreach($block in $timeline.getTicks())
@@ -50,7 +58,7 @@
 						<div id="timelineviewerbackground"></div>
 					</div>
 				</div>
-				
+				</div>
 				
 				<div style="visibility:hidden; text-align: center; padding:10px 30px;" id="warningarea">
 				
