@@ -260,7 +260,7 @@
 			if( values )
 			{
 				select2.val(); //Split? |
-				var options = values.split("|");
+				var options = values.split("|"); //Need \\| ?
 				for(var i=0; i< options.length; i++){
 					if (select2.find("option[value='" + options[i] + "']").length) {
 						
