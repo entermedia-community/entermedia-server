@@ -591,21 +591,27 @@ if( !jQuery.fn.videoTimeline )
 		var done = parseTimeToText(video.currentTime);
 		$("#timecodestart\\.value").val(done);
 
-		$("#timecodelength\\.value").val("10");
+		var total = parseInt(timelineeditor.data("videolength"));
 		
+		$("#timecodelength\\.value").val(total/1000/10);
+
+		//selected = $(".selectedclip");
+
 		//clean fields
 		$('#nestedfields input[name="field"]').each(function() {
 			var fieldid = $(this).val();
 			var select2 = jQuery("#list-" + fieldid);
 			if( select2.length > 0)
 			{
-				select2.val(null).trigger('change');
+				//select2.val(null).trigger('change');
+				select2.val([]).trigger('change');
+
 			}
 		});
+		//updateDetails(false);  //This clears
 		
 		updateSelectedClip();	
 		
-		updateDetails(false);
 		
 		$("#cliplabel\\.value").focus();
 	}
