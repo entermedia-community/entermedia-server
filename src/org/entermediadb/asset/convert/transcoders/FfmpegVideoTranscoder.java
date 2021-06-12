@@ -64,6 +64,9 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		ArrayList<String> comm = new ArrayList<String>();
 		comm.add("-abort_on");
 		comm.add("empty_output");
+		comm.add("-hide_banner");
+		comm.add("-loglevel");
+		comm.add("error");
 		comm.add("-i");
 		comm.add(inputpage.getAbsolutePath());
 		comm.add("-y");
