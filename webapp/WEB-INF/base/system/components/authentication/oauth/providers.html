@@ -1,11 +1,2 @@
-#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
-
-#foreach($p in $providers) 
-		<a href="$apphome/authentication/oauth/oauth.html?provider=$p.id">
-		#if($pages.doesExist("$apphome/authentication/oauth/${p.id}.png"))
-			<img src="$apphome/authentication/oauth/${p.id}.png"/>#else
-			[[Login with]] $p.name
-		#end</a><br/>
-#end
-
-
+<div class="oauthproviderbtn" style="text-align:center; padding-top:20px;"><a href="$apphome/authentication/oauth/oauth.html?provider=google"><img src="$apphome/authentication/oauth/google.png" /> </a></div>
+<div class="oauthproviderbtn" style="text-align:center; padding-top:20px;"><a href="$applink/authentication/oauth/oauth.html?provider=facebook"><img src="$apphome/authentication/oauth/facebook.png" /> </a></div>
