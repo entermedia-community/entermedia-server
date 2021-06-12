@@ -75,7 +75,7 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 		#if( $next )
 			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
 			#if( $preloadtype == "image")
-				#set($tpath = $mediaarchive.asLinkToPreview($next,  $libarycol.id, "image1024x768.jpg"))
+				#set($tpath = $mediaarchive.asLinkToPreview($next,  $libarycol.id, "image1900x1080.jpg"))
 				<div style="display:none;"><img src="$tpath" /></div>
 			#end
 		#end

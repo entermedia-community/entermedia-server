@@ -6,6 +6,6 @@
 	</permission>	
 	<property name="sourcepathhasfilename">true</property>
 	
-	<property name="exportname">image1024x768.jpg</property>
+	<property name="exportname">image1500x1500.jpg</property>
 	
 </page>
