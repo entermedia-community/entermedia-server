@@ -90,8 +90,11 @@ public class PublishedGenerator extends FileGenerator
 		
 		String[] paths = path.split("/");
 		String guid = paths[0];
-		String presetid = paths[1];
 		
+		String presetid = "0";
+		if (paths.length > 1) {
+		  presetid = paths[1];
+		}
 		Data dist = getSearcherManager().getCachedData(catalogid, "distribution", guid);
 		if (dist == null) {
 			throw new ContentNotAvailableException("Distribution Not Available", path);
@@ -107,8 +110,18 @@ public class PublishedGenerator extends FileGenerator
 
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
 		
-		inReq.setRequestParameter("sourcepath", asset.getSourcePath());
-		
+		inReq.setRequestParameter("sourcepath", asset.getSourcePath());		
+		if(presetid.equals("0")) {
+			if ((Boolean)dist.getValue("alloworiginal") == true) {
+				String genpath = archive.asLinkToOriginal(asset);			
+				Page gen = getPageManager().getPage(genpath);
+				inReq.getResponse().setContentType(gen.getMimeType());
+				getConvertGenerator().generate(inReq, gen, inOut);
+				return;
+			} else { 
+				throw new ContentNotAvailableException("Distribution Orignal Not Available", path);
+			}
+		}
 		if( presetid.contains("videohls"))
 		{
 			if(inPage.getName().endsWith("videohls") )
@@ -170,7 +183,9 @@ public class PublishedGenerator extends FileGenerator
 			super.generate(copy, output, inOut);
 			// archive.logDownload(sourcePath, "success", inReq.getUser());
 		}
-	}	
+	}
+	
+	
 
 }
 

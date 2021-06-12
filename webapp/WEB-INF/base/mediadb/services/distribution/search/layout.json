@@ -27,6 +27,12 @@
 			  	#set($presets = $mediaarchive.asListOfPreviewLinks($asset))
 			    "id":"$hit.id",
 			    "assetId": "$hit.assetid",
+			    "allowOrigin": "$hit.getValue("alloworiginal")",
+			    #if($hit.getValue("alloworiginal") == "true")
+			    #set($folderpath = $asset.getValue("foldersourcepath"))
+			  	#set($filename = $asset.getValue("name"))
+			    "originalUrl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$hit.id",
+			    #end
 			    "presets": [
 			    #foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
 				  {	

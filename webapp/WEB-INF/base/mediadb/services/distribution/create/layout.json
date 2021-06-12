@@ -19,20 +19,23 @@
  	#if($distributionid)
 	  ,
 	  #set($assetid = $data.assetid)
-	  "assetid":"$assetid",
-	  ##"data":#json($data $searcher.getPropertyDetails()),
-	  
+	  "assetid":"$assetid",	  
 	  #set($asset = $mediaarchive.getAsset($assetid) )
 	  #set($presets = $mediaarchive.asListOfPreviewLinks($asset))
+	  #if($data.getValue("alloworiginal") == "true")
+		#set($folderpath = $asset.getValue("foldersourcepath"))
+		#set($filename = $asset.getValue("name"))
+		"originalUrl": "$cdnprefix$home/$mediadbappid/services/distribution/published/$data.id",
+		#end
 	  "presets": [
 	    #foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
 		  {	
 			"name":#jesc($preset.name),	
 			"id":#jesc($preset.id),	
 			#if( $preset.getId() == "0")
-			   "url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid"
+			"url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid"
 			#else
-				"url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/$preset.id"
+			"url": "$cdnprefix$home/$mediadbappid/services/distribution/published/$distributionid/$preset.id"
 			#end	
 		  }
 	    #end
