@@ -2619,14 +2619,28 @@ public class MediaArchive implements CatalogEnabled
 	public ArrayList getInvoiceProductList(String invoiceId)
 	{
 		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
+		if (invoice == null) {
+			return null;
+		}
 		ArrayList products = (ArrayList)invoice.getValue("productlist");
 		return products;
 	}
 	
 	public String getProductName (String productId) {
 		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
+		if (product == null) {
+			return null;
+		}
 		String name = (String) product.getValue("name");
 		return name;
+	}
+	
+	public Data getProductById (String productId) {
+		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
+		if (product == null) {
+			return null;
+		}
+		return product;
 	}
 
 }
