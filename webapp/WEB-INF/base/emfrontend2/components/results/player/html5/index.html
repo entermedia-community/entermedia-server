@@ -27,7 +27,7 @@
 		> 
 			#if( $streams )
 					#foreach( $size in $streams)
-					<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
+					<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" res="$size" />
 					#end				
 				#else	
 					<source type="video/mp4" src="$sourcemp4"  label="$!hit.width">
