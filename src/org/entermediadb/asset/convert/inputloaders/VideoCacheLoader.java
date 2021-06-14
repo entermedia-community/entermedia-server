@@ -34,18 +34,22 @@ public class VideoCacheLoader implements InputLoader
 				{
 					if (inStructions.getTimeOffset() == null)
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500.jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080.jpg");
 						if(! input.exists() )
 						{
-							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768.jpg");
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500.jpg"); //Remove this
+						}
+						if(! input.exists() )
+						{
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768.jpg"); //Old!
 						}
 					}
 					else
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500offset" + inStructions.getTimeOffset() + ".jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080offset" + inStructions.getTimeOffset() + ".jpg");
 						if(! input.exists() )
 						{
-							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768offset" + inStructions.getTimeOffset() + ".jpg");
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080offset" + inStructions.getTimeOffset() + ".jpg");
 						}
 					}
 					if (!input.exists())
@@ -74,6 +78,10 @@ public class VideoCacheLoader implements InputLoader
 			//TODO: Save the fact that we used a cached file
 			//try HLS?
 			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.m3u8/1080/video.m3u8");
+			if (!input.exists() || input.getLength() == 0 )
+			{
+				input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.m3u8/720/video.m3u8");
+			}
 			if (input == null || input.getLength() < 2 )
 			{
 				return null;

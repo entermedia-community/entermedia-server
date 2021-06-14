@@ -110,17 +110,17 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		
 		List<String> com = new ArrayList<String>();
 
-		if( jumpoff > 2 )
+		com.add("-ss");  //By adding an SS early on its way faster
+		int seconds = (int)jumpoff;	
+		int framewindow = 1;
+		if( seconds > framewindow)
 		{
-			com.add("-ss");
-			int seconds = (int)jumpoff;			
-			com.add(String.valueOf( seconds - 2) ); //This is the whole number minus 2
-			
-			//https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
-			String jumpoffs = MathUtils.toString(jumpoff  - (double)seconds + 2d,3);  //Should be 2.1232
-			offset = jumpoffs; //Now we add the 2 second back on plus the millis
+			com.add(String.valueOf( seconds - framewindow) ); //This is the whole number minus 1
 		}
-
+		else
+		{
+			com.add(String.valueOf( seconds)); //This is the whole number 		
+		}
 		//com.add("-deinterlace");
 		com.add("-abort_on");
 		com.add("empty_output");
@@ -133,9 +133,13 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		com.add("-f");
 		com.add("mjpeg");
 
-		com.add("-ss");
-		com.add(offset);
-
+		if( seconds > framewindow)
+		{
+			com.add("-ss");
+			//https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
+			String jumpoffs = MathUtils.toString(jumpoff  - (double)seconds + (double)framewindow,3);  //Should be 2.1232
+			com.add(jumpoffs);
+		}
 
 		// -s 640x480
 		// com.add("-s");

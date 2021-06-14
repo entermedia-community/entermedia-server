@@ -64,10 +64,11 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		ArrayList<String> comm = new ArrayList<String>();
 		comm.add("-abort_on");
 		comm.add("empty_output");
+		comm.add("-hide_banner");
+		comm.add("-loglevel");
+		comm.add("error");
 		comm.add("-i");
 		comm.add(inputpage.getAbsolutePath());
-		comm.add("-preset");
-		comm.add("ultrafast");
 		comm.add("-y");
 
 		StringBuffer path = new StringBuffer();
@@ -120,7 +121,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		
 		 :force_original_aspect_ratio=decrease removed because sometimes it gives odd numbers. which isn't compatible with m3u8
 		*/		
-		String command = "-preview ultrafast -vf scale=w=-2:h=" + inSize;
+		String command = "-preset veryfast -vf scale=w=-2:h=" + inSize;
+		//String command = "-vf scale=w=-2:h=" + inSize;
 		//command = command + " -c:a aac -ar 48000 -c:v h264 -profile:v baseline -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";
 		//removing (-profile:v baseline) to let ffmpeg select one profile
 		command = command + " -c:a aac -ar 48000 -c:v h264 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -crf 28 -b:a 96k";

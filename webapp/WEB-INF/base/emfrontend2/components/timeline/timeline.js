@@ -217,8 +217,6 @@ if( !jQuery.fn.videoTimeline )
 		readyforedit = false;
 		updateTime(updatevideo);
 		
-		$("a.btn-disabled").removeClass("btn-disabled");
-		$("#savetimeline").removeAttr("disabled");
 		
 		var selected = $(".selectedclip");
 
@@ -591,21 +589,27 @@ if( !jQuery.fn.videoTimeline )
 		var done = parseTimeToText(video.currentTime);
 		$("#timecodestart\\.value").val(done);
 
-		$("#timecodelength\\.value").val("10");
+		var total = parseInt(timelineeditor.data("videolength"));
 		
+		$("#timecodelength\\.value").val(total/1000/10);
+
+		//selected = $(".selectedclip");
+
 		//clean fields
 		$('#nestedfields input[name="field"]').each(function() {
 			var fieldid = $(this).val();
 			var select2 = jQuery("#list-" + fieldid);
 			if( select2.length > 0)
 			{
-				select2.val(null).trigger('change');
+				//select2.val(null).trigger('change');
+				select2.val([]).trigger('change');
+
 			}
 		});
+		//updateDetails(false);  //This clears
 		
 		updateSelectedClip();	
 		
-		updateDetails(false);
 		
 		$("#cliplabel\\.value").focus();
 	}
@@ -617,7 +621,8 @@ if( !jQuery.fn.videoTimeline )
 		e.preventDefault();
 		//Grab all the dom... Submit it to a method, render
 		
-		if (!$(this).hasClass("btn-disabled")) {
+		$("#clipdetails").css('display','none');
+		
 			var clips = [];
 	    	$("#timelinemetadata  .ts-data-selection").each(function() 
 	    	{
@@ -663,11 +668,9 @@ if( !jQuery.fn.videoTimeline )
 	            	//reload page?
 	            	//$("#savetimeline").addClass("btn-disabled");
 					//$("#savetimeline").attr("disabled", true);
-					$("#clipdetails").css('display','none');
 					$("#warningarea").css('visibility','hidden');
 	       		}
 	    	}); 
-		}
 	});
 	
 	jQuery("#removetime").off("click");

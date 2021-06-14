@@ -1,4 +1,4 @@
-<div id="timelineeditor" class="actiontabtimeline">
+<div id="timelineeditor" class="actiontabtimeline" data-videolength="$timeline.getLength()">
 	#set( $clientroot = "/${applicationid}/components/timeline" )
 	#set( $type = $mediaarchive.getMediaPlayerType($asset))
 	#if($type == "video")
@@ -68,7 +68,7 @@
 				
 				  <strong>[[Note]]:</strong> [[unsaved changes]]&nbsp;&nbsp;
 				  
-				  <a id="savetimeline" href="#" class="btn btn-sm btn-dark btn-disabled" style="" disabled>[[Save Timeline]]</a>
+				  <a id="savetimeline" href="#" class="btn btn-sm btn-dark" style="" >[[Save Timeline]]</a>
 				</div>
 				</div>
 			</div>
