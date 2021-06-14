@@ -10,7 +10,7 @@
 	    </li>
 	<li id="editlayout" class="singlecontainer nohover" style="height: auto; padding-bottom:10px;">
 
-		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/modules/asset/assettypes/views/modifytype.html">
+		<form id="assettypeeditform" name="assettypeeditform" action="$siteroot$apphome/views/settings/modules/asset/assettypes/views/modifytype.html">
 			<input type="hidden" name="assettype" value="$type.id"/>
 			<input type="hidden" name="id" value="$type.id"/>
 			<input type="hidden" name="searchtype" value="assettype"/>
@@ -22,10 +22,11 @@
 			$context.putPageValue("details", $details)
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
-			<a class="btn btn-sm btn-primary" style="margin: 10px;" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
-#if( $type )
-<a class="btn btn-sm btn-danger red" onclick="return confirm('[[Are you sure you want to delete]] $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
-#end			
+			<a class="btn btn-sm btn-primary submitform" style="margin: 10px;" href="#">[[Save Changes]]</a>
+			#if( $type )
+			<a class="btn btn-sm btn-danger red" confirm="[[Are you sure you want to delete]] $type?" 
+			href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
+			#end			
 		</form>
 	</li>	
 	</ul>

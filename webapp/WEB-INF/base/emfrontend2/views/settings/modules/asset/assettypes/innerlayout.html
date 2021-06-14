@@ -16,14 +16,14 @@
 			
 				#foreach($item in $searcher.fieldSearch("id","*","textUp"))
 				 <li #if($current == $item.id) class="current" #end >
-				 	<a class="sortableitem" href="$home$apphome/views/settings/modules/asset/assettypes/views/index.html?assettype=$item.id">$item.getName($context)</a>
+				 	<a class="sortableitem" href="$siteroot$apphome/views/settings/modules/asset/assettypes/views/index.html?assettype=$item.id">$item.getName($context)</a>
 				 	</li>
 				#end
 			</ul>
 			
 			
 			<div  class="ui-widget-actions">
-			<a class="btn btn-small btn-primary" href='$home$apphome/views/settings/modules/asset/assettypes/edit/addnew.html'>[[Add New]]</a>
+			<a class="btn btn-small btn-primary" href='$siteroot$apphome/views/settings/modules/asset/assettypes/edit/addnew.html'>[[Add New]]</a>
 			</div>		
 		</div>
 	</div>
