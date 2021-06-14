@@ -62,7 +62,8 @@ public void init()
 		log.info("found ${finder.badfiles.size()} bad files");
 		
 		
-		context.putPageValue("finder",finder);		
+		context.putPageValue("finder",finder);
+		context.putPageValue("folderid",from);
 		Page root = archive.getPageManager().getPage(assetRoot);
 		int edited = 0;
 //		for(String sourcepath: finder.badfiles)

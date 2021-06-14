@@ -15,7 +15,8 @@
 		#if($tabs)
 			#foreach($screen in $tabs )
 			<li #if( $subtab == "$screen.id" ) class="current" #end>
-				<a  href="$home$apphome${screen.path}">#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
+				<a  href="$siteroot$apphome${screen.path}">
+					#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
 				</a>
 			</li>
 			#end
