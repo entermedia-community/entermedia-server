@@ -1,46 +1,43 @@
-<div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header"><span class="widget-header-title">[[Parameters]]</span></div>
-<div  class="ui-widget-content">
+<div class="ui-widget">
+<h3>[[Transcoder Paremeters]]</h3>
+
 
 <div id="editlayout">
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-
-#if( !$view )				
-	#set( $view = "${searcher.searchType}/edit" )
-#end
-$context.putPageValue("view", $view)
-
-<form id="dataeditor-settings" name="dataeditor-settings" method="post" action="$home$content.searchhome/edit/save.html" >
-	<input name="save" type="hidden" value="true" />
-	<input name="id" type="hidden" value="$!data.id" />
-	<input name="categoryid" type="hidden" value="$!categoryid" />
-	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.searchType" />
-	<input name="origURL"  type="hidden" value="$!origURL" />
-	$pages.include("$apphome/components/xml/detaileditor.html", $context)
-
-<div class="ui-widget-actions">
-<a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
-<a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
-<a class="btn btn-sm btn-danger red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>[[Delete]]</a>
-</div>
-<div id="messagearea">$!message</div>
-</form>
-
-
-#if( $savedok && $origURL )
-	<a href="$origURL">[[Go Back]]</a>	
-#end
-
-
-</div>
+	#set( $origURL = $context.getRequestParameter("origURL" ) )
+	
+	#if( !$view )				
+		#set( $view = "${searcher.searchType}/edit" )
+	#end
+	$context.putPageValue("view", $view)
+	
+	<form id="dataeditor-settings" name="dataeditor-settings" method="post" action="$siteroot$content.searchhome/edit/save.html" >
+		<input name="save" type="hidden" value="true" />
+		<input name="id" type="hidden" value="$!data.id" />
+		<input name="categoryid" type="hidden" value="$!categoryid" />
+		<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+		<input name="searchtype" type="hidden" value="$searcher.searchType" />
+		<input name="origURL"  type="hidden" value="$!origURL" />
+		$pages.include("$apphome/components/xml/detaileditor.html", $context)
+	
+		<div class="ui-widget-actions">
+		<a class="btn btn-sm btn-primary submitform" href="#"><span>[[Save]]</span></a>
+		<a class="btn btn-sm btn-secondary"  href='$siteroot$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+		<a class="btn btn-sm btn-danger red" href='$siteroot$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>[[Delete]]</a>
+		</div>
+		<div id="messagearea">$!message</div>
+	</form>
+	
+	
+	#if( $savedok && $origURL )
+		<a href="$origURL">[[Go Back]]</a>	
+	#end
 
 </div>
 </div>
 
 
 #if($data && $data.id)
-<h2>[[Preset Parameters]]</h2>
+<h3>[[Preset Parameters]]</h3>
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
 #set($viewdetailspath = "presetparameter/edit")
