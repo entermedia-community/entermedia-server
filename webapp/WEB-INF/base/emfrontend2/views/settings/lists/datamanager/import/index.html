@@ -4,19 +4,18 @@
 
 
 <div style="margin: 0 20px;">
-	<form name="excelimport" method="post" enctype="multipart/form-data" action="$home$dataroot/import/importfinish.html">
+	<form name="excelimport" method="post" enctype="multipart/form-data" action="$siteroot$dataroot/import/importfinish.html">
 
-<h3>[[Choose Input File]]</h3>
+	<h3>[[Choose Input File]]</h3>
+	
 	<input type="file" size="25" name="file">
-		<input type="hidden" name="searchtype" value="$context.getRequestParameter('searchtype')"/>
+	<input type="hidden" name="searchtype" value="$context.getRequestParameter('searchtype')"/>
 
-$pages.include("$dataroot/import/scriptlist.html")
+	$pages.include("$dataroot/import/scriptlist.html")
 
-<div id="submit" style="display: none;">
-<div class="hr" style="margin: 10px 0;"></div>
-
-		<input class="btn btn-primary" type="submit" value="[[Import]]" />
-</div>
+	<div id="submit" style="display: none; padding-bottom: 20px;">
+			<input class="btn btn-primary" type="submit" value="[[Import]]" />
+	</div>
 	</form>
 </div>
 
