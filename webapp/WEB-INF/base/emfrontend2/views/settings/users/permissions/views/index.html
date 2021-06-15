@@ -34,29 +34,33 @@
         
 	    #set( $hits = $permissionsearcher.query().match("permissiontype",$permissiontype).sort("permissiontype").sort("ordering").search() )
     	<table class="table table-striped emdata settings-table">	
-	    
-	    #set( $section = "none")
-    	#foreach($item in $hits )
-        		#set($val = false )
-        		
-        		#set($val = $data.getValues("permissions").contains($item.id))
-        		#if( $section != $item.permissiontype )
-        			<tr class="sectionlevel $item.permissiontype togglesection">
-        			<td colspan="3" style="height: 35px; line-height: 35px;">
-        				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
-        			</td>
-        			</tr>
-        		#set( $section = $item.permissiontype)
-        		#end
-        		<tr class="$item.permissiontype togglesection">
-        		<td valign="middle" style="text-align: center; width: 35px;">
-        		<input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" id="checkbox-$item.id" #if($val == "true" || $val == "full") checked #end/>
-        		</td>
-        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$context.getText($item.getName())</label></td>
-        		<td class="caption">$!item.caption</td>
-        			
-        		</tr>
-    	#end
+		    
+		    #set( $section = "none")
+	    	#foreach($item in $hits )
+	        		#set($val = false )
+	        		
+	        		#set($val = $data.getValues("permissions").contains($item.id))
+	        		#if( $section != $item.permissiontype )
+	        		<thead>
+	        			<tr class="sectionlevel section${item.permissiontype} togglesection">
+	        			<td colspan="3" style="height: 35px; line-height: 35px;">
+	        				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
+	        			</td>
+	        			</tr>
+	        		</thead>
+	        		#set( $section = $item.permissiontype)
+	        		
+	        			
+	        		#end
+	        		<tr class="$item.permissiontype">
+	        		<td valign="middle" style="text-align: center; width: 35px;">
+	        		<input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" id="checkbox-$item.id" #if($val == "true" || $val == "full") checked #end/>
+	        		</td>
+	        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$context.getText($item.getName())</label></td>
+	        		<td class="caption">$!item.caption</td>
+	        			
+	        		</tr>
+	    	#end
     	</table>
     </div>
 	<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]"/>
