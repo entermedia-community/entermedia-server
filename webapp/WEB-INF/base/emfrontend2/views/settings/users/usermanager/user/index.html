@@ -5,21 +5,21 @@
 #if($userName)
 
 <div class="row">
-	<div class="col-md-5">
+	<div class="col-md-6">
 	$pages.include("$content.usermanagerhome/user/editdata.html")
 	</div>
-	<div class="col-md-3">
+	<div class="col-md-6">
 	$pages.include("$content.usermanagerhome/user/editgroups.html")
 	$pages.include("$content.usermanagerhome/user/editrole.html")
 
 	<div style="margin-bottom:8px;">
-		<a href="$home$content.usermanagerhome/user/viewcategorypermissions.html?userid=$selectedUser.id" class="emdialog btn btn-sm btn-secondary" data-cancelsubmit="true">[[View Asset Permissions]]</a>
+		<a href="$siteroot$content.usermanagerhome/user/viewcategorypermissions.html?userid=$selectedUser.id" class="emdialog btn btn-sm btn-secondary" data-cancelsubmit="true">[[View Asset Permissions]]</a>
 	</div>
 
 	
 	#if($canactasotherusers)
 	<div style="margin-bottom:8px;">
-	<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
+	<a href="$siteroot$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
 
 		<a class="btn btn-sm btn-secondary emdialog" href="./showkey.html?username=$userName">Generate Temporary Key</a>
 
@@ -29,9 +29,9 @@
 	
 	#end
 	
-	<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Edit Password]]</a>
+	<a href="$siteroot$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Edit Password]]</a>
 	 #if( $selectedUser.password && $selectedUser.email )
-       	<a class="btn btn-sm btn-secondary ajax" targetdiv="passwordsent" href="$home$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id&oemaxlevel=1">Send Password Reset</a>
+       	<a class="btn btn-sm btn-secondary ajax" targetdiv="passwordsent" href="$siteroot$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id&oemaxlevel=1">Send Password Reset</a>
 	#end
 	
 	<div id="passwordsent"></div>

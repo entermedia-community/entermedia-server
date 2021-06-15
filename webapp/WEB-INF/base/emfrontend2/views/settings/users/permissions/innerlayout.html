@@ -17,13 +17,13 @@
         $("select#roles").change(function () {
            var val = $(this).val();
            if ( val == "new" ) {
-              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/addnew.html?oemaxlevel=1&groupname=New", function(){
+              $("#permissions-div").load("$siteroot$apphome/views/settings/users/permissions/views/addnew.html?oemaxlevel=1&groupname=New", function(){
             	  $(window).trigger( "resize" );
               });
               $('#module-picker').hide();
            }
            else {
-              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val, function(){
+              $("#permissions-div").load("$siteroot$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val, function(){
             	  $(window).trigger( "resize" );
               });
               $('#module-picker').show();
@@ -75,16 +75,15 @@
 	
 	#if($users.size() > 0)
 	<br>
-	<div class="em-rounded" >
 	
-	<h2>Users in the group</h2>
+	<h3>[[Users in the group]]</h3>
 	
 	
 	<ul class="vlist">
 	#foreach($hit in $users)
 	#set($target = $userManager.getUser($hit.userid))
 	
-	 <li><a target="_blank" href="$home$apphome/views/users/usermanager/user/index.html?userid=${target.id}">$target</a></li>
+	 <li><a target="_blank" href="$siteroot$apphome/views/users/usermanager/user/index.html?userid=${target.id}">$target</a></li>
 	#end
 	</ul>
 	
@@ -92,8 +91,6 @@
 	#end
 #end
 
-            <div id="permissions-div">
-            
+<div id="permissions-div">
 $pages.includeContent()
-
 </div>

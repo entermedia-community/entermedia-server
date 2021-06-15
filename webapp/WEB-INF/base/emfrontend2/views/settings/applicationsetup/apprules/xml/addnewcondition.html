@@ -1,4 +1,4 @@
-<div id="edit$permission.name"  style="background-color: rgb(253,252,220); padding:10px;" >
+<div id="edit$permission.name"  style=" padding:10px;" >
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 
@@ -15,7 +15,7 @@
 	</select>
 	<input class="btn btn-sm btn-primary"  onclick="addCondition('$permission.name','$!traverse');"  value="[[Ok]]" />
 
-<script language="javascript">
+<script>
 
 	addCondition = function(inName, inTraverse )
 	{

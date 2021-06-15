@@ -7,7 +7,7 @@
 	#end
 #end
 #if ($data)
-<form method="post" action="$home$apphome/views/settings/users/permissions/views/save.html">
+<form method="post" action="$siteroot$apphome/views/settings/users/permissions/views/save.html">
 	<input type="hidden" name="id" value="$!data.id"/>
 	<input type="hidden" name="save" value="true"/>
 	<input type="hidden" name="view" value="settings/settinggroupedit" />
@@ -59,8 +59,8 @@
     	#end
     	</table>
     </div>
-	<input class="btn btn-sm btn-primary small" type="submit" value="[[Save]]"/>
-<a class="btn btn-sm btn-wargning red"  href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('[[Are you sure you want to delete the security group]] $data.name')">[[Delete]]</a>
+	<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]"/>
+	<a class="btn btn-sm btn-danger"  href="$siteroot$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('[[Are you sure you want to delete the security group]] $data.name')">[[Delete]]</a>
 	
 </form>
 

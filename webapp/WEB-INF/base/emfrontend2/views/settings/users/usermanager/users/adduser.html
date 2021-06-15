@@ -6,7 +6,7 @@
 <h3>[[Create New User]]</h3>
 <div style="max-width:600px;"> 
 
-<form action="$home$usermanagerhome/users/adduser-finish.html" name="adduser" id="adduser">
+<form action="$siteroot$usermanagerhome/users/adduser-finish.html" name="adduser" id="adduser">
 <input type="hidden" name="method" value="adduser"/>
 
 $context.putPageValue("searcher", $userSearcher)
@@ -22,7 +22,7 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 <div class="hr" style="margin: 20px 0; padding: 0;"></div>
 <input class="btn btn-primary btn-sm" type="submit" value="[[Create]]" >
-<a href="index.html" class="btn btn-secondary btn-sm" style="margin-left:10px;">[[Cancel]]</a>
+<a href="$siteroot$usermanagerhome/users/ndex.html" class="btn btn-secondary btn-sm" style="margin-left:10px;">[[Cancel]]</a>
 </form>
 <div class="clearfix"></div>
 </div>

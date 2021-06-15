@@ -1,4 +1,4 @@
-<div id="edit$permission.name" style="padding:15px; background-color: #efefef;margin:10px 0;">
+<div id="edit$permission.name" >
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 #macro(showfilter2 $filter $inLevel $inTraverse)
@@ -19,11 +19,11 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 		<li>#showfilter2($child $level $newtraverse)</li>
 	#end
 	</ul>
-</li>	
+
 #end
 	#set( $filter = $permission.rootFilter)
 	#if ($filter)
-		<form name="permissionedit" class="ajaxform" targetdiv="edit$permission.name" action="$home$content.permissionrootpath/save.html">
+		<form name="permissionedit" class="ajaxform" data-targetdiv="edit$permission.name" action="$siteroot$content.permissionrootpath/save.html">
 			<input type="hidden" name="editPath" value="$editPath"/>
 			<input type="hidden" name="name" value="$permission.name"/>
 			<input type="hidden" name="inparent" value="$inparent"/>
@@ -34,7 +34,7 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 			#showfilter2($filter 0 "0")
 			<p>
 				<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
-		btn	##<a class="ajax btn  btn-sm btn-danger red" targetdiv="edit$permission.name" href="$home$content.permissionrootpath/cancel.html?name=$permission.name">[[Cancel]]</a>
+			##<a class="ajax btn  btn-sm btn-danger" targetdiv="edit$permission.name" href="$siteroot$content.permissionrootpath/cancel.html?name=$permission.name">[[Cancel]]</a>
 			</p>	
 		</form>
 	#else

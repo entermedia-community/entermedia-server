@@ -2,8 +2,7 @@
 #set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
 $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", $user))	
 <div id="usersearchresultspanel">
-
-$pages.include("./results.html")
+	$pages.include("$apphome/views/settings/users/usermanager/users/results.html")
 </div>
 
 
