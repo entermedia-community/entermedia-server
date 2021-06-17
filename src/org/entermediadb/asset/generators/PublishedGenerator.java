@@ -1,5 +1,6 @@
 package org.entermediadb.asset.generators;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.Generator;
@@ -112,14 +113,11 @@ public class PublishedGenerator extends FileGenerator
 		
 		inReq.setRequestParameter("sourcepath", asset.getSourcePath());		
 		if(presetid.equals("0")) {
-			if ((Boolean)dist.getValue("alloworiginal") == true) {
-				String genpath = archive.asLinkToOriginal(asset);			
-				Page gen = getPageManager().getPage(genpath);
-				inReq.getResponse().setContentType(gen.getMimeType());
-				getConvertGenerator().generate(inReq, gen, inOut);
+			if ((Boolean)dist.getValue("alloworiginal")) {
+				renderOriginalFile(inReq, asset, catalogid, inPage, inOut);
 				return;
 			} else { 
-				throw new ContentNotAvailableException("Distribution Orignal Not Available", path);
+				throw new ContentNotAvailableException("Distribution Orignal Not Enabled", path);
 			}
 		}
 		if( presetid.contains("videohls"))
@@ -128,7 +126,6 @@ public class PublishedGenerator extends FileGenerator
 			{
 				inReq.putPageValue("asset",asset);
 				inReq.putPageValue("mediaarchive",archive);
-				//return an html velocity page
 				String applicationid = inReq.findValue("applicationid");
 				Page player = getPageManager().getPage("/" + applicationid + "/services/module/asset/players/embed/video.html");
 				inReq.getResponse().setContentType("text/html");
@@ -185,7 +182,36 @@ public class PublishedGenerator extends FileGenerator
 		}
 	}
 	
-	
+	protected void renderOriginalFile(WebPageRequest inReq, Data asset, String catalogid, Page inPage, Output inOut)
+	{
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/originals/" + asset.getSourcePath() );
+		Page output = null;
+		boolean exists = item.exists();
+		if (exists)
+		{
+			output = new Page()
+			{
+				public boolean isHtml()
+				{
+					return false;
+				}
+			};
+			output.setPageSettings(inPage.getPageSettings());
+			output.setContentItem(item);
+		}
+		if (!exists && !output.exists())
+		{
+			throw new ContentNotAvailableException("Missing: " + output.getPath(), output.getPath());
+		}
+		else
+		{
+			inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + asset.getName() + "\"");
+			WebPageRequest copy = inReq.copy(output);
+			copy.putProtectedPageValue("content", output);
+			super.generate(copy, output, inOut);
+			// archive.logDownload(sourcePath, "success", inReq.getUser());
+		}
+	}
 
 }
 
