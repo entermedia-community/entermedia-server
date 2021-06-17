@@ -1442,7 +1442,7 @@ html, body, #application {
     border-left: none;
 }
 .emresultstable tr td.checkbox {
-    text-align: right;
+    text-align: center;
 }
 .emresultstable tr td.thumbnail {
     width: 130px;
@@ -3303,7 +3303,6 @@ label.error {
 .audio-thumb-container 
 {
 	text-align:center; 
-	background-color: #ccc;
 	padding: 10px;
 	max-width: 200px;
 }
