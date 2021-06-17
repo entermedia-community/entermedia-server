@@ -42,7 +42,7 @@
                 #set ( $urlenc = $url_util.encode($asset.sourcepath))
                 
                 #foreach( $page in [$start..$end])
-                	<li class="#if ( $page == $currentpreview ) current #end">
+                	<li class="mvpagelink #if ( $page == $currentpreview ) current #end">
                         #set( $page = $page + 1)
                         <a href="#" class="mvpageclick" 
                         	data-pageurl="$!siteroot/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page">
