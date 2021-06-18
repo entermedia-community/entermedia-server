@@ -2642,5 +2642,13 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return product;
 	}
+	
+	public Data getWorkspaceById (String workspaceId) {
+		Data workspace = getSearcherManager().getData(getCatalogId(), "librarycollection", workspaceId);
+		if (workspace == null) {
+			return null;
+		}
+		return workspace;
+	}
 
 }
