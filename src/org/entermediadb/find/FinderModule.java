@@ -39,7 +39,9 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String query = inReq.getRequestParameter("description.value");
-		
+		if (query == null) {
+			return;
+		}
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
 		HitTracker unsorted = dq.search(inReq);
 		//log.info(unsorted.size());
