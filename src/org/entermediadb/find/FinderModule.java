@@ -5,13 +5,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.autocomplete.LiveSuggestion;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
@@ -39,7 +42,7 @@ public class FinderModule extends BaseMediaModule
 		
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
 		HitTracker unsorted = dq.search(inReq);
-		log.info(unsorted.size());
+		//log.info(unsorted.size());
 		
 		inReq.setRequestParameter("clearfilters","true");
 		unsorted.getSearchQuery().setValue("description",query); //Not needed?
@@ -312,5 +315,80 @@ public class FinderModule extends BaseMediaModule
 		return searchmodules;
 	}
 
+	public void searchForLiveSuggestions(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String query = inReq.getRequestParameter("description.value");
+		
+		if( query == null)
+		{
+			return;
+		}
+		String lowerquery = query.toLowerCase();
+		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(50);
+		HitTracker unsorted = dq.search();
+
+		Map<String,String> keywordsLower = new HashMap();
+		//Set keywords = new HashSet();
+		//Loop over the results and get a list of similar keywords
+		for (Iterator iterator = unsorted.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			
+			//Look in keywords and name
+			String name = hit.getName();
+			//Split with . or spaces
+			addMatch(keywordsLower,query,lowerquery, name);
+			Collection words = hit.getValues("keywords");
+			if( words != null && !words.isEmpty())
+			{
+				for (Iterator iterator2 = words.iterator(); iterator2.hasNext();)
+				{
+					String word = (String) iterator2.next();
+					addMatch(keywordsLower,query, lowerquery, word);
+				}
+			}
+		}
+		List finallist = new ArrayList();
+		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+		{
+			String keyword = (String) iterator.next();
+			String keywordcase = keywordsLower.get(keyword);
+			LiveSuggestion suggestion = new LiveSuggestion();
+			suggestion.setSearchFor(query);
+			suggestion.setKeyword(keywordcase);
+			finallist.add(suggestion);
+		}
+		//inReq.setRequestParameter("clearfilters","true");
+		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
+		//List finallist = new ArrayList(keywords);
+		Collections.sort(finallist);
+		inReq.putPageValue("livesuggestions",finallist);
+
+	}
+
+	protected void addMatch(Map<String,String> keywords, String query, String lowerquery, String name)
+	{
+		if( name == null)
+		{
+			return;
+		}
+		if( !name.toLowerCase().startsWith(lowerquery) ) 
+		{
+			return;
+		}
+		String existing = keywords.get(name.toLowerCase());
+		if( existing == null)
+		{
+			keywords.put(name.toLowerCase(),name);
+		}
+		else if( !existing.startsWith(query))
+		{
+			keywords.put(name.toLowerCase(),name);
+		}
+		
+	}
+
+	
 	
 }
