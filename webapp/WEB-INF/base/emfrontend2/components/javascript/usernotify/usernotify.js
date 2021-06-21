@@ -129,9 +129,12 @@ usernotify = function ()
 			var userid = app.data("user");
 	    	command.userid =  userid;
 	    	var appid = app.data("apphome");
-	    	command.entermediakey = getCookieValue(appid);
-	    	var json = JSON.stringify(command);
-	    	usernotifyconnection.send(json);  
+	    	if (appid) 
+	    	{
+		    	command.entermediakey = getCookieValue(appid);
+		    	var json = JSON.stringify(command);
+		    	usernotifyconnection.send(json);  
+	    	}	
 	    }
 	    
 	    if (usernotifyconnection.readyState === usernotifyconnection.CLOSED) {  

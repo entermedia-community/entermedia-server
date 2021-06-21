@@ -6,6 +6,8 @@ var app,home,apphome,themeprefix;
 
 $(document).ready(function() 
 {
+	
+	
 	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
@@ -21,8 +23,8 @@ $(document).ready(function()
 		var lang = select.val();
 		langinput.attr("name",detailid + "." +  lang + ".value" );
 	});
-	
-	lQuery("textarea").livequery("keydown",function(e) {
+
+	lQuery("textarea.keeptab").livequery("keydown",function(e) {
 		  var $this, end, start;
 		  if (e.keyCode === 9) {
 		    start = this.selectionStart;
@@ -33,6 +35,8 @@ $(document).ready(function()
 		    return false;
 		  }
 		});
+	
+	
 	
 	lQuery(".languagesavebtn").livequery('click', function(event){
 		event.stopPropagation();
@@ -90,6 +94,7 @@ $(document).ready(function()
 	});
 	*/ 
 	
+	
 	lQuery(".force-validate-inputs").livequery(function() 
 	{
 		var theform = $(this).closest("form");
@@ -112,6 +117,8 @@ $(document).ready(function()
 	     number: true
 	});
 	
+	
+	
 	$.validator.setDefaults({
 	    errorPlacement: function(error, element) {
 	    	var elementid = element.attr('id');
@@ -125,6 +132,8 @@ $(document).ready(function()
 	    }
 	});
 
+	
+	
 	lQuery(".inlinesave").livequery("click", function()
 	{
 			var queryString = $(this).closest('.inlinedata').formSerialize(); 

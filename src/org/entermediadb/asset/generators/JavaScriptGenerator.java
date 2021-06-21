@@ -7,7 +7,9 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,17 +17,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
-import org.openedit.config.Script;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
 
 public class JavaScriptGenerator extends TempFileGenerator
 {
 	private static Log log = LogFactory.getLog(JavaScriptGenerator.class);
 	protected PageManager fieldPageManager;
-	
+	protected Map<String,Long> cachedSizeCounts = new HashMap();
 	
 	public PageManager getPageManager()
 	{
@@ -52,13 +54,14 @@ public class JavaScriptGenerator extends TempFileGenerator
 			//Check on the last mod date. If file has changed then write out new file before sending
 			
 			long mostrecentmod = 0;
-			
+			long totalsize = 0;
 			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
 			{		
 				String script= (String) iterator.next();
 				if(!skip(script))
 				{
 					Page file = getPageManager().getPage(script);
+					totalsize = totalsize + file.length();
 					long modifield = file.lastModified();
 					if( modifield > mostrecentmod )
 					{
@@ -91,9 +94,15 @@ public class JavaScriptGenerator extends TempFileGenerator
 		//Something modified. Save file again
 		try
 		{
-			if( mostrecentmod > inPage.getLastModified().getTime())
+			Long oldtotal = cachedSizeCounts.get(inPage.getPath());
+			if( oldtotal == null)
 			{
-				saveLocally(rootpage, inPage, inOut);
+				oldtotal = -1L;
+			}
+			if(oldtotal != totalsize ||  mostrecentmod != inPage.getLastModified().getTime())
+			{
+				saveLocally(rootpage, inPage, inOut, mostrecentmod);
+				cachedSizeCounts.put(inPage.getPath(),totalsize); //TODO check count change or size change
 			}
 			sendBack(inPage, mostrecentmod, inOut, res);
 		}
@@ -150,7 +159,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 	}
 
 
-	protected void saveLocally(Page rootpage, Page inPage, Output inOut) throws FileNotFoundException, IOException
+	protected void saveLocally(Page rootpage, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
 	{
 		synchronized( inPage )
 		{
@@ -188,7 +197,13 @@ public class JavaScriptGenerator extends TempFileGenerator
 			FileUtils.safeClose(out);
 			//rename
 			getPageManager().removePage(inPage);
+			//tmpfile.getContent().set
 			getPageManager().movePage(tmpfile, inPage);
+			if( inPage.getContentItem() instanceof FileItem)
+			{
+				FileItem savedata = (FileItem)inPage.getContentItem();
+				savedata.getFile().setLastModified(mostrecentmod);
+			}
 		}
 	}
 
