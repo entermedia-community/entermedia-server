@@ -2044,9 +2044,13 @@ String viewbase = null;
 
 	public void loadOrSearch(WebPageRequest inReq) throws Exception
 	{
-		String clear = inReq.getRequestParameter(resolveSearchType(inReq) + "clearresults");
+		String searchtype = resolveSearchType(inReq);
+		String clear = inReq.getRequestParameter( searchtype + "clearresults");
+		if(clear== null) {
+			clear = (String) inReq.findValue( searchtype + "clearresults");
+		}
 		HitTracker hits = null;
-		if (!Boolean.parseBoolean(clear))
+		if (Boolean.parseBoolean(clear))
 		{
 			hits = loadHits(inReq);
 //			if (hits != null)
