@@ -238,7 +238,8 @@ public class FaceDetectManager
 				jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
 				if( jsonresults == null)
 				{				
-					throw new OpenEditException("Match should not be null for " + finaljson);
+					//throw new OpenEditException("Match should not be null for " + finaljson);
+					return false;
 				}
 			}
 			//This is a JSON of a grid of grids
