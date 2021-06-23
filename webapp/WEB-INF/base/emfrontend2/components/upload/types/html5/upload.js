@@ -64,7 +64,7 @@ var uploadid;
 $(document).ready(function() 
 {	
 	
-	home = $("#application").data("home") + $("#application").data("apphome"); 
+	home = $("#application").data("siteroot") + $("#application").data("apphome"); 
 	lQuery('#filePicker').livequery('click',function(e){
 		e.preventDefault(); 
 		$('#upload_field').trigger('click');
@@ -248,6 +248,50 @@ $(document).ready(function()
 	
 	         }
 	     });
+	});
+	
+	
+	$("#upload_field").val('');
+	
+	var allfiles = new Array();
+	
+	$("#up-files-list").empty();
+
+	lQuery("#viewassetsbtn").livequery("click", function(e)
+	{
+		e.preventDefault();
+		var collectionid = $("#currentcollection").val();
+		var nodeid = $("#nodeid").val();
+		
+	    var href = null;
+	    var customviewupload = $(this).data("customviewupload");
+	    if(customviewupload)
+	    	{
+	    		href= customviewupload + "?collectionid=" + collectionid;
+	    		if( nodeid)
+		    	{
+		    		href = href + "&nodeID=" + nodeid;
+		    	}
+	    	}
+	    else if(collectionid)
+	    {
+	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
+	    	if( nodeid)
+	    	{
+	    		href = href + "&nodeID=" + nodeid;
+	    	}
+	    }
+	    else if( nodeid)
+		{
+	         href = "$siteroot$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+		}
+	    else
+	    {
+	        href = "$siteroot$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
+		}
+	    
+	    document.location.href = href;
+		
 	});
 	
 	//Detect Youtube Link

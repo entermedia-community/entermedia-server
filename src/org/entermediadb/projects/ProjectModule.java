@@ -1358,16 +1358,22 @@ Server ProjectModule.uploadFile
 		{
 			categoryId = inPageRequest.getRequestParameter("nodeID");
 		}
+		//get it from collectionid
+		LibraryCollection librarycol = loadCollection(inPageRequest);
+		/*	if(categoryId == null && librarycol != null) {
+			categoryId = librarycol.getRootCategoryId();
+		}*/
 		if (categoryId != null)
 		{
 			inPageRequest.putPageValue("categoryid",categoryId);
-			category = archive.getCategory(inPageRequest);
+			category = archive.getCategory(categoryId);
 		}
+		
 		
 		if (category != null) {
 			inPageRequest.putPageValue("category",category);
 			inPageRequest.putPageValue("selectedcategory",category);
-			LibraryCollection librarycol = loadCollection(inPageRequest);
+			//LibraryCollection librarycol = loadCollection(inPageRequest);
 			
 			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true);
 			//if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
