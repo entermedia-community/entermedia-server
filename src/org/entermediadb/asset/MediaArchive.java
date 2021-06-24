@@ -2669,8 +2669,6 @@ public class MediaArchive implements CatalogEnabled
 			String sub = word.replace("${","");
 			sub = sub.replace("}","");
 			String[] subs = sub.split("\\.");
-			// Data data = getSearcherManager().getData(getCatalogId(), subs[0], id);
-			// Data data = query(subs[0]).exact("id", id).searchOne();
 			Data data = getSearcherManager().getData(getCatalogId(), subs[0], id);
 			if (data != null) {
 				Object result = data.getValue(subs[1]);
@@ -2692,7 +2690,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		String[] all = text.split(" ");
 		String result = "";
-		for(var i =0; i < all.length; i++) {
+		for(int i =0; i < all.length; i++) {
 			result += getValueText(all[i], id) + " ";
 		}
 		return result;
