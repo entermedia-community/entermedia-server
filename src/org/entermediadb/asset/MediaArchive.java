@@ -3,6 +3,7 @@ package org.entermediadb.asset;
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.mail.internet.InternetAddress;
 
@@ -68,6 +71,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
@@ -2650,5 +2654,45 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return workspace;
 	}
-
+	
+	public String specialValueCases(Object obj, String format) {
+		switch (format) {
+		case "month":
+			DateFormat dateFormat  = new SimpleDateFormat("MMMM", Locale.US);
+			return dateFormat.format(obj);
+		default: return obj.toString();
+		}
+		
+	}
+	public String getValueText(String word, String id) {
+		if (word.contains("${")) {
+			String sub = word.replace("${","");
+			sub = sub.replace("}","");
+			String[] subs = sub.split("\\.");
+			Data data = getSearcherManager().getData(getCatalogId(), subs[0], id);
+			if (data != null) {
+				Object result = data.getValue(subs[1]);
+				if (subs.length >= 3) {
+					result = specialValueCases(result, subs[2]);
+				}
+				return result.toString();
+			}
+			return subs[1];
+		}
+		
+		return word;
+	}
+	
+	public String text(String text, String id)
+	{
+		if (text == null) {
+			return "";
+		}
+		String[] all = text.split(" ");
+		String result = "";
+		for(int i =0; i < all.length; i++) {
+			result += getValueText(all[i], id) + " ";
+		}
+		return result;
+	}
 }
