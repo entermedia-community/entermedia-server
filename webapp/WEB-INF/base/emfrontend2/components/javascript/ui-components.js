@@ -370,6 +370,7 @@ uiload = function() {
 				} 
 				
 				form.ajaxSubmit({
+					data : data,
 					error : function(data) {
 						alert("error");
 						if (targetdiv) {
@@ -403,7 +404,7 @@ uiload = function() {
 		                if (form.hasClass("autohideOverlay")) {
 		                	hideOverlayDiv(getOverlay());
 		                }
-						$(window).trigger( "resize" );
+						
 		                if (form.hasClass("autoreloadsource")) 
 		                {
 		                    var link = form.data("openedfrom")
@@ -412,9 +413,24 @@ uiload = function() {
 		                    	window.location.replace(link); 
 		                    }
 		                }
-
-					},
-					data : data
+		                
+		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+		        			//globaly disabled updateurl
+		        		}
+		        		else {
+		        			//Update Address Bar
+	        				var updateurl = form.data("updateurl");
+	        				if( updateurl)	{
+	        					//serialize and attach
+	        					var params = form.serialize();
+	        					var url = form.attr("action");
+	        					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
+	        					history.pushState({}, null, url);
+	        					window.scrollTo(0, 0);
+	        				}
+		        		}
+		                $(window).trigger( "resize" );
+					}
 				});
 
 
@@ -672,11 +688,13 @@ uiload = function() {
 				//form.submit();
 				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
+					$(form).trigger("submit");
+					/*
 					$(form).ajaxSubmit({
 						target : "#" + $.escapeSelector(targetdiv), 
 						data:data
 						
-					});
+					});*/
 				} else {
 					$(form).trigger("submit");
 				}
@@ -2014,6 +2032,27 @@ uiload = function() {
 			    }
 		});
 	}
+	
+    $('#setup-view').click(function(){
+        if ( $('#setup-view').hasClass('open') ) {
+            $('#views-header').height(16)
+            $('#views-settings').hide();
+            $('#setup-view').removeClass('open');
+        }
+        else {
+            $('#views-header').height('auto')
+            $('#views-settings').show();
+            $('#setup-view').addClass('open'); 
+        }
+    })
+    $('#renderastable').click(function(){
+        if ( $('#renderastable').is(':checked') ) {
+            $('#rendertableoptions').show();
+        }
+        else {
+            $('#rendertableoptions').hide();
+        }
+    })
 		
 		
 	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
