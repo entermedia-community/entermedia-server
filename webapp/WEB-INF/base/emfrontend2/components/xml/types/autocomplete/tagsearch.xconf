@@ -3,9 +3,12 @@
 	<inner-layout/>
 	
 	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
-	
+
+	<property name="forcealloworigin">true</property>
+		
 	<path-action name="Admin.autoLogin" alltypes="true"/>
-	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
+	
+	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	
 	
 	<page-action name="DataEditModule.search" alltypes="true">
 		<property name="hitsname">autocomplete</property>

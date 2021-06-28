@@ -1411,7 +1411,10 @@ public class AdminModule extends BaseMediaModule
 			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			String origin = httpRequest.getHeader("Origin");
-			if (origin != null && ( isoptions || inReq.getUser() != null) )
+			
+			
+			boolean forcealloworigin = Boolean.parseBoolean(inReq.findValue("forcealloworigin"));
+			if (origin != null && ( forcealloworigin || isoptions || inReq.getUser() != null) )
 			{
 				request.setHeader("Access-Control-Allow-Origin",origin);
 			}

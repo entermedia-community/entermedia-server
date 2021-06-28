@@ -73,12 +73,17 @@ $context.putPageValue("details",$details)
 		#end
 		</table>
 			<form name="editrow" 
-				action="$siteroot$content.dataroot/edit/edit.html?oemaxlevel=1"
+				action="$siteroot$content.dataroot/edit/edit.html"
 				class="ajaxform"
-				data-targetdiv="datamanager-workarea"
+				data-targetdivinner="datamanager-workarea"
+				data-updateurl="true"
+				data-oemaxlevel="1"
 			>
-				<input type="hidden" name="id" id="emselectedrow" />
+				##<input type="hidden" name="oemaxlevel" value="1" />
+				#if($origURL)
 				<input type="hidden" name="origURL" id="$!origURL" />
+				#end
+				<input type="hidden" name="id" id="emselectedrow" />
 				<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
 			</form>
 		</div>
