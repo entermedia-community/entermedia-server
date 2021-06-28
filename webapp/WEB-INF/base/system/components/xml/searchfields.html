@@ -44,11 +44,15 @@
 			$context.putPageValue("val",$value)
 		#end
 		$context.putPageValue("detail",$detail)
-		#if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
-			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-		#else
-			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-		#end
+		
+		$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		
+		##SLOW???
+		###if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
+		##	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		###else
+		##	$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		###end
 	</td>
 </tr>
 #end

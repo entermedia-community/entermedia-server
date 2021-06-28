@@ -1,5 +1,5 @@
 <page>
-	<path-action name="DataEditModule.loadPageOfSearch" />
+	<path-action name="DataEditModule.loadPageOfSearcX" />
 	<path-action name="Date.now" >
 		<format>S</format>
 	</path-action>
