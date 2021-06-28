@@ -929,3 +929,19 @@ max-width:200px;
 .emrowselected .resultsselection {display:block;}
 .emrowselected .caption { opacity: 1;}
 
+
+
+.entity-value-list {
+	list-style: none;
+}
+
+.entity-value-list a {
+	text-decoration: underline;
+}
+
+.emdatafieldvalue .entity-value-list a {
+	color:#ddd;
+}
+.emdatafieldvalue .entity-value-list a:hover {
+	color:#fff;
+}

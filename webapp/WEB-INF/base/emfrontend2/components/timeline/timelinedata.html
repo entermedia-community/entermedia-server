@@ -1,9 +1,10 @@
 #set( $clientroot = "/${applicationid}/components/timeline" )
-<div class="timelinedatacontainer">
+<div id="timelinedatacontainer" class="timelinedatacontainer">
 <div id="timelinemetadata"
 	class="timelinedata" 
 	data-ratio="$timeline.getPxToTimeRatio()" 
-	data-savelink="$home$clientroot/saveclips.json" 
+	data-savelink="$siteroot$clientroot/timelinedatasave.html"
+	data-targetdiv="timelinedatacontainer" 
 	data-assetid="$asset.id" 
 	style="margin:0; width:1200px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )

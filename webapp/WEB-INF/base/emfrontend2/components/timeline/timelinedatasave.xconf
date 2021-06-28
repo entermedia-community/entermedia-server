@@ -1,0 +1,6 @@
+<page>
+	<path-action name="TimelineModule.saveClips" />
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="TimelineModule.loadTimeline" />
+	<inner-layout/>
+</page>
