@@ -98,6 +98,7 @@ public class FinderModule extends BaseMediaModule
 				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = new ArrayList();
+				boolean foundasset = false;
 				//See if we have enough from one page. If not then run searches to get some results
 				if( node != null)
 				{
@@ -110,7 +111,11 @@ public class FinderModule extends BaseMediaModule
 						int max = targetsize;
 						if( sourcetype.equals("asset"))
 						{
-							max = Math.min(total,MEDIASAMPLE);
+							//max = Math.min(total,MEDIASAMPLE);
+							foundasset = true;
+							Data module = archive.getCachedData("module", sourcetype);
+							foundmodules.add(module);
+							continue; //Skip asset. Done below
 						}
 						int maxpossible = Math.min(total,max);
 
@@ -153,15 +158,38 @@ public class FinderModule extends BaseMediaModule
 				}
 
 				//Put asset into session
-				HitTracker assets = (HitTracker)bytypes.get("asset");
-				if( assets != null)
+				//HitTracker assets = (HitTracker)bytypes.get("asset");
+				//
+//				if( foundasset )
 				{
-					assets.setHitsName("hits");
-					assets.setSearcher(archive.getAssetSearcher());
-					assets.setDataSource("asset");
-					assets.setSessionId("hitsasset" + archive.getCatalogId() );
-					log.info(assets.getSessionId());
-					inReq.putSessionValue(assets.getSessionId(), assets);
+					SearchQuery copy = hits.getSearchQuery().copy();
+					copy.setFacets(null);
+					copy.setProperty("ignoresearchttype", "true");
+					//Fix the terms so it has the right details
+//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
+//					{
+//						Term term = (Term) iterator.next();
+//						term.copy();
+//						
+//					}
+					HitTracker assethits = archive.getAssetSearcher().search(copy);
+					assethits.setHitsName("hits");
+//					assets.setSearcher(archive.getAssetSearcher());
+//					assets.setDataSource("asset");
+					assethits.setSessionId("hitsasset" + archive.getCatalogId() );
+//					assets.setSearchQuery(hits.getSearchQuery());
+//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
+					//log.info(assets.getSessionId());
+					assethits.setHitsPerPage( MEDIASAMPLE );
+					
+					inReq.putSessionValue(assethits.getSessionId(), assethits);
+					if( !assethits.isEmpty())
+					{
+						Data module = archive.getCachedData("module", "asset");
+						foundmodules.add(module);
+
+						bytypes.put("asset",assethits);
+					}
 				}
 				
 
@@ -229,7 +257,7 @@ public class FinderModule extends BaseMediaModule
 			Collection values = (Collection) bytypes.get(type);
 			if( values == null)
 			{
-				values = new ListHitTracker();
+				values = new ListHitTracker();			
 				bytypes.put(type,values);
 			}
 			int max = maxsize;

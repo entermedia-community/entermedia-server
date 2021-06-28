@@ -129,6 +129,10 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
+			if( data.getId().equals("asset"))
+			{
+				continue; //Too big
+			}
 			String show = data.get("showonsearch");
 			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
 			{

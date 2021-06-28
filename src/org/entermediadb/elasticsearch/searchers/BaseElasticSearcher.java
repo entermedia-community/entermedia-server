@@ -410,16 +410,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();
-//		if( facets == null || facets.isEmpty()) //We might want the real facets just in case
-//		{
+		if( facets == null || facets.isEmpty()) //We might want the real facets just in case
+		{
 //			if( inQuery.getMainInput() == null)
 //			{
 //				facets = new ArrayList();
 //				get
 //			}	
-//		}
+			return false;
+		}
 		
-		for (Iterator iterator = inQuery.getFacets().iterator(); iterator.hasNext();)
+		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 
@@ -1078,11 +1079,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			Term term = (Term) iterator.next();
 			PropertyDetail detail = term.getDetail();
 			//We handle joins with SearchQueryFilter.java
-			if (detail.getSearchType() != null && !getSearchType().equals(detail.getSearchType()))
+			String ignoretypes  =  inQuery.get("ignoresearchttype");
+			if( ignoretypes == null || !Boolean.parseBoolean(ignoretypes))
 			{
-				continue;
+				if (detail.getSearchType() != null && !getSearchType().equals(detail.getSearchType()))
+				{
+					continue;
+				}
 			}
-
 			Object value = term.getValue();
 			if (value == null)
 			{
