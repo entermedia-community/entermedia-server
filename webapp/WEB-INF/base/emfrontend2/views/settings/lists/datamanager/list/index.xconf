@@ -1,8 +1,8 @@
 <page>
 	<page-action name="DataEditModule.search" />
-	<page-action name="DataEditModule.loadPageOfSearch" />
-	<page-action name="Date.now" >
+	
+	<!-- page-action name="Date.now" >
 		<format>S</format>
-	</page-action>
+	</page-action -->
 	
 </page>

@@ -20,7 +20,7 @@ if( !jQuery.fn.videoTimeline )
             backgroundColor: "white"
         }, options );
  
-	console.log("Timeline init");
+	//console.log("Timeline init");
 	var app = $("#application");
 	var siteroot =  app.data("siteroot");
 	var apphome = siteroot + app.data("apphome");
@@ -655,6 +655,7 @@ if( !jQuery.fn.videoTimeline )
 			var link = $("#timelinemetadata").data("savelink");
 			
 			var data = {"assetid": assetid,"clips":clips};
+			var targetdiv = $("#timelinemetadata").data("targetdiv");
 			
 			var json = JSON.stringify(data);
 			$.ajax({        
@@ -662,12 +663,14 @@ if( !jQuery.fn.videoTimeline )
 	       		url: link,
 	       		data: json,
 	       		contentType: "application/json; charset=utf-8",
-	    		dataType: "json",
-	       		success: function() 
+	       		success: function(html) 
 	       		{
 	            	//reload page?
 	            	//$("#savetimeline").addClass("btn-disabled");
 					//$("#savetimeline").attr("disabled", true);
+	       			
+	       			$("#"+targetdiv).replaceWith(html);
+	       			
 					$("#warningarea").css('visibility','hidden');
 	       		}
 	    	}); 
