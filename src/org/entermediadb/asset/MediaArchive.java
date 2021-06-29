@@ -2240,7 +2240,7 @@ public class MediaArchive implements CatalogEnabled
 					Data badge = getData("badge", badgeid);
 					if (badge == null)
 					{
-						log.info("badge not defined" + badgeid);
+						log.debug("badge not defined" + badgeid);
 					}
 					else
 					{
