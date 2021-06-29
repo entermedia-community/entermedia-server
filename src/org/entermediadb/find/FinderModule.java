@@ -353,14 +353,39 @@ public class FinderModule extends BaseMediaModule
 		if( query == null)
 		{
 			return;
-		}
-		String lowerquery = query.toLowerCase();
+		}		
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(50);
 		HitTracker unsorted = dq.search();
 
 		Map<String,String> keywordsLower = new HashMap();
-		//Set keywords = new HashSet();
-		//Loop over the results and get a list of similar keywords
+		collectMatches(keywordsLower, query, unsorted);
+		
+		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(50);
+		HitTracker assetunsorted = assetdq.search();
+		collectMatches(keywordsLower, query, assetunsorted);
+		
+		List finallist = new ArrayList();
+		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+		{
+			String keyword = (String) iterator.next();
+			String keywordcase = keywordsLower.get(keyword);
+			LiveSuggestion suggestion = new LiveSuggestion();
+			suggestion.setSearchFor(query);
+			suggestion.setKeyword(keywordcase);
+			finallist.add(suggestion);
+		}
+		//inReq.setRequestParameter("clearfilters","true");
+		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
+		//List finallist = new ArrayList(keywords);
+		Collections.sort(finallist);
+		inReq.putPageValue("livesuggestions",finallist);
+
+	}
+
+	protected void collectMatches(Map<String, String> keywordsLower, String query, HitTracker unsorted)
+	{
+		String lowerquery = query.toLowerCase();
+
 		for (Iterator iterator = unsorted.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
@@ -379,22 +404,6 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 		}
-		List finallist = new ArrayList();
-		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
-		{
-			String keyword = (String) iterator.next();
-			String keywordcase = keywordsLower.get(keyword);
-			LiveSuggestion suggestion = new LiveSuggestion();
-			suggestion.setSearchFor(query);
-			suggestion.setKeyword(keywordcase);
-			finallist.add(suggestion);
-		}
-		//inReq.setRequestParameter("clearfilters","true");
-		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
-		//List finallist = new ArrayList(keywords);
-		Collections.sort(finallist);
-		inReq.putPageValue("livesuggestions",finallist);
-
 	}
 
 	protected void addMatch(Map<String,String> keywords, String query, String lowerquery, String name)
