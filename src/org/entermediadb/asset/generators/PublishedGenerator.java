@@ -12,6 +12,7 @@ import org.openedit.error.ContentNotAvailableException;
 import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
@@ -82,6 +83,8 @@ public class PublishedGenerator extends FileGenerator
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
 		String catalogid = inReq.findValue("catalogid");
+		
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
 
 		String path = null;
 		String publishedroot = inPage.get("publishedroot");
@@ -100,7 +103,9 @@ public class PublishedGenerator extends FileGenerator
 		if (dist == null) {
 			throw new ContentNotAvailableException("Distribution Not Available", path);
 		}
-		Data asset = getSearcherManager().getCachedData(catalogid, "asset", dist.get("assetid"));
+		//Asset asset = (Asset)getSearcherManager().getCachedData(catalogid, "asset", dist.get("assetid"));
+		Asset asset = archive.getAsset(dist.get("assetid"), inReq);
+		
 		if (asset == null) {
 			throw new ContentNotAvailableException("Asset Not Available", path);
 		}
@@ -108,9 +113,7 @@ public class PublishedGenerator extends FileGenerator
 		if (preset == null) {
 			throw new ContentNotAvailableException("Distribution Preset Not Available", path);
 		}
-
-		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
-		
+	
 		inReq.setRequestParameter("sourcepath", asset.getSourcePath());		
 		if(presetid.equals("0")) {
 			if ((Boolean)dist.getValue("alloworiginal")) {
@@ -182,9 +185,10 @@ public class PublishedGenerator extends FileGenerator
 		}
 	}
 	
-	protected void renderOriginalFile(WebPageRequest inReq, Data asset, String catalogid, Page inPage, Output inOut)
+	protected void renderOriginalFile(WebPageRequest inReq, Asset asset, String catalogid, Page inPage, Output inOut)
 	{
 		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/originals/" + asset.getSourcePath() );
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
 		Page output = null;
 		boolean exists = item.exists();
 		if (exists)
@@ -205,11 +209,35 @@ public class PublishedGenerator extends FileGenerator
 		}
 		else
 		{
+			/*
 			inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + asset.getName() + "\"");
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", output);
 			super.generate(copy, output, inOut);
 			// archive.logDownload(sourcePath, "success", inReq.getUser());
+			 
+			 */
+			String filename = asset.getSourcePath();
+			if (asset.isFolder() && asset.getPrimaryFile() != null)
+			{
+				filename = filename + "/" + asset.getPrimaryFile();
+			}
+			 Page content =  archive.getOriginalDocument(asset);
+				if( content.exists() )
+				{
+					//its a regular file
+					inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\"" + asset.getName() + "\"");
+					WebPageRequest req = inReq.copy(content);
+					req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
+					super.generate(req, content, inOut);
+					archive.logDownload(filename, "success", inReq.getUser());
+
+				}
+				else
+				{
+					//stream(inReq, archive, inOut, asset, filename); //see OriginalDocumentGenerator.java
+					throw new OpenEditException("Could not find original document path " + asset.getSourcePath() );
+				}
 		}
 	}
 
