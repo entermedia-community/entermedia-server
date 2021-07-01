@@ -35,14 +35,30 @@
 							#if( $fieldid == "verticaloffset")
 								##skip
 							#elseif( $fieldid == "keywords")
-								<span class="clipdetail"><a href="$apphome/views/modules/modulesearch/index.html?description.value=$v&operation=freeform&field=description" target="_blank" class="entity-dialog">$v</a></span>
+								#set ($keywords = $v.split("\s*\|\s*"))
+	      						#foreach ($tag in $keywords)
+									<span class="clipdetail">
+										<a href="$siteroot$apphome/views/modules/modulesearch/index.html?description.value=$tag&operation=freeform&field=description"
+											title="[[Search]]: $!tag"
+											class="ajax"
+											data-targetdivinner="applicationcontainer"
+											data-oemaxlayout="1"
+											data-updateurl="true"
+											data-closemediaviewer="true">$!tag</a>
+										</span>
+								#end
 							#elseif( $v)
 								#set( $list = $v.split("\|"))
 								#foreach($row in $list)
 									#set( $val = false )
 									#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
 									#if( $val)
-										<span class="clipdetail"><a href="$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid" class="emdialog entity-dialog">$val</a></span>
+										<span class="clipdetail">
+											<a href="$siteroot$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid"
+											title="[[Entity]]: $!val" 
+											class="emdialog entity-dialog"
+											data-noesc="true"
+											>$!val</a></span>
 									#else
 									##Missing: $fieldid = $v
 									#end
