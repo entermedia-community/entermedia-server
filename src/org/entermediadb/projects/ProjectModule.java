@@ -939,6 +939,7 @@ public class ProjectModule extends BaseMediaModule
 		int count = manager.approveSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("approved", count);
 		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+		inReq.setRequestParameter(searcher.getSearchType()+"clearselection", "true");
 		searcher.loadHits(inReq);
 	}
 
@@ -950,6 +951,7 @@ public class ProjectModule extends BaseMediaModule
 		int count = manager.rejectSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("rejected", count);
 		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+		inReq.setRequestParameter(searcher.getSearchType()+"clearselection", "true");
 		searcher.loadHits(inReq);
 
 	}
@@ -1360,9 +1362,9 @@ Server ProjectModule.uploadFile
 		}
 		//get it from collectionid
 		LibraryCollection librarycol = loadCollection(inPageRequest);
-		/*	if(categoryId == null && librarycol != null) {
+		if(categoryId == null && librarycol != null) {
 			categoryId = librarycol.getRootCategoryId();
-		}*/
+		}
 		if (categoryId != null)
 		{
 			inPageRequest.putPageValue("categoryid",categoryId);
