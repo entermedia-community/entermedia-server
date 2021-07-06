@@ -1,9 +1,18 @@
-#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("id")) )    
+#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("id")) )
+#set ($link = "$siteroot$apphome/views/modules/asset/index.html?hitssessionid=hitsassetassets/catalog#asset-${asset.id}")    
 <div class="mapbubblef">
-<h3>$asset </h3>
-		  <a class=" stackedplayer# " data-assetid="$asset.id"  href="$home$apphome/views/modules/asset/index.html?hitssessionid=hitsassetassets/catalog#asset-${asset.id}" onclick="document.location.reload();">
-		   <img class="media-object#" src="$home$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" alt="$asset">
-		  </a>
+	
+  	<a class="stackedplayer" data-assetid="$asset.id"  href="$link" style="float:left; width:80px;">
+	   	<img 
+	   	class="media-object#"
+	   	style="max-width: 80px;" 
+	   	src="$siteroot$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" 
+	   	alt="$asset">
+  	</a>
+  	<div style="float:left; width:100px; padding-left:10px; word-break:break-all;">
+		<strong><a class="stackedplayer" data-assetid="$asset.id"  href="$link">$asset</a>
+		</strong>
+		</div>
 </div>		  
 				
 			

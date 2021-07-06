@@ -1,4 +1,4 @@
-<div id="asset-editor-container">
+<div id="asset-editor-container" style="padding:20px;">
 	<h2>[[Asset Geolocation]]</h2>
 
 	<div class="assetpanel-editorinner ">
@@ -42,10 +42,11 @@
 				    #else 
 				    
 				    #end
-				    	<form name="formedit$view" id="formedit$view"  class="ajaxform" 
+				    	<form name="formedit$view" id="formedit$view"  
+				    			class="ajaxform" 
 								targetdiv="asset-editor-container" 
 				    			method="post" 
-								action="$home$apphome/views/modules/asset/editor/map/save.html" >
+								action="$siteroot$apphome/views/modules/asset/editor/map/save.html" >
 				    		<input type="hidden" name="oemaxlevel" value="1"/>
 				    		<input type="hidden" name="saveasnew" value="false" />
 				    		<input type="hidden" name="save" value="true" />
@@ -67,9 +68,8 @@
 				    		</div>
 				    		#if( $caneditasset )
 				    		<div class="btns float-left" style="padding:1px 10px;">
-				    			<input class="btn btn-primary" type="button" 
-				    				onclick="jQuery(this.form).submit();"
-				    			value="[[Save Values]]"/>
+				    			<input class="btn btn-primary" type="submit" 
+				    				value="[[Save Values]]"/>
 				    		</div>
 				    		#end	
 				    	</form>

@@ -4,28 +4,32 @@
 <!--  This would have the point details in it -->
 
       <p style="margin-bottom: 10px;">
-		<label>[[Address]]:</label>
-        <input type="text" size="60" id="${detail.id}_address" class="form-control form-control-sm"  />
+		##<label>[[Address]]:</label>
+        <input type="text" size="60" id="${detail.id}_address" class="form-control form-control-sm" placeholder="[[Search Location]]"  />
 		
         <input class="btn btn-sm btn-primary" type="button" id="${detail.id}_search" value="[[Search]]"  />
       </p>
      
 
-<div id="${detail.id}_map" align style="width: 100%; height:360px; margin-bottom: 15px;"></div>
+<div id="${detail.id}_map" align style="width: 100%; height:460px; margin-bottom: 15px;"></div>
    #set($latandlong = $data.getValue($detail.getId()))
    
    #set( $lat = $latandlong.getLatitude() )
    #set( $lng = $latandlong.getLongitude() )
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
    
-   #set($lanlng = "")
-   #if ($lat && $lng)
-   	#set($lanlng = "$lat,$lng")
+   #set($latlng = "")
+   #if ($lat != "" && $lng != "")
+   	#set($latlng = "$lat,$lng")
    #end
    
    <div class="float-left assetpanel-content-label">[[Position]]:</div>
     <div class="float-left">
-		<input type="text" id="${detail.id}_latandlong" class="form-control" size="40" name="${detail.id}.value" value="$!latlng"/>
+		<input type="text" 
+				id="${detail.id}_latandlong" 
+				class="form-control" size="40" 
+				name="${detail.id}.value" 
+				value="$!latlng"/>
    </div>
    
 <script type="text/javascript">
