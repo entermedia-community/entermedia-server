@@ -1102,8 +1102,19 @@ checkScroll = function()
 	   resultsdiv.data("pagenum",page);
 	   var appdiv = $('#application');
 	   var home = $('#application').data('home') + $('#application').data('apphome');
+	   var link = "";
 	   var componenthome = appdiv.data('componenthome');
-	   var link = componenthome + "/results/stackedgallery.html";
+	   
+	   //var link = componenthome + "/results/stackedgallery.html";
+	   var stackedgallerypages = $('#resultsdiv').data("stackedgallerypages");
+	   if (stackedgallerypages) {
+		   link = home + stackedgallerypages;
+	   }
+	   else {
+		   link = componenthome + "/results/stackedgallery.html";
+	   }
+	   
+	   
 	   var collectionid = $('#resultsdiv').data("collectionid");
 	   var params = {
 		"hitssessionid":session,
@@ -1120,9 +1131,10 @@ checkScroll = function()
 
 		   $.ajax({
 			   	url: link,
-			   	xhrFields: {
-			      withCredentials: true
-			   	},
+				xhrFields: {
+			        withCredentials: true
+			    },
+				crossDomain: true,
 			   	cache: false,
 			   	data: params,
 				success: function(data) 
