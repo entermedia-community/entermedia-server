@@ -455,7 +455,7 @@ public class CategoryModule extends BaseMediaModule
 		Category tosave = null;
 		String action = inReq.getRequestParameter("action");
 		
-		if (action.equals("rename")) {
+		if (action != null && action.equals("rename")) {
 			catid = inReq.getRequestParameter("nodeID");
 		}
 		
