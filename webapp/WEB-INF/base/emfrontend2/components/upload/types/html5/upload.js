@@ -3,66 +3,67 @@ var uploadid = new Date().getTime();
 var home = null;
 var currentupload = 0;
 var haderror = false;
-var allfiles = new Array();
-
 
 var uploadid;
 
-	function filesPicked(event, files) 
-	{
-         		//merge them together
-         		for (var i = 0; i < files.length; i++) 
-        	 	{
-        	    	var file = files[i];
-        	    	if( file.size > 0)
- 	        	    {
-        	    		allfiles.push(file);
- 	        	    }
-        	    }
-        	    files = allfiles;
-				var inputbox = $("#upload_field")[0];
-				$("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
-				
-				inputbox.count = allfiles.length;
-				
-	         	//$("#upload_field").setFiles( allfiles );
-	         	
-	         	$("#uploadinstructionsafter").hide();
-	        	var startb = $("#startbutton");
-	        	$(startb).text("Upload");
-    			$(startb).prop('disabled', false);
-	        	$("#uploadinstructionsafter").show();
-	        	$(".showonselect").show();
-	        	
-	        	 
-	        	 var regex = new RegExp("currentupload", 'g');  
-	        	 
-        	    $("#up-files-list").empty();
-	             //return confirm("You are trying to upload " + total + " files. Are you sure?");
-	        	 for (var i = 0; i < files.length; i++) 
-	        	 {
-	        	    var file = files[i];
-	        	    if( file.size > 0)
-	        	    {
-		        	    var html = $("#progress_report_template").html();
-		        	    
-		        	    html = html.replace(regex,i);
-		        	    $("#up-files-list").append(html);
-		        	    
-		        	    //TODO: set the name and size of each row
-		        	    $("#progress_report_name" + i).text(file.name);
-		        	    var size = bytesToSize(file.size,2);
-		        	    $("#progress_report_size" + i).text(size);
-	        	    }
-	        	    
-	        	 }
-	        	 console.log("Picked " + files.length );
-	        	 
-	         }
 	
 // wait for the DOM to be loaded 
 $(document).ready(function() 
 {	
+	var allfiles = new Array();
+	
+
+	function filesPicked(event, files) 
+		{
+	         		//merge them together
+	         		for (var i = 0; i < files.length; i++) 
+	        	 	{
+	        	    	var file = files[i];
+	        	    	if( file.size > 0)
+	 	        	    {
+	        	    		allfiles.push(file);
+	 	        	    }
+	        	    }
+	        	    files = allfiles;
+					var inputbox = $("#upload_field")[0];
+					$("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
+					
+					inputbox.count = allfiles.length;
+					
+		         	//$("#upload_field").setFiles( allfiles );
+		         	
+		         	$("#uploadinstructionsafter").hide();
+		        	var startb = $("#startbutton");
+		        	$(startb).text("Upload");
+	    			$(startb).prop('disabled', false);
+		        	$("#uploadinstructionsafter").show();
+		        	$(".showonselect").show();
+		        	
+		        	 
+		        	 var regex = new RegExp("currentupload", 'g');  
+		        	 
+	        	    $("#up-files-list").empty();
+		             //return confirm("You are trying to upload " + total + " files. Are you sure?");
+		        	 for (var i = 0; i < files.length; i++) 
+		        	 {
+		        	    var file = files[i];
+		        	    if( file.size > 0)
+		        	    {
+			        	    var html = $("#progress_report_template").html();
+			        	    
+			        	    html = html.replace(regex,i);
+			        	    $("#up-files-list").append(html);
+			        	    
+			        	    //TODO: set the name and size of each row
+			        	    $("#progress_report_name" + i).text(file.name);
+			        	    var size = bytesToSize(file.size,2);
+			        	    $("#progress_report_size" + i).text(size);
+		        	    }
+		        	    
+		        	 }
+		        	 console.log("Picked " + files.length );
+		        	 
+		         }
 	
 	home = $("#application").data("siteroot") + $("#application").data("apphome"); 
 	lQuery('#filePicker').livequery('click',function(e){
