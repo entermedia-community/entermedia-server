@@ -259,6 +259,7 @@ $(document).ready(function()
 
 	lQuery("#viewassetsbtn").livequery("click", function(e)
 	{
+		home = $("#application").data("siteroot") + $("#application").data("apphome");
 		e.preventDefault();
 		var collectionid = $("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
@@ -275,7 +276,7 @@ $(document).ready(function()
 	    	}
 	    else if(collectionid)
 	    {
-	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
+	    	href = home+"/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
 	    	if( nodeid)
 	    	{
 	    		href = href + "&nodeID=" + nodeid;
@@ -283,11 +284,11 @@ $(document).ready(function()
 	    }
 	    else if( nodeid)
 		{
-	         href = "$siteroot$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+	         href = home+"/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
 		}
 	    else
 	    {
-	        href = "$siteroot$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	        href = home+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
 		}
 	    
 	    document.location.href = href;
