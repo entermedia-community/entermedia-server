@@ -73,7 +73,7 @@ $context.putPageValue("details",$details)
 		#end
 		</table>
 			<form name="editrow" 
-				action="$siteroot$content.dataroot/edit/edit.html"
+				action="$home$content.dataroot/edit/edit.html"
 				class="ajaxform"
 				data-targetdivinner="datamanager-workarea"
 				data-updateurl="true"
@@ -100,14 +100,14 @@ $context.putPageValue("details",$details)
 			&nbsp;&nbsp;
 			
 			#if( $datalist.prevPage() )
-			<a href="$siteroot$content.dataroot/list/results.html?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
+			<a href="$home$content.dataroot/list/results.html?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
 				class="ajax"
 				data-targetdivinner="datamanager-workarea" ><b>&lt;&lt;  [[Back]]</b></a>
 			#end
 			
 			#if ( $datalist.nextPage() )
 			<a style="margin-left: 10px;" 
-				href="$siteroot$content.dataroot/list/results.html?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
+				href="$home$content.dataroot/list/results.html?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType&oemaxlevel=1"
 				 class="ajax"
 				data-targetdivinner="datamanager-workarea"><b> [[Forward]] &gt;&gt;</b></a>
 			#end

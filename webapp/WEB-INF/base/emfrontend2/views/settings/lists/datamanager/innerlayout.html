@@ -1,6 +1,6 @@
 #set(  $currentsearch = $context.getRequestParameter("searchtype") ) 
 
-#set( $action = "$siteroot$apphome/views/settings/lists/datamanager/list/index.html" )
+#set( $action = "$home$apphome/views/settings/lists/datamanager/list/index.html" )
 
 
 <div class="datamanagerchose">
@@ -9,7 +9,7 @@
 		data-targetdivinner="datamanagerpage">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
 	<input type="hidden" name="oemaxlevel" value="2"/>
-	<a class="btn btn-sm btn-primary float-right ajax" data-targetdivinner="datamanagerpage" href="$siteroot$apphome/views/settings/lists/datamanager/addtable/index.html?oemaxlevel=1">[[New Table]]</a>
+	<a class="btn btn-sm btn-primary float-right ajax" data-targetdivinner="datamanagerpage" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html?oemaxlevel=1">[[New Table]]</a>
 		##[[Choose Table]]: 
            <select name="searchtype" onchange="" class="select2 form-control form-control-sm float-right">
 			<option value="">[[Choose Table]]</option>

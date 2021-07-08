@@ -12,7 +12,7 @@
 
 #set( $viewsroot = $content.viewsroot )
 
-<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
 #if( $viewid )
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
@@ -49,7 +49,7 @@
 	    
 	    <div class="inner clearfix">
 	    
-        <form id="changename" name="newgroup" method="post" action="$siteroot$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+        <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
             <input type="hidden" name="field" value="name" />
             <div>[[View Name]]</div>
             <input class="field" name="name.value" value="$view.name" >
@@ -92,13 +92,13 @@
                 <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
             </div>
             #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn" data-targetdiv="permissionedit" href="$siteroot$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+            <a class="ajax btn" data-targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
 <div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
             <input class="btn right" style="margin-top: 10px;" type="submit" value="[[Save]]" />
             #if($candevelop)
-            <a class="btn" href="$siteroot$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
+            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
         </form>
         
@@ -116,7 +116,7 @@
         #end
         #if( $canviewsettings )
         <div class="subheader-title">
-	    <a  class="btn btn-xs btn-primary" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>
+	    <a  class="btn btn-xs btn-primary" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>
 	    </div>
 	    #end
 	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="$apphome/views/settings/lists/datamanager/views/addtoview.html" >
@@ -143,7 +143,7 @@
 #end
 </ul>
 <ul  class="emsettingslist sortviews" data-viewid="$viewid" data-catalogid="$catalogid" data-searchtype="$moduleid" data-assettype="$assettype" data-viewpath="$viewpath" 
-data-path="$siteroot$viewsroot/saveview.html">
+data-path="$home$viewsroot/saveview.html">
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
@@ -151,7 +151,7 @@ data-path="$siteroot$viewsroot/saveview.html">
 				## #set( $pid = $pid.replace("_",""))//Why??? 
 				<li id="viewid_$pid">
 					#if( $canviewsettings )
-					<a class="sortableitem" href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype&viewid=${viewid}"><span class="drag-and-drop"></span> $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a class="sortableitem" href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype&viewid=${viewid}"><span class="drag-and-drop"></span> $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	
 						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	

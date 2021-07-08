@@ -9,7 +9,7 @@
 	<select id="proptomodify" 
 			name="id" 
 			class="form-control form-control-sm ajax"
-			data-href="$siteroot${dataroot}/properties/edit.html?oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()&" 
+			data-href="$home${dataroot}/properties/edit.html?oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=$searcher.getSearchType()&" 
 			data-targetdiv="datamanager-workarea">
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
@@ -28,7 +28,7 @@
 #set( $origURL = $context.getRequestParameter("origURL" ) )		
 		
 <form id="dataeditor" name="dataeditor" method="post" 
-		action="$siteroot$dataroot/properties/save.html?oemaxlevel=1"
+		action="$home$dataroot/properties/save.html?oemaxlevel=1"
 		data-targetdivinner="datamanager-workarea"
 		class="ajaxform" >
 	<input name="save" type="hidden" value="true" />
@@ -66,8 +66,8 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 <div class="" style="padding:10px 10px;">
 
 <input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="[[Save]]" />
-<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="datamanager-workarea" style="margin-right: 10px;" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Cancel]]</a>	
-<a class="btn btn-sm btn-danger ajax" data-targetdivinner="datamanager-workarea"href="$siteroot$apphome/views/settings/lists/datamanager/properties/remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Delete Field]]</a>
+<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="datamanager-workarea" style="margin-right: 10px;" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Cancel]]</a>	
+<a class="btn btn-sm btn-danger ajax" data-targetdivinner="datamanager-workarea"href="$home$apphome/views/settings/lists/datamanager/properties/remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()&oemaxlevel=1">[[Delete Field]]</a>
 </div>
 
 </form>
@@ -89,7 +89,7 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 
 	loadPropertyEdit = function(selectedid) {
 
-		jQuery("#propertyEditPanel").load("$siteroot${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+		jQuery("#propertyEditPanel").load("$home${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
 
 </script>
