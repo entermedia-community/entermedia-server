@@ -15,7 +15,10 @@
 		<a class="btn btn-sm btn-primary " 
 			href='$siteroot$usermanagerhome/users/reindex.html'
 			>[[Reindex]]</a>
-		<a class="btn btn-sm btn-primary ajax" href='$siteroot$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300'>[[Create User]]</a>
+		<a class="btn btn-sm btn-primary ajax" 
+			href='$siteroot$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300' 
+			data-targetdivinner="usersearchresultspanel"
+			data-oemaxlevel="1">[[Create User]]</a>
 		</div>
 		<div class="float-right">
 		$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
