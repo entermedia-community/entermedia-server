@@ -2837,7 +2837,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
+
+		if(inUser != null) {
 		log.info("Deleted all records database " + getSearchType() + " by user:" + inUser.getId());
+	}
 //		 DeleteByQueryRequestBuilder delete =
 //		 getClient().prepareDeleteByQuery(toId(getCatalogId()));
 //		 delete.setTypes(getSearchType());
