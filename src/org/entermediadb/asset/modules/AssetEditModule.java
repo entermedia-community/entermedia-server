@@ -1622,14 +1622,16 @@ public class AssetEditModule extends BaseMediaModule
 
 	}
 
-	public void deleteAssetVote(WebPageRequest ex)
+	public void deleteAssetVote(WebPageRequest inReq)
 	{
-		Asset asset = getAsset(ex);
-		User user = ex.getUser();
-
-		MediaArchive archive = getMediaArchive(ex);
-		removeVote(asset, archive, user);
-		loadAssetVotes(ex);
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		User user = inReq.getUser();
+		if (asset != null) {
+			removeVote(asset, archive, user);
+			loadAssetVotes(inReq);
+			inReq.putPageValue("assetid", asset.getId());
+		}
 	}
 
 	public void removeVote(Asset asset, MediaArchive archive, User user)
@@ -1644,7 +1646,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	}
 
-	public void voteForAsset(WebPageRequest ex) throws Exception
+	public void voteForAsset(WebPageRequest inReq) throws Exception
 	{
 		/*
 		 * #set($searcher = $searcherManager.getSearcher($catalogid,
@@ -1653,12 +1655,13 @@ public class AssetEditModule extends BaseMediaModule
 		 * $dateformat.format($today)) #set($alreadyVoted = $uservote)
 		 * $context.putPageValue("votetoremove", $uservote)
 		 */
-		MediaArchive archive = getMediaArchive(ex);
+		MediaArchive archive = getMediaArchive(inReq);
 
-		Asset asset = getAsset(ex);
+		Asset asset = getAsset(inReq);
 		if (asset != null) {
-			voteForAsset(asset, archive, ex.getUser());
-			loadAssetVotes(ex);
+			voteForAsset(asset, archive, inReq.getUser());
+			loadAssetVotes(inReq);
+			inReq.putPageValue("assetid", asset.getId());
 		}
 	}
 

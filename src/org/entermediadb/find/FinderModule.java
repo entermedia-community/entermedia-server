@@ -28,6 +28,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
 
 public class FinderModule extends BaseMediaModule
 {
@@ -194,10 +195,10 @@ public class FinderModule extends BaseMediaModule
 				
 
 				sortModules(foundmodules);
-				log.info("organized Modules: " + foundmodules);
+				log.info("Organized Modules: " + foundmodules);
 				
 				if (foundmodules.size() == 0) {
-					log.info("####---####--###--### ISSUE HERE ####---####--###--###");
+					log.info("Found no modules.");
 				}
 				
 				inReq.putPageValue("organizedModules",foundmodules);
@@ -324,9 +325,40 @@ public class FinderModule extends BaseMediaModule
 			if( hits != null)
 			{
 				//organizeHits(inReq, hits, hits.getPageOfHits());
-				log.info("Found " + hits.size() + " on " + hits.getHitsName());
+				log.info("Found " + hits.size() + " favorite on " + hits.getHitsName());
 			}
 		}
+		
+		//search Assets:assetvotes
+		//from MediaSearchModule.java
+		Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
+		SearchQuery query = searcher.createSearchQuery();
+		
+		User user = inReq.getUser();
+		
+		query.addExact("username", user.getId());
+		query.addSortBy("timeDown");
+		HitTracker assets = searcher.cachedSearch(inReq, query);
+		if( assets.size() > 0)
+		{
+			//Now do a big OR statement
+			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
+			aquery.setSortBy(inReq.findValue("sortby"));
+			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
+			orquery.setAndTogether(false);
+			for (Iterator iterator = assets.getPageOfHits().iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String assetid = data.get("assetid");
+				if(assetid != null){
+					orquery.addExact("id", data.get("assetid"));
+				}
+			}
+			aquery.addChildQuery(orquery);
+			
+			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
+		}
+		
 
 	}
 	protected Collection<Data> listSearchModules(MediaArchive archive)
