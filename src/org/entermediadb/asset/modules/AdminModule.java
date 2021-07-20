@@ -1369,7 +1369,18 @@ public class AdminModule extends BaseMediaModule
 			inReq.putPageValue("invalid", "Sorry, couldn't login.  Please try again.");
 		}
 	}
+	
+	public void resetKey(WebPageRequest inReq) {
+		String foruser = inReq.getRequestParameter("username");
+		UserManager userManager = getUserManager(inReq);
+		User user = userManager.getUser(foruser);
+		if (user != null) {
+			user.setValue("googlesecretkey", "");
+		}
+		userManager.saveUser(user);
+		return;
 
+	}
 	public void loadTemporaryKey(WebPageRequest inReq)
 	{
 		StringEncryption encoder = getUserManager(inReq).getStringEncryption();

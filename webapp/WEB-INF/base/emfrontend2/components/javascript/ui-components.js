@@ -111,6 +111,10 @@ uiload = function() {
 			letterCase : 'uppercase'
 		});
 	}
+	
+	lQuery('.focusme').livequery(function(){
+		$(this).focus();
+	})
 
 	lQuery('#module-dropdown').livequery("click", function(e) {
 		e.stopPropagation();
