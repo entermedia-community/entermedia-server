@@ -26,7 +26,7 @@
        	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="passwordsent" href="$siteroot$usermanagerhome/user/sendresetpassword.html?username=$selectedUser.id&oemaxlevel=1">[[Send Password Reset]]</a>
 	#end
 	
-	<a class="btn btn-sm btn-secondary emdialog" href="./showkey.html?username=$userName">[[Generate Temporary EnterMedia Key]]</a>
+	<a class="btn btn-sm btn-secondary emdialog"  data-cancelsubmit="true" href="./showkey.html?username=$userName">[[Generate Temporary EnterMedia Key]]</a>
 	
 	#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication") && $canviewsettings)
 		<div style="margin:8px 0;">
