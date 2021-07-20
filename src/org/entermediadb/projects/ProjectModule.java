@@ -1630,4 +1630,8 @@ Server ProjectModule.uploadFile
 		
 	}
 	
+	public void getDockerId(WebPageRequest inReq) {
+		inReq.putPageValue("instancemonitorid", inReq.getRequestParameter("instancemonitorid"));
+	}
+	
 }
