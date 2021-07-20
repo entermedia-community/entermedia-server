@@ -2697,21 +2697,26 @@ public class MediaArchive implements CatalogEnabled
 	}
 	
 	public Boolean isSnapshotDateOld(String dateStr) {
-		String[] dateArr = dateStr.split("-");
-		// Date date = new Date(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]),Integer.parseInt( dateArr[2]), Integer.parseInt(dateArr[3]), Integer.parseInt(dateArr[4]));
-		Calendar warnDate = Calendar.getInstance();
-		
-		Calendar date = new GregorianCalendar();
-		date.set(Calendar.YEAR, Integer.parseInt(dateArr[0]));
-		date.set(Calendar.MONTH, Integer.parseInt(dateArr[0]));
-		date.set(Calendar.DATE, Integer.parseInt(dateArr[0]));
-		date.set(Calendar.HOUR, Integer.parseInt(dateArr[0]));
-		date.set(Calendar.MINUTE, Integer.parseInt(dateArr[0]));
-		date.set(Calendar.SECOND, Integer.parseInt(dateArr[0]));
-		
-		warnDate.add(Calendar.DAY_OF_YEAR, 5);
-		
-		if (date.before(warnDate)) {
+		try {
+			String[] dateArr = dateStr.split("-");
+			// Date date = new Date(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]),Integer.parseInt( dateArr[2]), Integer.parseInt(dateArr[3]), Integer.parseInt(dateArr[4]));
+			Calendar warnDate = Calendar.getInstance();
+			
+			Calendar date = new GregorianCalendar();
+			date.set(Calendar.YEAR, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.MONTH, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.DATE, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.HOUR, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.MINUTE, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.SECOND, Integer.parseInt(dateArr[0]));
+			
+			warnDate.add(Calendar.DAY_OF_YEAR, 5);
+			
+			if (date.before(warnDate)) {
+				return true;
+			}
+		} catch(Exception e) {
+			log.error(e);
 			return true;
 		}
 		
