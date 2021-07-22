@@ -1,4 +1,8 @@
 <page>
 	<inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
 	<property name="sectiontab">assetadd</property>
+		
+  	<permission name="view">
+			<userprofile property="viewupload" equals="true" />
+	</permission>
 </page>
