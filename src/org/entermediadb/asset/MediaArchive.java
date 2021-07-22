@@ -2704,14 +2704,13 @@ public class MediaArchive implements CatalogEnabled
 			
 			Calendar date = new GregorianCalendar();
 			date.set(Calendar.YEAR, Integer.parseInt(dateArr[0]));
-			date.set(Calendar.MONTH, Integer.parseInt(dateArr[0]));
-			date.set(Calendar.DATE, Integer.parseInt(dateArr[0]));
-			date.set(Calendar.HOUR, Integer.parseInt(dateArr[0]));
-			date.set(Calendar.MINUTE, Integer.parseInt(dateArr[0]));
-			date.set(Calendar.SECOND, Integer.parseInt(dateArr[0]));
+			date.set(Calendar.MONTH, Integer.parseInt(dateArr[1]) -1);
+			date.set(Calendar.DATE, Integer.parseInt(dateArr[2]));
+			date.set(Calendar.HOUR, Integer.parseInt(dateArr[3]));
+			date.set(Calendar.MINUTE, Integer.parseInt(dateArr[4]));
+			date.set(Calendar.SECOND, Integer.parseInt(dateArr[5]));
 			
-			warnDate.add(Calendar.DAY_OF_YEAR, 5);
-			
+			warnDate.add(Calendar.DAY_OF_YEAR, -5);			
 			if (date.before(warnDate)) {
 				return true;
 			}
