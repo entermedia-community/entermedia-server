@@ -926,7 +926,7 @@ max-width:200px;
 	max-height: 100px;
 }
 
-.emrowselected .resultsselection {display:block;}
+td.emrowselected .resultsselection {display:block;}
 .emrowselected .caption { opacity: 1;}
 
 
