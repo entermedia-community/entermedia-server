@@ -297,7 +297,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 		ArrayList<Data> foundmodules = new ArrayList();
-		
+		Map<String,Collection> bytypes = null;
 		Collection<Data> modulestocheck = listSearchModules(archive);
 
 		Collection uids = new ArrayList();
@@ -335,7 +335,7 @@ public class FinderModule extends BaseMediaModule
 			}
 			String smaxsize = inReq.findValue("maxcols");
 			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
-			Map<String,Collection> bytypes = organizeHits(inReq, hits.iterator(),targetsize);
+			bytypes = organizeHits(inReq, hits.iterator(),targetsize);
 
 			foundmodules = processResults(hits, archive, targetsize, bytypes);
 		}
@@ -345,6 +345,7 @@ public class FinderModule extends BaseMediaModule
 		//from MediaSearchModule.java
 		Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
 		SearchQuery query = searcher.createSearchQuery();
+		query.setHitsName("favoriteassets");
 		
 		User user = inReq.getUser();
 		
@@ -369,7 +370,25 @@ public class FinderModule extends BaseMediaModule
 			aquery.addChildQuery(orquery);
 			
 			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
+			
+			
+			if( !assethits.isEmpty())
+			{
+				Data module = archive.getCachedData("module", "asset");
+				foundmodules.add(module);
+
+				bytypes.put("asset",assethits);
+			}
 		}
+		
+		sortModules(foundmodules);
+		log.info("Organized Modules: " + foundmodules);
+		
+		if (foundmodules.size() == 0) {
+			log.info("Found no modules.");
+		}
+		
+		inReq.putPageValue("organizedModules",foundmodules);
 		
 
 	}
