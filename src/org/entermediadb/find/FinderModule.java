@@ -88,75 +88,16 @@ public class FinderModule extends BaseMediaModule
 //				{
 //
 //				}
-				FilterNode node = hits.findFilterValue("entitysourcetype");
 
 				
 				// log.info(hits.getHitsPerPage());
 				//Find counts
+				
 				String smaxsize = inReq.findValue("maxcols");
 				int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
-				
 				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
 				
-				ArrayList foundmodules = new ArrayList();
-				boolean foundasset = false;
-				//See if we have enough from one page. If not then run searches to get some results
-				if( node != null)
-				{
-					for (Iterator iterator = node.getChildren().iterator(); iterator.hasNext();)
-					{
-						FilterNode filter = (FilterNode) iterator.next();
-						String sourcetype = filter.getId();
-						int total  = filter.getCount();
-						Collection sthits = bytypes.get(sourcetype);
-						int max = targetsize;
-						if( sourcetype.equals("asset"))
-						{
-							//max = Math.min(total,MEDIASAMPLE);
-							foundasset = true;
-							Data module = archive.getCachedData("module", sourcetype);
-							foundmodules.add(module);
-							continue; //Skip asset. Done below
-						}
-						int maxpossible = Math.min(total,max);
-
-						if( sthits == null || sthits.size() < maxpossible)
-						{
-							if( !hits.getSearchQuery().isEmpty())
-							{
-								//Only makes sense when someone searched for text. Otherwise we get all values from *
-								String input = hits.getSearchQuery().getMainInput();
-								if( input != null)
-								{
-									Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
-									//TODO: Compine results, avoid dups
-									bytypes.put(sourcetype,sthits);
-								}
-							}
-							else
-							{
-								//Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
-								Searcher searcher = archive.getSearcher(sourcetype);
-								if( sourcetype.equals("category"))
-								{
-									sthits = searcher.query().hitsPerPage(maxpossible).exact("parentid","index").sort("name").search();
-								}
-								else
-								{
-									sthits = searcher.query().hitsPerPage(maxpossible).all().sort("name").search();
-								}
-								//TODO: Compine results, avoid dups
-								bytypes.put(sourcetype,sthits);
-								
-							}
-						}
-						if( sthits != null && !sthits.isEmpty())
-						{
-							Data module = archive.getCachedData("module", sourcetype);
-							foundmodules.add(module);
-						}
-					}
-				}
+				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
 
 				//Put asset into session
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
@@ -205,6 +146,71 @@ public class FinderModule extends BaseMediaModule
 				
 			}
 		}
+	}
+
+	protected ArrayList processResults(HitTracker hits, MediaArchive archive, int targetsize, Map<String, Collection> bytypes)
+	{
+		ArrayList foundmodules = new ArrayList();
+		boolean foundasset = false;
+		//See if we have enough from one page. If not then run searches to get some results
+		FilterNode node = hits.findFilterValue("entitysourcetype");
+		if( node != null)
+		{
+			for (Iterator iterator = node.getChildren().iterator(); iterator.hasNext();)
+			{
+				FilterNode filter = (FilterNode) iterator.next();
+				String sourcetype = filter.getId();
+				int total  = filter.getCount();
+				Collection sthits = bytypes.get(sourcetype);
+				int max = targetsize;
+				if( sourcetype.equals("asset"))
+				{
+					//max = Math.min(total,MEDIASAMPLE);
+					foundasset = true;
+					Data module = archive.getCachedData("module", sourcetype);
+					foundmodules.add(module);
+					continue; //Skip asset. Done below
+				}
+				int maxpossible = Math.min(total,max);
+
+				if( sthits == null || sthits.size() < maxpossible)
+				{
+					if( !hits.getSearchQuery().isEmpty())
+					{
+						//Only makes sense when someone searched for text. Otherwise we get all values from *
+						String input = hits.getSearchQuery().getMainInput();
+						if( input != null)
+						{
+							Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
+							//TODO: Compine results, avoid dups
+							bytypes.put(sourcetype,sthits);
+						}
+					}
+					else
+					{
+						//Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
+						Searcher searcher = archive.getSearcher(sourcetype);
+						if( sourcetype.equals("category"))
+						{
+							sthits = searcher.query().hitsPerPage(maxpossible).exact("parentid","index").sort("name").search();
+						}
+						else
+						{
+							sthits = searcher.query().hitsPerPage(maxpossible).all().sort("name").search();
+						}
+						//TODO: Compine results, avoid dups
+						bytypes.put(sourcetype,sthits);
+						
+					}
+				}
+				if( sthits != null && !sthits.isEmpty())
+				{
+					Data module = archive.getCachedData("module", sourcetype);
+					foundmodules.add(module);
+				}
+			}
+		}
+		return foundmodules;
 	}
 
 	protected void sortModules(ArrayList foundmodules)
@@ -327,7 +333,13 @@ public class FinderModule extends BaseMediaModule
 				//organizeHits(inReq, hits, hits.getPageOfHits());
 				log.info("Found " + hits.size() + " favorite on " + hits.getHitsName());
 			}
+			String smaxsize = inReq.findValue("maxcols");
+			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
+			Map<String,Collection> bytypes = organizeHits(inReq, hits.iterator(),targetsize);
+
+			foundmodules = processResults(hits, archive, targetsize, bytypes);
 		}
+		
 		
 		//search Assets:assetvotes
 		//from MediaSearchModule.java
