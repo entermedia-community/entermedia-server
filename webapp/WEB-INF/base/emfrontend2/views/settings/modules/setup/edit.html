@@ -31,7 +31,7 @@
 			<input type="hidden" name="id" value="$!id" />
 			<tr>
 				<td class="emdatafield">
-					[[Tab on Navigation]]
+					[[Show on Navigation]]
 				</td>
 				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
 					<input type="hidden" name="field" value="showonnav" />
@@ -48,6 +48,17 @@
 					<input type="hidden" name="field" value="showonsearch" />
 					<div class="form-check">
 					<input name="showonsearch.value" class="form-check-input " type="checkbox" #if( $!data.showonsearch == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
+	        <tr>
+				<td class="emdatafield">
+					[[Is Entity]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="isentity" />
+					<div class="form-check">
+					<input name="isentity.value" class="form-check-input " type="checkbox" #if( $!data.isentity == "true") checked #end value="true" />
 					</div>
 				</td>
 			</tr>
