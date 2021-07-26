@@ -2310,6 +2310,10 @@ public class MediaArchive implements CatalogEnabled
 
 	public int getRealImageWidth(Data inHit)
 	{
+		if( inHit == null)
+		{
+			return -1;
+		}
 		String orientation = inHit.get("imageorientation");
 		String width = null;
 		if (orientation == null || orientation.equals("1") || orientation.equals("3"))
@@ -2329,6 +2333,11 @@ public class MediaArchive implements CatalogEnabled
 
 	public int getRealImageHeight(Data inHit)
 	{
+		if( inHit == null)
+		{
+			return -1;
+		}
+
 		String orientation = inHit.get("imageorientation");
 		String height = null;
 		if (orientation == null || orientation.equals("1") || orientation.equals("3"))
