@@ -74,6 +74,7 @@ $context.putPageValue("viewpostfix",".html")
 #set( $action = $context.getRequestParameter("actionurl") ) 
 <div id="" class="" style="min-height: 450px"  >
 <table  id="assetpicker-results-table" class="emdata table table-striped table-hover" >
+	<thead>
 	<tr class="tableheader" >
 	<th>[[Preview]]</th>
 	#foreach( $detail in $details )
@@ -107,6 +108,7 @@ $context.putPageValue("viewpostfix",".html")
 		 </th>
 	#end
 	</tr>
+	</thead>
 	<tbody ng-foreach="hit in dataresults">
 		#foreach( $hit in $hits.getPageOfHits() )
 		$context.putPageValue("hit", $hit)
