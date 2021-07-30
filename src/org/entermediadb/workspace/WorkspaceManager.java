@@ -168,30 +168,33 @@ public class WorkspaceManager
 		String mid = createModuleFallbacks(appid, module);
 		if( !mid.equals("asset") )
 		{
+			String viewstemplate = "";
 			/** DATABASE STUFF **/
-			String template = "/" + catalogid + "/data/lists/view/default.xml";
-			String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-			copyXml(catalogid, template, path, module);
-			Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+			//is Entity?
+			if (Boolean.parseBoolean(module.get("isentity"))) {
+				String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
+				String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+				copyXml(catalogid, templateentities, pathentities, module);
+				viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+			}else {
+				String template = "/" + catalogid + "/data/lists/view/default.xml";
+				String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+				copyXml(catalogid, template, path, module);		
+				viewstemplate = "/" + catalogid + "/data/views/defaults/";
+			}
 			
-			Collection valuesdir = getPageManager().getChildrenPaths("/" + catalogid + "/data/views/defaults/",true );
+			
+			Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+			Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
 			for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
 			{
 				
 				String copypath = (String) iterator.next();
 				Page input = getPageManager().getPage(copypath);
 				Page destpath = null;
-				if (input.isFolder()) {
-					//verify entities
-					String directoryname = input.getName();
-					
-					if (directoryname.equals("entities") && Boolean.parseBoolean(module.get("isentity"))) {
-						destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + input.getName());
-					}
-				}
-				else {
-					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
-				}
+				
+				destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
+				
 				if (destpath != null) {
 					getPageManager().copyPage(input, destpath);
 				}
