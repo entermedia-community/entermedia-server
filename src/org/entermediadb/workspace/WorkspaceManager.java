@@ -177,12 +177,27 @@ public class WorkspaceManager
 			Collection valuesdir = getPageManager().getChildrenPaths("/" + catalogid + "/data/views/defaults/",true );
 			for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
 			{
+				
 				String copypath = (String) iterator.next();
 				Page input = getPageManager().getPage(copypath);
-				Page destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
-				getPageManager().copyPage(input, destpath);
+				Page destpath = null;
+				if (input.isFolder()) {
+					//verify entities
+					String directoryname = input.getName();
+					
+					if (directoryname.equals("entities") && Boolean.parseBoolean(module.get("isentity"))) {
+						destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + input.getName());
+					}
+				}
+				else {
+					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
+				}
+				if (destpath != null) {
+					getPageManager().copyPage(input, destpath);
+				}
 				
 			}
+			
 			views.reIndexAll();
 			String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 			String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
