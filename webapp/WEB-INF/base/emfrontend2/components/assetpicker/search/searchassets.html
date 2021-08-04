@@ -12,7 +12,7 @@ $context.putPageValue("hits",$hits)
 		<form  class="autosubmit"
 				style="margin-bottom:10px;"
 			 	data-targetdiv="assetsearchresults" 
-			  	action="$home$apphome/components/assetpicker/search/searchassetresults.html">
+			  	action="$siteroot$apphome/components/assetpicker/search/searchassetresults.html">
 			<div class="row inlinesearch">
 			#foreach( $detail in $details)
 				<div class="col">
@@ -37,9 +37,9 @@ $context.putPageValue("hits",$hits)
 		<div id="assetsearchresults"  
 			class="emselectable" 
 	 		data-targetdiv="assetsearchresults"
-	 		data-searchhome="$home$apphome/components/assetpicker/search"
+	 		data-searchhome="$siteroot$apphome/components/assetpicker/search"
 	 		data-searchtype="asset" >
-			$pages.include("$home$apphome/components/assetpicker/search/searchassetresults.html",$context)
+			$pages.include("$apphome/components/assetpicker/search/searchassetresults.html",$context)
 		</div>
 		
 	</div>
@@ -53,7 +53,7 @@ $context.putPageValue("hits",$hits)
 	jQuery("#assetsearchresults").on("click", ".selectrowclick", function() {
 		var assetid = jQuery(this).data('assetid');
 		jQuery("#" + targetdiv).attr("value", assetid);
-		jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+		jQuery("#" + detailid + "-preview").load("$siteroot$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
 			jQuery("#assetsearchdialog").modal('hide');
 	});
 	});
