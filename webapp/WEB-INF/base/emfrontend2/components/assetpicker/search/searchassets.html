@@ -34,7 +34,11 @@ $context.putPageValue("hits",$hits)
 		
 		#end
 		
-		<div id="assetsearchresults">
+		<div id="assetsearchresults"  
+			class="emselectable" 
+	 		data-targetdiv="assetsearchresults"
+	 		data-searchhome="$home$apphome/components/assetpicker/search"
+	 		data-searchtype="asset" >
 			$pages.include("$home$apphome/components/assetpicker/search/searchassetresults.html",$context)
 		</div>
 		
