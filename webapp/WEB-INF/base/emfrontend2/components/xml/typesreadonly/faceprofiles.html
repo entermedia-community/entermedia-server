@@ -1,0 +1,17 @@
+#set($collection = $data.getValues($detail.getId()))
+
+<ul class="entity-value-list">
+	#foreach( $profile in $collection )
+		#set( $row = false )
+		#set( $row = $mediaarchive.getCachedData("faceprofilegroup",$profile.faceprofilegroup) )
+	    #if( $row )
+	    	#set($name = $context.getText( $row ) )
+	    	#if( !$name)
+	    		#set($name = "[[unlabeled]]") 
+	    	#end
+	    	##/find/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=AXmkjXDnqw92jqIo_9hS&searchtype=faceprofilegroup&hitssessionid=hitsfaceprofilegroupfinder/catalog
+		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&searchtype=faceprofilegroup&hitssessionid=$!hits.sessionId")
+		    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
+	    #end 
+	#end	
+</ul>

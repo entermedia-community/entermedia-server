@@ -1876,9 +1876,13 @@ public class MediaArchive implements CatalogEnabled
 			return null;
 		}
 		Searcher searcher = getSearcher(inSearchType);
-		Data hit = (Data) searcher.searchById(inId);
-		hit = searcher.loadData(hit); //not needed?
-		return hit;
+		if( searcher != null)
+		{
+			Data hit = (Data) searcher.searchById(inId);
+			hit = searcher.loadData(hit); //not needed?
+			return hit;
+		}
+		return null;
 
 	}
 
