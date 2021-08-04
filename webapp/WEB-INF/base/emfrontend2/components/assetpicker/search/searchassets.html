@@ -6,11 +6,13 @@ $context.putPageValue("hits",$hits)
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("asset") )
 		$context.putPageValue("searcher",$searcher)
+		#set($viewid = "asset")
+		#set($viewpath = "asset/picker")
 		#set ($details = $searcher.getDetailsForView("asset/picker", $userprofile))
 		<form  class="autosubmit"
 				style="margin-bottom:10px;"
-			  data-targetdiv="assetsearchresults" 
-			  action="$home$apphome/components/assetpicker/search/searchassetresults.html">
+			 	data-targetdiv="assetsearchresults" 
+			  	action="$home$apphome/components/assetpicker/search/searchassetresults.html">
 			<div class="row inlinesearch">
 			#foreach( $detail in $details)
 				<div class="col">
@@ -20,6 +22,17 @@ $context.putPageValue("hits",$hits)
 			#end
 			</div>
 		</form>
+		
+		#if($canviewsettings)
+		
+			<a style="position:absolute; top:3px; right:3px;"
+				class=" edit-icon"
+				href="$apphome/views/settings/modules/asset/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+				title="[[Edit Search Form Fields]]">
+			<i class="fas fa-edit"></i>
+			</a>
+		
+		#end
 		
 		<div id="assetsearchresults">
 			$pages.include("$home$apphome/components/assetpicker/search/searchassetresults.html",$context)
