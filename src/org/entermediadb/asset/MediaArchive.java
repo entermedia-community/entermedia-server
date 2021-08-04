@@ -2709,7 +2709,6 @@ public class MediaArchive implements CatalogEnabled
 		try {
 			String[] dateArr = dateStr.split("-");
 			// Date date = new Date(Integer.parseInt(dateArr[0]), Integer.parseInt(dateArr[1]),Integer.parseInt( dateArr[2]), Integer.parseInt(dateArr[3]), Integer.parseInt(dateArr[4]));
-			Calendar warnDate = Calendar.getInstance();
 			
 			Calendar date = new GregorianCalendar();
 			date.set(Calendar.YEAR, Integer.parseInt(dateArr[0]));
@@ -2719,16 +2718,41 @@ public class MediaArchive implements CatalogEnabled
 			date.set(Calendar.MINUTE, Integer.parseInt(dateArr[4]));
 			date.set(Calendar.SECOND, Integer.parseInt(dateArr[5]));
 			
-			warnDate.add(Calendar.DAY_OF_YEAR, -5);			
-			if (date.before(warnDate)) {
-				return true;
-			}
+			return isSnapshotDateOld(date);
 		} catch(Exception e) {
 			log.error(e);
 			return true;
 		}
-		
+	}
+	
+	public Boolean isSnapshotDateOld(Calendar date) {
+		Calendar warnDate = Calendar.getInstance();
+		warnDate.add(Calendar.DAY_OF_YEAR, -5);	
+		if (date.before(warnDate)) {
+			return true;
+		}
 		return false;
+	}
+	
+	public String healthColor(Data instance) {
+		Date instanceSyncDate = (Date) instance.getValue("lastSyncPullDate");
+		if (instanceSyncDate != null) {
+			Calendar syncDate = Calendar.getInstance();
+			syncDate.setTime(instanceSyncDate);
+			Boolean isSyncOld = isSnapshotDateOld(syncDate);
+			if (isSyncOld) {
+				return "btn-danger";
+			}
+		}
+		String clusterData = (String) instance.getValue("clusterhealth");
+		if (clusterData != null && !clusterData.isEmpty()) {
+			Double clusterHealth = Double.parseDouble(clusterData);;
+			if (clusterHealth < 100) {
+				return "btn-danger";
+			}
+		}
+		
+		return "btn-success";
 	}
 
 }
