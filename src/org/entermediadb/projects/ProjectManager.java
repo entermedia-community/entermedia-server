@@ -363,10 +363,11 @@ public class ProjectManager implements CatalogEnabled
 			String collectionroot = getMediaArchive().getCatalogSettingValue("collection_root");
 			if (collectionroot == null)
 			{
-				collectionroot = "Collections";
+				//collectionroot = "Collections/Favorites/";
+				collectionroot = "Favorites/";  //Finder
 			}
 
-			Category newcat = getMediaArchive().createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
+			Category newcat = getMediaArchive().createCategoryPath(collectionroot + collection.getName());
 
 			newcat.setName(collection.getName());
 
