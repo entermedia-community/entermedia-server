@@ -50,7 +50,7 @@ if( !jQuery.fn.videoTimeline )
 	    var n = Math.abs(num);
 	    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
 	    var zeroString = Math.pow(10,zeros).toString().substr(1);
-	    if( num < 0 ) {
+	    if( num < 0 && zeroString != '') {
 	        zeroString = '-' + zeroString;
 	    }
 
@@ -131,9 +131,10 @@ if( !jQuery.fn.videoTimeline )
 		updateDetails(true);
 	}
 
-	//Saved the selected data
+	//Saved the selected data to DOM
 	updateSelectedClip = function()
 	{
+		
 		var text = $("#cliplabel\\.value").val();
 
 		var selected = $(".selectedclip");
@@ -166,11 +167,14 @@ if( !jQuery.fn.videoTimeline )
 			var fieldid = $(this).val();
 			//var select2 = jQuery("#list-" + fieldid);
 			var select2 = jQuery('select[name="'+fieldid+'\.value"]');
-			if( select2.length > 0)
+			if( select2.length <= 0)
 			{
+				select2 = jQuery('select[name="'+fieldid+'\.values"]');
+			}
+			if( select2.length > 0) {
 				//select2.val(null).trigger('change');
 				var textvalues = select2.val().toString();
-				textvalues = textvalues.replace(",","|");
+				textvalues = textvalues.replaceAll(",","|");
 				selected.data(fieldid,textvalues);  //Convert to |
 			}
 		});	
@@ -192,6 +196,8 @@ if( !jQuery.fn.videoTimeline )
 		var decstart = selected.data("timecodestart");
 		decstart = parseFloat(decstart);
 		var start = parseTimeToText( decstart / 1000 );
+		//debugger;
+		
 		$("#timecodestart\\.value").val( start );
 	
 		var len = parseFloat(selected.data("timecodelength"));
@@ -257,7 +263,10 @@ if( !jQuery.fn.videoTimeline )
 		var fieldid = $(this).val();
 		var values = selected.data(fieldid);
 		
-		var select2 = jQuery("#list-" + fieldid);
+		var select2 = jQuery("select[name='"+fieldid+".value']");
+		if( select2.length <= 0) {
+			select2 = jQuery("select[name='"+fieldid+".values']");
+		}
 		if( select2.length > 0)
 		{
 			if( values )
@@ -394,6 +403,7 @@ if( !jQuery.fn.videoTimeline )
 	var clickspot = {};
 	var selectedbox = null;
 	var resizingbox = false;
+	var movingbox = false;
 	var startwidth = 10;
 
 	var moved = false;
@@ -734,9 +744,12 @@ if( !jQuery.fn.videoTimeline )
 			
 			if( !$(event.target).hasClass("grabresize") )
 			{
+				//we are moving
+				movingbox = true;
+				resizingbox = false;
 				clearSelection();
 				//clickspot = event;
-				resizingbox = false;
+				
 				var imageposition = selectedbox.position();
 				var left = imageposition.left;
 				$("#timelinecursor").css({"left" : left+60 + "px"});
@@ -745,6 +758,7 @@ if( !jQuery.fn.videoTimeline )
 			else
 			{
 				resizingbox = true;
+				movingbox = false;
 			}
 			
 		//});
@@ -757,89 +771,90 @@ if( !jQuery.fn.videoTimeline )
 //		});
 	});
 	
-		timelineeditor.on("mouseup", function(event)
+	timelineeditor.on("mouseup", function(event) {
+		if( selectedbox == null )
 		{
-			if( selectedbox == null )
-			{
-				return;
-			}
-			clickspot = {};
-			selectedbox = null;
-			resizingbox = false;
-			//moving = false;
-			//console.log("Release");
-			if (moved)
-			{
-				updateSelectedClip();
-			}
-			moved = false;
-			//updateDetails(true);
-			return false;
-		});
+			return;
+		}
+		clickspot = {};
+		selectedbox = null;
+		resizingbox = false;
+		//moving = false;
+		//console.log("Release");
+		if (moved)
+		{
+			updateSelectedClip();
+		}
+		moved = false;
+		movingbox = false;
+		//updateDetails(true);
+		return false;
+	});
 		
-		timelineeditor.on("mousemove", function(event)
+	timelineeditor.on("mousemove", function(event) {
+		if( selectedbox == null )
 		{
-			if( selectedbox == null )
+			return;
+		}
+		
+		moved = true;
+		
+		//Slow?
+		//clearSelection();
+	
+		var changeleft =  event.pageX - clickspot.xPos;
+		var changetop =  event.pageY - clickspot.yPos;
+		//console.log("csX: " +clickspot.xPos + " eX: " +xPos);
+
+		var ratio = $("#timelinemetadata").data("ratio");
+		ratio = parseFloat(ratio);
+
+		if( resizingbox )
+		{
+			var width = startwidth + changeleft;
+			if( width < 10 )
 			{
-				return;
+				width = 10;
 			}
+			selectedbox.css("width", width);
 			
-			moved = true;
-			
+			var miliseconds = (width / ratio );
 			//Slow?
-			//clearSelection();
-		
-			var changeleft =  event.pageX - clickspot.xPos;
-			var changetop =  event.pageY - clickspot.yPos;
-			//console.log("csX: " +clickspot.xPos + " eX: " +xPos);
-
-			var ratio = $("#timelinemetadata").data("ratio");
-			ratio = parseFloat(ratio);
-
-			if( resizingbox )
-			{
-				var width = startwidth + changeleft;
-				if( width < 10 )
-				{
-					width = 10;
-				}
-				selectedbox.css("width", width);
-				
-				var miliseconds = (width / ratio );
-				//Slow?
-				var selected = $(".selectedclip");
-				selected.data("timecodelength",miliseconds);
-				updateTime(false);
-				//event.preventDefault();
-				return false;
+			var selected = $(".selectedclip");
+			selected.data("timecodelength",miliseconds);
+			updateTime(false);
+			//event.preventDefault();
+			return false;
+		}
+		else if (movingbox)
+		{
+			
+			var left = clickspot.relativeXPos + changeleft;
+			if( left < 0 ) {
+				left = 0;
 			}
-			else
-			{
-				var left = clickspot.relativeXPos + changeleft;
-				if( left < 0 ) {
-					left = 0;
-				}
-				if (left > parentoffset.width) {
-					left = parentoffset.width;
-				}
-				selectedbox.css({"left" : left + "px"});
-				
-				var top = clickspot.relativeYPos + changetop;
-				if (top<0) {
-					top = 0;
-				}
-				if (top > parentoffset.height) {
-					top = parentoffset.height;
-				}
-				selectedbox.css({"top" : top + "px"});
-				
-				var seconds = left / ratio;
-				$("#timelinecursor").css({"left" : left+60 + "px"});
-				var selected = $(".selectedclip");
-				selected.data("timecodestart",seconds);
-				updateTime(true);
+			if (left > parentoffset.width) {
+				left = parentoffset.width;
 			}
-		});
+			selectedbox.css({"left" : left + "px"});
+			
+			var top = clickspot.relativeYPos + changetop;
+			if (top<0) {
+				top = 0;
+			}
+			if (top > parentoffset.height) {
+				top = parentoffset.height;
+			}
+			selectedbox.css({"top" : top + "px"});
+			
+			var seconds = left / ratio;
+			$("#timelinecursor").css({"left" : left+60 + "px"});
+			var selected = $(".selectedclip");
+			selected.data("timecodestart",seconds);
+			updateTime(true);
+			
+		}
+	});
 
 				/*
 	var jump = $("#timelineviewer").data("timecodejump");

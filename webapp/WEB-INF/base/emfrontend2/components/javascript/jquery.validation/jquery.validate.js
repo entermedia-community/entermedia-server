@@ -113,9 +113,11 @@ $.extend($.fn, {
 		} else {
 			valid = true;
 			validator = $( this[ 0 ].form ).validate();
+			if (validator) {
 			this.each( function() {
 				valid = validator.element( this ) && valid;
 			});
+			}
 		}
 		return valid;
 	},
