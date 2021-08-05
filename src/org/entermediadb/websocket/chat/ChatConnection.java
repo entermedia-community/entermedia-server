@@ -224,6 +224,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			if( command != null && !command.equals("keepalive"))
 			{
 				log.info("Command was: " + command);
+				log.info(map);
 			}
 			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
@@ -241,7 +242,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				String collectionid = (String) map.get("collectionid");
+				
+				String collectionid = (String) map.get("collectionid").toString();
 				/* Get first name */
 				Object userval = map.get("user");
 				String userid = null;
@@ -287,6 +289,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 		} catch (Exception e) {
 			log.error("Could not parse: " , e);
+			
 		}
 	}
 
