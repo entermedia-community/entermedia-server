@@ -1,5 +1,8 @@
-var initclosedcaptions = function() 
-{
+if( !jQuery.fn.videoClosedCaptions ) { 
+
+	(function ( $ ) {
+	$.fn.videoClosedCaptions = function( options ) {
+	
 	console.log("Closed Caption init");
 	
 	var app = $("#application");
@@ -7,7 +10,10 @@ var initclosedcaptions = function()
 	var themeprefix = app.data("siteroot")	+ app.data("themeprefix");
 	
 	var videoclip = $("#videoclipcc");
-	var video = document.getElementById("videoclipcc");//videoclip[0];
+	var timelineeditor = $(this);
+	
+	var video = timelineeditor.find("video")[0];//videoclip[0];
+	//var video = document.getElementById("videoclipcc");//videoclip[0];
 	
 	if (video == null) {
 		return;
@@ -84,13 +90,46 @@ var initclosedcaptions = function()
 			success: function() 
 			{
 				$("#captioninput").val("");
-				$("#scrollarea").scrollTop($("#scrollarea")[0].scrollHeight);
+				//$("#scrollarea").scrollTop($("#scrollarea")[0].scrollHeight);
 				var endingtime = video.currentTime + 8;
 				$("#timecodelength").val(8000);
 				$("#captionend").text(parseTimeToText(endingtime));
 			}
 	 	});
 	}	
+	
+	
+	ccselectClip = function(div)
+	{
+		var div = $(div).closest(".cc-data-selection");
+		$(".cc-data-selection").removeClass("selectedclip");
+		div.addClass("selectedclip");
+		ccupdateDetails();
+	}
+	
+	ccupdateDetails = function(jumptoend)
+	{
+		var selected = $(".selectedclip");
+	
+		$("#captioninput").val( selected.data("cliplabel") );
+		var decstart = selected.data("timecodestart");
+		decstart = parseFloat(decstart);
+		if( decstart )
+		{
+			video.currentTime = decstart / 1000;
+		}
+		var declength = selected.data("timecodelength");
+		declength = parseFloat(declength);
+		$("#timecodelength").val(declength);
+		var ending = (decstart + declength);
+		$("#captionend").text(parseTimeToText(ending/1000));
+		
+	}
+	
+	ccupdateCaptions = function(starttime) {
+		$("#captionstart").text(parseTimeToText(starttime));
+		$("#timecodestart").val( Math.round(starttime * 1000 ));
+	}
 
 	//Closed caption stuff
 	lQuery("#captioninput").livequery( "keydown",function(e) 
@@ -143,13 +182,13 @@ var initclosedcaptions = function()
 	});
 	
 	videoclip.on("timeupdate",function(e) {
-		debugger;
+		//debugger;
 		var link = $("#playtab");
 		if( video.paused )
 		{
 			link.removeClass("playing");
 			starttime = video.currentTime;
-			updateCaptions(starttime);
+			ccupdateCaptions(starttime);
 		}
 		else if(link.hasClass("playing") )
 		{
@@ -199,57 +238,27 @@ var initclosedcaptions = function()
 		return false;
 	});
 
-	ccselectClip = function(div)
-	{
-		var div = $(div).closest(".cc-data-selection");
-		$(".cc-data-selection").removeClass("selectedclip");
-		div.addClass("selectedclip");
-		ccupdateDetails();
-	}
 	
-	ccupdateDetails = function(jumptoend)
-	{
-		var selected = $(".selectedclip");
-	
-		$("#captioninput").val( selected.data("cliplabel") );
-		var decstart = selected.data("timecodestart");
-		decstart = parseFloat(decstart);
-		if( decstart )
-		{
-			video.currentTime = decstart / 1000;
-		}
-		var declength = selected.data("timecodelength");
-		declength = parseFloat(declength);
-		$("#timecodelength").val(declength);
-		var ending = (decstart + declength);
-		$("#captionend").text(parseTimeToText(ending/1000));
-		
-	}
-	
-	ccupdatecaptions = function(starttime) {
-		$("#captionstart").text(parseTimeToText(starttime));
-		$("#timecodestart").val( Math.round(starttime * 1000 ));
-	}
 	
 	lQuery(".cc-data-selection").livequery("click", function(e)	{
 		e.preventDefault();
 		ccselectClip(this);
 		ccupdateDetails();
-		ccupdatecaptions(video.currentTime);
+		ccupdateCaptions(video.currentTime);
 	});	
-};
 
+
+	};
+	
+	}( jQuery ));
+} //Dont reload
 
 
 jQuery(document).ready(function()
 {
-	initclosedcaptions();
-	
-	$(window).on('tabready',function()
-	{
-		initclosedcaptions();
-	});
+	$("#closedcaptioneditor").videoClosedCaptions();
 });
+
 
 
 

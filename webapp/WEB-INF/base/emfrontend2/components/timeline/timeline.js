@@ -1,15 +1,13 @@
-if( !jQuery.fn.videoTimeline )
-{
-(function ( $ ) {
+if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 
 	//console.log("Timeline init1", $.fn.videoTimeline);
-//	if( $.fn.videoTimeline != null )
-//	{
-//		console.log("Timeline init skip, already defined");
-//		
-//		return this;
-//	}
-//debugger;
+	//	if( $.fn.videoTimeline != null )
+	//	{
+	//		console.log("Timeline init skip, already defined");
+	//		
+	//		return this;
+	//	}
+	//debugger;
 	
     $.fn.videoTimeline = function( options ) {
  
