@@ -28,7 +28,8 @@
 	<div class="opencollections">
 	<ul>
 		
-	 #if($canaddtofavorites)
+	##disabled Favorite Collection for Users
+	 #if($canaddtofavorites && 1==2)
 		#set( $collection = $mediaarchive.getProjectManager().getFavoritesCollection($user) )
 		#if( $librarycol && $collection.getId() == $librarycol.id )
 				#set( $selected = true )
