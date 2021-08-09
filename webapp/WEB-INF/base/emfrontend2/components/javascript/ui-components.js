@@ -59,7 +59,7 @@ uiload = function() {
                     setTimeout(function () {
                         //Fix Position if in bootstrap modal
 						var modal = $("#modals");
-                        if (modal) {
+                        if (modal.length) {
 							var modaltop = $("#modals").offset().top;
 							if (modaltop) {
 	                            var dpickertop = dpicker.offset().top;
