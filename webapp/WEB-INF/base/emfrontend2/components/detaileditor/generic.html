@@ -68,7 +68,13 @@ $context.putPageValue("searchtype", $searchtype)
 	#if (!$targetdiv)
 		#set( $targetdiv = "tabsummarypanel")
 	#end
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" data-includesearchcontext="false">
+	<form name="formedit$view" 
+			id="formedit$view" 
+			class="ajaxform" 
+			data-targetdiv="$!targetdiv" 
+			method="post" 
+			action="$siteroot$editpath" 
+			data-includesearchcontext="false">
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input name="oemaxlevel" type="hidden" value="1" />
@@ -118,7 +124,7 @@ $context.putPageValue("searchtype", $searchtype)
  		<div class="row">
  		<div class="col">
 		<div class="btns">
-			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).trigger('submit');" value="[[Save values]]"/>
+			<input class="btn btn-sm btn-primary submitform" type="button"	value="[[Save values]]"/>
 			#if ($targetdiv == "tabsummarypanel")
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
 				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
