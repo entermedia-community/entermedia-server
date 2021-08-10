@@ -175,33 +175,34 @@ $context.putPageValue("module", $module)
 			</li>
 		#end		
 
-		#if(!$edit || $edit == "false"  )
-			<li class="resultsnavtitem">
-				<select class="form-control" name="resultview" id="selectresultview"  
-					data-hitssessionid="$hits.getSessionId()" 
-					data-searchtype="asset" 
-					data-page="$hits.getPage()" 
-					data-showremoveselections="$showremoveselections" 
-					data-collectionid="$!librarycol.getId()">
-				#set( $types = $mediaarchive.getList("resulttype"))
-				#foreach($type in $types)
-					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+		#if(!$context.hideresultstypes)
+			#if(!$edit || $edit == "false"  )
+				<li class="resultsnavtitem">
+					<select class="form-control" name="resultview" id="selectresultview"  
+						data-hitssessionid="$hits.getSessionId()" 
+						data-searchtype="asset" 
+						data-page="$hits.getPage()" 
+						data-showremoveselections="$showremoveselections" 
+						data-collectionid="$!librarycol.getId()">
+					#set( $types = $mediaarchive.getList("resulttype"))
+					#foreach($type in $types)
+						<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+					#end
+					</select>
+					
+				</li>
+				#if ($resultview != "map")
+				#if( $hits && $hits.size() > 0)
+					<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+						$pages.include("$componenthome/results/pages.html",$context)
+					</li>	
+					<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+						<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>
+					</li>			
 				#end
-				</select>
-				
-			</li>
-			#if ($resultview != "map")
-			#if( $hits && $hits.size() > 0)
-				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-					$pages.include("$componenthome/results/pages.html",$context)
-				</li>	
-				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-					<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>
-				</li>			
-			#end
-			#end
-		#end	
-
+				#end
+			#end	
+		#end
 		
 	</ul>
 </div>

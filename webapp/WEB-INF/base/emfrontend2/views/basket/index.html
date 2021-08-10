@@ -2,30 +2,23 @@
 $context.putPageValue("hits",$orderassets)
 $context.putPageValue("hidefilters",true)
 
+#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
+
 <div id="searchplugin" class="modules-layout">
-	<div class="col-main col-sidebar" id="leftsidebar">
-	<div class="col-main-inner">
-		
-		#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-		<h2>[[Cart]]</h2>
-		 
-		##$pages.include("${searchhome}/sidebar/standard.html",$context)
-		<div class="clearfix"></div>
-		
-	</div>
-	</div>
-	<div class="col-main col-content col-content-main" class="module-inner">
-				<div id="collectionbasket">
-                    #if($orderitems.size() >0 )
-                        $pages.include("$apphome/components/results/index.html",$context)
-                    #else
+<div id="collectionbasket">
+<h2>[[Cart]]</h2>
+                #if($orderitems.size() >0 )
+                	$context.putPageValue("resultstargetdiv","collectionbasket")
+                	$context.putPageValue("resultsPage","$siteroot$apphome/views/basket/index.html")
+                	$context.putPageValue("hideresultstypes","hideresultstypes")
+                	
+                    $pages.include("$apphome/components/results/index.html",$context)
+                #else
 
-                    <p class="info" style="padding:20px;">[[No Items in Cart]]</p>
+                <p class="info" style="padding:20px;">[[No Items in Cart]]</p>
 
-                    #end
-                </div>
+    #end
+</div>
 
-				<div class="clearfix"></div>
-	</div>
 
 </div> 

@@ -9,7 +9,12 @@
 	#if ($category)
 		#set($categoryid = $category.getId())
 	#end
-	#set($resultsPage = "$home$apphome/views/search/index.html")
+	
+	#set($resultsPage = $context.resultsPage)
+	#if(!$resultsPage)
+		#set($resultsPage = "$siteroot$apphome/views/search/index.html")
+	#end
+	
 	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage")
 	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
 	#if($module)
@@ -18,7 +23,10 @@
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
-	#set($targetdiv = "filteredresults")
+	#set($targetdiv = $context.resultstargetdiv)
+	#if(!$targetdiv)
+		#set($targetdiv = "searchlayout")
+	#end
 	
 	 
 	

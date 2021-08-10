@@ -665,10 +665,11 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(inReq);
 
 		HitTracker re = getOrderManager().findAssets(inReq, catalogid, order);
+		re.setHitsPerPage(500);
 		if( re != null)
 		{
 			inReq.putPageValue("orderassets", re);
-			inReq.putSessionValue(re.getSessionId(),re);
+			inReq.putSessionValue(re.getSessionId(), re);
 			return re;
 		}
 		return null;
