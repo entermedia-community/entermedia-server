@@ -364,7 +364,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+			log.info("Asset: "+ asset.getId()+" Image Magick Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " " + inOutFile.getName());
 
 			return result;
 		}

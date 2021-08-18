@@ -169,8 +169,7 @@ public class CMYKTranscoder extends BaseTranscoder
 		{
 			result.setComplete(true);
 
-			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
-
+			log.info("Asset: "+ asset.getId()+" CMYK Convert complete in:" + (System.currentTimeMillis() - start) + " Preset:" + inStructions.getConvertPreset() + " " + inOutFile.getName());
 			return result;
 		}
 		//problems
