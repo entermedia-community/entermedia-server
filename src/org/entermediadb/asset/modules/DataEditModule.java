@@ -562,6 +562,7 @@ String viewbase = null;
 		String ok = inReq.findValue("save");
 		if (!Boolean.parseBoolean(ok))
 		{
+			log.info("Save was not set to true");
 			return;
 		}
 
@@ -1958,13 +1959,20 @@ String viewbase = null;
 		{
 			String field = inReq.getRequestParameter("field");
 			inReq.setRequestParameter(field + ".value", content);
-
+			String searchtype = inReq.findValue("searchtype");
+			log.info("Saving HTML content:" + searchtype + "." + content + " field:" + field + " user:" + inReq.getUserName());
 		}
 		inReq.setRequestParameter("save", "true");
-		String path = inReq.getRequestParameter("page");
-		log.info("Saving HTML content size:" + content.length() + " path:" + path + " user:" + inReq.getUserName());
+		String path = inReq.getRequestParameter("editPath");
+		if( path == null)
+		{
+			path = inReq.getRequestParameter("page"); //Legacy, please remove
+		}
+	//	log.info("Saving HTML content size:" + content.length() + " path:" + path + " user:" + inReq.getUserName());
 		saveData(inReq);
 
+		String edited = (String)inReq.getPageValue("rowsedited");
+		log.info("Saved html data "+ edited);
 	}
 
 	/**
