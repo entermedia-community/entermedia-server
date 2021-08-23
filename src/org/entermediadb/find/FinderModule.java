@@ -376,7 +376,10 @@ public class FinderModule extends BaseMediaModule
 			{
 				Data module = archive.getCachedData("module", "asset");
 				foundmodules.add(module);
-
+				if( bytypes == null)
+				{
+					bytypes = new HashMap();
+				}
 				bytypes.put("asset",assethits);
 			}
 		}
