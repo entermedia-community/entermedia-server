@@ -63,6 +63,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return null;
 	}
 
+	public boolean isDeleted()
+	{
+		return getBoolean("deleted");
+	}
+	
 	public boolean isFolder()
 	{
 		return getBoolean("isfolder");
