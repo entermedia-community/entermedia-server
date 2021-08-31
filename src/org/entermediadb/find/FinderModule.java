@@ -421,12 +421,14 @@ public class FinderModule extends BaseMediaModule
 			return;
 		}		
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(50);
+		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search();
 
 		Map<String,String> keywordsLower = new HashMap();
 		collectMatches(keywordsLower, query, unsorted);
 		
 		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(50);
+		assetdq.getQuery().setIncludeDescription(true);
 		HitTracker assetunsorted = assetdq.search();
 		collectMatches(keywordsLower, query, assetunsorted);
 		
@@ -460,36 +462,51 @@ public class FinderModule extends BaseMediaModule
 			String name = hit.getName();
 			//Split with . or spaces
 			addMatch(keywordsLower,query,lowerquery, name);
-			Collection words = hit.getValues("keywords");
-			if( words != null && !words.isEmpty())
+			String description = hit.get("description");
+			if( description != null )
 			{
-				for (Iterator iterator2 = words.iterator(); iterator2.hasNext();)
+				String[] keywords = description.split("[ ]+");
+				for (int i = 0; i < keywords.length; i++)
 				{
-					String word = (String) iterator2.next();
-					addMatch(keywordsLower,query, lowerquery, word);
+					addMatch(keywordsLower,query, lowerquery, keywords[i]);
 				}
 			}
 		}
 	}
 
-	protected void addMatch(Map<String,String> keywords, String query, String lowerquery, String name)
+	protected void addMatch(Map<String,String> foundkeywords, String query, String lowerquery, String keyword)
 	{
-		if( name == null)
+		if( keyword == null || keyword.isEmpty())
 		{
 			return;
 		}
-		if( !name.toLowerCase().startsWith(lowerquery) ) 
+		
+		String cleanedup = keyword.trim();
+
+		if( cleanedup.length() > 25)
+		{
+			cleanedup = cleanedup.substring(0,25);
+		}
+		
+		//cleanedup = cleanedup.replaceAll("[^a-zA-Z\\-\\._\\d^]", "").toLowerCase();
+		
+		//TODO: Remove any weird trailing things like enter or ascii
+		
+		if( cleanedup.endsWith("."))
+		{
+			cleanedup = cleanedup.substring(0,cleanedup.length()-1);
+		}
+		
+		if( !cleanedup.toLowerCase().startsWith(lowerquery) ) 
 		{
 			return;
 		}
-		String existing = keywords.get(name.toLowerCase());
-		if( existing == null)
+		
+		//Add to the list or replace one
+		String existing = foundkeywords.get(cleanedup.toLowerCase());
+		if( existing == null ||  !existing.startsWith(query))
 		{
-			keywords.put(name.toLowerCase(),name);
-		}
-		else if( !existing.startsWith(query))
-		{
-			keywords.put(name.toLowerCase(),name);
+			foundkeywords.put(cleanedup.toLowerCase(),cleanedup);
 		}
 		
 	}
