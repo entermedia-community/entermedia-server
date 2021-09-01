@@ -24,6 +24,7 @@ public void init(){
 	SearchQuery query = searcher.addStandardSearchTerms(context);
 	if(query == null){
 		query = searcher.createSearchQuery();
+		query.addMatches("id", "*");
 	}
 	AggregationBuilder b = AggregationBuilders.terms("fileformat_filesize").field("fileformat");
 	SumBuilder sum = new SumBuilder("filesize_sum");
@@ -33,11 +34,13 @@ public void init(){
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
 	hits.getActiveFilterValues();
+	log.info("Found " + hits.size());
+	
 	StringTerms agginfo = hits.getAggregations().get("fileformat_filesize");
+	log.info(agginfo);
 	context.putPageValue("diskspacehits", hits)
 	context.putPageValue("hits", hits)
 	
-	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
 	
 }

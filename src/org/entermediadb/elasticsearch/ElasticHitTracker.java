@@ -527,7 +527,9 @@ public class ElasticHitTracker extends HitTracker
 	
 	public Aggregations getAggregations(){
 		SearchResponse response = getSearchResponse(0);
-		return response.getAggregations();
+		Aggregations agregations = response.getAggregations();
+		
+		return agregations;
 	}
 	
 	
