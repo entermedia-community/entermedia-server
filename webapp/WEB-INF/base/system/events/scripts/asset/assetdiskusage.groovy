@@ -31,10 +31,10 @@ public void init(){
 	//query.setEndUserSearch(false);
 
 	
-		HitTracker hits =searcher.search(query);
-		log.info("query:" + query.hasFilters());
-		
-			hits.enableBulkOperations();
+	HitTracker hits =searcher.search(query);
+	//log.info("query:" + query.hasFilters());
+	
+	hits.enableBulkOperations();
 	hits.getActiveFilterValues();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)
