@@ -99,7 +99,7 @@ public void init(){
         //log.info("**** hits.getSearchResponse " + hits.getSearchResponse(0))
 	hits.enableBulkOperations();
 	hits.getActiveFilterValues();
-	StringTerms agginfo = hits.getAggregations().get("keywords");
+	//StringTerms agginfo = hits.getAggregations().get("keywords");
         context.putPageValue("event_breakdown_day", hits)
 	
 }
