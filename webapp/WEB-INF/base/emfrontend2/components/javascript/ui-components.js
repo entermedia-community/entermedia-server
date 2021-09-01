@@ -692,17 +692,17 @@ uiload = function() {
 				});
 				//form.submit();
 				var targetdiv = form.data("targetdiv");
+				
+				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
-					$(form).trigger("submit");
-					/*
 					$(form).ajaxSubmit({
 						target : "#" + $.escapeSelector(targetdiv), 
-						data:data
-						
-					});*/
+						data:data						
+					});
 				} else {
 					$(form).trigger("submit");
 				}
+				
 				if (form.hasClass("autoclose")) {
 					form.closest(".modal").modal("hide");
 				}
