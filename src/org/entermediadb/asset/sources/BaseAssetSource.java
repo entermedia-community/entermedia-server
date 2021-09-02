@@ -233,8 +233,11 @@ public abstract class BaseAssetSource implements AssetSource
 							}
 							Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
 							asset.setValue(field, date);
-						}else{
-							asset.setValue(field, col[0]);
+						} 
+						else
+						{
+							String v = col[0];
+							asset.setValue(field, v);
 						}
 					}
 					else
@@ -245,6 +248,31 @@ public abstract class BaseAssetSource implements AssetSource
 				else
 				{
 					asset.setValue(field, val);
+				}
+				
+				//Check for _auto
+				PropertyDetail detail = getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field);
+				if( detail.isList() )  
+				{
+					Collection<String> values = asset.getValues(field);
+					if( values != null && !values.isEmpty())
+					{
+						Collection<String> tosave = new ArrayList();
+						for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
+						{
+							String v = (String) iterator2.next();
+							if( "_auto".equals( v ) )
+							{
+								Searcher s = getMediaArchive().getSearcher(detail.getListId() );
+								Data newone = s.createNewData();
+								newone.setName(PathUtilities.extractPageName(asset.getName()));
+								s.saveData(newone);
+								v = newone.getId();
+							}
+							tosave.add(v);
+						}
+						asset.setValue(field,tosave);
+					}
 				}
 			}
 		}
