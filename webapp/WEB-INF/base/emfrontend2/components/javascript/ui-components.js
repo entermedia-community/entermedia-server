@@ -1844,7 +1844,7 @@ uiload = function() {
 			
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
-				$(".account-content").addClass('account-content-fullwidth');
+				$(".emrightcontent").removeClass('empushcontent');
 				saveProfileProperty("usersidebarhidden","true");
 			}
 			});
@@ -1853,7 +1853,7 @@ uiload = function() {
 			var url = apphome + '/components/sidebars/user/show.html';
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
-				$(".account-content").removeClass('account-content-fullwidth');
+				$(".emrightcontent").addClass('empushcontent');
 				saveProfileProperty("usersidebarhidden","false");
 			}
 			});
