@@ -252,7 +252,7 @@ public abstract class BaseAssetSource implements AssetSource
 				
 				//Check for _auto
 				PropertyDetail detail = getMediaArchive().getAssetSearcher().getPropertyDetails().getDetail(field);
-				if( detail.isList() )  
+				if( detail != null && detail.isList() )  
 				{
 					Collection<String> values = asset.getValues(field);
 					if( values != null && !values.isEmpty())
