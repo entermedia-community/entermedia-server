@@ -70,6 +70,7 @@ public class VideoConversionManager extends BaseConversionManager
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.m3u8");
 		if( preset == null || !Boolean.parseBoolean( preset.get("onimport")) )
 		{
+			//legacy
 			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
 		}
 		ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(),preset);
@@ -85,7 +86,8 @@ public class VideoConversionManager extends BaseConversionManager
 		ConvertInstructions instructions2;
 		String defaultpresetoutput = "image1900x1080.jpg";
 		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
-		if (preset == null) {
+		if (preset == null) 
+		{
 			defaultpresetoutput = "image1024x768.jpg";
 			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
 		}

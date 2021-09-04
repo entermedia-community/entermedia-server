@@ -484,13 +484,16 @@
 	    
 	    
   </property>
-  
 
   <property id="faceprofiles" index="true" keyword="false" stored="true" editable="true" datatype="nested" > 
      <name> 
       <language id="en"><![CDATA[Face Profiles]]></language>  
     </name> 
-    
+    <property id="facedatatime" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
+      <name> 
+        <language id="en"><![CDATA[Face Data Time Code]]></language>  
+      </name> 
+	</property>  
     <property id="facedata" index="true" indextype="not_analyzed" keyword="true" stored="true" editable="true" >
     <name> 
       <language id="en"><![CDATA[Face Data]]></language>  

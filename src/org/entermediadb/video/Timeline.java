@@ -3,10 +3,12 @@ package org.entermediadb.video;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
-import org.entermediadb.asset.Asset;
 import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
 
@@ -33,17 +35,17 @@ public class Timeline
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public Collection getClips()
+	public Collection<Clip> getClips()
 	{
 		return fieldClips;
 	}
 
-	public void setClips(Collection inClips)
+	public void setClips(Collection<Clip> inClips)
 	{
 		fieldClips = inClips;
 	}
 
-	public Collection getTicks()
+	public Collection<Block> getTicks()
 	{
 		if (fieldTicks == null)
 		{
@@ -100,18 +102,50 @@ public class Timeline
 		if( inParent != null)
 		{
 			Collection rows = inParent.getValues(inField);
+			Set existingfaceprofilegroups = new HashSet();
 			if( rows != null)
 			{
 				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
 				{
 					Map data = (Map) iterator.next();
+					
 					Clip clip = new Clip();
 					clip.setData(data);
+					
+					if( data.get("faceprofilegroup") != null)
+					{
+						existingfaceprofilegroups.add(data.get("faceprofilegroup") + String.valueOf(clip.getStart() ) );
+					}
+					
 					fieldClips.add(clip);
 				}
 				Collections.sort((ArrayList)fieldClips);
 	
 			}
+			//Now look for facial recognition stuff and create records if needed. Once they save its done
+			Collection faceprofiles = inParent.getValues("faceprofiles");
+			if( faceprofiles != null)
+			{
+				for (Iterator iterator = faceprofiles.iterator(); iterator.hasNext();)
+				{
+					Map<String,Object> profile = (Map) iterator.next();
+					if( !existingfaceprofilegroups.contains(profile.get("faceprofilegroup") + String.valueOf(profile.get("timecodestart") ) ) )
+					{
+						//Add it
+						Map data = new HashMap();
+						data.put( "timecodestart",profile.get("timecodestart"));
+						data.put( "timecodelength",profile.get("timecodelength"));
+						data.put( "faceprofilegroup",profile.get("faceprofilegroup"));
+						
+						//TODO: Set the heights bassed on profilegroup. Like one row per each?
+						Clip clip = new Clip();
+						clip.setData(data);
+						fieldClips.add(clip);
+					}
+				}
+			}
+			
+			
 		}
 		return fieldClips;
 	}
@@ -124,6 +158,24 @@ public class Timeline
 	public int getPxLength(Clip inClip)
 	{
 		double ratio = (double)inClip.getLength() / (double)getLength();
+		double px = (double)getPxWidth() * ratio;
+		if( px < 90)
+		{
+			px = 90;
+		}
+		int pxi = (int)Math.round(px);
+		return pxi;
+	}
+	
+	public int getPxFaceStart(Map inFace)
+	{
+		double ratio = toDouble(inFace.get("facedatastarttime")) / (double)getLength();
+		double px = (double)getPxWidth() * ratio;
+		return (int)Math.round(px);
+	}
+	public int getPxFaceLength(Map inFace)
+	{
+		double ratio = toDouble(inFace.get("facedataendtime")) / (double)getLength();
 		double px = (double)getPxWidth() * ratio;
 		if( px < 90)
 		{
@@ -156,5 +208,19 @@ public class Timeline
 			Clip clip = (Clip) iterator.next();
 			//clip.getStart()
 		}
+	}
+	private double toDouble(Object inString)
+	{
+		if( inString == null)
+		{
+			return 0;
+		}
+		
+		return Long.parseLong(inString.toString());
+	}
+
+	public int getFaceRow(Collection inProfiles, Map facedata)
+	{
+		return 10;
 	}
 }

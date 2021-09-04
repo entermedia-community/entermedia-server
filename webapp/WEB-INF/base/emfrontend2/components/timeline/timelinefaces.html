@@ -1,34 +1,23 @@
 #set( $clientroot = "/${applicationid}/components/timeline" )
-
-
-
-<div id="timelinedatacontainer" class="timelinedatacontainer">
-<div id="timelinemetadata"
-	class="timelinedata" 
+<div id="timelinemetaface"
+	class="timelineface" 
 	data-ratio="$timeline.getPxToTimeRatio()" 
-	data-savelink="$siteroot$clientroot/timelinedatasave.html"
-	data-targetdiv="timelinedatacontainer" 
+	data-savelink="$siteroot$clientroot/timelinefacesave.html"
+	data-targetdiv="timelinefacecontainer" 
 	data-assetid="$asset.id" 
 	style="margin:0; width:1200px;">
-	#set( $clips = $timeline.loadClips($asset,"clips") )
-	#foreach($clip in $clips)
+	#set( $faceprofiles = $asset.getValues("faceprofiles") )
+	#foreach($facedata in $faceprofiles)
 		#set( $index = ${foreach.count} - 1)
 		<div id="slider$index" 
-			class="ts-data-selection"  
-			data-cliplabel="#esc($clip.getLabel())"
-			data-timecodestart="$clip.getStart()"
-			data-timecodelength="$clip.getLength()"
-			#set( $other = $clip.getOtherDetails() )
-			#foreach($fieldid in $other.keySet())
-				#set( $v = $other.get($fieldid))
-				data-${fieldid}="$v" 
-			#end
+			class="ts-face-selection"  
+			data-timecodestart="$facedata.facedatastarttime"
+			data-timecodelength="$facedata.facedataendtime"
 			>
-			##<div class="ruler" >
-				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
+				<div class="timecell" style="left: ${timeline.getPxFaceStart($facedata)}px; width: ${timeline.getPxFaceLength($facedata)}px; top: ${timeline.getFaceRow($faceprofiles,$facedata)}px;">
 					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div>
-					<span class="cliptext">  #esc($!clip.getValue("cliplabel"))</span>
+					<span class="cliptext">  #esc($facedata.get("faceprofilegroup"))</span>
 					#if( $other.size() > 1)
 					<span class="clipdetails"> 
 					#foreach($fieldid in $other.keySet())	
@@ -74,23 +63,4 @@
 				</div>
 			##</div>
 		</div>
-		
-		
-
-		
-		
 	#end
-</div>
-</div>
-<div id="templateclip" class="ts-data-selection" style="height: 45px;display:none;"
-	data-cliplabel='[[New Clip]]' 
-	data-timecodestart="0"
-	data-timecodelength="10">
-	##<div class="ruler" >
-		<div class="timecell">
-			<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
-			<div class="grabresize"></div>
-			<span class="cliptext">[[New Clip]]</span>
-		</div>
-	##</div>
-</div>	
