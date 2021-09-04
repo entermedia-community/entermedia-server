@@ -1,7 +1,7 @@
 #set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #if(!$prefix) #set( $prefix = $context.siteRoot ) #end
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
-#set( $sharelink = "$prefix$home/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html")
+#set( $sharelink = "$!prefix$!home/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html")
 <iframe src="$sharelink" width="550" height="400" 
 		style="border:none" 
 		webkitallowfullscreen="true" 

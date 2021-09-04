@@ -647,9 +647,15 @@ public class GoogleManager implements CatalogEnabled
 	{
 		MediaArchive archive = getMediaArchive();
 
-		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
+		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg";
 
 		Page inputpage = archive.getPageManager().getPage(input);
+		if (!inputpage.exists())
+		{
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
+			inputpage = archive.getPageManager().getPage(input);
+
+		}
 		if (!inputpage.exists())
 		{
 			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
