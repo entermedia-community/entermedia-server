@@ -28,7 +28,15 @@
 				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
 					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div>
-					<span class="cliptext">  #esc($!clip.getValue("cliplabel"))</span>
+					#set( $label = $!clip.getValue("cliplabel"))
+						#if( $label)
+						<span class="cliptext"> 
+						#if( $label.length()  > 30)
+						#set( $label = $label.substring(0,30) )
+						#set( $label = "${label}..." )
+						#end
+					 #esc($label) </span>
+					#end
 					#if( $other.size() > 1)
 					<span class="clipdetails"> 
 					#foreach($fieldid in $other.keySet())	
@@ -61,7 +69,13 @@
 											title="[[Entity]]: $!val" 
 											class="emdialog entity-dialog"
 											data-noesc="true"
-											>$!val</a></span>
+											>
+											#if( $val.getName() )
+											$val.getName()
+											#else
+											[[Unlabeled]]
+											#end
+											$!val</a></span>
 									#else
 									##Missing: $fieldid = $v
 									#end
