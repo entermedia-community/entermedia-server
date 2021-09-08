@@ -1,0 +1,22 @@
+<div class="text-center" style="min-height:450px;">
+   	#set( $clientroot = "${applink}/components/timeline" )
+	    
+	<form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  
+			data-targetdiv="videosearchresults" action="$clientroot/search/results.html"
+			onsubmit="return false;">
+
+			<input name="assetid" value="$asset.id" type="hidden">
+			<input name="oemaxlevel" value="1" type="hidden">
+				
+			<input name="searchby" length="10" placeholder="Search within the video"/>
+	</form>
+	
+
+	<div id="videosearchresults">
+	
+	$pages.include("./results.html")
+	</div>	
+	
+	
+</div>
+		

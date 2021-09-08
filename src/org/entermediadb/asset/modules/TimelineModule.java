@@ -17,8 +17,10 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.MathUtils;
+import org.entermediadb.video.Clip;
 import org.entermediadb.video.CloudTranscodeManager;
 import org.entermediadb.video.Timeline;
+import org.entermediadb.video.TimelineManager;
 import org.entermediadb.video.VTT.Cue;
 import org.entermediadb.video.VTT.webvtt.WebvttParser;
 import org.entermediadb.video.VTT.webvtt.WebvttSubtitle;
@@ -157,12 +159,8 @@ public class TimelineModule extends BaseMediaModule
 		
 	}
 	
-	public void loadClosedCaption(WebPageRequest inReq) 
+	public MultiValued loadClosedCaption(WebPageRequest inReq) 
 	{
-		if( inReq.getResponse() != null)
-		{
-			inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
-		}
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");
@@ -185,16 +183,12 @@ public class TimelineModule extends BaseMediaModule
 		track = (MultiValued)captionsearcher.loadData(track);
 		inReq.putPageValue("track", track);
 		inReq.putPageValue("captionsearcher", captionsearcher);
-		
+		return track;
 	}
 	
 	
-	public void loadClosedCaptions(WebPageRequest inReq) 
+	public Collection loadClosedCaptions(WebPageRequest inReq) 
 	{
-		if( inReq.getResponse() != null)
-		{
-			inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
-		}
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");
@@ -204,8 +198,9 @@ public class TimelineModule extends BaseMediaModule
 			Collection tracks = captionsearcher.query().exact("assetid", asset.getId()).sort("sourcelang").search(inReq);
 			inReq.putPageValue("tracks", tracks);
 			inReq.putPageValue("captionsearcher", captionsearcher);
+			return tracks;
 		}
-		
+		return null; //All languages
 	}
 	
 	public void importCaptions(WebPageRequest inReq) throws Exception
@@ -542,6 +537,18 @@ public class TimelineModule extends BaseMediaModule
 	}
 	
 	
+	public void searchInVideo(WebPageRequest inReq) 
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchby = inReq.getRequestParameter("autosubmitfilter");
+		Asset asset = getAsset(inReq);
+
+		TimelineManager manager = (TimelineManager)archive.getBean("timelineManager");
+		Collection results = manager.searchInVideo(archive, asset, searchby);
+		inReq.putPageValue("searchresults",results);
+	}
+
 	
 	
 }

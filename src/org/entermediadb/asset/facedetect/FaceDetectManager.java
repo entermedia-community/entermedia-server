@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.cluster.IdManager;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
@@ -396,7 +397,6 @@ public class FaceDetectManager
 						{
 							group.setValue("collectionimage", otherasset.getId());
 						}
-						
 						
 						group.setValue("creationdate", new Date());
 						group.setValue("automatictagging", true);

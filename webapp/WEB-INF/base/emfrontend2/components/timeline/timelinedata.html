@@ -71,11 +71,13 @@
 											data-noesc="true"
 											>
 											#if( $val.getName() )
-											$val.getName()
+												$val.getName()
+											#elseif( $fieldid == "faceprofilegroup")
+											[[User]] $!val.facecounter
 											#else
-											[[Unlabeled]]
+												$!val
 											#end
-											$!val</a></span>
+											</a></span>
 									#else
 									##Missing: $fieldid = $v
 									#end

@@ -7,9 +7,11 @@
 	<property name="showshare">true</property>
 	<property name="clientroot">/${applicationid}/views/modules/asset/editor/timeline</property>
 	
+	<!--We use an include to load this -->
 	<page-action name="MediaArchiveModule.getAsset"  />
 	<page-action name="TimelineModule.loadTimeline" />
 	
+
   	<property name="assettab">viewtimeline</property>
 
 </page>

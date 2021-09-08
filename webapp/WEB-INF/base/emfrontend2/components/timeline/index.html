@@ -1,5 +1,5 @@
 <div id="timelineeditor" class="actiontabtimeline" data-videolength="$timeline.getLength()">
-	#set( $clientroot = "/${applicationid}/components/timeline" )
+	#set( $clientroot = "${applink}/components/timeline" )
 	#set( $type = $mediaarchive.getMediaPlayerType($asset))
 	#if($type == "video")
 		#set( $sourcepath = $asset.sourcepath )
@@ -16,10 +16,14 @@
 				<div class="timelineviewercontainer">
 					<div class="timelinevieweractions">
 							<a id="addnewcopy" href="#" class="btn btn-sm btn-secondary btn-addnewcopy"><i class="fas fa-plus"></i> [[Add Tag]]</a>
+							<div style="float:right; margin: 9px 118px 0 0">
+									<a id="searchicon" href="$clientroot/search/index.html?assetid=$asset.id" data-height="500" title="[[Search Video]]" 
+										class="btn btn-sm btn-secondary emdialog"><i class="fas fa-search"></i> [[Search]]</a>
 							<div class="timelineviewerarrows">
 									<a id="removetime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-left"></i></a>
 									<a id="addtime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-right"></i></a>
 							</div>
+							</div>		
 					</div>
 				<div class="timelineviewerinside">
 					

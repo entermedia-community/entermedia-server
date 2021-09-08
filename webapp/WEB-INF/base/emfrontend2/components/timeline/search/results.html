@@ -1,0 +1,32 @@
+
+
+
+<table  id="main-results-table" class="emdata table table-striped  table-hover" >
+	<thead>
+	<tr class="tableheader">
+		<th>Type</th>
+		<th>Label</th>
+		<th>Time</th>
+	</tr>
+	</thead>
+	<tbody ng-foreach="hit in dataresults">
+
+#foreach($row in $searchresults)
+	<tr>
+	<td>
+	#if( $row.type == "clip" ) [[Tag]]
+	#elseif( $row.type == "closedcaption" ) [[Closed Caption]]
+	#else
+		[[Face Detected]]
+	#end
+	</td>
+	<td>
+		$row.getLabel()
+	</td>
+	<td>
+		$row.getStartTime()
+	</td>
+	</tr>
+#end
+	</tbody>
+</table>

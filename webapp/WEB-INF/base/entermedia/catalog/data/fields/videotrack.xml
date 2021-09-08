@@ -16,7 +16,7 @@
   
   <property id="sourcelang" index="true" stored="true" editable="true" type="list"  listid="locale">Language</property>   
   
-  <property id="captions" index="true" stored="true" editable="true" datatype="objectarray" > 
+  <property id="captions" index="true" stored="true" editable="true"  datatype="nested" > 
     <name> 
       <language id="en"><![CDATA[Captions]]></language>  
     </name> 

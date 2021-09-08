@@ -2393,5 +2393,8 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
 
+	<bean id="timelineManager" class="org.entermediadb.video.TimelineManager" >
+	</bean>
+
 		
 </beans>

@@ -257,6 +257,12 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		Data authinfo = archive.getData("oauthprovider", "google");
 
+		if( authinfo.get("refreshtoken") == null)
+		{
+			throw new OpenEditException("Must authenticate your Google Login from the Settings Server Area");
+		}
+
+
 		TranscodeTools transcodetools = archive.getTranscodeTools();
 		Map all = new HashMap(); // TODO: Get parent ones as well
 
