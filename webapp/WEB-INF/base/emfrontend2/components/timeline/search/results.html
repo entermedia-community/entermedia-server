@@ -1,31 +1,41 @@
 
 
 
-<table  id="main-results-table" class="emdata table table-striped  table-hover" >
+<table  id="tlmain-results-table" class="emdata table table-striped  table-hover" >
 	<thead>
 	<tr class="tableheader">
-		<th>Type</th>
-		<th>Label</th>
-		<th>Time</th>
+		<th>[[Type]]</th>
+		<th>[[Label]]</th>
+		<th>[[Time]]</th>
 	</tr>
 	</thead>
 	<tbody ng-foreach="hit in dataresults">
 
 #foreach($row in $searchresults)
-	<tr>
-	<td>
-	#if( $row.type == "clip" ) [[Tag]]
-	#elseif( $row.type == "closedcaption" ) [[Closed Caption]]
-	#else
-		[[Face Detected]]
-	#end
-	</td>
-	<td>
-		$row.getLabel()
-	</td>
-	<td>
-		$row.getStartTime()
-	</td>
+	#set($time = $row.getStartTime())
+	<tr class="rowclick" data-rowtime="$!time" data-cliptype="$!row.type">
+		<td>
+		#if( $row.type == "clip" ) 
+			[[Tag]]
+		#elseif( $row.type == "closedcaption" ) 
+			[[Closed Caption]]
+		#else
+			[[Face Detected]]
+		#end
+		</td>
+		<td style="text-align: left;">
+			$row.getLabel()
+		</td>
+		<td>
+			#if($time>0)
+				#set($time_ = $time/1000)
+				$time_
+			#else
+				$time
+			#end
+			
+			
+		</td>
 	</tr>
 #end
 	</tbody>

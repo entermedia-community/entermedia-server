@@ -7,16 +7,49 @@
 
 			<input name="assetid" value="$asset.id" type="hidden">
 			<input name="oemaxlevel" value="1" type="hidden">
-				
-			<input name="searchby" length="10" placeholder="Search within the video"/>
+			<div style="padding: 0 0 10px">
+			<input name="autosubmitfilter" class="form-control"  placeholder="[[Search within the video]]"/>
+			</div>
 	</form>
 	
 
 	<div id="videosearchresults">
-	
 	$pages.include("./results.html")
 	</div>	
 	
+	
+	<script>
+lQuery("#tlmain-results-table .rowclick").livequery("click", function(e) {
+	$(this).closest(".modal").modal("hide");
+	var row = $(this);
+	var rowtime = parseFloat(row.data("rowtime"));
+	
+	//Jum based on Clip type
+	var cliptype = row.data("cliptype");
+	if (cliptype == "clip") {
+		//Select Clip
+		var clip = $('div[data-timecodestart="'+rowtime+'"]').find(".timecell");
+		if (clip.length) {
+			console.log("Jump to: " +rowtime)
+			selectClip(clip);
+		}	
+	}
+	else {
+	//Video Jump
+		unselectClips();
+		var timelineeditor = $("#video-container");
+		if (timelineeditor.length && typeof rowtime === 'number') {
+			rowtime = rowtime/1000;
+			var video = timelineeditor.find("video")[0];
+			if (video) {
+				video.currentTime = rowtime;
+				//console.log("Jump to: " +rowtime)
+			}
+		}
+	}
+	
+});
+</script>
 	
 </div>
 		

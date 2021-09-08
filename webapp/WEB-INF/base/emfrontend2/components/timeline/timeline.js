@@ -888,9 +888,7 @@ if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 	jQuery("#timelineviewerbackground").on("click", function(event)
 		{
 			event.preventDefault();
-			$(".selectedclip").removeClass("selectedclip");
-			//clean fields
-			$("#clipdetails").hide();
+			unselectClips();
 			
 			//console.log("bkg click");
 			var left = event.pageX - $(this).offset().left;
@@ -905,7 +903,15 @@ if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 		}
 	);
 	
+	
+	unselectClips = function() {
+		
+		$(".selectedclip").removeClass("selectedclip");
+		//clean fields
+		$("#clipdetails").hide();
+	};
 
+	
 	return this;
 
 };
