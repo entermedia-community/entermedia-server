@@ -138,7 +138,7 @@ if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 		var selected = $(".selectedclip");
 		var cell = $(".selectedclip .timecell");
 		selected.data("cliplabel", text);
-		$(".cliptext",selected).html(text);
+		$(".cliptext",selected).html(text.trimEllip(30));
 
 		var starttext = $("#timecodestart\\.value").val();
 		var start = parseTimeFromText(starttext);

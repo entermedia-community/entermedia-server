@@ -15,14 +15,17 @@
 				#set( $timecodejump = $page.get("timecodejump"))
 				<div class="timelineviewercontainer">
 					<div class="timelinevieweractions">
-							<a id="addnewcopy" href="#" class="btn btn-sm btn-secondary btn-addnewcopy"><i class="fas fa-plus"></i> [[Add Tag]]</a>
-							<div style="float:right; margin: 9px 118px 0 0">
+						<div style="position:absolute; left:50px; top:5px">
+							<a id="addnewcopy" href="#" class="btn btn-secondary btn-addnewcopy"><i class="fas fa-plus"></i> [[Add Tag]]</a>
+						</div>
+							<div style="position:absolute; right:110px; top:5px">
 									<a id="searchicon" href="$clientroot/search/index.html?assetid=$asset.id" data-height="500" title="[[Search Video]]" 
-										class="btn btn-sm btn-secondary emdialog"><i class="fas fa-search"></i> [[Search]]</a>
+										class="btn btn-secondary emdialog"><i class="fas fa-search"></i> [[Search]]</a>
+							</div>
 							<div class="timelineviewerarrows">
 									<a id="removetime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-left"></i></a>
 									<a id="addtime" href="#" class="btn btn-dark" style="margin-left:0px; z-index:6;" ><i class="fas fa-angle-right"></i></a>
-							</div>
+							
 							</div>		
 					</div>
 				<div class="timelineviewerinside">
