@@ -65,7 +65,7 @@ public class OauthModule extends BaseMediaModule
 			MediaArchive archive = getMediaArchive(inReq);
 			String appid = inReq.findValue("applicationid");
 			Data authinfo = archive.getData("oauthprovider", provider);
-			String siteroot = inReq.findValue("siteRoot");
+			String siteroot = inReq.findValue("siteroot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
