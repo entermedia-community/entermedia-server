@@ -27,7 +27,7 @@ public class TimelineManager
 		List<SearchResult> results = new ArrayList();
 		
 		//closed captions
-		Collection tracks = captionsearcher.query().exact("assetid", inAsset.getId()).freeform("captions.cliplabel", searchby).sort("timecodestart").search();
+		Collection tracks = captionsearcher.query().exact("assetid", inAsset.getId()).contains("captions.cliplabel", searchby).sort("timecodestart").search();
 		for (Iterator iterator = tracks.iterator(); iterator.hasNext();)
 		{
 			Data videotrack = (Data) iterator.next();
