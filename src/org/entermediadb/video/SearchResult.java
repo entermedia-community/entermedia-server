@@ -1,5 +1,7 @@
 package org.entermediadb.video;
 
+import org.entermediadb.asset.util.MathUtils;
+
 public class SearchResult
 {
 
@@ -21,14 +23,20 @@ public class SearchResult
 		fieldLabel = inLabel;
 	}
 	String fieldType;
-	double fieldStartTime;
-	public double getStartTime()
+	long fieldStartTime;
+	public long getStartTime()
 	{
 		return fieldStartTime;
 	}
-	public void setStartTime(double inStartTime)
+	public void setStartTime(long inStartTime)
 	{
 		fieldStartTime = inStartTime;
 	}
 	String fieldLabel;
+
+	public String getStartSecondsAndHours()
+	{
+		return MathUtils.toDuration(getStartTime());
+	}
+	
 }
