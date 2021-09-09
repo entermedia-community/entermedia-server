@@ -159,9 +159,11 @@ public class Timeline
 						data.put( "timecodelength",profile.get("timecodelength"));
 						
 						Data groupprofile = getMediaArchive().getCachedData("faceprofilegroup",groupid);
-
-						data.put( "verticaloffset", getFaceRow(groupprofile.get("facecounter")) );
-						data.put( "faceprofilegroup",groupid);
+						if(groupprofile != null)
+						{
+							data.put( "verticaloffset", getFaceRow(groupprofile.get("facecounter")) );
+							data.put( "faceprofilegroup",groupid);
+						}
 						
 						//TODO: Set the heights bassed on profilegroup. Like one row per each?
 						Clip clip = new Clip();
