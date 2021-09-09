@@ -4,9 +4,10 @@
 <table  id="tlmain-results-table" class="emdata table table-striped  table-hover" >
 	<thead>
 	<tr class="tableheader">
+		<th>[[Time]]</th>
 		<th>[[Type]]</th>
 		<th>[[Label]]</th>
-		<th>[[Time]]</th>
+		
 	</tr>
 	</thead>
 	<tbody ng-foreach="hit in dataresults">
@@ -14,6 +15,16 @@
 #foreach($row in $searchresults)
 	#set($time = $row.getStartTime())
 	<tr class="rowclick" data-rowtime="$!time" data-cliptype="$!row.type">
+			<td>
+			#if($time>0)
+				#set($time_ = $time/1000)
+				$time_
+			#else
+				$time
+			#end
+			
+			
+		</td>
 		<td>
 		#if( $row.type == "clip" ) 
 			[[Tag]]
@@ -26,16 +37,7 @@
 		<td style="text-align: left;">
 			$row.getLabel()
 		</td>
-		<td>
-			#if($time>0)
-				#set($time_ = $time/1000)
-				$time_
-			#else
-				$time
-			#end
-			
-			
-		</td>
+
 	</tr>
 #end
 	</tbody>
