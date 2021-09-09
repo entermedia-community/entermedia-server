@@ -7,7 +7,7 @@
 	    #if( $row )
 	    	#set($name = $context.getText( $row ) )
 	    	#if( !$name)
-	    		#set($name = "[[face]] $!row.get('facecounter')") 
+	    		#set($name = "[[face]] $!row.get("facecounter")") 
 	    	#end
 	    	##/find/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=AXmkjXDnqw92jqIo_9hS&searchtype=faceprofilegroup&hitssessionid=hitsfaceprofilegroupfinder/catalog
 		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&searchtype=faceprofilegroup&hitssessionid=$!hits.sessionId")

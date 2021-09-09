@@ -710,6 +710,8 @@ String viewbase = null;
 			}
 			inReq.putPageValue("savedok", Boolean.TRUE);
 
+			getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
+			
 			if (getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();

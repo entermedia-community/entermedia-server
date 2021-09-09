@@ -2758,5 +2758,10 @@ public class MediaArchive implements CatalogEnabled
 		
 		return "btn-success";
 	}
+	
+	public void clearCachedData(String inType, String inId)
+	{
+		getCacheManager().remove("data" + inType, inId);
+	}
 
 }

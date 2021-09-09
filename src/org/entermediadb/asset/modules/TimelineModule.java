@@ -58,6 +58,7 @@ public class TimelineModule extends BaseMediaModule
 			return;
 		}
 		Timeline timeline = new Timeline();
+		timeline.setMediaArchive(archive);
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
 		timeline.setPxWidth(1200);
@@ -394,6 +395,8 @@ public class TimelineModule extends BaseMediaModule
 			return;
 		}
 		timeline = new Timeline();
+		timeline.setMediaArchive(archive);
+
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
 		//timeline.setPxWidth(4000);

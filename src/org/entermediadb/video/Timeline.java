@@ -9,22 +9,38 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
 
 public class Timeline
 {
+	private static final Log log = LogFactory.getLog(Timeline.class);
 	
 	//20 chunks at 15 * 4 = 60px each
 	//20 * 60 = 1200px wide
 	
 	protected long fieldLength;
 	protected int fieldPxWidth;
-
+	protected Map facerows = new HashMap();
 	protected Collection fieldTicks;
 	protected Collection fieldClips;
 	protected SearcherManager fieldSearcherManager;
+	protected MediaArchive fieldMediaArchive;
 	
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -132,10 +148,20 @@ public class Timeline
 					if( !existingfaceprofilegroups.contains(profile.get("faceprofilegroup") + String.valueOf(profile.get("timecodestart") ) ) )
 					{
 						//Add it
+						String groupid = (String)profile.get("faceprofilegroup");
+						if( groupid == null)
+						{
+							log.error("Must have a groupid");
+							continue;
+						}
 						Map data = new HashMap();
 						data.put( "timecodestart",profile.get("timecodestart"));
 						data.put( "timecodelength",profile.get("timecodelength"));
-						data.put( "faceprofilegroup",profile.get("faceprofilegroup"));
+						
+						Data groupprofile = getMediaArchive().getCachedData("faceprofilegroup",groupid);
+
+						data.put( "verticaloffset", getFaceRow(groupprofile.get("facecounter")) );
+						data.put( "faceprofilegroup",groupid);
 						
 						//TODO: Set the heights bassed on profilegroup. Like one row per each?
 						Clip clip = new Clip();
@@ -219,8 +245,19 @@ public class Timeline
 		return Long.parseLong(inString.toString());
 	}
 
-	public int getFaceRow(Collection inProfiles, Map facedata)
+	public int getFaceRow(String inFaceCounter)
 	{
-		return 10;
+		String counter= inFaceCounter;
+		if( counter == null)
+		{
+			counter = "uncounted";
+		}
+		Integer row = (Integer)facerows.get(counter);
+		if( row == null)
+		{
+			row = facerows.size() * 30; //px
+			facerows.put(counter,row);
+		}
+		return row;
 	}
 }

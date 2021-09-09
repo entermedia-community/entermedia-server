@@ -4,6 +4,6 @@
 		<script>/${catalogid}/events/scripts/asset/facescan.groovy</script>
 	</path-action>
 	<property name="enabled">true</property>
-	<property name="period">5m</property>
+	<property name="period">1m</property>
 
 </page>

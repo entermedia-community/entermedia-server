@@ -172,7 +172,15 @@ public class FaceDetectManager
 						else 
 						{
 							updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
-							continuelooking = combineVideoMatches(continuelooking,more);  //WARNING: This will update times on some, and remove from others
+							try
+							{
+								continuelooking = combineVideoMatches(continuelooking,more);
+							}
+							catch(IndexOutOfBoundsException ex)
+							{
+								log.info("Issue happened again on " + block.getSeconds());
+								//ignoring...
+							}
 						}
 						if( !more.isEmpty() )
 						{
@@ -259,7 +267,7 @@ public class FaceDetectManager
 				//Array of numbers?
 				Map profile = new HashMap();
 				profile.put("facedata",profilejson.toJSONString());
-				//TODO: Look for faces now??? No wait..  
+				//TODO: Add coordinates of where the face is on the image
 				profilemap.add(profile);
 			}
 		}
@@ -278,7 +286,14 @@ public class FaceDetectManager
 				return false;
 			}
 			boolean foundmatch = false;
-			List<ValuesMap> pictures = createListMap((Collection)inAsset.getValue("faceprofiles"));
+			
+			Collection faces = (Collection)inAsset.getValue("faceprofiles");
+			if( faces == null || faces.isEmpty())
+			{
+				return false;
+			}
+			List<ValuesMap> pictures = createListMap(faces);
+			
 			//Search all the other assets minus myself
 			HitTracker 	hits = inArchive.query("asset").exact("facehasprofile",true).not("id",inAsset.getId()).search();
 			hits.enableBulkOperations();
@@ -287,13 +302,21 @@ public class FaceDetectManager
 				Data otherasset = (Data) iterator.next();
 				
 				List<ValuesMap> otherprofiles = createListMap((Collection)otherasset.getValue("faceprofiles"));
-				if( otherprofiles == null)
+				if( otherprofiles == null || otherprofiles.isEmpty())
 				{
 					//Should never happen
-					log.error("face missing");
+					log.info("no faces, continue");
 					continue;
 				}
 				boolean didfoundmatch = checkHit(inArchive, inAsset, otherasset, pictures, otherprofiles);
+				
+				if( "video".equals( type ) )
+				{
+					createGroupsWithinVideo(inArchive,inAsset);
+				}
+				//TODO: Finally add groups for all leftover people
+				createGroupsForAllProfiles(inArchive,inAsset);
+				
 				if( didfoundmatch)
 				{
 					foundmatch = didfoundmatch;
@@ -310,63 +333,72 @@ public class FaceDetectManager
 	}
 
 	
-	public void combineGroups()
+	protected void createGroupsForAllProfiles(MediaArchive inArchive, Asset inAsset)
 	{
-		//TODO: Go over all the groups and see if any two have common asset profiles. Then put them into one of the groups. If the remaining has no more hits delete it	
+		Collection faces = (Collection)inAsset.getValue("faceprofiles");
+		for (Iterator iterator = faces.iterator(); iterator.hasNext();)
+		{
+			Map profile = (Map) iterator.next();
+			if( profile.get("faceprofilegroup") == null)
+			{
+				//Create one
+				Data group = inArchive.getSearcher("faceprofilegroup").createNewData();
+				group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+				group.setValue("creationdate", new Date());
+				group.setValue("automatictagging", true);
+				inArchive.getSearcher("faceprofilegroup").saveData(group);
+				profile.put("faceprofilegroup",group.getId());  //Is this line really needed?
+			}
+		}
 	}
+
 	
 	protected boolean checkHit(MediaArchive inArchive, Asset inAsset, Data otherasset, List<ValuesMap> thisassetprofiles, List<ValuesMap> otherprofiles) throws ParseException
 	{
-		Searcher groupsearcher =  inArchive.getSearcher("faceprofilegroup");
-
 		boolean foundmatch = false;
 
-		//--
-		StringBuffer profilebuffer = new StringBuffer();
-		profilebuffer.append("\"profile\":[");
+		StringBuffer jsonoutput = new StringBuffer();
+		jsonoutput.append("{\"picture\":[");
+		for (Iterator iterator0 = thisassetprofiles.iterator(); iterator0.hasNext();)
+		{
+			ValuesMap onepicture = (ValuesMap) iterator0.next();
+			String jsondata = (String)onepicture.get("facedata");
+			jsonoutput.append(jsondata);
+			if( iterator0.hasNext())
+			{
+				jsonoutput.append(",");
+			}
+		}
+		jsonoutput.append("],");
+		jsonoutput.append("\"profile\":[");
 		for (Iterator iterator2 = otherprofiles.iterator(); iterator2.hasNext();)
 		{
 			Map map = (Map) iterator2.next();
 			String fjsondata = (String)map.get("facedata");
 			
-			profilebuffer.append(fjsondata);
+			jsonoutput.append(fjsondata);
 			if( iterator2.hasNext())
 			{
-				profilebuffer.append(",");
+				jsonoutput.append(",");
 			}
 		}
-		profilebuffer.append("]");
-		String profilesjson = profilebuffer.toString();
+		jsonoutput.append("]}");
 		
-		for (Iterator iterator0 = thisassetprofiles.iterator(); iterator0.hasNext();)
+		JSONArray rowsofresults = runCompare(jsonoutput);
+		if( rowsofresults == null)
 		{
-			StringBuffer picturetocompare = new StringBuffer();
-			picturetocompare.append("\"picture\":[");
-			ValuesMap onepicture = (ValuesMap) iterator0.next();
-			String jsondata = (String)onepicture.get("facedata");
-			picturetocompare.append(jsondata);
-			picturetocompare.append("]");
+			return foundmatch;
+		}
 		
-			//Low level comparison using a running process
-			String finaljson = "{" + picturetocompare.toString() + " , " + profilesjson + "}";
-			
-			String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
-			if( jsonresults == null)
-			{
-				//TODO: Find out why the first ones always fail
-				jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
-				if( jsonresults == null)
-				{				
-					//throw new OpenEditException("Match should not be null for " + finaljson);
-					return false;
-				}
-			}
-			//This is a JSON of a grid of grids
-			JSONParser parser = new JSONParser();
-			JSONObject result = (JSONObject)parser.parse(jsonresults);
-			JSONArray rowsofresults = (JSONArray)result.get("matches");
-			JSONArray rowsofresultsdone = (JSONArray)rowsofresults.iterator().next();
-			
+		int index = 0;
+		for (Iterator iterator = rowsofresults.iterator(); iterator.hasNext();)
+		{
+			JSONArray rowsofresultsdone = (JSONArray)iterator.next();
+			/**
+			 * Can you refresh my memory on face matching? If I pass in 3 rows of profiles and try and match it with 4 rows how do I know what matches what? I guess would like it to return an list of 3 arrays for each with 4 cells in each array.  like [0,0,0,1][0,0,0,0][0,0,0,0] so this means the first profile matched the fourth image
+			 */
+			ValuesMap onepicture = (ValuesMap)thisassetprofiles.get(index);
+			index++;
 			for (int i = 0; i < rowsofresultsdone.size(); i++)
 			{
 				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
@@ -376,60 +408,117 @@ public class FaceDetectManager
 					foundmatch = true;
 					ValuesMap otherprofile = (ValuesMap)otherprofiles.get(i);
 					
-					//See if either profile already has a group. If so then use that group
-					String groupid = (String)onepicture.get("faceprofilegroup");
-					if( groupid == null)
-					{
-						groupid = (String)otherprofile.get("faceprofilegroup"); 
-					}
-					//New group in between both pictures. Create a new group
-					if( groupid == null)
-					{
-						//Create one
-						Data group = groupsearcher.createNewData();
-						
-						//Make sure we use an image that has fewer profiles in it. Fewer is better
-						if(otherprofiles.size() > thisassetprofiles.size() )
-						{
-							group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
-						}
-						else
-						{
-							group.setValue("collectionimage", otherasset.getId());
-						}
-						
-						group.setValue("creationdate", new Date());
-						group.setValue("automatictagging", true);
-						
-						groupsearcher.saveData(group);
-						groupid = group.getId();
-					}
-					if( !onepicture.containsInValues("faceprofilegroup",groupid) )
-					{
-						Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
-						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));  //Is this line really needed?
-						inAsset.setValue("faceprofiles",thisassetprofiles); //Save the group id
-						//save asset at the end?
-						inArchive.saveData("asset",inAsset);
-					}	
-					if( !otherprofile.containsInValues("faceprofilegroup",groupid) )
-					{
-						Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
-						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));  //Is this line really needed?
-						Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(otherasset);
-						tosave.setValue("faceprofiles",otherprofiles);
-						//save data
-						inArchive.saveData("asset",tosave);
-					}	
+					assignFaceGroupId(inArchive, inAsset, otherasset, thisassetprofiles, otherprofiles, onepicture, otherprofile);	
 				}
 			}
 		}
+			
 		return foundmatch;
+	}
+
+	protected JSONArray runCompare(StringBuffer jsonoutput)
+	{
+		String finaljson = jsonoutput.toString();
+//		try
+//		{
+//			Thread.currentThread().sleep(300);
+//		}
+//		catch (InterruptedException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
+
+//		try
+//		{
+//			Thread.currentThread().sleep(300);
+//		}
+//		catch (InterruptedException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		if( jsonresults == null)
+		{
+			//TODO: Find out why the first ones always fail
+			jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
+			if( jsonresults == null)
+			{				
+				//throw new OpenEditException("Match should not be null for " + finaljson);
+				return null;
+			}
+		}
+		//This is a JSON of a grid of grids
+		JSONParser parser = new JSONParser();
+		try
+		{
+			JSONObject result = (JSONObject)parser.parse(jsonresults);
+			JSONArray rowsofresults = (JSONArray)result.get("matches");
+			return rowsofresults;
+		} catch (ParseException ex)
+		{
+			log.error("Prblem",ex);
+		}
+		return null;
+	}
+
+	protected void assignFaceGroupId(MediaArchive inArchive,  Asset inAsset, Data otherasset, List<ValuesMap> thisassetprofiles, List<ValuesMap> otherprofiles, ValuesMap onepicture, ValuesMap otherprofile)
+	{
+		
+		//See if either profile already has a group. If so then use that group
+		String groupid = (String)onepicture.get("faceprofilegroup");
+		if( groupid == null)
+		{
+			groupid = (String)otherprofile.get("faceprofilegroup"); 
+		}
+		//New group in between both pictures. Create a new group
+		Searcher groupsearcher =  inArchive.getSearcher("faceprofilegroup");
+		if( groupid == null)
+		{
+			//Create one
+			Data group = groupsearcher.createNewData();
+			
+			//Make sure we use an image that has fewer profiles in it. Fewer is better
+			if(otherprofiles.size() > thisassetprofiles.size() )
+			{
+				group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+			}
+			else
+			{
+				group.setValue("collectionimage", otherasset.getId());
+			}
+			
+			group.setValue("creationdate", new Date());
+			group.setValue("automatictagging", true);
+			
+			groupsearcher.saveData(group);
+			groupid = group.getId();
+		}
+		//Make sure they have the same group set
+		if( !onepicture.containsInValues("faceprofilegroup",groupid) )
+		{
+			Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
+			onepicture.put("faceprofilegroup",onepicture.toString(pgroups));  //Is this line really needed?
+			inAsset.setValue("faceprofiles",thisassetprofiles); //Save the group id
+			//save asset at the end?
+			inArchive.saveData("asset",inAsset);
+		}	
+		if( !otherprofile.containsInValues("faceprofilegroup",groupid) )
+		{
+			Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
+			otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));  //Is this line really needed?
+			Asset tosave = (Asset)inArchive.getAssetSearcher().loadData(otherasset);
+			tosave.setValue("faceprofiles",otherprofiles);
+			//save data
+			inArchive.saveData("asset",tosave);
+		}
 	}
 
 	private List<ValuesMap> createListMap(Collection inValues)
 	{
-		ArrayList copy = new ArrayList();
+		ArrayList copy = new ArrayList(inValues.size());
 		if (inValues != null) 
 		{
 			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
@@ -447,8 +536,6 @@ public class FaceDetectManager
 		return tracker;
 	}
 	
-	
-
 	public List<Map> combineVideoMatches(List<Map> firstprofiles, List<Map> secondprofiles)
 	{
 		List<Map> tocontinuelooking = new ArrayList();
@@ -476,82 +563,69 @@ public class FaceDetectManager
 				}
 			}
 		}
-		if( secondprofiles.isEmpty() )
+		if( firstprofiles.isEmpty() || secondprofiles.isEmpty() )
 		{
 			return tocontinuelooking;
 		}
-		
-		StringBuffer profilebuffer = new StringBuffer();
-		profilebuffer.append("\"profile\":[");
+
+		StringBuffer jsonoutput = new StringBuffer();
+		jsonoutput.append("{\"picture\":[");
+		for (Iterator iterator0 = firstprofiles.iterator(); iterator0.hasNext();)
+		{
+			Map onepicture = (Map) iterator0.next();
+			String jsondata = (String)onepicture.get("facedata");
+			jsonoutput.append(jsondata);
+			if( iterator0.hasNext())
+			{
+				jsonoutput.append(",");
+			}
+		}
+		jsonoutput.append("],");
+		jsonoutput.append("\"profile\":[");
 		for (Iterator iterator2 = secondprofiles.iterator(); iterator2.hasNext();)
 		{
 			Map map = (Map) iterator2.next();
 			String fjsondata = (String)map.get("facedata");
 			
-			profilebuffer.append(fjsondata);
+			jsonoutput.append(fjsondata);
 			if( iterator2.hasNext())
 			{
-				profilebuffer.append(",");
+				jsonoutput.append(",");
 			}
 		}
-		profilebuffer.append("]");
-		String profilesjson = profilebuffer.toString();  //Check each profile in the main asset to the group in the second
-				
-		for (Iterator iterator0 = firstprofiles.iterator(); iterator0.hasNext();)
-		{
-			StringBuffer picturetocompare = new StringBuffer();
-			picturetocompare.append("\"picture\":[");
-			Map onepicture = (Map) iterator0.next();
-			String jsondata = (String)onepicture.get("facedata");
-			picturetocompare.append(jsondata);
-			picturetocompare.append("]");
+		jsonoutput.append("]}");
 		
-			//Low level comparison using a running process
-			String finaljson = "{" + picturetocompare.toString() + " , " + profilesjson + "}";
-			
-			String jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
-			if( jsonresults == null)
-			{
-				//TODO: Find out why the first ones always fail
-				jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
-				if( jsonresults == null)
-				{				
-					//throw new OpenEditException("Match should not be null for " + finaljson);
-					log.error("Match should not be null for " + finaljson);
-					return null;
-				}
-			}
-			//This is a JSON of a grid of grids
-			JSONParser parser = new JSONParser();
-			JSONObject result = null;
-			try
-			{
-				result = (JSONObject)parser.parse(jsonresults);
-			}
-			catch (ParseException e)
-			{
-				log.error("Parese problem",e);
-				continue;
-			}
-			JSONArray rowsofresults = (JSONArray)result.get("matches");
-			JSONArray rowsofresultsdone = (JSONArray)rowsofresults.iterator().next();
-			
+		JSONArray rowsofresults = runCompare(jsonoutput);
+		if( rowsofresults == null)
+		{
+			return tocontinuelooking;
+		}
+
+		int index = 0;
+		for (Iterator iterator = rowsofresults.iterator(); iterator.hasNext();)
+		{
+			JSONArray rowsofresultsdone = (JSONArray)iterator.next();
+
+			Map onepicture = (Map)firstprofiles.get(index);
+			index++;
 			for (int i = 0; i < rowsofresultsdone.size(); i++)
 			{
 				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
-				//We have a match!!
-				Map otherprofile = (Map)secondprofiles.get(i);
 				if( istrue == 1)
 				{
+					Map otherprofile = (Map)secondprofiles.get(i);
+					//We have a match!!
 					//Remove this one and give the time to the one before it onepicture
 					//Long start = (Long)otherprofile.get("facedatastarttime");
 					//onepicture.put("facedataendtime",start);
 					toremove.add(otherprofile);
 					tocontinuelooking.remove(otherprofile);
 					tocontinuelooking.add(onepicture); //put this one back
+					break;
 				}
 			}
 		}
+			
 		for (Iterator iterator = toremove.iterator(); iterator.hasNext();)
 		{
 			Map redundantprofile = (Map) iterator.next();
@@ -559,7 +633,107 @@ public class FaceDetectManager
 		}
 		return tocontinuelooking;
 	}
+
 	
+	public void createGroupsWithinVideo(MediaArchive inArchive, Asset inAsset)
+	{
+		List<ValuesMap> allprofiles = createListMap((List)inAsset.getValue("faceprofiles"));
+		StringBuffer jsonoutput = new StringBuffer();
+		jsonoutput.append("{\"picture\":[");
+		for (Iterator iterator0 = allprofiles.iterator(); iterator0.hasNext();)
+		{
+			Map onepicture = (Map) iterator0.next();
+			String jsondata = (String)onepicture.get("facedata");
+			jsonoutput.append(jsondata);
+			if( iterator0.hasNext())
+			{
+				jsonoutput.append(",");
+			}
+		}
+		jsonoutput.append("],");
+		jsonoutput.append("\"profile\":[");
+		for (Iterator iterator2 = allprofiles.iterator(); iterator2.hasNext();)
+		{
+			Map map = (Map) iterator2.next();
+			String fjsondata = (String)map.get("facedata");
+			
+			jsonoutput.append(fjsondata);
+			if( iterator2.hasNext())
+			{
+				jsonoutput.append(",");
+			}
+		}
+		jsonoutput.append("]}");
+		
+		JSONArray rowsofresults = runCompare(jsonoutput);
+		if( rowsofresults == null)
+		{
+			return;
+		}
+
+		int index = 0;
+		for (Iterator iterator = rowsofresults.iterator(); iterator.hasNext();)
+		{
+			JSONArray rowsofresultsdone = (JSONArray)iterator.next();
+
+			ValuesMap otherprofile = (ValuesMap)allprofiles.get(index);
+			index++;
+			for (int i = 0; i < rowsofresultsdone.size(); i++)
+			{
+				
+				if( index == i)
+				{
+					//Same person dont do anythuing
+					continue;
+				}
+				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
+				ValuesMap onepicture = (ValuesMap)allprofiles.get(i);
+				if( istrue == 1)
+				{
+					//We have a match!!
+					//See if either profile already has a group. If so then use that group
+					String groupid = (String)onepicture.get("faceprofilegroup");
+					if( groupid == null)
+					{
+						groupid = (String)otherprofile.get("faceprofilegroup"); 
+					}
+					//New group in between both pictures. Create a new group
+					Searcher groupsearcher =  inArchive.getSearcher("faceprofilegroup");
+					if( groupid == null)
+					{
+						//Create one
+						Data group = groupsearcher.createNewData();
+						
+						//Make sure we use an image that has fewer profiles in it. Fewer is better
+						group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+						group.setValue("creationdate", new Date());
+						group.setValue("automatictagging", true);
+						
+						groupsearcher.saveData(group);
+						groupid = group.getId();
+						
+					}
+					
+					//Make sure its set on both
+					if( !onepicture.containsInValues("faceprofilegroup",groupid) )
+					{
+						Collection pgroups = onepicture.addValue("faceprofilegroup", groupid);
+						onepicture.put("faceprofilegroup",onepicture.toString(pgroups));  //Is this line really needed?
+					}	
+					if( !otherprofile.containsInValues("faceprofilegroup",groupid) )
+					{
+						Collection pgroups = otherprofile.addValue("faceprofilegroup", groupid);
+						otherprofile.put("faceprofilegroup",otherprofile.toString(pgroups));  //Is this line really needed?
+						//save data
+					}
+					inAsset.setValue("faceprofiles",allprofiles); //Save the group id
+					inArchive.saveData("asset",inAsset);
+
+				}
+			}
+			
+		}
+	}
 	
 	
 }

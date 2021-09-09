@@ -59,10 +59,17 @@ public class TimelineManager
 				if( id != null && start != null)
 				{
 					Data group = inArchive.getCachedData("faceprofilegroup", id);
-					if( matchesText(searchby,group.getName()))
+					if( group != null && matchesText(searchby,group.getName()))
 					{
 						double num = Double.parseDouble(start.toString());
-						results.add(createResult("faceprofile", group.getName(),num));
+						
+						String name = group.getName();
+						if( name == null)
+						{
+							name = group.get("facecounter");
+						}
+						
+						results.add(createResult("faceprofile", name,num));
 					}
 				}
 			}
@@ -70,17 +77,19 @@ public class TimelineManager
 		
 		//tags
 		Collection clips = inAsset.getValues("clips");
-		
-		for (Iterator iterator = clips.iterator(); iterator.hasNext();)
+		if( clips != null)
 		{
-			Map<String,Object> clip = (Map) iterator.next();
-			String label = (String)clip.get("cliplabel");
-			if( matchesText(searchby,label))
+			for (Iterator iterator = clips.iterator(); iterator.hasNext();)
 			{
-				Object start = clip.get("timecodestart");
-				if( start != null)
+				Map<String,Object> clip = (Map) iterator.next();
+				String label = (String)clip.get("cliplabel");
+				if( matchesText(searchby,label))
 				{
-					results.add(createResult("clip", label,Double.parseDouble( start.toString() ) ) );
+					Object start = clip.get("timecodestart");
+					if( start != null)
+					{
+						results.add(createResult("clip", label,Double.parseDouble( start.toString() ) ) );
+					}
 				}
 			}
 		}
