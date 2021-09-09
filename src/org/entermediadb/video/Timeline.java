@@ -257,7 +257,7 @@ public class Timeline
 		Integer row = (Integer)facerows.get(counter);
 		if( row == null)
 		{
-			row = facerows.size() * 30; //px
+			row = facerows.size() * 30 + 200; //px
 			facerows.put(counter,row);
 		}
 		return row;
