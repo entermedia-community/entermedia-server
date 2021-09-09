@@ -319,17 +319,23 @@ if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 		$("#timelinecursor").css({"left" : left+60 + "px"});
 	}
 
-/*
-#set($time = $context.getRequestParameter("jumpto"))
-#if($time)
 
-	 var video = $("#video");
-	$("#video").bind("loadeddata", function() {
-		jump('$time');
-		pause();
+	//#set($time = $context.getRequestParameter("jumpto"))
+	
+	$(video).bind("loadeddata", function() {  //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#events
+//		#if($time)
+//			var jumpto = parseFloat("$time");
+//			video.currentTime = jumpto;
+//		#else
+		// Play the video
+		console.log("Loaded data");
+		$(video).trigger('play'); //Works as long as the user clicks to open the UI
+		  
+		// Pause the video
+		$(video).trigger('pause');
 	});
-#end
-*/	
+
+	
 
 	clearSelection = function()
 	{

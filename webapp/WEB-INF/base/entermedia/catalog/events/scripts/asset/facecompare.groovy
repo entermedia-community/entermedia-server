@@ -4,8 +4,7 @@ import org.entermediadb.asset.*
 import org.entermediadb.asset.facedetect.FaceDetectManager
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
-import org.openedit.util.ExecutorManager
-import org.openedit.util.RunningProcess
+import org.openedit.locks.Lock
 
 public void init()
 {
