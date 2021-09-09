@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.entermediadb.asset.util.MathUtils;
 import org.openedit.data.ValuesMap;
 
 
@@ -42,6 +43,11 @@ public class Clip implements Comparable
 			return 0L;
 		}
 		return d;
+	}
+	
+	public String getStartSecondsAndHours()
+	{
+		return MathUtils.toDuration(getStart());
 	}
 	
 	public Object getValue(String inKey)

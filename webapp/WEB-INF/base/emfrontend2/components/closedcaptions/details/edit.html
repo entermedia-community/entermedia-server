@@ -1,36 +1,19 @@
 #set( $clientroot = "/${applicationid}/components/closedcaptions" )
 
-<div class="clipedit">
+<div class="clipedit" style="padding-bottom:20px;">
 	
 		<h3>
 			[[Transcribing Tools]]
 		</h3>
-		<div id="closedcaptiondetails" style="margin-bottom:20px; padding:0 0 20px; border-bottom:1px solid #3f3f3f">
-			<p>[[Select the language you are working in]]</p>
-			#set($languages = $mediaarchive.getList("locale"))
-			<form name="swaplang" id="langform" action="$clientroot/switchlang.html" class="ajaxform" data-targetdiv="closedcaptioneditor" >
-				<input type="hidden" name="assetid" value="$asset.id" />
-				<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}" >	 
-					#foreach($locale in $languages)
-						<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
-					#end
-				</select>
-			</form>
-		</div>
-	
 
-	
-		<a href="$clientroot/details/autotranscribedialog.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Automatic Captions]]</a> 
-		<a href="$clientroot/details/autotranslatedialog.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Automatic Translate]]</a> 
-	<br><br>
 		<a href="$clientroot/details/importstart.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Import Captions]] (VTT [[file]])</a> 
 		<a  href='#urlescape("$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${asset.name}-${selectedlang}.vtt")' class="btn btn-dark" style="margin-left:0px;" >[[Export]]</a> 
-	##<br><br>
-	##<a id="removeclip" class="btn btn-danger ajax" targetdiv="closedcaptioneditor" data-confirm="[[Are you sure?]]" href="$clientroot/details/delete.html?assetid=$asset.id&selectedlang=$selectedlang" >[[Delete]]</a>
- 
- #if( $track.sourcelang == $selectedlang && $track.transcribestatus == "complete")
- <br><br> <div class="alert fader alert-success" role="alert">	[[Auto transcribe complete]]  </div>
- #end
+		##<br><br>
+		##<a id="removeclip" class="btn btn-danger ajax" targetdiv="closedcaptioneditor" data-confirm="[[Are you sure?]]" href="$clientroot/details/delete.html?assetid=$asset.id&selectedlang=$selectedlang" >[[Delete]]</a>
+	 
+		 #if( $track.sourcelang == $selectedlang && $track.transcribestatus == "complete")
+		 <br><br> <div class="alert fader alert-success" role="alert">	[[Auto transcribe complete]]  </div>
+		 #end
 
 	
 </div>
