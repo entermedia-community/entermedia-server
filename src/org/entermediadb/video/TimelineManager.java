@@ -40,7 +40,7 @@ public class TimelineManager
 				if( matchesText(searchby,label))
 				{
 					Object start = (Object)caption.get("timecodestart");
-					results.add(createResult("closedcaption", label,Double.parseDouble(start.toString())));			
+					results.add(createResult("closedcaption", label,Long.parseLong(start.toString())));			
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class TimelineManager
 					Data group = inArchive.getCachedData("faceprofilegroup", id);
 					if( group != null && matchesText(searchby,group.getName()))
 					{
-						double num = Double.parseDouble(start.toString());
+						long num = Long.parseLong(start.toString());
 						
 						String name = group.getName();
 						if( name == null)
@@ -88,7 +88,7 @@ public class TimelineManager
 					Object start = clip.get("timecodestart");
 					if( start != null)
 					{
-						results.add(createResult("clip", label,Double.parseDouble( start.toString() ) ) );
+						results.add(createResult("clip", label,Long.parseLong( start.toString() ) ) );
 					}
 				}
 			}
@@ -121,7 +121,7 @@ public class TimelineManager
 
 	}
 
-	protected SearchResult createResult(String inType, String inName, Double inStart)
+	protected SearchResult createResult(String inType, String inName, Long inStart)
 	{
 		SearchResult result = new SearchResult();
 		result.setType(inType);

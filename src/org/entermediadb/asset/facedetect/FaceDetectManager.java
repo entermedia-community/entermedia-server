@@ -406,7 +406,7 @@ public class FaceDetectManager
 				{
 					//We have a match!!
 					foundmatch = true;
-					ValuesMap otherprofile = (ValuesMap)otherprofiles.get(i);
+					ValuesMap otherprofile = (ValuesMap)otherprofiles.get(i); //Error here means API not working right
 					
 					assignFaceGroupId(inArchive, inAsset, otherasset, thisassetprofiles, otherprofiles, onepicture, otherprofile);	
 				}
