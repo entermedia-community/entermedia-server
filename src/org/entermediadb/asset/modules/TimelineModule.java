@@ -1,6 +1,9 @@
 package org.entermediadb.asset.modules;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +35,10 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.modules.translations.Translation;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
+import org.openedit.util.OutputFiller;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -271,6 +277,8 @@ public class TimelineModule extends BaseMediaModule
 		searcher.saveData(track);
 		getPageManager().removePage(page);
 		
+		saveCaptionToFullText(archive,asset);
+
 	}
 	public void addCaption(WebPageRequest inReq)
 	{
@@ -319,7 +327,46 @@ public class TimelineModule extends BaseMediaModule
 		}
 		lasttrack.setValue("captions",captions);
 		captionsearcher.saveData(lasttrack);
+		saveCaptionToFullText(archive,asset);
 	}	
+	protected void saveCaptionToFullText(MediaArchive inArchive, Asset inAsset)
+	{
+		Collection hits = inArchive.query("videotrack").exact("assetid", inAsset.getId()).search();
+
+		StringBuffer out = new StringBuffer();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued track = (MultiValued) iterator.next();
+			Collection captions = (Collection)track.getValue("captions");
+			for (Iterator iterator2 = captions.iterator(); iterator2.hasNext();)
+			{
+				Map clip = (Map) iterator2.next();
+				String label = (String)clip.get("cliplabel");
+				out.append( label );
+				out.append(" ");
+			}
+		}
+		
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+		if( item instanceof FileItem)
+		{
+			((FileItem)item).getFile().getParentFile().mkdirs();
+		}
+		PrintWriter output = new PrintWriter(item.getOutputStream());
+		OutputFiller filler = new OutputFiller();
+		try
+		{
+			filler.fill(new StringReader(out.toString()), output );
+		}
+		catch (IOException e)
+		{
+			log.error("Could not fill",e);
+		}
+		filler.close(output);
+		inAsset.setProperty("hasfulltext", "true");
+		inArchive.saveAsset(inAsset);
+	}
+
 	protected Collection removeDuplicate(Collection inCaptions, Map inCuemap)
 	{
 		Long start = (Long)inCuemap.get("timecodestart");
@@ -511,6 +558,8 @@ public class TimelineModule extends BaseMediaModule
 		captionsearcher.saveData(newtrack);
 		inReq.putPageValue("track", newtrack);
 		inReq.putSessionValue("selectedlang",targetlang);
+		saveCaptionToFullText(archive,asset);
+
 	}
 
 	protected Collection<Map> translateInGroups(Searcher captionsearcher, String selectedlang, String targetlang, Collection<Map> existingcaptions) throws InterruptedException
