@@ -1,24 +1,20 @@
 if( !jQuery.fn.videoClosedCaptions ) { 
 
-	(function ( $ ) {
+(function ( $ ) {
 	$.fn.videoClosedCaptions = function( options ) {
 	
 	console.log("Closed Caption init");
 	
 	var app = $("#application");
 	var apphome = app.data("siteroot") + app.data("apphome");
-	var themeprefix = app.data("siteroot")	+ app.data("themeprefix");
 	
-	var videoclip = $("#videoclipcc");
 	var timelineeditor = $(this);
-	
+
 	var video = timelineeditor.find("video")[0];//videoclip[0];
-	//var video = document.getElementById("videoclipcc");//videoclip[0];
 	
 	if (video == null) {
 		return;
 	}
-	
 	
 	var inTime = video.currentTime;
 	
@@ -48,15 +44,11 @@ if( !jQuery.fn.videoClosedCaptions ) {
 	    return zeroString+n;
 	}
 	
-	
 	$("#captionend").text(parseTimeToText(inTime));
 	
 	var link = $("#playtab");
 	
 	var starttime = 0;
-	
-	
-
 	
 	startchunk = function()
 	{
@@ -134,6 +126,7 @@ if( !jQuery.fn.videoClosedCaptions ) {
 	//Closed caption stuff
 	lQuery("#captioninput").livequery( "keydown",function(e) 
 	{
+
 			var theinput = $(this);
 			
 			var keyCode = e.keyCode || e.which; 
@@ -155,6 +148,7 @@ if( !jQuery.fn.videoClosedCaptions ) {
 				saveCaptionToServer();
 			}
 	});
+	
 	lQuery("#addcaption").livequery('submit',function(e)
 	{ 
 		e.preventDefault();
@@ -174,14 +168,8 @@ if( !jQuery.fn.videoClosedCaptions ) {
 		}
 		
 	});
-	
-	lQuery(".lenguagepicker").livequery("change",function(e)
-	{
-		var selected = $(this);
-		$("#langform").submit();
-	});
-	
-	videoclip.on("timeupdate",function(e) {
+
+	$(video).on("timeupdate", function(e) {
 		//debugger;
 		var link = $("#playtab");
 		if( video.paused )
@@ -217,6 +205,7 @@ if( !jQuery.fn.videoClosedCaptions ) {
 		video.currentTime = video.currentTime + .5;
 		return false;
 	});
+	
 	lQuery("#removecaption").livequery("click",function(e)
 	{
 		e.preventDefault();
@@ -239,19 +228,47 @@ if( !jQuery.fn.videoClosedCaptions ) {
 	});
 
 	
-	
 	lQuery(".cc-data-selection").livequery("click", function(e)	{
 		e.preventDefault();
 		ccselectClip(this);
 		ccupdateDetails();
 		ccupdateCaptions(video.currentTime);
 	});	
+	
+	$(video).bind("loadeddata", function() {  //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#events
+		console.log("Loaded data");
+		$(video).trigger('play'); //Works as long as the user clicks to open the UI
+		$(video).trigger('pause');
+	});
 
 
 	};
 	
 	}( jQuery ));
-} //Dont reload
+} 
+else {
+	//Dont reload
+}
+
+
+lQuery(".lenguagepicker").livequery("change",function(e)
+{
+	var selected = $(this);
+	$('.video-js, .video-player').each(function () {
+		if (this.id) {
+			console.log("dispose "+this.id)
+			videojs(this.id).dispose();
+			$("#"+this.id).unbind().removeData();
+		}
+	});
+	//$("#closedcaptioneditor").unbind().removeData();
+	$("#cclangform").trigger("submit");
+	
+});
+
+var ccreloadvideo = function() {
+	//$("#closedcaptioneditor").videoClosedCaptions();
+}
 
 
 jQuery(document).ready(function()

@@ -14,10 +14,17 @@
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
+#set($contextlang = $context.getRequestParameter("selectedlang") )
+#if($contextlang)
+	#set( $assetidpostfix = "$!assetidpostfix$contextlang")
+#else
+	#set($contextlang = $context.getLanguage())
+#end
+
 	
 ##Add back full screen button, Autoplay and escape handling
 <div class="player-outer">
-<div id="playarea-$hit.id" class="player">
+<div id="playarea-$hit.id$!assetidpostfix" class="player">
 
 	<video id="videoviewer-$hit.id$!assetidpostfix" 
 			class="video-js vjs-default-skin vjs-big-play-centered" 
@@ -40,21 +47,22 @@
 						label="$track.sourcelang subtitles" 
 						kind="subtitles" 
 						srclang="$track.sourcelang" 
-						src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-						#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+						src="$!siteroot/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+						#if( $contextlang == ${track.sourcelang})	 default #end>
 					#end
 				#end
 	</video>
 </div>
 </div>
 <script>
-			videojs('videoviewer-$hit.id$!assetidpostfix', {
-				controls: true,
-				plugins: {
-					videoJsResolutionSwitcher: {
-						default: 'high',
-						dynamicLabel: true
-					}
+		var thevideo = "videoviewer-$hit.id$!assetidpostfix";
+		var myPlayer = videojs(thevideo, {
+			controls: true,
+			plugins: {
+				videoJsResolutionSwitcher: {
+					default: 'high',
+					dynamicLabel: true
 				}
-			});
-		</script>
+			}
+		});
+	</script>

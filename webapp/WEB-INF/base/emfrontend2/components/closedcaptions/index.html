@@ -21,7 +21,7 @@
 					#set($languages = $mediaarchive.getList("locale"))
 					
 					<div style="float:left; width:250px;">
-					<form name="swaplang" id="langform" action="$clientroot/switchlang.html" class="ajaxform" data-targetdiv="closedcaptioneditor" >
+					<form name="swaplang" id="cclangform" action="$clientroot/switchlang.html" class="ajaxform" data-targetdiv="closedcaptioneditor" data-onsuccess="ccreloadvideo" >
 						<input type="hidden" name="assetid" value="$asset.id" />
 						<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}" >	 
 							#foreach($locale in $languages)
@@ -79,5 +79,4 @@
 	
 
 </div>
-
 
