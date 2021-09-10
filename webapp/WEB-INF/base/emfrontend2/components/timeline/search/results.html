@@ -15,15 +15,8 @@
 #foreach($row in $searchresults)
 	#set($time = $row.getStartTime())
 	<tr class="rowclick" data-rowtime="$!time" data-cliptype="$!row.type">
-			<td>
-			#if($time>0)
-				#set($time_ = $time/1000)
-				$time_
-			#else
-				$time
-			#end
-			
-			
+		<td>
+			$timeline.toHourTime($time)
 		</td>
 		<td>
 		#if( $row.type == "clip" ) 
@@ -35,7 +28,18 @@
 		#end
 		</td>
 		<td style="text-align: left;">
-			$row.getLabel()
+		#if( $row.type == "clip" ) 
+			$row.getData().get("cliplabel")
+		#elseif( $row.type == "closedcaption" ) 
+			$row.getData().get("cliplabel")
+		#elseif( $row.type == "faceprofilegroup" )
+			#if( $row.getData().getName() )
+				$row.getData().getName()
+			#else
+				[[User]] $!row.getData().get("facecounter") 
+			#end
+		#end
+			
 		</td>
 
 	</tr>

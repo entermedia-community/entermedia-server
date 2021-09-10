@@ -1,6 +1,7 @@
 package org.entermediadb.video;
 
 import org.entermediadb.asset.util.MathUtils;
+import org.openedit.Data;
 
 public class SearchResult
 {
@@ -13,14 +14,15 @@ public class SearchResult
 	{
 		fieldType = inType;
 	}
-
-	public String getLabel()
+	Data fieldData;
+	
+	public Data getData()
 	{
-		return fieldLabel;
+		return fieldData;
 	}
-	public void setLabel(String inLabel)
+	public void setData(Data inData)
 	{
-		fieldLabel = inLabel;
+		fieldData = inData;
 	}
 	String fieldType;
 	long fieldStartTime;
@@ -32,7 +34,6 @@ public class SearchResult
 	{
 		fieldStartTime = inStartTime;
 	}
-	String fieldLabel;
 
 	public String getStartSecondsAndHours()
 	{

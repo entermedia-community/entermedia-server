@@ -11,7 +11,9 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 
 public class TimelineManager
 {
@@ -40,40 +42,40 @@ public class TimelineManager
 				if( matchesText(searchby,label))
 				{
 					Object start = (Object)caption.get("timecodestart");
-					results.add(createResult("closedcaption", label,Long.parseLong(start.toString())));			
+					results.add(createResult("closedcaption", new BaseData(caption),Long.parseLong(start.toString())));			
 				}
 			}
 		}
 		
 		//Load up the tracks and find all the mentions by hand
-		Collection faceprofiles = inAsset.getValues("faceprofiles");
-		if( faceprofiles != null)
-		{
-			for (Iterator iterator = faceprofiles.iterator(); iterator.hasNext();)
-			{
-				Map<String,Object> profile = (Map) iterator.next();
-				//data.put( "timecodestart",profile.get("timecodestart"));
-				String id = (String)profile.get("faceprofilegroup");
-				Object start = profile.get("timecodestart");
-
-				if( id != null && start != null)
-				{
-					Data group = inArchive.getCachedData("faceprofilegroup", id);
-					if( group != null && matchesText(searchby,group.getName()))
-					{
-						long num = Long.parseLong(start.toString());
-						
-						String name = group.getName();
-						if( name == null)
-						{
-							name = group.get("facecounter");
-						}
-						
-						results.add(createResult("faceprofile", name,num));
-					}
-				}
-			}
-		}
+//		Collection faceprofiles = inAsset.getValues("faceprofiles");
+//		if( faceprofiles != null)
+//		{
+//			for (Iterator iterator = faceprofiles.iterator(); iterator.hasNext();)
+//			{
+//				Map<String,Object> profile = (Map) iterator.next();
+//				//data.put( "timecodestart",profile.get("timecodestart"));
+//				String id = (String)profile.get("faceprofilegroup");
+//				Object start = profile.get("timecodestart");
+//
+//				if( id != null && start != null)
+//				{
+//					Data group = inArchive.getCachedData("faceprofilegroup", id);
+//					if( group != null && matchesText(searchby,group.getName()))
+//					{
+//						long num = Long.parseLong(start.toString());
+//						
+//						String name = group.getName();
+//						if( name == null)
+//						{
+//							name = group.get("facecounter");
+//						}
+//						
+//						results.add(createResult("faceprofile", name,num));
+//					}
+//				}
+//			}
+//		}
 		
 		//tags
 		Collection clips = inAsset.getValues("clips");
@@ -82,13 +84,45 @@ public class TimelineManager
 			for (Iterator iterator = clips.iterator(); iterator.hasNext();)
 			{
 				Map<String,Object> clip = (Map) iterator.next();
-				String label = (String)clip.get("cliplabel");
-				if( matchesText(searchby,label))
+				
+				boolean foundahit = false;
+				Data data = new BaseData(clip);
+				//check the contents
+				//TODO: Check all data types
+				Object start = clip.get("timecodestart");
+				Collection groupids = data.getValues("faceprofilegroup");
+				if( groupids != null && !groupids.isEmpty())
 				{
-					Object start = clip.get("timecodestart");
-					if( start != null)
+					for (Iterator iterator2 = groupids.iterator(); iterator2.hasNext();)
 					{
-						results.add(createResult("clip", label,Long.parseLong( start.toString() ) ) );
+						String groupid = (String) iterator2.next();
+						Data group = inArchive.getCachedData("faceprofilegroup", groupid);
+						if( group != null )
+						{
+							if( matchesText(searchby,group.getName()) || (group.get("facecounter") != null && group.get("facecounter").contains(searchby)) )
+							{
+								long num = Long.parseLong(start.toString());
+								
+	//								String name = group.getName();
+	//								if( name == null)
+	//								{
+	//									name = group.get("facecounter");
+	//								}
+								results.add(createResult("faceprofilegroup", group,num));
+								foundahit = true;
+							}
+						}
+					}
+				}
+				if( !foundahit)
+				{
+					String label = (String)clip.get("cliplabel");
+					if( label != null && !label.isEmpty() && matchesText(searchby,label))
+					{
+						if( start != null)
+						{
+							results.add(createResult("clip", data,Long.parseLong( start.toString() ) ) );
+						}
 					}
 				}
 			}
@@ -121,24 +155,24 @@ public class TimelineManager
 
 	}
 
-	protected SearchResult createResult(String inType, String inName, Long inStart)
+	protected SearchResult createResult(String inType, Data inData, Long inStart)
 	{
 		SearchResult result = new SearchResult();
 		result.setType(inType);
-		result.setLabel(inName);
+		result.setData(inData);
 		result.setStartTime(inStart);
 		return result;
 	}
 
 	protected boolean matchesText(String inSearchby, String inName)
 	{
-		if( inName == null || inName.isEmpty())
-		{
-			return false;
-		}
 		if( inSearchby.equals("*"))
 		{
 			return true;
+		}
+		if( inName == null || inName.isEmpty())
+		{
+			return false;
 		}
 		boolean contains = inName.toLowerCase().contains(inSearchby.toLowerCase());
 		return contains;
