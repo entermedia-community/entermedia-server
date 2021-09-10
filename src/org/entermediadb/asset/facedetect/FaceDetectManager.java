@@ -443,12 +443,12 @@ public class FaceDetectManager
 		if( jsonresults == null)
 		{
 			//TODO: Find out why the first ones always fail
-			jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
-			if( jsonresults == null)
-			{				
-				//throw new OpenEditException("Match should not be null for " + finaljson);
-				return null;
-			}
+//			jsonresults = getRunningCompareProcess().runExecStream(finaljson + "\n",60000); //EXTRA new line To account for new lines inside json
+//			if( jsonresults == null)
+//			{				
+				throw new OpenEditException("Match should not be null for " + finaljson);
+//				return null;
+//			}
 		}
 		//This is a JSON of a grid of grids
 		JSONParser parser = new JSONParser();

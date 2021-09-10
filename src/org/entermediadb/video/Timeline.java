@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
@@ -245,6 +246,20 @@ public class Timeline
 		}
 		
 		return Long.parseLong(inString.toString());
+	}
+	
+	public String toHourTime(Object inTime)
+	{
+		long milli = 0;
+		if( inTime instanceof Double)
+		{
+			milli = Math.round( toDouble(inTime)*1000D);
+		}
+		else
+		{
+			milli = Long.parseLong(inTime.toString());
+		}
+		return MathUtils.toDuration(milli);
 	}
 
 	public int getFaceRow(String inFaceCounter)

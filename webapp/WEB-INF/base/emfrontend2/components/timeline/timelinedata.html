@@ -25,7 +25,7 @@
 			#end
 			>
 			##<div class="ruler" >
-				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
+				<div class="timecell #if( $clip.data.faceprofilegroup ) timecellfaceprofile #end" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
 					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div> 
 					#set( $label = $!clip.getValue("cliplabel"))
