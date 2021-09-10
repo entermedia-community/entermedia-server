@@ -243,7 +243,9 @@
         <property name="xmlArchive"><ref bean="xmlArchive"/></property>
        
     </bean>
-	<bean id="translator" class="org.openedit.modules.translations.Translation" />
+	<bean id="translator" class="org.openedit.modules.translations.Translation">
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
 
 	<bean id="userProfileManager" class="org.entermediadb.users.UserProfileManager" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>

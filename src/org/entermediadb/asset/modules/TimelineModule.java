@@ -4,9 +4,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -17,7 +17,6 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.MathUtils;
-import org.entermediadb.video.Clip;
 import org.entermediadb.video.CloudTranscodeManager;
 import org.entermediadb.video.Timeline;
 import org.entermediadb.video.TimelineManager;
@@ -502,35 +501,74 @@ public class TimelineModule extends BaseMediaModule
 			newtrack.setProperty("sourcelang", targetlang);
 			newtrack.setProperty("assetid",  asset.getId());
 		}
-
 		
 		Collection<Map> existingcaptions = (Collection)lasttrack.getValue("captions");
-		Collection<Map> captions = new ArrayList(existingcaptions);
-		Translation server = new Translation();
-		int counter = 0;
-		for(Map caption : captions)
-		{
-			String cliplabel = (String)caption.get("cliplabel"); 
-			if( cliplabel != null && !cliplabel.isEmpty() )
-			{
-				counter++;
-				cliplabel = server.webTranslate(cliplabel,selectedlang,targetlang);
-				caption.put("cliplabel", cliplabel);
-				newtrack.setValue("captions", captions);
-				if( counter == 25)
-				{
-					counter =0;
-					captionsearcher.saveData(newtrack);
-					Thread.sleep(1000);
-				}	
-
-			}
-		}
+		
+		Collection translated = translateInGroups(captionsearcher, selectedlang, targetlang, existingcaptions);
+		newtrack.setValue("captions", translated);
+		captionsearcher.saveData(newtrack);
 		newtrack.setValue("transcribestatus", "complete");
-		newtrack.setValue("captions", captions);
 		captionsearcher.saveData(newtrack);
 		inReq.putPageValue("track", newtrack);
 		inReq.putSessionValue("selectedlang",targetlang);
+	}
+
+	protected Collection<Map> translateInGroups(Searcher captionsearcher, String selectedlang, String targetlang, Collection<Map> existingcaptions) throws InterruptedException
+	{
+		Translation server = (Translation)getModuleManager().getBean("translator");
+		int counter = 0;
+		int sofar = 0;
+		int maxcount = 10;
+		StringBuffer tosend = new StringBuffer();
+
+		List<Map> finishedlist = new ArrayList(); //
+		
+		for (Iterator iterator = existingcaptions.iterator(); iterator.hasNext();)
+		{
+			Map caption = (Map) iterator.next();
+			String cliplabel = (String)caption.get("cliplabel"); 
+			finishedlist.add(new HashMap(caption));
+			if( cliplabel != null && !cliplabel.isEmpty() )
+			{
+				tosend.append(cliplabel);
+			}
+			if( counter < maxcount && iterator.hasNext())
+			{
+				tosend.append(" || ");
+			}
+			counter++;
+			if( counter == maxcount+1)
+			{
+				String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
+				
+				parseTranslationResults(response,sofar, counter, finishedlist);
+				sofar = sofar + counter;
+				counter = 0;
+				tosend = new StringBuffer();
+			}
+		}
+		String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
+		parseTranslationResults(response, sofar, counter, finishedlist);
+		return finishedlist;
+
+	}
+
+	protected void parseTranslationResults(String response, int sofar, int counter, List<Map> finishedlist)
+	{
+		String cleanup = response.replaceAll("\\|\\|", "|");
+		String[] labels = MultiValued.VALUEDELMITER.split(cleanup);
+		
+		//make sure they match
+		if( labels.length != counter)
+		{
+			log.error("SOmething bad");
+		}
+		for (int i = 0; i < labels.length; i++)
+		{
+			String label  = labels[i];
+			label = label.trim();
+			finishedlist.get(i + sofar).put("cliplabel",label);
+		}
 	}
 	
 	
