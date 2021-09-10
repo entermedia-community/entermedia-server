@@ -1,12 +1,15 @@
 package org.entermediadb.asset.modules;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -17,7 +20,6 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.MathUtils;
-import org.entermediadb.video.Clip;
 import org.entermediadb.video.CloudTranscodeManager;
 import org.entermediadb.video.Timeline;
 import org.entermediadb.video.TimelineManager;
@@ -33,7 +35,10 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.modules.translations.Translation;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
+import org.openedit.util.OutputFiller;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -272,6 +277,8 @@ public class TimelineModule extends BaseMediaModule
 		searcher.saveData(track);
 		getPageManager().removePage(page);
 		
+		saveCaptionToFullText(archive,asset);
+
 	}
 	public void addCaption(WebPageRequest inReq)
 	{
@@ -320,7 +327,46 @@ public class TimelineModule extends BaseMediaModule
 		}
 		lasttrack.setValue("captions",captions);
 		captionsearcher.saveData(lasttrack);
+		saveCaptionToFullText(archive,asset);
 	}	
+	protected void saveCaptionToFullText(MediaArchive inArchive, Asset inAsset)
+	{
+		Collection hits = inArchive.query("videotrack").exact("assetid", inAsset.getId()).search();
+
+		StringBuffer out = new StringBuffer();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued track = (MultiValued) iterator.next();
+			Collection captions = (Collection)track.getValue("captions");
+			for (Iterator iterator2 = captions.iterator(); iterator2.hasNext();)
+			{
+				Map clip = (Map) iterator2.next();
+				String label = (String)clip.get("cliplabel");
+				out.append( label );
+				out.append(" ");
+			}
+		}
+		
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+		if( item instanceof FileItem)
+		{
+			((FileItem)item).getFile().getParentFile().mkdirs();
+		}
+		PrintWriter output = new PrintWriter(item.getOutputStream());
+		OutputFiller filler = new OutputFiller();
+		try
+		{
+			filler.fill(new StringReader(out.toString()), output );
+		}
+		catch (IOException e)
+		{
+			log.error("Could not fill",e);
+		}
+		filler.close(output);
+		inAsset.setProperty("hasfulltext", "true");
+		inArchive.saveAsset(inAsset);
+	}
+
 	protected Collection removeDuplicate(Collection inCaptions, Map inCuemap)
 	{
 		Long start = (Long)inCuemap.get("timecodestart");
@@ -502,35 +548,76 @@ public class TimelineModule extends BaseMediaModule
 			newtrack.setProperty("sourcelang", targetlang);
 			newtrack.setProperty("assetid",  asset.getId());
 		}
-
 		
 		Collection<Map> existingcaptions = (Collection)lasttrack.getValue("captions");
-		Collection<Map> captions = new ArrayList(existingcaptions);
-		Translation server = new Translation();
-		int counter = 0;
-		for(Map caption : captions)
-		{
-			String cliplabel = (String)caption.get("cliplabel"); 
-			if( cliplabel != null && !cliplabel.isEmpty() )
-			{
-				counter++;
-				cliplabel = server.webTranslate(cliplabel,selectedlang,targetlang);
-				caption.put("cliplabel", cliplabel);
-				newtrack.setValue("captions", captions);
-				if( counter == 25)
-				{
-					counter =0;
-					captionsearcher.saveData(newtrack);
-					Thread.sleep(1000);
-				}	
-
-			}
-		}
+		
+		Collection translated = translateInGroups(captionsearcher, selectedlang, targetlang, existingcaptions);
+		newtrack.setValue("captions", translated);
+		captionsearcher.saveData(newtrack);
 		newtrack.setValue("transcribestatus", "complete");
-		newtrack.setValue("captions", captions);
 		captionsearcher.saveData(newtrack);
 		inReq.putPageValue("track", newtrack);
 		inReq.putSessionValue("selectedlang",targetlang);
+		saveCaptionToFullText(archive,asset);
+
+	}
+
+	protected Collection<Map> translateInGroups(Searcher captionsearcher, String selectedlang, String targetlang, Collection<Map> existingcaptions) throws InterruptedException
+	{
+		Translation server = (Translation)getModuleManager().getBean("translator");
+		int counter = 0;
+		int sofar = 0;
+		int maxcount = 10;
+		StringBuffer tosend = new StringBuffer();
+
+		List<Map> finishedlist = new ArrayList(); //
+		
+		for (Iterator iterator = existingcaptions.iterator(); iterator.hasNext();)
+		{
+			Map caption = (Map) iterator.next();
+			String cliplabel = (String)caption.get("cliplabel"); 
+			finishedlist.add(new HashMap(caption));
+			if( cliplabel != null && !cliplabel.isEmpty() )
+			{
+				tosend.append(cliplabel);
+			}
+			if( counter < maxcount && iterator.hasNext())
+			{
+				tosend.append(" || ");
+			}
+			counter++;
+			if( counter == maxcount+1)
+			{
+				String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
+				
+				parseTranslationResults(response,sofar, counter, finishedlist);
+				sofar = sofar + counter;
+				counter = 0;
+				tosend = new StringBuffer();
+			}
+		}
+		String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
+		parseTranslationResults(response, sofar, counter, finishedlist);
+		return finishedlist;
+
+	}
+
+	protected void parseTranslationResults(String response, int sofar, int counter, List<Map> finishedlist)
+	{
+		String cleanup = response.replaceAll("\\|\\|", "|");
+		String[] labels = MultiValued.VALUEDELMITER.split(cleanup);
+		
+		//make sure they match
+		if( labels.length != counter)
+		{
+			log.error("SOmething bad");
+		}
+		for (int i = 0; i < labels.length; i++)
+		{
+			String label  = labels[i];
+			label = label.trim();
+			finishedlist.get(i + sofar).put("cliplabel",label);
+		}
 	}
 	
 	

@@ -164,7 +164,7 @@ public class TranslationModule extends BaseModule {
 
 	public Translation getTranslations(WebPageRequest inReq)
 			throws OpenEditException {
-		Translation trans = new Translation();
+		Translation trans = (Translation)getModuleManager().getBean("translator");
 
 		// get the languages
 		init(inReq, trans);
