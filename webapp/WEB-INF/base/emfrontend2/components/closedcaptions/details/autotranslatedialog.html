@@ -2,17 +2,33 @@
 
 	<form name="vttupload" id="vttupload" method="post"  class="ajaxform autocloseform" data-oemaxlevel="1" targetdiv="closedcaptioneditor"
 		  action="$clientroot/details/autotranslate.html">
-	 	<input type="hidden" name="selectedlang" value="$selectedlang"> 
+
+		<p>[[Translate from language]]
+
+#set($languages = $mediaarchive.getList("locale"))
+	<div>				
+		<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}" >	 
+			#foreach($locale in $languages)
+				<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
+			#end
+		</select>
+	</div>
+</p>
 	 	<input type="hidden" name="assetid" value="$asset.id"> 
 		 
-		<p>[[Translate your closed captions to]]</p>
+		<p>[[To what laguage]]
+		<div>
 		#set($languages = $mediaarchive.getList("locale"))
 		<select class="select2 lenguagepicker" name="targetlang" >
 				#foreach($locale in $languages)
-				<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
+				#if( $selectedlang!=$!locale.id)
+				<option value="$!locale.id" >$!locale</option>
+				#end
 				#end
 		</select>
-		 <p>Note: This will overwrite existing captions in this language</p>
+		 <p>[[Note: This will overwrite existing captions!]]</p>
+		 </p>
+		 </div>
 	</form>
 
 	

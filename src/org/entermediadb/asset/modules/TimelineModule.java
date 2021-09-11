@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.HttpClient;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
@@ -39,6 +40,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.URLUtilities;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -567,49 +569,54 @@ public class TimelineModule extends BaseMediaModule
 		Translation server = (Translation)getModuleManager().getBean("translator");
 		int counter = 0;
 		int sofar = 0;
-		int maxcount = 10;
+		int maxcount = 1;  //3900 char limit. Cant find any delimiters
 		StringBuffer tosend = new StringBuffer();
-
+		HttpClient client = URLUtilities.createTrustingHttpClient().setUserAgent("Mozilla/5.0 (Mobile; rv:14.0) Gecko/14.0 Firefox/14.0").build();
 		List<Map> finishedlist = new ArrayList(); //
 		
 		for (Iterator iterator = existingcaptions.iterator(); iterator.hasNext();)
 		{
 			Map caption = (Map) iterator.next();
-			String cliplabel = (String)caption.get("cliplabel"); 
 			finishedlist.add(new HashMap(caption));
+			counter++;
+			String cliplabel = (String)caption.get("cliplabel"); 
 			if( cliplabel != null && !cliplabel.isEmpty() )
 			{
 				tosend.append(cliplabel);
 			}
-			if( counter < maxcount && iterator.hasNext())
+			if( counter == maxcount && iterator.hasNext())
 			{
-				tosend.append(" || ");
-			}
-			counter++;
-			if( counter == maxcount+1)
-			{
-				String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
+				String response = server.webTranslate(client,tosend.toString(),selectedlang,targetlang);
 				
 				parseTranslationResults(response,sofar, counter, finishedlist);
 				sofar = sofar + counter;
 				counter = 0;
 				tosend = new StringBuffer();
 			}
+			else
+			{
+				tosend.append(" 123456789 ");
+			}
 		}
-		String response = server.webTranslate(tosend.toString(),selectedlang,targetlang);
-		parseTranslationResults(response, sofar, counter, finishedlist);
+		if( counter > 0)
+		{
+			String response = server.webTranslate(client,tosend.toString(),selectedlang,targetlang);
+			parseTranslationResults(response, sofar, counter, finishedlist);
+		}
 		return finishedlist;
+			
 
 	}
 
 	protected void parseTranslationResults(String response, int sofar, int counter, List<Map> finishedlist)
 	{
-		String cleanup = response.replaceAll("\\|\\|", "|");
-		String[] labels = MultiValued.VALUEDELMITER.split(cleanup);
+		//String cleanup = response.replaceAll("~~~~", "|");
+		//String[] labels = MultiValued.VALUEDELMITER.split(cleanup);
+		String[] labels = response.split("123456789");
 		
 		//make sure they match
-		if( labels.length != counter)
-		{
+		if( labels.length != counter) //One based
+ 		{
 			log.error("SOmething bad");
 		}
 		for (int i = 0; i < labels.length; i++)
