@@ -1,13 +1,15 @@
 #set( $clientroot = "/${applicationid}/components/closedcaptions" )
 
-<div class="clipedit" style="padding-bottom:20px;">
+<div class="clipedit" style="padding:10px 0 20px 10px;">
 	
 		<h3>
-			[[Transcribing Tools]]
+			[[Edit Locally]]
 		</h3>
 
-		<a href="$clientroot/details/importstart.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Import Captions]] (VTT [[file]])</a> 
-		<a  href='#urlescape("$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${asset.name}-${selectedlang}.vtt")' class="btn btn-dark" style="margin-left:0px;" >[[Export]]</a> 
+		<a  href='#urlescape("$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${asset.name}-${selectedlang}.vtt")' 
+			class="btn btn-dark" style="margin-left:0px;" >[[Download (VTT file)]]</a> 
+		<a href="$clientroot/details/importstart.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%" 
+		 class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Upload (VTT file)]]</a> 
 		##<br><br>
 		##<a id="removeclip" class="btn btn-danger ajax" targetdiv="closedcaptioneditor" data-confirm="[[Are you sure?]]" href="$clientroot/details/delete.html?assetid=$asset.id&selectedlang=$selectedlang" >[[Delete]]</a>
 	 
