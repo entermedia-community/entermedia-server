@@ -60,6 +60,10 @@ public class ConversionUtil {
 		//log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
 		boolean canCrop = false;
 		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
+		Data preset = inArchive.getCachedData("convertpreset", inPresetId);
+		if (!preset.get("transcoderid").equals("imagemagick")) {
+			return false;
+		}
 		//log.debug("Crop Dimension: "+cropDimension);
 		if (cropDimension!=null && cropDimension.getHeight()!=0 && cropDimension.getWidth()!=0){
 //			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
