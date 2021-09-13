@@ -16,4 +16,8 @@
 #end
 </div>
 
-
+#if( !$values.isEmpty() && $canviewsettings )
+	<a href="$siteroot$apphome/components/timeline/deleteallprofiles.html?id=$asset.id">
+	[[delete all]]
+	</a>
+#end

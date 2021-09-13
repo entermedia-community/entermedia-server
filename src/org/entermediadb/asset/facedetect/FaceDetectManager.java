@@ -1,6 +1,10 @@
 package org.entermediadb.asset.facedetect;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,15 +12,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.cluster.IdManager;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.TranscodeTools;
+import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
@@ -28,7 +33,6 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.RunningProcess;
@@ -257,10 +261,25 @@ public class FaceDetectManager
 		
 		List<Map> profilemap = new ArrayList<Map>();
 		
+		// "location": [[125, 583, 254, 454], [98, 1887, 253, 1732], [179, 934, 254, 859]]}
+		
 		JSONArray array = (JSONArray)json.get("profile");
-		if( array != null)
+		if( array != null && !array.isEmpty())
 		{
 			log.info("Found profile! " + input.getPath());
+			
+			BufferedImage bimg = null;
+			try
+			{
+				bimg = ImageIO.read(new File(input.getAbsolutePath()));
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			int width          = bimg.getWidth();
+			int height         = bimg.getHeight();
 			for (Iterator iterator = array.iterator(); iterator.hasNext();)
 			{
 				JSONArray profilejson = (JSONArray) iterator.next();
@@ -269,6 +288,18 @@ public class FaceDetectManager
 				profile.put("facedata",profilejson.toJSONString());
 				//TODO: Add coordinates of where the face is on the image
 				profilemap.add(profile);
+			}
+			JSONArray locations = (JSONArray)json.get("location");
+			if( locations != null)
+			{
+				for (int i = 0; i < profilemap.size(); i++)
+				{
+					Map profile = (Map) profilemap.get(i);
+					JSONArray locationxy = (JSONArray) locations.get(i);
+					//Array of numbers?
+					profile.put("locationxy",locationxy.toArray());
+					profile.put("locationwh",new int[] {width,height} );
+				}
 			}
 		}
 		return profilemap;
@@ -297,6 +328,7 @@ public class FaceDetectManager
 			//Search all the other assets minus myself
 			HitTracker 	hits = inArchive.query("asset").exact("facehasprofile",true).not("id",inAsset.getId()).search();
 			hits.enableBulkOperations();
+			
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data otherasset = (Data) iterator.next();
@@ -385,11 +417,13 @@ public class FaceDetectManager
 		jsonoutput.append("]}");
 		
 		JSONArray rowsofresults = runCompare(jsonoutput);
-		if( rowsofresults == null)
+		if( rowsofresults == null && !rowsofresults.contains("1"))
 		{
 			return foundmatch;
 		}
 		
+		Asset otherassetsaved = inArchive.getAsset(otherasset.getId()); //Make sure we got updated data
+		otherprofiles = createListMap((Collection)otherassetsaved.getValue("faceprofiles"));  
 		int index = 0;
 		for (Iterator iterator = rowsofresults.iterator(); iterator.hasNext();)
 		{
@@ -399,6 +433,7 @@ public class FaceDetectManager
 			 */
 			ValuesMap onepicture = (ValuesMap)thisassetprofiles.get(index);
 			index++;
+			
 			for (int i = 0; i < rowsofresultsdone.size(); i++)
 			{
 				long istrue = (long) rowsofresultsdone.get(i); //Only this array level had a match
@@ -408,7 +443,7 @@ public class FaceDetectManager
 					foundmatch = true;
 					ValuesMap otherprofile = (ValuesMap)otherprofiles.get(i); //Error here means API not working right
 					
-					assignFaceGroupId(inArchive, inAsset, otherasset, thisassetprofiles, otherprofiles, onepicture, otherprofile);	
+					assignFaceGroupId(inArchive, inAsset, otherassetsaved, thisassetprofiles, otherprofiles, onepicture, otherprofile);	
 				}
 			}
 		}
@@ -464,15 +499,26 @@ public class FaceDetectManager
 		return null;
 	}
 
-	protected void assignFaceGroupId(MediaArchive inArchive,  Asset inAsset, Data otherasset, List<ValuesMap> thisassetprofiles, List<ValuesMap> otherprofiles, ValuesMap onepicture, ValuesMap otherprofile)
+	protected void assignFaceGroupId(MediaArchive inArchive, Asset inAsset, Asset otherasset, List<ValuesMap> thisassetprofiles, List<ValuesMap> otherprofiles, ValuesMap onepicture, ValuesMap otherprofile)
 	{
 		
 		//See if either profile already has a group. If so then use that group
+		
+		//These values may have changed since I started processing the results
+		//Save a map of assetid and xy locations to make sure I have the correct faceprofilegroup
+		
 		String groupid = (String)onepicture.get("faceprofilegroup");
 		if( groupid == null)
 		{
 			groupid = (String)otherprofile.get("faceprofilegroup"); 
 		}
+		
+		//Make sure it exsits
+		if( groupid != null && null == inArchive.getData("faceprofilegroup", groupid))
+		{
+			groupid = null;
+		}
+		
 		//New group in between both pictures. Create a new group
 		Searcher groupsearcher =  inArchive.getSearcher("faceprofilegroup");
 		if( groupid == null)
@@ -530,6 +576,7 @@ public class FaceDetectManager
 		return copy;
 	}
 	
+
 	public HitTracker searchForAssets(MediaArchive inArchive, String faceprofilegroupid)
 	{
 		HitTracker tracker = inArchive.query("asset").exact("faceprofiles.faceprofilegroup", faceprofilegroupid).search();
@@ -733,6 +780,51 @@ public class FaceDetectManager
 			}
 			
 		}
+	}
+
+	public String getImageAndLocationForGroup(Data asset,String inGroupId, int thumbwidth, int thumbheight)
+	{
+		Collection profiles = (Collection)asset.getValue("faceprofiles");
+		
+		for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
+		{
+			Map profile = (Map) iterator.next();
+			String groupid = (String)profile.get("faceprofilegroup");
+			
+			if( profile != null && inGroupId.equals(groupid))
+			{
+				List<Integer> wh = (List)profile.get("locationwh");
+				List<Integer> locationxy = (List)profile.get("locationxy");
+				
+				double scale = 1;
+				//if( locationxy.get(0) > locationxy.get(1)) //Wider
+				//{
+					scale = MathUtils.divide(thumbwidth , wh.get(0));
+//				}
+//				else
+//				{
+//					scale = MathUtils.divide(thumbheight , wh.get(1));
+//				}
+				
+				double x = locationxy.get(0);
+				double y = locationxy.get(1);
+				double w = (locationxy.get(2)-locationxy.get(0));
+				double h = (locationxy.get(3)-locationxy.get(1));
+				
+				x = x * scale;
+				y = y * scale;
+				w = w * scale;
+				h = h * scale;
+				
+				Double[] scaledxy = new Double[] { x, y, w , h};
+				
+				//Calculate the dimentions scaled to this image
+				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
+				return json;
+			}
+		}
+		
+		return null;
 	}
 	
 	

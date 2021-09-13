@@ -4,7 +4,7 @@
 		  action="$clientroot/details/autotranscribe.html">
 	 	<input type="hidden" name="assetid" value="$asset.id"> 
 		 
-		<p>[[Automatically transcribe your media file]]</p>
+		<p>[[Language within the video is]]</p>
 		#set($languages = $mediaarchive.getList("locale"))
 		<select class="select2 lenguagepicker" name="selectedlang" >
 				#foreach($locale in $languages)
