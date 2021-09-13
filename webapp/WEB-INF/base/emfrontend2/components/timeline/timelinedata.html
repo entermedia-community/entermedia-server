@@ -65,7 +65,11 @@
 									#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
 									#if( $val)
 										<span class="clipdetail">
+										#if( $fieldid == "faceprofilegroup")
+											<a href="$siteroot$apphome/components/gridsample/preview/faceprofilegroup.html?id=$val.getId()&searchtype=$fieldid"
+										#else
 											<a href="$siteroot$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid"
+										#end	
 											title="[[Entity]]: $!val" 
 											class="emdialog entity-dialog"
 											data-noesc="true"

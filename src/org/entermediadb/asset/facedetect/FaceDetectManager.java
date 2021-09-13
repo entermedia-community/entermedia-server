@@ -346,14 +346,15 @@ public class FaceDetectManager
 				{
 					createGroupsWithinVideo(inArchive,inAsset);
 				}
-				//TODO: Finally add groups for all leftover people
-				createGroupsForAllProfiles(inArchive,inAsset);
 				
 				if( didfoundmatch)
 				{
 					foundmatch = didfoundmatch;
 				}
 			}
+			//TODO: Finally add groups for all leftover people
+			createGroupsForAllProfiles(inArchive,inAsset);
+			
 			inAsset.setValue("facematchcomplete",true);
 			inArchive.saveData("asset",inAsset);
 			return foundmatch;
