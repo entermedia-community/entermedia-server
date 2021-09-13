@@ -782,9 +782,11 @@ public class FaceDetectManager
 		}
 	}
 
-	public String getImageAndLocationForGroup(Data asset,String inGroupId, int thumbwidth, int thumbheight)
+	public Map getImageAndLocationForGroup(Data asset,String inGroupId, int thumbwidth, int thumbheight)
 	{
 		Collection profiles = (Collection)asset.getValue("faceprofiles");
+		
+		Map results = new HashMap();
 		
 		for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
 		{
@@ -820,11 +822,16 @@ public class FaceDetectManager
 				
 				//Calculate the dimentions scaled to this image
 				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
-				return json;
+				results.put("locationxy",json);
+				if( profile.get("timecodestart") != null )
+				{
+					double seconds = MathUtils.divide( profile.get("timecodestart").toString(),"1000");
+					results.put("timecodestartseconds",seconds);
+				}
 			}
 		}
 		
-		return null;
+		return results;
 	}
 	
 	

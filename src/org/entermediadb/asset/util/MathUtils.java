@@ -86,6 +86,11 @@ public String percent(String inVal){
 			return null;
 		}
 	}
+	public static double divide(String intop, String inbottom)
+	{
+		double d = divide(Double.parseDouble(intop),Double.parseDouble(inbottom));
+		return d;
+	}
 
 	public static double divide(double intop, double inbottom)
 	{
