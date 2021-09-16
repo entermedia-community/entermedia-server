@@ -729,7 +729,7 @@ public class FaceDetectManager
 			for (int i = 0; i < rowsofresultsdone.size(); i++)
 			{
 				
-				if( index == i)
+				if( index - 1 == i)
 				{
 					//Same person dont do anythuing
 					continue;
