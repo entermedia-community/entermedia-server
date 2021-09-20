@@ -1,0 +1,77 @@
+<div class="ui-widget uipanel" >
+
+		    <div class="ui-widget-header">[[Add Remote Media]]</div>
+		    <div class="ui-widget-content">
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+
+<script>
+
+	$("#externalmediainput").on("change",function()
+	{
+		var externalmediainput = $(this).val();
+		var youtubeid = false;
+		if( externalmediainput.startsWith("https://youtu.be/") )			//https://youtu.be/n7GxnhQjBaw		
+		{
+			youtubeid = externalmediainput.substring(17);
+		}
+		else if (externalmediainput.indexOf("youtube.com/") > -1 ) //https://www.youtube.com/watch?v=n7GxnhQjBaw
+		{
+			var start = externalmediainput.indexOf("watch?v=");
+			youtubeid = externalmediainput.substring( start + 8);
+		}
+		if( youtubeid )
+		{
+			var code = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + youtubeid + '" frameborder="0" allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+		if( externalmediainput.indexOf("vimeo") > -1) 
+		{
+			var vimeoid = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
+			var code = '<iframe src="https://player.vimeo.com/video/' + vimeoid +'" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+	});
+
+</script>	
+
+<style>
+
+#embeddedurl
+{
+	width: 400px;
+	height: 60px;
+}
+#detail_embeddedurl
+{
+	margin-bottom: 10px;
+}
+.detail-note {
+	font-style: italic;
+}
+#externalmediainput
+{
+	width: 350px;
+	border: 2px solid #444;
+}
+</style>
+
+<div class="inputformrow">
+	<span class="emdatafield">
+			[[Media URL Address]]: 
+	</span>
+	<div id="detail_embeddedurl" class="emdatafieldvalue ">
+		<input name="externalmediainput" id="externalmediainput"  />
+		<input type="hidden" name="field" value="embeddedurl" />
+		<input type="hidden" name="embeddedurl.value" id="embeddedurl"  />
+		<div>
+		<span class="detail-note">[[URL to external asset or YouTube/Vimeo link]]</span>
+		</div>
+	</div>
+</div>
+
+</div>
+</div>
+
