@@ -16,6 +16,7 @@ import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 
 public class Timeline
 {
@@ -124,14 +125,18 @@ public class Timeline
 			{
 				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
 				{
-					Map data = (Map) iterator.next();
-					
+					ValuesMap data = new ValuesMap((Map) iterator.next());
+
 					Clip clip = new Clip();
 					clip.setData(data);
 					
 					if( data.get("faceprofilegroup") != null)
 					{
-						existingfaceprofilegroups.add(data.get("faceprofilegroup") + String.valueOf(clip.getStart() ) );
+						for (Iterator iterator2 = data.getValues("faceprofilegroup").iterator(); iterator2.hasNext();)
+						{
+							String faceprofilegroup = (String) iterator2.next();
+							existingfaceprofilegroups.add(faceprofilegroup + String.valueOf(clip.getStart() ) );
+						}
 					}
 					
 					fieldClips.add(clip);
@@ -146,10 +151,16 @@ public class Timeline
 				for (Iterator iterator = faceprofiles.iterator(); iterator.hasNext();)
 				{
 					Map<String,Object> profile = (Map) iterator.next();
-					if( !existingfaceprofilegroups.contains(profile.get("faceprofilegroup") + String.valueOf(profile.get("timecodestart") ) ) )
+					String faceprofilegroup = (String)profile.get("faceprofilegroup");
+					if( faceprofilegroup == null || faceprofilegroup.contains("|"))
+					{
+						log.error("Must be a one to one groupid " + faceprofilegroup);
+						continue;
+					}
+					if( !existingfaceprofilegroups.contains(faceprofilegroup + String.valueOf(profile.get("timecodestart") ) ) )
 					{
 						//Add it
-						String groupid = (String)profile.get("faceprofilegroup");
+						String groupid = (String)faceprofilegroup;
 						if( groupid == null)
 						{
 							log.error("Must have a groupid");

@@ -87,7 +87,23 @@ $(document).ready(function()
     	$(this).attr('disabled', 'disabled');
     	//$(this).prop('disabled', true);
     	$("#viewassetsbtn").attr('disabled', 'disabled');
-    	$("#upload_field").triggerHandler("html5_upload.start");
+    	
+    	if( allfiles.length == 0 )
+    	{
+    		//Just submit it?
+    		var form = $("#uploaddata");
+    		//Submit it to upload the one
+    		var finishaction = form.data("linkfinishaction");
+    		form.attr("action",finishaction);
+    		var targetdiv = form.data("finishtargetdiv");
+			form.ajaxSubmit({
+				target : "#" + $.escapeSelector(targetdiv) 
+			});
+    	}
+    	else
+    	{
+    		$("#upload_field").triggerHandler("html5_upload.start");
+    	}
     	
     });
 

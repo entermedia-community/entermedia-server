@@ -19,13 +19,12 @@ asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForSt
 
 //String assettype = context.getRequestParameter("assettype");
 //asset.setProperty("assettype", assettype);
-branch = mediaarchive.getCategoryArchive().createCategoryTree("/newassets/${context.getUserName()}");
-asset.addCategory(branch);
 
 String[] fields = context.getRequestParameters("field");
 if(fields != null) {
 	mediaarchive.getAssetSearcher().updateData(context,fields,asset);
 }
+
 
 //n7GxnhQjBaw/hqdefault.jpg
 String externalmediainput = context.getRequestParameter("externalmediainput");
@@ -72,6 +71,14 @@ else
 	asset.setName( PathUtilities.extractFileName(name));		
 }
 
+
+String sourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePath(context,mediaarchive,asset.getName());
+asset.setSourcePath(sourcepath);
+
+String catpath = context.getRequestParameter("sourcepath");
+branch = mediaarchive.createCategoryPath(catpath);
+asset.addCategory(branch);
+
 //TODO: Use some parser interface and grab more metadata from youtube or vimeo, flickr
 asset.setProperty("linkurl",externalmediainput);
 
@@ -88,8 +95,6 @@ else
 }
 asset.setProperty("importstatus","needsdownload");
 
-String sourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePath(context,mediaarchive,asset.getName());
-asset.setSourcePath(sourcepath);
 
 
 //String embed =  context.getRequestParameter("embeddedurl.value") 
