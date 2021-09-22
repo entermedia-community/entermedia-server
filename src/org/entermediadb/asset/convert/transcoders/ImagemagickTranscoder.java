@@ -451,14 +451,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			pages = "["+page+"]";
 		}
-		if (isOnWindows())
-		{
-			com.add("\"" + prefix + absolutePath + pages + "\"");
-		}
-		else
-		{
-			com.add(prefix + absolutePath + pages);
-		}
+			//filename = filename.replaceAll("[", "\\[").replaceAll("]", "\\]");
+		com.add("\"" + prefix + absolutePath + pages+ "\"");
 		com.add("-limit");
 		com.add("thread");
 		com.add("1");
