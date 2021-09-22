@@ -355,8 +355,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		new File(outputpath).getParentFile().mkdirs();
 
 		long timeout = inStructions.getConversionTimeout();
-		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
+		ExecResult none = getExec().runExec("acommand", com, true, timeout);
+		ExecResult execresult = getExec().runExec("convert", com, true, timeout);		
 
+		none.isRunOk();
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 
