@@ -1,7 +1,6 @@
 package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -356,28 +355,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		new File(outputpath).getParentFile().mkdirs();
 
 		long timeout = inStructions.getConversionTimeout();
-		Process p = null;
-		try {
-			List<String> comOptions = new ArrayList<String>();
-			comOptions.add("convert");
-			comOptions.addAll(com);
-			p = new ProcessBuilder(comOptions).start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int retval = 0;
-		try {
-			retval = p.waitFor();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// ExecResult execresult = getExec().runExec("convert", com, true, timeout);
+		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
 
-		// boolean ok = execresult.isRunOk();
-		boolean ok = retval == 1 ? true: false;
+		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 
 		if (ok)
@@ -389,17 +369,22 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			return result;
 		}
 		//problems
-		log.info("Could not exec: " + p.getOutputStream());
-		
-			String output = p.getOutputStream().toString();
+		log.info("Could not exec: " + execresult.getStandardOut());
+		if (execresult.getReturnValue() == 124)
+		{
+			result.setError("Exec timed out after " + timeout);
+		}
+		else
+		{
+			String output = execresult.getStandardOut();
 			if(output != null && output.contains("warning/tiff.c")) {
 				result.setComplete(true);
 				log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
 			}else {
-				result.setError(p.getErrorStream().toString());
+			result.setError(execresult.getStandardOut());
 			}
-		
+		}
 		return result;
 	}
 	
@@ -472,7 +457,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			//filename = filename.replaceAll("[", "\\[").replaceAll("]", "\\]");
 			com.add(prefix + absolutePath + pages);
 		}
 		com.add("-limit");
