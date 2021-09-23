@@ -790,11 +790,15 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
-		updateEntity(archive, tracker, metadata, user);
+		updateEntities(archive, tracker, metadata, user);
 		
 		
 	}
-		
+	
+	
+	/*
+	 * use updateEntities
+	 * 
 	public void updateEntity(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
 	{
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
@@ -826,6 +830,45 @@ public class AssetEditModule extends BaseMediaModule
 		}
 	
 	}
+	*/
+	
+	public void updateEntities(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
+	{
+		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
+		{
+			String field  = (String)iterator.next();
+			if( field.startsWith("entity") ) {
+				for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+				{
+					//loop all assets and save them
+					Asset asset = (Asset)iterator2.next();
+					Collection<String> values = asset.getValues(field);
+					if( values != null && !values.isEmpty())
+					{
+						Searcher s = archive.getSearcher(field);
+						List tosave = new ArrayList();
+						for (Iterator iterator3 = values.iterator(); iterator3.hasNext();)
+						{
+							String entityid = (String) iterator3.next();
+							
+							Data entity = s.query().exact("id", entityid).searchOne();
+							String pi = entity.get("primaryimage");
+							if (entity != null && pi == null) {
+								entity.setValue("primaryimage", asset.getId());
+								tosave.add(entity);
+							}
+						}
+						s.saveAllData(tosave, inUser);
+						
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
+
 	
 	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
