@@ -790,18 +790,16 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
-		updateEntity(inReq, archive, tracker, metadata, user);
+		updateEntity(archive, tracker, metadata, user);
 		
 		
 	}
 		
-	public void updateEntity(WebPageRequest inReq, final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
+	public void updateEntity(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
 	{
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
-
-			
 			if( field.startsWith("entity") ) {
 				Object values = inMetadata.get(field);
 				if( values instanceof String[] ) {
@@ -809,7 +807,7 @@ public class AssetEditModule extends BaseMediaModule
 					//loop on entityX values
 					for (String entityid : valuesarray)	{				
 						if( !entityid.equals("_auto") ) {
-							Searcher s = getSearcherManager().getSearcher(archive.getCatalogId(), field);
+							Searcher s = archive.getSearcher(field);
 							if (s != null) {
 								//isentity
 								//Data entity = s.query().exact("id", entityid).match("primaryimage", "").searchOne();
@@ -829,7 +827,7 @@ public class AssetEditModule extends BaseMediaModule
 	
 	}
 	
-
+	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		HitTracker tracker = archive.getAssetManager().saveFilesAndImport(currentcollection, createCategories, metadata, pages, user);
