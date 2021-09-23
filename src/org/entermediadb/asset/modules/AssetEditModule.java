@@ -796,42 +796,6 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	
 	
-	/*
-	 * use updateEntities
-	 * 
-	public void updateEntity(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
-	{
-		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
-		{
-			String field  = (String)iterator.next();
-			if( field.startsWith("entity") ) {
-				Object values = inMetadata.get(field);
-				if( values instanceof String[] ) {
-					String[] valuesarray = (String[])values;
-					//loop on entityX values
-					for (String entityid : valuesarray)	{				
-						if( !entityid.equals("_auto") ) {
-							Searcher s = archive.getSearcher(field);
-							if (s != null) {
-								//isentity
-								//Data entity = s.query().exact("id", entityid).match("primaryimage", "").searchOne();
-								Data entity = s.query().exact("id", entityid).searchOne();
-								String pi = entity.get("primaryimage");
-								if (entity != null && pi == null) {
-									Asset asset = (Asset) tracker.iterator().next();
-									entity.setValue("primaryimage", asset.getId());
-									s.saveData(entity, inUser);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	
-	}
-	*/
-	
 	public void updateEntities(final MediaArchive archive, Collection tracker, final Map inMetadata,  final User inUser)
 	{
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
