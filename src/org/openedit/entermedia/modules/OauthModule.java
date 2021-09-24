@@ -176,8 +176,14 @@ public class OauthModule extends BaseMediaModule
 					prompt = "";
 				}
 				
+				String state = "";
+				String loginokpage = inReq.findValue("loginokpage");
+				if (loginokpage != null) {
+					state = "{loginokpage="+loginokpage+"}";
+				}
 				
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.FACEBOOK).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
+				
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.FACEBOOK).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setResponseType("code").setScope(requestedpermissions).setState(state).buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
