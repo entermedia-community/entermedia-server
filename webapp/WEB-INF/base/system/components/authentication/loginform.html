@@ -4,18 +4,16 @@
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
-<div class="row justify-content-md-center" style="margin: 90px 0; ">
-
-
-
 #if($user)
 	<p class="text-center"><strong>[[You are currently logged in as]] $user 
-	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
+	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
 #end
+
+<div class="row justify-content-md-center loginformcontainer">
 
 #set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
-<div class="col-md-3" style="padding:50px 0px 0 0px; ">
+<div class="col-sm-4 loginform-col">
 
 		<p class="text-center"><strong>[[Sign-in with]]</strong></p>
 
@@ -29,15 +27,15 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
         <div style="text-align: center;">
 
-				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="Enter App Key" style="text-align:center; margin-top:20px;">[[Sign-In with App Key]]</a> 
+				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[Sign-In with App Key]]</a> 
 <br>	
-				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="Login" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
+				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="[[Login]]" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
         	
 		</div>
 
 </div>
 
-<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
+<div class="col-sm-7  loginform-col-right">
 		
 		 #set($loginok = $context.findValue("loginokpage") ) 
 
@@ -46,8 +44,8 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			
 			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 			
-					<p>[[Or E-mail Authentication Key]]</p>
-					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /></p>
+					<p><strong>[[Or E-mail Authentication Key]]</strong></p>
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%" placeholder="[[Enter your Email Address]]" required /></p>
 					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
 					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" style="margin-right:150px"/>
 					

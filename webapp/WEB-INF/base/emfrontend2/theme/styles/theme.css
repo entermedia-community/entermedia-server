@@ -4857,8 +4857,26 @@ a.collectionbox.favorite
 #registration-submit {
     margin-top: 10px;
 }
+.loginformcontainer {
+	margin: 20px 0; 
+}
+.loginform-col-right {
+	padding-top:30px;
+}
+@media (min-width: 640px) {
+	.loginformcontainer {
+	margin: 40px 0; 
+}
+	.loginform-col-right {
+	padding-top:0px;
+}
+}
+@media (min-width: 1024px) {
+.loginformcontainer {
+	margin: 90px 0; 
+}	
+}
 .login-form {
-
     padding: 0 0 30px;
     margin: 0;
     padding-right: 20px;
