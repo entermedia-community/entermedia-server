@@ -4,20 +4,21 @@
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
-<div class="row justify-content-md-center" style="margin: 90px 0; ">
+<div class="row justify-content-md-center" style="margin: 0px 0; ">
 
 
 
 #if($user)
 	<p class="text-center"><strong>[[You are currently logged in as]] $user 
-	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
+	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
 #end
 
 #set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
-<div class="col-md-3" style="padding:50px 0px 0 0px; ">
+<div class="col-md-3" style="padding:0px 0px 0 0px; ">
 
-		<p class="text-center"><strong>[[Sign-in with]]</strong></p>
+<h1 class="page-title">
+[[Sign-in with]]</h1>
 
 #if( !$providers.isEmpty() )
 		
@@ -29,30 +30,36 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
         <div style="text-align: center;">
 
-				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="Enter App Key" style="text-align:center; margin-top:20px;">[[Sign-In with App Key]]</a> 
+				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="Enter App Key" style="text-align:center; margin-top:20px; min-width:200px">[[Sign-In with App Key]]</a> 
 <br>	
-				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="Login" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
+				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="Login" style="text-align:center; margin-top:20px; min-width:200px">[[Username and Password]]</a> 
         	
 		</div>
 
 </div>
 
-<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
+<div class="col-md-8" style=" max-width:500px; padding:20px 0px 0 40px; ">
 		
 		 #set($loginok = $context.findValue("loginokpage") ) 
 
+#if( $content.allowguestregistration == "true")
+	#set( $allowguest =  true)
+#else
+	#set( $allowguest =  false)
+#end
+
 		#set( $to = $context.getRequestParameter("to") )	
 			#set( $username = $context.getRequestParameter("username") )
-			
+#if( $allowguest )			
 			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 			
-					<p>[[Or E-mail Authentication Key]]</p>
+					<p>[[Or Use your E-mail to Sign-in]]</p>
 					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /></p>
 					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
 					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" style="margin-right:150px"/>
 					
             </form>
-		
+#end		
 
 	<div><br>[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
 		

@@ -48,7 +48,7 @@ public class librarySearchSecurity implements SearchSecurity
 			}
 		}
 		String roleid = null;
-		if( inUserprofile.getSettingsGroup() != null)
+		if( inUserprofile != null && inUserprofile.getSettingsGroup() != null)
 		{
 			roleid = inUserprofile.getSettingsGroup().getId();
 		}
