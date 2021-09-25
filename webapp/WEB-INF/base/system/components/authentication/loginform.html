@@ -30,7 +30,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
         <div style="text-align: center;">
 
-				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="Enter App Key" style="text-align:center; margin-top:20px; min-width:200px">[[Sign-In with App Key]]</a> 
+				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="Enter App Key" style="text-align:center; margin-top:20px; min-width:200px">[[App Key]]</a> 
 <br>	
 				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="Login" style="text-align:center; margin-top:20px; min-width:200px">[[Username and Password]]</a> 
         	
@@ -53,10 +53,10 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 #if( $allowguest )			
 			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 			
-					<p>[[Or Use your E-mail to Sign-in]]</p>
-					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /></p>
+					<p>[[Or Sign-in with E-Mail only]]</p>
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" style="margin:0 auto; width:350px" placeholder="[[Enter your Email Address]]" required /></p>
 					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
-					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" style="margin-right:150px"/>
+					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
 					
             </form>
 #end		
