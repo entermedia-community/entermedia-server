@@ -15,7 +15,8 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 <div class="col-sm-4 loginform-col">
 
-		<p class="text-center"><strong>[[Sign-in with]]</strong></p>
+<h1 class="page-title">
+[[Sign-in with]]</h1>
 
 #if( !$providers.isEmpty() )
 		
@@ -39,18 +40,24 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		
 		 #set($loginok = $context.findValue("loginokpage") ) 
 
+#if( $content.allowguestregistration == "true")
+	#set( $allowguest =  true)
+#else
+	#set( $allowguest =  false)
+#end
+
 		#set( $to = $context.getRequestParameter("to") )	
 			#set( $username = $context.getRequestParameter("username") )
-			
+#if( $allowguest )			
 			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 			
 					<p><strong>[[Or E-mail Authentication Key]]</strong></p>
 					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%" placeholder="[[Enter your Email Address]]" required /></p>
 					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
-					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" style="margin-right:150px"/>
+					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
 					
             </form>
-		
+#end		
 
 	<div><br>[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
 		

@@ -48,7 +48,7 @@ public class librarySearchSecurity implements SearchSecurity
 			}
 		}
 		String roleid = null;
-		if( inUserprofile.getSettingsGroup() != null)
+		if( inUserprofile != null && inUserprofile.getSettingsGroup() != null)
 		{
 			roleid = inUserprofile.getSettingsGroup().getId();
 		}
@@ -57,11 +57,21 @@ public class librarySearchSecurity implements SearchSecurity
 			roleid = "anonymous";
 		}
 		
+		String userid = null;
+		if( inUserprofile != null)
+		{
+			userid = inUserprofile.getUserId();
+		}
+		else
+		{
+			userid  = "null";
+		}
+		
 		SearchQuery securityfilter = inSearcher.query().or().
 			match("privatelibrary", "false").
 			orgroup("viewgroups", groupids).
 			match("viewroles", roleid).
-			match("owner", inUserprofile.getUserId()).
+			match("owner", userid).
 			match("viewusers", inUserprofile.getUserId()).getQuery();
 		
 		inQuery.addChildQuery(securityfilter);
