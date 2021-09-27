@@ -4866,15 +4866,18 @@ a.collectionbox.favorite
 @media (min-width: 640px) {
 	.loginformcontainer {
 	margin: 40px 0; 
-}
+	}
 	.loginform-col-right {
 	padding-top:0px;
-}
+	}
 }
 @media (min-width: 1024px) {
 .loginformcontainer {
 	margin: 90px 0; 
 }	
+}
+.loginformcontainer .page-title {
+	margin:0 0 20px;
 }
 .login-form {
     padding: 0 0 30px;

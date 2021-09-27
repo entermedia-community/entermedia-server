@@ -28,7 +28,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
         <div style="text-align: center;">
 
-				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[Sign-In with App Key]]</a> 
+				<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
 <br>	
 				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="[[Login]]" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
         	
@@ -36,34 +36,35 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 </div>
 
-<div class="col-sm-7  loginform-col-right">
+
 		
-		 #set($loginok = $context.findValue("loginokpage") ) 
+	#if( $content.allowguestregistration == "true")
+		#set( $allowguest =  true)
+	#else
+		#set( $allowguest =  false)
+	#end
 
-#if( $content.allowguestregistration == "true")
-	#set( $allowguest =  true)
-#else
-	#set( $allowguest =  false)
-#end
-
-		#set( $to = $context.getRequestParameter("to") )	
-			#set( $username = $context.getRequestParameter("username") )
-#if( $allowguest )			
-			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
-			
-					<p><strong>[[Or E-mail Authentication Key]]</strong></p>
-					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%" placeholder="[[Enter your Email Address]]" required /></p>
-					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
-					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
-					
-            </form>
+	#set( $to = $context.getRequestParameter("to") )	
+	#set( $username = $context.getRequestParameter("username") )
+	#if( $allowguest )
+	
+	<div class="col-sm-7  loginform-col-right">			
+		<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+		
+				<p>[[Or Sign-in with E-Mail only]]</p>
+				<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%" placeholder="[[Enter your Email Address]]" required /></p>
+				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+				<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
+				
+           </form>
+     </div>
 #end		
 
-	<div><br>[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
 		
-</div>
+
 
 </div>
+<div class="text-center">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
 <script language="JavaScript" >
 	jQuery(document).ready(function() 
 	{ 
