@@ -9,7 +9,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
 #end
 
-<div class="row justify-content-md-center loginformcontainer">
+<div class="row no-gutters justify-content-sm-center loginformcontainer">
 
 #set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
