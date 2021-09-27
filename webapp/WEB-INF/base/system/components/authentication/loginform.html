@@ -3,7 +3,7 @@
 	#set($loginokpage = $context.findValue("loginokpage") )
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
-
+<div class="container">
 #if($user)
 	<p class="text-center"><strong>[[You are currently logged in as]] $user 
 	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
@@ -13,7 +13,8 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 #set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
-<div class="col-sm-4 loginform-col">
+<div class="col-sm-5 col-lg-3">
+<div class="loginform-col">
 
 <h1 class="page-title">
 [[Sign-in with]]</h1>
@@ -33,7 +34,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="[[Login]]" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
         	
 		</div>
-
+</div>
 </div>
 
 
@@ -48,15 +49,17 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 	#set( $username = $context.getRequestParameter("username") )
 	#if( $allowguest )
 	
-	<div class="col-sm-7  loginform-col-right">			
+	<div class="col-sm-7 col-lg-5">
+	<div class="loginform-col-right">			
 		<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 		
 				<p>[[Or Sign-in with E-Mail only]]</p>
-				<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%" placeholder="[[Enter your Email Address]]" required /></p>
+				<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>
 				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
 				<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
 				
            </form>
+     </div>
      </div>
 #end		
 
@@ -64,7 +67,9 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 
 </div>
-<div class="text-center">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
+<div class="text-center" style="padding-top:40px;">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
+
+</div>
 <script language="JavaScript" >
 	jQuery(document).ready(function() 
 	{ 
