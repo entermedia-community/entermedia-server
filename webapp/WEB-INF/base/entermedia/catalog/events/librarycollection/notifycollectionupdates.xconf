@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Send Collection Notifications</property>	
+	<property name="eventname">Send Collection Chat Notifications</property>	
 	<property name="virtual">true</property>
 
 	<path-action name="Script.run" allowduplicates="true" >
