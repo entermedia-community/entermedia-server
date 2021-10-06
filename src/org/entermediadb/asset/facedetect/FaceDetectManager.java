@@ -255,7 +255,9 @@ public class FaceDetectManager
 		long end = System.currentTimeMillis();
 		double total = (end - start) / 1000.0;
 		log.info("faceprofile Done in:"+total);
-		
+		if (jsonresults == null) {
+			return null;
+		}
 		JSONParser parser = new JSONParser();
 		JSONObject json = (JSONObject)parser.parse(jsonresults);
 		
