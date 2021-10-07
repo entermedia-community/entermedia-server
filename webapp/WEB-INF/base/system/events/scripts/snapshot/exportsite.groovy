@@ -83,7 +83,9 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap, boolean c
 	
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
-
+	searchtypes.remove("modulesearch");
+	searchtypes.remove("modulesearchkeyword");
+	
 	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
 	log.info("Exporting " + rootfolder);
