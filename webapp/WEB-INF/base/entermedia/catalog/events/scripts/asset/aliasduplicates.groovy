@@ -17,7 +17,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetSearcher searcher = archive.getAssetSearcher();
 	
-	HitTracker all = searcher.query().exact("duplicate", "true").sort("md5hex").sort("assetaddeddateDown").search();
+	HitTracker all = searcher.query().exact("duplicate", "true").sort("md5hex").sort("assetaddeddateUp").search();
 	all.enableBulkOperations();
 	HashSet tosave = new HashSet();
 
@@ -36,14 +36,27 @@ public void init()
 			String hex2 = duplicate.get("md5hex");
 			if(hex1.equals(hex2))
 			{
-				Asset older = searcher.loadData(duplicate);
-				for( Category cat : currentasset.getCategories() )
+				Asset newer = searcher.loadData(duplicate);
+				
+				if( currentasset.isDeleted() && !newer.isDeleted() )
 				{
-					older.addCategory(cat);
+					//We have an issue. The older asset is deleted but the newer one is not
+					//update the sourcepath of the older one and make it the currect
+					currentasset.setSourcePath(newer.getSourcePath());
+					currentasset.setName(newer.getName());
+					currentasset.setValue("deleted",false);
+					log.info("Flip deleted " + currentasset.getName() );
 				}
-				todelete.add(currentasset);
-				older.setValue("duplicate",false);
-				tosave.add(older);
+
+				for( Category cat : newer.getCategories() )
+				{
+					currentasset.addCategory(cat);
+				}
+				todelete.add(newer);
+				log.info("Deleting " + newer.getName() + " with upload date of " + newer.getDate("assetaddeddate"));
+				currentasset.setValue("duplicate",false);
+				log.info("Saving " + currentasset.getName() + " with upload date of " + currentasset.getDate("assetaddeddate"));
+				tosave.add(currentasset); //hashset
 			}
 			else
 			{
