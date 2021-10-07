@@ -240,6 +240,8 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			}
 			if(value ==null){
 				if(getSearchData() != null){
+					
+					//TODO: THis is redundant to above for internationaled fields
 					value = getSearchData().get(inId + "_int");
 					if(value != null && value instanceof Map){
 						LanguageMap map = new LanguageMap((Map) value);

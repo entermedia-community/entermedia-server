@@ -72,7 +72,7 @@ public void init() {
 	}
 	
 	String divid = library.getValue("division");
-	log.info("Found division");
+	//log.info("Found division");
 	
 	if(divid){
 		Searcher collectionsearcher = mediaarchive.getSearcher("librarycollection");

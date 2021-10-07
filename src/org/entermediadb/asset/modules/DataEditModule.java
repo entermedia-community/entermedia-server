@@ -1962,7 +1962,7 @@ String viewbase = null;
 			String field = inReq.getRequestParameter("field");
 			inReq.setRequestParameter(field + ".value", content);
 			String searchtype = inReq.findValue("searchtype");
-			log.info("Saving HTML content:" + searchtype + "." + content + " field:" + field + " user:" + inReq.getUserName());
+			log.info("Saving HTML searchtype:" + searchtype + "." + content + " field:" + field + " user:" + inReq.getUserName());
 		}
 		inReq.setRequestParameter("save", "true");
 		String path = inReq.getRequestParameter("editPath");

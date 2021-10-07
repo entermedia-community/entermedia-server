@@ -24,6 +24,7 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -1485,27 +1486,32 @@ Server ProjectModule.uploadFile
 		{
 			String domain = utils.getDomain();
 			MediaArchive archive = getMediaArchive(inReq);
-			Data library = (Data)archive.getCacheManager().get("domaincache",domain);
-			if( library == BaseData.NULL)
+			String libraryid = (String)archive.getCacheManager().get("domaincache",domain);
+			if( libraryid == CacheManager.NULLVALUE)
 			{
 				return;
 			}
-			else if(library != null)
+			if(libraryid != null)
 			{
-				inReq.putPageValue("library",library);
-				return;				
+				Data library = archive.getCachedData("library", libraryid);
+				if( library != null)
+				{
+					inReq.putPageValue("library",library);
+					return;				
+				}
 			}
 			//Cache
-			library = archive.query("library").startsWith("communitysubdomain", domain).searchOne();
-			if( library == null)
+			Data found  = archive.query("library").startsWith("communitysubdomain", domain).searchOne();
+			if( found == null)
 			{
-				library = BaseData.NULL;
+				libraryid = CacheManager.NULLVALUE;
 			}
 			else
 			{
-				inReq.putPageValue("library",library);
+				inReq.putPageValue("library",found);
+				libraryid = found.getId();
 			}
-			archive.getCacheManager().put("domaincache",domain,library);
+			archive.getCacheManager().put("domaincache",domain,libraryid);
 		}
 	}
 	/*
