@@ -2249,6 +2249,15 @@ String viewbase = null;
 
 		if (saved) {
 			archive.saveAsset(asset, inPageRequest.getUser());
+			//Assign primaryimage if not exists
+			Data entity = archive.getData(moduleid, entityid);
+			if (entity != null) {
+				if (entity.get("primaryimage") == null) {
+					entity.setValue("primaryimage", asset.getId());
+					Searcher searcher = archive.getSearcher(moduleid);
+					searcher.saveData(entity);
+				}
+			}
 			archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 			inPageRequest.putPageValue("added" , "1");
 		}
