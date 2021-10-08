@@ -803,11 +803,16 @@ public class FaceDetectManager
 			{
 				List<Integer> wh = (List)profile.get("locationwh");
 				List<Integer> locationxy = (List)profile.get("locationxy");
+				if (wh == null || locationxy == null) {
+					continue;
+				}
 				
 				double scale = 1;
 				//if( locationxy.get(0) > locationxy.get(1)) //Wider
 				//{
+					
 					scale = MathUtils.divide(thumbwidth , wh.get(0));
+					
 //				}
 //				else
 //				{
