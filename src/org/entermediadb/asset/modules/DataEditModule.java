@@ -2263,6 +2263,27 @@ String viewbase = null;
 		}
 	}
 	
+	
+	public void makePrimaryImageEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String assetid = inPageRequest.getRequestParameter("assetid");
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		if (entityid == null || moduleid == null || assetid == null) 
+		{
+			return;
+		}
+		
+		Data entity = archive.getData(moduleid, entityid);
+		if (entity != null) {
+				entity.setValue("primaryimage", assetid);
+				Searcher searcher = archive.getSearcher(moduleid);
+				searcher.saveData(entity);
+		}
+	}
+	
 	private List<ValuesMap> createListMap(Collection inValues)
 	{
 		ArrayList copy = new ArrayList();
