@@ -149,6 +149,9 @@ public class FaceDetectManager
 					//ContentItem input = inArchive.getContent("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
 					//Convert quickly
 					ContentItem item = generateInputFile(inArchive,inAsset,block);
+					if (item == null) {
+						continue;
+					}
 					if( !item.exists() )
 					{
 						//probblem
