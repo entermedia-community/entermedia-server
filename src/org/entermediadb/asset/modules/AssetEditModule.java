@@ -790,9 +790,36 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			inReq.getUserProfile().setProperty("lastselectedcollection", currentcollection);
 		}
+		
+		//Update Primary Images in Collections and Entities
+		updateCollection(archive, tracker, currentcollection, user);
 		updateEntities(archive, tracker, metadata, user);
 		
 		
+	}
+	
+	public void updateCollection(final MediaArchive archive, Collection tracker, final String currentcollection,  final User inUser)
+	{
+		if (currentcollection != null) {
+			for (Iterator iterator2 = tracker.iterator(); iterator2.hasNext();)
+			{
+				//loop all assets and save them
+				Asset asset = (Asset)iterator2.next();
+				
+				Searcher s = archive.getSearcher("librarycollection");
+				List tosave = new ArrayList();
+				
+				Data entity = s.query().exact("id", currentcollection).searchOne();
+				String pi = entity.get("primaryimage");
+				if (entity != null && pi == null) {
+					entity.setValue("primaryimage", asset.getId());
+					tosave.add(entity);
+				}
+				
+				s.saveAllData(tosave, inUser);
+					
+			}
+		}
 	}
 	
 	

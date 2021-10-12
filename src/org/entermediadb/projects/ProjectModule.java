@@ -498,6 +498,7 @@ public class ProjectModule extends BaseMediaModule
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
+		inReq.putPageValue("librarycollection", saved.getId());
 		
 		getCategoryCollectionCache(inReq).addCollection(saved);
 		
