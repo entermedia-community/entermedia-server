@@ -517,13 +517,18 @@ public class ProjectModule extends BaseMediaModule
 	public void addOpenCollection(WebPageRequest inReq) {
 		UserProfile profile = inReq.getUserProfile();
 		Collection cols = profile.getValues("opencollections");
-
+		String collectionid = null;
 		Data collection = (Data) inReq.getPageValue("librarycol");
 		if (collection == null) {
 			collection = (Data) inReq.getPageValue("data");
 		}
 		if (collection != null) {
-			String collectionid = collection.getId();
+			collectionid = collection.getId();
+		}
+		if (collectionid == null) {
+			collectionid = (String) inReq.getRequestParameter("collectionid");
+		}
+		if (collectionid != null) {
 			if (cols == null || !cols.contains(collectionid)) 
 			{
 				profile.addValue("opencollections", collectionid);
