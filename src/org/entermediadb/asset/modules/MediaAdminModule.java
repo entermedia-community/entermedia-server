@@ -359,11 +359,15 @@ public class MediaAdminModule extends BaseMediaModule
 					Page cat = getPageManager().getPage("/" + catalogid + "/site.xconf" );
 					if( !cat.exists())
 					{
-						
+						log.info("Creating catalog: " + catalogid);
 						PageManager pageManager = archive.getPageManager();
 						PageSettings homesettings = pageManager.getPageSettingsManager().getPageSettings("/" + catalogid + "/_site.xconf");
 						homesettings.setProperty("catalogid", catalogid);
-						homesettings.setProperty("fallbackdirectory","/entermedia/catalog");
+						String fallbackdirectory = "/entermedia/catalog";
+						if (catalogid.contains("finder")) {
+							fallbackdirectory = "/WEB-INF/base/finder/catalog";
+						}
+						homesettings.setProperty("fallbackdirectory", fallbackdirectory);
 						pageManager.getPageSettingsManager().saveSetting(homesettings);
 						pageManager.clearCache();
 					}
