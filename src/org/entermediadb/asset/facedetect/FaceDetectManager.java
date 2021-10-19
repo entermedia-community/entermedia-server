@@ -160,36 +160,37 @@ public class FaceDetectManager
 					else
 					{
 						List<Map> more = findFaceData(item);
-						
-						for (Iterator iterator2 = more.iterator(); iterator2.hasNext();)
-						{
-							Map map = (Map) iterator2.next();
-							map.put("timecodestart",block.getStartOffset());
-						}
-						//If its the same person we can consolidate. 
-						//Compare all of them for matches to the previous frame
-						//and if match then just add an end time to the face and remove a profile  
-						//This allows us show bars on the top of the timeline tool for faces
-						//and speeds up the processing when comparing lots of faces to a big database
-
-						if( continuelooking == null)
-						{
-							continuelooking = more; //First set
-						}
-						else 
-						{
-							updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
-							try
+						if (more != null) {
+							for (Iterator iterator2 = more.iterator(); iterator2.hasNext();)
 							{
-								continuelooking = combineVideoMatches(continuelooking,more);
+								Map map = (Map) iterator2.next();
+								map.put("timecodestart",block.getStartOffset());
 							}
-							catch(IndexOutOfBoundsException ex)
+							//If its the same person we can consolidate. 
+							//Compare all of them for matches to the previous frame
+							//and if match then just add an end time to the face and remove a profile  
+							//This allows us show bars on the top of the timeline tool for faces
+							//and speeds up the processing when comparing lots of faces to a big database
+	
+							if( continuelooking == null)
 							{
-								log.info("Issue happened again on " + block.getSeconds());
-								//ignoring...
+								continuelooking = more; //First set
+							}
+							else 
+							{
+								updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
+								try
+								{
+									continuelooking = combineVideoMatches(continuelooking,more);
+								}
+								catch(IndexOutOfBoundsException ex)
+								{
+									log.info("Issue happened again on " + block.getSeconds());
+									//ignoring...
+								}
 							}
 						}
-						if( !more.isEmpty() )
+						if(more != null && !more.isEmpty() )
 						{
 							profilemap.addAll(more);
 						}
@@ -201,7 +202,7 @@ public class FaceDetectManager
 			inAsset.setValue("faceprofiles",profilemap);
 			inAsset.setValue("facescancomplete","true");
 			inAsset.setValue("facematchcomplete","false");
-			if( !profilemap.isEmpty())
+			if(profilemap != null &&  !profilemap.isEmpty())
 			{
 				inAsset.setValue("facehasprofile",true);
 			}
@@ -219,14 +220,15 @@ public class FaceDetectManager
 
 	protected void updateEndTimes(List<Map> pendingprofiles, long cutofftime)
 	{
-		for (Iterator iterator = pendingprofiles.iterator(); iterator.hasNext();)
-		{
-			Map runningprofile = (Map) iterator.next(); //Put ends times because they got this far
-			
-			long length = cutofftime-(long)runningprofile.get("timecodestart");
-			runningprofile.put("timecodelength",length);
+		if (pendingprofiles != null) {
+			for (Iterator iterator = pendingprofiles.iterator(); iterator.hasNext();)
+			{
+				Map runningprofile = (Map) iterator.next(); //Put ends times because they got this far
+				
+				long length = cutofftime-(long)runningprofile.get("timecodestart");
+				runningprofile.put("timecodelength",length);
+			}
 		}
-
 	}
 	
 	private ContentItem generateInputFile(MediaArchive inArchive, Asset inAsset, Block inBlock)
@@ -252,7 +254,7 @@ public class FaceDetectManager
 	protected List<Map> findFaceData(ContentItem input) throws ParseException
 	{
 		long start = System.currentTimeMillis();
-		//getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
+		getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
 		getRunningProfileProcess();
 		String jsonresults = getRunningProfileProcess().runExecStream(input.getAbsolutePath(),60000);
 		long end = System.currentTimeMillis();
