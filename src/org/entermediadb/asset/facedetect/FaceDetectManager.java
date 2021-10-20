@@ -383,7 +383,7 @@ public class FaceDetectManager
 			{
 				//Create one
 				Data group = inArchive.getSearcher("faceprofilegroup").createNewData();
-				group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+				group.setValue("primaryimage", inAsset.getId()); //Use the picure that has less profiles
 				group.setValue("creationdate", new Date());
 				group.setValue("automatictagging", true);
 				inArchive.getSearcher("faceprofilegroup").saveData(group);
@@ -537,11 +537,11 @@ public class FaceDetectManager
 			//Make sure we use an image that has fewer profiles in it. Fewer is better
 			if(otherprofiles.size() > thisassetprofiles.size() )
 			{
-				group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+				group.setValue("primaryimage", inAsset.getId()); //Use the picure that has less profiles
 			}
 			else
 			{
-				group.setValue("collectionimage", otherasset.getId());
+				group.setValue("primaryimage", otherasset.getId());
 			}
 			
 			group.setValue("creationdate", new Date());
@@ -760,7 +760,7 @@ public class FaceDetectManager
 						Data group = groupsearcher.createNewData();
 						
 						//Make sure we use an image that has fewer profiles in it. Fewer is better
-						group.setValue("collectionimage", inAsset.getId()); //Use the picure that has less profiles
+						group.setValue("primaryimage", inAsset.getId()); //Use the picure that has less profiles
 						group.setValue("creationdate", new Date());
 						group.setValue("automatictagging", true);
 						
