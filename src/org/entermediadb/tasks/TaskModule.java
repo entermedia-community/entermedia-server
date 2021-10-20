@@ -941,6 +941,7 @@ public class TaskModule extends BaseMediaModule
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Date start = cal.getTime();
 		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+		days = days - 1;
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.add(Calendar.DAY_OF_MONTH,days);
