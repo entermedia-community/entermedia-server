@@ -356,10 +356,10 @@ public class MediaAdminModule extends BaseMediaModule
 					//import any data sitting there for importing
 					MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive");
 					
-					Page cat = getPageManager().getPage("/" + catalogid + "/site.xconf" );
+					Page cat = getPageManager().getPage("/" + catalogid + "/_site.xconf" );
 					if( !cat.exists())
 					{
-						log.info("Creating catalog: " + catalogid);
+						
 						PageManager pageManager = archive.getPageManager();
 						PageSettings homesettings = pageManager.getPageSettingsManager().getPageSettings("/" + catalogid + "/_site.xconf");
 						homesettings.setProperty("catalogid", catalogid);
@@ -367,6 +367,7 @@ public class MediaAdminModule extends BaseMediaModule
 						if (catalogid.contains("finder")) {
 							fallbackdirectory = "/WEB-INF/base/finder/catalog";
 						}
+						log.info("Creating catalog: " + catalogid + " Fallback: "+fallbackdirectory);
 						homesettings.setProperty("fallbackdirectory", fallbackdirectory);
 						pageManager.getPageSettingsManager().saveSetting(homesettings);
 						pageManager.clearCache();
