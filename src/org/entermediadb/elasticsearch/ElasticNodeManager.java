@@ -1197,6 +1197,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		//            }
 		//		}
 
+		types.remove("modulesearch");
 		types.remove("category");
 		types.add(0, "category");
 		return types;
