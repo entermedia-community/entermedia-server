@@ -1,5 +1,11 @@
-<p>[[Notifications for User]]: $followeruser</p>
+#if(!$siteroot)
+	#set($siteroot = $context.siteRoot)
+	#if(!$siteroot)
+		#set($siteroot = $url_util.buildRoot())
+	#end
+#end
 
+<p>[[Chat notifications for User]]: <strong>$!followeruser</strong></p>
 
 #foreach( $topicmod in $topicmods)
 
@@ -8,8 +14,8 @@
 
 #set( $collection = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 #set( $topic = $mediaarchive.getCachedData("collectiveproject",$topicid) )
-<div>
-	<a href="$context.siteRoot$applink/collective/community/index.html?collectionid=${collection.getId()}&topic=$topicid">$collection.getName() / $topic</a>
+<div style="padding-bottom:10px; border-bottom:1px solid #ddd;">
+	<strong><a href="$!siteroot$applink/collective/community/index.html?collectionid=${collection.getId()}&topic=$topicid">$collection.getName() / $topic</a></strong>
 	
 	#set( $messages = $mediaarchive.query("chatterbox").exact("channel",$topicid).after("date",$messagessince).sort("date").search() )
 	#foreach($chat in $messages)
@@ -33,5 +39,5 @@
 
 <br>
 <p>
-[[To change notification preferences please edit your]] <a href="$context.siteRoot$applink/views/myaccount/preferences/index.html">[[Account Preferences]]</a>
+[[To change notification preferences please edit your]] <a href="$!siteroot$applink/views/myaccount/preferences/index.html">[[Account Preferences]]</a>
 </p>
