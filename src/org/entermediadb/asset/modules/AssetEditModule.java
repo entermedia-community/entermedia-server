@@ -843,10 +843,12 @@ public class AssetEditModule extends BaseMediaModule
 							String entityid = (String) iterator3.next();
 							
 							Data entity = s.query().exact("id", entityid).searchOne();
-							String pi = entity.get("primaryimage");
-							if (entity != null && pi == null) {
-								entity.setValue("primaryimage", asset.getId());
-								tosave.add(entity);
+							if (entity != null) {
+								String pi = entity.get("primaryimage");
+								if (entity != null && pi == null) {
+									entity.setValue("primaryimage", asset.getId());
+									tosave.add(entity);
+								}
 							}
 						}
 						s.saveAllData(tosave, inUser);

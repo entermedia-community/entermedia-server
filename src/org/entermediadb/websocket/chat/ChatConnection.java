@@ -242,8 +242,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				
-				String collectionid = (String) map.get("collectionid").toString();
+				String collectionid = null;
+				if(map.get("collectionid")!=null) {
+				 collectionid = (String) map.get("collectionid").toString();
+				}
 				/* Get first name */
 				Object userval = map.get("user");
 				String userid = null;

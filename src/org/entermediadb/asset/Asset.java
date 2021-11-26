@@ -825,6 +825,27 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		
 		super.setValue(inKey, inValue);
 	}
+	
+	public void setTagsValue(String inKey, Object inValue)
+	{
+			if (inValue instanceof Collection)
+			{
+				Collection tagid = null;
+				Collection tags = new HashSet();
+				tagid = (Collection) inValue;
+				for (Iterator iterator = tagid.iterator(); iterator.hasNext();)
+				{
+					Object row = iterator.next();
+					tags.add((String)row);
+				}
+				inValue = tags;
+				//String[] vals = VALUEDELMITER.split((String) inValue);
+				//inValue = Arrays.asList(vals);
+			}
+			log.debug("saving tags field " + getId() + " " + inValue);
+		
+		super.setValue(inKey, inValue);
+	}
 
 	@Override
 	public PropertyDetails getPropertyDetails()
