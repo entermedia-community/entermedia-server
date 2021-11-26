@@ -65,7 +65,12 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public boolean isDeleted()
 	{
-		return getBoolean("deleted");
+		String editstatus = get("editstatus");
+		if( "7".equals( editstatus) )
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean isFolder()
