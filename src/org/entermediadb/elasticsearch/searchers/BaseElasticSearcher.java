@@ -2436,7 +2436,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				if (propid.equals("description")) //This field must be defined by user first. or it will continue above
 				{
 					Object value = inData.getValue(propid);
-					if (value == null)
+					if (value == null || !isReIndexing())
 					{
 						StringBuffer desc = new StringBuffer();
 						populateKeywords(desc, inData, inDetails);
@@ -2447,6 +2447,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							value = desc.toString();
 						}
 					}
+					//?inData.setValue("description",value);
 					inContent.field(propid, value);
 					continue;
 				}
@@ -3178,6 +3179,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 							}
 						}
+					}
+				}
+				else if( det.isMultiValue() ) //But not a list
+				{
+					Collection values  = inData.getValues(det.getId());
+					for (Iterator iterator = values.iterator(); iterator.hasNext();)
+					{
+						String oneval = (String) iterator.next();
+						inFullDesc.append(oneval);
+						inFullDesc.append(' ');
 					}
 				}
 				else
