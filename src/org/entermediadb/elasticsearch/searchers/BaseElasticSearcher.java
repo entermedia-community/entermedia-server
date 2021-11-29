@@ -3184,11 +3184,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				else if( det.isMultiValue() ) //But not a list
 				{
 					Collection values  = inData.getValues(det.getId());
-					for (Iterator iterator = values.iterator(); iterator.hasNext();)
+					if( values != null && !values.isEmpty() )
 					{
-						String oneval = (String) iterator.next();
-						inFullDesc.append(oneval);
-						inFullDesc.append(' ');
+						for (Iterator iterator = values.iterator(); iterator.hasNext();)
+						{
+							String oneval = (String) iterator.next();
+							inFullDesc.append(oneval);
+							inFullDesc.append(' ');
+						}
 					}
 				}
 				else
