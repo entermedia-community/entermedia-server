@@ -144,7 +144,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 			}
 		}
 		else {
-			log.info("Skiped: " + endpath + " Exists: " + found.exists() );
+			log.debug("Skiped: " + endpath + " Exists: " + found.exists() );
 		}
 	}
 	public void pull(MediaArchive inArchive, ScriptLogger inLog)
