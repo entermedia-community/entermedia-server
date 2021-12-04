@@ -2627,24 +2627,26 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 	
-	public HitTracker getInvoiceFromYear(String status, int year) 
-	{
-		Calendar start = new GregorianCalendar(year, 0, 1);
-		Calendar end = new GregorianCalendar(year, 11, 31);
-		HitTracker invoice = query("collectiveinvoice")
-				.exact("paymentstatus", status)
-				.between("createdon", start.getTime(), end.getTime()).search();
-		return invoice;
-	}
+//	public HitTracker getInvoiceFromYear(String status, int year) 
+//	{
+//		Calendar start = new GregorianCalendar(year, 0, 1);
+//		Calendar end = new GregorianCalendar(year, 11, 31);
+//		HitTracker invoice = query("collectiveinvoice")
+//				.exact("paymentstatus", status)
+//				.between("createdon", start.getTime(), end.getTime())
+//				.sort("createdonDown").search();
+//		return invoice;
+//	}
 	
 	public HitTracker getInvoiceFromMonth(String status, int year, int month) 
 	{
-		Calendar start = new GregorianCalendar(year, month, 1);
-		Calendar end = new GregorianCalendar(year, month + 1, 1);
+		Calendar start = month == 0 ? new GregorianCalendar(year, 0, 1) :  new GregorianCalendar(year, month - 1, 1);
+		Calendar end = month == 0 ? new GregorianCalendar(year, 11, 31) : new GregorianCalendar(year, month, 1);
 		end.add(Calendar.DAY_OF_YEAR, -1);
 		HitTracker invoice = query("collectiveinvoice")
 				.exact("paymentstatus", status)
-				.between("createdon", start.getTime(), end.getTime()).search();
+				.between("createdon", start.getTime(), end.getTime()) 
+				.sort("createdonDown").search();
 		return invoice;
 	}
 	
