@@ -290,7 +290,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		}
 
 		String encoded = url + debugurl;
-		log.info("Checking: " + URLUtilities.urlEscape(encoded));
+		log.info("Pull-Data Checking remote: " + URLUtilities.urlEscape(encoded));
 
 		
 		CloseableHttpResponse response2 = connection.sharedPost(url, params);
@@ -349,7 +349,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				{
 					throw new OpenEditException("Page could not be loaded " + remotechanges.toJSONString());
 				}
-				log.info("Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
+				log.info("Pull-Data Downloading page " + page + " of " + pages + " pages. data count:" + datacounted);
 				JSONArray results = (JSONArray)remotechanges.get("results"); //records?
 				
 				saved = importDataChanges(inArchive, results);
@@ -362,7 +362,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		}
 		else if (ok.equals("empty"))
 		{
-			log.info("No changes found");
+			log.info("Pull-Data No changes found in remote.");
 			return 0;
 		}
 		else
@@ -707,7 +707,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 	{
 		JSONObject params = createJsonFromHits(inArchive,inSince, inLocalchanges);
 		//to much log
-		log.info("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
+		log.debug("Sending data changes to server -> " + url + "/mediadb/services/cluster/receive/uploadchanges.json" + params.toJSONString() );
 		CloseableHttpResponse response2 = inConnection.sharedPostWithJson(url + "/mediadb/services/cluster/receive/uploadchanges.json", params);
 		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
@@ -730,8 +730,12 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		if( toupload != null)
 		{
 			//TODO: Use pagination to do a few at a time
+			Integer uploadingtotal = toupload.size();
+			log.info("Data-Upload Uploading:" + uploadingtotal + " files to remote." );
+			Integer count = 0;
 			for (Iterator iterator = toupload.iterator(); iterator.hasNext();)
 			{
+				count++;
 				JSONObject fileinfo = (JSONObject) iterator.next();
 				String urlpath = url + "/mediadb/services/module/asset/sync/uploadfile.json"; //TODO: This should also include asking for Originals
 				
@@ -740,7 +744,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 				String reallocalpath = localpath.replace(remotecatalogid, inArchive.getCatalogId());
 				ContentItem item = inArchive.getContent(reallocalpath);
 				File tosend = new File(item.getAbsolutePath());
-				log.info("Sending this file:" + tosend.length() + " " + tosend.getAbsolutePath() );
+				log.info("Data-Upload ("+count+"/"+uploadingtotal+") Sending file:" + tosend.length() + " " + tosend.getAbsolutePath() );
 
 				JSONObject tosendparams = new JSONObject(fileinfo);
 				tosendparams.put("catalogid", inArchive.getCatalogId());

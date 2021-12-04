@@ -1475,7 +1475,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 
 		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
-		Collection types = archive.getCatalogSettingValues("sync_data_types");
+		Collection<String> types = archive.getCatalogSettingValues("sync_data_types");
 		
 		String[] defaulttypes = synctypes;
 		if( types != null)
@@ -1494,6 +1494,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		search.setRequestCache(false);  //What does this do?
 
 		//search.toString()
+		
+		log.info(search.toString());
+		
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, date, 1000);
 		hits.enableBulkOperations();
 		
@@ -1505,7 +1508,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String json = search.toString();
 			log.info(toId(inCatalogId) + "/_search' -d '" + json + "' \n");
 		}
-		log.info("Found these changes: " + hits.size() + " since " + inAfter);
+		log.info("Data-Sync Found these edited documents: " + hits.size() + " since " + inAfter);
 		//hits.setSearcherManager(getSearcherManager());
 		//hits.setSearcher(this);
 		//hits.setSearchQuery(inQuery);
