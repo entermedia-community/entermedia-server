@@ -2627,16 +2627,11 @@ public class MediaArchive implements CatalogEnabled
 		return manager;
 	}
 	
-//	public HitTracker getInvoiceFromYear(String status, int year) 
-//	{
-//		Calendar start = new GregorianCalendar(year, 0, 1);
-//		Calendar end = new GregorianCalendar(year, 11, 31);
-//		HitTracker invoice = query("collectiveinvoice")
-//				.exact("paymentstatus", status)
-//				.between("createdon", start.getTime(), end.getTime())
-//				.sort("createdonDown").search();
-//		return invoice;
-//	}
+	public int getCurrentYear() 
+	{
+		var today = Calendar.getInstance().getTime();
+		return today.getYear() + 1900;
+	}
 	
 	public HitTracker getInvoiceFromMonth(String status, int year, int month) 
 	{
