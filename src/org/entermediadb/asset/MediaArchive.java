@@ -2629,7 +2629,7 @@ public class MediaArchive implements CatalogEnabled
 	
 	public int getCurrentYear() 
 	{
-		var today = Calendar.getInstance().getTime();
+		Date today = Calendar.getInstance().getTime();
 		return today.getYear() + 1900;
 	}
 	
