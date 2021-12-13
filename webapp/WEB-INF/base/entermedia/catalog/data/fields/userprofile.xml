@@ -163,7 +163,7 @@
   </property>  
     <property id="sendchatnotifications" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="true" > 
     <name> 
-      <language id="en"><![CDATA[Chat Notifications]]></language>  
+      <language id="en"><![CDATA[Disable Chat Notifications]]></language>  
     </name> 
   </property>  
   <property id="lastviewedapp" index="true"  internalfield="true" keyword="false" filter="false" editable="true" > 

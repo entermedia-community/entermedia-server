@@ -61,7 +61,9 @@ public void init()
 			if(!userwhochecked.contains(userid + "_" + chattopicid))
 			{
 				Data profile = mediaArchive.getData("userprofile", userid);
-				if(profile != null && profile.getBoolean("sendchatnotifications") == false)
+				
+				//make it not false?
+				if(profile != null && profile.getBoolean("sendchatnotifications") == true)
 				{
 					log.info("Chat Notification disabled " + userid);
 					continue;
