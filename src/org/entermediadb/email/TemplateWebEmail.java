@@ -255,12 +255,19 @@ public class TemplateWebEmail extends WebEmail implements Data
 		}
 		else
 		{
-			String body = inContext.getRequestParameter("body"); //Is this SPAM prof? TODO: remove
-			if( body!= null && body.indexOf("Message-Id:") > 0)
-			{
-				throw new OpenEditException("Email message looks like spam");
+			//Message already set?
+			if (getMessage() == null) {
+				String body = inContext.findValue("emailbody"); //Is this SPAM prof? TODO: remove
+				if (body  == null) {
+					body = inContext.getRequestParameter("body"); //Is this SPAM prof? TODO: remove
+				}
+				if( body!= null && body.indexOf("Message-Id:") > 0)
+				{
+					throw new OpenEditException("Email message looks like spam");
+				}
+				setMessage(body);
 			}
-			setMessage(body);
+			
 		}
 	}
 	
@@ -533,6 +540,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		sendText(outputStream.toString());
 
 	}
+	
 	public void send()
 	{
 		if (getFrom() == null)

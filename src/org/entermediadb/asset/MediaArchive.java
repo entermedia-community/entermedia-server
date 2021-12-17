@@ -2260,24 +2260,27 @@ public class MediaArchive implements CatalogEnabled
 
 		return null;
 	}
+	
+	public TemplateWebEmail createsystemEmail(InternetAddress email) {
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+		webmail.setRecipient(email);
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+		
+		return webmail;
+	}
 
 	public TemplateWebEmail createSystemEmail(User inSendTo, String inTemplatePath)
 	{
-		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
-
-		String fromemail = getCatalogSettingValue("system_from_email");
-		String fromemailname = getCatalogSettingValue("system_from_email_name");
-
-		webmail.setFrom(fromemail);
-		webmail.setFromName(fromemailname);
-
-		webmail.setMailTemplatePath(inTemplatePath);
-
+		TemplateWebEmail webmail = null;
 		try
 		{
 			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription());
 			if (to != null) {
-				webmail.setRecipient(to);
+				webmail = createsystemEmail(to);
+				webmail.setMailTemplatePath(inTemplatePath);
 			}
 		}
 		catch (UnsupportedEncodingException e)
@@ -2287,23 +2290,15 @@ public class MediaArchive implements CatalogEnabled
 		return webmail;
 	}
 
-	//Made by Thomas
+
 	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
 	{
-		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
-
-		String fromemail = getCatalogSettingValue("system_from_email");
-		String fromemailname = getCatalogSettingValue("system_from_email_name");
-
-		webmail.setFrom(fromemail);
-		webmail.setFromName(fromemailname);
-
-		webmail.setMailTemplatePath(inTemplatePath);
-
+		TemplateWebEmail webmail = null;
 		try
 		{
 			InternetAddress to = new InternetAddress(email, "");
-			webmail.setRecipient(to);
+			webmail = createsystemEmail(to);
+			webmail.setMailTemplatePath(inTemplatePath);
 		}
 		catch (UnsupportedEncodingException e)
 		{
@@ -2311,6 +2306,26 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return webmail;
 	}
+	
+	public TemplateWebEmail createSystemEmailBody(User inSendTo, String inEmailBody)
+	{
+		TemplateWebEmail webmail = null;
+		try
+		{
+			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription());
+			if (to != null) {
+				webmail = createsystemEmail(to);
+				webmail.setMessage(inEmailBody);
+			}
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
+	
+	
 
 	public int getRealImageWidth(Data inHit)
 	{
