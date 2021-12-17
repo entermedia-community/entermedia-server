@@ -22,11 +22,19 @@ public void init()
 		return;
 	}
 	context.putPageValue("preset", preset);
+	context.putPageValue("catalogid", catalogid);
 	String assetid = context.findValue("assetid");
+	
+	if( presetid.equals("0"))
+	{
+		log.error("Skiping 0 preset for asset "+ assetid);
+		return;
+	}
+	
 	Searcher tasksearcher = archive.getSearcher("conversiontask");
 	int loop = 0;
 	Asset asset = archive.getAsset(assetid);
-	context.putPageValue("catalogid", catalogid);
+	
 	if( asset == null)
 	{
 		log.error("No such asset "+ assetid);
@@ -36,7 +44,7 @@ public void init()
 
 	if(preset.get("transcoderid") == "original")
 	{
-		log.info("Getting original transcoder");
+		log.info("Getting original transcoder for asset "+ assetid);
 		return;
 	}
 	
@@ -54,7 +62,7 @@ public void init()
 		if( one == null)
 		{
 			one = tasksearcher.createNewData();
-			log.error("Creating missing task for asset "+ assetid + "preset " + presetid);
+			log.error("Creating missing task for asset "+ assetid + " preset " + presetid);
 			one.setSourcePath(asset.getSourcePath());
 			one.setProperty("status", "new");
 			one.setProperty("assetid", asset.getId() );
@@ -100,7 +108,7 @@ public void init()
 				}
 				tasksearcher.saveData(one, null);
 				Thread.sleep(200);
-				log.info("Generated output not found. Recreating asset "+ assetid + "preset " + presetid);
+				log.info("Generated output not found. Recreating asset "+ assetid + " preset " + presetid);
 				continue;
 			}
 			
@@ -108,7 +116,7 @@ public void init()
 		}
 		if( loop > 27000) //27000 * 200 = 5400S = 90Minutes
 		{
-			throw new OpenEditException("Conversion timeout on long running api call " + assetid + "  preset:" + presetid);
+			throw new OpenEditException("Conversion timeout on long running api call " + assetid + " preset:" + presetid);
 		}
 		if( loop % 100 == 1)
 		{
