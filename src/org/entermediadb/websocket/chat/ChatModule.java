@@ -18,6 +18,8 @@ package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.entermediadb.asset.MediaArchive;
@@ -26,6 +28,7 @@ import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.DateStorageUtil;
 
 public class ChatModule extends BaseMediaModule
 {
@@ -37,19 +40,28 @@ public class ChatModule extends BaseMediaModule
 		String channel = inReq.findValue("channel");
 		Searcher chats = archive.getSearcher("chatterbox");
 
-		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
-		inReq.putPageValue("messages", recent);
+		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
+		
+		//inReq.putPageValue("messages", recent);
 
-		/*
-		 * Pagination Searcher searcher = getMessagesSearcher(inReq); HitTracker
-		 * results = searcher.query().match("channel",
-		 * channel).sort("dateDown").search(); results.setHitsPerPage(10);
-		 * Collection page = results.getPageOfHits(); ArrayList loaded = new
-		 * ArrayList(); for (Iterator iterator = page.iterator();
-		 * iterator.hasNext();) { Data data = (Data) iterator.next(); Data
-		 * message = searcher.loadData(data); loaded.add(message); }
-		 * Collections.reverse(loaded); inReq.putPageValue("messages", loaded);
-		 */
+		
+		  HitTracker results = chats.query().match("channel", channel).sort("dateDown").search(); 
+		  results.setHitsPerPage(10);
+		  Collection page = results.getPageOfHits(); 
+		  ArrayList loaded = new  ArrayList(); 
+		  String lastdateloaded = null;
+		  for (Iterator iterator = page.iterator(); iterator.hasNext();) {
+			  Data data = (Data) iterator.next(); 
+			  Data message = chats.loadData(data); 
+			  loaded.add(message); 
+			  
+			  lastdateloaded = message.get("date");
+			  
+		  }
+		  Collections.reverse(loaded); 
+		  inReq.putPageValue("messages", loaded);
+		  inReq.putPageValue("lastloaded", lastdateloaded);
+		 
 		String userid = null;
 		if (inReq.getUser() != null)
 		{
@@ -65,6 +77,42 @@ public class ChatModule extends BaseMediaModule
 
 	}
 
+	
+	public void loadMoreMessages(WebPageRequest inReq)
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+		String channel = inReq.findValue("channel");
+		String lastloaded = inReq.findValue("lastloaded");
+		Date startdate = DateStorageUtil.getStorageUtil().parseFromStorage(lastloaded);
+		Searcher chats = archive.getSearcher("chatterbox");
+
+		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
+		
+		//inReq.putPageValue("messages", recent);
+
+		
+		  HitTracker oldresults = chats.query()
+				  				.before("date", startdate)
+				  				.exact("channel", channel)
+				  				.sort("dateDown")
+				  				.search(); 
+		  oldresults.setHitsPerPage(10);
+		  //log.info(results.getFriendlyQuery());
+		  String query = oldresults.getFriendlyQuery();
+		  Collection page = oldresults.getPageOfHits(); 
+		  ArrayList oldloaded = new  ArrayList(); 
+		  String lastdateloaded = null;
+		  for (Iterator iterator = page.iterator(); iterator.hasNext();) {
+			  Data data = (Data) iterator.next(); 
+			  Data message = chats.loadData(data); 
+			  oldloaded.add(message); 
+			  lastdateloaded = message.get("date");
+		  }
+		  Collections.reverse(oldloaded); 
+		  inReq.putPageValue("oldmessages", oldloaded);
+		  //inReq.putPageValue("lastloaded", lastdateloaded);
+	}
 	
 	public void loadChatServer(WebPageRequest inReq) {
 		

@@ -240,6 +240,7 @@ function reloadAll(){
 		var mydata = $( this ).data();
 		jQuery.get( url, mydata, function( data ) {
 				chatterdiv.html( data );
+				
 				scrollToChat();
 		});
 					
@@ -247,6 +248,28 @@ function reloadAll(){
 
 }
 
+
+function loadMore(){
+
+	var app = jQuery("#application");
+	var apphome = app.data("home") + app.data("apphome");
+	
+	jQuery(".chatterbox").each(function () 
+	{
+		var chatter = $(this);
+		var url =  apphome + "/components/chatterbox/loadmessages.html";
+		
+		var chatterdiv = $(this);
+		var mydata = $( this ).data();
+		mydata.lastloaded = chatterdiv.find(".chatterbox-messages").data("lastloaded");
+		jQuery.get( url, mydata, function( data ) {
+				chatterdiv.find(".chatterbox-message-list").prepend( data );
+				//scrollToChat();
+		});
+					
+	});
+
+}
 
 
 var timerID = 0; 

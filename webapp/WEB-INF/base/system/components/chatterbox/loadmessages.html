@@ -1,0 +1,13 @@
+*************
+				  #foreach($message in $oldmessages)
+			
+				  #set($type = $message.messagetype)
+				  $context.putPageValue("chat", $message)
+				  #if(!$type)
+				  	#set($type = "message")
+				  #end  
+				
+				 	$pages.include("$apphome/components/chatterbox/types/${type}.html", $context)
+				 
+				
+				  #end

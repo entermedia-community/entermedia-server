@@ -32,9 +32,13 @@ public class PayPalModule extends BaseMediaModule
 		//Process event
 	}
 	
+	
 	public void processPayment(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		User user = inReq.getUser();
+		String collectionid = inReq.findValue("collectionid");
+		inReq.putPageValue("collectionid", collectionid);
 		Searcher payments = archive.getSearcher("transaction");
 		Data payment = payments.createNewData();
 		payments.updateData(inReq, inReq.getRequestParameters("field"), payment);
@@ -42,19 +46,40 @@ public class PayPalModule extends BaseMediaModule
 		payment.setValue("paymentdate",new Date() );
 		payment.setValue("paymenttype","paypal" );
 		
-		//Get the email
-		if( payment.get("userid") == null)
-		{
+		if( user == null && payment.get("userid") != null) {
+			user = getMediaArchive(inReq).getUserManager().getUser(payment.get("userid"));
+		}
+		if( user == null) {
 			String email = inReq.getRequestParameter("paymentemail.value");
-			User user = getMediaArchive(inReq).getUserManager().getUserByEmail(email);
-			if( user != null)
-			{
-				payment.setValue("userid",user.getId());
-			}
+			user = getMediaArchive(inReq).getUserManager().getUserByEmail(email);
+		}
+		
+		payment.setValue("userid",user.getId());
+		
+		
+		Boolean isdonation = Boolean.parseBoolean(inReq.getRequestParameter("isdonation"));
+		payment.setValue("isdonation", isdonation );
+		
+		payments.saveData(payment);
+		inReq.putPageValue("payment", payment);
+			
+		//Donation Receipt
+		if (isdonation) {
+			Searcher donationreceipt = archive.getSearcher("donationreceipt");
+			Data receipt = donationreceipt.createNewData();
+			receipt.setValue("paymentid", payment.getId());
+			receipt.setValue("amount", payment.getValue("totalprice"));
+			receipt.setValue("donor", user.getName());
+			receipt.setValue("collectionid", collectionid);
+			//receipt.setValue("paymentdate", paymentdate);
+			receipt.setValue("receiptstatus", "new");
+			
+			donationreceipt.saveData(receipt);
+			
+			inReq.putPageValue("receipt", receipt);
 		}
 		
 		
-		payments.saveData(payment);
 		/*
 		boolean success = getOrderProcessor().process(archive, inReq.getUser(), payment, token);
 		if (success)
