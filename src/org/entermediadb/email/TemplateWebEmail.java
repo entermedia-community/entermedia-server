@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -273,7 +275,6 @@ public class TemplateWebEmail extends WebEmail implements Data
 	
 	public String render(Writer outputStream) throws OpenEditException
 	{
-
 		if( getWebPageContext() != null &&  getMailTemplatePath() != null)
 		{
 			PageStreamer streamer = getWebPageContext().getPageStreamer().copy();
@@ -524,20 +525,26 @@ public class TemplateWebEmail extends WebEmail implements Data
 	
 	public void send(Map inObjects)
 	{
-		WebPageRequest req = getRequestUtils().createPageRequest(getMailTemplatePage(), null);
-		PageStreamer streamer = getRequestUtils().createPageStreamer(getMailTemplatePage(),req);
-		StringWriter outputStream = new StringWriter();
-		Output out = new Output();
-		out.setWriter(outputStream);
-
-		streamer.setOutput(out);
-		for (Iterator iterator = inObjects.keySet().iterator(); iterator.hasNext();)
-		{
-			String	key = (String) iterator.next();
-			req.putPageValue(key, inObjects.get(key));			
+		if (getMailTemplatePath() != null) {
+			WebPageRequest req = getRequestUtils().createPageRequest(getMailTemplatePage(), null);
+			PageStreamer streamer = getRequestUtils().createPageStreamer(getMailTemplatePage(),req);
+			StringWriter outputStream = new StringWriter();
+			Output out = new Output();
+			out.setWriter(outputStream);
+	
+			streamer.setOutput(out);
+			for (Iterator iterator = inObjects.keySet().iterator(); iterator.hasNext();)
+			{
+				String	key = (String) iterator.next();
+				req.putPageValue(key, inObjects.get(key));			
+			}
+			streamer.include(getMailTemplatePage(), req);
+			sendText(outputStream.toString());
 		}
-		streamer.include(getMailTemplatePage(), req);
-		sendText(outputStream.toString());
+		else if(getMessage() != null) {
+			String Message = replaceTokens(getMessage(), inObjects);
+			sendText(Message);
+		}
 
 	}
 	
@@ -580,6 +587,25 @@ public class TemplateWebEmail extends WebEmail implements Data
 		}
 		setSent(true);
 		setSendDate(new Date());
+	}
+	
+	public static String replaceTokens(String text, 
+        Map<String, String> replacements) {
+		Pattern pattern = Pattern.compile("\\[(.+?)\\]");
+		Matcher matcher = pattern.matcher(text);
+		StringBuffer buffer = new StringBuffer();
+		
+		while (matcher.find()) {
+		String replacement = replacements.get(matcher.group(1));
+		if (replacement != null) {
+		// matcher.appendReplacement(buffer, replacement);
+		// see comment 
+		matcher.appendReplacement(buffer, "");
+		buffer.append(replacement);
+		}
+		}
+		matcher.appendTail(buffer);
+		return buffer.toString();
 	}
 	
 //	public void setValues(String inKey, Collection<String> inValues)
