@@ -791,10 +791,12 @@ public class TaskModule extends BaseMediaModule
 	{
 		String cat = task.get("projectdepartment");
 		Category folder = archive.getCategory(cat);
-		ArrayList list = new ArrayList(folder.getValues("countdata"));
-		list.remove(task.get("projectgoal"));
-		folder.setValue("countdata",list);
-		archive.getCategorySearcher().saveData(folder);
+		if (folder.getValues("countdata") != null) {
+			ArrayList list = new ArrayList(folder.getValues("countdata"));
+			list.remove(task.get("projectgoal"));
+			folder.setValue("countdata",list);
+			archive.getCategorySearcher().saveData(folder);
+		}
 	}
 	//Everything over 15
 	public void searchClosedGoals(WebPageRequest inReq) throws Exception
