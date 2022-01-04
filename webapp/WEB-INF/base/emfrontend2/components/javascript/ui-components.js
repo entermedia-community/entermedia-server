@@ -483,8 +483,18 @@ uiload = function() {
 	lQuery(".submitform").livequery("click", function(e) {
 		e.preventDefault();
 		var theform = $(this).closest('form');
-		theform.submit();
+		console.log("Submit Form " + theform);
+		theform.trigger("submit");
 	});
+	
+	lQuery(".submitform-oehtml").livequery('click',
+			function(e) {
+				var theform = $(this).closest('form');
+				theform.data("readytosubmit","true"); 
+				theform.find(".oehtmlinput").trigger("blur");
+				e.preventDefault();
+			});
+
 
 	lQuery(".quicksearch-toggler").livequery("click", function() {
 		var navbar = $(this).data('target');
