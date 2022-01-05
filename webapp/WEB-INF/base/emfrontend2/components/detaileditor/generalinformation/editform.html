@@ -1,5 +1,7 @@
 #set( $viewpath = $context.getRequestParameter("viewpath"))
 #set( $assetid = $asset.id)
-
+#if($librarycol.id)
+	#set( $editpath = "$applink/views/modules/librarycollection/asset/genericsave.html")
+#end
 $context.putPageValue("finished",$finished)
-$pages.include("$componenthome/detaileditor/generic.html?assetid=$asset.id&label=$label&view=$viewpath&module=asset&targetdiv=tabsummarypanel", $context)
+$pages.include("$componenthome/detaileditor/generic.html?assetid=$asset.id&label=$label&view=$viewpath&module=asset&targetdiv=tabsummarypanel&editpath=$!editpath", $context)

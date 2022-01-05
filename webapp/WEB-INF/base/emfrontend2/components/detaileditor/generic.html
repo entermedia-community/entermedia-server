@@ -85,8 +85,11 @@ $context.putPageValue("searchtype", $searchtype)
 		<input type="hidden" name="view" value="$view" />
 		<input type="hidden" name="label" value="$label" />
 		<input type="hidden" name="module" value="$module" />
+		 
 		#if( $collectionid  )
                 	<input type="hidden" name="collectionid" value="$!collectionid" />
+        #elseif( $librarycol.id  )
+                	<input type="hidden" name="collectionid" value="$librarycol.id" />
 		#end
 		#if( $searchtype == "asset" )
 ##			<input type="hidden" name="field" value="assetid" />
