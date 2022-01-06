@@ -46,7 +46,7 @@ public class ChatModule extends BaseMediaModule
 
 		
 		  HitTracker results = chats.query().match("channel", channel).sort("dateDown").search(); 
-		  results.setHitsPerPage(10);
+		  //results.setHitsPerPage(10);
 		  Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
