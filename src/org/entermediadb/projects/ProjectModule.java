@@ -375,6 +375,26 @@ public class ProjectModule extends BaseMediaModule
 		String sessionId = all.getSessionId();
 		inReq.putSessionValue(sessionId, all);
 	}
+	
+	public void getFirstUserCollection(WebPageRequest inReq)
+	{
+		String collectionid = loadCollectionId(inReq);
+		if (collectionid == null) {
+			Asset asset = getAsset(inReq);
+			if (asset != null) {
+				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();)
+				{
+					Category child = (Category) iterator2.next();
+					String foundcollectionid  = getCategoryCollectionCache(inReq).findCollectionId(child);
+					if (foundcollectionid != null) {
+						inReq.setRequestParameter("collectionid", foundcollectionid);
+						return;
+					}
+				}
+			}
+		}
+		
+	}
 
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
