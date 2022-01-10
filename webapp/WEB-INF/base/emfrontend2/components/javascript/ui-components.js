@@ -487,11 +487,19 @@ uiload = function() {
 		theform.trigger("submit");
 	});
 	
-	lQuery(".submitform-oehtml").livequery('click',
+	lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery('click',
 			function(e) {
 				var theform = $(this).closest('form');
-				theform.data("readytosubmit","true"); 
-				theform.find(".oehtmlinput").trigger("blur");
+				if (theform.length == 0) {
+					//dialog form?
+					var dialogform = $(this).attr("form");
+					theform = $("#"+dialogform);
+				}
+				if (theform.length) {
+					theform.data("readytosubmit","true"); 
+					theform.find(".oehtmlinput").trigger("blur");
+					theform.trigger("submit");
+				}
 				e.preventDefault();
 			});
 
