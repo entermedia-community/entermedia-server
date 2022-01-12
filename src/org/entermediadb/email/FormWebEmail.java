@@ -86,4 +86,11 @@ public class FormWebEmail extends WebEmail
 	{
 		return (field != null && field.length() > 0);
 	}
+
+
+	@Override
+	public void send(String body, Map inObjects) {
+		// TODO Auto-generated method stub
+		
+	}
 }
