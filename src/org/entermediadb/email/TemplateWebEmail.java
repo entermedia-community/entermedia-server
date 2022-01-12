@@ -596,7 +596,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		StringBuffer buffer = new StringBuffer();
 		
 		while (matcher.find()) {
-		String replacement = (String) replacements.get(matcher.group(1));
+		String replacement = replacements.get(matcher.group(1));
 		if (replacement != null) {
 		// matcher.appendReplacement(buffer, replacement);
 		// see comment 
