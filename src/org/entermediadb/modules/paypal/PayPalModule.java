@@ -36,13 +36,16 @@ public class PayPalModule extends BaseMediaModule
 	public void processPayment(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		String username =  inReq.getUserName();
 		User user = inReq.getUser();
 		String collectionid = inReq.findValue("collectionid");
 		inReq.putPageValue("collectionid", collectionid);
 		Searcher payments = archive.getSearcher("transaction");
 		Data payment = payments.createNewData();
-		payments.updateData(inReq, inReq.getRequestParameters("field"), payment);
 		
+		
+		payments.updateData(inReq, inReq.getRequestParameters("field"), payment);
+			
 		payment.setValue("paymentdate",new Date() );
 		payment.setValue("paymenttype","paypal" );
 		
@@ -59,10 +62,13 @@ public class PayPalModule extends BaseMediaModule
 		
 		Boolean isdonation = Boolean.parseBoolean(inReq.getRequestParameter("isdonation"));
 		payment.setValue("isdonation", isdonation );
+		payment.setValue("receiptstatus", "new");
 		
 		payments.saveData(payment);
 		inReq.putPageValue("payment", payment);
 			
+		/*
+		//TODO: in case different receipt required.
 		//Donation Receipt
 		if (isdonation) {
 			Searcher donationreceipt = archive.getSearcher("donationreceipt");
@@ -70,6 +76,7 @@ public class PayPalModule extends BaseMediaModule
 			receipt.setValue("paymentid", payment.getId());
 			receipt.setValue("amount", payment.getValue("totalprice"));
 			receipt.setValue("donor", user.getName());
+			receipt.setValue("donoremail", user.getEmail());
 			receipt.setValue("collectionid", collectionid);
 			//receipt.setValue("paymentdate", paymentdate);
 			receipt.setValue("receiptstatus", "new");
@@ -78,6 +85,7 @@ public class PayPalModule extends BaseMediaModule
 			
 			inReq.putPageValue("receipt", receipt);
 		}
+		*/
 		
 		
 		/*
