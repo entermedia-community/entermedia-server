@@ -2344,6 +2344,23 @@ public class MediaArchive implements CatalogEnabled
 		return webmail;
 	}
 	
+	public TemplateWebEmail createSystemEmailBody(String email)
+	{
+		TemplateWebEmail webmail = null;
+		try
+		{
+			InternetAddress to = new InternetAddress(email, "");
+			if (to != null) {
+				webmail = createsystemEmail(to);
+			}
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
+	
 	
 
 	public int getRealImageWidth(Data inHit)

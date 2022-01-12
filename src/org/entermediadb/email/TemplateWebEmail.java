@@ -541,11 +541,11 @@ public class TemplateWebEmail extends WebEmail implements Data
 			streamer.include(getMailTemplatePage(), req);
 			sendText(outputStream.toString());
 		}
-		else if(getMessage() != null) {
-			String Message = replaceTokens(getMessage(), inObjects);
-			sendText(Message);
-		}
 
+	}
+	public void send(String body, Map inObjects) {
+		String Message = replaceTokens(body, inObjects);
+		sendText(Message);
 	}
 	
 	public void send()
@@ -596,7 +596,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		StringBuffer buffer = new StringBuffer();
 		
 		while (matcher.find()) {
-		String replacement = replacements.get(matcher.group(1));
+		String replacement = (String) replacements.get(matcher.group(1));
 		if (replacement != null) {
 		// matcher.appendReplacement(buffer, replacement);
 		// see comment 
