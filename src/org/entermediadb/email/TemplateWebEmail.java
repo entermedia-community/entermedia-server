@@ -591,7 +591,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 	
 	public static String replaceTokens(String text, 
         Map<String, String> replacements) {
-		Pattern pattern = Pattern.compile("\\{(.+?)\\}");
+		Pattern pattern = Pattern.compile("\\[(.+?)\\]");
 		Matcher matcher = pattern.matcher(text);
 		StringBuffer buffer = new StringBuffer();
 		
