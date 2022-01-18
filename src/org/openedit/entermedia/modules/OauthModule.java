@@ -65,7 +65,8 @@ public class OauthModule extends BaseMediaModule
 			MediaArchive archive = getMediaArchive(inReq);
 			String appid = inReq.findValue("applicationid");
 			Data authinfo = archive.getData("oauthprovider", provider);
-			String siteroot = inReq.findValue("siteroot");
+			
+			String siteroot = inReq.findValue("siteRoot");
 
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 			if (siteroot == null && utils != null)
@@ -229,6 +230,7 @@ public class OauthModule extends BaseMediaModule
 			{
 				redirect = siteroot + "/" + redirect;
 			}
+			log.info("Login Attempt redirect to: "+redirect);
 			String state = inReq.getRequestParameter("state"); 
 			String clientid = authinfo.get("clientid");
 			String clientsecret = authinfo.get("clientsecret");
