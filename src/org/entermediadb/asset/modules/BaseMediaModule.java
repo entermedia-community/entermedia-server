@@ -64,7 +64,7 @@ public class BaseMediaModule extends BaseModule
 			applink = sitedata.getAppLink(applicationid);
 			sitelink = "";
 		}
-		else
+		else if( applicationid != null)
 		{
 			applink = apphome;
 			int slash = applicationid.indexOf("/");
@@ -91,13 +91,16 @@ public class BaseMediaModule extends BaseModule
 		if( site == null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
-			site = archive.getCatalogSettingValue("siteroot");
-			if( site == null)
+			if( archive != null)
 			{
-				site = inReq.getContentProperty("siteRoot");
-				if( site != null)
+				site = archive.getCatalogSettingValue("siteroot");
+				if( site == null)
 				{
-					archive.setCatalogSettingValue("siteroot", site);
+					site = inReq.getContentProperty("siteRoot");
+					if( site != null)
+					{
+						archive.setCatalogSettingValue("siteroot", site);
+					}
 				}
 			}
 		}

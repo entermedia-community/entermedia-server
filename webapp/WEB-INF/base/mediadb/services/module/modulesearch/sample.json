@@ -27,6 +27,7 @@
 						#jsonpartial($sample $mediaarchive.getSearcher($module.id).getPropertyDetails())
 						#if($module.getId() == "asset" && $sample.importstatus == "complete" )
 						, "thumbnailimg": 
+								#set( $thumbpath =  false )
 								#if( $hit.previewstatus && $hit.previewstatus == "mime")
 									#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 									#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
