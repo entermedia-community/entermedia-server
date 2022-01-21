@@ -22,6 +22,7 @@ import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -29,6 +30,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -1665,6 +1667,46 @@ Server ProjectModule.uploadFile
 	
 	public void getDockerId(WebPageRequest inReq) {
 		inReq.putPageValue("instancemonitorid", inReq.getRequestParameter("instancemonitorid"));
+	}
+	
+	public void loadCommunityTag(WebPageRequest inReq) 
+	{
+		if( inReq.getPageValue("communitytag") != null)
+		{
+			return;
+		}
+		URLUtilities util = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+		String subdomain = util.buildRoot();
+		String[] parts = subdomain.split("\\.");
+		if( parts.length > 2)
+		{
+			String tag = parts[0].toLowerCase();
+			tag = tag.substring(tag.lastIndexOf("/")+1);
+			MediaArchive archive = getMediaArchive(inReq);
+			Data data = (Data)archive.getCacheManager().get("communitytag", tag);
+			if( data == null)
+			{
+				data = archive.query("communitytag").exact("subdomain", tag).searchOne();
+				if( data == null )
+				{
+					data = CacheManager.NULLDATA;
+				}
+				else
+				{
+					HitTracker 	collections = archive.query("librarycollection").exact("communitytag", data.getId()).search(inReq);
+					inReq.putPageValue("communityprojects",collections);
+					archive.getCacheManager().put("communityprojects", tag,collections);
+				}
+				archive.getCacheManager().put("communitytag", tag,data);
+			}
+			if( data != CacheManager.NULLDATA)
+			{
+				inReq.putPageValue("communitytag", data);
+			}
+			Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
+			inReq.putPageValue("communityprojects",communityprojects);
+			
+		}
 	}
 	
 }

@@ -1830,8 +1830,24 @@ public class ProjectManager implements CatalogEnabled
 			builder.exact("exclusivecontent", false);
 			if (selectedlibrary == null || selectedlibrary.equals("*"))
 			{
-				builder.all();
-				
+				//If we are on a special URL
+				Data communitytag = (Data) inReq.getPageValue("communitytag");
+				if( communitytag != null)
+				{
+					HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
+					if (!collections.isEmpty())
+					{
+						builder.orgroup("librarycollection", collections);
+					}
+					else
+					{
+						builder.exact("librarycollection", "NONE");
+					}
+				}
+				else
+				{
+					builder.all();
+				}
 			}
 			else
 			{
