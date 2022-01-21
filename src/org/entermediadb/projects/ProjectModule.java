@@ -1702,9 +1702,9 @@ Server ProjectModule.uploadFile
 			if( data != CacheManager.NULLDATA)
 			{
 				inReq.putPageValue("communitytag", data);
+				Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
+				inReq.putPageValue("communityprojects",communityprojects);
 			}
-			Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
-			inReq.putPageValue("communityprojects",communityprojects);
 			
 		}
 	}
