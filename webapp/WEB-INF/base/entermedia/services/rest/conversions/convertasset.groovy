@@ -44,7 +44,7 @@ public void init()
 
 	if(preset.get("transcoderid") == "original")
 	{
-		log.info("Getting original transcoder for asset "+ assetid);
+		log.info("returning original for asset "+ assetid);
 		return;
 	}
 	
