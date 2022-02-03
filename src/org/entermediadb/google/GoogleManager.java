@@ -971,7 +971,7 @@ public class GoogleManager implements CatalogEnabled
 				}
 				catch (Throwable ex)
 				{
-					log.error(ex);
+					log.error("Could not send push", ex);
 				}
 			}
 		});
