@@ -908,8 +908,10 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				assetsourcepath = inputsourcepath;
 			}
-
-			if (incollection && filename.toLowerCase().endsWith(".zip"))
+			
+			
+			//Disable unzip zip files
+			if (false && incollection && filename.toLowerCase().endsWith(".zip"))
 			{
 				try
 				{
