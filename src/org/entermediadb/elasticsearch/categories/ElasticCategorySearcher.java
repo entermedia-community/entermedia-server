@@ -28,7 +28,16 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	protected XmlCategoryArchive fieldXmlCategoryArchive;
 	//protected Category fieldRootCategory;
 	protected CacheManager fieldCacheManager;
+	protected String fieldSort = "name";
 	
+	public String getSort() {
+		return fieldSort;
+	}
+
+	public void setSort(String inSort) {
+		fieldSort = inSort;
+	}
+
 	public CacheManager getCacheManager()
 	{
 		return fieldCacheManager;
@@ -72,7 +81,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if(inParent== null || inParent.getId() == null) {
 			return new ArrayList();
 		}
-		HitTracker hits = query().exact("parentid", inParent.getId()).search();
+		HitTracker hits = query().exact("parentid", inParent.getId()).sort(getSort()).search();
 		hits.enableBulkOperations();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
@@ -89,7 +98,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			category.setParentCategory(inParent);
 			children.add(category);
 		}
-		Collections.sort(children);
+		//Collections.sort(children);
 		return children;
 	}
 	
