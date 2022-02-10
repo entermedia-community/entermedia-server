@@ -2846,7 +2846,7 @@ label.error {
 .fields-editor label.error {
 	padding-top:0;
 }
-.fields-editor .form-control.error {
+.form-control.error {
 	border:1px solid red;
 }
 .assetpanel-editor .btns {
