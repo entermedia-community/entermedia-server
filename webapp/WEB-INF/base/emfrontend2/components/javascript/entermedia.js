@@ -214,6 +214,20 @@ runajaxonthis = function(inlink,e)
 		history.pushState({}, null, nextpage);
 		window.scrollTo(0, 0);
 	}
+	
+	if( inlink.hasClass("auto-active-link" ) )
+	{
+		var container = inlink.closest(".auto-active-container");
+		
+		jQuery(".auto-active-row",container).removeClass("current");	
+		var row = inlink.closest(".auto-active-row");
+		row.addClass("current");
+
+		jQuery("li",container).removeClass("current");
+		var row = inlink.closest("li");
+		row.addClass("current");
+
+	}
 
 	var options = inlink.data();
 	
