@@ -634,6 +634,13 @@ uiload = function() {
 			"click", function(event) {
 				emdialog($(this), event);
 	});
+	
+	
+	lQuery(".closemodal").livequery(
+			"click", function(event) {
+				$(this).closest(".modal").modal("hide");
+	});
+	
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
 		event.preventDefault();
