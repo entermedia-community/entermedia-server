@@ -129,9 +129,8 @@ public class FinderModule extends BaseMediaModule
 					{
 						Data module = archive.getCachedData("module", "asset");
 						foundmodules.add(module);
-
-						bytypes.put("asset",assethits);
 					}
+					bytypes.put("asset",assethits);
 				}
 				
 
