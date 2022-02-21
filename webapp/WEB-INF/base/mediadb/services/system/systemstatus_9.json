@@ -1,0 +1,20 @@
+#set($status = "notok")
+#foreach( $stat in $stats )
+	#if( $stat.name == "clusterhealth" && $stat.value=="GREEN" )
+		#set($status = "ok")
+	#end
+	#if( $stat.name == "totalassets")
+		#set($assetscount = $stat.value)
+	#end
+#end 
+
+{
+	"response":
+	{
+	    "status":"$status"
+	    #if($assetscount) 
+	    ,
+	    "assetscount":$assetscount
+	    #end
+	}
+}
