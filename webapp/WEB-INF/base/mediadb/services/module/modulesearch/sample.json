@@ -16,9 +16,8 @@
 				#set( $count = $filter.getCount($module.id) )
 			#end
 			"samplecount":"$idhits.size()"
-			#if( $count ),
-				"sampletotal":"$count"
-			#end	
+			,
+			"sampletotal":"$count"
 			,
 			"samples" : [
 				#foreach( $sample in $idhits )
