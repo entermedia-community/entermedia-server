@@ -1,0 +1,12 @@
+#if( $data )
+
+#else
+
+#ifnull( $val )
+	#set( $val = $user.id )
+	$context.putPageValue("val",$val)
+#end
+
+#end
+
+$pages.include("${apphome}/components/xml/types/autocomplete.html",$context)
