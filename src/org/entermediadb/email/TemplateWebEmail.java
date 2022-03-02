@@ -543,9 +543,9 @@ public class TemplateWebEmail extends WebEmail implements Data
 		}
 
 	}
-	public void send(String body, Map inObjects) {
-		String Message = replaceTokens(body, inObjects);
-		sendText(Message);
+	public void send(String body) 
+	{
+		sendText(body);
 	}
 	
 	public void send()

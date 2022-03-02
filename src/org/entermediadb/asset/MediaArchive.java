@@ -195,7 +195,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		if (fieldReplacer == null)
 		{
-			fieldReplacer = new Replacer();
+			fieldReplacer = (Replacer)getModuleManager().getBean(getCatalogId(), "replacer");
 			fieldReplacer.setCatalogId(getCatalogId());
 			fieldReplacer.setSearcherManager(getSearcherManager());
 			fieldReplacer.setAlwaysReplace(true);
