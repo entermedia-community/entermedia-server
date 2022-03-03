@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -43,6 +44,19 @@ public abstract class WebEmail
 	protected String fieldMessage;
 	protected String fieldAlternativeMessage;
 	protected PostMail fieldPostMail;
+
+	ModuleManager fieldModuleManager;
+	
+	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
 
 	public List<InternetAddress> getBCCRecipients()
 	{
@@ -496,7 +510,7 @@ public abstract class WebEmail
 
 	public abstract void send(Map inObjects);
 	
-	public abstract void send(String body, Map inObjects);
+	public abstract void send(String body);
 
 	
 	public PostMailStatus sendAndCollectStatus()
