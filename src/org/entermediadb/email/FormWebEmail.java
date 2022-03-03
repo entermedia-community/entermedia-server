@@ -18,8 +18,11 @@ public class FormWebEmail extends WebEmail
 	throw new OpenEditException("Not Implemented for FormWebEmail");
 	}
 	
-	
 	public void send() throws OpenEditException
+	{
+		send( getBody().toString() );
+	}
+	public void send(String body) throws OpenEditException
 	{
 		
 		if (isValidMessage())
@@ -28,7 +31,7 @@ public class FormWebEmail extends WebEmail
 			{
 				String from = getFrom();
 				String fromname = getFromName();
-				fieldPostMail.postMail(getTo(),getSubject(),null,getBody().toString(),from, fromname);
+				fieldPostMail.postMail(getTo(),getSubject(),null,body,from, fromname);
 			}
 			catch (MessagingException ex)
 			{
@@ -88,9 +91,4 @@ public class FormWebEmail extends WebEmail
 	}
 
 
-	@Override
-	public void send(String body, Map inObjects) {
-		// TODO Auto-generated method stub
-		
-	}
 }
