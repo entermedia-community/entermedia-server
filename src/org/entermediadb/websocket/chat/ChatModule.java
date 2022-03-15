@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
@@ -32,6 +35,8 @@ import org.openedit.util.DateStorageUtil;
 
 public class ChatModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(ChatConnection.class);
+		
 
 	public void loadRecentChats(WebPageRequest inReq)
 	{
@@ -46,7 +51,7 @@ public class ChatModule extends BaseMediaModule
 
 		
 		  HitTracker results = chats.query().match("channel", channel).sort("dateDown").search(); 
-		  //results.setHitsPerPage(10);
+		  results.setHitsPerPage(200);
 		  Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
@@ -58,6 +63,7 @@ public class ChatModule extends BaseMediaModule
 			  lastdateloaded = message.get("date");
 			  
 		  }
+		  log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
 		  inReq.putPageValue("messages", loaded);
 		  inReq.putPageValue("lastloaded", lastdateloaded);
@@ -98,7 +104,7 @@ public class ChatModule extends BaseMediaModule
 				  				.sort("dateDown")
 				  				.search(); 
 		  oldresults.setHitsPerPage(10);
-		  //log.info(results.getFriendlyQuery());
+		  //log.info(oldresults.getFriendlyQuery());
 		  String query = oldresults.getFriendlyQuery();
 		  Collection page = oldresults.getPageOfHits(); 
 		  ArrayList oldloaded = new  ArrayList(); 
