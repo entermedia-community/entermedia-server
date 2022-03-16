@@ -178,7 +178,6 @@ findclosest = function(link,inid)
 }
 runajaxonthis = function(inlink,e)
 {
-	
 	var ajaxprogress = $(".ajaxprogress"); 
 	ajaxprogress.show();
 	var inText = $(inlink).data("confirm");
