@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -151,15 +152,21 @@ public class ChatServer
 			if( collectionid != null && !"null".equals(collectionid))
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
+				
+				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+				LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
+				Set userids = projectmanager.listTeam(collection);
 				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 				{
 					ChatConnection chatConnection = (ChatConnection) iterator.next();
-					if( projectmanager.canViewCollection(chatConnection.getUserId(),collectionid) )
+					if( userids.contains(chatConnection.getUserId() ) )
 					{
 						chatConnection.sendMessage(inMap);
 					}
 				}	
-			} else {
+			} 
+			else 
+			{ 
 				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 				{
 					ChatConnection chatConnection = (ChatConnection) iterator.next();

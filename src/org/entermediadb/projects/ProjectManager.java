@@ -1268,8 +1268,9 @@ public class ProjectManager implements CatalogEnabled
 
 	public LibraryCollection getLibraryCollection(MediaArchive inArchive, String inCollectionid)
 	{
-		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		//Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		//LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		LibraryCollection collection = (LibraryCollection) inArchive.getCachedData("librarycollection", inCollectionid);
 		return collection;
 	}
 
@@ -1881,6 +1882,19 @@ public class ProjectManager implements CatalogEnabled
 	{
 		Data subscription = getMediaArchive().query("librarycollectionusers").exact("collectionid", inCollection.getId()).exact("ontheteam", "true").exact("followeruser", inUserid).searchOne();
 		return subscription != null;
+	}
+	
+	public Set<String> listTeam(LibraryCollection inCollection)
+	{
+		Collection users = getMediaArchive().query("librarycollectionusers").exact("collectionid", inCollection.getId()).exact("ontheteam", "true").search();
+		Set userids = new HashSet();
+		for (Iterator iterator = users.iterator(); iterator.hasNext();)
+		{
+			Data coluser = (Data) iterator.next();
+			String userid  = coluser.get("followeruser");
+			userids.add(userid);
+		}
+		return userids;
 	}
 
 	public Collection listCollectionsForFollower(User inUser)
