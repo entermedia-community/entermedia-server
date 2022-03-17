@@ -688,6 +688,12 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			if (searchtype.equals("asset")) 
 			{
 				//Data hit = (Data) iterator.next();
+				String importstatus = (String)data.getSearchData().get("importstatus");
+				if( importstatus != null && importstatus.equals("error"))
+				{
+					continue;
+				}
+				
 				String sourcepath = (String) data.getSearchData().get("sourcepath");
 				String alternative = (String) data.getSearchData().get("archivesourcepath");
 				
