@@ -72,7 +72,7 @@ public class librarySearchSecurity implements SearchSecurity
 			orgroup("viewgroups", groupids).
 			match("viewroles", roleid).
 			match("owner", userid).
-			match("viewusers", inUserprofile.getUserId()).getQuery();
+			match("viewusers", userid).getQuery();
 		
 		inQuery.addChildQuery(securityfilter);
 		

@@ -159,7 +159,6 @@ public class AdminModule extends BaseMediaModule
 		User foundUser = null;
 		String username = null;
 		String email = null;
-		String password = null;
 		// if the user provided an email instead of a username, lookup username
 		String emailaddress = inReq.getRequestParameter(EMAIL);
 		if (emailaddress != null && emailaddress.length() > 0)
@@ -192,15 +191,6 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("error", "noemail");
 				return;
 			}
-			// get the user's current password
-			if (foundUser.getPassword().startsWith("DES:"))
-			{
-				password = getUserManager(inReq).getStringEncryption().decrypt(foundUser.getPassword());
-			}
-			else
-			{
-				password = foundUser.getPassword();
-			}
 			foundUser.setEnabled(true);
 			username = foundUser.getUserName();
 		}
@@ -222,9 +212,13 @@ public class AdminModule extends BaseMediaModule
 			//Different email template for desktopapp
 			String launchersource = inReq.getRequestParameter("launchersource");
 			inReq.putPageValue("launchersource", launchersource);
+
+			String tempkey = getUserManager(inReq).createNewTempLoginKey(username);
 			
-			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, key, email);
+			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, tempkey, key, email);
 			inReq.putPageValue("commandSucceeded", "ok");
+			inReq.putPageValue("founduserid", foundUser.getUserName());
+			
 		}
 		catch (OpenEditException oex)
 		{
@@ -450,7 +444,9 @@ public class AdminModule extends BaseMediaModule
 			{
 				password = entermediakey;
 			}
-			if (password == null)
+			String templogincode = inReq.getRequestParameter("templogincode");
+			
+			if (password == null && templogincode == null)
 			{
 				inReq.putPageValue("oe-exception", "Password cannot be blank " + account);
 				log.info(" Password cannot be blank ");
@@ -464,6 +460,8 @@ public class AdminModule extends BaseMediaModule
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
 
+			aReq.putProperty("templogincode", templogincode);
+			
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);

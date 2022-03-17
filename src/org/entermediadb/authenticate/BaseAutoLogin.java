@@ -186,6 +186,9 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 						{
 	//						String catalogid =user.get("catalogid");
 	//						inReq.putSessionValue(catalogid + "user", user);
+							
+							//Save cookie?
+							
 							return user;
 						}
 						else

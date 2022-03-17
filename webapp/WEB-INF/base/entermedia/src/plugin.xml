@@ -34,6 +34,11 @@
 			<ref bean="stringEncryption" />
 		</property>
 	</bean>
+	<bean id="tempSecurityKeyAuthenticator" class="org.openedit.users.authenticate.TempSecurityKeyAuthenticator">
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
+	</bean>
 	<bean id="autoLoginByHeader" class="org.entermediadb.authenticate.AutoLoginByHeader">
 		<property name="moduleManager">
         	<ref bean="moduleManager" />
@@ -602,6 +607,7 @@
 	<bean id="authenticator" class="org.openedit.users.authenticate.CompositeAuthenticator">
 		<property name="authenticators">
 			<list>
+				<ref bean="tempSecurityKeyAuthenticator" />
 				<ref bean="fileAuthenticator" />
 				<ref bean="windowsAuthenticator" />
 				<ref bean="ldapAuthenticator" />

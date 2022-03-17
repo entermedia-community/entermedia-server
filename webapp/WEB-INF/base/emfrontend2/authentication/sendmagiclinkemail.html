@@ -16,12 +16,13 @@
 	#set($null = $calendar.add(6, $days))
 	
 	<p>
-	<a href="#urlescape($link)">[[Login here or Copy/Paste key below into the App]].</a>
+	<a href="#urlescape($link)">[[Login here]]</a>
 	#if( $calendar )
 	[[Key will expire by]] $context.getDate( $calendar.getTime() ) 
 	#end
 	</p>
-	<p id="entermediakey" style="text-align:center; font-size:120%;">$entermediakey</p>
+	<p id="entermediakey" style="text-align:center; font-weight:bold; font-size:120%;">	[[Use login code]]
+	<br>$templogincode</p>
 	
 </div>
 

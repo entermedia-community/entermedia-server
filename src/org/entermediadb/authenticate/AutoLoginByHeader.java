@@ -61,7 +61,7 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 		{
 			log.error("No auto login group or role configured");
 		}
-		
+		//Not for headers? saveCookieForUser(inRequest,user); //For next time
 		AutoLoginResult result = new AutoLoginResult();
 		result.setUser(user);
 		return result;

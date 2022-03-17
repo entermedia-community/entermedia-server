@@ -98,6 +98,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		
 		if( ok != null)
 		{
+			saveCookieForUser(inReq,ok); //For next time
 			AutoLoginResult result = new AutoLoginResult();
 			result.setUser(ok);
 			return result;
