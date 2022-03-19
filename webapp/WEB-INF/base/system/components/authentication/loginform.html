@@ -51,11 +51,20 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 	
 	<div class="col-sm-7 col-lg-5">
 	<div class="loginform-col-right">			
+	
+		#set( $error = $context.getPageValue("oe-exception") )
+			#if ( $error )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$error</div>
+				$context.removeSessionValue("oe-exception")
+			#end
+	
+	
 		<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 		
 				<p>[[Or Sign-in with E-Mail only]]</p>
 				<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>
 				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+				
 				<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
 				
            </form>

@@ -189,6 +189,7 @@ public class AdminModule extends BaseMediaModule
 			if (email == null || email.equals(""))
 			{
 				inReq.putPageValue("error", "noemail");
+				
 				return;
 			}
 			foundUser.setEnabled(true);
@@ -196,7 +197,6 @@ public class AdminModule extends BaseMediaModule
 		}
 		else
 		{
-			inReq.putPageValue("error", "nouser");
 			inReq.putPageValue("commandSucceeded", "nouser");
 			return;
 		}
@@ -466,6 +466,10 @@ public class AdminModule extends BaseMediaModule
 			{
 				user.setVirtual(false);
 				userManager.saveUser(user);
+			}
+			else
+			{
+				inReq.putPageValue("oe-exception", "Invalid Login");
 			}
 		}
 	}

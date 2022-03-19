@@ -3,7 +3,7 @@
 	<div class="row justify-content-md-center">
 	    <div class="col col-lg-12">
 	    <div class="text-center">
-	    
+
 
 			#set( $to = $context.getRequestParameter("to") )	
 			#set( $username = $context.getRequestParameter("username") )
@@ -12,9 +12,13 @@
 					action="$home$content.loginroot/sendmagiclinkfinish.html" 
 					id="password-reminder" name="passwordReminder"  method="post"
 					data-targetdiv="magiclinkcontainer">
+
+			#if( $commandSucceeded == "nouser")
+				<div style="border: 1px solid black;margin:50px; text-align: center">[[email not found]]</div>
+			#end
 				
-					<p>[[Please click 'Send Link'. Your magic link will be sent to you via e-mail:]]</p>
-					<p><input class="form-control form-control-sm required" type="text" name="to" size="40" style="margin:0 auto; width:300px" placeholder="[[Enter your Email Address]]" required /></p>
+					<p>[[Your login code will be sent to you via e-mail:]]</p>
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /></p>
 					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
 					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" />
 					
