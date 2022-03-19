@@ -148,6 +148,10 @@ public class AdminModule extends BaseMediaModule
 	public void emailPasswordReminder(WebPageRequest inReq) throws Exception
 	{
 		String e = inReq.getRequestParameter(EMAIL);
+		if( e == null)
+		{
+			e = inReq.getRequestParameter("email"); //Move to using this
+		}
 		String u = inReq.getRequestParameter(UNAME);
 		if (e == null && u == null)
 		{
