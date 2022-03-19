@@ -147,13 +147,13 @@ public class AdminModule extends BaseMediaModule
 
 	public void emailPasswordReminder(WebPageRequest inReq) throws Exception
 	{
-		String e = inReq.getRequestParameter(EMAIL);
-		if( e == null)
+		String emailaddress = inReq.getRequestParameter(EMAIL);
+		if( emailaddress == null)
 		{
-			e = inReq.getRequestParameter("email"); //Move to using this
+			emailaddress = inReq.getRequestParameter("email"); //Move to using this
 		}
 		String u = inReq.getRequestParameter(UNAME);
-		if (e == null && u == null)
+		if (emailaddress == null && u == null)
 		{
 			inReq.putPageValue("commandSucceeded", "missingparam");
 			// log.error("Invalid information");
@@ -162,9 +162,7 @@ public class AdminModule extends BaseMediaModule
 
 		User foundUser = null;
 		String username = null;
-		String email = null;
 		// if the user provided an email instead of a username, lookup username
-		String emailaddress = inReq.getRequestParameter(EMAIL);
 		if (emailaddress != null && emailaddress.length() > 0)
 		{
 			foundUser = (User) getUserManager(inReq).getUserByEmail(emailaddress);
@@ -189,7 +187,7 @@ public class AdminModule extends BaseMediaModule
 		}
 		if (foundUser != null)
 		{
-			email = foundUser.getEmail();
+			String email = foundUser.getEmail();
 			if (email == null || email.equals(""))
 			{
 				inReq.putPageValue("error", "noemail");
@@ -198,6 +196,7 @@ public class AdminModule extends BaseMediaModule
 			}
 			foundUser.setEnabled(true);
 			username = foundUser.getUserName();
+			emailaddress = email;
 		}
 		else
 		{
@@ -219,7 +218,7 @@ public class AdminModule extends BaseMediaModule
 
 			String tempkey = getUserManager(inReq).createNewTempLoginKey(username);
 			
-			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, tempkey, key, email);
+			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, tempkey, key, emailaddress);
 			inReq.putPageValue("commandSucceeded", "ok");
 			inReq.putPageValue("founduserid", foundUser.getUserName());
 			
@@ -421,6 +420,7 @@ public class AdminModule extends BaseMediaModule
 				{
 					log.info("No user id or email found " + account);
 					inReq.putPageValue("oe-exception", "No user id or email found");
+					inReq.putPageValue("commandSucceeded", "nouser");
 					return;
 				}
 				user = userManager.getUserByEmail(email);
@@ -454,12 +454,14 @@ public class AdminModule extends BaseMediaModule
 			{
 				inReq.putPageValue("oe-exception", "Password cannot be blank " + account);
 				log.info(" Password cannot be blank ");
+				inReq.putPageValue("commandSucceeded", "nopassword");
 				return;
 			}
 			if (user == null)
 			{
 				log.info("No user found " + account);
 				inReq.putPageValue("oe-exception", "Invalid Login");
+				inReq.putPageValue("commandSucceeded", "nouser");
 				return;
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
@@ -470,10 +472,12 @@ public class AdminModule extends BaseMediaModule
 			{
 				user.setVirtual(false);
 				userManager.saveUser(user);
+				inReq.putPageValue("commandSucceeded", "ok");
 			}
 			else
 			{
 				inReq.putPageValue("oe-exception", "Invalid Login");
+				inReq.putPageValue("commandSucceeded", "invalidlogin");
 			}
 		}
 	}

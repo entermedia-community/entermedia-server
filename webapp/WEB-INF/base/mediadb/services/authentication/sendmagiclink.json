@@ -2,7 +2,13 @@
 	"response":
 	{
 
-		"status":"ok"
+		#if( $commandSucceeded == "ok")
+		"status":"ok",		
+		"user":"$!{user.id}"
+		#else
+		"status":"$commandSucceeded"
+		#end
+
 		 		
 	}
 }

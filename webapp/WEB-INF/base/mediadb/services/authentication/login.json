@@ -1,8 +1,12 @@
 {
 	"response":
 	{
-		"status":"ok",
-		"user":"${user.id}"
+		#if( $commandSucceeded == "ok")
+		"status":"ok",		
+		"user":"$!{user.id}"
+		#else
+		"status":"$commandSucceeded"
+		#end
 	},
 	"results": 
 	{ 
