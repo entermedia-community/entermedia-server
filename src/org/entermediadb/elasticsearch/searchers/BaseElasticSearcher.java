@@ -401,7 +401,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isHighlight())
 			{
-				search.addHighlightedField(detail.getId(), 60);
+				search.addHighlightedField(detail.getId(), 180);
+				
 			}
 		}
 
