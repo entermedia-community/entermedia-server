@@ -24,5 +24,7 @@
       <language id="en"><![CDATA[Number Code]]></language> 
     </name> 
   </property> 
+	<property id="firstName" index="true" stored="true" keyword="true" editable="true" >First Name</property>
+	<property id="lastName" index="true" stored="true" keyword="true" editable="true" >Last Name</property>
 
 </properties>

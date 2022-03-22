@@ -45,7 +45,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		#set( $allowguest =  false)
 	#end
 
-	#set( $to = $context.getRequestParameter("to") )	
+	#set( $to = $context.getRequestParameter("email") )	
 	#set( $username = $context.getRequestParameter("username") )
 	#if( $allowguest )
 	
@@ -62,10 +62,11 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 		
 				<p>[[Or Sign-in with E-Mail only]]</p>
-				<p><input class="form-control form-control-sm required grabfocus" type="text" name="to" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>
+				<p><input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>
 				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
 				
 				<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Key]]" style="margin-right:150px"/>
+				
 				
            </form>
      </div>

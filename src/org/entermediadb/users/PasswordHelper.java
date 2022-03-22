@@ -41,7 +41,7 @@ public class PasswordHelper implements Serializable {
 	 * @param password
 	 * @param email
 	 */
-	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inUsername, String inTempKey, String inEnterMediaKey, String inEmail) 
+	public void emailPasswordReminder(WebPageRequest inContext, PageManager inManager, String inTempKey, String inEnterMediaKey, String inEmail) 
 	{
 	
 		//TO
@@ -62,9 +62,6 @@ public class PasswordHelper implements Serializable {
 			e1.printStackTrace();
 		}
 		inContext.putPageValue(SendMailModule.EMAIL_SETTINGS,email);
-		if (inUsername != null){
-			inContext.putPageValue("uname", inUsername);
-		}
 		
 		inContext.putPageValue("templogincode", inTempKey);
 		inContext.putPageValue("entermediakey", inEnterMediaKey);
@@ -73,7 +70,7 @@ public class PasswordHelper implements Serializable {
 			inContext.putPageValue("mail", inEmail);
 		}
 		inContext.putPageValue("commandSucceeded", "didnotexecute");
-		if (inEmail != null && inUsername != null){
+		if (inEmail != null){
 			try
 			{
 				sendMailModule.sendEmail( inContext );

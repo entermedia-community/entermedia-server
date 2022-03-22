@@ -1,0 +1,23 @@
+<div style="background-color:#efefef">
+<div style="background-color:#fff; padding:20px 20px 20px; margin:0 auto; width:600px;">
+<div style="background-color:#000; padding: 1px 0 5px 0; margin-bottom:20px;">
+<a href="https://entermediadb.org"><img src="https://entermediadb.org/theme/img/entermedia_database.png"></a>
+</div>
+<p>[[Hello]],</p>
+<p>[[A new user was requested for]]: $mail</p>
+<div style="margin:10px; padding:15px; background-color:#f0f0f0;">
+
+	#set( $link = "$context.siteRoot$applink/authentication/login.html" )
+	<p>
+	<a href="#urlescape($link)">[[Enter Code Here]]</a>
+	</p>
+	<p id="entermediakey" style="text-align:center; font-weight:bold; font-size:120%;">	
+		[[Use login code]]	<br> $templogincode
+	</p>
+</div>
+
+<p><strong>The EnterMediaDB Team</strong><br>
+<em><a href="mailto:help@entermediadb.org">help@entermediadb.org</a></em>
+</p>
+</div>
+</div>

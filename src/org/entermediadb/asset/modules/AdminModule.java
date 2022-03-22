@@ -176,51 +176,41 @@ public class AdminModule extends BaseMediaModule
 				foundUser = (User) getUserManager(inReq).getUser(username);
 			}
 		}
-		Boolean createuser =  Boolean.parseBoolean( inReq.findValue("createuser"));
-		if (foundUser == null && emailaddress != null && createuser) {
-			String	newpassword = new PasswordGenerator().generate();
+		if( foundUser != null)
+		{
+			emailaddress = foundUser.getEmail();
+		}
+		
+		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findValue("allowguestregistration"));
+		if (foundUser == null && !allowguestregistration) {
 			
-			foundUser = (User) getUserManager(inReq).createUser(null, newpassword);
-			foundUser.setEmail(emailaddress.trim().toLowerCase());
-			foundUser.setEnabled(true);
-			getUserManager(inReq).saveUser(foundUser);
-		}
-		if (foundUser != null)
-		{
-			String email = foundUser.getEmail();
-			if (email == null || email.equals(""))
-			{
-				inReq.putPageValue("error", "noemail");
-				
-				return;
-			}
-			foundUser.setEnabled(true);
-			username = foundUser.getUserName();
-			emailaddress = email;
-		}
-		else
-		{
 			inReq.putPageValue("commandSucceeded", "nouser");
 			return;
 		}
-		inReq.putPageValue("founduser", foundUser);
+		//Different email template for desktopapp
+		String launchersource = inReq.getRequestParameter("launchersource");
+		inReq.putPageValue("launchersource", launchersource);
 
 		try
 		{
-			// let the passwordHelper send the password
-			PasswordHelper passwordHelper = getPasswordHelper(inReq);
-	
-			String key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser);
-	
-			//Different email template for desktopapp
-			String launchersource = inReq.getRequestParameter("launchersource");
-			inReq.putPageValue("launchersource", launchersource);
-
-			String tempkey = getUserManager(inReq).createNewTempLoginKey(username);
+			String firstName = inReq.getRequestParameter("firstName");
+			String lastName = inReq.getRequestParameter("lastName");
+			if (foundUser == null && firstName == null && lastName == null)
+			{
+				inReq.putPageValue("commandSucceeded", "nouser");
+				return;
+			}
+			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
 			
-			passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, tempkey, key, emailaddress);
+			PasswordHelper passwordHelper = getPasswordHelper(inReq);
+			String key = null;
+			if( foundUser != null )
+			{
+				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
+			}
+			passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
 			inReq.putPageValue("commandSucceeded", "ok");
-			inReq.putPageValue("founduserid", foundUser.getUserName());
+			//inReq.putPageValue("founduserid", foundUser.getUserName());
 			
 		}
 		catch (OpenEditException oex)
@@ -433,22 +423,32 @@ public class AdminModule extends BaseMediaModule
 					user = userManager.getUserByEmail(account);
 				}
 			}
-			if (user == null) // Allow guest user
+			String templogincode = inReq.getRequestParameter("templogincode");
+			if (user == null && templogincode != null) // Allow guest user?
 			{
-				String groupname = inReq.getPage().get("autologingroup");
-				if (groupname != null)
+				String allow = inReq.getPage().get("allowguestregistration");
+				if( allow == null)
 				{
-					//we dont want to save the real password since it might be NT based
-					String tmppassword = new PasswordGenerator().generate();
-					user = userManager.createGuestUser(account, tmppassword, groupname);
-					log.info("Username not found. Creating guest user.");
+					log.error("allowguestregistration must be set to login with temp codes");
 				}
+				else
+				{
+					String groupid = inReq.getPage().get("autologingroup");
+					user = userManager.checkForNewUser(email,templogincode, groupid);
+				}
+
+//				if (groupname != null)
+//				{
+//					//we dont want to save the real password since it might be NT based
+//					String tmppassword = new PasswordGenerator().generate();
+//					user = userManager.createGuestUser(account, tmppassword, groupname);
+//					log.info("Username not found. Creating guest user.");
+//				}
 			}
 			if( password == null)
 			{
 				password = entermediakey;
 			}
-			String templogincode = inReq.getRequestParameter("templogincode");
 			
 			if (password == null && templogincode == null)
 			{
@@ -485,16 +485,30 @@ public class AdminModule extends BaseMediaModule
 	public boolean authenticate(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("id");
+		String email = inReq.getRequestParameter("email");
+		
 		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
 			account = account.toLowerCase();
 		}
 		String password = inReq.getRequestParameter("password");
 		UserManager userManager = getUserManager(inReq);
-		User user = userManager.getUser(account);
+		User user = null;
+		if( account != null )
+		{
+			user = userManager.getUser(account);
+		}
+		else if( email != null)
+		{
+			userManager.getUserByEmail(email);
+		}
 		Boolean ok = false;
 		if (user != null)
 		{
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
+			
+			String templogincode = inReq.getRequestParameter("templogincode");
+			aReq.putProperty("templogincode", templogincode);
+			
 			if (userManager.authenticate(aReq))
 			{
 				ok = true;
@@ -503,11 +517,18 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("entermediakey", value); //TODO: Remove this, its slow
 				inReq.putSessionValue(aReq.getCatalogId() + "user", user);
 				inReq.putPageValue("user", user);
+				inReq.putPageValue("commandSucceeded", "ok");
+			}
+			else
+			{
+				inReq.putPageValue("oe-exception", "Invalid Login");
+				inReq.putPageValue("commandSucceeded", "invalidlogin");
 			}
 		}
 		else
 		{
 			log.info("No such user" + account);
+			inReq.putPageValue("commandSucceeded", "nouser");
 //			String catalogid =user.get("catalogid");
 //			inReq.putSessionValue(catalogid + "user", null);
 		}

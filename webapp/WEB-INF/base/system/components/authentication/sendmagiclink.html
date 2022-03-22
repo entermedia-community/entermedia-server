@@ -1,0 +1,50 @@
+<div id="magiclinkcontainer">
+<div class="container applicationcontent">
+	<div class="row justify-content-md-center">
+	    <div class="col col-lg-12">
+	    <div class="text-center">
+
+
+			#set( $to = $context.getRequestParameter("email") )	
+			#set( $allowguestregistration = $context.findValue("allowguestregistration") )	
+			#set( $username = $context.getRequestParameter("username") )
+			
+			<form class="ajaxform" 
+					action="$home$content.loginroot/sendmagiclinkfinish.html"
+					id="password-reminder" name="passwordReminder"  method="post"
+					data-targetdiv="magiclinkcontainer">
+
+			#if( $commandSucceeded == "nouser")
+						<div style="margin:10px; text-align: center">[[Email was not found. Enter first and last name to register]]</div>			
+					<p><input class="form-control form-control-sm required" type="text" name="email" size="50" value="$!to" 
+							style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /> 		
+							</p>
+							
+				 #if( $allowguestregistration == "true" )
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="firstName"  
+							style="margin:0 auto; width:200px" placeholder="[[First Name]]" required />
+					<input class="form-control form-control-sm required " type="text" name="lastName"   
+							style="margin:0 auto; width:200px" placeholder="[[Last Name]]" required /></p>
+						<input class="btn btn-secondary" name="submit" type="submit" value="[[Send New User Link]]" />
+				  #else
+						<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" />
+				  #end	
+			
+			#else				
+					<p>[[Your login code will be sent to you via e-mail:]]</p>
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" value="$!to" 
+							style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /></p>
+					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" />
+			#end
+					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					
+					
+            </form>
+            <div class="text-center note" style="margin-top: 40px; margin-bottom: 10px;">
+        	</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

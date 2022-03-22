@@ -1,0 +1,10 @@
+<page>
+	
+	<path-action name="JsonAdminModule.preprocess" />
+	<property name="emaillayout">/${applicationid}/authentication/sendnewuseremailtemplate.html</property>
+	<path-action name="Admin.sendNewUserCode" />
+	<property name="subject">Login Code</property>
+	<permission name="view">
+		<blank/>
+	</permission>
+</page>

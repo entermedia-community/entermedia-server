@@ -1,6 +1,6 @@
 #if( $commandSucceeded == "nouser")
-	
-	$pages.include("./sendmagiclink.html")
+
+	$pages.include("./sendmagiclink.html")  ##to try again or register
 
 #else			
 
@@ -15,7 +15,12 @@
 			<div class="form-group">
 			<label for="password">[[Enter Six Digit Login Code]]</label>
 			<input class="form-controlX grabfocus" id="entermediakey" name="templogincode" />
-			<input class="form-controlX " type="hidden" name="accountname" value="$founduserid" />
+			#set( $email = $context.getRequestParameter("email") )	
+			#if( $email )
+			<input class="form-controlX " type="hidden" name="email" value="$email" />
+			#else
+			<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
+			#end
 			</div>
 			
 			<div class="form-group">
