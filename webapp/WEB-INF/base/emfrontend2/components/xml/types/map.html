@@ -19,7 +19,7 @@
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
    
    #set($latlng = "")
-   #if ($lat != "" && $lng != "")
+   #if ($lat && $lng && $lat != "" && $lng != "")
    	#set($latlng = "$lat,$lng")
    #end
    

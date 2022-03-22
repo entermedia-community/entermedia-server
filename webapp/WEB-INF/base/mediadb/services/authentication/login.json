@@ -11,6 +11,8 @@
 	"results": 
 	{ 
 #if($entermediakey)
+		"id" : "$user.id",
+		"userid" : "$user.id", 
 		"entermediakey": "$entermediakey",
 		"firstname": "$!user.firstName",
 		"lastname" : "$!user.lastName",

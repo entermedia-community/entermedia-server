@@ -345,7 +345,8 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if(getSearchHit() == null) {
 			return highlights;
 		}
-		HighlightField field = getSearchHit().getHighlightFields().get(inField);
+		Map<String, HighlightField> highlightFields = getSearchHit().getHighlightFields();
+		HighlightField field = highlightFields.get(inField);
 		if(field == null) {
 			return highlights;
 		}
