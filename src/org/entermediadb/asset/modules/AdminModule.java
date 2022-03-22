@@ -482,6 +482,8 @@ public class AdminModule extends BaseMediaModule
 		}
 	}
 
+	
+	//TODO: Remove this, its duplicates login
 	public boolean authenticate(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("id");

@@ -3,5 +3,5 @@
 		<blank/>
 	</permission>
 	<path-action name="JsonAdminModule.preprocess" />
-	<path-action name="Admin.authenticate" />
+	<path-action name="Admin.login" />
 </page>
