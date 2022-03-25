@@ -162,6 +162,8 @@ public class AdminModule extends BaseMediaModule
 
 		User foundUser = null;
 		String username = null;
+		String firstName = "";
+		String lastName = "";
 		// if the user provided an email instead of a username, lookup username
 		if (emailaddress != null && emailaddress.length() > 0)
 		{
@@ -179,6 +181,9 @@ public class AdminModule extends BaseMediaModule
 		if( foundUser != null)
 		{
 			emailaddress = foundUser.getEmail();
+			firstName = foundUser.getFirstName();
+			lastName = foundUser.getLastName();
+			username = foundUser.getId();
 		}
 		
 		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findValue("allowguestregistration"));
@@ -193,8 +198,8 @@ public class AdminModule extends BaseMediaModule
 
 		try
 		{
-			String firstName = inReq.getRequestParameter("firstName");
-			String lastName = inReq.getRequestParameter("lastName");
+			//firstName = inReq.getRequestParameter("firstName");
+			//lastName = inReq.getRequestParameter("lastName");
 			if (foundUser == null && firstName == null && lastName == null)
 			{
 				inReq.putPageValue("commandSucceeded", "nouser");
