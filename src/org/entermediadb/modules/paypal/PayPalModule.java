@@ -43,20 +43,28 @@ public class PayPalModule extends BaseMediaModule
 		Searcher payments = archive.getSearcher("transaction");
 		Data payment = payments.createNewData();
 		
-		
 		payments.updateData(inReq, inReq.getRequestParameters("field"), payment);
 			
 		payment.setValue("paymentdate",new Date() );
 		payment.setValue("paymenttype","paypal" );
 		
-		if( user == null && payment.get("userid") != null) {
-			user = getMediaArchive(inReq).getUserManager().getUser(payment.get("userid"));
+//		if( user == null && payment.get("userid") != null) {
+//			user = getMediaArchive(inReq).getUserManager().getUser(payment.get("userid"));
+//		}
+//		if( user == null) {
+		String email = inReq.getRequestParameter("paymentemail.value");
+		user = archive.getUserManager().getUserByEmail(email);
+		//Crate a guest user
+		if( user == null)
+		{
+			String first = inReq.getRequestParameter("firstName.value");
+			String last = inReq.getRequestParameter("lastName.value");
+			user = archive.getUserManager().createGuestUser(null, null, "paypal");
+			user.setFirstName(first);
+			user.setLastName(last);
+			user.setEmail(email);
+			archive.getUserManager().saveUser(user);
 		}
-		if( user == null) {
-			String email = inReq.getRequestParameter("paymentemail.value");
-			user = getMediaArchive(inReq).getUserManager().getUserByEmail(email);
-		}
-		
 		payment.setValue("userid",user.getId());
 		
 		
