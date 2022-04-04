@@ -423,6 +423,14 @@ public class AdminModule extends BaseMediaModule
 			else
 			{
 				user = userManager.getUser(account);
+				if( user == null)
+				{
+					if( !"system".equals( userManager.getUserSearcher().getCatalogId() ) )
+					{
+						log.error("Catalog has customized searchtypes table for user and group database. "
+								+ "Make sure users exist in: WEB-INF/data/" + userManager.getUserSearcher().getCatalogId() + "/users");
+					}
+				}
 				if( user == null && account.contains("@"))
 				{
 					user = userManager.getUserByEmail(account);
