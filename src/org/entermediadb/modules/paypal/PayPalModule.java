@@ -35,6 +35,13 @@ public class PayPalModule extends BaseMediaModule
 	
 	public void processPayment(WebPageRequest inReq)
 	{
+		String email = inReq.getRequestParameter("paymentemail.value");
+		
+		if( email == null)
+		{
+			log.error("No data found");
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		String username =  inReq.getUserName();
 		User user = inReq.getUser();
@@ -52,7 +59,6 @@ public class PayPalModule extends BaseMediaModule
 //			user = getMediaArchive(inReq).getUserManager().getUser(payment.get("userid"));
 //		}
 //		if( user == null) {
-		String email = inReq.getRequestParameter("paymentemail.value");
 		user = archive.getUserManager().getUserByEmail(email);
 		//Crate a guest user
 		if( user == null)
