@@ -209,7 +209,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			tosave.setValue("creationdate", new Date() );
 		}
 		getXmlUserArchive().saveUser(tosave);
-		getCacheManager().remove("usercache",inData.getId());
+		getCacheManager().remove("usercache",tosave.getId());
 
 		super.saveData(inData, inUser); //update the index
 	}
