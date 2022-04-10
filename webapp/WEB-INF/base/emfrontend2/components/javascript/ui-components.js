@@ -419,6 +419,20 @@ uiload = function() {
 		                    }
 		                }
 		                
+		              //experimental
+		                if(form.data("onsuccess")) {
+		                	var onsuccess = form.data("onsuccess");
+		                	var fnc = window[onsuccess];
+		                	if( fnc && typeof fnc === "function" ) {  //make sure it exists and it is a function
+		                	    fnc(form);  //execute it
+		                	}
+		                }
+		                
+		              //experimental
+		                if(form.data("onsuccessreload")) {
+		                	document.location.reload(true)
+		                }
+		                
 		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
 		        			//globaly disabled updateurl
 		        		}
