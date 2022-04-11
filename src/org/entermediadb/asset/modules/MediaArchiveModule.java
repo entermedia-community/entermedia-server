@@ -236,6 +236,7 @@ public class MediaArchiveModule extends BaseMediaModule
 				if (user == null)
 				{
 					user = getUserManager(inReq).createGuestUser(username, null, groupid);
+					user.setVirtual(true);
 					log.info("Creating virtual user " + username);
 				}
 

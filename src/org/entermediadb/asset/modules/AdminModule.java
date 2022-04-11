@@ -1270,6 +1270,7 @@ public class AdminModule extends BaseMediaModule
 
 			user = getUserManager(inReq).createGuestUser(null, null, "guest");
 			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+			user.setVirtual(true);
 			user.setProperty("catalogid", catalogid);
 			user.setEnabled(false);
 			getUserManager(inReq).saveUser(user);

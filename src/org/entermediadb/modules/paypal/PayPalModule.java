@@ -66,6 +66,7 @@ public class PayPalModule extends BaseMediaModule
 			String first = inReq.getRequestParameter("firstName.value");
 			String last = inReq.getRequestParameter("lastName.value");
 			user = archive.getUserManager().createGuestUser(null, null, "paypal");
+			user.setVirtual(false);
 			user.setFirstName(first);
 			user.setLastName(last);
 			user.setEmail(email);
