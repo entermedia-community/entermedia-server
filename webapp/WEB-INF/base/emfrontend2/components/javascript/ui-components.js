@@ -515,7 +515,15 @@ uiload = function() {
 					theform.trigger("submit");
 				}
 				e.preventDefault();
-			});
+	});
+	
+	lQuery(".form-currency").livequery("keyup", function() {
+	    var val = $(this).val().replace(/\,/g,'');
+	    val = val.replace(/\$/g,'');
+	    val = val.replace(/ /g,'');
+	    $(this).val( val ); 
+	});
+	
 
 
 	lQuery(".quicksearch-toggler").livequery("click", function() {
