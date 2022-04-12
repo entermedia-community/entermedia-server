@@ -298,5 +298,13 @@ public String percent(String inVal){
 		String val = toString(sub,2);
 		return val;
 	}
+	public String addition(Object inOne, Object inTwo)
+	{
+		double d1 = Double.parseDouble(inOne.toString());
+		double d2 = Double.parseDouble(inTwo.toString());
+		double sub = d1 + d2;
+		String val = toString(sub,2);
+		return val;
+	}
 	
 }
