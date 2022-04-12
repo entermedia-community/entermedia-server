@@ -127,7 +127,9 @@ $(document).ready(function()
 	    		//elementparent = $("#" + $.escapeSelector(elementid));
 	    		error.insertAfter(elementparent);
 	    	}
-	    	
+	    	if(element.hasClass('listdropdown') && element.next('.select2-container').length) {
+	    		element.next('.select2-container').find('.select2-selection').addClass('error');
+	        }
 	    	
 	    }
 	});
