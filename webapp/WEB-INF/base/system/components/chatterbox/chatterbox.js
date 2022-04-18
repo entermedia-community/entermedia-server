@@ -1,7 +1,10 @@
 var chatconnection;
 var chatopen = false;
+var loadingmore = false;
 
 function chatterbox() {	
+	
+	console.log('loaded');
 	
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
@@ -99,6 +102,15 @@ function chatterbox() {
 	 				scrollToEdit(targetDiv);
 	 	 });
 	});
+	
+	
+	lQuery(".chatterbox-body-inside").livequery('scroll', function(e) {
+		if($(this).scrollTop() < 50) {
+			loadMoreChats();
+		}
+	});
+	
+	
 	chatopen=true;
 }
 
@@ -153,7 +165,7 @@ function connect() {
     	var apphome = app.data("home") + app.data("apphome");
     	
         var message = JSON.parse(event.data);
-        console.log(message);
+        //console.log(message);
         
         var channel = message.channel;
         var id = message.messageid;
@@ -249,8 +261,14 @@ function reloadAll(){
 }
 
 
-function loadMore(){
-
+function loadMoreChats(){
+	//already loading
+	if (loadingmore) {
+		console.log('already loading');
+		//skip
+		return;
+	}
+	loadingmore = true;
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	
@@ -265,6 +283,8 @@ function loadMore(){
 		jQuery.get( url, mydata, function( data ) {
 				chatterdiv.find(".chatterbox-message-list").prepend( data );
 				//scrollToChat();
+				loadingmore = false;
+				console.log('stop loading now');
 		});
 					
 	});

@@ -54,6 +54,7 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 			if (user == null && groupname != null)
 			{
 				user = userManager.createGuestUser(username, null, groupname);
+				user.setVirtual(true);
 			}
 		}
 		

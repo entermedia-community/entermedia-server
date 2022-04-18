@@ -9,7 +9,7 @@
 		<type id="double"  >Double</type>
 		<type id="date"  >Date</type>
 		<type id="datetime"  >Date/Time</type>
-				<type id="datesearch"  >Date Search Box</type>
+		<type id="datesearch"  >Date Search Box</type>
 		
 		<type id="filesize"  >File Size</type>
 		<type id="numbersearch"  >Number Range</type>
@@ -30,9 +30,9 @@
 		<type id="timecodetable"  >Timecode Table</type>
 		<type id="searchsuggest"  >Suggestions</type>
 		<type id="tageditor"  >Tags</type>
--		<type id="map"  >Map</type>
+		<type id="map"  >Map</type>
 		<type id="secondstotime">Seconds to Time</type>
 
-
+		<type id="currency"  >Currency</type>
 
 </types>

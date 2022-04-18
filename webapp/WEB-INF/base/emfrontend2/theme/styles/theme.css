@@ -2847,8 +2847,9 @@ label.error {
 .fields-editor label.error {
 	padding-top:0;
 }
-.form-control.error {
-	border:1px solid red;
+.form-control.error,
+.select2-selection.error {
+	border:1px solid red!important;
 }
 .assetpanel-editor .btns {
 	padding:15px 0;
