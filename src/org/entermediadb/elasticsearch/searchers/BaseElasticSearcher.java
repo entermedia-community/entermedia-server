@@ -413,11 +413,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		Collection facets = inQuery.getFacets();
 		if( facets == null || facets.isEmpty()) //We might want the real facets just in case
 		{
-//			if( inQuery.getMainInput() == null)
-//			{
-//				facets = new ArrayList();
-//				get
-//			}	
+			boolean added = false;
+			if (inQuery.getAggregation() != null)
+			{
+				inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
+				added = true;
+			}
+			ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
+			if(q.getAggregationJson() != null) {
+				inSearch.setAggregations(q.getAggregationJson().getBytes());
+				added = true;
+			}			
 			return false;
 		}
 		
