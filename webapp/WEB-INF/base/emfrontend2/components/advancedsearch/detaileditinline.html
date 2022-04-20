@@ -8,7 +8,7 @@
 	#end
 		$!detail.getText($context) 
 		</div>
-		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+		<input name="field" value="${detail.getId()}" type="hidden">
 
 		#set( $viewtype = $detail.searchcomponent )
 		#if (!$viewtype)
