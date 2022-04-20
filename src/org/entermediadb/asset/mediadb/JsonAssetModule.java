@@ -518,7 +518,7 @@ public class JsonAssetModule extends BaseJsonModule {
 				// href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset,
 				// $presetdata)">Preview</a>
 				String exportfilename = inArchive.asExportFileName(inAsset, it);
-				String url = "/views/modules/asset/downloads/preview/${inAsset.getSourcePath()}/${it.outputfile}";
+				String url = "/views/modules/asset/downloads/preview/" + inAsset.getSourcePath() + "/" + exportfilename;
 				data.put("URL", url);
 				data.put("height", dimension.getHeight());
 				data.put("width", dimension.getWidth());
