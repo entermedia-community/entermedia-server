@@ -96,6 +96,7 @@ public void init() {
 		//Loop over apps
 		appsearcher.deleteAll(null);
 		Collection paths = mediaarchive.getPageManager().getChildrenPaths(site.get("rootpath"));
+		log.info("Found "+paths.size() + " folders in catalog "+site.get("rootpath"));
 		for(String path:paths)
 		{
 			String name = PathUtilities.extractFileName(path);
@@ -107,19 +108,23 @@ public void init() {
 				newapp.setValue("deploypath", path);
 				appsearcher.saveData(newapp);
 				log.info("Fixed app " + path);
-
-				if( name == "emshare")
-				{
-					String appid = name;
-
+				
+			}
+		}
+		
+		HitTracker apps = appsearcher.query().all().search();
+		for(Data app:apps)
+		{
+			
+			if( app.getId() == "emsare")
+			{
 					Collection all = mediaarchive.getList("module");
 					WorkspaceManager manager = mediaarchive.getBean("workspaceManager");
 					for (Iterator iterator = all.iterator(); iterator.hasNext();)
 					{
 						Data module = (Data) iterator.next();
-						manager.saveModule(catalogid, appid, module);
+						manager.saveModule(catalogid, app.getId(), module);
 					}
-				}
 			}
 		}
 
