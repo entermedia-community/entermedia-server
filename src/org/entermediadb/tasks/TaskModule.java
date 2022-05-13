@@ -731,7 +731,12 @@ public class TaskModule extends BaseMediaModule
 			{
 				task.setValue("completedby", inReq.getUserName());
 			}
-
+			Data goal = archive.getData("projectgoal", task.get("projectgoal"));
+			if( "critical".equals( goal.get("projectstatus") ) )
+			{
+				task.setValue("completedurgent","true" );
+			}
+			
 			//remove task from tree
 			removeCount(archive, task);
 			
@@ -791,7 +796,7 @@ public class TaskModule extends BaseMediaModule
 	{
 		String cat = task.get("projectdepartment");
 		Category folder = archive.getCategory(cat);
-		if (folder.getValues("countdata") != null) {
+		if (folder != null && folder.getValues("countdata") != null) {
 			ArrayList list = new ArrayList(folder.getValues("countdata"));
 			list.remove(task.get("projectgoal"));
 			folder.setValue("countdata",list);
