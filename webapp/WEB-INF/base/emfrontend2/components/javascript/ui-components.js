@@ -1916,7 +1916,7 @@ uiload = function() {
 		var picker = $(this).closest(".assetpicker");
 		var detailid = $(this).data("detailid");
 		
-		picker.find("#" + detailid + "-preview").html("");
+		picker.find("#" + detailid + "-file-info").html("");
 		picker.find("#" + detailid + "-value").val("");
 		picker.find("#" + detailid + "-file").val("");		
 		
