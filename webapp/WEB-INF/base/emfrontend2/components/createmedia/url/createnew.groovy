@@ -8,6 +8,12 @@ import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
 
 
+String skipasset = context.getRequestParameter("skipasset");
+if(skipasset == "true") 
+{
+	return;
+}
+
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
 Asset asset = mediaarchive.getAssetSearcher().createNewData();
@@ -29,20 +35,20 @@ if(fields != null) {
 //n7GxnhQjBaw/hqdefault.jpg
 String externalmediainput = context.getRequestParameter("externalmediainput");
 String fetchthumb = null;
-if( externalmediainput.startsWith("https://youtu.be/") )
+if( externalmediainput != null &&  externalmediainput.startsWith("https://youtu.be/") )
 {
 	//set the thumbnail
 	//https://youtu.be/n7GxnhQjBaw
 	String link = externalmediainput.substring(17);
 	fetchthumb = "http://img.youtube.com/vi/" + link + "/hqdefault.jpg";
 }
-else if (externalmediainput.contains("youtube.com/") )
+else if (externalmediainput != null && externalmediainput.contains("youtube.com/") )
 {
 	//https://www.youtube.com/watch?v=n7GxnhQjBaw
 	String link = externalmediainput.substring(externalmediainput.indexOf("watch?v=") + 8);
 	fetchthumb = "http://img.youtube.com/vi/" + link + "/hqdefault.jpg";
 }
-else if (externalmediainput.contains("vimeo") )
+else if (externalmediainput != null && externalmediainput.contains("vimeo") )
 {
 	//https://vimeo.com/api/v2/video/145706460.json
 	String vimeoVideoID = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
