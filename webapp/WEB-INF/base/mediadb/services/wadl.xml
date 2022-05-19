@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+ 
+#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#if(!$prefix) #set( $prefix = $context.siteRoot ) #end
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+    <resources base="$!prefix$home">
+        <resource path="/$!{mediadbappid}/services/authentication/login.json">
+            <method id="login" name="PUT">
+                <request>
+                    <param name="id" type="xsd:string" style="query" required="true"/>
+                    <param name="password" type="xsd:string" style="query" required="true"/>  
+                </request>
+                <response status="200"> 
+                    <representation mediaType="application/json" element="json:response"/> 
+                </response> 
+            </method>
+        </resource>
+    </resources>
+</application> 
