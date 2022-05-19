@@ -1,0 +1,11 @@
+<page>
+	<generator name="velocityGenerator" />
+	<inner-layout />
+	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	
+	<permission name="view">
+		<blank/>
+	</permission>
+	
+	
+</page>
