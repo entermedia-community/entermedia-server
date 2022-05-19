@@ -1,0 +1,44 @@
+##API -
+## $detail
+## $searcher
+## $val
+## $searcherManager
+
+#set( $highlights = $data.getHighlights($detail.id) )
+ 
+#if($highlights.isEmpty() == false )
+<ul class="highlightlist list-unstyled " >
+#foreach($item in $highlights)
+<li>$item</li> 
+#end
+</ul>
+#else
+<div class="emdatafieldreadonly">
+#if(!$val && $detail.rendermask && $data)
+	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
+	#esc( $label ) 
+#elseif($detail.isMultiLanguage()) 
+		#set($map = $data.getValue($detail.getId()))
+		#if( $showalllanguagevalues )
+			#set($languages = $mediaarchive.getList("locale"))
+			#foreach($locale in $languages)
+				#set( $lval = false ) 
+				#set( $lval = $map.getText($locale.id) )
+				#if($lval) 
+					<div class="emdatafieldvaluelanguages"><span class="emdatafieldvaluelocale">$locale:</span> $lval</div> 
+				#end 
+			#end
+        #else
+			$!map.getText($context.language)
+		#end
+#elseif( $detail.isKeywordMap() )
+	#set($map = $data.getValue($detail.getId()))
+	#foreach($keyid in $map.keySet())
+		#set( $lval = false ) #set( $lval = $map.get($keyid) )
+		#if($lval) $keyid:$lval <br>#end 
+	#end		
+#else
+    #esc($!val)	
+#end
+</div>
+#end
