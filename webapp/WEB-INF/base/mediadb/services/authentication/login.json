@@ -5,7 +5,9 @@
 		"status":"ok",		
 		"user":"$!{user.id}"
 		#else
-		"status":"$commandSucceeded"
+			#if(!$commandSucceeded)
+				"status":"error"
+			#end
 		#end
 	},
 	"results": 
