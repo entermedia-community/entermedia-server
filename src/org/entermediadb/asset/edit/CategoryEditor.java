@@ -112,7 +112,7 @@ public class CategoryEditor {
 	 */
 	 public Category addNewCategory(String inId, String inName) throws OpenEditRuntimeException
 	 {
-		 Category newCat = new BaseCategory();
+		 Category newCat =  (Category) getMediaArchive().getCategorySearcher().createNewData();
 		 newCat.setId(inId);
 		 newCat.setName(inName);
 		 if (getCurrentCategory() != null)

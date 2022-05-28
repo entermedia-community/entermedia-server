@@ -101,6 +101,10 @@ public class ScriptManager
 			{
 				script.setType("shell");
 			}
+			else if (code.endsWith(".py") )
+			{
+				script.setType("py");
+			}
 			else
 			{
 				script.setType("bsf");
