@@ -369,6 +369,10 @@ public class AdminModule extends BaseMediaModule
 			entermediakey = inReq.getRequestParameter("entermediakey");
 		}
 		String account = inReq.getRequestParameter("accountname");
+		if( account == null)
+		{
+			account = inReq.getRequestParameter("id");
+		}
 		String email = inReq.getRequestParameter("email");
 		
 		String password = inReq.getRequestParameter("password");
