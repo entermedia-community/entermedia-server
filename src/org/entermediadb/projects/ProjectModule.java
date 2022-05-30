@@ -1708,5 +1708,24 @@ Server ProjectModule.uploadFile
 			
 		}
 	}
+
+	public void loadMessages(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+
+		LibraryCollection collection = loadCollection(inReq);
+
+		//Check permissions
+		
+		Collection topics = archive.query("collectiveproject").exact("parentcollectionid", collection).hitsPerPage(10).search(inReq);
+		//TODO Cache these
+		inReq.putPageValue("topics", topics);
+		
+		Searcher chats = archive.getSearcher("chatterbox");
 	
+		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateDown").search(inReq);
+		inReq.putPageValue("messages", recent);
+	}
+
 }
