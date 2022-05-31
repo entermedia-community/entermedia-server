@@ -1716,6 +1716,10 @@ Server ProjectModule.uploadFile
 
 		LibraryCollection collection = loadCollection(inReq);
 
+		if( collection == null)
+		{
+			return;
+		}
 		//Check permissions
 		
 		Collection topics = archive.query("collectiveproject").exact("parentcollectionid", collection).hitsPerPage(10).search(inReq);
