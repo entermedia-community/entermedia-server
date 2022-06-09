@@ -32,6 +32,13 @@ public class FireBase {
 		
 		//https://firebase.google.com/docs/cloud-messaging/http-server-ref
 		
+		//---oAuth Permissions---
+		//Edit Permissions at /app/view/settings/google/connect.xconf
+		//Add: https://www.googleapis.com/auth/firebase.messaging
+		//Re-connect to Google oAuth (Server/Connect with Google)
+		 
+		
+		
 		//TODO: Add to catalog settings
 		HttpPost post = new HttpPost("https://fcm.googleapis.com/v1/projects/" + firebaseid +  "/messages:send"); //entermediadb-177816
 		post.setHeader("Content-type", "application/json");
