@@ -21,6 +21,8 @@ public class FireBase {
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
+		//https://console.firebase.google.com/u/2/project/openinstitute-27575/notification/reporting
+		
 		//https://medium.com/@ThatJenPerson/authenticating-firebase-cloud-messaging-http-v1-api-requests-e9af3e0827b8
 		
 		//https://firebase.google.com/docs/cloud-messaging/ios/topic-messaging

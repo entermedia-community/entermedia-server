@@ -259,6 +259,10 @@ public class GoogleManager implements CatalogEnabled
 
 			if (accesstoken == null || force)
 			{
+				
+				//The client id comes from https://console.firebase.google.com/u/2/project/openinstitute-27575/settings/cloudmessaging/ios:org.openinstitute.ios.chat2
+				
+				
 				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
 						setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).
 						setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
