@@ -1453,4 +1453,15 @@ public class UserManagerModule extends BaseMediaModule
 		inReq.putPageValue("selectedprofile",selectedprofile);
 		
 	}
+	public void loadUserByPageName(WebPageRequest inReq)
+	{
+		String selecteduser = inReq.getRequestParameter("userid");
+		if( selecteduser == null)
+		{
+			selecteduser = inReq.getContentPage().getPageName();
+		}
+		User user = getUserManager(inReq).getUser(selecteduser);
+		inReq.putPageValue("selecteduser", user);
+	}
+	
 }

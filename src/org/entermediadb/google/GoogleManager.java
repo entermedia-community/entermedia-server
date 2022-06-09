@@ -259,6 +259,10 @@ public class GoogleManager implements CatalogEnabled
 
 			if (accesstoken == null || force)
 			{
+				
+				//The client id comes from https://console.firebase.google.com/u/2/project/openinstitute-27575/settings/cloudmessaging/ios:org.openinstitute.ios.chat2
+				
+				
 				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
 						setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).
 						setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
@@ -964,10 +968,14 @@ public class GoogleManager implements CatalogEnabled
 				{
 					MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 					final Data authinfo = archive.getData("oauthprovider", "google");
-	
+					String firebaseid = authinfo.get("remoteprojectid"); //entermediadb-177816
+					if( firebaseid == null)
+					{
+						throw new OpenEditException("remote project id missing");
+					}
 					String accesstoken = getAccessToken(authinfo);
 					FireBase base = new FireBase();
-					base.notifyTopic(accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
+					base.notifyTopic(firebaseid,accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
 				}
 				catch (Throwable ex)
 				{

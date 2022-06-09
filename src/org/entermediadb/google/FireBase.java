@@ -17,10 +17,12 @@ public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
+	public void notifyTopic(String firebaseid, String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
+		//https://console.firebase.google.com/u/2/project/openinstitute-27575/notification/reporting
+		
 		//https://medium.com/@ThatJenPerson/authenticating-firebase-cloud-messaging-http-v1-api-requests-e9af3e0827b8
 		
 		//https://firebase.google.com/docs/cloud-messaging/ios/topic-messaging
@@ -31,7 +33,7 @@ public class FireBase {
 		//https://firebase.google.com/docs/cloud-messaging/http-server-ref
 		
 		//TODO: Add to catalog settings
-		HttpPost post = new HttpPost("https://fcm.googleapis.com/v1/projects/entermediadb-177816/messages:send");
+		HttpPost post = new HttpPost("https://fcm.googleapis.com/v1/projects/" + firebaseid +  "/messages:send"); //entermediadb-177816
 		post.setHeader("Content-type", "application/json");
 		post.setHeader("Authorization", "Bearer " + inToken); //"AIzaSyBSxxxxsXevRq0trDbA9mhnY_2jqMoeChA"
 

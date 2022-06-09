@@ -1313,8 +1313,11 @@ public class TaskModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
 		
-		String staffid = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
-		
+		String staffid = inReq.getRequestParameter("userid");//inReq.getUserProfile().get("goaltrackerstaff");
+		if( staffid == null)
+		{
+			staffid = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
+		}
 		//Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
 				
 		QueryBuilder opengoalbuilder = goalsearcher.query();
