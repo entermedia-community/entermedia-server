@@ -44,6 +44,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 
 public class ChatServer
@@ -141,11 +142,27 @@ public class ChatServer
 		connections.add(inConnection);
 	}
 
+	public void broadcastMessage(String inCatalogId, Data inData)
+	{
+		JSONObject inMap = new JSONObject(inData.getProperties());
+		//Command
+		Date date = (Date)inData.getValue("date");
+		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
+		inMap.put("messageid",inData.getId());
+		inMap.put("command","messagereceived");
+		
+		broadcastMessage(inCatalogId,inMap);
+	}
 	public void broadcastMessage(JSONObject inMap)
 	{
+		String inCatalogId = (String)inMap.get("catalogid");
+		broadcastMessage(inCatalogId,inMap);
+	}
+	public void broadcastMessage(String catalogid, JSONObject inMap)
+	{
+		
 		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
 		String collectionid = String.valueOf(inMap.get("collectionid"));
-		String catalogid = (String) inMap.get("catalogid");
 
 		if( catalogid != null  )
 		{
@@ -239,6 +256,8 @@ public class ChatServer
 		}
 		
 		chats.saveData(chat);
+		
+		
 		inMap.put("messageid", chat.getId());
 		
 		User user = archive.getUser(userid);
@@ -255,14 +274,15 @@ public class ChatServer
 		}
 		else
 		{
-			Map params = new HashMap(chat.getProperties());
-			params.remove("user");
+			Map params = new HashMap();
+			
 			Object collectionid = inMap.get( "collectionid" );
 			if( collectionid != null)
 			{
 				params.put("collectionid",String.valueOf(collectionid));
 			}
-			archive.fireGeneralEvent(user,"chatterbox","saved", params);
+			params.put("data",chat);
+			archive.fireGeneralEvent(user,"chatterbox","messageedited", params);
 			getExecutorManager(catalogid).execute( new Runnable() {
 				@Override
 				public void run() 

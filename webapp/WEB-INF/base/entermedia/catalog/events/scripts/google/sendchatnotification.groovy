@@ -25,9 +25,10 @@ public void runit()
 	 */
 	User aUser = event.getUser();
 	
-	String message = event.get("message");
+	Data data = (Data)event.getValue("data");
+	String message = data.get("message");
 		
-	String topicid = event.get("channel");
+	String topicid = data.get("channel");
 	MultiValued topicdata = (MultiValued)mediaArchive.getData("collectiveproject", topicid);
 	//If it ends with messages
 	

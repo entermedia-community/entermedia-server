@@ -1,0 +1,10 @@
+<page>
+	<path-action name="JsonDataModule.createData" alltypes="true" >
+	</path-action>
+	<property name="searchtype">chatterbox</property>
+	
+	<path-action name="Script.run" alltypes="true">
+		<script>./messagesave.groovy</script>
+	</path-action>
+	
+</page>

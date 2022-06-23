@@ -201,7 +201,7 @@ public class WorkspaceManager
 				
 			}
 			
-			views.reIndexAll();
+			//views.reIndexAll();
 			String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 			String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 			copyXml(catalogid, templte2, path2, module);

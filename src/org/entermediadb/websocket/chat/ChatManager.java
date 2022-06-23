@@ -187,6 +187,7 @@ public class ChatManager implements CatalogEnabled
 		return collectionids;
 
 	}
+
 	
 	public String escapeMessage(String inMessage) {
 		

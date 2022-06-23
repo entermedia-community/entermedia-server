@@ -1,0 +1,35 @@
+#set( $hits = $messages )
+#set( $searcher = $hits.getSearcher() )
+$hits.setHitsPerPage(200)
+{
+	"response":
+		{
+		    "status":"ok",
+		    "userid":"$user.getId()",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"topics":[
+		#foreach($hit in $topics)#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($hit $topics.getSearcher().getPropertyDetails()) 
+			}
+		#end
+		],
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($hit $searcher.getPropertyDetails()) 
+			}
+		#end
+		]
+}

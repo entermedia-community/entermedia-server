@@ -166,13 +166,10 @@ public class JsonDataModule extends BaseJsonModule
 			newdata.setProperty("sourcepath", sourcepath);
 		}
 
-
 		searcher.saveData(newdata, inReq.getUser());
-		
 	
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("data", newdata);
-		
 
 	}
 	

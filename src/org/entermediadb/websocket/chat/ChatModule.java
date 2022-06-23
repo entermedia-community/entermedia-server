@@ -188,16 +188,38 @@ public class ChatModule extends BaseMediaModule
 		String chatid = inReq.getRequestParameter("chatid");
 		String message = inReq.getRequestParameter("chatter-msg");
 
-		Data chat = archive.getData("chatterbox", chatid);
-		String channel = chat.get("channel");
-		if (message != null)
+		Data chat = null;
+		if( chatid != null)
 		{
-			chat.setValue("message", message);
+			chat = archive.getData("chatterbox", chatid);
+			if (message != null)
+			{
+				chat.setValue("message", message);
+				archive.saveData("chatterbox", chat);
+			}
+		}
+		else
+		{
+			chat = archive.getSearcher("chatterbox").createNewData();
+			if (message != null)
+			{
+				chat.setValue("message", message);
+			}
+			chat.setValue("user",inReq.getUserName());
+			chat.setValue("date",new Date());
+			String channel = inReq.getRequestParameter("channel");
+			String collectionid = inReq.getRequestParameter("collectionid");
+			chat.setValue("channel",channel);
+			chat.setValue("collectionid",collectionid);
+			
 			archive.saveData("chatterbox", chat);
 		}
+		String channel = chat.get("channel");
 		inReq.setRequestParameter("channel", channel);
 		inReq.putPageValue("chat", chat);
+		inReq.putPageValue("data", chat);
 
+		archive.fireGeneralEvent(inReq.getUser(), "chatterbox", "messageedited", inReq.getPageMap());
 	}
 
 	public void clearChannel(WebPageRequest inReq)

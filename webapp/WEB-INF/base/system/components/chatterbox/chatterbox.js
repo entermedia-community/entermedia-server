@@ -205,7 +205,7 @@ function connect() {
         	/*Desktop notifications - mando*/
 		    function showNotification() 
 			{
-				const notification = new Notification(message.name + " in " + message.topic, {
+				const notification = new Notification(message.name + " in " + message.topic, { //TODO: URL?
 					body: message.content,
 					renotify: false,
 					tag: message.content,

@@ -269,7 +269,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				map.put("name", name);
 				map.put("content", content);
 				
-				getChatServer().broadcastMessage(map);
+				getChatServer().broadcastMessage(catalogid,map);
 				
 			}
 			else if("approveasset".equals(command)){

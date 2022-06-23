@@ -1,0 +1,9 @@
+{
+  "response":
+      {
+        "status":"ok",
+        "id":"$data.id"
+      }
+  ,
+  "data":#json($data $searcher.getPropertyDetails())
+}

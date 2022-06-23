@@ -16,6 +16,10 @@ public void init(){
 	modules.each{
 		manager.saveModule(archive.getCatalogId(), appid, it);
 	}
+	//renindex  view endpoint
+	archive.getSearcher("view").reIndexAll();
+	//archive.getSearcher("endpoint").reIndexAll();
+	
 }
 
 
