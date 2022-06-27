@@ -14,6 +14,8 @@ See the GNU Lesser General Public License for more details.
 */
 package org.entermediadb.asset.modules;
 
+import java.util.Arrays;
+
 import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
@@ -61,7 +63,7 @@ public class SendMailModule extends BaseModule
 		}
 		log.info("Sending email");
 		sendEmail(inContext, webmail);
-		log.info("Mail Sent");
+		log.info("Mail Sent to " + Arrays.asList(webmail.getTo()) );
 	}
 	public void sendFormEmail(WebPageRequest inReq) throws Exception
 	{
