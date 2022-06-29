@@ -1,0 +1,56 @@
+$hits.setHitsPerPage(200)
+{
+	"response":
+		{
+		    "status":"ok",
+		    "userid":"$user.getId()",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($hit $searcher.getPropertyDetails()) 
+			, 
+		#if($hit.assetportrait)
+			#set($asset = $mediaarchive.getAsset($hit.assetportrait))
+			#set($link = $mediaarchive.asLinkToPreview($asset,"image550x350.jpg"))
+		#else
+			#set($link = "$applink/theme/images/OI_flower.png")
+		#end
+			"logo": "$link"
+			#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$hit.id).exact("ontheteam","true").search() )
+			#if( !$team.isEmpty() )
+			, "team": [
+				#foreach($member in $team)
+					#set( $person = $mediaarchive.getUser( $member.followeruser ) )
+					#if( $person )
+					#if( ${foreach.count} != 1 ), #end
+					{
+						"userid" : "$person.id",
+						"screenname": "$person.screenName",
+						"email": "$person.email",
+						"firstName": "$person.firstName",
+						"lastName": "$person.lastName"
+						#set( $userimageurl = $mediaarchive.asLinkToProfile($person.assetportrait) )
+						#if($userimageurl)
+							,"portrait": "$userimageurl"
+						#end
+					}
+					#end
+				#end	
+			]
+			#end
+			}
+		#end
+		]
+}

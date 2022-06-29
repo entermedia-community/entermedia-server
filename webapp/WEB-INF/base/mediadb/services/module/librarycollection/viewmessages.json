@@ -1,6 +1,5 @@
 #set( $hits = $messages )
 #set( $searcher = $hits.getSearcher() )
-$hits.setHitsPerPage(200)
 {
 	"response":
 		{
@@ -32,4 +31,24 @@ $hits.setHitsPerPage(200)
 			}
 		#end
 		]
+		#if( !$persons.isEmpty() )
+		, "people": [
+			#foreach($person in $persons)
+				#if( $person )
+				#if( ${foreach.count} != 1 ), #end
+				{
+					"userid" : "$person.id",
+					"screenname": "$person.screenName",
+					"email": "$person.email",
+					"firstName": "$person.firstName",
+					"lastName": "$person.lastName"
+					#set( $userimageurl = $mediaarchive.asLinkToProfile($person.assetportrait) )
+					#if($userimageurl)
+						,"portrait": "$userimageurl"
+					#end
+				}
+				#end
+			#end	
+		]
+		#end	
 }

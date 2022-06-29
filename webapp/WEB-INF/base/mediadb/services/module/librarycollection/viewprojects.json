@@ -6,37 +6,6 @@
 #set($x = $oids.add("NONE"))
 #set( $searcher = $mediaarchive.getSearcher("searcher") )
 #set( $hits = $mediaarchive.query("librarycollection").ids($oids).not("organizationstatus","disabled").not("organizationstatus","closed").not("organizationstatus","pendingdelete").sort("name").search() )
-
-$hits.setHitsPerPage(200)
-{
-	"response":
-		{
-		    "status":"ok",
-		    "userid":"$user.getId()",
-			"totalhits" : $hits.size(),
-			"searchtype" : "$searcher.getSearchType()",
-			"hitsperpage": $hits.getHitsPerPage(),			
-			"page": $hits.getPage(),
-			"pages": $hits.totalPages,
-			"hitsessionid": "$hits.getSessionId()",
-			"query":
-			{
-				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
-				"search":#jesc($hits.getSearchQuery().toQuery())
-			}
-		},
-	"results":[
-		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-			{
-			#jsonfields($hit $searcher.getPropertyDetails()) 
-			#set( $servers = $mediaarchive.query("entermedia_instances").match("librarycollection", $hit.getId()).search() )
-			, "servers":[
-				#foreach( $server in $servers)
-					#if( ${foreach.count} != 1 ), #end
-					#json($server $mediaarchive.getSearcher("entermedia_instances").getPropertyDetails()) 
-				#end		
-			]
-			}
-		#end
-		]
-}
+$context.putPageValue("hits",$hits)
+$context.putPageValue("searcher",$searcher)
+$pages.include("$apphome/services/module/librarycollection/projectresults.json",$context)
