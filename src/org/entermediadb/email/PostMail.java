@@ -14,6 +14,7 @@ package org.entermediadb.email;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -324,7 +325,7 @@ public class PostMail
 		// msg.setContent(msg, "text/plain");
 
 		Transport.send(msg);
-		log.info("sent email " + subject);
+		log.info("sent email from: " + Arrays.asList(msg.getFrom()) + " to: " + Arrays.asList(addressTo) + " subject: "+ subject );
 	}
 
 	public int getPort()
