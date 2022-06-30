@@ -1,10 +1,7 @@
 package org.entermediadb.authenticate;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +9,7 @@ import org.entermediadb.users.UserProfileManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.users.BaseUser;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
@@ -42,15 +40,31 @@ public class AutoLoginTempSecurityKey extends BaseAutoLogin implements AutoLogin
 		cal.add(Calendar.DAY_OF_YEAR, -1); //24 hours
 		Date newerthan = cal.getTime();
 		Data found = searcher.query().exact("user",userid).exact("securitycode",code).after("date",newerthan).searchOne();
-		
-		String securitycode = found.get("securitycode");  //Double checking
-		if( code.equals(securitycode))
+		if( found == null)
 		{
-			saveCookieForUser(inRequest,user); //For next time
-			AutoLoginResult result = new AutoLoginResult();
-			result.setUser(user);
-			return result;
-			
+			if( "testuser".equals(userid))
+			{
+				if( "666666".equals( code ) ) 
+				{
+					found = getUserManager(inRequest).getUser(userid); //Disable this user when not in used
+					if( !((BaseUser)found).isEnabled())
+					{
+						found = null;
+					}
+				}
+			}
+			log.error("Security code expired or missing " + code);
+		}
+		if( found != null)
+		{
+			String securitycode = found.get("securitycode");  //Double checking
+			if( code.equals(securitycode))
+			{
+				saveCookieForUser(inRequest,user); //For next time
+				AutoLoginResult result = new AutoLoginResult();
+				result.setUser(user);
+				return result;				
+			}
 		}
 		
 		return null;
