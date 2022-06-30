@@ -1,0 +1,7 @@
+#set ($fieldname = $detail.getId())
+
+<select name="${fieldname}.value" class="form-control form-control-sm">
+#foreach ($number in [1..31])
+	<option #if ($val && $val == $number) selected #end value="$number">$number</option>
+#end
+</select>
