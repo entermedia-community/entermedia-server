@@ -1814,7 +1814,15 @@ public class ProjectManager implements CatalogEnabled
 			}
 		}
 		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
-
+		if( collection == null)
+		{
+			String collectionid = inReq.getRequestParameter("collectionid");
+			if( collectionid != null)
+			{
+				collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
+			}
+		}
+		
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker topuploads = null;
 

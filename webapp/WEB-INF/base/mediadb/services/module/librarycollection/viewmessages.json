@@ -32,10 +32,12 @@
 		#end
 		]
 		#if( !$persons.isEmpty() )
-		, "people": [
+		, "users": [
+			#set( $inside = false )
 			#foreach($person in $persons)
 				#if( $person )
-				#if( ${foreach.count} != 1 ), #end
+				#if( $inside ) , #end
+				#set( $inside = true )
 				{
 					"userid" : "$person.id",
 					"screenname": "$person.screenName",
