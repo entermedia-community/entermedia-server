@@ -3,6 +3,7 @@
 	<path-action name="JsonAssetModule.preprocess" />
 	
 	<path-action name="ProjectModule.loadMessages"/>
+	<path-action name="ProjectModule.loadGoalsInMessages"/>
 
 	<generator name="velocity"/>
 	<permission name="view">

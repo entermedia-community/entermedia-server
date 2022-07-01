@@ -1708,6 +1708,43 @@ Server ProjectModule.uploadFile
 		}
 	}
 
+	public void loadGoalsInMessages(WebPageRequest inReq)
+	{
+		Map goalspermessage = new HashMap<String,Data>();
+		
+		Collection messages = (Collection)inReq.getPageValue("messages");
+		
+		List ids = new ArrayList(messages.size());
+		for (Iterator iterator = messages.iterator(); iterator.hasNext();)
+		{
+			Data message = (Data) iterator.next();
+			ids.add(message.getId());
+		}
+		
+		Collection goals = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",ids ).search();
+		inReq.putPageValue("goalhits",goals);
+		for (Iterator iterator = goals.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			goalspermessage.put(goal.get("chatparentid"),goal );
+		}
+		
+		
+		inReq.putPageValue("goalsinmessages",goalspermessage);
+	}
+	
+	public void loadGoalInMessage(WebPageRequest inReq)
+	{
+		Map goalspermessage = new HashMap<String,Data>();
+		Data chat = (Data)inReq.getPageValue("chat");
+		Data goal = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",chat.getId()).searchOne();
+		if( goal != null)
+		{
+			goalspermessage.put(goal.get("chatparentid"),goal );
+		}
+		inReq.putPageValue("goalsinmessages",goalspermessage);
+		
+	}
 	public void loadMessages(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
