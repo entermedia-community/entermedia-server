@@ -106,7 +106,7 @@ function chatterbox() {
 	
 	lQuery(".chatterbox-body-inside").livequery('scroll', function(e) {
 		if($(this).scrollTop() < 50) {
-			loadMoreChats();
+			//loadMoreChats();
 		}
 	});
 	
@@ -372,7 +372,7 @@ function createNotificationSubscription() {
 	      return subscription;
 	    });
 	  });
-	}
+}
 
 
 
