@@ -1881,7 +1881,9 @@ public class ProjectManager implements CatalogEnabled
 			builder.exact("collectiveproject", topic);
 		}
 
-		topuploads = builder.named("topuploads").hitsPerPage(3).sort("uploaddateDown").search(inReq);
+		topuploads = builder.named("topuploads").sort("uploaddateDown").search(inReq);
+		topuploads.setHitsPerPage(3);
+		
 		inReq.putPageValue("topuploads", topuploads);
 
 	}
