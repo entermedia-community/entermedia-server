@@ -291,7 +291,7 @@ public class ChatServer
 					Object channelid = channel;
 					if( channelid != null)
 					{
-						manager.updateChatTopicLastModified(String.valueOf( channelid) );
+						manager.updateChatTopicLastModified(String.valueOf( channelid), String.valueOf( userid) );
 					}
 				}
 			});

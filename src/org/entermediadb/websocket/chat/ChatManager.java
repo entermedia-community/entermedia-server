@@ -57,8 +57,14 @@ public class ChatManager implements CatalogEnabled
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
+	
 
 	public synchronized void updateChatTopicLastModified(String channelid)
+	{
+		updateChatTopicLastModified(channelid, "");
+	}
+	
+	public synchronized void updateChatTopicLastModified(String channelid, String inUserId)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("chattopicid", channelid).searchOne();
 		if (status == null)
@@ -74,9 +80,12 @@ public class ChatManager implements CatalogEnabled
 				status.setValue("collectionid", collections);
 			}
 		}
+		if(inUserId != null) {
+			//save user
+			status.setValue("userid", inUserId);
+		}
 		status.setValue("datemodified", new Date());
 		getMediaArchive().saveData("chattopiclastmodified", status);
-
 	}
 
 	//TODO: Do this while messages are coming in
