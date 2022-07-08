@@ -1826,6 +1826,8 @@ public class ProjectManager implements CatalogEnabled
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker topuploads = null;
 
+		
+		
 		if (collection != null)
 		{
 			builder.exact("librarycollection", collection.getId());
@@ -1881,7 +1883,13 @@ public class ProjectManager implements CatalogEnabled
 			builder.exact("collectiveproject", topic);
 		}
 
-		topuploads = builder.named("topuploads").hitsPerPage(3).sort("uploaddateDown").search(inReq);
+		topuploads = builder.named("topuploads").sort("uploaddateDown").search(inReq);
+		
+		String page = inReq.getRequestParameter("page");
+		if( page != null)
+		{
+			topuploads.setPage(Integer.parseInt(page));
+		}
 		inReq.putPageValue("topuploads", topuploads);
 
 	}

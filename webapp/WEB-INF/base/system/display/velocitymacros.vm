@@ -92,6 +92,8 @@ $invalue
 
 #set($rendercomma = false)
 #foreach($detail in $details)
+#if( ${detail.id} != "password" )
+
 #set($val = false)#set($val = $hit.get(${detail.id}))
 #if($val)#if($rendercomma),#else
 #set($rendercomma = true)#end
@@ -106,6 +108,7 @@ $invalue
 #jsonmap($detail $hit.getValue($detail.id))
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
 #else#jesc($val) 
+#end
 #end
 #end
 #end

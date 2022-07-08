@@ -314,7 +314,23 @@ public class WorkspaceManager
 			PageSettings homesettings = home.getPageSettings();
 			homesettings.setProperty("module", inModule.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + mediadb + "/services/module/default");
+			
+			//This might be an existing fallback
+			String parent = "/" + mediadb + "/services/module/default";
+			PageSettings fallback = homesettings.getFallback();
+			do
+			{
+				String path = fallback.getParentPath();
+				if( getPageManager().getRepository().doesExist(path) && !path.endsWith("default"))
+				{
+					//Use this one
+					parent = path;
+					break;
+				}
+				fallback = fallback.getFallback();
+			}
+			while( fallback != null);
+			prop.setValue(parent);
 			homesettings.putProperty(prop);
 			prop = new PageProperty("searchtype");
 			prop.setValue(inModule.getId());
