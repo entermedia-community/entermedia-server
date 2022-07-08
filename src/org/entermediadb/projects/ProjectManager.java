@@ -1826,8 +1826,6 @@ public class ProjectManager implements CatalogEnabled
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker topuploads = null;
 
-		
-		
 		if (collection != null)
 		{
 			builder.exact("librarycollection", collection.getId());

@@ -29,6 +29,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
@@ -49,9 +50,12 @@ public class ChatModule extends BaseMediaModule
 		
 		//inReq.putPageValue("messages", recent);
 
+		QueryBuilder builder = archive.query("chatterbox");
 		
-		  HitTracker results = chats.query().match("channel", channel).sort("dateDown").search(); 
-		  results.setHitsPerPage(200);
+		HitTracker results = builder.named("messagesthitracker").match("channel", channel).sort("dateDown").search(inReq);
+		
+		results.setHitsPerPage(20);
+		  
 		  Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
@@ -66,6 +70,7 @@ public class ChatModule extends BaseMediaModule
 		  log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
 		  inReq.putPageValue("messages", loaded);
+		  inReq.putPageValue("messagesthitracker", results);
 		  inReq.putPageValue("lastloaded", lastdateloaded);
 		 
 		String userid = null;
