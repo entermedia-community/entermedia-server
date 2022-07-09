@@ -38,9 +38,7 @@ $invalue
 	"name":#jesc($data.getName($context.getLocale()) )
 }
 #end
-#macro(jesc $object)
- "$!jsonUtil.escape($object)"
-#end
+#macro(jesc $object)"$!jsonUtil.escape($object)"#end
 #macro(json $hit $details)
 {
 #set($rendercomma = false)

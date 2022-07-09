@@ -2116,4 +2116,14 @@ public class ProjectManager implements CatalogEnabled
 		return users;
 	}
 
+	
+	public Collection getTasksForGoal(String inGoalId)
+	{
+		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
+		QueryBuilder query = tasksearcher.query().exact("projectgoal", inGoalId);
+		query.sort("creationdate");
+		
+		Collection all = query.search();
+		return all;
+	}
 }

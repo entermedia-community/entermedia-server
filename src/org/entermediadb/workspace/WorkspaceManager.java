@@ -165,64 +165,63 @@ public class WorkspaceManager
 	public void saveModule(String catalogid, String appid, Data module) throws Exception
 	{
 		/** APP STUFF **/
-		String mid = createModuleFallbacks(appid, module);
-		if( !mid.equals("asset") )
+		if( !appid.endsWith("mediadb"))
 		{
-			String viewstemplate = "";
-			/** DATABASE STUFF **/
-			//is Entity?
-			if (Boolean.parseBoolean(module.get("isentity"))) {
-				String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
-				String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-				copyXml(catalogid, templateentities, pathentities, module);
-				viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
-			}else {
-				String template = "/" + catalogid + "/data/lists/view/default.xml";
-				String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-				copyXml(catalogid, template, path, module);		
-				viewstemplate = "/" + catalogid + "/data/views/defaults/";
-			}
-			
-			
-			Searcher views = getSearcherManager().getSearcher(catalogid, "view");
-			Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
-			for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
+
+			String mid = createModuleFallbacks(appid, module);
+			if( !mid.equals("asset") )
 			{
-				
-				String copypath = (String) iterator.next();
-				Page input = getPageManager().getPage(copypath);
-				Page destpath = null;
-				
-				destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
-				
-				if (destpath != null) {
-					getPageManager().copyPage(input, destpath);
+				String viewstemplate = "";
+				/** DATABASE STUFF **/
+				//is Entity?
+				if (Boolean.parseBoolean(module.get("isentity"))) {
+					String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
+					String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+					copyXml(catalogid, templateentities, pathentities, module);
+					viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+				}else {
+					String template = "/" + catalogid + "/data/lists/view/default.xml";
+					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+					copyXml(catalogid, template, path, module);		
+					viewstemplate = "/" + catalogid + "/data/views/defaults/";
 				}
 				
+				
+				Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+				Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
+				for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
+				{
+					
+					String copypath = (String) iterator.next();
+					Page input = getPageManager().getPage(copypath);
+					Page destpath = null;
+					
+					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
+					
+					if (destpath != null) {
+						getPageManager().copyPage(input, destpath);
+					}
+					
+				}
+				
+				//views.reIndexAll();
+				String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
+				String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
+				copyXml(catalogid, templte2, path2, module);
+				
+				Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
+				settingsmenumodule.reIndexAll();
+				
+				String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
+				String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
+				copyXml(catalogid, templte3, path3, module);
+				getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
 			}
-			
-			//views.reIndexAll();
-			String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
-			String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
-			copyXml(catalogid, templte2, path2, module);
-			
-			Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
-			settingsmenumodule.reIndexAll();
-			
-			String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
-			String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
-			copyXml(catalogid, templte3, path3, module);
-
-			
-			createMediaDbModule(catalogid,module);
-			
-			getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
-
 			// add settings menu
 			createTable(catalogid, module.getId(), module.getId());
 		}
 		
-				
+		createMediaDbModule(catalogid,module);
 		
 	}
 
@@ -308,9 +307,10 @@ public class WorkspaceManager
 		}
 		
 		//Files
-		Page home = getPageManager().getPage("/" + mediadb + "/services/module/" + inModule.getId() + "/_site.xconf");
-		if (!home.exists())
+		String settingspath = "/" + mediadb + "/services/module/" + inModule.getId() + "/_site.xconf";
+		//if (!getPageManager().getRepository().doesExist(settingspath))
 		{
+			Page home = getPageManager().getPage(settingspath);
 			PageSettings homesettings = home.getPageSettings();
 			homesettings.setProperty("module", inModule.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");

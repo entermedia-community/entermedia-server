@@ -1,5 +1,6 @@
 #set( $hits = $messages )
 #set( $searcher = $hits.getSearcher() )
+		#set( $projectmanager = $mediaarchive.getBean("projectManager") )
 {
 	"response":
 		{
@@ -25,9 +26,20 @@
 		#end
 		],
 	"goals":[
-		#foreach($hit in $goalhits)#if( ${foreach.count} != 1 ), #end
+		#foreach($goal in $goalhits)#if( ${foreach.count} != 1 ), #end
 			{
-			#jsonfields($hit $goalhits.getSearcher().getPropertyDetails()) 
+			#jsonfields($goal $goalhits.getSearcher().getPropertyDetails()) 
+			#set( $tasks = $projectmanager.getTasksForGoal($goal.id) )
+			#if( !$tasks.isEmpty() )
+			,
+			"tasks": [
+				#foreach( $task in $tasks )#if( ${foreach.count} != 1 ), #end
+				{	#jsonpartial($task $tasks.getSearcher().getPropertyDetails())
+					##, "projectdepartmentpoints": $mediaarchive.getCategory($task.projectdepartment)
+				 }
+				#end
+			]
+			#end
 			##We need the goals and the topics. Or just a link?
 			}
 		#end
