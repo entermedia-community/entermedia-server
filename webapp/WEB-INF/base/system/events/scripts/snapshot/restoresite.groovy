@@ -610,10 +610,13 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 						// this moves the parsing position to the end of it
 						JsonNode node = jp.readValueAsTree();
 						IndexRequest req = Requests.indexRequest(tempindex).type(searchtype);
-						String json  = node.toString();
-						
+						String json  = node.get("_source").toString();
+						//log.info("JSON: "+json);
 						req.source(json);
-						JsonNode id = node.get("id");
+						JsonNode id = node.get("_id");
+						if( id == null) {
+							id = node.get("id");
+						}
 						if( id == null)
 						{
 							log.info("No ID found " + searchtype + " node:" + node);
