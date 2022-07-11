@@ -6,8 +6,9 @@
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	
-	
-	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/utils/setupmodules.html" allowduplicates="true" />
+	<path-action name="Script.run">
+		<script>./createmodules.groovy</script>
+	</path-action>
 	
 <script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
 <style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />

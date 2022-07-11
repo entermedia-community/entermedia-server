@@ -1720,7 +1720,10 @@ Server ProjectModule.uploadFile
 			Data message = (Data) iterator.next();
 			ids.add(message.getId());
 		}
-		
+		if( ids.isEmpty() )
+		{
+			ids.add("NONE");
+		}
 		Collection goals = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",ids ).search();
 		inReq.putPageValue("goalhits",goals);
 		for (Iterator iterator = goals.iterator(); iterator.hasNext();)

@@ -1882,8 +1882,12 @@ public class ProjectManager implements CatalogEnabled
 		}
 
 		topuploads = builder.named("topuploads").sort("uploaddateDown").search(inReq);
-		topuploads.setHitsPerPage(3);
 		
+		String page = inReq.getRequestParameter("page");
+		if( page != null)
+		{
+			topuploads.setPage(Integer.parseInt(page));
+		}
 		inReq.putPageValue("topuploads", topuploads);
 
 	}
@@ -2112,4 +2116,14 @@ public class ProjectManager implements CatalogEnabled
 		return users;
 	}
 
+	
+	public Collection getTasksForGoal(String inGoalId)
+	{
+		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
+		QueryBuilder query = tasksearcher.query().exact("projectgoal", inGoalId);
+		query.sort("creationdate");
+		
+		Collection all = query.search();
+		return all;
+	}
 }

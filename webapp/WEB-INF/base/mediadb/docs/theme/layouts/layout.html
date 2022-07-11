@@ -43,7 +43,7 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
       <div id="collapseListGroup1${section.id}" class="collapse #if($sectionid == $section.id) show #end " #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
       <div class="card-body" style="padding:0;">
         <ul class="list-group">
-      		#set($endpoints = $searcher.fieldSearch("docsection",$section.id ))
+      		#set($endpoints = $searcher.query().exact("docsection",$section.id ).sort("name").search())
          #foreach($endpoint in $endpoints)
           <li class="list-group-item"><a href="$home$apphome/docs/showdoc.html?id=${endpoint.id}&section=${section.id}">$endpoint</a></li>
           #end
