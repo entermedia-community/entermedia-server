@@ -1676,35 +1676,37 @@ Server ProjectModule.uploadFile
 		}
 		URLUtilities util = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 		String subdomain = util.buildRoot();
-		String[] parts = subdomain.split("\\.");
-		if( parts.length > 2)
+		if (subdomain != null) 
 		{
-			String tag = parts[0].toLowerCase();
-			tag = tag.substring(tag.lastIndexOf("/")+1);
-			MediaArchive archive = getMediaArchive(inReq);
-			Data data = (Data)archive.getCacheManager().get("communitytag", tag);
-			if( data == null)
+			String[] parts = subdomain.split("\\.");
+			if( parts.length > 2)
 			{
-				data = archive.query("communitytag").exact("subdomain", tag).searchOne();
-				if( data == null )
+				String tag = parts[0].toLowerCase();
+				tag = tag.substring(tag.lastIndexOf("/")+1);
+				MediaArchive archive = getMediaArchive(inReq);
+				Data data = (Data)archive.getCacheManager().get("communitytag", tag);
+				if( data == null)
 				{
-					data = CacheManager.NULLDATA;
+					data = archive.query("communitytag").exact("subdomain", tag).searchOne();
+					if( data == null )
+					{
+						data = CacheManager.NULLDATA;
+					}
+					else
+					{
+						HitTracker 	collections = archive.query("librarycollection").exact("communitytag", data.getId()).search(inReq);
+						inReq.putPageValue("communityprojects",collections);
+						archive.getCacheManager().put("communityprojects", tag,collections);
+					}
+					archive.getCacheManager().put("communitytag", tag,data);
 				}
-				else
+				if( data != CacheManager.NULLDATA)
 				{
-					HitTracker 	collections = archive.query("librarycollection").exact("communitytag", data.getId()).search(inReq);
-					inReq.putPageValue("communityprojects",collections);
-					archive.getCacheManager().put("communityprojects", tag,collections);
+					inReq.putPageValue("communitytag", data);
+					Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
+					inReq.putPageValue("communityprojects",communityprojects);
 				}
-				archive.getCacheManager().put("communitytag", tag,data);
-			}
-			if( data != CacheManager.NULLDATA)
-			{
-				inReq.putPageValue("communitytag", data);
-				Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
-				inReq.putPageValue("communityprojects",communityprojects);
-			}
-			
+			}	
 		}
 	}
 
