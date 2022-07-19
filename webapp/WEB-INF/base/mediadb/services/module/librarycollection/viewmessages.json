@@ -35,7 +35,10 @@
 			"tasks": [
 				#foreach( $task in $tasks )#if( ${foreach.count} != 1 ), #end
 				{	#jsonpartial($task $tasks.getSearcher().getPropertyDetails())
-					##, "projectdepartmentpoints": $mediaarchive.getCategory($task.projectdepartment)
+					#set( $cat = $mediaarchive.getCachedData("projectdepartment",$task.projectdepartment) )
+					#if( $cat )
+					, "projectdepartmentpoints": "$!{cat.goalpoints}"
+					#end
 				 }
 				#end
 			]
