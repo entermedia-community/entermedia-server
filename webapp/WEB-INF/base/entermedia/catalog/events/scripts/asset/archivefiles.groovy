@@ -18,24 +18,25 @@ PageManager pageManager = mediaarchive.getPageManager();
 public void checkRules()
 {
 	Collection policies = mediaarchive.getList("retentionrules");
-	log.info("Checking assets rules " + policies.size() );
-	policies.each 
+	if (policies.size()>0) 
 	{
-		Data retentionpolicy = it;
-		TimeParser parser = new TimeParser();
-		long daystokeep = parser.parse(it.expirationperiod);
-		Date target = new Date(System.currentTimeMillis() -  daystokeep);
-		def nots = ["deletegenerated","deleteoriginal"];
-		
-		HitTracker assets = mediaarchive.getAssetSearcher().query().match("importstatus","complete").exact("retentionpolicy",it.id).notgroup("retentionstatus",nots).before("assetaddeddate", target).search();
-		assets.enableBulkOperations();
-		log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
-		archiveAssets(retentionpolicy, assets);
+		log.info("Checking assets archive rules " + policies.size() );
+		policies.each 
+		{
+			Data retentionpolicy = it;
+			TimeParser parser = new TimeParser();
+			long daystokeep = parser.parse(it.expirationperiod);
+			Date target = new Date(System.currentTimeMillis() -  daystokeep);
+			def nots = ["deletegenerated","deleteoriginal"];
+			
+			HitTracker assets = mediaarchive.getAssetSearcher().query().match("importstatus","complete").exact("retentionpolicy",it.id).notgroup("retentionstatus",nots).before("assetaddeddate", target).search();
+			assets.enableBulkOperations();
+			if (assets.size()>0) {
+				log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
+				archiveAssets(retentionpolicy, assets);
+			}
+		}
 	}
-	
-	
-	
-	
 	
 }	
 
