@@ -1382,6 +1382,7 @@ public class TaskModule extends BaseMediaModule
 
 		List opentickets = new ArrayList();
 		inReq.putPageValue("opentickets", opentickets);
+		inReq.putPageValue("searcher", opengoalresults.getSearcher());
 		
 		Map tasklookup = new HashMap();
 		for (Iterator iterator = opengoalresults.iterator(); iterator.hasNext();)
@@ -1411,8 +1412,9 @@ public class TaskModule extends BaseMediaModule
 				opentickets.add( goalsearcher.loadData(goal) );
 				tasklookup.put(goal.getId(),found);
 			}
-
 		}
+		inReq.putPageValue("tasksearcher",archive.getSearcher("goaltask"));
+		
 		inReq.putPageValue("tasklookup",tasklookup);
 	}
 
