@@ -4,8 +4,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.entermediadb.asset.util.CSVReader;
 import org.entermediadb.asset.util.Header;
@@ -36,7 +38,21 @@ public class BaseImporter extends EnterMediaObject
 	protected boolean fieldMakeId;
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
+	protected Set fieldDbLookUps = new HashSet();
+	public Set getDbLookUps()
+	{
+		return fieldDbLookUps;
+	}
 
+	public void setDbLookUps(Set inDbLookUps)
+	{
+		fieldDbLookUps = inDbLookUps;
+	}
+
+	public void addDbLookUp(String inLookUp)
+	{
+		getDbLookUps().add(inLookUp);
+	}
 	protected boolean fieldAddNewData = true;
 	
 	
@@ -196,12 +212,13 @@ public class BaseImporter extends EnterMediaObject
 	{
 		if (fieldLookUps == null)
 		{
-			HashMap<String, Map> fieldLookUps = new HashMap<String, Map>();
+			fieldLookUps = new HashMap<String, Map>();
 			//fieldLookUps.put("Division", "val_Archive_Division");
 		}
 		return fieldLookUps;
 	}
 
+	
 	protected void createMultiSelect(MultiValued inRow, String inField, String inTable)
 	{
 		inField = PathUtilities.extractId(inField, true);
@@ -218,16 +235,7 @@ public class BaseImporter extends EnterMediaObject
 				Data data = (Data) datavalues.get(id);
 				if (data == null)
 				{
-					//create it
-					Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
-					data = (Data) searcher.searchById(id);
-					if (data == null)
-					{
-						data = searcher.createNewData();
-						data.setId(id);
-						data.setName(val);
-						searcher.saveData(data, null);
-					}
+					data = findOrCreateById(inTable, id, val);
 					datavalues.put(id, data);
 				}
 				valueids.add(id); //save it
@@ -274,25 +282,39 @@ public class BaseImporter extends EnterMediaObject
 			{
 				value = value.substring(0, comma);
 			}
-			Map datavalues = loadValueList(inField, inTable, false);
-			Data data = (Data) datavalues.get(value);
-			if (data == null)
-			{
-				//create it
-				String id = PathUtilities.extractId(value, true);
-				Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
-				data = (Data) searcher.searchById(id);
-				if (data == null)
-				{
-					data = searcher.createNewData();
-					data.setId(id);
-					data.setName(value);
-					searcher.saveData(data, null);
-				}
-				datavalues.put(value, data);
-			}
+			Data data = findOrCreateData(inTable, inField, value);
 			inRow.setProperty(inField, data.get("id"));
 		}
+	}
+
+	protected Data findOrCreateData(String inTable, String inField, String value)
+	{
+		Map datavalues = loadValueList(inField, inTable, false);
+		Data data = (Data) datavalues.get(value);
+		if (data == null)
+		{
+			//create it
+			String id = PathUtilities.extractId(value, true);
+			
+			data = findOrCreateById(inTable, id, value);
+			datavalues.put(value, data);
+		}
+		return data;
+	}
+
+	protected Data findOrCreateById(String inTable, String id, String value)
+	{
+		Data data;
+		Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
+		data = (Data) searcher.searchById(id);
+		if (data == null)
+		{
+			data = searcher.createNewData();
+			data.setId(id);
+			data.setName(value);
+			searcher.saveData(data, null);
+		}
+		return data;
 	}
 
 	protected void createMetadata(Header inHeader)
@@ -371,17 +393,34 @@ public class BaseImporter extends EnterMediaObject
 			else if (val != null && val.length() > 0)
 			{
 				PropertyDetail detail = getSearcher().getDetail(header);
-				if(detail == null) {
-				
-				Object value = getSearcher().createValue(headerid, val);
-				inData.setValue(headerid, value);
-				} else {
-					Object value = getSearcher().createValue(header, val);
+				if(detail != null) 
+				{
+					Object value = lookUpListValIfNeeded(detail,val);
 					inData.setValue(header, value);
+				} 
+				else
+				{
+					Object value = getSearcher().createValue(headerid, val);
+					inData.setValue(headerid, value);
+
 				}
 				
 			}
 		}
+	}
+
+	protected Object lookUpListValIfNeeded(PropertyDetail inDetail, String inVal)
+	{
+		Object value = null;
+		if( inDetail.isList() && getDbLookUps().contains(inDetail.getId() ))
+		{
+			value = findOrCreateData(inDetail.getListId(),inDetail.getId(),inVal);
+		}
+		else
+		{
+			value = getSearcher().createValue(inDetail.getId(), inVal);
+		}
+		return value;
 	}
 
 	public boolean isMakeId()
