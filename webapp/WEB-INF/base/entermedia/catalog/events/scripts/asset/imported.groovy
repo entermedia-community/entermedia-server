@@ -11,43 +11,45 @@ public void init()
 	String assetids = context.getRequestParameter("assetids");
 	if( assetids == null)
 	{
-		log.info("No assetid found");
+		//log.info("No assetid found");
 		return;
 	}
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Collection assets = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
-	log.info("Found ${assets.size()} Assets");
-	Searcher searcher = mediaarchive.getSearcher("categorydefaultdata");
-	assets.each
-	{
-		boolean foundone = false;
-		boolean foundretention = false;
-		Asset asset = mediaarchive.getAssetSearcher().loadData(it);
-		asset.getCategories().each
+	if (assets.size()) {
+		log.info("Found ${assets.size()} Assets Imported");
+		Searcher searcher = mediaarchive.getSearcher("categorydefaultdata");
+		assets.each
 		{
-			//Look for any parent values
-			Category cat = it;
-			Collection values = searcher.query().orgroup("categoryid",cat.getParentCategories()).search();
-			values.each
+			boolean foundone = false;
+			boolean foundretention = false;
+			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
+			asset.getCategories().each
 			{
-				Data row = it;
-				String field = row.get("fieldname");
-				if( field.equals("retentionpolicy") )
+				//Look for any parent values
+				Category cat = it;
+				Collection values = searcher.query().orgroup("categoryid",cat.getParentCategories()).search();
+				values.each
 				{
-					foundretention = true;
+					Data row = it;
+					String field = row.get("fieldname");
+					if( field.equals("retentionpolicy") )
+					{
+						foundretention = true;
+					}
+					if( asset.getValue(field) == null || "editstatus".equals(field) )
+					{	
+						String value = row.get("fieldvalue");
+						asset.setProperty(field,value);
+						foundone = true;
+					}	
 				}
-				if( asset.getValue(field) == null || "editstatus".equals(field) )
-				{	
-					String value = row.get("fieldvalue");
-					asset.setProperty(field,value);
-					foundone = true;
-				}	
 			}
-		}
-		if(foundone){
-			mediaarchive.saveAsset(asset);
-		}
-	}	
+			if(foundone){
+				mediaarchive.saveAsset(asset);
+			}
+		}	
+	}
 }
 
 init();
