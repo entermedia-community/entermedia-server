@@ -322,8 +322,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Category getCategory(String inCategoryId)
 	{
-		Category cat = null;
-		cat = (Category)getCacheManager().get("category", inCategoryId);
+		Category cat = null;		cat = (Category)getCacheManager().get(getSearchType() + "category", inCategoryId);
 		if( cat == null || cat.isDirty() )
 		{
 			cat = searchCategory(inCategoryId);
@@ -351,7 +350,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}
 		if( cat != null )
 		{
-			getCacheManager().put("category", inCategoryId,cat);
+			getCacheManager().put(getSearchType() + "category", inCategoryId,cat);
 		}
 
 		return cat;
