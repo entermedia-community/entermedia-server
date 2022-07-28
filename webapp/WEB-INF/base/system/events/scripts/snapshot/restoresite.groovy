@@ -306,21 +306,23 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		mappings.each{
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + it + ".json");
 			String searchtype = it.substring(0, it.indexOf("-"));
-			
+			log.info("Restore - Put Mappings: "+searchtype);
 			putMapping( mediaarchive,searchtype,upload, tempindex);
 
 		}
 
 		Searcher categories = mediaarchive.getSearcher("category");
 		categories.setAlternativeIndex(tempindex);
-
+		log.info("Restore - Put Mappings: category");
 		categories.putMappings();
+		
 		categories.setAlternativeIndex(null);
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + type + ".zip");
 			
 			try{
 				if( upload.exists() ) {
+					log.info("Restore - Importing: "+ type);
 					importJson(site, mediaarchive,type,upload, tempindex);
 				}
 			} catch (Exception e) {
@@ -610,7 +612,13 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 						// this moves the parsing position to the end of it
 						JsonNode node = jp.readValueAsTree();
 						IndexRequest req = Requests.indexRequest(tempindex).type(searchtype);
-						String json  = node.get("_source").toString();
+						JsonNode source = node.get("_source");
+						if (source == null)
+						{
+							source = node;
+						}
+						String json  = source.toString();
+						
 						//log.info("JSON: "+json);
 						req.source(json);
 						JsonNode id = node.get("_id");
