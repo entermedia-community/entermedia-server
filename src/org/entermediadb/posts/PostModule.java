@@ -48,13 +48,26 @@ public class PostModule extends BaseMediaModule
 				post.setValue("maincontent", "");
 				searcher.saveData(post);
 			}
+			else
+			{
+				//TODO: send 404
+				return;
+			}
 		}
-		else
-		{
-			//TODO: send 404
-		}
+		
 		//TODO: Set mod time
 		inReq.putPageValue("postdata", post);
+		
+		
+		//SEO
+		if(post!=null)
+		{
+			if(post.getValue("metatitle") != null)
+			{
+				inReq.putPageValue("metatitle", post.getValue("metatitle"));
+			}
+		}
+		
 		//Load up a $sitehome and $postdata 
 	}
 
