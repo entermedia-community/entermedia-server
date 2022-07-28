@@ -1849,6 +1849,10 @@ public class ProjectManager implements CatalogEnabled
 			else
 			{
 				collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
+				if( collectionbuilder == null )
+				{
+					collectionbuilder = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+				}
 			}
 			if (collectionid != null)
 			{
