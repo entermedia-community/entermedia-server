@@ -22,6 +22,7 @@ import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
@@ -1804,77 +1805,82 @@ public class ProjectManager implements CatalogEnabled
 	public void loadUploads(WebPageRequest inReq)
 	{
 		//See if we have a station
-		String selectedlibrary = inReq.getRequestParameter("libraryid");
-		if( selectedlibrary == null)
-		{
-			Data library = (Data) inReq.getPageValue("library");
-			if( library != null)
-			{
-				selectedlibrary = library.getId();
-			}
-		}
+//		String selectedlibrary = inReq.getRequestParameter("libraryid");
+//		if( selectedlibrary == null)
+//		{
+//			Data library = (Data) inReq.getPageValue("library");
+//			if( library != null)
+//			{
+//				selectedlibrary = library.getId();
+//			}
+//		}
+		String collectionid = inReq.getRequestParameter("collectionid");
 		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
-		if( collection == null)
+		if( collection != null)
 		{
-			String collectionid = inReq.getRequestParameter("collectionid");
-			if( collectionid != null)
-			{
-				collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
-			}
+			collectionid = collection.getId();
 		}
 		
 		QueryBuilder builder = getMediaArchive().query("userupload");
 		HitTracker topuploads = null;
 
-		if (collection != null)
+		//If we are on a special URL
+		Data communitytag = (Data) inReq.getPageValue("communitytag");
+		if( communitytag != null)
 		{
-			builder.exact("librarycollection", collection.getId());
-			if(	!canEditCollection(inReq, collection))
+			builder.exact("exclusivecontent", false);
+			HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
+			if (!collections.isEmpty())
 			{
-				builder.exact("exclusivecontent", false);
+				builder.orgroup("librarycollection", collections);
+			}
+			else
+			{
+				builder.exact("librarycollection", "NONE");
 			}
 		}
 		else
 		{
-			builder.exact("exclusivecontent", false);
-			if (selectedlibrary == null || selectedlibrary.equals("*"))
+			SearchQuery collectionbuilder = null;
+			if( inReq.getJsonRequest() != null )
 			{
-				//If we are on a special URL
-				Data communitytag = (Data) inReq.getPageValue("communitytag");
-				if( communitytag != null)
-				{
-					HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
-					if (!collections.isEmpty())
-					{
-						builder.orgroup("librarycollection", collections);
-					}
-					else
-					{
-						builder.exact("librarycollection", "NONE");
-					}
-				}
-				else
-				{
-					builder.all();
-				}
+				collectionbuilder = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
 			}
 			else
 			{
-				HitTracker collections = null;
-
-				//get all the collections for this Library
-				collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
-				//log.info("done" + collections.size());
-				if (!collections.isEmpty())
+				collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
+			}
+			if (collectionid != null)
+			{
+				collectionbuilder.addExact("id",collectionid);
+				if( collection == null)
 				{
-					builder.orgroup("librarycollection", collections);
+					collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
 				}
-				else
+				if(	!canEditCollection(inReq, collection))
+				{
+					builder.exact("exclusivecontent", false);
+				}
+			}
+			if( !collectionbuilder.isEmpty() )
+			{
+				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionbuilder);
+				if( ids.isEmpty() )
 				{
 					builder.exact("librarycollection", "NONE");
 				}
+				else
+				{
+					builder.orgroup("librarycollection", ids);
+				}
+				builder.hitsPerPage(ids.getHitsPerPage());
+			}
+			else
+			{
+				builder.all();
 			}
 		}
+	
 		String topic = inReq.getRequestParameter("topic");
 		if (topic != null)
 		{
