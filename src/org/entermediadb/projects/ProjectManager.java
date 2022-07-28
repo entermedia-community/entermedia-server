@@ -42,6 +42,7 @@ import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -1821,7 +1822,22 @@ public class ProjectManager implements CatalogEnabled
 			collectionid = collection.getId();
 		}
 		
+
+		SearchQuery collectionbuilder = null;
+		if( inReq.getJsonRequest() != null )
+		{
+			collectionbuilder = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
+		}
+		else
+		{
+			collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
+			if( collectionbuilder == null )
+			{
+				collectionbuilder = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+			}
+		}
 		QueryBuilder builder = getMediaArchive().query("userupload");
+		
 		HitTracker topuploads = null;
 
 		//If we are on a special URL
@@ -1841,22 +1857,9 @@ public class ProjectManager implements CatalogEnabled
 		}
 		else
 		{
-			SearchQuery collectionbuilder = null;
-			if( inReq.getJsonRequest() != null )
-			{
-				collectionbuilder = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
-			}
-			else
-			{
-				collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
-				if( collectionbuilder == null )
-				{
-					collectionbuilder = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
-				}
-			}
 			if (collectionid != null)
 			{
-				collectionbuilder.addExact("id",collectionid);
+				builder.exact("librarycollection",collectionid);
 				if( collection == null)
 				{
 					collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
@@ -1869,14 +1872,19 @@ public class ProjectManager implements CatalogEnabled
 			if( !collectionbuilder.isEmpty() )
 			{
 				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionbuilder);
-				if( ids.isEmpty() )
+				
+				SearchQuery orchild = builder.getSearcher().createSearchQuery();
+				if( !ids.isEmpty() )
 				{
-					builder.exact("librarycollection", "NONE");
+					orchild.addOrsGroup("librarycollection", ids);
 				}
-				else
+				Term fulltext = collectionbuilder.getTermByDetailId("description");
+				if( fulltext != null)
 				{
-					builder.orgroup("librarycollection", ids);
+					orchild.setAndTogether(false);
+					orchild.addFreeFormQuery("description", fulltext.getValue());  //(TExt1 or Text2 ) and Collection ID
 				}
+				builder.getQuery().addChildQuery(orchild);
 				builder.hitsPerPage(ids.getHitsPerPage());
 			}
 			else
