@@ -92,6 +92,7 @@ import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
@@ -424,7 +425,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				inSearch.setAggregations(q.getAggregationJson().getBytes());
 				added = true;
 			}			
-			return false;
+			return added;
 		}
 		
 		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
@@ -3538,6 +3539,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					getFiller().close(input);
 				}
 			}
+		}
+	}
+	
+	
+	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch) {
+		String aggs = inPageRequest.findValue("aggs");
+		if(aggs != null) {
+			ElasticSearchQuery search = (ElasticSearchQuery)inSearch;
+			search.setAggregationJson(aggs);
 		}
 	}
 

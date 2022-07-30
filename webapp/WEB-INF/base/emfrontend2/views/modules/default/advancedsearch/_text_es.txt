@@ -1,0 +1,6 @@
+#
+#Fri Jul 15 10:48:14 EDT 2022
+Edit\ Advanced\ Search\ Form=Editar formulario de b\u00FAsqueda avanzada
+Add\ Field=Agregue campo
+Done=Hecho
+Search=B\u00FAsqueda
