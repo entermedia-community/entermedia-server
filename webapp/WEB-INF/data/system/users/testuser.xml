@@ -6,7 +6,7 @@
   <creation-date>1237057734887</creation-date>
   <properties>
     <property name="lastName" value="Mellow"/>
-    <property name="enabled" value="true"/>
+    <property name="enabled" value="false"/>
     <property name="searchtype" value="categories"/>
     <property name="screenname" value="RachelM"/>
     <property name="email" value=""/>

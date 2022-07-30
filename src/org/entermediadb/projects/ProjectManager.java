@@ -22,6 +22,7 @@ import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
@@ -41,6 +42,7 @@ import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -1804,77 +1806,93 @@ public class ProjectManager implements CatalogEnabled
 	public void loadUploads(WebPageRequest inReq)
 	{
 		//See if we have a station
-		String selectedlibrary = inReq.getRequestParameter("libraryid");
-		if( selectedlibrary == null)
-		{
-			Data library = (Data) inReq.getPageValue("library");
-			if( library != null)
-			{
-				selectedlibrary = library.getId();
-			}
-		}
+//		String selectedlibrary = inReq.getRequestParameter("libraryid");
+//		if( selectedlibrary == null)
+//		{
+//			Data library = (Data) inReq.getPageValue("library");
+//			if( library != null)
+//			{
+//				selectedlibrary = library.getId();
+//			}
+//		}
+		String collectionid = inReq.getRequestParameter("collectionid");
 		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
-		if( collection == null)
+		if( collection != null)
 		{
-			String collectionid = inReq.getRequestParameter("collectionid");
-			if( collectionid != null)
-			{
-				collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
-			}
+			collectionid = collection.getId();
 		}
 		
+
+		SearchQuery collectionbuilder = null;
+		if( inReq.getJsonRequest() != null )
+		{
+			collectionbuilder = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
+		}
+		else
+		{
+			collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
+			if( collectionbuilder == null )
+			{
+				collectionbuilder = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+			}
+		}
 		QueryBuilder builder = getMediaArchive().query("userupload");
+		
 		HitTracker topuploads = null;
 
-		if (collection != null)
+		//If we are on a special URL
+		Data communitytag = (Data) inReq.getPageValue("communitytag");
+		if( communitytag != null)
 		{
-			builder.exact("librarycollection", collection.getId());
-			if(	!canEditCollection(inReq, collection))
+			builder.exact("exclusivecontent", false);
+			HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
+			if (!collections.isEmpty())
 			{
-				builder.exact("exclusivecontent", false);
+				builder.orgroup("librarycollection", collections);
+			}
+			else
+			{
+				builder.exact("librarycollection", "NONE");
 			}
 		}
 		else
 		{
-			builder.exact("exclusivecontent", false);
-			if (selectedlibrary == null || selectedlibrary.equals("*"))
+			if (collectionid != null)
 			{
-				//If we are on a special URL
-				Data communitytag = (Data) inReq.getPageValue("communitytag");
-				if( communitytag != null)
+				builder.exact("librarycollection",collectionid);
+				if( collection == null)
 				{
-					HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
-					if (!collections.isEmpty())
-					{
-						builder.orgroup("librarycollection", collections);
-					}
-					else
-					{
-						builder.exact("librarycollection", "NONE");
-					}
+					collection = (LibraryCollection)getMediaArchive().getCachedData("librarycollection", collectionid);
 				}
-				else
+				if(	!canEditCollection(inReq, collection))
 				{
-					builder.all();
+					builder.exact("exclusivecontent", false);
 				}
+			}
+			if( !collectionbuilder.isEmpty() )
+			{
+				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionbuilder);
+				
+				SearchQuery orchild = builder.getSearcher().createSearchQuery();
+				if( !ids.isEmpty() )
+				{
+					orchild.addOrsGroup("librarycollection", ids);
+				}
+				Term fulltext = collectionbuilder.getTermByDetailId("description");
+				if( fulltext != null)
+				{
+					orchild.setAndTogether(false);
+					orchild.addFreeFormQuery("description", fulltext.getValue());  //(TExt1 or Text2 ) and Collection ID
+				}
+				builder.getQuery().addChildQuery(orchild);
+				builder.hitsPerPage(ids.getHitsPerPage());
 			}
 			else
 			{
-				HitTracker collections = null;
-
-				//get all the collections for this Library
-				collections = getMediaArchive().query("librarycollection").exact("library", selectedlibrary).search(inReq);
-				//log.info("done" + collections.size());
-				if (!collections.isEmpty())
-				{
-					builder.orgroup("librarycollection", collections);
-				}
-				else
-				{
-					builder.exact("librarycollection", "NONE");
-				}
+				builder.all();
 			}
 		}
+	
 		String topic = inReq.getRequestParameter("topic");
 		if (topic != null)
 		{

@@ -474,7 +474,7 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("commandSucceeded", "nopassword");
 				return;
 			}
-			if (user == null)
+			if (user == null )
 			{
 				log.info("No user found " + account);
 				inReq.putPageValue("oe-exception", "Invalid Login");
