@@ -381,7 +381,17 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				result.setComplete(true);
 				log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 				result.setOk(true);
-			}else {
+			}
+			//Added as PDF was throwing an error like this but the images generated were fine.
+			if(output != null && output.contains("subimage specification returns no images")) {
+				result.setComplete(true);
+				log.info("Asset: "+ asset.getId()+" Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				result.setOk(true);
+			}
+			
+			
+			
+			else {
 			result.setError(execresult.getStandardOut());
 			}
 		}
