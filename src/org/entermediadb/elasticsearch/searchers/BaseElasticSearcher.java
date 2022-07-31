@@ -3544,7 +3544,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	
 	
 	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch) {
+
 		String aggs = inPageRequest.findValue("aggs");
+		if(aggs == null) {
+			aggs = (String) inPageRequest.getPageValue("aggs");
+		}
 		if(aggs != null) {
 			ElasticSearchQuery search = (ElasticSearchQuery)inSearch;
 			search.setAggregationJson(aggs);
