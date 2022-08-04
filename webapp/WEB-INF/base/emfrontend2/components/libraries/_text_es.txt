@@ -1,13 +1,15 @@
 #
-#Mon Mar 26 16:11:06 EDT 2018
-Add\ Library=A\u00F1adir biblioteca
-[Add\ New=[Agregar nuevo
-Assets=Bienes
-Create\ New=Crear nuevo
-Add\ Collection=A\u00F1adir colecci\u00F3n
-Pick\ From=Escoge de
-Details=detalles
-Libraries=bibliotecas
-Collections=Colecciones
-Collection\ Search=B\u00FAsqueda de colecciones
+#Fri Jul 15 10:48:13 EDT 2022
 add=a\u00F1adir
+Collection\ Search=B\u00FAsqueda de colecciones
+Create\ New=Crear nuevo
+Pick\ From=Escoge de
+Search\ Collection=Colecci\u00F3n de b\u00FAsqueda
+[Add\ New=[Agregar nuevo
+Details=detalles
+Assets=Bienes
+Search\ Library=Biblioteca de b\u00FAsqueda
+Libraries=bibliotecas
+Add\ Collection=A\u00F1adir colecci\u00F3n
+Collections=Colecciones
+Add\ Library=A\u00F1adir biblioteca

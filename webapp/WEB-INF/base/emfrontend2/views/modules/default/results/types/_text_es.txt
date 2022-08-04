@@ -1,0 +1,5 @@
+#
+#Fri Jul 15 10:48:18 EDT 2022
+Deselect\ All=Deseleccionar todo
+Select\ All\ Results=Seleccionar todos los resultados
+Select\ This\ Page=Seleccionar esta p\u00E1gina
