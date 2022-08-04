@@ -1,11 +1,9 @@
 #
-#Fri Jul 15 10:48:16 EDT 2022
-New=Nuevo
+#Tue Apr 07 17:58:14 CST 2020
 No\ values\ found=No se encontraron valores
 After\ Date=despu\u00E9s de la fecha
 Please\ enter=Por favor escribe
 chars\ less=Caracteres menos
-Past\ 24\ hours=\u00FAltimas 24 horas
 chars\ more=Chars m\u00E1s
 Remove=retirar
 Add\ New=A\u00F1adir nuevo
@@ -15,6 +13,7 @@ Clear\ Selection=Selecci\u00F3n clara
 Search=Buscar
 limit\ reached=l\u00EDmite alcanzado
 Pick\ Categories=Escoja Categor\u00EDas
+No=No
 or=o
 Past\ year=A\u00F1o pasado
 Between=Entre

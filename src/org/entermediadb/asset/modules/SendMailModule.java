@@ -15,14 +15,18 @@ See the GNU Lesser General Public License for more details.
 package org.entermediadb.asset.modules;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.email.WebEmail;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.modules.BaseModule;
@@ -48,6 +52,56 @@ public class SendMailModule extends BaseModule
 	public SendMailModule()
 	{
 	}
+	public void sendEmailtoProject(WebPageRequest inContext)throws OpenEditException
+	{
+		MediaArchive archive = (MediaArchive)inContext.getPageValue("mediaarchive");
+		TemplateWebEmail webmail = (TemplateWebEmail)inContext.getPageValue(EMAIL_SETTINGS);
+		if( webmail == null)
+		{
+
+			
+			
+//			webmail = new TemplateWebEmail();
+			webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+			webmail.setPostMail(getPostMail());
+			webmail.setPageManager(getPageManager());
+			
+			Map<String, String> formfields = new HashMap<String, String>();
+			//Get email To address from collection
+			String collectionid = inContext.getRequestParameter("collectionid");
+			if(collectionid != null) {
+				Data collection = archive.getData("librarycollection", collectionid);
+				String emailto = (String) collection.getValue("contactemail");
+				if(emailto == null) {
+					//get it from request or content? or set default to something
+				}
+				if(emailto != null) {
+					webmail.setTo(emailto);
+				}
+				webmail.setSubject("Contacted from: " + collection.getName());
+				//formfields.put("project", collection.getName());
+				inContext.putPageValue("project", collection.getName());
+			}
+			String fields[] = inContext.getRequestParameters("field");
+			
+			if (fields != null)
+			{
+				for (int i = 0; i < fields.length; i++)
+				{
+					String field = fields[i];
+					String value = (String) inContext.getRequestParameter(field + ".value");
+					if (value != null) {
+						formfields.put(field, value);
+					}
+				}
+				inContext.putPageValue("formfields", formfields);
+			}
+			webmail.loadSettings(inContext);
+			inContext.putPageValue(EMAIL_SETTINGS, webmail);
+		}
+		sendEmail(inContext, webmail);
+		log.info("Mail Sent to " + Arrays.asList(webmail.getTo()) );
+	}
 	
 	public void sendEmail(WebPageRequest inContext)throws OpenEditException
 	{
@@ -65,6 +119,7 @@ public class SendMailModule extends BaseModule
 		sendEmail(inContext, webmail);
 		log.info("Mail Sent to " + Arrays.asList(webmail.getTo()) );
 	}
+	
 	public void sendFormEmail(WebPageRequest inReq) throws Exception
 	{
 		//check for subject in the email

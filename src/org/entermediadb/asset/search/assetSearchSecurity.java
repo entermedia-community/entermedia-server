@@ -150,11 +150,12 @@ public class assetSearchSecurity implements SearchSecurity
 				}
 			}
 			
+			String showpending = inPageRequest.findValue("canshowpendingassets");
 			
 			
-			boolean showpending = inPageRequest.hasPermission("showpendingassets");
+			boolean showpendingOLD = inPageRequest.hasPermission("showpendingassets");
 			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets");
-			if(editstatus == null && (!showpending ||onlyapproved )) {
+			if(editstatus == null && (!Boolean.parseBoolean(showpending) ||onlyapproved )) {
 				editstatus="6";
 			}
 			

@@ -1,5 +1,5 @@
 #
-#Thu Mar 28 09:38:27 CST 2019
+#Mon Jun 27 19:35:14 CDT 2022
 Delete=Borrar
 Drag\ columns\ to\ move\ them=Arrastrar las columnas para moverlos
 LOCATIONS=UBICACIONES
@@ -13,6 +13,7 @@ Remove\ from\ library\ and\ all\ collections?=Eliminar de la biblioteca y todas 
 Remove\ from\ Collection=Sacar de la colecci\u00F3n
 Download\ Options=Opciones de descarga
 No\ results\ found=No se han encontrado resultados
+pages=paginas
 Edit\ Columns=Editar columnas
 Copy\ Collection=Copiar Colecci\u00F3n
 of=de
@@ -38,6 +39,7 @@ Results=Resultados
 Gallery=Galer\u00EDa
 Remove\ from\ Library=Eliminar de la biblioteca
 Collection=Colecci\u00F3n
+page=p\u00E1gina
 Share=Compartir
 Share\ Gallery=Compartir Galer\u00EDa
 Export\ results\ (friendly)=Resultados de exportaci\u00F3n (amistoso)
