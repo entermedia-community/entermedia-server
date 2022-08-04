@@ -3,21 +3,21 @@
 	$pages.include("./sendmagiclink.html")  ##to try again or register
 
 #else			
-
-<div class="col-md-8 container applicationcontent text-center" style="max-width: 400px;">
+<div class="login-area" >
+<div class="container applicationcontent text-center" style="padding-top:40px;">
 	
-	    <h3 style="text-align:center;">[[Please check your email]]</h3>
+	    <h2 style="text-align:center;">[[Please check your email]]</h2>
 	    
 	     #set($loginok = $context.findValue("loginokpage") ) 
 
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<div class="form-group">
-			<label for="password">[[Enter Six Digit Login Code]]</label>
-			<input class="form-controlX grabfocus" id="entermediakey" name="templogincode" />
+			<label for="password">[[Enter six digit login code]]</label>:
+			<input class="form-control  form-control-sm grabfocus required" id="entermediakey" name="templogincode" required />
 			#set( $email = $context.getRequestParameter("email") )	
 			#if( $email )
-			<input class="form-controlX " type="hidden" name="email" value="$email" />
+			<input  type="hidden" name="email" value="$email" />
 			#else
 			<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
 			#end
@@ -36,9 +36,9 @@
 			#end
 		</form>   
 		
-		<p><a href="$home$content.loginroot/login.html">[[Back to Login page]]</a></p>
+		<p><a href="$home$content.loginroot/login.html" style="text-decoration: underline;">[[Back to Login page]]</a></p>
 
 			
 </div>
-
+</div>
 #end
