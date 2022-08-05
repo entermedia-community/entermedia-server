@@ -442,7 +442,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( collectionid == null)
 			{
-				collectionid = inReq.getRequestParameter("id");
+				//collectionid = inReq.getRequestParameter("id"); //Causing issues
 				if (collectionid == null) {
 					Data coll = (Data) inReq.getPageValue("librarycol");
 					if (coll != null) {
