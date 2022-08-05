@@ -1,0 +1,1 @@
+#json($hit $searcher.getPropertyDetails()) 

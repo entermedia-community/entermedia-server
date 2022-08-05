@@ -31,32 +31,39 @@ $invalue
 #jesc($map)
 #end
 #end
-#macro(datajsonmin $detail $id)
-#set($data = false)#set($data = $searcherManager.getData($detail, $id))
+#macro(datajsonmin $detail $value)
+#if( $detail.isList() )
+#set($data = $value)
+#if( $value.class.toString().equals("class java.lang.String") )
+	#set($data = $searcherManager.getData($detail, $value))
+#end
 {
-	"id":"$id",
+	"id":"$data.getId()",
 	"name":#jesc($data.getName($context.getLocale()) )
 }
+#else
+	{ 	"id":"$value" }
+#end
 #end
 #macro(jesc $object)"$!jsonUtil.escape($object)"#end
 #macro(json $hit $details)
 {
 #set($rendercomma = false)
 #foreach($detail in $details)
-#set($val = false)#set($val = $hit.get(${detail.id}))
-#if($val)#if($rendercomma),#else
+#set($value = false)#set($value = $hit.getValue(${detail.id}))
+#if($value)#if($rendercomma),#else
 #set($rendercomma = true)#end
-"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
-#foreach($value in $hit.getValues($detail.id))
+"${detail.id}":#if($detail.isMultiValue())[
+#foreach($mvalue in $hit.getValues($detail.id))
 #if(${foreach.count} > 1),#end
-#datajsonmin($detail $value)
+#datajsonmin($detail $mvalue)
 #end]
 #elseif($detail.isList())
-#datajsonmin($detail $val)
+#datajsonmin($detail $value)
 #elseif($detail.isMultiLanguage())
-#jsonmap($detail $hit.getValue($detail.id))
-#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
-#else#jesc($val) 
+#jsonmap($detail $value)
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
+#else#jesc($hit.get(${detail.id}))
 #end
 #end
 #end}
@@ -66,20 +73,20 @@ $invalue
 #macro(jsonfields $hit $details)
 #set($rendercomma = false)
 #foreach($detail in $details)
-#set($val = false)#set($val = $hit.get(${detail.id}))
-#if($val)#if($rendercomma),#else
+#set($value = false)#set($value = $hit.getValue(${detail.id}))
+#if($value)#if($rendercomma),#else
 #set($rendercomma = true)#end
-"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
-#foreach($value in $hit.getValues($detail.id))
+"${detail.id}":#if($detail.isMultiValue())[
+#foreach($mvalue in $hit.getValues($detail.id))
 #if(${foreach.count} > 1),#end
-#datajsonmin($detail $value)
+#datajsonmin($detail $mvalue)
 #end]
 #elseif($detail.isList())
-#datajsonmin($detail $val)
+#datajsonmin($detail $value)
 #elseif($detail.isMultiLanguage())
-#jsonmap($detail $hit.getValue($detail.id))
-#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
-#else#jesc($val) 
+#jsonmap($detail $value)
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
+#else#jesc($hit.get(${detail.id})) 
 #end
 #end
 #end
@@ -87,30 +94,31 @@ $invalue
 
 
 #macro(jsonpartial $hit $details)
-
 #set($rendercomma = false)
 #foreach($detail in $details)
 #if( ${detail.id} != "password" )
 
-#set($val = false)#set($val = $hit.get(${detail.id}))
-#if($val)#if($rendercomma),#else
+#set($value = false)#set($value = $hit.getValue(${detail.id}))
+#if($value)#if($rendercomma),#else
 #set($rendercomma = true)#end
-"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
-#foreach($value in $hit.getValues($detail.id))
+"${detail.id}":#if($detail.isMultiValue())[ 
+#foreach($mvalue in $hit.getValues($detail.id))
 #if(${foreach.count} > 1),#end
-#datajsonmin($detail $value)
+#datajsonmin($detail $mvalue)
 #end]
-#elseif($detail.isList())
-#datajsonmin($detail $val)
-#elseif($detail.isMultiLanguage())
-#jsonmap($detail $hit.getValue($detail.id))
-#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
-#else#jesc($val) 
+#elseif($detail.isList()) 
+#datajsonmin($detail $value)
+#elseif($detail.isMultiLanguage()) 
+#jsonmap($detail $value)
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
+#else#jesc($hit.get($detail.id)) 
 #end
 #end
 #end
 #end
 #end
+
+
 #macro(date $inData $inField)$context.getDate($inData.getDate($inField))#end
 #macro(dash $intext)#set( $text = $url_util.xmlEscape($intext) )
 $text.replaceAll(" ","-").replaceAll("&amp;","-")#end

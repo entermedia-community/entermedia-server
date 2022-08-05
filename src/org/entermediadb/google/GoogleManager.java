@@ -1167,7 +1167,7 @@ public class GoogleManager implements CatalogEnabled
 		{
 			String returned = getConnection().parseText( createresp );
 
- 			log.error("Could not create user in firebase. Please delete existing user " + inUser.getEmail() + " " + returned);
+ 			log.error("Could not create user in firebase. Please manually delete existing user " + inUser.getEmail() + " " + returned);
  			return;
 		}
  		JSONObject json  = getConnection().parseJson(createresp);

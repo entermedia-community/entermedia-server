@@ -29,7 +29,8 @@
 		},
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
-		#json($hit $searcher.getPropertyDetails()) 
+			$context.putPageValue("hit",$hit)
+			$pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
 		#end
 		]		
  #if( $hits.getSearchQuery().hasFilters() )

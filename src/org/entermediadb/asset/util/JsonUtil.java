@@ -15,13 +15,15 @@ import org.openedit.util.DateStorageUtil;
 
 public class JsonUtil
 {
-	public String formatDateObj(Date inDate)
+	public String formatDateObj(Object inDate)
 	{
 		if( inDate == null)
 		{
 			return "";
 		}
-		String json = DateStorageUtil.getStorageUtil().formatDateObj(inDate, "yyyy-MM-dd'T'HH:mm:ss");
+		inDate = DateStorageUtil.getStorageUtil().parseFromObject(inDate);
+		//https://mincong.io/2017/02/16/convert-date-to-string-in-java/
+		String json = DateStorageUtil.getStorageUtil().formatDateObj((Date)inDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); 
 		return json;
 	}
 	public String formatDate(String inDate)

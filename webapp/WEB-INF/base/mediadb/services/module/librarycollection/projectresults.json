@@ -31,10 +31,12 @@ $hits.setHitsPerPage(200)
 			#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$hit.id).exact("ontheteam","true").search() )
 			#if( !$team.isEmpty() )
 			, "team": [
+				#set( $second = false )
 				#foreach($member in $team)
 					#set( $person = $mediaarchive.getUser( $member.followeruser ) )
 					#if( $person )
-					#if( ${foreach.count} != 1 ), #end
+					#if( $second ), #end
+					#set( $second = true )
 					{
 						"userid" : "$person.id",
 						"screenname": "$person.screenName",
