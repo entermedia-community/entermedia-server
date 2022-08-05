@@ -1,6 +1,6 @@
 #set( $column = $context.getRequestParameter("field") )
 #set( $q = $context.getRequestParameter( "${column}.value") )
- #set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q) ) 
+#set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q) ) 
 {
   "total_count": $unique.size(),
   "incomplete_results": false,

@@ -947,14 +947,23 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("since", cal.getTime());
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Date start = cal.getTime();
+		
+		/*
 		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 		days = days - 1;
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.add(Calendar.DAY_OF_MONTH,days);
+		*/
+		
+		int days = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		cal.set(Calendar.DAY_OF_MONTH, days);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.SECOND, 59);
 		
 		Date onemonth = cal.getTime();
-
+		
 		//String rootid = "tasks" + collection.getId();
 		QueryBuilder q = tasksearcher.query();
 		if( !collectionid.equals("*") )

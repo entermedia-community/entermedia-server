@@ -539,6 +539,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 				req.putPageValue(key, inObjects.get(key));			
 			}
 			streamer.include(getMailTemplatePage(), req);
+			//log.info(outputStream.toString());
 			sendText(outputStream.toString());
 		}
 

@@ -1,7 +1,7 @@
 #
 #Tue Apr 07 17:58:14 CST 2020
 No\ values\ found=No se encontraron valores
-New=Nuevo
+After\ Date=despu\u00E9s de la fecha
 Please\ enter=Por favor escribe
 chars\ less=Caracteres menos
 chars\ more=Chars m\u00E1s
@@ -13,16 +13,24 @@ Clear\ Selection=Selecci\u00F3n clara
 Search=Buscar
 limit\ reached=l\u00EDmite alcanzado
 Pick\ Categories=Escoja Categor\u00EDas
+No=No
 or=o
+Past\ year=A\u00F1o pasado
+Between=Entre
 No\ results=No hay resultados
 Add\ Language=Agregar idioma
+Past\ week=Semana pasada
 View=Ver
 Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
 Browse=Vistazo
 entry=entrada
 entries=Entradas
+Equals=igual
 You\ can\ only\ select=S\u00F3lo puede seleccionar
 Searching=buscando
+Before\ Date=antes de la fecha
 Loading\ more\ results=Cargando m\u00E1s resultados
+Past\ month=El mes pasado
 Choose\ a\ File=Escoge un archivo
 Enter\ comma\ separated\ tags=Introducir etiquetas separadas por comas
+to=a

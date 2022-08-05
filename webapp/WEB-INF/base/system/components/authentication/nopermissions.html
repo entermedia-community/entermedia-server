@@ -1,6 +1,14 @@
 
 #if( $user.getId() )
-<h2>[[Permission Error]]</h2>
+<h2>[[Youy]]</h2>
+
+
+#foreach($task in $somelist)
+
+<p>$task.id = This is a paragraph</p>
+
+
+#end
 
 <p>[[You do not have permissions to perform the previous action.]]</p>
 

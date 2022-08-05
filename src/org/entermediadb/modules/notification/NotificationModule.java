@@ -66,12 +66,12 @@ public class NotificationModule extends BaseMediaModule
 			Collection hits = null;
 			if (startingfrom != null)
 			{
-				log.info("Getting hits with last ran date");
+				//log.info("Getting hits with last ran date");
 				hits = archive.query("chatterbox").exact("channeltype", "asset").between("date", startingfrom, today).search();
 			}
 			else
 			{
-				log.info("Getting hits without last ran date");
+				//log.info("Getting hits without last ran date");
 				hits = archive.query("chatterbox").exact("channeltype", "asset").before("date", today).search();
 			}
 
@@ -79,10 +79,12 @@ public class NotificationModule extends BaseMediaModule
 
 			if ( users == null || (users != null && users.size() == 0))
 			{
+				/*
 				log.info("No Messages loaded");				
 				log.info("hits: " + hits.size());
 				log.info("messages: " + users!=null?users.size():"null");
 				log.info("startingfrom: " + startingfrom);
+				*/
 			}
 			else
 			{

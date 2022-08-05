@@ -28,6 +28,9 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -472,7 +475,7 @@ public class ElasticHitTracker extends HitTracker
 		{
 			//log.info(response.toString());
 			Aggregations facets = response.getAggregations();
-
+			
 			
 				Object agg = facets.get(inField);
 				if (agg instanceof Histogram)
@@ -532,7 +535,14 @@ public class ElasticHitTracker extends HitTracker
 		return agregations;
 	}
 	
-	
+	public Object getAggregationJson() throws ParseException {
+		String json = getSearchResponse(0).toString();
+		JSONParser parser = new JSONParser();
+		JSONObject results = (JSONObject) parser.parse(json);
+
+		JSONObject aggs = (JSONObject) results.get("aggregations");
+		return aggs;
+	}
 
 	public void invalidate()
 	{
