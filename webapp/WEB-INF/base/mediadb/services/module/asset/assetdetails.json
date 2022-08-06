@@ -17,7 +17,7 @@
 		#set ($ext = $hit.fileformat)
 		#set ($thumb = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
 	#else
-		#set( $thumb = "!$prefix$cataloghome/downloads/preview/thumb/$asset.sourcePath/thumb.jpg")
+		#set( $thumb = "$!prefix$cataloghome/downloads/preview/thumb/$asset.sourcePath/thumb.jpg")
 	#end
 	"thumb":"#esc($thumb)",
 	#if(  $type == "video" )
@@ -25,7 +25,7 @@
 		#if( $streams )
 			"preview": {
 			#foreach( $size in $streams)
-			#set( $preview = "!$prefix$!home/$catalogid/downloads/converted/cache/${asset.sourcePath}/$size/video.m3u8")
+			#set( $preview = "$!prefix$!home/$catalogid/downloads/converted/cache/${asset.sourcePath}/$size/video.m3u8")
 			"$size":"#urlencode($preview)"
 				#if($foreach.count < $streams.size())
 				,
@@ -40,7 +40,7 @@
 		#if( $type == "image" || $type == "document")
 			#set( $preview = "$!prefix$!home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
 		#elseif( $type == "audio" )
-			#set( $preview = "!$prefix$!home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
+			#set( $preview = "$!prefix$!home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
 		#end
 		"preview":"#urlencode($preview)",
 	#end
