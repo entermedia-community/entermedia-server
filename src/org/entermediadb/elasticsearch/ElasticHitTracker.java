@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,12 +21,14 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.InternalMultiBucketAggregation.InternalBucket;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
+import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -527,7 +528,40 @@ public class ElasticHitTracker extends HitTracker
 		return loadHistogram(inField, false);
 	}
 	
-	
+	public Map<String,Object> getAggregationMap(String inName){
+
+		Map<String,Object> map = new HashMap();
+		
+		Aggregations agregations = getAggregations();
+		if( agregations != null)
+		{
+			org.elasticsearch.search.aggregations.bucket.terms.Terms terms = agregations.get(inName);
+			if( terms != null)
+			{
+				for (Iterator iterator = terms.getBuckets().iterator(); iterator.hasNext();)
+				{
+					InternalBucket bucket = (InternalBucket) iterator.next();
+					//bucket.getAggregations()
+					for (Iterator iterator2 = bucket.getAggregations().iterator(); iterator2.hasNext();)
+					{
+						Aggregation aggregation = (Aggregation) iterator2.next();
+						
+						//TODO: If there is one in there already, add a collection of values
+						if( aggregation instanceof InternalSum)
+						{
+							map.put(bucket.getKeyAsString(),((InternalSum)aggregation).value());
+						}
+						else
+						{
+							//map.put(bucket.getKeyAsString(),aggregation.value());
+						}
+					}
+				}
+			}
+		}
+		
+		return map;
+	}
 	public Aggregations getAggregations(){
 		SearchResponse response = getSearchResponse(0);
 		Aggregations agregations = response.getAggregations();
