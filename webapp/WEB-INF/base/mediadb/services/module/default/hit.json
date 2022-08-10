@@ -1,1 +1,3 @@
-#json($hit $searcher.getPropertyDetails()) 
+{
+	#jsonpartial($hit $searcher.getPropertyDetails()) 
+}
