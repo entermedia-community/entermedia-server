@@ -134,7 +134,7 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	@Override
 	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser)
 	{
-		String foldersourcepath = getAssetUtilities().extractSourcePath(inContent, true, getMediaArchive());
+		String foldersourcepath = getAssetUtilities().extractSourcePath(inContent, false, getMediaArchive());
 		Long sizeval = fieldSizeCache.get(foldersourcepath);
 		if(sizeval != null && sizeval == inContent.getLength())
 		{

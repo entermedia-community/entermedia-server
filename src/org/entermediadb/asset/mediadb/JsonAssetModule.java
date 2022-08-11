@@ -176,17 +176,23 @@ public class JsonAssetModule extends BaseJsonModule {
 			}
 			sourcepath = sm.getValue(catalogid, sourcepath, vals);
 		}
-		
-
+		//String legacysourcepath = archive.getCatalogSettingValue("catalogassetuploadalwaysappend"); //PRN? ${division.uploadpath}/${user.userName}/${formateddate}
 		if (properties.getFirstItem() != null) 
 		{
-			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/"
-					+ properties.getFirstItem().getName();
+			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath ;
+			
+			//if( legacysourcepath != null && "true".equalsIgnoreCase(legacysourcepath))
+			boolean foldrbased = false;
+			if( path.endsWith("/"))
+			{
+				path = path + "/" + properties.getFirstItem().getName();
+				foldrbased = true;
+			}
 			path = path.replace("//", "/");
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
-			// THis will append the filename to the source path
-			asset = importer.createAssetFromPage(archive, false, inReq.getUser(), newfile, id);
+			// THis will NOT append the filename to the source path
+			asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
 		}
 		else if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
@@ -214,7 +220,7 @@ public class JsonAssetModule extends BaseJsonModule {
 					sourcepath = subfolder +  ending;
 					String contentpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
 					Page item = archive.getPageManager().getPage(contentpath);
-					asset = importer.createAssetFromPage(archive, true, inReq.getUser(), item, id);
+					asset = importer.createAssetFromPage(archive, false, inReq.getUser(), item, id);
 					foundmatch = true;
 					break;
 				}
@@ -222,17 +228,19 @@ public class JsonAssetModule extends BaseJsonModule {
 			if( !foundmatch)
 			{
 				ContentItem item = new FileItem(new File(importpath));
-				if( sourcepath.endsWith("/"))
+				boolean folderbased = sourcepath.endsWith("/");
+				String postfix = sourcepath;
+				if( folderbased )
 				{
-					sourcepath = sourcepath + PathUtilities.extractFileName(importpath);
+					postfix = postfix + PathUtilities.extractFileName(importpath); //Add a filename
 				}
-				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;  
+				String destpath = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + postfix;  
 				destpath = destpath.replace("//", "/");
 
 				Page destitem = archive.getPageManager().getPage(destpath);
 				archive.getPageManager().getRepository().copy(item, destitem.getContentItem());
 				
-				asset = importer.createAssetFromPage(archive, true, inReq.getUser(), destitem, id);
+				asset = importer.createAssetFromPage(archive, folderbased, inReq.getUser(), destitem, id);
 			}
 		}
 
@@ -248,7 +256,7 @@ public class JsonAssetModule extends BaseJsonModule {
 				File target = new File(realpath);
 				target.getParentFile().mkdirs();
 				if (file.renameTo(new File(realpath))) {
-					asset = importer.createAssetFromPage(archive, true, inReq.getUser(), newfile, id);
+					asset = importer.createAssetFromPage(archive, false, inReq.getUser(), newfile, id);
 					if(id != null){
 						asset.setId(id);
 					
