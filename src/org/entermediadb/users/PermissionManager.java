@@ -17,7 +17,9 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.cache.CacheManager;
 import org.openedit.config.XMLConfiguration;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -40,7 +42,17 @@ public class PermissionManager implements CatalogEnabled
 
 	protected SearcherManager fieldSearcherManager;
 	protected PermissionSorter fieldPermissionSorter;
-	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
+	protected CacheManager fieldCacheManager;
 	protected String fieldCatalogId;
 	protected FilterReader fieldFilterReader;
 	protected FilterWriter fieldFilterWriter;
@@ -130,8 +142,13 @@ public class PermissionManager implements CatalogEnabled
 	{
 		//Base module permissions. Module wide
 		//TODO: Cache
-		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
+		HitTracker <Data> modulepermissions = (HitTracker <Data>)getCacheManager().get("modulepermissions" + getCatalogId(),inModuleid);
+		if( modulepermissions == null)
+		{
+			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
 				exact("permissiontype", inModuleid).search();
+			getCacheManager().put("modulepermissions" + getCatalogId(),inModuleid,modulepermissions);
+		}
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -177,8 +194,16 @@ public class PermissionManager implements CatalogEnabled
 	{
 		//Use a 5 min Cache
 		Collection<Permission> rules = new ArrayList();
-		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
+		HitTracker <Data> modulepermissions = (HitTracker <Data>)getCacheManager().get("moduleidpermissions" + getCatalogId(),inDataType);
+		if( modulepermissions == null)
+		{
+			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
 				exact("moduleid", inDataType).search();
+			getCacheManager().put("moduleidpermissions" + getCatalogId(),inDataType,modulepermissions);
+		}
+
+//		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
+//				exact("moduleid", inDataType).search();
 	//	log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
 		//log.info(modulepermissions.getFriendlyQuery());
 		//log.info(modulepermissions.getSearchQuery().toString());
@@ -260,14 +285,31 @@ public class PermissionManager implements CatalogEnabled
 		if(inFolder == null && inData == null) {
 			return null;
 		}
-		
-			Data target = (Data) searcher.query().ignoreEmpty().exact("moduleid", inModule).exact("parentfolderid", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
-			if(target != null) {
-				Permission permission = getPermission(target.getId());
-				return permission;
+
+		String id = inModule + " " + inFolder + " " + inData + " " + inPermissionId;
+		Data target = (Data)getCacheManager().get("custompermissions"+ getCatalogId(), id);
+		if( target == null)
+		{
+			//log.info("Loading custom permissions " + id);
+			target = (Data) searcher.query().ignoreEmpty().exact("moduleid", inModule).exact("parentfolderid", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
+			if( target == null)
+			{
+				target = BaseData.NULL;
 			}
+			getCacheManager().put("custompermissions"+ getCatalogId(), id,target);
+		}
 		
-return null;		
+		if(target != null && target != BaseData.NULL) 
+		{
+			String xml = target.get("value");
+			if (xml == null)
+			{
+				return null;
+			}
+			return getPermission(target.getId(), xml);
+		}
+		
+		return null;		
 		
 		
 	}
@@ -276,6 +318,7 @@ return null;
 
 	public void savePermission( Permission inPermission)
 	{
+		getCacheManager().clear("custompermissions");
 		Searcher custompermissions = getSearcher("custompermissions");
 		Data target = (Data) custompermissions.searchById(inPermission.getId());
 		if (target == null)

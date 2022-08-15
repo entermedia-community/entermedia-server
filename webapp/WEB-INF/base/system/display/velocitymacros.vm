@@ -33,13 +33,19 @@ $invalue
 #end
 #macro(datajsonmin $detail $value)
 #if( $detail.isList() )
+#set($data = false)
 #set($data = $value)
-#if( $value.class.toString().equals("class java.lang.String") )
+#if( $searcherManager.isData($value) )
+#else
 	#set($data = $searcherManager.getData($detail, $value))
 #end
 {
+	#if( $data )
 	"id":"$data.getId()",
 	"name":#jesc($data.getName($context.getLocale()) )
+	#else
+	"id":"$!value"
+	#end
 }
 #else
 	{ 	"id":"$value" }

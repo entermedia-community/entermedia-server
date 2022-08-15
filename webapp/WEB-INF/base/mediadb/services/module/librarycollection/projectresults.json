@@ -20,6 +20,9 @@ $hits.setHitsPerPage(200)
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 			{
 			#jsonfields($hit $searcher.getPropertyDetails()) 
+			,
+			#set( $cat = false)#set( $cat = $mediaarchive.getCategory($hit.rootcategory))
+			"categorypath" : "$!cat.getCategoryPath()"
 			, 
 		#if($hit.assetportrait)
 			#set($asset = $mediaarchive.getAsset($hit.assetportrait))

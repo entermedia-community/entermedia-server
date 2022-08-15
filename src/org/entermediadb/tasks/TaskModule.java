@@ -1660,7 +1660,34 @@ public class TaskModule extends BaseMediaModule
 		long ago = System.currentTimeMillis() - 24*60*60*1000;
 		Date todaysDate = new Date(ago);
 		inReq.putPageValue("date",todaysDate);
+	}
 
+	public Map getAllTasksForHits(WebPageRequest inReq) throws Exception
+	{
+		HitTracker hits = (HitTracker)inReq.getPageValue("hits");
+		if( hits != null)
+		{
+			Map<String,Collection> goalhits = new HashMap();
+			
+			MediaArchive archive = getMediaArchive(inReq);
+			Collection sorted = archive.query("goaltask").named("goaltasks").orgroup("projectgoal", hits).sort("creationdate").search();
+			
+			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+			{
+				Data task = (Data) iterator.next();
+				String goalid = task.get("projectgoal");
+				Collection tasks = goalhits.get(goalid);
+				if( tasks == null)
+				{
+					tasks = new ArrayList();
+					goalhits.put(goalid,tasks);
+				}
+				tasks.add(task);
+			}
+			inReq.putPageValue("goalhits",goalhits);
+			return goalhits;
+		}
+		return null;
 	}
 	
 }

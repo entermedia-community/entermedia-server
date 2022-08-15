@@ -2296,6 +2296,7 @@
 
 	<bean id="permissionManager" class="org.entermediadb.users.PermissionManager" scope="prototype" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 		<property name="filterReader"><ref bean="filterReader"/></property>	
 	</bean>
 
