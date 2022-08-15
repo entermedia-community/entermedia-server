@@ -399,8 +399,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 						StatusLine filestatus = genfile.getStatusLine();
 						if (filestatus.getStatusCode() != 200)
 						{
-							log.error("Could not download generated " + filestatus + " " + path);
-							throw new OpenEditException("Could not download generated " + filestatus + " " + path);
+							log.error("Could not download originals " + filestatus + " " + path);
+							throw new OpenEditException("Could not download originals " + filestatus + " " + path);
 						}
 						downloads++;
 						//Save to local file
