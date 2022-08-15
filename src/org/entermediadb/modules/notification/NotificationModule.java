@@ -112,7 +112,7 @@ public class NotificationModule extends BaseMediaModule
 		Lock lock = archive.getLockManager().lockIfPossible("notificationemails", "module");
 		if (lock == null)
 		{
-			log.error("Could not lock metadata notificationemails");
+			//log.error("Could not lock metadata notificationemails");
 			return;
 		}
 		try
@@ -137,7 +137,7 @@ public class NotificationModule extends BaseMediaModule
 			hits = archive.query("asseteditLog").exact("operation", "edit").after("date", startingfrom).search();
 			if(hits.isEmpty())
 			{
-				log.info("No edits made");
+				//log.info("No edits made");
 				return;
 			}
 			Map users = loadUserEditMetadata(archive, hits);
