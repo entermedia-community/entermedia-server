@@ -207,7 +207,12 @@ return catid;
 	
 	public String getWebName()
 	{
-		return getName().replaceAll(" ", "-");
+		if( getName() ==  null)
+		{
+			return "null";
+		}
+		String label = getName().replaceAll(" ", "-");
+		return label;
 	}
 	
 

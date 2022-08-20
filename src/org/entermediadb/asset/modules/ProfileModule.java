@@ -443,6 +443,31 @@ public class ProfileModule extends MediaArchiveModule
 		getUserProfileManager().saveUserProfile(prof);
 	}
 
+	public void addOrRemoveUserPreference(WebPageRequest inReq)
+	{
+		UserProfile prof = loadUserProfile(inReq);
+		String field = inReq.getRequestParameter("field");
+		if (field == null)
+		{
+			return;
+		}
+		String value = inReq.getRequestParameter("profilepreference.value");
+		if( value == null)
+		{
+			return;
+		}
+		if( prof.containsValue(field, value) )
+		{
+			prof.removeValue(field, value);
+		}
+		else
+		{
+			prof.addValue(field, value);
+		}
+		getUserProfileManager().saveUserProfile(prof);
+		inReq.putPageValue("userprofile",prof);
+	}
+
 	public void saveResultPreferences(WebPageRequest inReq) throws Exception
 	{
 		UserProfile pref = loadUserProfile(inReq);

@@ -40,7 +40,11 @@
       }
   ,
   
-  "data":#json($data $searcher.getPropertyDetails())
+  "data":
+  
+	$context.putPageValue("hit",$data)
+	$pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
+  
 }
 #else
   {
