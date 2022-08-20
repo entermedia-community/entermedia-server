@@ -32,6 +32,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.profile.UserProfile;
 import org.openedit.util.DateStorageUtil;
 
 public class ChatModule extends BaseMediaModule
@@ -52,7 +53,21 @@ public class ChatModule extends BaseMediaModule
 
 		QueryBuilder builder = archive.query("chatterbox");
 		
-		HitTracker results = builder.named("messagesthitracker").match("channel", channel).sort("dateDown").search(inReq);
+		builder.named("messagesthitracker").exact("channel", channel).sort("dateDown");
+		
+		
+		UserProfile prof = inReq.getUserProfile();
+		if( prof != null)
+		{
+			Collection blocked = prof.getValues("blockedusers");
+			if( blocked != null && !blocked.isEmpty() )
+			{
+				builder.notgroup("user", blocked );
+			}
+		}
+		
+
+		HitTracker results = builder.search(inReq);
 		
 		results.setHitsPerPage(20);
 		  
