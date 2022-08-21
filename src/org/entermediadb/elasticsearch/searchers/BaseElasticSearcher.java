@@ -427,11 +427,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}			
 			return added;
 		}
+		List added = new ArrayList();
 		
 		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-
+			if(added.contains(detail.getId())) {
+				continue;
+			}
 			if (detail.isDate())
 			{
 				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
@@ -483,6 +486,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
 				inSearch.addAggregation(b);
 			}
+			added.add(detail.getId());
 
 		}
 
