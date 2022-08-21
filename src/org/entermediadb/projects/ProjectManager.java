@@ -1899,6 +1899,19 @@ public class ProjectManager implements CatalogEnabled
 			builder.exact("collectiveproject", topic);
 		}
 
+		UserProfile prof = inReq.getUserProfile();
+		if( prof != null)
+		{
+			Collection blocked = prof.getValues("blockedusers");
+			if( blocked != null && !blocked.isEmpty() )
+			{
+				builder.notgroup("owner", blocked );
+			}
+		}
+		
+		//#if( !$userprofile.containsValue("blockedusers",$upload.owner) )
+
+		
 		topuploads = builder.named("topuploads").sort("uploaddateDown").search(inReq);
 		
 		String page = inReq.getRequestParameter("page");

@@ -1715,7 +1715,11 @@ Server ProjectModule.uploadFile
 		Map goalspermessage = new HashMap<String,Data>();
 		
 		Collection messages = (Collection)inReq.getPageValue("messages");
-		
+		if( messages == null)
+		{
+			log.error("No messages found");
+			return;
+		}
 		List ids = new ArrayList(messages.size());
 		for (Iterator iterator = messages.iterator(); iterator.hasNext();)
 		{
@@ -1763,13 +1767,13 @@ Server ProjectModule.uploadFile
 		}
 		//Check permissions
 		
-		Collection topics = archive.query("collectiveproject").exact("parentcollectionid", collection).hitsPerPage(10).search(inReq);
+		Collection topics = archive.query("collectiveproject").exact("parentcollectionid", collection).named("topics").hitsPerPage(10).search(inReq);
 		//TODO Cache these
 		inReq.putPageValue("topics", topics);
 		
 		Searcher chats = archive.getSearcher("chatterbox");
 	
-		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateDown").hitsPerPage(200).search(inReq);
+		HitTracker recent = chats.query().orgroup("channel", topics).named("hits").sort("dateDown").hitsPerPage(200).search(inReq);
 		inReq.putPageValue("messages", recent);
 		
 		Set users = new HashSet();
