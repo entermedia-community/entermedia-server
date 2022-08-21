@@ -113,10 +113,10 @@ public class ConvertGenerator extends FileGenerator
 			{
 				String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
 				String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
-				if( type.length() > 3)
-				{
-					type = type.substring(0,3);
-				}
+//				if( type.length() > 3)
+//				{
+//					type = type.substring(0,3);
+//				}
 				name = label + "." + type;
 			}
 		}
@@ -146,7 +146,6 @@ public class ConvertGenerator extends FileGenerator
 			copy.putProtectedPageValue("content",output);
 			super.generate(copy, output, inOut);
 			ConvertInstructions instructions = result.getInstructions();
-
 			//TODO: Find a better way to do this
 			if (instructions != null && instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
 			{
