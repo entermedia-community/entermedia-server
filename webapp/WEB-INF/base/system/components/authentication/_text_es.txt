@@ -1,7 +1,8 @@
 #
-#Thu Mar 28 09:37:08 CST 2019
+#Thu Aug 25 17:00:27 CDT 2022
 You\ do\ not\ have\ permissions\ to\ perform\ the\ previous\ action.=No tiene permisos para realizar la acci\u00F3n anterior.
 Email\ or\ Username=Correo electr\u00F3nico o nombre de usuario
+Back\ to\ Login\ page=Volver a la p\u00E1gina de inicio de sesi\u00F3n
 contact\ us=Cont\u00E1ctenos
 Or\ Sign-in\ with\ E-Mail\ only=O inicie sesi\u00F3n solo con correo electr\u00F3nico
 You\ are\ logged\ in\ as=Has iniciado sesi\u00F3n como
@@ -14,12 +15,14 @@ Log\ in=iniciar sesi\u00F3n
 Send\ Key=Enviar Clave
 Password=Contrase\u00F1a
 Enter\ your\ Email\ Address=Ingrese su direcci\u00F3n de correo electr\u00F3nico
+Enter\ six\ digit\ login\ code=Ingrese el c\u00F3digo de inicio de sesi\u00F3n de seis d\u00EDgitos
 Login=Iniciar Sesi\u00F3n
 Welcome\!\ Please\ enter\ your\ email\ and\ password\:=\u00A1Bienvenido\! 
 App\ Key=Clave de la aplicaci\u00F3n
 Please=Por favor
 Do\ you\ have\ any\ questions?=\u00BFTiene usted alguna pregunta?
 Please\ enter\ your\ password=Por favor, introduzca su contrase\u00F1a
+Please\ check\ your\ email=Por favor revise su correo electr\u00F3nico
 Sign-in\ with=Inicie sesi\u00F3n con
 Username\ and\ Password=Nombre de usuario y contrase\u00F1a
 or\ Create\ a\ New\ Account=o Crear una cuenta nueva

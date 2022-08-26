@@ -1,7 +1,7 @@
 #
 #Fri Mar 29 10:14:25 CST 2019
 Related\ Media=Medios Relacionados
-Asset\ is\ missing=Falta el activo
+Asset\ is\ missing=Falta Asset
 Dashboard=Tablero
 System\ Settings=Ajustes del sistema
 Revisions=Revisiones
@@ -10,17 +10,17 @@ Annotate=Anotar
 Attachments=Archivos adjuntos
 Language=Idioma
 There\ was\ a\ problem\ completing\ this\ request=Hubo un problema al completar esta solicitud
-Assets=Bienes
+Assets=Assets
 Logout=Cerrar sesi\u00F3n
 Permissions=Permisos
 My\ Account=Mi cuenta
-Settings=ajustes
+Settings=Ajustes
 Selected\ Media=Medios seleccionados
-Applications=aplicaciones
+Applications=Aplicaciones
 Add\ Media=A\u00F1adir medios
 Login=Iniciar sesi\u00F3n
 Followers=Seguidores
-Library\ Assets=Activos de la biblioteca
+Library\ Assets=Biblioteca de Assets
 Close=Cerrar
-Ok=De acuerdo
+Ok=Ok
 Pending=Pendiente

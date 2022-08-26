@@ -1,7 +1,27 @@
 
 <projectstatuss>
-  <projectstatus id="open">Open</projectstatus>
-  <projectstatus id="critical">Urgent</projectstatus>
-  <projectstatus id="closed">Closed</projectstatus>
-  <projectstatus id="completed">Completed</projectstatus>
+  <projectstatus id="open">
+   <name> 
+      <language id="en"><![CDATA[Open]]></language> 
+      <language id="es"><![CDATA[Active]]></language>
+    </name> 
+  </projectstatus>
+  <projectstatus id="critical">
+  	<name> 
+      <language id="en"><![CDATA[Urgent]]></language> 
+      <language id="es"><![CDATA[Urgente]]></language>
+    </name> 
+  </projectstatus>
+  <projectstatus id="closed">
+  <name> 
+      <language id="en"><![CDATA[Closed]]></language> 
+      <language id="es"><![CDATA[Cerrado]]></language>
+    </name> 
+    </projectstatus>
+  <projectstatus id="completed">
+  <name> 
+      <language id="en"><![CDATA[Completed]]></language> 
+      <language id="es"><![CDATA[Finalizado]]></language>
+    </name> 
+  </projectstatus>
 </projectstatuss>

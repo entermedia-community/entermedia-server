@@ -1,7 +1,9 @@
 #
-#Tue Apr 07 17:58:14 CST 2020
+#Thu Aug 25 17:44:11 CDT 2022
+All=Todos
 No\ values\ found=No se encontraron valores
 After\ Date=despu\u00E9s de la fecha
+New=Nuevo
 Please\ enter=Por favor escribe
 chars\ less=Caracteres menos
 chars\ more=Chars m\u00E1s
@@ -9,10 +11,11 @@ Remove=retirar
 Add\ New=A\u00F1adir nuevo
 Over=encima
 Remove\ Asset\ Selected=Eliminar activo seleccionado
-Clear\ Selection=Selecci\u00F3n clara
+Clear\ Selection=Limpiar Selecci\u00F3n
 Search=Buscar
 limit\ reached=l\u00EDmite alcanzado
 Pick\ Categories=Escoja Categor\u00EDas
+View\ Catalog=Ver cat\u00E1logo
 No=No
 or=o
 Past\ year=A\u00F1o pasado
@@ -34,3 +37,4 @@ Past\ month=El mes pasado
 Choose\ a\ File=Escoge un archivo
 Enter\ comma\ separated\ tags=Introducir etiquetas separadas por comas
 to=a
+Sorry\ -\ wrong\ format=Lo siento, formato incorrecto
