@@ -80,7 +80,7 @@ public void runit()
 		String lastUserId = projectgoal.get("lasteditedby");
 		User lastUser = mediaArchive.getUser(lastUserId);
 		
-		manager.notifyTopic(collectionid, lastUser, subject, message, extra);
+		manager.notifyTopic(collectionid,collection.getName(),lastUser, subject, message, extra);
 		
 	}
 

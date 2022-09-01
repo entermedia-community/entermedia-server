@@ -17,7 +17,7 @@ public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String firebaseid, String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
+	public void notifyTopic(String firebaseid, String inToken, String inChannel, String inChannelLabel, User inUser, String inSubject, String inMessage, Map extraData)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
@@ -68,18 +68,21 @@ public class FireBase {
 			//data.put("chattopic",inTopic);
 			data.put(key,value);
 		}
+		data.put("title", inSubject);
+		data.put("channellabel", inChannelLabel);
+
 //		 intent.putExtra("collectionid",inCollectionId);
 //        intent.putExtra("userlabel",inUserLabel);
 //        intent.putExtra("message",messageBody);
 		
 		message.put("data", data);
 	
-		JSONObject notification = new JSONObject();
-		notification.put("title", inSubject);
-		notification.put("body", inMessage);
+//		JSONObject notification = new JSONObject();
+//		notification.put("title", inSubject);
+//		notification.put("body", inMessage);
 		//notification.put("channel_id","my_channel_id");
 		
-		message.put("notification", notification);
+		//message.put("notification", notification);
 
 		String tosend = root.toJSONString();
 		post.setEntity(new StringEntity(tosend, "UTF-8"));
