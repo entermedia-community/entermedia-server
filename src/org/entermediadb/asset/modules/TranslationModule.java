@@ -237,13 +237,16 @@ public class TranslationModule extends BaseModule {
 
 	public void changeLanguage(WebPageRequest inReq) throws Exception {
 		String newlang = inReq.getRequestParameter("newlang");
-		getTranslations(inReq);
-		if (newlang != null) {
-			if (newlang.equals("locale_browser")) {
-				inReq.removeSessionValue("sessionlocale");
-			} else {
-				String locale = newlang.substring("locale_".length());
-				inReq.putSessionValue("sessionlocale", locale);
+		if( newlang != null)
+		{
+			getTranslations(inReq);
+			if (newlang != null) {
+				if (newlang.equals("locale_browser")) {
+					inReq.removeSessionValue("sessionlocale");
+				} else {
+					String locale = newlang.substring("locale_".length());
+					inReq.putSessionValue("sessionlocale", locale);
+				}
 			}
 		}
 	}

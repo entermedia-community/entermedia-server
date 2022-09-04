@@ -2,6 +2,7 @@ package org.entermediadb.modules.notification;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,6 +78,10 @@ public class UserChats
 	public Collection getMessages(String inAssetId)
 	{
 		Collection existingmessages = (Collection) fieldAssetMessages.get(inAssetId);
+		if( existingmessages == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		existingmessages = sort(existingmessages);
 		//TODO: Sort by date
 		return existingmessages;
