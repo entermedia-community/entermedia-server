@@ -509,7 +509,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		if( lasttrack != null)
 		{
 			String status = lasttrack.get("transcribestatus");
-			if( status.equals("error"))
+			if(status != null &&  status.equals("error"))
 			{
 				log.info("Retrying track " + inAsset.getId() + " " + inSelectedlang);
 				lasttrack.setValue("transcribestatus", "needstranscribe");
