@@ -956,7 +956,7 @@ public class GoogleManager implements CatalogEnabled
 	}
 
 	// For Push Notifications
-	public void notifyTopic(final String inChannel,final String inChannelLabel,final  User inUser,final  String inSubject, final String inMessage, final Map inExtraData)
+	public void notifyTopic(final String inChannel,final  User inUser,final  String inSubject, final String inMessage, final Map inExtraData)
 	{
 		//TODO: Dont spam the channel. Send the first one. Then wait 20min for the rest
 		getExecutorManager().execute( new Runnable() {
@@ -975,7 +975,7 @@ public class GoogleManager implements CatalogEnabled
 					}
 					String accesstoken = getAccessToken(authinfo);
 					FireBase base = new FireBase();
-					base.notifyTopic(firebaseid,accesstoken, inChannel,inChannelLabel, inUser, inSubject, inMessage, inExtraData);
+					base.notifyTopic(firebaseid,accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
 				}
 				catch (Throwable ex)
 				{

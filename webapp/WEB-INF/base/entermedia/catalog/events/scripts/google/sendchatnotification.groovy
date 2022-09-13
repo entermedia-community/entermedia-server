@@ -67,7 +67,7 @@ public void runit()
 					extra.put("collectivetopicid", topicid);
 					extra.put("collectivetopiclabel", otherUser.getScreenName());
 					extra.put("userid", aUser.getId());
-					manager.notifyTopic(collection.getId(), collection.getName(),aUser, subject, message, extra);
+					manager.notifyTopic(collection.getId(),aUser, subject, message, extra);
 				}
 			}
 		}
@@ -82,7 +82,7 @@ public void runit()
 			extra.put("collectivetopiclabel", topicdata.getName());
 			extra.put("userid", aUser.getId());
 			
-			manager.notifyTopic(collection.getId(), collection.getName(), aUser, subject, message, extra);
+			manager.notifyTopic(collection.getId(), aUser, subject, message, extra);
 		}	
 	}
 
