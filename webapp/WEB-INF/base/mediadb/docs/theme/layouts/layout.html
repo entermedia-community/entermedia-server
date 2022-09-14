@@ -35,7 +35,7 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
       <div class="card-header" id="collapseListGroupHeading1${section.id}">
         <h5 class="mb-0">
           <a class="" data-toggle="collapse" href="#collapseListGroup1${section.id}" data-target="#collapseListGroup1${section.id}" #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
-            $section
+            $context.getText($!mediaarchive.getCachedData("docsection", $section.getId()))
           </a>
         </h5>
       </div>
