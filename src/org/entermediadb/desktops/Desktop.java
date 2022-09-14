@@ -322,9 +322,11 @@ public class Desktop
 	public void setUserDownloadComplete(MediaArchive inMediaArchive, String inId)
 	{
 		Data userdownload = inMediaArchive.query("userdownloads").id(inId).searchOne();
-		userdownload.setValue("isdownloadcomplete",true);
-		inMediaArchive.saveData("userdownloads",userdownload);
-		
+		if( userdownload  != null)
+		{
+			userdownload.setValue("isdownloadcomplete",true);
+			inMediaArchive.saveData("userdownloads",userdownload);
+		}		
 		
 		
 	}
