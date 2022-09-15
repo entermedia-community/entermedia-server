@@ -1,6 +1,10 @@
+	#ifnull($targetdiv)
 	#set($targetdiv = "resultsdiv")
+	#end
+	#ifnull($resultsLink)
 	#set( $searchhome = "$home$apphome/components/table")
 	#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#end
 	#set($resultsPage = "$resultsLink&page")
 	#set($thispage = $hits.getPage())
 	
@@ -9,7 +13,7 @@
 		#if( $hits && $hits.getTotalPages() >  1  )
 	
 	
-	<div id="pages" class="pages">
+	<div id="pages" class="pages smartpages">
 		<ul>
 			<li id="resultpageslabel" class="resultmenuitem">
 			<div>
@@ -25,17 +29,17 @@
 			#set( $befores = $hits.linksBefore() )					
 			#if($befores.size()!=0)
 			  #if($befores.get(0)>1)
-				<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=1" >1</a></li>	
+				<li class="pagenum"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=1" >1</a></li>	
 			    <li class="ellipsis">...</li>
 			   #end
 			#end
 			#set( $afters = $hits.linksAfter() )
 			#foreach( $before in $befores )
-				<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$before" >$before</a></li>		
+				<li  class="pagenum"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$before" >$before</a></li>		
 			#end
 			<li class="current"><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$thispage" >$!thispage</a></li>
 			#foreach( $after in $afters )
-				<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$after">$after</a></li>		
+				<li  class="pagenum"><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$after">$after</a></li>		
 			#end
 			#set($size=${afters.size()})
 			#set( $size = $size - 1 )
