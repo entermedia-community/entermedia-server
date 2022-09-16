@@ -1,0 +1,11 @@
+<page>
+	
+	<path-action name="JsonAssetModule.preprocess" />
+	
+	<path-action name="ProjectModule.loadTopMessages"/>
+
+	<generator name="velocity"/>
+	<permission name="view">
+		  <user/>
+	</permission>
+</page>

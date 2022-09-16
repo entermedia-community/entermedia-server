@@ -1,6 +1,7 @@
 package org.entermediadb.projects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -1785,6 +1787,74 @@ Server ProjectModule.uploadFile
 			
 		}
 		inReq.putPageValue("persons",users);
+	}
+	
+	public void loadTopMessages(WebPageRequest inReq)
+	{
+		if( inReq.getUser() == null )
+		{
+			return;
+		}
+		
+		String userid = inReq.getRequestParameter("userid");
+		if( userid != null)
+		{
+			userid = inReq.getUserName();
+		}
+		else
+		{
+			if( !inReq.getUserProfile().isInRole("administrators"))
+			{
+				log.error("Non Admin is trying to get other users messages");
+				return;
+			}
+		}
+		
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+
+		UserProfile profile = mediaArchive.getUserProfileManager().loadUserProfile(inReq, mediaArchive.getCatalogId(), userid);
+		if( profile == null)
+		{
+			return;
+		}
+
+		//Check permissions
+		Set allowedcats = new HashSet();
+
+		Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
+		Collection canview = profile.getViewCategories();
+		if( canview != null )
+		{
+			allowed.addAll(canview);
+		}
+		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
+		{
+			Category allowedcat = (Category) iterator.next();
+			allowedcats.add(allowedcat.getId());
+		}
+		if (allowedcats.isEmpty())
+		{
+			allowedcats.add("none");
+		}
+		Collection librarycollections = mediaArchive.query("librarycollection")
+				.orgroup("parentcategories",allowedcats)
+				.notgroup("collectiontype", Arrays.asList("0","2"))
+				.search();
+		
+		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).search(inReq);
+		if( moddifiedcol.isEmpty())
+		{
+			log.info("No messages modifield");
+			return;
+		}
+		moddifiedcol.enableBulkOperations();
+		Collection messages = moddifiedcol.collectValues("messageid");
+		
+		Searcher chats = mediaArchive.getSearcher("chatterbox");
+		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(100).search(inReq);
+		inReq.putPageValue("messages", recent);
+
 	}
 
 }

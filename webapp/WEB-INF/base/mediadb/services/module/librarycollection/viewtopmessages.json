@@ -1,0 +1,35 @@
+#set( $hits = $messages )
+#set( $searcher = $hits.getSearcher() )
+		#set( $projectmanager = $mediaarchive.getBean("projectManager") )
+{
+	"response":
+		{
+		    "status":"ok",
+		    "userid":"$user.getId()",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($hit $searcher.getPropertyDetails())
+			#set( $topic = $mediaarchive.getCachedData("collectiveproject",$hit.channel) )
+			#if( $topic )
+			, "topic": 
+				{
+					#jsonfields($topic $mediaarchive.getSearcher("collectiveproject").getPropertyDetails())
+				}			 
+			#end
+			}
+		#end
+		]
+}
