@@ -255,6 +255,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				}
 				
 				String name = archive.getUser(userid).getFirstName();
+				if (name == null) 
+				{
+					name = "";
+				}
 				/* Get project name and save as topic for notification */
 				Object library = archive.getData("librarycollection", collectionid);
 				if (library != null)
