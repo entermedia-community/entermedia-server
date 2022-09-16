@@ -1797,7 +1797,7 @@ Server ProjectModule.uploadFile
 		}
 		
 		String userid = inReq.getRequestParameter("userid");
-		if( userid != null)
+		if( userid == null)
 		{
 			userid = inReq.getUserName();
 		}
