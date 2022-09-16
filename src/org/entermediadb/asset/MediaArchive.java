@@ -39,6 +39,7 @@ import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
+import org.entermediadb.users.UserProfileManager;
 import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -2838,6 +2839,11 @@ public class MediaArchive implements CatalogEnabled
 	public void clearCachedData(String inType, String inId)
 	{
 		getCacheManager().remove("data" + inType, inId);
+	}
+	
+	public UserProfileManager getUserProfileManager()
+	{
+		return (UserProfileManager)getModuleManager().getBean(getCatalogId(),"userProfileManager",true);
 	}
 
 }
