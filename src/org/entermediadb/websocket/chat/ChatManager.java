@@ -64,7 +64,11 @@ public class ChatManager implements CatalogEnabled
 		updateChatTopicLastModified(channelid, "");
 	}
 	
-	public synchronized void updateChatTopicLastModified(String channelid, String inUserId)
+	public synchronized void updateChatTopicLastModified(String channelid, String inUserId) {
+		updateChatTopicLastModified(channelid, inUserId, "");
+	}
+	
+	public synchronized void updateChatTopicLastModified(String channelid, String inUserId, String inMessageId)
 	{
 		MultiValued status = (MultiValued) getMediaArchive().query("chattopiclastmodified").exact("chattopicid", channelid).searchOne();
 		if (status == null)
@@ -83,6 +87,10 @@ public class ChatManager implements CatalogEnabled
 		if(inUserId != null) {
 			//save user
 			status.setValue("userid", inUserId);
+		}
+		if(inMessageId != null) {
+			//save Message
+			status.setValue("messageid", inMessageId);
 		}
 		status.setValue("datemodified", new Date());
 		getMediaArchive().saveData("chattopiclastmodified", status);

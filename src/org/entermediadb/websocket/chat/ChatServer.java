@@ -257,8 +257,8 @@ public class ChatServer
 		
 		chats.saveData(chat);
 		
-		
-		inMap.put("messageid", chat.getId());
+		String messageid = chat.getId();
+		inMap.put("messageid", messageid);
 		
 		User user = archive.getUser(userid);
 		String assetid = (String)inMap.get("assetid");
@@ -291,7 +291,7 @@ public class ChatServer
 					Object channelid = channel;
 					if( channelid != null)
 					{
-						manager.updateChatTopicLastModified(String.valueOf( channelid), String.valueOf( userid) );
+						manager.updateChatTopicLastModified(String.valueOf( channelid), String.valueOf( userid), String.valueOf( messageid) );
 					}
 				}
 			});
