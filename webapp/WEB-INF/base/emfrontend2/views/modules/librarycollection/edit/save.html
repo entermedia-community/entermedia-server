@@ -1,7 +1,0 @@
-<div class="alert-primary alert-save alert-save-top fader">[[Saved Ok]]</div>
-#set($id = $context.getRequestParameter("id"))
-#if ($id.startsWith("multiedit:"))
-	$pages.include("./batchedit.html")
-#else
-	$pages.include("./edit.html")
-#end
