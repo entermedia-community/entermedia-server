@@ -79,7 +79,7 @@
 			#set($deleteurl = "$home$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
 			#if($module=="librarycollection")
 				###set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
-				#set($deleteurl = ""$home$componenthome/actions/deleteselections.html?hitssessionid=$hits.sessionId")
+				#set($deleteurl = "$home$componenthome/actions/deleteselections.html?hitssessionid=$hits.sessionId")
 			#end	    
 	 		<a class="dropdown-item emdialog"
 	 			data-maxwidth="600" 
