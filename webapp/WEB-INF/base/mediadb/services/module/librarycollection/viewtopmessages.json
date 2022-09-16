@@ -4,7 +4,12 @@
 {
 	"response":
 		{
-		    "status":"ok",
+		    "status":
+		    #ifnull($error)
+		    "ok",
+		    #else
+		    "$error",
+		    #end
 		    "userid":"$user.getId()",
 			"totalhits" : $hits.size(),
 			"searchtype" : "$searcher.getSearchType()",

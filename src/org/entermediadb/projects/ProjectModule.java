@@ -1803,9 +1803,9 @@ Server ProjectModule.uploadFile
 		}
 		else
 		{
-			if( !inReq.getUserProfile().isInRole("administrators"))
+			if( !inReq.getUserProfile().isInRole("administrator"))
 			{
-				log.error("Non Admin is trying to get other users messages");
+				inReq.putPageValue("error", "Non Admin is trying to get other users messages");
 				return;
 			}
 		}
@@ -1845,7 +1845,7 @@ Server ProjectModule.uploadFile
 		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).search(inReq);
 		if( moddifiedcol.isEmpty())
 		{
-			log.info("No messages modifield");
+			inReq.putPageValue("error", "No messages modifield");
 			return;
 		}
 		moddifiedcol.enableBulkOperations();
