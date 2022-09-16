@@ -420,9 +420,17 @@ public class BaseImporter extends EnterMediaObject
 		{
 			value = getSearcher().createValue(inDetail.getId(), inVal);
 		}
-		return value;
+		Object finished = scrubValueIfNeeded(inDetail,value);
+		return finished;
 	}
 
+	public Object scrubValueIfNeeded(PropertyDetail inDetail, Object inVal)
+	{
+		Object finalVal = inVal;
+		//TO be overrriden by scripts
+		return finalVal;
+	}
+	
 	public boolean isMakeId()
 	{
 		return fieldMakeId;

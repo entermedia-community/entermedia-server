@@ -17,7 +17,7 @@ public class FireBase {
 
 	private static final Log log = LogFactory.getLog(FireBase.class);
 
-	public void notifyTopic(String firebaseid, String inToken, String inChannel, String inChannelLabel, User inUser, String inSubject, String inMessage, Map extraData)
+	public void notifyTopic(String firebaseid, String inToken, String inChannel, User inUser, String inSubject, String inMessage, Map extraData)
 	{
 		HttpSharedConnection connection = new HttpSharedConnection();
 
@@ -69,7 +69,7 @@ public class FireBase {
 			data.put(key,value);
 		}
 		data.put("title", inSubject);
-		data.put("channellabel", inChannelLabel);
+		data.put("body", inMessage);
 
 //		 intent.putExtra("collectionid",inCollectionId);
 //        intent.putExtra("userlabel",inUserLabel);

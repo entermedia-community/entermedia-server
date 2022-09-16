@@ -1,7 +1,0 @@
-<page>
-<path-action name="ProjectModule.addAssetsToCollection"/>
-<path-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-<path-action name="ProjectModule.redirectToCollectionRoot"/>
-</page>

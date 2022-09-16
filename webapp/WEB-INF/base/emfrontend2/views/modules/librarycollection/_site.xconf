@@ -5,55 +5,6 @@
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2/views/modules/default</property>
     <property name="module">librarycollection</property>
     
-	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
-
-	<path-action name="Admin.loadPermissions"/>
-	
-	<path-action name="DataPermissionModule.loadCustomModulePermissions">
-		<property name="parameterid">collectionid</property>
-		<property name="parentparameterid">library</property>
-		
-	</path-action>
-	
-	
-	
-	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true">
-		<property name="module">asset</property>
-
-		<property name="parameterid">collectionid</property>
-		<property name="parametertype">librarycollection</property>
-
-		<property name="parentparameterid">library</property>
-		<property name="parentparametertype">library</property>
-
-	</path-action>
-	
-	
-	<path-action name="ProfileModule.savePreference"/>
-	
-	<property name="defaulttab">mediatab</property>
-
-	
-	<property name="uploadtab">single</property>
-
-	<path-action name="ProfileModule.changeResultView"/>
-	
-	<path-action name="ProjectModule.listConnectedDesktop"/>
-
-<permission name="editdata">
-		<or>
-			<group name="administrators" />
-			<action name="ProjectModule.canEditCollection" />
-		</or>
-	</permission>
-	
-	<permission name="editcollection">
-		<or>
-			<group name="administrators" />
-			<action name="ProjectModule.canEditCollection" />
-			<action name="ProjectModule.isOnTeam" />
-		</or>
-	</permission>
 
 
 </page>
