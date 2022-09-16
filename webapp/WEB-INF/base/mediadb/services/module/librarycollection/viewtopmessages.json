@@ -4,13 +4,16 @@
 {
 	"response":
 		{
-		    "status":
-		    #ifnull($error)
-		    "ok",
-		    #else
-		    "$error",
+		    #ifnotnull($error)
+			    "status": "error",
+			    "errordetails": "$error",
 		    #end
-		    "userid":"$user.getId()",
+		    #ifnull($error)
+		    "status": "ok",
+		    #end
+		    "userid":"$user.getId()"
+		    #ifnotnull( $hits)
+		    ,
 			"totalhits" : $hits.size(),
 			"searchtype" : "$searcher.getSearchType()",
 			"hitsperpage": $hits.getHitsPerPage(),			
@@ -22,6 +25,7 @@
 				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
 				"search":#jesc($hits.getSearchQuery().toQuery())
 			}
+			#end
 		},
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end

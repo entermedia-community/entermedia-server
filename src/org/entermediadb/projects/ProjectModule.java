@@ -1813,42 +1813,20 @@ Server ProjectModule.uploadFile
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 
-		UserProfile profile = mediaArchive.getUserProfileManager().loadUserProfile(inReq, mediaArchive.getCatalogId(), userid);
-		if( profile == null)
+		HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(1000).exact("followeruser", userid).search(inReq);
+		Collection librarycollections = workspaces.collectValues("collectionid");
+		if( librarycollections.isEmpty())
 		{
+			inReq.putPageValue("error", "No such user in any collection");
 			return;
 		}
 
-		//Check permissions
-		Set allowedcats = new HashSet();
-
-		Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-		Collection canview = profile.getViewCategories();
-		if( canview != null )
-		{
-			allowed.addAll(canview);
-		}
-		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
-		{
-			Category allowedcat = (Category) iterator.next();
-			allowedcats.add(allowedcat.getId());
-		}
-		if (allowedcats.isEmpty())
-		{
-			allowedcats.add("none");
-		}
-		Collection librarycollections = mediaArchive.query("librarycollection")
-				.orgroup("parentcategories",allowedcats)
-				.notgroup("collectiontype", Arrays.asList("0","2"))
-				.search();
-		
-		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).search(inReq);
+		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).hitsPerPage(1000).search(inReq);
 		if( moddifiedcol.isEmpty())
 		{
 			inReq.putPageValue("error", "No messages modifield");
 			return;
 		}
-		moddifiedcol.enableBulkOperations();
 		Collection messages = moddifiedcol.collectValues("messageid");
 		
 		Searcher chats = mediaArchive.getSearcher("chatterbox");
