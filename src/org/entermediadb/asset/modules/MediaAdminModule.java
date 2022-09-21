@@ -677,9 +677,11 @@ public class MediaAdminModule extends BaseMediaModule
 		String targetcatalogid = inReq.findValue("catalogid");
 		
 		Data site = getSearcherManager().query("system", "site").exact("catalogid", targetcatalogid).searchOne();
-		inReq.setRequestParameter("id",site.getId());
-		createSiteSnapshot(inReq);
-		
+		if( site != null)
+		{
+			inReq.setRequestParameter("id",site.getId());
+			createSiteSnapshot(inReq);
+		}		
 	}
 	public void clearCaches(WebPageRequest inReq)
 	{

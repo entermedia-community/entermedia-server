@@ -1,0 +1,46 @@
+{
+	#jsonpartial($hit $searcher.getPropertyDetails()) 
+	,
+	#set( $cat = false)#set( $cat = $mediaarchive.getCategory($hit.rootcategory))
+	"categorypath" : "$!cat.getCategoryPath()"
+#if($hit.assetportrait)
+	#set($asset = $mediaarchive.getAsset($hit.assetportrait))
+	#set($link = $mediaarchive.asLinkToPreview($asset,"image550x350.jpg"))
+	, "logo": "$link"
+#end
+	#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$hit.id).exact("ontheteam","true").search($context) )
+	#if( !$team.isEmpty() )
+	, "team": [
+		#set( $second = false )
+		#foreach($member in $team)
+			#set( $person = $mediaarchive.getUser( $member.followeruser ) )
+			#if( $person )
+			#if( $second ), #end
+			#set( $second = true )
+			{
+				"userid" : "$person.id",
+				"screenname": "$person.screenName",
+				"email": "$person.email",
+				"firstName": "$person.firstName",
+				"lastName": "$person.lastName"
+				#set( $userimageurl = $mediaarchive.asLinkToProfile($person.assetportrait) )
+				#if($userimageurl)
+					,"portrait": "$userimageurl"
+				#end
+			}
+			#end
+		#end	
+	]
+	#end
+	#set( $topics = $mediaarchive.query("collectiveproject").exact("parentcollectionid",$hit.id).sort("name").search($context) )
+	#if( !$topics.isEmpty() )
+	, "topics": [
+		#set( $second = false )
+		#foreach($topic in $topics)
+			{ #if( $foreach.count != 1 ), #end
+				#jsonfields($topic $topics.getSearcher().getPropertyDetails()) 
+			}
+		#end	
+	]
+	#end
+}

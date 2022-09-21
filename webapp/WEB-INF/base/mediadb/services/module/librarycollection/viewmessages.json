@@ -11,7 +11,7 @@
 			"hitsperpage": $hits.getHitsPerPage(),			
 			"page": $hits.getPage(),
 			"pages": $hits.totalPages,
-			"hitsessionid": "$hits.getSessionId()",
+			"hitssessionid": "$hits.getSessionId()",
 			"query":
 			{
 				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
