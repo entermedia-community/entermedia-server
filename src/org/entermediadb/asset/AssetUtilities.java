@@ -519,6 +519,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			sourcepath = sourcepath + "/";
 		}
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 		if (sourcepath.startsWith("/"))
 		{
 			sourcepath = sourcepath.substring(1);

@@ -217,9 +217,13 @@ public class BaseJsonModule extends BaseMediaModule
 				{
 					map = new LanguageMap();
 				}
-				if( value != null && key.contains("."))
+				if( value != null )
 				{
-					String lang = key.substring(key.indexOf( ".") + 1);
+					String lang = "en";
+					if( key.contains("."))
+					{
+						lang = key.substring(key.indexOf( ".") + 1);
+					}
 					map.setText(lang,String.valueOf( value) );
 				}
 				inData.setValue(detail.getId(), map);

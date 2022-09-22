@@ -19,14 +19,13 @@ $data.samplerequest
 <textarea name="jsonrequest" #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
 </textarea>
 
-#if( "$!data.uploadfile" == "true" )
+#foreach( $toupload in $data.getValues("filefieldstoupload"))
 
-<input type="file" name="file"  id="file"/>
+<input type="file" name="$toupload"  id="$toupload"/>
 
 #end
 
 </form>
-
 <input type="button" class="btn btn-primary" id="process" value="Execute">
 
 <h2 class="mt-4">[[Formatted and Raw Response]]:</h2>
@@ -57,8 +56,7 @@ jQuery("#process").on("click", function(){
    	var url = jQuery("#url").val();
     var method =  jQuery("#request").data("method");
     
-    if( "$!data.uploadfile" == "true" )
-    {
+    #if( $data.getValues("filefieldstoupload") )
         var data = new FormData(jQuery("#requestform")[0]);
         
         jQuery.ajax({
@@ -77,9 +75,7 @@ jQuery("#process").on("click", function(){
     		},
     		success: success
         });
-    }
-    else
-    {
+    #else
 	    jQuery.ajax({
 	        contentType: 'text/plain',
 	    	type: method,
@@ -95,7 +91,7 @@ jQuery("#process").on("click", function(){
 			success: success
 	    	//  dataType: "JSON"
 	    });
-    } 
+	#end
 });
 
 
