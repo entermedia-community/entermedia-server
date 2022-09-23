@@ -112,7 +112,7 @@ public class ProfileModule extends MediaArchiveModule
 			detail = (PropertyDetail) details.get(i);
 			if (detail.getId().equals(source))
 			{
-				if (i < target)
+				if (i < target && (target+1 <= details.size()))
 				{
 					details.add(target+1, detail);
 					details.remove(i);
@@ -174,10 +174,12 @@ public class ProfileModule extends MediaArchiveModule
 			{
 				// add it
 				Collection ids = new ArrayList();
-				for (Iterator iterator = details.iterator(); iterator.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					ids.add(detail.getId());
+				if(details!=null) {
+					for (Iterator iterator = details.iterator(); iterator.hasNext();)
+					{
+						PropertyDetail detail = (PropertyDetail) iterator.next();
+						ids.add(detail.getId());
+					}
 				}
 				ids.add(add);
 				userProfile.setValues("view_" + searchtype + "_" + view, ids);

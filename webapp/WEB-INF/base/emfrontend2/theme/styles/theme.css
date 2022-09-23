@@ -1455,10 +1455,9 @@ html, body, #application {
 
 .resultstablecell .emdatafieldreadonly {
   overflow:hidden; 
-  white-space:nowrap; 
+  white-space:pre-wrap; 
   text-overflow:ellipsis; 
-  max-width:280px; 
-}
+  }
 .resultstablecell .emdatafieldreadonly-nobr {
     white-space: nowrap;
 }

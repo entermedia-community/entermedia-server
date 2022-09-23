@@ -282,10 +282,10 @@ public class UserProfileManager
 				{
 					builder.match("viewroles", userprofile.getSettingsGroup().getId());
 				}
-				builder.sort("name");
+				builder.sort("ordering");
 				HitTracker modules  = builder.search();
 					//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
-				userprofile.setModules(modules);
+				userprofile.setModules(modules); 
 			}
 		}
 		else

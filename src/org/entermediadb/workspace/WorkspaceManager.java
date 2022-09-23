@@ -20,6 +20,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
@@ -278,10 +279,15 @@ public class WorkspaceManager
 		{
 			section = sectionSearcher.createNewData();
 			section.setId("module" + inModule.getId());
-			section.setName(inModule.getName());
-			sectionSearcher.saveData(section, null);
 		}
-		
+//		Object name = section.getValue("name");
+//		if( name == null)
+//		{
+			LanguageMap names = new LanguageMap();
+			names.setText("en", inModule.getName());
+			section.setValue("name",names);
+			sectionSearcher.saveData(section, null);
+//		}
 		Searcher endpointSearcher = getSearcherManager().getSearcher(inCatalogId, "endpoint");
 		Collection templates = getSearcherManager().getList(inCatalogId, "endpointmoduletemplate");
 		for (Iterator iterator = templates.iterator(); iterator.hasNext();)
