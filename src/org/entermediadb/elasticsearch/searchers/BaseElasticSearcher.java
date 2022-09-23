@@ -1151,7 +1151,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			or.mustNot(find);
 			return or;
 		}
-		else if( inDetail.getId().contains("."))
+		else if("nested".equals(inDetail.getDataType()))
 		{
 			String[] ids = inDetail.getId().split("\\.");
 			find = QueryBuilders.nestedQuery(ids[0], find);
