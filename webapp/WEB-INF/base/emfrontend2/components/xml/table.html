@@ -27,27 +27,24 @@
 #set ($catalogId = $context.getRequestParameter("catalogid") )
 			
 #set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
-#if(!$existingrecords)
 
+#if(!$existingrecords)
 	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
-	
 	#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
 	#set ( $sortby = $context.findValue("sortby"))
 	$!query.addSortBy($sortby)
 	#set( $existingrecords = $joinsearcher.search($query) )
-    
 #end
-
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $details = $joinsearcher.getDataProperties($viewpath,$user) )
+#set( $details = $joinsearcher.getDataProperties($viewpath, $user) )
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
 #set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
 <div id="${searchtype}_table" class="tableholder">
-    
+   
 #if($candelete != "false")
 <div id="emselectable" 
 		class="emselectable" 
@@ -63,6 +60,7 @@
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
 #if( $existingrecords && $existingrecords.size() > 0 )
+
 <table id="main-results-table" class="emdata table table-striped table-hover"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
 	<tr id="tableheader" class="tableheader">
