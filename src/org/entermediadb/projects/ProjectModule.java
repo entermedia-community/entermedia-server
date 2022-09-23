@@ -1806,7 +1806,8 @@ Server ProjectModule.uploadFile
 			if( !inReq.getUserProfile().isInRole("administrator"))
 			{
 				inReq.putPageValue("error", "Non Admin is trying to get other users messages");
-				return;
+				//return;
+				userid = inReq.getUserName();
 			}
 		}
 		

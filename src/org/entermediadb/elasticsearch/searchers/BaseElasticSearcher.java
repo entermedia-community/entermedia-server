@@ -1012,7 +1012,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else
 		{
-			if (detail.isAnalyzed() && !(detail.isList() || detail.isBoolean() || detail.isNumber() || detail.isDate() || detail.isGeoPoint() || "name".equals(detail.getId())))
+			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId())))  //TODO: For asset search
 			{
 				jsonproperties.field("analyzer", "lowersnowball");
 			}
@@ -1194,12 +1194,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		String fieldid = inDetail.getId();
 		if (inDetail.isMultiLanguage())
 		{
-
-			if (!fieldid.contains("_int"))
+			if (!fieldid.endsWith("_int"))
 			{
 				fieldid = fieldid + "_int.en";//default to search the english
 			}
-
 		}
 
 		if ("searchjoin".equals(inDetail.getDataType()))
@@ -1272,8 +1270,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if (valueof.equals("*"))
 		{
-			find = QueryBuilders.wildcardQuery(fieldid, "*");
-
+			//find = QueryBuilders.wildcardQuery(fieldid, "*");
+			find = QueryBuilders.matchAllQuery();
 			// ExistsFilterBuilder filter =
 			// FilterBuilders.existsFilter(fieldid);
 			// find = QueryBuilders.filteredQuery(all, filter);
@@ -1301,13 +1299,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 												// are not run by the analyser
 												// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 												// valueof);
-			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, wildcard);
+			String altid = inDetail.isAnalyzed()?fieldid+".sort":fieldid;
+			
+			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(altid, wildcard);
 
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.should(text);
 
 			valueof = valueof.replace("*", "");
-			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(altid, valueof);
 			phrase.maxExpansions(75);
 			or.should(phrase);
 			find = or;
@@ -1465,7 +1465,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else if (valueof.contains("*"))
 		{
-			find = QueryBuilders.wildcardQuery(fieldid, valueof);
+			if( inDetail.isAnalyzed())
+			{
+				find = QueryBuilders.wildcardQuery(fieldid + ".sort", valueof);
+			}
+			else
+			{
+				find = QueryBuilders.wildcardQuery(fieldid, valueof);
+			}
 		}
 		else if (inDetail.isBoolean())
 		{
@@ -1697,19 +1704,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						or.must(item);
 
 					}
-
 				}
 				find = or;
 			}
 			else if ("matches".equals(inTerm.getOperation()))
 			{
-				find = QueryBuilders.matchQuery(fieldid, valueof); // this is
-																	// analyzed
-																	// find = QueryBuilders.termQuery(fieldid, valueof);
+				find = createMatchQuery(inDetail, fieldid, valueof);
 			}
 			else if ("contains".equals(inTerm.getOperation()))
 			{
-				find = QueryBuilders.matchQuery(fieldid, valueof);
+				find = createMatchQuery(inDetail, fieldid, valueof);
 			}
 			else if (inDetail.isList())
 			{
@@ -1717,21 +1721,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				find = QueryBuilders.matchQuery(fieldid, valueof); // This is
-																	// analyzed
-																	// termQuery
-																	// is not
-																	// find = QueryBuilders.termQuery(fieldid, valueof);
+				find = createMatchQuery(inDetail, fieldid, valueof);
 			}
 		}
-		// QueryBuilders.idsQuery(types)
-		//
-		//		if (fieldid.contains("."))
-		//		{
-		//			String[] parentpath = fieldid.split(".");
-		//
-		//		}
+		return find;
+	}
 
+	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof)
+	{
+		QueryBuilder find;
+		if( inDetail.isAnalyzed())
+		{
+			find = QueryBuilders.matchQuery(fieldid + ".sort", valueof);
+		}
+		else
+		{
+			find = QueryBuilders.matchQuery(fieldid, valueof);
+		}
 		return find;
 	}
 
