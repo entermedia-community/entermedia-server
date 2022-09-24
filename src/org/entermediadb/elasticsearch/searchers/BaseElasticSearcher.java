@@ -371,7 +371,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
 			// Infinite loop check
-			if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+			//if (getSearcherManager().getShowSearchLogs(getCatalogId()))
 			{
 				long size = hits.size(); // order is important
 				json = search.toString();
@@ -932,7 +932,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			jsonproperties = jsonproperties.field("type", "boolean");
 		}
 		else if (detail.isDataType("number") || detail.isDataType("long"))
-		{
+		{|| "name".equals(detail.getId())
 			jsonproperties = jsonproperties.field("type", "long");
 		}
 		else if (detail.isDataType("double"))
@@ -976,7 +976,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				jsonproperties = jsonproperties.field("index", "analyzed");
 				jsonproperties = jsonproperties.field("analyzer", "tags");
 				jsonproperties = jsonproperties.field("ignore_above", 256);
-
+				|| "name".equals(detail.getId())
 				jsonproperties.endObject();
 
 				jsonproperties.endObject();
@@ -1012,7 +1012,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else
 		{
-			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId())))  //TODO: For asset search
+			//TODO: Remove the need for name column. Will the reindex break existing name columns?
+			if (detail.isAnalyzed() && !"name".equals(detail.getId()) ) //&& !("name".equals(detail.getId())))  //TODO: For asset search
 			{
 				jsonproperties.field("analyzer", "lowersnowball");
 			}
@@ -1299,7 +1300,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 												// are not run by the analyser
 												// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 												// valueof);
-			String altid = inDetail.isAnalyzed()?fieldid+".sort":fieldid;
+			String altid = null;
+			if( inDetail.isAnalyzed() && !inDetail.getId().equals("description") )
+			{
+				altid = fieldid+".sort";
+			}
+			else
+			{
+				altid = fieldid;
+			}
 			
 			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(altid, wildcard);
 
@@ -1730,7 +1739,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof)
 	{
 		QueryBuilder find;
-		if( inDetail.isAnalyzed())
+		if( inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
 		{
 			find = QueryBuilders.matchQuery(fieldid + ".sort", valueof);
 		}
