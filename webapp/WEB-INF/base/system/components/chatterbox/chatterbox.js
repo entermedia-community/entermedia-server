@@ -163,7 +163,7 @@ function connect() {
     	
     	var app = jQuery("#application");
     	var apphome = app.data("home") + app.data("apphome");
-    	
+    	jQuery(window).trigger("ajaxsocketautoreload");
         var message = JSON.parse(event.data);
         //console.log(message);
         
