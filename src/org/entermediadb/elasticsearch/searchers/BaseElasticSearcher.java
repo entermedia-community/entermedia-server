@@ -370,8 +370,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
-			// Infinite loop check
-			//if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+			if (getSearcherManager().getShowSearchLogs(getCatalogId()))
 			{
 				long size = hits.size(); // order is important
 				json = search.toString();
