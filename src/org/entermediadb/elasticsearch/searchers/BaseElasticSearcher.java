@@ -776,23 +776,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						jsonproperties.field("type", "string");
 						if (detail.isAnalyzed())
 						{
-							jsonproperties.startObject("fields");
-							jsonproperties.startObject("exact");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "not_analyzed");
-							jsonproperties = jsonproperties.field("ignore_above", 256);
-
-							jsonproperties.endObject();
-							//lowercase with no analysis 
-							jsonproperties.startObject("sort");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "analyzed");
-							jsonproperties = jsonproperties.field("analyzer", "tags");
-							jsonproperties = jsonproperties.field("ignore_above", 256);
-
-							jsonproperties.endObject();
-
-							jsonproperties.endObject();
+							jsonproperties = createExactEnabledField(detail,jsonproperties);
 
 						}
 
@@ -813,6 +797,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					jsonproperties = jsonproperties.startObject(detail.getId());
 					jsonproperties = jsonproperties.field("type", "string");
+					jsonproperties = createExactEnabledField(detail,jsonproperties);
 					jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
 
@@ -833,7 +818,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
-			//log.info(getSearchType() + " " + content);
+		//	log.info(getSearchType() + " " + content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -932,7 +917,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			jsonproperties = jsonproperties.field("type", "boolean");
 		}
 		else if (detail.isDataType("number") || detail.isDataType("long"))
-		{|| "name".equals(detail.getId())
+		{
 			jsonproperties = jsonproperties.field("type", "long");
 		}
 		else if (detail.isDataType("double"))
@@ -959,27 +944,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		else
 		{
 			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed() || detail.isViewType("tageditor"))
+			if (detail.isAnalyzed())
 			{
-				jsonproperties.startObject("fields");
-				jsonproperties.startObject("exact");
-				jsonproperties = jsonproperties.field("type", "string");
-				jsonproperties = jsonproperties.field("index", "not_analyzed");
-				if (!detail.getId().contains("path"))
-				{
-					jsonproperties = jsonproperties.field("ignore_above", 256);
-				}
-				jsonproperties.endObject();
-
-				jsonproperties.startObject("sort");
-				jsonproperties = jsonproperties.field("type", "string");
-				jsonproperties = jsonproperties.field("index", "analyzed");
-				jsonproperties = jsonproperties.field("analyzer", "tags");
-				jsonproperties = jsonproperties.field("ignore_above", 256);
-				|| "name".equals(detail.getId())
-				jsonproperties.endObject();
-
-				jsonproperties.endObject();
+				jsonproperties = createExactEnabledField(detail, jsonproperties);
 			}
 
 		}
@@ -1012,12 +979,35 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else
 		{
-			//TODO: Remove the need for name column. Will the reindex break existing name columns?
-			if (detail.isAnalyzed() && !"name".equals(detail.getId()) ) //&& !("name".equals(detail.getId())))  //TODO: For asset search
-			{
-				jsonproperties.field("analyzer", "lowersnowball");
-			}
+//			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId()))) 
+//			{
+//				jsonproperties.field("analyzer", "lowersnowball");
+//			}
 		}
+	}
+
+
+	protected XContentBuilder createExactEnabledField(PropertyDetail detail, XContentBuilder jsonproperties) throws IOException
+	{
+		jsonproperties.startObject("fields");
+		jsonproperties.startObject("exact");
+		jsonproperties = jsonproperties.field("type", "string");
+		jsonproperties = jsonproperties.field("index", "not_analyzed");
+		if (!detail.getId().contains("path"))
+		{
+			jsonproperties = jsonproperties.field("ignore_above", 256);
+		}
+		jsonproperties.endObject();
+
+		jsonproperties.startObject("sort");
+		jsonproperties = jsonproperties.field("type", "string");
+		jsonproperties = jsonproperties.field("index", "analyzed");
+		jsonproperties = jsonproperties.field("analyzer", "tags");
+		jsonproperties = jsonproperties.field("ignore_above", 256);
+		jsonproperties.endObject();
+
+		jsonproperties.endObject();
+		return jsonproperties;
 	}
 
 	public BoolQueryBuilder buildTerms(SearchQuery inQuery)

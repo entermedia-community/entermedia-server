@@ -11,7 +11,10 @@
 #set($map = $mediaarchive.getPropertyDetailsArchive().findSearchersWithDetail($error.getDetail()))
 <table class="main-results-table" style="width: 100%">
 <tr><td>Table</td><td>Field Name</td><td>Data Type</td><td>Index Type</td>
-<td>Indexed</td><td>Analyzer</td><td>Is Analyzed</td><td>Is Stored</td><td></td></tr>
+<td>Indexed</td><td>Analyzer</td><td>Is Analyzed</td>
+##<td>Is Stored</td>
+<td></td>
+<td></td></tr>
 #foreach($key in $map.keySet())
 #set($detail = false)
 #set($detail = $map.get($key))
@@ -20,7 +23,7 @@
 <td>$!detail.indextype</td>
 <td>$detail.isIndex()</td>
 <td>$!detail.analyzer</td><td>$detail.isAnalyzed()</td>
-<td>$detail.store()</td>
+##<td>$detail.store()</td>
 <td><a class="btn emdialog" data-hidefooter="true" data-width="300"  href="resetsettings.html?searchtype=$key">Reset Table Def</a></td>
 ##<td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail.id">Make all like this</a></td>
 ##<td><td><a class="btn" target="_blank" href="legacy.html?searchtype=$key&detail=$detail.id">Reset this field name and reset other lists</a> </td>
