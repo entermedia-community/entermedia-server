@@ -223,7 +223,10 @@ public class FinderModule extends BaseMediaModule
 			    { 
 			    	int a1 = Integer.parseInt(a.get("ordering"));
 			    	int b1 = Integer.parseInt(b.get("ordering"));
-			    	
+			    	if( a1 == b1)
+			    	{
+			    		return 0;
+			    	}
 			        if ( a1 > b1 ) {
 			        	return 1;
 			        }
@@ -232,6 +235,7 @@ public class FinderModule extends BaseMediaModule
 			    
 			});
 		}
+		log.info("Complete sort" + foundmodules);
 	}
 	private Collection loadMoreResults(MediaArchive archive, SearchQuery inSearchQuery, String inSourcetype, int maxsize)
 	{
