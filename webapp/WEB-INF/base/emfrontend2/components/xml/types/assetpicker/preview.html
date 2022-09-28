@@ -38,8 +38,9 @@
 	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
 				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</div>       
-	
-		<a class="stackedplayer" style="display: block; text-align: center;" data-assetid="$foundrow.id" href="#" title="$!sourcepath" >[[Open]]</a>
+		<div class="emthumbaudio-assetname">
+		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!foundrow.name" >$!foundrow.name</a>
+		</div>
 	#else
 		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
 		##       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
