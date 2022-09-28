@@ -82,7 +82,7 @@ $types.enableBulkOperations()
 		class="select2  #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" 
 		data-listid="$listid" 
-		data-placeholder=" "
+		data-placeholder="[[Search ]]#text($detail)"
 		data-searchtype='$!searchtype'
 		data-searchfield="$searchfield"
 		data-width="100%"

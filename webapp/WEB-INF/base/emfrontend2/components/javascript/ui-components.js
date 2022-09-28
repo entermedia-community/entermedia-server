@@ -148,8 +148,15 @@ uiload = function() {
 		if (allowClear == undefined)  {
 			allowClear = true;
 		}
+		
+		var placeholder = $(this).data('placeholder');
+		if( placeholder  == undefined)
+		{
+			placeholder = "...";
+		}
 		theinput.select2({
 			allowClear : allowClear,
+			placeholder: placeholder,
 			dropdownParent : dropdownParent
 		});
 		theinput.on("select2:open", function(e) {
