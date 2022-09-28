@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Type]]></language> 
     </name> 
   </property>  
-  <property id="parentid" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Parent 
+  <property id="parentid" type="list" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Parent 
     <name> 
       <language id="de"><![CDATA[Elternteil]]></language>  
       <language id="en"><![CDATA[Parent]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Parent]]></language> 
     </name> 
   </property>  
-  <property id="moduleid" index="true" stored="true" editable="true" legacy="module" keyword="false" filter="false" sortable="true">Module 
+  <property id="moduleid" type="list" listid="module" index="true" stored="true" editable="true" legacy="module" keyword="false" filter="false" sortable="true">Module 
     <name> 
       <language id="de"><![CDATA[Modul]]></language>  
       <language id="en"><![CDATA[Module]]></language>  
