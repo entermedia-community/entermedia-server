@@ -23,6 +23,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.CompositeData;
@@ -2297,11 +2298,11 @@ String viewbase = null;
 		}
 		Searcher searcher = archive.getSearcher(searchtype);
 		String id = inPageRequest.getRequestParameter("submoduleid");
-		Data entity = archive.getData(searchtype, id);
+		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
 		if (entity != null) {
 			String fieldexternalid = inPageRequest.getRequestParameter("fieldexternalid");
 			String fieldexternalvalue = inPageRequest.getRequestParameter("fieldexternalvalue");
-			entity.setValue(fieldexternalid, fieldexternalvalue);
+			entity.addValue(fieldexternalid, fieldexternalvalue);
 			searcher.saveData(entity);
 		}
 		
