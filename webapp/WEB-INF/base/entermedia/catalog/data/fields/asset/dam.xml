@@ -70,6 +70,15 @@
       <language id="fr"><![CDATA[Categories]]></language> 
     </name> 
   </property>  
+    <property id="collectionid" index="true" 
+  	type="list" stored="true" editable="true" listid="librarycollection" > 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
   <!-- Allow searching 
 	<property id="libraries"   type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
 	-->  
@@ -879,7 +888,16 @@
     <name> 
       <language id="en"><![CDATA[Import Path>]]></language> 
     </name> 
-  </property>  
+  </property> 
+  
+    <property id="datatype" index="true" listid="datadatatype" editable="true" stored="true" keyword="false" datatype="list"> 
+    <name> 
+      <language id="de"><![CDATA[Datentyp]]></language>  
+      <language id="en"><![CDATA[Data Type]]></language>  
+      <language id="es"><![CDATA[Tipo de datos]]></language>  
+      <language id="fr"><![CDATA[Type de données]]></language> 
+    </name> 
+  </property>   
   
   
 </page>
