@@ -167,6 +167,12 @@
       <language id="en"><![CDATA[Automatic Tagging]]></language>  
     </name> 
   </property>  
+  
+  	<property id="primaryimage" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="entities/${id}">  
+   	<name>
+   		<language id="en"><![CDATA[Primary Image]]></language>
+   	</name>
+   </property>
 
   <property id="notes" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Notes 
     <name> 
