@@ -2012,11 +2012,10 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				Searcher searcher = archive.getSearcher(searchtype);
 				PropertyDetail detail = searcher.getDetail(detailid);
-				if (detail != null)
+				if (detail != null && detail.get("sourcepath") != null)
 				{
-					sourcepath = detail.get("sourcepath");
-					sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
-
+					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
+					//OLD style sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
 				}
 			}
 			String path = "";
