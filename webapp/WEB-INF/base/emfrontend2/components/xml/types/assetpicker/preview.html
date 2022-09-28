@@ -14,38 +14,42 @@
 #end
 
 #if( $foundrow )
-#set( $rootid = $hits.sessionId )
-
-#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
-
-<div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
-#set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
-
-<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
-
-##       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
-##       data-sourcepath="$urlenc" data-name="$foundrow.name" src="$img" alt="$!foundrow.name"/>
-
-#set( $hit = $foundrow)
-        $context.putPageValue("hit", $hit)
-        #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-        $context.putPageValue("type", $rendertype)
-    	$context.putPageValue("thumbsize", "small" )
-
-	  	#if(!$rendertype || $rendertype =="rendertype")
-			#set( $rendertype = "mime" )
-		#elseif( $rendertype =="video")
-			#set( $rendertype = "videothumbnail" )
-		#end
-    	
-     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" title="$sourcepath" >
-			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-		</div>       
-</a>
-
-</div>
-
-	#if( $type == "audio")
-	<a href="$click" alt="$foundrow" class="audio-filename"> $foundrow.name	</a>
+	#set( $rootid = $hits.sessionId )
+	
+	#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
+	
+	<div  id="${detailid}-previewlink" style="display: block; text-align:center;">
+	#set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
+	
+	
+	#set( $hit = $foundrow)
+	$context.putPageValue("hit", $hit)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$context.putPageValue("type", $rendertype)
+	$context.putPageValue("thumbsize", "small" )
+	
+	#if(!$rendertype || $rendertype =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "videothumbnail" )
 	#end
+	
+	#if($rendertype == "audio")
+	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</div>       
+		<div class="emthumbaudio-assetname">
+		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!foundrow.name" >$!foundrow.name</a>
+		</div>
+	#else
+		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		##       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
+		##       data-sourcepath="$urlenc" data-name="$foundrow.name" src="$img" alt="$!foundrow.name"/>
+	
+	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</div>       
+	</a>
+	#end
+	</div>
 #end			
