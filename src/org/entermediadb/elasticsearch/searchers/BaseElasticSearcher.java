@@ -1972,6 +1972,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			try
 			{
 				Data data2 = (Data) iterator.next();
+				if( data2.getId() == null || data2.getId().trim().isEmpty())
+				{
+					continue;
+				}
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
@@ -3245,7 +3249,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 				{
 					Data hit = (Data) iterator2.next();
+					if( hit.getId() == null || hit.getId().trim().isEmpty())
+					{
+						continue;
+					}
 					Data real = (Data) loadData(hit);
+
 					tosave.add(real);
 					if (tosave.size() > 1000)
 					{
@@ -3329,6 +3338,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
 				Data hit = (Data) iterator2.next();
+				if( hit.getId() == null || hit.getId().trim().isEmpty())
+				{
+					continue;
+				}
 				tosave.add(hit);
 				if (tosave.size() > SIZE)
 				{
