@@ -34,7 +34,7 @@ public class FinderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(FinderModule.class);
 
-	private static final int MEDIASAMPLE=22;
+	private static final int MEDIASAMPLE=7;
 	
 	public void searchByQuery(WebPageRequest inReq)
 	{
@@ -46,7 +46,7 @@ public class FinderModule extends BaseMediaModule
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query);
 		HitTracker unsorted = dq.search(inReq);
 		//log.info(unsorted.size());
-		
+			
 		inReq.setRequestParameter("clearfilters","true");
 		unsorted.getSearchQuery().setValue("description",query); //Not needed?
 
@@ -267,7 +267,9 @@ public class FinderModule extends BaseMediaModule
 			Collection values = (Collection) bytypes.get(type);
 			if( values == null)
 			{
-				values = new ListHitTracker();			
+				ListHitTracker newvalues = new ListHitTracker();
+				newvalues.setHitsPerPage(maxsize);
+				values = newvalues;
 				bytypes.put(type,values);
 			}
 			int max = maxsize;
@@ -423,14 +425,14 @@ public class FinderModule extends BaseMediaModule
 		{
 			return;
 		}		
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(50);
+		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(10);
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search();
 
 		Map<String,String> keywordsLower = new HashMap();
 		collectMatches(keywordsLower, query, unsorted);
 		
-		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(50);
+		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(10);
 		assetdq.getQuery().setIncludeDescription(true);
 		HitTracker assetunsorted = assetdq.search();
 		collectMatches(keywordsLower, query, assetunsorted);
