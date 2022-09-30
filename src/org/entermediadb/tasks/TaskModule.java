@@ -77,7 +77,7 @@ public class TaskModule extends BaseMediaModule
 		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
 		if( collection == null)
 		{
-			log.info("Collection not found");
+			//log.info("Collection not found");
 			return;
 		}
 		
