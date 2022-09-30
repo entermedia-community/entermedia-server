@@ -1134,17 +1134,23 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
+		
 		QueryBuilder find = buildNewTerm(inDetail, inTerm, inValue);
+
 		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 		{
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.mustNot(find);
 			return or;
 		}
-		else if("nested".equals(inDetail.getDataType()))
+		else if( inDetail.getId().contains("."))
 		{
 			String[] ids = inDetail.getId().split("\\.");
-			find = QueryBuilders.nestedQuery(ids[0], find);
+			PropertyDetail parent = getDetail(ids[0]);
+			if( parent != null && "nested".equals(parent.getDataType()))
+			{
+				find = QueryBuilders.nestedQuery(ids[0], find);
+			}
 			/*
 			  "nested": {
 	            "path": "faceprofiles",
