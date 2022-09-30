@@ -36,6 +36,9 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		{
 			destinationpath = destinationpath + "/";
 		}
+		destinationpath = mediaArchive.getSearcherManager().getValue(mediaArchive.getCatalogId()
+				,destinationpath,inAsset.getProperties());
+		
 		String exportname = inPublishRequest.get("exportname");
 		//String guid = inPreset.get("guid");
 		try{
