@@ -33,10 +33,12 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		//Now publish it!		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 		String destinationpath = inDestination.get("url");
+		/*
 		if(!destinationpath.endsWith("/"))
 		{
 			destinationpath = destinationpath + "/";
 		}
+		*/
 		destinationpath = mediaArchive.getSearcherManager().getValue(mediaArchive.getCatalogId()
 				,destinationpath,inAsset.getProperties());
 		
