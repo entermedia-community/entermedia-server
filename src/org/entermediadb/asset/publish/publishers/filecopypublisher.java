@@ -13,6 +13,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 
 public class filecopypublisher extends BasePublisher implements Publisher
 {
@@ -41,6 +42,12 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		
 		String exportname = inPublishRequest.get("exportname");
 		//String guid = inPreset.get("guid");
+		
+		if( destinationpath.endsWith(exportname))
+		{
+			destinationpath = PathUtilities.extractDirectoryPath(destinationpath);
+		}
+		
 		try{
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);
