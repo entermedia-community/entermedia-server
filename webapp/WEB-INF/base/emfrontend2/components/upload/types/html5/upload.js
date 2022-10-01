@@ -34,7 +34,8 @@ $(document).ready(function()
 		         	
 		         	$("#uploadinstructionsafter").hide();
 		        	var startb = $("#startbutton");
-		        	$(startb).text("Upload");
+		        	var text = startb.data("uploadreadytext");
+		        	$(startb).text(text);
 	    			$(startb).prop('disabled', false);
 		        	$("#uploadinstructionsafter").show();
 		        	$(".showonselect").show();
