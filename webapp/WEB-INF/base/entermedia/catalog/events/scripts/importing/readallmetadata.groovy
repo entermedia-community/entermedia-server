@@ -8,9 +8,11 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.repository.ContentItem
 
+import groovy.util.logging.Log
+
 public void init()
 {
-		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+		MediaArchive archive = context.getPageValue("mediaarchive");
 		Searcher searcher = archive.getAssetSearcher();
 		HitTracker assets = searcher.query().all().not("editstatus","7").sort("id").search();
 		assets.enableBulkOperations();
@@ -26,6 +28,7 @@ public void init()
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
 		for (Data hit in assets)
 		{
+			log.info("metadatareader loading asset: ${hit.id}")
 			Asset asset = searcher.loadData(hit);
 
 			if( asset != null)
@@ -33,11 +36,11 @@ public void init()
 				ContentItem content = archive.getOriginalContent( asset );
 				reader.populateAsset(archive, content, asset);
 				assetsToSave.add(asset);
-				if(assetsToSave.size() == 1000)
+				if(assetsToSave.size() == 300)
 				{
 					archive.saveAssets( assetsToSave );
 					assetsToSave.clear();
-					log.info("saved 1000 metadata readings");
+					log.info("saved 300 metadata readings");
 				}
 			}
 		}

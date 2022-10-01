@@ -971,7 +971,8 @@ public class GoogleManager implements CatalogEnabled
 					String firebaseid = authinfo.get("remoteprojectid"); //entermediadb-177816
 					if( firebaseid == null)
 					{
-						throw new OpenEditException("remote project id missing");
+						//throw new OpenEditException("remote project id missing");
+						return;
 					}
 					String accesstoken = getAccessToken(authinfo);
 					FireBase base = new FireBase();
