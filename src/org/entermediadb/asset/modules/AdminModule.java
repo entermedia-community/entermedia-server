@@ -753,6 +753,9 @@ public class AdminModule extends BaseMediaModule
 		UserManager usermanager = getUserManager(inReq);
 		String catalogid = usermanager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
+		if(user == null) {
+			user = (User) inReq.getPageValue("user");
+		}
 		if (user == null)
 		{
 			//this user is already logged out
