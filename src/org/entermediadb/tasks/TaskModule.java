@@ -234,6 +234,8 @@ public class TaskModule extends BaseMediaModule
 				}
 			}
 		}	
+		final List order = Arrays.asList(new String[] {"critical","active","open"});
+		
 		for (Iterator iterator = week.iterator(); iterator.hasNext();)
 		{
 			List values = (List) iterator.next();
@@ -255,32 +257,19 @@ public class TaskModule extends BaseMediaModule
 								return date2.compareTo(date1);
 							}
 						}
-						else if( status1.equals("active"))
-						{
-							return 1;
-						}
-						else if( status2.equals("active"))
-						{
-							return -1;
-						}
-						else if( status1.equals("critical"))
-						{
-							return 1;
-						}
-						else if( status2.equals("critical"))
-						{
-							return -1;
-						}
-						else if( status1.equals("open"))
-						{
-							return -1;
-						}
-						else if( status2.equals("open"))
+						
+						int order1 = order.indexOf(status1);
+						int order2 = order.indexOf(status2);
+						
+						if( order1 == order2)
 						{
 							return 0;
 						}
-						
-						return 0;
+						else if( order1 > order2)
+						{
+							return 1;
+						}
+						return -1;
 					}
 			});
 			Collections.reverse(values);
