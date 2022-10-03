@@ -28,7 +28,7 @@ usernotify = function ()
 		siteroot = app.data("home");
 		}
 	if (siteroot == "undefined") {
-		console.log("Siteroot notdefined");
+		console.log("siteroot notdefined");
 		return;
 	}
 	var apphome =  siteroot + app.data("apphome");
@@ -74,13 +74,13 @@ usernotify = function ()
 	    		siteroot = app.data("home");
 	    		}
 	    	if (siteroot == "undefined") {
-	    		console.log("Siteroot notdefined");
+	    		console.log("siteroot notdefined");
 	    		return;
 	    	}
 	    	var apphome =  siteroot + app.data("apphome");
 	    	
 	        var message = JSON.parse(event.data);
-	        console.log("receipbed = " , message);
+	        console.log("received = " , message);
 	        if( message.command === "uireload")
 	        {
 		        var targetdiv = message.targetdiv;

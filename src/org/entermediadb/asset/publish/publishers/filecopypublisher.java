@@ -13,6 +13,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 
 public class filecopypublisher extends BasePublisher implements Publisher
 {
@@ -32,12 +33,23 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		//Now publish it!		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 		String destinationpath = inDestination.get("url");
+		/*
 		if(!destinationpath.endsWith("/"))
 		{
 			destinationpath = destinationpath + "/";
 		}
+		*/
+		destinationpath = mediaArchive.getSearcherManager().getValue(mediaArchive.getCatalogId()
+				,destinationpath,inAsset.getProperties());
+		
 		String exportname = inPublishRequest.get("exportname");
 		//String guid = inPreset.get("guid");
+		
+		if( destinationpath.endsWith(exportname))
+		{
+			destinationpath = PathUtilities.extractDirectoryPath(destinationpath);
+		}
+		
 		try{
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);

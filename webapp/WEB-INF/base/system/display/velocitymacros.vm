@@ -117,7 +117,7 @@ $invalue
 #elseif($detail.isMultiLanguage()) 
 #jsonmap($detail $value)
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
-#else#jesc($hit.get($detail.id)) 
+#else #jesc($hit.getText($detail.id,$context.getLocale()))
 #end
 #end
 #end

@@ -1,7 +1,6 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
-import java.text.SimpleDateFormat;  
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -30,13 +29,14 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
-import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+
+import com.google.common.collect.ComparisonChain;
 
 public class TaskModule extends BaseMediaModule
 {
@@ -77,7 +77,7 @@ public class TaskModule extends BaseMediaModule
 		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
 		if( collection == null)
 		{
-			log.info("Collection not found");
+			//log.info("Collection not found");
 			return;
 		}
 		
@@ -234,6 +234,8 @@ public class TaskModule extends BaseMediaModule
 				}
 			}
 		}	
+		final List order = Arrays.asList(new String[] {"critical","active","open"});
+		
 		for (Iterator iterator = week.iterator(); iterator.hasNext();)
 		{
 			List values = (List) iterator.next();
@@ -246,41 +248,24 @@ public class TaskModule extends BaseMediaModule
 						String status2 = pg2.get("projectstatus");
 						if( status1 == null) status1 = "open";
 						if( status2 == null) status2 = "open";
-						if( status1.equals(status2))
+						int order1 = order.indexOf(status1);
+						int order2 = order.indexOf(status2);
+
+						Date date1 = (Date)pg1.getDate("creationdate");
+						Date date2 = (Date)pg2.getDate("creationdate");
+						if( date1 == null)
 						{
-							Date date1 = (Date)pg1.getDate("creationdate");
-							Date date2 = (Date)pg2.getDate("creationdate");
-							if( date1 != null && date2 != null)
-							{
-								return date2.compareTo(date1);
-							}
+							date1 = new Date(0);
 						}
-						else if( status1.equals("active"))
+						if( date2 == null)
 						{
-							return 1;
-						}
-						else if( status2.equals("active"))
-						{
-							return -1;
-						}
-						else if( status1.equals("critical"))
-						{
-							return 1;
-						}
-						else if( status2.equals("critical"))
-						{
-							return -1;
-						}
-						else if( status1.equals("open"))
-						{
-							return -1;
-						}
-						else if( status2.equals("open"))
-						{
-							return 0;
+							date2 = new Date(0);							
 						}
 						
-						return 0;
+						int r = ComparisonChain.start().compare(order1, order2).
+						 	compare(date1, date2).result();  
+					        
+						return r;
 					}
 			});
 			Collections.reverse(values);

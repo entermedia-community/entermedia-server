@@ -69,6 +69,8 @@ curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {
 
 curl -XGET 'http://localhost:9200/insights_catalog/insight_project_mip/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/app_catalog/userupload/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
 
 
 insight_project_mip
