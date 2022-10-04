@@ -663,13 +663,27 @@ uiload = function() {
 			if (noesc != null && noesc == true) {
 				 modalkeyboard = false;
 			}
-			var modalinstance = modaldialog.modal({
-				keyboard : modalkeyboard,
-				backdrop : true,
-				closeExisting: false,
-				"show" : true
-			});
-				
+			var modalinstance;
+			if( bootstrap )
+			{
+				var newid = modaldialog.attr("id");
+				 const modal = document.getElementById(newid);
+		          //  document.body.appendChild(modal);
+		            
+				modalinstance  = new bootstrap.Modal(modal, {
+					keyboard : modalkeyboard
+					});
+				modalinstance.show();
+			}				
+			else
+			{
+				modalinstance = modaldialog.modal({
+					keyboard : modalkeyboard,
+					backdrop : true,
+					closeExisting: false,
+					"show" : true
+				});
+			}
 			var firstform = $('form', modaldialog);
 			firstform.data("openedfrom", openfrom);
 			// fix submit button

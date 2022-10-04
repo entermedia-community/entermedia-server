@@ -1,1 +1,4 @@
+#ifnull($val)
+	#set ($val = $context.replaceProperty($detail.defaultvalue) )  ##not used much
+#end
 <input type="text" size="15" value="#esc($val)"  id="${detail.getId()}.value" name="${detail.getId()}.value" class="form-control validateNumber" />

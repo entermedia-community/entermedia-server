@@ -92,6 +92,13 @@ $context.putPageValue("librarycol",$librarycol)
 							<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
 					#else		 
 					
+					#set( $type = $context.getRequestParameter("entitytype") )		
+					#if( $type )	 
+						#set( $typevalue = $context.getRequestParameter("entityvalue") )
+						<input type="hidden" name="field" value="$type" />
+						<input id="nodeid" type="hidden" name="${type}.value" value="$typevalue"/>
+					#end		 
+					
 						#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
 							$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
 						#end	

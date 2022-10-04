@@ -377,4 +377,12 @@ function createNotificationSubscription() {
 
 
 
+jQuery(document).ready(function() 
+{
+	lQuery(".chatterbox").livequery(function() {
+		chatterbox();
+		scrollToChat();
+	});
+});
+
 

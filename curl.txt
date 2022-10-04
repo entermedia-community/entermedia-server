@@ -63,6 +63,8 @@ curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
   }
  }' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/site_catalog/collectiveinvoice/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
 curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool

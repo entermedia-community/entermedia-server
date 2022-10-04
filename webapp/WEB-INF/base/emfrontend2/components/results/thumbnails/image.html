@@ -9,6 +9,7 @@
 #set ($sourcepath = $hit.sourcepath)
 #set ($urlutils = $context.getPageValue("url_util"))
 #set ($thumbsize = $context.getPageValue("thumbsize"))
+
 #if ($urlutils)
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
@@ -47,7 +48,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize))
 		#end
 		<div class="thumbimagecontainer">
-			<img class="imagethumb img-fluid"
+			<img class="imagethumb img-fluid d-block w-100"
 				 border="0" 
 				 sourcepath="$sourcepath" 
 				 catalogid="$catalogid" 
