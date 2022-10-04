@@ -32,9 +32,9 @@
 	#set( $localesearcher = $mediaarchive.getSearcher("locale") )
        #set($currentlang = $localesearcher.searchById($context.language))
       #if($currentlang)
- 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$currentlang</a> 
+ 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bs-toggle="dropdown">$currentlang</a> 
     #else
- 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">[[Language]]</a> 
+ 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bs-toggle="dropdown">[[Language]]</a> 
      #end
   
   	<div id="language-bar-select" class="dropdown-menu">
@@ -67,7 +67,7 @@
 	    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
 	#end
 #set( $urlbase = "$home$apphome/views/modules" )
-<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context)</a> 
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bs-toggle="dropdown">$module.getName($context)</a> 
 	<div id="module-bar-select" class="dropdown-menu">
 		#foreach ( $amodule in $userprofile.getModules() )
 			<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>

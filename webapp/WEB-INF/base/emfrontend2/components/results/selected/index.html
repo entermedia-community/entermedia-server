@@ -1,5 +1,5 @@
 <li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarSelectionsDropdown">
+<a class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarSelectionsDropdown">
 #if( $hits.isShowOnlySelected() )
 	[[Showing Selected]] ($hits.getSelectionSize()/$hits.size())
 #elseif( $hits.hasSelections()) 
@@ -32,7 +32,7 @@
 #if( $user && $hits.hasSelections() )
 
 <li class="nav-item dropdown">
-	<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
+	<a class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
 	</a>
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 		#if(!$canforcebasiccollections)
