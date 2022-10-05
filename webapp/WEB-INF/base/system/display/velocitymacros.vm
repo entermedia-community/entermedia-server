@@ -8,7 +8,7 @@
 #set( $text = $context.getText($t) )
 $!url_util.xmlEscape($text)
 #end
-#macro(text $data $field)
+#macro(datatext $data $field)
 #set( $text = $data.getText($field,$context))
 $!url_util.xmlEscape($text)
 #end
