@@ -503,24 +503,29 @@ uiload = function() {
 
 	lQuery("form.autosubmit").livequery(function() {
 		var form = $(this);
+		var data = form.data();
 		var targetdiv = form.data('targetdiv');
 		$("select",form).change(function() {
 			$(form).ajaxSubmit({
+				data:data,
 				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
 		$("input",form).on("keyup", function() {
 			$(form).ajaxSubmit({
+				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="file"]',form).on("change", function() {
 			$(form).ajaxSubmit({
+				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="checkbox"]',form).on("change", function() {
 			$(form).ajaxSubmit({
+				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
