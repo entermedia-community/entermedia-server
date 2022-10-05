@@ -52,7 +52,7 @@ public class ElasticHitTracker extends HitTracker
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
 	protected SearcherManager fieldSearcherManager;
-	
+	protected Aggregations fieldAggregations;
 
 	public SearcherManager getSearcherManager()
 	{
@@ -269,7 +269,7 @@ public class ElasticHitTracker extends HitTracker
 		{
 			
 			Aggregations facets = response.getAggregations();
-
+			fieldAggregations = facets;
 			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 			{
 				Object agg = iterator.next();
@@ -528,6 +528,11 @@ public class ElasticHitTracker extends HitTracker
 		return loadHistogram(inField, false);
 	}
 	
+	/**
+	 * This is a low level custom map of values. Not related to DataProperty fields
+	 * @param inName
+	 * @return
+	 */
 	public Map<String,Object> getAggregationMap(String inName){
 
 		Map<String,Object> map = new HashMap();
@@ -562,11 +567,14 @@ public class ElasticHitTracker extends HitTracker
 		
 		return map;
 	}
-	public Aggregations getAggregations(){
-		SearchResponse response = getSearchResponse(0);
-		Aggregations agregations = response.getAggregations();
-		
-		return agregations;
+	public Aggregations getAggregations()
+	{
+		if( fieldAggregations == null)
+		{
+			SearchResponse response = getSearchResponse(0);
+			fieldAggregations = response.getAggregations();
+		}		
+		return fieldAggregations;
 	}
 	
 	public Object getAggregationJson() throws ParseException {
