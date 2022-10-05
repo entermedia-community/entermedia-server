@@ -74,7 +74,7 @@ $context.putPageValue("module", $module)
 
 			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
 			  <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" 
+				<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
 					aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
 				#if($canpublish || $canemaillink )				
@@ -100,7 +100,7 @@ $context.putPageValue("module", $module)
 			#if($enabled && $canquickpublish )
 				#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 			<li class="nav-item">
-				<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+				<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
 					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
 						#foreach($item in $quickpublishlist)
 							<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>

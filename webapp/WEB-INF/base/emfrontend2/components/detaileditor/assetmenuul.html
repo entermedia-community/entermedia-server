@@ -22,7 +22,7 @@
 <div  class="asset-menu">
 <ul id="assetmenu">
 	#if($canprintpreview || $candownload || $candeleteasset)
-	<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[File Menu]]">[[File]]</a>
+	<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[File Menu]]">[[File]]</a>
     	<ul class="dropdown-menu">
 	 		#if($canprintpreview)
 	 			#set($printurl = "$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}")
@@ -53,7 +53,7 @@
     </li>
     #end
     #if ( $canshareasset )
-    <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Share Menu]]">[[Share]]</a>
+    <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Share Menu]]">[[Share]]</a>
     	<ul class="dropdown-menu">
 			#if ($canpublish)
                	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a></li>
@@ -71,7 +71,7 @@
    </li>
    #end
    <li>
-   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]">[[Edit]]</a>
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Edit Menu]]">[[Edit]]</a>
    <ul class="dropdown-menu">
    #if ( $asset.id.startsWith("multiedit:") )
         #set  ( $ismulti = true)

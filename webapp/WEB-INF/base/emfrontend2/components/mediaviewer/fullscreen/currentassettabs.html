@@ -67,7 +67,7 @@
 			#end
 			#if ( $canshareasset && !$ismulti )
             <li class="footermenu bottomtab hidemulti">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Share]]">
 			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
 			   <ul class="dropdown-menu">
    							#if ($canpublish)
@@ -104,7 +104,7 @@
 			#if (!$ismulti)
 			#if(1==2 && ($candownload || $canconvert || $candownloadfpo))
 				<li class="footermenu bottomtab hidemulti" >		
-					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
+					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
 					   <ul class="dropdown-menu">
 						#if( !$cdnprefix )
 							#set( $cdnprefix = $context.siteRoot )
@@ -152,7 +152,7 @@
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
 			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>  
 			   <span class="bottomtabactionstext">
 			   ##TODO Create a table for actions
