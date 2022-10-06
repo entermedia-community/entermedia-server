@@ -421,7 +421,7 @@ select.form-control-sm2:not([size]):not([multiple]) {
 	width:200px;
 	margin-right: 10px;
 	display:inline-block;
-	height: calc(1.8rem);
+	height: calc(1.6rem);
 	padding:.215rem .35rem;
 	font-size: .9rem;
 	}
@@ -497,7 +497,7 @@ h3 {
 .emselectable .table-striped {
 	margin-bottom:0;
 }
-select + .select2-container {
+select + .select2-containerX {
   width: 100% !important;
 }
 .select2-container {
