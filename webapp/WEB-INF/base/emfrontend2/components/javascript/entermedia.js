@@ -178,13 +178,14 @@ findclosest = function(link,inid)
 }
 runajaxonthis = function(inlink,e)
 {
+	e.stopPropagation();
+	e.preventDefault();
+	
 	var ajaxprogress = $(".ajaxprogress"); 
 	ajaxprogress.show();
 	var inText = $(inlink).data("confirm");
 	if(e && inText && !confirm(inText) )
 	{
-		e.stopPropagation();
-		e.preventDefault();
 		return false;
 	}
 	inlink.attr('disabled','disabled');
@@ -211,8 +212,16 @@ runajaxonthis = function(inlink,e)
 	if( updateurl )
 	{
 		history.pushState({}, null, nextpage);
+		//window.scrollTo(0, 0);
+	}
+	
+	var jumptotop = inlink.data("jumptotop");
+
+	if( jumptotop )
+	{
 		window.scrollTo(0, 0);
 	}
+	
 	
 	if( inlink.hasClass("auto-active-link" ) )
 	{
@@ -229,6 +238,10 @@ runajaxonthis = function(inlink,e)
 	}
 
 	var options = inlink.data();
+	
+	if(inlink.data("oemaxlevel") == undefined) {
+		options["oemaxlevel"] = 1;
+	}
 	
 	if( targetDiv)
 	{
