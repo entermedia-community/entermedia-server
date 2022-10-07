@@ -59,14 +59,14 @@ public class ChatManager implements CatalogEnabled
 	}
 	
 
-	public synchronized void updateChatTopicLastModified(String channelid)
-	{
-		updateChatTopicLastModified(channelid, "");
-	}
-	
-	public synchronized void updateChatTopicLastModified(String channelid, String inUserId) {
-		updateChatTopicLastModified(channelid, inUserId, "");
-	}
+//	public synchronized void updateChatTopicLastModified(String channelid)
+//	{
+//		updateChatTopicLastModified(channelid, "");
+//	}
+//	
+//	public synchronized void updateChatTopicLastModified(String channelid, String inUserId) {
+//		updateChatTopicLastModified(channelid, inUserId, "");
+//	}
 	
 	public synchronized void updateChatTopicLastModified(String channelid, String inUserId, String inMessageId)
 	{
@@ -79,7 +79,6 @@ public class ChatManager implements CatalogEnabled
 			MultiValued topic = (MultiValued) getMediaArchive().getData("collectiveproject", channelid);
 			if (topic != null)
 			{
-
 				Collection collections = topic.getValues("parentcollectionid");
 				status.setValue("collectionid", collections);
 			}
@@ -205,7 +204,11 @@ public class ChatManager implements CatalogEnabled
 
 	}
 
-	
+	public ChatServer getChatServer()
+	{
+		ChatServer server  = (ChatServer) getModuleManager().getBean("system", "chatServer");
+		return server;
+	}
 	public String escapeMessage(String inMessage) {
 		
 		String escaped = URLUtilities.xmlEscape(inMessage);

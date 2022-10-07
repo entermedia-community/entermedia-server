@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
@@ -18,10 +17,9 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.users.User;
 
 public class ChatConnection extends Endpoint implements  MessageHandler.Partial<String> {
 	private static final Log log = LogFactory.getLog(ChatConnection.class);
@@ -238,7 +236,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			else if("messagereceived".equals(command) || "notify".equals(command))
 			{
 			
-				String content = getChatServer().saveMessage(map);
+				Data chat = getChatServer().saveMessage(map);  //<----- SAVE!!!!
+				
+				String content = chat.get("message");
 				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
@@ -299,13 +299,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		}
 	}
 
-	
-
-
-
 	public void sendMessage(JSONObject json) {
 		try {
-			String command = (String) json.get("command");
+			//String command = (String) json.get("command");
 			remoteEndpointBasic.sendText(json.toJSONString());
 		} catch (Exception e) {
 			log.error(e);

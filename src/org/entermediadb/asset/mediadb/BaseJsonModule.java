@@ -25,6 +25,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.util.DateStorageUtil;
 
 
 
@@ -228,10 +229,6 @@ public class BaseJsonModule extends BaseMediaModule
 				}
 				inData.setValue(detail.getId(), map);
 			}
-			else if(value instanceof String)
-			{
-				inData.setProperty(key, (String)value);
-			} 
 			else if(value instanceof Collection)
 			{
 				Collection ids = new ArrayList();
@@ -302,10 +299,13 @@ public class BaseJsonModule extends BaseMediaModule
 						inData.setProperty(key, targetid);
 					}
 			}
-			
+			else if(detail.isDate() && value != null )
+			{
+				inData.setValue(key, DateStorageUtil.getStorageUtil().parseFromObject(value));
+			}
 			else
 			{
-				inData.setValue(key, value);
+				inData.setValue(key, value);				
 			}
 
 		}

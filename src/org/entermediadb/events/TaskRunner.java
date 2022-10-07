@@ -192,7 +192,6 @@ public class TaskRunner extends java.util.TimerTask
 	
 	public void runBlocking()
 	{
-		// TODO Auto-generated method stub
 		//before we run this make sure our event is still enabled
 		//make sure this event did not get reloaded
 		PathEvent event = getEventManager().getPathEvent(getPathEvent().getPage().getPath());

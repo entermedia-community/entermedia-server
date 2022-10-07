@@ -108,7 +108,8 @@ public class JsonDataModule extends BaseJsonModule
 		}
 
 		searcher.saveData(newdata, inReq.getUser());
-	
+		archive.firePathEvent(searcher.getSearchType() + "/saved", inReq.getUser(), newdata);
+
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("data", newdata);
 
@@ -234,6 +235,7 @@ public class JsonDataModule extends BaseJsonModule
 
 			populateJsonData(request,searcher,newdata);
 			searcher.saveData(newdata, inReq.getUser());
+			archive.firePathEvent(searcher.getSearchType() + "/saved", inReq.getUser(), newdata);
 			inReq.putPageValue("searcher", searcher);
 			inReq.putPageValue("data", newdata);
 		}

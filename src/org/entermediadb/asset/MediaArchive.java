@@ -1276,14 +1276,25 @@ public class MediaArchive implements CatalogEnabled
 		return null;
 	}
 
-	public void firePathEvent(String operation, User inUser, Collection inData)
+	public void firePathEvent(String operation, User inUser, Collection inHits)
 	{
 		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
 		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
 
 		request.setRequestParameter("catalogid", getCatalogId());
-		request.putPageValue("hits", inData);
+		request.putPageValue("hits", inHits);
+		manager.runPathEvent(runpath, request);
+	}
+
+	public void firePathEvent(String operation, User inUser, Data inData)
+	{
+		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
+
+		request.setRequestParameter("catalogid", getCatalogId());
+		request.putPageValue("data", inData);
 		manager.runPathEvent(runpath, request);
 	}
 

@@ -188,10 +188,12 @@ public class ChatServer
 				{
 					ChatConnection chatConnection = (ChatConnection) iterator.next();
 					chatConnection.sendMessage(inMap);
-					
 				}	
 			}
 			ChatManager manager = getChatManager(catalogid);
+			
+			
+			//For people who are logged in, mark that they checked already
 			getExecutorManager(catalogid).execute( new Runnable() {
 				@Override
 				public void run() 
@@ -215,7 +217,7 @@ public class ChatServer
 		}
 	}
 
-	public String saveMessage(final JSONObject inMap)
+	public Data saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
 		log.info("Saving Message: " + inMap.toJSONString());
@@ -244,23 +246,27 @@ public class ChatServer
 				lastOne.setValue("message",combined);
 			}
 		}
+		String collectionid = (String)inMap.get("collectionid").toString();
+
 		if( chat == null)
 		{
 			chat = chats.createNewData();
 			chat.setValue("date", new Date());
 			chat.setValue("user", userid);
 			chat.setValue("channel", channel);
+			chat.setValue("collectionid",collectionid);
 			chat.setValue("channeltype", inMap.get("channeltype"));
 			chat.setValue("message", newmessage);
 			
 		}
 		
-		chats.saveData(chat);
+		chats.saveData(chat);  //<----  SAVE chat
+		User user = archive.getUser(userid);
+		archive.firePathEvent("chatterbox/saved", user, chat);
 		
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
 		
-		User user = archive.getUser(userid);
 		String assetid = (String)inMap.get("assetid");
 		if( assetid != null)
 		{
@@ -272,32 +278,7 @@ public class ChatServer
 			}
 			archive.fireMediaEvent("assetchat", user,asset );
 		}
-		else
-		{
-			Map params = new HashMap();
-			
-			Object collectionid = inMap.get( "collectionid" );
-			if( collectionid != null)
-			{
-				params.put("collectionid",String.valueOf(collectionid));
-			}
-			params.put("data",chat);
-			archive.fireGeneralEvent(user,"chatterbox","messageedited", params);
-			getExecutorManager(catalogid).execute( new Runnable() {
-				@Override
-				public void run() 
-				{
-					ChatManager manager = getChatManager(catalogid);
-					Object channelid = channel;
-					if( channelid != null)
-					{
-						manager.updateChatTopicLastModified(String.valueOf( channelid), String.valueOf( userid), String.valueOf( messageid) );
-					}
-				}
-			});
-			
-		}
-		return chat.get("message");
+		return chat;//chat.get("message");
 	}
 
 	/* Desktop notificationsss */

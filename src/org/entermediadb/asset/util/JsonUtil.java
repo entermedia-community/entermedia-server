@@ -23,7 +23,9 @@ public class JsonUtil
 		}
 		inDate = DateStorageUtil.getStorageUtil().parseFromObject(inDate);
 		//https://mincong.io/2017/02/16/convert-date-to-string-in-java/
-		String json = DateStorageUtil.getStorageUtil().formatDateObj((Date)inDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); 
+		String json = DateStorageUtil.getStorageUtil().formatDateObj((Date)inDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		//String json = DateStorageUtil.getStorageUtil().formatDateObj((Date)inDate, "yyyy-MM-dd'T'HH:mm:ss.SSSX");
+		
 		return json;
 	}
 	public String formatDate(String inDate)
