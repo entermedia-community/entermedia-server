@@ -9,13 +9,14 @@
 #end
 
 #ifnull($projectid)
-	#if( !$allprojects.isEmpty() && $allprojects.size() == 1)
+	#if( !$searchform && !$allprojects.isEmpty() && $allprojects.size() == 1)
 		#set( $projectid = $allprojects.get(0).getId() )  ##TODO: remeber last one picked
 	#end	
 #end
+
 <select name="${detail.getId()}.value" class="select2">
-#if ($detail.blankoption != false)
-<option value="">[[All]]</option>
+#if ($detail.blankoption != false || $searchform)
+<option value="*">[[All]]</option>
 #end
 #foreach( $project in $allprojects )
 	<option value="$project.getId()" #if($projectid == $project.getId()) selected #end>$project</option>

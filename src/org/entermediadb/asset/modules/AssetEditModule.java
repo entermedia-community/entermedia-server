@@ -1999,7 +1999,7 @@ public class AssetEditModule extends BaseMediaModule
 			String detailid = splits[1];
 			//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
 			String sourcepath = null;
-			HashMap variables = new HashMap();
+			Map variables = inReq.getParameterMap();
 			variables.put("userid", inReq.getUser().getId());
 			variables.put("id", id);
 			variables.put("filename", item.getName());

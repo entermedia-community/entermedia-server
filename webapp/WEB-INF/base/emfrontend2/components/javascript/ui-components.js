@@ -14,6 +14,45 @@ function getRandomColor() {
 }
 
 uiload = function() {
+	
+	$.fn.cleandata = function(){
+		  var element = $(this);
+		  var params = element.data();
+
+		  var cleaned = [];
+		  Object.keys(params).forEach(function(key) 
+		  {
+		    var param = params[key];
+		    var thetype = typeof param;
+			if( thetype === "string" || thetype === "number" || thetype === "boolean")
+			{
+				cleaned[key] = param;
+			}
+		  });
+		  return cleaned;
+	};
+
+	$.fn.setformdata = function(cleandata)
+	{
+		  var form = $(this);
+		  Object.keys(cleandata).forEach(function(key) 
+		  {
+		    var param = cleandata[key];
+		    //TODO make sure its not already on there
+		    //form.append(key,param);
+		    var found = $('input[name="' + key +'"]',form);
+		    if( found.length == 0)
+		    {
+		    	form.append('<input type="hidden" name="' + key + '" value="' + param + '" />');
+		    }
+		    else
+		    {
+		    	found.attr("value",param);
+		    }
+		  });
+	};
+
+	
 	// https://github.com/select2/select2/issues/600
 	//$.fn.select2.defaults.set("theme", "bootstrap4");
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {
@@ -407,7 +446,6 @@ uiload = function() {
 				if(form.data("includesearchcontext") == true){
 					data = jQuery("#resultsdiv").data();
 					data.oemaxlevel = oemaxlevel;
-
 				}
 				
 				else{
@@ -415,9 +453,8 @@ uiload = function() {
 				} 
 				
 				var formmodal = form.closest(".modal");
-				
+				form.setformdata(data);
 				form.ajaxSubmit({
-					data : data,
 					error : function(data) {
 						alert("error");
 						if (targetdiv) {
@@ -503,29 +540,30 @@ uiload = function() {
 
 	lQuery("form.autosubmit").livequery(function() {
 		var form = $(this);
-		var data = form.data();
+		var data = form.cleandata();
 		var targetdiv = form.data('targetdiv');
 		$("select",form).change(function() {
-			$(form).ajaxSubmit({
-				data:data,
+			//data["jqxhr"] = null;
+			form.setformdata(data);
+			form.ajaxSubmit({
 				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
 		$("input",form).on("keyup", function() {
+			form.setformdata(data);
 			$(form).ajaxSubmit({
-				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="file"]',form).on("change", function() {
+			form.setformdata(data);
 			$(form).ajaxSubmit({
-				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
 		$('input[type="checkbox"]',form).on("change", function() {
+			form.setformdata(data);
 			$(form).ajaxSubmit({
-				data:data,
 				target : "#" + $.escapeSelector(targetdiv)
 			});
 		});
@@ -830,9 +868,9 @@ uiload = function() {
 				
 				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
+					$(form).setformdata(data);
 					$(form).ajaxSubmit({
-						target : "#" + $.escapeSelector(targetdiv), 
-						data:data						
+						target : "#" + $.escapeSelector(targetdiv) 
 					});
 				} else {
 					$(form).trigger("submit");
