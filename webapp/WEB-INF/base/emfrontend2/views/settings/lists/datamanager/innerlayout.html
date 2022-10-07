@@ -9,17 +9,19 @@
 		data-targetdivinner="datamanagerpage">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
 	<input type="hidden" name="oemaxlevel" value="2"/>
-	<a class="btn btn-sm btn-primary float-right ajax" data-targetdivinner="datamanagerpage" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html?oemaxlevel=1">[[New Table]]</a>
-		##[[Choose Table]]: 
-           <select name="searchtype" onchange="" class="select2 form-control form-control-sm float-right">
-			<option value="">[[Choose Table]]</option>
-		#foreach( $type in $searchtypes )
-			#if($type != "CVS")
-				<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
-			#end
-		#end
-		</select>
 	
+		<a class="btn btn-sm btn-primary float-right  ajax" data-targetdivinner="datamanagerpage" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html?oemaxlevel=1">[[New Table]]</a>
+		<div class="float-right" style="width:200px; margin-right:10px;">
+			##[[Choose Table]]: 
+           <select name="searchtype" onchange="" class="select2 form-control">
+			<option value="">[[Choose Table]]</option>
+				#foreach( $type in $searchtypes )
+					#if($type != "CVS")
+						<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
+					#end
+				#end
+				</select>
+		</div>
 	</form>
 <div class="clearfix"></div>
 </div>

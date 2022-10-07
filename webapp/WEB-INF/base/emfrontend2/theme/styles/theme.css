@@ -497,9 +497,10 @@ h3 {
 .emselectable .table-striped {
 	margin-bottom:0;
 }
-select + .select2-containerX {
+select.form-control + .select2-container {
   width: 100% !important;
 }
+
 .select2-container {
 	/*z-index: 1;*/
 }
