@@ -26,13 +26,11 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.BaseAutoLogin;
-import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.config.Configuration;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
@@ -43,9 +41,7 @@ import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
-import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.PathUtilities;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
 
@@ -326,6 +322,7 @@ public class AdminModule extends BaseMediaModule
 	public void allowViewing(WebPageRequest inReq) throws OpenEditException
 	{
 		createUserSession(inReq);
+
 		AllowViewing command = new AllowViewing();
 		command.setPageManager(getPageManager());
 		command.configure(inReq);
@@ -1292,25 +1289,14 @@ public class AdminModule extends BaseMediaModule
 	{
 		String email = inReq.getRequestParameter(EMAIL);
 		if (email != null) {
-			User user = getUserSearcher(inReq).getUserByEmail(email);
-			if (user == null )
-			{
-				Group guest = getGroupSearcher(inReq).getGroup("guest");
-				if (guest == null)
-				{
-					getUserManager(inReq).createGroup("guest", "Guest");
-				}
-				user = (User)getUserSearcher(inReq).createNewData();
-				//user = getUserManager(inReq).createGuestUser(null, null, "guest");
-				user.setEmail(email);
-				user.addGroup(guest);
-				String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
-				user.setProperty("catalogid", catalogid);
-				getUserManager(inReq).saveUser(user);
-			}
+			
+			User user =  getUserManager(inReq).createTempUserFromEmail(email);
+			inReq.putSessionValue(inReq.findValue("catalogid") + "user", user);
+			inReq.putPageValue("user", user);
 		}
 
 	}
+	
 
 	public void switchToUser(WebPageRequest inReq)
 	{
