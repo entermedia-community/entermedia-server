@@ -866,11 +866,11 @@ uiload = function() {
 				//form.submit();
 				var targetdiv = form.data("targetdiv");
 				
-				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
-					$(form).setformdata(data);
+					//$(form).setformdata(data);
 					$(form).ajaxSubmit({
-						target : "#" + $.escapeSelector(targetdiv) 
+						target : "#" + $.escapeSelector(targetdiv),
+						data: data
 					});
 				} else {
 					$(form).trigger("submit");
