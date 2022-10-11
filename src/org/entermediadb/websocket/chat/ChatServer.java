@@ -240,7 +240,7 @@ public class ChatServer
 			String lastUserId = lastOne.get("user"); 
 			if( lastUserId.contentEquals(userid))
 			{
-				chat = lastOne;
+				chat = lastOne;  //USE LAST ONE
 				String combined = lastOne.get("message");
 				combined = combined + "<br>" + newmessage;
 				lastOne.setValue("message",combined);
@@ -266,7 +266,7 @@ public class ChatServer
 		
 		chats.saveData(chat);  //<----  SAVE chat
 		User user = archive.getUser(userid);
-		archive.firePathEvent("chatterbox/saved", user, chat);
+		archive.fireDataEvent(user,"chatterbox","saved", chat);
 		
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);

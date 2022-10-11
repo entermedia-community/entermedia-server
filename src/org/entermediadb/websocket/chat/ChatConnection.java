@@ -236,7 +236,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			else if("messagereceived".equals(command) || "notify".equals(command))
 			{
 			
-				Data chat = getChatServer().saveMessage(map);  //<----- SAVE!!!!
+				Data chat = getChatServer().saveMessage(map);  //<----- --------SAVE-----------------------------------SAVE!!!!
 				
 				String content = chat.get("message");
 				/* add user info to JSON message object- mando 6/11/2020*/
