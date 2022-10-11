@@ -35,9 +35,9 @@
 	#set( $topics = $mediaarchive.query("collectiveproject").exact("parentcollectionid",$hit.id).sort("name").search($context) )
 	#if( !$topics.isEmpty() )
 	, "topics": [
-		#set( $second = false )
 		#foreach($topic in $topics)
-			{ #if( $foreach.count != 1 ), #end
+			#if( $foreach.count != 1 ), #end
+			{ 
 				#jsonfields($topic $topics.getSearcher().getPropertyDetails()) 
 			}
 		#end	
