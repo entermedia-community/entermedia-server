@@ -246,7 +246,11 @@ public class ChatServer
 				lastOne.setValue("message",combined);
 			}
 		}
-		String collectionid = (String)inMap.get("collectionid").toString();
+		String collectionid = null;
+		if(inMap.get("collectionid")!= null) {
+			collectionid = (String)inMap.get("collectionid");
+			
+		}
 
 		if( chat == null)
 		{
