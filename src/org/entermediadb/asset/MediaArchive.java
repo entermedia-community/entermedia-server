@@ -1287,15 +1287,21 @@ public class MediaArchive implements CatalogEnabled
 		manager.runPathEvent(runpath, request);
 	}
 
-	public void firePathEvent(String operation, User inUser, Data inData)
+	public void fireDataEvent(User inUser, String inSearchType, String inAction, Data inData)
 	{
-		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
-		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
-		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
+		WebEvent event = new WebEvent();
+		event.setSearchType(inSearchType);
 
-		request.setRequestParameter("catalogid", getCatalogId());
-		request.putPageValue("data", inData);
-		manager.runPathEvent(runpath, request);
+		event.setCatalogId(getCatalogId());
+		event.setOperation(inAction);
+		event.setUser(inUser);
+		event.setSource(this);
+		event.setSourcePath(inData.getSourcePath()); //TODO: This should not be needed any more
+		event.setProperty("dataid", inData.getId()); //Needed?
+		event.setValue("data", inData);
+		
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
 	}
 
 	/*
