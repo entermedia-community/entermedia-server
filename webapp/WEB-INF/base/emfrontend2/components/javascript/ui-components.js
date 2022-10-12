@@ -477,9 +477,7 @@ uiload = function() {
 							}
 					 	}
 		                if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-		                    if (formmodal.modal) {
-		                    	formmodal.modal("hide");
-		                    }
+		                	closeemdialog(formmodal);
 		                }
 		        		$('#resultsdiv').data('reloadresults',true);
 
@@ -581,7 +579,7 @@ uiload = function() {
 	lQuery(".submitform").livequery("click", function(e) {
 		e.preventDefault();
 		var theform = $(this).closest('form');
-		console.log("Submit Form " + theform);
+		//console.log("Submit Form " + theform);
 		theform.trigger("submit");
 	});
 	
@@ -604,7 +602,7 @@ uiload = function() {
 	lQuery(".oehtmlinputblur").livequery('click',
 		function(e) {
 			e.preventDefault();
-			console.log("Trigger ui");
+			//console.log("Trigger ui");
 			var theform = $(this).closest('form');
 			if (theform.length == 0) {
 				//dialog form?
@@ -686,6 +684,7 @@ uiload = function() {
 		{
 			history.pushState({}, null, urlbar);
 		}
+		
 		modaldialog.load(link, options, function() {
 			if (width) {
 				
@@ -706,28 +705,25 @@ uiload = function() {
 			if (noesc != null && noesc == true) {
 				 modalkeyboard = false;
 			}
+			//Verify if modal was open on top of Asset Media Viewer
+			if(modalkeyboard) {
+				var mainmedia = $("#hiddenoverlay");
+				if(mainmedia.length  && mainmedia.hasClass("show")) {
+					modalkeyboard = false;
+				}
+			}
+			
 			var modalinstance;
-			if( bootstrap )
-			{
-				var newid = modaldialog.attr("id");
-				 const modal = document.getElementById(newid);
-		          //  document.body.appendChild(modal);
-		            
-				modalinstance  = new bootstrap.Modal(modal, {
-					keyboard : modalkeyboard
-					});
-				modalinstance.show();
-			}				
-			else
-			{
-				modalinstance = modaldialog.modal({
+
+			modalinstance = modaldialog.modal({
 					keyboard : modalkeyboard,
-					backdrop : true,
+					backdrop : 'static',
 					closeExisting: false,
 					"show" : true
 				});
-			}
+
 			var firstform = $('form', modaldialog);
+			
 			firstform.data("openedfrom", openfrom);
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
@@ -783,11 +779,19 @@ uiload = function() {
 	});
 	
 	
-	lQuery(".closemodal").livequery(
-			"click", function(event) {
-				$(this).closest(".modal").modal("hide");
+	lQuery(".closemodal").livequery("click", function(event) {
+		closeemdialog($(this).closest(".modal"));
 	});
 	
+	closeemdialog = function(modaldialog) {
+		if (modaldialog.modal) {
+			modaldialog.modal("hide");
+		}
+	}
+	
+	lQuery('.modal').livequery('hidden.bs.modal', function (event) {
+		  
+	})
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
 		event.preventDefault();
@@ -828,7 +832,7 @@ uiload = function() {
 			$(form).trigger("submit");
 		}
 		if (form.hasClass("autoclose")) {
-			form.closest(".modal").modal("hide");
+			closeemdialog(form.closest(".modal"));
 		}
 
 	});
@@ -877,7 +881,7 @@ uiload = function() {
 				}
 				
 				if (form.hasClass("autoclose")) {
-					form.closest(".modal").modal("hide");
+					closeemdialog(form.closest(".modal"));
 				}
 			} else if (url != undefined) {
 				if (url == "") {
@@ -998,7 +1002,7 @@ uiload = function() {
 				$(this).closest('.select-dropdown').siblings(
 						'.select-dropdown-open').addClass('down');
 				$(this).closest('.select-dropdown').hide();
-				console.log("Clicked");
+				//console.log("Clicked");
 			});
 
 	function select2formatResult(emdata) {
@@ -1171,7 +1175,7 @@ uiload = function() {
 		theinput.click(function() {
 			theinput.css("color", "#000");
 			var initial = theinput.data("initialtext");
-			console.log(initial, theinput.val());
+			//console.log(initial, theinput.val());
 			if (theinput.val() === initial) {
 				theinput.val('');
 				theinput.unbind('click');
@@ -1481,7 +1485,7 @@ uiload = function() {
 							});
 							
 							theinput.on("select2:open", function(e) {
-								console.log("open");
+								//console.log("open");
 								var selectId = $(this).attr("id");
 								if(selectId) {
 									$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
@@ -1731,7 +1735,7 @@ uiload = function() {
 										});
 
 						mainimage.on("mousedown", function(event) {
-							console.log($(event.target));
+							//console.log($(event.target));
 							if ($(event.target).is(".zoomable")) {
 								clickspot = event;
 								imageposition = mainimage.position();
@@ -1754,7 +1758,7 @@ uiload = function() {
 							// if( isMouseDown() )
 							
 							if (clickspot) {
-								console.log(clickspot.pageX);
+								//console.log(clickspot.pageX);
 								var changetop = clickspot.pageY - event.pageY;
 								var changeleft = clickspot.pageX - event.pageX;
 
@@ -2268,7 +2272,7 @@ uiload = function() {
 		  document.execCommand("copy");
 		  var alertdiv = btn.data("targetdiv");
 		  if (alertdiv) {
-			  console.log(alertdiv);
+			  //console.log(alertdiv);
 			  $("#"+alertdiv).show().fadeOut(2000);
 		  }
 		  

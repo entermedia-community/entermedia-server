@@ -314,6 +314,7 @@ $(document).ready(function(url,params)
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
+		inOverlay.removeClass("show");
 		
 		var reloadonclose =  $('#resultsdiv').data('reloadresults');
 		if (reloadonclose == undefined) {
@@ -335,8 +336,9 @@ $(document).ready(function(url,params)
 	showOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = true;
-		 $("body").css({ overflow: 'hidden' })
+		$("body").css({ overflow: 'hidden' })
 		inOverlay.show();
+		inOverlay.addClass("show");
 		var lastscroll = $(window).scrollTop();
 		getOverlay().data("lastscroll",lastscroll);
 	}
@@ -472,10 +474,13 @@ $(document).ready(function(url,params)
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		        	if ($('#modals').hasClass('show')) {
+		        	var ismodal = $('#modals, #inlineedit, .modal');
+		        	if (ismodal.hasClass('show')) {
 		        		//Close modal only
-		        		$('#modals').modal('hide');
+		        		ismodal.modal('hide');
 		        		e.stopPropagation();
+		        		return;
+		        		
 		        	}
 		        	else{
 		        		hideOverlayDiv(getOverlay());
