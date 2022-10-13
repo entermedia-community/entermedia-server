@@ -222,17 +222,15 @@ public class JsonDataModule extends BaseJsonModule
 	
 	public void updateData(WebPageRequest inReq)
 	{
-		Map request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
-		
 		Data newdata = loadData(inReq);
 		if(newdata != null)
 		{
 			checkAssetUploads(inReq, archive, searcher, newdata);
-
+			Map request = inReq.getJsonRequest();
 			populateJsonData(request,searcher,newdata);
 			searcher.saveData(newdata, inReq.getUser());
 			archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
