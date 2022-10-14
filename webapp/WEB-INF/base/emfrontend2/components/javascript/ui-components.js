@@ -714,13 +714,28 @@ uiload = function() {
 			}
 			
 			var modalinstance;
-
-			modalinstance = modaldialog.modal({
-					keyboard : modalkeyboard,
-					backdrop : 'static',
-					closeExisting: false,
-					"show" : true
+			
+			var bootstrapversion = $.fn.modal.Constructor.VERSION;
+			if (parseFloat(bootstrapversion) >= 5.0){
+				//Bootstrap 5
+				var newid = modaldialog.attr("id");
+				const modal = document.getElementById(newid);
+		          //  document.body.appendChild(modal);
+		            
+				modalinstance  = new bootstrap.Modal(modal, {
+					keyboard : modalkeyboard
+					});
+				modalinstance.show();
+				
+			}
+			else {
+				modalinstance = modaldialog.modal({
+						keyboard : modalkeyboard,
+						backdrop : 'static',
+						closeExisting: false,
+						"show" : true
 				});
+			}
 
 			var firstform = $('form', modaldialog);
 			
@@ -2252,6 +2267,7 @@ uiload = function() {
             $('#setup-view').addClass('open'); 
         }
     })
+    
     $('#renderastable').click(function(){
         if ( $('#renderastable').is(':checked') ) {
             $('#rendertableoptions').show();
