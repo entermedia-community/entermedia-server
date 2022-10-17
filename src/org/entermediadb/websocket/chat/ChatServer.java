@@ -248,8 +248,8 @@ public class ChatServer
 		}
 		String collectionid = null;
 		if(inMap.get("collectionid")!= null) {
-			collectionid = (String)inMap.get("collectionid");
-			
+			//CAST FROM LONG!
+			collectionid = String.valueOf(inMap.get("collectionid"));
 		}
 
 		if( chat == null)
@@ -271,16 +271,18 @@ public class ChatServer
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
 		
-		String assetid = (String)inMap.get("assetid");
-		if( assetid != null)
-		{
-			Asset asset = archive.getAsset( assetid);
-			if( asset != null && !asset.isPropertyTrue("haschat"))
+		if (inMap.get("assetid")!= null) {
+			String assetid = String.valueOf(inMap.get("assetid"));
+			if( assetid != null)
 			{
-				asset.setValue("haschat", true);
-				archive.saveAsset(asset);
+				Asset asset = archive.getAsset( assetid);
+				if( asset != null && !asset.isPropertyTrue("haschat"))
+				{
+					asset.setValue("haschat", true);
+					archive.saveAsset(asset);
+				}
+				archive.fireMediaEvent("assetchat", user,asset );
 			}
-			archive.fireMediaEvent("assetchat", user,asset );
 		}
 		return chat;//chat.get("message");
 	}
