@@ -45,6 +45,7 @@
             	action="$home$content.dataroot/list/index.html"
             	class="inlineform ajaxform"
         		data-targetdivinner="datamanager-workarea">
+        			$context.putPageValue("hits",false)
                     $pages.include("/${applicationid}/components/xml/searchfields.html",$context)
                     <input type="hidden" name="catalogid" value="$!searcher.catalogId" />
                     <input type="hidden" name="searchtype" value="$!searcher.searchType" />
