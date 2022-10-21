@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -68,6 +69,18 @@ public abstract class WebEmail
 		fieldBCCRecipients = inBCCRecipients;
 	}
 
+
+	public void setBCC(String inEmails)
+	{
+		ArrayList<InternetAddress> recipients = new ArrayList<InternetAddress>();
+		String[] list = MultiValued.VALUEDELMITER.split(inEmails);
+		for (String email : list)
+		{
+			InternetAddress inet = parseRecipient(email);
+			recipients.add(inet);
+		}
+		setBCCRecipients(recipients);
+	}
 	public User getUser()
 	{
 		return fieldUser;

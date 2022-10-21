@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -47,6 +48,7 @@ import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.authenticate.PasswordGenerator;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
@@ -1803,7 +1805,7 @@ public class ProjectManager implements CatalogEnabled
 		return hits;
 	}
 
-	public void loadUploads(WebPageRequest inReq)
+	public HitTracker loadUploads(WebPageRequest inReq)
 	{
 		//See if we have a station
 //		String selectedlibrary = inReq.getRequestParameter("libraryid");
@@ -1920,6 +1922,7 @@ public class ProjectManager implements CatalogEnabled
 			topuploads.setPage(Integer.parseInt(page));
 		}
 		inReq.putPageValue("topuploads", topuploads);
+		return topuploads;
 
 	}
 
@@ -2157,4 +2160,70 @@ public class ProjectManager implements CatalogEnabled
 		Collection all = query.search();
 		return all;
 	}
+	
+	public ListHitTracker mergeEvents(HitTracker uploads, Collection messages)
+	{
+		Stack messageinputs = new Stack();
+		if( messages != null)
+		{
+			List reversed = new ArrayList(messages);
+			Collections.reverse(reversed);
+			messageinputs.addAll(reversed);
+		}
+
+		//Make an object for each in order
+		ListHitTracker combinedEvents =  new ListHitTracker();
+
+		Stack inputUploads = new Stack();
+		List reversed = new ArrayList(uploads.getPageOfHits());
+		Collections.reverse(reversed);
+		inputUploads.addAll(reversed);
+		while( !inputUploads.isEmpty() || !messageinputs.isEmpty() )
+		{
+			addNext(combinedEvents,inputUploads,messageinputs);
+		}
+		return combinedEvents;
+	}
+
+	private void addNext(ListHitTracker inCombinedEvents, Stack inInputUploads, Stack inMessageinputs)
+	{
+		Event newEvent = new Event();
+		MultiValued upload = null;
+		if( !inInputUploads.isEmpty() )
+		{
+			upload = (MultiValued)inInputUploads.peek();
+		}
+		MultiValued message = null;
+		if( !inMessageinputs.isEmpty() )
+		{
+			message = (MultiValued)inMessageinputs.peek();
+		}
+		if( upload == null)
+		{
+			newEvent.setType("chatterbox");
+			newEvent.setData(message);				
+			inMessageinputs.pop();
+		}
+		else if( message == null)
+		{
+			newEvent.setType("userupload");
+			newEvent.setData(upload);
+			inInputUploads.pop();
+		}
+		else if( DateStorageUtil.getStorageUtil().newerThan(upload.getDate("uploaddate"),message.getDate("date")) )
+		{
+			newEvent.setType("userupload");
+			newEvent.setData(upload);
+			inInputUploads.pop();
+		}
+		else
+		{
+			newEvent.setType("chatterbox");
+			newEvent.setData(message);						
+			inMessageinputs.pop();
+		}
+		inCombinedEvents.add(newEvent);
+	}
+
+
 }

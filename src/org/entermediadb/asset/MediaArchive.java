@@ -2709,6 +2709,9 @@ public class MediaArchive implements CatalogEnabled
 		return today.getYear() + 1900;
 	}
 	
+	
+	//TODO: Move this to InvoiceManager
+	
 	public HitTracker getInvoiceFromMonth(String status, int year, int month) 
 	{
 		Calendar start = month == 0 ? new GregorianCalendar(year, 0, 1) :  new GregorianCalendar(year, month - 1, 1);
@@ -2720,6 +2723,7 @@ public class MediaArchive implements CatalogEnabled
 				.sort("createdonDown").search();
 		return invoice;
 	}
+	//TODO: Move this to InvoiceManager
 	
 	public Data getInvoiceById(String invoiceId)
 	{
@@ -2727,6 +2731,7 @@ public class MediaArchive implements CatalogEnabled
 		return invoice;
 	}
 	
+	//TODO: Move this to InvoiceManager
 	public ArrayList getInvoiceProductList(String invoiceId)
 	{
 		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
@@ -2736,6 +2741,7 @@ public class MediaArchive implements CatalogEnabled
 		ArrayList products = (ArrayList)invoice.getValue("productlist");
 		return products;
 	}
+	//TODO: Move this to InvoiceManager
 	
 	public String getProductName (String productId) {
 		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
