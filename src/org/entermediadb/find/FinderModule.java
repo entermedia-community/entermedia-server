@@ -94,7 +94,7 @@ public class FinderModule extends BaseMediaModule
 				//Find counts
 				
 				String smaxsize = inReq.findValue("maxcols");
-				int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
+				int targetsize = smaxsize == null? 4:Integer.parseInt(smaxsize);
 				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
@@ -122,7 +122,9 @@ public class FinderModule extends BaseMediaModule
 //					assets.setSearchQuery(hits.getSearchQuery());
 //					assets.setIndexId(archive.getAssetSearcher().getIndexId());
 					//log.info(assets.getSessionId());
-					assethits.setHitsPerPage( MEDIASAMPLE );
+					UserProfile profile = inReq.getUserProfile();
+					Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+					assethits.setHitsPerPage( mediasample );
 					
 					inReq.putSessionValue(assethits.getSessionId(), assethits);
 					if( !assethits.isEmpty())
@@ -135,7 +137,7 @@ public class FinderModule extends BaseMediaModule
 				
 
 				sortModules(foundmodules);
-				log.info("Organized Modules: " + foundmodules);
+				log.debug("Organized Modules: " + foundmodules);
 				
 				if (foundmodules.size() == 0) {
 					log.info("Found no modules.");
