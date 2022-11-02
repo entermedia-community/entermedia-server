@@ -518,6 +518,55 @@ public class FinderModule extends BaseMediaModule
 		
 	}
 
+	public void loadOrSearchByTypes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
+		Collection searchmodules = new ArrayList();
+		
+		String inModule = inReq.findValue("module");
+		
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			if( data.getId().equals("asset"))
+			{
+				continue; //Too big
+			}
+			String show = data.get("showonsearch");
+			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
+			{
+				//Make sure we are not in the module already... it will be searched another way
+				if( !data.getId().equals(inModule))
+				{
+					searchmodules.add(data.getId());
+				}
+			}
+		}
+		Searcher searcher = archive.getSearcher("modulesearch");
+		SearchQuery search = searcher.addStandardSearchTerms(inReq);
+
+		if (search == null)
+		{
+			search = searcher.createSearchQuery();
+			search.addMatches("id", "*");
+		}
+
+		search.setValue("searchtypes", searchmodules);
+		
+		HitTracker hits = searcher.cachedSearch(inReq, search);
+
+		//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+		if (hits != null)
+		{
+			String name = inReq.findValue("hitsname");
+			inReq.putPageValue(name, hits);
+			inReq.putSessionValue(hits.getSessionId(), hits);
+		}
+		inReq.putPageValue("searcher", searcher);
+		
+	}
+
 	
 	
 }

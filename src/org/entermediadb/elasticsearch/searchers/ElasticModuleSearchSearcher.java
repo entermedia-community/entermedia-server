@@ -32,12 +32,12 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	@Override
 	public HitTracker search(SearchQuery inQuery)
 	{
-		String[] searchmodules = listSearchModules();
+		Collection searchmodules = inQuery.getValues("searchtypes");
 		
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		
-		search.setTypes(searchmodules);
+		search.setTypes((String[])searchmodules.toArray(new String[searchmodules.size()]));
 
 		/*
 		//TODO: Auto added from advancedfilter
@@ -120,7 +120,6 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	{
 		//super.reindexInternal();
 	}
-	
 	
 	protected String[] listSearchModules()
 	{
