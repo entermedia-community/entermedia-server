@@ -127,6 +127,7 @@ public class FinderModule extends BaseMediaModule
 					//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
 					assethits.setHitsPerPage( targetsize );
 					
+					inReq.putPageValue(assethits.getHitsName(), assethits);
 					inReq.putSessionValue(assethits.getSessionId(), assethits);
 					if( !assethits.isEmpty())
 					{
