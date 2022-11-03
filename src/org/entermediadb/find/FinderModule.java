@@ -523,6 +523,40 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 	}
+	
+	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String defaultmodule = archive.getCatalogSettingValue("defaultmodule");
+		if( defaultmodule == null)
+		{
+			return null;
+		}
+		Searcher searcher = archive.getSearcher(defaultmodule);
+		HitTracker hits = null;
+		if (searcher != null)
+		{
+			hits = searcher.fieldSearch(inReq);
+
+			if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
+			{
+				hits = searcher.getAllHits(inReq);
+			}
+			//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("searcher", searcher);
+		inReq.putPageValue("module", archive.getCachedData("module", defaultmodule));
+		
+		return hits;
+	}
+
 
 	public void loadOrSearchByTypes(WebPageRequest inReq)
 	{
