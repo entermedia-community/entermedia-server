@@ -434,7 +434,10 @@ public class FinderModule extends BaseMediaModule
 		{
 			return;
 		}		
+		Collection searchmodules = loadUserSearchTypes(inReq);
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(10);
+		dq.getQuery().setValue("searchtypes", searchmodules);
+
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search();
 
@@ -562,28 +565,7 @@ public class FinderModule extends BaseMediaModule
 	public void loadOrSearchByTypes(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
-		Collection searchmodules = new ArrayList();
-		
-		String inModule = inReq.findValue("module");
-		
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			if( data.getId().equals("asset"))
-			{
-				continue; //Too big
-			}
-			String show = data.get("showonsearch");
-			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
-			{
-				//Make sure we are not in the module already... it will be searched another way
-				if( !data.getId().equals(inModule))
-				{
-					searchmodules.add(data.getId());
-				}
-			}
-		}
+		Collection searchmodules = loadUserSearchTypes(inReq);
 		Searcher searcher = archive.getSearcher("modulesearch");
 		SearchQuery search = searcher.addStandardSearchTerms(inReq);
 
@@ -606,6 +588,35 @@ public class FinderModule extends BaseMediaModule
 		}
 		inReq.putPageValue("searcher", searcher);
 		
+	}
+
+	protected Collection loadUserSearchTypes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
+		Collection searchmodules = new ArrayList();
+		
+		String inModule = inReq.findValue("module");
+		
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			if( data.getId().equals("asset"))
+			{
+				continue; //Too big
+			}
+			String show = data.get("showonsearch");
+			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
+			{
+				//Make sure we are not in the module already... it will be searched another way
+				if( !data.getId().equals(inModule))
+				{
+					searchmodules.add(data.getId());
+				}
+			}
+		}
+		return searchmodules;
 	}
 
 	
