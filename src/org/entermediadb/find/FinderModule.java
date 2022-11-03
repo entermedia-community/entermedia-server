@@ -103,7 +103,8 @@ public class FinderModule extends BaseMediaModule
 				//Put asset into session
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
 				//
-//				if( foundasset )
+				Data module = (Data) inReq.getPageValue("module");
+				if( module == null || !module.getId().equals("asset"))
 				{
 					SearchQuery copy = hits.getSearchQuery().copy();
 					copy.setFacets(null);
@@ -131,8 +132,8 @@ public class FinderModule extends BaseMediaModule
 					inReq.putSessionValue(assethits.getSessionId(), assethits);
 					if( !assethits.isEmpty())
 					{
-						Data module = archive.getCachedData("module", "asset");
-						foundmodules.add(module);
+						Data assetmodule = archive.getCachedData("module", "asset");
+						foundmodules.add(assetmodule);
 					}
 					bytypes.put("asset",assethits);
 				}
