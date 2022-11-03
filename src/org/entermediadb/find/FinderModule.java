@@ -93,8 +93,9 @@ public class FinderModule extends BaseMediaModule
 				// log.info(hits.getHitsPerPage());
 				//Find counts
 				
-				String smaxsize = inReq.findValue("maxcols");
-				int targetsize = smaxsize == null? 4:Integer.parseInt(smaxsize);
+				//String smaxsize = inReq.findValue("maxcols");
+				
+				int targetsize = 4;
 				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
@@ -114,7 +115,7 @@ public class FinderModule extends BaseMediaModule
 //						term.copy();
 //						
 //					}
-					copy.setHitsName("hits");
+					copy.setHitsName("assethits");
 					HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
 //					assets.setSearcher(archive.getAssetSearcher());
 //					assets.setDataSource("asset");
@@ -123,8 +124,8 @@ public class FinderModule extends BaseMediaModule
 //					assets.setIndexId(archive.getAssetSearcher().getIndexId());
 					//log.info(assets.getSessionId());
 					UserProfile profile = inReq.getUserProfile();
-					Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
-					assethits.setHitsPerPage( mediasample );
+					//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+					assethits.setHitsPerPage( targetsize );
 					
 					inReq.putSessionValue(assethits.getSessionId(), assethits);
 					if( !assethits.isEmpty())
@@ -148,6 +149,8 @@ public class FinderModule extends BaseMediaModule
 			}
 		}
 	}
+	
+	
 
 	protected ArrayList processResults(HitTracker hits, MediaArchive archive, int targetsize, Map<String, Collection> bytypes)
 	{
@@ -291,6 +294,8 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("organizedHits",bytypes);
 		return bytypes;
 	}
+	
+	
 
 	public void showFavorites(WebPageRequest inReq) 
 	{
