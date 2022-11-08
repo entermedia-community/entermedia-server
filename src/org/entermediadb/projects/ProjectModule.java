@@ -521,6 +521,8 @@ public class ProjectModule extends BaseMediaModule
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
 		inReq.setRequestParameter("newcollectionid", saved.getId());
+		
+		inReq.setRequestParameter("nodeID", (String) saved.getValue("rootcategory"));
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
