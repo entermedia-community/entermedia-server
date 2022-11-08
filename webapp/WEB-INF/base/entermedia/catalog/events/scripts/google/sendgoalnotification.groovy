@@ -69,7 +69,8 @@ public void runit()
 		Data level = mediaArchive.getData("ticketlevel",projectgoal.get("ticketlevel") );
 		if( level != null)
 		{
-			message = level.getName() + ": " + message;
+			//message = level.getName() + ": " + message;
+			extra.put("level", level.getProperties());
 		}
 		if( !notified)
 		{	
