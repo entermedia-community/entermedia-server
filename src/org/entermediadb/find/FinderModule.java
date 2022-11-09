@@ -532,7 +532,20 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String defaultmodule = archive.getCatalogSettingValue("defaultmodule");
+		
+		UserProfile profile = inReq.getUserProfile();
+		String defaultmodule  = (String) profile.getValue("defaultmodule");
+		if(defaultmodule != null) 
+		{
+			if(defaultmodule.equals("none"))
+			{
+				return null;
+			}
+		}
+		if(defaultmodule == null)
+		{
+			defaultmodule = archive.getCatalogSettingValue("defaultmodule");
+		}
 		if( defaultmodule == null)
 		{
 			return null;
@@ -555,6 +568,7 @@ public class FinderModule extends BaseMediaModule
 				inReq.putSessionValue(hits.getSessionId(), hits);
 			}
 		}
+		inReq.putPageValue("defaultmodule", defaultmodule);
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("module", archive.getCachedData("module", defaultmodule));
 		
