@@ -1789,15 +1789,17 @@ Server ProjectModule.uploadFile
 		HitTracker recent = chats.query().orgroup("channel", topics).named("hits").sort("dateDown").hitsPerPage(200).search(inReq);
 		inReq.putPageValue("messages", recent);
 		
-		Set users = new HashSet();
-		for (Iterator iterator = recent.iterator(); iterator.hasNext();)
-		{
-			Data chat = (Data) iterator.next();
-			User person = archive.getUser( chat.get("user"));
-			users.add(person);
-			
+		if(recent != null) {
+			Set users = new HashSet();
+			for (Iterator iterator = recent.iterator(); iterator.hasNext();)
+			{
+				Data chat = (Data) iterator.next();
+				User person = archive.getUser( chat.get("user"));
+				users.add(person);
+				
+			}
+			inReq.putPageValue("persons",users);
 		}
-		inReq.putPageValue("persons",users);
 		return recent;
 	}
 	
