@@ -1781,7 +1781,10 @@ Server ProjectModule.uploadFile
 			q.exact("teamproject",false);
 		}
 		Collection topics = q.search(inReq);		
-
+		if( topics.isEmpty() )
+		{
+			return new ListHitTracker();
+		}
 		inReq.putPageValue("topics", topics);
 		
 		Searcher chats = archive.getSearcher("chatterbox");
