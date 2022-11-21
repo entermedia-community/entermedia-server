@@ -64,7 +64,7 @@ public class FireBase {
 		}
 		for (Iterator iterator = extraData.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
-			String value = (String)extraData.get(key);
+			Object value = extraData.get(key);
 			//data.put("chattopic",inTopic);
 			data.put(key,value);
 		}

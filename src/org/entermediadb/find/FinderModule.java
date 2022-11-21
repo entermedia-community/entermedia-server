@@ -93,8 +93,9 @@ public class FinderModule extends BaseMediaModule
 				// log.info(hits.getHitsPerPage());
 				//Find counts
 				
-				String smaxsize = inReq.findValue("maxcols");
-				int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
+				//String smaxsize = inReq.findValue("maxcols");
+				
+				int targetsize = 4;
 				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
@@ -102,7 +103,8 @@ public class FinderModule extends BaseMediaModule
 				//Put asset into session
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
 				//
-//				if( foundasset )
+				Data module = (Data) inReq.getPageValue("module");
+				if( module == null || !module.getId().equals("asset"))
 				{
 					SearchQuery copy = hits.getSearchQuery().copy();
 					copy.setFacets(null);
@@ -114,7 +116,7 @@ public class FinderModule extends BaseMediaModule
 //						term.copy();
 //						
 //					}
-					copy.setHitsName("hits");
+					copy.setHitsName("entityhits");
 					HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
 //					assets.setSearcher(archive.getAssetSearcher());
 //					assets.setDataSource("asset");
@@ -122,20 +124,23 @@ public class FinderModule extends BaseMediaModule
 //					assets.setSearchQuery(hits.getSearchQuery());
 //					assets.setIndexId(archive.getAssetSearcher().getIndexId());
 					//log.info(assets.getSessionId());
-					assethits.setHitsPerPage( MEDIASAMPLE );
+					UserProfile profile = inReq.getUserProfile();
+					//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+					assethits.setHitsPerPage( targetsize );
 					
+					inReq.putPageValue(assethits.getHitsName(), assethits);
 					inReq.putSessionValue(assethits.getSessionId(), assethits);
 					if( !assethits.isEmpty())
 					{
-						Data module = archive.getCachedData("module", "asset");
-						foundmodules.add(module);
+						Data assetmodule = archive.getCachedData("module", "asset");
+						foundmodules.add(assetmodule);
 					}
 					bytypes.put("asset",assethits);
 				}
 				
 
 				sortModules(foundmodules);
-				log.info("Organized Modules: " + foundmodules);
+				log.debug("Organized Modules: " + foundmodules);
 				
 				if (foundmodules.size() == 0) {
 					log.info("Found no modules.");
@@ -146,6 +151,8 @@ public class FinderModule extends BaseMediaModule
 			}
 		}
 	}
+	
+	
 
 	protected ArrayList processResults(HitTracker hits, MediaArchive archive, int targetsize, Map<String, Collection> bytypes)
 	{
@@ -289,6 +296,8 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("organizedHits",bytypes);
 		return bytypes;
 	}
+	
+	
 
 	public void showFavorites(WebPageRequest inReq) 
 	{
@@ -425,7 +434,10 @@ public class FinderModule extends BaseMediaModule
 		{
 			return;
 		}		
+		Collection searchmodules = loadUserSearchTypes(inReq);
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(10);
+		dq.getQuery().setValue("searchtypes", searchmodules);
+
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search();
 
@@ -514,6 +526,111 @@ public class FinderModule extends BaseMediaModule
 			foundkeywords.put(cleanedup.toLowerCase(),cleanedup);
 		}
 		
+	}
+	
+	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		
+		UserProfile profile = inReq.getUserProfile();
+		String defaultmodule  = (String) profile.getValue("defaultmodule");
+		if(defaultmodule != null) 
+		{
+			if(defaultmodule.equals("none"))
+			{
+				return null;
+			}
+		}
+		if(defaultmodule == null)
+		{
+			defaultmodule = archive.getCatalogSettingValue("defaultmodule");
+		}
+		if( defaultmodule == null)
+		{
+			return null;
+		}
+		Searcher searcher = archive.getSearcher(defaultmodule);
+		HitTracker hits = null;
+		if (searcher != null)
+		{
+			hits = searcher.fieldSearch(inReq);
+
+			if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
+			{
+				hits = searcher.getAllHits(inReq);
+			}
+			//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("defaultmodule", defaultmodule);
+		inReq.putPageValue("searcher", searcher);
+		inReq.putPageValue("module", archive.getCachedData("module", defaultmodule));
+		
+		return hits;
+	}
+
+
+	public void loadOrSearchByTypes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection searchmodules = loadUserSearchTypes(inReq);
+		Searcher searcher = archive.getSearcher("modulesearch");
+		SearchQuery search = searcher.addStandardSearchTerms(inReq);
+
+		if (search == null)
+		{
+			search = searcher.createSearchQuery();
+			search.addMatches("id", "*");
+		}
+
+		search.setValue("searchtypes", searchmodules);
+		
+		HitTracker hits = searcher.cachedSearch(inReq, search);
+
+		//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+		if (hits != null)
+		{
+			String name = inReq.findValue("hitsname");
+			inReq.putPageValue(name, hits);
+			inReq.putSessionValue(hits.getSessionId(), hits);
+		}
+		inReq.putPageValue("searcher", searcher);
+		
+	}
+
+	protected Collection loadUserSearchTypes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
+		Collection searchmodules = new ArrayList();
+		
+		String inModule = inReq.findValue("module");
+		
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			if( data.getId().equals("asset"))
+			{
+				continue; //Too big
+			}
+			String show = data.get("showonsearch");
+			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
+			{
+				//Make sure we are not in the module already... it will be searched another way
+				if( !data.getId().equals(inModule))
+				{
+					searchmodules.add(data.getId());
+				}
+			}
+		}
+		return searchmodules;
 	}
 
 	

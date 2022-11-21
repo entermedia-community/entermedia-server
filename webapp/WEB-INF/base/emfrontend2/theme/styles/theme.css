@@ -323,6 +323,9 @@ a {
    outline: 0;
 }
 .hr2 {margin:2rem 0;}
+.float-left { float:left;}
+.float-right { float:right;}
+.text-right { text-align: right;}
 .btn {
 	cursor:pointer;
 	padding: .275rem .75rem;
@@ -503,6 +506,7 @@ select.form-control + .select2-container {
 
 .select2-container {
 	/*z-index: 1;*/
+	text-align: left;
 }
 .select2-results__options li {
 	float:none!important;

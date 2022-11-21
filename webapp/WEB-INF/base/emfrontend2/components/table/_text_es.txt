@@ -1,0 +1,4 @@
+#
+#Mon Oct 17 14:17:09 CDT 2022
+Results=Resultados
+of=de

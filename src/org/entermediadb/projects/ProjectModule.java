@@ -1,8 +1,8 @@
 package org.entermediadb.projects;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,17 +26,19 @@ import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -518,6 +521,8 @@ public class ProjectModule extends BaseMediaModule
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
 		inReq.setRequestParameter("newcollectionid", saved.getId());
+		
+		inReq.setRequestParameter("nodeID", (String) saved.getValue("rootcategory"));
 
 		manager.configureCollection(saved,inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
@@ -1712,7 +1717,7 @@ Server ProjectModule.uploadFile
 		}
 	}
 
-	public void loadGoalsInMessages(WebPageRequest inReq)
+	public Map loadGoalsInMessages(WebPageRequest inReq)
 	{
 		Map goalspermessage = new HashMap<String,Data>();
 		
@@ -1720,7 +1725,7 @@ Server ProjectModule.uploadFile
 		if( messages == null)
 		{
 			log.error("No messages found");
-			return;
+			return null;
 		}
 		List ids = new ArrayList(messages.size());
 		for (Iterator iterator = messages.iterator(); iterator.hasNext();)
@@ -1740,8 +1745,8 @@ Server ProjectModule.uploadFile
 			goalspermessage.put(goal.get("chatparentid"),goal );
 		}
 		
-		
 		inReq.putPageValue("goalsinmessages",goalspermessage);
+		return goalspermessage;
 	}
 	
 	public void loadGoalInMessage(WebPageRequest inReq)
@@ -1756,7 +1761,7 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("goalsinmessages",goalspermessage);
 		
 	}
-	public void loadMessages(WebPageRequest inReq)
+	public HitTracker loadMessages(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
@@ -1765,12 +1770,21 @@ Server ProjectModule.uploadFile
 
 		if( collection == null)
 		{
-			return;
+			return new ListHitTracker();
 		}
 		//Check permissions
-		
-		Collection topics = archive.query("collectiveproject").exact("parentcollectionid", collection).named("topics").hitsPerPage(10).search(inReq);
-		//TODO Cache these
+		QueryBuilder q = archive.query("collectiveproject").exact("parentcollectionid", collection).named("topics").hitsPerPage(10);
+
+		boolean only = Boolean.parseBoolean( inReq.findValue("onlyshowpublictopics"));
+		if( only)
+		{
+			q.exact("teamproject",false);
+		}
+		Collection topics = q.search(inReq);		
+		if( topics.isEmpty() )
+		{
+			return new ListHitTracker();
+		}
 		inReq.putPageValue("topics", topics);
 		
 		Searcher chats = archive.getSearcher("chatterbox");
@@ -1787,6 +1801,7 @@ Server ProjectModule.uploadFile
 			
 		}
 		inReq.putPageValue("persons",users);
+		return recent;
 	}
 	
 	public void loadTopMessages(WebPageRequest inReq)
@@ -1836,4 +1851,16 @@ Server ProjectModule.uploadFile
 
 	}
 
+	public void loadUploadsInMessages(WebPageRequest inReq)
+	{
+			ProjectManager manager = getProjectManager(inReq);
+			HitTracker uploads = manager.loadUploads(inReq); 
+			
+			inReq.setRequestParameter("onlyshowpublictopics", "true");
+			Collection messages = (Collection)loadMessages(inReq);
+			ListHitTracker combinedEvents = manager.mergeEvents(uploads, messages);
+			inReq.putPageValue("combinedevents",combinedEvents);
+	}
+
+	
 }

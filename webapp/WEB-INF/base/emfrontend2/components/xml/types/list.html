@@ -94,7 +94,7 @@
         	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")
-	<option value="">$detail.blankoption</option>
+	<option value="">$!detail.blankoption</option>
 	#end
 	$types.setHitsPerPage(1000)
 	#foreach( $type in $types.getPageOfHits() )

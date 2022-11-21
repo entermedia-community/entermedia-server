@@ -2,8 +2,20 @@ package org.entermediadb.projects;
 
 import java.util.Date;
 
+import org.openedit.Data;
+
 public class Event
 {
+	protected Data fieldData;
+	
+	public Data getData()
+	{
+		return fieldData;
+	}
+	public void setData(Data inData)
+	{
+		fieldData = inData;
+	}
 	protected String fieldLabel;
 	public String getLabel()
 	{
