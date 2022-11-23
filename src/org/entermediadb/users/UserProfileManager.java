@@ -259,7 +259,7 @@ public class UserProfileManager
 				log.error("Error saving " + inUserName ,ex);
 			}
 		}
-		userprofile.setValue("userid",user.getId());
+		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 		loadLibraries(userprofile, inCatalogId);
