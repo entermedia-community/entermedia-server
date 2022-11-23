@@ -42,6 +42,15 @@ public class PayPalModule extends BaseMediaModule
 			log.error("No data found");
 			return;
 		}
+		
+		String authorizationid = inReq.getRequestParameter("authorizationid.value");
+		if( authorizationid == null || authorizationid.length() < 9)
+		{
+			log.error("Not a valid transaction " + authorizationid);
+			return;
+		}
+		
+		
 		MediaArchive archive = getMediaArchive(inReq);
 		String username =  inReq.getUserName();
 		User user = inReq.getUser();
