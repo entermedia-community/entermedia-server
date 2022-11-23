@@ -1098,6 +1098,11 @@ public class TaskModule extends BaseMediaModule
 	
 	public void toggleGoalLike(WebPageRequest inReq)
 	{
+		if( inReq.getUser() == null)
+		{
+			return;
+		}
+		
 		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("projectgoal");
