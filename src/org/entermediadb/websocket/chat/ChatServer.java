@@ -150,7 +150,7 @@ public class ChatServer
 		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
 		inMap.put("messageid",inData.getId());
 		inMap.put("command","messagereceived");
-		
+		inMap.put("content",inData.get("message"));
 		broadcastMessage(inCatalogId,inMap);
 	}
 	public void broadcastMessage(JSONObject inMap)
@@ -160,7 +160,6 @@ public class ChatServer
 	}
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
-		
 		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
 		String collectionid = String.valueOf(inMap.get("collectionid"));
 
@@ -172,6 +171,19 @@ public class ChatServer
 				
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 				LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
+				if( inMap.get("topic") == null)
+				{
+					inMap.put("topic",collection.getName());
+				}
+				if( inMap.get("name") == null)
+				{
+					User user = archive.getUser((String)inMap.get("user"));
+					if(user != null)
+					{
+						inMap.put("name",user.getScreenName());
+					}
+				}
+				
 				Set userids = projectmanager.listTeam(collection);
 				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 				{

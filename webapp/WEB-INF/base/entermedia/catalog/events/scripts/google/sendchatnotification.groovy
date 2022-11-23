@@ -31,10 +31,15 @@ public void runit()
 	String topicid = data.get("channel");
 	MultiValued topicdata = (MultiValued)mediaArchive.getData("collectiveproject", topicid);
 	//If it ends with messages
-	
+	if( topicdata == null)
+	{
+		log.info("No channel");
+		return;
+	}
 	Collection values = topicdata.getValues("parentcollectionid");
 	if( values == null)
 	{
+		log.info("No parent");
 		return;
 	}
 	for(String parentcollectionid in values)

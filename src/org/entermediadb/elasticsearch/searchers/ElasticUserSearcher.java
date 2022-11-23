@@ -17,6 +17,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.BaseUser;
 import org.openedit.users.Group;
 import org.openedit.users.GroupSearcher;
@@ -204,12 +205,18 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public void saveData(Data inData, User inUser)
 	{
 		User tosave = (User)inData;
+		if(tosave instanceof UserProfile)
+		{
+			tosave = ((UserProfile)tosave).getUser();
+		}
+		
 		if( tosave.getValue("creationdate") == null )
 		{
 			tosave.setValue("creationdate", new Date() );
 		}
 		getXmlUserArchive().saveUser(tosave);
-		getCacheManager().remove("usercache",tosave.getId());
+		//getCacheManager().remove("usercache",tosave.getId());
+		getCacheManager().put("usercache",tosave.getId(),tosave);
 
 		super.saveData(inData, inUser); //update the index
 	}

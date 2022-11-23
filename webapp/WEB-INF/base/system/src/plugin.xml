@@ -255,6 +255,8 @@
 
 	<bean id="userProfile" class="org.openedit.profile.UserProfile" scope="prototype" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="userManager"><ref bean="userManager"/></property>
+		
 	</bean>
 
 	<bean id="lockManager" class="org.openedit.locks.MemoryLockManager"  scope="prototype" >

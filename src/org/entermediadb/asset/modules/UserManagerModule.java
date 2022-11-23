@@ -840,6 +840,7 @@ public class UserManagerModule extends BaseMediaModule
 	}
 
 	/**
+	 * Do not use this anymore. Use UserProfile to save all the data of a user
 	 * @see org.openedit.action.Command#execute(Map, Map)
 	 */
 	public void updateUserProperties( WebPageRequest inReq ) throws UserManagerException,
@@ -1429,7 +1430,7 @@ public class UserManagerModule extends BaseMediaModule
 			String path = inReq.getPath();
 			selecteduser = PathUtilities.extractDirectoryName(path);
 		}
-		User user = getUserManager(inReq).getUser(selecteduser);
+		User user = getUserManager(inReq).getUser(selecteduser,true);
 		inReq.putPageValue("selecteduser", user);
 	}
 	

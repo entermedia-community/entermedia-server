@@ -209,8 +209,11 @@ function connect() {
 					body: message.content,
 					renotify: false,
 					tag: message.content,
-					icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
+					icon: apphome + "/theme/images/logo.png"
 				});
+			    notification.addEventListener("click", function (event) {
+					//window.open('http://www.mozilla.org', '_blank');
+			    } );
 				
 			}
 			
