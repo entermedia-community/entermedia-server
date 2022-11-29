@@ -16,6 +16,8 @@ public void init(){
 	modules.each{
 		manager.createModuleFallbacks( appid, it);
 	}
+	archive.clearAll();
+	
 }
 
 

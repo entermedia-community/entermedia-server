@@ -1996,9 +1996,22 @@ public class MediaArchive implements CatalogEnabled
 		getPresetManager().conversionCompleted(this, asset);
 	}
 
+	/**
+	 * Use getUserProfile instead
+	 * @param inId
+	 * @return
+	 */
 	public User getUser(String inId)
 	{
+		//User user = getUserManager().getUserProfile(getCatalogId(), inId);
 		User user = getUserManager().getUserSearcher().getUser(inId,true);
+		return user;
+	}
+
+	public UserProfile getUserProfile(String inId)
+	{
+		UserProfile user = getUserProfileManager().getUserProfile(getCatalogId(), inId);
+		//User user = getUserManager().getUserSearcher().getUser(inId,true);
 		return user;
 	}
 

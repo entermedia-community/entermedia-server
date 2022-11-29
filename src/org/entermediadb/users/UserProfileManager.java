@@ -86,6 +86,10 @@ public class UserProfileManager
 
 	protected UserProfile loadProfile(WebPageRequest inReq, String inCatalogId, String appid, String inUserName)
 	{
+		if( inUserName == null)
+		{
+			return null;
+		}
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
 		boolean forcereload = false;
@@ -255,7 +259,7 @@ public class UserProfileManager
 				log.error("Error saving " + inUserName ,ex);
 			}
 		}
-		userprofile.setUser(user);
+		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 		loadLibraries(userprofile, inCatalogId);

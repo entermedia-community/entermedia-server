@@ -55,7 +55,7 @@ public class FireBase {
 		
 		//message.put("channel_id","my_channel_id");
 		JSONObject data = new JSONObject();
-		data.put("collectionid",inChannel);
+		data.put("collectionid",inChannel);  //TODO: This does not seem correct
 		if(inUser != null)
 		{
 			data.put("userid",inUser.getId()); 
