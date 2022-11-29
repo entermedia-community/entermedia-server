@@ -11,7 +11,11 @@
 					title="$item.key">$subitem.getValue() [[Seconds]] </span>
 					#set( $data = false)
 					#set( $data = $mediaarchive.getData("user",$item.key))
-					$context.getText($data)
+					#if ($data)
+					$!context.getText($data)
+					#else
+					$item.key
+					#end
 					
 					<br /></li> #end #end
 
