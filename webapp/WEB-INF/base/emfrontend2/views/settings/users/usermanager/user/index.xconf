@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 
 <page>
-	<page-action name="User.loadUserProperties" />
+	<path-action name="User.loadUserProperties" />
 </page>

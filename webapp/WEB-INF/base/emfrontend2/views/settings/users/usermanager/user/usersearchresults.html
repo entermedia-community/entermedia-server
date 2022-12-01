@@ -1,0 +1,15 @@
+<div id="emresultscontent">
+$context.putPageValue("searchtype", "user")
+#set( $searcher = $mediaarchive.getSearcher("user") )
+$context.putPageValue("searcher",$searcher)
+#set($viewid = "copyuserpicker")
+$context.putPageValue("viewid", $viewid)
+
+#set ($details = $searcher.getDetailsForView("user/${viewid}", $userprofile))
+$context.putPageValue("details",$details)
+$context.putPageValue("module","user")
+$context.putPageValue("hits",$collhits)
+
+$pages.include("${apphome}/components/table/results.html", $context)
+
+</div>

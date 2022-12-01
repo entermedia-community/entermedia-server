@@ -1,0 +1,15 @@
+<page>
+
+	<inner-layout />
+	<property name="enforcesecurity">true</property>
+	<page-action name="DataEditModule.search" >
+		<property name="searchtype">user</property>
+		<property name="sortby">firstName</property>
+		<property name="hitsname">collhits</property>
+	</page-action>
+	
+	<permission name="edittablecolumns"> 
+			<not />
+	</permission>
+
+</page>
