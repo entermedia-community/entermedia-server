@@ -2293,6 +2293,25 @@ uiload = function() {
 		  }
 		  
 	});
+    
+	lQuery("#copyuserpicker .rowclick").livequery("click", function(e) {
+		e.preventDefault();
+		//$(this).closest(".modal").modal("hide");
+		var picker = $("#copyuserpicker");
+		var row = $(this);
+		var rowid = row.attr("rowid");
+		
+		var targetdiv = picker.data("targetdiv");
+		var targetdiv = $("#" + targetdiv);
+		var nextpage = picker.data("nextpage");
+		var options = picker.data();
+		options.copyid = picker.data("userid");
+		options.copytoid = rowid;
+		$.get(nextpage, options, function(data) {
+			targetdiv.replaceWith(data);
+		});
+	
+	});
 		
 
 }// uiload
