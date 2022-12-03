@@ -110,6 +110,12 @@ function chatterbox() {
 		}
 	});
 	
+	lQuery("a.appendgoalbutton").livequery('click', function(e) {
+		var parent = $(this).closest(".goalstatusopen");
+		if (parent) {
+			parent[0].scrollIntoView();
+		}
+	});
 	
 	chatopen=true;
 }
