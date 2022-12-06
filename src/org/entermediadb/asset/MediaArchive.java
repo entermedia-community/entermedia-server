@@ -2882,4 +2882,20 @@ public class MediaArchive implements CatalogEnabled
 		return (UserProfileManager)getModuleManager().getBean(getCatalogId(),"userProfileManager",true);
 	}
 
+	public String asLinkToUserProfile(Data inUser)
+	{
+		Data chatprofile = getUserProfile(inUser.getId());
+		String userimageid = chatprofile.get("assetportrait");
+		if(userimageid == null)
+		{
+			userimageid = inUser.get("assetportrait");
+		}
+		if( userimageid != null)
+		{
+			String url  = asLinkToProfile(userimageid);
+			return url;
+		}
+		return null;
+	}
+	
 }
