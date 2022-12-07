@@ -2884,7 +2884,15 @@ public class MediaArchive implements CatalogEnabled
 
 	public String asLinkToUserProfile(Data inUser)
 	{
+		if( inUser == null)
+		{
+			return null;
+		}
 		Data chatprofile = getUserProfile(inUser.getId());
+		if( chatprofile == null)
+		{
+			return null;
+		}
 		String userimageid = chatprofile.get("assetportrait");
 		if(userimageid == null)
 		{
