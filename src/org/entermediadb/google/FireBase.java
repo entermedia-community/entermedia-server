@@ -80,7 +80,6 @@ public class FireBase {
 		JSONObject notification = new JSONObject();
 		notification.put("title", inSubject);
 		notification.put("body", inMessage);
-		notification.put("channel_id",inChannel);
 		message.put("notification", notification);
 
 		String tosend = root.toJSONString();
