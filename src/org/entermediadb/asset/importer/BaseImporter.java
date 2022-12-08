@@ -324,7 +324,7 @@ public class BaseImporter extends EnterMediaObject
 		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
 		{
 			String header = (String) iterator.next();
-			if(header.contains(".")){
+			if(header.contains(".")){  //TODO: What about english and spanish language imports?
 				continue;
 			}
 			//String header = inHeaders[i];

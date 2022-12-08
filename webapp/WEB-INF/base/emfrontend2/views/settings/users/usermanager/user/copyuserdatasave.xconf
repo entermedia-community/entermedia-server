@@ -1,0 +1,10 @@
+<page>
+
+	<path-action name="User.loadUserProperties" />
+
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/users/mergeusers.groovy</script>
+	</path-action>
+
+	
+</page>

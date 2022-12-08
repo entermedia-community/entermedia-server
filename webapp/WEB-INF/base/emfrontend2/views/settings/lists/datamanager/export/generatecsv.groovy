@@ -19,7 +19,7 @@ searcher = searcherManager.getSearcher(catalogid, searchtype);
 boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
 
 
-PropertyDetails	details = searcher.getPropertyDetails();
+PropertyDetails	details = searcher.getActivePropertyDetails();
 
 int count = 0;
 Writer output = context.getPageStreamer().getOutput().getWriter();
