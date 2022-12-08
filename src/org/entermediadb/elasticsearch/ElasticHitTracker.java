@@ -30,7 +30,6 @@ import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -40,6 +39,9 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -577,12 +579,12 @@ public class ElasticHitTracker extends HitTracker
 		return fieldAggregations;
 	}
 	
-	public Object getAggregationJson() throws ParseException {
+	public JsonObject getAggregationJson() throws ParseException {
 		String json = getSearchResponse(0).toString();
-		JSONParser parser = new JSONParser();
-		JSONObject results = (JSONObject) parser.parse(json);
+		JsonParser parser = new JsonParser();
+		JsonObject results = (JsonObject) parser.parse(json);
 
-		JSONObject aggs = (JSONObject) results.get("aggregations");
+		JsonObject aggs = (JsonObject) results.get("aggregations");
 		return aggs;
 	}
 
