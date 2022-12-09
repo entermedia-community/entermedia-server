@@ -28,10 +28,12 @@ $context.putPageValue("details",$details)
 		 data-catalogid="$searcher.catalogId" 
 		 data-searchtype="$searcher.searchType" >
 		 <thead>
-			<tr id="tableheader">
-			###set( $sortby = $datalist.getSearchQuery().getSortBy() )
+			<tr id="tableheader" class="tableheader">
+			#set( $sortby = $datalist.getSearchQuery().getSortBy() )
 			#foreach( $detail in $details )
 			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
+				
+				 
 				$detail.getText($context)
 				#if ($sortby.startsWith($detail.getId()))
 	 				#if($sortby.endsWith("Up"))
@@ -77,7 +79,7 @@ $context.putPageValue("details",$details)
 				class="ajaxform"
 				data-targetdivinner="datamanager-workarea"
 				data-updateurl="true"
-				data-oemaxlevel="1"
+				
 			>
 				#if($origURL)
 				<input type="hidden" name="origURL" id="$!origURL" />

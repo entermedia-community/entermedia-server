@@ -16,6 +16,7 @@
 			<input name="searchtype" type="hidden" value="$searcher.searchType" />
 			<input name="origURL"  type="hidden" value="$!origURL" />
 		<div id="edit-data">	
+		$context.putPageValue("editortype","datamanager")	
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 		</div>
 		<div style="padding:10px">
