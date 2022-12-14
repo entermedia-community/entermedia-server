@@ -13,7 +13,6 @@
 $context.putPageValue("multiedit",$multiedit)
 $context.putPageValue("longform",false)
 
-
 #if(!$view)
 	#if($viewid)
 		#set($view = "${searcher.searchType}/${viewid}")
@@ -150,6 +149,6 @@ $context.putPageValue("longform",false)
 </div>
 
 ##needed for fast loading HTML edit boxes
-#if( $usedhtml && $readonly !=  "true") 
-	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
-#end
+## #if( $usedhtml && $readonly !=  "true") 
+##	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
+## #end
