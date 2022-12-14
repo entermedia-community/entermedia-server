@@ -5,14 +5,14 @@
 
 <div class="assetpicker">
 
-<div id="${detail.id}-file-info" style="font-size:90%">
+<div id="${detail.id}-file-info">
 
-<div class="render-type-thumbnail" id="${detail.id}-preview" style="padding: 4px;">
+<div class="render-type-thumbnail" id="${detail.id}-preview">
 #if($val && $val != "")
 	#set( $foundrow = $mediaarchive.getAsset($val)  )
 	#if($foundrow)
 		$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-		<span id="${detail.id}-file-info" style="font-size:90%">
+		<span id="${detail.id}-file-info" class="assetpicker-filename">
 			$!mediaarchive.getAsset($val)
 		</span>			
 	#end

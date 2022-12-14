@@ -559,6 +559,7 @@ span.glyphicon-triangle-left.overlay-nav {
 	display:block;
     margin:auto;
     position:relative;
+    max-height: 100%;
 }
 
 #emcontainer #emselectable  #main-results-table .tableresults tr td {

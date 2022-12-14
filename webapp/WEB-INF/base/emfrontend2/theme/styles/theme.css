@@ -5251,3 +5251,15 @@ a.collectionlike,a.collectionsaved
 	min-height:200px;
 	overflow: auto;
 }
+
+
+.assetpicker-filename {
+	font-size:0.9rem;
+	max-width: 200px;
+	margin:0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    display: block;
+}
