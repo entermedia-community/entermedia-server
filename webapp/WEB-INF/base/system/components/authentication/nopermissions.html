@@ -1,6 +1,6 @@
-
+<div class="nopermissions">
 #if( $user.getId() )
-<h2>[[Youy]]</h2>
+<h2>[[No Permissions]]</h2>
 
 
 #foreach($task in $somelist)
@@ -16,3 +16,4 @@
 
 	$pages.include("$content.loginroot/login.html",$context)
 #end
+</div>
