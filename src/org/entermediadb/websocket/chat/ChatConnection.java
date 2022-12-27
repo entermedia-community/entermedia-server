@@ -251,8 +251,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				Object userval = map.get("user");
 				String userid = null;
 				if(userval!= null) {
-				userid= userval.toString();
-
+					userid= userval.toString();
 				}
 				User auser = archive.getUser(userid);
 				String name = auser.getFirstName();
