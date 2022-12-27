@@ -20,6 +20,7 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
+import org.openedit.users.User;
 
 public class ChatConnection extends Endpoint implements  MessageHandler.Partial<String> {
 	private static final Log log = LogFactory.getLog(ChatConnection.class);
@@ -250,11 +251,10 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				Object userval = map.get("user");
 				String userid = null;
 				if(userval!= null) {
-				userid= userval.toString();
-
+					userid= userval.toString();
 				}
-				
-				String name = archive.getUser(userid).getFirstName();
+				User auser = archive.getUser(userid);
+				String name = auser.getFirstName();
 				if (name == null) 
 				{
 					name = "";
@@ -274,6 +274,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				map.put("content", content);
 				
 				getChatServer().broadcastMessage(catalogid,map);
+				archive.fireGeneralEvent(auser, "chatterbox", "messagereceived", map);
+
 				
 			}
 			else if("approveasset".equals(command)){

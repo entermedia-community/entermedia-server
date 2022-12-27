@@ -8,6 +8,7 @@ import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.page.PageRequestKeys;
 
 /**
  * Listens for web events such as upload and runs the related path event
@@ -45,7 +46,10 @@ public class PathEventHandler implements WebEventListener
 			{
 				request.setRequestParameter(key, (String)value);
 			}
-			request.putPageValue(key, value);
+			if( !key.equals(PageRequestKeys.USER))
+			{
+				request.putPageValue(key, value);
+			}
 		}
 		request.setRequestParameter("catalogid", inEvent.getCatalogId());
 		request.putPageValue("webevent", inEvent);

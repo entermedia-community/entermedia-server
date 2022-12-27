@@ -70,6 +70,8 @@ public class FireBase {
 		}
 		data.put("title", inSubject);
 		data.put("body", inMessage);
+		data.put("notificationtype", "chat"); //TODO: Add more
+		
 
 //		 intent.putExtra("collectionid",inCollectionId);
 //        intent.putExtra("userlabel",inUserLabel);
