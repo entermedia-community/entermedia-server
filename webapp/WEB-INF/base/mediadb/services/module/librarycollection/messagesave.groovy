@@ -18,7 +18,7 @@ public void init(){
 	server.broadcastMessage(archive.getCatalogId(),data);
 	
 	//Google notify
-	archive.fireGeneralEvent(req.getUser(), "chatterbox", "messagereceived", req.getPageMap());
+	archive.fireDataEvent(req.getUser(), "chatterbox", "messagereceived", data);
 	
 	
 }
