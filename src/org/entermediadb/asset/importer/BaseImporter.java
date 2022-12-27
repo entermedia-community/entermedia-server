@@ -248,7 +248,8 @@ public class BaseImporter extends EnterMediaObject
 	protected HashMap loadValueList(String inField, String inTableName, boolean inMulti)
 	{
 		HashMap datavalues = (HashMap) getLookUps().get(inField);
-		if (datavalues == null)
+		//if (datavalues == null)
+		if (datavalues == null || datavalues.isEmpty())
 		{
 			datavalues = new HashMap();
 			getLookUps().put(inField, datavalues);
@@ -256,7 +257,7 @@ public class BaseImporter extends EnterMediaObject
 			PropertyDetails details = getSearcher().getPropertyDetails();
 			PropertyDetail detail = details.getDetail(id);
 			//if( detail.getL
-			if (detail.getDataType() != "list")
+			if (!detail.getDataType().equals("list"))
 			{
 				detail.setDataType("list");
 				detail.setListId(inTableName);
@@ -293,10 +294,19 @@ public class BaseImporter extends EnterMediaObject
 		Data data = (Data) datavalues.get(value);
 		if (data == null)
 		{
-			//create it
-			String id = PathUtilities.extractId(value, true);
-			
-			data = findOrCreateById(inTable, id, value);
+			//search by name
+			Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
+			data = (Data) searcher.query().match("name", value).searchOne();
+			if(data == null) 
+			{
+				data = (Data) searcher.searchById(value);
+				if(data == null) 
+				{
+					//create it
+					String id = PathUtilities.extractId(value, true);
+					data = findOrCreateById(inTable, id, value);
+				}
+			}
 			datavalues.put(value, data);
 		}
 		return data;
