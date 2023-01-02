@@ -1431,6 +1431,10 @@ public class MediaArchive implements CatalogEnabled
 		event.setUser(inUser);
 		event.setSource(this);
 
+		if( inParams.get("id") != null && event.getValue("dataid") == null )
+		{
+			event.setValue("dataid", inParams.get("id"));
+		}
 		//archive.getWebEventListener()
 		getEventManager().fireEvent(event);
 	}
