@@ -2736,7 +2736,7 @@ public class MediaArchive implements CatalogEnabled
 		end.add(Calendar.DAY_OF_YEAR, -1);
 		HitTracker invoice = query("collectiveinvoice")
 				.exact("paymentstatus", status)
-				.between("createdon", start.getTime(), end.getTime()) 
+				.between("duedate", start.getTime(), end.getTime()) 
 				.sort("createdonDown").search();
 		return invoice;
 	}
