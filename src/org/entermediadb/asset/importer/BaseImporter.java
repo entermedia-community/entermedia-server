@@ -365,7 +365,6 @@ public class BaseImporter extends EnterMediaObject
 				continue;
 			}
 			String header = inRow.getHeader().getColumn(i);
-			String headerid = PathUtilities.extractId(header, true);
 			if (header.contains("."))
 			{
 				String splits[] = header.split("\\.");
@@ -395,18 +394,21 @@ public class BaseImporter extends EnterMediaObject
 				}
 				continue;
 			}
+			//trim spaces and clean
+			String headerid = PathUtilities.extractId(header, true);
 			val = URLUtilities.escapeUtf8(val); //The XML parser will clean up the & and stuff when it saves it
-			if ("sourcepath".equals(header))
+			
+			if ("sourcepath".equals(headerid))
 			{
 				inData.setSourcePath(val);
 			}
 			else if (val != null && val.length() > 0)
 			{
-				PropertyDetail detail = getSearcher().getDetail(header);
+				PropertyDetail detail = getSearcher().getDetail(headerid);
 				if(detail != null) 
 				{
 					Object value = lookUpListValIfNeeded(detail,val);
-					inData.setValue(header, value);
+					inData.setValue(headerid, value);
 				} 
 				else
 				{
