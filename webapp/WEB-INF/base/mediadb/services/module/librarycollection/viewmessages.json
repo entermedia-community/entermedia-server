@@ -67,7 +67,7 @@
 					"email": "$person.email",
 					"firstName": "$person.firstName",
 					"lastName": "$person.lastName"
-					#set( $userimageurl = $mediaarchive.asLinkToProfile($person.assetportrait) )
+					#set( $userimageurl = $mediaarchive.asLinkToProfile($person) )
 					#if($userimageurl)
 						,"portrait": "$userimageurl"
 					#end
