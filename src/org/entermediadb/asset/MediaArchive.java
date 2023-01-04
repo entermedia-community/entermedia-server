@@ -2749,7 +2749,7 @@ public class MediaArchive implements CatalogEnabled
 		HitTracker invoice = query("collectiveinvoice")
 				.exact("paymentstatus", status)
 				.between("duedate", start.getTime(), end.getTime()) 
-				.sort("createdonDown").search();
+				.sort("duedateDown").search();
 		return invoice;
 	}
 	//TODO: Move this to InvoiceManager
