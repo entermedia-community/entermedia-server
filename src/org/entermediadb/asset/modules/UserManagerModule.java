@@ -1464,5 +1464,24 @@ public class UserManagerModule extends BaseMediaModule
 		User user = getUserManager(inReq).getUser(selecteduser);
 		inReq.putPageValue("selecteduser", user);
 	}
+
+	public Boolean isDataOwner(WebPageRequest inReq)
+	{
+//		String userid = inReq.getRequestParameter("id");
+//		if( userid == null)
+//		{
+//			userid = inReq.getContentPage().getPageName();
+//		}
+		
+		if( "PUT".equals(inReq.getRequest().getMethod()) )
+		{
+			String userid = inReq.getContentPage().getPageName();
+			if( userid.equals(inReq.getUserName() ) )
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

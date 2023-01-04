@@ -9,7 +9,7 @@
   	<property name="module">user</property>
   	<property name="searchtype">user</property>
  
- <permission name="view">
+ 	<permission name="view">
 		<userprofile property="api-manage-users" equals="true"/>
 	</permission>
  

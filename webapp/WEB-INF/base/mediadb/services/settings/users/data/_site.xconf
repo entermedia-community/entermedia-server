@@ -1,5 +1,12 @@
 <page>
 
+	<permission name="view">
+ 		<or>
+		<userprofile property="api-manage-users" equals="true"/>
+ 		<action name="User.isDataOwner" />
+		</or>
+	</permission>
+
 	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT">
 		<property name="catalogid">system</property>
 	</path-action> 
