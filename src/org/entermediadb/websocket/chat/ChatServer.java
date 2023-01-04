@@ -165,6 +165,15 @@ public class ChatServer
 
 		if( catalogid != null  )
 		{
+			final ChatManager manager = getChatManager(catalogid);
+			
+			String channelid = (String)inMap.get("channel");
+			String userid = (String)inMap.get("user");
+			String messageid = (String)inMap.get("messageid");
+			if( channelid != null)
+			{
+				manager.updateChatTopicLastModified( channelid, userid, messageid );
+			}
 			if( collectionid != null && !"null".equals(collectionid))
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
@@ -202,21 +211,20 @@ public class ChatServer
 					chatConnection.sendMessage(inMap);
 				}	
 			}
-			ChatManager manager = getChatManager(catalogid);
-			
 			
 			//For people who are logged in, mark that they checked already
 			getExecutorManager(catalogid).execute( new Runnable() {
 				@Override
 				public void run() 
 				{
+					String channelid = (String)inMap.get("channel");
+					
 					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 					{
 						ChatConnection chatConnection = (ChatConnection) iterator.next();
 						String connectedUser = chatConnection.getUserId(); 
 						if( connectedUser != null)
 						{
-							Object channelid = inMap.get("channel");
 							String connectionTopic = chatConnection.getChannelId();  //Current Connection Channel
 							if( channelid != null && channelid.equals(connectionTopic))
 							{
