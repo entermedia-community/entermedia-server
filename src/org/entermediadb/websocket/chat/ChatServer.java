@@ -168,7 +168,11 @@ public class ChatServer
 			final ChatManager manager = getChatManager(catalogid);
 			
 			String channelid = (String)inMap.get("channel");
-			String userid = (String)inMap.get("user");
+			String userid = null;
+			if( inMap.get("user") != null )
+			{
+				userid = inMap.get("user").toString();
+			}
 			String messageid = (String)inMap.get("messageid");
 			if( channelid != null)
 			{
