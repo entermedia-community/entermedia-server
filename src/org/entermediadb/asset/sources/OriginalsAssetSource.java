@@ -293,11 +293,23 @@ public class OriginalsAssetSource extends BaseAssetSource
 				checkformod = true;
 			}
 			
-			importer.fireHotFolderEvent(getMediaArchive(), "scan", "start", "Scanning " + path, null);
+			boolean makelogs = false;
+			String value = getMediaArchive().getCatalogSettingValue("show_hotfolder_status");
+			if(Boolean.valueOf(value))
+			{
+				makelogs = true;
+			}
+			if( makelogs )
+			{
+				importer.fireHotFolderEvent(getMediaArchive(), "scan", "start", "Scanning " + path, null);
+			}
 			log.info(path + " scan started. mod check = " + checkformod);
 			
 			List<String> paths = importer.processOn(base, path, checkformod, getMediaArchive(), null);
-			importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish", String.valueOf( paths.size()), null);
+			if( makelogs )
+			{
+				importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish", String.valueOf( paths.size()), null);
+			}
 			getConfig().setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 			getFolderSearcher().saveData(getConfig(), null);
 

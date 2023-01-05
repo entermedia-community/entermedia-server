@@ -11,6 +11,8 @@
 	<row id="10"  webeventlistener="logger" action="asset/rejected" ></row>	
 	<row id="em12"  webeventlistener="logger" action="asset/usercrop" ></row>	
 	<row id="12"  webeventlistener="logger" action="asset/deleted" ></row>	
+	<row id="11init"  webeventlistener="logger" action="hotfolder/init" ></row>	
+	<row id="11scan"  webeventlistener="logger" action="hotfolder/scan" ></row>	
 	<row id="11"  webeventlistener="logger" action="hotfolder/update" ></row>	
 	
 	
