@@ -113,6 +113,10 @@ public class AssetPathProcessor extends PathProcessor
 				existingassets.add(asset);
 			}
 		}
+		if( isShowLogs() )
+		{
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "About to save " + getMediaArchive().getCatalogId() + String.valueOf( getAssetsToSave().size()), null);
+		}
 		
 		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); 
 
@@ -137,7 +141,7 @@ public class AssetPathProcessor extends PathProcessor
 		getMediaArchive().firePathEvent("importing/assetscreated",inUser,getAssetsToSave());
 		if( isShowLogs() )
 		{
-			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "Saved " + String.valueOf( getAssetsToSave().size()) + " asset ids: " + assetsids, null);
 		}
 		getAssetsToSave().clear();
 	}
@@ -478,6 +482,11 @@ public class AssetPathProcessor extends PathProcessor
 					pathtocheck = pathtocheck + "/" + nextfolder;
 				} else{
 					pathtocheck =folderlist[0];
+				}
+				if( isShowLogs() )
+				{
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "processAssets", 
+							"Checking starting point of " + inStartingPoint + " Checking " + pathtocheck , null);
 				}
 				//TODO: This is super slow....Cache it for top level assets?
 				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);

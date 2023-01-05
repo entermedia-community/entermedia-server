@@ -305,16 +305,16 @@ public class OriginalsAssetSource extends BaseAssetSource
 			}
 			log.info(path + " scan started. mod check = " + checkformod);
 			
-			List<String> paths = importer.processOn(base, path, checkformod, getMediaArchive(), null);
+			List<String> assetids = importer.processOn(base, path, checkformod, getMediaArchive(), null);
 			if( makelogs )
 			{
-				importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish", String.valueOf( paths.size()), null);
+				importer.fireHotFolderEvent(getMediaArchive(), "scan", "finish", "Found assets: " + String.valueOf( assetids.size()), null);
 			}
 			getConfig().setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 			getFolderSearcher().saveData(getConfig(), null);
 
 			long taken = ((new Date().getTime() - started.getTime())/6000L);
-			log.info(getConfig() + " Imported " + paths.size() + " in " + taken + " milli-seconds" );
+			log.info(getConfig() + " Imported " + assetids.size() + " assets in " + taken + " milli-seconds" );
 			
 			
 			String monitor = getConfig().get("monitortree");
@@ -323,7 +323,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 				initMonitor();
 			}
 			
-			return paths.size();
+			return assetids.size();
 		}
 		
 		protected void initMonitor()
