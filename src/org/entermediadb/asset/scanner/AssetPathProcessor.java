@@ -209,18 +209,22 @@ public class AssetPathProcessor extends PathProcessor
 			{
 				//look deeper for assets
 				List paths = getPageManager().getChildrenPaths(inInput.getPath());
-				if( paths.size() == 0 )
+				if( isShowLogs() )
 				{
-					if( isShowLogs() )
+					if( paths.size() == 0 )
 					{
 						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
 								"Empty folder: " + inInput.getAbsolutePath(), null);
 					}
 					return;
 				}
-				if( paths.size() > 3000 )
+				if( isShowLogs() )
 				{
-					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
+					if( paths.size() > 3000 )
+					{
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
+					}
+					
 				}
 				
 				boolean processchildren = true;
