@@ -1318,7 +1318,11 @@ public class TaskModule extends BaseMediaModule
 			staffid = inReq.getRequestParameter("goaltrackerstaff");//inReq.getUserProfile().get("goaltrackerstaff");
 		}
 		//Boolean isAgent =  inReq.getUserProfile().isInRole("administrator");  //For now Admins can see all tickets
-				
+		if( staffid == null)
+		{
+			staffid = inReq.getUserName();
+		}
+		
 		QueryBuilder opengoalbuilder = goalsearcher.query();
 		Collection userprojects = new HashSet();
 
@@ -1351,10 +1355,33 @@ public class TaskModule extends BaseMediaModule
 		else 
 		{
 			//search only in project the user belongs
-			Collection allprojectsuser = archive.query("librarycollectionusers").
+			Collection allprojectsuser = null;
+			
+			
+			if( staffid.equals(inReq.getUserName()))
+			{
+				//gather up common projects
+				allprojectsuser = archive.query("librarycollectionusers").
+				exact("followeruser",currentuser).
+				exact("ontheteam","true").search();
+			}
+			else
+			{
+				List bothusers = new ArrayList();
+				HitTracker someprojects = archive.query("librarycollectionusers").
+				exact("followeruser",inReq.getUserName()).
+				exact("ontheteam","true").search();
+				if( !someprojects.isEmpty() )
+				{
+					Collection projects = someprojects.collectValues("collectionid");
+					allprojectsuser = archive.query("librarycollectionusers").
+					orgroup("collectionid",projects).
 					exact("followeruser",currentuser).
 					exact("ontheteam","true").search();
-			if(allprojectsuser.size()<1)
+				}
+			}
+			
+			if(allprojectsuser == null || allprojectsuser.isEmpty())
 			{
 				
 				inReq.putPageValue("opentickets", new ListHitTracker());
