@@ -202,6 +202,10 @@ public class BaseJsonModule extends BaseMediaModule
 			//log.info("Got " + inputdata + " from JSON");
 			
 			PropertyDetail detail = searcher.getDetail(key);
+			//only save valid fields?
+			if( detail == null) {
+				return;
+			}
 			if( detail != null && detail.isMultiLanguage())
 			{
 				LanguageMap map = null;

@@ -241,11 +241,14 @@ public class JsonDataModule extends BaseJsonModule
 	
 	public  void getUUID(WebPageRequest inReq) {
 		Map request = inReq.getJsonRequest();
-		String id = (String)request.get("id");
+		String id = null;
+		if (request != null) {
+			id = (String)request.get("id");
+		}
 		if(id == null) {
 			 id = UUID.randomUUID().toString();
-			 inReq.putPageValue("id", id);
 		}
+		inReq.putPageValue("id", id);
 	}
 	
 	
