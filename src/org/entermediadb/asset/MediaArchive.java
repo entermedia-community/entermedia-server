@@ -2735,16 +2735,14 @@ public class MediaArchive implements CatalogEnabled
 		
 		//Calendar end = month == 0 ? new GregorianCalendar(year, 11, 31) : new GregorianCalendar(year, month, 1);
 		//end.add(Calendar.DAY_OF_YEAR, -1);
-		//it is triming 31th day
 		
-		GregorianCalendar end = new GregorianCalendar();
-		end.setTime(start.getTime());
+		Calendar end = month == 0 ? new GregorianCalendar(year, 11, 31) : new GregorianCalendar(year, month, 1);
+		//fix 31th
 		int days = end.getActualMaximum(Calendar.DAY_OF_MONTH);
 		end.set(Calendar.DAY_OF_MONTH, days);
 		end.set(Calendar.MINUTE, 59);
 		end.set(Calendar.HOUR_OF_DAY, 23);
 		end.set(Calendar.SECOND, 59);
-		//Date end = cal.getTime();
 		
 		HitTracker invoice = query("collectiveinvoice")
 				.exact("paymentstatus", status)
