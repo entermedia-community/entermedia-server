@@ -807,6 +807,10 @@ public class UserManagerModule extends BaseMediaModule
 			
 			
 			User user = getUser( inReq );
+			if (user == null) {
+				inReq.putPageValue("errors", "mismatch user");
+				return;
+			}
 			User target = inReq.getUser();
 			if( !user.getId().equals(target.getId()  ))
 			{

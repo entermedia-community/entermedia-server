@@ -395,7 +395,7 @@ public class AssetSourceManager implements CatalogEnabled
 					{
 						if( laststarted.getTime() + period > System.currentTimeMillis())
 						{
-							long remaining = System.currentTimeMillis() - laststarted.getTime() + period;
+							long remaining = System.currentTimeMillis() - laststarted.getTime() - period;
 							inLog.info(name+ ", will scan again within: " + remaining/1000D + " seconds ");
 							continue;
 						}

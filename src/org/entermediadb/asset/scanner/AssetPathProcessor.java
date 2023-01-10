@@ -115,7 +115,7 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		if( isShowLogs() )
 		{
-			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "About to save " + getMediaArchive().getCatalogId() + String.valueOf( getAssetsToSave().size()), null);
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saveImportedAssets", "About to save " + getMediaArchive().getCatalogId() + " " + String.valueOf( getAssetsToSave().size()), null);
 		}
 		
 		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); 
