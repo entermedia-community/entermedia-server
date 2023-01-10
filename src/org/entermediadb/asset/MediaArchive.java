@@ -362,6 +362,9 @@ public class MediaArchive implements CatalogEnabled
 
 	public Collection<Data> asListOfPreviewLinks(Data inAsset)
 	{
+		if(inAsset == null) {
+			return null;
+		}
 		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
 		
 		if(rendertype == null)
