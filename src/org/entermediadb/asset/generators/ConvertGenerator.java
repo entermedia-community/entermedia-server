@@ -69,7 +69,10 @@ public class ConvertGenerator extends FileGenerator
 		if(collectionid != null) 
 		{
 			sourcePath = sourcePath.substring(collectionid.length() + 1);
-			log.info("Final Source Path: " + sourcePath);
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Final Source Path: " + sourcePath);
+			}
 		}
 		
 //		outputype = outputype.toLowerCase();
