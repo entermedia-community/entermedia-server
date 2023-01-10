@@ -166,7 +166,8 @@ public class JsonAssetModule extends BaseJsonModule {
 		
 		if( asset == null)
 		{
-			sourcepath = (String) vals.get("sourcepath");
+			//sourcepath = (String) vals.get("sourcepath");
+			sourcepath = inReq.getRequiredParameter("sourcepath");
 	
 			if (sourcepath == null) {
 				sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
