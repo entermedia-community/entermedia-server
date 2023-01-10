@@ -802,7 +802,7 @@ public class MediaAdminModule extends BaseMediaModule
 	public Data loadHomeModule(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
-		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav","true").sort("orderingUp").searchOne(inReq);
+		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav","true").sort("orderingUp").searchOne();
 		String finalpath;
 		if(module == null){
 			return null;
