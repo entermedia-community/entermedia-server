@@ -2077,7 +2077,15 @@ String viewbase = null;
 		{
 			//hits = search(inReq);
 			Searcher searcher = loadSearcher(inReq);
-			hits = searcher.getAllHits(inReq);
+			SearchQuery q = searcher.addStandardSearchTerms(inReq);
+			if( q != null)
+			{
+				hits = searcher.cachedSearch(inReq, q);
+			}
+			else
+			{
+				hits = searcher.getAllHits(inReq);				
+			}
 //			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
 		}
 //		String name = inReq.findValue("hitsname");
