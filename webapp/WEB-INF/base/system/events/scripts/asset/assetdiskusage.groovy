@@ -33,14 +33,15 @@ public void init(){
 	
 	HitTracker hits =searcher.search(query);
 	//log.info("query:" + query.hasFilters());
-	
-	hits.enableBulkOperations();
-	hits.getActiveFilterValues();
-	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
-	context.putPageValue("breakdownhits", hits)
-	context.putPageValue("hits", hits)
-	
-	log.info(agginfo.getBuckets().size())
+	if(hits != null) {
+		hits.enableBulkOperations();
+		hits.getActiveFilterValues();
+		StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
+		context.putPageValue("breakdownhits", hits)
+		context.putPageValue("hits", hits)
+		
+		log.info(agginfo.getBuckets().size())
+	}
 	log.info("hits" + hits.size());
 	
 }

@@ -101,7 +101,7 @@ h5, h6 {
 	text-decoration: none;
 }
 h5 {
-	font-size: 10px;
+	font-size: 14px;
 }
 h6 {
 	font-size: 14px;
@@ -1039,4 +1039,8 @@ li div.listid A
 {
    margin: 10px 0 0 40px;
  
+}
+
+.emrowpicker tr:hover {
+	cursor: pointer;
 }

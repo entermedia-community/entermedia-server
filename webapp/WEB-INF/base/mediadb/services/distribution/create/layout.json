@@ -4,19 +4,23 @@
 #if(!$cdnprefix )
 	#set($cdnprefix = $context.siteRoot )
 #end
+
+#set($assetid = $data.assetid)
+#set($distributionid= $data.id)
+
 #if($method == "POST")
 {
   "response":
       {
-      #if($data.id)
-      	#set($distributionid= $data.id)
+      #if($distributionid)
         "id":"$distributionid",
         "status" : "ok"
         #else
         "status" :"error"
       #end
       }
- 	#if($distributionid)
+    
+ 	#if($distributionid && $assetid)
 	  ,
 	  #set($assetid = $data.assetid)
 	  "assetid":"$assetid",	  
