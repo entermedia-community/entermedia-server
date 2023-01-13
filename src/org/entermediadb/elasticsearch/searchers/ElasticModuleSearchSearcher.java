@@ -33,7 +33,10 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	public HitTracker search(SearchQuery inQuery)
 	{
 		Collection searchmodules = inQuery.getValues("searchtypes");
-		
+		if( searchmodules == null)
+		{
+			throw new OpenEditException("DataEditModule.loadOrSearchByTypes needs to be called on this search " + inQuery);
+		}
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		
@@ -107,6 +110,15 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		hits.setIndexId(getIndexId());
 		hits.setSearcher(this);
 		hits.setSearchQuery(inQuery);
+		
+		if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+		{
+			long size = hits.size(); // order is important
+			String json = search.toString();
+			long end = System.currentTimeMillis() - start;
+			log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
+		}
+		
 //		hits.size(); //load it up
 //		long end = System.currentTimeMillis();
 //		

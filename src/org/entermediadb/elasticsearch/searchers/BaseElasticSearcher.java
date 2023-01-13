@@ -938,8 +938,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				jsonproperties = jsonproperties.field("type", "string");
 			}
+			//TODO: enable sort on list fields. if exact field is sortable add sort subfield with the actual lookedup name value?
 		}
-
 		else
 		{
 			jsonproperties = jsonproperties.field("type", "string");
@@ -1373,7 +1373,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
 				// "Big Deal" => "Big Deal"
 				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
-				BoolQueryBuilder or = QueryBuilders.boolQuery();
 
 				Matcher m = operators.matcher(uppercase);
 
@@ -1382,6 +1381,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				String operator = null;
 				boolean keepgoing = true;
 				String nextoperator = null;
+
+				BoolQueryBuilder or = QueryBuilders.boolQuery();
 				while (keepgoing)
 				{
 					if (m.find())
