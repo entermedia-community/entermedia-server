@@ -150,10 +150,14 @@ public class ProfileModule extends MediaArchiveModule
 		{
 			searchtype = "asset";
 		}
-		if( view == null && "asset".equals(searchtype))
-		{
-			view = "resultstable";
-		} 
+		if( view == null) {
+			if("asset".equals(searchtype)) {
+				view = "resultstable";
+			}
+			else {
+				view = searchtype+"resultstable";
+			}
+		}
 		String viewpath = searchtype + "/" + view; 
 
 		String add = inReq.getRequestParameter("addcolumn");
