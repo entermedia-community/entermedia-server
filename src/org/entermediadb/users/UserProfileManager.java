@@ -274,7 +274,7 @@ public class UserProfileManager
 					match("viewusers", inUserName)*/
 					search();
 					///log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
-				userprofile.setModules(modules);
+				userprofile.setModules(new ArrayList(modules));
 			}
 			else
 			{
@@ -289,7 +289,7 @@ public class UserProfileManager
 				builder.sort("ordering");
 				HitTracker modules  = builder.search();
 					//log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
-				userprofile.setModules(modules); 
+				userprofile.setModules(new ArrayList(modules)); 
 			}
 		}
 		else
