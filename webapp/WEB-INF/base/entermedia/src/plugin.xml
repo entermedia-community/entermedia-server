@@ -2292,6 +2292,9 @@
  	</bean>
 
  	<bean id="desktopManager" class="org.entermediadb.desktops.DesktopManager" >
+ 		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
  	</bean>
 
  	<bean id="desktop" class="org.entermediadb.desktops.Desktop" scope="prototype">

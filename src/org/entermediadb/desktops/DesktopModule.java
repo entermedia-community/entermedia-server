@@ -98,6 +98,22 @@ public class DesktopModule extends BaseMediaModule
 		}
 
 	}
-
+	
+	
+	public void loadDesktop(WebPageRequest inReq)
+	{
+	
+		String isDesktop = inReq.getRequestParameter("desktop");
+		if(Boolean.parseBoolean(isDesktop)) 
+		{
+			ProjectManager manager = getProjectManager(inReq);
+			Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+			if(desktop == null) {
+				desktop = manager.getDesktopManager().connectDesktop(inReq.getUser());
+			}
+			inReq.putSessionValue("desktop", desktop);
+		}
+		
+	}
 	
 }
