@@ -17,6 +17,8 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
+import org.entermediadb.asset.orders.PresetOption;
+import org.entermediadb.asset.orders.RenderTypeOptions;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -25,11 +27,9 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.URLUtilities;
 
 public class OrderModule extends BaseMediaModule
 {
@@ -1217,5 +1217,52 @@ public class OrderModule extends BaseMediaModule
 		
 		return order;
 	}
+	
+	public void loadPresetOptionsForOrder(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker items = findOrderItems(inReq);
+		Map<String,RenderTypeOptions> rendertypeoptions = new HashMap<String,RenderTypeOptions>();
+		
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
+		{
+			Data item = (Data) iterator.next();
+			Asset asset = archive.getAsset(item.get("assetid"));
+			String fileformat = asset.getFileFormat();
+			String rendertypeid = null;
+			if(fileformat != null)
+			{
+				rendertypeid = archive.getMediaRenderType(fileformat);
+			}
+			else
+			{
+				rendertypeid = "none";
+			}	
+			RenderTypeOptions option = rendertypeoptions.get(rendertypeid);
+			if( option == null)
+			{
+				option = new RenderTypeOptions();
+				Data rendertype = archive.getCachedData("rendertype",rendertypeid);
+				option.setRenderType(rendertype);
+				rendertypeoptions.put(option.getRenderTypeId(),option);
+
+				Collection presets = archive.query("converpreset").or().exact("inputtype",rendertypeid).exact("inputtype","all").sort("ordering").search();
+				for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
+				{
+					Data preset = (Data) iterator2.next();
+					PresetOption presetoption = new PresetOption();
+					presetoption.setPreset(preset);
+				}
+			}
+			for (Iterator iterator2 = option.getPresetOptions().iterator(); iterator2.hasNext();)
+			{
+				PresetOption presetoption = (PresetOption) iterator2.next();
+				presetoption.addOrderItem(item); 
+				String path = archive.asLinkToDownload(asset, presetoption.getPreset());
+				presetoption.addDownloadPath(path);
+			}
+		}
+		inReq.putPageValue("rendertypeoptions",rendertypeoptions);
+	}	
 
 }

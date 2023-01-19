@@ -704,7 +704,7 @@ public class BaseOrderManager implements OrderManager {
 			} else{
 				user = inUser;
 			}
-			Data preset = (Data) presets.searchById(presetid);
+			//Data preset = (Data) presets.searchById(presetid);
 			if( preset == null)
 			{
 				throw new OpenEditException("Preset missing " + presetid);
