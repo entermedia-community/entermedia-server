@@ -6,6 +6,7 @@
 	<property name="tab">datamanager</property>
 	<property name="subtab">manager</property>
 	<property name="datatab">data</property>
+	<property name="skipallsecurity">true</property>
 	<property name="showallfiles">true</property>
 	  <property name="assetshowonly"/>
 	

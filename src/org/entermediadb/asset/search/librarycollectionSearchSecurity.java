@@ -34,7 +34,12 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 			
 			return inQuery;
 		}
-			
+        String skipfilter = inPageRequest.getContentProperty("skipallsecurity");
+        if (Boolean.parseBoolean(skipfilter))
+        {
+            return inQuery;
+        }
+	
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null && profile.isInRole("administrator"))
 		{
