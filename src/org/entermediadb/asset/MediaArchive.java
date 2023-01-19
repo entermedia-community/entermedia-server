@@ -2646,7 +2646,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
 			cdnprefix = rutil.getSiteRoot();
-			if (cdnprefix.contains("localhost"))
+			if (cdnprefix == null || cdnprefix.contains("localhost"))
 			{
 				cdnprefix = "";
 			}

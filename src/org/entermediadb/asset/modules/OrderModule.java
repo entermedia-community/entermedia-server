@@ -1246,7 +1246,7 @@ public class OrderModule extends BaseMediaModule
 				option.setRenderType(rendertype);
 				rendertypeoptions.put(option.getRenderTypeId(),option);
 
-				Collection presets = archive.query("converpreset").or().exact("inputtype",rendertypeid).exact("inputtype","all").sort("ordering").search();
+				Collection presets = archive.query("convertpreset").or().exact("inputtype",rendertypeid).exact("inputtype","all").sort("ordering").search();
 				for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
 				{
 					Data preset = (Data) iterator2.next();
