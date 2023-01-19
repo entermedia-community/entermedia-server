@@ -21,8 +21,8 @@
 				"userid" : "$person.id",
 				"screenname": "$person.screenName",
 				"email": "$person.email",
-				"firstName": "$person.firstName",
-				"lastName": "$person.lastName"
+				"firstName": "$!person.firstName",
+				"lastName": "$!person.lastName"
 				#set( $userimageurl = $mediaarchive.asLinkToProfile($person) )
 				#if($userimageurl)
 					,"portrait": "$userimageurl"

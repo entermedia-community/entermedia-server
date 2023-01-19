@@ -1,7 +1,8 @@
 <page>
+	<path-action name="JsonAssetModule.preprocess" />
 
-	<path-action name="JsonDataModule.createData" alltypes="true" method="POST"/>
-	<path-action name="Script.run" >
+
+	<path-action name="Script.run" allowduplicates="true">
 		<script>/${catalogid}/events/scripts/librarycollection/startdirectchat.groovy</script>
 	</path-action>
 	

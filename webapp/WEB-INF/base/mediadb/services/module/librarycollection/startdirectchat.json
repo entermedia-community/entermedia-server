@@ -1,11 +1,11 @@
 {
-#set( $data = $librarycol);
   "response":
       {
         "status":"ok",
         "id":"$data.id"
       }
-  ,
-	$context.putPageValue("hit",$data)
+     , 
+   "data" :
+  	$context.putPageValue("hit",$data)
 	$pages.include(	"${apphome}/services/module/librarycollection/hit.json",$context)
 }
