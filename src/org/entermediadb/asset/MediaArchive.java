@@ -2635,11 +2635,6 @@ public class MediaArchive implements CatalogEnabled
 	{
 		//	<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
 
-		if( "0".equals(inPreset.getId()) )
-		{
-			String original =  asLinkToOriginal(inAsset);
-			return original;
-		}
 		if (inAsset == null)
 		{
 			return null;
@@ -2666,6 +2661,14 @@ public class MediaArchive implements CatalogEnabled
 			//			searcher.saveData(prefix);
 			//			getCacheManager().clear("catalogsettings");
 		}
+
+		if( "0".equals(inPreset.getId()) )
+		{
+			String original =  asLinkToOriginal(inAsset);
+			String url = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/originals/" + original;
+			return url;
+		}
+		
 		String sourcepath = inAsset.getSourcePath();
 		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
 
