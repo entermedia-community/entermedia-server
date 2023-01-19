@@ -1,0 +1,11 @@
+<page>
+
+	<path-action name="JsonDataModule.createData" alltypes="true" method="POST"/>
+	<path-action name="Script.run" >
+		<script>/${catalogid}/events/scripts/librarycollection/startdirectchat.groovy</script>
+	</path-action>
+	
+	<permission name="view">
+			<user />
+	</permission>
+</page>

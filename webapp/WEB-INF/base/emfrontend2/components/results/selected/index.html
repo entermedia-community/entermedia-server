@@ -89,9 +89,6 @@
 	    	 <a class="dropdown-item" href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
 		#end
 		#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
-			#if( $librarycol )
-				$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
-			#end
 			#set ($enabled=$hits.getSelectionSize() > 0)
 			
 			#if( $enabled )
