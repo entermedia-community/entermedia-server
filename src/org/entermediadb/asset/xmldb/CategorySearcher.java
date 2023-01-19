@@ -1,6 +1,7 @@
 package org.entermediadb.asset.xmldb;
 
 import java.util.List;
+import java.util.Set;
 
 import org.entermediadb.asset.Category;
 import org.openedit.data.Searcher;
@@ -21,4 +22,10 @@ public interface CategorySearcher extends Searcher
 	List findChildren(Category inElasticCategory);
 	
 	void clearCategories();
+	
+	public Set buildCategorySet(List inCategories);
+	public Set buildCategorySet(Category inCategory);
+
+	
+	
 }

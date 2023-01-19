@@ -2,8 +2,10 @@ package org.entermediadb.asset.xmldb;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
@@ -253,4 +255,29 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		getCategoryArchive().clearCategories();
 		
 	}
+	
+	public Set buildCategorySet(Category inCategory) {
+		List categories = new ArrayList();
+		categories.add(inCategory);
+		
+		return buildCategorySet(categories);
+	}
+	public Set buildCategorySet(List inCategories) {
+		HashSet allCatalogs = new HashSet();
+		// allCatalogs.addAll(catalogs);
+		for (Iterator iter = inCategories.iterator(); iter.hasNext();) {
+			Category catalog = (Category) iter.next();
+			buildCategorySet(catalog, allCatalogs);
+		}
+		return allCatalogs;
+	}
+
+	protected void buildCategorySet(Category inCatalog, Set inCatalogSet) {
+		inCatalogSet.add(inCatalog);
+		Category parent = inCatalog.getParentCategory();
+		if (parent != null) {
+			buildCategorySet(parent, inCatalogSet);
+		}
+	}
+	
 }
