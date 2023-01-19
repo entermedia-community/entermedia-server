@@ -1252,6 +1252,7 @@ public class OrderModule extends BaseMediaModule
 					Data preset = (Data) iterator2.next();
 					PresetOption presetoption = new PresetOption();
 					presetoption.setPreset(preset);
+					option.addPresetOption(presetoption);
 				}
 			}
 			for (Iterator iterator2 = option.getPresetOptions().iterator(); iterator2.hasNext();)
