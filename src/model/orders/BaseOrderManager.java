@@ -630,6 +630,12 @@ public class BaseOrderManager implements OrderManager {
 			}
 
 			orderItem.setProperty("presetid", presetid);
+			Data preset = archive.getCachedData("convertpreset", presetid);
+			if( preset != null)
+			{
+				String path = archive.asLinkToDownload(asset, preset);
+				orderItem.setProperty("downloadpath", path);
+			}			
 			if( "preview".equals(presetid) )   //This never touches publishing
 			{
 				orderItemSearcher.saveData(orderItem, inUser);
