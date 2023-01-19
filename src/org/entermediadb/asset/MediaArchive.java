@@ -2633,9 +2633,13 @@ public class MediaArchive implements CatalogEnabled
 
 	public String asLinkToDownload(Data inAsset, Data inPreset)
 	{
-
 		//	<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
 
+		if( "0".equals(inPreset.getId()) )
+		{
+			String original =  asLinkToOriginal(inAsset);
+			return original;
+		}
 		if (inAsset == null)
 		{
 			return null;
