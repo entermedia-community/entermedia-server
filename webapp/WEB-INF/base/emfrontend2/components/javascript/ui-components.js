@@ -409,6 +409,9 @@ uiload = function() {
 						// $(this).closest("form").trigger("submit")
 			function(e) {
 				e.preventDefault();
+				e.stopImmediatePropagation();
+				
+				
 				var form = $(this);
 
 				if (form.validate && !form.hasClass("novalidate")) {
