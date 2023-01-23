@@ -1,0 +1,42 @@
+#set($loginokpage = $context.getRequestParameter("loginokpage") )
+#if(!$loginokpage)
+	#set($loginokpage = $context.findValue("loginokpage") )
+#end 
+$context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
+
+<div id="loginformcontainer" class="justify-content-sm-center loginformcontainer">
+
+	#if( $content.allowguestregistration == "true")
+		#set( $allowguest =  true)
+	#else
+		#set( $allowguest =  false)
+	#end
+
+	#set( $to = $context.getRequestParameter("email") )	
+	#set( $username = $context.getRequestParameter("username") )
+
+	<div class="loginform-col-right">			
+	
+		#set( $error = $context.getPageValue("oe-exception") )
+			#if ( $error )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$error</div>
+				$context.removeSessionValue("oe-exception")
+			#end
+	
+		<form class="ajaxform" data-targetdiv="loginformcontainer" action="$applink/authentication/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+		
+				<p>[[E-Mail Login]]</p>
+				<p><input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" 
+				style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>
+				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+				
+				<input class="btn btn-secondary" name="submit" type="submit" value="[[Next]]" style="margin-right:150px"/>
+				
+				
+       </form>
+       </div>
+</div>
+
+		
+
+

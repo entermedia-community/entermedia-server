@@ -1595,9 +1595,19 @@ String viewbase = null;
 		//		}
 		if (id == null)
 		{
-			String pagename = inReq.getPage().getName();
-			id = pagename.substring(0, pagename.indexOf("."));
-
+			String level = inReq.findValue("idlevel"); //SECURITY RISK
+			if( level != null)
+			{
+				String[] levels = inReq.getPath().split("/");
+				int pick = Integer.parseInt(level);
+				int fromend = levels.length - pick - 1;
+				id = levels[fromend];
+			}
+			else
+			{
+				String pagename = inReq.getPage().getName();
+				id = pagename.substring(0, pagename.indexOf("."));
+			}
 		}
 
 		Data result = null;
