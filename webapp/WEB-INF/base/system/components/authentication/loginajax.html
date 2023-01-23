@@ -4,7 +4,7 @@
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
-<div id="loginformcontainer" class="justify-content-sm-center loginformcontainer">
+<div id="ajaxloginformcontainer" class="justify-content-sm-center">
 
 	#if( $content.allowguestregistration == "true")
 		#set( $allowguest =  true)
@@ -23,7 +23,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				$context.removeSessionValue("oe-exception")
 			#end
 	
-		<form class="ajaxform" data-targetdiv="loginformcontainer" action="$applink/authentication/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+		<form class="ajaxform" data-targetdiv="ajaxloginformcontainer" action="$applink/authentication/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 		
 				<p>[[E-Mail Login]]</p>
 				<p><input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" 
