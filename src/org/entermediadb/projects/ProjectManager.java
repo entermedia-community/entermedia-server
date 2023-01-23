@@ -1825,17 +1825,17 @@ public class ProjectManager implements CatalogEnabled
 		}
 		
 
-		SearchQuery collectionbuilder = null;
+		SearchQuery collectionquery = null;
 		if( inReq.getJsonRequest() != null )
 		{
-			collectionbuilder = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
+			collectionquery = new JsonUtil().parseJson(getMediaArchive().getSearcher("librarycollection"), inReq);
 		}
 		else
 		{
-			collectionbuilder = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
-			if( collectionbuilder == null )
+			collectionquery = getMediaArchive().getSearcher("librarycollection").addStandardSearchTerms(inReq);
+			if( collectionquery == null )
 			{
-				collectionbuilder = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+				collectionquery = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
 			}
 		}
 		QueryBuilder builder = getMediaArchive().query("userupload");
@@ -1871,16 +1871,19 @@ public class ProjectManager implements CatalogEnabled
 					builder.exact("exclusivecontent", false);
 				}
 			}
-			if( !collectionbuilder.isEmpty() )
+			if( !collectionquery.isEmpty() )
 			{
-				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionbuilder);
+				collectionquery.setHitsPerPage(200);
+				collectionquery.addSortBy("name");
+				log.info("Searching all uploads " + inReq.getPage().getPath() + " " + collectionquery);
+				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionquery);
 				
 				SearchQuery orchild = builder.getSearcher().createSearchQuery();
 				if( !ids.isEmpty() )
 				{
-					orchild.addOrsGroup("librarycollection", ids);
+					orchild.addOrsGroup("librarycollection", ids.getPageOfHits());
 				}
-				Term fulltext = collectionbuilder.getTermByDetailId("description");
+				Term fulltext = collectionquery.getTermByDetailId("description");
 				if( fulltext != null)
 				{
 					orchild.setAndTogether(false);
