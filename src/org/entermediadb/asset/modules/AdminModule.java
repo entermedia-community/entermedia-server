@@ -41,6 +41,7 @@ import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
+import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
@@ -473,10 +474,21 @@ public class AdminModule extends BaseMediaModule
 			}
 			if (user == null )
 			{
-				log.info("No user found " + account);
-				inReq.putPageValue("oe-exception", "Invalid Login");
-				inReq.putPageValue("commandSucceeded", "nouser");
-				return;
+				String server = inReq.getPage().get("authenticationserver");
+				if( server != null)
+				{	
+					log.info("Checking server for user " + server);
+					String groupid = inReq.getPage().get("autologingroup");
+					user = userManager.createGuestUser(account, password, groupid);
+				}
+				else
+				{
+					inReq.putPageValue("oe-exception", "Invalid Login");
+					inReq.putPageValue("commandSucceeded", "nouser");
+					log.info("No user found " + account);
+					
+					return;
+				}
 			}
 			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
 
