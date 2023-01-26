@@ -189,7 +189,7 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)
 		{
-			String sourcepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
+			String sourcepath = getAssetUtilities().extractSourcePath(inInput, false, getMediaArchive());
 			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(sourcepath);
 			if( asset != null)
 			{
@@ -213,15 +213,19 @@ public class AssetPathProcessor extends PathProcessor
 			{
 				//look deeper for assets
 				List paths = getPageManager().getChildrenPaths(inInput.getPath());
-				if( isShowLogs() )
+				
+				if( paths.size() == 0 )
 				{
-					if( paths.size() == 0 )
+					if( isShowLogs() )
 					{
-						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
-								"Empty folder: " + inInput.getAbsolutePath(), null);
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
+							"Empty folder: " + inInput.getAbsolutePath(), null);
+			
 					}
 					return;
 				}
+					
+				
 				if( isShowLogs() )
 				{
 					if( paths.size() > 3000 )

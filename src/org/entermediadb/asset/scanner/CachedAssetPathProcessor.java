@@ -95,7 +95,7 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	@Override
 	protected void processAssetFolder(ContentItem inInput, User inUser)
 	{
-		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
+		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, false, getMediaArchive());
 		
 		loadCache(foldersourcepath);
 		cachesaves = 0;
