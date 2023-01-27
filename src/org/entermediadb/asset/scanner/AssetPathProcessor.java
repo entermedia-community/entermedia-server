@@ -123,6 +123,9 @@ public class AssetPathProcessor extends PathProcessor
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
 			Asset asset = (Asset) iter.next();
+			if (asset.getId() == null) {
+				throw new OpenEditException(getMediaArchive().getCatalogId() + asset.getProperties());
+			}
 			assetsids.add(asset.getId() );
 			
 			if( existingassets.contains(asset) )

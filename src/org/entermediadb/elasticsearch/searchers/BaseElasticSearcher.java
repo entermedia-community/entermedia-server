@@ -1950,8 +1950,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					// Data toupdate = toversion.get(res.getId());
 					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate != null)
+					if (toupdate == null)
 					{
+						errors.add("Data ["+i+"] was null: "+res.getItemId());
+					}
+					else {
 						if (isCheckVersions())
 						{
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
@@ -1979,10 +1982,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			try
 			{
 				Data data2 = (Data) iterator.next();
-				if( data2.getId() == null || data2.getId().trim().isEmpty())
-				{
-					continue;
-				}
+//				if( data2.getId() == null || data2.getId().trim().isEmpty())
+//				{
+					//continue;
+//				}
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
