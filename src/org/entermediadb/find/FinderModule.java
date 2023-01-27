@@ -116,6 +116,7 @@ public class FinderModule extends BaseMediaModule
 //						term.copy();
 //						
 //					}
+					copy.addSortBy("assetaddeddateDown");
 					copy.setHitsName("entityhits");
 					HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
 //					assets.setSearcher(archive.getAssetSearcher());
