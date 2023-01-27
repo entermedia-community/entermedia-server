@@ -30,8 +30,8 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 		}
 
 		//Make sure no part of sourcepath is already an asset
-		String sourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
-		String[] folderlist = sourcepath.split("/");
+		String startsourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
+		String[] folderlist = startsourcepath.split("/");
 		String pathtocheck = "";
 		for (int i = 0; i < folderlist.length; i++)
 		{
@@ -66,14 +66,19 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 						.getStub(path);
 				if( subitem.isFolder() )
 				{
-					String foldersourcepath = getAssetUtilities().extractSourcePath(subitem, true, getMediaArchive());
+					String foldersourcepath = getAssetUtilities().extractSourcePath(subitem, getMediaArchive());
 					//Is this an asset itself?
-					Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(foldersourcepath);
-					if( asset != null)
+
+					Long sizeval = fieldSizeCache.get(foldersourcepath);
+					if(sizeval != null)
 					{
-						//processFile(subitem, inUser);
-						continue; 
+						//Has folder based asset with same name
+						cachesaves++;
+						log.info("Skipping folder based asset check " + foldersourcepath);
+						continue; //Not needed
 					}
+
+					//processFile(subitem, inUser);
 					//Ok if its a folder then do a search, cached asset results and start processing
 					process(subitem,inUser);
 				}
@@ -95,7 +100,7 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	@Override
 	protected void processAssetFolder(ContentItem inInput, User inUser)
 	{
-		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, false, getMediaArchive());
+		String foldersourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 		
 		loadCache(foldersourcepath);
 		cachesaves = 0;
@@ -134,7 +139,7 @@ public class CachedAssetPathProcessor extends AssetPathProcessor
 	@Override
 	protected Asset createAssetIfNeeded(ContentItem inContent, MediaArchive inMediaArchive, User inUser)
 	{
-		String foldersourcepath = getAssetUtilities().extractSourcePath(inContent, false, getMediaArchive());
+		String foldersourcepath = getAssetUtilities().extractSourcePath(inContent, getMediaArchive());
 		Long sizeval = fieldSizeCache.get(foldersourcepath);
 		if(sizeval != null && sizeval == inContent.getLength())
 		{

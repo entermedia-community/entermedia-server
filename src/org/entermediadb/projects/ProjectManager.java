@@ -998,7 +998,7 @@ public class ProjectManager implements CatalogEnabled
 					destpath = destpath + item.getName();
 					ContentItem finalitem = inArchive.getPageManager().getRepository().getStub(destpath);
 					inArchive.getPageManager().getRepository().copy(item, finalitem);
-					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, true, inArchive, null);
+					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, false, inArchive, null);
 					// asset.setCategories(null);
 					asset.addCategory(inCurrentParent);
 					asset.setValue("md5hex", md5);

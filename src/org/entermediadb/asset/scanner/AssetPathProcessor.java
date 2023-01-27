@@ -192,7 +192,7 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)
 		{
-			String sourcepath = getAssetUtilities().extractSourcePath(inInput, false, getMediaArchive());
+			String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(sourcepath);
 			if( asset != null)
 			{
@@ -280,7 +280,7 @@ public class AssetPathProcessor extends PathProcessor
 				
 				if( processchildren && isRecursive())
 				{
-					Set	knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
+					//Set	knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
 					int processedfiles = 0;
 					int acceptfolder = 0;
 					int rejectfolder = 0;
@@ -327,20 +327,20 @@ public class AssetPathProcessor extends PathProcessor
 									processFile(item, inUser);
 									processedfiles++;
 								}
-								else if( !knownssourcepaths.isEmpty())
-								{
-									String nwwsourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
-
-									if( !knownssourcepaths.contains(nwwsourcepath) )
-									{
-										processFile(item, inUser);
-										processedfiles++;
-									}
-									else
-									{
-										skipfile++;
-									}
-								}
+//								else if( !knownssourcepaths.isEmpty())
+//								{
+//									String nwwsourcepath = getAssetUtilities().extractSourcePath(item, false, getMediaArchive());
+//
+//									if( !knownssourcepaths.contains(nwwsourcepath) )
+//									{
+//										processFile(item, inUser);
+//										processedfiles++;
+//									}
+//									else
+//									{
+//										skipfile++;
+//									}
+//								}
 								else
 								{
 									processFile(item, inUser);
@@ -479,7 +479,7 @@ public class AssetPathProcessor extends PathProcessor
 		public void processAssets(String inStartingPoint, User inUser)
 		{
 			ContentItem item = getMediaArchive().getPageManager().getRepository().getStub(inStartingPoint);
-			String sourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
+			String sourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
 			String[] folderlist = sourcepath.split("/");
 			String pathtocheck = "";
 			for (int i = 0; i < folderlist.length; i++)

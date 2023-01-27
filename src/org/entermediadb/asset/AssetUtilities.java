@@ -52,7 +52,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 	public Asset createAssetIfNeeded(ContentItem inContent, boolean infolderbased, final MediaArchive inArchive, User inUser)
 	{
-		String sourcepath = extractSourcePath(inContent, infolderbased, inArchive);
+		String sourcepath = extractSourcePathFromFile(inContent, infolderbased, inArchive);
 		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcepath);
 		asset = populateAsset(asset, inContent, inArchive, sourcepath, inUser);
 		return asset;
@@ -66,7 +66,12 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		return asset;
 	}
 
-	public String extractSourcePath(ContentItem inContent, boolean infolderbased, MediaArchive inArchive)
+	public String extractSourcePath(ContentItem inContent, MediaArchive inArchive)
+	{
+		String sourcepath = extractSourcePathFromFile(inContent,false,inArchive);
+		return sourcepath;
+	}
+	public String extractSourcePathFromFile(ContentItem inContent, boolean infolderbased, MediaArchive inArchive)
 	{
 		String datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 
