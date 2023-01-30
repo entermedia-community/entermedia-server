@@ -298,7 +298,7 @@ public class ElasticHitTracker extends HitTracker
 					}
 					else
 					{
-						log.info("No such detail for " + f);
+					//	log.info("No such detail for " + f);
 						continue;
 					}
 					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
@@ -587,6 +587,8 @@ public class ElasticHitTracker extends HitTracker
 		JsonObject aggs = (JsonObject) results.get("aggregations");
 		return aggs;
 	}
+	
+		
 
 	public void invalidate()
 	{
