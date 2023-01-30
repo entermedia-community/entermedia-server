@@ -771,6 +771,7 @@ public class AdminModule extends BaseMediaModule
 			return;
 		}
 		usermanager.logout(user);
+		inReq.removeSessionValue(catalogid + "user");
 
 		Enumeration enumeration = inReq.getSession().getAttributeNames();
 		List toremove = new ArrayList();
