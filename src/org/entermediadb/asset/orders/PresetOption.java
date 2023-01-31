@@ -26,11 +26,12 @@ public class PresetOption
 		getDowloadPaths().add(inPath);
 	}
 	
-	public void addDownloadPath(String inPath, Data inAsset)
+	public void addDownloadPath(String inDownloadPath, String inSavePath, Data inAsset)
 	{
 		Map<String, Object> object = new HashMap<String, Object>();
 		object.put("asset", inAsset);
-		object.put("path", inPath);
+		object.put("downloadpath", inDownloadPath);
+		object.put("savetopath", inSavePath);
 		getDowloadPaths().add(object);
 	}
 	

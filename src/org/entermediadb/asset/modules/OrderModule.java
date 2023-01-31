@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
@@ -1234,6 +1235,10 @@ public class OrderModule extends BaseMediaModule
 		HitTracker items = findOrderItems(inReq);
 		Map<String,RenderTypeOptions> rendertypeoptions = new HashMap<String,RenderTypeOptions>();
 		
+		String categoryid = inReq.getRequestParameter("categoryid");
+		
+		Category startingpoint = archive.getCategory(categoryid);
+		
 		for (Iterator iterator = items.iterator(); iterator.hasNext();)
 		{
 			Data item = (Data) iterator.next();
@@ -1269,8 +1274,39 @@ public class OrderModule extends BaseMediaModule
 			{
 				PresetOption presetoption = (PresetOption) iterator2.next();
 				presetoption.addOrderItem(item); 
-				String path = archive.asLinkToDownload(asset, presetoption.getPreset());
-				presetoption.addDownloadPath(path, asset);
+				String downloadpath = archive.asLinkToDownload(asset, presetoption.getPreset());
+				String exportname = archive.asExportFileName(inReq.getUser(), asset, presetoption.getPreset());
+
+				String savetopath = "/";
+				
+				if( startingpoint != null)
+				{
+					for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();)
+					{
+						Category sub = (Category) iterator3.next();
+						if( startingpoint.getId().equals(sub.getId()) )
+						{
+							savetopath = "/";
+							break; //do nothing
+						}
+						else if(sub.hasParent(startingpoint.getId())) 
+						{
+							savetopath = sub.getCategoryPath().substring(startingpoint.getCategoryPath().length());
+							break;
+						}
+					}
+				}
+				if( presetoption.getPreset().getName().toLowerCase().contains("proxy") ) //Change to a setting 
+				{
+					savetopath = savetopath + "proxy/" + exportname;
+				}
+				else
+				{
+					savetopath = exportname;
+				}
+				//
+				
+				presetoption.addDownloadPath(downloadpath, savetopath, asset);
 			}
 		}
 		inReq.putPageValue("rendertypeoptions",rendertypeoptions);

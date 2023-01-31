@@ -492,8 +492,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				//parentcategory.addChild(found);
 				saveData(found);
 				//log.info(parentcategory.isDirty());
-
-				
 			}
 		}
 		return found;
@@ -508,9 +506,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			
 		}
 		delete(root, null);
-		
-		
-		
 	}
 
 	@Override
