@@ -109,6 +109,8 @@ public class OrderModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		
+		
 		HitTracker assets = null;
 		if (hitssessionid != null)
 		{
@@ -137,6 +139,12 @@ public class OrderModule extends BaseMediaModule
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
+		
+		String selectall = inReq.getRequestParameter("selectall");
+		if (Boolean.parseBoolean(selectall)) 
+		{
+			assets.selectAll();
+		}
 
 		if (assets.hasSelections())
 		{
@@ -663,14 +671,16 @@ public class OrderModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		Order order = loadOrder(inReq);
-
-		HitTracker re = getOrderManager().findAssets(inReq, catalogid, order);
-		re.setHitsPerPage(500);
-		if( re != null)
-		{
-			inReq.putPageValue("orderassets", re);
-			inReq.putSessionValue(re.getSessionId(), re);
-			return re;
+		if (order != null) {
+			HitTracker re = getOrderManager().findAssets(inReq, catalogid, order);
+			
+			if( re != null)
+			{
+				re.setHitsPerPage(500);
+				inReq.putPageValue("orderassets", re);
+				inReq.putSessionValue(re.getSessionId(), re);
+				return re;
+			}
 		}
 		return null;
 	}
@@ -1260,7 +1270,7 @@ public class OrderModule extends BaseMediaModule
 				PresetOption presetoption = (PresetOption) iterator2.next();
 				presetoption.addOrderItem(item); 
 				String path = archive.asLinkToDownload(asset, presetoption.getPreset());
-				presetoption.addDownloadPath(path);
+				presetoption.addDownloadPath(path, asset);
 			}
 		}
 		inReq.putPageValue("rendertypeoptions",rendertypeoptions);

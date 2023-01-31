@@ -2,6 +2,8 @@ package org.entermediadb.asset.orders;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openedit.Data;
 
@@ -23,6 +25,16 @@ public class PresetOption
 	{
 		getDowloadPaths().add(inPath);
 	}
+	
+	public void addDownloadPath(String inPath, Data inAsset)
+	{
+		Map<String, Object> object = new HashMap<String, Object>();
+		object.put("asset", inAsset);
+		object.put("path", inPath);
+		getDowloadPaths().add(object);
+	}
+	
+	
 	protected Data fieldPreset; //render type
 	public Data getPreset()
 	{

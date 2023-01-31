@@ -26,12 +26,16 @@ public void init(){
 			if( term != null )
 			{
 				search.setAndTogether(false);
+				search.addContains("description", term.getValue());
+				/*
 				//Add the name and every other detail
 				Collection all = searcher.getPropertyDetails();
 				for(PropertyDetail detail: all)
 				{
+			
 					search.addContains(detail, term.getValue());
 				}
+				*/
 			}
 			hits = searcher.cachedSearch(req, search);
 		}

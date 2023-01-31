@@ -170,8 +170,16 @@ public class ElasticCategoryArchive implements CategoryArchive
 //		}
 		return newcat;
 	}
+	
+	/**
+	 * @deprecated
+	 * @param inPath
+	 * @param inNames
+	 * @return
+	 * @throws OpenEditException
+	 */
 
-	public Category createCategoryTree(String inPath, List inNames) throws OpenEditException
+	public synchronized Category createCategoryTree(String inPath, List inNames) throws OpenEditException
 	{
 
 		if (inPath.length() < 1)

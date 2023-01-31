@@ -76,7 +76,7 @@ public class JsonDataModule extends BaseJsonModule
 		{
 			hits = getJsonUtil().searchByJson(searcher ,inReq);
 		}
-		
+		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("searcher", searcher);
 
 	}

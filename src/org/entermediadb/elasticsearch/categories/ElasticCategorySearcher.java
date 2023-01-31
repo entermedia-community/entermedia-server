@@ -478,6 +478,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category found = (Category)loadData(hit);
 		if( found == null)
 		{
+			log.info("Category not found: "+ inPath);
 			found = (Category)createNewData();
 			String name = PathUtilities.extractFileName(inPath);
 			found.setName(name);
