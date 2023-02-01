@@ -956,7 +956,7 @@ public class TaskModule extends BaseMediaModule
 				q.exact("collectionid",collectionid);
 		}
 		HitTracker all = q.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
-		log.info("Query: " + all.getSearchQuery());
+		log.info("Tasks completed: " + all);
 		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
@@ -964,6 +964,7 @@ public class TaskModule extends BaseMediaModule
 			String userid = task.get("completedby");
 			completed.addTask(userid,task);
 		}
+		log.info("CompletedTasks: " + completed.getUserIds() );
 		
 		inReq.putPageValue("completed", completed);		
 		
@@ -973,6 +974,8 @@ public class TaskModule extends BaseMediaModule
 				gq.exact("collectionid",collectionid);
 		}
 		HitTracker alltickets = gq.match("resolveusers", "*").between("resolveddate", start,onemonth).sort("resolveddateDown").search();		
+		
+		log.info(" Resolved by user: " + alltickets);
 		
 		for (Iterator iterator = alltickets.iterator(); iterator.hasNext();)
 		{

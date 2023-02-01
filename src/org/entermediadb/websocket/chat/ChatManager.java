@@ -10,11 +10,11 @@ import java.util.Set;
 
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
-import org.entermediadb.projects.TopicLabelPicker;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.users.User;
 import org.openedit.util.URLUtilities;
 
 public class ChatManager implements CatalogEnabled
@@ -215,5 +215,30 @@ public class ChatManager implements CatalogEnabled
 		escaped = escaped.replaceAll("&lt;br&gt;", "<br>");
 		return escaped;
 		
+	}
+	
+	public User getOtherChatUser(LibraryCollection inData, User myself)
+	{
+		if( inData == null)
+		{
+			return null;
+		}
+		if( !"3".equals(inData.get("collectiontype")) )
+		{
+			return null;
+		}
+		String names = inData.getName();		
+		names = names.substring("Messages [".length(), names.length() - 1);
+		String[] both = names.split(",");
+		for (int i = 0; i < both.length; i++)
+		{
+			String userid = both[i].trim();
+			if( !userid.equals(myself.getId()) )
+			{
+				User user = getMediaArchive().getUser(userid);
+				return user;
+			}
+		}
+		return null;
 	}
 }

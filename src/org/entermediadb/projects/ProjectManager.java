@@ -2228,5 +2228,20 @@ public class ProjectManager implements CatalogEnabled
 		inCombinedEvents.add(newEvent);
 	}
 
+	public HitTracker viewUserProjects(WebPageRequest inReq)
+	{
+		HitTracker organizationsuser = getMediaArchive().query("librarycollectionusers").exact("followeruser",inReq.getUserName()).exact("ontheteam","true").search(inReq);
+		Collection ids = organizationsuser.collectValues("collectionid"); 
+				
+		if( ids.isEmpty())
+		{
+			ids.add("NONE");
+		}
+		HitTracker hits = getMediaArchive().query("librarycollection").ids(ids).named("hits").orgroup("collectiontype","1|3").not("organizationstatus","disabled").not("organizationstatus","closed").not("organizationstatus","pendingdelete").sort("name").search(inReq);
+		hits.setHitsPerPage(100);
+
+		return hits;
+	}
+
 
 }

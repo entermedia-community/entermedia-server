@@ -1,5 +1,6 @@
 <page>
 	<generator name="velocity"/>
+	<path-action name="ProjectModule.viewProjects" />
 	<permission name="view">
 		  <user/>
 	</permission>

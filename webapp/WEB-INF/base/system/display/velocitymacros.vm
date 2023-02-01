@@ -130,5 +130,5 @@ $invalue
 
 
 #macro(date $inData $inField)$context.getDate($inData.getDate($inField))#end
-#macro(dash $intext)#set( $text = $url_util.xmlEscape($intext) )
+#macro(dash $intext)#set( $text = $!url_util.getPathUtilities().extractId($intext,true) )
 $text.replaceAll(" ","-").replaceAll("&amp;","-")#end
