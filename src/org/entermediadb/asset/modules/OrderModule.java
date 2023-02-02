@@ -1275,9 +1275,10 @@ public class OrderModule extends BaseMediaModule
 				PresetOption presetoption = (PresetOption) iterator2.next();
 				presetoption.addOrderItem(item); 
 				String downloadpath = archive.asLinkToDownload(asset, presetoption.getPreset());
-				String exportname = archive.asExportFileName(inReq.getUser(), asset, presetoption.getPreset());
+				String exportname = org.openedit.util.PathUtilities.extractFileName(downloadpath);
+						//archive.asExportFileName(inReq.getUser(), asset, presetoption.getPreset());
 
-				String savetopath = "/";
+				String savetopath = "";
 				
 				if( startingpoint != null)
 				{
@@ -1286,7 +1287,7 @@ public class OrderModule extends BaseMediaModule
 						Category sub = (Category) iterator3.next();
 						if( startingpoint.getId().equals(sub.getId()) )
 						{
-							savetopath = "/";
+							savetopath = "";
 							break; //do nothing
 						}
 						else if(sub.hasParent(startingpoint.getId())) 
@@ -1298,11 +1299,11 @@ public class OrderModule extends BaseMediaModule
 				}
 				if( presetoption.getPreset().getName().toLowerCase().contains("proxy") ) //Change to a setting 
 				{
-					savetopath = savetopath + "proxy/" + exportname;
+					savetopath = savetopath + "/proxy/" + exportname;
 				}
 				else
 				{
-					savetopath = exportname;
+					savetopath = savetopath + "/" + exportname;
 				}
 				//
 				
