@@ -1,12 +1,1 @@
-#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search($context) )
-#set($oids = [])
-#foreach( $ohit in $organizationsuser )
-	#set($x = $oids.add($ohit.collectionid))
-#end
-#set($x = $oids.add("NONE"))
-#set( $searcher = $mediaarchive.getSearcher("searcher") )
-#set( $hits = $mediaarchive.query("librarycollection").ids($oids).named("hits").not("organizationstatus","disabled").not("organizationstatus","closed").not("organizationstatus","pendingdelete").sort("name").search($context) )
-$hits.setHitsPerPage(100)
-$context.putPageValue("hits",$hits)
-$context.putPageValue("searcher",$searcher)
 $pages.include("$apphome/services/module/librarycollection/projectresults.json",$context)

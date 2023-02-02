@@ -1864,5 +1864,12 @@ Server ProjectModule.uploadFile
 			inReq.putPageValue("combinedevents",combinedEvents);
 	}
 
+	public void viewProjects(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		HitTracker hits = manager.viewUserProjects(inReq); 
+		inReq.putPageValue("hits",hits);
+
+	}
 	
 }

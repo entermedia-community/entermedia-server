@@ -14,6 +14,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.SearchSecurity;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 
 public class librarycollectionSearchSecurity implements SearchSecurity
@@ -39,13 +40,25 @@ public class librarycollectionSearchSecurity implements SearchSecurity
         {
             return inQuery;
         }
+        Collection onlytypes = Arrays.asList("0","2","3");
 	
+        Term bytype = inQuery.getTermByDetailId("collectiontype");
+        if( bytype != null)
+        {
+        	Term ids = inQuery.getTermByDetailId("id");
+        	if( ids != null)
+        	{
+        		log.debug("Specified ids so allowing search without collectiontype");
+        		onlytypes = null;
+        	}
+        }
+        
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null && profile.isInRole("administrator"))
 		{
 			SearchQuery child = inSearcher.query()
 					.all()
-					.notgroup("collectiontype", Arrays.asList("0","2","3"))
+					.notgroup("collectiontype", onlytypes)
 					.getQuery();
 			inQuery.addChildQuery(child);
 			inQuery.setSecurityAttached(true);
@@ -77,7 +90,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				//.notgroup("parentcategories", catshidden)
-				.notgroup("collectiontype", Arrays.asList("0","2","3"))
+				.notgroup("collectiontype", onlytypes)
 				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000
