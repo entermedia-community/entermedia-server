@@ -2315,7 +2315,7 @@ String viewbase = null;
 			return;
 		}
 		Searcher searcher = archive.getSearcher(searchtype);
-		String id = inPageRequest.getRequestParameter("submoduleid");
+		String id = inPageRequest.getRequestParameter("id");
 		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
 		if (entity != null) {
 			String fieldexternalid = inPageRequest.getRequestParameter("fieldexternalid");

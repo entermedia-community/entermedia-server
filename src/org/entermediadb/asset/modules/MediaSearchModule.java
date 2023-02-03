@@ -114,6 +114,9 @@ public class MediaSearchModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
+		if (category == null) {
+			return;
+		}
 		inPageRequest.putPageValue("category",category);
 		inPageRequest.putPageValue("selectedcategory",category);
 		
