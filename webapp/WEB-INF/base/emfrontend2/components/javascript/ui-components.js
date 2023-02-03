@@ -404,6 +404,25 @@ uiload = function() {
 		});
 	});
 
+	lQuery("form").livequery('submit', function(e)
+	{
+		if( CKEDITOR )
+		{
+			for (instance in CKEDITOR.instances) 
+			{
+	         var editor = CKEDITOR.instances[instance];
+	         var div = $(editor.element.$);
+	         var id = div.data("saveto");
+	         var tosave = $("#" + id);
+	         //editor.updateElement() //does not work
+	         var data = editor.getData();
+	         tosave.val(data);
+			}
+		}
+
+	});
+	
+	
 	lQuery("form.ajaxform").livequery(
 			'submit', // Make sure you use
 						// $(this).closest("form").trigger("submit")
@@ -411,7 +430,7 @@ uiload = function() {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				
-				if( CKEDITOR )
+				if( CKEDITOR ) //might not be needed
 				{
 					for (instance in CKEDITOR.instances) 
 					{
