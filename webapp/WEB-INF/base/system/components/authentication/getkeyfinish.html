@@ -1,0 +1,36 @@
+<div class="loginform-container" >
+<div class="login-area">
+
+<h2 class="text-center">[[Two Factor Authentication]]</h2>
+<div class="login-form" >
+###if($error)
+<div class="alert alert-danger">[[You've already setup Two Factor Authentication. If you need to reset your key please contact your system administrator.]]</div>
+###elseif($invalid)
+<div class="alert alert-danger">[[Login Failed - please try again]]</div>
+###else
+	<h3 class="text-center" style="margin-bottom:30px;">[[Key Generated]]</h3>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<img src="$qrcode" align="top"> 
+			</div>
+			<div class="col-md-6">
+				<p>[[Your key is]]: <strong>$!googlesecret</strong>
+	</p>
+		<p>
+				[[Please scan the QR or install your Key into the ]] <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" style="text-decoration: underline;" >Google Authenticator</a> [[Application and then]] 
+				<strong><a href="login.html" style="text-decoration: underline;" title="[[Login Here]]">[[Login here]]</a></strong>
+				</p>
+			</div>
+		</div>
+		</div>
+##end
+<p class="login-otherlinks">
+		<a href="login.html" title="[[Back to login page]]">[[Back to Login Page]]</a>
+		</p>
+</div>
+
+</div>
+
+
+</div>

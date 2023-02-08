@@ -1,6 +1,7 @@
-<div class="form-container" >
-<h1 class="page-title">[[Two Factor Authentication]]</h1>
+<div class="loginform-container" >
+<h2 class="text-center">[[Two Factor Authentication]]</h2>
 $!request.getAttribute( "oe-exception")
+<div class="login-area" >
 <div class="login-form" >
 	#if($user)
 		<div class="alert alert-info">[[You are logged in as]] <strong>$user</strong></div>		
@@ -13,7 +14,7 @@ $!request.getAttribute( "oe-exception")
 		<form name="login" id="login" action="$home$content.loginroot/getkeyfinish.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
 			<div class="form-group">
-			<label for="accountname">[[Email or Username]]</label>
+			<label for="accountname">[[Username]]</label>
 			<input class="form-control focusme" type="text" id="accountname" name="accountname" autocapitalize="off"
                 autocorrect="off" />
 			</div>
@@ -35,6 +36,7 @@ $!request.getAttribute( "oe-exception")
 		<a href="login.html" title="[[Back to login page]]">[[Back to Login Page]]</a>
 		</p>
 </div>	
+</div>
 </div>
 	<script >
 
