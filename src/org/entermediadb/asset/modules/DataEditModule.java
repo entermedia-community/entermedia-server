@@ -2207,103 +2207,6 @@ String viewbase = null;
 	}
 */
 	
-	public void addEntityToAsset(WebPageRequest inPageRequest) throws Exception 
-	{
-		
-		String entityid = inPageRequest.getRequestParameter("entityid");
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (entityid == null || moduleid == null) 
-		{
-			return;
-		}
-		
-		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
-		boolean moveentity = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
-			
-		Asset asset = getAsset(inPageRequest);
-		if (asset == null) {
-			log.error("No asset id passed in");
-			return;
-		}
-
-		if( moveentity )
-		{
-			//remove from the other entity
-		}
-		Boolean saved = false;
-		//Use standard in CategoryEditModule?
-		if (moduleid.equals("librarycollection")) {
-			//rootcategoryid passed
-			String rootcategory = inPageRequest.getRequestParameter("rootcategory");
-			Category c = archive.getCategory(rootcategory);
-			if (c != null) {
-				asset.addCategory(c);
-				saved = true;
-			}
-		}
-		else if(moduleid.equals("faceprofilegroup")) {
-			List<ValuesMap> otherprofiles = createListMap((Collection)asset.getValue("faceprofiles"));
-			Boolean alreadyinprofile = false;
-			for (int i = 0; i < otherprofiles.size(); i++) {
-				ValuesMap profilegroups = (ValuesMap)otherprofiles.get(i);
-				if( profilegroups.containsInValues("faceprofilegroup",entityid) ) {
-					alreadyinprofile = true;
-				}
-			}
-			if (!alreadyinprofile) {
-				List<Map> profilemap = new ArrayList<Map>();
-				Map profile = new HashMap();
-				profile.put("faceprofilegroup", entityid);
-				otherprofiles.add(new ValuesMap(profile));
-				asset.setValue("faceprofiles", otherprofiles);
-				saved = true;
-			}
-		}
-		else {
-			//Defualt entity
-			asset.addValue(moduleid, entityid);
-			saved = true;
-		}
-
-		if (saved) {
-			archive.saveAsset(asset, inPageRequest.getUser());
-			//Assign primaryimage if not exists
-			Data entity = archive.getData(moduleid, entityid);
-			if (entity != null) {
-				if (entity.get("primaryimage") == null) {
-					entity.setValue("primaryimage", asset.getId());
-					Searcher searcher = archive.getSearcher(moduleid);
-					searcher.saveData(entity);
-				}
-			}
-			archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-			inPageRequest.putPageValue("added" , "1");
-		}
-	}
-	
-	
-	public void makePrimaryImageEntity(WebPageRequest inPageRequest) throws Exception 
-	{
-		
-		String entityid = inPageRequest.getRequestParameter("entityid");
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
-		String assetid = inPageRequest.getRequestParameter("assetid");
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (entityid == null || moduleid == null || assetid == null) 
-		{
-			return;
-		}
-		
-		Data entity = archive.getData(moduleid, entityid);
-		if (entity != null) {
-				entity.setValue("primaryimage", assetid);
-				Searcher searcher = archive.getSearcher(moduleid);
-				searcher.saveData(entity);
-		}
-	}
-	
-	
 	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
 	{
 		
@@ -2327,20 +2230,7 @@ String viewbase = null;
 	}
 	
 	
-	private List<ValuesMap> createListMap(Collection inValues)
-	{
-		ArrayList copy = new ArrayList();
-		if (inValues != null) 
-		{
-			for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-			{
-				Map map = (Map) iterator.next();
-				copy.add(new ValuesMap(map));
-			}
-		}
-		return copy;
-	}
-	
+
 	public void toggleBillingContact(WebPageRequest context) {
 		String collectionid = context.getRequestParameter("collectionid");
 		String userid = context.getRequestParameter("userid");

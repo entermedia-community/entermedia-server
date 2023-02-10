@@ -2432,5 +2432,9 @@
 	<bean id="timelineManager" class="org.entermediadb.video.TimelineManager" >
 	</bean>
 
+
+	<bean id="EntityModule" class="org.entermediadb.asset.modules.EntityModule" >
+	</bean>
+
 		
 </beans>
