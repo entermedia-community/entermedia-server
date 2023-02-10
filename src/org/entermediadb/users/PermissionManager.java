@@ -420,5 +420,43 @@ public class PermissionManager implements CatalogEnabled
 		}
 	}
 
+
+	public EntityPermissions loadEntityPermissions(String inSettingsGroupId)
+	{
+		//Base module permissions. Module wide
+		//TODO: Cache
+		EntityPermissions entitypermissions = (EntityPermissions)getCacheManager().get("entitypermissions" + getCatalogId(),inSettingsGroupId);
+		if( entitypermissions == null)
+		{
+			entitypermissions =  new EntityPermissions();
+			entitypermissions.set
+			= getSearcherManager().query(getCatalogId(), "entitypermissions").
+				exact("settingsgroup", inSettingsGroupId).search();
+			getCacheManager().put("entitypermissions" + getCatalogId(),inSettingsGroupId,entitypermissions);
+		}
+		for (Iterator iterator = entitypermissions.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+		}
+		
+		Collection custompermissions = loadCustomPermissionRules(inModuleid,inParentFolderId,inDataId);
+	//	log.info("Checking : " + custompermissions );
+		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
+		{
+			Permission per = (Permission) iterator.next();
+			String permid = per.get("permissionid");
+			Boolean systemwide = (Boolean)inReq.getPageValue("can" + permid);
+			if( systemwide == null || !systemwide )
+			{
+				boolean value = per.passes(inReq);
+				if( value )
+				{
+					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
+					//log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
+				}
+			}	
+		}
+	}
+	
 	
 }
