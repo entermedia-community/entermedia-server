@@ -16,6 +16,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.EntityPermissions;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -138,6 +139,10 @@ public class UserProfileManager
 				return userprofile;
 			}
 			userprofile = loadUserProfile(mediaArchive, appid,inUserName);
+			PermissionManager manager = (PermissionManager)mediaArchive.getBean("permissionManager");
+			EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
+			userprofile.setEntityPermissions(permissions);
+			
 			if (inReq != null)
 			{
 				inReq.putPageValue("userprofile", userprofile);

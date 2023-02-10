@@ -37,11 +37,12 @@ import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.Permission;
 import org.openedit.page.manage.PageManager;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
+import org.openedit.users.Permissions;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.AuthenticationRequest;
-import org.openedit.users.authenticate.PasswordGenerator;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
@@ -282,6 +283,12 @@ public class AdminModule extends BaseMediaModule
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
 	
+	public void loadPermissionFinder(WebPageRequest inReq) throws Exception
+	{
+		UserProfile profile = inReq.getUserProfile();
+		Permissions permissions = profile.getPermissions();
+		inReq.putPageValue("permissions", permissions);
+	}
 	
 	//We will see if we use this or not. Actions may want to handle it themself
 	public void permissionRedirect(WebPageRequest inReq) throws OpenEditException

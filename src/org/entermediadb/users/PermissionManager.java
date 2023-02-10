@@ -20,6 +20,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.config.XMLConfiguration;
 import org.openedit.data.BaseData;
+import org.openedit.data.EntityPermissions;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -32,6 +33,7 @@ import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
 import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
+import org.openedit.util.strainer.PermissionFilter;
 import org.openedit.util.strainer.SettingsGroupFilter;
 
 
@@ -420,7 +422,14 @@ public class PermissionManager implements CatalogEnabled
 		}
 	}
 
-
+	public EntityPermissions loadEntityPermissions(Data inSettingsGroup)
+	{
+		if(inSettingsGroup != null)
+		{
+			return loadEntityPermissions(inSettingsGroup.getId());
+		}
+		return null;
+	}
 	public EntityPermissions loadEntityPermissions(String inSettingsGroupId)
 	{
 		//Base module permissions. Module wide
@@ -429,34 +438,28 @@ public class PermissionManager implements CatalogEnabled
 		if( entitypermissions == null)
 		{
 			entitypermissions =  new EntityPermissions();
-			entitypermissions.set
-			= getSearcherManager().query(getCatalogId(), "entitypermissions").
-				exact("settingsgroup", inSettingsGroupId).search();
-			getCacheManager().put("entitypermissions" + getCatalogId(),inSettingsGroupId,entitypermissions);
-		}
-		for (Iterator iterator = entitypermissions.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
+			entitypermissions.setSettingsGroup(inSettingsGroupId);
+			getCacheManager().put("entitypermissions" + getCatalogId(),inSettingsGroupId,entitypermissions);	
+
+			Searcher searcher = getSearcher("entitypermission");
+			HitTracker grouppermissions =  searcher.query().exact("settingsgroup", inSettingsGroupId).search();
+			
+			for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String entityid = data.get("entity");
+				String permissionname = data.get("permission");
+				Object val = data.getValue("value");
+				
+				
+				entitypermissions.putPermission(entityid, permissionname,val );
+				
+			}
 		}
 		
-		Collection custompermissions = loadCustomPermissionRules(inModuleid,inParentFolderId,inDataId);
-	//	log.info("Checking : " + custompermissions );
-		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
-		{
-			Permission per = (Permission) iterator.next();
-			String permid = per.get("permissionid");
-			Boolean systemwide = (Boolean)inReq.getPageValue("can" + permid);
-			if( systemwide == null || !systemwide )
-			{
-				boolean value = per.passes(inReq);
-				if( value )
-				{
-					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
-					//log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
-				}
-			}	
-		}
+		
+		return entitypermissions;
+			
 	}
-	
-	
+		
 }
