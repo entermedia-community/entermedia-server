@@ -26,12 +26,16 @@
 				</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
+						<li id="setup" #if( $tab == "setup" ) class="current" #end>
+							<a href="$home$apphome/views/settings/modules/${amodule.id}/module-setup.html">[[Properties]]</a>
+						</li>
 						#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
 						#set( $query = $searcher.createSearchQuery() )
 						#set( $null = $query.addExact("menulevel","toplevel") )
 						#set( $null = $query.addExact("moduleid",$module.id) )
 						$!query.addSortBy("ordering")
 						#set($screens =  $searcher.search($query))
+						
 						#foreach($screen in $screens)
 
 						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>

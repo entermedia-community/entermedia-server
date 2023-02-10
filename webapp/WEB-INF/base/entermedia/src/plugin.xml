@@ -2436,5 +2436,8 @@
 	<bean id="EntityModule" class="org.entermediadb.asset.modules.EntityModule" >
 	</bean>
 
+	<bean id="securityEnabledSearchSecurity" class="org.entermediadb.asset.search.SecurityEnabledSearchSecurity"  lazy-init="default">
+	</bean>
+
 		
 </beans>

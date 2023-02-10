@@ -14,6 +14,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.EntityPermissions;
@@ -264,6 +265,23 @@ public class UserProfileManager
 				log.error("Error saving " + inUserName ,ex);
 			}
 		}
+		
+		String settingsgroupid = userprofile.get("settingsgroup");
+		if (settingsgroupid == null)
+		{
+			settingsgroupid = "guest";
+		}
+		Data fieldSettingsGroup = getSearcherManager().getCachedData(mediaArchive.getCatalogId(), "settingsgroup",settingsgroupid);
+		if (fieldSettingsGroup == null && log.isDebugEnabled())
+		{
+			log.debug("No settings group defined");
+		}
+		if (fieldSettingsGroup != null)
+		{
+			Collection permissions = fieldSettingsGroup.getValues("permissions");
+			userprofile.getPermissions().setProfilePermissions(permissions);
+		}
+		userprofile.setSettingsGroup(fieldSettingsGroup);
 		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);

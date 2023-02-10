@@ -1,3 +1,4 @@
 <page>
+	<property name="tab">setup</property>
 	<property name="searchtype">module</property>
 </page>

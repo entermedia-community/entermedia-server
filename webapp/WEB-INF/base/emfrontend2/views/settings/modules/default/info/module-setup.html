@@ -11,8 +11,9 @@
 		<a class="btn btn-sm btn-light"  href="$home$apphome/views/settings/modules/${data.id}/index.html" ><i class="fas fa-cog"></i> [[Settings]]</a>
 		</div>
 	</div>
-	<div class="fields">
-		
-		$pages.include("$apphome/views/settings/modules/setup/edit.html",$context)
-	</div>
+
+		$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module") )	
+		$context.putPageValue("view","module/edit")	
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
 </div>
