@@ -609,7 +609,7 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
+		Collection<Data> modules = archive.query("module").exact("showonsearch",true).search(inReq);
 		Collection searchmodules = new ArrayList();
 		
 		String inModule = inReq.findValue("module");
@@ -622,7 +622,7 @@ public class FinderModule extends BaseMediaModule
 				continue; //Too big
 			}
 			String show = data.get("showonsearch");
-			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show)) //Permission check?
+			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show))
 			{
 				//Make sure we are not in the module already... it will be searched another way
 				if( !data.getId().equals(inModule))

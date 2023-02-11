@@ -290,6 +290,35 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 	}
 
+
+	public void checkModulePath(WebPageRequest inReq) throws Exception
+	{
+		if( inReq.getContentPage().exists())
+		{
+			return;
+		}
+		String moduleid = inReq.findValue("moduleid");
+		if( moduleid == null)
+		{
+			int i = inReq.getPath().indexOf("/views/settings/modules/");
+			if( i > 0 )
+			{
+				moduleid = inReq.getPath().substring(i + "/views/settings/modules/".length());
+				moduleid = PathUtilities.extractRootDirectory(moduleid);
+			}
+		}
+		if( moduleid != null)
+		{
+			//TODO: Speed uploading
+			
+			
+			String catalogid = inReq.findValue("catalogid");
+			Data module = getSearcherManager().getCachedData(catalogid, "module", moduleid);
+			String appid = inReq.findValue("applicationid");
+			getWorkspaceManager().saveModule(catalogid, appid, module);
+		}
+	}
+
 	public void saveAllModules(WebPageRequest inReq) throws Exception
 	{
 		String appid = inReq.findValue("applicationid");

@@ -67,7 +67,7 @@ public class BaseSearchSecurity implements SearchSecurity
 					PropertyDetail detail = inSearcher.getDetail("securityenabled");
 					if( detail != null)
 					{
-						filter = (SearchSecurity)getSearcherManager().getModuleManager().getBean(inSearcher.getCatalogId(),"securtyEnabledSearchSecurity" );
+						filter = (SearchSecurity)getSearcherManager().getModuleManager().getBean(inSearcher.getCatalogId(),"securityEnabledSearchSecurity" );
 					}
 					else
 					{

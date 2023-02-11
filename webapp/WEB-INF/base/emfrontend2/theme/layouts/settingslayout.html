@@ -16,10 +16,10 @@
 			<div class="ui-widget" >
 				<div  class="ui-widget-header">
 					<div class="widget-header-title">
-						<a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bs-toggle="dropdown">$module [[Settings]]</a>
+						<a class="dropdown-toggle" href="#" data-toggle="dropdown" data-bs-toggle="dropdown">#text($module) [[Settings]]</a>
 						<div class="dropdown-menu">
 						#foreach ( $amodule in $userprofile.getModules() )
-								<a class="dropdown-item" href="$home$apphome/views/settings/modules/${amodule.id}/index.html?propertyfield=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
+								<a class="dropdown-item" href="$home$apphome/views/settings/modules/${amodule.id}/index.html?propertyfield=last_selected_module&last_selected_module.value=${amodule.id}">#text($amodule)</a>
 							#end
 						</div>
 					</div>

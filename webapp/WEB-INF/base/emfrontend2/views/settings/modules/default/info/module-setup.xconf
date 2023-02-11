@@ -1,7 +1,8 @@
 <page>
 	
 	<path-action name="DataEditModule.loadData" />
-<page-action name="ProfileModule.saveProperties"/>
+	<page-action name="ProfileModule.saveProperties"/>
+	<path-action name="ProfileModule.savePreference"/>
 
 			
 </page>
