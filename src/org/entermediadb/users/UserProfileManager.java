@@ -291,11 +291,21 @@ public class UserProfileManager
 		{
 			if( userprofile.hasPermission("viewsettings"))
 			{
-				HitTracker modules  = mediaArchive.query("module").all().sort("name").
-					/*orgroup("viewgroups", user.getGroups()).
-					match("viewroles", userprofile.getSettingsGroup().getId()).
-					match("viewusers", inUserName)*/
-					search();
+				Searcher msearcher = mediaArchive.getSearcher("module");
+				SearchQuery mainquery = msearcher.query().all().sort("name").getQuery();
+				SearchQuery securityfilter = msearcher.query().or().
+						match("securityenabled", "false").
+						orgroup("viewgroups", user.getGroups()).
+						match("viewroles", userprofile.getSettingsGroup().getId()).
+						match("owner", inUserName).
+						match("viewusers", inUserName).getQuery();
+				mainquery.addChildQuery(securityfilter);
+				
+				HitTracker modules  = msearcher.search(mainquery); 
+				/*orgroup("viewgroups", user.getGroups()).
+				match("viewroles", userprofile.getSettingsGroup().getId()).
+				match("viewusers", inUserName)*/
+
 					///log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(new ArrayList(modules));
 			}
