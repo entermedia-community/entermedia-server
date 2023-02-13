@@ -13,6 +13,7 @@ import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.search.AssetSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -180,6 +181,39 @@ public class WorkspaceManager
 					String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 					copyXml(catalogid, templateentities, pathentities, module);
 					viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+					//Copies viewusers, viewgroups and security stuff for this entity.
+					String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
+					Page template= getPageManager().getPage(templatepermissionfields);
+					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
+					getPageManager().copyPage(template, destination);
+					
+					//Add corresponding fields to Asset
+					
+					
+					AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
+					PropertyDetailsArchive propertyDetailsArchive = searcher.getPropertyDetailsArchive();
+
+					PropertyDetail detail = searcher.getDetail(mid);
+					if(detail == null) {
+
+						detail = propertyDetailsArchive.createDetail(mid, mid );
+						detail.setDeleted(false);
+						Object name = module.getValue("name");
+						detail.setDataType("list");
+						if(name instanceof String){
+							detail.setName((String) name);
+						} 
+						else if(name instanceof LanguageMap) {
+							detail.setName((LanguageMap)name);
+						}
+						
+						propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
+
+												
+					}
+				
+					
+					
 				}else {
 					String template = "/" + catalogid + "/data/lists/view/default.xml";
 					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
