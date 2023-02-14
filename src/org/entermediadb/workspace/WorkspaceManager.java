@@ -14,6 +14,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSearcher;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -191,10 +192,14 @@ public class WorkspaceManager
 					
 					
 					AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
+					CategorySearcher cats = (CategorySearcher) getSearcherManager().getSearcher(catalogid, "category");
+
 					PropertyDetailsArchive propertyDetailsArchive = searcher.getPropertyDetailsArchive();
 
 					PropertyDetail detail = searcher.getDetail(mid);
-					if(detail == null) {
+					PropertyDetail catdetail = cats.getDetail(mid);
+
+					if(detail == null || catdetail == null) {
 
 						detail = propertyDetailsArchive.createDetail(mid, mid );
 						detail.setDeleted(false);
@@ -208,6 +213,7 @@ public class WorkspaceManager
 						}
 						
 						propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
+						propertyDetailsArchive.savePropertyDetail(detail, "category", null);
 
 												
 					}
