@@ -288,6 +288,7 @@ public class MediaAdminModule extends BaseMediaModule
 		String appid = inReq.findValue("applicationid");
 		String catalogid = inReq.findValue("catalogid");
 		getWorkspaceManager().saveModule(catalogid, appid, module);
+		getMediaArchive(inReq).clearAll();
 	}
 
 
