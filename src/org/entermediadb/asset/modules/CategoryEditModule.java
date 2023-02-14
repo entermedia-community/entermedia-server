@@ -366,6 +366,32 @@ public class CategoryEditModule extends BaseMediaModule {
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 	}
+	
+	
+	public void addEntityToCategory(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String categoryid = inPageRequest.getRequestParameter("categoryid");
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		if (categoryid == null || moduleid == null || entityid == null) 
+		{
+			return;
+		}
+		
+		Category category = archive.getCategory(categoryid);
+		if(category == null) {
+			return;
+		}
+		category.addValue(moduleid, entityid);
+		archive.getCategorySearcher().saveData(category);
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Removes generated images (medium, thumbs, etc) for a asset. TODO:
