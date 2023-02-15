@@ -2439,5 +2439,11 @@
 	<bean id="securityEnabledSearchSecurity" class="org.entermediadb.asset.search.SecurityEnabledSearchSecurity"  lazy-init="default">
 	</bean>
 
+	<bean id="entityManager" class="org.entermediadb.find.EntityManager"  lazy-init="default">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>		
 		
 </beans>
