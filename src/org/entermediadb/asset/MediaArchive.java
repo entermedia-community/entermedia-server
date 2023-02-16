@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.mail.internet.InternetAddress;
 
@@ -37,6 +36,7 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
+import org.entermediadb.find.EntityManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
@@ -72,7 +72,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
@@ -2927,6 +2926,10 @@ public class MediaArchive implements CatalogEnabled
 			return url;
 		}
 		return null;
+	}
+	public EntityManager getEntityManager()
+	{
+		return (EntityManager)getModuleManager().getBean(getCatalogId(),"entityManager",true);
 	}
 	
 }
