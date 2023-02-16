@@ -2237,7 +2237,7 @@ public class ProjectManager implements CatalogEnabled
 		{
 			ids.add("NONE");
 		}
-		HitTracker hits = getMediaArchive().query("librarycollection").ids(ids).named("hits").orgroup("collectiontype","1|3").not("organizationstatus","disabled").not("organizationstatus","closed").not("organizationstatus","pendingdelete").sort("name").search(inReq);
+		HitTracker hits = getMediaArchive().query("librarycollection").ids(ids).named("hits").orgroup("collectiontype","1").not("organizationstatus","disabled").not("organizationstatus","closed").not("organizationstatus","pendingdelete").sort("name").search(inReq);
 		hits.setHitsPerPage(100);
 
 		return hits;
