@@ -406,7 +406,7 @@ uiload = function() {
 
 	lQuery("form").livequery('submit', function(e)
 	{
-		if( CKEDITOR )
+		if( typeof CKEDITOR !== 'undefined')
 		{
 			for (instance in CKEDITOR.instances) 
 			{
