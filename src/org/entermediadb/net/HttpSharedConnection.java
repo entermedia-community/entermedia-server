@@ -198,6 +198,17 @@ public class HttpSharedConnection
 		JSONObject elem = parseJson(resp);
 		return elem;
 	}
+	public String getResponseString(String inUrl) 
+	{
+		return getResponseString(inUrl, null);
+	}
+	
+	public String getResponseString(String inUrl,Map extraHeaders) 
+	{
+		CloseableHttpResponse resp = sharedGet(inUrl,extraHeaders);
+		String text = parseText(resp);
+		return text;
+	}
 
 
 	public String parseText(CloseableHttpResponse inCreaterequest)
