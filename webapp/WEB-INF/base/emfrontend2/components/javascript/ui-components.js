@@ -430,7 +430,7 @@ uiload = function() {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				
-				if( CKEDITOR ) //might not be needed
+				if( typeof CKEDITOR !== 'undefined')
 				{
 					for (instance in CKEDITOR.instances) 
 					{

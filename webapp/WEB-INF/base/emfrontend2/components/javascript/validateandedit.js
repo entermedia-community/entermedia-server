@@ -122,7 +122,7 @@ $(document).ready(function()
 	$.validator.setDefaults({
 	    errorPlacement: function(error, element) {
 	    	var elementid = element.attr('id');
-	    	var elementparent = $("#" + $.escapeSelector(elementid)).closest(".emdatafieldvalue");
+	    	var elementparent = $("#" + $.escapeSelector(elementid)).closest("div");
 	    	if(elementparent.length != 0) {
 	    		//elementparent = $("#" + $.escapeSelector(elementid));
 	    		error.insertAfter(elementparent);
