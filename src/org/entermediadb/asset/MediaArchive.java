@@ -2825,7 +2825,7 @@ public class MediaArchive implements CatalogEnabled
 				}
 				return result.toString();
 			}
-			return subs[1];
+			//return subs[1];  //lets return word 
 		}
 		
 		return word;
