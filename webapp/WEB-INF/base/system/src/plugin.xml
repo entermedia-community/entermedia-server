@@ -342,5 +342,8 @@
 	</bean>
 	<bean id="siteData" class="org.openedit.servlet.SiteData" scope="prototype">
 	</bean>
+
+	<bean id="dateStorageUtil" class="org.openedit.util.DateStorageUtil" scope="prototype">
+	</bean>
 	
 </beans>
