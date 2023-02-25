@@ -294,11 +294,11 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void checkModulePath(WebPageRequest inReq) throws Exception
 	{
-		if( inReq.getContentPage().exists())
+		String moduleid = inReq.findValue("moduleid");
+		if( moduleid != null)
 		{
 			return;
 		}
-		String moduleid = inReq.findValue("moduleid");
 		if( moduleid == null)
 		{
 			int i = inReq.getPath().indexOf("/views/settings/modules/");
