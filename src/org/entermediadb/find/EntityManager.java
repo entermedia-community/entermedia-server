@@ -50,7 +50,7 @@ public class EntityManager implements CatalogEnabled
 	{
 		//TODO: Caching ability
 		Collection categories = (Collection)getCacheManager().get("entitymanager", inEntityType + "/" + inEntityId);
-		if( categories == null)
+		//if( categories == null || categories.size() < 1)
 		{
 			categories = getMediaArchive().query("category").exact(inEntityType, inEntityId).sort("categorypath").search();
 			getCacheManager().put("entitymanager", inEntityType + "/" + inEntityId,categories);
