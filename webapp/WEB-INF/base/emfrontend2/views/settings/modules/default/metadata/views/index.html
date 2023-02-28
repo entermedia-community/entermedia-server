@@ -17,10 +17,12 @@
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	<li class="header no-sort" id="views-header" >
-	    <span id="name">$context.getText($view)</span>
+	    <span id="name" title="" >$context.getText($view)</span>
+	    <span class="type"> (Id: $viewid)  </span>
 	    #if ( $view.rendertable )
-	    <span class="type">[[Table]]: $view.rendertable</span>
+	    <span class="type"> ([[Table]]: $view.rendertable)</span>
 	    #end
+	    
 	    
 	    #set ( $systemdefined = "false" )
         #set ( $systemdefined = $context.findValue("systemdefined") )
@@ -234,9 +236,11 @@
 	</li>
 #end
 </ul>
+#set($details = false)
+#set($details =  $searcher.getDetailsForView($viewpath, $user))
+
 <ul  class="emsettingslist listsort" data-path="$home$viewsroot/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid" >
-			#set($details = false)
-			#set($details =  $searcher.getDetailsForView($viewpath, $user))
+			
 			#foreach( $element in $details)
 				#set( $pid = "${element.searchType}.${element.id}")
 				<li id="$pid" > 
