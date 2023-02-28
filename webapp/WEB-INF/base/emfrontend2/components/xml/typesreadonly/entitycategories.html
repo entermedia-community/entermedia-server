@@ -1,7 +1,7 @@
-#set( $collection =  $mediaarchive.getBean("entityManager").loadCategories($detail.getId(), $data.getId()))
+#set( $collection =  $mediaarchive.getBean("entityManager").loadCategories($searcher.getSearchType(), $data.getId()))
 <ul class="entity-value-list">
 	#foreach( $category in $collection )
 	    #set($link = "$!siteroot$applink/views/modules/asset/bycategory/${category.id}.html")
-	    <li><a href="$link" class="emdialog entity-dialog">#text($category)</a></li>
+	    <li><a href="$link" class="emdialog entity-dialog">#esc($category.get("categorypath"))</a></li>
 	#end	
 </ul>
