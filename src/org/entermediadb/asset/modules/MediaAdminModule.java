@@ -315,8 +315,11 @@ public class MediaAdminModule extends BaseMediaModule
 			
 			String catalogid = inReq.findValue("catalogid");
 			Data module = getSearcherManager().getCachedData(catalogid, "module", moduleid);
-			String appid = inReq.findValue("applicationid");
-			getWorkspaceManager().saveModule(catalogid, appid, module);
+			if( module != null)
+			{
+				String appid = inReq.findValue("applicationid");
+				getWorkspaceManager().saveModule(catalogid, appid, module);
+			}
 		}
 	}
 
