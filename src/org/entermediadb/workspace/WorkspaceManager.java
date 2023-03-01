@@ -239,7 +239,7 @@ public class WorkspaceManager
 					
 					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
 					
-					if (destpath != null) {
+					if (destpath == null) {
 						getPageManager().copyPage(input, destpath);
 					}
 					
