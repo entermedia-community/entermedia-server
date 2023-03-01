@@ -1911,7 +1911,7 @@ public class MediaArchive implements CatalogEnabled
 
 	public Data getCachedData(String inSearchType, String inId)
 	{
-		if (inId == null)
+		if (inId == null || inSearchType == null)
 		{
 			return null;
 		}
