@@ -2,13 +2,16 @@ package org.entermediadb.find;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -63,5 +66,22 @@ public class EntityManager implements CatalogEnabled
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
 	}
+	
+	public String loadUploadSourcepath(Data module, Data entity, User inUser)
+	{
+		String mask = (String) module.getValue("uploadsourcepath");
+		String sourcepath = "";
+		if(mask != null)
+		{
+			Map values = new HashedMap();
+			
+			values.put("module", module);
+			values.put(module.getId(), entity);
+			
+			sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values);
+		}
+		
+		return sourcepath;
+	}	
 	
 }
