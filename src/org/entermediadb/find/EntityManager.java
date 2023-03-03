@@ -53,7 +53,7 @@ public class EntityManager implements CatalogEnabled
 	{
 		//TODO: Caching ability
 		Collection categories = (Collection)getCacheManager().get("entitymanager", inEntityType + "/" + inEntityId);
-		//if( categories == null || categories.size() < 1)
+		if( categories == null )
 		{
 			categories = getMediaArchive().query("category").exact(inEntityType, inEntityId).sort("categorypath").search();
 			getCacheManager().put("entitymanager", inEntityType + "/" + inEntityId,categories);
@@ -83,5 +83,17 @@ public class EntityManager implements CatalogEnabled
 		
 		return sourcepath;
 	}	
+
+	public Collection loadChildren(String inEntityParentType, String inParentEntityId, String inChildEntityType)
+	{
+		String cacheid = inEntityParentType + "/" + inParentEntityId + "/" + inChildEntityType;
+		Collection entities = (Collection)getCacheManager().get("entitymanager", cacheid);
+		if( entities == null)
+		{
+			entities = getMediaArchive().query(inChildEntityType).exact(inEntityParentType, inParentEntityId).sort("name").search();
+			getCacheManager().put("entitymanager", cacheid,entities);
+		}
+		return entities;
+	}
 	
 }

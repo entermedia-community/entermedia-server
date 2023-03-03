@@ -1,0 +1,7 @@
+#set( $collection =  $mediaarchive.getBean("entityManager").loadChildren($searcher.getSearchType(), $data.getId(), $detail.getListId()))
+<ul class="entity-value-list">
+	#foreach( $entity in $collection )
+	    #set($link = "$!siteroot$applink/views/modules/TODO/${entity.id}.html")
+	    <li><a href="$link" class="emdialog entity-dialog">#text($entity)</a></li>
+	#end	
+</ul>

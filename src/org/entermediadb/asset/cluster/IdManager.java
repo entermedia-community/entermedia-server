@@ -290,10 +290,10 @@ public class IdManager
 			if(val instanceof Long){
 				current = (Long) val;
 			}
-			if(current == null){
-				current = 1L;
+			if(current == null || current == 0)
+			{
+				current = 1000L;
 			}
-			
 			current++;
 			counter.setValue("countvalue", current);
 		}
