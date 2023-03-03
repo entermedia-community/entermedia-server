@@ -2,6 +2,15 @@
 <ul class="entity-value-list">
 	#foreach( $category in $collection )
 	    #set($link = "$!siteroot$applink/views/modules/asset/bycategory/${category.id}.html")
-	    <li><a href="$link" class="emdialog entity-dialog">#esc($category.get("categorypath"))</a></li>
+	    <li>
+	    	<a href="$link" 
+	    		class="ajax" 
+	    		data-targetdiv="applicationcontent"
+	    		data-closedialog="true"
+	    		data-oemaxlevel="4"
+	    		data-updateurl="true"
+	    		data-sidebarcomponent="categories"
+	    		title='[[View Folder]]: #esc($category.get("categorypath"))'>#esc($category.get("categorypath"))</a>
+	    </li>
 	#end	
 </ul>

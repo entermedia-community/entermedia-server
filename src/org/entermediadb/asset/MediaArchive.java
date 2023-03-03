@@ -1449,10 +1449,12 @@ public class MediaArchive implements CatalogEnabled
 		{
 			categoryId = inReq.getRequestParameter("nodeID");
 		}
+		/*
 		if (categoryId == null)
 		{
 			categoryId = inReq.getRequestParameter("id"); //for tables
-		}
+		}*/
+		
 		if (categoryId == null)
 		{
 			Page page = inReq.getPage();
