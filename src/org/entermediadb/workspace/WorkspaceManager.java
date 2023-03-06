@@ -183,11 +183,13 @@ public class WorkspaceManager
 					copyXml(catalogid, templateentities, pathentities, module);
 					viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
 					//Copies viewusers, viewgroups and security stuff for this entity.
-					String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
-					Page template= getPageManager().getPage(templatepermissionfields);
 					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
-					getPageManager().copyPage(template, destination);
-					
+					if( !destination.exists() )
+					{
+						String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
+						Page template= getPageManager().getPage(templatepermissionfields);
+						getPageManager().copyPage(template, destination);
+					}					
 					//Add corresponding fields to Asset
 					
 					
@@ -239,7 +241,7 @@ public class WorkspaceManager
 					
 					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
 					
-					if (destpath == null) {
+					if (!destpath.exists()) {
 						getPageManager().copyPage(input, destpath);
 					}
 					
