@@ -3,6 +3,7 @@ package org.entermediadb.users;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +34,6 @@ import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
 import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
-import org.openedit.util.strainer.PermissionFilter;
 import org.openedit.util.strainer.SettingsGroupFilter;
 
 
@@ -109,6 +109,7 @@ public class PermissionManager implements CatalogEnabled
 	
 	public void loadPermissions(WebPageRequest inReq, Page inPage, String limited)
 	{
+		HashMap userpermissions = new HashMap();
 		List permissions = null;
 		if( limited == null )
 		{
@@ -136,8 +137,10 @@ public class PermissionManager implements CatalogEnabled
 				Permission per = (Permission) iterator.next();
 				boolean value = per.passes(inReq);
 				inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value));
+				userpermissions.put("can" + per.getName(), Boolean.valueOf(value));				
 			}
 		}
+		inReq.putPageValue("permissionset", userpermissions);
 	}
 
 	public void loadModulePermissions(String inModuleid, String inParentFolderId, String inDataId, WebPageRequest inReq)
