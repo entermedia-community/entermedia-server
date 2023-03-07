@@ -250,15 +250,19 @@ public class WorkspaceManager
 				//views.reIndexAll();
 				String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 				String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
-				copyXml(catalogid, templte2, path2, module);
-				
-				Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
-				settingsmenumodule.reIndexAll();
-				
+				if( !getPageManager().getPage(path2).exists())
+				{
+					copyXml(catalogid, templte2, path2, module);
+					Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
+					settingsmenumodule.reIndexAll();
+				}
 				String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
 				String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
-				copyXml(catalogid, templte3, path3, module);
-				getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
+				if( !getPageManager().getPage(path3).exists())
+				{
+					copyXml(catalogid, templte3, path3, module);
+					getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
+				}
 			}
 			// add settings menu
 			createTable(catalogid, module.getId(), module.getId());
@@ -339,19 +343,19 @@ public class WorkspaceManager
 			if( endpoint == null )
 			{
 				endpoint = endpointSearcher.createNewData();
+				//endpoint.setProperties(row.getProperties());
+				for (Iterator iterator2 = row.keySet().iterator(); iterator2.hasNext();)
+				{
+					String key = (String) iterator2.next();
+					String val = row.get(key);
+					val = replacer.replace(val, lookup);
+					endpoint.setProperty(key, val);
+				}
+				
+				endpoint.setId(section.getId() + row.getId() );
+				endpoint.setProperty( "docsection",section.getId() );
+				endpointSearcher.saveData(endpoint, null);
 			}
-			//endpoint.setProperties(row.getProperties());
-			for (Iterator iterator2 = row.keySet().iterator(); iterator2.hasNext();)
-			{
-				String key = (String) iterator2.next();
-				String val = row.get(key);
-				val = replacer.replace(val, lookup);
-				endpoint.setProperty(key, val);
-			}
-			
-			endpoint.setId(section.getId() + row.getId() );
-			endpoint.setProperty( "docsection",section.getId() );
-			endpointSearcher.saveData(endpoint, null);
 		}
 		
 		//Files
