@@ -756,6 +756,24 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		boolean assigncategory =  oktoadd;
 		
+		String inputsourcepath = inReq.findValue("sourcepath");
+		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
+		{
+			Category topcat = archive.createCategoryPath(inputsourcepath);
+			String entitytype = inReq.getRequestParameter("entitytype");
+			String entityid = inReq.getRequestParameter("selected"  + entitytype);
+			Collection vals = topcat.getValues(entitytype);
+			if(vals == null || !vals.contains(entityid))
+			{
+				topcat.addValue(entitytype, entityid);
+				archive.saveData("category", topcat);
+			}
+			metadata.put("field","category");
+			metadata.put("category.value", topcat.getId());
+			assigncategory = true;
+		}
+
+		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inUploadRequest);
 		final User user = inReq.getUser();
 		archive.getAssetSearcher();
@@ -859,11 +877,6 @@ public class AssetEditModule extends BaseMediaModule
 		}
 	}
 	
-	
-	
-
-	
-	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		HitTracker tracker = archive.getAssetManager().saveFilesAndImport(currentcollection, createCategories, metadata, pages, user);
@@ -875,6 +888,8 @@ public class AssetEditModule extends BaseMediaModule
 		//if we are uploading into a collection?
 		Boolean incollection = inReq.findValue("currentcollection") != null;
 
+		String inputsourcepath = inReq.findValue("sourcepath");
+		
 		Map pages = new HashMap();
 		for (Iterator iterator = inUploadRequest.getSavedContentItems().iterator(); iterator.hasNext();)
 		{
@@ -888,7 +903,6 @@ public class AssetEditModule extends BaseMediaModule
 			String rootpath = inUploadRequest.getRootPath(contentitem.getPath());
 			String filepath = contentitem.getPath().substring(rootpath.length());					
 
-			String inputsourcepath = inReq.findValue("sourcepath");
 			String assetsourcepath = null;
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 			if (inputsourcepath == null)
@@ -902,7 +916,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else if (inputsourcepath.endsWith("/")) //EMBridge expects the filename to be added on
 			{
-				assetsourcepath = inputsourcepath + filename;
+				assetsourcepath = inputsourcepath + filepath;
 			}
 			else
 			{

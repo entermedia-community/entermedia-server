@@ -1,5 +1,6 @@
 package org.entermediadb.find;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,11 +53,11 @@ public class EntityManager implements CatalogEnabled
 	public Collection loadCategories(String inEntityType, String inEntityId)
 	{
 		//TODO: Caching ability
-		Collection categories = (Collection)getCacheManager().get("entitymanager", inEntityType + "/" + inEntityId);
+		Collection categories = (Collection)getCacheManager().get("searchercategory" , inEntityType + "/ " + inEntityId);
 		if( categories == null )
 		{
 			categories = getMediaArchive().query("category").exact(inEntityType, inEntityId).sort("categorypath").search();
-			getCacheManager().put("entitymanager", inEntityType + "/" + inEntityId,categories);
+			getCacheManager().put("searchercategory", inEntityType + "/" + inEntityId,categories);
 			
 		}
 		return categories;
@@ -80,7 +81,11 @@ public class EntityManager implements CatalogEnabled
 			
 			sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values);
 		}
-		
+		if( sourcepath.isEmpty())
+		{
+			long year = Calendar.getInstance().get(Calendar.YEAR);
+			sourcepath = module.getName("en") + "/" + year + "/" + entity.getName() + "/";
+		}
 		return sourcepath;
 	}	
 
