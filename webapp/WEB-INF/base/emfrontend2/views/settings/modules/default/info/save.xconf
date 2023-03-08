@@ -2,5 +2,7 @@
 
 	<path-action name="DataEditModule.saveData" />
 	<path-action name="MediaAdminModule.saveModule" />
-
+	<path-action name="DataEditModule.loadData">
+	<property name ="pageval">module</property>
+	</path-action>
 </page>
