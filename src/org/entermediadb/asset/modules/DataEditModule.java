@@ -955,7 +955,8 @@ String viewbase = null;
 		}
 		Collections.sort(notdeleted);
 		inReq.putPageValue("properties", notdeleted);
-		inReq.putPageValue("details", searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searcher.getSearchType()));
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searcher.getSearchType());
+		inReq.putPageValue("details", details);
 
 		return all;
 	}
