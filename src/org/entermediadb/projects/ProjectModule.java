@@ -237,6 +237,9 @@ public class ProjectModule extends BaseMediaModule
 		// String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("collectionid");
 		if (librarycollection == null) {
+			librarycollection = inReq.getRequestParameter("id");
+		}
+		if (librarycollection == null) {
 			Data data = (Data) inReq.getPageValue("data");
 			if (data != null) {
 				librarycollection = data.getId();
