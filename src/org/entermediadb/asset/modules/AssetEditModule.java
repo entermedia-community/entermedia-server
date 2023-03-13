@@ -759,7 +759,9 @@ public class AssetEditModule extends BaseMediaModule
 		String inputsourcepath = inReq.findValue("sourcepath");
 		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
 		{
-			Category topcat = archive.createCategoryPath(inputsourcepath);
+			FileUploadItem item = inUploadRequest.getFirstItem();
+			String root = PathUtilities.extractRootDirectory(item.getName());
+			Category topcat = archive.createCategoryPath(inputsourcepath + root);
 			String entitytype = inReq.getRequestParameter("entitytype");
 			String entityid = inReq.getRequestParameter("selected"  + entitytype);
 			Collection vals = topcat.getValues(entitytype);
