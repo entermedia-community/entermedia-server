@@ -181,7 +181,12 @@ public class WorkspaceManager
 					String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
 					String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 					copyXml(catalogid, templateentities, pathentities, module);
-					viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+					viewstemplate = "/" + catalogid + "/data/views/" + module.getId() + "/";
+					Page viewstemplatedefaults = getPageManager().getPage(viewstemplate);
+					if (!viewstemplatedefaults.exists()) 
+					{
+						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
 					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
 					if( !destination.exists() )
@@ -239,7 +244,16 @@ public class WorkspaceManager
 					Page input = getPageManager().getPage(copypath);
 					Page destpath = null;
 					
-					destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
+					String pathfinal = "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/";
+					
+					if (input.getName().indexOf(module.getId()) != -1) {
+						pathfinal = pathfinal + input.getName();
+					}
+					else {
+						pathfinal = pathfinal + module.getId()+ input.getName();
+					}
+					
+					destpath = getPageManager().getPage( pathfinal );
 					
 					if (!destpath.exists()) {
 						getPageManager().copyPage(input, destpath);
@@ -247,7 +261,7 @@ public class WorkspaceManager
 					
 				}
 				
-				//views.reIndexAll();
+				views.reIndexAll();
 				String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 				String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 				if( !getPageManager().getPage(path2).exists())
