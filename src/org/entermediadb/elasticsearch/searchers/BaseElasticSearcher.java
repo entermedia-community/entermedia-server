@@ -1660,7 +1660,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			if ("exact".equals(inTerm.getOperation()))
 			{
-				if (inDetail.isAnalyzed() && !inDetail.isDataType("nested"))
+				if (inDetail.isAnalyzed())
 				{
 					find = QueryBuilders.termQuery(fieldid + ".exact", valueof);
 				}
