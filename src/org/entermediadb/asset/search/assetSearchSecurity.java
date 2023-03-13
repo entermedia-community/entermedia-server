@@ -149,7 +149,7 @@ public class assetSearchSecurity implements SearchSecurity
 					}
 				}
 			}
-			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets");
+			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare2
 			if(editstatus == null && onlyapproved ) 
 			{
 				editstatus="6";
