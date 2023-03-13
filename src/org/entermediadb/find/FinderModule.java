@@ -339,6 +339,10 @@ public class FinderModule extends BaseMediaModule
 			{
 				query = searcher.createSearchQuery();
 			}
+			
+			Collection searchmodules = loadUserSearchTypes(inReq);
+			query.setValue("searchtypes", searchmodules);
+			
 			query.setName("modulehits");
 			query.addOrsGroup("id",uids);  //TODO: Filter out duplicates based on type
 			query.setHitsPerPage(1000);
@@ -407,6 +411,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		
 		inReq.putPageValue("organizedModules",foundmodules);
+		inReq.putPageValue("organizedHits", bytypes);
 		
 
 	}
