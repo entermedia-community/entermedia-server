@@ -279,7 +279,7 @@ public class ProjectManager implements CatalogEnabled
 			query.exact("editstatus", "6");
 		}
 
-		HitTracker hits = query.search();
+		HitTracker hits = query.search(inReq);
 
 		// log.info( hits.getSearchQuery() );
 		int assetsize = 0;
