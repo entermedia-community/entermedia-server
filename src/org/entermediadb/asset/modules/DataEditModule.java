@@ -1176,7 +1176,7 @@ String viewbase = null;
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
 		String name = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		if (hits != null)
 		{
 			String[] params = inReq.getRequestParameters("dataid");

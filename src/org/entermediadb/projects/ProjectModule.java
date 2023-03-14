@@ -249,10 +249,11 @@ public class ProjectModule extends BaseMediaModule
 			log.error("librarycollection not found");
 			return;
 		}
+		inReq.putPageValue("collectionid", librarycollection);
 		ProjectManager manager = getProjectManager(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		if (hitssessionid != null) {
-			HitTracker tracker = (HitTracker) inReq.getSessionValue(hitssessionid);
+			HitTracker tracker = (HitTracker) inReq.getPageValue(hitssessionid);
 			if (tracker != null) {
 				tracker = tracker.getSelectedHitracker();
 			}
@@ -266,6 +267,7 @@ public class ProjectModule extends BaseMediaModule
 		if (assetid != null) {
 			manager.addAssetToCollection(archive, librarycollection, assetid);
 			inReq.putPageValue("added", "1");
+			
 		}
 	}
 
@@ -300,6 +302,7 @@ public class ProjectModule extends BaseMediaModule
 				inReq.putPageValue("count", String.valueOf(tracker.size()));
 				return;
 			}
+			inReq.putPageValue("collectionid", librarycollection);
 		}
 
 	}
