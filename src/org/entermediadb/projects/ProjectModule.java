@@ -567,9 +567,9 @@ public class ProjectModule extends BaseMediaModule
 			{
 				profile.addValue("opencollections", collectionid);
 				cols = profile.getValues("opencollections");
-				if (cols.size() > 10) {
+				if (cols.size() > 30) {
 					List cut = new ArrayList(cols);
-					cut = cut.subList(cols.size() - 10, cols.size());
+					cut = cut.subList(cols.size() - 30, cols.size());
 					profile.setValues("opencollections", cut);
 				}
 			}
