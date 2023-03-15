@@ -104,6 +104,10 @@ public class FinderModule extends BaseMediaModule
 				//HitTracker assets = (HitTracker)bytypes.get("asset");
 				//
 				String moduleid = inReq.findValue("module");
+				if(moduleid == null) {
+					moduleid = (String) inReq.getPageValue("moduleid");
+				}
+				
 				if( moduleid == null || !moduleid.equals("asset"))
 				{
 					SearchQuery copy = hits.getSearchQuery().copy();
@@ -577,7 +581,7 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("defaultmodule", defaultmodule);
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("module", archive.getCachedData("module", defaultmodule));
-		
+		inReq.putPageValue("moduleid", defaultmodule);
 		return hits;
 	}
 
