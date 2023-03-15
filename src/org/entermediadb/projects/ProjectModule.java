@@ -554,14 +554,15 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = null;
 		Data collection = (Data) inReq.getPageValue("librarycol");
 		if (collection == null) {
+			collectionid = (String) inReq.getRequestParameter("collectionid");
+		}
+		if (collectionid == null) {
 			collection = (Data) inReq.getPageValue("data");
 		}
 		if (collection != null) {
 			collectionid = collection.getId();
 		}
-		if (collectionid == null) {
-			collectionid = (String) inReq.getRequestParameter("collectionid");
-		}
+
 		if (collectionid != null) {
 			if (cols == null || !cols.contains(collectionid)) 
 			{
