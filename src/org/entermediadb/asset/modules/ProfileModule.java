@@ -340,9 +340,6 @@ public class ProfileModule extends MediaArchiveModule
 				data.setName(hitsperpage);
 				searcher.saveData(data, null);
 			}
-			
-					
-			
 		}
 		/*
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");

@@ -460,11 +460,12 @@
 	<bean id="userAlbums" class="com.entermedia.archive.albums.UserAlbums"
 		scope="prototype" />
 
-	<bean id="zipAlbumGenerator" class="org.entermediadb.asset.generators.ZipAlbumGenerator">
+	<bean id="categoryZipGenerator" class="org.entermediadb.asset.generators.CategoryZipGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+
 	<bean id="downloadZipGenerator" class="org.entermediadb.asset.generators.DownloadZipGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
