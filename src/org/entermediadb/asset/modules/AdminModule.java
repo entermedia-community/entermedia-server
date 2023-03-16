@@ -286,8 +286,11 @@ public class AdminModule extends BaseMediaModule
 	public void loadPermissionFinder(WebPageRequest inReq) throws Exception
 	{
 		UserProfile profile = inReq.getUserProfile();
-		Permissions permissions = profile.getPermissions();
-		inReq.putPageValue("permissions", permissions);
+		if( profile != null)
+		{
+			Permissions permissions = profile.getPermissions();
+			inReq.putPageValue("permissions", permissions);
+		}
 	}
 	
 	//We will see if we use this or not. Actions may want to handle it themself
