@@ -489,7 +489,8 @@ public class AdminModule extends BaseMediaModule
 				{	
 					log.info("Checking server for user " + server);
 					String groupid = inReq.getPage().get("autologingroup");
-					user = userManager.createGuestUser(account, password, groupid);
+					user = userManager.createGuestUser(account, null, groupid);
+					user.setEnabled(true);
 				}
 				else
 				{

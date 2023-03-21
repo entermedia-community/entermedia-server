@@ -211,69 +211,6 @@ public class MediaArchiveModule extends BaseMediaModule
 		}
 	}
 
-	public void createLogin(WebPageRequest inReq) throws OpenEditException
-	{
-		User user = inReq.getUser();
-		if (user == null)
-		{
-			// only do this if we're not logged in..
-			// sales people get nothing
-			// assetion people get everything
-			PageAction cAcction = inReq.getCurrentAction();
-			String username = cAcction.getConfig().getChildValue("username");
-			if (username == null)
-			{
-				username = inReq.getRequestParameter("username");
-			}
-			if (username != null)
-			{
-				String groupid = cAcction.getConfig().getChildValue("group");
-				String virtual = inReq.findValue("virtualuser");
-				if (!Boolean.parseBoolean(virtual))
-				{
-					user = getUserManager(inReq).getUser(username);
-				}
-				if (user == null)
-				{
-					user = getUserManager(inReq).createGuestUser(username, null, groupid);
-					user.setVirtual(true);
-					log.info("Creating virtual user " + username);
-				}
-
-//				String includerecords = cAcction.getConfig().getChildValue("limitrecords");
-//				if (includerecords != null)
-//				{
-//					// excluderecords:PII_site:false
-//					// user.put("includerecords", );
-//					String val = inReq.getRequestParameter(includerecords);
-//					if (val != null)
-//					{
-//						Group tmpGroup = getUserManager(inReq).createGroup();
-//						tmpGroup.addPermission("limitrecords:" + includerecords + ":" + val);
-//						user.addGroup(tmpGroup); // TODO: Keep this from
-//						// saving
-//					}
-//					else
-//					{
-//						log.error("No value passed in for " + includerecords);
-//					}
-//				}
-				// <username>ExternalUser</username>
-				// <group>externalusers</group>
-				// <includerecords>customernumber</includerecords>
-				if (!user.isVirtual())
-				{
-					AdminModule umodule = (AdminModule) getModule("Admin");
-					umodule.savePasswordAsCookie(user, inReq);
-				}
-			}
-			inReq.putPageValue("user", user);
-			inReq.putSessionValue("user", user);
-			inReq.removeSessionValue("catalogTree"); // to reload it
-			getMediaArchive(inReq); // To reload the MediaArchive object
-
-		}
-	}
 	/**
 	 * Requires catalog on the URL and sourcepath
 	 * @param inReq

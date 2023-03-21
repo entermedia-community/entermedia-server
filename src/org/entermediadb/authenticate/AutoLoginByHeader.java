@@ -55,6 +55,7 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 			{
 				user = userManager.createGuestUser(username, null, groupname);
 				user.setVirtual(true);
+				//user.setEnbled(true);
 			}
 		}
 		
@@ -88,6 +89,7 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 	@Override
 	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
+		//This is not used often. Used with Proxies
 		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
 		{
 			return autoLoginFromRequest(inReq);
