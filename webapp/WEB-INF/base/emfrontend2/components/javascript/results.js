@@ -603,7 +603,7 @@ $(document).ready(function(url,params)
 	lQuery('.carousel-indicators li#leftpage').livequery('click',function(e)
 	{
 		e.preventDefault();
-		var div = $("#main-media-viewer" );
+		var div = $(this).closest(".carousel-indicators");
 		var id = div.data("previouspage");
 		if( id )
 		{
@@ -613,7 +613,7 @@ $(document).ready(function(url,params)
 	lQuery('.carousel-indicators li#rightpage').livequery('click',function(e)
 	{
 		e.preventDefault();
-		var div = $("#main-media-viewer" );
+		var div = $(this).closest(".carousel-indicators");
 		var id = div.data("nextpage");
 		if( id )
 		{

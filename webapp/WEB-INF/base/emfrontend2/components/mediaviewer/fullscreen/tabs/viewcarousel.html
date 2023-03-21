@@ -27,9 +27,9 @@
                     #set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
                     #set($hitcaption = "")
                     #if ($hit.name)
-                        #set($hitcaption = $hit.name)
+                        #set($hitcaption = $context.getText($hit.name))
                     #elseif($hit.assettitle)
-                        #set($hitcaption = $hit.assettitle)
+                        #set($hitcaption = $context.getText($hit.assettitle))
                     #end
 				   <div class="gallery-thumb 
 				   		#if( $ismulti && $hits.isSelected($hit.id))
@@ -51,7 +51,7 @@
           			</a>
           			<div class="gallery-item-title">
           			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
- 					<label for="selectionbox_${hit.id}" class="">${hitcaption}</label>
+ 					<label for="selectionbox_${hit.id}" class="">$!hitcaption</label>
  					</div>
         		
        
@@ -62,7 +62,9 @@
         </div>
     </div>
     #if($hits)
-    <ol class="carousel-indicators">
+    <ol class="carousel-indicators"
+    data-previouspage="$!hits.idOnPreviousPage()" 
+	data-nextpage="$!hits.idOnNextPage()"  >
             <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
             <li style="padding:4px; width:120px;" >$hits.getPage() [[of]] $hits.getTotalPages()</li>
             <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
