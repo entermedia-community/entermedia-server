@@ -444,7 +444,7 @@ public class PermissionManager implements CatalogEnabled
 			entitypermissions.setSettingsGroup(inSettingsGroupId);
 			getCacheManager().put("entitypermissions" + getCatalogId(),inSettingsGroupId,entitypermissions);	
 
-			Searcher searcher = getSearcher("entitypermission");
+			Searcher searcher = getSearcher("permissionentityassigned");
 			HitTracker grouppermissions =  searcher.query().exact("settingsgroup", inSettingsGroupId).search();
 			
 			for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)

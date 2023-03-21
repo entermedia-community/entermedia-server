@@ -290,6 +290,8 @@ public class AdminModule extends BaseMediaModule
 		{
 			Permissions permissions = profile.getPermissions();
 			inReq.putPageValue("permissions", permissions);
+			
+			//$permissions.can("viewsettings") $permissions.can("asset","upload")
 		}
 	}
 	
