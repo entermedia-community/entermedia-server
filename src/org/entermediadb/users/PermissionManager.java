@@ -437,30 +437,23 @@ public class PermissionManager implements CatalogEnabled
 	public EntityPermissions loadEntityPermissions(String inSettingsGroupId)
 	{
 		//Base module permissions. Module wide
-		//TODO: Cache
-		EntityPermissions entitypermissions = (EntityPermissions)getCacheManager().get("entitypermissions" + getCatalogId(),inSettingsGroupId);
-		if( entitypermissions == null)
-		{
-			entitypermissions =  new EntityPermissions();
-			entitypermissions.setSettingsGroup(inSettingsGroupId);
-			getCacheManager().put("entitypermissions" + getCatalogId(),inSettingsGroupId,entitypermissions);	
+		EntityPermissions entitypermissions = null;//(EntityPermissions)getCacheManager().get("entitypermissions" + getCatalogId(),inSettingsGroupId);
+		entitypermissions =  new EntityPermissions();
+		entitypermissions.setSettingsGroup(inSettingsGroupId);
 
-			Searcher searcher = getSearcher("permissionentityassigned");
-			HitTracker grouppermissions =  searcher.query().exact("settingsgroup", inSettingsGroupId).search();
-			
-			for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				String entityid = data.get("moduleid");
-				String permissionname = data.get("permissionsentity");
-				Object val = data.getValue("value");
-				
-				
-				entitypermissions.putPermission(entityid, permissionname,val );
-				
-			}
-		}
+		Searcher searcher = getSearcher("permissionentityassigned");
+		HitTracker grouppermissions =  searcher.query().exact("settingsgroup", inSettingsGroupId).search();
 		
+		for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String entityid = data.get("moduleid");
+			String permissionname = data.get("permissionsentity");
+			Object val = data.getValue("value");
+			
+			
+			entitypermissions.putPermission(entityid, permissionname,val );
+		}
 		
 		return entitypermissions;
 			

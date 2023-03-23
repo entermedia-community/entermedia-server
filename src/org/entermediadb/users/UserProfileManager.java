@@ -276,11 +276,11 @@ public class UserProfileManager
 		{
 			log.debug("No settings group defined");
 		}
-		if (fieldSettingsGroup != null)
-		{
-			Collection permissions = fieldSettingsGroup.getValues("permissions");
-			userprofile.getPermissions().setProfilePermissions(permissions);
-		}
+//		if (fieldSettingsGroup != null)
+//		{
+//			Collection permissions = fieldSettingsGroup.getValues("permissions");
+//			userprofile.getPermissions().setProfilePermissions(permissions);
+//		}
 		userprofile.setSettingsGroup(fieldSettingsGroup);
 		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
