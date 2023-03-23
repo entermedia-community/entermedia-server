@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -450,8 +451,8 @@ public class PermissionManager implements CatalogEnabled
 			for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
-				String entityid = data.get("entity");
-				String permissionname = data.get("permission");
+				String entityid = data.get("moduleid");
+				String permissionname = data.get("permissionsentity");
 				Object val = data.getValue("value");
 				
 				
@@ -463,6 +464,23 @@ public class PermissionManager implements CatalogEnabled
 		
 		return entitypermissions;
 			
+	}
+	
+	public Map loadEntitySettingsGroupPermissions(String inEntityId, String inSettingsGroupId) {
+		
+		Map permissions =  new HashMap();
+		Searcher searcher = getSearcher("permissionentityassigned");
+		HitTracker grouppermissions =  searcher.query()
+										.exact("settingsgroup", inSettingsGroupId)
+										.exact("moduleid", inEntityId)
+										.exact("enabled", true) .search();
+		
+		for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			permissions.put(data.get("permissionsentity"), data);
+		}
+		return permissions;
 	}
 		
 }
