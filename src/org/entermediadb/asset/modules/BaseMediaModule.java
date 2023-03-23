@@ -178,9 +178,16 @@ public class BaseMediaModule extends BaseModule
 		}
 		inReq.putPageValue("mediaarchive", archive);
 		inReq.putPageValue("cataloghome", archive.getCatalogHome());
-		String mediadb = archive.getMediaDbId();
-		inReq.putPageValue("mediadbappid", mediadb);
-		inReq.putPageValue("catalogid", archive.getCatalogId()); // legacy
+		try
+		{
+			String mediadb = archive.getMediaDbId();
+			inReq.putPageValue("mediadbappid", mediadb);
+			inReq.putPageValue("catalogid", archive.getCatalogId()); // legacy
+		}
+		catch( Throwable ex)
+		{
+			log.error("Could not load " +  catalogid, ex);
+		}
 		return archive;
 	}
 	public SearcherManager getSearcherManager()
