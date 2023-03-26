@@ -533,6 +533,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 
 	protected void buildCategorySet(Category inCatalog, Set inCatalogSet) {
+		if(inCatalog==null) {
+			return;
+		}
 		inCatalogSet.add(inCatalog);
 		Category parent = inCatalog.getParentCategory();
 		if (parent != null) {

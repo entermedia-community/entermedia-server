@@ -231,15 +231,19 @@ public class CategoryEditModule extends BaseMediaModule {
 	public CategoryEditor getCategoryEditor(WebPageRequest inContext)
 			throws OpenEditException {
 		MediaArchive mediaarchive = getMediaArchive(inContext);
+		String searchtype = inContext.findValue("categorysearchtype");
+		if(searchtype == null) {
+			searchtype= "category";
+		}
 		CategoryEditor editor = (CategoryEditor) inContext
-				.getSessionValue("CategoryEditor" + mediaarchive.getCatalogId());
+				.getSessionValue("CategoryEditor" +searchtype+ mediaarchive.getCatalogId());
 		if (editor == null) {
 			editor = (CategoryEditor) getModuleManager().getBean(
 					"categoryEditor");
 			editor.setMediaArchive(mediaarchive);
-
+			editor.setSearchType(searchtype);
 			inContext.putSessionValue(
-					"CategoryEditor" + mediaarchive.getCatalogId(), editor);
+					"CategoryEditor" +searchtype+ mediaarchive.getCatalogId(), editor);
 		}
 		inContext.putPageValue("CategoryEditor", editor);
 

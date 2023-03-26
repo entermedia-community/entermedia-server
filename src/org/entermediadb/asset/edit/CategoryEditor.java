@@ -7,9 +7,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
 import org.openedit.page.Page;
@@ -17,16 +17,35 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.RepositoryException;
 
 public class CategoryEditor {
+	
+	
 	protected MediaArchive fieldMediaArchive;
 	protected PageManager fieldPageManager;
+	protected String fieldSearchType = "category";
 	
+	
+	
+	public String getSearchType() {
+		return fieldSearchType;
+	}
+
+	public void setSearchType(String inSearchType) {
+		fieldSearchType = inSearchType;
+	}
+
 	protected Category fieldCurrentCategory;
 	
 	private static final Log log = LogFactory.getLog(CategoryEditor.class);
 
+	
+	protected CategorySearcher getCategorySearcher() {
+		CategorySearcher searcher = (CategorySearcher) getMediaArchive().getSearcher(getSearchType());
+		return searcher;
+	}
+	
 	public Category getCategory(String inCategoryId) throws OpenEditRuntimeException
 	{
-		return getMediaArchive().getCategorySearcher().getCategory(inCategoryId);
+		return getCategorySearcher().getCategory(inCategoryId);
 	}
 
 	public void moveCategoryUp(Category inCategory) throws OpenEditRuntimeException
@@ -112,7 +131,7 @@ public class CategoryEditor {
 	 */
 	 public Category addNewCategory(String inId, String inName) throws OpenEditRuntimeException
 	 {
-		 Category newCat =  (Category) getMediaArchive().getCategorySearcher().createNewData();
+		 Category newCat =  (Category) getCategorySearcher().createNewData();
 		 newCat.setId(inId);
 		 newCat.setName(inName);
 		 if (getCurrentCategory() != null)
@@ -127,7 +146,7 @@ public class CategoryEditor {
 //		 {
 //			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
 //		 }
-		 getMediaArchive().getCategorySearcher().saveCategory(newCat);
+		 getCategorySearcher().saveCategory(newCat);
 		 return newCat;
 	 }
 
@@ -135,7 +154,7 @@ public class CategoryEditor {
 	 {
 		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory().getId() != inCategory.getId())
 		 {
-			 getMediaArchive().getCategorySearcher().getRootCategory().addChild(inCategory);
+			 getCategorySearcher().getRootCategory().addChild(inCategory);
 			// getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
 		 }
 //		 try
@@ -152,7 +171,7 @@ public class CategoryEditor {
 //		 {
 //			 throw new OpenEditRuntimeException(ex);
 //		 }
-		 getMediaArchive().getCategorySearcher().saveCategory(inCategory);		
+		 getCategorySearcher().saveCategory(inCategory);		
 	 }
 
 	 /**
@@ -167,18 +186,18 @@ public class CategoryEditor {
 			 Asset element = (Asset) iter.next();
 			 element.removeCategory(inCategory);
 		 }
-		 getMediaArchive().getCategorySearcher().delete(inCategory,null);
+		 getCategorySearcher().delete(inCategory,null);
 		 getMediaArchive().saveAssets(assets);
 	 }
 
 	 public Category getRootCategory() throws OpenEditRuntimeException
 	 {
-		 return getMediaArchive().getCategorySearcher().getRootCategory();
+		 return getCategorySearcher().getRootCategory();
 	 }
 
 	 public void clearCategories() throws OpenEditRuntimeException
 	 {
-		 getMediaArchive().getCategoryArchive().clearCategories();
+		 getCategorySearcher().clearCategories();
 	 }
 
 	 public void reloadCategories() throws OpenEditRuntimeException
