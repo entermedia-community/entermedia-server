@@ -1,0 +1,7 @@
+#
+#Fri Feb 17 19:19:44 CST 2023
+Remove\ Column=Eliminar columna
+Edit\ Results\ Table\ Columns=Editar columnas de la tabla de resultados
+Add\ Column=A\u00F1adir columna
+Edit\ Search\ Form\ Fields=Editar campos de formulario de b\u00FAsqueda
+Preview=Avance

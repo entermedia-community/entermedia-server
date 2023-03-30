@@ -169,7 +169,7 @@ public class UserProfileManager
 	protected boolean hasChanged(WebPageRequest inReq, MediaArchive mediaArchive, UserProfile userprofile)
 	{
 		String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-		String index2 = mediaArchive.getSearcher("entitypermissions").getIndexId();
+		String index2 = mediaArchive.getSearcher("permissionentityassigned").getIndexId();
 		String id = index + index2; 
 		if( id.equals(userprofile.getSettingsGroupIndexId()) )
 		{

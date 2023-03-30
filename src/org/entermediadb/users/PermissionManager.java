@@ -449,7 +449,7 @@ public class PermissionManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			String entityid = data.get("moduleid");
 			String permissionname = data.get("permissionsentity");
-			Object val = data.getValue("value");
+			Object val = data.getValue("enabled");
 			
 			
 			entitypermissions.putPermission(entityid, permissionname,val );
