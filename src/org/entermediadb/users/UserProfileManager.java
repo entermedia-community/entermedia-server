@@ -108,15 +108,14 @@ public class UserProfileManager
 		}
 		if (forcereload == false && userprofile != null)
 		{
-			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-			if( index.equals(userprofile.getSettingsGroupIndexId()) )
+			if( !hasChanged(inReq, mediaArchive, userprofile) )
 			{
 				if (inReq != null)
 				{
 					inReq.putPageValue("userprofile", userprofile);
 				}
 				return userprofile;
-			}	
+			}
 		}
 
 		if (inCatalogId == null)
@@ -129,9 +128,7 @@ public class UserProfileManager
 		{
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
 			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
-			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-
-			if( forcereload == false && userprofile != null && index.equals(userprofile.getSettingsGroupIndexId()) )
+			if( forcereload == false && userprofile != null && !hasChanged(inReq, mediaArchive, userprofile) )
 			{
 				if (inReq != null)
 				{
@@ -167,6 +164,18 @@ public class UserProfileManager
 		}
 
 		return userprofile;
+	}
+
+	protected boolean hasChanged(WebPageRequest inReq, MediaArchive mediaArchive, UserProfile userprofile)
+	{
+		String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
+		String index2 = mediaArchive.getSearcher("entitypermissions").getIndexId();
+		String id = index + index2; 
+		if( id.equals(userprofile.getSettingsGroupIndexId()) )
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	/*  TODO: User module query filter to filter the list like we do libraries
@@ -349,7 +358,10 @@ public class UserProfileManager
 				}
 		}
 		String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-		userprofile.setSettingsGroupIndexId(index);
+		String index2 = mediaArchive.getSearcher("entitypermissions").getIndexId();
+		String id = index + index2; 
+
+		userprofile.setSettingsGroupIndexId(id);
 		
 		return userprofile;
 	}
