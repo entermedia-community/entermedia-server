@@ -32,7 +32,11 @@ public void init(){
 	Collection details = null;
 	if(view != null){
 		details = searcher.getDetailsForView(view);
-		log.info("export custom view detauls: "+ details);
+		log.info("export custom view details: "+ details);
+	}
+	if(details ) {
+		details.add("id");
+		details.add("sourcepath");
 	}
 	
 	if(details == null){
