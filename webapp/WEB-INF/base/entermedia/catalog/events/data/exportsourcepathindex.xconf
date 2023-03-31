@@ -1,0 +1,17 @@
+<page>
+	<path-action name="PageValue.loadPageVariable"  bean="searcherManager" alltypes="true"/>
+	<page-action bean="replacer" name="PageValue.loadPageVariable" class="org.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
+	<property name="eventname">Save Asset Sourcepath Index</property>	
+	
+	<path-action name="Script.run" alltypes="true" >
+		<script>/${catalogid}/events/scripts/data/generateassetsourcepathindex.groovy</script>
+	</path-action>
+	<property name="searchtype">asset</property>
+	<property name="friendly">true</property>
+	<property name="exportpath">/WEB-INF/data/${catalogid}/exports/assetsindex-${date}.csv</property>
+	<property name="view">asset/sourcepathindex</property>
+	<property name="sendnotifications">false</property>
+	<property name="to">xxx@xxx.ca</property>
+
+	
+</page>
