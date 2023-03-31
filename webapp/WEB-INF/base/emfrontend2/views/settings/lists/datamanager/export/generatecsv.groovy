@@ -35,21 +35,21 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 {
 	PropertyDetail detail = (PropertyDetail) iterator.next();
 	if(friendly){
-	headers[count] = detail.getText();
+	headers[count] = detail.getText(context);
 	} else{
 	if(detail.isMultiLanguage()){
 						languages.each{
 							String id = it.id ;
 							headers[count] = detail.getId() + "." + id;
-							count ++;
+						
 						}
 					}
 					else{
 						headers[count] = detail.getId();
-						count++;
+						
 					}
 	}		
-	
+	count++;
 }
 
 int rowcount = 0;
