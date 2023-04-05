@@ -247,7 +247,7 @@ public class FinderModule extends BaseMediaModule
 			    
 			});
 		}
-		log.info("Complete sort" + foundmodules);
+		//log.info("Complete sort" + foundmodules);
 	}
 	private Collection loadMoreResults(MediaArchive archive, SearchQuery inSearchQuery, String inSourcetype, int maxsize)
 	{
