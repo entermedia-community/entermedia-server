@@ -254,8 +254,8 @@ public class FaceDetectManager
 	protected List<Map> findFaceData(ContentItem input) throws ParseException
 	{
 		long start = System.currentTimeMillis();
-		getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
-		getRunningProfileProcess();
+		//getRunningProfileProcess().start("faceprofile"); //FOR TESTING NLY
+		//getRunningProfileProcess();
 		String jsonresults = getRunningProfileProcess().runExecStream(input.getAbsolutePath(),60000);
 		long end = System.currentTimeMillis();
 		double total = (end - start) / 1000.0;
@@ -588,6 +588,15 @@ public class FaceDetectManager
 	public HitTracker searchForAssets(MediaArchive inArchive, String faceprofilegroupid)
 	{
 		HitTracker tracker = inArchive.query("asset").exact("faceprofiles.faceprofilegroup", faceprofilegroupid).search();
+		return tracker;
+	}
+	
+	public HitTracker searchForAssetsNotPrimary(MediaArchive inArchive, String faceprofilegroupid, String inPrimaryid)
+	{
+		HitTracker tracker = inArchive.query("asset")
+							.exact("faceprofiles.faceprofilegroup", faceprofilegroupid)
+							.not("assetid", inPrimaryid)
+							.search();
 		return tracker;
 	}
 	

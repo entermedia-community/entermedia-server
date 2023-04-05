@@ -38,14 +38,14 @@ public void init()
 			if( tosave.size() == 1000 )
 			{
 				saved = saved +  tosave.size();
-				log.info("saved " + saved);
+				log.info("Facescan assets saved: " + saved);
 				archive.saveAssets(tosave);
 				tosave.clear();
 			}
 		}
 		archive.saveAssets(tosave);
 		saved = saved +  tosave.size();
-		log.info("saved " + saved);
+		log.info("Facescan assets saved: " + saved);
 		
 		if( saved > 0)
 		{
