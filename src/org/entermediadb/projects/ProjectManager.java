@@ -1848,12 +1848,13 @@ public class ProjectManager implements CatalogEnabled
 		{
 			builder.exact("exclusivecontent", false);
 			HitTracker 	collections = (HitTracker)inReq.getPageValue("communityprojects");
-			if (!collections.isEmpty())
+			if (collections != null && !collections.isEmpty())
 			{
 				builder.orgroup("librarycollection", collections);
 			}
-			else
+			else 
 			{
+				
 				builder.exact("librarycollection", "NONE");
 			}
 		}
