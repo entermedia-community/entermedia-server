@@ -292,7 +292,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	{
 		if( inValue == null )
 		{
-			inValue = "";
+			//inValue = "";
+			return;
 		}
 		//getProperties().put(inKey, inValue);
 		getPropertiesSet().put(inKey,inValue);
@@ -401,6 +402,10 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 					}
 					else
 					{
+						if( "---".equals(value) )
+						{
+							value = null;
+						}
 						loaded.setValue(key, value);
 					}
 					inloopasset = loaded;
@@ -419,6 +424,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		log.info("Saving multi done in " + time);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
+		getPropertiesSet().clear();
 	}
 
 	/**

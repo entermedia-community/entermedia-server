@@ -1606,7 +1606,7 @@ String viewbase = null;
 		//		}
 		if (id == null)
 		{
-			String level = inReq.findValue("idlevel"); //SECURITY RISK
+			String level = inReq.findActionValue("idlevel");
 			if( level != null)
 			{
 				String[] levels = inReq.getPath().split("/");
