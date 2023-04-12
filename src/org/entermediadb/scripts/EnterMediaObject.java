@@ -157,18 +157,18 @@ public class EnterMediaObject
 
 	public PathEventManager getPathEventManager()
 	{
-		String catalogid = context.findValue("catalogid");
+		String catalogid = context.findPathValue("catalogid");
 		return (PathEventManager)getModuleManager().getBean(catalogid,"pathEventManager");
 	}
 
 	public Searcher loadSearcher(WebPageRequest inReq) throws Exception
 	{
-		String fieldname = inReq.findValue("searchtype");
+		String fieldname = inReq.findPathValue("searchtype");
 		if (fieldname == null)
 		{
 			return null;
 		}
-		String catalogId = inReq.findValue("catalogid");
+		String catalogId = inReq.findPathValue("catalogid");
 
 		org.openedit.data.Searcher searcher = getSearcherManager().getSearcher(catalogId, fieldname);
 		return searcher;

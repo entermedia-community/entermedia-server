@@ -82,7 +82,7 @@ public class PublishedGenerator extends FileGenerator
 	
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive",true);
 

@@ -667,7 +667,7 @@ public class AssetEditModule extends BaseMediaModule
 	public void createAssetsFromFile(WebPageRequest inReq)
 	{
 		String sourcepath = inReq.findValue("sourcepath");
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		Asset asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), sourcepath);
 		getAssetImporter().saveAsset(getMediaArchive(inReq), inReq.getUser(), asset);
@@ -1677,7 +1677,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return;
 		}
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
 		if (searcher == null)
@@ -1974,7 +1974,7 @@ public class AssetEditModule extends BaseMediaModule
 		if(properties.getUploadItems().size() == 0) {
 			return;
 		}
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 		String id = inReq.getRequestParameter("id");
 		if(id == null) {
 			id = inReq.getRequestParameter("id.value");

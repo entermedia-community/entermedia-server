@@ -16,7 +16,7 @@ public class UserPostModule extends BaseMediaModule
 {
 	protected Searcher getPostCommentSearcher(WebPageRequest inReq)
 	{
-		String catid = inReq.findValue("catalogid");
+		String catid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catid, "postcomments");
 		return searcher;
 	}

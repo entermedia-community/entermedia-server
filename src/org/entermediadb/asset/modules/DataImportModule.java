@@ -231,7 +231,7 @@ public class DataImportModule extends DataEditModule
 	public void createTable(WebPageRequest inReq) throws Exception
 	{
 		String tablename = inReq.findValue("tablename");
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		String prefix = inReq.findValue("prefix");
 		String searchtype = getWorkspaceManager().createTable(catalogid, tablename, prefix);
@@ -239,7 +239,7 @@ public class DataImportModule extends DataEditModule
 	}	
 	public void deleteTable(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String searchtype = inReq.getRequestParameter("searchtype");
 		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
 		getPageManager().removePage(xml);

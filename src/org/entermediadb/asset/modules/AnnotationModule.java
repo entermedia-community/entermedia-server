@@ -17,7 +17,7 @@ public class AnnotationModule extends BaseMediaModule
 	public JSONObject loadAnnotatedAsset(WebPageRequest inReq)
 	{
 		AnnotationManager manager = loadAnnotationManager(inReq);
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String assetid = inReq.findValue("assetid");
 		JSONObject asset = manager.loadAnnotatedAsset(catalogid,assetid);
 		inReq.putPageValue("jsonasset", asset);

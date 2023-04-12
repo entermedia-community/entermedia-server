@@ -20,7 +20,7 @@ public class PostModule extends BaseMediaModule
 		}
 		
 		//getSearcherManager().getCacheManager()
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		//TODO: Cache this
 		//TODO: Fallback? Use the actual page
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "postdata");

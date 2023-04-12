@@ -45,7 +45,7 @@ public class ProfileModule extends MediaArchiveModule
 		inReq.setRequestParameter("reloadprofile", "true");
 
 		// TODO: Find a way to clear all the search session ids
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		inReq.removeSessionValue("hitsasset" + catalogid); // hitsassetmedia/catalogs/public
 
 		loadUserProfile(inReq);
@@ -63,7 +63,7 @@ public class ProfileModule extends MediaArchiveModule
 		String profilelocation = inReq.findValue("profilemanagerid");// catalogid
 		if (profilelocation == null)
 		{
-			profilelocation = inReq.findValue("catalogid");
+			profilelocation = inReq.findPathValue("catalogid");
 		}
 		if (profilelocation == null)
 		{
@@ -252,12 +252,12 @@ public class ProfileModule extends MediaArchiveModule
 		String value = userProfile.get(viewkey);
 		if (value == null)
 		{
-			String type = inReq.findValue("searchtype"); 
+			String type = inReq.findPathValue("searchtype"); 
 			if (type == null)
 			{
 				type = "asset";
 			}
-			Searcher searcher = getSearcherManager().getSearcher(inReq.findValue("catalogid"), type);
+			Searcher searcher = getSearcherManager().getSearcher(inReq.findPathValue("catalogid"), type);
 			List<PropertyDetail> details = searcher.getDetailsForView(view, userProfile);
 			userProfile.setValuesFromDetails(viewkey, details);
 		}
@@ -620,7 +620,7 @@ public class ProfileModule extends MediaArchiveModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		UserProfile userProfile = inReq.getUserProfile();
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 		String view = "";
 		if (inReq.findValue("viewid") != null)
 		{

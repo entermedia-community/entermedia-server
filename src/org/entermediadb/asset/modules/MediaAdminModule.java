@@ -223,7 +223,7 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void saveRows(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "catalogsettings");
 
 		String[] fields = inReq.getRequestParameters("field");
@@ -286,7 +286,7 @@ public class MediaAdminModule extends BaseMediaModule
 		Data module = (Data) inReq.getPageValue("data");
 
 		String appid = inReq.findValue("applicationid");
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 		getMediaArchive(inReq).clearAll();
 	}
@@ -313,7 +313,7 @@ public class MediaAdminModule extends BaseMediaModule
 			//TODO: Speed uploading
 			
 			
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 			Data module = getSearcherManager().getCachedData(catalogid, "module", moduleid);
 			if( module != null)
 			{
@@ -326,7 +326,7 @@ public class MediaAdminModule extends BaseMediaModule
 	public void saveAllModules(WebPageRequest inReq) throws Exception
 	{
 		String appid = inReq.findValue("applicationid");
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection all = archive.getList("module");
@@ -340,7 +340,7 @@ public class MediaAdminModule extends BaseMediaModule
 	
 	public void reloadSettings(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		
 		Collection tables = getSearcherManager().reloadLoadedSettings(catalogid);
 		
@@ -707,7 +707,7 @@ public class MediaAdminModule extends BaseMediaModule
 	}
 	public void catalogSnapshot(WebPageRequest inReq)
 	{
-		String targetcatalogid = inReq.findValue("catalogid");
+		String targetcatalogid = inReq.findPathValue("catalogid");
 		
 		Data site = getSearcherManager().query("system", "site").exact("catalogid", targetcatalogid).searchOne();
 		if( site != null)
@@ -733,7 +733,7 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void reindexAll(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		NodeManager manager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
 
 		long start = System.currentTimeMillis();
@@ -756,7 +756,7 @@ public class MediaAdminModule extends BaseMediaModule
 	}
 	public void listMappings(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ElasticNodeManager manager = (ElasticNodeManager)getModuleManager().getBean(catalogid,"nodeManager");
 		String map = manager.listAllExistingMapping(catalogid);
 		inReq.putPageValue("mappingdebug",map);
@@ -819,7 +819,7 @@ public class MediaAdminModule extends BaseMediaModule
 				Page item = getPageManager().getPage("/" + applicationid + "/views/modules/" + moduleid + "/_site.xconf");
 				if( !item.exists() )
 				{
-					String catalogid = inReq.findValue("catalogid");
+					String catalogid = inReq.findPathValue("catalogid");
 					Data module = getSearcherManager().getData(catalogid, "module", moduleid);
 		
 					getWorkspaceManager().saveModule(catalogid, applicationid, module);
@@ -833,7 +833,7 @@ public class MediaAdminModule extends BaseMediaModule
 		
 	}
 	public Data loadHomeModule(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
 		Data module = getSearcherManager().getSearcher(catalogid, "module").query().match("showonnav","true").sort("orderingUp").searchOne(inReq);
 		String finalpath;

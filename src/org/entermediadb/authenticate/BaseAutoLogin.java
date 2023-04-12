@@ -44,7 +44,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 
 	protected UserManager getUserManager(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if( catalogid == null)
 		{
 			catalogid = "system";

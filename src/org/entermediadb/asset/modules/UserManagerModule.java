@@ -876,7 +876,7 @@ public class UserManagerModule extends BaseMediaModule
 		inReq.putPageValue("saved",true);
 		
 		
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if( user.getId().equals(  inReq.getUser().getId() ) )
 		{
 			inReq.putSessionValue(catalogid + "user",user);
@@ -1447,7 +1447,7 @@ public class UserManagerModule extends BaseMediaModule
 	{
 		String selecteduser = inReq.getRequestParameter("userid");
 		
-		String inCatalogId = inReq.findValue("catalogid");
+		String inCatalogId = inReq.findPathValue("catalogid");
 		UserProfileManager manager = getProfileManager(inCatalogId);
 		
 		MediaArchive archive = getMediaArchive(inReq);

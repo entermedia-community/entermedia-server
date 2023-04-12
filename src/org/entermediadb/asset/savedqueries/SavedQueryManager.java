@@ -27,7 +27,7 @@ public class SavedQueryManager
 
 	public Collection loadSavedQueryList(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher savedsearcher = getSearcherManager().getSearcher(catalogid, "savedquery");
 		SearchQuery query = savedsearcher.createSearchQuery();
 		String userid = inReq.getUserName();

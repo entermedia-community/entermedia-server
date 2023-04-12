@@ -163,7 +163,7 @@ public class AssetSyncModule extends BaseMediaModule
 		Searcher searcher=null;
 //		if (Boolean.parseBoolean(searchcurrentcatalogonly)) 
 //		{
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 			if( catalogid == null)
 			{
 				return;

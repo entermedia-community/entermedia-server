@@ -16,7 +16,7 @@ public class AutoLoginByToken extends BaseAutoLogin implements AutoLoginProvider
 	private static final Log log = LogFactory.getLog(AutoLoginByToken.class);
 	public GoogleManager getGoogleManager(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if(catalogid == null)
 		{
 			catalogid = "system";

@@ -144,7 +144,7 @@ public class FileUpload
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
 
-		String catalogid = inContext.findValue("catalogid");
+		String catalogid = inContext.findPathValue("catalogid");
 		if (uploadid != null && catalogid != null)
 		{
 			upload.setUploadId(uploadid);

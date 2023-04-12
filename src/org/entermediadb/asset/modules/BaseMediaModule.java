@@ -166,7 +166,7 @@ public class BaseMediaModule extends BaseModule
 		String catalogid = null;
 		if( archive == null)
 		{
-			catalogid = inReq.findValue("catalogid");
+			catalogid = inReq.findPathValue("catalogid");
 			if (catalogid == null || "$catalogid".equals(catalogid))
 			{
 				return null;
@@ -283,7 +283,7 @@ public class BaseMediaModule extends BaseModule
 		String catalogId = null;//inReq.getRequestParameter("catalogid");
 		if (catalogId == null)
 		{
-			catalogId = inReq.findValue("catalogid");
+			catalogId = inReq.findPathValue("catalogid");
 		}
 		if( catalogId == null)
 		{
@@ -296,7 +296,7 @@ public class BaseMediaModule extends BaseModule
 
 	protected String resolveSearchType(WebPageRequest inReq)
 	{
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 
 		inReq.putPageValue("searchtype", searchtype);
 		return searchtype;
@@ -318,7 +318,7 @@ public class BaseMediaModule extends BaseModule
 		
 	}
 	public UserManager getUserManager(WebPageRequest inReq){
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if(catalogid != null) {
 			return  (UserManager) getModuleManager().getBean( catalogid, "userManager");
 

@@ -32,7 +32,7 @@ public class AutoCompleteModule extends DataEditModule
 	public AutoCompleteSearcher getAutoCompleteSearcher(WebPageRequest inReq, boolean inSave)
 	{
 		String catalogid = null;
-		String type = inReq.findValue("searchtype");
+		String type = inReq.findPathValue("searchtype");
 		if (type == null || type.equals("compositeLucene") )
 		{
 			type = "compositeLucene";
@@ -40,7 +40,7 @@ public class AutoCompleteModule extends DataEditModule
 		}
 		else
 		{
-			catalogid = inReq.findValue("catalogid");
+			catalogid = inReq.findPathValue("catalogid");
 		}
 
 		type = type + "AutoComplete";
@@ -416,13 +416,13 @@ public class AutoCompleteModule extends DataEditModule
 	public void expireSuggestions(WebPageRequest inReq) throws Exception
 	{
 		//Pass in search type
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getAutoCompleteSearcher(inReq);
 		//Look for any that now have 0 and remove them
 		HitTracker all = searcher.getAllHits();
 		all.enableBulkOperations();
 		
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher finder = getSearcherManager().getSearcher(catalogid, searchtype);
 		List todelete = new ArrayList();
 		List tosave = new ArrayList();

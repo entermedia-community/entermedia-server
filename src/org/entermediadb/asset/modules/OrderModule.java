@@ -60,7 +60,7 @@ public class OrderModule extends BaseMediaModule
 
 	/*
 	 * public Data placeOrder(WebPageRequest req) { String catalogid =
-	 * req.findValue("catalogid");
+	 * req.findPathValue("catalogid");
 	 * 
 	 * Album album = getEnterMedia(req).getAlbumArchive().loadAlbum("4",
 	 * req.getUserName()); HitTracker assets = album.getAssets(catalogid, req);
@@ -92,7 +92,7 @@ public class OrderModule extends BaseMediaModule
 	 */
 	public Data createNewOrder(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
 
 		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
@@ -107,7 +107,7 @@ public class OrderModule extends BaseMediaModule
 
 	public Order createOrderFromSelections(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		
@@ -193,7 +193,7 @@ public class OrderModule extends BaseMediaModule
 
 	public Order createOrderFromData(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String mergefield = inReq.getRequestParameter("mergefield");
@@ -256,7 +256,7 @@ public class OrderModule extends BaseMediaModule
 		if (items != null)
 		{
 			String[] fields = inReq.getRequestParameters("field");
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 			ArrayList toSave = getOrderManager().saveItems(catalogid, inReq, fields, items);
 			return toSave;
 		}
@@ -279,7 +279,7 @@ public class OrderModule extends BaseMediaModule
 			return order;
 		}
 
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 				if (orderid == null)
 		{
 			return null;
@@ -304,7 +304,7 @@ public class OrderModule extends BaseMediaModule
 	{
 		Order order = loadOrder(inReq);
 		String[] fields = inReq.getRequestParameters("field");
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 		
 		String[] sharewithemail = inReq.getRequestParameters("sharewithemail.value");
@@ -336,7 +336,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(inReq);
 		if (order != null)
 		{
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 			//Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 			
 			HitTracker items = findOrderItems(inReq);
@@ -354,7 +354,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(inReq);
 		if (order != null)
 		{
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 			order = getOrderManager().createOrder(catalogid, inReq, saveitems);
 			inReq.putPageValue("savedok", "true");
 		}
@@ -363,7 +363,7 @@ public class OrderModule extends BaseMediaModule
 
 	public HitTracker findOrdersForUser(WebPageRequest req)
 	{
-		String catalogid = req.findValue("catalogid");
+		String catalogid = req.findPathValue("catalogid");
 		User owner = (User) req.getPageValue("owner");
 		if (owner == null)
 		{
@@ -381,7 +381,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(req);
 		if (order != null)
 		{
-			String catalogid = req.findValue("catalogid");
+			String catalogid = req.findPathValue("catalogid");
 			String orderid = order.getId();
 			if (orderid == null)
 			{
@@ -398,7 +398,7 @@ public class OrderModule extends BaseMediaModule
 	{
 		ArrayList<String> list = new ArrayList<String>(); //add omitted orders to a list
 		String publishtype = req.getRequestParameter("publishdestination.value");
-		String catalogid = req.findValue("catalogid");
+		String catalogid = req.findPathValue("catalogid");
 		HitTracker items = (HitTracker) req.getPageValue("orderitems");
 		if (items == null)
 		{
@@ -449,7 +449,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(req);
 		if (order != null)
 		{
-			String catalogid = req.findValue("catalogid");
+			String catalogid = req.findPathValue("catalogid");
 			String orderid = order.getId();
 			if (orderid == null)
 			{
@@ -469,7 +469,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(req);
 		if (order != null)
 		{
-			String catalogid = req.findValue("catalogid");
+			String catalogid = req.findPathValue("catalogid");
 			String orderid = order.getId();
 			if (orderid == null)
 			{
@@ -670,7 +670,7 @@ public class OrderModule extends BaseMediaModule
 
 	public HitTracker loadAssets(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Order order = loadOrder(inReq);
 		if (order != null) {
 			HitTracker re = getOrderManager().findAssets(inReq, catalogid, order);
@@ -719,7 +719,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = loadOrder(inReq);
 
 		OrderManager manager = getOrderManager();
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 		if (order == null)
 		{
@@ -766,7 +766,7 @@ public class OrderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		OrderManager manager = getOrderManager();
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 
@@ -868,7 +868,7 @@ public class OrderModule extends BaseMediaModule
 
 	public Order loadOrderFromAssets(WebPageRequest inReq)
 	{
-		String catalogId = inReq.findValue("catalogid");
+		String catalogId = inReq.findPathValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
 
@@ -928,7 +928,7 @@ public class OrderModule extends BaseMediaModule
 	}
 	public Order createOrderFromAssets(WebPageRequest inReq)
 	{
-		String catalogId = inReq.findValue("catalogid");
+		String catalogId = inReq.findPathValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
 		
@@ -954,7 +954,7 @@ public class OrderModule extends BaseMediaModule
 
 //	public Order createOrderFromUpload(WebPageRequest inReq)
 //	{
-//		String catalogId = inReq.findValue("catalogid");
+//		String catalogId = inReq.findPathValue("catalogid");
 //		MediaArchive archive = getMediaArchive(catalogId);
 //		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
 //
@@ -989,7 +989,7 @@ public class OrderModule extends BaseMediaModule
 //		Order order = loadOrder(inReq);
 //		if (order != null)
 //		{
-//			String catalogid = inReq.findValue("catalogid");
+//			String catalogid = inReq.findPathValue("catalogid");
 //			String[] fields = inReq.getRequestParameters("field");
 //			String userstatus = inReq.findValue("userstatus.value");
 //			OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), userstatus);
@@ -1098,13 +1098,13 @@ public class OrderModule extends BaseMediaModule
 	public void deleteOrder(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		getOrderManager().delete(catalogid, order);
 	}
 
 	public void removeItem(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String itemid = inReq.getRequestParameter("id");
 		getOrderManager().removeItem(catalogid, itemid);
 	}
@@ -1152,7 +1152,7 @@ public class OrderModule extends BaseMediaModule
 			log.info("Asset not found");
 			return false;
 		}
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		HitTracker assets = getOrderManager().findOrderItems(inReq, catalogid, order);
 		int found = assets.findRow("assetid", asset.getId());
 		if( found > -1 && !order.isExpired() )
@@ -1163,7 +1163,7 @@ public class OrderModule extends BaseMediaModule
 	}
 	public Data checkoutCart(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
 		MediaArchive archive = getMediaArchive(inReq);
 

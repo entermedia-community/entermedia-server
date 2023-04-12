@@ -269,7 +269,7 @@ public class AdminModule extends BaseMediaModule
 
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
-		String catid = inReq.findValue("catalogid");
+		String catid = inReq.findPathValue("catalogid");
 		if (catid == null)
 		{
 			catid = "system";
@@ -743,7 +743,7 @@ public class AdminModule extends BaseMediaModule
 			log.debug("User is virtual. Not saving cookie");
 			return;
 		}
-		BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+		BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findPathValue("catalogid"),"autoLoginWithCookie");
 		autologin.saveCookieForUser(inReq, user);
 	}
 
@@ -1317,7 +1317,7 @@ public class AdminModule extends BaseMediaModule
 		if (email != null) {
 			
 			User user =  getUserManager(inReq).createTempUserFromEmail(email);
-			inReq.putSessionValue(inReq.findValue("catalogid") + "user", user);
+			inReq.putSessionValue(inReq.findPathValue("catalogid") + "user", user);
 			inReq.putPageValue("user", user);
 		}
 
@@ -1340,7 +1340,7 @@ public class AdminModule extends BaseMediaModule
 		{
 			clearSession(inReq);		
 			inReq.putSessionValue("realuser", user);
-			String catid = inReq.findValue("catalogid");
+			String catid = inReq.findPathValue("catalogid");
 			inReq.putSessionValue(catid + "user", target);
 			inReq.putSessionValue("system" + "user", target);
 			inReq.putPageValue( "user", target);

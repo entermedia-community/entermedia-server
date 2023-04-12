@@ -215,7 +215,7 @@ public class JsonDataModule extends BaseJsonModule
 		}
 		if(searchtype == null)
 		{
-			searchtype = inReq.findValue("searchtype");
+			searchtype = inReq.findPathValue("searchtype");
 		}
 		return searchtype;
 	}

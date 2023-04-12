@@ -435,7 +435,7 @@ String viewbase = null;
 			detail = new PropertyDetail();
 			detail.setId(id);
 			detail.setName(label);
-			String catid = inReq.findValue("catalogid");
+			String catid = inReq.findPathValue("catalogid");
 			detail.setCatalogId(catid);
 			detail.setEditable(true);
 			detail.setIndex(true);
@@ -1010,7 +1010,7 @@ String viewbase = null;
 	{
 		String catid = resolveCatalogId(inReq);
 
-		String type = inReq.findValue("searchtype");
+		String type = inReq.findPathValue("searchtype");
 		if (type == null)
 		{
 			return null;
@@ -1152,7 +1152,7 @@ String viewbase = null;
 	public void updateDataIndex(WebPageRequest inReq) throws Exception
 	{
 		String id = inReq.getRequestParameter("id"); // Old ID
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 		String catalogId = resolveCatalogId(inReq);
 		User user = inReq.getUser();
 		updateIndex(id, searchtype, catalogId, user);
@@ -1432,7 +1432,7 @@ String viewbase = null;
 		String catalogid = inReq.getRequestParameter("catalogid"); //TODO: Security isssue?
 		if (catalogid == null)
 		{
-			catalogid = inReq.findValue("catalogid");
+			catalogid = inReq.findPathValue("catalogid");
 		}
 		if (catalogid == null)
 		{
@@ -1535,7 +1535,7 @@ String viewbase = null;
 			String name = item.getFieldName();
 			String detailid = name.substring(name.lastIndexOf('.') + 1, name.length());
 			String catalogid = inReq.getRequestParameter("catalogid");
-			String searchtype = inReq.findValue("searchtype");
+			String searchtype = inReq.findPathValue("searchtype");
 			String datafolder = inReq.findValue("datafolder");
 			if (datafolder == null)
 			{
@@ -1983,7 +1983,7 @@ String viewbase = null;
 		{
 			String field = inReq.getRequestParameter("field");
 			inReq.setRequestParameter(field + ".value", content);
-			String searchtype = inReq.findValue("searchtype");
+			String searchtype = inReq.findPathValue("searchtype");
 			log.info("Saving HTML searchtype:" + searchtype + "." + content + " field:" + field + " user:" + inReq.getUserName());
 		}
 		inReq.setRequestParameter("save", "true");

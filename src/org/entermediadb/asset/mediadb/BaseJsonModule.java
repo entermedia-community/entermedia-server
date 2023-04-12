@@ -58,7 +58,7 @@ public class BaseJsonModule extends BaseMediaModule
 
 	public String findCatalogId(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if(catalogid == null)
 		{
 			if(inReq.getRequest() != null)

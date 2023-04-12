@@ -95,7 +95,7 @@ public class MultiSearchModule extends BaseMediaModule
 		}
 		if (applicationid == null)
 		{
-			applicationid = inReq.findValue("catalogid");
+			applicationid = inReq.findPathValue("catalogid");
 		}
 		SearchQuery query = getSearchQueryArchive().loadQuery(applicationid, "asset", queryid, inReq.getUser());
 		if (query != null)
@@ -123,7 +123,7 @@ public class MultiSearchModule extends BaseMediaModule
 		String applicationid = inReq.findValue("applicationid");
 		if (applicationid == null)
 		{
-			applicationid = inReq.findValue("catalogid");
+			applicationid = inReq.findPathValue("catalogid");
 		}
 		SearchQuery query = loadCurrentQuery(inReq);
 
@@ -191,7 +191,7 @@ public class MultiSearchModule extends BaseMediaModule
 		String catalogid = inReq.getRequestParameter("catalogid");
 		if (catalogid == null)
 		{
-			catalogid = inReq.findValue("catalogid");
+			catalogid = inReq.findPathValue("catalogid");
 		}
 		String fieldid = inReq.getRequestParameter("fieldid");
 		String viewname = inReq.getRequestParameter("view");
@@ -487,7 +487,7 @@ public class MultiSearchModule extends BaseMediaModule
 		}
 		if (catid == null)
 		{
-			catid = inReq.findValue("catalogid");
+			catid = inReq.findPathValue("catalogid");
 		}
 		return catid;
 	}

@@ -37,7 +37,7 @@ public class DataPermissionModule extends BaseMediaModule
 		{
 			throw new OpenEditException("No module specified");
 		}
-		String catid = inReq.findValue("catalogid");
+		String catid = inReq.findPathValue("catalogid");
 		if (catid == null)
 		{
 			catid = "system";
@@ -449,7 +449,7 @@ public class DataPermissionModule extends BaseMediaModule
 		
 		String permissiontype = inReq.findValue("permissiontype");
 		if(permissiontype == null) {
-			permissiontype = inReq.findValue("searchtype");
+			permissiontype = inReq.findPathValue("searchtype");
 
 		}
 		if(permissiontype == null) {
@@ -472,7 +472,7 @@ public class DataPermissionModule extends BaseMediaModule
 
 		String permissiontype = inReq.findValue("permissiontype");
 		if(permissiontype == null) {
-			permissiontype = inReq.findValue("searchtype");
+			permissiontype = inReq.findPathValue("searchtype");
 
 		}
 		if(permissiontype == null) {

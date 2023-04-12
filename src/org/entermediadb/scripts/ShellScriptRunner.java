@@ -51,7 +51,7 @@ public class ShellScriptRunner implements ScriptRunner
 		String path = inScript.getPage().getContentItem().getAbsolutePath();
 		ArrayList args = new ArrayList();
 		WebPageRequest req = (WebPageRequest) variableMap.get("context");
-		String catalogid = req.findValue("catalogid");
+		String catalogid = req.findPathValue("catalogid");
 		String mask = req.findValue("scriptargs");
 		if(catalogid != null && mask != null) {
 			String value = getSearcherManager().getValue(catalogid, mask, variableMap);

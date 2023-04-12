@@ -400,7 +400,7 @@ public class PermissionModule extends BaseMediaModule
 
 	public void loadPermissionsByType(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if( catalogid == null )
 		{
 			catalogid = inReq.findValue("applicationid");
@@ -423,7 +423,7 @@ public class PermissionModule extends BaseMediaModule
 	
 	public void loadPermissionForEdit(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		if( catalogid == null )
 		{
 			catalogid = inReq.findValue("applicationid");

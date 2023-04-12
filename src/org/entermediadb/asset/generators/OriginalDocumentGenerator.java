@@ -48,7 +48,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 		// this depends on the URL path to be /stuff/1/2/3/abc.eps/abs.eps This
 		// way we support weird source paths
 
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 
 		String assetrootfolder = inPage.get("assetrootfolder");

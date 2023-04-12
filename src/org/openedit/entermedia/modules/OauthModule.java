@@ -535,7 +535,7 @@ public class OauthModule extends BaseMediaModule
 			archive.getSearcher("user").saveData(target);
 
 			
-			BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+			BaseAutoLogin autologin = (BaseAutoLogin)getModuleManager().getBean(inReq.findPathValue("catalogid"),"autoLoginWithCookie");
 			autologin.saveCookieForUser(inReq, target);
 
 			

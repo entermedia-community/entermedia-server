@@ -35,7 +35,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 
 		String path = null;
 		String assetrootfolder = inPage.get("assetrootfolder");

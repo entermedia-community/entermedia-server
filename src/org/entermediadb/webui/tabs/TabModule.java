@@ -110,7 +110,7 @@ public class TabModule extends BaseModule
 	public TabList loadTabs(WebPageRequest inReq) throws Exception
 	{
 		String tabid = inReq.findValue("tablistname");
-		String id  =  inReq.findValue("catalogid");
+		String id  =  inReq.findPathValue("catalogid");
 		if( id == null)
 		{
 			id = inReq.findValue("applicationid");

@@ -71,7 +71,7 @@ public class CommentModule extends BaseMediaModule
 	
 	private WebEvent createEvent(Comment inComment, String inOperation, WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		WebEvent event = new WebEvent();
 		if(catalogid == null)
 		{
@@ -132,7 +132,7 @@ public class CommentModule extends BaseMediaModule
 		
 //		WebEvent event = createEvent(comment, type + "commentadded", inReq);
 //		getWebEventListener().eventFired(event);
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String sourcepath = findSourcePath(inReq);
 		getCommentArchive().addComment(catalogid, sourcepath, comment);
 		loadComments(inReq);
@@ -155,7 +155,7 @@ public class CommentModule extends BaseMediaModule
 		comment.setUser(u);
 		comment.setDate(date);
 		
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		getCommentArchive().removeComment(catalogid, sourcepath, comment);
 		loadComments(inReq);
 		

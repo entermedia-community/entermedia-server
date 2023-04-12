@@ -54,7 +54,7 @@ public class SavedQueryModule extends BaseMediaModule
 		{
 			queryid = inReq.findValue("queryid"); // "mostrecent" ?
 		}
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Data query = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		inReq.putPageValue("savedquery", query);
 		return query;
@@ -71,7 +71,7 @@ public class SavedQueryModule extends BaseMediaModule
 		{
 			return null;
 		}
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Data query = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		//String sessionid = catalogid + "_" + queryid + "_query";
 		// inReq.putSessionValue(queryid + "_query", query);
@@ -107,7 +107,7 @@ public class SavedQueryModule extends BaseMediaModule
 		boolean usersaved = Boolean.valueOf( inReq.findValue("usersaved") );
 		query.setProperty("usersaved", String.valueOf(usersaved));
 
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
 
 		inReq.putSessionValue("currentquery", query);
@@ -126,7 +126,7 @@ public class SavedQueryModule extends BaseMediaModule
 		//query.setProperty("caption", query.getName() );
 		query.setProperty("usersaved", "false");
 		
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
 
 		inReq.putSessionValue("currentquery", query);
@@ -186,13 +186,13 @@ public class SavedQueryModule extends BaseMediaModule
 
 	public void deletedSavedQuery(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String queryid = inReq.findValue("queryid");
 		getSavedQueryManager().deleteQuery(catalogid, queryid, inReq.getUser());
 	}
 	public HitTracker runSavedQuery(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String queryid = inReq.findValue("queryid");
 		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		if(data != null)
@@ -208,7 +208,7 @@ public class SavedQueryModule extends BaseMediaModule
 	
 	public void saveTerm(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String queryid = inReq.findValue("queryid");
 		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		if(data == null)
@@ -247,7 +247,7 @@ public class SavedQueryModule extends BaseMediaModule
 	
 	public void addTerm(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		SearchQuery tmpquery = getMediaArchive(inReq).getAssetSearcher().addStandardSearchTerms(inReq);
 		//Edit it
 		String detailid = inReq.getRequestParameter("detailid");
@@ -272,7 +272,7 @@ public class SavedQueryModule extends BaseMediaModule
 
 	public void removeTerm(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String queryid = inReq.findValue("queryid");
 		
 		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());

@@ -29,8 +29,8 @@ public class RelatedKeywordModule extends BaseModule
 
 	public RelatedKeywordSearcher getSuggestionsSearcher(WebPageRequest inReq, boolean inPutPageValue) throws OpenEditException
 	{
-		String catalogid = inReq.findValue("catalogid");
-		String searchType = inReq.findValue("searchtype");
+		String catalogid = inReq.findPathValue("catalogid");
+		String searchType = inReq.findPathValue("searchtype");
 		if( searchType == null)
 		{
 			searchType = "asset";
@@ -57,14 +57,14 @@ public class RelatedKeywordModule extends BaseModule
 	 */
 	public Map<String, String> getSuggestions(WebPageRequest inReq) throws Exception
 	{
-		String searchType = inReq.findValue("searchtype");
+		String searchType = inReq.findPathValue("searchtype");
 		if( !"asset".equals(searchType))
 		{
 			return null;
 		}
 
 		
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		//searcher = (Searcher) inReq.getPageValue("searcher");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchType);
 		

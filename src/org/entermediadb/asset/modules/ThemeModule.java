@@ -31,7 +31,7 @@ public class ThemeModule extends BaseMediaModule {
 	}
 
 	// public void loadPortfolio(WebPageRequest inReq){
-	// String catalogid = inReq.findValue("catalogid");
+	// String catalogid = inReq.findPathValue("catalogid");
 	// Searcher searcher = getSearcherManager().getSearcher(get, inFieldName);
 	// }
 	//
@@ -113,7 +113,7 @@ public class ThemeModule extends BaseMediaModule {
 	}
 
 	public void saveTheme(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
 				"theme");
 		String owner = inReq.findValue("applicationid");
@@ -134,7 +134,7 @@ public class ThemeModule extends BaseMediaModule {
 	}
 
 	public Data loadTheme(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
 				"theme");
 		String themeid = inReq.getRequestParameter("themeid");

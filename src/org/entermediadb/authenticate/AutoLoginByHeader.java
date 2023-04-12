@@ -31,7 +31,7 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 		
 		UserManager userManager = getUserManager(inRequest);
 		User user = userManager.getUser(username);
-		String catalogid = inRequest.findValue("catalogid");
+		String catalogid = inRequest.findPathValue("catalogid");
 
 		if (user == null)
 		{

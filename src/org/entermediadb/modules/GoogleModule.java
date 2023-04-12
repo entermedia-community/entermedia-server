@@ -18,7 +18,7 @@ public class GoogleModule extends BaseMediaModule
 
 	public GoogleManager getGoogleManager(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		return (GoogleManager)getModuleManager().getBean(catalogid,"googleManager");
 	}
 

@@ -165,7 +165,7 @@ public class ChatModule extends BaseMediaModule
 	public ChatManager getChatManager(WebPageRequest inReq)
 	{
 		//For a collection show all the channel mod times
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ChatManager manager = (ChatManager) getModuleManager().getBean(catalogid, "chatManager");
 		inReq.putPageValue("chatManager", manager);
 		return manager;

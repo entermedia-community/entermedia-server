@@ -121,7 +121,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			user.setPassword((String)data.get("password"));
 			userManager.saveUser(user);
 
-			String catalogid = inReq.findValue("catalogid");
+			String catalogid = inReq.findPathValue("catalogid");
 
 			Searcher profilesearcher = getSearcherManager().getSearcher(catalogid, "userprofile");
 			

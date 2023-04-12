@@ -218,7 +218,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		if (getSearcherManager() != null && getFrom() == null)
 		{
 			SearcherManager sm = getSearcherManager();
-			String catalogid = inContext.findValue("catalogid");
+			String catalogid = inContext.findPathValue("catalogid");
 			Data setting = sm.getData(catalogid, "catalogsettings", "system_from_email");
 			if (setting != null)
 			{

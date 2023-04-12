@@ -47,14 +47,14 @@ public class ProjectModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 
 	public void loadCollections(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
 	/*
 	public void redirectToCollection(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		String collectionid = inReq.getRequestParameter("newcollectionid");
 		if(collectionid == null) {
@@ -132,7 +132,7 @@ public class ProjectModule extends BaseMediaModule
 	}
 	
 	public void redirectToCategory(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		String categoryid = inReq.getRequestParameter("categoryid");
 		String nodeID = inReq.getRequestParameter("nodeID");
@@ -157,13 +157,13 @@ public class ProjectModule extends BaseMediaModule
 	
 
 	public void loadOpenCollections(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		manager.loadOpenCollections(inReq, getMediaArchive(inReq), 10);
 	}
 
 	public void loadMostRecentCollection(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		Collection<LibraryCollection> list = manager.loadOpenCollections(inReq, getMediaArchive(inReq), 1);
 		if (!list.isEmpty()) {
@@ -172,7 +172,7 @@ public class ProjectModule extends BaseMediaModule
 	}
 
 	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		Data selected = manager.getCurrentLibrary(inReq.getUserProfile());
 		inReq.putPageValue("selectedlibrary", selected);
@@ -180,7 +180,7 @@ public class ProjectModule extends BaseMediaModule
 	}
 
 	public void setCurrentLibrary(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		String libraryid = inReq.findValue("selectedlibrary");
 		if (libraryid != null) {
 			ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
@@ -1472,7 +1472,7 @@ Server ProjectModule.uploadFile
 	
 	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest)
 	{
-		String catalogid = inPageRequest.findValue("catalogid");
+		String catalogid = inPageRequest.findPathValue("catalogid");
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
 		return cache;

@@ -80,7 +80,7 @@ public class ValidationModule extends BaseModule
 			String catalogid = inReq.getRequestParameter("catalogid");
 			if (catalogid == null)
 			{
-				catalogid = inReq.findValue("catalogid");
+				catalogid = inReq.findPathValue("catalogid");
 			}
 			if (catalogid == null)
 			{
@@ -92,7 +92,7 @@ public class ValidationModule extends BaseModule
 				views = new String[] {inReq.findValue("view")};
 			}
 
-			String datatype = inReq.findValue("searchtype"); // product
+			String datatype = inReq.findPathValue("searchtype"); // product
 			if (datatype == null)
 			{
 				datatype = inReq.findValue("type");

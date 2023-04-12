@@ -14,7 +14,7 @@ public class SiteMonitorModule extends BaseMediaModule
 
 	public void checkDisks(WebPageRequest inReq)
 	{
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.findPathValue("catalogid");
 		DiskManager diskManager = (DiskManager)getModuleManager().getBean(catalogid,"diskManager");
 //		StatManager statManager = (StatManager)getModuleManager().getBean(catalogid,"statManager");
 		MediaArchive archive = getMediaArchive(inReq);
