@@ -423,6 +423,8 @@ public class ProjectModule extends BaseMediaModule
 		if( collection == null)
 		{
 			//log.error("No collection id found on " + inReq.getPath());
+			collection = loadCollectionFromCommunityTagFolder(inReq);
+
 		}
 		if(collection != null)
 		{
@@ -453,6 +455,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( collectionid == null)
 			{
+				collectionid = (String) inReq.getPageValue("collectionid");
 				//collectionid = inReq.getRequestParameter("id"); //Causing issues
 				if (collectionid == null) {
 					Data coll = (Data) inReq.getPageValue("librarycol");
@@ -933,6 +936,23 @@ public class ProjectModule extends BaseMediaModule
 		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq), colid);
 		inReq.putPageValue("librarycol", col);
 		return col;
+
+	}
+	
+	public LibraryCollection loadCollectionFromCommunityTagFolder(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String tagid = PathUtilities.extractDirectoryName(inReq.getPath());
+		ProjectManager manager = getProjectManager(inReq);
+		Data tag = archive.getData("communitytag", tagid);
+		if(tag != null) {
+			LibraryCollection col = manager.getLibraryCollection(archive, (String)tag.getValue("collectionid"));
+			inReq.putPageValue("librarycol", col);
+			inReq.putPageValue("collectionid", col.getId());
+			
+			return col;
+		}
+		return null;
 
 	}
 
