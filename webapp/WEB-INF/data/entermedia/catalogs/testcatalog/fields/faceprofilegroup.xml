@@ -1,0 +1,8 @@
+
+<properties>
+  <property id="primaryimage" index="true" listid="asset" internalfield="false" deleted="false" datatype="list" editable="true" stored="true" viewtype="asset" sourcepath="entities/${id}">New
+    <name>
+      <language id="en"><![CDATA[Primary Image]]></language>
+    </name>
+  </property>
+</properties>

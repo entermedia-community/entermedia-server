@@ -18,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -32,6 +31,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -246,7 +246,7 @@ public class HttpSharedConnection
 			{
 				return null;
 			}
-			if (resp.getStatusLine().getStatusCode() != 200)
+			if (resp.getStatusLine().getStatusCode() >= 200 && resp.getStatusLine().getStatusCode() <= 206)
 			{
 				String returned = EntityUtils.toString(resp.getEntity());
 				throw new OpenEditException("HTTP Error:" + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase() + " Body: \n" + returned);
@@ -344,6 +344,11 @@ public class HttpSharedConnection
 			else if( value instanceof JSONObject)
 			{
 				builder.addPart(key, ((JSONObject) value).toJSONString(), "application/json" );
+			}
+			else if( value instanceof ByteArrayBody)
+			{
+				//ByteArrayBody bin = new ByteArrayBody(bytes, fileName);
+				builder.addPart(key,(ByteArrayBody)value);
 			}
 			
 		}

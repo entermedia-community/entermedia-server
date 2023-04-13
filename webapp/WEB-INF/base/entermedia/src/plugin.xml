@@ -2446,5 +2446,12 @@
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>		
+
+
+	<bean id="faceProfileManager" class="org.entermediadb.asset.facedetect.FaceProfileManager"  lazy-init="default">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>		
 		
 </beans>
