@@ -2,17 +2,21 @@ package org.entermediadb.find;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -83,8 +87,33 @@ public class EntityManager implements CatalogEnabled
 		}
 		if( sourcepath.isEmpty())
 		{
-			long year = Calendar.getInstance().get(Calendar.YEAR);
-			sourcepath = module.getName("en") + "/" + year + "/" + entity.getName() + "/";
+			
+			if(module.getId().equals("librarycollection")) {
+				LibraryCollection coll = (LibraryCollection) getMediaArchive().getData("librarycollection", entity.getId());
+				if (coll != null)
+				{
+				
+				
+				Category uploadto  = null;
+				uploadto = coll.getCategory();
+				if(uploadto != null) 
+				{
+					sourcepath = uploadto.getCategoryPath(); 
+					String year = getMediaArchive().getCatalogSettingValue("collectionuploadwithyear");
+					if( year == null || Boolean.parseBoolean(year)) //Not reindexed yet
+					{
+						String thisyear = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy"); 
+						sourcepath = sourcepath + "/" + thisyear;
+					}
+					sourcepath = sourcepath + "/";
+				}
+				}
+			}
+			if( sourcepath.isEmpty())
+			{
+				long year = Calendar.getInstance().get(Calendar.YEAR);
+				sourcepath = module.getName("en") + "/" + year + "/" + entity.getName() + "/";
+			}
 		}
 		return sourcepath;
 	}	
