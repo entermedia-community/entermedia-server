@@ -105,6 +105,13 @@ public class FaceProfileManager implements CatalogEnabled
 				inAsset.setValue("facescancomplete","true");
 				return true;
 			}
+			
+			String api = getMediaArchive().getCatalogSettingValue("faceapikey");
+			if(api == null)
+			{
+				log.info("faceapikey not set");
+				return false;
+			}
 		
 			//If its a video then generate all the images and scan them
 			
