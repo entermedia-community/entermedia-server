@@ -241,15 +241,15 @@ public class HttpSharedConnection
 	public JSONObject parseJson(CloseableHttpResponse resp) 
 	{
 		try {
-			Integer statusCode = (Integer) resp.getStatusLine().getStatusCode();
-			if (statusCode == 404)
+			
+			if (resp.getStatusLine().getStatusCode() == 404)
 			{
 				return null;
 			}
-			if (statusCode >= 200 && statusCode <= 206)
+			if (resp.getStatusLine().getStatusCode() < 200 || resp.getStatusLine().getStatusCode() > 206)
 			{
 				String returned = EntityUtils.toString(resp.getEntity());
-				throw new OpenEditException("HTTP Error:" + statusCode + ":" + resp.getStatusLine().getReasonPhrase() + " Body: \n" + returned);
+				throw new OpenEditException("HTTP Error:" + resp.getStatusLine().getStatusCode() + ":" + resp.getStatusLine().getReasonPhrase() + " Body: \n" + returned);
 				//throw new OpenEditException("Could not process " + returned);
 			}
 			
