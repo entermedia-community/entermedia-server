@@ -252,7 +252,7 @@ public class FaceProfileManager implements CatalogEnabled
 			Map map = (Map) iterator.next();
 			Map faceprofile = new HashMap();
 			faceprofile.put("timecodestart",timecodestart);
-			faceprofile.put("facedata", map);
+			//faceprofile.put("facedata", map);
 			//faceprofilegroup
 			List subjects = (List)map.get("subjects");
 			Map found = null;
@@ -341,6 +341,8 @@ public class FaceProfileManager implements CatalogEnabled
 				faceprofile.put("locationh",h);
 				
 		        BufferedImage originalImgage = ImageIO.read(new File( inInput.getAbsolutePath()) );
+		        faceprofile.put("inputwidth",originalImgage.getWidth());
+		        
 		        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
 		        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		        ImageIO.write(subImgage, "jpg", baos);
@@ -491,7 +493,6 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		Collection profiles = (Collection)asset.getValue("faceprofiles");
 		
-		Map results = new HashMap();
 		
 		for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
 		{
@@ -501,12 +502,14 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if( profile != null && inGroupId.equals(groupid))
 			{
+				
 				double x = values.getInteger("locationx");
 				double y = values.getInteger("locationy");
 				double w = values.getInteger("locationw");
 				double h = values.getInteger("locationh");
+				double inputwidth = values.getInteger("inputwidth");
 				
-				double scale = MathUtils.divide(thumbwidth , w);
+				double scale = MathUtils.divide(thumbwidth , inputwidth);
 				
 				x = x * scale;
 				y = y * scale;
@@ -517,16 +520,18 @@ public class FaceProfileManager implements CatalogEnabled
 				
 				//Calculate the dimentions scaled to this image
 				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
-				results.put("locationxy",json);
+				Map result = new HashMap();
+				result.put("locationxy",json);
 				if( profile.get("timecodestart") != null )
 				{
 					double seconds = MathUtils.divide( profile.get("timecodestart").toString(),"1000");
-					results.put("timecodestartseconds",seconds);
+					result.put("timecodestartseconds",seconds);
 				}
+				return result;
 			}
 		}
 		
-		return results;
+		return null;
 	}
 	
 	

@@ -173,7 +173,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
   ]
 }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AWSudkEOitp-LpW3ZyZX' | python -mjson.tool
+curl -XGET 'http://localhost:9200/finder_catalog/lock/_search?q=id:AYeRa8VzKBD-eE6vn2wS' | python -mjson.tool
 
 
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AXAc2zAwp-5b942Ye91X' | python -mjson.tool
