@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,9 +37,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 
 
@@ -188,7 +188,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 			inAsset.setValue("faceprofiles",faceprofiles);  //box  and subjects
 			inAsset.setValue("facescancomplete","true");
-			inAsset.setValue("facematchcomplete","false");
+			//inAsset.setValue("facematchcomplete","false");
 			if(faceprofiles != null &&  !faceprofiles.isEmpty())
 			{
 				inAsset.setValue("facehasprofile",true);
@@ -207,6 +207,14 @@ public class FaceProfileManager implements CatalogEnabled
 
 	private List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces)
 	{
+		
+		double similaritycheck = .83D;
+		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
+		if( value != null)
+		{
+			similaritycheck = Double.parseDouble(value);
+		}
+		
 		/*
 		 * <property id="faceprofiles" index="true" keyword="false" stored="true" editable="false" viewtype="faceprofiles" datatype="nested" > 
  <name> 
@@ -247,7 +255,44 @@ public class FaceProfileManager implements CatalogEnabled
 			Map found = null;
 			if( subjects != null && !subjects.isEmpty())
 			{
-				found  = (Map)found.get(0); //TODO: Pick best 
+				/*
+				List sorted = new ArrayList(subjects);
+				Collections.sort(sorted,new Comparator<Map>()
+				{
+					public int compare(Map arg0, Map arg1) 
+					{
+						double similrity0 = (Double)arg0.get("similarity");
+						double similrity1 = (Double)arg1.get("similarity");
+						if( similrity0 > similrity1)
+						{
+							return 1;
+						}
+						if( similrity0 < similrity1)
+						{
+							return -1;
+						}
+						return 0;
+						
+					};
+				});
+				for (Iterator iterator2 = sorted.iterator(); iterator2.hasNext();)
+				{
+					Map subject = (Map) iterator2.next();
+					double similrity = (Double)subject.get("similarity");
+					if( similrity > .80D)
+					{
+						found = subject;
+						break;
+					}
+				}
+				*/
+				found  = (Map)subjects.get(0); //We only get up to one result
+				double similrity = (Double)found.get("similarity");
+				if( similrity < similaritycheck)
+				{
+					found = null;//
+				}				
+				
 			}
 			//Upload as another subject so we have plenty similar ones
 //			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
@@ -311,6 +356,12 @@ public class FaceProfileManager implements CatalogEnabled
 				url = "http://localhost:8000/";
 			}
 			resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/faces",tosendparams);
+			if (resp.getStatusLine().getStatusCode() == 400)
+			{
+				//No faces found error
+				getSharedConnection().release(resp);
+				continue;
+			}
 			JSONObject json = getSharedConnection().parseJson(resp);
 			if( json.get("image_id") != null)
 			{
@@ -366,6 +417,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		Map tosendparams = new HashMap();
 		tosendparams.put("limit","20");
+		tosendparams.put("prediction_count","1"); //Return only most likely subject
 		//tosendparams.put("face_plugins","detector");
 		tosendparams.put("file", new File(input.getAbsolutePath()));
 		CloseableHttpResponse resp = null;
@@ -374,7 +426,16 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			url = "http://localhost:8000";
 		}
+		log.info("Sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
+		log.info("Returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() );
+		if (resp.getStatusLine().getStatusCode() == 400)
+		{
+			//No faces found error
+			getSharedConnection().release(resp);
+			return Collections.EMPTY_LIST;
+		}
+
 		JSONObject json = getSharedConnection().parseJson(resp);
 		JSONArray results = (JSONArray)json.get("result");
 		
