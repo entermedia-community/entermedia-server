@@ -115,7 +115,8 @@ public class FaceProfileManager implements CatalogEnabled
 		
 			//If its a video then generate all the images and scan them
 			
-			List<Map> faceprofiles = null;
+			List<Map> faceprofiles = new ArrayList();
+			
 			if( "image".equalsIgnoreCase(type) )
 			{
 				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
@@ -126,8 +127,9 @@ public class FaceProfileManager implements CatalogEnabled
 					inAsset.setValue("facescancomplete","true");
 					return true;
 				}
-				List<Map> json = findFaces(input);	
-				faceprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
+				List<Map> json = findFaces(input);
+				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
+				faceprofiles.addAll(moreprofiles);
 			}
 			else if( "video".equalsIgnoreCase(type) )
 			{
@@ -168,7 +170,8 @@ public class FaceProfileManager implements CatalogEnabled
 					else
 					{
 						List<Map> json = findFaces(item);	
-						faceprofiles = makeProfilesForEachFace(inAsset,block.getStartOffset(),item,json);
+						List<Map> moreprofiles = makeProfilesForEachFace(inAsset,block.getStartOffset(),item,json);
+						faceprofiles.addAll(moreprofiles);
 					}
 				}
 				
@@ -208,7 +211,7 @@ public class FaceProfileManager implements CatalogEnabled
 	private List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces)
 	{
 		
-		double similaritycheck = .83D;
+		double similaritycheck = .90D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -287,6 +290,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				*/
 				found  = (Map)subjects.get(0); //We only get up to one result
+				log.info(found);
 				double similrity = (Double)found.get("similarity");
 				if( similrity < similaritycheck)
 				{
@@ -373,6 +377,7 @@ public class FaceProfileManager implements CatalogEnabled
 				  "subject": "subject1"
 				}
 			*/
+			faceprofiles.add(faceprofile);
 		}
 		return faceprofiles;
 	}
