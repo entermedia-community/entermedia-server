@@ -208,7 +208,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 	}
 
-	private List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces)
+	protected List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
 		
 		double similaritycheck = .90D;
@@ -246,7 +246,8 @@ public class FaceProfileManager implements CatalogEnabled
 </property>
 		 */
 		List<Map> faceprofiles = new ArrayList();
-		
+        BufferedImage originalImgage = ImageIO.read(new File( inInput.getAbsolutePath()) );
+
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
 			Map map = (Map) iterator.next();
@@ -302,13 +303,26 @@ public class FaceProfileManager implements CatalogEnabled
 //			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
 //			-H "Content-Type: multipart/form-data" \
 //			-H "x-api-key: <service_api_key>" \
-			Map tosendparams = new HashMap();
+			int count = 0;
 			//tosendparams.put("det_prob_threshold",".6");
+			String groupid = null;
 			if( found != null)
 			{
-				String groupid = (String)found.get("subject");
-				tosendparams.put("subject",groupid );
+				groupid = (String)found.get("subject");
 				//TODO: Count how many times I have used this group.
+				Data oldgroup = getMediaArchive().getData("faceprofilegroup",groupid);
+				if( oldgroup == null)
+				{
+					oldgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();
+				}
+				Object countval = oldgroup.getValue("samplecount");
+				if( countval == null)
+				{
+					count = Integer.parseInt(countval.toString());
+				}
+				count++;
+				oldgroup.setValue("samplecount",count);
+				getMediaArchive().getSearcher("faceprofilegroup").saveData(oldgroup);
 				
 				faceprofile.put("faceprofilegroup", groupid);
 			}
@@ -319,69 +333,77 @@ public class FaceProfileManager implements CatalogEnabled
 				newgroup.setValue("primaryimage", inAsset.getId());
 				newgroup.setValue("automatictagging", true);
 				newgroup.setValue("creationdate", new Date());
+				newgroup.setValue("samplecount",count);
 				getMediaArchive().saveData("faceprofilegroup", newgroup);
-				tosendparams.put("subject",newgroup.getId() );
 				faceprofile.put("faceprofilegroup", newgroup.getId() );
 			}
 			
-			//Crop this down
-			try {
-
-				ValuesMap box = new ValuesMap((Map)map.get("box"));
-				int x = box.getInteger("x_min");
-				int y = box.getInteger("y_min");
-				int x2 = box.getInteger("x_max");
-				int y2 = box.getInteger("y_max");
-				int w = x2 - x;
-				int h = y2 - y;
+			if( count > 10)
+			{
+				uploadAProfile(faceprofile, map, timecodestart, originalImgage, inAsset, groupid);
+			}
+			else
+			{
+				log.error("Already have 10" + groupid);
+			}
 				
-				faceprofile.put("locationx",x);
-				faceprofile.put("locationy",y);
-				faceprofile.put("locationw",w);
-				faceprofile.put("locationh",h);
-				
-		        BufferedImage originalImgage = ImageIO.read(new File( inInput.getAbsolutePath()) );
-		        faceprofile.put("inputwidth",originalImgage.getWidth());
-		        
-		        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
-		        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		        ImageIO.write(subImgage, "jpg", baos);
-		        byte[] bytes = baos.toByteArray();
-		        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".jpg");
-		        tosendparams.put("file", body);
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		        return null;
-		    }
-			
-			//tosendparams.put("file", new File(inInput.getAbsolutePath()));
-			CloseableHttpResponse resp = null;
-			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
-			if( url == null)
-			{
-				url = "http://localhost:8000/";
-			}
-			resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/faces",tosendparams);
-			if (resp.getStatusLine().getStatusCode() == 400)
-			{
-				//No faces found error
-				getSharedConnection().release(resp);
-				continue;
-			}
-			JSONObject json = getSharedConnection().parseJson(resp);
-			if( json.get("image_id") != null)
-			{
-				//OK
-			}
-			/*
-			{
-				  "image_id": "6b135f5b-a365-4522-b1f1-4c9ac2dd0728",
-				  "subject": "subject1"
-				}
-			*/
 			faceprofiles.add(faceprofile);
 		}
 		return faceprofiles;
+	}
+
+	private void uploadAProfile(Map map, Map faceprofile, long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
+	{
+
+			ValuesMap box = new ValuesMap((Map)map.get("box"));
+			int x = box.getInteger("x_min");
+			int y = box.getInteger("y_min");
+			int x2 = box.getInteger("x_max");
+			int y2 = box.getInteger("y_max");
+			int w = x2 - x;
+			int h = y2 - y;
+			
+			faceprofile.put("locationx",x);
+			faceprofile.put("locationy",y);
+			faceprofile.put("locationw",w);
+			faceprofile.put("locationh",h);
+			
+	        faceprofile.put("inputwidth",originalImgage.getWidth());
+	        
+	        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        ImageIO.write(subImgage, "jpg", baos);
+	        byte[] bytes = baos.toByteArray();
+	        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".jpg");
+			Map tosendparams = new HashMap();
+	        tosendparams.put("file", body);
+			tosendparams.put("subject",groupId );
+
+		//tosendparams.put("file", new File(inInput.getAbsolutePath()));
+		CloseableHttpResponse resp = null;
+		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
+		if( url == null)
+		{
+			url = "http://localhost:8000/";
+		}
+		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/faces",tosendparams);
+		if (resp.getStatusLine().getStatusCode() == 400)
+		{
+			//No faces found error
+			getSharedConnection().release(resp);
+			return;
+		}
+		JSONObject json = getSharedConnection().parseJson(resp);
+		if( json.get("image_id") != null)
+		{
+			//OK
+		}
+		/*
+		{
+			  "image_id": "6b135f5b-a365-4522-b1f1-4c9ac2dd0728",
+			  "subject": "subject1"
+			}
+		*/
 	}
 
 	protected void updateEndTimes(List<Map> pendingprofiles, long cutofftime)
