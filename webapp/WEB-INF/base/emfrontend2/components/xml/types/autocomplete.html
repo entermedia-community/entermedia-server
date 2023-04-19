@@ -27,7 +27,7 @@
 		class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
 		data-searchfield="$searchfield" 
 		data-searchtype="$detail.listId" 
-		data-listcatalogid="$detail.listCatalogId" 
+		##data-listcatalogid="$detail.listCatalogId" 
 		data-foreignkeyid="$!detail.foreignkeyid" 
 		data-placeholder="$detail.getText($context)" 
 		data-sortby="$!detail.sort">
