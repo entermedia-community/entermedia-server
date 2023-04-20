@@ -1189,10 +1189,12 @@ String viewbase = null;
 				}
 			}
 			inReq.putPageValue(hits.getHitsName(), hits);
+			/*
 			if (inReq.getPageValue("hits") == null)
 			{
 				inReq.putPageValue("hits", hits); //could this cause problems?
 			}
+			*/
 		}
 	}
 
@@ -1634,7 +1636,7 @@ String viewbase = null;
 			{
 				result = compositedata;
 			}
-			if (compositedata == null)
+			if (result == null)
 			{
 				if (hits == null)
 				{
