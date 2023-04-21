@@ -303,9 +303,10 @@ public class FaceProfileManager implements CatalogEnabled
 //			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
 //			-H "Content-Type: multipart/form-data" \
 //			-H "x-api-key: <service_api_key>" \
-			int count = 0;
+			
 			//tosendparams.put("det_prob_threshold",".6");
 			String groupid = null;
+			int count = 0;
 			if( found != null)
 			{
 				groupid = (String)found.get("subject");
@@ -313,15 +314,24 @@ public class FaceProfileManager implements CatalogEnabled
 				Data oldgroup = getMediaArchive().getData("faceprofilegroup",groupid);
 				if( oldgroup == null)
 				{
+					//is a new group
 					oldgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();
+					oldgroup.setValue("id", groupid);
+					oldgroup.setValue("primaryimage", inAsset.getId());
+					count++;
+					oldgroup.setValue("samplecount", count);
 				}
-				Object countval = oldgroup.getValue("samplecount");
-				if( countval == null)
+				else 
 				{
-					count = Integer.parseInt(countval.toString());
+					
+					Object countval = oldgroup.getValue("samplecount");
+					if( countval != null)
+					{
+						count = Integer.parseInt(countval.toString());
+					}
+					count++;
+					oldgroup.setValue("samplecount", count);
 				}
-				count++;
-				oldgroup.setValue("samplecount",count);
 				getMediaArchive().getSearcher("faceprofilegroup").saveData(oldgroup);
 				
 				faceprofile.put("faceprofilegroup", groupid);
@@ -338,23 +348,6 @@ public class FaceProfileManager implements CatalogEnabled
 				faceprofile.put("faceprofilegroup", newgroup.getId() );
 			}
 			
-			if( count > 10)
-			{
-				uploadAProfile(faceprofile, map, timecodestart, originalImgage, inAsset, groupid);
-			}
-			else
-			{
-				log.error("Already have 10" + groupid);
-			}
-				
-			faceprofiles.add(faceprofile);
-		}
-		return faceprofiles;
-	}
-
-	private void uploadAProfile(Map map, Map faceprofile, long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
-	{
-
 			ValuesMap box = new ValuesMap((Map)map.get("box"));
 			int x = box.getInteger("x_min");
 			int y = box.getInteger("y_min");
@@ -369,7 +362,45 @@ public class FaceProfileManager implements CatalogEnabled
 			faceprofile.put("locationh",h);
 			
 	        faceprofile.put("inputwidth",originalImgage.getWidth());
-	        
+			
+			if( count <= 10)
+			{
+				uploadAProfile(faceprofile, map, timecodestart, originalImgage, inAsset, groupid);
+			}
+			else
+			{
+				log.error("Already have 10 profiles from same subject: " + groupid);
+			}
+				
+			faceprofiles.add(faceprofile);
+		}
+		return faceprofiles;
+	}
+
+	private void uploadAProfile(Map faceprofile, Map map,  long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
+	{
+		/*
+			ValuesMap box = new ValuesMap((Map)map.get("box"));
+			int x = box.getInteger("x_min");
+			int y = box.getInteger("y_min");
+			int x2 = box.getInteger("x_max");
+			int y2 = box.getInteger("y_max");
+			int w = x2 - x;
+			int h = y2 - y;
+			
+			faceprofile.put("locationx",x);
+			faceprofile.put("locationy",y);
+			faceprofile.put("locationw",w);
+			faceprofile.put("locationh",h);
+			
+	        faceprofile.put("inputwidth",originalImgage.getWidth());
+	      */ 
+		
+			int x = (Integer) faceprofile.get("locationx");
+			int y = (Integer) faceprofile.get("locationy");
+			int w = (Integer) faceprofile.get("locationw");
+			int h = (Integer) faceprofile.get("locationh");
+			
 	        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        ImageIO.write(subImgage, "jpg", baos);
