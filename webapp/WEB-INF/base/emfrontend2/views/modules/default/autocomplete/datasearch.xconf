@@ -11,10 +11,11 @@
 	
 	<page-action name="DataEditModule.search" alltypes="true">
 		<property name="hitsname">autocomplete</property>
-		<property name="searchtypeFromRequest">true</property>
+		<property name="searchtype">${module}</property>
 	</page-action>
 	<page-action name="DataEditModule.addDefaultValue" alltypes="true">
 		<property name="hitsname">autocomplete</property>
+		<property name="searchtype">${module}</property>
 	</page-action>
 	<property name="enforcesecurity">true</property>
 	<generator name="velocityGenerator" />

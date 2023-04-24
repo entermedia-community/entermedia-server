@@ -1718,7 +1718,8 @@ td.checkbox input, th.firstheader input {
 
 
 
-.listautocomplete {width: 100%;} /* General?? */
+.listautocomplete,
+.safelistautocomplete {width: 100%;} /* General?? */
 
 
 /*Collections Home Page*/
