@@ -339,7 +339,7 @@ public class FaceProfileManager implements CatalogEnabled
 			else
 			{
 				//Create new profilegroupid
-				Data newgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();
+				Data newgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();		
 				newgroup.setValue("primaryimage", inAsset.getId());
 				newgroup.setValue("automatictagging", true);
 				newgroup.setValue("creationdate", new Date());
@@ -365,7 +365,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			if( count <= 10)
 			{
-				uploadAProfile(faceprofile, map, timecodestart, originalImgage, inAsset, groupid);
+				uploadAProfile(faceprofile, timecodestart, originalImgage, inAsset, groupid);
 			}
 			else
 			{
@@ -377,25 +377,8 @@ public class FaceProfileManager implements CatalogEnabled
 		return faceprofiles;
 	}
 
-	private void uploadAProfile(Map faceprofile, Map map,  long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
+	private void uploadAProfile(Map faceprofile, long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
-		/*
-			ValuesMap box = new ValuesMap((Map)map.get("box"));
-			int x = box.getInteger("x_min");
-			int y = box.getInteger("y_min");
-			int x2 = box.getInteger("x_max");
-			int y2 = box.getInteger("y_max");
-			int w = x2 - x;
-			int h = y2 - y;
-			
-			faceprofile.put("locationx",x);
-			faceprofile.put("locationy",y);
-			faceprofile.put("locationw",w);
-			faceprofile.put("locationh",h);
-			
-	        faceprofile.put("inputwidth",originalImgage.getWidth());
-	      */ 
-		
 			int x = (Integer) faceprofile.get("locationx");
 			int y = (Integer) faceprofile.get("locationy");
 			int w = (Integer) faceprofile.get("locationw");
@@ -428,6 +411,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if( json.get("image_id") != null)
 		{
 			//OK
+			log.info("Profile: "+groupId+" created at server. Image id" + json.get("image_id"));
 		}
 		/*
 		{
