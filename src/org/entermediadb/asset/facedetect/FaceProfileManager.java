@@ -36,6 +36,7 @@ import org.json.simple.parser.ParseException;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.ValuesMap;
 import org.openedit.repository.ContentItem;
@@ -210,6 +211,11 @@ public class FaceProfileManager implements CatalogEnabled
 
 	protected List<Map> makeProfilesForEachFace(Asset inAsset,long timecodestart, ContentItem inInput, List<Map> inJsonOfFaces) throws Exception
 	{
+		List<Map> faceprofiles = new ArrayList();
+		if( inJsonOfFaces.isEmpty())
+		{
+			return faceprofiles;
+		}
 		
 		double similaritycheck = .90D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
@@ -252,7 +258,6 @@ public class FaceProfileManager implements CatalogEnabled
 	</property>  
 </property>
 		 */
-		List<Map> faceprofiles = new ArrayList();
         BufferedImage originalImgage = ImageIO.read(new File( inInput.getAbsolutePath()) );
 
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
@@ -323,32 +328,33 @@ public class FaceProfileManager implements CatalogEnabled
 //			-H "x-api-key: <service_api_key>" \
 			
 			//tosendparams.put("det_prob_threshold",".6");
+			boolean morethan10 = false;
 			String groupid = null;
-			int count = 0;
 			if( found != null)
 			{
 				groupid = (String)found.get("subject");
 				//TODO: Count how many times I have used this group.
-				Data oldgroup = getMediaArchive().getData("faceprofilegroup",groupid);
+				MultiValued oldgroup = (MultiValued)getMediaArchive().getData("faceprofilegroup",groupid);
 				if( oldgroup == null)
 				{
 					//is a new group
-					oldgroup = getMediaArchive().getSearcher("faceprofilegroup").createNewData();
+					oldgroup = (MultiValued)getMediaArchive().getSearcher("faceprofilegroup").createNewData();
 					oldgroup.setValue("id", groupid);
 					oldgroup.setValue("primaryimage", inAsset.getId());
-					count++;
-					oldgroup.setValue("samplecount", count);
+					oldgroup.setValue("samplecount", 1);
 				}
 				else 
 				{
-					
-					Object countval = oldgroup.getValue("samplecount");
-					if( countval != null)
-					{
-						count = Integer.parseInt(countval.toString());
-					}
+					int count = oldgroup.getInt("samplecount");
 					count++;
-					oldgroup.setValue("samplecount", count);
+					if( count > 10)
+					{
+						morethan10 = true;
+					}
+					else
+					{
+						oldgroup.setValue("samplecount", count);
+					}
 				}
 				getMediaArchive().getSearcher("faceprofilegroup").saveData(oldgroup);
 				
@@ -361,8 +367,7 @@ public class FaceProfileManager implements CatalogEnabled
 				newgroup.setValue("primaryimage", inAsset.getId());
 				newgroup.setValue("automatictagging", true);
 				newgroup.setValue("creationdate", new Date());
-				count++;
-				newgroup.setValue("samplecount",count);
+				newgroup.setValue("samplecount",1);
 				getMediaArchive().saveData("faceprofilegroup", newgroup);
 				faceprofile.put("faceprofilegroup", newgroup.getId() );
 			}
@@ -382,7 +387,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 	        faceprofile.put("inputwidth",originalImgage.getWidth());
 			
-			if( count <= 10)
+			if( !morethan10)
 			{
 				uploadAProfile(faceprofile, timecodestart, originalImgage, inAsset, groupid);
 			}
@@ -390,7 +395,7 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				log.error("Already have 10 profiles from same subject: " + groupid);
 			}
-				
+			//TODO: Make sure this is not already in there. For debug purposes
 			faceprofiles.add(faceprofile);
 		}
 		return faceprofiles;
@@ -482,7 +487,7 @@ public class FaceProfileManager implements CatalogEnabled
 		tosendparams.put("limit","20");
 		tosendparams.put("prediction_count","1"); //Return only most likely subject
 		//tosendparams.put("face_plugins","detector");
-		tosendparams.put("det_prob_threshold","1");
+		//tosendparams.put("det_prob_threshold","1");
 
 		tosendparams.put("file", new File(input.getAbsolutePath()));
 		CloseableHttpResponse resp = null;
