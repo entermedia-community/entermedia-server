@@ -217,7 +217,14 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			similaritycheck = Double.parseDouble(value);
 		}
-		
+
+		double facedetect_detect_confidence = .999D;
+		String detectvalue = getMediaArchive().getCatalogSettingValue("facedetect_detect_confidence");
+		if( detectvalue != null)
+		{
+			facedetect_detect_confidence = Double.parseDouble(detectvalue);
+		}
+
 		/*
 		 * <property id="faceprofiles" index="true" keyword="false" stored="true" editable="false" viewtype="faceprofiles" datatype="nested" > 
  <name> 
@@ -255,6 +262,17 @@ public class FaceProfileManager implements CatalogEnabled
 			faceprofile.put("timecodestart",timecodestart);
 			//faceprofile.put("facedata", map);
 			//faceprofilegroup
+			
+			Map mask = (Map)map.get("box");
+			if( mask != null)
+			{
+				Double probability = (Double)mask.get("probability");
+				if( probability < facedetect_detect_confidence)
+				{
+					continue;
+				}
+			}
+			
 			List subjects = (List)map.get("subjects");
 			Map found = null;
 			if( subjects != null && !subjects.isEmpty())
@@ -343,6 +361,7 @@ public class FaceProfileManager implements CatalogEnabled
 				newgroup.setValue("primaryimage", inAsset.getId());
 				newgroup.setValue("automatictagging", true);
 				newgroup.setValue("creationdate", new Date());
+				count++;
 				newgroup.setValue("samplecount",count);
 				getMediaArchive().saveData("faceprofilegroup", newgroup);
 				faceprofile.put("faceprofilegroup", newgroup.getId() );
@@ -463,6 +482,8 @@ public class FaceProfileManager implements CatalogEnabled
 		tosendparams.put("limit","20");
 		tosendparams.put("prediction_count","1"); //Return only most likely subject
 		//tosendparams.put("face_plugins","detector");
+		tosendparams.put("det_prob_threshold","1");
+
 		tosendparams.put("file", new File(input.getAbsolutePath()));
 		CloseableHttpResponse resp = null;
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
