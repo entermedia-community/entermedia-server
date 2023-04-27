@@ -85,7 +85,7 @@ public class EntityManager implements CatalogEnabled
 			
 			sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values);
 		}
-		if( sourcepath.isEmpty())
+		if( sourcepath.isEmpty() && entity != null)
 		{
 			
 			if(module.getId().equals("librarycollection")) {
