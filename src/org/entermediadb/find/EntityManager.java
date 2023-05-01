@@ -54,14 +54,16 @@ public class EntityManager implements CatalogEnabled
 		fieldCatalogId = inCatalogId;
 	}
 
-	public Collection loadCategories(String inEntityType, String inEntityId)
+	public Collection loadCategories(Data inModule,Data entity, User inUser )
 	{
-		//TODO: Caching ability
-		Collection categories = (Collection)getCacheManager().get("searchercategory" , inEntityType + "/ " + inEntityId);
+		String inEntityType = inModule.getId();
+		
+		Collection categories = (Collection)getCacheManager().get("searchercategory" , inEntityType + "/ " + entity.getId());
 		if( categories == null )
 		{
-			categories = getMediaArchive().query("category").exact(inEntityType, inEntityId).sort("categorypath").search();
-			getCacheManager().put("searchercategory", inEntityType + "/" + inEntityId,categories);
+			loadDefaultFolder(inModule, entity, inUser);
+			categories = getMediaArchive().query("category").exact(inEntityType, entity.getId()).sort("categorypath").search();
+			getCacheManager().put("searchercategory", inEntityType + "/" + entity.getId(),categories);
 			
 		}
 		return categories;
@@ -71,7 +73,17 @@ public class EntityManager implements CatalogEnabled
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
 	}
-	
+	public Category loadDefaultFolder(Data module, Data entity, User inUser)
+	{
+		String sourcepath = loadUploadSourcepath(module,entity,inUser);
+		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+		if( cat.getValue(module.getId()) == null)
+		{
+			cat.setValue(module.getId(),entity.getId());
+			getMediaArchive().getCategorySearcher().saveData(cat);
+		}
+		return cat;
+	}	
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
 		String mask = (String) module.getValue("uploadsourcepath");
