@@ -123,8 +123,8 @@ public class EntityManager implements CatalogEnabled
 			}
 			if( sourcepath.isEmpty())
 			{
-				long year = Calendar.getInstance().get(Calendar.YEAR);
-				sourcepath = module.getName("en") + "/" + year + "/" + entity.getName() + "/";
+				//long year = Calendar.getInstance().get(Calendar.YEAR);
+				sourcepath = module.getName("en") + "/" + entity.getName() + "/";
 			}
 		}
 		return sourcepath;
