@@ -947,9 +947,11 @@ public class ProjectModule extends BaseMediaModule
 		Data tag = archive.getData("communitytag", tagid);
 		if(tag != null) {
 			LibraryCollection col = manager.getLibraryCollection(archive, (String)tag.getValue("collectionid"));
-			inReq.putPageValue("librarycol", col);
-			inReq.putPageValue("collectionid", col.getId());
-			
+			if( col != null)
+			{
+				inReq.putPageValue("librarycol", col);
+				inReq.putPageValue("collectionid", col.getId());
+			}			
 			return col;
 		}
 		return null;
