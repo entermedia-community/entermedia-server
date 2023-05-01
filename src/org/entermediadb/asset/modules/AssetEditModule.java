@@ -774,6 +774,22 @@ public class AssetEditModule extends BaseMediaModule
 			metadata.put("category.value", topcat.getId());
 			assigncategory = true;
 		}
+		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityparent")))
+		{
+			FileUploadItem item = inUploadRequest.getFirstItem();
+			Category topcat = archive.createCategoryPath(inputsourcepath);
+			String entitytype = inReq.getRequestParameter("entitytype");
+			String entityid = inReq.getRequestParameter("selected"  + entitytype);
+			Collection vals = topcat.getValues(entitytype);
+			if(vals == null || !vals.contains(entityid))
+			{
+				topcat.addValue(entitytype, entityid);
+				archive.saveData("category", topcat);
+			}
+			metadata.put("field","category");
+			metadata.put("category.value", topcat.getId());
+			assigncategory = true;
+		}
 
 		
 		final Map<String, ContentItem> pages = savePages(inReq, archive, inUploadRequest);
