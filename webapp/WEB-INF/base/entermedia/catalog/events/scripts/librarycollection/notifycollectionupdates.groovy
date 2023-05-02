@@ -104,7 +104,12 @@ public void init()
 				Data oneitem = topicmods.iterator().next();
 				Data collection = mediaArchive.getCachedData("librarycollection", oneitem.get("collectionid") );
 				Data topic = mediaArchive.getCachedData("collectiveproject", oneitem.get("chattopicid") );
-				templatemail.setSubject("[EM] " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
+				String notificationsprefix = mediaArchive.getCatalogSettingValue("notificationsprefix");
+				if (notificationsprefix == null)
+				{
+					notificationsprefix = "[OI]";
+				}
+				templatemail.setSubject(notificationsprefix + " " + collection.getName() + "/" + topic.getName() + " Notification"); //TODO: Translate
 			}
 			Map objects = new HashMap();
 			objects.put("topicmods",topicmods);
