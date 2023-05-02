@@ -431,6 +431,8 @@ public class ElasticHitTracker extends HitTracker
 	public double getSum(String inField, String inSummarizer)
 	{
 		double total = 0;
+//		Map map = getAggregations().asMap();
+//		map.get(inField);
 		Terms terms = (Terms)getAggregations().get(inField);
 		if( terms != null)
 		{

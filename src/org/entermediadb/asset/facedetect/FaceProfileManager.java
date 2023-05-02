@@ -217,7 +217,7 @@ public class FaceProfileManager implements CatalogEnabled
 			return faceprofiles;
 		}
 		
-		double similaritycheck = .90D;
+		double similaritycheck = .99D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{

@@ -1,20 +1,24 @@
 package org.entermediadb.find;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
-import org.openedit.profile.UserProfile;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
@@ -147,6 +151,43 @@ public class EntityManager implements CatalogEnabled
 			getCacheManager().put("entitymanager", cacheid,entities);
 		}
 		return entities;
+	}
+
+	public Map listTotalSize(String inCategoryId, WebPageRequest inContext)
+	{
+		SearchQuery query = getMediaArchive().query("asset").named("sizecheck").exact("category", inCategoryId).getQuery();
+		AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("assettype");
+		SumBuilder sum = new SumBuilder("assettype_sum");
+		sum.field("filesize");
+		b.subAggregation(sum);
+		query.setAggregation(b);
+
+//		#foreach($item in
+//		$breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
+//		#foreach($subitem in $item.getAggregations())
+//		<li class="list-group-item"><span class="badge"
+//			title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+//			#set( $data = false)
+//			#set( $data = $mediaarchive.getData("assettype",$item.key))
+//			$context.getText($data)
+//			<br /></li> 
+//		#end
+//		#end
+//
+		HitTracker hits =
+				getMediaArchive().getSearcher("asset").cachedSearch(inContext,query);
+		//log.info("query:" + query.hasFilters());
+		hits.enableBulkOperations();
+		hits.getActiveFilterValues();
+			//StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
+			//context.putPageValue("breakdownhits", hits)
+
+//		<li class="list-group-item"><span class="badge">$!sizer.inEnglish($breakdownhits.getSum("filesize"))
+		Map values = new HashMap();
+		values.put("hits", hits);
+		double size= hits.getSum("assettype_filesize","assettype_sum");
+		values.put("filesize", size);
+		return values;
 	}
 	
 }
