@@ -54,6 +54,13 @@ public class EntityManager implements CatalogEnabled
 		fieldCatalogId = inCatalogId;
 	}
 
+	public Collection loadCategories(String inModule,Data entity, User inUser ) {
+		Data module = getMediaArchive().getCachedData("module", inModule);
+		Collection categories = loadCategories(module, entity, inUser );
+		return categories;
+	}
+	
+	
 	public Collection loadCategories(Data inModule,Data entity, User inUser )
 	{
 		String inEntityType = inModule.getId();
