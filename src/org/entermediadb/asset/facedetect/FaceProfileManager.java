@@ -362,7 +362,9 @@ public class FaceProfileManager implements CatalogEnabled
 				newgroup.setValue("creationdate", new Date());
 				newgroup.setValue("samplecount",1);
 				getMediaArchive().saveData("faceprofilegroup", newgroup);
-				faceprofile.put("faceprofilegroup", newgroup.getId() );
+				groupid = newgroup.getId();
+				faceprofile.put("faceprofilegroup", groupid );
+				
 			}
 			
 			ValuesMap box = new ValuesMap((Map)map.get("box"));
