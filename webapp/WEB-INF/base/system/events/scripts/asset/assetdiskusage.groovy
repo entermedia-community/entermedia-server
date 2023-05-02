@@ -42,6 +42,16 @@ public void init(){
 		
 		log.info(agginfo.getBuckets().size())
 	}
+	/*
+		#foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
+				#foreach($subitem in $item.getAggregations())
+					title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+					#set( $data = $mediaarchive.getData("assettype",$item.key))
+					$context.getText($data)
+	
+	*/
+	//	<li class="list-group-item"><span class="badge">$!sizer.inEnglish($breakdownhits.getSum("filesize"))
+	
 	log.info("hits" + hits.size());
 	
 }
