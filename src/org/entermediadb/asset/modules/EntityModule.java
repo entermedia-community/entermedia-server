@@ -76,7 +76,13 @@ public class EntityModule extends BaseMediaModule
 		}
 		else {
 			//Defualt entity
-			asset.addValue(moduleid, entityid);
+			//asset.addValue(moduleid, entityid);
+			String categoryid = inPageRequest.getRequestParameter("categoryid");
+			Category c = archive.getCategory(categoryid);
+			if (c != null) {
+				asset.addCategory(c);
+				saved = true;
+			}
 			saved = true;
 		}
 
