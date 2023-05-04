@@ -432,6 +432,10 @@ public class FaceProfileManager implements CatalogEnabled
 			//OK
 			log.info("Profile: "+groupId+" created at server. Image id" + json.get("image_id"));
 		}
+		else 
+		{
+			log.info("Could'nt upload image, response:" + json.toString());
+		}
 		/*
 		{
 			  "image_id": "6b135f5b-a365-4522-b1f1-4c9ac2dd0728",
