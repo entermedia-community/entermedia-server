@@ -180,7 +180,7 @@ public class FaceProfileManager implements CatalogEnabled
 						faceprofiles.addAll(moreprofiles);
 					}
 				}
-				
+				faceprofiles = combineVideoMatches(faceprofiles,mili);
 //				updateEndTimes(continuelooking,block.getStartOffset()); //Brings them up to date
 //				try
 //				{
@@ -261,8 +261,6 @@ public class FaceProfileManager implements CatalogEnabled
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
 			Map map = (Map) iterator.next();
-			Map faceprofile = new HashMap();
-			faceprofile.put("timecodestart",timecodestart);
 			//faceprofile.put("facedata", map);
 			//faceprofilegroup
 			
@@ -326,6 +324,21 @@ public class FaceProfileManager implements CatalogEnabled
 //			-H "x-api-key: <service_api_key>" \
 			
 			//tosendparams.put("det_prob_threshold",".6");
+			ValuesMap box = new ValuesMap((Map)map.get("box"));
+			int x = box.getInteger("x_min");
+			int y = box.getInteger("y_min");
+			int x2 = box.getInteger("x_max");
+			int y2 = box.getInteger("y_max");
+			int w = x2 - x;
+			int h = y2 - y;
+			if( w < 200 || h < 200)
+			{
+				log.info("Not enough data " + found );
+				continue;
+			}
+			Map faceprofile = new HashMap();
+			faceprofile.put("timecodestart",timecodestart);
+
 			boolean morethan10 = false;
 			String groupid = null;
 			if( found != null)
@@ -372,13 +385,6 @@ public class FaceProfileManager implements CatalogEnabled
 				
 			}
 			
-			ValuesMap box = new ValuesMap((Map)map.get("box"));
-			int x = box.getInteger("x_min");
-			int y = box.getInteger("y_min");
-			int x2 = box.getInteger("x_max");
-			int y2 = box.getInteger("y_max");
-			int w = x2 - x;
-			int h = y2 - y;
 			
 			faceprofile.put("locationx",x);
 			faceprofile.put("locationy",y);
@@ -610,5 +616,53 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 	
+	public List<Map> combineVideoMatches(List<Map> faceprofles, long inVideoLength)
+	{
+		
+		Map previousprofile = null;
+		List<Map> copy = new ArrayList();
+		for (Iterator iterator = faceprofles.iterator(); iterator.hasNext();)
+		{
+			Map profile = (Map)iterator.next();
+			if( previousprofile == null)
+			{
+				copy.add(profile);
+				previousprofile = profile;
+			}
+			else
+			{
+				String previousfaceprofilegroup = (String)previousprofile.get("faceprofilegroup");
+				String faceprofilegroup = (String)profile.get("faceprofilegroup");
+
+				long start1 = (Long)previousprofile.get("timecodestart");
+				long start2 = (Long)profile.get("timecodestart");
+				long total = start2 - start1;
+				previousprofile.put("timecodelength",total);
+				if( faceprofilegroup.equals(previousfaceprofilegroup))
+				{
+					if( !iterator.hasNext())
+					{
+						//Last one not set
+						long laststart1 = (Long)previousprofile.get("timecodestart");	
+						long lasttotal = inVideoLength - laststart1;
+						previousprofile.put("timecodelength",lasttotal);
+					}
+				}
+				else
+				{
+					copy.add(profile);
+					previousprofile = profile;
+					if( !iterator.hasNext())
+					{
+						//Last one not set
+						long laststart1 = (Long)profile.get("timecodestart");	
+						long lasttotal = inVideoLength - laststart1;
+						previousprofile.put("timecodelength",lasttotal);
+					}
+				}
+			}
+		}
+		return copy;
+	}
 	
 }
