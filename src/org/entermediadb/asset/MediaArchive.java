@@ -23,6 +23,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.velocity.runtime.parser.node.MathUtils;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
@@ -1878,6 +1879,11 @@ public class MediaArchive implements CatalogEnabled
 		String sec = seconds >= 10 ? String.valueOf(seconds) : seconds > 0 ? "0" + String.valueOf(seconds) : "00";
 		sb.append(min + ":" + sec);
 		return sb.toString();
+	}
+	
+	public String formatMilliseconds(String inMilliseconds) {
+		Double seconds = org.entermediadb.asset.util.MathUtils.divide(Long.parseLong(inMilliseconds), 1000);
+		return formatMinutesAndSeconds(seconds.toString());
 	}
 
 	public String formatSeconds(String inSeconds, String inMask)

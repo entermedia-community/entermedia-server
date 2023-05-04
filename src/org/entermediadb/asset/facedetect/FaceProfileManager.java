@@ -145,6 +145,11 @@ public class FaceProfileManager implements CatalogEnabled
 				long mili = Math.round( videolength*1000d );
 				timeline.setLength(mili);
 				timeline.setPxWidth(1200); //This divides in 10 or 20
+				
+				if(videolength < 20) {
+					timeline.setTotalTickCount(10);
+				}
+				
 				Collection<Block> ticks = timeline.getTicks();
 				faceprofiles = new ArrayList<Map>();
 				

@@ -1,5 +1,5 @@
 #set($collection = $data.getValues($detail.getId()))
-
+<div class="emfield-scroll">
 <ul class="entity-value-list">
 	#foreach( $profile in $collection )
 		#set( $row = false )
@@ -9,9 +9,15 @@
 	    	#if( !$name)
 	    		#set($name = "[[face]] $!row.get('facecounter')") 
 	    	#end
+	    	#ifnotnull($profile.timecodestart)
+	    	#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+	    	#set($name = "$name &nbsp;($secs)")
+	    	#end
 	    	##/find/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=AXmkjXDnqw92jqIo_9hS&searchtype=faceprofilegroup&hitssessionid=hitsfaceprofilegroupfinder/catalog
-		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&searchtype=faceprofilegroup&hitssessionid=$!hits.sessionId")
+		    
+		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&hitssessionid=$!hits.sessionId")
 		    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
 	    #end 
 	#end	
 </ul>
+</div>
