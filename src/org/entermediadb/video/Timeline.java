@@ -24,7 +24,17 @@ public class Timeline
 	
 	//20 chunks at 15 * 4 = 60px each
 	//20 * 60 = 1200px wide
-	
+	protected int fieldTotalTickCount = 20;
+	public int getTotalTickCount()
+	{
+		return fieldTotalTickCount;
+	}
+
+	public void setTotalTickCount(int inTotalTickCount)
+	{
+		fieldTotalTickCount = inTotalTickCount;
+	}
+
 	protected long fieldLength;
 	protected int fieldPxWidth;
 	protected Map facerows = new HashMap();
@@ -70,8 +80,8 @@ public class Timeline
 			//divide into 60 blocks
 			fieldTicks = new ArrayList();
 			
-			double chunck = (double)getLength() / 20d;
-			for (int i = 0; i < 21; i++)
+			double chunck = (double)getLength() / (double)getTotalTickCount();
+			for (int i = 0; i < getTotalTickCount() + 1; i++)
 			{
 				Block block = new Block();
 				//block.setTime(i * chunck);
