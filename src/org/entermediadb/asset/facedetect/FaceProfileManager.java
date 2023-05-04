@@ -646,13 +646,16 @@ public class FaceProfileManager implements CatalogEnabled
 
 				long start1 = (Long)previousprofile.get("timecodestart");
 				long start2 = (Long)profile.get("timecodestart");
-				long total = start2 - start1;
-				previousprofile.put("timecodelength",total);
 				if( faceprofilegroup.equals(previousfaceprofilegroup))
 				{
+					long total = start2 - start1 + defaultlength;
+					//TODO: Beyond the end?
+					previousprofile.put("timecodelength",total);
 				}
 				else
 				{
+					long total = start2 - start1;
+					previousprofile.put("timecodelength",total);
 					copy.add(profile);
 					previousprofile = profile;
 				}
