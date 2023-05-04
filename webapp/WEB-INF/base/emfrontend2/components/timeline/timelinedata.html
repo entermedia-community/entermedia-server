@@ -2,14 +2,14 @@
 
 
 
-<div id="timelinedatacontainer" class="timelinedatacontainer">
+<div id="timelinedatacontainer" class="timelinedatacontainer" style="width:100%;">
 <div id="timelinemetadata"
 	class="timelinedata" 
 	data-ratio="$timeline.getPxToTimeRatio()" 
 	data-savelink="$siteroot$clientroot/timelinedatasave.html"
 	data-targetdiv="timelinedatacontainer" 
 	data-assetid="$asset.id" 
-	style="margin:0; width:1200px;">
+	style="width:1200px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)
@@ -25,7 +25,8 @@
 			#end
 			>
 			##<div class="ruler" >
-				<div class="timecell #if( $clip.data.faceprofilegroup ) timecellfaceprofile #end" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
+				<div class="timecell #if( $clip.data.faceprofilegroup ) timecellfaceprofile #end" 
+					style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
 					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
 					<div class="grabresize"></div> 
 					#set( $label = $!clip.getValue("cliplabel"))
