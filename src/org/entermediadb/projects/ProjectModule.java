@@ -957,6 +957,23 @@ public class ProjectModule extends BaseMediaModule
 		return null;
 
 	}
+	
+	
+	
+	public void loadCommunityTagFolder(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String tagid = PathUtilities.extractDirectoryName(inReq.getPath());
+		ProjectManager manager = getProjectManager(inReq);
+		Data tag = archive.getData("communitytag", tagid);
+		if(tag != null) {
+			inReq.putPageValue("communitytag", tag);
+			inReq.putPageValue("communitytagid", tag.getId());
+			
+			
+		}
+
+	}
 
 	public boolean checkViewCollection(WebPageRequest inReq) {
 		ProjectManager manager = getProjectManager(inReq);
