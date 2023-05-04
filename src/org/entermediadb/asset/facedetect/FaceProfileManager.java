@@ -618,12 +618,22 @@ public class FaceProfileManager implements CatalogEnabled
 	
 	public List<Map> combineVideoMatches(List<Map> faceprofles, long inVideoLength)
 	{
-		
+		long defaultlength = -1;
+		if( inVideoLength < 60000)
+		{
+			defaultlength = (long)MathUtils.divide(inVideoLength, 10);
+		}
+		else
+		{
+			defaultlength = (long)MathUtils.divide(inVideoLength, 20);
+		}
 		Map previousprofile = null;
 		List<Map> copy = new ArrayList();
 		for (Iterator iterator = faceprofles.iterator(); iterator.hasNext();)
 		{
 			Map profile = (Map)iterator.next();
+			profile.put("timecodelength",defaultlength);
+
 			if( previousprofile == null)
 			{
 				copy.add(profile);
@@ -636,29 +646,18 @@ public class FaceProfileManager implements CatalogEnabled
 
 				long start1 = (Long)previousprofile.get("timecodestart");
 				long start2 = (Long)profile.get("timecodestart");
-				long total = start2 - start1;
-				previousprofile.put("timecodelength",total);
 				if( faceprofilegroup.equals(previousfaceprofilegroup))
 				{
-					if( !iterator.hasNext())
-					{
-						//Last one not set
-						long laststart1 = (Long)previousprofile.get("timecodestart");	
-						long lasttotal = inVideoLength - laststart1;
-						previousprofile.put("timecodelength",lasttotal);
-					}
+					long total = start2 - start1 + defaultlength;
+					//TODO: Beyond the end?
+					previousprofile.put("timecodelength",total);
 				}
 				else
 				{
+					long total = start2 - start1;
+					previousprofile.put("timecodelength",total);
 					copy.add(profile);
 					previousprofile = profile;
-					if( !iterator.hasNext())
-					{
-						//Last one not set
-						long laststart1 = (Long)profile.get("timecodestart");	
-						long lasttotal = inVideoLength - laststart1;
-						previousprofile.put("timecodelength",lasttotal);
-					}
 				}
 			}
 		}
