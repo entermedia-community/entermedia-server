@@ -443,6 +443,14 @@ public class TaskModule extends BaseMediaModule
 			}
 			query.exact("completedby", selected);
 		}
+		
+		
+		String keyword = inReq.getRequestParameter("keyword");
+		if( keyword != null)
+		{
+			query.exact("keywords", keyword);
+		}
+		
 		query.sort("creationdate");
 		HitTracker tasks = query.search(inReq);
 		//Legacy: Make sure all tasks have parents
@@ -756,6 +764,10 @@ public class TaskModule extends BaseMediaModule
 		task.setValue("completedby", completedby);
 		
 		task.setValue("comment",taskcomment);
+		
+		String[] keywords = inReq.getRequestParameters("keywords.value");
+		task.setValue("keywords", keywords);
+		
 		
 		tasksearcher.saveData(task);	
 		inReq.putPageValue("task", task);
@@ -1245,7 +1257,6 @@ public class TaskModule extends BaseMediaModule
 		HitTracker likesclosed = builder.search();
 
 		inReq.putPageValue("selecteduser",archive.getUser(seeuser));
-		
 		List all = new ArrayList();
 		for (Iterator iterator = likesopen.iterator(); iterator.hasNext();)
 		{

@@ -9,7 +9,9 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set( $detailid = $detail.getId().replace('.','-') )
 
 ##TODO Use $values
-#set( $vals = $val.split("\s*\|\s*") )
+#ifnull($values)
+#set( $values = $val.split("\s*\|\s*") )
+#end
 
 <select name="${detail.getId()}.value" 
 		##id="list-${detailid}${idcount}" 
@@ -23,7 +25,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 		data-placeholder=""
 		data-width="100%"
 		>
-	#foreach($vtag in $vals)
+	#foreach($vtag in $values)
 		#if($vtag && $vtag != "")
 			<option value="$!vtag" selected="selected">#esc($vtag)</option>
 		#end
