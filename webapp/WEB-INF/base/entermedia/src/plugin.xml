@@ -768,7 +768,17 @@
 			</property>
 	</bean>
 
-
+	<bean id="zohoAssetSource" class="org.entermediadb.asset.sources.ZohoAssetSource"
+		scope="prototype">
+				<property name="webServer"><ref bean="WebServer" /></property>		
+		
+			<property name="zohoManager">
+				<ref bean="zohoManager" />
+			</property>
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+	</bean>
 
 
 
@@ -2201,8 +2211,7 @@
  	
  	
  	
- 	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
-	</bean>	
+ 	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule">	</bean>	
 	
 	<bean id="googleManager" class="org.entermediadb.google.GoogleManager"  scope="prototype" >
 		<property name="moduleManager">
@@ -2211,8 +2220,16 @@
 	</bean>	
 	
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
+	
+	
+	<bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>	
 
-<property name="moduleManager">
+	
+	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 
