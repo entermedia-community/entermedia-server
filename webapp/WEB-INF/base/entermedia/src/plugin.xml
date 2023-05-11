@@ -2221,19 +2221,16 @@
 	
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
 	
-	
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager"  scope="prototype" >
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>	
-
-	
-	<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-
-	</bean>
 	
 	<bean id="queueManager" class="org.entermediadb.asset.convert.QueueManager"  scope="prototype" >
 		<property name="moduleManager">
