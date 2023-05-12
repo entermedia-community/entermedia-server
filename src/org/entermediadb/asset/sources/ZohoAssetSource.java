@@ -23,13 +23,13 @@ public class ZohoAssetSource extends BaseAssetSource
 	
 	public ZohoManager getZohoManager()
 	{
-		return (ZohoManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"ZohoManager");
+		return (ZohoManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"zohoManager");
 	}
 	
 	protected String getAccessToken() {
 		try
 		{
-			return getZohoManager().getUserAccessToken(getConfig(), "hotfolder");
+			return getZohoManager().getAccessToken(getConfig());
 		}
 		catch (Exception e)
 		{
@@ -107,7 +107,7 @@ public class ZohoAssetSource extends BaseAssetSource
 	public boolean handles(Asset inAsset)
 	{
 		String name = getFolderPath();
-		if( inAsset.getSourcePath().startsWith(name))
+		if(name != null &&  inAsset.getSourcePath().startsWith(name))
 		{
 			return true;
 		}
