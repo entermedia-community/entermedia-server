@@ -265,9 +265,9 @@ public class ZohoManager implements CatalogEnabled
 				 * */
 				
 				OAuthClientRequest request = OAuthClientRequest.authorizationLocation("https://accounts.zoho.com/oauth/v2/token").
-							setParameter("client_id", "1000.NPM8LJUIQ2ZD0ZJGIXHOKXHPP0W1HS").
-							setParameter("client_secret", "35328b8720dc5f3748d5ab901f91cb978b7298457f").
-							setParameter("code", "1000.438e93a35c85899c18b39d03b535455e.c908b50cf9d9bd14f9f3d51e91818d50").
+							setParameter("client_id", "").
+							setParameter("client_secret", "").
+							setParameter("code", "").
 							setParameter("grant_type", "authorization_code").
 							setParameter("redirect_uri", "http://localhost:8080").
 							setScope("WorkDrive.team.ALL").
