@@ -11,7 +11,13 @@
 	<property name="collectionidinfilename">true</property>
 
 	<property name="sortby">assetcreationdatedown</property>
-
+	
+	
+	<property name="allowframes">true</property>
+	<property name="allowframesfrom">frame-ancestors 'self' 'crm.zoho.com'</property>
+	
+	
+	<path-action name="Admin.allowCorsHeaders" alltypes="true" />	
 
     <path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>

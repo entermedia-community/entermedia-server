@@ -1,6 +1,7 @@
 <page>
 
-	<property name="allowframes">true</property>
+	
+	
 	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
     
 	<script id="videojs" src="/${applicationid}/components/javascript/videojs/7.8.2/video.js" />
@@ -9,5 +10,19 @@
 	<script id="videojs-res" src="/${applicationid}/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.js" />
 	<style  id="videjs-res-css" href="/${applicationid}/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.css"  />
     
+    
+    
+	<!-- permissions for embeding 
+	    
+    <permission name="view">
+	<or>
+		<boolean value="true" />
+		<user />
+		<referer value="https://CLIENT-DOMIAN.COM/*" />
+		<referer value="https://www.CLIENT-DOMAIN.net/*" />
+		<referer value="https://CLIENT.entermediadb.net/*" />
+	</or>
+	</permission>
+    -->
 	 
 </page>

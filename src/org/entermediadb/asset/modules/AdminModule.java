@@ -1509,6 +1509,15 @@ public class AdminModule extends BaseMediaModule
 				inReq.setCancelActions(true);
 				request.setStatus(200);
 			}
+			
+			//Frames
+			if(Boolean.parseBoolean(inReq.findValue("allowframes"))) {
+				String frameancestors = (String) inReq.findValue("allowframesfrom");
+				if (frameancestors != null) {
+					//frameancestors expected: frame-ancestors 'self' 'domain.com' 'domain2.com'
+					request.setHeader("Content-Security-Policy", frameancestors);
+				}
+			}
           	
 		}	
 		
