@@ -19,7 +19,8 @@
 	
 	<link rel="Shortcut Icon" type="image/x-icon" href="$home$apphome/theme/images/em-favicon.ico" />
 	  
-	$pages.include("/${applicationid}/theme/layouts/includes.html")
+	$pages.include("/${applicationid}/theme/layouts/includes.html", $context)
+	
 	#if($content.usemap == "true")
 		$pages.include("$apphome/components/map/includes.html")
 	#end

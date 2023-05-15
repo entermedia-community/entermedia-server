@@ -1,0 +1,7 @@
+<page>
+
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/gallery.html</inner-layout>
+	<!--inner-layout /-->
+	<property name="alwaysresetpage">false</property>
+	
+</page>
