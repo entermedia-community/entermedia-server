@@ -14,7 +14,7 @@
 	
 	
 	<property name="allowframes">true</property>
-	<property name="allowframesfrom">frame-ancestors 'self' 'crm.zoho.com'</property>
+	<property name="allowframesfrom">frame-ancestors 'self' http://crm.zoho.com</property>
 	
 	
 	<path-action name="Admin.allowCorsHeaders" alltypes="true" />	

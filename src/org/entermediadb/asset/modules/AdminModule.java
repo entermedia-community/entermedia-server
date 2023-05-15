@@ -1510,11 +1510,14 @@ public class AdminModule extends BaseMediaModule
 				request.setStatus(200);
 			}
 			
-			//Frames
+			
+			
+			//Allow be in a Frame only from specific domains. 
+			//Also Review Nginx conf, it may be overwrithing this setting.
 			if(Boolean.parseBoolean(inReq.findValue("allowframes"))) {
 				String frameancestors = (String) inReq.findValue("allowframesfrom");
 				if (frameancestors != null) {
-					//frameancestors expected: frame-ancestors 'self' 'domain.com' 'domain2.com'
+					//frameancestors expected: frame-ancestors 'self' https://domain.com https://domain2.com
 					request.setHeader("Content-Security-Policy", frameancestors);
 				}
 			}
