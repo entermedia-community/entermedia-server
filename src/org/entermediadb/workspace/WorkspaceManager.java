@@ -344,7 +344,7 @@ public class WorkspaceManager
 //		if( name == null)
 //		{
 			LanguageMap names = new LanguageMap();
-			names.setText("en", inModule.getName());
+			names.setText("en", inModule.getName("en"));
 			section.setValue("name",names);
 			sectionSearcher.saveData(section, null);
 //		}
