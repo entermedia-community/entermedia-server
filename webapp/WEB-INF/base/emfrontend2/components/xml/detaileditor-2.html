@@ -34,9 +34,7 @@
 <div class="container-fluid">
  <div class="row">
  #foreach( $detail in $details )
- 	
- 	<div class="$detailviewercolumnclass">
-	#set( $val = false )
+ 	#set( $val = false )
 	#set( $target = "${detail.id}.value" )
 	#set( $val = $context.getRequestParameter($target) )					
 	#if( $searcherManager )
@@ -51,6 +49,20 @@
 	
 	$!context.putPageValue("detail",$detail)
 	
+	#if($detail.dataType == "searchjoin" )
+		#set($viewtype = "searchjoin" )
+	#else
+		#set($viewtype = $detail.viewType)
+	#end
+	#if (!$viewtype)
+		#set($viewtype = $detail.dataType)
+	#end
+	#if (!$viewtype || $viewtype== "text")
+		#set ($viewtype = "default")
+	#end
+ 	
+ 	<div class="$detailviewercolumnclass emdatafield-$!viewtype">
+
 	#if ($detail.header)
 		#if ($detail.header != "blank")
 			<div class="header"><h4>$detail.header</h4></div>
