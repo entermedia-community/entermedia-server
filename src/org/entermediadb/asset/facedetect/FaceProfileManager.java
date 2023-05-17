@@ -331,9 +331,9 @@ public class FaceProfileManager implements CatalogEnabled
 			int y2 = box.getInteger("y_max");
 			int w = x2 - x;
 			int h = y2 - y;
-			if( w < 200 || h < 200)
+			if( w < 150 || h < 190)
 			{
-				log.info("Not enough data " + found );
+				log.info("Not enough data, small face detected w:" + w + " h:" + h );
 				continue;
 			}
 			Map faceprofile = new HashMap();
