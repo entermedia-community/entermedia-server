@@ -332,6 +332,7 @@ public class WorkspaceManager
 		lookup.put("mediadbappid",mediadb);
 		lookup.put("moduleid",inModule.getId());
 		lookup.put("module",inModule);
+		lookup.put("modulename",inModule.getName("en"));
 		
 		Searcher sectionSearcher = getSearcherManager().getSearcher(inCatalogId, "docsection");
 		Data section = (Data)sectionSearcher.searchById("module" + inModule.getId() );
