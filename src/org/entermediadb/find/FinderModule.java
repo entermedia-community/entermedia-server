@@ -18,6 +18,7 @@ import org.entermediadb.asset.autocomplete.LiveSuggestion;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
@@ -623,20 +624,28 @@ public class FinderModule extends BaseMediaModule
 		
 		String inModule = inReq.findValue("module");
 		
-		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		Data selected = archive.getCachedData("module", inModule);
+		if( selected != null)
 		{
-			Data data = (Data) iterator.next();
-			if( data.getId().equals("asset"))
+			Collection children = selected.getValues("childentities");
+			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 			{
-				continue; //Too big
-			}
-			String show = data.get("showonsearch");
-			if( !"modulesearch".equals(data.getId() ) && Boolean.parseBoolean(show))
-			{
-				//Make sure we are not in the module already... it will be searched another way
-				if( !data.getId().equals(inModule))
+				MultiValued amodule = (MultiValued) iterator.next();
+				
+				if( amodule.getId().equals(inModule))
 				{
-					searchmodules.add(data.getId());
+					continue; //Never search what we are in
+				}
+				if( children != null)
+				{
+					if( children.contains(amodule.getId() ) )
+					{
+						searchmodules.add(amodule.getId());
+					}
+				}
+				else
+				{
+					searchmodules.add(amodule.getId());
 				}
 			}
 		}
