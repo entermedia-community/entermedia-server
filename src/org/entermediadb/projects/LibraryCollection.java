@@ -155,7 +155,13 @@ return catid;
 		if(getRootCategoryId() == null){
 			return null;
 		}
-		return getMediaArchive().getCategory(getRootCategoryId());
+		Category cat = getMediaArchive().getCategory(getRootCategoryId());
+		if( !cat.containsValue("librarycollection",getId()))
+		{
+			cat.addValue("librarycollection", getId());
+			getMediaArchive().saveData("category", cat);
+		}
+		return cat;
 	}
 	public boolean isVisibility(String inCode)
 	{

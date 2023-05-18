@@ -111,6 +111,8 @@ public class FinderModule extends BaseMediaModule
 				
 				if( moduleid == null || !moduleid.equals("asset"))
 				{
+					//TODO: Only do if its child of current module
+					
 					SearchQuery copy = hits.getSearchQuery().copy();
 					copy.setFacets(null);
 					copy.setProperty("ignoresearchttype", "true");
