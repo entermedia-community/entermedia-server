@@ -623,9 +623,27 @@ public class FinderModule extends BaseMediaModule
 		Collection searchmodules = new ArrayList();
 		
 		String inModule = inReq.findValue("module");
+		if( inModule == null)
+		{
+			String defaultmodule = (String)inReq.getUserProfile().getValue("defaultmodule");
+			if( defaultmodule != null && !defaultmodule.isEmpty())
+			{
+				inModule = defaultmodule;
+			}
+		}
+		//pick last selected 
+		
 		
 		Data selected = archive.getCachedData("module", inModule);
-		if( selected != null)
+		if( selected == null)
+		{
+			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+			{
+				MultiValued amodule = (MultiValued) iterator.next();
+				searchmodules.add(amodule.getId());
+			}
+		}
+		else
 		{
 			Collection children = selected.getValues("childentities");
 			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
