@@ -629,7 +629,7 @@ public class FinderModule extends BaseMediaModule
 			if( defaultmodule != null && !defaultmodule.isEmpty())
 			{
 				inModule = defaultmodule;
-			}
+			}	
 		}
 		//pick last selected 
 		
@@ -667,6 +667,7 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 		}
+		searchmodules.remove("asset"); 
 		return searchmodules;
 	}
 
