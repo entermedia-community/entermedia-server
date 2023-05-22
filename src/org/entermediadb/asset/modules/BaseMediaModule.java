@@ -333,7 +333,7 @@ public class BaseMediaModule extends BaseModule
 		
 		if(moduleid == null && inReq.getUserProfile() != null)
 		{
-			moduleid = inReq.getUserProfile().get("last_selected_module");
+			//moduleid = inReq.getUserProfile().get("last_selected_module");
 		}
 		if(moduleid == null)
 		{
