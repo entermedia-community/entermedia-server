@@ -37,6 +37,12 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		{
 			throw new OpenEditException("DataEditModule.loadOrSearchByTypes needs to be called on this search " + inQuery);
 		}
+		if( searchmodules.contains("asset"))
+		{
+			//We always skip assets
+			searchmodules = new ArrayList(searchmodules);
+			searchmodules.remove("asset");
+		}
 		SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 		search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 		

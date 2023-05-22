@@ -111,39 +111,41 @@ public class FinderModule extends BaseMediaModule
 				
 				if( moduleid == null || !moduleid.equals("asset"))
 				{
-					//TODO: Only do if its child of current module
-					
-					SearchQuery copy = hits.getSearchQuery().copy();
-					copy.setFacets(null);
-					copy.setProperty("ignoresearchttype", "true");
-					//Fix the terms so it has the right details
-//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
-//					{
-//						Term term = (Term) iterator.next();
-//						term.copy();
-//						
-//					}
-					copy.addSortBy("assetaddeddateDown");
-					copy.setHitsName("entityhits");
-					HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
-//					assets.setSearcher(archive.getAssetSearcher());
-//					assets.setDataSource("asset");
-					assethits.setSessionId("hitsasset" + archive.getCatalogId() );
-//					assets.setSearchQuery(hits.getSearchQuery());
-//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
-					//log.info(assets.getSessionId());
-					UserProfile profile = inReq.getUserProfile();
-					//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
-					assethits.setHitsPerPage( targetsize );
-					
-					inReq.putPageValue(assethits.getHitsName(), assethits);
-					inReq.putSessionValue(assethits.getSessionId(), assethits);
-					if( !assethits.isEmpty())
+					Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
+					if( types == null || types.contains("asset"))
 					{
-						Data assetmodule = archive.getCachedData("module", "asset");
-						foundmodules.add(assetmodule);
+						SearchQuery copy = hits.getSearchQuery().copy();
+						copy.setFacets(null);
+						copy.setProperty("ignoresearchttype", "true");
+						//Fix the terms so it has the right details
+	//					for (Iterator iterator = copy.getTerms().iterator(); iterator.hasNext();)
+	//					{
+	//						Term term = (Term) iterator.next();
+	//						term.copy();
+	//						
+	//					}
+						copy.addSortBy("assetaddeddateDown");
+						copy.setHitsName("entityhits");
+						HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq,copy);
+	//					assets.setSearcher(archive.getAssetSearcher());
+	//					assets.setDataSource("asset");
+						assethits.setSessionId("hitsasset" + archive.getCatalogId() );
+	//					assets.setSearchQuery(hits.getSearchQuery());
+	//					assets.setIndexId(archive.getAssetSearcher().getIndexId());
+						//log.info(assets.getSessionId());
+						UserProfile profile = inReq.getUserProfile();
+						//Integer mediasample  = profile.getHitsPerPageForSearchType(hits.getSearchType());
+						assethits.setHitsPerPage( targetsize );
+						
+						inReq.putPageValue(assethits.getHitsName(), assethits);
+						inReq.putSessionValue(assethits.getSessionId(), assethits);
+						if( !assethits.isEmpty())
+						{
+							Data assetmodule = archive.getCachedData("module", "asset");
+							foundmodules.add(assetmodule);
+						}
+						bytypes.put("asset",assethits);
 					}
-					bytypes.put("asset",assethits);
 				}
 				
 
@@ -669,7 +671,7 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 		}
-		searchmodules.remove("asset"); 
+		//searchmodules.remove("asset"); 
 		return searchmodules;
 	}
 
