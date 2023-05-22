@@ -1200,6 +1200,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		types.remove("modulesearch");
 		types.remove("category");
 		types.add(0, "category");
+		
+		//Skip these types
+		Collection values = getSearcherManager().getList("system", "skiptables");
+		
 		return types;
 
 	}
