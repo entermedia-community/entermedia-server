@@ -236,7 +236,6 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			try
 			{
 				saveToElasticSearch(details, data, false,inUser); //Cant use bulk operations because id wont be set
-				getXmlSearcher().saveData(data, inUser);
 			}
 			catch(Throwable ex)
 			{
@@ -244,6 +243,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 				throw new OpenEditException(ex);
 			}
 		}
+		getXmlSearcher().saveAllData(inAll, inUser);
 	}
 
 	public void saveData(Data inData, User inUser)

@@ -691,7 +691,12 @@ public class ProfileModule extends MediaArchiveModule
 		String id = inReq.getRequestParameter("userid");
 		getUserProfileManager().clearProfile(archive.getCatalogId(), id);
 	}
-	
+
+	public void clearProfiles(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		getUserProfileManager().clearProfiles(archive.getCatalogId());
+	}
+
 
 	public void saveProperty(WebPageRequest inReq)
 	{

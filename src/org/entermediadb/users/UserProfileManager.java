@@ -551,4 +551,12 @@ public class UserProfileManager
 		mediaArchive.getCacheManager().remove("userprofile", id);
 		
 	}
+
+	public void clearProfiles(String inCatalogId)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
+		mediaArchive.getSearcher("settingsgroup").clearIndex();
+		mediaArchive.clearCaches();
+		
+	}
 }
