@@ -297,7 +297,12 @@ public class BaseMediaModule extends BaseModule
 	protected String resolveSearchType(WebPageRequest inReq)
 	{
 		String searchtype = inReq.findPathValue("searchtype");
+		if(searchtype == null) {
+			if(inReq.getUser() != null && inReq.getUser().isInGroup("administrators")) {
+				 searchtype = inReq.findValue("searchtype");
 
+			}
+		}
 		inReq.putPageValue("searchtype", searchtype);
 		return searchtype;
 	}
