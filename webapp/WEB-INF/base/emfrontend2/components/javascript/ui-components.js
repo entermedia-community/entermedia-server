@@ -2482,15 +2482,15 @@ uiload = function() {
 	}
 	
     $('#setup-view').click(function(){
-        if ( $('#setup-view').hasClass('open') ) {
+        if ( $('#views-settings').hasClass('open') ) {
             $('#views-header').height(16)
             $('#views-settings').hide();
-            $('#setup-view').removeClass('open');
+            $('#views-settings').removeClass('open');
         }
         else {
             $('#views-header').height('auto')
             $('#views-settings').show();
-            $('#setup-view').addClass('open'); 
+            $('#views-settings').addClass('open'); 
         }
     })
     

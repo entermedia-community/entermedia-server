@@ -1821,7 +1821,9 @@ String viewbase = null;
 	{
 		Searcher searcher = loadSearcher(inReq);
 		String field = inReq.getRequestParameter("field");
-
+		if(field == null) {
+			field = "ordering"; //default
+		}
 		String[] ids = inReq.getRequestParameters("ids");
 		ArrayList valuestosave = new ArrayList();
 		for (int i = 0; i < ids.length; i++)
