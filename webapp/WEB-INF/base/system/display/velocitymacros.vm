@@ -6,8 +6,7 @@
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)
 #set( $text = $context.getText($t) )
-$!url_util.xmlEscape($text)
-#end
+$!{url_util.xmlEscape($text)}#end
 #macro(datatext $data $field)
 #set( $text = $data.getText($field,$context))
 $!url_util.xmlEscape($text)
