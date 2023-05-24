@@ -1,13 +1,15 @@
 #set( $collection =  $mediaarchive.getBean("entityManager").loadChildren($searcher.getSearchType(), $data.getId(), $detail.getListId()))
 
+$detail.getListId()
 <ul class="entity-value-list">
 	#foreach( $entity in $collection )
-	    #set($link = "$applink/components/gridsample/preview/entity.html")
+	    #set($link = "$applink/views/modules/${detail.getListId()}/components/gridsample/preview/entity.html")
 	     <li>
 	     <a href="$link" class="emdialog entity-dialog" 
 	     		data-noesc="true" 
 	     		data-entityid="$entity.getId()" 
-	     		data-searchtype="$detail.getListId()"
+	     		data-targetrendertype="entity"
+	    		data-targetcomponenthome="/$applicationid/views/modules/$detail.getListId()/components"
 	    		data-id="$entity.getId()"
 	    		data-updateurl="true"
 	    		title='[[View Folder]]'>#text($entity)</a>
