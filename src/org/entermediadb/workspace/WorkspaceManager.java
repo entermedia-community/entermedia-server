@@ -113,7 +113,8 @@ public class WorkspaceManager
 		searchtype = searchtype.toLowerCase();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		String path = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
-		if( getPageManager().getPage(path).exists() )
+		String pathbase = "/" + catalogid + "/fields/" + searchtype + ".xml";
+		if( getPageManager().getPage(path).exists() || getPageManager().getPage(pathbase).exists() )
 		{
 			return searchtype;
 		}
@@ -189,7 +190,8 @@ public class WorkspaceManager
 					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
 					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
-					if( !destination.exists() )
+					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
+					if( !destination.exists() && !destinationbase.exists() )
 					{
 						String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
@@ -237,6 +239,8 @@ public class WorkspaceManager
 				
 				Searcher views = getSearcherManager().getSearcher(catalogid, "view");
 				Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
+				
+				boolean copied = false;
 				for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
 				{
 					
@@ -245,23 +249,30 @@ public class WorkspaceManager
 					Page destpath = null;
 					
 					String pathfinal = "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/";
+					String pathfinalbase = "/" + catalogid + "/views/" + module.getId() + "/";
 					
 					if (input.getName().indexOf(module.getId()) != -1) {
 						pathfinal = pathfinal + input.getName();
+						pathfinalbase = pathfinalbase + input.getName();
 					}
 					else {
 						pathfinal = pathfinal + module.getId()+ input.getName();
+						pathfinalbase = pathfinalbase + module.getId()+ input.getName();
 					}
 					
 					destpath = getPageManager().getPage( pathfinal );
+					Page destpathbase = getPageManager().getPage( pathfinalbase );
 					
-					if (!destpath.exists()) {
+					if (!destpath.exists() && !destpathbase.exists()) {
 						getPageManager().copyPage(input, destpath);
+						copied = true;
 					}
 					
 				}
-				
-				views.reIndexAll();
+				if( copied )
+				{
+					views.reIndexAll();
+				}
 				String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 				String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 				if( !getPageManager().getPage(path2).exists())
