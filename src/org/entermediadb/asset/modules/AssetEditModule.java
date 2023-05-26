@@ -743,16 +743,15 @@ public class AssetEditModule extends BaseMediaModule
 
 		boolean oktoadd = archive.isCatalogSettingTrue("assigncategoryonupload");
 
-		if( currentcollection != null)
+		if( currentcollection != null )
 		{
 			oktoadd = true; //Should use the mask to make any sub-categories
 		}
-
 		Object cat = metadata.get("category.value");
 
 		if( cat != null)
 		{
-			oktoadd = false; //Will already exist
+			oktoadd = true; //Will already exist
 		}
 		boolean assigncategory =  oktoadd;
 		

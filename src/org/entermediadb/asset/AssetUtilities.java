@@ -396,9 +396,17 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 		else
 		{
-			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //Dumb name ${division.uploadpath}/${user.userName}/${formateddate}
-			String uploadcategoryid = inReq.getRequestParameter("category.value");
-
+			sourcepathmask = inArchive.getCatalogSettingValue("categoryupload"); //Dumb name ${division.uploadpath}/${user.userName}/${formateddate}
+			if( sourcepathmask == null)
+			{
+				sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //Dumb name ${division.uploadpath}/${user.userName}/${formateddate}
+			}
+			
+			String uploadcategoryid = inReq.getRequestParameter("categoryrootid");
+			if( uploadcategoryid == null)
+			{
+				uploadcategoryid = inReq.getRequestParameter("category.value");
+			}
 			if (uploadcategoryid != null)
 			{
 
