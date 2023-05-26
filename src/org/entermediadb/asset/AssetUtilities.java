@@ -470,6 +470,16 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			vals.put("division", division);
 		}
 
+		String categoryparent = inReq.getRequestParameter("parentcategoryid");
+		if (categoryparent != null)
+		{
+			Category uploadto = inArchive.getCategory(categoryparent);
+			if (uploadto != null)
+			{
+				vals.put("categorypath", uploadto.getCategoryPath());
+			}
+		}
+
 		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), fileName, sourcepathmask, vals);
 
 		return sourcepath;
