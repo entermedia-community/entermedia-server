@@ -180,8 +180,12 @@ public class WorkspaceManager
 				//is Entity?
 				if (Boolean.parseBoolean(module.get("isentity"))) {
 					String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
-					String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-					copyXml(catalogid, templateentities, pathentities, module);
+					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
+					if( !pathentitiesbase.exists())
+					{
+						String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+						copyXml(catalogid, templateentities, pathentities, module);
+					}
 					viewstemplate = "/" + catalogid + "/data/views/" + module.getId() + "/";
 					Page viewstemplatedefaults = getPageManager().getPage(viewstemplate);
 					if (!viewstemplatedefaults.exists()) 
@@ -232,7 +236,11 @@ public class WorkspaceManager
 				}else {
 					String template = "/" + catalogid + "/data/lists/view/default.xml";
 					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-					copyXml(catalogid, template, path, module);		
+					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
+					if( !pathentitiesbase.exists())
+					{
+						copyXml(catalogid, template, path, module);		
+					}
 					viewstemplate = "/" + catalogid + "/data/views/defaults/";
 				}
 				
