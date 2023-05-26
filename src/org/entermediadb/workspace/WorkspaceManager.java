@@ -257,7 +257,7 @@ public class WorkspaceManager
 					Page destpath = null;
 					
 					String pathfinal = "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/";
-					String pathfinalbase = "/" + catalogid + "/views/" + module.getId() + "/";
+					String pathfinalbase = "/" + catalogid + "/data/views/" + module.getId() + "/";
 					
 					if (input.getName().indexOf(module.getId()) != -1) {
 						pathfinal = pathfinal + input.getName();
