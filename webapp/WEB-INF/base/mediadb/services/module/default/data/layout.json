@@ -15,36 +15,34 @@
 {
   "response":
       {
-        "status":"$status",
-        "id":"$data.id"
+        "status":"$status"
+        #ifnotnull($data),"id":"$data.id"#end
       }
-  ,
-  "data":#json($data $searcher.getPropertyDetails())
+  #ifnotnull($data),
+  "data":#json($data $searcher.getPropertyDetails())#end
 }  
 #elseif($method == "POST")## for creating assets
 {
   "response":
       {
-        "status":"$status",
-        "id":"$data.id"
+        "status":"$status"
+        #ifnotnull($data),"id":"$data.id"#end
       }
-  ,
-  "data":#json($data $searcher.getPropertyDetails())
+  #ifnotnull($data),
+  "data":#json($data $searcher.getPropertyDetails())#end
 }
 #elseif($method == "GET")
 {
   "response":
       {
-        "status":"$status",
-        "id":"$data.id"
+        "status":"$status"
+        #ifnotnull($data),"id":"$data.id"#end
       }
-  ,
-  
-  "data":
-  
-	$context.putPageValue("hit",$data)
-	$pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
-  
+  #ifnotnull($data),
+    "data":
+  		$context.putPageValue("hit",$data)
+		$pages.include(	"${apphome}/services/module/${searcher.getSearchType()}/hit.json",$context)
+  #end
 }
 #else
   {

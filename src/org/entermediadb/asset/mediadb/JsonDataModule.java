@@ -147,6 +147,8 @@ public class JsonDataModule extends BaseJsonModule
 
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
+		inReq.putPageValue("searcher", searcher);
+		
 		String id = getId(inReq);
 
 		Data data = (Data) searcher.searchById(id);
@@ -158,7 +160,7 @@ public class JsonDataModule extends BaseJsonModule
 		}
 		
 		inReq.putPageValue("data", data);
-		inReq.putPageValue("searcher", searcher);
+		
 
 		return data;
 
