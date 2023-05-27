@@ -40,7 +40,8 @@
 		#if( $type == "image" || $type == "document")
 			#set( $preview = "$!prefix$!home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
 		#elseif( $type == "audio" )
-			#set( $preview = "$!prefix$!home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
+			##set( $preview = "$!prefix$!home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
+			#set( $preview = "$!prefix$!home/${mediadbappid}/services/module/asset/downloads/preset/${asset.sourcePath}/audio.mp3")
 		#end
 		"preview":"#urlencode($preview)",
 	#end
