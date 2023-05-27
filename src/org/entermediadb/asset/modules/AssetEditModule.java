@@ -741,20 +741,7 @@ public class AssetEditModule extends BaseMediaModule
 		final Map metadata = readMetaData(inReq, archive, "");
 		final String currentcollection = (String) metadata.get("collectionid");
 
-		boolean oktoadd = archive.isCatalogSettingTrue("assigncategoryonupload");
-
-		if( currentcollection != null)
-		{
-			oktoadd = true; //Should use the mask to make any sub-categories
-		}
-
-		Object cat = metadata.get("category.value");
-
-		if( cat != null)
-		{
-			oktoadd = false; //Will already exist
-		}
-		boolean assigncategory =  oktoadd;
+		boolean assigncategory =  true;
 		
 		String inputsourcepath = inReq.findValue("sourcepath");
 		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
@@ -1038,13 +1025,32 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		vals.put("categories", cats);
 
+		categories = inReq.getRequestParameters(prefix + "category.value");
+		if (categories != null)
+		{
+			for (int i = 0; i < categories.length; i++)
+			{
+				Category cat = archive.getCategory(categories[i]);
+				if (cat != null)
+				{
+					cats.add(cat);
+				}
+			}
+		}
+		vals.put("categories", cats);
+		
+		
 		if (fields != null)
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
 				String afield = fields[i];
+				if( afield.equals("category"))
+				{
+					//already handled above
+					continue;
+				}
 				Object val = inReq.getRequestParameters(prefix + afield + ".value");
 				if (val == null)
 				{
@@ -1075,7 +1081,6 @@ public class AssetEditModule extends BaseMediaModule
 							lmap.setText(lang, langval);
 						}
 					}
-
 					val = lmap;
 				}
 

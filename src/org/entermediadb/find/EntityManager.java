@@ -97,6 +97,10 @@ public class EntityManager implements CatalogEnabled
 	}	
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
+		if( entity.getValue("uploadsourcepath") != null)
+		{
+			return entity.get("uploadsourcepath");
+		}
 		String mask = (String) module.getValue("uploadsourcepath");
 		String sourcepath = "";
 		if(mask != null)
@@ -138,6 +142,8 @@ public class EntityManager implements CatalogEnabled
 				sourcepath = module.getName("en") + "/" + entity.getName() + "/";
 			}
 		}
+		entity.setValue("uploadsourcepath",sourcepath );
+		getMediaArchive().saveData(module.getId(), entity);
 		return sourcepath;
 	}	
 
