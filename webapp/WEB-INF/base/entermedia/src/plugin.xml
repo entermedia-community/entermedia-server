@@ -768,7 +768,7 @@
 			</property>
 	</bean>
 
-	<bean id="zohoAssetSource" class="org.entermediadb.asset.sources.ZohoAssetSource"
+	<!-- bean id="zohoAssetSource" class="org.entermediadb.asset.sources.ZohoAssetSource"
 		scope="prototype">
 				<property name="webServer"><ref bean="WebServer" /></property>		
 		
@@ -778,7 +778,7 @@
 			<property name="pageManager">
 				<ref bean="pageManager" />
 			</property>
-	</bean>
+	</bean -->
 
 
 
@@ -2226,11 +2226,11 @@
 		</property>
 	</bean>
 
-	<bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager"  scope="prototype" >
+	<!-- bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager"  scope="prototype" >
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-	</bean>	
+	</bean -->	
 	
 	<bean id="queueManager" class="org.entermediadb.asset.convert.QueueManager"  scope="prototype" >
 		<property name="moduleManager">
