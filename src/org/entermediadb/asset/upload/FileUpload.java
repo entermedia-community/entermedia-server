@@ -266,6 +266,10 @@ public class FileUpload
 					}
 					else
 					{
+						if( tmp.getName().startsWith("."))
+						{
+							continue; //ignore .DS Store
+						}
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setFileItem(tmp);
 						String name = tmp.getName();
