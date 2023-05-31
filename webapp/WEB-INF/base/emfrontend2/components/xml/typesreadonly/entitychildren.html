@@ -1,5 +1,5 @@
 #set( $collection =  $mediaarchive.getBean("entityManager").loadChildren($searcher.getSearchType(), $data.getId(), $detail.getListId()))
-
+##XXX $searcher.getSearchType(), $data.getId(), $detail.getListId()  $collection
 <ul class="entity-value-list">
 	#foreach( $entity in $collection )
 	    #set($link = "$applink/views/modules/${detail.getListId()}/components/gridsample/preview/entity.html")
