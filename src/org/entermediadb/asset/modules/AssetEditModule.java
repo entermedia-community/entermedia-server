@@ -2014,12 +2014,11 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			Searcher searcher = archive.getSearcher(searchtype);
 			target = searcher.createNewData();
+			String[] fields = inReq.getRequestParameters("field");
+			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
 			searcher.saveData(target, inReq.getUser());
 			id = target.getId();
 			inReq.setRequestParameter("id", id);
-			String[] fields = inReq.getRequestParameters("field");
-
-			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
 		}
 		Collection savedassets = new ArrayList();
 		
@@ -2051,8 +2050,12 @@ public class AssetEditModule extends BaseMediaModule
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null && detail.get("sourcepath") != null)
 				{
-					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
+					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,searchtype,target,inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
 					//OLD style sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
+					if( sourcepath.endsWith("/"))
+					{
+						sourcepath = sourcepath + item.getName();
+					}
 				}
 			}
 			String path = "";
@@ -2060,7 +2063,8 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
 			}
-			else {
+			else 
+			{
 				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName());
 				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
 			}
