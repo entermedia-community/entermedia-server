@@ -156,7 +156,7 @@ return catid;
 			return null;
 		}
 		Category cat = getMediaArchive().getCategory(getRootCategoryId());
-		if( !cat.containsValue("librarycollection",getId()))
+		if( cat!= null &&  !cat.containsValue("librarycollection",getId()))
 		{
 			cat.addValue("librarycollection", getId());
 			getMediaArchive().saveData("category", cat);
