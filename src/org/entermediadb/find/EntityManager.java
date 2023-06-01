@@ -97,6 +97,9 @@ public class EntityManager implements CatalogEnabled
 	}	
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
+		if (entity == null ) {
+			return null;
+		}
 		if( entity.getValue("uploadsourcepath") != null)
 		{
 			return entity.get("uploadsourcepath");

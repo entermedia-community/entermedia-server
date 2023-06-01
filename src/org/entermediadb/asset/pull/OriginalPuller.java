@@ -411,7 +411,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 							tosave.getParentFile().delete();
 						}
 						
-						log.info("Saving :" + found.getAbsolutePath());
+						log.info("Saving: " + found.getAbsolutePath());
 						
 						
 						InputStream stream = genfile.getEntity().getContent();
