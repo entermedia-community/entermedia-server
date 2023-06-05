@@ -7,17 +7,44 @@
 	
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
-		#set($entry = $filternode.children[1])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="true" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[True]] </label>
-		</a>
-		#set($entry = $filternode.children[0])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="false" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[False]] </label>
-		</a>
 		
+		#set($selected = "")
+		
+		#if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") )
+			##true selected
+			#set($selected = "true")
+			#set($entry_true = $filternode.children[0])
+		#end
+		#if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") )
+			##false selected
+			#set($selected = "false")
+			#set($entry_false = $filternode.children[0])
+		#end
+		
+		#if($selected.equals(""))
+			#set($entry_true = $filternode.children[1])
+			#set($entry_false = $filternode.children[0])
+		#end
+		
+		#ifnotnull($entry_true)
+				<a class="addfilter #if ($first) filter-current #end radiofilter" 
+					data-filtertype="$filternode.getId()" 
+					data-filtervalue="true" 
+					data-filterlabel="$entry_true.getText($context)" href="#" title="($entry_true.count)">
+				<input type="checkbox" name="${fieldname}.value" id="$entry_true.getId()${fieldname}_val" value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
+				<label for="$entry_true.getId()${fieldname}_val"> [[True]] </label>
+				</a>
+		#end
+		#ifnotnull($entry_false)
+			<a class="addfilter #if ($first) filter-current #end radiofilter" 
+				data-filtertype="$filternode.getId()" 
+				data-filtervalue="false" 
+				data-filterlabel="$entry_false.getText($context)" 
+				href="#" title="($entry_false.count)">
+			<input type="checkbox" name="${fieldname}.value" id="$entry_false.getId()${fieldname}_val" value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
+			<label for="$entry_false.getId()${fieldname}_val"> [[False]] </label>
+			</a>
+		#end
 
 		
 	#end  ##permission
