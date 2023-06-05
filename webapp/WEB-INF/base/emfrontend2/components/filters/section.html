@@ -1,7 +1,7 @@
 <tr>
 	<td>	
-		<h4>$detail.title</h4>
-		<div class="advSearchSection" style="#if ($detail.size() > 4) height:10em; #end">
+		<h4>$!detail.title</h4>
+		<div class="advSearchSection" style="#if (!$detail.empty() && $detail.size() > 4) height:10em; #end">
 			<table>
 			#foreach( $child in $detail)
 				$context.putPageValue("detail", $child)

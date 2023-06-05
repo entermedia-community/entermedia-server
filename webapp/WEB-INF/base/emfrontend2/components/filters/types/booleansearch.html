@@ -8,7 +8,7 @@
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
 		
-		#set($selected = "")
+		#set($selected = "X")
 		
 		#if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") )
 			##true selected
@@ -21,27 +21,39 @@
 			#set($entry_false = $filternode.children[0])
 		#end
 		
-		#if($selected.equals(""))
+		#if($selected.equals("X"))
 			#set($entry_true = $filternode.children[1])
 			#set($entry_false = $filternode.children[0])
 		#end
 		
 		#ifnotnull($entry_true)
-				<a class="addfilter #if ($first) filter-current #end radiofilter" 
+				<a class='addfilter #if ($first) filter-current #end  radiofilter' 
 					data-filtertype="$filternode.getId()" 
 					data-filtervalue="true" 
 					data-filterlabel="$entry_true.getText($context)" href="#" title="($entry_true.count)">
-				<input type="checkbox" name="${fieldname}.value" id="$entry_true.getId()${fieldname}_val" value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
+				<input type="checkbox" 
+					name="${fieldname}.value" 
+					id="$entry_true.getId()${fieldname}_val"
+					class='#if($selected.equals("true"))filtercheck#end' 
+					data-fieldtype="boolean"
+					data-fieldname="${fieldname}"
+					value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
 				<label for="$entry_true.getId()${fieldname}_val"> [[True]] </label>
 				</a>
 		#end
 		#ifnotnull($entry_false)
-			<a class="addfilter #if ($first) filter-current #end radiofilter" 
+			<a class='addfilter #if ($first) filter-current #end  radiofilter' 
 				data-filtertype="$filternode.getId()" 
 				data-filtervalue="false" 
 				data-filterlabel="$entry_false.getText($context)" 
 				href="#" title="($entry_false.count)">
-			<input type="checkbox" name="${fieldname}.value" id="$entry_false.getId()${fieldname}_val" value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
+			<input type="checkbox" 
+				name="${fieldname}.value" 
+				id="$entry_false.getId()${fieldname}_val"
+				class='#if($selected.equals("false"))filtercheck#end' 
+				data-fieldtype="boolean"
+				data-fieldname="${fieldname}"
+				value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
 			<label for="$entry_false.getId()${fieldname}_val"> [[False]] </label>
 			</a>
 		#end
