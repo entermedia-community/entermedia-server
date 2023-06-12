@@ -690,6 +690,7 @@ public class FinderModule extends BaseMediaModule
 			if( !cat.containsValue("viewusers", inReq.getUserName()) )
 			{
 				cat.addValue("viewusers", inReq.getUserName());
+				cat.setValue("securityenabled",true);
 				//reload profile
 				//search again for results
 				archive.saveData("category", cat);
@@ -702,6 +703,7 @@ public class FinderModule extends BaseMediaModule
 				if( !entity.getData().containsValue("viewusers", inReq.getUserName()) )
 				{
 					entity.getData().addValue("viewusers", inReq.getUserName());
+					entity.getData().setValue("securityenabled",true);
 					archive.saveData(entity.getModuleId(), entity.getData());
 				}					
 			}
