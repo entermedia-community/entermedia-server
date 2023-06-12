@@ -5,14 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.autocomplete.LiveSuggestion;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -28,6 +27,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
+import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
@@ -681,5 +681,30 @@ public class FinderModule extends BaseMediaModule
 	}
 
 	
-	
+	public void assignUserToEntities(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Category cat = archive.getCategory(inReq);
+		if( cat != null)
+		{
+			if( !cat.containsValue("viewusers", inReq.getUserName()) )
+			{
+				cat.addValue("viewusers", inReq.getUserName());
+				//reload profile
+				//search again for results
+				archive.saveData("category", cat);
+			}
+			//get all entities and add user
+			Collection entities = inReq.getUserProfile().getEntitiesInParent(cat);
+			for (Iterator iterator = entities.iterator(); iterator.hasNext();)
+			{
+				ModuleData entity = (ModuleData) iterator.next();
+				if( !entity.containsValue("viewusers", inReq.getUserName()) )
+				{
+					entity.addValue("viewusers", inReq.getUserName());
+					archive.saveData(entity.getModuleId(), entity);
+				}					
+			}
+		}
+	}
 }
