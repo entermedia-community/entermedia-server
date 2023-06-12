@@ -699,10 +699,10 @@ public class FinderModule extends BaseMediaModule
 			for (Iterator iterator = entities.iterator(); iterator.hasNext();)
 			{
 				ModuleData entity = (ModuleData) iterator.next();
-				if( !entity.containsValue("viewusers", inReq.getUserName()) )
+				if( !entity.getData().containsValue("viewusers", inReq.getUserName()) )
 				{
-					entity.addValue("viewusers", inReq.getUserName());
-					archive.saveData(entity.getModuleId(), entity);
+					entity.getData().addValue("viewusers", inReq.getUserName());
+					archive.saveData(entity.getModuleId(), entity.getData());
 				}					
 			}
 		}
