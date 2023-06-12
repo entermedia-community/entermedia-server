@@ -1468,14 +1468,24 @@ public class MediaArchive implements CatalogEnabled
 
 		if (category == null && categoryId == null)
 		{
-			// get it from the path?
-			String path = inReq.getPath();
-
-			categoryId = PathUtilities.extractPageName(path);
-			if (categoryId.endsWith(".draft"))
+			String level = inReq.findActionValue("idlevel");
+			if( level != null)
 			{
-				categoryId = categoryId.replace(".draft", "");
+				String[] levels = inReq.getPath().split("/");
+				int pick = Integer.parseInt(level);
+				int fromend = levels.length - pick - 1;
+				categoryId = levels[fromend];
 			}
+			else
+			{
+				String path = inReq.getPath();
+				categoryId = PathUtilities.extractPageName(path);
+				if (categoryId.endsWith(".draft"))
+				{
+					categoryId = categoryId.replace(".draft", "");
+				}
+			}
+
 		}
 
 		// Why the content page? Page page = inPageRequest.getContentPage();
