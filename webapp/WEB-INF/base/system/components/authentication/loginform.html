@@ -2,6 +2,9 @@
 #if(!$loginokpage)
 	#set($loginokpage = $context.findValue("loginokpage") )
 #end 
+#if(!$loginokpage)
+	#set($loginokpage = $context.getSessionValue("fullOriginalEntryPage") )
+#end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 <div class="container">
 	#if($user)
