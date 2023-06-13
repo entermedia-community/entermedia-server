@@ -212,6 +212,9 @@ public class AdminModule extends BaseMediaModule
 				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
 			}
 			passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
+			if(inReq.getPageValue("error") != null) {
+				log.info("Error sending Email. " + inReq.getPageValue("error"));
+			}
 			inReq.putPageValue("commandSucceeded", "ok");
 			//inReq.putPageValue("founduserid", foundUser.getUserName());
 			
