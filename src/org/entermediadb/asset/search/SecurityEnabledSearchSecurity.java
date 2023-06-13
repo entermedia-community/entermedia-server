@@ -29,7 +29,12 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 		{
 			return inQuery;					
 		}
-		
+
+		if (profile != null && profile.isInRole("administrator"))
+		{
+			return inQuery;					
+		}
+
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
 		
