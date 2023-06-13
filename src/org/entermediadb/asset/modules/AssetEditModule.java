@@ -1708,7 +1708,7 @@ public class AssetEditModule extends BaseMediaModule
 		SearchQuery q = searcher.createSearchQuery();
 		q.setHitsName("voteshits");
 		q.addMatches("assetid", asset.getId());
-		HitTracker hits = searcher.cachedSearch(inReq, q);
+		HitTracker hits = searcher.search(q);
 
 		String username = inReq.getUserName();
 		if (username != null)
