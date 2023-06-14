@@ -111,6 +111,7 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.Replacer;
 
 import groovy.json.JsonOutput;
 
@@ -137,7 +138,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected boolean fieldIncludeFullText = true;
 	protected OutputFiller fieldFiller;
 	protected PageManager fieldPageManager;
+	protected Replacer fieldReplacer;
 
+	protected Replacer getReplacer()
+	{
+		if (fieldReplacer == null)
+		{
+			fieldReplacer = (Replacer)getModuleManager().getBean(getCatalogId(),"replacer");
+		}
+
+		return fieldReplacer;
+	}
+
+	protected void setReplacer(Replacer inReplacer)
+	{
+		fieldReplacer = inReplacer;
+	}
 	protected boolean fieldOptimizeReindex = true;
 	public boolean isOptimizeReindex()
 	{
@@ -2481,12 +2497,21 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					inContent.field(propid, value);
 					continue;
 				}
-				Object value = inData.getValue(key);
-				if (value != null)
+				Object value  = null;
+				String mask = detail.get("rendermask");
+				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
 				{
-					if (value instanceof String && ((String) value).isEmpty())
+					value = getReplacer().replace(mask, inData);
+				}
+				if( value == null)
+				{
+					value = inData.getValue(key);
+					if (value != null)
 					{
-						value = null;
+						if (value instanceof String && ((String) value).isEmpty())  //Standarize
+						{
+							value = null;
+						}
 					}
 				}
 				//				if( isReIndexing() ) //When reindexing dont mess with this data
