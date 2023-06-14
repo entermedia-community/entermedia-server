@@ -87,7 +87,7 @@ public class CategoryZipGenerator extends BaseGenerator
 		{
 			Data asset = (Data) iterator.next();
 			
-			String filename = thispath + asset.getName();
+			String filename = thispath + asset.getName("en");
 			ZipEntry entry = new ZipEntry(filename);
 			ContentItem inFile = archive.getOriginalContent(asset);
 			entry.setSize(inFile.getLength());
