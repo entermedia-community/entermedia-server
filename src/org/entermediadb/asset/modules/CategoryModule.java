@@ -64,7 +64,7 @@ public class CategoryModule extends BaseMediaModule
 		String treeid = inRequest.getRequestParameter("treeid");
 		if( treeid == null)
 		{
-			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
+			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName() + archive.getCategorySearcher().getIndexId();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
 		
@@ -84,10 +84,10 @@ public class CategoryModule extends BaseMediaModule
 			main = archive.getCategorySearcher().getRootCategory();
 		}
 		
-		WebTreeModel model;
+		CategoryWebTreeModel model;
 		if( webTree != null && webTree.getModel().getRoot() == main)
 		{
-			model = webTree.getModel();
+			model = (CategoryWebTreeModel)webTree.getModel();
 		}
 		else
 		{
@@ -101,10 +101,10 @@ public class CategoryModule extends BaseMediaModule
 			amodel.setCatalogId(archive.getCatalogId());
 			amodel.setRoot(main);
 			amodel.setCategorySearcher(archive.getCategorySearcher());
-			amodel.setUserProfile(inRequest.getUserProfile());
 			amodel.setRequestUtils(getRequestUtils());			
 			model = amodel;
 		}
+		model.setUserProfile(inRequest.getUserProfile());
 
 		String reload = inRequest.getRequestParameter("reloadtree");
 
@@ -129,19 +129,30 @@ public class CategoryModule extends BaseMediaModule
 				return null;
 			}
 			log.debug("No Category in Session, creating new " + treeid);
+			WebTree oldwebTree = webTree;
 			webTree = new WebTree(model);
 			webTree.setName(name);
 			webTree.setId(treeid);
 
-			CatalogTreeRenderer renderer = new CatalogTreeRenderer( webTree );
+			CatalogTreeRenderer renderer = null;
+			if( oldwebTree == null)
+			{
+			
+			renderer = new CatalogTreeRenderer( webTree );
 			renderer.setFoldersLinked( true );
 			String prefix = inRequest.findValue( "url-prefix" );
 			prefix = inRequest.getPage().getPageSettings().replaceProperty(prefix);
 			renderer.setUrlPrefix(prefix );
 			String postfix = inRequest.findValue( "url-postfix" );
 			renderer.setUrlPostfix(postfix );
-			webTree.setTreeRenderer(renderer);
 
+			}
+			else
+			{
+				renderer = (CatalogTreeRenderer)oldwebTree.getTreeRenderer();
+			}
+			webTree.setTreeRenderer(renderer);
+			
 			String autoexpand = inRequest.findValue( "autoexpand" );
 			if( autoexpand == null || Boolean.parseBoolean(autoexpand) )
 			{
