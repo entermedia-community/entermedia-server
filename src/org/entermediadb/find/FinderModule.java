@@ -680,7 +680,22 @@ public class FinderModule extends BaseMediaModule
 		return searchmodules;
 	}
 
-	
+	public void assignDataPermissionsToCategory(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data data = (Data)inReq.getPageValue("data");
+		if( data != null)
+		{
+			String moduleid = inReq.findActionValue("searchtype");
+			Data module = archive.getCachedData("module", moduleid);
+			Category cat = archive.getEntityManager().loadDefaultFolder(module, data, inReq.getUser());
+			cat.setValue("viewusers", data.getValues("viewusers"));
+			cat.setValue("viewroles", data.getValues("viewroles"));
+			cat.setValue("viewgroups", data.getValues("viewgroups"));
+			cat.setValue("securityenabled",data.getValue("securityenabled"));
+			archive.saveData("category", cat);
+		}
+	}
 	public void assignUserToEntities(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
