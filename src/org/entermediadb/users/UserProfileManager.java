@@ -241,6 +241,16 @@ public class UserProfileManager
 			}
 		}
 		User user = getUserManager(inCatalogId).getUser(inUserName);
+		if( user != null && userprofile != null)
+		{
+			String role = userprofile.get("settingsgroup");
+			if( role == null || "guest".equals( role))
+			{
+				log.info("Reset to defaultrole");
+				userprofile = null;
+			}
+		}
+		
 		if (userprofile == null)
 		{
 			userprofile = (UserProfile) searcher.createNewData();
@@ -259,7 +269,7 @@ public class UserProfileManager
 			}
 			else
 			{
-				userprofile.setProperty("settingsgroup", "guest");
+				userprofile.setProperty("settingsgroup", "guest"); //Anonymmous
 			}
 			userprofile.setSourcePath(inUserName);
 			userprofile.setCatalogId(inCatalogId);

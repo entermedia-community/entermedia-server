@@ -709,8 +709,13 @@ public class FinderModule extends BaseMediaModule
 				//reload profile
 				//search again for results
 				archive.saveData("category", cat);
+				inReq.getUserProfile().addToViewCategories(cat);
 			}
 			//get all entities and add user
+			if( inReq.getUserProfile() == null)
+			{
+				return;
+			}
 			Collection entities = inReq.getUserProfile().getEntitiesInParent(cat);
 			for (Iterator iterator = entities.iterator(); iterator.hasNext();)
 			{
