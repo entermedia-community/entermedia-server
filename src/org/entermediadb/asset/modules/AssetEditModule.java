@@ -1767,13 +1767,35 @@ public class AssetEditModule extends BaseMediaModule
 		 * $context.putPageValue("votetoremove", $uservote)
 		 */
 		MediaArchive archive = getMediaArchive(inReq);
-
-		Asset asset = getAsset(inReq);
-		if (asset != null) {
-			voteForAsset(asset, archive, inReq.getUser());
-			loadAssetVotes(inReq);
-			inReq.putPageValue("assetid", asset.getId());
+		String assetId = inReq.getRequestParameter("assetid");
+		
+		Asset asset;
+		
+		if(assetId == null) {
+			HitTracker tracker = archive.getAssetSearcher().loadHits(inReq);
+			for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
+				Data assetdata = (Data) iterator.next();
+				asset = (Asset) archive.getAssetSearcher().loadData(assetdata);
+				if (asset != null) {
+					voteForAsset(asset, archive, inReq.getUser());
+					loadAssetVotes(inReq);
+				 }
+			}
 		}
+		else {
+			asset = getAsset(inReq);
+			if (asset != null)
+			{
+				if (asset != null) {
+					voteForAsset(asset, archive, inReq.getUser());
+					loadAssetVotes(inReq);
+					inReq.putPageValue("assetid", asset.getId());
+				}
+			}
+		}
+		
+		
 	}
 
 	public void voteForAsset(Asset asset, MediaArchive archive, User inUser)
