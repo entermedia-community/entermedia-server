@@ -100,7 +100,6 @@ public class AllowViewing
 						{
 							log.error("Profile was " + inReq.getUserProfile() );
 						}
-						inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
 	
 						 //this is the original page someone might have been on. Used in login
 						 inReq.putSessionValue("originalEntryPage",inReq.getContentPage().getPath() );
@@ -109,7 +108,18 @@ public class AllowViewing
 						 {
 							 inReq.putSessionValue("fullOriginalEntryPage",inReq.getPathUrlWithoutContext() );
 						 }
-						 inReq.redirect( getLoginPath() );
+						 
+						 String showpageanyways = inReq.findActionValue("showpageanyways");
+						 
+						 if( Boolean.parseBoolean(showpageanyways))
+						 {
+							 inReq.setCancelActions(true);
+						 }
+						 else
+						 {
+							//inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
+							 inReq.redirect( getLoginPath() );
+						 }
 					 }
 				}
 			}

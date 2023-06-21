@@ -293,5 +293,15 @@ public class MediaSearchModule extends BaseMediaModule
 		return tracker;
 
 	}
-	
+
+	public void loadCategory(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		Category category = archive.getCategory(inPageRequest);
+		if (category == null) {
+			return;
+		}
+		inPageRequest.putPageValue("category",category);
+
+	}
 }
