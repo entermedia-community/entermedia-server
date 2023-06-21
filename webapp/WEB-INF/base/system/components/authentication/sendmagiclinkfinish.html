@@ -6,7 +6,7 @@
 <div class="login-area" >
 <div class="container applicationcontent text-center" style="padding-top:40px;">
 	
-	    <h2 style="text-align:center;">[[Please check your email]]</h2>
+	    <h2 style="text-align:center; margin-bottom:30px;">[[Please check your email]]</h2>
 	    
 	     #set($loginok = $context.findValue("loginokpage") ) 
 
@@ -36,9 +36,9 @@
 			#end
 		</form>   
 		
-		<p><a href="$home$content.loginroot/login.html" style="text-decoration: underline;">[[other login options]]</a></p>
+		<p><a href="$home$content.loginroot/login.html" style="text-decoration: underline;">[[Other login options]]</a></p>
 
-			
+		<div class="text-center loginformquestions">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.</div>
 </div>
 </div>
 #end
