@@ -29,6 +29,7 @@ import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.entermediadb.users.PermissionManager;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
@@ -203,6 +204,25 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("commandSucceeded", "nouser");
 				return;
 			}
+			
+			String categoryid = (String)inReq.getRequestParameter("categoryid");
+			if(categoryid != null) 
+			{
+				Data category = getMediaArchive(inReq).getCachedData("category", categoryid);
+				if(category != null)
+				{
+					String assetid = (String)category.getValue("headercategoryimage");
+					if(assetid != null) {
+						Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);
+						if(asset != null) {
+							String categorylogo = getMediaArchive(inReq).asLinkToOriginal(asset);
+							inReq.putPageValue("categorylogo", categorylogo);
+						}
+					}
+				}
+			}
+			
+			
 			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
 			
 			PasswordHelper passwordHelper = getPasswordHelper(inReq);
@@ -211,7 +231,9 @@ public class AdminModule extends BaseMediaModule
 			{
 				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
 			}
+			
 			passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
+			
 			if(inReq.getPageValue("error") != null) {
 				log.info("Error sending Email. " + inReq.getPageValue("error"));
 			}

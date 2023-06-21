@@ -1,7 +1,12 @@
 <div style="background-color:#efefef; padding: 40px 0;">
 <div style="background-color:#fff; padding:0 20px 20px 20px; margin:0 auto; width:600px;">
 <div style="background-color:#000; padding: 1px 0 5px 0; margin-bottom:20px;">
-<a href="https://entermediadb.org"><img src="https://entermediadb.org/theme/img/entermedia_database.png"></a>
+##$categorylogo
+#if($categorylogo)
+<a href="$context.siteRoot"><img src="$context.siteRoot/${categorylogo}" style="max-height: 90px;"></a>
+#else
+<a href="$context.siteRoot"><img src="https://entermediadb.org/theme/img/entermedia_database.png"></a>
+#end
 </div>
 <p>[[Hello]],</p>
 <p>[[A magic link was requested for]]: $mail</p>
