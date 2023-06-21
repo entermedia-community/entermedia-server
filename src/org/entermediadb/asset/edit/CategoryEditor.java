@@ -12,6 +12,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
+import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.RepositoryException;
@@ -38,7 +39,7 @@ public class CategoryEditor {
 	private static final Log log = LogFactory.getLog(CategoryEditor.class);
 
 	
-	protected CategorySearcher getCategorySearcher() {
+	public CategorySearcher getCategorySearcher() {
 		CategorySearcher searcher = (CategorySearcher) getMediaArchive().getSearcher(getSearchType());
 		return searcher;
 	}
@@ -149,6 +150,9 @@ public class CategoryEditor {
 		 getCategorySearcher().saveCategory(newCat);
 		 return newCat;
 	 }
+	 
+	 
+	 
 
 	 public void saveCategory(Category inCategory) throws OpenEditRuntimeException
 	 {
@@ -374,6 +378,10 @@ public class CategoryEditor {
 	public void setCurrentCategory(Category currentCategory) {
 		fieldCurrentCategory = currentCategory;
 	}
+	
+	
+	
+	
 
 //	 public void reBuildCategories() throws OpenEditRuntimeException
 //	 {
