@@ -6,7 +6,7 @@
 	#set($loginokpage = $context.getSessionValue("fullOriginalEntryPage") )
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
-<div class="container">
+<div class="container" id="loginformdiv">
 	#if($user)
 		<p class="text-center"><strong>[[You are currently logged in as]] $user 
 		(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
@@ -63,7 +63,11 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 	<div class="loginform-col-right">			
 	
 	
-		<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+		<form class="ajaxform" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+		
+				#ifnotnull( $category)
+					<input type="hidden" name="categoryid" value="$category.id" />
+				#end
 		
 				<p>[[Or Sign-in with E-Mail only]]</p>
 				<p><input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required /></p>

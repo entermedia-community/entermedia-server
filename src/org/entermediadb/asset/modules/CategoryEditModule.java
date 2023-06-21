@@ -17,6 +17,7 @@ import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.edit.CategoryEditor;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -47,6 +48,18 @@ public class CategoryEditModule extends BaseMediaModule {
 		categoryeditor.setCurrentCategory(newcategory);
 		categoryeditor.saveCategory(newcategory);
 		inContext.putPageValue("category", newcategory);
+	}
+	
+	public void renameCategory(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		String category1Id = inReq.getRequestParameter("categoryid");
+		CategoryEditor categoryeditor = getCategoryEditor(inReq);
+
+		CategorySearcher searcher = (CategorySearcher) archive.getSearcher(categoryeditor.getSearchType());
+		Category cat = searcher.getCategory(category1Id);
+		String newname = inReq.findValue("newname");
+		cat.setName(newname);
+		searcher.saveData(cat);
 	}
 
 	public void moveCategory(WebPageRequest inContext) throws OpenEditException 
