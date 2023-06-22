@@ -88,7 +88,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 				{
 					age  = getSearcherManager().getCachedData("system", "systemsettings", "cookie_expiration_age");
 				}
-				int maxage = Integer.MAX_VALUE;
+				int maxage = 34560000; //400 days Chrome standard
 				if( age != null && age.get("value") != null && !age.get("value").isEmpty())
 				{
 					//how many seconds a given cookie should be
