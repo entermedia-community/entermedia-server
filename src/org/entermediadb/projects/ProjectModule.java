@@ -452,6 +452,14 @@ public class ProjectModule extends BaseMediaModule
 						collectionid = ending.substring(0, endslash);
 					}
 				}	
+				if( collectionid == null)
+				{
+					String collectionidonpagename = inReq.findActionValue("collectionidonpagename");
+					if( Boolean.parseBoolean(collectionidonpagename))
+					{
+						collectionid = PathUtilities.extractPageName(inReq.getPath());
+					}	
+				}	
 			}
 			if( collectionid == null)
 			{
@@ -964,15 +972,22 @@ public class ProjectModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String tagid = PathUtilities.extractDirectoryName(inReq.getPath());
-		ProjectManager manager = getProjectManager(inReq);
 		Data tag = archive.getData("communitytag", tagid);
 		if(tag != null) {
 			inReq.putPageValue("communitytag", tag);
 			inReq.putPageValue("communitytagid", tag.getId());
-			
-			
 		}
+	}
 
+	public void loadCommunityTagCategory(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String tagid = PathUtilities.extractPageName(inReq.getPath());
+		Data tag = archive.getData("communitytagcategory", tagid);
+		if(tag != null) {
+			inReq.putPageValue("communitytagcategory", tag);
+			inReq.putPageValue("communitytagcategoryid", tag.getId());
+		}
 	}
 
 	public boolean checkViewCollection(WebPageRequest inReq) {
