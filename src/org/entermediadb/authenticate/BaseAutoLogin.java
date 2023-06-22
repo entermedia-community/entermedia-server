@@ -79,7 +79,7 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 				Cookie cookie = new Cookie(name, value);
 				
 				Data age  = null;
-				String catalogid = inReq.findPathValue("catalog");
+				String catalogid = inReq.findPathValue("catalogid");
 				if( catalogid != null)
 				{
 					age = getSearcherManager().getCachedData(catalogid, "catalogsettings", "cookie_expiration_age");
