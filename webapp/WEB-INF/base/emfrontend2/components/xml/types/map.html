@@ -13,14 +13,20 @@
 
 <div id="${detail.id}_map" align style="width: 100%; height:460px; margin-bottom: 15px;"></div>
    #set($latandlong = $data.getValue($detail.getId()))
-   
-   #set( $lat = $latandlong.getLatitude() )
-   #set( $lng = $latandlong.getLongitude() )
+   #if($latandlong.getLatitude())
+	   #set( $lat = $latandlong.getLatitude() )
+	   #set( $lng = $latandlong.getLongitude() )
+   #else
+	   #set( $lat = $latandlong.lat )
+	   #set( $lng = $latandlong.lon )
+   #end
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
    
    #set($latlng = "")
    #if ($lat && $lng && $lat != "" && $lng != "")
    	#set($latlng = "$lat,$lng")
+   #else
+   	
    #end
    
    <div class="float-left assetpanel-content-label">[[Position]]:</div>
