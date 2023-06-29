@@ -5,10 +5,10 @@
 <p>[[A user needs to be created]]: $emailaddress</p>
 <div style="margin:10px; padding:15px; background-color:#f0f0f0;">
 
-	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?emailaddress=$emailaddress" )
+	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?email.value=$emailaddress" )
 	
 	<p>
-	<a href="#urlescape($link)?save=true&field=email&email.value=$emailaddress">[[Create User]]</a>
+	<a href="#urlescape($link)">[[Create User]]</a>
 	</p>
 #end	
 	
