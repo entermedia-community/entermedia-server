@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.BaseAutoLogin;
@@ -208,11 +209,11 @@ public class AdminModule extends BaseMediaModule
 			String categoryid = (String)inReq.getRequestParameter("categoryid");
 			if(categoryid != null) 
 			{
-				Data category = getMediaArchive(inReq).getCachedData("category", categoryid);
+				Category category = getMediaArchive(inReq).getCategory( categoryid);
 				if(category != null)
 				{
 					inReq.putPageValue("category", category);
-					String assetid = (String)category.getValue("headercategoryimage");
+					String assetid = (String)category.findValue("headercategoryimage");
 					if(assetid != null) {
 						Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);
 						if(asset != null) {
