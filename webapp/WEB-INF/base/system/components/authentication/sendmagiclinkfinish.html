@@ -1,7 +1,7 @@
 #if( $commandSucceeded == "nouser")
-
 	$pages.include("./sendmagiclink.html")  ##to try again or register
-
+#elseif( $disableduser)
+	$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
 #else			
 <div class="login-area" >
 <div class="container applicationcontent text-center" style="padding-top:40px;">

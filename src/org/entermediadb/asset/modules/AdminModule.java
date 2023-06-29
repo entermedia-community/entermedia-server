@@ -205,11 +205,11 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("commandSucceeded", "nouser");
 				return;
 			}
-			
+			Category category = null;
 			String categoryid = (String)inReq.getRequestParameter("categoryid");
 			if(categoryid != null) 
 			{
-				Category category = getMediaArchive(inReq).getCategory( categoryid);
+				category = getMediaArchive(inReq).getCategory( categoryid);
 				if(category != null)
 				{
 					inReq.putPageValue("category", category);
@@ -235,7 +235,26 @@ public class AdminModule extends BaseMediaModule
 				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
 			}
 			
-			passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
+			if( foundUser.isEnabled() )
+			{
+				passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
+			}
+			else
+			{
+				//Show error on page. Notify admin
+				inReq.putPageValue("emailaddress", emailaddress);
+				String  userapproveremail = null;
+				if( category != null)
+				{
+					userapproveremail = (String)category.findValue("userapproveremail");
+				}
+				if( userapproveremail == null)
+				{
+					userapproveremail = getMediaArchive(inReq).getCatalogSettingValue("userapproveremail");
+				}
+				inReq.putPageValue("userapproveremail", userapproveremail);
+				passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
+			}
 			
 			if(inReq.getPageValue("error") != null) {
 				log.info("Error sending Email. " + inReq.getPageValue("error"));

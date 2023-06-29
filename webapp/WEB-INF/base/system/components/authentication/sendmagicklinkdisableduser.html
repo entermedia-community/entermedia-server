@@ -1,0 +1,12 @@
+<div>
+	    <h2 style="text-align:center; margin-bottom:30px;">[[Thank you for registering]]</h2>
+
+		<p>
+			[[Your application for an account is currently pending approval. Once it has been approved,you will receive an email containing information about how to log in.]]
+			#ifnotnull($userapproveremail)
+				<p><a href="mailto:${userapproveremail}">userapproveremail</a> [[has been notified]]</p>
+			#end	
+			 	
+		</p>
+
+</div>

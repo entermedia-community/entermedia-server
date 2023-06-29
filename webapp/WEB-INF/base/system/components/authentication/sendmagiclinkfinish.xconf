@@ -2,6 +2,7 @@
 
 <page>
   	<property name="emaillayout">/${applicationid}/authentication/sendmagiclinkemail.html</property>
+  	<property name="emaillayoutadmin">/${applicationid}/authentication/sendmagiclinkemailadmin.html</property>
   	
   	
   	<path-action name="Admin.emailPasswordReminder"/>

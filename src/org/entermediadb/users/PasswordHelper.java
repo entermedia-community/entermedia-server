@@ -13,6 +13,7 @@ import org.entermediadb.email.TemplateWebEmail;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.page.manage.PageManager;
+import org.openedit.users.User;
 
 /**
  * @author mcgaha_b
@@ -85,6 +86,47 @@ public class PasswordHelper implements Serializable {
 			}
 		}
 	}
-	
+
+	/**
+	 * @param inContext
+	 * @param username
+	 * @param password
+	 * @param email
+	 */
+	public void emailAdminAboutNewUser(WebPageRequest inContext, PageManager inManager, String emailaddress, String inEmail) 
+	{
+		//TO
+		inContext.setRequestParameter("to", inEmail);
+		
+		TemplateWebEmail email = sendMailModule.getPostMail().getTemplateWebEmail();
+		email.setPageManager(inManager);
+		try {
+			email.loadSettings(inContext);
+		} catch (OpenEditException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String subject = emailaddress + " Approval";
+		email.setSubject(subject);
+		email.setMailTemplatePath(inContext.findValue("emaillayoutadmin"));
+		inContext.putPageValue(SendMailModule.EMAIL_SETTINGS,email);
+		inContext.putPageValue("categorylogo", inContext.getPageValue("categorylogo"));
+		
+		if (inEmail != null){
+			inContext.putPageValue("mail", inEmail);
+		}
+		if (inEmail != null)
+		{
+			try
+			{
+				sendMailModule.sendEmail( inContext );
+			}
+			catch (OpenEditException e)
+			{
+				inContext.putPageValue("error", e.getLocalizedMessage());
+			}
+		}
+	}
+
 }
 

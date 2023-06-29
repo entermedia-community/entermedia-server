@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<page>
+	<path-action name="Script.run" >
+		<script>./scripts/createuser.groovy</script>
+	</path-action>
+
+</page>

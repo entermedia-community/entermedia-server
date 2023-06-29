@@ -8,7 +8,7 @@ selectUser = function(inUser)
 {
 	var currentUser = jQuery("#selecteduserholder").val();
 	jQuery("[id=" + currentUser + "_row]").css("background-color",'');
-	jQuery('#usercontentpanel').load('$home$usermanagerhome/users/modifyuser.html', {username: inUser, oemaxlevel: '1'});
+	jQuery('#usercontentpanel').load('$home$usermanagerhome/user/modifyuser.html', {username: inUser, oemaxlevel: '1'});
 	jQuery("[id=" + inUser + "_row]").css("background-color", "lightblue");
 	jQuery("#selecteduserholder").attr("value", inUser);
 }
