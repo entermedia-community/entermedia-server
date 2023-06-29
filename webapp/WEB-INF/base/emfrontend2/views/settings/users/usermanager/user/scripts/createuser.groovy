@@ -19,6 +19,8 @@ public User createUser()
 		newuser = userManager.createUser( null, null);
 		newuser.setEmail(email);
 		newuser.setVirtual(false);
+		String logincategoryid = context.getRequestParameter("logincategoryid");
+		newuser.setValue("logincategoryid",logincategoryid);
 		userManager.saveUser(newuser);
 	}
 	context.putPageValue("userName",newuser.getId());

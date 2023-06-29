@@ -1,11 +1,11 @@
 <div style="background-color:#efefef; padding: 40px 0;">
 <div style="background-color:#fff; padding:0 20px 20px 20px; margin:0 auto; width:600px;">
 
-<p>[[Hello]],</p>
+<p>#text($category)</p>
 <p>[[A user needs to be created]]: $emailaddress</p>
 <div style="margin:10px; padding:15px; background-color:#f0f0f0;">
 
-	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?email.value=$emailaddress" )
+	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?email.value=$emailaddress&logincategoryid=$!category.id" )
 	
 	<p>
 	<a href="#urlescape($link)">[[Create User]]</a>

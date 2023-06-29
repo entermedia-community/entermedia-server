@@ -237,6 +237,11 @@ public class AdminModule extends BaseMediaModule
 			
 			if( foundUser.isEnabled() )
 			{
+				if(categoryid != null)
+				{
+					foundUser.setValue("logincategoryid",categoryid);
+					getUserManager(inReq).saveUser(foundUser);
+				}
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
 			}
 			else
