@@ -3,10 +3,12 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -2245,4 +2247,24 @@ public class ProjectManager implements CatalogEnabled
 	}
 
 
+	public int calcDaysRemaining(LibraryCollection inCollection)
+	{
+		if( inCollection != null )
+		{
+			Date renewal = inCollection.getDate("startdate");
+			if( renewal == null)
+			{
+				renewal = new Date();
+				inCollection.setValue("startdate", renewal);
+				MediaArchive archive = getMediaArchive();
+				archive.saveData("librarycollection", inCollection);
+			}
+			Calendar enddate = new GregorianCalendar();
+			enddate.setTime(renewal);
+			enddate.add(Calendar.YEAR,1);
+			float days = DateStorageUtil.getStorageUtil().daysBetweenDates(enddate.getTime(),renewal);
+			return (int)days - 1;
+		}
+		return -1;
+	}
 }

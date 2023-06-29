@@ -39,6 +39,8 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.location.GeoCoder;
+import org.entermediadb.location.Position;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -1197,7 +1199,117 @@ public class GoogleManager implements CatalogEnabled
 //	 	{
 //	 		log.error("Network error " ,ex);
 //	 		throw new OpenEditException(ex);
-//	 	}
+//	 
 //	}
-	
+//	}
+
+public GeoCoder getGeoCoder()
+{
+	GeoCoder coder = (GeoCoder) getModuleManager().getBean(getCatalogId(), "geoCoder");
+	coder.setGoogleKey(getMediaArchive().getCatalogSettingValue("google-maps-key"));
+	if (coder.getGoogleKey() == null)
+	{
+		log.error("No key set");
+	}
+	return coder;
 }
+
+
+	public Position searchForGeoLocation(String inAddress)
+	{
+		Position pos = getGeoCoder().findFirstPosition(inAddress);
+		return pos;
+	}	
+/**
+ * 
+ 
+function getLatLngFromString(ll) {
+    var latlng = ll.split(/, ?/)
+    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
+}
+
+var geocoder;
+
+initialize = function() {
+var parentheight = $(".assetpanel-geomap").height();
+if (typeof parentheight !== 'undefined') {
+	var mapheight = (jQuery(".assetpanel-geomap").height()-110);
+	jQuery('#geo_point_map').height(mapheight);
+}
+ var centerloc = getLatLngFromString('39.025818619038375,-95.03089171562499');
+ var map = new google.maps.Map(jQuery('#geo_point_map')[0], {
+    zoom: 2
+,
+    center:centerloc,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      mapTypeIds: ['roadmap', 'terrain']
+    }
+  });
+
+  var marker = new google.maps.Marker({
+		position: getLatLngFromString('$lat,$lng'),
+		draggable: true, 
+		bounds: true,
+        map: map,
+        title: '{"en":"Screenshot from 2023-06-22 15-53-59.png"}'
+     });
+     
+     
+   google.maps.event.addListener(marker, 'dragend', function(event)
+	    {
+	    	console.log(marker.getPosition());
+            jQuery('#geo_point_latandlong').val(marker.getPosition().lat()+ "," + marker.getPosition().lng());
+	});
+
+
+	jQuery('#geo_point_search').click(dosearch);
+	
+	jQuery('#geo_point_address').keypress(function(e) {
+		if (e.keyCode == 13) {
+			dosearch()
+		}
+	});
+	
+	geocoder = new google.maps.Geocoder();
+			
+		
+}
+
+dosearch = function () {
+	var address = jQuery('#geo_point_address').val();
+	var postalCode = jQuery('#geo_point_postalCode').val();
+	if (address!=null) {
+		$('#geo_point_map').gmap('search', { 'address': address }, function(results, status) {
+		    if ( status === 'OK' ) {
+		    	$('#geo_point_map').gmap('clear', 'markers');
+		    	$('#geo_point_map').gmap('addMarker', 
+		          {
+		    		'position': results[0].geometry.location, 
+		    		'draggable': true, 
+		    		'bounds': true
+		    	  }).dragend(function(event) {
+		              jQuery('#geo_point_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
+	    	  		}
+		    	  );
+	
+		    	$('#geo_point_map').gmap('get', 'map').panTo(results[0].geometry.location);
+		        $('#geo_point_map').gmap('option', 'zoom', 12);
+	            jQuery('#geo_point_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
+	
+		    }
+		});
+	}
+}
+
+initialize(); //Onload?
+$(window).resize(function() {
+	if (typeof map !== 'undefined') {
+  		google.maps.event.trigger(map, "resize");
+	}
+});
+
+**/
+	}
+	

@@ -16,7 +16,7 @@ public void init()
 	}
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Collection assets = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
-	if (assets.size()) {
+	if (!assets.isEmpty()) {
 		log.info("Found ${assets.size()} Assets Imported");
 		Searcher searcher = mediaarchive.getSearcher("categorydefaultdata");
 		assets.each
