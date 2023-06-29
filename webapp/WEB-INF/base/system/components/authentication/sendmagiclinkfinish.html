@@ -34,6 +34,9 @@
 				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
 				$context.removeSessionValue("oe-exception")
 			#end
+			#ifnotnull( $category)
+					<input type="hidden" name="categoryid" value="$category.id" />
+			#end
 		</form>   
 		
 		<p><a href="$home$content.loginroot/login.html" style="text-decoration: underline;">[[Other login options]]</a></p>

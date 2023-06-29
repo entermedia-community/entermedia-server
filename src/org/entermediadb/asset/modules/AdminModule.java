@@ -211,11 +211,13 @@ public class AdminModule extends BaseMediaModule
 				Data category = getMediaArchive(inReq).getCachedData("category", categoryid);
 				if(category != null)
 				{
+					inReq.putPageValue("category", category);
 					String assetid = (String)category.getValue("headercategoryimage");
 					if(assetid != null) {
 						Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);
 						if(asset != null) {
 							String categorylogo = getMediaArchive(inReq).asLinkToOriginal(asset);
+							
 							inReq.putPageValue("categorylogo", categorylogo);
 						}
 					}
@@ -647,6 +649,17 @@ public class AdminModule extends BaseMediaModule
 					inReq.putPageValue("invaliduser", inUser);
 					getUserManager(inReq).fireUserEvent(inUser, "disabled");
 					log.info("User disabled");
+					
+					String categoryid = inReq.getRequestParameter("categoryid");
+					if(categoryid != null) 
+					{
+						Data category = getMediaArchive(inReq).getCachedData("category", categoryid);
+						if(category != null)
+						{
+							inReq.putPageValue("category", category);
+						}
+					}
+					
 					return false;
 				}
 			}
