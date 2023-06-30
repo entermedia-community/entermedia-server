@@ -207,6 +207,9 @@ public class AdminModule extends BaseMediaModule
 			}
 			Category category = null;
 			String categoryid = (String)inReq.getRequestParameter("categoryid");
+			if(categoryid == null && foundUser != null) {
+				categoryid = foundUser.get("logincategoryid");
+			}
 			if(categoryid != null) 
 			{
 				category = getMediaArchive(inReq).getCategory( categoryid);
@@ -235,7 +238,7 @@ public class AdminModule extends BaseMediaModule
 				key = getUserManager(inReq).getStringEncryption().getTempEnterMediaKey(foundUser); //Optional
 			}
 			
-			if( foundUser.isEnabled() )
+			if(foundUser != null &&  foundUser.isEnabled() )
 			{
 				if(categoryid != null)
 				{
@@ -251,14 +254,20 @@ public class AdminModule extends BaseMediaModule
 				String  userapproveremail = null;
 				if( category != null)
 				{
-					userapproveremail = (String)category.findValue("userapproveremail");
+					userapproveremail = (String)category.findValue("categoryadminemail");
 				}
 				if( userapproveremail == null)
 				{
 					userapproveremail = getMediaArchive(inReq).getCatalogSettingValue("userapproveremail");
 				}
-				inReq.putPageValue("userapproveremail", userapproveremail);
-				passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
+				if (userapproveremail != null) {
+					inReq.putPageValue("userapproveremail", userapproveremail);
+					passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
+				}
+				else {
+					inReq.putPageValue("commandSucceeded", "nouser");
+					return;
+				}
 			}
 			
 			if(inReq.getPageValue("error") != null) {
