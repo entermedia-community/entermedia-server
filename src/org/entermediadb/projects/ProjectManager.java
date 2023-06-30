@@ -2262,7 +2262,7 @@ public class ProjectManager implements CatalogEnabled
 			Calendar enddate = new GregorianCalendar();
 			enddate.setTime(renewal);
 			enddate.add(Calendar.YEAR,1);
-			float days = DateStorageUtil.getStorageUtil().daysBetweenDates(enddate.getTime(),renewal);
+			float days = DateStorageUtil.getStorageUtil().daysBetweenDates(enddate.getTime(),new Date());
 			return (int)days - 1;
 		}
 		return -1;
