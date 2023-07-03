@@ -496,7 +496,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		if( parentData != null && !inModuleId.equals("asset"))
 		{
 			MultiValued module = (MultiValued)inArchive.getCachedData("module", inModuleId);
-			if( module.getBoolean("isentity"))
+			if( module != null && module.getBoolean("isentity"))
 			{
 				EntityManager manager = inArchive.getEntityManager();
 				manager.loadUploadSourcepath(module, parentData, inUser);
