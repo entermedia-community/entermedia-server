@@ -212,10 +212,12 @@ public class AdminModule extends BaseMediaModule
 			}
 			if(categoryid != null) 
 			{
-				category = getMediaArchive(inReq).getCategory( categoryid);
+				category = getMediaArchive(inReq).getCategory(categoryid);
 				if(category != null)
 				{
 					inReq.putPageValue("category", category);
+					List parentcategories = category.getParentCategories();
+					inReq.putPageValue("parentcategories", parentcategories);
 					String assetid = (String)category.findValue("headercategoryimage");
 					if(assetid != null) {
 						Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);

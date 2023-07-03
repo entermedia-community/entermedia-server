@@ -14,7 +14,7 @@
 #if( $entermediakey )
 	
 	#if($category)
-		#set( $link = "$context.siteRoot$applink/views/modules/asset/viewfiles/$category.getId()/#dash($category.getName()).html?entermedia.key=$entermediakey" )
+		#set( $link = "$context.siteRoot$applink/views/modules/asset/sharefiles/$category.getId()/#dash($category.getName()).html?entermedia.key=$entermediakey" )
 	#else
 		#set( $link = "$context.siteRoot$applink/index.html?entermedia.key=$entermediakey" )
 	#end
@@ -34,8 +34,9 @@
 	#end
 	</p>
 #end	
-	<p id="entermediakey" style="text-align:center; font-weight:bold; font-size:120%;">	[[Use login code]]
-	<br>$templogincode</p>
+
+	##<p id="entermediakey" style="text-align:center; font-weight:bold; font-size:120%;">	[[Use login code]]
+	##<br>$templogincode</p>
 	
 </div>
 
