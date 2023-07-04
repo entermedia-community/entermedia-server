@@ -5,7 +5,7 @@
 			[[Your application for an account is currently pending approval. Once it has been approved,you will receive an email containing information about how to log in.]]
 			#ifnotnull($userapproveremail)
 				<p style="text-align: center;">
-					<a href="mailto:$!{userapproveremail}">userapproveremail</a> [[has been notified]].
+					<a href="mailto:$!{userapproveremail}">$userapproveremail</a> [[has been notified]].
 				</p>
 			#end	
 			 	
