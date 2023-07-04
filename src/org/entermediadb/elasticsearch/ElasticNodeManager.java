@@ -1203,7 +1203,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		
 		//Skip these types
 		Collection values = getSearcherManager().getList("system", "skiptables");
-		
+		if( values != null)
+		{
+			for (Iterator iterator = values.iterator(); iterator.hasNext();)
+			{
+				Data skip = (Data) iterator.next();
+				types.remove(skip.getName());
+				
+			}
+		}
 		return types;
 
 	}
