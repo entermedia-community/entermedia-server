@@ -2467,5 +2467,15 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>		
+
+
+	<bean id="customizationExportGenerator" class="org.entermediadb.workspace.CustomizationExportGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+	</bean>
+
+
 		
 </beans>

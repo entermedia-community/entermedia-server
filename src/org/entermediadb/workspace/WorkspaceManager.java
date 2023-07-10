@@ -3,6 +3,7 @@ package org.entermediadb.workspace;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -609,5 +610,58 @@ public class WorkspaceManager
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
+	{
+		for (Iterator iterator = inModules.iterator(); iterator.hasNext();)
+		{
+			Data module = (Data) iterator.next();
+			Data customization = inMediaArchive.query("customization").exact("targetid",module.getId()).searchOne();
+			if( customization == null)
+			{
+				//Make em
+				customization = inMediaArchive.getSearcher("customization").createNewData();
+				customization.setValue("targetid",module.getId());
+				customization.setName(module.getName());
+				customization.setValue("customizationtype","module");
+				customization.setValue("dateupdated",new Date() );
+				//This will be used to export and import a bunch of xml files?
+				inMediaArchive.saveData("customization",customization);
+			}
+		}
+	}
+
+
+	public void scanHtmlCustomizations(MediaArchive inMediaArchive, Collection inExisting)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void exportCustomizations(String inCatalogId, String[] inIds, OutputStream inStream)
+	{
+		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
+		ZipOutputStream finalZip = new ZipOutputStream(inStream);
+
+		MediaArchive archive  = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
+
+		for (int i = 0; i < inIds.length; i++)
+		{
+			Data customization = archive.getData("customization", inIds[i]);
+			//TODO: Make xml files for each config
+			Element root = DocumentHelper.createElement("application");
+			//root.addElement("applicationid").addAttribute("id", appid);
+			root.addElement("catalogid").addAttribute("id", inCatalogId);
+			root.addAttribute("version", "9");
+			//root.addElement("name").setText(app.getName());
+			//TODO: Append a list of files to the xml
+			//TODO: Append the files to the zip
+			//pageZipUtil.zip(path, finalZip);
+			//pageZipUtil.addTozip(root.asXML(), ".emapp.xml", finalZip);
+		}
+
+		//finalZip.close();
+		
 	}
 }

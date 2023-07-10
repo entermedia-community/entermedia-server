@@ -1,0 +1,5 @@
+<page>
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
+	<property name="searchtype">customization</property>
+	<property name="tab">customization</property>
+</page>
