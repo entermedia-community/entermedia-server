@@ -11,83 +11,71 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		<p class="text-center"><strong>[[You are currently logged in as]] $user 
 		(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
 	#end
-	
 
-<div class="row no-gutters justify-content-sm-center loginformcontainer">
-
-	#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+	<div class="row no-gutters justify-content-sm-center loginformcontainer">
 	
-	<div class="col-sm-5 col-lg-4">
-	<div class="loginform-col">
-	
-	<h1 class="page-title">
-	[[Sign-in with]]</h1>
-	
-	#if( !$providers.isEmpty() )
-			
-			
+		#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+		
+		<div class="col-sm-5 col-lg-4">
+		<div class="loginform-col">
+		
+		<h1 class="page-title">
+		[[Sign-in with]]</h1>
+		
+		#if( !$providers.isEmpty() )
 	        <div style="text-align: center;">
 			$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 			</div>
-	#end
-	
-					
-	
-	        <div style="text-align: center;">
-	
+		#end
+		
+	    <div style="text-align: center;">
 			##<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
 			##<br>	
-			
+				
 			<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="[[Login]]" style="text-align:center; margin-top:20px;">[[Username and Password]]</a> 
-	        	
-		#set( $error = $context.getPageValue("oe-exception") )
+		        	
+			#set( $error = $context.getPageValue("oe-exception") )
 			#if ( $error )
 				<br><span style="width: 60%; text-align: center">$error</span>
 				$context.removeSessionValue("oe-exception")
 			#end
-
-			</div>
+	
+		</div>
 	</div>
 	</div>
-	
-	#if( $content.allowguestregistration == "true")
-		#set( $allowguest =  true)
-	#else
-		#set( $allowguest =  false)
-	#end
-
-	#set( $to = $context.getRequestParameter("email") )	
-	#set( $username = $context.getRequestParameter("username") )
-	#if( $allowguest )
-	
-	<div class="col-sm-6 col-lg-6">
-	<div class="loginform-col-right">			
-	
-	
-		<form class="ajaxform" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 		
-				#ifnotnull( $category)
-					<input type="hidden" name="categoryid" value="$category.id" />
-				#end
+		#if( $content.allowguestregistration == "true")
+			#set( $allowguest =  true)
+		#else
+			#set( $allowguest =  false)
+		#end
+	
+		#set( $to = $context.getRequestParameter("email") )	
+		#set( $username = $context.getRequestParameter("username") )
+		#if( $allowguest )
+		<div class="col-sm-6 col-lg-6">
+			<div class="loginform-col-right">			
 		
-				
-				
-				<p  style="float:left;">
-				<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
-				</p>
-				<div class="clearfix"></div>
-				<input class="btn btn-primary" style="float:left" name="submit" type="submit" value="[[Next]]" style="margin-right:150px"/>
-				
-				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
-				
-           </form>
-     </div>
-     </div>
-#end		
+				<form class="ajaxform" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+					#ifnotnull( $category)
+						<input type="hidden" name="categoryid" value="$category.id" />
+					#end
+					<p style="float:left;">
+					<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
+					</p>
+					<div class="clearfix"></div>
+					<input class="btn btn-primary" style="float:left" name="submit" type="submit" value="[[Next]]" style="margin-right:150px"/>
+					
+					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					
+		         </form>
+		     </div>
+	     </div>
+		#end		
+	
+	</div>
 
-</div>
-
-<div class="text-center loginformquestions">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.</div>
+	<div class="text-center loginformquestions">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.</div>
 
 </div>
 
