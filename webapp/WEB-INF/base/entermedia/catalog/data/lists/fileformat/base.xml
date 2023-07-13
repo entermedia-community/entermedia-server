@@ -92,5 +92,9 @@
 	<property id="csv"  synctags="true"  >CSV</property>
 	<property id="webp"  synctags="false"  rendertype="image" >Webp</property>
 	
+	<property id="heic"  synctags="true"  rendertype="image" creator="imagemagick">HEIC</property>
+	<property id="heif"  synctags="true"  rendertype="image" creator="imagemagick">HEIF</property>
+	
+	
 	<property id="default"  rendertype="default" >Default</property>
 </properties>

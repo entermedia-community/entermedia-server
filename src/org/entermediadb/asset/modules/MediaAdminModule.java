@@ -855,4 +855,13 @@ public class MediaAdminModule extends BaseMediaModule
 		requestedPage.setInnerLayout("/" + applicationid + "/theme/layouts/searchlayout2.html");*/
 		return module;
 	}
+	
+	public void scanForCustomizations(WebPageRequest inReq)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		Collection modules = mediaArchive.query("module").all().sort("name").search();
+		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
+		//getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
+	}
+	
 }

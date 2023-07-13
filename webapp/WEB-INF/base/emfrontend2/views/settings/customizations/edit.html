@@ -1,0 +1,112 @@
+<form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="$home$apphome/views/settings/modules/setup/save.html" target="_top">
+#set( $id = $context.getRequestParameter("id") )
+<table class="settings-table table table-striped">
+	<tr>
+		<td class="emdatafield">
+	 	[[Module Name]]
+		</td>
+			
+		<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+			<div class="emfield-default">
+				<input type="hidden" name="field" value="name" />
+				<input class="form-control form-control-sm short required" name="name.value" value ="$!data.name" />
+				<span style="color:gray;font-style:italic;font-size:.9em;">[[Module nickname.]]</span>
+			</div>
+			
+		</td>
+		</tr>
+		#if( !$id )
+			<tr>
+				<td class="emdatafield">
+					[[Module Id]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input class="form-control form-control-sm short required" name="id" value ="$!data.id" />
+					<div class="note">[[lower case, singular, no spaces]]</div>
+				</td>
+			</tr>
+			
+		#end
+		#if($id)
+			<input type="hidden" name="id" value="$!id" />
+			<tr>
+				<td class="emdatafield">
+					[[Show on Navigation]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="showonnav" />
+					<div class="form-check">
+					<input name="showonnav.value" class="form-check-input " type="checkbox" #if( $!data.showonnav == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
+	        <tr>
+				<td class="emdatafield">
+					[[Enable Search]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="showonsearch" />
+					<div class="form-check">
+					<input name="showonsearch.value" class="form-check-input " type="checkbox" #if( $!data.showonsearch == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
+	        <tr>
+				<td class="emdatafield">
+					[[Is Entity]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="isentity" />
+					<div class="form-check">
+					<input name="isentity.value" class="form-check-input " type="checkbox" #if( $!data.isentity == "true") checked #end value="true" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="emdatafield">
+					[[Render Type]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="modulerendertype" />
+					<input name="modulerendertype.value" type="text" size="1" value="$!data.modulerendertype" class="form-control form-control-sm" />
+				</td>
+			</tr>
+			<tr>
+				<td class="emdatafield">
+					[[Home Page Render Type]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="homepagerendertype" />
+					<input name="homepagerendertype.value" type="text" size="1" value="$!data.homepagerendertype" class="form-control form-control-sm" />
+				</td>
+			</tr>
+			<tr>
+				<td class="emdatafield">
+					[[Tab Order]]
+				</td>
+				<td id="detail_name" class="emdatafieldvalue  emdatafieldtype">
+					<input type="hidden" name="field" value="ordering" />
+					<input name="ordering.value" type="text" size="1" value="$!data.ordering" class="form-control form-control-sm" />
+				</td>
+			</tr>
+			#end
+	
+	</table>
+
+
+
+
+
+
+
+##<input type="hidden" name="field" value="showactions" />
+##<label><input type="checkbox" name="showactions.value" style="margin-right: 10px;"  #if( $data.showactions && $data.showactions == "true" ) checked #end />Enable Actions</label>
+
+
+<input name="reloadprofile" type="hidden" value="true" />
+
+<input style="margin: 20px 10px;;" class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
+
+<a href="$home$apphome/views/settings/modules/setup/index.html" class="btn btn-sm btn-secondary" style="margin:20px 0;">[[Cancel]]</a>
+
+</form>
