@@ -1,7 +1,9 @@
 package org.entermediadb.workspace;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 import org.openedit.util.XmlUtil;
 import org.openedit.util.ZipUtil;
+import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
@@ -614,16 +617,22 @@ public class WorkspaceManager
 
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
+		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch"});
+		
 		for (Iterator iterator = inModules.iterator(); iterator.hasNext();)
 		{
 			Data module = (Data) iterator.next();
+			if( skip.contains(module.getId()) )
+			{
+				continue;
+			}
 			Data customization = inMediaArchive.query("customization").exact("targetid",module.getId()).searchOne();
 			if( customization == null)
 			{
 				//Make em
 				customization = inMediaArchive.getSearcher("customization").createNewData();
 				customization.setValue("targetid",module.getId());
-				customization.setName(module.getName());
+				customization.setName(module.getName("en"));
 				customization.setValue("customizationtype","module");
 				customization.setValue("dateupdated",new Date() );
 				//This will be used to export and import a bunch of xml files?
@@ -635,7 +644,6 @@ public class WorkspaceManager
 
 	public void scanHtmlCustomizations(MediaArchive inMediaArchive, Collection inExisting)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -650,18 +658,75 @@ public class WorkspaceManager
 		{
 			Data customization = archive.getData("customization", inIds[i]);
 			//TODO: Make xml files for each config
-			Element root = DocumentHelper.createElement("application");
-			//root.addElement("applicationid").addAttribute("id", appid);
-			root.addElement("catalogid").addAttribute("id", inCatalogId);
-			root.addAttribute("version", "9");
-			//root.addElement("name").setText(app.getName());
-			//TODO: Append a list of files to the xml
-			//TODO: Append the files to the zip
-			//pageZipUtil.zip(path, finalZip);
-			//pageZipUtil.addTozip(root.asXML(), ".emapp.xml", finalZip);
+			Element root = DocumentHelper.createElement("customization");
+			root.attributeValue("targetid",customization.get("targetid"));
+			root.attributeValue("customizationtype",customization.get("customizationtype"));
+			root.addElement("name").setText(customization.getName("en"));
+			try
+			{
+				if( "module".equals(customization.get("customizationtype")) )
+				{
+					Data module = archive.getCachedData("module", customization.get("targetid"));
+					
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + "/";
+						if( getPageManager().getRepository().doesExist(path))
+						{
+							pageZipUtil.zip(path, finalZip);
+						}
+					}
+					//Views
+					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + customization.get("targetid") + ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+					}
+					path = "/WEB-INF/data/" + inCatalogId + "/views/" + customization.get("targetid") + "/";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+					}
+					//Pull in the module data info
+					Element xml = saveDataToXml(module);
+					root.add(xml);
+				}
+				String name = customization.getName("en") ;
+				pageZipUtil.addTozip(root.asXML(), name + ".xml", finalZip);
+				
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		//finalZip.close();
+		try
+		{
+			finalZip.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+	}
+
+	private Element saveDataToXml(Data inModule)
+	{
+		ElementData data = new ElementData();
+		data.setId(inModule.getId());
+		data.setName(inModule.getName());
+		data.setSourcePath(inModule.getSourcePath());
+		for (Iterator iterator = inModule.keySet().iterator(); iterator.hasNext();)
+		{
+			String key	= (String) iterator.next();
+			data.setValue(key, inModule.getValue(key));
+		}
+		Element thedata = data.getElement();//.asXML();
+		return thedata;
 	}
 }

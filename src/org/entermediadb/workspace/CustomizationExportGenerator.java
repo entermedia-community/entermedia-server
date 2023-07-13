@@ -32,7 +32,7 @@ public class CustomizationExportGenerator extends BaseGenerator
 	{
 		try
 		{
-			String[] ids = inReq.getRequestParameters("customization");
+			String[] ids = inReq.getRequestParameters("id");
 			String catalogid = inReq.findPathValue("catalogid");
 			getWorkspaceManager().exportCustomizations(catalogid, ids, inOut.getStream());
 		}
