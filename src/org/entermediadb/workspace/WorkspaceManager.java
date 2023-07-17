@@ -669,7 +669,7 @@ public class WorkspaceManager
 				PropertyDetail detail = (PropertyDetail) iterator2.next();
 				if( detail.isList())
 				{
-					if( !tables.contains(detail.getListId()) )
+					if( !tables.contains(detail.getListId()) && !skip.contains(detail.getListId()) )
 					{
 						tables.add(detail.getListId());
 						customization = inMediaArchive.query("customization").exact("targetid",detail.getListId()).searchOne();
