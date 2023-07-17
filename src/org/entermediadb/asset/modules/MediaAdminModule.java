@@ -905,8 +905,8 @@ public class MediaAdminModule extends BaseMediaModule
 			{
 				//Import customization
 				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
-				ElementData data = new ElementData(element.element("data"));
-				String targetid = data.get("targetid");
+				ElementData data = new ElementData(element.element("element"));
+				String targetid = data.get("id");
 				Data module = mediaArchive.getCachedData("module", targetid);
 				if( module == null)
 				{
