@@ -639,7 +639,7 @@ public class WorkspaceManager
 
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
-		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch","faceprofilegroup" });
+		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch","faceprofilegroup", "group", "user", "settingsgroup" });
 
 		Set tables = new HashSet();
 
@@ -713,30 +713,31 @@ public class WorkspaceManager
 			Data customization = archive.getData("customization", inIds[i]);
 			//TODO: Make xml files for each config
 			Element root = DocumentHelper.createElement("customization");
-			root.addAttribute("targetid",customization.get("targetid"));
+			String searchtype = customization.get("targetid");
+			root.addAttribute("targetid",searchtype);
 			root.addAttribute("customizationtype",customization.get("customizationtype"));
 			root.addElement("name").setText(customization.getName("en"));
 				if( "module".equals(customization.get("customizationtype")) )
 				{
-					Data module = archive.getCachedData("module", customization.get("targetid"));
+					Data module = archive.getCachedData("module", searchtype);
 					
-					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + ".xml";
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + ".xml";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
-						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + "/";
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + "/";
 						if( getPageManager().getRepository().doesExist(path))
 						{
 							pageZipUtil.zip(path, finalZip);
 						}
 					}
 					//Views
-					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + customization.get("targetid") + ".xml";
+					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + searchtype + ".xml";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
 					}
-					path = "/WEB-INF/data/" + inCatalogId + "/views/" + customization.get("targetid") + "/";
+					path = "/WEB-INF/data/" + inCatalogId + "/views/" + searchtype + "/";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
@@ -747,7 +748,6 @@ public class WorkspaceManager
 				}
 				else if( "table".equals(customization.get("customizationtype")) )
 				{
-					String searchtype = customization.get("targetid");
 					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype+ ".xml";
 					if( getPageManager().getRepository().doesExist(path))
 					{
@@ -760,8 +760,8 @@ public class WorkspaceManager
 					}
 					exportData(archive,searchtype,finalZip);
 				}
-				String name = customization.getName("en") ;
-				pageZipUtil.addTozip(root.asXML(), "/customizations/" + name + ".xml", finalZip);
+				
+				pageZipUtil.addTozip(root.asXML(), "/customizations/" + searchtype + ".xml", finalZip);
 		}				
 		try
 		{
