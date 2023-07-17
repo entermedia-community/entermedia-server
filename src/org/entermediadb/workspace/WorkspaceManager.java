@@ -694,6 +694,77 @@ public class WorkspaceManager
 					root.add(xml);
 				}
 				String name = customization.getName("en") ;
+				pageZipUtil.addTozip(root.asXML(), "/entities/" + name + ".xml", finalZip);
+				
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try
+		{
+			finalZip.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void importCustomizations(String inCatalogId, String[] inIds, OutputStream inStream)
+	{
+		//Unzip the upload
+		
+		
+		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
+		ZipOutputStream finalZip = new ZipOutputStream(inStream);
+
+		MediaArchive archive  = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
+
+		for (int i = 0; i < inIds.length; i++)
+		{
+			Data customization = archive.getData("customization", inIds[i]);
+			//TODO: Make xml files for each config
+			Element root = DocumentHelper.createElement("customization");
+			root.attributeValue("targetid",customization.get("targetid"));
+			root.attributeValue("customizationtype",customization.get("customizationtype"));
+			root.addElement("name").setText(customization.getName("en"));
+			try
+			{
+				if( "module".equals(customization.get("customizationtype")) )
+				{
+					Data module = archive.getCachedData("module", customization.get("targetid"));
+					
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + "/";
+						if( getPageManager().getRepository().doesExist(path))
+						{
+							pageZipUtil.zip(path, finalZip);
+						}
+					}
+					//Views
+					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + customization.get("targetid") + ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+					}
+					path = "/WEB-INF/data/" + inCatalogId + "/views/" + customization.get("targetid") + "/";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+					}
+					//Pull in the module data info
+					Element xml = saveDataToXml(module);
+					root.add(xml);
+				}
+				String name = customization.getName("en") ;
 				pageZipUtil.addTozip(root.asXML(), name + ".xml", finalZip);
 				
 			}

@@ -11,7 +11,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
@@ -32,7 +34,9 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.XmlUtil;
 import org.openedit.util.ZipUtil;
+import org.openedit.xml.ElementData;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -863,5 +867,75 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
 		//getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
 	}
+	protected XmlUtil fieldXmlUtil;
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
+			fieldXmlUtil = new XmlUtil();
+		}
+		return fieldXmlUtil;
+	}
+
+
+	public void importCustomization(WebPageRequest inReq)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+		if (properties.getFirstItem() == null)
+		{
+			return;
+		}
+		properties.saveFirstFileAs("/WEB-INF/tmp/temporary.zip" , inReq.getUser());
+		
+		List files = properties.unzipFiles(true);
+		for (Iterator iterator = files.iterator(); iterator.hasNext();)
+		{
+			Page file = (Page) iterator.next();
+			if( file.getPath().contains("entities") && file.getName().endsWith("xml"))
+			{
+				//Import customization
+				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
+				ElementData data = new ElementData(element.element("data"));
+				String targetid = data.get("targetid");
+				Data module = mediaArchive.getCachedData("module", targetid);
+				if( module == null)
+				{
+					module = data;
+				}
+				mediaArchive.saveData("module", module);
+			}
+			if(file.getPath().contains("/fields/"))
+			{
+				//Copy all the views etc files
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/fields/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/view/"))
+			{
+				//Views
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/views/"))
+			{
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			
+		}
+		//Reindex
+	}
+
 	
 }
