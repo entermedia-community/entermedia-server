@@ -13,14 +13,16 @@
     
     #set ( $changes = $mediaarchive.query("customization").all().sort("dateupdated").search($context) )
     #foreach ( $change in $changes )
-    <li> <input style="float:left;" name="id" value="$change.id" checked	type="checkbox" />
-        <div  class="module" style="float:left;">
-       	 <a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
-              <div class="modules-name">      <div style="margin-top: 16px" class="alias" title="Alias">#text($change)</div>            </div>        
-        </a>
-
+    <li> 
+    	<input style="float:left; margin-top:5px;" name="id" id="module$change.id" value="$change.id" checked	type="checkbox" />
+        <div style="float:left; margin-left:8px;">
+       	 	<a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
+         		
+         		<label for="module$change.id" style="margin-bottom:0;">#text($change)</label>            
+	         	
+    	    </a>
         </div>
-               <div class="clearfix"></div>
+        <div class="clearfix"></div>
     </li>
     #end
     
