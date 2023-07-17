@@ -9,25 +9,39 @@
             <a class="btn btn-sm btn-primary submitform" data-updateaction="true"  href="$home$apphome/views/settings/customizations/delete.html">[[Delete]]</a>
 
 
-<ul id="modules" class="fwlist modulelist">
-    
-    #set ( $changes = $mediaarchive.query("customization").all().sort("dateupdated").search($context) )
+
+<table class="table table-striped table-hover" style="margin:15px 0; border:1px solid #aaa">    
+<thead>
+<tr>
+	<th></th>
+	<th>[[Type]]</th>
+	<th>[[Customization]]</th>
+</tr>
+</thead>
+    #set ( $changes = $mediaarchive.query("customization").all().sort("customizationtype").search($context) )
     #foreach ( $change in $changes )
-    <li> 
-    	<input style="float:left; margin-top:5px;" name="id" id="module$change.id" value="$change.id" checked	type="checkbox" />
-        <div style="float:left; margin-left:8px;">
+    <tr> 
+    	<td>
+    	<input style=" margin-top:5px;" name="id" id="module$change.id" value="$change.id" checked	type="checkbox" />
+    	</td>
+    	<td>
+    		#set($type = $mediaarchive.getCachedData("customizationtype", $change.customizationtype))
+    		$type 
+    	</td>
+    	<td>
+        
        	 	<a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
          		
          		<label for="module$change.id" style="margin-bottom:0;">#text($change)</label>            
 	         	
     	    </a>
-        </div>
-        <div class="clearfix"></div>
-    </li>
+        </td>
+        
+    </tr>
     #end
     
     
-</ul>               
+</table>               
 
 </form>
 </div>
