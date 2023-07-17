@@ -867,18 +867,7 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
 		//getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
 	}
-	protected XmlUtil fieldXmlUtil;
-	public XmlUtil getXmlUtil()
-	{
-		if (fieldXmlUtil == null)
-		{
-			fieldXmlUtil = new XmlUtil();
-		}
-		return fieldXmlUtil;
-	}
-
-
-	public void importCustomization(WebPageRequest inReq)
+	public void importCustomization(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
@@ -896,47 +885,9 @@ public class MediaAdminModule extends BaseMediaModule
 		Page temp = getPageManager().getPage("/WEB-INF/tmp/unzip");
 		getPageManager().removePage(temp);
 		properties.saveFirstFileAs("/WEB-INF/tmp/unzip/temporary.zip" , inReq.getUser());
-		
+
 		List files = properties.unzipFiles(true);
-		for (Iterator iterator = files.iterator(); iterator.hasNext();)
-		{
-			Page file = (Page) iterator.next();
-			if( file.getPath().contains("/entities/") && file.getName().endsWith("xml"))
-			{
-				//Import customization
-				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
-				ElementData data = new ElementData(element.element("element"));
-				String targetid = data.get("id");
-				Data module = mediaArchive.getCachedData("module", targetid);
-				if( module == null)
-				{
-					module = data;
-				}
-				mediaArchive.saveData("module", module);
-			}
-			if(file.getPath().contains("/fields/"))
-			{
-				//Copy all the views etc files
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/fields/";
-				Page target = getPageManager().getPage(path);
-				getPageManager().copyPage(file, target);
-			}
-			if(file.getPath().contains("/view/"))
-			{
-				//Views
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
-				Page target = getPageManager().getPage(path);
-				getPageManager().copyPage(file, target);
-			}
-			if(file.getPath().contains("/views/"))
-			{
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/";
-				Page target = getPageManager().getPage(path);
-				getPageManager().copyPage(file, target);
-			}
-			
-		}
-		//Reindex
+		getWorkspaceManager().importCustomizations(mediaArchive,files);
 	}
 
 	

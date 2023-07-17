@@ -1,23 +1,37 @@
 package org.entermediadb.workspace;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.MediaAdminModule;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -25,6 +39,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
@@ -40,8 +55,15 @@ import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
+
 public class WorkspaceManager
 {
+	private static final Log log = LogFactory.getLog(WorkspaceManager.class);
+
 	protected SearcherManager fieldSearcherManager;
 	protected PageManager fieldPageManager;
 	protected XmlArchive fieldXmlArchive;
@@ -618,7 +640,9 @@ public class WorkspaceManager
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
 		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch","faceprofilegroup" });
-		
+
+		Set tables = new HashSet();
+
 		for (Iterator iterator = inModules.iterator(); iterator.hasNext();)
 		{
 			Data module = (Data) iterator.next();
@@ -637,11 +661,38 @@ public class WorkspaceManager
 				customization.setValue("dateupdated",new Date() );
 				//This will be used to export and import a bunch of xml files?
 				inMediaArchive.saveData("customization",customization);
-				
-				
+			}
+			tables.add(module.getId());
+			PropertyDetails details = inMediaArchive.getPropertyDetailsArchive().getPropertyDetails(module.getId());
+			for (Iterator iterator2 = details.iterator(); iterator2.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator2.next();
+				if( detail.isList())
+				{
+					if( !tables.contains(detail.getListId()) )
+					{
+						tables.add(detail.getListId());
+						customization = inMediaArchive.query("customization").exact("targetid",detail.getListId()).searchOne();
+						if( customization == null)
+						{
+							//Make em
+							customization = inMediaArchive.getSearcher("customization").createNewData();
+							customization.setValue("targetid",detail.getListId());
+							customization.setName(detail.getName("en"));
+							customization.setValue("customizationtype","table");
+							customization.setValue("dateupdated",new Date() );
+							//This will be used to export and import a bunch of xml files?
+							inMediaArchive.saveData("customization",customization);
+						}
+					}
+				}
 				
 			}
 		}
+		
+		//List of table
+
+		
 	}
 
 
@@ -650,7 +701,7 @@ public class WorkspaceManager
 		
 	}
 
-	public void exportCustomizations(String inCatalogId, String[] inIds, OutputStream inStream)
+	public void exportCustomizations(String inCatalogId, String[] inIds, OutputStream inStream) throws Exception
 	{
 		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
 		ZipOutputStream finalZip = new ZipOutputStream(inStream);
@@ -662,11 +713,9 @@ public class WorkspaceManager
 			Data customization = archive.getData("customization", inIds[i]);
 			//TODO: Make xml files for each config
 			Element root = DocumentHelper.createElement("customization");
-			root.attributeValue("targetid",customization.get("targetid"));
-			root.attributeValue("customizationtype",customization.get("customizationtype"));
+			root.addAttribute("targetid",customization.get("targetid"));
+			root.addAttribute("customizationtype",customization.get("customizationtype"));
 			root.addElement("name").setText(customization.getName("en"));
-			try
-			{
 				if( "module".equals(customization.get("customizationtype")) )
 				{
 					Data module = archive.getCachedData("module", customization.get("targetid"));
@@ -696,16 +745,24 @@ public class WorkspaceManager
 					Element xml = saveDataToXml(module);
 					root.add(xml);
 				}
+				else if( "table".equals(customization.get("customizationtype")) )
+				{
+					String searchtype = customization.get("targetid");
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype+ ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + "/";
+						if( getPageManager().getRepository().doesExist(path))
+						{
+							pageZipUtil.zip(path, finalZip);
+						}
+					}
+					exportData(archive,searchtype,finalZip);
+				}
 				String name = customization.getName("en") ;
-				pageZipUtil.addTozip(root.asXML(), "/entities/" + name + ".xml", finalZip);
-				
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+				pageZipUtil.addTozip(root.asXML(), "/customizations/" + name + ".xml", finalZip);
+		}				
 		try
 		{
 			finalZip.close();
@@ -718,75 +775,180 @@ public class WorkspaceManager
 		
 	}
 
-	public void importCustomizations(String inCatalogId, String[] inIds, OutputStream inStream)
+	private void exportData(MediaArchive mediaarchive, String inSearchtype, ZipOutputStream inFinalZip) throws Exception
+	{
+		Searcher searcher = mediaarchive.getSearcher(inSearchtype);
+		PropertyDetails details = searcher.getPropertyDetails();
+		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
+		if(hits.size() > 0){
+			ZipEntry ze = new ZipEntry("/customizations/" + inSearchtype + ".json");
+
+			inFinalZip.putNextEntry(ze);
+			IOUtils.write("{ \"" + inSearchtype + "\": [", inFinalZip, "UTF-8");
+			int size = hits.size();
+			int count = 0;
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data it = (Data) iterator.next();
+				count++;
+				SearchHitData hit = (SearchHitData)it;
+				IOUtils.write(hit.toJsonString(), inFinalZip, "UTF-8");
+				if(size != count) {
+				IOUtils.write(",", inFinalZip, "UTF-8");
+				}
+			}
+			IOUtils.write("]}", inFinalZip, "UTF-8");
+			
+			inFinalZip.flush();
+			inFinalZip.closeEntry();
+		}
+	}
+	
+	public void importData(MediaArchive mediaarchive, String searchtype , Page inDataFile) throws Exception
+	{
+		ElasticNodeManager manager = (ElasticNodeManager)mediaarchive.getNodeManager();
+		
+		BulkProcessor processor = manager.getBulkProcessor();
+
+		String indexid = manager.toId(mediaarchive.getCatalogId());
+
+		
+		try{
+
+			MappingJsonFactory f = new MappingJsonFactory();
+			JsonParser jp = f.createParser(inDataFile.getReader());
+
+			JsonToken current;
+
+			current = jp.nextToken();
+			if (current != JsonToken.START_OBJECT) {
+				System.out.println("Error: root should be object: quiting.");
+				return;
+			}
+
+			while (jp.nextToken() != JsonToken.END_OBJECT) {
+				String fieldName = jp.getCurrentName();
+				// move from field name to field value
+				current = jp.nextToken();
+				if (fieldName.equals(searchtype)) {
+					if (current == JsonToken.START_ARRAY) {
+						// For each of the records in the array
+						while (jp.nextToken() != JsonToken.END_ARRAY) {
+							// read the record into a tree model,
+							// this moves the parsing position to the end of it
+							JsonNode node = jp.readValueAsTree();
+							IndexRequest req = Requests.indexRequest(indexid).type(searchtype);
+							JsonNode source = node.get("_source");
+							if (source == null)
+							{
+								source = node;
+							}
+							String json  = source.toString();
+							
+							//log.info("JSON: "+json);
+							req.source(json);
+							JsonNode id = node.get("_id");
+							if( id == null) {
+								id = node.get("id");
+							}
+							if( id == null)
+							{
+								log.info("No ID found " + searchtype + " node:" + node);
+							}
+							else
+							{
+								req.id(id.asText());
+							}	
+							processor.add(req);
+
+						}
+					} else {
+						System.out.println("Error: records should be an array: skipping.");
+						jp.skipChildren();
+					}
+				} else {
+					System.out.println("Unprocessed property: " + fieldName);
+					jp.skipChildren();
+				}
+			}
+		}
+		finally
+		{
+
+			manager.flushBulk();
+
+				//This is in memory only flush
+				//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+		}
+	}
+	protected XmlUtil fieldXmlUtil;
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
+			fieldXmlUtil = new XmlUtil();
+		}
+		return fieldXmlUtil;
+	}
+
+
+
+	public void importCustomizations(MediaArchive mediaArchive, List inFiles) throws Exception
 	{
 		//Unzip the upload
-		
-		
-		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
-		ZipOutputStream finalZip = new ZipOutputStream(inStream);
 
-		MediaArchive archive  = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
-
-		for (int i = 0; i < inIds.length; i++)
+		
+		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 		{
-			Data customization = archive.getData("customization", inIds[i]);
-			//TODO: Make xml files for each config
-			Element root = DocumentHelper.createElement("customization");
-			root.attributeValue("targetid",customization.get("targetid"));
-			root.attributeValue("customizationtype",customization.get("customizationtype"));
-			root.addElement("name").setText(customization.getName("en"));
-			try
+			Page file = (Page) iterator.next();
+			if( file.getPath().contains("/customizations/") && file.getName().endsWith("xml"))
 			{
-				if( "module".equals(customization.get("customizationtype")) )
-				{
-					Data module = archive.getCachedData("module", customization.get("targetid"));
-					
-					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + ".xml";
-					if( getPageManager().getRepository().doesExist(path))
-					{
-						pageZipUtil.zip(path, finalZip);
-						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + "/";
-						if( getPageManager().getRepository().doesExist(path))
-						{
-							pageZipUtil.zip(path, finalZip);
-						}
-					}
-					//Views
-					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + customization.get("targetid") + ".xml";
-					if( getPageManager().getRepository().doesExist(path))
-					{
-						pageZipUtil.zip(path, finalZip);
-					}
-					path = "/WEB-INF/data/" + inCatalogId + "/views/" + customization.get("targetid") + "/";
-					if( getPageManager().getRepository().doesExist(path))
-					{
-						pageZipUtil.zip(path, finalZip);
-					}
-					//Pull in the module data info
-					Element xml = saveDataToXml(module);
-					root.add(xml);
-				}
-				String name = customization.getName("en") ;
-				pageZipUtil.addTozip(root.asXML(), name + ".xml", finalZip);
+				//Import customization
+				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
 				
+				String type = element.attributeValue("customizationtype");
+				if( "module".equals(type) )
+				{
+					ElementData data = new ElementData(element.element("element"));
+					String targetid = data.get("id");
+					Data module = mediaArchive.getCachedData("module", targetid);
+					if( module == null)
+					{
+						module = data;
+					}
+					mediaArchive.saveData("module", module);
+				}
 			}
-			catch (IOException e)
+			if( file.getPath().contains("/customizations/") && file.getName().endsWith("json"))
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				String searchtype = file.getPageName();
+				importData(mediaArchive,searchtype,file);
 			}
+			if(file.getPath().contains("/fields/"))
+			{
+				//Copy all the views etc files
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/fields/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/view/"))
+			{
+				//Views
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/views/"))
+			{
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			
 		}
-		try
-		{
-			finalZip.close();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		//Reindex
+
 	}
 
 	private Element saveDataToXml(Data inModule)
