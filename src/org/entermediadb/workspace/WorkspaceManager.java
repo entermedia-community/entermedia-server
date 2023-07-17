@@ -617,7 +617,7 @@ public class WorkspaceManager
 
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
-		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch"});
+		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch","faceprofilegroup" });
 		
 		for (Iterator iterator = inModules.iterator(); iterator.hasNext();)
 		{
@@ -637,6 +637,9 @@ public class WorkspaceManager
 				customization.setValue("dateupdated",new Date() );
 				//This will be used to export and import a bunch of xml files?
 				inMediaArchive.saveData("customization",customization);
+				
+				
+				
 			}
 		}
 	}

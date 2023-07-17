@@ -893,13 +893,15 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			return;
 		}
-		properties.saveFirstFileAs("/WEB-INF/tmp/temporary.zip" , inReq.getUser());
+		Page temp = getPageManager().getPage("/WEB-INF/tmp/unzip");
+		getPageManager().removePage(temp);
+		properties.saveFirstFileAs("/WEB-INF/tmp/unzip/temporary.zip" , inReq.getUser());
 		
 		List files = properties.unzipFiles(true);
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			Page file = (Page) iterator.next();
-			if( file.getPath().contains("entities") && file.getName().endsWith("xml"))
+			if( file.getPath().contains("/entities/") && file.getName().endsWith("xml"))
 			{
 				//Import customization
 				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
