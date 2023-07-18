@@ -142,7 +142,7 @@ public class EntityManager implements CatalogEnabled
 			if( sourcepath.isEmpty())
 			{
 				//long year = Calendar.getInstance().get(Calendar.YEAR);
-				sourcepath = module.getName("en") + "/" + entity.getName() + "/";
+				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 			}
 		}
 		entity.setValue("uploadsourcepath",sourcepath );
