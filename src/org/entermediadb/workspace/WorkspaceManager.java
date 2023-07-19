@@ -219,11 +219,11 @@ public class WorkspaceManager
 						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
 					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
-					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
-					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
+					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
+					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
 					if( !destination.exists() && !destinationbase.exists() )
 					{
-						String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
+						String templatepermissionfields = "/" + catalogid + "/configuration/baseentitytemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
 						getPageManager().copyPage(template, destination);
 					}					
@@ -689,8 +689,22 @@ public class WorkspaceManager
 				
 			}
 		}
-		
-		//List of table
+		Collection menu = inMediaArchive.query("appsection").all().search();
+		if( !menu.isEmpty() )
+		{
+			Data customization = inMediaArchive.query("customization").exact("targetid","appsection").searchOne();
+			if( customization == null)
+			{
+				//Make em
+				customization = inMediaArchive.getSearcher("customization").createNewData();
+				customization.setValue("targetid","appsection");
+				customization.setName("App Section Menu");
+				customization.setValue("customizationtype","table");
+				customization.setValue("dateupdated",new Date() );
+				//This will be used to export and import a bunch of xml files?
+				inMediaArchive.saveData("customization",customization);
+			}
+		}
 
 		
 	}
