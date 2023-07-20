@@ -590,6 +590,44 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 
+	
+	public void loadOrSearchChildren(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String inModule = inReq.findValue("module");
+		Data selected = archive.getCachedData("module", inModule);
+		if( selected == null)
+		{
+			Collection children = selected.getValues("childentities");
+
+			
+			//TODO: Load them from the views
+			
+			
+			//String searchingfor = inReq.findActionValue("searchallchildren");
+			
+			for (Iterator iterator = children.iterator(); iterator.hasNext();)
+			{
+				String amoduleid = (String) iterator.next();
+				Data amodule = archive.getCachedData("module", amoduleid);
+				if( amodule.getId().equals(inModule))
+				{
+					continue; //Never search what we are in
+				}
+				if( children != null)
+				{
+					if( children.contains(amodule.getId() ) )
+					{
+						searchmodules.add(amodule.getId());
+					}
+				}
+				else if(inModule == null)
+				{
+					searchmodules.add(amodule.getId());
+				}
+			}
+		}
+	}
 
 	public void loadOrSearchByTypes(WebPageRequest inReq)
 	{
@@ -601,11 +639,21 @@ public class FinderModule extends BaseMediaModule
 		}
 		Searcher searcher = archive.getSearcher("modulesearch");
 		SearchQuery search = searcher.addStandardSearchTerms(inReq);
-
+		
+		String entityid = inReq.findPathValue("entityid");
+		String externalid = inReq.findPathValue("externalid");
+		
 		if (search == null)
 		{
 			search = searcher.createSearchQuery();
-			search.addMatches("id", "*");
+			if(entityid != null && externalid != null) 
+			{
+				search.addExact(externalid, entityid);
+			}
+			else 
+			{
+				search.addMatches("id", "*");
+			}
 		}
 
 		search.setValue("searchtypes", searchmodules);
@@ -653,6 +701,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		else
 		{
+			/*
 			Collection children = selected.getValues("childentities");
 			//String searchingfor = inReq.findActionValue("searchallchildren");
 			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
@@ -674,7 +723,7 @@ public class FinderModule extends BaseMediaModule
 				{
 					searchmodules.add(amodule.getId());
 				}
-			}
+			}*/
 		}
 		//searchmodules.remove("asset"); 
 		return searchmodules;
