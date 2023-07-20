@@ -611,19 +611,21 @@ public class FinderModule extends BaseMediaModule
 				Data view = (Data)iterator.next();
 				String searchtype = view.get("rendertable");
 				Data amodule = archive.getCachedData("module", searchtype);
-				organizedModules.add(amodule);
-				String renderexternalid = view.get("renderexternalid");
-				QueryBuilder builder = archive.query(searchtype).named(searchtype + "hits");
-				if( entityid != null)
-				{
-					builder.exact(renderexternalid, entityid);
+				if(amodule != null) {
+					organizedModules.add(amodule);
+					String renderexternalid = view.get("renderexternalid");
+					QueryBuilder builder = archive.query(searchtype).named(searchtype + "hits");
+					if( entityid != null)
+					{
+						builder.exact(renderexternalid, entityid);
+					}
+					else
+					{
+						builder.all();
+					}
+					HitTracker hits = (HitTracker)builder.sort("name").search(inReq);
+					organizedHits.put(amodule.getId(),hits);
 				}
-				else
-				{
-					builder.all();
-				}
-				HitTracker hits = (HitTracker)builder.sort("name").search(inReq);
-				organizedHits.put(amodule.getId(),hits);
 			}
 			inReq.putPageValue("organizedModules",organizedModules);
 			inReq.putPageValue("organizedHits",organizedHits);
