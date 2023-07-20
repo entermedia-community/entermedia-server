@@ -596,36 +596,37 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String inModule = inReq.findValue("module");
 		Data selected = archive.getCachedData("module", inModule);
-		if( selected == null)
+		String entityid = inReq.getRequestParameter("entityid");
+		if( selected != null)
 		{
-			Collection children = selected.getValues("childentities");
-
-			
-			//TODO: Load them from the views
-			
+			Collection views = archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search(inReq);
+			//Search for children data. Add to organizedModules
 			
 			//String searchingfor = inReq.findActionValue("searchallchildren");
+			List organizedModules = new ArrayList();
+			Map organizedHits = new HashMap();
 			
-			for (Iterator iterator = children.iterator(); iterator.hasNext();)
+			for (Iterator iterator = views.iterator(); iterator.hasNext();)
 			{
-				String amoduleid = (String) iterator.next();
-				Data amodule = archive.getCachedData("module", amoduleid);
-				if( amodule.getId().equals(inModule))
+				Data view = (Data)iterator.next();
+				String searchtype = view.get("rendertable");
+				Data amodule = archive.getCachedData("module", searchtype);
+				organizedModules.add(amodule);
+				String renderexternalid = view.get("renderexternalid");
+				QueryBuilder builder = archive.query(searchtype).named(searchtype + "hits");
+				if( entityid != null)
 				{
-					continue; //Never search what we are in
+					builder.exact(renderexternalid, entityid);
 				}
-				if( children != null)
+				else
 				{
-					if( children.contains(amodule.getId() ) )
-					{
-						searchmodules.add(amodule.getId());
-					}
+					builder.all();
 				}
-				else if(inModule == null)
-				{
-					searchmodules.add(amodule.getId());
-				}
+				HitTracker hits = (HitTracker)builder.sort("name").search(inReq);
+				organizedHits.put(amodule.getId(),hits);
 			}
+			inReq.putPageValue("organizedModules",organizedModules);
+			inReq.putPageValue("organizedHits",organizedHits);
 		}
 	}
 
