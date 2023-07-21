@@ -597,6 +597,7 @@ public class FinderModule extends BaseMediaModule
 		String inModule = inReq.findValue("module");
 		Data selected = archive.getCachedData("module", inModule);
 		String entityid = inReq.getRequestParameter("entityid");
+		String selectedentitytype = inReq.getRequestParameter("entitytype");
 		if( selected != null)
 		{
 			Collection views = archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search(inReq);
@@ -613,9 +614,9 @@ public class FinderModule extends BaseMediaModule
 				Data amodule = archive.getCachedData("module", searchtype);
 				if(amodule != null) {
 					organizedModules.add(amodule);
-					String renderexternalid = view.get("renderexternalid");
 					QueryBuilder builder = archive.query(searchtype).named(searchtype + "hits");
-					if( entityid != null)
+					String renderexternalid = view.get("renderexternalid");
+					if( renderexternalid != null && entityid != null && renderexternalid.equals(selectedentitytype))
 					{
 						builder.exact(renderexternalid, entityid);
 					}

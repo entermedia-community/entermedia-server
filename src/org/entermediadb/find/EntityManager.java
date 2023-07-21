@@ -92,6 +92,10 @@ public class EntityManager implements CatalogEnabled
 		}
 		String type = entity.get("entitysourcetype");
 		Data module = getMediaArchive().getCachedData("module", type);
+		if( module == null)
+		{
+			return null;
+		}
 		Category cat = loadDefaultFolder(module, entity,inUser);
 		return cat;
 	}
@@ -99,6 +103,11 @@ public class EntityManager implements CatalogEnabled
 	{
 		String sourcepath = loadUploadSourcepath(module,entity,inUser);
 		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+		if( cat == null)
+		{
+			//Cant find sourcepath
+			return null;
+		}
 		if( cat.getValue(module.getId()) == null)
 		{
 			cat.setValue(module.getId(),entity.getId());
