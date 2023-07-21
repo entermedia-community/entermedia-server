@@ -86,6 +86,10 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data entity, User inUser)
 	{
+		if( entity == null)
+		{
+			return null;
+		}
 		String type = entity.get("entitysourcetype");
 		Data module = getMediaArchive().getCachedData("module", type);
 		Category cat = loadDefaultFolder(module, entity,inUser);
