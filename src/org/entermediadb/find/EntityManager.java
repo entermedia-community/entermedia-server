@@ -84,6 +84,13 @@ public class EntityManager implements CatalogEnabled
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
 	}
+	public Category loadDefaultFolder(Data entity, User inUser)
+	{
+		String type = entity.get("entitysourcetype");
+		Data module = getMediaArchive().getCachedData("module", type);
+		Category cat = loadDefaultFolder(module, entity,inUser);
+		return cat;
+	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
 		String sourcepath = loadUploadSourcepath(module,entity,inUser);
