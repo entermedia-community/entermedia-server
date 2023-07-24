@@ -144,6 +144,86 @@ public class AdminModule extends BaseMediaModule
 
 		return passwordHelper;
 	}
+	
+	
+	
+	
+	public void emailUserLoginCode(WebPageRequest inReq) throws Exception
+	{
+		String emailaddress = inReq.getRequestParameter(EMAIL);
+		if( emailaddress == null)
+		{
+			emailaddress = inReq.getRequestParameter("email"); //Move to using this
+		}
+		String u = inReq.getRequestParameter(UNAME);
+		if (emailaddress == null && u == null)
+		{
+			inReq.putPageValue("commandSucceeded", "missingparam");
+			// log.error("Invalid information");
+			return;
+		}
+
+		User foundUser = null;
+		String username = null;
+		String firstName = "";
+		String lastName = "";
+		
+		Category userCategory = (Category)inReq.getPageValue("userCategory"); 
+		
+		PasswordHelper passwordHelper = getPasswordHelper(inReq);
+
+		if (emailaddress != null && emailaddress.length() > 0)
+		{
+			foundUser = (User) getUserManager(inReq).getUserByEmail(emailaddress);
+		}
+		if (foundUser != null)
+		{
+			emailaddress = foundUser.getEmail();
+			firstName = foundUser.getFirstName();
+			lastName = foundUser.getLastName();
+			username = foundUser.getId();
+			
+			String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
+			
+			
+			
+			if(userCategory != null)
+			{
+				foundUser.setValue("logincategoryid",userCategory.getId());
+				getUserManager(inReq).saveUser(foundUser);
+			}
+			
+			if(foundUser.isEnabled() )
+			{
+				
+				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
+			}
+		}
+		else
+		{
+			//Show error on page. Notify admin
+			inReq.putPageValue("emailaddress", emailaddress);
+			String userapproveremail = (String)inReq.getPageValue("userapproveremail");
+			if (userapproveremail != null) {
+				passwordHelper.emailAdminAboutNewUser(inReq, getPageManager(), emailaddress, userapproveremail);
+			}
+			else {
+				firstName = inReq.getRequestParameter("firstName");
+				lastName = inReq.getRequestParameter("lastName");
+				String userCode = getUserManager(inReq).createNewTempLoginKey(null,emailaddress,firstName,lastName);
+				
+				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
+				
+			}
+		}
+		if(inReq.getPageValue("error") != null) {
+			log.info("Error sending Email. " + inReq.getPageValue("error"));
+		}
+		inReq.putPageValue("commandSucceeded", "ok");
+	}
+	
+	
+	
 
 	public void emailPasswordReminder(WebPageRequest inReq) throws Exception
 	{

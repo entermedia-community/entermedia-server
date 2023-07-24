@@ -9,12 +9,12 @@
 			#set( $username = $context.getRequestParameter("username") )
 			
 			<form class="ajaxform" 
-					action="$home$content.loginroot/sendmagiclinkfinish.html"
+					action="$home$content.loginroot/sendusercode.html"
 					id="password-reminder" name="passwordReminder"  method="post"
 					data-targetdiv="magiclinkcontainer">
 
 						<div style="margin:10px; text-align: center">[[Email was not found. Enter first and last name to register]]</div>								
-					<p><input class="form-control form-control-sm required" type="text" name="email" size="50" value="$!to" 
+						<p><input class="form-control form-control-sm required" type="text" name="email" size="50" value="$!to" 
 							style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /> 		
 							</p>
 							
@@ -24,8 +24,10 @@
 							style="margin:0 auto; width:200px" placeholder="[[Last Name]]" required /></p>
 						<input class="btn btn-secondary" name="submit" type="submit" value="[[Send New User Code]]" />
 			
-					<input type="hidden" name="subject" VALUE="[[Your Login Code]]"/>
-					
+				
+				#ifnotnull( $userCategory)
+				<input type="hidden" name="categoryid" value="$userCategory.id" />
+				#end
 					
             </form>
             <div class="text-center note" style="margin-top: 40px; margin-bottom: 10px;">
