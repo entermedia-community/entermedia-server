@@ -52,6 +52,9 @@ public class ImportFile
 		getParser().setBufferedReader(reader);
 		
 		String[] cells = getParser().readNext();
+		if (cells == null) {
+			return;
+		}
 		setHeader(new Header());
 		List valid = new ArrayList();
 		for (int i = 0; i < cells.length; i++)

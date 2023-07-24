@@ -1,6 +1,6 @@
 #set( $allowguestregistration = $context.findValue("allowguestregistration") )	
 
-#if( $commandSucceeded == "nouser")
+#ifnull( $selecteduser )
 	#if( $userapproveremail)
 		##Uses and admin to create the user
 		$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
@@ -13,7 +13,8 @@
 			$pages.include("./sendnewusercode.html")
 		#end	
 	#end	
-#else	
+#end
+#ifnotnull( $selecteduser )
 	##Sends a code right away and asks for the numbers
 	$pages.include("./sendusercode.html")  ##to try again or register
 #end

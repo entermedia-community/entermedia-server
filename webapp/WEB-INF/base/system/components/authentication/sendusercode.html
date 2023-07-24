@@ -6,31 +6,32 @@
 	     #set($loginok = $context.findValue("loginokpage") ) 
 
 		<div class="hr"></div>
-		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" >
 			<div class="form-group">
-			<label for="password">[[Enter six digit login code]]</label>:
-			<input class="form-control  form-control-sm grabfocus required" id="entermediakey" name="templogincode" required />
-			#set( $email = $context.getRequestParameter("email") )	
-			#if( $email )
-			<input  type="hidden" name="email" value="$email" />
-			#else
-			<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
-			#end
-			</div>
-			
-			<div class="form-group">
-			<input class="btn btn-sm btn-primary" name="submit" type="submit" id="login-submit" value="[[Login]]" />
-			#if($loginok)
-			#set( $loginok = "$context.siteRoot" + "$loginok")
-			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
-			#end
+				<label for="password">[[Enter six digit login code]]</label>:
+				<input class="form-control  form-control-sm grabfocus required" id="entermediakey" name="templogincode" required />
+				
+				#set( $email = $context.getRequestParameter("email") )	
+				#if( $email )
+				<input  type="hidden" name="email" value="$email" />
+				#else
+				<input class="form-control form-control-sm required grabfocus" type="text" name="email" size="50" style="margin:0 auto; width:100%; max-width: 400px;" placeholder="[[Enter your Email Address]]" required />
+				#end
+				</div>
+				
+				<div class="form-group">
+				<input class="btn btn-sm btn-primary" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+				#if($loginok)
+				#set( $loginok = "$context.siteRoot" + "$loginok")
+				<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+				#end
 			</div>
 			#if ( $context.getPageValue("oe-exception") )
 				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
 				$context.removeSessionValue("oe-exception")
 			#end
-			#ifnotnull( $category)
-					<input type="hidden" name="categoryid" value="$category.id" />
+			#ifnotnull( $userCategory)
+					<input type="hidden" name="categoryid" value="$userCategory.id" />
 			#end
 		</form>   
 		
