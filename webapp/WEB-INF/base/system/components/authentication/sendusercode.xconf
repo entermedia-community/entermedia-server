@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  	
+  	<page-action name="Admin.emailPasswordReminder">
+	  	<property name="emaillayout">/${applicationid}/authentication/sendmagiclinkemail.html</property>
+	  	<property name="emaillayoutadmin">/${applicationid}/authentication/sendmagiclinkemailadmin.html</property>
+  	</page-action>
+</page>
