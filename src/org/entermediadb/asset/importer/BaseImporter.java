@@ -26,6 +26,8 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
+import groovy.json.internal.ValueMap;
+
 public class BaseImporter extends EnterMediaObject
 {
 	public void setSearcher(Searcher inSearcher)
@@ -407,13 +409,24 @@ public class BaseImporter extends EnterMediaObject
 				PropertyDetail detail = getSearcher().getDetail(headerid);
 				if(detail != null) 
 				{
-					Object value = lookUpListValIfNeeded(detail,val);
-					inData.setValue(headerid, value);
+					if(detail.isMultiValue())
+					{
+						String[] vals = MultiValued.VALUEDELMITER.split(val);
+						for (int j = 0; j < vals.length; j++)
+						{
+							Object value = lookUpListValIfNeeded(detail,vals[j]);
+							((MultiValued)inData).addValue(headerid, value);							
+						}
+					}
+					else
+					{
+						Object value = lookUpListValIfNeeded(detail,val);
+						inData.setValue(headerid, value);
+					}
 				} 
 				else
 				{
-					Object value = getSearcher().createValue(headerid, val);
-					inData.setValue(headerid, value);
+					inData.setValue(headerid, val);
 
 				}
 				
