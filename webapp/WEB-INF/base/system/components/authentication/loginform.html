@@ -14,6 +14,11 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 	<div class="row no-gutters justify-content-sm-center loginformcontainer">
 	
+		#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
+		#ifnotnull($customloginmessage)
+			$customloginmessage
+		#end
+	
 		#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 		
 		<div class="col-sm-5 col-lg-4">
@@ -53,8 +58,8 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			<div class="loginform-col-right">			
 		
 				<form class="ajaxform" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
-					#ifnotnull( $category)
-						<input type="hidden" name="categoryid" value="$category.id" />
+					#ifnotnull( $userCategory)
+						<input type="hidden" name="categoryid" value="$userCategory.id" />
 					#end
 					<p style="float:left;">
 					

@@ -211,7 +211,8 @@ public class AdminModule extends BaseMediaModule
 				firstName = inReq.getRequestParameter("firstName");
 				lastName = inReq.getRequestParameter("lastName");
 				String userCode = getUserManager(inReq).createNewTempLoginKey(null,emailaddress,firstName,lastName);
-				
+				String subject = inReq.getRequestParameter("subject");
+				inReq.putPageValue("subject", subject);
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
 				
 			}
@@ -285,31 +286,8 @@ public class AdminModule extends BaseMediaModule
 				inReq.putPageValue("commandSucceeded", "nouser");
 				return;
 			}
-			Category category = null;
-			String categoryid = (String)inReq.getRequestParameter("categoryid");
-			if(categoryid == null && foundUser != null) {
-				categoryid = foundUser.get("logincategoryid");
-			}
-			if(categoryid != null) 
-			{
-				category = getMediaArchive(inReq).getCategory(categoryid);
-				if(category != null)
-				{
-					inReq.putPageValue("category", category);
-					List parentcategories = category.getParentCategories();
-					inReq.putPageValue("parentcategories", parentcategories);
-					String assetid = (String)category.findValue("headercategoryimage");
-					if(assetid != null) {
-						Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);
-						if(asset != null) {
-							String categorylogo = getMediaArchive(inReq).asLinkToOriginal(asset);
-							
-							inReq.putPageValue("categorylogo", categorylogo);
-						}
-					}
-				}
-			}
 			
+			 
 			
 			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
 			
@@ -322,21 +300,24 @@ public class AdminModule extends BaseMediaModule
 			
 			if(foundUser != null &&  foundUser.isEnabled() )
 			{
-				if(categoryid != null)
+				/*
+				if(userCategory != null)
 				{
-					foundUser.setValue("logincategoryid",categoryid);
+					foundUser.setValue("logincategoryid",userCategory.getId());
 					getUserManager(inReq).saveUser(foundUser);
 				}
+				*/
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), tempsecuritykey, key, emailaddress);
 			}
 			else
 			{
 				//Show error on page. Notify admin
 				inReq.putPageValue("emailaddress", emailaddress);
+				Category userCategory = (Category)inReq.getPageValue("userCategory");
 				String  userapproveremail = null;
-				if( category != null)
+				if( userCategory != null)
 				{
-					userapproveremail = (String)category.findValue("categoryadminemail");
+					userapproveremail = (String)userCategory.findValue("categoryadminemail");
 				}
 				if( userapproveremail == null)
 				{
