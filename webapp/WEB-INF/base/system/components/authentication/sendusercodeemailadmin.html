@@ -6,7 +6,7 @@
 #if(!$parentcategories.isEmpty())
 	#foreach( $parent in $parentcategories)
 		#if( ${foreach.count} > 1) / #end
-		#if($category.getId() != $parent.getId())
+		#if($userCategory.getId() != $parent.getId())
 			$parent
 		#else
 		<span class="currentcategory">$parent</span>

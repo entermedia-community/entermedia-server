@@ -4,6 +4,7 @@
  	<page-action name="User.loadUserCategory" />
  	
   	<page-action name="Admin.emailUserLoginCode">
+  		
 	  	<property name="emaillayout">/${applicationid}/authentication/sendusercodeemail.html</property>
   	</page-action>
 </page>

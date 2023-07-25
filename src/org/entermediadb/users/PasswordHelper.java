@@ -64,9 +64,7 @@ public class PasswordHelper implements Serializable {
 		
 		inContext.putPageValue("templogincode", inUserCode);
 		inContext.putPageValue("entermediakey", inEnterMediaKey);
-		
-		inContext.putPageValue("categorylogo", inContext.getPageValue("categorylogo"));
-		
+			
 		if (inEmail != null){
 			inContext.putPageValue("mail", inEmail);
 		}

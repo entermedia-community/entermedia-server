@@ -1503,14 +1503,28 @@ public class UserManagerModule extends BaseMediaModule
 	
 	public void loadUserCategory(WebPageRequest inReq)
 	{
-		Category category = null;
-		String categoryid = (String)inReq.getRequestParameter("categoryid");
-		
-		if(categoryid != null) 
+		Category category = (Category)inReq.getPageValue("category");
+		if(category == null) 
 		{
-			category = getMediaArchive(inReq).getCategory(categoryid);
-			if(category != null)
+			String categoryid = (String)inReq.getRequestParameter("categoryid");
+			if(categoryid == null) 
 			{
+				String username = inReq.getRequestParameter("username");
+				if (username != null)
+				{
+					User foundUser = (User) getUserManager(inReq).getUser(username);
+					if(foundUser != null) {
+						categoryid = foundUser.get("logincategoryid");
+					}
+				}
+			}
+			if(categoryid != null) 
+			{
+				category = getMediaArchive(inReq).getCategory(categoryid);
+			}
+		}
+		if(category != null)
+		{
 				inReq.putPageValue("userCategory", category);
 				
 				String  userapproveremail = null;
@@ -1531,7 +1545,6 @@ public class UserManagerModule extends BaseMediaModule
 					}
 				}
 			}
-		}
 	}
 	
 	
