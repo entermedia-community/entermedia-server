@@ -97,7 +97,7 @@ public class FinderModule extends BaseMediaModule
 				//String smaxsize = inReq.findValue("maxcols");
 				
 				int targetsize = 4;
-				Map<String,Collection> bytypes = organizeHits(inReq, pageOfHits.iterator(),targetsize);
+				Map<String,Collection> bytypes = organizeHits(inReq,hits, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
 
@@ -271,7 +271,7 @@ public class FinderModule extends BaseMediaModule
 	}
 
 
-	public Map organizeHits(WebPageRequest inReq, Iterator hits, int maxsize) 
+	public Map organizeHits(WebPageRequest inReq, HitTracker allhits,Iterator hits, int maxsize) 
 	{
 		Map bytypes = new HashMap();
 		MediaArchive archive = getMediaArchive(inReq);
@@ -286,6 +286,9 @@ public class FinderModule extends BaseMediaModule
 			{
 				ListHitTracker newvalues = new ListHitTracker();
 				newvalues.setHitsPerPage(maxsize);
+				newvalues.setSearchQuery(allhits.getSearchQuery());
+				String v = newvalues.getInput("description");
+				System.out.print(v);
 				values = newvalues;
 				bytypes.put(type,values);
 			}
@@ -363,7 +366,7 @@ public class FinderModule extends BaseMediaModule
 			}
 			String smaxsize = inReq.findValue("maxcols");
 			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
-			bytypes = organizeHits(inReq, hits.iterator(),targetsize);
+			bytypes = organizeHits(inReq,hits, hits.iterator(),targetsize);
 
 			foundmodules = processResults(hits, archive, targetsize, bytypes);
 		}
@@ -450,16 +453,17 @@ public class FinderModule extends BaseMediaModule
 			return;
 		}		
 		Collection searchmodules = loadUserSearchTypes(inReq);
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(10);
+		searchmodules.remove("asset");
+		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(30);
 		dq.getQuery().setValue("searchtypes", searchmodules);
 
 		dq.getQuery().setIncludeDescription(true);
-		HitTracker unsorted = dq.search();
+		HitTracker unsorted = dq.search(inReq); //With permissions?
 
 		Map<String,String> keywordsLower = new HashMap();
 		collectMatches(keywordsLower, query, unsorted);
 		
-		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(10);
+		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(30);
 		assetdq.getQuery().setIncludeDescription(true);
 		HitTracker assetunsorted = assetdq.search();
 		collectMatches(keywordsLower, query, assetunsorted);
@@ -479,6 +483,13 @@ public class FinderModule extends BaseMediaModule
 		//List finallist = new ArrayList(keywords);
 		Collections.sort(finallist);
 		inReq.putPageValue("livesuggestions",finallist);
+		
+		//Include module results
+		Collection pageOfHits = unsorted.getPageOfHits();
+		pageOfHits = new ArrayList(pageOfHits); 
+		organizeHits(inReq, unsorted, pageOfHits);
+
+		
 
 	}
 
@@ -682,6 +693,7 @@ public class FinderModule extends BaseMediaModule
 		Collection<Data> modules = archive.query("module").exact("showonsearch",true).search(inReq);
 		Collection searchmodules = new ArrayList();
 		
+		/*
 		String inModule = inReq.findValue("module");
 		if( inModule == null)
 		{
@@ -697,14 +709,15 @@ public class FinderModule extends BaseMediaModule
 		Data selected = archive.getCachedData("module", inModule);
 		if( selected == null)
 		{
+		*/
 			for (Iterator iterator = modules.iterator(); iterator.hasNext();)
 			{
 				MultiValued amodule = (MultiValued) iterator.next();
 				searchmodules.add(amodule.getId());
 			}
-		}
-		else
-		{
+//		}
+//		else
+//		{
 			/*
 			Collection children = selected.getValues("childentities");
 			//String searchingfor = inReq.findActionValue("searchallchildren");
@@ -728,7 +741,7 @@ public class FinderModule extends BaseMediaModule
 					searchmodules.add(amodule.getId());
 				}
 			}*/
-		}
+		//}
 		//searchmodules.remove("asset"); 
 		return searchmodules;
 	}
