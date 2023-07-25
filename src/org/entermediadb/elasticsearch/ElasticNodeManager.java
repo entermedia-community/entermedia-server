@@ -126,7 +126,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected BulkProcessor fieldBulkProcessor;
 	protected ArrayList fieldBulkErrors = new ArrayList();
 
-	public static String[] synctypes = new String[] { "library","category", "asset", "librarycollection","convertpreset","presetparameter"};
+	public static String[] synctypes = new String[] { "library","category", "asset", "librarycollection","convertpreset","presetparameter","settingsgroup","userprofile"};
 	public static Collection synctypesCol = Arrays.asList(synctypes);
 
 	public CacheManager getCacheManager()
