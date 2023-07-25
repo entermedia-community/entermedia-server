@@ -21,6 +21,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -83,6 +84,25 @@ public class EntityManager implements CatalogEnabled
 	protected MediaArchive getMediaArchive()
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
+	}
+	public Category loadDefaultFolderForModule(Data module, User inUser)
+	{
+		String mask = (String) module.getValue("uploadsourcepath");
+		if(mask == null)
+		{
+			mask = module.getName();
+		}
+		else
+		{
+			int index = mask.indexOf("$");
+			if(index > -1)
+			{
+				mask = mask.substring(0,index -1);
+			}
+		}
+		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(mask);
+		return cat;
+
 	}
 	public Category loadDefaultFolder(Data entity, User inUser)
 	{
