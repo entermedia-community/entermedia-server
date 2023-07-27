@@ -87,18 +87,14 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolderForModule(Data module, User inUser)
 	{
-		String mask = (String) module.getValue("uploadsourcepath");
+		if( module == null)
+		{
+			return null;
+		}
+		String mask = (String) module.getValue("autocreatestartingpath");
 		if(mask == null)
 		{
 			mask = module.getName();
-		}
-		else
-		{
-			int index = mask.indexOf("$");
-			if(index > -1)
-			{
-				mask = mask.substring(0,index -1);
-			}
 		}
 		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(mask);
 		return cat;

@@ -606,10 +606,12 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String inModule = inReq.findValue("module");
-		Data selected = archive.getCachedData("module", inModule);
-		String entityid = inReq.getRequestParameter("entityid");
-		String selectedentitytype = inReq.getRequestParameter("entitytype");
-		if( selected != null)
+		Data topmodule = archive.getCachedData("module", inModule);
+		String topentityid = inReq.getRequestParameter("topentityid");
+		//String entityid = inReq.getRequestParameter("entityid");
+
+		//String selectedentitytype = inReq.getRequestParameter("entitytype");
+		if( topmodule != null)
 		{
 			Collection views = archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact("systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq);
 			//Search for children data. Add to organizedModules
@@ -626,10 +628,10 @@ public class FinderModule extends BaseMediaModule
 				if(amodule != null) {
 					organizedModules.add(amodule);
 					QueryBuilder builder = archive.query(searchtype).named(searchtype + "hits");
-					String renderexternalid = view.get("renderexternalid");
-					if( renderexternalid != null && entityid != null && renderexternalid.equals(selectedentitytype))
+					String renderexternalid = view.get("renderexternalid"); //Not needed?
+					if( renderexternalid != null && topentityid != null && renderexternalid.equals(topmodule.getId()))
 					{
-						builder.exact(renderexternalid, entityid);
+						builder.exact(renderexternalid, topentityid);
 					}
 					else
 					{
