@@ -30,7 +30,7 @@ $context.putPageValue("module", $module)
 #else
 
 #set ($resultview = $context.getRequestParameter("resultview"))
-#if($resultview)
+#ifnull($resultview)
 	#set ($resultview = $userprofile.get('resultview'))
 #end
 <div id="emresultscontent" >
@@ -41,7 +41,6 @@ $context.putPageValue("module", $module)
     #set( $colleftwidth = $userprofile.get("colleftwidth"))
     #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
 	<div class="pushcontent" style="#if($leftbarstatus!=false && $colleftwidth) margin-left:${colleftwidth}px;#end">
-		
 		#if (!$resultview || $resultview == 'table')
 			$context.putPageValue("showhover", "false")
 			$context.putPageValue("thumbsize", "crop")

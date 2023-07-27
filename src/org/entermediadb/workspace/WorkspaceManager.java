@@ -1,23 +1,37 @@
 package org.entermediadb.workspace;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.MediaAdminModule;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -25,6 +39,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
@@ -40,8 +55,15 @@ import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
+
 public class WorkspaceManager
 {
+	private static final Log log = LogFactory.getLog(WorkspaceManager.class);
+
 	protected SearcherManager fieldSearcherManager;
 	protected PageManager fieldPageManager;
 	protected XmlArchive fieldXmlArchive;
@@ -197,11 +219,11 @@ public class WorkspaceManager
 						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
 					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
-					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
-					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/entitypermissions.xml");
+					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
+					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
 					if( !destination.exists() && !destinationbase.exists() )
 					{
-						String templatepermissionfields = "/" + catalogid + "/configuration/entitypermissiontemplate.xml";
+						String templatepermissionfields = "/" + catalogid + "/configuration/baseentitytemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
 						getPageManager().copyPage(template, destination);
 					}					
@@ -330,12 +352,12 @@ public class WorkspaceManager
 		{
 			homesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/modules/" + basepath);
+			prop.setValue("/${applicationid}/views/modules/" + basepath);
 			homesettings.putProperty(prop);
 	
 			modulesettings.setProperty("module", module.getId());
 			prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/settings/modules/" + basepath);
+			prop.setValue("/${applicationid}/views/settings/modules/" + basepath);
 			modulesettings.putProperty(prop);
 		}		
 		getPageManager().getPageSettingsManager().saveSetting(homesettings);
@@ -617,8 +639,10 @@ public class WorkspaceManager
 
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
-		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch"});
-		
+		Collection skip = Arrays.asList(new String[] {"order","asset","librarycollection","library","category","modulesearch","faceprofilegroup", "group", "user", "settingsgroup" });
+
+		Set tables = new HashSet();
+
 		for (Iterator iterator = inModules.iterator(); iterator.hasNext();)
 		{
 			Data module = (Data) iterator.next();
@@ -638,7 +662,51 @@ public class WorkspaceManager
 				//This will be used to export and import a bunch of xml files?
 				inMediaArchive.saveData("customization",customization);
 			}
+			tables.add(module.getId());
+			PropertyDetails details = inMediaArchive.getPropertyDetailsArchive().getPropertyDetails(module.getId());
+			for (Iterator iterator2 = details.iterator(); iterator2.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator2.next();
+				if( detail.isList())
+				{
+					if( !tables.contains(detail.getListId()) && !skip.contains(detail.getListId()) )
+					{
+						tables.add(detail.getListId());
+						customization = inMediaArchive.query("customization").exact("targetid",detail.getListId()).searchOne();
+						if( customization == null)
+						{
+							//Make em
+							customization = inMediaArchive.getSearcher("customization").createNewData();
+							customization.setValue("targetid",detail.getListId());
+							customization.setName(detail.getName("en"));
+							customization.setValue("customizationtype","table");
+							customization.setValue("dateupdated",new Date() );
+							//This will be used to export and import a bunch of xml files?
+							inMediaArchive.saveData("customization",customization);
+						}
+					}
+				}
+				
+			}
 		}
+		Collection menu = inMediaArchive.query("appsection").all().search();
+		if( !menu.isEmpty() )
+		{
+			Data customization = inMediaArchive.query("customization").exact("targetid","appsection").searchOne();
+			if( customization == null)
+			{
+				//Make em
+				customization = inMediaArchive.getSearcher("customization").createNewData();
+				customization.setValue("targetid","appsection");
+				customization.setName("App Section Menu");
+				customization.setValue("customizationtype","table");
+				customization.setValue("dateupdated",new Date() );
+				//This will be used to export and import a bunch of xml files?
+				inMediaArchive.saveData("customization",customization);
+			}
+		}
+
+		
 	}
 
 
@@ -647,7 +715,7 @@ public class WorkspaceManager
 		
 	}
 
-	public void exportCustomizations(String inCatalogId, String[] inIds, OutputStream inStream)
+	public void exportCustomizations(String inCatalogId, String[] inIds, OutputStream inStream) throws Exception
 	{
 		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
 		ZipOutputStream finalZip = new ZipOutputStream(inStream);
@@ -659,32 +727,31 @@ public class WorkspaceManager
 			Data customization = archive.getData("customization", inIds[i]);
 			//TODO: Make xml files for each config
 			Element root = DocumentHelper.createElement("customization");
-			root.attributeValue("targetid",customization.get("targetid"));
-			root.attributeValue("customizationtype",customization.get("customizationtype"));
+			String searchtype = customization.get("targetid");
+			root.addAttribute("targetid",searchtype);
+			root.addAttribute("customizationtype",customization.get("customizationtype"));
 			root.addElement("name").setText(customization.getName("en"));
-			try
-			{
 				if( "module".equals(customization.get("customizationtype")) )
 				{
-					Data module = archive.getCachedData("module", customization.get("targetid"));
+					Data module = archive.getCachedData("module", searchtype);
 					
-					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + ".xml";
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + ".xml";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
-						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + customization.get("targetid") + "/";
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + "/";
 						if( getPageManager().getRepository().doesExist(path))
 						{
 							pageZipUtil.zip(path, finalZip);
 						}
 					}
 					//Views
-					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + customization.get("targetid") + ".xml";
+					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + searchtype + ".xml";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
 					}
-					path = "/WEB-INF/data/" + inCatalogId + "/views/" + customization.get("targetid") + "/";
+					path = "/WEB-INF/data/" + inCatalogId + "/views/" + searchtype + "/";
 					if( getPageManager().getRepository().doesExist(path))
 					{
 						pageZipUtil.zip(path, finalZip);
@@ -693,16 +760,23 @@ public class WorkspaceManager
 					Element xml = saveDataToXml(module);
 					root.add(xml);
 				}
-				String name = customization.getName("en") ;
-				pageZipUtil.addTozip(root.asXML(), name + ".xml", finalZip);
+				else if( "table".equals(customization.get("customizationtype")) )
+				{
+					String path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype+ ".xml";
+					if( getPageManager().getRepository().doesExist(path))
+					{
+						pageZipUtil.zip(path, finalZip);
+						path = "/WEB-INF/data/" + inCatalogId + "/fields/" + searchtype + "/";
+						if( getPageManager().getRepository().doesExist(path))
+						{
+							pageZipUtil.zip(path, finalZip);
+						}
+					}
+					exportData(archive,searchtype,finalZip);
+				}
 				
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+				pageZipUtil.addTozip(root.asXML(), "/customizations/" + searchtype + ".xml", finalZip);
+		}				
 		try
 		{
 			finalZip.close();
@@ -713,6 +787,182 @@ public class WorkspaceManager
 			e.printStackTrace();
 		}
 		
+	}
+
+	private void exportData(MediaArchive mediaarchive, String inSearchtype, ZipOutputStream inFinalZip) throws Exception
+	{
+		Searcher searcher = mediaarchive.getSearcher(inSearchtype);
+		PropertyDetails details = searcher.getPropertyDetails();
+		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
+		if(hits.size() > 0){
+			ZipEntry ze = new ZipEntry("/customizations/" + inSearchtype + ".json");
+
+			inFinalZip.putNextEntry(ze);
+			IOUtils.write("{ \"" + inSearchtype + "\": [", inFinalZip, "UTF-8");
+			int size = hits.size();
+			int count = 0;
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data it = (Data) iterator.next();
+				count++;
+				SearchHitData hit = (SearchHitData)it;
+				IOUtils.write(hit.toJsonString(), inFinalZip, "UTF-8");
+				if(size != count) {
+				IOUtils.write(",", inFinalZip, "UTF-8");
+				}
+			}
+			IOUtils.write("]}", inFinalZip, "UTF-8");
+			
+			inFinalZip.flush();
+			inFinalZip.closeEntry();
+		}
+	}
+	
+	public void importData(MediaArchive mediaarchive, String searchtype , Page inDataFile) throws Exception
+	{
+		ElasticNodeManager manager = (ElasticNodeManager)mediaarchive.getNodeManager();
+		
+		BulkProcessor processor = manager.getBulkProcessor();
+
+		String indexid = manager.toId(mediaarchive.getCatalogId());
+
+		
+		try{
+
+			MappingJsonFactory f = new MappingJsonFactory();
+			JsonParser jp = f.createParser(inDataFile.getReader());
+
+			JsonToken current;
+
+			current = jp.nextToken();
+			if (current != JsonToken.START_OBJECT) {
+				System.out.println("Error: root should be object: quiting.");
+				return;
+			}
+
+			while (jp.nextToken() != JsonToken.END_OBJECT) {
+				String fieldName = jp.getCurrentName();
+				// move from field name to field value
+				current = jp.nextToken();
+				if (fieldName.equals(searchtype)) {
+					if (current == JsonToken.START_ARRAY) {
+						// For each of the records in the array
+						while (jp.nextToken() != JsonToken.END_ARRAY) {
+							// read the record into a tree model,
+							// this moves the parsing position to the end of it
+							JsonNode node = jp.readValueAsTree();
+							IndexRequest req = Requests.indexRequest(indexid).type(searchtype);
+							JsonNode source = node.get("_source");
+							if (source == null)
+							{
+								source = node;
+							}
+							String json  = source.toString();
+							
+							//log.info("JSON: "+json);
+							req.source(json);
+							JsonNode id = node.get("_id");
+							if( id == null) {
+								id = node.get("id");
+							}
+							if( id == null)
+							{
+								log.info("No ID found " + searchtype + " node:" + node);
+							}
+							else
+							{
+								req.id(id.asText());
+							}	
+							processor.add(req);
+
+						}
+					} else {
+						System.out.println("Error: records should be an array: skipping.");
+						jp.skipChildren();
+					}
+				} else {
+					System.out.println("Unprocessed property: " + fieldName);
+					jp.skipChildren();
+				}
+			}
+		}
+		finally
+		{
+
+			manager.flushBulk();
+
+				//This is in memory only flush
+				//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+		}
+	}
+	protected XmlUtil fieldXmlUtil;
+	public XmlUtil getXmlUtil()
+	{
+		if (fieldXmlUtil == null)
+		{
+			fieldXmlUtil = new XmlUtil();
+		}
+		return fieldXmlUtil;
+	}
+
+
+
+	public void importCustomizations(MediaArchive mediaArchive, List inFiles) throws Exception
+	{
+		//Unzip the upload
+
+		
+		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
+		{
+			Page file = (Page) iterator.next();
+			if( file.getPath().contains("/customizations/") && file.getName().endsWith("xml"))
+			{
+				//Import customization
+				Element element = getXmlUtil().getXml(file.getReader(), "utf-8");
+				
+				String type = element.attributeValue("customizationtype");
+				if( "module".equals(type) )
+				{
+					ElementData data = new ElementData(element.element("element"));
+					String targetid = data.get("id");
+					Data module = mediaArchive.getCachedData("module", targetid);
+					if( module == null)
+					{
+						module = data;
+					}
+					mediaArchive.saveData("module", module);
+				}
+			}
+			if( file.getPath().contains("/customizations/") && file.getName().endsWith("json"))
+			{
+				String searchtype = file.getPageName();
+				importData(mediaArchive,searchtype,file);
+			}
+			if(file.getPath().contains("/fields/"))
+			{
+				//Copy all the views etc files
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/fields/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/view/"))
+			{
+				//Views
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			if(file.getPath().contains("/views/"))
+			{
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/";
+				Page target = getPageManager().getPage(path);
+				getPageManager().copyPage(file, target);
+			}
+			
+		}
+		//Reindex
+
 	}
 
 	private Element saveDataToXml(Data inModule)

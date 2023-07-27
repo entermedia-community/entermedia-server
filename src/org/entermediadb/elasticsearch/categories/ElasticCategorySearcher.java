@@ -462,6 +462,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		{		
 			return getRootCategory();
 		}
+		//TODO: Cache these categories
+		
+		
 		//TODO: Find right way to do this not matches
 		inPath = inPath.replace('\\', '/'); //Unix paths
 		

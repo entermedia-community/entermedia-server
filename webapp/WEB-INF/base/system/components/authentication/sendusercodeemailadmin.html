@@ -6,7 +6,7 @@
 #if(!$parentcategories.isEmpty())
 	#foreach( $parent in $parentcategories)
 		#if( ${foreach.count} > 1) / #end
-		#if($category.getId() != $parent.getId())
+		#if($userCategory.getId() != $parent.getId())
 			$parent
 		#else
 		<span class="currentcategory">$parent</span>
@@ -15,13 +15,13 @@
 
 	
 #else
-	#text($category)
+	#text($userCategory)
 #end
 </p>
 <p>[[A user needs to be created]]: $emailaddress</p>
 <div style="margin:10px; padding:15px; background-color:#f0f0f0;">
 
-	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?email.value=$emailaddress&logincategoryid=$!category.id" )
+	#set( $link = "$context.siteRoot$applink/views/settings/users/usermanager/user/createuser.html?email.value=$emailaddress&logincategoryid=$!userCategory.id" )
 	
 	<p>
 	<a href="#urlescape($link)">[[Create User]]</a>

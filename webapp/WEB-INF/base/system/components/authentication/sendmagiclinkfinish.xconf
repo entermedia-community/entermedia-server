@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  	<property name="emaillayout">/${applicationid}/authentication/sendmagiclinkemail.html</property>
-  	<property name="emaillayoutadmin">/${applicationid}/authentication/sendmagiclinkemailadmin.html</property>
-  	
-  	
-  	<path-action name="Admin.emailPasswordReminder"/>
+ 	
+  	<path-action name="User.loadUserByEmail"/>
+  	<path-action name="User.loadUserCategory" />
 </page>

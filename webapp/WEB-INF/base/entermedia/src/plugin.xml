@@ -2451,10 +2451,10 @@
 	<bean id="EntityModule" class="org.entermediadb.asset.modules.EntityModule" >
 	</bean>
 
-	<bean id="securityEnabledSearchSecurity" class="org.entermediadb.asset.search.SecurityEnabledSearchSecurity"  lazy-init="default">
+	<bean id="securityEnabledSearchSecurity" class="org.entermediadb.asset.search.SecurityEnabledSearchSecurity"  lazy-init="default" scope="prototype">
 	</bean>
 
-	<bean id="entityManager" class="org.entermediadb.find.EntityManager"  lazy-init="default">
+	<bean id="entityManager" class="org.entermediadb.find.EntityManager"  lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -2462,7 +2462,7 @@
 	</bean>		
 
 
-	<bean id="faceProfileManager" class="org.entermediadb.asset.facedetect.FaceProfileManager"  lazy-init="default">
+	<bean id="faceProfileManager" class="org.entermediadb.asset.facedetect.FaceProfileManager"  lazy-init="default" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

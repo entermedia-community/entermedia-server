@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+ 	<page-action name="User.loadUserCategory" />
+ 	
+  	<page-action name="Admin.emailUserLoginCode">
+	  	<property name="emaillayoutadmin">/${applicationid}/authentication/sendusercodeemailadmin.html</property>
+  	</page-action>
+</page>

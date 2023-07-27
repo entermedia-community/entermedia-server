@@ -135,5 +135,20 @@ public class EntityModule extends BaseMediaModule
 				searcher.saveData(entity);
 		}
 	}
-	
+
+	public Data loadSelectedEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String moduleid = inPageRequest.getRequestParameter("entitytype");
+		if( entityid == null || moduleid == null)
+		{
+			return null;
+		}
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		Data entity = archive.getCachedData(moduleid, entityid);
+		
+		inPageRequest.putPageValue("selectedentity", entity);
+		return entity;
+	}
 }

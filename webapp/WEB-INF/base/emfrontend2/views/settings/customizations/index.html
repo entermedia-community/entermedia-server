@@ -5,27 +5,43 @@
             <a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/customizations/scan.html">[[Scan for Changes]]</a>
 
             <a class="btn btn-sm btn-primary submitform" href="$home$apphome/views/settings/customizations/export/customizations.zip">[[Export]]</a>
-            <a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/customizations/scan.html">[[Import]]</a>
+            <a class="btn btn-sm btn-primary emdialog" href="$home$apphome/views/settings/customizations/importdialog.html">[[Import]]</a>
             <a class="btn btn-sm btn-primary submitform" data-updateaction="true"  href="$home$apphome/views/settings/customizations/delete.html">[[Delete]]</a>
 
 
-<ul id="modules" class="fwlist modulelist">
-    
-    #set ( $changes = $mediaarchive.query("customization").all().sort("dateupdated").search($context) )
-    #foreach ( $change in $changes )
-    <li> <input style="float:left;" name="id" value="$change.id" checked	type="checkbox" />
-        <div  class="module" style="float:left;">
-       	 <a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
-              <div class="modules-name">      <div style="margin-top: 16px" class="alias" title="Alias">#text($change)</div>            </div>        
-        </a>
 
-        </div>
-               <div class="clearfix"></div>
-    </li>
+<table class="table table-striped table-hover" style="margin:15px 0; border:1px solid #aaa">    
+<thead>
+<tr>
+	<th></th>
+	<th>[[Type]]</th>
+	<th>[[Customization]]</th>
+</tr>
+</thead>
+    #set ( $changes = $mediaarchive.query("customization").all().sort("customizationtype").search($context) )
+    #foreach ( $change in $changes )
+    <tr> 
+    	<td>
+    	<input style=" margin-top:5px;" name="id" id="module$change.id" value="$change.id" checked	type="checkbox" />
+    	</td>
+    	<td>
+    		#set($type = $mediaarchive.getCachedData("customizationtype", $change.customizationtype))
+    		$type 
+    	</td>
+    	<td>
+        
+       	 	<a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
+         		
+         		<label for="module$change.id" style="margin-bottom:0;">#text($change)</label>            
+	         	
+    	    </a>
+        </td>
+        
+    </tr>
     #end
     
     
-</ul>               
+</table>               
 
 </form>
 </div>

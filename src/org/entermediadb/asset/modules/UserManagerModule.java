@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
@@ -1468,6 +1469,17 @@ public class UserManagerModule extends BaseMediaModule
 		User user = getUserManager(inReq).getUser(selecteduser);
 		inReq.putPageValue("selecteduser", user);
 	}
+	
+	public void loadUserByEmail(WebPageRequest inReq)
+	{
+		String emailaddress = inReq.getRequestParameter("email");
+		User foundUser = null;
+		if (emailaddress != null && emailaddress.length() > 0)
+		{
+			foundUser = (User) getUserManager(inReq).getUserByEmail(emailaddress);
+		}
+		inReq.putPageValue("selecteduser", foundUser);
+	}
 
 	public Boolean isDataOwner(WebPageRequest inReq)
 	{
@@ -1487,5 +1499,53 @@ public class UserManagerModule extends BaseMediaModule
 		}
 		return false;
 	}
+	
+	
+	public void loadUserCategory(WebPageRequest inReq)
+	{
+		Category category = (Category)inReq.getPageValue("category");
+		if(category == null) 
+		{
+			String categoryid = (String)inReq.getRequestParameter("categoryid");
+			if(categoryid == null) 
+			{
+				String username = inReq.getRequestParameter("username");
+				if (username != null)
+				{
+					User foundUser = (User) getUserManager(inReq).getUser(username);
+					if(foundUser != null) {
+						categoryid = foundUser.get("logincategoryid");
+					}
+				}
+			}
+			if(categoryid != null) 
+			{
+				category = getMediaArchive(inReq).getCategory(categoryid);
+			}
+		}
+		if(category != null)
+		{
+				inReq.putPageValue("userCategory", category);
+				
+				String  userapproveremail = null;
+				userapproveremail = (String)category.findValue("categoryadminemail");
+				if( userapproveremail == null)
+				{
+					userapproveremail = getMediaArchive(inReq).getCatalogSettingValue("userapproveremail");
+				}
+				inReq.putPageValue("userapproveremail", userapproveremail);
+				List parentcategories = category.getParentCategories();
+				inReq.putPageValue("parentcategories", parentcategories);
+				String assetid = (String)category.findValue("headercategoryimage");
+				if(assetid != null) {
+					Data asset = getMediaArchive(inReq).getCachedData("asset", assetid);
+					if(asset != null) {
+						String categorylogo = getMediaArchive(inReq).asLinkToOriginal(asset);
+						inReq.putPageValue("categorylogo", categorylogo);
+					}
+				}
+			}
+	}
+	
 	
 }

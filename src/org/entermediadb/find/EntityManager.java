@@ -21,6 +21,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -84,10 +85,45 @@ public class EntityManager implements CatalogEnabled
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(), "mediaArchive", true);
 	}
+	public Category loadDefaultFolderForModule(Data module, User inUser)
+	{
+		if( module == null)
+		{
+			return null;
+		}
+		String mask = (String) module.getValue("autocreatestartingpath");
+		if(mask == null)
+		{
+			mask = module.getName();
+		}
+		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(mask);
+		return cat;
+
+	}
+	public Category loadDefaultFolder(Data entity, User inUser)
+	{
+		if( entity == null)
+		{
+			return null;
+		}
+		String type = entity.get("entitysourcetype");
+		Data module = getMediaArchive().getCachedData("module", type);
+		if( module == null)
+		{
+			return null;
+		}
+		Category cat = loadDefaultFolder(module, entity,inUser);
+		return cat;
+	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
 		String sourcepath = loadUploadSourcepath(module,entity,inUser);
 		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+		if( cat == null)
+		{
+			//Cant find sourcepath
+			return null;
+		}
 		if( cat.getValue(module.getId()) == null)
 		{
 			cat.setValue(module.getId(),entity.getId());
@@ -142,7 +178,7 @@ public class EntityManager implements CatalogEnabled
 			if( sourcepath.isEmpty())
 			{
 				//long year = Calendar.getInstance().get(Calendar.YEAR);
-				sourcepath = module.getName("en") + "/" + entity.getName() + "/";
+				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 			}
 		}
 		entity.setValue("uploadsourcepath",sourcepath );

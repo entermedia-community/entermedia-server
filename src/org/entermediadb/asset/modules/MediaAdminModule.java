@@ -11,7 +11,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
@@ -32,7 +34,9 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.XmlUtil;
 import org.openedit.util.ZipUtil;
+import org.openedit.xml.ElementData;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -863,5 +867,28 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
 		//getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
 	}
+	public void importCustomization(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+		if (properties.getFirstItem() == null)
+		{
+			return;
+		}
+		Page temp = getPageManager().getPage("/WEB-INF/tmp/unzip");
+		getPageManager().removePage(temp);
+		properties.saveFirstFileAs("/WEB-INF/tmp/unzip/temporary.zip" , inReq.getUser());
+
+		List files = properties.unzipFiles(true);
+		getWorkspaceManager().importCustomizations(mediaArchive,files);
+	}
+
 	
 }

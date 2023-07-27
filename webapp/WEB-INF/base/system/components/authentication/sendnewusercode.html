@@ -1,0 +1,39 @@
+<div id="magiclinkcontainer">
+<div class="container applicationcontent">
+	<div class="row justify-content-md-center">
+	    <div class="col col-lg-12">
+	    <div class="text-center">
+
+
+			#set( $to = $context.getRequestParameter("email") )	
+			#set( $username = $context.getRequestParameter("username") )
+			
+			<form class="ajaxform" 
+					action="$home$content.loginroot/sendusercode.html"
+					id="password-reminder" name="passwordReminder"  method="post"
+					data-targetdiv="magiclinkcontainer">
+
+						<div style="margin:10px; text-align: center">[[Email was not found. Enter first and last name to register]]</div>								
+						<p><input class="form-control form-control-sm required" type="text" name="email" size="50" value="$!to" 
+							style="margin:0 auto; width:400px" placeholder="[[Enter your Email Address]]" required /> 		
+							</p>
+							
+					<p><input class="form-control form-control-sm required grabfocus" type="text" name="firstName"  
+							style="margin:0 auto; width:200px" placeholder="[[First Name]]" required />
+					<input class="form-control form-control-sm required " type="text" name="lastName"   
+							style="margin:0 auto; width:200px" placeholder="[[Last Name]]" required /></p>
+						<input class="btn btn-secondary" name="submit" type="submit" value="[[Send New User Code]]" />
+			
+				
+				#ifnotnull( $userCategory)
+				<input type="hidden" name="categoryid" value="$userCategory.id" />
+				#end
+				<input type="hidden" name="subject" value="[[Login Code]]" />
+            </form>
+            <div class="text-center note" style="margin-top: 40px; margin-bottom: 10px;">
+        	</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
