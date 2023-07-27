@@ -409,6 +409,23 @@ public class BaseImporter extends EnterMediaObject
 				PropertyDetail detail = getSearcher().getDetail(headerid);
 				if(detail != null) 
 				{
+					Object value = lookUpListValIfNeeded(detail,val);
+					inData.setValue(headerid, value);
+				} 
+				else
+				{
+					Object value = getSearcher().createValue(headerid, val);
+					inData.setValue(headerid, value);
+
+				}
+				
+			}
+			/*
+			else if (val != null && val.length() > 0)
+			{
+				PropertyDetail detail = getSearcher().getDetail(headerid);
+				if(detail != null) 
+				{
 					if(detail.isMultiValue())
 					{
 						String[] vals = MultiValued.VALUEDELMITER.split(val);
@@ -430,7 +447,7 @@ public class BaseImporter extends EnterMediaObject
 
 				}
 				
-			}
+			}*/
 		}
 	}
 
