@@ -6,13 +6,13 @@
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/src"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entermedia-core"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime-3.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/apache-log4j-extras-1.2.17.jar"/>
@@ -27,7 +27,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/compiler-0.8.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compress-lzf-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.4.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/HdrHistogram-2.1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hppc-0.7.1.jar"/>
@@ -78,5 +77,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/googleauth-1.2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.10.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
