@@ -80,9 +80,12 @@
 							[[Pending]]
 						#else
 							#if($item.status == "approved")
-						<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+							
+							<a class="btn btn-sm btn-secondary" 
+								href="/${mediadbappid}/services/module/asset/downloads/orders/originals/${originalpath}?orderid=${order.id}"
+								title="[[Download]]: ${originalpath}">[[Download]]</a>
 						#else
-						[[Not Approved for Download]] 
+							[[Not Approved for Download]] 
 						#end
 						#end
 					#end
@@ -97,7 +100,9 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn btn-sm btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+					<a class="btn btn-sm btn-secondary"
+					#set($downloadlink = "$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}") 
+					href="#urlescape($downloadlink)">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
