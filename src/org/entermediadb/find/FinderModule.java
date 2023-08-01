@@ -557,10 +557,44 @@ public class FinderModule extends BaseMediaModule
 	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+
+		Data module = (Data)inReq.getPageValue("firstmodule");
+		if (module != null) 
+		{
+			inReq.putPageValue("module", module);
+			Searcher searcher = archive.getSearcher(module.getId());
+			HitTracker hits = null;
+			if (searcher != null)
+			{
+				hits = searcher.fieldSearch(inReq);
+
+				if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
+				{
+					hits = searcher.getAllHits(inReq);
+				}
+				//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+				if (hits != null)
+				{
+					String name = inReq.findValue("hitsname");
+					inReq.putPageValue(name, hits);
+					inReq.putSessionValue(hits.getSessionId(), hits);
+				}
+			}
+			inReq.putPageValue("defaultmodule", module.getId());
+			inReq.putPageValue("moduleid", module.getId());
+			inReq.putPageValue("searcher", searcher);
+			return hits;
+		}
 		
+		
+		//Legacy defaultmodule logic
 		
 		UserProfile profile = inReq.getUserProfile();
-		String defaultmodule  = (String) profile.getValue("defaultmodule");
+		String defaultmodule  = ""; 
+		if(defaultmodule == null)
+		{
+			defaultmodule = (String) profile.getValue("defaultmodule");
+		}
 		if(defaultmodule != null) 
 		{
 			if(defaultmodule.equals("none"))
@@ -601,6 +635,20 @@ public class FinderModule extends BaseMediaModule
 		return hits;
 	}
 
+	
+	public void loadTopMenu(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Data> topmenu = archive.query("appsection").all().sort("ordering").search(inReq);
+		if(topmenu != null)
+		{
+			Data first = (Data)topmenu.iterator().next();
+			String entityid = (String)first.getValue("toplevelentity");
+			Data firstmodule = archive.getCachedData("module", entityid);
+			inReq.putPageValue("topmenu", topmenu);
+			inReq.putPageValue("firstmodule", firstmodule);
+		}
+	}
 	
 	public void loadOrSearchChildren(WebPageRequest inReq)
 	{
