@@ -433,7 +433,7 @@ public class BaseImporter extends EnterMediaObject
 				String[] vals = MultiValued.VALUEDELMITER.split(inVal);
 				for (int j = 0; j < vals.length; j++)
 				{
-					Object newvalue = lookUpListValIfNeeded(inDetail,vals[j]);
+					Object newvalue = findOrCreateData(inDetail.getListId(), inDetail.getId(), vals[j]);
 					values.add(newvalue);			
 				}
 				value = values;
