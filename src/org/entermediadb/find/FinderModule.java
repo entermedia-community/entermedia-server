@@ -640,14 +640,15 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection<Data> topmenu = archive.query("appsection").all().sort("ordering").search(inReq);
-		if(topmenu != null)
+		if(topmenu != null && !topmenu.isEmpty())
 		{
 			Data first = (Data)topmenu.iterator().next();
 			String entityid = (String)first.getValue("toplevelentity");
 			Data firstmodule = archive.getCachedData("module", entityid);
-			inReq.putPageValue("topmenu", topmenu);
+			
 			inReq.putPageValue("firstmodule", firstmodule);
 		}
+		inReq.putPageValue("topmenu", topmenu);
 	}
 	
 	public void loadOrSearchChildren(WebPageRequest inReq)
