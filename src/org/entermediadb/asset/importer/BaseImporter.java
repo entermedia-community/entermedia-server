@@ -418,36 +418,7 @@ public class BaseImporter extends EnterMediaObject
 					inData.setValue(headerid, value);
 
 				}
-				
 			}
-			/*
-			else if (val != null && val.length() > 0)
-			{
-				PropertyDetail detail = getSearcher().getDetail(headerid);
-				if(detail != null) 
-				{
-					if(detail.isMultiValue())
-					{
-						String[] vals = MultiValued.VALUEDELMITER.split(val);
-						for (int j = 0; j < vals.length; j++)
-						{
-							Object value = lookUpListValIfNeeded(detail,vals[j]);
-							((MultiValued)inData).addValue(headerid, value);							
-						}
-					}
-					else
-					{
-						Object value = lookUpListValIfNeeded(detail,val);
-						inData.setValue(headerid, value);
-					}
-				} 
-				else
-				{
-					inData.setValue(headerid, val);
-
-				}
-				
-			}*/
 		}
 	}
 
@@ -456,7 +427,21 @@ public class BaseImporter extends EnterMediaObject
 		Object value = null;
 		if( inDetail.isList() && getDbLookUps().contains(inDetail.getId() ))
 		{
-			value = findOrCreateData(inDetail.getListId(),inDetail.getId(),inVal);
+			if(inDetail.isMultiValue())
+			{
+				Collection values = new ArrayList();
+				String[] vals = MultiValued.VALUEDELMITER.split(inVal);
+				for (int j = 0; j < vals.length; j++)
+				{
+					Object newvalue = lookUpListValIfNeeded(inDetail,vals[j]);
+					values.add(newvalue);			
+				}
+				value = values;
+			}
+			else
+			{
+				value = findOrCreateData(inDetail.getListId(),inDetail.getId(),inVal);
+			}
 		}
 		else
 		{
