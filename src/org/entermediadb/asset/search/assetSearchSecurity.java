@@ -138,18 +138,16 @@ public class assetSearchSecurity implements SearchSecurity
 			
 			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 			String editstatus = null;
-			if (caneditdata != null)
+			if (caneditdata == null || !caneditdata )
 			{
-				if( !caneditdata )
-				{
 					Boolean showpendingassets = (Boolean) inPageRequest.getPageValue("canshowpendingassets");
 					if(showpendingassets == null || !showpendingassets)
 					{
 						editstatus = "6";
 					}
-				}
+				
 			}
-			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare2
+			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare
 			if(editstatus == null && onlyapproved ) 
 			{
 				editstatus="6";
