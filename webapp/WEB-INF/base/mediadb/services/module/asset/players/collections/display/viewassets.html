@@ -24,6 +24,8 @@ $context.putPageValue("showtoolbar", "false")
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
+    
+    
 
 <div class="masonry-grid" 
 data-maxheight="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')" 

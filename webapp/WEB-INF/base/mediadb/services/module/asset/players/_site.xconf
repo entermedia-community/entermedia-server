@@ -2,8 +2,6 @@
 	
 	<inner-layout />
 	<layout />
-
-
 	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
 		<permissions>view viewasset download showunwatermarkedassets forcewatermarkasset</permissions>
@@ -17,12 +15,14 @@
 		<userprofile property="forcewatermarkasset" equals="true" />
 	</permission>
 	
-	
-
 
 
 	<permission name="view">
 		<boolean value="true" />
+	</permission>
+	
+	<permission name="showpendingassets">
+		<userprofile property="showpendingassets" equals="true" />
 	</permission>
 	
 </page>

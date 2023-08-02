@@ -2,22 +2,13 @@
 
 	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/viewassets.html</inner-layout>
 	
-	<property name="assetskipfilter">true</property>
-	
 	<property name="hitsname">collectionhits</property>
 	<property name="virtual">true</property>
 	
 	<property name="collectionidinfilename">true</property>
 
 
-
-	
-
-
-<property name="sortby">assetcreationdatedown</property>
-
-
-
+	<property name="sortby">assetcreationdatedown</property>
 	
     <path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
@@ -25,13 +16,20 @@
 			<searchtype>librarycollection</searchtype>
     </path-action>
 
-	<path-action name="ProjectModule.searchForAssetsOnCollection" />
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
+	
+	<!-- permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission -->
+	 
+	<path-action name="DataEditModule.loadPageOfSearch"/>
+	 
+	 
 	
 	<property name="alwaysresetpage">false</property>
 	
-   	<!--path-action name="MediaSearchModule.searchCategories"/ -->
-   	
-	<property name="searchcategory">true</property>
 
 	<permission name="showbadge">
     		<boolean value="false" />
@@ -44,23 +42,7 @@
     <permission name="convert">
            <userprofile property="convert" equals="true" />
     </permission>
- 
- <!--  
-	<permission name="view">
-    		<action name="ProjectModule.checkViewCollection" />
-    </permission>
- -->
- 
-<permission name="view">
-	<or>
-		<boolean value="true" />
- </or>
- </permission>
- 
-    
-	 <page-action name="DataEditModule.loadPageOfSearch"/>
-
-  	
+ 	
   	<script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
   	
     <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
@@ -81,8 +63,6 @@
     
     <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
     <style id="app-css" href="${themeprefix}/styles/theme.css"/>
-    
-
-    
+   
 	 
 </page>
