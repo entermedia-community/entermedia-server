@@ -165,7 +165,7 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 			return true;
 		}
 		*/
-		if( getUserProfile() != null && getUserProfile().getSettingsGroup().getId().equals("administrator"))
+		if( getUserProfile() != null && getUserProfile().getSettingsGroup() != null && getUserProfile().getSettingsGroup().getId().equals("administrator"))
 		{
 			return true;
 		}
