@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.xmldb.CategorySearcher;
@@ -317,14 +318,44 @@ public class CategoryEditModule extends BaseMediaModule {
 				return;
 			}
 		}
-			
-		Asset asset = getAsset(inPageRequest);
-		if (asset == null) {
-			log.error("No asset id passed in");
-			return;
+		
+		Asset asset;
+		
+		String[] assetIds = inPageRequest.getRequestParameters("assetid");
+		for (int i = 0; i < assetIds.length; i++)
+		{
+		
+			if (assetIds[i].startsWith("multiedit:"))
+			{
+				try
+				{
+					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+					{
+						asset = (Asset) iterator.next();
+						if (asset == null) {
+							log.error("No asset id passed in");
+							return;
+						}
+						addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+					}
+				}
+				catch (Exception e)
+				{
+					continue;
+				}
+			}
+			else 
+			{
+				asset = getAsset(inPageRequest);
+				if (asset == null) {
+					log.error("No asset id passed in");
+					return;
+				}
+				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				inPageRequest.putPageValue("added" , "1");
+			}
 		}
-		addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
-		inPageRequest.putPageValue("added" , "1");
 	}
 
 	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset, boolean moveasset, String rootcategoryid)
