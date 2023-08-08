@@ -258,8 +258,8 @@ public class BaseImporter extends EnterMediaObject
 			String id = PathUtilities.extractId(inField, true);
 			PropertyDetails details = getSearcher().getPropertyDetails();
 			PropertyDetail detail = details.getDetail(id);
-			//if( detail.getL
-			if (!detail.getDataType().equals("list"))
+			
+			if (detail.getDataType() == null ||  !detail.getDataType().equals("list"))
 			{
 				detail.setDataType("list");
 				detail.setListId(inTableName);
