@@ -557,6 +557,7 @@ public class OauthModule extends BaseMediaModule
 			
 			if(redirectpage != null) {
 				inReq.redirect(redirectpage);
+				return;
 			}
 			
 			
