@@ -552,6 +552,15 @@ public class OauthModule extends BaseMediaModule
 
 				getEventManager().fireEvent(event);
 			}
+			
+			String redirectpage = inReq.findActionValue("redirectpath");
+			
+			if(redirectpage != null) {
+				inReq.redirect(redirectpage);
+			}
+			
+			
+			
 			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
 			if( sendTo == null)
 			{
