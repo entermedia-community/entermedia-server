@@ -76,11 +76,8 @@
 				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
 		#end
 		#if($canmultidelete)
-			#set($deleteurl = "$home$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
-			#if($module=="librarycollection")
-				###set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
-				#set($deleteurl = "$home$componenthome/actions/deleteselections.html?hitssessionid=$hits.sessionId")
-			#end	    
+			#set($deleteurl = "$home$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid&collectionid=$!librarycol.getId()")
+	    
 	 		<a class="dropdown-item emdialog"
 	 			data-maxwidth="600" 
 	 			href="$deleteurl">[[Delete Selected]]</a>
