@@ -153,12 +153,12 @@ public class MediaSearchModule extends BaseMediaModule
 		}
 		
 		
-//		if (tracker != null)
-//		{
-//			String name = inPageRequest.findValue("hitsname");
-//			inPageRequest.putPageValue(name, tracker);
-//			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
-//		}
+		if (tracker != null)
+		{
+			String name = inPageRequest.findValue("hitsname");
+			inPageRequest.putPageValue(name, tracker);
+			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
+		}
 
 		
 		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();

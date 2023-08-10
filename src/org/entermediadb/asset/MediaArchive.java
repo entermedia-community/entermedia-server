@@ -1463,6 +1463,10 @@ public class MediaArchive implements CatalogEnabled
 		}
 		if (categoryId == null)
 		{
+			categoryId = (String)inReq.getPageValue("categoryid");
+		}
+		if (categoryId == null)
+		{
 			category = (Category) inReq.getPageValue("category");
 		}
 
