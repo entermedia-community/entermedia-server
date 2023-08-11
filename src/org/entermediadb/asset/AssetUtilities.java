@@ -433,6 +433,22 @@ public class AssetUtilities //TODO: Rename to AssetManager
 					}
 				}
 			}
+			else {
+				
+				String uploadsourcepath = inReq.getRequestParameter("uploadsourcepath");
+				if(uploadsourcepath != null) {
+					if( Boolean.parseBoolean(inReq.getRequestParameter("createentity"))) 
+					{
+						sourcepathmask = "${categorypath}/${filename}";
+						uploadsourcepath = uploadsourcepath + '/' + fileName;
+						vals.put("categorypath", uploadsourcepath);
+					}
+					else {
+						vals.put("categorypath", uploadsourcepath);
+					}
+				}
+			}
+			
 		}
 		String[] fields = inReq.getRequestParameters("field");
 

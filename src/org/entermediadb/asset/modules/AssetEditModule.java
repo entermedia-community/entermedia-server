@@ -744,6 +744,7 @@ public class AssetEditModule extends BaseMediaModule
 		boolean assigncategory =  true;
 		
 		String inputsourcepath = inReq.findValue("sourcepath");
+		
 		if( inputsourcepath != null && Boolean.parseBoolean(inReq.getRequestParameter("createentityfolder")))
 		{
 			FileUploadItem item = inUploadRequest.getFirstItem();
@@ -789,6 +790,8 @@ public class AssetEditModule extends BaseMediaModule
 			log.error("No pages uploaded");
 			return;
 		}
+		
+
 //		String threaded = inReq.findValue("threadedupload");
 //		if (Boolean.valueOf(threaded) )
 //		{
@@ -927,6 +930,21 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				assetsourcepath = inputsourcepath;
 			}
+			
+			
+			
+			//Create Entity, should be here?
+			if( Boolean.parseBoolean(inReq.getRequestParameter("createentity")))
+			{
+				String uploadsourcepath = inReq.getRequestParameter("uploadsourcepath");
+				String entitytype = inReq.getRequestParameter("entitytype");
+				Searcher s = inArchive.getSearcher(entitytype );
+				Data newone = s.createNewData();
+				newone.setName(PathUtilities.extractPageName(filepath));
+				newone.setValue("uploadsourcepath", uploadsourcepath+'/'+filepath);
+				s.saveData(newone);
+			}
+			
 			
 			
 			//Disable unzip zip files
