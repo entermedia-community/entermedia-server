@@ -130,6 +130,12 @@ public class MediaSearchModule extends BaseMediaModule
 			searchtype = "asset";
 		}
 		
+		String hitsperpage = inPageRequest.getRequestParameter("hitsperpage");
+		if (hitsperpage == null)
+		{
+			hitsperpage = inPageRequest.findValue("hitsperpage");
+		}
+		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
 			tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
@@ -155,6 +161,11 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		if (tracker != null)
 		{
+			if (hitsperpage != null)
+			{
+				int numhitsperpage = Integer.parseInt(hitsperpage);
+				tracker.setHitsPerPage(numhitsperpage);
+			}
 			String name = inPageRequest.findValue("hitsname");
 			inPageRequest.putPageValue(name, tracker);
 			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
