@@ -639,7 +639,7 @@ public class FinderModule extends BaseMediaModule
 	public void loadTopMenu(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection<Data> topmenu = archive.query("appsection").all().sort("ordering").search(inReq);
+		Collection<Data> topmenu = archive.query("appsection").named("topmenu").all().sort("ordering").search(inReq);
 		if(topmenu != null && !topmenu.isEmpty())
 		{
 			Data first = (Data)topmenu.iterator().next();

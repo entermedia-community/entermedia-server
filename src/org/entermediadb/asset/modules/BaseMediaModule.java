@@ -108,7 +108,7 @@ public class BaseMediaModule extends BaseModule
 		{
 			StringBuffer ctx = inReq.getRequest().getRequestURL();
 			site = ctx.substring( 0, ctx.indexOf("/", 8) ); //8 comes from https://
-			if( site.startsWith("http://localhost"))
+			if( site.startsWith("http://") )
 			{
 				
 			}

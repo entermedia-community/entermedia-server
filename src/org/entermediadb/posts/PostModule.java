@@ -3,14 +3,33 @@ package org.entermediadb.posts;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.openedit.WebPageRequest;
 import org.openedit.Data;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.servlet.SiteData;
 
 public class PostModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(PostModule.class);
-	
+
+	public void loadPostFromSiteData(WebPageRequest inReq)
+	{
+		//Add the domain before the page name
+		SiteData sitedata = (SiteData)inReq.getPageValue("sitedata");
+		if( sitedata != null)
+		{
+			String domain = sitedata.getFirstDomain();
+			if( domain != null)
+			{
+				String name = inReq.getContentPage().getName();
+				String sourcepath = domain + "/" + name;
+				loadPost(inReq,sourcepath);				
+				return;
+			}
+		}
+		//loadPost(inReq);		//
+		
+	}
 	public void loadPost(WebPageRequest inReq)
 	{
 		String sourcepath = inReq.getContentProperty("postsourcepath");
@@ -18,6 +37,10 @@ public class PostModule extends BaseMediaModule
 		{
 			sourcepath = loadFromAppHome(inReq);
 		}
+		loadPost(inReq,sourcepath);
+	}
+	public void loadPost(WebPageRequest inReq, String sourcepath)
+	{
 		
 		//getSearcherManager().getCacheManager()
 		String catalogid = inReq.findPathValue("catalogid");
