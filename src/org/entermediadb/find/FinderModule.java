@@ -639,7 +639,7 @@ public class FinderModule extends BaseMediaModule
 	public void loadTopMenu(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection<Data> topmenu = archive.query("appsection").named("topmenu").all().sort("ordering").search(inReq);
+		Collection<Data> topmenu = archive.query("appsection").named("topmenuhits").all().sort("ordering").search(inReq);
 		if(topmenu != null && !topmenu.isEmpty())
 		{
 			Data first = (Data)topmenu.iterator().next();
@@ -684,7 +684,15 @@ public class FinderModule extends BaseMediaModule
 					}
 					else
 					{
-						builder.all();
+						String field = inReq.getRequestParameter("field");
+						String value = inReq.getRequestParameter(field+".value");
+						if(field != null && field.equals("description") && value != null) {
+							builder.freeform(field, value);
+						}
+						else 
+						{
+							builder.all();
+						}
 					}
 					HitTracker hits = (HitTracker)builder.sort("name").search(inReq);
 					organizedHits.put(amodule.getId(),hits);
