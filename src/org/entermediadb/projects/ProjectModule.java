@@ -37,6 +37,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.servlet.SiteData;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
@@ -982,8 +983,37 @@ public class ProjectModule extends BaseMediaModule
 	public void loadCommunityTagCategory(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		String communitytagcategory = inReq.getRequestParameter("communitytagcategory");
+		if( communitytagcategory !=null)
+		{
+			Data tag = archive.getCachedData("communitytagcategory", communitytagcategory);
+			if(tag != null) {
+				inReq.putPageValue("communitytagcategory", tag);
+				inReq.putPageValue("communitytagcategoryid", tag.getId());
+				return;
+			}
+			
+		}
+		SiteData data = (SiteData)inReq.getPageValue("sitedata");
+		if( data != null)
+		{
+			String tagid = data.get("domaincommunityid");
+			if( tagid != null)
+			{
+				Data tag = archive.getCachedData("communitytagcategory", tagid);
+				if(tag != null) {
+					inReq.putPageValue("communitytagcategory", tag);
+					inReq.putPageValue("communitytagcategoryid", tag.getId());
+					return;
+				}
+			}
+		}
 		String tagid = PathUtilities.extractPageName(inReq.getPath());
-		Data tag = archive.getData("communitytagcategory", tagid);
+		if( tagid.equals("index"))
+		{
+			return;
+		}
+		Data tag = archive.getCachedData("communitytagcategory", tagid);
 		if(tag != null) {
 			inReq.putPageValue("communitytagcategory", tag);
 			inReq.putPageValue("communitytagcategoryid", tag.getId());

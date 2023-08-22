@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="webapp/WEB-INF/base/system/events/scripts"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/src"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entermedia-core"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -78,5 +77,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/googleauth-1.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-2.10.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

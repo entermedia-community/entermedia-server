@@ -6,5 +6,6 @@
 	<property id="catalogid" editable="true" listid="catalog" datatype="list" stored="true" index="true">Catalog</property>	
 	<property id="lastsnapshot" listid="sitesnapshot" datatype="list" editable="true" stored="true" index="true">Last Snapshot</property>	
 	<property id="domains" editable="true" stored="true" index="true">Domains</property>	
+	<property id="domaincommunityid" editable="true" stored="true" index="true">Community Id</property>	
 	<property id="welcomepage" editable="true" stored="true" index="true">Welcome Page</property>	
 </properties>
