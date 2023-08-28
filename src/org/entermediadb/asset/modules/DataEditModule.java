@@ -2227,7 +2227,7 @@ String viewbase = null;
 	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
 	{
 		
-		String searchtype = inPageRequest.getRequestParameter("submodulesearchtype");
+		String searchtype = inPageRequest.getRequestParameter("searchtype");
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		if (searchtype == null) 
 		{
