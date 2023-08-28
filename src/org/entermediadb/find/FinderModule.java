@@ -662,12 +662,17 @@ public class FinderModule extends BaseMediaModule
 		//String selectedentitytype = inReq.getRequestParameter("entitytype");
 		if( topmodule != null)
 		{
-			Collection views = archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact("systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq);
 			//Search for children data. Add to organizedModules
+			Collection views = archive.query("view").exact("moduleid",inModule).named("views").exact("rendertype","table").exact("systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq);
+			
 			
 			//String searchingfor = inReq.findActionValue("searchallchildren");
 			List organizedModules = new ArrayList();
 			Map organizedHits = new HashMap();
+			
+			List organizedSubModulesIds = new ArrayList();
+			Map organizedSubModules = new HashMap();
+			Map organizedHitsSubModules = new HashMap();
 			
 			for (Iterator iterator = views.iterator(); iterator.hasNext();)
 			{
@@ -695,11 +700,74 @@ public class FinderModule extends BaseMediaModule
 						}
 					}
 					HitTracker hits = (HitTracker)builder.sort("name").search(inReq);
+					for (Iterator hitsiterator = hits.iterator(); hitsiterator.hasNext();)
+					{
+						Data hit = (Data) hitsiterator.next();
+						organizedSubModulesIds.add(hit.getId());
+					}
 					organizedHits.put(amodule.getId(),hits);
 				}
 			}
+			
+			for (Iterator iterator = organizedModules.iterator(); iterator.hasNext();) {
+				Data amodule = (Data) iterator.next();
+			
+				//Search Third Level
+				Collection views2 = archive.query("view").exact("moduleid",amodule).named("views").exact("rendertype","table").exact("systemdefined","false").exact("showonsearch","true").sort("orderingUp").search(inReq);
+				if(views2 != null) {
+					//List organizedSubModules = new ArrayList();
+					
+					String entityid = inReq.getRequestParameter("entityid");
+					for (Iterator iterator2 = views2.iterator(); iterator2.hasNext();)
+					{
+						Data view2 = (Data)iterator2.next();
+						String searchtype2 = view2.get("rendertable");
+						Data amodule2 = archive.getCachedData("module", searchtype2);
+						if(amodule2 != null) {
+							organizedSubModules.put(amodule.getId(), amodule2);
+							
+							QueryBuilder builder2 = archive.query(searchtype2).named(searchtype2 + "hits");
+							String renderexternalid2 = view2.get("renderexternalid"); //Not needed?
+							if( renderexternalid2 != null && entityid != null && renderexternalid2.equals(amodule2.getId()))
+							{
+								//if Child Selected
+								builder2.exact(renderexternalid2, entityid);
+							}
+							else
+							{
+								//if Parent Selected
+								if (topentityid != null) {
+									
+									builder2.orgroup(renderexternalid2, organizedSubModulesIds);
+								}
+								else {
+									String field = inReq.getRequestParameter("field");
+									String value = inReq.getRequestParameter(field+".value");
+									if(field != null && field.equals("description") && value != null) {
+										builder2.freeform(field, value);
+									}
+									else 
+									{
+										builder2.all();
+									}
+								}
+								
+								
+							}
+							HitTracker hits2 = (HitTracker)builder2.sort("name").search(inReq);
+							organizedHitsSubModules.put(amodule2.getId(),hits2);
+							
+						}
+					}
+				}
+			}
+			
+			
 			inReq.putPageValue("organizedModules",organizedModules);
 			inReq.putPageValue("organizedHits",organizedHits);
+			
+			inReq.putPageValue("organizedSubModules",organizedSubModules);
+			inReq.putPageValue("organizedHitsSubModules",organizedHitsSubModules);
 		}
 	}
 
