@@ -729,7 +729,7 @@ public class FinderModule extends BaseMediaModule
 							QueryBuilder builder2 = archive.query(searchtype2).named(searchtype2 + "hits");
 							String renderexternalid2 = view2.get("renderexternalid"); //Not needed?
 							Boolean exists = archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId()).getDetail(renderexternalid2) != null;
-							if( renderexternalid2 != null && entityid != null && !topentityid.equals(entityid) && exists)
+							if( renderexternalid2 != null && entityid != null && topentityid!= null && !topentityid.equals(entityid) && exists)
 							{
 								//if Child Selected
 								builder2.exact(renderexternalid2, entityid);
