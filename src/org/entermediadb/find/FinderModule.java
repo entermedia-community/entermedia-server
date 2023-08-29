@@ -606,7 +606,7 @@ public class FinderModule extends BaseMediaModule
 		{
 			defaultmodule = archive.getCatalogSettingValue("defaultmodule");
 		}
-		if( defaultmodule == null)
+		if( defaultmodule == null || defaultmodule.equals(""))
 		{
 			return null;
 		}
@@ -728,7 +728,8 @@ public class FinderModule extends BaseMediaModule
 							
 							QueryBuilder builder2 = archive.query(searchtype2).named(searchtype2 + "hits");
 							String renderexternalid2 = view2.get("renderexternalid"); //Not needed?
-							if( renderexternalid2 != null && entityid != null && renderexternalid2.equals(amodule2.getId()))
+							Boolean exists = archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId()).getDetail(renderexternalid2) != null;
+							if( renderexternalid2 != null && entityid != null && !topentityid.equals(entityid) && exists)
 							{
 								//if Child Selected
 								builder2.exact(renderexternalid2, entityid);
