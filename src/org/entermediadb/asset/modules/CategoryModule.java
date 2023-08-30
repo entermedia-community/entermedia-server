@@ -64,6 +64,10 @@ public class CategoryModule extends BaseMediaModule
 		{
 			name = inReq.findValue("tree-name");
 		}
+		if (name == null)
+		{
+			name = inReq.findValue("treename");
+		}
 		String appid = inReq.findValue("applicationid");
 		String root = inReq.getRequestParameter(name + "root");
 
