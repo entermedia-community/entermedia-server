@@ -655,6 +655,9 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String inModule = inReq.findValue("module");
+		if(inModule == null) {
+			inModule = inReq.findValue("defaultmodule");
+		}
 		Data topmodule = archive.getCachedData("module", inModule);
 		String topentityid = inReq.getRequestParameter("topentityid");
 		//String entityid = inReq.getRequestParameter("entityid");
