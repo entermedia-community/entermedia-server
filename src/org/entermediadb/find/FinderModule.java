@@ -740,6 +740,10 @@ public class FinderModule extends BaseMediaModule
 									else {
 										builder2.exact(renderexternalid2, entityid);
 									}
+									Boolean exists2 = archive.getPropertyDetailsArchive().getPropertyDetailsCached(amodule2.getId()).getDetail(topmodule.getId()) != null;
+									if (topentityid != null && exists2) {
+										builder2.exact(topmodule.getId(), topentityid);
+									}
 							}
 							else
 							{
