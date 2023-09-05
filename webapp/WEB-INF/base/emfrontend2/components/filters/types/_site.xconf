@@ -1,0 +1,3 @@
+<page>
+	<property name="fallbackdirectory">/${applicationid}/components/xml/typesreadonly</property>
+</page>
