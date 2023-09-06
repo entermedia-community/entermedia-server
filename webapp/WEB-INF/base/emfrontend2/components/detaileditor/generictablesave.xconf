@@ -1,5 +1,5 @@
 <page>
 	<path-action name="AssetEditModule.handleUploads"/>
-
+	<property name="searchtypeFromRequest">true</property>
 	<path-action name="DataEditModule.saveData"/>
 </page>
