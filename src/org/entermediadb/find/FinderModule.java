@@ -453,9 +453,10 @@ public class FinderModule extends BaseMediaModule
 			return;
 		}		
 		Collection searchmodules = loadUserSearchTypes(inReq);
-		searchmodules.remove("asset");
+		Collection searchmodulescopy = new ArrayList(searchmodules);
+		searchmodulescopy.remove("asset");
 		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(30);
-		dq.getQuery().setValue("searchtypes", searchmodules);
+		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search(inReq); //With permissions?
@@ -463,11 +464,13 @@ public class FinderModule extends BaseMediaModule
 		Map<String,String> keywordsLower = new HashMap();
 		collectMatches(keywordsLower, query, unsorted);
 		
-		QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(30);
-		assetdq.getQuery().setIncludeDescription(true);
-		HitTracker assetunsorted = assetdq.search();
-		collectMatches(keywordsLower, query, assetunsorted);
-		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(30);
+			assetdq.getQuery().setIncludeDescription(true);
+			HitTracker assetunsorted = assetdq.search();
+			collectMatches(keywordsLower, query, assetunsorted);
+		}		
 		List finallist = new ArrayList();
 		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
 		{
