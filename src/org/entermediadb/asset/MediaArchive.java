@@ -1953,6 +1953,17 @@ public class MediaArchive implements CatalogEnabled
 		return getSearcherManager().getList(getCatalogId(), inSearchType);
 	}
 
+	public HitTracker getCachedSearch(QueryBuilder inBuilder)
+	{
+		HitTracker tracker = (HitTracker)getCacheManager().get("sm", inBuilder.getQuery().toQuery());
+		if( tracker == null)
+		{
+			tracker = inBuilder.search();
+			getCacheManager().put("sm", inBuilder.getQuery().toQuery(),tracker);
+		}
+		return tracker;
+	}
+
 	public Collection getCatalogSettingValues(String inKey)
 	{
 		String value = getCatalogSettingValue(inKey);
