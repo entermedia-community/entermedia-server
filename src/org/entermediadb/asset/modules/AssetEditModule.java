@@ -836,14 +836,15 @@ public class AssetEditModule extends BaseMediaModule
 				List tosave = new ArrayList();
 				
 				Data entity = s.query().exact("id", currentcollection).searchOne();
-				String pi = entity.get("primaryimage");
-				if (entity != null && pi == null) {
-					entity.setValue("primaryimage", asset.getId());
-					tosave.add(entity);
+				if( entity != null)
+				{
+					String pi = entity.get("primaryimage");
+					if (entity != null && pi == null) {
+						entity.setValue("primaryimage", asset.getId());
+						tosave.add(entity);
+					}
+					s.saveAllData(tosave, inUser);
 				}
-				
-				s.saveAllData(tosave, inUser);
-					
 			}
 		}
 	}
