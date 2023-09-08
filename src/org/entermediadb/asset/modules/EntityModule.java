@@ -149,6 +149,9 @@ public class EntityModule extends BaseMediaModule
 		Data entity = archive.getCachedData(moduleid, entityid);
 		
 		inPageRequest.putPageValue("selectedentity", entity);
+		//inPageRequest.putPageValue(entityid+"sortby", entity);
+		
+		
 		return entity;
 	}
 }
