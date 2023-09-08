@@ -3344,7 +3344,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				String key = (String) iterator.next();
 				Object object = inSource.get(key);
-
+				if( key.equals("name_int") && object != null && object instanceof HashMap)
+				{
+					object = new LanguageMap((Map)object);
+				}
 				inData.setValue(key, object);
 
 			}
