@@ -94,9 +94,14 @@ public class FinderModule extends BaseMediaModule
 				// log.info(hits.getHitsPerPage());
 				//Find counts
 				
-				//String smaxsize = inReq.findValue("maxcols");
+				String smaxsize = inReq.findValue("maxhitsperpage");
 				
 				int targetsize = 4;
+				
+				if( smaxsize != null)
+				{
+					targetsize = Integer.parseInt(smaxsize);
+				}
 				Map<String,Collection> bytypes = organizeHits(inReq,hits, pageOfHits.iterator(),targetsize);
 				
 				ArrayList foundmodules = processResults(hits, archive, targetsize, bytypes);
