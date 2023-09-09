@@ -573,6 +573,11 @@ public class FinderModule extends BaseMediaModule
 
 				if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
 				{
+					String defaultsort = (String) module.getValue("defaultsort");
+					if (defaultsort != null) {
+						inReq.putPageValue("sortby", defaultsort);
+					}
+					
 					hits = searcher.getAllHits(inReq);
 				}
 				//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );

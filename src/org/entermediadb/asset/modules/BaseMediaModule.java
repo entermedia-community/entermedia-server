@@ -349,6 +349,10 @@ public class BaseMediaModule extends BaseModule
 		if( moduledata != null)
 		{
 			inReq.putPageValue("module", moduledata);
+			String defaultsort = (String) moduledata.getValue("defaultsort");
+			if (defaultsort != null) {
+				inReq.putPageValue(moduleid+"sortby", defaultsort);
+			}
 		}
 		return moduledata;
 	}
