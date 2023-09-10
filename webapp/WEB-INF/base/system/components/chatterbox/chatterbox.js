@@ -23,9 +23,19 @@ function chatterbox() {
 		var button = jQuery(this);
 		var chatter = button.closest(".chatterbox");
 		var data = chatter.data();
-	    var content = document.getElementById("chatter-msg").value;
-	    data.content = content;
+		
+		data = jQuery.extend({}, data); //So we can edit it
 	    data.command= button.data("command");
+
+		var input = $("#chatter-msg");
+	    var replytoid = input.data("replytoid");
+		if( replytoid )
+		{
+			data.replytoid = replytoid;
+		}
+	    var content = input.val();
+	    data.content = content;
+
 	    var json = JSON.stringify(data);
 	    content.value="";
 	    
@@ -38,12 +48,21 @@ function chatterbox() {
 	    	jQuery(".chatter-toggle").toggle();
 	    }
 	    
-	    if(jQuery("#chatter-msg").val() != "" ){
-		chatconnection.send(json);
-	    jQuery("#chatter-msg").val("");
-	    
-	    //scroll down, delay a little?
-	    scrollToChat();
+	    if(jQuery("#chatter-msg").val() != "" )
+	    {
+			chatconnection.send(json);
+			
+			//Clear editing area
+		    var area = jQuery("#chatterbox-write");
+		    $("#chatter-msg", area).val("");
+		    $("#chatter-msg").data("replytoid",'');
+		    
+			console.log($("#chatter-msg").data("replytoid"));
+
+		    $(".chatterboxreplyto", area).hide();
+
+		    //scroll down, delay a little?
+		    scrollToChat();
 		
 		}
 	    
@@ -198,7 +217,6 @@ function connect() {
 	        scrollToChat();
 		});
 	
-        
         registerServiceWorker();
         
         /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/

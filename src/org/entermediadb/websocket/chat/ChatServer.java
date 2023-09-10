@@ -285,9 +285,9 @@ public class ChatServer
 			chat.setValue("collectionid",collectionid);
 			chat.setValue("channeltype", inMap.get("channeltype"));
 			chat.setValue("message", newmessage);
-			
 		}
-		
+		String replytoid = (String)inMap.get("replytoid");
+		chat.setValue("replytoid",replytoid);
 		chats.saveData(chat);  //<----  SAVE chat
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
