@@ -32,6 +32,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
@@ -967,7 +968,18 @@ public class TaskModule extends BaseMediaModule
 		{
 				q.exact("collectionid",collectionid);
 		}
-		HitTracker all = q.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+		QueryBuilder qall = q.match("completedby", "*").between("completedon", start,onemonth);
+		UserProfile profile = inReq.getUserProfile();
+		if (profile != null && profile.isInRole("administrator"))
+		{
+			//See all
+		}
+		else
+		{
+			Collection projects = archive.getProjectManager().listCollectionsOnTeam(inReq.getUser());
+			qall.orgroup("collectionid",projects);
+		}
+		HitTracker all = qall.sort("completedonDown").search();
 		log.info("Tasks completed: " + all);
 		CompletedTasks completed = new CompletedTasks();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -1641,27 +1653,69 @@ public class TaskModule extends BaseMediaModule
 	public void createGoalFromMessage(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String messageid = inReq.getRequestParameter("messageid");
 		Searcher chatsearcher = archive.getSearcher("chatterbox");
+		String messageid = inReq.getRequestParameter("messageid");
 
 		Data message = (Data)chatsearcher.searchById(messageid);
+
+		Data goal = createGoal(inReq, message);
+//		Searcher searcher = archive.getSearcher("projectgoal");
+//		searcher.saveData(goal);
+
+		inReq.putPageValue("chat",message);
+	}
+
+	public void createAgendaFromMessage(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher chatsearcher = archive.getSearcher("chatterbox");
+		String messageid = inReq.getRequestParameter("messageid");
+
+		Data message = (Data)chatsearcher.searchById(messageid);
+
+		//Remove all existing level 1s
+		Searcher searcher = archive.getSearcher("projectgoal");
+		HitTracker all = searcher.query().exact("ticketlevel", "1").search();
+		List tosave = new ArrayList();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data record = (Data) iterator.next();
+			record.setValue("ticketlevel", "2");
+			tosave.add(record);
+		}
+		searcher.saveAllData(tosave, inReq.getUser());
+		
+		Data goal = createGoal(inReq, message);
+		goal.setValue("ticketlevel", "1");
+		searcher.saveData(goal);
+
+		inReq.putPageValue("chat",message);
+	}
+
+	
+
+	
+	protected Data createGoal(WebPageRequest inReq, Data message)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher chatsearcher = archive.getSearcher("chatterbox");
 		
 		String topic = message.get("channel");
 		String content = message.get("message");
 		String collectionid = inReq.getRequestParameter("collectionid");
 
 		Searcher searcher = archive.getSearcher("projectgoal");
-		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", messageid).searchOne();
+		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", message.getId()).searchOne();
 		if( goal == null)
 		{
 			goal = (MultiValued)searcher.createNewData();
 			goal.setValue("goaltrackercolumn", topic);
 			goal.setValue("tickettype", "chat");
-			goal.setValue("ticketlevel", "1");
+			goal.setValue("ticketlevel", "2");
 			goal.setValue("projectstatus", "open");
 			goal.setValue("creationdate",new Date());
 			goal.setValue("collectionid", collectionid);
-			goal.setValue("chatparentid", messageid);
+			goal.setValue("chatparentid", message.getId());
 			goal.addValue("userlikes",inReq.getUserName());
 			goal.setValue("owner", inReq.getUserName());
 			goal.addValue("details",content);
@@ -1681,7 +1735,7 @@ public class TaskModule extends BaseMediaModule
 			searcher.saveData(goal);
 			addStatus(archive, goal,inReq.getUserName());
 		}
-		inReq.putPageValue("chat",message);
+		return goal;
 	}
 	
 	

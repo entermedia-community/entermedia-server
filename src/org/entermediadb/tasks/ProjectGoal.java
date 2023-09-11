@@ -43,6 +43,17 @@ public class ProjectGoal extends BaseData implements Comparable
 
 		if( status1.equals(status2))
 		{
+			String level1 = get("ticketlevel");
+			String level2 = pg2.get("ticketlevel");
+			if( level1 != level2)
+			{
+				if( level1 != null && level1.equals("1"))
+				{
+					return 1;
+				}
+				return -1;
+			}
+			
 			Date date1 = (Date)getDate("creationdate");
 			Date date2 = (Date)pg2.getDate("creationdate");
 			if( date1 != null && date2 != null)

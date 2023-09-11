@@ -1965,26 +1965,35 @@ public class ProjectManager implements CatalogEnabled
 		return hits;
 	}
 	
-	public Collection listCollectionsOnTeam(User inUser)
+	public Collection<LibraryCollection> listCollectionsOnTeam(User inUser)
 	{
-		Collection workspaces = getMediaArchive().query("librarycollectionusers").exact("ontheteam", "true").exact("followeruser", inUser.getId()).search();
-		Set ids = new HashSet();
-		for (Iterator iterator = workspaces.iterator(); iterator.hasNext();)
+		List<LibraryCollection> libraryCollections = (List<LibraryCollection>)getMediaArchive().getCacheManager().get("collections", inUser.getId());
+
+		if( libraryCollections == null)
 		{
-			Data hit = (Data) iterator.next();
-			ids.add(hit.get("collectionid"));
-		}		
-			    
-		List libraryCollectionIds = new ArrayList();
-		Collection instances = getMediaArchive().query("entermedia_instances").orgroup("librarycollection", ids).search();
-		for (Iterator iterator = instances.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			// hit.get("id")+","+ hit.get("instanceurl")
-			libraryCollectionIds.add(hit);
+			libraryCollections = new ArrayList();
+			Collection colusers = getMediaArchive().query("librarycollectionusers").exact("ontheteam", "true").exact("followeruser", inUser.getId()).search();
+			if( !colusers.isEmpty())
+			{
+				List ids = new ArrayList(colusers.size());
+				for (Iterator iterator = colusers.iterator(); iterator.hasNext();)
+				{
+					Data hit = (Data) iterator.next();
+					ids.add(hit.get("collectionid"));
+				}
+				Collection instances = getMediaArchive().query("librarycollection").ids(ids).search();
+				Searcher searcher = getMediaArchive().getSearcher("librarycollection");
+				for (Iterator iterator = instances.iterator(); iterator.hasNext();)
+				{
+					Data hit = (Data) iterator.next();
+					LibraryCollection col = (LibraryCollection)searcher.loadData(hit);
+					libraryCollections.add(col);
+				}
+			}	
+			getMediaArchive().getCacheManager().put("collections", inUser.getId(),libraryCollections);
 		}
 				
-		return libraryCollectionIds;
+		return libraryCollections;
 	}
 
 	public boolean doesLike(User inUser, LibraryCollection inCollection)
