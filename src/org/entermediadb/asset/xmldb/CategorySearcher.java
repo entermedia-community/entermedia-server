@@ -26,6 +26,7 @@ public interface CategorySearcher extends Searcher
 	public Set buildCategorySet(List inCategories);
 	public Set buildCategorySet(Category inCategory);
 
-	
+	public Category loadCategoryByPath(String categorypath);
+
 	
 }

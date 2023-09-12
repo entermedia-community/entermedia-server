@@ -118,7 +118,7 @@ public class EntityManager implements CatalogEnabled
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
 		String sourcepath = loadUploadSourcepath(module,entity,inUser);
-		Category cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+		Category cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
 		if( cat == null)
 		{
 			//Cant find sourcepath

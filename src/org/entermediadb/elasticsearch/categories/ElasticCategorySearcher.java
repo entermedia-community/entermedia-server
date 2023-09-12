@@ -458,27 +458,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public synchronized Category createCategoryPath(String inPath)
 	{
-		if( inPath.length() == 0 || inPath.equals(getRootCategory().getName()))
-		{		
-			return getRootCategory();
-		}
-		//TODO: Cache these categories
-		
-		
-		//TODO: Find right way to do this not matches
-		inPath = inPath.replace('\\', '/'); //Unix paths
-		
-		if (inPath.endsWith("/"))
-		{
-			inPath = inPath.substring(0,inPath.length()-1);
-		}
-		Data hit = (Data)query().exact("categorypath", inPath).sort("categorypathUp").searchOne();
-//		if( hit == null)
-//		{
-//			//String id = createCategoryId(inPath);
-//			//hit = (Data)searchById(id);  //May result in false positive
-//		}
-		Category found = (Category)loadData(hit);
+		Category found = loadCategoryByPath(inPath);
 		if( found == null)
 		{
 			log.info("Category not found: "+ inPath);
@@ -547,6 +527,31 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if (parent != null) {
 			buildCategorySet(parent, inCatalogSet);
 		}
+	}
+	public Category loadCategoryByPath(String categorypath)
+	{
+		if( categorypath.length() == 0 || categorypath.equals(getRootCategory().getName()))
+		{		
+			return getRootCategory();
+		}
+		//TODO: Cache these categories
+		
+		
+		//TODO: Find right way to do this not matches
+		categorypath = categorypath.replace('\\', '/'); //Unix paths
+		
+		if (categorypath.endsWith("/"))
+		{
+			categorypath = categorypath.substring(0,categorypath.length()-1);
+		}
+		Data hit = (Data)query().exact("categorypath", categorypath).sort("categorypathUp").searchOne();
+//		if( hit == null)
+//		{
+//			//String id = createCategoryId(categorypath);
+//			//hit = (Data)searchById(id);  //May result in false positive
+//		}
+		Category found = (Category)loadData(hit);
+		return found;
 	}
 	
 }
