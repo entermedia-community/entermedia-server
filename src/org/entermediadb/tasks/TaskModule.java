@@ -1675,7 +1675,12 @@ public class TaskModule extends BaseMediaModule
 
 		//Remove all existing level 1s
 		Searcher searcher = archive.getSearcher("projectgoal");
-		HitTracker all = searcher.query().exact("ticketlevel", "1").search();
+		String collectionid = message.get("collectionid");
+		if( collectionid == null)
+		{
+			throw new OpenEditException("No collectionid on " + messageid);
+		}
+		HitTracker all = searcher.query().exact("collectionid",collectionid).exact("ticketlevel", "1").search();
 		List tosave = new ArrayList();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
