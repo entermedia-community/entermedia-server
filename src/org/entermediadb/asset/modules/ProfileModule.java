@@ -315,6 +315,27 @@ public class ProfileModule extends MediaArchiveModule
 			hits = (HitTracker) inReq.getPageValue("albumitems");
 		}
 		inReq.putPageValue("hits", hits);
+		
+		
+			//hits per page custom for module or userprofile
+			String moduleid = inReq.getRequestParameter("moduleid");
+			//Search userprofile first
+			String customhitsperpage = userProfile.get(moduleid+resultviewtype+"hitsperpage");
+			if (customhitsperpage == null) {
+				customhitsperpage = userProfile.get("modulehitsperpage");
+			}
+			if (customhitsperpage != null) {
+				if(moduleid != null) {
+					inReq.putPageValue(moduleid+"hitsperpage", Integer.parseInt(customhitsperpage));
+				}
+				else {
+					inReq.putPageValue("hitsperpage", Integer.parseInt(customhitsperpage));
+				}
+				if (hits != null) {
+					hits.setHitsPerPage(Integer.parseInt(customhitsperpage));
+				}
+			}
+		
 	}
 	
 	public void changeHitsPerPage(WebPageRequest inReq)
@@ -326,7 +347,14 @@ public class ProfileModule extends MediaArchiveModule
 			{
 				hitsperpage = "15";
 			}
-			userProfile.setProperty("modulehitsperpage", hitsperpage);
+			//custom for each module (entity)
+			String moduleid = inReq.getRequestParameter("moduleid");
+			if(moduleid != null) {
+				userProfile.setProperty(moduleid+"hitsperpage", hitsperpage);
+			}
+			else {
+				userProfile.setProperty("modulehitsperpage", hitsperpage);
+			}
 			userProfile.save();
 
 			//Save value to hitsperpage "hitcount"
