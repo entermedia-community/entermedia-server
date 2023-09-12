@@ -100,6 +100,21 @@ public class EntityManager implements CatalogEnabled
 		return cat;
 
 	}
+	public Category createDefaultFolder(Data entity, User inUser)
+	{
+		if( entity == null)
+		{
+			return null;
+		}
+		String type = entity.get("entitysourcetype");
+		Data module = getMediaArchive().getCachedData("module", type);
+		if( module == null)
+		{
+			return null;
+		}
+		Category cat = loadDefaultFolder(module, entity,inUser,true);
+		return cat;		
+	}
 	public Category loadDefaultFolder(Data entity, User inUser)
 	{
 		if( entity == null)
@@ -117,8 +132,23 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
+		Category cat = loadDefaultFolder(module, entity,inUser,false);
+		return cat;
+		
+	}
+	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
+	{
 		String sourcepath = loadUploadSourcepath(module,entity,inUser);
-		Category cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
+		Category cat = null;
+		if( create )
+		{
+			cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+		}
+		else
+		{
+			cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
+
+		}
 		if( cat == null)
 		{
 			//Cant find sourcepath
