@@ -279,5 +279,12 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 			buildCategorySet(parent, inCatalogSet);
 		}
 	}
+
+	@Override
+	public Category loadCategoryByPath(String inCategorypath)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
