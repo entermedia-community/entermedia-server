@@ -481,5 +481,11 @@ public abstract class BaseAssetSource implements AssetSource
 		}
 		return repo;
 	}
+
+	@Override
+	public int removeExtraCategories()
+	{
+		return -1;
+	}
 	
 }

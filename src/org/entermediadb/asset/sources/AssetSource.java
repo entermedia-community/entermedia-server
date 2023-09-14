@@ -54,5 +54,7 @@ public interface AssetSource
 
 	String getId();
 
+	int removeExtraCategories();
+
 
 }

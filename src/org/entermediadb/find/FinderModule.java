@@ -203,8 +203,10 @@ public class FinderModule extends BaseMediaModule
 						if( input != null)
 						{
 							Collection moredata = loadMoreResults(archive,hits.getSearchQuery(),sourcetype, maxpossible);
-							//TODO: Compine results, avoid dups
-							bytypes.put(sourcetype,sthits);
+							if(moredata != null)
+							{
+								bytypes.put(sourcetype,moredata);
+							}
 						}
 					}
 					else
@@ -269,7 +271,13 @@ public class FinderModule extends BaseMediaModule
 		{
 			Term term = (Term) iterator.next();
 			PropertyDetail old = term.getDetail();
-			term.setDetail( searcher.getDetail(old.getId()) );
+			PropertyDetail  newd = searcher.getDetail(old.getId());
+			if( newd == null)
+			{
+				log.info("Term does not exist " + inSourcetype + " " + q);
+				return null;
+			}
+			term.setDetail( newd);
 		}
 		HitTracker more = searcher.search(q);
 		return more.getPageOfHits();
@@ -475,6 +483,8 @@ public class FinderModule extends BaseMediaModule
 			assetdq.getQuery().setIncludeDescription(true);
 			HitTracker assetunsorted = assetdq.search();
 			collectMatches(keywordsLower, query, assetunsorted);
+			inReq.putPageValue("assethits",assetunsorted);
+		
 		}		
 		List finallist = new ArrayList();
 		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
@@ -490,6 +500,7 @@ public class FinderModule extends BaseMediaModule
 		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
 		//List finallist = new ArrayList(keywords);
 		Collections.sort(finallist);
+		inReq.putPageValue("modulehits",unsorted);
 		inReq.putPageValue("livesuggestions",finallist);
 		
 		//Include module results

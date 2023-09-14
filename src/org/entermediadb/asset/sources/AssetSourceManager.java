@@ -418,6 +418,10 @@ public class AssetSourceManager implements CatalogEnabled
 				long timetook = System.currentTimeMillis() - starttime;
 				inLog.info("Hot folder: " + name + ", imported " + found + " assets within:" + timetook/1000D + " seconds");
 				//TODO: Clear empty hot folder if enabled
+				int remove = source.removeExtraCategories(); 
+				inLog.info("Hot folder: " + name + ", removed categories " + remove);
+				
+
 			}
 			catch( Exception ex)
 			{

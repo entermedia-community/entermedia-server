@@ -2,7 +2,6 @@ package org.entermediadb.asset.sources;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,14 +18,12 @@ import org.entermediadb.asset.importer.PathChangedListener;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.util.TimeParser;
-import org.entermediadb.projects.ProjectManager;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
@@ -391,97 +388,167 @@ public class OriginalsAssetSource extends BaseAssetSource
 		{
 			MediaArchive archive = getMediaArchive();
 
-		String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
-		String name = getConfig().get("subfolder");
-		String path = base + "/" + name ;
-		List paths = getPageManager().getChildrenPaths(path);
-		if( paths.size() == 0)
-		{
-			log.error("Found hot folder with no files, canceled delete request " + path);
-			return;
+			String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
+			String name = getConfig().get("subfolder");
+			String path = base + "/" + name ;
+			List paths = getPageManager().getChildrenPaths(path);
+			if( paths.size() == 0)
+			{
+				log.error("Found hot folder with no files, canceled delete request " + path);
+				return;
+			}
+	
+			//Making sure assets that we have in DB still exists. If not then mark as deleted
+			AssetSearcher searcher = archive.getAssetSearcher();
+			QueryBuilder q = searcher.query(); 
+			HitTracker assets = null;
+	//		String sourcepath = context.getRequestParameter("sourcepath");
+	//		if(sourcepath == null)
+	//		{
+	//			q.all();
+	//		}
+	//		else
+	//		{
+				q.startsWith("sourcepath", name);
+	//		}
+			//q.not("editstatus","7").sort("sourcepathUp");
+			q.sort("sourcepathUp");
+			assets = q.search();
+			assets.enableBulkOperations();
+			int removed = 0;
+			int existed = 0;	
+			int modified = 0;
+			List tosave = new ArrayList();
+			String localClusterId = archive.getNodeManager().getLocalClusterId();
+			for(Object obj: assets)
+			{
+				Data hit = (Data)obj;
+			
+				Asset asset = (Asset)searcher.loadData(hit);
+				
+				//verify we own this asset (cluster)
+				Map emEditStatus = asset.getEmRecordStatus();
+				String clusterid = (String) emEditStatus.get("mastereditclusterid");
+				if (!localClusterId.equals(clusterid))
+				{
+					//Skip it, We do not own this asset
+					continue;
+				}
+				
+				ContentItem item = getOriginalContent(asset);
+				boolean saveit = false;
+				//log.info(item.getPath());
+				if(!item.exists() )
+				{
+					removed++;
+				    asset.setProperty("editstatus", "7"); //mark as deleted
+				    saveit = true;
+				}
+				else 
+				{
+					existed++;
+		            if("7".equals(asset.get("editstatus")))
+		            {
+					   asset.setProperty("editstatus", "6"); //restore files
+					   saveit = true;
+		            }
+					//TODO: Should we have locked the asset?
+					if( !asset.isEquals(item.getLastModified()))
+					{
+						archive.getAssetImporter().reImportAsset(archive,asset); //this saves it
+						modified++;
+					}
+				}
+				if( saveit )
+				{
+					tosave.add(asset);
+					if( tosave.size() == 100 )
+					{
+						log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
+						archive.saveAssets(tosave);
+						tosave.clear();
+					}
+				}	
+			}
+			archive.saveAssets(tosave);
+			tosave.clear();
+			log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
+			if( modified > 0 )
+			{
+				archive.fireSharedMediaEvent("conversions/runconversions");
+			}
+	
 		}
 
-		//Making sure assets that we have in DB still exists. If not then mark as deleted
-		AssetSearcher searcher = archive.getAssetSearcher();
-		QueryBuilder q = searcher.query(); 
-		HitTracker assets = null;
-//		String sourcepath = context.getRequestParameter("sourcepath");
-//		if(sourcepath == null)
-//		{
-//			q.all();
-//		}
-//		else
-//		{
-			q.startsWith("sourcepath", name);
-//		}
-		//q.not("editstatus","7").sort("sourcepathUp");
-		q.sort("sourcepathUp");
-		assets = q.search();
-		assets.enableBulkOperations();
-		int removed = 0;
-		int existed = 0;	
-		int modified = 0;
-		List tosave = new ArrayList();
-		String localClusterId = archive.getNodeManager().getLocalClusterId();
-		for(Object obj: assets)
+		@Override
+		public int removeExtraCategories()
 		{
-			Data hit = (Data)obj;
-		
-			Asset asset = (Asset)searcher.loadData(hit);
-			
-			//verify we own this asset (cluster)
-			Map emEditStatus = asset.getEmRecordStatus();
-			String clusterid = (String) emEditStatus.get("mastereditclusterid");
-			if (!localClusterId.equals(clusterid))
+			MediaArchive archive = getMediaArchive();
+
+			String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
+			String name = getConfig().get("subfolder");
+			String path = base + "/" + name ;
+			List paths = getPageManager().getChildrenPaths(path);
+			if( paths.size() == 0)
 			{
-				//Skip it, We do not own this asset
-				continue;
+				log.error("Found hot folder with no files, canceled delete request " + path);
+				return -1;
+			}
+			ContentItem item = getPageManager().getContent(path);
+			Category category = archive.getCategorySearcher().loadCategoryByPath(name);
+			
+			HitTracker entities = getMediaArchive().query("module").exact("isentity", true).search();
+			Collection ids = entities.collectValues("id");
+			
+
+			
+			int count = checkForExtraCategories(ids,item,category);
+			return count;
+		}
+		protected int checkForExtraCategories(Collection entities, ContentItem inFolder, Category inParent)
+		{
+			HashMap names = new HashMap();
+			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+			{
+				Category cat = (Category)iterator.next();
+				names.put(cat.getName(),cat);
 			}
 			
-			ContentItem item = getOriginalContent(asset);
-			boolean saveit = false;
-			//log.info(item.getPath());
-			if(!item.exists() )
+			List paths = getPageManager().getChildrenPaths(inFolder.getPath());
+			for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 			{
-				removed++;
-			    asset.setProperty("editstatus", "7"); //mark as deleted
-			    saveit = true;
-			}
-			else 
-			{
-				existed++;
-	            if("7".equals(asset.get("editstatus")))
-	            {
-				   asset.setProperty("editstatus", "6"); //restore files
-				   saveit = true;
-	            }
-				//TODO: Should we have locked the asset?
-				if( !asset.isEquals(item.getLastModified()))
+				String subdirectory = (String) iterator.next();
+				ContentItem item = getPageManager().getContent(subdirectory);
+				if( item.isFolder())
 				{
-					archive.getAssetImporter().reImportAsset(archive,asset); //this saves it
-					modified++;
+					Category folder = (Category)names.get(item.getName());
+					names.remove(item.getName());
+					if( folder != null)
+					{
+						checkForExtraCategories(entities,item,folder);
+					}
 				}
 			}
-			if( saveit )
+			for (Iterator iterator = names.values().iterator(); iterator.hasNext();)
 			{
-				tosave.add(asset);
-				if( tosave.size() == 100 )
+				Category oldjunk = (Category) iterator.next();
+				//Look for entities with this exact path
+				QueryBuilder builder = getMediaArchive().query("modulesearch").exact("uploadsourcepath",oldjunk.getCategoryPath());
+				builder.getQuery().setSearchTypes(entities);	
+				
+				Collection hits = builder.search();
+				for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
 				{
-					log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
-					archive.saveAssets(tosave);
-					tosave.clear();
+					Data data = (Data) iterator2.next();
+					String moduletype = data.get("entitysourcetype");
+					log.info("Deleting missing path " + new JSONObject(data.getProperties()).toJSONString());
+					getMediaArchive().getSearcher(moduletype).delete(data, null);
 				}
-			}	
-		}
-		archive.saveAssets(tosave);
-		tosave.clear();
-		log.info("found modified: " + modified + " found deleted: " + removed + " found unmodified:" + existed );
-		if( modified > 0 )
-		{
-			archive.fireSharedMediaEvent("conversions/runconversions");
+				inParent.removeChild(oldjunk);
+			}
+			int deleted = names.size();
+			getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
+			return deleted;
 		}
 
-}
-
-		
 }
