@@ -15,7 +15,7 @@ public void init()
 	
 	if( lock == null)
 	{
-		log.info("Face scanning already in progress");
+		log.info("("+archive.getCatalogId()+") Face scanning already in progress.");
 		return;
 	}
 
@@ -43,10 +43,11 @@ public void init()
 				tosave.clear();
 			}
 		}
-		archive.saveAssets(tosave);
-		saved = saved +  tosave.size();
-		log.info("Facescan assets saved: " + saved);
-		
+		if(tosave.size() > 0) {
+			archive.saveAssets(tosave);
+			saved = saved +  tosave.size();
+			log.info("Facescan assets saved: " + saved);
+		}
 		if( saved > 0)
 		{
 			archive.fireMediaEvent("facecompare", context.getUser());
