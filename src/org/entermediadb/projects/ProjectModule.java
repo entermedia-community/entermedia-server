@@ -424,7 +424,7 @@ public class ProjectModule extends BaseMediaModule
 		if( collection == null)
 		{
 			//log.error("No collection id found on " + inReq.getPath());
-			collection = loadCollectionFromCommunityTagFolder(inReq);
+			//collection = loadCollectionFromCommunityTagFolder(inReq);
 
 		}
 		if(collection != null)
@@ -948,77 +948,6 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 	
-	public LibraryCollection loadCollectionFromCommunityTagFolder(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String tagid = PathUtilities.extractDirectoryName(inReq.getPath());
-		ProjectManager manager = getProjectManager(inReq);
-		Data tag = archive.getData("communitytag", tagid);
-		if(tag != null) {
-			LibraryCollection col = manager.getLibraryCollection(archive, (String)tag.getValue("collectionid"));
-			if( col != null)
-			{
-				inReq.putPageValue("librarycol", col);
-				inReq.putPageValue("collectionid", col.getId());
-			}			
-			return col;
-		}
-		return null;
-
-	}
-	
-	
-	
-	public void loadCommunityTagFolder(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String tagid = PathUtilities.extractDirectoryName(inReq.getPath());
-		Data tag = archive.getData("communitytag", tagid);
-		if(tag != null) {
-			inReq.putPageValue("communitytag", tag);
-			inReq.putPageValue("communitytagid", tag.getId());
-		}
-	}
-
-	public void loadCommunityTagCategory(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String communitytagcategory = inReq.getRequestParameter("communitytagcategory");
-		if( communitytagcategory !=null)
-		{
-			Data tag = archive.getCachedData("communitytagcategory", communitytagcategory);
-			if(tag != null) {
-				inReq.putPageValue("communitytagcategory", tag);
-				inReq.putPageValue("communitytagcategoryid", tag.getId());
-				return;
-			}
-			
-		}
-		SiteData data = (SiteData)inReq.getPageValue("sitedata");
-		if( data != null)
-		{
-			String tagid = data.get("domaincommunityid");
-			if( tagid != null)
-			{
-				Data tag = archive.getCachedData("communitytagcategory", tagid);
-				if(tag != null) {
-					inReq.putPageValue("communitytagcategory", tag);
-					inReq.putPageValue("communitytagcategoryid", tag.getId());
-					return;
-				}
-			}
-		}
-		String tagid = PathUtilities.extractPageName(inReq.getPath());
-		if( tagid.equals("index"))
-		{
-			return;
-		}
-		Data tag = archive.getCachedData("communitytagcategory", tagid);
-		if(tag != null) {
-			inReq.putPageValue("communitytagcategory", tag);
-			inReq.putPageValue("communitytagcategoryid", tag.getId());
-		}
-	}
 
 	public boolean checkViewCollection(WebPageRequest inReq) {
 		ProjectManager manager = getProjectManager(inReq);
