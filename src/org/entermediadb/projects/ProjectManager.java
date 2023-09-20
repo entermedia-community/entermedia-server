@@ -1206,7 +1206,12 @@ public class ProjectManager implements CatalogEnabled
 			usercollection.setId( "users-" + user.getId());
 			usercollection.setName( user.getScreenName() );
 			usercollection.setValue("library",userlibrary.getId());
-			String folder = "Albums/Users/" + user.getScreenName();
+			
+			String basefolder = inArchive.getCatalogSettingValue("userbasefolder");
+			if (basefolder == null) {
+				basefolder = "Albums/Users"; //New default: "User Folder"
+			}
+			String folder = basefolder + "/" + user.getScreenName();
 			Category category = inArchive.createCategoryPath(folder);
 			((MultiValued) category).addValue("viewusers", user.getId());
 			inArchive.getCategorySearcher().saveData(category);
