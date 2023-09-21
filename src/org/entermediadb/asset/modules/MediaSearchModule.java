@@ -138,13 +138,22 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
-			tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
+			//tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
+			inPageRequest.addRequestParameter("field", "category-exact");
+			inPageRequest.addRequestParameter("category.value", category.getId());
+			inPageRequest.addRequestParameter("operation", "exact");
 		}
 		else
 		{
-			tracker = archive.getSearcher(searchtype).query().exact("category",category.getId()).search(inPageRequest);
+			//tracker = archive.getSearcher(searchtype).query().exact("category",category.getId()).search(inPageRequest);
 			//tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
+			inPageRequest.addRequestParameter("field", "category");
+			inPageRequest.addRequestParameter("category.value", category.getId());
+			inPageRequest.addRequestParameter("operation", "exact");
 		}
+		
+		tracker = archive.getSearcher(searchtype).fieldSearch(inPageRequest);
+
 		if( tracker != null)
 		{
 				//TODO: Seems like this could be done within the searcher or something
