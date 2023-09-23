@@ -130,29 +130,24 @@ public class MediaSearchModule extends BaseMediaModule
 			searchtype = "asset";
 		}
 		
-		String hitsperpage = inPageRequest.getRequestParameter("hitsperpage");
-		if (hitsperpage == null)
-		{
-			hitsperpage = inPageRequest.findValue("hitsperpage");
+		Searcher assetsearcher = archive.getSearcher(searchtype);
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inPageRequest);
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
 		}
 		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
-			//tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
-			inPageRequest.addRequestParameter("field", "category-exact");
-			inPageRequest.addRequestParameter("category.value", category.getId());
-			inPageRequest.addRequestParameter("operation", "exact");
+			search.addExact("category-exact",category.getId());
 		}
 		else
 		{
-			//tracker = archive.getSearcher(searchtype).query().exact("category",category.getId()).search(inPageRequest);
-			//tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
-			inPageRequest.addRequestParameter("field", "category");
-			inPageRequest.addRequestParameter("category.value", category.getId());
-			inPageRequest.addRequestParameter("operation", "exact");
+			search.addExact("category",category.getId());
 		}
+			
 		
-		tracker = archive.getSearcher(searchtype).fieldSearch(inPageRequest);
+		tracker = assetsearcher.cachedSearch(inPageRequest, search);
 
 		if( tracker != null)
 		{
@@ -166,21 +161,7 @@ public class MediaSearchModule extends BaseMediaModule
 				tracker.setPage(1);
 
 		}
-		
-		
-		if (tracker != null)
-		{
-			if (hitsperpage != null)
-			{
-				int numhitsperpage = Integer.parseInt(hitsperpage);
-				tracker.setHitsPerPage(numhitsperpage);
-			}
-			String name = inPageRequest.findValue("hitsname");
-			inPageRequest.putPageValue(name, tracker);
-			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
-		}
-
-		
+			
 		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
 		if( prefs != null)
 		{
