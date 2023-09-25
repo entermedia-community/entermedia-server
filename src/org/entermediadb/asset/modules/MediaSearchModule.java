@@ -158,7 +158,7 @@ public class MediaSearchModule extends BaseMediaModule
 					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
 				}
 				tracker.getSearchQuery().setProperty("categoryid", category.getId());
-				tracker.setPage(1);
+				//tracker.setPage(1);  //<---why?
 
 		}
 			
