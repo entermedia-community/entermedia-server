@@ -437,7 +437,7 @@ public class ProjectModule extends BaseMediaModule
 	
 	public String loadCollectionId(WebPageRequest inReq) 
 	{
-		String collectionid = inReq.findValue("collectionid");
+		String collectionid = inReq.getRequestParameter("collectionid");
 		if (collectionid == null) {
 			collectionid = inReq.getRequestParameter("librarycollection");
 			if (collectionid == null) 
