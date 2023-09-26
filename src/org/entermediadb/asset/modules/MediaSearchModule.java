@@ -130,21 +130,25 @@ public class MediaSearchModule extends BaseMediaModule
 			searchtype = "asset";
 		}
 		
-		String hitsperpage = inPageRequest.getRequestParameter("hitsperpage");
-		if (hitsperpage == null)
-		{
-			hitsperpage = inPageRequest.findValue("hitsperpage");
+		Searcher assetsearcher = archive.getSearcher(searchtype);
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inPageRequest);
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
 		}
 		
 		if( exact != null && Boolean.parseBoolean(exact))
 		{
-			tracker = archive.getSearcher(searchtype).query().exact("category-exact",category.getId()).search(inPageRequest);
+			search.addExact("category-exact",category.getId());
 		}
 		else
 		{
-			tracker = archive.getSearcher(searchtype).query().exact("category",category.getId()).search(inPageRequest);
-			//tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
+			search.addExact("category",category.getId());
 		}
+			
+		
+		tracker = assetsearcher.cachedSearch(inPageRequest, search);
+
 		if( tracker != null)
 		{
 				//TODO: Seems like this could be done within the searcher or something
@@ -154,24 +158,10 @@ public class MediaSearchModule extends BaseMediaModule
 					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
 				}
 				tracker.getSearchQuery().setProperty("categoryid", category.getId());
-				tracker.setPage(1);
+				//tracker.setPage(1);  //<---why?
 
 		}
-		
-		
-		if (tracker != null)
-		{
-			if (hitsperpage != null)
-			{
-				int numhitsperpage = Integer.parseInt(hitsperpage);
-				tracker.setHitsPerPage(numhitsperpage);
-			}
-			String name = inPageRequest.findValue("hitsname");
-			inPageRequest.putPageValue(name, tracker);
-			inPageRequest.putSessionValue(tracker.getSessionId(), tracker);
-		}
-
-		
+			
 		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
 		if( prefs != null)
 		{
