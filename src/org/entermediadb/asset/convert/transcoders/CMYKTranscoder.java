@@ -173,7 +173,7 @@ public class CMYKTranscoder extends BaseTranscoder
 			return result;
 		}
 		//problems
-		log.info("Could not exec: " + execresult.getStandardOut());
+		log.info("Could not exec CMYK Convert after: " + (System.currentTimeMillis() - start) + " - Error: " + execresult.getReturnValue() + " - " + execresult.getStandardOut());
 		if (execresult.getReturnValue() == 124)
 		{
 			result.setError("Exec timed out after " + timeout);
