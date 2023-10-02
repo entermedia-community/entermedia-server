@@ -394,7 +394,7 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = loadCollectionId(inReq);
 		if (collectionid == null) {
 			Asset asset = getAsset(inReq);
-			if (asset != null) {
+			if (asset != null && asset.getCategories() != null) {
 				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();)
 				{
 					Category child = (Category) iterator2.next();

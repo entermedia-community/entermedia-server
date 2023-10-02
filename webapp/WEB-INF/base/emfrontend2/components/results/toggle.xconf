@@ -1,6 +1,7 @@
 <page>
 
 <path-action name="DataEditModule.toggleHitSelection"/>
+<path-action name="DataEditModule.loadPageOfSearch"/>
 <inner-layout/>
 <layout/>
 
