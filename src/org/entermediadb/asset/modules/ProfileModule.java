@@ -347,13 +347,20 @@ public class ProfileModule extends MediaArchiveModule
 			{
 				hitsperpage = "15";
 			}
-			//custom for each module (entity)
+			//custom for each resulttype
 			String moduleid = inReq.getRequestParameter("moduleid");
-			if(moduleid != null) {
-				userProfile.setProperty(moduleid+"hitsperpage", hitsperpage);
+			
+			String resultview = inReq.getRequestParameter("resultview");
+			if(resultview != null) {
+				userProfile.setProperty(resultview+"assethitsperpage", hitsperpage);
 			}
 			else {
-				userProfile.setProperty("modulehitsperpage", hitsperpage);
+				if(moduleid != null) {
+					userProfile.setProperty(moduleid+"hitsperpage", hitsperpage);
+				}
+				else {
+					//userProfile.setProperty("assethitsperpage", hitsperpage);
+				}
 			}
 			userProfile.save();
 
