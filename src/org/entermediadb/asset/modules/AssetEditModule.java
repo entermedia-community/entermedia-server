@@ -1717,6 +1717,9 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return;
 		}
+		if (asset.getId().contains("multiedit:")) {
+			return;
+		}
 		String catalogid = inReq.findPathValue("catalogid");
 
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
