@@ -11,6 +11,7 @@
 	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>
 	
 	<page-action name="DataEditModule.search" alltypes="true">
+		<property name="includeDescription">true</property>
 		<property name="hitsname">autocomplete</property>
 		<property name="searchtypeFromRequest">true</property>
 	</page-action>
