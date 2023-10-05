@@ -1818,8 +1818,10 @@ Server ProjectModule.uploadFile
 			{
 				Data chat = (Data) iterator.next();
 				User person = archive.getUser( chat.get("user"));
-				users.add(person);
-				
+				if( person != null)
+				{
+					users.add(person);
+				}	
 			}
 			inReq.putPageValue("persons",users);
 		}
