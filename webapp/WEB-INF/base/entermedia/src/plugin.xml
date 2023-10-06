@@ -2476,6 +2476,8 @@
 		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
 	</bean>
 
+	<bean id="BaseExporter" class="org.entermediadb.asset.importer.BaseExporter" >
+	</bean>
 
 		
 </beans>
