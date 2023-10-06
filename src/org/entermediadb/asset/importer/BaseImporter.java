@@ -16,6 +16,7 @@ import org.entermediadb.asset.util.Row;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
@@ -25,8 +26,6 @@ import org.openedit.util.EmStringUtils;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
-
-import groovy.json.internal.ValueMap;
 
 public class BaseImporter extends EnterMediaObject
 {
@@ -352,6 +351,12 @@ public class BaseImporter extends EnterMediaObject
 						data = findOrCreateById(inTable, id, value);
 					}
 				}
+			}
+			if( data == null)
+			{
+				data = new BaseData();
+				data.setId(value);
+				data.setName(value);
 			}
 			datavalues.put(value, data);
 		}
