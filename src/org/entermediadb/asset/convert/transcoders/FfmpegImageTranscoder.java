@@ -82,7 +82,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		String offset = inStructions.getProperty("timeoffset");
 		if( offset == null)
 		{
-			offset = "2";
+			offset = "0";
 		}
 		try
 		{
@@ -109,17 +109,22 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		}
 		
 		List<String> com = new ArrayList<String>();
-
-		com.add("-ss");  //By adding an SS early on its way faster
-		int seconds = (int)jumpoff;	
+		
 		int framewindow = 1;
-		if( seconds > framewindow)
-		{
-			com.add(String.valueOf( seconds - framewindow) ); //This is the whole number minus 1
-		}
-		else
-		{
-			com.add(String.valueOf( seconds)); //This is the whole number 		
+		int seconds = (int)jumpoff;
+		
+		if(seconds>0) {  //only on custom offset
+			com.add("-ss");  
+				
+			
+			if( seconds > framewindow)
+			{
+				com.add(String.valueOf( seconds - framewindow) ); //This is the whole number minus 1
+			}
+			else
+			{
+				com.add(String.valueOf( seconds)); //This is the whole number 		
+			}
 		}
 		//com.add("-deinterlace");
 		com.add("-abort_on");

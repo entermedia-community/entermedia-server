@@ -277,7 +277,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	if( !inStructions.isForce() && !inStructions.isStreaming() )
     	{
 	    	ContentItem output = inStructions.getOutputFile();
-			if( output.getLength() > 2 )
+			if( output.getLength() > 0 )
 			{
 				ConvertResult result = new ConvertResult();
 				result.setOutput(output);
