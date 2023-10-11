@@ -33,7 +33,8 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldSearcher = inSearcher;
 	}
-
+	protected Data fieldLastNonSkipData;
+	
 	protected HashMap<String, Map> fieldLookUps;
 	protected HashMap<String, String[]> fieldLookUpFilters;
 	
@@ -125,6 +126,7 @@ public class BaseImporter extends EnterMediaObject
 		Page upload = getPageManager().getPage(importpath);
 		Reader reader = upload.getReader();
 		ArrayList data = new ArrayList();
+		int rowNum = 0;
 
 		try
 		{
@@ -135,11 +137,13 @@ public class BaseImporter extends EnterMediaObject
 			createMetadata(file.getHeader());
 
 			Row trow = null;
-			int rowNum = 0;
 			while ((trow = file.getNextRow()) != null)
 			{
 				rowNum++;
-
+				if( skipRow(trow))
+				{
+					continue;
+				}
 				Data target = findExistingRecord(trow);
 				if( target == null)
 				{
@@ -191,7 +195,7 @@ public class BaseImporter extends EnterMediaObject
 				{
 					continue;
 				}
-
+				fieldLastNonSkipData = target;
 				addProperties(trow, target);
 				data.add(target);
 				if (data.size() == 3000)
@@ -208,7 +212,13 @@ public class BaseImporter extends EnterMediaObject
 			getPageManager().removePage(upload);
 		}
 		getSearcher().saveAllData(data, context.getUser());
-		log.info("imported " + data.size());
+		log.info("imported " + rowNum);
+	}
+
+	public boolean skipRow(Row inTrow)
+	{
+		//Add fields to this string or two?
+		return false;
 	}
 
 	protected Data findExistingRecord(Row inRow)
@@ -389,10 +399,10 @@ public class BaseImporter extends EnterMediaObject
 				continue;
 			}
 			//String header = inHeaders[i];
+			PropertyDetail detail = details.getDetailByName(header);
 			String id = PathUtilities.extractId(header, true);
-			PropertyDetail detail = details.getDetail(id);
 			if(detail == null){
-				detail = details.getDetail(header);
+				detail = details.getDetail(id);
 			}			
 			if(detail == null)
 			{
@@ -460,10 +470,10 @@ public class BaseImporter extends EnterMediaObject
 			}
 			else if (val != null && val.length() > 0)
 			{
-				PropertyDetail detail = getSearcher().getDetail(headerid);
+				PropertyDetail detail = details.getDetailByName(header);
 				if(detail == null)
 				{
-					detail = details.getDetailByName(header);
+					detail = getSearcher().getDetail(headerid);
 				}
 
 				if(detail != null) 
