@@ -96,7 +96,7 @@ public class FinderModule extends BaseMediaModule
 				
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
-				int targetsize = 4;
+				int targetsize = 10;
 				
 				if( smaxsize != null)
 				{
