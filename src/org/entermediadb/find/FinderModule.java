@@ -459,30 +459,32 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String query = inReq.getRequestParameter("description.value");
+		String query[] = inReq.getRequestParameters("description.value");
 		
 		if( query == null)
 		{
 			return;
 		}		
+		String plainquery = String.join(" ", query);
+		
 		Collection searchmodules = loadUserSearchTypes(inReq);
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search(inReq); //With permissions?
 
 		Map<String,String> keywordsLower = new HashMap();
-		collectMatches(keywordsLower, query, unsorted);
+		collectMatches(keywordsLower, plainquery, unsorted);
 		
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(30);
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
 			HitTracker assetunsorted = assetdq.search();
-			collectMatches(keywordsLower, query, assetunsorted);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits",assetunsorted);
 		
 		}		
@@ -492,7 +494,7 @@ public class FinderModule extends BaseMediaModule
 			String keyword = (String) iterator.next();
 			String keywordcase = keywordsLower.get(keyword);
 			LiveSuggestion suggestion = new LiveSuggestion();
-			suggestion.setSearchFor(query);
+			suggestion.setSearchFor(plainquery);
 			suggestion.setKeyword(keywordcase);
 			finallist.add(suggestion);
 		}
