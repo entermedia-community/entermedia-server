@@ -459,13 +459,14 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String query[] = inReq.getRequestParameters("description.value");
-		
-		if( query == null)
+		//String query[] = inReq.getRequestParameters("description.value");
+		String plainquery = inReq.getRequestParameter("description.value");
+		if( plainquery == null)
 		{
 			return;
 		}		
-		String plainquery = String.join(" ", query);
+		//String plainquery = String.join(" ", query);
+		
 		
 		Collection searchmodules = loadUserSearchTypes(inReq);
 		Collection searchmodulescopy = new ArrayList(searchmodules);
@@ -518,7 +519,7 @@ public class FinderModule extends BaseMediaModule
 	{
 		String lowerquery = query.toLowerCase();
 
-		for (Iterator iterator = unsorted.iterator(); iterator.hasNext();)
+		for (Iterator iterator = unsorted.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			
