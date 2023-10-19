@@ -31,8 +31,8 @@ public class LiveSuggestion implements Comparable<LiveSuggestion>
 	
 	public String getBold()
 	{
-		String keyword = getKeyword();
-		String searchfor = getSearchFor();
+		String keyword = getKeyword().toLowerCase();
+		String searchfor = getSearchFor().toLowerCase();
 		//Loop over any spaces and words
 		if(getKeyword().length()>2) {
 			StringBuffer buffer = new StringBuffer();
