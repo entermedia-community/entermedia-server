@@ -42,7 +42,21 @@ public class ChatModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(ChatConnection.class);
 		
+	public void loadMessage(WebPageRequest inReq)
+	{
 
+		MediaArchive archive = getMediaArchive(inReq);
+		List messageids = new ArrayList(1);
+		String messageid = inReq.getRequestParameter("messageid");
+		messageids.add(messageid);
+		loadReactions(inReq, messageids);
+		loadAttachments(inReq, messageids);
+		
+		Data chat = archive.getCachedData("chatterbox", messageid);
+		inReq.putPageValue("chat", chat);
+
+		
+	}
 	public void loadRecentChats(WebPageRequest inReq)
 	{
 
@@ -114,28 +128,28 @@ public class ChatModule extends BaseMediaModule
 	}
 
 
-	protected void toggleReaction(WebPageRequest inReq)
+	public void toggleReaction(WebPageRequest inReq)
 	{
 		String messageid = inReq.getRequestParameter("messageid");
 		String character = inReq.getRequestParameter("reactioncharacter");
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Data found = archive.query("chatterboxreaction").exact("messageid", messageid).exact("user", inReq.getUserName()).searchOne();
+		if( found != null && found.getName().equals(character))
+		{
+			//if its the same then delete it
+			archive.getSearcher("chatterboxreaction").delete(found, inReq.getUser());
+			return;
+		}
 		if( found == null)
 		{
-			if(character != null)
-			{
 				found = archive.getSearcher("chatterboxreaction").createNewData();
 				found.setValue("messageid", messageid);
 				found.setValue("user", inReq.getUserName());
-				found.setValue("date", new Date() );
-				archive.saveData("chatterboxreaction", found);
-			}
 		}
-		else
-		{
-			archive.getSearcher("chatterboxreaction").delete(found, inReq.getUser());
-		}
+		found.setValue("date", new Date() );
+		found.setValue("name", character);
+		archive.saveData("chatterboxreaction", found);
 	}
 	protected void loadReactions(WebPageRequest inReq, List messageids)
 	{
@@ -285,6 +299,8 @@ public class ChatModule extends BaseMediaModule
 			chatattchment.setValue("date", new Date());
 			chatattchment.setValue("messageid", chat.getId());
 			chatattchment.setValue("user", inReq.getUserName());
+			chatattchment.setValue("assetid", asset.getId());
+			
 			archive.getSearcher("chatterboxattachment").saveData(chatattchment,inReq.getUser());
 		}
 

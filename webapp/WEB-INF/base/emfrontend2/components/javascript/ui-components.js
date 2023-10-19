@@ -2544,11 +2544,17 @@ uiload = function() {
 	{
 		//Load div
 		var input = $(this);
+		input.click(function()
+		{
+			$(".emoticonmenu").hide(); //Hide old ones
+		});
+		
 		input.hover(function()
 		{
 			var isattached = input.data("isattached");
 			if(isattached)
 			{
+				$(".emoticonmenu").hide(); //Hide old ones
 				input.parent().find(".emoticonmenu").show();			
 			}
 			else
@@ -2557,7 +2563,7 @@ uiload = function() {
 				$.ajax({ url: options.showurl, async: true, data: options, 
 					success: function(data) 
 					{
-						$(".emoticonmenu").hide();
+						$(".emoticonmenu").hide(); //Hide old ones
 						input.data("isattached",true);
 						input.append(data);
 					}	
@@ -2574,16 +2580,17 @@ uiload = function() {
 		var menuitem = $(this);
 		
 		var aparent = $(menuitem.parents(".pickemoticon"));
-		console.log(aparent.data());
+		//console.log(aparent.data());
 
 		var saveurl = aparent.data("toggleurl");
 		//Save
-		var options = menuitem.data();
-		options.reactioncharacter = menuitem.html();
+		var options = aparent.data();
+		options.reactioncharacter = menuitem.data("hex");
 		$.ajax({ url: saveurl, async: true, data: options, 
 			success: function(data) 
 			{
 				$(".emoticonmenu").hide();
+				$("#chatter-message-" + aparent.data("messageid")).html(data);
 				//reload message
 			}	
 		});			
