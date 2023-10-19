@@ -31,16 +31,23 @@ public class LiveSuggestion implements Comparable<LiveSuggestion>
 	
 	public String getBold()
 	{
+		String keyword = getKeyword().toLowerCase();
+		String searchfor = getSearchFor().toLowerCase();
 		//Loop over any spaces and words
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("<b>");
-		
-		String sub  = getKeyword().substring(0,getSearchFor().length());
-		buffer.append(URLUtilities.xmlEscape(sub));
-		buffer.append("</b>");
-		String ending = getKeyword().substring(getSearchFor().length());
-		buffer.append(URLUtilities.xmlEscape(ending));
-		return buffer.toString();
+		if(getKeyword().length()>2) {
+			StringBuffer buffer = new StringBuffer();
+			
+			Integer start = keyword.indexOf(searchfor);
+			String sub  = keyword.substring(start, start+searchfor.length());
+			buffer.append(keyword.substring(0, start));
+			buffer.append("<b>");
+			buffer.append(URLUtilities.xmlEscape(sub));
+			buffer.append("</b>");
+			String ending = keyword.substring(start+searchfor.length());
+			buffer.append(URLUtilities.xmlEscape(ending));
+			return buffer.toString();
+		}
+		return getKeyword();
 		
 	}
 

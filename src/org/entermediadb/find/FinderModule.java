@@ -530,7 +530,7 @@ public class FinderModule extends BaseMediaModule
 			String description = hit.get("description");
 			if( description != null )
 			{
-				String[] keywords = description.split("[ ]+");
+				String[] keywords = description.split("[\\s+\\,]");
 				for (int i = 0; i < keywords.length; i++)
 				{
 					addMatch(keywordsLower,query, lowerquery, keywords[i]);
@@ -548,9 +548,9 @@ public class FinderModule extends BaseMediaModule
 		
 		String cleanedup = keyword.trim();
 
-		if( cleanedup.length() > 25)
+		if( cleanedup.length() > 50)
 		{
-			cleanedup = cleanedup.substring(0,25);
+			cleanedup = cleanedup.substring(0,50);
 		}
 		
 		//cleanedup = cleanedup.replaceAll("[^a-zA-Z\\-\\._\\d^]", "").toLowerCase();
@@ -562,7 +562,8 @@ public class FinderModule extends BaseMediaModule
 			cleanedup = cleanedup.substring(0,cleanedup.length()-1);
 		}
 		
-		if( !cleanedup.toLowerCase().startsWith(lowerquery) ) 
+		//if( !cleanedup.toLowerCase().startsWith(lowerquery) ) 
+		if( !cleanedup.toLowerCase().contains(lowerquery) )
 		{
 			return;
 		}
