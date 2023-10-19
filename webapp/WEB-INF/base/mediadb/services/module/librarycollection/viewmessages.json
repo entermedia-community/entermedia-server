@@ -50,7 +50,30 @@
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 			{
-			#jsonfields($hit $searcher.getPropertyDetails()) 
+				#jsonpartial($hit $hits.getSearcher().getPropertyDetails())
+				
+				#set( $reactions = $reactionspermessage.get($hit.getId()))
+			    #ifnotnull( $reactions )
+				    , 
+				    "reactions": [
+					 #foreach($reaction in $reactions)#if( ${foreach.count} != 1 ), #end
+					   {
+					   	  #jsonfields($reaction $mediaarchive.getSearcher("chatterboxreaction").getPropertyDetails()) 
+					   }
+					 #end
+					 ]			  	
+			    #end
+				#set( $attachments = $attachmentspermessage.get($hit.getId()))
+			    #ifnotnull( $attachments )
+				    , 
+				    "attachments": [
+					 #foreach($attachment in $attachments)#if( ${foreach.count} != 1 ), #end
+					   {
+					   	  #jsonfields($attachment $mediaarchive.getSearcher("chatterboxattachment").getPropertyDetails()) 
+					   }
+					 #end
+					 ]			  	
+			    #end
 			}
 		#end
 		]

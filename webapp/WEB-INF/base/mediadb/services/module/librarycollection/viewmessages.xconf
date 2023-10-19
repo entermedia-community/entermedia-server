@@ -4,6 +4,8 @@
 	
 	<path-action name="ProjectModule.loadMessages"/>
 	<path-action name="ProjectModule.loadGoalsInMessages"/>
+	<path-action name="ChatModule.loadReactions"/>
+	<path-action name="ChatModule.loadAttachments"/>
 
 	<generator name="velocity"/>
 	<permission name="view">

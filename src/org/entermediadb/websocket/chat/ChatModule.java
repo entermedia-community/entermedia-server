@@ -46,11 +46,12 @@ public class ChatModule extends BaseMediaModule
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
-		List messageids = new ArrayList(1);
 		String messageid = inReq.getRequestParameter("messageid");
+		List messageids = new ArrayList(1);
 		messageids.add(messageid);
-		loadReactions(inReq, messageids);
-		loadAttachments(inReq, messageids);
+		inReq.putPageValue("messages", messageids);
+		loadReactions(inReq);
+		loadAttachments(inReq);
 		
 		Data chat = archive.getCachedData("chatterbox", messageid);
 		inReq.putPageValue("chat", chat);
@@ -102,8 +103,8 @@ public class ChatModule extends BaseMediaModule
 			  messageids.add(message.getId());
 		  }
 		  
-		  loadReactions(inReq, messageids);
-		  loadAttachments(inReq, messageids);
+		  loadReactions(inReq);
+		  loadAttachments(inReq);
 
 		  
 		  log.info("Chat loaded messages: " + loaded.size());
@@ -151,11 +152,18 @@ public class ChatModule extends BaseMediaModule
 		found.setValue("name", character);
 		archive.saveData("chatterboxreaction", found);
 	}
-	protected void loadReactions(WebPageRequest inReq, List messageids)
+	public void loadReactions(WebPageRequest inReq)
 	{
+		Collection messages = (Collection)inReq.getPageValue("messages");
+		List messageids = new ArrayList(messages.size());
+		for (Iterator iterator = messages.iterator(); iterator.hasNext();) 
+		{
+			  Data data = (Data) iterator.next(); 
+			  messageids.add(data.getId());
+		}
 		if( messageids.isEmpty() )
 		{
-			messageids.add("NONE");
+			return;
 		}
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxreaction").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();
@@ -174,12 +182,20 @@ public class ChatModule extends BaseMediaModule
 		inReq.putPageValue("reactionspermessage",reactionspermessage);
 	}
 
-	protected void loadAttachments(WebPageRequest inReq, List messageids)
+	public void loadAttachments(WebPageRequest inReq)
 	{
+		Collection messages = (Collection)inReq.getPageValue("messages");
+		List messageids = new ArrayList(messages.size());
+		for (Iterator iterator = messages.iterator(); iterator.hasNext();) 
+		{
+			  Data data = (Data) iterator.next(); 
+			  messageids.add(data.getId());
+		}
 		if( messageids.isEmpty() )
 		{
-			messageids.add("NONE");
+			return;
 		}
+
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();
 		for (Iterator iterator = reactionhits.iterator(); iterator.hasNext();)
