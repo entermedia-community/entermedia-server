@@ -2540,6 +2540,58 @@ uiload = function() {
 	});
 		
 
+	lQuery('.pickemoticon').livequery(function() 
+	{
+		//Load div
+		var input = $(this);
+		input.hover(function()
+		{
+			var isattached = input.data("isattached");
+			if(isattached)
+			{
+				input.parent().find(".emoticonmenu").show();			
+			}
+			else
+			{
+				var options = input.data();
+				$.ajax({ url: options.showurl, async: true, data: options, 
+					success: function(data) 
+					{
+						$(".emoticonmenu").hide();
+						input.data("isattached",true);
+						input.append(data);
+					}	
+				});			
+			}
+		});
+		
+		//On any click hide this:
+		//$(".emoticonmenu").hide();
+	});
+	
+	lQuery('.pickemoticon .emoticonmenu span').livequery("click",function() 
+	{
+		var menuitem = $(this);
+		
+		var aparent = $(menuitem.parents(".pickemoticon"));
+		console.log(aparent.data());
+
+		var saveurl = aparent.data("toggleurl");
+		//Save
+		var options = menuitem.data();
+		options.reactioncharacter = menuitem.html();
+		$.ajax({ url: saveurl, async: true, data: options, 
+			success: function(data) 
+			{
+				$(".emoticonmenu").hide();
+				//reload message
+			}	
+		});			
+
+		
+	});
+
+
 }// uiload
 
 

@@ -960,8 +960,52 @@ public class TaskModule extends BaseMediaModule
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.SECOND, 59);
 		
-		Date onemonth = cal.getTime();
+		Date end = cal.getTime();
 		
+		populateResults(inReq, archive, collectionid, tasksearcher, start, end);
+
+	}
+	
+	public void loadDashboardWeekly(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid =  inReq.getRequestParameter("collectionid");
+		
+		if(collectionid == null) 
+		{
+			collectionid = "*";
+		}
+		//Search for all tasks with updated dates?
+		GregorianCalendar cal = new GregorianCalendar();
+		String monthsback = inReq.getRequestParameter("weeksback");
+		if( monthsback == null)
+		{
+			monthsback = "0";
+		}
+		int count = Integer.parseInt(monthsback);
+		cal.set(Calendar.DAY_OF_MONTH,1);
+		int existingweek = cal.get(Calendar.WEEK_OF_YEAR);
+		cal.set(Calendar.WEEK_OF_YEAR, existingweek - count);
+		inReq.putPageValue("weeksback", count+1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		inReq.putPageValue("since", cal.getTime());
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Date start = cal.getTime();
+		
+		cal.set(Calendar.WEEK_OF_YEAR, existingweek - count + 1);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.SECOND, 0);
+		
+		Date end = cal.getTime();
+		populateResults(inReq, archive, collectionid, tasksearcher, start, end);
+
+	}
+
+	protected void populateResults(WebPageRequest inReq, MediaArchive archive, String collectionid, Searcher tasksearcher, Date start, Date onemonth)
+	{
 		//String rootid = "tasks" + collection.getId();
 		QueryBuilder q = tasksearcher.query();
 		if( !collectionid.equals("*") )
@@ -1029,8 +1073,9 @@ public class TaskModule extends BaseMediaModule
 		}
 		Collections.sort(users);
 		inReq.putPageValue("users", users);
-
 	}
+
+	
 	//Old?
 	public void loadTaskByStatus(WebPageRequest inReq)
 	{

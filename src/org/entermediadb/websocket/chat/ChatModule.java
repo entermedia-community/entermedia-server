@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
@@ -74,14 +77,21 @@ public class ChatModule extends BaseMediaModule
 		  Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
-		  for (Iterator iterator = page.iterator(); iterator.hasNext();) {
+		  List messageids = new ArrayList(results.size());
+		  for (Iterator iterator = page.iterator(); iterator.hasNext();) 
+		  {
 			  Data data = (Data) iterator.next(); 
 			  Data message = chats.loadData(data); 
 			  loaded.add(message); 
 			  
 			  lastdateloaded = message.get("date");
-			  
+			  messageids.add(message.getId());
 		  }
+		  
+		  loadReactions(inReq, messageids);
+		  loadAttachments(inReq, messageids);
+
+		  
 		  log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
 		  inReq.putPageValue("messages", loaded);
@@ -103,6 +113,77 @@ public class ChatModule extends BaseMediaModule
 
 	}
 
+
+	protected void toggleReaction(WebPageRequest inReq)
+	{
+		String messageid = inReq.getRequestParameter("messageid");
+		String character = inReq.getRequestParameter("reactioncharacter");
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Data found = archive.query("chatterboxreaction").exact("messageid", messageid).exact("user", inReq.getUserName()).searchOne();
+		if( found == null)
+		{
+			if(character != null)
+			{
+				found = archive.getSearcher("chatterboxreaction").createNewData();
+				found.setValue("messageid", messageid);
+				found.setValue("user", inReq.getUserName());
+				found.setValue("date", new Date() );
+				archive.saveData("chatterboxreaction", found);
+			}
+		}
+		else
+		{
+			archive.getSearcher("chatterboxreaction").delete(found, inReq.getUser());
+		}
+	}
+	protected void loadReactions(WebPageRequest inReq, List messageids)
+	{
+		if( messageids.isEmpty() )
+		{
+			messageids.add("NONE");
+		}
+		Collection reactionhits = getMediaArchive(inReq).query("chatterboxreaction").orgroup("messageid",messageids).sort("date").search();
+		Map reactionspermessage = new HashMap();
+		for (Iterator iterator = reactionhits.iterator(); iterator.hasNext();)
+		{
+			Data reaction = (Data) iterator.next();
+			List reactions = (List)reactionspermessage.get(reaction.get("messageid"));
+			if( reactions == null)
+			{
+				reactions = new ArrayList();
+			}
+			reactions.add(reaction);
+			reactionspermessage.put(reaction.get("messageid"),reactions);
+		}
+		
+		inReq.putPageValue("reactionspermessage",reactionspermessage);
+	}
+
+	protected void loadAttachments(WebPageRequest inReq, List messageids)
+	{
+		if( messageids.isEmpty() )
+		{
+			messageids.add("NONE");
+		}
+		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
+		Map reactionspermessage = new HashMap();
+		for (Iterator iterator = reactionhits.iterator(); iterator.hasNext();)
+		{
+			Data reaction = (Data) iterator.next();
+			List reactions = (List)reactionspermessage.get(reaction.get("messageid"));
+			if( reactions == null)
+			{
+				reactions = new ArrayList();
+			}
+			reactions.add(reaction);
+			reactionspermessage.put(reaction.get("messageid"),reactions);
+		}
+		
+		inReq.putPageValue("attachmentspermessage",reactionspermessage);
+	}
+
+	
 	
 	public void loadMoreMessages(WebPageRequest inReq)
 	{
@@ -176,29 +257,36 @@ public class ChatModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
-		String chatid = inReq.getRequestParameter("chatid");
-		Data chat = archive.getData("chatterbox", chatid);
-		String channel = chat.get("channel");
-		inReq.setRequestParameter("channel", channel);
-		//Just support one upload for now
-		Collection existing = chat.getValues("attachedassets");
-		if (existing != null && !existing.isEmpty())
+		
+		String topicid = inReq.getRequestParameter("channel");
+		String collectionid = inReq.getRequestParameter("collectionid");
+		String messageid = inReq.getRequestParameter("messageid");
+		
+		Data chat = null;
+		if( messageid != null)
 		{
-			if (savedassets == null || savedassets.isEmpty())
-			{
-				savedassets = new ArrayList();
-			}
+			chat = archive.getCachedData("chatterbox",messageid);
 		}
-		if (savedassets == null || savedassets.isEmpty())
+		if( chat == null)
 		{
-			chat.setValue("attachedassets", null);
+			chat = archive.getSearcher("chatterbox").createNewData();
+			chat.setValue("collectionid",collectionid);
+			chat.setValue("channel",topicid);
+			chat.setValue("user",inReq.getUser());
+			chat.setValue("date",new Date());
+			archive.saveData("chatterbox", chat);
 		}
-		else
+		
+		//Now the other table
+		for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
 		{
-			Data firstupload = (Data) savedassets.iterator().next();
-			chat.setValue("attachedassets", firstupload);
+			Asset asset = (Asset) iterator.next();
+			Data chatattchment = archive.getSearcher("chatterboxattachment").createNewData();
+			chatattchment.setValue("date", new Date());
+			chatattchment.setValue("messageid", chat.getId());
+			chatattchment.setValue("user", inReq.getUserName());
+			archive.getSearcher("chatterboxattachment").saveData(chatattchment,inReq.getUser());
 		}
-		archive.saveData("chatterbox", chat);
 
 	}
 
