@@ -1812,6 +1812,14 @@ Server ProjectModule.uploadFile
 		HitTracker recent = chats.query().orgroup("channel", topics).named("hits").sort("dateDown").hitsPerPage(200).search(inReq);
 		inReq.putPageValue("messages", recent);
 		
+		List messageids = new ArrayList(recent.size());
+		for (Iterator iterator = recent.iterator(); iterator.hasNext();) 
+		{
+			  Data data = (Data) iterator.next(); 
+			  messageids.add(data.getId());
+		}
+		inReq.putPageValue("messagesids", messageids);
+		
 		if(recent != null) {
 			Set users = new HashSet();
 			for (Iterator iterator = recent.iterator(); iterator.hasNext();)

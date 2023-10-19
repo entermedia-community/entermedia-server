@@ -1,0 +1,5 @@
+<page>
+	<property name="module">chatterbox</property>
+	<property name="fallbackdirectory">/${applicationid}/services/module/default</property>
+	<property name="searchtype">${module}</property>
+</page>
