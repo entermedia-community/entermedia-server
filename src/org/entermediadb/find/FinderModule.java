@@ -96,7 +96,7 @@ public class FinderModule extends BaseMediaModule
 				
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
-				int targetsize = 4;
+				int targetsize = 10;
 				
 				if( smaxsize != null)
 				{
@@ -459,30 +459,33 @@ public class FinderModule extends BaseMediaModule
 	public void searchForLiveSuggestions(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String query = inReq.getRequestParameter("description.value");
-		
-		if( query == null)
+		//String query[] = inReq.getRequestParameters("description.value");
+		String plainquery = inReq.getRequestParameter("description.value");
+		if( plainquery == null)
 		{
 			return;
 		}		
+		//String plainquery = String.join(" ", query);
+		
+		
 		Collection searchmodules = loadUserSearchTypes(inReq);
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",query).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 
 		dq.getQuery().setIncludeDescription(true);
 		HitTracker unsorted = dq.search(inReq); //With permissions?
 
 		Map<String,String> keywordsLower = new HashMap();
-		collectMatches(keywordsLower, query, unsorted);
+		collectMatches(keywordsLower, plainquery, unsorted);
 		
 		if( searchmodules.contains("asset"))
 		{
-			QueryBuilder assetdq = archive.query("asset").freeform("description",query).hitsPerPage(30);
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
 			HitTracker assetunsorted = assetdq.search();
-			collectMatches(keywordsLower, query, assetunsorted);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits",assetunsorted);
 		
 		}		
@@ -492,7 +495,7 @@ public class FinderModule extends BaseMediaModule
 			String keyword = (String) iterator.next();
 			String keywordcase = keywordsLower.get(keyword);
 			LiveSuggestion suggestion = new LiveSuggestion();
-			suggestion.setSearchFor(query);
+			suggestion.setSearchFor(plainquery);
 			suggestion.setKeyword(keywordcase);
 			finallist.add(suggestion);
 		}
@@ -516,7 +519,7 @@ public class FinderModule extends BaseMediaModule
 	{
 		String lowerquery = query.toLowerCase();
 
-		for (Iterator iterator = unsorted.iterator(); iterator.hasNext();)
+		for (Iterator iterator = unsorted.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			
@@ -664,15 +667,26 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection<Data> topmenu = archive.query("appsection").named("topmenuhits").all().sort("ordering").search(inReq);
+		//Collection<Data> topmenufinal = null;
+		//Map topmenufinal = new HashMap();
+		List topmenufinal = new ArrayList();
 		if(topmenu != null && !topmenu.isEmpty())
 		{
+			Collection<String> usermodules = inReq.getUserProfile().getEntitiesIds();
+			for (Iterator iterator = topmenu.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				if(usermodules.contains(data.getValue("toplevelentity"))) {
+					topmenufinal.add(data);
+				}
+			}
 			Data first = (Data)topmenu.iterator().next();
 			String entityid = (String)first.getValue("toplevelentity");
 			Data firstmodule = archive.getCachedData("module", entityid);
 			
 			inReq.putPageValue("firstmodule", firstmodule);
 		}
-		inReq.putPageValue("topmenu", topmenu);
+		inReq.putPageValue("topmenu", topmenufinal);
 	}
 	
 	public void loadOrSearchChildren(WebPageRequest inReq)
