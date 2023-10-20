@@ -121,8 +121,8 @@ public class BaseMediaModule extends BaseModule
 				}
 				if( site != null)
 				{
-					MediaArchive archive = getMediaArchive(inReq);
-					archive.setCatalogSettingValue("siteroot", site);
+					//MediaArchive archive = getMediaArchive(inReq);
+					//archive.setCatalogSettingValue("siteroot", site);
 				}
 			}
 		}
