@@ -530,7 +530,7 @@ public class FinderModule extends BaseMediaModule
 			String description = hit.get("description");
 			if( description != null )
 			{
-				String[] keywords = description.split("[\\s+\\,]");
+				String[] keywords = description.split("[\\s+\\,\\(\\)]");
 				for (int i = 0; i < keywords.length; i++)
 				{
 					addMatch(keywordsLower,query, lowerquery, keywords[i]);
