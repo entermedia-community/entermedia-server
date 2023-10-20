@@ -1,0 +1,102 @@
+#set( $hits = $messages )
+#set( $searcher = $hits.getSearcher() )
+		#set( $projectmanager = $mediaarchive.getBean("projectManager") )
+{
+	"response":
+		{
+		    "status":"ok",
+		    "userid":"$user.getId()",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitssessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"topics":[
+		#foreach($hit in $topics)#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($hit $topics.getSearcher().getPropertyDetails()) 
+			}
+		#end
+		],
+	"goals":[
+		#foreach($goal in $goalhits)#if( ${foreach.count} != 1 ), #end
+			{
+			#jsonfields($goal $goalhits.getSearcher().getPropertyDetails()) 
+			#set( $tasks = $projectmanager.getTasksForGoal($goal.id) )
+			#if( !$tasks.isEmpty() )
+			,
+			"tasks": [
+				#foreach( $task in $tasks )#if( ${foreach.count} != 1 ), #end
+				{	#jsonpartial($task $tasks.getSearcher().getPropertyDetails())
+					#set( $cat = $mediaarchive.getCachedData("projectdepartment",$task.projectdepartment) )
+					#if( $cat )
+					, "projectdepartmentpoints": "$!{cat.goalpoints}"
+					#end
+				 }
+				#end
+			]
+			#end
+			##We need the goals and the topics. Or just a link?
+			}
+		#end
+	],	
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+			{
+				#jsonpartial($hit $hits.getSearcher().getPropertyDetails())
+				
+				#set( $reactions = $reactionspermessage.get($hit.getId()))
+			    #ifnotnull( $reactions )
+				    , 
+				    "reactions": [
+					 #foreach($reaction in $reactions)#if( ${foreach.count} != 1 ), #end
+					   {
+					   	  #jsonfields($reaction $mediaarchive.getSearcher("chatterboxreaction").getPropertyDetails()) 
+					   }
+					 #end
+					 ]			  	
+			    #end
+				#set( $attachments = $attachmentspermessage.get($hit.getId()))
+			    #ifnotnull( $attachments )
+				    , 
+				    "attachments": [
+					 #foreach($attachment in $attachments)#if( ${foreach.count} != 1 ), #end
+					   {
+					   	  #jsonfields($attachment $mediaarchive.getSearcher("chatterboxattachment").getPropertyDetails()) 
+					   }
+					 #end
+					 ]			  	
+			    #end
+			}
+		#end
+		]
+		#if( !$persons.isEmpty() )
+		, "users": [
+			#set( $inside = false )
+			#foreach($person in $persons)
+				#if( $person )
+				#if( $inside ) , #end
+				#set( $inside = true )
+				{
+					"userid" : "$person.id",
+					"screenname": "$person.screenName",
+					"email": "$person.email",
+					"firstName": "$person.firstName",
+					"lastName": "$person.lastName"
+					#set( $userimageurl = $mediaarchive.asLinkToProfile($person) )
+					#if($userimageurl)
+						,"portrait": "$userimageurl"
+					#end
+				}
+				#end
+			#end	
+		]
+		#end	
+}

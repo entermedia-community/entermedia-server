@@ -1,0 +1,17 @@
+{
+  "response":
+      {
+        "status":"ok",
+        "id":"$chat.id"
+      }
+  ,
+  "data":#json($chat $mediaarchive.getSearcher("chatterbox").getPropertyDetails())
+	#set( $reactions = $reactionspermessage.get($chat.getId()))
+	,"reactions": [
+		 #foreach($reaction in $reactions)#if( ${foreach.count} != 1 ), #end
+		   {
+		   	  #jsonfields($reaction $mediaarchive.getSearcher("chatterboxreaction").getPropertyDetails()) 
+		   }
+		 #end
+		 ]			  	
+}

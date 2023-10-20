@@ -1,0 +1,6 @@
+<page>
+	<path-action name="ChatModule.toggleReaction"/>
+	<path-action name="ChatModule.loadMessage"/>
+	<path-action name="ProjectModule.loadGoalInMessage"/>
+
+</page>

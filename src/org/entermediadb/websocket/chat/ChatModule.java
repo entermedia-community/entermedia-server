@@ -44,23 +44,19 @@ public class ChatModule extends BaseMediaModule
 		
 	public void loadMessage(WebPageRequest inReq)
 	{
-
 		MediaArchive archive = getMediaArchive(inReq);
 		String messageid = inReq.getRequestParameter("messageid");
 		List messageids = new ArrayList(1);
 		messageids.add(messageid);
-		inReq.putPageValue("messages", messageids);
+		inReq.putPageValue("messageids", messageids);
 		loadReactions(inReq);
 		loadAttachments(inReq);
 		
 		Data chat = archive.getCachedData("chatterbox", messageid);
 		inReq.putPageValue("chat", chat);
-
-		
 	}
 	public void loadRecentChats(WebPageRequest inReq)
 	{
-
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
 		Searcher chats = archive.getSearcher("chatterbox");
@@ -144,6 +140,8 @@ public class ChatModule extends BaseMediaModule
 		}
 		if( found == null)
 		{
+			//Make sure message is valid?
+			
 				found = archive.getSearcher("chatterboxreaction").createNewData();
 				found.setValue("messageid", messageid);
 				found.setValue("user", inReq.getUserName());
@@ -151,20 +149,21 @@ public class ChatModule extends BaseMediaModule
 		found.setValue("date", new Date() );
 		found.setValue("name", character);
 		archive.saveData("chatterboxreaction", found);
+		
+		List messageids = new ArrayList(1);
+		messageids.add(messageid);
+		inReq.putPageValue("messageids", messageids);
+		loadReactions(inReq);
+		//loadAttachments(inReq);
 	}
 	public void loadReactions(WebPageRequest inReq)
 	{
-		Collection messages = (Collection)inReq.getPageValue("messages");
-		List messageids = new ArrayList(messages.size());
-		for (Iterator iterator = messages.iterator(); iterator.hasNext();) 
-		{
-			  Data data = (Data) iterator.next(); 
-			  messageids.add(data.getId());
-		}
-		if( messageids.isEmpty() )
+		Collection messageids = (Collection)inReq.getPageValue("messageids");
+		if( messageids == null || messageids.isEmpty())
 		{
 			return;
 		}
+
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxreaction").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();
 		for (Iterator iterator = reactionhits.iterator(); iterator.hasNext();)
@@ -184,18 +183,11 @@ public class ChatModule extends BaseMediaModule
 
 	public void loadAttachments(WebPageRequest inReq)
 	{
-		Collection messages = (Collection)inReq.getPageValue("messages");
-		List messageids = new ArrayList(messages.size());
-		for (Iterator iterator = messages.iterator(); iterator.hasNext();) 
-		{
-			  Data data = (Data) iterator.next(); 
-			  messageids.add(data.getId());
-		}
-		if( messageids.isEmpty() )
+		Collection messageids = (Collection)inReq.getPageValue("messageids");
+		if( messageids == null || messageids.isEmpty())
 		{
 			return;
 		}
-
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();
 		for (Iterator iterator = reactionhits.iterator(); iterator.hasNext();)
