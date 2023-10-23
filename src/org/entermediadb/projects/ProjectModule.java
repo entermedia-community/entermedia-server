@@ -1818,7 +1818,7 @@ Server ProjectModule.uploadFile
 			  Data data = (Data) iterator.next(); 
 			  messageids.add(data.getId());
 		}
-		inReq.putPageValue("messagesids", messageids);
+		inReq.putPageValue("messageids", messageids);
 		
 		if(recent != null) {
 			Set users = new HashSet();
@@ -1880,6 +1880,15 @@ Server ProjectModule.uploadFile
 		Searcher chats = mediaArchive.getSearcher("chatterbox");
 		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(100).search(inReq);
 		inReq.putPageValue("messages", recent);
+		
+		List messageids = new ArrayList(recent.size());
+		for (Iterator iterator = recent.iterator(); iterator.hasNext();) 
+		{
+			  Data data = (Data) iterator.next(); 
+			  messageids.add(data.getId());
+		}
+		inReq.putPageValue("messageids", messageids);
+		
 
 	}
 

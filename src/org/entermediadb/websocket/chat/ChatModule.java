@@ -98,6 +98,7 @@ public class ChatModule extends BaseMediaModule
 			  lastdateloaded = message.get("date");
 			  messageids.add(message.getId());
 		  }
+		  inReq.putPageValue("messageids", messageids);
 		  
 		  loadReactions(inReq);
 		  loadAttachments(inReq);

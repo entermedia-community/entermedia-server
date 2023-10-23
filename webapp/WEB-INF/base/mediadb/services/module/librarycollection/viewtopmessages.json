@@ -30,7 +30,9 @@
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 			{
-			#jsonfields($hit $searcher.getPropertyDetails())
+				$context.putPageValue("message",$hit)
+				$pages.include("$apphome/services/module/librarycollection/message.json",$context)
+
 			#set( $topic = $mediaarchive.getCachedData("collectiveproject",$hit.channel) )
 			#if( $topic )
 			, "topic": 
