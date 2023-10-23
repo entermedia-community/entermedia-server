@@ -148,6 +148,10 @@ public class BaseImporter extends EnterMediaObject
 				if( target == null)
 				{
 					String idCell = trow.get("id");
+					if( idCell == null)
+					{
+						idCell = trow.get("ID");
+					}
 					if(fieldStripPrefix){
 						if(idCell.startsWith(getPrefix()))
 						{
