@@ -74,14 +74,17 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 		boolean lesssecure = true;
 
 		Data module = inSearcher.getSearcherManager().getCachedData(inSearcher.getCatalogId(), "module", inSearcher.getSearchType());
-		String recordvisibility = module.get("recordvisibility");
-		if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+		if( module != null)
 		{
-			lesssecure = true;
-		}
-		else if(  recordvisibility.equals("hidebydefault"))
-		{
-			lesssecure = false;
+			String recordvisibility = module.get("recordvisibility");
+			if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+			{
+				lesssecure = true;
+			}
+			else if(  recordvisibility.equals("hidebydefault"))
+			{
+				lesssecure = false;
+			}
 		}
 //		<property id="hidebydefault">Hidden</property>
 //		<property id="showbydefault">Visible</property>
