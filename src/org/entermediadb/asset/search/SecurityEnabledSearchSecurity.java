@@ -6,7 +6,9 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.SearchSecurity;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
@@ -34,7 +36,7 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 		{
 			return inQuery;					
 		}
-
+		
 		Collection groupids = new ArrayList();
 		UserProfile inUserprofile = inPageRequest.getUserProfile();
 		
@@ -69,13 +71,32 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 		{
 			userid  = "null";
 		}
+		boolean lesssecure = true;
+
+		Data module = inSearcher.getSearcherManager().getCachedData(inSearcher.getCatalogId(), "module", inSearcher.getSearchType());
+		String recordvisibility = module.get("recordvisibility");
+		if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+		{
+			lesssecure = true;
+		}
+		else if(  recordvisibility.equals("hidebydefault"))
+		{
+			lesssecure = false;
+		}
+//		<property id="hidebydefault">Hidden</property>
+//		<property id="showbydefault">Visible</property>
 		
-		SearchQuery securityfilter = inSearcher.query().or().
-			match("securityenabled", "false").
+		QueryBuilder builder = inSearcher.query().or().
 			orgroup("viewgroups", groupids).
 			match("viewroles", roleid).
 			match("owner", userid).
-			match("viewusers", userid).getQuery();
+			match("viewusers", userid);
+			
+		if(lesssecure)
+		{
+			builder.match("securityenabled", "false");
+		}
+		SearchQuery securityfilter  = builder.getQuery();
 		
 		inQuery.addChildQuery(securityfilter);
 		

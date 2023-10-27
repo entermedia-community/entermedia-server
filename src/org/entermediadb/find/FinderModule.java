@@ -15,6 +15,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.autocomplete.LiveSuggestion;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -475,7 +476,11 @@ public class FinderModule extends BaseMediaModule
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 
 		dq.getQuery().setIncludeDescription(true);
-		HitTracker unsorted = dq.search(inReq); //With permissions?
+		
+		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
+		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
+		
+		HitTracker unsorted = dq.search(); //With permissions?
 
 		Map<String,String> keywordsLower = new HashMap();
 		collectMatches(keywordsLower, plainquery, unsorted);
@@ -484,7 +489,7 @@ public class FinderModule extends BaseMediaModule
 		{
 			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
 			assetdq.getQuery().setIncludeDescription(true);
-			HitTracker assetunsorted = assetdq.search();
+			HitTracker assetunsorted = assetdq.search(inReq);
 			collectMatches(keywordsLower, plainquery, assetunsorted);
 			inReq.putPageValue("assethits",assetunsorted);
 		

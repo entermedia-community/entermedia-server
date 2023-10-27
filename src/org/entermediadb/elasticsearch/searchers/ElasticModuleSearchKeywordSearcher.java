@@ -51,6 +51,10 @@ public class ElasticModuleSearchKeywordSearcher extends BaseElasticSearcher
 
 		search.setRequestCache(false);  //What does this do?
 
+		//TODO: Always add generic security filtering to all entities
+		
+		
+		
 		BoolQueryBuilder terms = buildTerms(inQuery);
 
 		//addFacets(inQuery,search);
