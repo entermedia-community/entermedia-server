@@ -575,3 +575,96 @@ curl -XGET 'localhost:9200/assets_catalog/asset/_explain' -d '{
 
 
 curl -XDELETE 'http://localhost:9200/assets_catalog'
+
+
+
+
+curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search' -d '{
+  "from" : 0,
+  "size" : 36,
+  "query" : {
+    "bool" : {
+      "must" : [ {
+        "match_all" : { }
+      }, {
+        "bool" : {
+          "should" : [ {
+            "terms" : {
+              "viewgroups" : [ "guest" ]
+            }
+          }, {
+            "match" : {
+              "viewroles" : {
+                "query" : "users",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "owner.sort" : {
+                "query" : "testuser",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "viewusers" : {
+                "query" : "testuser",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "term" : {
+              "securityenabled" : false
+            }
+          } ]
+        }
+      } ],
+      "must_not" : {
+        "term" : {
+          "emrecordstatus.recorddeleted" : true
+        }
+      }
+    }
+  },
+  "explain" : false,
+  "_source" : {
+    "includes" : [ ],
+    "excludes" : [ "description" ]
+  },
+  "aggregations" : {
+    "keywords" : {
+      "terms" : {
+        "field" : "keywords.exact",
+        "size" : 100
+      }
+    }
+  },
+  "aggregations_binary" : "OikKBfr7"
+}' | python3 -mjson.tool
+
+
+
+curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search' -d '{
+	  "from" : 0,
+	  "size" : 36,
+	  "query" : {
+            "term" : {
+              "securityenabled" : true
+            }
+	  },
+	  "explain" : true,
+	  "_source" : {
+	    "includes" : [ ],
+	    "excludes" : [ "description" ]
+	  },
+	  "aggregations" : {
+	    "keywords" : {
+	      "terms" : {
+	        "field" : "keywords.exact",
+	        "size" : 100
+	      }
+	    }
+	  },
+	  "aggregations_binary" : "OikKBfr7"
+	}' | python3 -mjson.tool

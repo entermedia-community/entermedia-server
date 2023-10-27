@@ -690,17 +690,6 @@ String viewbase = null;
 						String sourcepath = inReq.getRequestParameter("sourcepath");
 						data.setSourcePath(sourcepath);
 					}
-					//Check for security
-					if( searcher.getDetail("securityenabled") != null && inReq.getRequestParameter("securityenabled") == null )
-					{
-						//We need to possibly enable this
-						if( inReq.getRequestParameter("viewroles.values") != null || 
-								inReq.getRequestParameter("viewgroups.values") != null || inReq.getRequestParameter("viewusers.values") != null)
-						{
-							data.setValue("securityenabled", true);
-						}
-					}
-					
 					searcher.saveDetails(inReq, fields, data, id);
 					inReq.setRequestParameter("id", data.getId());
 					inReq.setRequestParameter("id.value", data.getId());

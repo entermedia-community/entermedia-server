@@ -2815,6 +2815,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				inContent.field("badge", badges);
 			}
+			
+			addSecurity(inContent, inData);
+			
+			
 			addCustomFields(inContent, inData);
 		}
 
@@ -2827,6 +2831,40 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
+	{
+		//Check for security
+		if( getDetail("securityenabled") != null)
+		{
+			boolean moresecure = false;
+
+			//We need to possibly enable this
+			if( inData.getValue("viewroles") != null || 
+					inData.getValue("viewgroups") != null || inData.getValue("viewusers") != null)
+			{
+				moresecure = true;
+			}
+			else
+			{
+				Data module = getSearcherManager().getCachedData(getCatalogId(), "module", getSearchType());
+				if( module != null)
+				{
+					String recordvisibility = module.get("recordvisibility");
+					if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+					{
+						moresecure = false;
+					}
+					else if(  recordvisibility.equals("hidebydefault"))
+					{
+						moresecure = true;
+					}
+				}
+
+			}
+			inContent.field("securityenabled", moresecure);
+		}
 	}
 
 	public void addCustomFields(XContentBuilder inContent, Data inData)
@@ -3543,7 +3581,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		search.setTypes(getSearchType());
 		search.setRequestCache(true);
 		QueryBuilder findall = QueryBuilders.matchAllQuery();
-		search.setQuery(findall);
+		
+		//TODO: Dont include deleted...
+		if( getDetail("emrecordstatus") == null)
+		{
+			search.setQuery(findall);
+		}
+		else
+		{
+			BoolQueryBuilder bool = QueryBuilders.boolQuery();
+			TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
+			bool.must(findall);
+			bool.mustNot(deleted);
+			search.setQuery(bool);
+		}
 
 		ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, findall, 1000);
 		hits.enableBulkOperations();

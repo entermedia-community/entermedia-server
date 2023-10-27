@@ -71,23 +71,21 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 		{
 			userid  = "null";
 		}
-		boolean lesssecure = true;
-
-		Data module = inSearcher.getSearcherManager().getCachedData(inSearcher.getCatalogId(), "module", inSearcher.getSearchType());
-		if( module != null)
-		{
-			String recordvisibility = module.get("recordvisibility");
-			if( recordvisibility == null || recordvisibility.equals("showbydefault"))
-			{
-				lesssecure = true;
-			}
-			else if(  recordvisibility.equals("hidebydefault"))
-			{
-				lesssecure = false;
-			}
-		}
-//		<property id="hidebydefault">Hidden</property>
-//		<property id="showbydefault">Visible</property>
+//		boolean lesssecure = true;
+//	
+//		Data module = inSearcher.getSearcherManager().getCachedData(inSearcher.getCatalogId(), "module", inSearcher.getSearchType());
+//		if( module != null)
+//		{
+//			String recordvisibility = module.get("recordvisibility");
+//			if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+//			{
+//				lesssecure = true;
+//			}
+//			else if(  recordvisibility.equals("hidebydefault"))
+//			{
+//				lesssecure = false;
+//			}
+//		}
 		
 		QueryBuilder builder = inSearcher.query().or().
 			orgroup("viewgroups", groupids).
@@ -95,10 +93,10 @@ public class SecurityEnabledSearchSecurity implements SearchSecurity
 			match("owner", userid).
 			match("viewusers", userid);
 			
-		if(lesssecure)
-		{
+//		if(lesssecure)
+//		{
 			builder.match("securityenabled", "false");
-		}
+//		}
 		SearchQuery securityfilter  = builder.getQuery();
 		
 		inQuery.addChildQuery(securityfilter);
