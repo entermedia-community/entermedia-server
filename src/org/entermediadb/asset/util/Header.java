@@ -4,6 +4,8 @@
 package org.entermediadb.asset.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class Header
@@ -18,8 +20,18 @@ public class Header
 		}
 		return fieldHeaderNames;
 	}
+	public void setHeaders(Collection inHeaders)
+	{
+		getHeaderNames().clear();
+		for (Iterator iterator = inHeaders.iterator(); iterator.hasNext();)
+		{
+			String heaader = (String) iterator.next();
+			getHeaderNames().add(heaader);
+		}
+	}
 	public void setHeaders(String[] inHeaders)
 	{
+		getHeaderNames().clear();
 		for (int i = 0; i < inHeaders.length; i++)
 		{
 			//Integer integer = new Integer(i);
