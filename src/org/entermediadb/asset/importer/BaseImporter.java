@@ -34,7 +34,16 @@ public class BaseImporter extends EnterMediaObject
 		fieldSearcher = inSearcher;
 	}
 	protected Data fieldLastNonSkipData;
-	
+	protected char fieldSeparator = ',';
+	public char getSeparator()
+	{
+		return fieldSeparator;
+	}
+
+	public void setSeparator(char inSeparator)
+	{
+		fieldSeparator = inSeparator;
+	}
 	protected HashMap<String, Map> fieldLookUps;
 	protected HashMap<String, String[]> fieldLookUpFilters;
 	
@@ -131,7 +140,7 @@ public class BaseImporter extends EnterMediaObject
 		try
 		{
 			ImportFile file = new ImportFile();
-			file.setParser(new CSVReader(reader, ',', '\"'));
+			file.setParser(new CSVReader(reader, getSeparator(), '\"'));
 			file.read(reader);
 
 			createMetadata(file.getHeader());

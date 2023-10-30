@@ -653,18 +653,13 @@ curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search' -d '{
               "securityenabled" : true
             }
 	  },
-	  "explain" : true,
+	  "explain" : false,
 	  "_source" : {
 	    "includes" : [ ],
 	    "excludes" : [ "description" ]
-	  },
-	  "aggregations" : {
-	    "keywords" : {
-	      "terms" : {
-	        "field" : "keywords.exact",
-	        "size" : 100
-	      }
-	    }
-	  },
-	  "aggregations_binary" : "OikKBfr7"
+	  }
 	}' | python3 -mjson.tool
+	
+	
+	curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search?q=dam_is_internet_ok:true' | python3 -mjson.tool
+	
