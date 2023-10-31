@@ -78,23 +78,36 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		
 		//get timeout
 		long timeout = inStructions.getConversionTimeout();
-		
+				
+		Double videolength = (Double)inStructions.getAsset().getDouble("length");
 		String offset = inStructions.getProperty("timeoffset");
+		
 		if( offset == null)
 		{
-			offset = "0";
+			offset = "2";
 		}
+		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
+		if( videolength != null)
+		{
+			if( (int)jumpoff <= videolength.intValue())
+			{
+				if(videolength.intValue() < 3) {  //fraction of seconds usually failing
+					jumpoff = 0;
+				}
+			}
+		}
+	
 		try
 		{
-			offset = String.valueOf(Double.parseDouble(offset));
+			offset = String.valueOf(jumpoff);
 		}
 		catch( Exception e )
 		{
 			log.error(e);
 			offset = "0";
 		}
-		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
-		Double videolength = (Double)inStructions.getAsset().getDouble("length");
+		
+		
 		if( videolength != null)
 		{
 			if( jumpoff > videolength)
@@ -113,7 +126,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		int framewindow = 1;
 		int seconds = (int)jumpoff;
 		
-		if(seconds>0) {  //only on custom offset
+		if(seconds>1) {  //only on custom offset
 			com.add("-ss");  
 				
 			
