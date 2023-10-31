@@ -57,7 +57,7 @@ public class BaseImporter extends EnterMediaObject
 	}
 
 	protected Searcher fieldSearcher;
-	protected boolean fieldMakeId;
+	protected boolean fieldMakeId = false;
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
 	
@@ -425,6 +425,11 @@ public class BaseImporter extends EnterMediaObject
 			if (detail == null && !header.contains("."))
 			{				
 				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, id);
+				
+				if( getDbLookUps().contains(id))
+				{
+					detail.setDataType("list");
+				}
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
 				getSearcher().putMappings();
 			}

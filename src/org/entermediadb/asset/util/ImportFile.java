@@ -66,7 +66,7 @@ public class ImportFile
 			}
 			else
 			{
-				valid.add(cell);
+				valid.add(cell.trim());
 			}
 		}
 		getHeader().setHeaders((String[]) valid.toArray(new String[valid.size()]));
