@@ -472,7 +472,7 @@ public class FinderModule extends BaseMediaModule
 		Collection searchmodules = loadUserSearchTypes(inReq);
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
-		QueryBuilder dq = archive.query("modulesearch").freeform("description",plainquery).hitsPerPage(30);
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
 		dq.getQuery().setValue("searchtypes", searchmodulescopy);
 
 		dq.getQuery().setIncludeDescription(true);
