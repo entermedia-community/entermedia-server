@@ -4,6 +4,7 @@
   <analyzer id="tags" name="Lower Case Analyzer for Tags, does not remove spaces"/>
   <analyzer id="standard" name="Standard Analyzer"/>
   <analyzer id="simple" name="Simple Analyzer"/>
+    <analyzer id="spanish" name="Light Spanish Analyzer"/>
   
   
 
