@@ -1,39 +1,52 @@
-#mapping._id.indexed: true
-#mapper.dynamic: true
 analysis:
- char_filter:
-  quotes:  
-   type: "mapping"
-   mappings: [ "\\u0091=>\\u0027","\\u0092=>\\u0027","\\u2018=>\\u0027","\\u2019=>\\u0027","\\u201B=>\\u0027"] 
- analyzer: 
- 
-  tags:
-   type: "custom"
-   tokenizer: "keyword"
-   char_filter: ["quotes"]
-   filter:
-    - "lowercase"
-    - "elision"
-  sorter:
-   type: "custom"
-   tokenizer: "keyword"
-   filter:
-    - "lowercase"
-  lowersnowball:
-   tokenizer: "standard"
-   char_filter: ["quotes"]
-   filter:
-    - standard
-    - lowercase
-    - stemfilter
-    - asciifolding
-    - elision
- filter:
-  stemfilter:
-   type: "snowball"
-   language: "English"
- filter:
-  elision:
-   type: "elision"
-   articles: ["l", "m", "t", "qu", "n", "s", "j"]
- 
+  char_filter:
+    quotes:  
+      type: "mapping"
+      mappings: 
+        - "\\u0091=>\\u0027"
+        - "\\u0092=>\\u0027"
+        - "\\u2018=>\\u0027"
+        - "\\u2019=>\\u0027"
+        - "\\u201B=>\\u0027"
+  filter:
+    stemfilter:
+      type: "snowball"
+      language: "English"
+    spanish_stemmer:
+      type: "stemmer"
+      language: "spanish"
+    elision:
+      type: "elision"
+      articles: ["l", "m", "t", "qu", "n", "s", "j"]
+    # You can add more filters if needed
+  analyzer:
+    tags:
+      type: "custom"
+      tokenizer: "keyword"
+      char_filter: ["quotes"]
+      filter:
+        - "lowercase"
+        - "elision"
+    sorter:
+      type: "custom"
+      tokenizer: "keyword"
+      filter:
+        - "lowercase"
+    lowersnowball:
+      tokenizer: "standard"
+      char_filter: ["quotes"]
+      filter:
+        - standard
+        - lowercase
+        - stemfilter
+        - asciifolding
+        - elision
+    # Define the new Spanish analyzer here
+    spanish:
+      type: "custom"
+      tokenizer: "standard"
+      char_filter: ["html_strip"]
+      filter:
+        - lowercase
+        - asciifolding
+        - spanish_stemmer
