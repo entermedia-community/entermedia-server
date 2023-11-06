@@ -79,10 +79,10 @@ public class FireBase {
 		
 		message.put("data", data);
 	
-		JSONObject notification = new JSONObject();
-		notification.put("title", inSubject);
-		notification.put("body", inMessage);
-		message.put("notification", notification);
+//		JSONObject notification = new JSONObject();
+//		notification.put("title", inSubject);
+//		notification.put("body", inMessage);
+//		message.put("notification", notification);
 
 		String tosend = root.toJSONString();
 		post.setEntity(new StringEntity(tosend, "UTF-8"));
