@@ -302,7 +302,7 @@ public class FinderModule extends BaseMediaModule
 				newvalues.setHitsPerPage(maxsize);
 				newvalues.setSearchQuery(allhits.getSearchQuery());
 				String v = newvalues.getInput("description");
-				System.out.print(v);
+				//System.out.print(v);
 				values = newvalues;
 				bytypes.put(type,values);
 			}

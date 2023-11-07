@@ -124,6 +124,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
 	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
+	public static final Pattern TOKENS = Pattern.compile("[^a-zA-Z\\d\\s]");
+	
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -1398,7 +1400,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				boolean keepgoing = true;
 				String nextoperator = null;
 
-				BoolQueryBuilder or = QueryBuilders.boolQuery();
+				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
 				while (keepgoing)
 				{
 					if (m.find())
@@ -1420,60 +1422,73 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					StringBuffer out = new StringBuffer();
 					out.append("+(");
+
+					
+					//If there are tokens then treat a one word with quotes
+					boolean hastoken =  TOKENS.matcher(word).find();
 					//Check for quotes..
-					if ((word.startsWith("\"") && word.endsWith("\"")))
+
+					if( hastoken)
 					{
-						String sub = word.substring(1, word.length() - 1);
-						out.append("\"" + QueryParser.escape(sub) + "\"");
+						//String quoted = "\"" + QueryParser.escape(word) + "\"";						
+						MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(word));
+						text.analyzer("lowersnowball");
+						booleans.must(text);
 					}
 					else
 					{
-						wildcard(out, word);
-					}
-					out.append(")");
+						if(word.startsWith("\"") && word.endsWith("\""))
+						{
+							String sub = word.substring(1, word.length() - 1);
+							out.append("\"" + QueryParser.escape(sub) + "\"");
+						}
+						else
+						{
+							wildcard(out, word);
+						}
+						out.append(")");
+						//Make a *xxx* OR xxx* search to deal with bugs
+						BoolQueryBuilder pair = QueryBuilders.boolQuery();
+						QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
+						text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+						text.analyzeWildcard(true); //This is important
+						text.allowLeadingWildcard(true);
+						text.analyzer("lowersnowball");
+						text.defaultField("description");
+						pair.should(text);
+	
+						String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
+						QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
+						startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+						startw.analyzer("lowersnowball");
+						startw.defaultField("description");
+						pair.should(startw);
 
-					//Make a *xxx* OR xxx* search to deal with bugs
-					BoolQueryBuilder pair = QueryBuilders.boolQuery();
-					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
-					text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-					text.analyzeWildcard(true); //This is important
-					text.allowLeadingWildcard(true);
-					text.analyzer("lowersnowball");
-					text.defaultField("description");
-					pair.should(text);
-
-					String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
-					QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
-					startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-					startw.analyzer("lowersnowball");
-					startw.defaultField("description");
-					pair.should(startw);
-
-					if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
-					{
-						operator = "OR";
+						if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
+						{
+							operator = "OR";
+						}
+						else if (operator == null)
+						{
+							operator = "AND";
+						}
+						if (operator.equals("NOT"))
+						{
+							booleans.mustNot(pair);
+						}
+						if (operator.equals("OR"))
+						{
+							booleans.should(pair);
+						}
+						else
+						{
+							booleans.must(pair);
+						}
 					}
-					else if (operator == null)
-					{
-						operator = "AND";
-					}
-					if (operator.equals("NOT"))
-					{
-						or.mustNot(pair);
-					}
-					if (operator.equals("OR"))
-					{
-						or.should(pair);
-					}
-					else
-					{
-						or.must(pair);
-					}
-
-					operator = nextoperator;
+						operator = nextoperator;
 				}
 
-				find = or;
+				find = booleans;
 			}
 		}
 		else if (valueof.endsWith("*"))
@@ -1764,8 +1779,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	private void wildcard(StringBuffer output, String word)
 	{
+		String escaped = QueryParser.escape(word);
+
 		output.append("*");
-		output.append(QueryParser.escape(word));
+		output.append(escaped);
 		output.append("*");
 	}
 
