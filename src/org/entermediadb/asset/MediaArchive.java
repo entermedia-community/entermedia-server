@@ -2104,7 +2104,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			findItems(path, children);
 		}
-		else
+		else if( item.exists() )
 		{
 			children.add(item);
 		}

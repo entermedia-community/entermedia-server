@@ -6,7 +6,6 @@
 	<property name="sourcepathhasfilename">true</property>
 	
 	<generator name="originalDownloadGenerator"/>
-	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
 	
 	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
 	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true">

@@ -2,9 +2,6 @@ package org.entermediadb.asset.generators;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,10 +10,12 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.error.ContentNotAvailableException;
 import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
+import org.openedit.page.PageStreamer;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -44,6 +43,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
+		
 		// log.info("Downloading " + inPage.getPath());
 		// this depends on the URL path to be /stuff/1/2/3/abc.eps/abs.eps This
 		// way we support weird source paths
@@ -103,11 +103,6 @@ public class OriginalDocumentGenerator extends FileGenerator
 //			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
 //			fileName.replace("\"", "/\"");
 //		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
-			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
-		    if(inReq.getResponse() != null && !skipheader )
-			{
-				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
-			}
 //			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
 
 
@@ -126,6 +121,11 @@ public class OriginalDocumentGenerator extends FileGenerator
 		if( content.exists() )
 		{
 			//its a regular file
+			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
+		    if(inReq.getResponse() != null && !skipheader )
+			{
+				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
+			}
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 			super.generate(req, content, inOut);
@@ -141,27 +141,39 @@ public class OriginalDocumentGenerator extends FileGenerator
 	private void stream(WebPageRequest inReq, MediaArchive archive, Output inOut, Asset asset, String filename)
 	{
 		InputStream in = null;
-		try
-		{
+//		try
+//		{
 			in = archive.getOriginalDocumentStream(asset);
 			if (in == null)
 			{
-				throw new OpenEditException("Could not find original document path " + asset.getSourcePath() );
+				
+				throw new ContentNotAvailableException("Could not find original document path " , asset.getSourcePath() );
 			}
-		}
-		catch (Exception e)
-		{
-			archive.logDownload(filename, "missing", inReq.getUser());
-			log.error("Error for " + asset.getName() + ": " + e);
-			String applicationid = inReq.findValue("applicationid");
-			if(applicationid != null){
-				inReq.redirect("/" + applicationid + "/missingfile.html");
-
+//		}
+//		catch (Exception e)
+//		{
+//			archive.logDownload(filename, "missing", inReq.getUser());
+//			if( inReq.getRequest() != null)
+//			{
+//				inReq.getResponse().setStatus(404);
+//			}
+//			
+//			log.error("Error for " + asset.getName() + ": " + e);
+//			String applicationid = inReq.findValue("applicationid");
+//			if(applicationid != null){
+//				inReq.redirect("/" + applicationid + "/missingfile.html");
+//
+//			}
+//			inReq.redirect(archive.getCatalogHome() + "/missingfile.html");
+//			return;
+//		}
+			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
+		    if(inReq.getResponse() != null && !skipheader )
+			{
+				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ filename +"\"");  //This seems to work on firefox
 			}
-			inReq.redirect(archive.getCatalogHome() + "/missingfile.html");
-			return;
-		}
 
+			
 		try
 		{
 			// FileInputStream fis = new FileInputStream( originalDocumentFile
