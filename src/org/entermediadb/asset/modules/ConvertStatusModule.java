@@ -2,6 +2,8 @@ package org.entermediadb.asset.modules;
 
 import java.util.Date;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -23,7 +25,8 @@ public class ConvertStatusModule extends BaseMediaModule
 	
 	protected SearcherManager fieldSearcherManager;
 	protected EventManager fieldEventManager;
-
+	
+	private static final Log log = LogFactory.getLog(ConvertStatusModule.class);
 
 	public SearcherManager getSearcherManager()
 	{
@@ -230,12 +233,22 @@ public class ConvertStatusModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		
 		String presetid = inReq.getRequestParameter("presetid");
+		
 		Data preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
 		Asset current = archive.getAsset(assetid);
-	
+		String generated = "";
+		if(presetid.equals("0")) 
+		{
+			generated  =  archive.getOriginalContent(current).getPath();
+			
+		}
+		else {
+			generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
+		}
 		
-		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
 		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+		
+		log.info("Asset: " + assetid + " Replaced " + generated);
 
 		boolean newdefault = Boolean.parseBoolean(inReq.getRequestParameter("replaceall"));
 		if(newdefault){
