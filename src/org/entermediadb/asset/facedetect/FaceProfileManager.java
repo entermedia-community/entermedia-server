@@ -570,8 +570,24 @@ public class FaceProfileManager implements CatalogEnabled
 		return tocontinuelooking;
 	}
 */
-	
-	public Map getImageAndLocationForGroup(Data asset,String inGroupId, int thumbwidth, int thumbheight)
+	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, int thumbwidth, int thumbheight)
+	{
+		
+		for(Data group : faceprofilegroups)
+		{
+			Map found = getImageAndLocationForGroup(asset,group, thumbwidth, thumbheight);
+			if( found != null)
+			{
+				return found;
+			}
+		}
+		return null;
+	}
+	public Map getImageAndLocationForGroup(Data asset,Data infaceprofilegroup, int thumbwidth, int thumbheight)
+	{
+		return getImageAndLocationForGroup(asset,infaceprofilegroup.getId(),thumbwidth,thumbheight);
+	}	
+	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, int thumbwidth, int thumbheight)
 	{
 		Collection profiles = (Collection)asset.getValue("faceprofiles");
 		
@@ -582,7 +598,7 @@ public class FaceProfileManager implements CatalogEnabled
 			ValuesMap values = new ValuesMap(profile);
 			String groupid = (String)profile.get("faceprofilegroup");
 			
-			if( profile != null && inGroupId.equals(groupid))
+			if( profile != null && infaceprofilegroupid.equals(groupid))
 			{
 				
 				double x = values.getInteger("locationx");
@@ -663,5 +679,14 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		return copy;
 	}
+
+	public Collection findAssetsForPerson(Data inPersonEntity)
+	{
+		Collection profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
+		Collection assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+		return assets;
+		
+	}
+
 	
 }
