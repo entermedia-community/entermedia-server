@@ -3,11 +3,15 @@
  */
 package org.entermediadb.asset.modules;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.facedetect.FaceProfileManager;
 import org.entermediadb.location.GeoCoder;
 import org.entermediadb.location.Position;
 import org.openedit.Data;
@@ -18,10 +22,12 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
 
+
 //Use DataEditModule for searching asset data
 public class MediaSearchModule extends BaseMediaModule
 {
 	protected GeoCoder fieldGeoCoder;
+	private static final Log log = LogFactory.getLog(MediaSearchModule.class);
 	
 
 	public GeoCoder getGeoCoder() {
@@ -305,4 +311,22 @@ public class MediaSearchModule extends BaseMediaModule
 		inPageRequest.putPageValue("category",category);
 
 	}
+
+	public void searchProfiles(WebPageRequest inPageRequest) throws Exception
+	{
+		Data person = (Data)inPageRequest.getPageValue("entity");
+		if( person == null)
+		{
+			log.info("No entity");
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceprofilemanager");
+		Collection hits = manager.findAssetsForPerson(person);
+		inPageRequest.putPageValue("faceassets", hits);
+		
+
+	}
+
+	
 }
