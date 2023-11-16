@@ -328,7 +328,7 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
 		
-		inPageRequest.putPageValue("faceassets", assets);
+		inPageRequest.putPageValue("entityassethits", assets);
 		
 
 	}
