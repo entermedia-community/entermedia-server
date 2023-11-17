@@ -321,7 +321,7 @@ public class MediaSearchModule extends BaseMediaModule
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceprofilemanager");
+		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
 		Collection assets = manager.findAssetsForPerson(person,1000);
 		inPageRequest.putPageValue("faceassets", assets);
 

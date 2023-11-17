@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToDoubleBiFunction;
 
 import javax.imageio.ImageIO;
 
@@ -571,7 +572,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return tocontinuelooking;
 	}
 */
-	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, int thumbwidth, int thumbheight)
+	public Map getImageAndLocationForGroup(Data asset,Collection<Data> faceprofilegroups, Double thumbwidth, Double thumbheight)
 	{
 		
 		for(Data group : faceprofilegroups)
@@ -584,11 +585,16 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		return null;
 	}
-	public Map getImageAndLocationForGroup(Data asset,Data infaceprofilegroup, int thumbwidth, int thumbheight)
+	public Map getImageAndLocationForGroup(Data asset,Data infaceprofilegroup, Double thumbwidth, Double thumbheight)
 	{
 		return getImageAndLocationForGroup(asset,infaceprofilegroup.getId(),thumbwidth,thumbheight);
 	}	
-	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, int thumbwidth, int thumbheight)
+	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, String thumbwidth, String thumbheight)
+	{
+		return getImageAndLocationForGroup(asset,infaceprofilegroupid, Double.valueOf(thumbwidth) , Double.valueOf(thumbheight));
+	}
+
+	public Map getImageAndLocationForGroup(Data asset,String infaceprofilegroupid, Double thumbwidth, Double thumbheight)
 	{
 		Collection profiles = (Collection)asset.getValue("faceprofiles");
 		
