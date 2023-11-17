@@ -39,6 +39,7 @@ import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.ValuesMap;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem;
 
 
@@ -680,11 +681,47 @@ public class FaceProfileManager implements CatalogEnabled
 		return copy;
 	}
 
-	public Collection findAssetsForPerson(Data inPersonEntity)
+	public Collection<FaceAsset> findAssetsForPerson(Data inPersonEntity, int maxnumber)
 	{
-		Collection profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
-		Collection assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-		return assets;
+		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
+		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
+
+		Map allprofiles = new HashMap();
+		for(Data profile : profiles)
+		{
+			allprofiles.put(profile.getId(), profile);
+		}
+		
+//
+//		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
+//		inPageRequest.putPageValue("faceprofiles", profiles);
+//		
+//		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+//		
+//		inPageRequest.putPageValue("entityassethits", assets);
+
+		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
+
+		for(Data asset : assets)
+		{
+			FaceAsset faceasset = new FaceAsset();
+			faceasset.setAsset(asset);
+			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
+			for( Map entry : faceprofiles)
+			{
+				String faceprofilegroupid = (String)entry.get("faceprofilegroup");
+				Data group = (Data)allprofiles.get(faceprofilegroupid);
+				if( group != null)
+				{
+					faceasset.setFaceProfileGroup(group);
+					faceassets.add(faceasset);
+					break;
+				}
+			}
+		}
+		
+		
+		return faceassets;
 		
 	}
 
