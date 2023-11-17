@@ -321,15 +321,10 @@ public class MediaSearchModule extends BaseMediaModule
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		//FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceprofilemanager");
-		//
-		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
-		inPageRequest.putPageValue("faceprofiles", profiles);
-		
-		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-		
-		inPageRequest.putPageValue("entityassethits", assets);
-		
+		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceprofilemanager");
+		Collection assets = manager.findAssetsForPerson(person,1000);
+		inPageRequest.putPageValue("faceassets", assets);
+
 
 	}
 
