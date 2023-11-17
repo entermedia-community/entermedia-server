@@ -1,6 +1,9 @@
 package org.entermediadb.asset.facedetect;
 
+import java.util.Map;
+
 import org.openedit.Data;
+import org.openedit.data.ValuesMap;
 
 public class FaceAsset
 {
@@ -13,6 +16,16 @@ public class FaceAsset
 		fieldAsset = inAsset;
 	}
 	protected Data fieldAsset;
+	protected ValuesMap fieldFaceLocationData;
+	
+	public ValuesMap getFaceLocationData()
+	{
+		return fieldFaceLocationData;
+	}
+	protected void setFaceLocationData(ValuesMap inFaceLocationData)
+	{
+		fieldFaceLocationData = inFaceLocationData;
+	}
 	protected Data fieldFaceProfileGroup;
 	protected Data getFaceProfileGroup()
 	{
