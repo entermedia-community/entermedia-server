@@ -14,7 +14,7 @@ public class FaceAsset
 	}
 	protected Data fieldAsset;
 	protected Data fieldFaceProfileGroup;
-	protected Data getFaceProfileGroup()
+	public Data getFaceProfileGroup()
 	{
 		return fieldFaceProfileGroup;
 	}
@@ -22,7 +22,7 @@ public class FaceAsset
 	{
 		fieldFaceProfileGroup = inFaceProfileGroup;
 	}
-	protected String getFaceProfileGroupId()
+	public String getFaceProfileGroupId()
 	{
 		return getFaceProfileGroup().getId();
 	}
