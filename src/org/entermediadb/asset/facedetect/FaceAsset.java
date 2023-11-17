@@ -1,21 +1,20 @@
 package org.entermediadb.asset.facedetect;
 
-import java.util.Map;
-
+import org.entermediadb.asset.Asset;
 import org.openedit.Data;
 import org.openedit.data.ValuesMap;
 
 public class FaceAsset
 {
-	public Data getAsset()
+	public Asset getAsset()
 	{
 		return fieldAsset;
 	}
-	protected void setAsset(Data inAsset)
+	protected void setAsset(Asset inAsset)
 	{
 		fieldAsset = inAsset;
 	}
-	protected Data fieldAsset;
+	protected Asset fieldAsset;
 	protected ValuesMap fieldFaceLocationData;
 	
 	public ValuesMap getFaceLocationData()

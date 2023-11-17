@@ -3,18 +3,15 @@ package org.entermediadb.asset.facedetect;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToDoubleBiFunction;
 
 import javax.imageio.ImageIO;
 
@@ -39,6 +36,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem;
@@ -708,8 +706,10 @@ public class FaceProfileManager implements CatalogEnabled
 
 		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
 
-		for(Data asset : assets)
+		Searcher searcher = getMediaArchive().getSearcher("asset");
+		for(Data data: assets)
 		{
+			Asset asset = (Asset)searcher.loadData(data);
 			FaceAsset faceasset = new FaceAsset();
 			faceasset.setAsset(asset);
 			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
