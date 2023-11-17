@@ -4,19 +4,21 @@
 <ul class="entity-value-list">
 	#foreach( $profile in $collection )
 		#set( $row = false )
-		#set( $row = $mediaarchive.getCachedData("faceprofilegroup",$profile.faceprofilegroup) )
+		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
 	    #if( $row )
-	    	#set($name = $context.getText( $row ) )
-	    	#if( !$name)
-	    		#set($name = "[[face]] $!row.get('facecounter')") 
+			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+			#ifnotnull($person)
+		    	#set($name = $context.getText( $person) )
+			#end
+	    	#ifnull( $name)
+	    		#set($name = "[[Profile]] $!row.get('facecounter')") 
 	    	#end
-	    	#ifnotnull($profile.timecodestart)
+	    	#if($profile.timecodestart)
 	    	#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
 	    	#set($name = "$name &nbsp;($secs)")
 	    	#end
-	    	##/find/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=AXmkjXDnqw92jqIo_9hS&searchtype=faceprofilegroup&hitssessionid=hitsfaceprofilegroupfinder/catalog
 		    
-		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&hitssessionid=$!hits.sessionId")
+		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?id=$row.id&hitssessionid=$!hits.sessionId")
 		    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
 	    #end 
 	#end	

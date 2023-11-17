@@ -256,7 +256,7 @@ public class FaceProfileManager implements CatalogEnabled
 	</property>  
 </property>
 		 */
-        BufferedImage originalImgage = ImageIO.read(new File( inInput.getAbsolutePath()) );
+        BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
 
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
@@ -391,11 +391,13 @@ public class FaceProfileManager implements CatalogEnabled
 			faceprofile.put("locationw",w);
 			faceprofile.put("locationh",h);
 			
-	        faceprofile.put("inputwidth",originalImgage.getWidth());
+	        faceprofile.put("inputwidth",imageImput.getWidth());
+	        
+	        faceprofile.put("inputheight",imageImput.getHeight());
 			
 			if( !morethan10)
 			{
-				uploadAProfile(faceprofile, timecodestart, originalImgage, inAsset, groupid);
+				uploadAProfile(faceprofile, timecodestart, imageImput, inAsset, groupid);
 			}
 			else
 			{
@@ -710,8 +712,6 @@ public class FaceProfileManager implements CatalogEnabled
 		for(Data data: assets)
 		{
 			Asset asset = (Asset)searcher.loadData(data);
-			FaceAsset faceasset = new FaceAsset();
-			faceasset.setAsset(asset);
 			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
 			for( Map facedata : faceprofiles)
 			{
@@ -719,10 +719,11 @@ public class FaceProfileManager implements CatalogEnabled
 				Data group = (Data)allprofiles.get(faceprofilegroupid);
 				if( group != null)
 				{
+					FaceAsset faceasset = new FaceAsset();
+					faceasset.setAsset(asset);
 					faceasset.setFaceProfileGroup(group);
 					faceasset.setFaceLocationData(new ValuesMap(facedata));
 					faceassets.add(faceasset);
-					break;
 				}
 			}
 		}
@@ -743,6 +744,11 @@ public class FaceProfileManager implements CatalogEnabled
 		double h = profiledata.getInteger("locationh");
 		double inputheight = profiledata.getInteger("inputheight");
 		
+		if (inputheight == 0) {
+			double inputwidth = profiledata.getInteger("inputwidth");
+			double assetscale = MathUtils.divide(faceasset.getAsset().getDouble("height") , faceasset.getAsset().getDouble("width"));
+			inputheight = inputwidth * assetscale;
+		}
 		double scale = MathUtils.divide(thumbheight , inputheight);
 				
 		x = x * scale;
