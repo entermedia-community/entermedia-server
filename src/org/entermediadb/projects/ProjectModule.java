@@ -2,7 +2,6 @@ package org.entermediadb.projects;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +24,6 @@ import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -37,9 +34,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.servlet.SiteData;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -1742,7 +1737,7 @@ Server ProjectModule.uploadFile
 		Map goalspermessage = new HashMap<String,Data>();
 		
 		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
-		if( messages == null)
+		if( messages == null)	
 		{
 			log.error("No messages found");
 			return null;
@@ -1790,7 +1785,9 @@ Server ProjectModule.uploadFile
 
 		if( collection == null)
 		{
-			return new ListHitTracker();
+			ListHitTracker empty = new ListHitTracker();
+			inReq.putPageValue("messages", empty);
+			return empty;
 		}
 		//Check permissions
 		QueryBuilder q = archive.query("collectiveproject").exact("parentcollectionid", collection).named("topics").hitsPerPage(10);

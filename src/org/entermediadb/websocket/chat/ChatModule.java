@@ -35,6 +35,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.util.DateStorageUtil;
 
@@ -106,7 +107,7 @@ public class ChatModule extends BaseMediaModule
 		  
 		  log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
-		  inReq.putPageValue("messages", loaded);
+		  inReq.putPageValue("messages", new ListHitTracker(loaded));
 		  inReq.putPageValue("messagesthitracker", results);
 		  inReq.putPageValue("lastloaded", lastdateloaded);
 		 
