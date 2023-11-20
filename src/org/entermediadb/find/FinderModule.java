@@ -13,17 +13,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.autocomplete.LiveSuggestion;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
+import org.openedit.hittracker.Highlighter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -467,8 +468,6 @@ public class FinderModule extends BaseMediaModule
 			return;
 		}		
 		//String plainquery = String.join(" ", query);
-		
-		
 		Collection searchmodules = loadUserSearchTypes(inReq);
 		Collection searchmodulescopy = new ArrayList(searchmodules);
 		searchmodulescopy.remove("asset");
@@ -499,17 +498,17 @@ public class FinderModule extends BaseMediaModule
 		{
 			String keyword = (String) iterator.next();
 			String keywordcase = keywordsLower.get(keyword);
-			LiveSuggestion suggestion = new LiveSuggestion();
-			suggestion.setSearchFor(plainquery);
-			suggestion.setKeyword(keywordcase);
-			finallist.add(suggestion);
+			finallist.add(keywordcase);
 		}
 		//inReq.setRequestParameter("clearfilters","true");
 		//unsorted.getSearchQuery().setValue("description",query); //Not needed?
 		//List finallist = new ArrayList(keywords);
 		Collections.sort(finallist);
 		inReq.putPageValue("modulehits",unsorted);
+		inReq.putPageValue("livesearchfor",plainquery);
 		inReq.putPageValue("livesuggestions",finallist);
+		inReq.putPageValue("highlighter",new Highlighter());
+		
 		
 		//Include module results
 		Collection pageOfHits = unsorted.getPageOfHits();
@@ -535,7 +534,7 @@ public class FinderModule extends BaseMediaModule
 			String description = hit.get("description");
 			if( description != null )
 			{
-				String[] keywords = description.split("[\\s+\\,\\(\\)]");
+				String[] keywords = MultiValued.VALUEDELMITER.split(description);//description.split("[\\s+\\,\\(\\)]");
 				for (int i = 0; i < keywords.length; i++)
 				{
 					addMatch(keywordsLower,query, lowerquery, keywords[i]);

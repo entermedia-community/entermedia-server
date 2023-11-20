@@ -3169,7 +3169,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 								inFullDesc.append(String.valueOf(object));
 							}
-							inFullDesc.append(' ');
+							inFullDesc.append('|');
 						}
 					}
 					else if(prop instanceof String)
@@ -3178,7 +3178,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						if (data != null && data.getName() != null)
 						{
 							inFullDesc.append(data.getName());
-							inFullDesc.append(' ');
+							inFullDesc.append('|');
 						}
 					}
 				}
@@ -3215,7 +3215,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 
 								inFullDesc.append(localeval);
-								inFullDesc.append(' ');
+								inFullDesc.append('|');
 							}
 
 						}
@@ -3228,7 +3228,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						//Spreadsheet import
 						inFullDesc.append(values);
-						inFullDesc.append(' ');
+						inFullDesc.append('|');
 						return;
 					}
 
@@ -3300,7 +3300,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							String oneval = (String) iterator.next();
 							inFullDesc.append(oneval);
-							inFullDesc.append(' ');
+							inFullDesc.append('|');
 						}
 					}
 				}
@@ -3310,7 +3310,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					if (val != null)
 					{
 						inFullDesc.append(val);
-						inFullDesc.append(' ');
+						inFullDesc.append('|');
 					}
 				}
 			}
