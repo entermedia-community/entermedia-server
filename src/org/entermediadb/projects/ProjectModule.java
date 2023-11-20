@@ -1741,14 +1741,14 @@ Server ProjectModule.uploadFile
 	{
 		Map goalspermessage = new HashMap<String,Data>();
 		
-		Collection messages = (Collection)inReq.getPageValue("messages");
+		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
 		if( messages == null)
 		{
 			log.error("No messages found");
 			return null;
 		}
-		List ids = new ArrayList(messages.size());
-		for (Iterator iterator = messages.iterator(); iterator.hasNext();)
+		List ids = new ArrayList(messages.getHitsPerPage());
+		for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
 		{
 			Data message = (Data) iterator.next();
 			ids.add(message.getId());
@@ -1813,7 +1813,7 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("messages", recent);
 		
 		List messageids = new ArrayList(recent.size());
-		for (Iterator iterator = recent.iterator(); iterator.hasNext();) 
+		for (Iterator iterator = recent.getPageOfHits().iterator(); iterator.hasNext();) 
 		{
 			  Data data = (Data) iterator.next(); 
 			  messageids.add(data.getId());
