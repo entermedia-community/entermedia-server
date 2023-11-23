@@ -639,6 +639,57 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 	
+	
+	public Map getImageAndLocationForGroup(Asset asset,String infaceprofilegroupid, Double thumbheight)
+	{
+		Collection profiles = (Collection)asset.getValue("faceprofiles");
+		
+		
+		for (Iterator iterator = profiles.iterator(); iterator.hasNext();)
+		{
+			Map profile = (Map) iterator.next();
+			ValuesMap values = new ValuesMap(profile);
+			String groupid = (String)profile.get("faceprofilegroup");
+			
+			if( profile != null && infaceprofilegroupid.equals(groupid))
+			{
+				
+				double x = values.getInteger("locationx");
+				double y = values.getInteger("locationy");
+				double w = values.getInteger("locationw");
+				double h = values.getInteger("locationh");
+				double inputheight = values.getInteger("inputheight");
+				
+				if (inputheight == 0) {
+					double inputwidth = values.getInteger("inputwidth");
+					double assetscale = MathUtils.divide(asset.getDouble("height") , asset.getDouble("width"));
+					inputheight = inputwidth * assetscale;
+				}
+				double scale = MathUtils.divide(thumbheight , inputheight);
+				
+				x = x * scale;
+				y = y * scale;
+				w = w * scale;
+				h = h * scale;
+				
+				Double[] scaledxy = new Double[] { x, y, w , h};
+				
+				//Calculate the dimentions scaled to this image
+				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
+				Map result = new HashMap();
+				result.put("locationxy",json);
+				if( profile.get("timecodestart") != null )
+				{
+					double seconds = MathUtils.divide( profile.get("timecodestart").toString(),"1000");
+					result.put("timecodestartseconds",seconds);
+				}
+				return result;
+			}
+		}
+		
+		return null;
+	}
+	
 	public List<Map> combineVideoMatches(List<Map> faceprofles, long inVideoLength)
 	{
 		long defaultlength = -1;
