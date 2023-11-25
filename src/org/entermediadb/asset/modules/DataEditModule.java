@@ -768,6 +768,15 @@ String viewbase = null;
 		}
 	}
 
+	public void deleteHits(WebPageRequest inReq) throws Exception
+	{
+		HitTracker hits = loadHits(inReq);
+		if (hits != null && inReq.getUser() != null)
+		{
+			
+			hits.getSearcher().deleteAll(hits,inReq.getUser());
+		}
+	}
 	public void restoreDefaults(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);

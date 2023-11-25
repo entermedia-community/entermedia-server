@@ -191,7 +191,7 @@ uiload = function() {
 		var placeholder = $(this).data('placeholder');
 		if( placeholder  == undefined)
 		{
-			placeholder = "...";
+			placeholder = "";
 		}
 		theinput.select2({
 			allowClear : allowClear,
