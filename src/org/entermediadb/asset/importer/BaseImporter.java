@@ -481,7 +481,10 @@ public class BaseImporter extends EnterMediaObject
 			//trim spaces and clean
 			String headerid = PathUtilities.extractId(header, true);
 			val = URLUtilities.escapeUtf8(val); //The XML parser will clean up the & and stuff when it saves it
-			
+			if( val != null)
+			{
+				val = val.trim();
+			}
 			if ("sourcepath".equals(headerid))
 			{
 				inData.setSourcePath(val);
@@ -524,7 +527,7 @@ public class BaseImporter extends EnterMediaObject
 				String[] vals = MultiValued.VALUEDELMITER.split(inVal);
 				for (int j = 0; j < vals.length; j++)
 				{
-					Object newvalue = findOrCreateData(inDetail, vals[j]);
+					Object newvalue = findOrCreateData(inDetail, vals[j].trim());
 					values.add(newvalue);			
 				}
 				value = values;
