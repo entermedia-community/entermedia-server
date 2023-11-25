@@ -3,6 +3,7 @@
 ##requires $searcher //used to get the catalogid and searcherManager
 
 <table class="settings-table">
+$context.putPageValue("insearch",true)
 #foreach( $detail in $details)
 
 <tr class="emsearchfieldrow">
@@ -45,11 +46,11 @@
 		#end
 		$context.putPageValue("detail",$detail)
 		
-		$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		##$pages.include("/${applicationid}/components/xml/types/default.html", $context)
 		
 		##SLOW???
 		###if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
-		##	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 		###else
 		##	$pages.include("/${applicationid}/components/xml/types/default.html", $context)
 		###end

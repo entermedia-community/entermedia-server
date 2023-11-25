@@ -3,8 +3,10 @@
 #else
 
 #ifnull( $val )
+	#ifnull( $insearch )
 	#set( $val = $user.id )
 	$context.putPageValue("val",$val)
+	#end
 #end
 
 #end

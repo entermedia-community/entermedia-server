@@ -233,7 +233,7 @@ uiload = function() {
             //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
 			var placeholder = theinput.data('placeholder');
 			if (!placeholder) {
-				placeholder = '';
+				placeholder = ' ';
 			}
             var allowClear = theinput.data('allowclear');
 

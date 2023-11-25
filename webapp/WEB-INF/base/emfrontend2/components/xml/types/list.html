@@ -76,13 +76,17 @@
 	#set ($value = $val)
 #end
 #ifnull ($value)
+	#ifnull( $insearch )
 	#set ($value = $context.replaceProperty($detail.defaultvalue) )
+	#end
 #end
 
 #set($searchfield = $detail.getId() )
 
 #set( $valueid = "$fieldname" )
 #if($types)
+
+
 	<select name="${fieldname}.value" 
 			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 			listid="$listid" 
