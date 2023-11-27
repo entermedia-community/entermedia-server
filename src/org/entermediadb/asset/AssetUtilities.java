@@ -495,8 +495,25 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				vals.put("categorypath", uploadto.getCategoryPath());
 			}
 		}
-
-		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), fileName, sourcepathmask, vals);
+		String savefilename = fileName;
+		String[] parts = fileName.split("/");
+		if (parts.length > 1)
+		{
+			String categorypath = (String)vals.get("categorypath");
+			if( categorypath != null)
+			{
+				if (categorypath.endsWith(parts[0]))
+				{
+					savefilename = "";
+					for (int i = 1; i < parts.length; i++)
+					{
+						savefilename = savefilename + parts[i] + "/";
+					}
+				}
+			}
+		}
+		
+		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), savefilename, sourcepathmask, vals);
 
 		return sourcepath;
 	}
