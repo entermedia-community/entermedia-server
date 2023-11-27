@@ -642,6 +642,10 @@ public class FaceProfileManager implements CatalogEnabled
 	
 	public Map getImageAndLocationForGroup(Asset asset,String infaceprofilegroupid, Double thumbheight)
 	{
+		if(asset == null) {
+			return null;
+		}
+		
 		Collection profiles = (Collection)asset.getValue("faceprofiles");
 		
 		
@@ -741,6 +745,53 @@ public class FaceProfileManager implements CatalogEnabled
 	public Collection<FaceAsset> findAssetsForPerson(Data inPersonEntity, int maxnumber)
 	{
 		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
+		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
+
+		Map allprofiles = new HashMap();
+		for(Data profile : profiles)
+		{
+			allprofiles.put(profile.getId(), profile);
+		}
+		
+//
+//		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
+//		inPageRequest.putPageValue("faceprofiles", profiles);
+//		
+//		Collection assets = archive.query("asset").named("faceassets").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+//		
+//		inPageRequest.putPageValue("entityassethits", assets);
+
+		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
+
+		Searcher searcher = getMediaArchive().getSearcher("asset");
+		for(Data data: assets)
+		{
+			Asset asset = (Asset)searcher.loadData(data);
+			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
+			for( Map facedata : faceprofiles)
+			{
+				String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
+				Data group = (Data)allprofiles.get(faceprofilegroupid);
+				if( group != null)
+				{
+					FaceAsset faceasset = new FaceAsset();
+					faceasset.setAsset(asset);
+					faceasset.setFaceProfileGroup(group);
+					faceasset.setFaceLocationData(new ValuesMap(facedata));
+					faceassets.add(faceasset);
+				}
+			}
+		}
+		
+		
+		return faceassets;
+		
+	}
+	
+	
+	public Collection<FaceAsset> findAssetsForProfile(String inFaceProfileId, int maxnumber)
+	{
+		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("id", inFaceProfileId).search();
 		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
 
 		Map allprofiles = new HashMap();
