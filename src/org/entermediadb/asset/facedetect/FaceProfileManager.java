@@ -333,7 +333,7 @@ public class FaceProfileManager implements CatalogEnabled
 			int h = y2 - y;
 			if( w < 150 || h < 190)
 			{
-				log.info("Not enough data, small face detected w:" + w + " h:" + h );
+				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
 				continue;
 			}
 			Map faceprofile = new HashMap();
