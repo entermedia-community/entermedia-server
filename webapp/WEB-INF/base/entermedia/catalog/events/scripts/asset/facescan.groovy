@@ -23,34 +23,37 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").search();
 		hits.enableBulkOperations();
-			
-		int saved = 0;
-		List tosave = new ArrayList();
-		FaceDetectManager manager = archive.getBean("faceDetectManager");
-		int found = 0;
-		for(Data hit in hits)
-		{
-			Asset asset = archive.getAssetSearcher().loadData(hit);
-			if( manager.extractFaces(archive, asset) )
+		if(hits.size()>0) {
+			log.info("Facescan scanning: " + hits.size() + " assets");		
+			int saved = 0;
+			List tosave = new ArrayList();
+			FaceDetectManager manager = archive.getBean("faceDetectManager");
+			int found = 0;
+			for(Data hit in hits)
 			{
-				tosave.add(asset);
+	
+				Asset asset = archive.getAssetSearcher().loadData(hit);
+				if( manager.extractFaces(archive, asset) )
+				{
+					tosave.add(asset);
+				}
+				if( tosave.size() == 1000 )
+				{
+					saved = saved +  tosave.size();
+					log.info("Facescan assets saved: " + saved);
+					archive.saveAssets(tosave);
+					tosave.clear();
+				}
 			}
-			if( tosave.size() == 1000 )
-			{
+			if(tosave.size() > 0) {
+				archive.saveAssets(tosave);
 				saved = saved +  tosave.size();
 				log.info("Facescan assets saved: " + saved);
-				archive.saveAssets(tosave);
-				tosave.clear();
 			}
-		}
-		if(tosave.size() > 0) {
-			archive.saveAssets(tosave);
-			saved = saved +  tosave.size();
-			log.info("Facescan assets saved: " + saved);
-		}
-		if( saved > 0)
-		{
-			archive.fireMediaEvent("facecompare", context.getUser());
+			if( saved > 0)
+			{
+				archive.fireMediaEvent("facecompare", context.getUser());
+			}
 		}
 	}
 	finally

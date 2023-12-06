@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.elasticsearch.discovery.zen.publish.PublishClusterStateAction.NewClusterStateListener;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -104,7 +105,8 @@ public class FaceProfileManager implements CatalogEnabled
 			if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 			{
 				inAsset.setValue("facescancomplete","true");
-				return true;
+				getMediaArchive().saveAsset(inAsset);
+				return false;
 			}
 			
 			String api = getMediaArchive().getCatalogSettingValue("faceapikey");
@@ -125,8 +127,10 @@ public class FaceProfileManager implements CatalogEnabled
 				{
 					//probblem
 					log.debug("No thumbnail " + inAsset.getSourcePath());
-					inAsset.setValue("facescancomplete","true");
-					return true;
+					//inAsset.setValue("facescancomplete","true");
+					//getMediaArchive().saveAsset(inAsset);
+					//may not be ready?
+					return false;
 				}
 				List<Map> json = findFaces(input);
 				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
@@ -194,18 +198,20 @@ public class FaceProfileManager implements CatalogEnabled
 
 				
 			}
-
+			boolean detected = false;
 			inAsset.setValue("faceprofiles",faceprofiles);  //box  and subjects
 			inAsset.setValue("facescancomplete","true");
 			//inAsset.setValue("facematchcomplete","false");
 			if(faceprofiles != null &&  !faceprofiles.isEmpty())
 			{
 				inAsset.setValue("facehasprofile",true);
+				
+				detected = true;
 			}
 			//For each box make sure we have a profile
 			getMediaArchive().saveAsset(inAsset);
 			
-			return true;
+			return detected;
 		}
 		catch( Throwable ex)
 		{
@@ -331,7 +337,7 @@ public class FaceProfileManager implements CatalogEnabled
 			int y2 = box.getInteger("y_max");
 			int w = x2 - x;
 			int h = y2 - y;
-			if( w < 150 || h < 190)
+			if( w < 70 || h < 75)
 			{
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
 				continue;
@@ -367,6 +373,9 @@ public class FaceProfileManager implements CatalogEnabled
 						oldgroup.setValue("samplecount", count);
 					}
 				}
+				
+				oldgroup.setValue("entity_date", new Date());
+				
 				getMediaArchive().getSearcher("faceprofilegroup").saveData(oldgroup);
 				
 				faceprofile.put("faceprofilegroup", groupid);
