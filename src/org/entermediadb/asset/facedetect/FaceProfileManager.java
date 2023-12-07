@@ -126,7 +126,7 @@ public class FaceProfileManager implements CatalogEnabled
 				if( !input.exists() )
 				{
 					//probblem
-					log.debug("No thumbnail " + inAsset.getSourcePath());
+					log.info("No thumbnail " + inAsset.getSourcePath());
 					//inAsset.setValue("facescancomplete","true");
 					//getMediaArchive().saveAsset(inAsset);
 					//may not be ready?
@@ -361,6 +361,7 @@ public class FaceProfileManager implements CatalogEnabled
 				newgroup.setValue("automatictagging", true);
 				newgroup.setValue("creationdate", new Date());
 				newgroup.setValue("samplecount",1);
+				newgroup.setValue("entity_date", new Date());
 				getMediaArchive().saveData("faceprofilegroup", newgroup);
 				groupid = newgroup.getId();
 				faceprofile.put("faceprofilegroup", groupid );
