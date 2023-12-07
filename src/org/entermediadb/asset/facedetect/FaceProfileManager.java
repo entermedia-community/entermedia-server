@@ -235,33 +235,6 @@ public class FaceProfileManager implements CatalogEnabled
 			similaritycheck = Double.parseDouble(value);
 		}
 
-		/*
-		 * <property id="faceprofiles" index="true" keyword="false" stored="true" editable="false" viewtype="faceprofiles" datatype="nested" > 
- <name> 
-  <language id="en"><![CDATA[Face Profiles]]></language>  
-</name> 
-    <property id="timecodestart" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
-      <name> 
-        <language id="en"><![CDATA[Face Data Time Code]]></language>  
-      </name> 
-	</property>  
-    <property id="timecodelength" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
-      <name> 
-        <language id="en"><![CDATA[Face Data Length]]></language>  
-      </name> 
-	</property>  
-    <property id="facedata" index="true" indextype="not_analyzed" keyword="true" stored="true" editable="true" >
-    <name> 
-      <language id="en"><![CDATA[Face Data]]></language>  
-    </name> 
-    </property>
-	<property id="faceprofilegroup" index="true" indextype="not_analyzed" stored="true" viewtype="multiselect" editable="true" datatype="list" type="list"> 
-	    <name> 
-	      <language id="en"><![CDATA[Face Profile Group]]></language>  
-	    </name> 
-	</property>  
-</property>
-		 */
         BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
 
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
