@@ -227,16 +227,19 @@ public class ChatManager implements CatalogEnabled
 		{
 			return null;
 		}
-		String names = inData.getName();		
-		names = names.substring("Messages [".length(), names.length() - 1);
-		String[] both = names.split(",");
-		for (int i = 0; i < both.length; i++)
+		String names = inData.getName();	
+		if( names != null && names.startsWith("Messages ["))
 		{
-			String userid = both[i].trim();
-			if( !userid.equals(myself.getId()) )
+			names = names.substring("Messages [".length(), names.length() - 1);
+			String[] both = names.split(",");
+			for (int i = 0; i < both.length; i++)
 			{
-				User user = getMediaArchive().getUser(userid);
-				return user;
+				String userid = both[i].trim();
+				if( !userid.equals(myself.getId()) )
+				{
+					User user = getMediaArchive().getUser(userid);
+					return user;
+				}
 			}
 		}
 		return null;
