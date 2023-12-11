@@ -11,7 +11,6 @@ import org.entermediadb.comments.CommentArchive;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
 import org.openedit.users.User;
 
 public class CommentModule extends BaseMediaModule 

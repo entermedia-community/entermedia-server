@@ -16,8 +16,6 @@ import org.openedit.config.XMLConfiguration;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Permission;
-import org.openedit.profile.UserProfile;
-import org.openedit.users.Group;
 import org.openedit.util.strainer.BooleanFilter;
 import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;

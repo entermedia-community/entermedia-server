@@ -135,7 +135,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
-	protected CacheManager fieldCacheManager;
 	protected ArrayList<String> fieldSearchTypes;
 	protected boolean fieldIncludeFullText = true;
 	protected OutputFiller fieldFiller;
@@ -226,16 +225,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public void setSearchTypes(ArrayList<String> inSearchTypes)
 	{
 		fieldSearchTypes = inSearchTypes;
-	}
-
-	public CacheManager getCacheManager()
-	{
-		return fieldCacheManager;
-	}
-
-	public void setCacheManager(CacheManager inCacheManager)
-	{
-		fieldCacheManager = inCacheManager;
 	}
 
 	public boolean isRefreshSaves()
@@ -1926,7 +1915,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	 */
 	public void updateIndex(Collection<Data> inBuffer, User inUser)
 	{
-		if (inBuffer.size() > 99 || fieldForceBulk) // 100 was too low - caused shard exceptions
+		if (inBuffer.size() > 2 || fieldForceBulk) // 100 was too low - caused shard exceptions
 		// due to thread pool size on large
 		// ingests..
 		{
@@ -1993,6 +1982,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
 						}
 						toupdate.setId(res.getId());
+						getCacheManager().remove("data" + getSearchType(), res.getId());
 					}
 				}
 				//	request.refresh(true);
@@ -2377,6 +2367,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
+		}
+		if( fieldCacheManager != null)
+		{
+			getCacheManager().remove("data" + getSearchType(), data.getId());
 		}
 	}
 

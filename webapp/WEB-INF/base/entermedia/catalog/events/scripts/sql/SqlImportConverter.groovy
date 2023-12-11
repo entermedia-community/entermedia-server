@@ -249,7 +249,7 @@ public class SqlImportConverter extends CatalogConverter
 			   }
 			   else
 			   {
-				   newasset = new Asset(inArchive);
+				   newasset = new BaseAsset(inArchive);
 				   newasset.setId(id);
 				   newasset.setName(name);
 			   }

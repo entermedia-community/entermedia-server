@@ -2,49 +2,42 @@ package org.entermediadb.elasticsearch.searchers;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetArchive;
+import org.entermediadb.asset.BaseAsset;
+import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
 import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.IntCounter;
-import org.openedit.util.OutputFiller;
-import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 
 public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements DataConnector
@@ -55,7 +48,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	public Data createNewData()
 	{
-		return new Asset(getMediaArchive());
+		return new BaseAsset(getMediaArchive());
 	}
 
 	protected DataArchive getDataArchive()
@@ -490,7 +483,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	protected Asset createAssetFromResponse(String inId, Map inSource)
 	{
-		Asset asset = (Asset) createNewData();
+		BaseAsset asset = (BaseAsset) createNewData();
 		
 		if (inSource == null)
 		{
@@ -519,6 +512,40 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return createAssetFromResponse(inHit.getId(), db.getSearchData());
 	}
 
+	public Data loadData(WebPageRequest inReq,String dataid)
+	{
+		Data data = null;
+		
+		if (dataid.startsWith("multiedit"))
+		{
+			CompositeData compositeasset = (CompositeData) inReq.getSessionValue(dataid);
+			String hitssessionid = dataid.substring("multiedit".length() + 1);
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if (compositeasset!= null && !compositeasset.getSelectedResults().hasChanged(hits)) 
+			{
+				data = compositeasset;
+			}
+
+			if (data == null)
+			{
+				if (hits == null)
+				{
+					log.error("Could not find " + hitssessionid);
+					return null;
+				}
+				CompositeData composite = new CompositeAsset(this,getEventManager(), hits);
+				composite.setId(dataid);
+				data = composite;
+				inReq.putSessionValue(dataid, data);
+			}
+		}
+		else
+		{
+			data = loadData(dataid);
+		}
+		return data;
+
+	}
 	protected AssetArchive getAssetArchive()
 	{
 		return getMediaArchive().getAssetArchive();

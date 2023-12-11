@@ -47,7 +47,6 @@ import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
 
 public class AssetEditModule extends BaseMediaModule
@@ -521,7 +520,7 @@ public class AssetEditModule extends BaseMediaModule
 			existing = new ArrayList(existing);
 		}
 		existing.remove(value);
-		asset.setValues(inFieldName, existing);
+		asset.setValue(inFieldName, existing);
 		getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
 	}
 
@@ -532,6 +531,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	}
 
+	/*
 	public void saveAssetProperties(WebPageRequest inReq) throws OpenEditException
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -545,6 +545,7 @@ public class AssetEditModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		archive.getAssetSearcher().saveDetails(inReq, fields, asset, assetid);
 	}
+	*/
 
 	//Attachment handling of files
 	public void attachToAssetFromUploads(WebPageRequest inReq) throws Exception
@@ -675,11 +676,11 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return;
 		}
-		if (asset instanceof CompositeAsset)
-		{
-			asset.setId("multiedit:new");
-			inReq.putSessionValue(asset.getId(), asset);
-		}
+//		if (asset instanceof CompositeAsset)
+//		{
+//			asset.setId("multiedit:new");
+//			inReq.putSessionValue(asset.getId(), asset);
+//		}
 		inReq.setRequestParameter("id", asset.getId());
 		inReq.putPageValue("asset", asset);
 	}
@@ -1905,7 +1906,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 
 		//Now always reload the selected nodes and only pass in those nodes to multi-edit
-		MediaArchive store = getMediaArchive(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
 
 		//		//lost selections?
 		//		HitTracker old = hits;
@@ -1943,7 +1944,8 @@ public class AssetEditModule extends BaseMediaModule
 		//HitTracker selected = freshhits.getSelectedHitracker();
 		String assetid = "multiedit:" + hitssessionid;
 		inReq.removeSessionValue(assetid);
-		Asset composite = store.getAsset(assetid, inReq);
+		Searcher searcher = archive.getSearcher("asset");
+		Data composite = searcher.loadData(inReq,assetid);
 		inReq.setRequestParameter("assetid", assetid);
 		inReq.putPageValue("data", composite);
 		inReq.putPageValue("asset", composite);

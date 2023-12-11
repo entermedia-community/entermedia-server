@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.CatalogConverter;
 import org.entermediadb.asset.Category;
@@ -137,7 +138,7 @@ public class DvdImportConverter extends CatalogConverter
 		{
 			String chapter = (String) inDvd.getChapterNames().get(i);
 
-			Asset asset = new Asset(inArchive);
+			Asset asset = new BaseAsset(inArchive);
 			String count = format.format(i + 1);
 			chapter = chapter.replace('.', '_');
 

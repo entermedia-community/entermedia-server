@@ -1,6 +1,7 @@
 package org.entermediadb.asset.scanner;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +47,65 @@ public class MetaDataReader
 				target.setProperty(detail, externaldetails.get(detail));
 			}
 		}
+	}
+	public void populateAssets(MediaArchive inMediaArchive, Collection<Asset> inAssets)
+	{
+		try
+		{
+			//Make sure this is not a getStub so that S3 can cache it
+			//make sure it is fully loaded
+//			if( inputFile.isStub() )
+//			{
+//				inputFile = getPageManager().getRepository().get(inputFile.getPath());
+//			}	
+//			GregorianCalendar cal = new GregorianCalendar();
+//			cal.setTimeInMillis(inputFile.lastModified());
+//			cal.set(Calendar.MILLISECOND, 0);
+			// Asset Modification Date">2005-03-04 08:28:57
+			Collection contentitems = new ArrayList();
+			for(Asset asset:inAssets)
+			{
+				ContentItem inputFile = inMediaArchive.getOriginalContent(asset);
+				Date date = inputFile.lastModified();
+				asset.setValue("assetmodificationdate",date);
+				// inAsset.setProperty("recordmodificationdate", format.format(
+				// new Date() ) );
+				asset.setProperty("filesize", String.valueOf(inputFile.getLength()));
+				asset.setName(inputFile.getName());
+				String ext = PathUtilities.extractPageType(inputFile.getName());
+				if (ext != null)
+				{
+					ext = ext.toLowerCase();
+				}
+				asset.setProperty("fileformat", ext);
+				contentitems.add(inputFile);
+			}
+			
+			//Run Exiftool
+			long start = System.currentTimeMillis();
+			boolean foundone = false;
+			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
+			{
+				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
+				if( extrac.extractAll(inMediaArchive, contentitems, inAssets) )
+				{
+					foundone = true;
+				}
+			}
+			if( foundone )
+			{
+				long end = System.currentTimeMillis();
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Got metadata in " + (end - start) + " mili seconds.");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			log.error("Could not read metadata", e);
+		}
+		
 	}
 	public void populateAsset(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{

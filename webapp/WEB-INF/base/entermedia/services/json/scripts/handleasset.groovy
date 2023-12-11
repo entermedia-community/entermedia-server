@@ -147,7 +147,7 @@ public JSONObject handlePost(){
 		}
 	}
 	if(asset == null){
-		asset = new Asset();//Empty Record
+		asset = new BaseAsset();//Empty Record
 		asset.setId(id);
 	}
 

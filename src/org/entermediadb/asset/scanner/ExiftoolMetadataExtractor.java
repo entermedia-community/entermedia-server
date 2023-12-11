@@ -1,11 +1,20 @@
 package org.entermediadb.asset.scanner;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,10 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.ConversionManager;
-import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -36,6 +41,8 @@ import groovy.json.JsonSlurper;
 
 public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
+	String[] supportedTypes = new String[] { "audio", "video", "image", "document" };
+
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
 	//protected MediaTranscoder fieldExiftoolThumbTranscoder;
@@ -63,23 +70,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		fieldTextFields = inTextFields;
 	}
 
-
-
-	/**
-	 * synchronized because ExifTool is not thread safe
-	 */
-	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
+	public synchronized boolean extractAll(MediaArchive inArchive, Collection<ContentItem> inputFiles, Collection<Asset> inAssets)
 	{
-		String[] supportedTypes = new String[] { "audio", "video", "image", "document" };
-		String type = PathUtilities.extractPageType(inputFile.getName());
-
-		if (type != null)
+		
+		//Make a temp file 
+		File tmp = writeList(inArchive, inputFiles);
+		if(tmp == null)
 		{
-			String mediatype = inArchive.getMediaRenderType(type);
-			if (!Arrays.asList(supportedTypes).contains(mediatype))
-			{
-				return false;
-			}
+			return false;
 		}
 		try
 		{
@@ -94,20 +92,36 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				base.add("-config");
 				base.add(etConfig.getContentItem().getAbsolutePath());
 			}
-
 			base.add("-S");
+			base.add("-fast2");
 			base.add("-d");
 			base.add("\"%Y-%m-%d %H:%M:%S\""); //yyyy-MM-dd HH:mm:ss
-
-			base.add(inputFile.getAbsolutePath());
-			ArrayList<String> comm = new ArrayList(base);
-			comm.add("-n");
+			base.add("-@");
+			base.add(tmp.getAbsolutePath());
+			//base.add(inputFile.getAbsolutePath());
+//			ArrayList<String> comm = new ArrayList(base);
+			base.add("-n");
 			
 			//--
 			long start = System.currentTimeMillis();
-			//log.info("Runnning identify");
 			//--
-			ExecResult result = getExec().runExec("exiftool", comm, true);
+			//ExecResult result = getExec().runExec("exiftool", base, true);
+			//public ExecResult runExecStream(String inCommandKey, List<String> args, OutputStream inOutput, long inTimeout) throws OpenEditException
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			
+			ExecResult result = getExec().runExecStream("exiftool", base, output, -1);
+			//This will write a bunch of lines out
+			
+			String out = new String(output.toByteArray(), "UTF-8");
+
+			String[] eachresult = out.split("//n//n");
+//			
+//			String line = null;
+//			while ((line = br.readLine()) != null) {
+//				System.out.println(line);
+//			}
+			tmp.delete();
+			
 			//--
 			long end = System.currentTimeMillis();
 			double total = (end - start) / 1000.0;
@@ -120,45 +134,172 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				log.info("error " + error);
 				return false;
 			}
-			String numberinfo = result.getStandardOut();
-			if (numberinfo == null)
-			{
-				log.info("Exiftool found " + inAsset.getSourcePath() + " returned null");
-			}
-			else
-			{
-				log.debug("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length());
-			}
 
-			boolean foundtext = parseNumericValues(inArchive, inAsset, details, numberinfo);
-			if (foundtext)
+			//System.out.println(eachresult);
+			int i=0;
+			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 			{
-				//Run it again TODO: Use text values all the time
-				ExecResult resulttext = getExec().runExec("exiftool", base, true);
-				if (!resulttext.isRunOk())
+				Asset asset = (Asset) iterator.next();
+				if( canProcess(inArchive, asset.getName()))
 				{
-					String error = resulttext.getStandardError();
-					log.info("error " + error);
-					return false;
+					String numberinfo = eachresult[i++];//result.getStandardOut();
+					parseNumericValues(inArchive, asset, details, numberinfo);
+					//log.debug("Exiftool found " + asset.getSourcePath() + " returned " + numberinfo.length());
 				}
-				String textinfo = resulttext.getStandardOut();
-				parseTextValues(inAsset, details, textinfo);  //TODO: Do we skip anything already set
 			}
 		}
 		catch (Exception e1)
 		{
-			log.error("Could not read metada from asset: " + inAsset.getSourcePath() + e1, e1);
+			log.error("Could not read metada from assets: " + e1, e1);
 		}
 
-		extractThumb(inArchive, inputFile, inAsset);
+		//extractThumb(inArchive, inputFile, inAsset);
 
 		return true;
 	}
 
-	protected boolean parseNumericValues(MediaArchive inArchive, Asset inAsset, PropertyDetails details, String numberinfo)
+
+
+	protected File writeList(MediaArchive inArchive, Collection<ContentItem> inputFiles) 
+	{
+		try
+		{
+			File tmp = File.createTempFile("exiftool", EMPTY_STRING);
+			
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tmp));
+			for(ContentItem item : inputFiles)
+			{
+				if(canProcess(inArchive, item.getName()))
+				{
+					writer.write(item.getAbsolutePath() + "\n");
+				}
+			}
+		    writer.close();
+			return tmp;
+		}
+		catch( Throwable ex)
+		{
+			log.error("Could not write", ex);
+		}
+		return null;
+	}
+	private boolean canProcess(MediaArchive inArchive,String inName)
+	{
+		String type = PathUtilities.extractPageType(inName);
+
+		if (type != null)
+		{
+			String mediatype = inArchive.getMediaRenderType(type);
+			if (!Arrays.asList(supportedTypes).contains(mediatype))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
+	{
+		String[] supportedTypes = new String[] { "audio", "video", "image", "document" };
+		String type = PathUtilities.extractPageType(inputFile.getName());
+
+		if (type != null)
+		{
+			String mediatype = inArchive.getMediaRenderType(type);
+			if (!Arrays.asList(supportedTypes).contains(mediatype))
+			{
+				return false;
+			}
+		}
+		PropertyDetails details = inArchive.getAssetPropertyDetails();
+		ArrayList<String> base = new ArrayList<String>();
+
+
+		Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
+
+		if (etConfig.exists())
+		{
+			base.add("-config");
+			base.add(etConfig.getContentItem().getAbsolutePath());
+		}
+		base.add("-fast2");
+		base.add("-S");
+		base.add("-d");
+		base.add("\"%Y-%m-%d %H:%M:%S\""); //yyyy-MM-dd HH:mm:ss
+
+		base.add(inputFile.getAbsolutePath());
+		base.add("-n");
+		
+		runExif(inArchive, inputFile, inAsset, base);
+		extractThumb(inArchive, inputFile, inAsset);
+
+		return true;
+	
+	}
+	
+	/**
+	 * synchronized because ExifTool is not thread safe
+	 */
+	public synchronized void runExif(MediaArchive inArchive, ContentItem inputFile, Asset inAsset, List comm)
+	{
+		try
+		{
+
+		//--
+		long start = System.currentTimeMillis();
+		//log.info("Runnning identify");
+		//--
+		ExecResult result = getExec().runExec("exiftool", comm, true);
+		//--
+		long end = System.currentTimeMillis();
+		double total = (end - start) / 1000.0;
+		log.info("Exiftool Done in:"+total);
+		//--
+		
+		if (!result.isRunOk())
+		{
+			String error = result.getStandardError();
+			log.info("error " + error);
+			return;
+		}
+		String numberinfo = result.getStandardOut();
+		if (numberinfo == null)
+		{
+			log.info("Exiftool found " + inAsset.getSourcePath() + " returned null");
+		}
+		else
+		{
+			log.debug("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length());
+		}
+		PropertyDetails details = inArchive.getAssetPropertyDetails();
+
+		//boolean foundtext = 
+		parseNumericValues(inArchive, inAsset, details, numberinfo);
+//		if (foundtext)
+//		{
+//			//Run it again TODO: Use text values all the time
+//			ExecResult resulttext = getExec().runExec("exiftool", base, true);
+//			if (!resulttext.isRunOk())
+//			{
+//				String error = resulttext.getStandardError();
+//				log.info("error " + error);
+//				return false;
+//			}
+//			String textinfo = resulttext.getStandardOut();
+//			//parseTextValues(inAsset, details, textinfo);  //TODO: Do we skip anything already set
+//		}
+	}
+	catch (Exception e1)
+	{
+		log.error("Could not read metada from asset: " + inAsset.getSourcePath() + e1, e1);
+	}
+		
+	}
+
+	protected void parseNumericValues(MediaArchive inArchive, Asset inAsset, PropertyDetails details, String numberinfo)
 	{
 		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace TODO: handle lower/mixed case
-		boolean foundtextvalues = false;
+		//boolean foundtextvalues = false;
 		String lat = null;
 		String lng = null;
 		if (numberinfo != null)
@@ -345,10 +486,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					lng = value;
 					//inAsset.setProperty("position_lng", value);
 				}
-				else if (getTextFields().contains(key))
-				{
-					foundtextvalues = true;
-				}
+//				else if (getTextFields().contains(key))
+//				{
+//					foundtextvalues = true;
+//				}
 				else
 				{
 					PropertyDetail property = details.getDetailByExternalId(key);
@@ -429,40 +570,38 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 			inAsset.setProperty("geo_point", lat + " , " + lng);  //TODO makesure we dont have junk in here
 		}
-		
-		return foundtextvalues;
 	}
 
-	protected void parseTextValues(Asset inAsset, PropertyDetails details, String numberinfo)
-	{
-		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace
-		if (numberinfo != null)
-		{
-			String[] numbers = numberinfo.split("\n");
-			for (int i = 0; i < numbers.length; i++)
-			{
-				Matcher m = p.matcher(numbers[i]);
-				if (!m.find())
-				{
-					continue;
-				}
-				String key = m.group(1);
-				String value = m.group(2);
-
-				if (key == null || value == null || !getTextFields().contains(key))
-				{
-					continue;
-				}
-				PropertyDetail property = details.getDetailByExternalId(key);
-				if (property == null)
-				{
-					continue;
-				}
-				
-				saveValue(inAsset,property.getId(), value);
-			}
-		}
-	}
+//	protected void parseTextValues(Asset inAsset, PropertyDetails details, String numberinfo)
+//	{
+//		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace
+//		if (numberinfo != null)
+//		{
+//			String[] numbers = numberinfo.split("\n");
+//			for (int i = 0; i < numbers.length; i++)
+//			{
+//				Matcher m = p.matcher(numbers[i]);
+//				if (!m.find())
+//				{
+//					continue;
+//				}
+//				String key = m.group(1);
+//				String value = m.group(2);
+//
+//				if (key == null || value == null || !getTextFields().contains(key))
+//				{
+//					continue;
+//				}
+//				PropertyDetail property = details.getDetailByExternalId(key);
+//				if (property == null)
+//				{
+//					continue;
+//				}
+//				
+//				saveValue(inAsset,property.getId(), value);
+//			}
+//		}
+//	}
 
 	protected void saveValue(Asset inAsset, String inName, Object value)
 	{

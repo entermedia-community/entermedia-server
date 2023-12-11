@@ -3,6 +3,7 @@ package org.entermediadb.model;
 import java.io.File;
 
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.MetaDataReader;
@@ -21,7 +22,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 //	{
 //		
 //		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
-//		Asset asset = new Asset();
+//		Asset asset = new BaseAsset();
 //		File file = new File("/media/D603-EA1D/Sample EM/Content Archive/Highlights/2011/HL_12_11/HL_DEC_2011_PRESS_PDFS/HL_12_11_05_VERSE.pdf");		
 //		reader.populateAsset(getMediaArchive(), file, asset);
 //		reader.populateAsset(getMediaArchive(), file, asset);
@@ -79,7 +80,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		{
 			File testFile = new File(rootDir, fileNames[i]);
 			assertTrue(testFile.exists() && testFile.canRead());
-			p = new Asset(getMediaArchive());
+			p = new BaseAsset(getMediaArchive());
 			FileItem item = new FileItem();
 			item.setPath(testFile.getName());
 			item.setFile(testFile);
@@ -101,7 +102,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
 	
 		File testFile = new File(testDir, "location.jpg");
-		p = new Asset();
+		p = new BaseAsset();
 		FileItem item = new FileItem();
 		item.setPath(testFile.getName());
 		item.setFile(testFile);

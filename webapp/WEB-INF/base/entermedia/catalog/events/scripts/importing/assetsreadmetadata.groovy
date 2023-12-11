@@ -19,28 +19,21 @@ public void init()
 			assets.enableBulkOperations();
 			assets.setHitsPerPage(100);
 			List assetsToSave = new ArrayList();
-			MetaDataReader reader = moduleManager.getBean("metaDataReader");
 			for (Data hit in assets)
 			{
 				Asset asset = searcher.loadData(hit);
 				//log.info("${asset.getSourcePath()}");
 				if( asset != null)
 				{
-					ContentItem content = archive.getOriginalContent( asset );
-					reader.populateAsset(archive, content, asset);
-					//asset.setValue("geo_point",null);
-					asset.setProperty("importstatus", "imported");
 					assetsToSave.add(asset);
 					if(assetsToSave.size() == 100)
 					{
-						archive.saveAssets( assetsToSave );
-						archive.firePathEvent("importing/assetsimported",user,assetsToSave);
+						archive.readMetadata(assetsToSave);
 						assetsToSave.clear();
-						log.info("saved 100 metadata readings");
 					}
 				}
 			}
-			archive.saveAssets( assetsToSave );
+			archive.readMetadata( assetsToSave );
 			archive.firePathEvent("importing/assetsimported",user,assetsToSave);
 			//log.info("metadata reading complete");
 			

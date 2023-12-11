@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.*;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.MetaDataReader;
 import org.openedit.Data;
@@ -141,7 +141,7 @@ public class AttachmentManager
 					attachment.setProperty("isfolder", String.valueOf(page.isFolder()));
 					attachment.setProperty("parentsourcepath", inFolderSourcePath);
 
-					Asset asset = new Asset(inArchive);
+					Asset asset = new BaseAsset(inArchive);
 					asset.setId(inAssetId);
 					getMetaDataReader().populateAsset(inArchive, page.getContentItem(), asset);
 					for (Iterator iterator2 = asset.keySet().iterator(); iterator2.hasNext();)

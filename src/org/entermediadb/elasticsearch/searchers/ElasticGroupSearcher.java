@@ -28,18 +28,6 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 {
 	private static final Log log = LogFactory.getLog(ElasticGroupSearcher.class);
 	protected XmlUserArchive fieldXmlUserArchive;
-	protected CacheManager fieldCacheManager;
-	
-	public CacheManager getCacheManager()
-	{
-		return fieldCacheManager;
-	}
-
-
-	public void setCacheManager(CacheManager inCacheManager)
-	{
-		fieldCacheManager = inCacheManager;
-	}
 
 
 	public XmlUserArchive getXmlUserArchive() {

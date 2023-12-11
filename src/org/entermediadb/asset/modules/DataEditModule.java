@@ -15,9 +15,6 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.BaseCompositeData;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -26,6 +23,7 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseCompositeData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.CompositeFilteredTracker;
 import org.openedit.data.FilteredTracker;
@@ -34,7 +32,6 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
@@ -601,52 +598,23 @@ String viewbase = null;
 			// We need to do this for multiediting so that we can get better record edit logs.
 			if (data instanceof CompositeData)
 			{
-				//String val = null;
-				//				ArrayList<String> fieldswithvalues = new ArrayList<String>();
-				//				for(int i=0;i<fields.length;i++)
-				//				{
-				//					//see if we have boolean fields
-				//					PropertyDetail detail = searcher.getDetail(fields[i]);
-				//					if( detail == null)
-				//					{
-				//						continue;
-				//					}
-				//					if( detail.isBoolean() || detail.isMultiValue() || detail.isList() )
-				//					{
-				//						fieldswithvalues.add(detail.getId());
-				//						continue;
-				//					}
-				//					
-				//					val = inReq.getRequestParameter(detail.getId()+".value");
-				//					if(val!= null && val.length() > 0)
-				//					{
-				//						fieldswithvalues.add(detail.getId());
-				//					}
-				//					String[] vals = inReq.getRequestParameters(detail.getId()+".values");
-				//					if(vals != null && vals.length > 0)
-				//					{
-				//						fieldswithvalues.add(detail.getId());
-				//					}
-				//				}
-				//				
+				
 				CompositeData compositedata = (CompositeData) data;
 				compositedata.setEditFields(Arrays.asList(fields));
-				searcher.updateData(inReq, fields, compositedata);
-				//				for (Iterator iterator = compositedata.iterator(); iterator.hasNext();)
-				//				{
-				//					Data copy = (Data) iterator.next();
-				//					inReq.setRequestParameter("id", copy.getId());
-				//					searcher.saveDetails(inReq, newfields, copy, copy.getId());
-				//				}
+				
 				count = compositedata.size();
-				compositedata.saveChanges();
+				compositedata.saveChanges(inReq);
+				
+				//getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
 				// should we redirect to a save ok page?
 				//redirectToSaveOk(inReq);
 			}
 			else
 			{
+				/**
+				 * TODO: Remove this weird stuff
+				 */
 				boolean multivalues = false;
-
 				/* This is being used for table data */
 				String externalid = inReq.getRequestParameter("fieldexternalid");
 				if (externalid != null)
@@ -664,7 +632,7 @@ String viewbase = null;
 							data.setSourcePath(element.getSourcePath());
 							inReq.setRequestParameter("id", data.getId());
 							inReq.setRequestParameter(externalid + ".value", element.getId());
-							searcher.saveDetails(inReq, fields, data, id);
+							searcher.saveData(data);
 							count++;
 						}
 						redirectToSaveOk(inReq);
@@ -690,7 +658,13 @@ String viewbase = null;
 						String sourcepath = inReq.getRequestParameter("sourcepath");
 						data.setSourcePath(sourcepath);
 					}
-					searcher.saveDetails(inReq, fields, data, id);
+					
+					getEventManager().fireDataEditEvent(inReq, searcher, data);
+					searcher.updateData(inReq, fields, data);
+					searcher.saveData(data);
+					getEventManager().fireDataSavedEvent(inReq, searcher, data);
+					//getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
+
 					inReq.setRequestParameter("id", data.getId());
 					inReq.setRequestParameter("id.value", data.getId());
 					count++;
@@ -710,23 +684,9 @@ String viewbase = null;
 			}
 			inReq.putPageValue("savedok", Boolean.TRUE);
 
-			getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
-			
-			if (getEventManager() != null)
-			{
-				WebEvent event = new WebEvent();
-				event.setSearchType(searcher.getSearchType());
-				event.setCatalogId(searcher.getCatalogId());
-				event.setOperation("saved");
-				event.setProperty("dataid", data.getId());
-				event.setProperty("id", data.getId());
-				event.setProperty("note", "old field diff");
-				event.setProperty("applicationid", inReq.findValue("applicationid"));
-				event.setUser(inReq.getUser());
-				event.setValue("data", data);
-				getEventManager().fireEvent(event);
-			}
 			inReq.putPageValue("rowsedited", String.valueOf(count));
+			inReq.putPageValue("message", data.getId() + " is saved");
+
 			//rowsedited="$!rowsedited}
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
@@ -1641,7 +1601,7 @@ String viewbase = null;
 					log.error("Could not find " + hitssessionid);
 					return null;
 				}
-				CompositeData composite = new BaseCompositeData(searcher, hits);
+				CompositeData composite = new BaseCompositeData(searcher, getEventManager(), hits);
 				composite.setId(id);
 				result = composite;
 				inReq.putSessionValue(id, result);
@@ -1652,6 +1612,8 @@ String viewbase = null;
 			result = (Data) searcher.searchById(id);
 		}
 		inReq.putPageValue(variablename, result);
+
+		
 		return result;
 
 	}

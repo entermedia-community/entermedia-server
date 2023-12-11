@@ -863,15 +863,13 @@ public class UserManagerModule extends BaseMediaModule
 		String[] fields = (String[]) params.get("field");
 		String enabled = inReq.getRequestParameter("enabled.value");
 		
-			
-		
-		getUserSearcher(inReq).saveDetails(inReq, fields, user, user.getId());
+		getUserSearcher(inReq).updateData(inReq, fields, user);
+		//getEventManager().fireDataSavedEvent(inReq, searcher, data);
+
 		if(enabled!= null) {
 			user.setEnabled(Boolean.parseBoolean(enabled));
 		}
 		getUserSearcher(inReq).saveData( user ,inReq.getUser());
-		
-		
 	
 		inReq.putPageValue("status","Saved");
 		inReq.putPageValue("saved",true);

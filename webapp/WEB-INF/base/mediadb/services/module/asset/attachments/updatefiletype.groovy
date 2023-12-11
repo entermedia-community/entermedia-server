@@ -30,7 +30,7 @@ public void init(){
 	MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
 	//problem is if pages not set, will not update page property
 	Page content = archive.getPageManager().getPage(path);// read the primary file again and find # of pages
-	Asset tempasset = new Asset();
+	Asset tempasset = new BaseAsset();
 	reader.populateAsset(archive, content.getContentItem(), tempasset);
 	int pages = getPages(tempasset);
 	asset.setProperty("pages", "$pages");

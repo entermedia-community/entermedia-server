@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
@@ -101,7 +102,7 @@ public class AssetSyncModule extends BaseMediaModule
 				
 				String currentSourcePath = sourcepath[i];
 				Asset existing = archive.getAssetBySourcePath(currentSourcePath);
-				Asset toadd = new Asset(archive);
+				Asset toadd = new BaseAsset(archive);
 				toadd.setId(archive.getAssetSearcher().nextAssetNumber());
 				if (existing != null) 
 				{

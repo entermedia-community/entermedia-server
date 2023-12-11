@@ -284,14 +284,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 
 	public void saveData(Data inData, User inUser)
 	{
-		if (inData instanceof CompositeAsset)
+		if (inData instanceof CompositeData)
 		{
-			CompositeAsset asset = (CompositeAsset)inData;
-			asset.saveChanges();
-		}
-		else if (inData instanceof CompositeData)
-		{
-			saveCompositeData((CompositeData) inData, inUser);
+			throw new OpenEditException("Saving composite data requires web context");
 		}
 		else if (inData instanceof Asset)
 		{

@@ -210,7 +210,7 @@ public class BaseMediaModule extends BaseModule
 			
 		if( assetid != null )
 		{
-			Asset data = archive.getAsset(assetid, inReq);
+			Asset data = archive.getAsset(assetid,inReq);
 			inReq.putPageValue("asset", data);
 			inReq.putPageValue("data", data);
 			return (Asset) data;
@@ -245,7 +245,7 @@ public class BaseMediaModule extends BaseModule
 			{
 				if (assetid != null)
 				{
-					asset = archive.getAsset(assetid);
+					asset = archive.getAsset(assetid,inReq);
 				}
 			}
 		}

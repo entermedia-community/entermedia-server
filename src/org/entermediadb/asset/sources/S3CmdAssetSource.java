@@ -21,7 +21,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.*;
 import org.entermediadb.asset.Category;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

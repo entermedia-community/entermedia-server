@@ -275,7 +275,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 
 		String message = "Removed from category \"" + c.getName() + "\"";
-		Asset asset = archive.getAsset(assetid,inPageRequest);
+		Asset asset = (Asset)archive.getAssetSearcher().loadData(inPageRequest,assetid);
 		asset.removeCategory(c);
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);

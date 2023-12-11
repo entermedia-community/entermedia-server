@@ -8,7 +8,7 @@ import org.openedit.util.DateStorageUtil
 
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
-Asset asset = new Asset(mediaarchive);
+Asset asset = new BaseAsset(mediaarchive);
 asset.setId(mediaarchive.getAssetSearcher().nextAssetNumber());
 String sourcepath = "data/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);

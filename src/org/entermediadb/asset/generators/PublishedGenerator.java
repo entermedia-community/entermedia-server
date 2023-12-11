@@ -104,7 +104,7 @@ public class PublishedGenerator extends FileGenerator
 			throw new ContentNotAvailableException("Distribution Not Available", path);
 		}
 		//Asset asset = (Asset)getSearcherManager().getCachedData(catalogid, "asset", dist.get("assetid"));
-		Asset asset = archive.getAsset(dist.get("assetid"), inReq);
+		Asset asset = archive.getAsset(dist.get("assetid"));
 		
 		if (asset == null) {
 			throw new ContentNotAvailableException("Asset Not Available", path);

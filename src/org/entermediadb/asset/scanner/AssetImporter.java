@@ -3,7 +3,6 @@
  */
 package org.entermediadb.asset.scanner;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,23 +12,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
-import org.entermediadb.asset.CompositeAsset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.fetch.UrlMetadataImporter;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.ZipUtil;
 
 public class AssetImporter
 {
@@ -322,7 +318,7 @@ public class AssetImporter
 		String extension = PathUtilities.extractPageType(inSourcePath);
 		if (extension != null)
 		{
-			Asset asset = new Asset(inArchive); //throw away
+			Asset asset = new BaseAsset(inArchive); //throw away
 			//asset.setCatalogId(inArchive.getCatalogId());
 	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
 			asset.setSourcePath(inSourcePath);

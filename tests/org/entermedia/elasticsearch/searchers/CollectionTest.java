@@ -3,7 +3,7 @@ package org.entermedia.elasticsearch.searchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.*;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
@@ -52,13 +52,13 @@ public class CollectionTest  extends BaseEnterMediaTest
 	{
 		//getMediaArchive().getAssetSearcher().reIndexAll();
 		
-		Asset newasset = new Asset(getMediaArchive());
+		Asset newasset = new BaseAsset(getMediaArchive());
 		newasset.setId("101");
 		newasset.setName("Test 101");
 		newasset.setSourcePath("users/101");
 		getMediaArchive().saveAsset(newasset, null);
 
-		newasset = new Asset(getMediaArchive());
+		newasset = new BaseAsset(getMediaArchive());
 		newasset.setId("102");
 		newasset.setName("Test 102");
 		newasset.setSourcePath("users/102");

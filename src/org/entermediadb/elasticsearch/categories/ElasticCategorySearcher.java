@@ -29,7 +29,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	private static final Log log = LogFactory.getLog(ElasticCategorySearcher.class);
 	protected XmlCategoryArchive fieldXmlCategoryArchive;
 	//protected Category fieldRootCategory;
-	protected CacheManager fieldCacheManager;
 	protected String fieldSort = "name";
 	
 	public String getSort() {
@@ -40,15 +39,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		fieldSort = inSort;
 	}
 
-	public CacheManager getCacheManager()
-	{
-		return fieldCacheManager;
-	}
 
-	public void setCacheManager(CacheManager inCacheManager)
-	{
-		fieldCacheManager = inCacheManager;
-	}
 
 	public XmlCategoryArchive getXmlCategoryArchive()
 	{
@@ -327,7 +318,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if(inCategoryId == null) {
 			return null;
 		}
-		Category cat = null;		cat = (Category)getCacheManager().get(getSearchType() + "category", inCategoryId);
+		Category cat = null;		
+		cat = (Category)getCacheManager().get(getSearchType() + "category", inCategoryId);
 		if( cat == null || cat.isDirty() )
 		{
 			cat = searchCategory(inCategoryId);

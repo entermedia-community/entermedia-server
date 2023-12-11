@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.comments.CommentArchive;
@@ -31,7 +32,7 @@ public class AssetEditor
 
 	public Asset createAsset()
 	{
-		return new Asset(getMediaArchive());
+		return new BaseAsset(getMediaArchive());
 	}
 
 	public void addToCategory(Asset inAsset, Category inCategory) throws OpenEditRuntimeException
@@ -99,7 +100,7 @@ public class AssetEditor
 		Asset asset = null;
 		if (inAsset != null)
 		{
-			asset = new Asset(inAsset.getMediaArchive());
+			asset = new BaseAsset(inAsset.getMediaArchive());
 			//asset.setCatalogId(inAsset.getCatalogId());
 			asset.setName(inAsset.getName());
 			if (asset.getKeywords().size() > 0)

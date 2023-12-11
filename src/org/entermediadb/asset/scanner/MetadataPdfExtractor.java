@@ -38,7 +38,10 @@ public class MetadataPdfExtractor extends MetadataExtractor
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
-		
+		if(!inArchive.isCatalogSettingTrue("extractfulltext"))
+		{
+			return false;
+		}
 		String type = PathUtilities.extractPageType(inFile.getPath());
 		if (type == null || "data".equals(type.toLowerCase()))
 		{

@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionUtil;
@@ -268,7 +269,7 @@ public class JsonAssetModule extends BaseJsonModule {
 			}
 		}
 		if (asset == null) {
-			asset = new Asset(archive);// Empty Record
+			asset = new BaseAsset(archive);// Empty Record
 			asset.setId(id);
 			asset.setProperty("sourcepath", sourcepath);
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
@@ -676,7 +677,7 @@ public class JsonAssetModule extends BaseJsonModule {
 
 		
 			if (asset == null) {
-				asset = new Asset(archive);// Empty Record
+				asset = new BaseAsset(archive);// Empty Record
 				asset.setId(id);
 				asset.setProperty("sourcepath", sourcepath);
 				asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));

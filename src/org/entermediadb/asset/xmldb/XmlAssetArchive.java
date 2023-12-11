@@ -20,6 +20,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetArchive;
 import org.entermediadb.asset.AssetPathFinder;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CategoryArchive;
 import org.entermediadb.asset.MediaArchive;
@@ -135,7 +136,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 		Asset item = (Asset)getCacheManager().get(toCacheId(), inSourcePath);
 		if( item == null)
 		{
-			item = new Asset(getMediaArchive());
+			item = new BaseAsset(getMediaArchive());
 			//item.setCatalogId(getCatalogId());
 			item.setSourcePath(inSourcePath);
 			String url = buildXmlPath(item);

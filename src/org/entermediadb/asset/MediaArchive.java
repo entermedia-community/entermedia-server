@@ -23,12 +23,12 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.runtime.parser.node.MathUtils;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.scanner.MetaDataReader;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
@@ -129,6 +129,10 @@ public class MediaArchive implements CatalogEnabled
 
 	public CacheManager getCacheManager()
 	{
+		if( fieldCacheManager == null)
+		{
+			fieldCacheManager = (CacheManager)getModuleManager().getBean(getCatalogId(), "cacheManager",true);
+		}
 		return fieldCacheManager;
 	}
 
@@ -638,7 +642,7 @@ public class MediaArchive implements CatalogEnabled
 	//Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
-		Asset asset = new Asset(this);
+		Asset asset = new BaseAsset(this);
 		//asset.setCatalogId(getCatalogId());
 		if (inId == null)
 		{
@@ -702,42 +706,13 @@ public class MediaArchive implements CatalogEnabled
 
 	public Asset getAsset(String assetid, WebPageRequest inReq)
 	{
-		Asset asset = null;
-		
-		if (assetid.startsWith("multiedit"))
-		{
-			CompositeAsset compositeasset = (CompositeAsset) inReq.getSessionValue(assetid);
-			String hitssessionid = assetid.substring("multiedit".length() + 1);
-			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (compositeasset!= null && !compositeasset.getSelectedResults().hasChanged(hits)) 
-			{
-				asset = compositeasset;
-			}
-
-			if (asset == null)
-			{
-				if (hits == null)
-				{
-					log.error("Could not find " + hitssessionid);
-					return null;
-				}
-				CompositeAsset composite = new CompositeAsset(this, hits);
-				composite.setId(assetid);
-				asset = composite;
-				inReq.putSessionValue(assetid, asset);
-			}
-		}
-		else
-		{
-			asset = getAsset(assetid);
-		}
-		return asset;
-
+		Asset data = (Asset)getAssetSearcher().loadData(inReq, assetid);
+		return data;
 	}
 
 	public Asset getAsset(String inId)
 	{
-		Asset asset = (Asset) getAssetSearcher().searchById(inId);
+		Asset asset = (Asset) getAssetSearcher().loadData(inId);
 		return asset;
 	}
 	public Asset getCachedAsset(String inId)
@@ -746,15 +721,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		Asset asset = (Asset)getCacheManager().get("assetcache", inId);
-		if( asset == null && inId != null)
-		{
-			asset = (Asset) getAssetSearcher().searchById(inId);
-			if( asset != null)
-			{
-				getCacheManager().put("assetcache", inId, asset);
-			}
-		}
+		Asset asset = (Asset) getAssetSearcher().loadCachedData(inId);
 		return asset;
 	}
 
@@ -804,26 +771,10 @@ public class MediaArchive implements CatalogEnabled
 		return sourcePath;
 	}
 
-	public void saveAsset(CompositeAsset inAssets, User inUser)
-	{
-		inAssets.saveChanges();
-		//		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
-		//		{
-		//			Asset asset = (Asset) iterator.next();
-		//			getAssetSearcher().saveData(asset, inUser);			
-		//		}
-	}
 
 	public void saveAsset(Asset inAsset, User inUser)
 	{
-		if (inAsset instanceof CompositeAsset)
-		{
-			saveAsset((CompositeAsset) inAsset, inUser);
-		}
-		else
-		{
-			getAssetSearcher().saveData(inAsset, inUser);
-		}
+		getAssetSearcher().saveData(inAsset, inUser);
 	}
 
 	public void saveAsset(Asset inAsset)
@@ -1339,12 +1290,6 @@ public class MediaArchive implements CatalogEnabled
 
 	public void fireMediaEvent(String inSearchType, String operation, User inUser, Asset asset)
 	{
-		if (asset instanceof CompositeAsset)
-		{
-			fireMediaEvent(operation, inUser, (CompositeAsset) asset);
-		}
-		else
-		{
 			WebEvent event = new WebEvent();
 			event.setSearchType(inSearchType);
 			event.setCatalogId(getCatalogId());
@@ -1358,7 +1303,6 @@ public class MediaArchive implements CatalogEnabled
 			event.setValue("asset", asset);
 			//archive.getWebEventListener()
 			getEventManager().fireEvent(event);
-		}
 	}
 
 	public void fireMediaEvent(String operation, User inUser)
@@ -1938,14 +1882,8 @@ public class MediaArchive implements CatalogEnabled
 			return null;
 		}
 		Searcher searcher = getSearcher(inSearchType);
-		Data hit = (Data)getCacheManager().get("data" + inSearchType, inId);
-		if( hit == null)
-		{
-			hit = (Data) searcher.searchById(inId);
-			hit = searcher.loadData(hit); //not needed?
-			getCacheManager().put("data" + inSearchType, inId,hit);
-		}
-		return hit;
+		Data data = searcher.loadCachedData(inId);
+		return data;
 	}
 	
 	public HitTracker getList(String inSearchType)
@@ -2169,6 +2107,12 @@ public class MediaArchive implements CatalogEnabled
 		getPropertyDetailsArchive().clearCache();
 		getCategorySearcher().clearIndex();
 		getCategoryArchive().clearCategories();
+
+		CacheManager manager = (CacheManager)getModuleManager().getBean("systemCacheManager");
+		manager.clearAll();		
+		
+		CacheManager manager3 = (CacheManager)getModuleManager().getBean("systemExpireCacheManager");
+		manager3.clearAll();		
 
 	}
 
@@ -2964,6 +2908,23 @@ public class MediaArchive implements CatalogEnabled
 	public EntityManager getEntityManager()
 	{
 		return (EntityManager)getModuleManager().getBean(getCatalogId(),"entityManager",true);
+	}
+	
+	public void readMetadata(Collection<Asset> inAssets)
+	{
+		MetaDataReader reader = (MetaDataReader)getBean("metaDataReader");
+		reader.populateAssets(this,inAssets);
+		//asset.setValue("geo_point",null);
+		for( Asset asset : inAssets)
+		{
+//			ContentItem content = getOriginalContent( asset );
+//			contentitems.add(content);
+			asset.setProperty("importstatus", "imported");
+		}
+		saveAssets( inAssets );
+		firePathEvent("importing/assetsimported",null,inAssets);
+		log.info("saved 100 metadata readings");
+
 	}
 	
 }

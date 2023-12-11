@@ -2,6 +2,7 @@ package org.entermediadb.model;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetSourcePathCreator;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 
 
@@ -11,7 +12,7 @@ public class SourcePathTest extends BaseEnterMediaTest
 	
 	public void testLookup() throws Exception
 	{
-		Asset asset = new Asset(getMediaArchive());
+		Asset asset = new BaseAsset(getMediaArchive());
 		String originalpath= "\\\\server\\share\\mystuff\\here\\1234.gif";
 		
 		AssetSourcePathCreator creator = new AssetSourcePathCreator();

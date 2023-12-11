@@ -33,7 +33,7 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.tree.DefaultElement;
-import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.*;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;

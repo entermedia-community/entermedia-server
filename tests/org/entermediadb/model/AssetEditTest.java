@@ -240,7 +240,8 @@ public class AssetEditTest extends BaseEnterMediaTest
 		}
 		product.setProperty("keywords", "1");
 		product.setProperty("categories", "index");
-		User user = getFixture().createPageRequest().getUser();
+		WebPageRequest req = getFixture().createPageRequest();
+		User user = req.getUser();
 		getMediaArchive().saveAsset(product, user);
 
 		Asset product2 = getMediaArchive().getAsset("2");
@@ -285,7 +286,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		assertTrue(existing.contains("1"));
 		existing.add("3");
 		composite.setValue("keywords",existing); //We removed 1 (common) and added 3
-		composite.saveChanges();
+		composite.saveChanges(req);
 		Collection values = composite.getValues("keywords");
 		assertEquals( 2 , values.size());
 		assertTrue(values.contains("1"));
@@ -307,7 +308,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 
 		//Now set it again and it will fail since results are not updated
 		composite.setValue("keywords" , new ArrayList() );
-		composite.saveChanges(); //removed 3
+		composite.saveChanges(req); //removed 3
 		values = composite.getValues("keywords");
 		assertEquals( 0 , values.size());
 

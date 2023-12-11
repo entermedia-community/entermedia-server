@@ -1,8 +1,10 @@
 package org.entermediadb.asset;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,16 +14,505 @@ import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.BaseCompositeData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.RecordStatusEnabled;
+import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.users.User;
 
-public class CompositeAsset extends Asset implements Data, CompositeData
+public class CompositeAsset extends BaseCompositeData implements Data, CompositeData, Asset
 {
+	protected MediaArchive fieldMediaArchive;
+	
+	public CompositeAsset(Searcher inSearcher, EventManager inManager, HitTracker inHits)
+	{
+		super(inSearcher, inManager, inHits);
+	}
+
+	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
+	{
+		super(inMediaArchive.getAssetSearcher(),inMediaArchive.getEventManager(), inHits);
+		setMediaArchive(inMediaArchive);
+	}
+
+	@Override
+	public boolean isLocked()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public User getLockOwner()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public boolean isDeleted()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public boolean isFolder()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public void setFolder(boolean inIsFolder)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+		//return null;
+	}
+
+	@Override
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
+
+	@Override
+	public int getOrdering()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return 0;
+	}
+
+	@Override
+	public void setOrdering(int inOrdering)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String getShortDescription()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void setShortDescription(String inDescription)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String toString(String inLocale)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void removeProperty(String inKey)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void addCategory(Category inCatid)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void removeCategory(Category inCategory)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public Set buildCategorySet()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public Collection<Category> getCategories()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public boolean isInCatalog(Category inCategory)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public boolean isInCategory(Category inCat)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public boolean isInCategory(String inCategoryId)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public Collection getCollections()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public Collection getLibraries()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void clearCategories()
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public boolean hasProperty(String inKey)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public void addKeyword(String inString)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void addKeywords(String inString)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public Collection<String> getKeywords()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void removeKeyword(String inKey)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public Date getDate(String inField, String inDateFormat)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public boolean isRelated(Asset inAsset)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public void setKeywords(Collection<String> inKeywords)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void clearKeywords()
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void incrementProperty(String inProperty, int inDelta) throws Exception
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public boolean hasRelatedAssets()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public Asset copy(String inNewId)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public Asset copy()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void setCategories(Collection<Category> inCatalogs)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void setOriginalImagePath(String inPath)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String getSaveAsName()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void addRelatedAsset(RelatedAsset inRelationship)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public Collection getRelatedAssets()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void removeRelatedAsset(String inCatalogId, String inAssetId)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public List getRelatedAssets(String inType)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void clearRelatedAssets()
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public void setRelatedAssets(Collection inRelatedAssets)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String getMediaName()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public String getPrimaryFile()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void setPrimaryFile(String inPath)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String getCatalogId()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public String getFileFormat()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public String getDetectedFileFormat()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public String getAttachmentByType(String inType)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void setAttachmentFileByType(String inType, String inName)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public boolean hasKeywords()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public Category getDefaultCategory()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public BigDecimal getBigDecimal(String inKey)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public float getUploadPercentage()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return 0;
+	}
+
+	@Override
+	public boolean isPropertyTrue(String inKey)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public void setTagsValue(String inKey, Object inValue)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public String getPath()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return null;
+	}
+
+	@Override
+	public void removeChildCategory(Category inCatParent)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public boolean isEquals(long inFilemmod)
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public boolean clearParentCategories()
+	{
+		throw new OpenEditException("Unimplemented");
+		//return false;
+	}
+
+	@Override
+	public void toggleLock(User inUser)
+	{
+		throw new OpenEditException("Unimplemented");
+		
+	}
+
+	@Override
+	public Map getSearchData()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSearchData(Map inSearchHit)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map getEmRecordStatus()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	/*
 	private static final long serialVersionUID = -7154445212382362391L;
 	protected HitTracker fieldInitialSearchResults;
 	protected HitTracker fieldSelectedResults;
@@ -47,7 +538,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		setMediaArchive(inMediaArchive);
 		setInitialSearchResults(inHits);
-
+		setSearcher(inMediaArchive.getAssetSearcher());
 		reloadData();
 	}
 
@@ -194,11 +685,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return new ArrayList(fieldKeywords);
 	}
 
-	protected void checkSave(List<Asset> inTosave)
+	protected void checkSave(WebPageRequest inReq, Collection<Data> inTosave)
 	{
 		if (inTosave.size() > 99)
 		{
-			getMediaArchive().saveAssets(inTosave);
+			saveAll(inReq,inTosave);
 			inTosave.clear();
 		}
 	}
@@ -494,14 +985,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		super.setValue(inKey, inValues);
 	}
 
-	/**
-	 * Do not call this more than once! Because we use the hit results to check
-	 * on previous saved
-	 */
-	public void saveChanges()
+
+	public void saveChanges(WebPageRequest inReq)
 	{
 		//compare keywords, categories and data. 
-		List tosave = new ArrayList(500);
+		List<Data> tosave = new ArrayList(500);
 
 		Map savedvalues = new HashMap();
 
@@ -581,7 +1069,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				Collection cats = (Collection) data.getValue("category-exact");
 				if (cats != null && cats.contains(cat))
 				{
-					Asset asset = loadAsset(inloopasset, data, tosave);
+					Asset asset = loadAsset(inReq,inloopasset, data, tosave);
 					if (asset != null)
 					{
 						asset.removeCategory(cat);
@@ -612,7 +1100,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				Collection keywords = (Collection) data.getValue("keywords");
 				if (keywords != null && keywords.contains(inKey))
 				{
-					Asset asset = loadAsset(inloopasset, data, tosave);
+					Asset asset = loadAsset(inReq,inloopasset, data, tosave);
 					if (asset != null)
 					{
 						asset.removeKeyword(inKey);
@@ -637,8 +1125,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				{
 					continue;
 				}
-
-				Asset asset = loadAsset(inloopasset, data, tosave);
+				Asset asset = loadAsset(inReq, inloopasset, data, tosave);
 				if (asset != null)
 				{
 					PropertyDetail detail = getPropertyDetails().getDetail(key);
@@ -689,15 +1176,19 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			}
 			if (tosave.size() > 1000)
 			{
-				getMediaArchive().saveAssets(tosave);
+				saveAll(inReq, tosave);
+
 				tosave.clear();
 			}
 		}
-		getMediaArchive().saveAssets(tosave);
+		saveAll(inReq, tosave);
+		
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
 		commonValues = new HashMap();
 	}
+
+	
 
 	protected Collection<Category> collectCats(Object existingvalue)
 	{
@@ -751,79 +1242,9 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return cats;
 	}
 
-	/**
-	 * @param asset
-	 * @param key
-	 * @param added
-	 *            Ones that needs to be added
-	 * @param existing
-	 *            Ones that are already on the asset
-	 * @param old
-	 *            Ones that need to be removed?
-	 */
-	protected void saveMultiValues(Asset asset, String key, Collection added, Collection existing, Collection previousCommonOnes)
-	{
-		HashSet set = new HashSet();
-		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
-		{
-			Object object = (Object) iterator.next();
-			if (object instanceof String && ((String) object).isEmpty())
-			{
-				continue;
-			}
-			set.add(object);
-		}
 
-		set.addAll(added);
-
-		//Need to remove any that are missing from combined
-		previousCommonOnes.removeAll(added);
-		set.removeAll(previousCommonOnes);
-
-		asset.setValue(key, set);
-		//System.out.println("Saving old value:" + datavalue + " saved: " + existing);
-	}
-
-	protected boolean isMulti(String key)
-	{
-		if (key.equals("libraries"))
-		{
-			return true;
-		}
-		PropertyDetail detail = getPropertyDetails().getDetail(key);
-
-		boolean multi = detail != null && detail.isMultiValue();
-		return multi;
-	}
-
-	protected Collection collect(Object existingvalue)
-	{
-		if (existingvalue == null)
-		{
-			return new HashSet();
-		}
-		if (existingvalue instanceof Collection)
-		{
-			return (Collection) existingvalue;
-		}
-		if (existingvalue instanceof String)
-		{
-
-			String val = (String) existingvalue;
-			if (val.trim().isEmpty())
-			{
-				return new HashSet();
-			}
-			String[] vals = VALUEDELMITER.split(val);
-			Set set = new HashSet(vals.length);
-			for (int i = 0; i < vals.length; i++)
-			{
-				set.add(vals[i]);
-			}
-			return set;
-		}
-		return new HashSet();
-	}
+	
+	
 
 	//
 	class AssetIterator implements Iterator
@@ -854,7 +1275,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 
 	}
 
-	protected Asset loadAsset(Asset inFieldCurrentAsset, Data inData, List toSave)
+	protected Asset loadAsset(WebPageRequest inReq, Asset inFieldCurrentAsset, Data inData, List toSave)
 	{
 		if (inFieldCurrentAsset == null)
 		{
@@ -866,7 +1287,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		if (inFieldCurrentAsset != null)
 		{
-			checkSave(toSave);
+			checkSave(inReq,toSave);
 			toSave.add(inFieldCurrentAsset);
 		}
 		return inFieldCurrentAsset;
@@ -892,5 +1313,5 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return collect(currentlist);
 
 	}
-
+	*/
 }

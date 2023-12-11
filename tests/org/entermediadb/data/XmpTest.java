@@ -3,6 +3,7 @@ package org.entermediadb.data;
 import java.io.File;
 
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.ExiftoolMetadataExtractor;
@@ -13,7 +14,7 @@ public class XmpTest extends BaseEnterMediaTest{
 	
 	public void testXmpWriting() throws Exception
 	{
-		Asset asset = new Asset(getMediaArchive());
+		Asset asset = new BaseAsset(getMediaArchive());
 		asset.addKeyword("test1");
 		asset.addKeyword("test2");
 		asset.setSourcePath("testassets/Indesign.indd");
@@ -23,7 +24,7 @@ public class XmpTest extends BaseEnterMediaTest{
 		assertNotNull(writer);
 		writer.saveMetadata(getMediaArchive(), asset);
 		
-		Asset newasset = new Asset(getMediaArchive());
+		Asset newasset = new BaseAsset(getMediaArchive());
 		
 		ExiftoolMetadataExtractor reader= (ExiftoolMetadataExtractor)getBean("exiftoolMetadataExtractor");
 		MediaArchive mediaArchive = getMediaArchive();
@@ -40,7 +41,7 @@ public class XmpTest extends BaseEnterMediaTest{
 
 	public void testCustomXmp() throws Exception
 	{
-		Asset asset = new Asset(getMediaArchive());
+		Asset asset = new BaseAsset(getMediaArchive());
 		asset.setValue("entermedia-exif", "EnterMedia");
 			
 		
@@ -51,7 +52,7 @@ public class XmpTest extends BaseEnterMediaTest{
 		assertNotNull(writer);
 		writer.saveMetadata(getMediaArchive(), asset);
 		
-		Asset newasset = new Asset(getMediaArchive());
+		Asset newasset = new BaseAsset(getMediaArchive());
 		
 		ExiftoolMetadataExtractor reader= (ExiftoolMetadataExtractor)getBean("exiftoolMetadataExtractor");
 		MediaArchive mediaArchive = getMediaArchive();

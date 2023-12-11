@@ -1,7 +1,6 @@
 package org.entermediadb.asset.modules;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Iterator;
 
 import org.entermediadb.asset.Asset;
@@ -18,7 +17,6 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
-import org.openedit.util.PathUtilities;
 
 public class AttachmentModule extends BaseMediaModule
 {

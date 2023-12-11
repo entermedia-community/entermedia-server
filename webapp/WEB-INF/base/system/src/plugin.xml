@@ -39,7 +39,7 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 	</bean>
 	<bean id="userManager" class="org.openedit.users.BaseUserManager" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -84,7 +84,7 @@
 	<bean id="pageManager" class="org.openedit.page.manage.PageManager">
 		<property name="repository"><ref bean="repository"/></property>
 		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemExpireCacheManager"/></property>
 		
 	</bean>
 	
@@ -94,7 +94,7 @@
 	
 	<bean id="beanNameLoader" class="org.openedit.BeanNameLoader">
 		<property name="pageManager"><ref bean="pageManager"/></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
         <property name="xmlArchive"><ref bean="xmlArchive"/></property>
 	</bean>
 
@@ -122,7 +122,7 @@
 		<property name="xconfReader"><ref bean="xConfToPageSettingsConverter"/></property>
 		<property name="pageSettingsWriter"><ref bean="pageSettingsToXconfWriter"/></property>
 		<property name="textLabelManager"><ref bean="textLabelManager"/></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 	</bean>
 	
 	<bean id="xConfToPageSettingsConverter" class="org.openedit.page.manage.XConfToPageSettingsConverter">
@@ -269,11 +269,15 @@
 	<bean id="executorManager" class="org.openedit.util.ExecutorManager" >
 	</bean>
 
-	<bean id="cacheManager" class="org.openedit.cache.CacheManager"  >
-	
+	<bean id="systemCacheManager" class="org.openedit.cache.CacheManager" >
 	</bean>
 
-	<bean id="timedCacheManager" class="org.openedit.cache.CacheManager" scope="prototype" >
+	<bean id="systemExpireCacheManager" class="org.openedit.cache.CacheManager" >
+			<property name="expiryTime"><value>15</value></property>
+	</bean>
+
+
+	<bean id="cacheManager" class="org.openedit.cache.CacheManager" scope="prototype" >
 			<property name="expiryTime"><value>15</value></property>
 	</bean>
 
@@ -293,7 +297,6 @@
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 		
 	<bean id="userSearcher"
@@ -337,7 +340,7 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemExpireCacheManager"/></property>
 		
 	</bean>
 	<bean id="siteData" class="org.openedit.servlet.SiteData" scope="prototype">

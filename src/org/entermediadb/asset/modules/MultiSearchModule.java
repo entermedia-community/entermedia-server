@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
-import org.entermediadb.asset.search.CompositeSearcher;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;

@@ -279,7 +279,6 @@
 		<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="searchQueryArchive" class="org.openedit.data.SearchQueryArchive"
@@ -432,9 +431,6 @@
 		<property name="mimeTypeMap">
 			<ref bean="mimeTypeMap" />
 		</property>
-		<property name="cacheManager">
-			<ref bean="timedCacheManager" />
-		</property>
 <!-- 		<property name="lockManager">
 			<ref bean="lockManager" />
 		</property>
@@ -488,22 +484,7 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 	
-
 	
-	<bean id="assetDataArchive" class="org.entermediadb.asset.xmldb.XmlAssetArchive"
-		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="updateExistingRecord">
-			<value>true</value>
-		</property>
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-	</bean>
-
 	<bean id="pdfExtractor" class="org.entermediadb.asset.scanner.MetadataPdfExtractor" >
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -698,16 +679,6 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
  -->
-	<bean id="xmlCategoryArchive" class="org.entermediadb.asset.xmldb.XmlCategoryArchive"
-		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="xmlUtil">
-			<ref bean="xmlUtil" />
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-	</bean>
 
 <!-- 
 	<bean id="luceneAssetSearcher" class="org.entermediadb.asset.search.BaseAssetSearcher"
@@ -923,20 +894,6 @@
 	<bean id="TranslationModule" class="org.entermediadb.asset.modules.TranslationModule" />
 
 	
-	<!-- 
-	<bean id="xmlFileSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
-		<property name="pageManager"><ref bean="pageManager"/></property>
-		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="rootDirectory"><ref bean="root"/></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>		
-				<property name="moduleManager"><ref bean="moduleManager"/></property>
-		
-	</bean>
-	 -->
-	 
 	<bean id="chunkySourcePathCreator" class="org.entermediadb.asset.ChunkySourcePathCreator" />
 	
 	<bean id="emailArchive" class="org.entermediadb.email.XmlEmailArchive" scope="prototype">
@@ -1013,44 +970,9 @@
 		
 	</bean>
 
-<!-- 
-	<bean id="luceneOrderSearcher" class="org.entermediadb.asset.orders.OrderSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>orders</value></property>
-		<property name="newDataName"><value>order</value></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="orderManager"><ref bean="orderManager" /></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
-	</bean>
-	 -->
+
 	<bean id="order" class="org.entermediadb.asset.orders.Order" scope="prototype">
 	</bean>
-	<!-- 
-	<bean id="luceneOrderitemSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>orderitems</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
-	</bean>
-
-	<bean id="luceneOrderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>orders</value></property>
-		<property name="newDataName"><value>orderhistory</value></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
-	</bean>
-	 -->
 	<bean id="orderhistory" class="org.entermediadb.asset.orders.OrderHistory" scope="prototype"/>
 	
 	<bean id="publishManager" class="org.entermediadb.asset.publishing.PublishManager" >
@@ -1163,18 +1085,7 @@
 			<ref bean="metaDataReader" />
 		</property>
 	</bean>
-	
-	<!-- 
-	<bean id="attachmentSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>assets</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
- -->
+
 	<bean id="SavedQueryModule" class="org.entermediadb.asset.modules.SavedQueryModule">
 		<property name="savedQueryManager"><ref bean="savedQueryManager" /></property>
 	</bean>
@@ -1183,29 +1094,7 @@
 	<bean id="savedQueryManager" class="org.entermediadb.asset.savedqueries.SavedQueryManager"	scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-<!-- 
-	<bean id="savedquerySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>users</value></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
 
-	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>users</value></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
- -->
 
 	<bean id="AttachmentModule" class="org.entermediadb.asset.modules.AttachmentModule" >
 		<property name="attachmentManager">
@@ -1214,38 +1103,7 @@
 		
 		
 	</bean>
-	<!-- 
-		<bean id="RegistrationModule" class="org.entermediadb.asset.modules.RegistrationModule" >
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="postMail">
-			<ref bean="postMail" />
-		</property>
-	</bean>
-	 -->
-	<!-- Catalog based user details (not like preferences) -->
-	<!-- 
-	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>profiles</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
-	
-		 -->
-	<!-- 
-	<bean id="EmailSearchModule" class="org.entermediadb.email.EmailSearchModule" >
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</bean>
-	 -->
-	 
+
 	 
 	 <bean id="exiftoolThumbTranscoder" class="org.entermediadb.asset.convert.transcoders.ExiftoolThumbTranscoder" lazy-init="default">
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1411,7 +1269,7 @@
 			<ref bean="xmlUtil" />
 		</property>
 		<property name="webServer"><ref bean="WebServer" /></property>		
-				<property name="cacheManager"><ref bean="cacheManager"/></property>
+				<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 		
 	</bean>
 
@@ -1505,7 +1363,6 @@
 			<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 	
 	</bean>
 	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
@@ -1526,7 +1383,6 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 		<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
@@ -1576,7 +1432,6 @@
 			<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
 	</bean>
 	
@@ -1696,9 +1551,6 @@
 		</property>
 		<property name="newDataName"><value>elasticCategory</value></property>
 		<property name="checkVersions"><value>false</value></property>
-		<property name="cacheManager">
-			<ref bean="timedCacheManager" />
-		</property>
 		
 	</bean>
 
@@ -1783,9 +1635,6 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="cacheManager">
-			<ref bean="timedCacheManager" />
-		</property>
 		
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -1799,9 +1648,6 @@
 		</property>
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
-		</property>
-		<property name="cacheManager">
-			<ref bean="timedCacheManager" />
 		</property>
 		
 		<property name="searcherManager">
@@ -1955,7 +1801,7 @@
 			<property name="executorManager">
 				<ref bean="executorManager" />
 			</property>
-			<property name="timedCache"><ref bean="timedCacheManager"/></property>
+			<property name="timedCache"><ref bean="systemExpireCacheManager"/></property>
 	</bean>		
 	<bean id="OrderManager" class="model.orders.BaseOrderManager" >
 		<property name="searcherManager">
@@ -2063,7 +1909,7 @@
 
 	<bean id="searchSecurity" class="org.entermediadb.asset.search.BaseSearchSecurity"  lazy-init="default">
 		<property name="cacheManager">
-			<ref bean="timedCacheManager" />
+			<ref bean="systemCacheManager" />
 		</property>
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -2316,7 +2162,7 @@
  	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="localFileCache"><ref bean="timedCacheManager"/></property>
+		<property name="localFileCache"><ref bean="systemExpireCacheManager"/></property>
  	</bean>
 
 	<bean id="ChatModule" class="org.entermediadb.websocket.chat.ChatModule" >
@@ -2333,14 +2179,14 @@
 	
 	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		<property name="timedCacheManager"><ref bean="timedCacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
+		<property name="timedCacheManager"><ref bean="systemExpireCacheManager"/></property>
 		
 	</bean>
 
 	<bean id="permissionManager" class="org.entermediadb.users.PermissionManager" scope="prototype" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 		<property name="filterReader"><ref bean="filterReader"/></property>	
 	</bean>
 
@@ -2458,7 +2304,7 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 	</bean>		
 
 

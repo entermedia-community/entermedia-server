@@ -162,7 +162,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			users = new ArrayList<String>(users);
 		}
 		users.remove(inUsername);
-		inAsset.setValues("viewusers", users);
+		inAsset.setValue("viewusers", users);
 		inArchive.saveAsset(inAsset, null);
 	}
 
@@ -179,7 +179,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			users = new ArrayList<String>(users);
 		}
 		users.remove(inGroupname);
-		inAsset.setValues("viewgroups", users);
+		inAsset.setValue("viewgroups", users);
 		inArchive.saveAsset(inAsset, null);
 
 	}
@@ -201,7 +201,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		users.add(inUsername);
 		inAsset.removeProperty("public");
 		users.remove("true");
-		inAsset.setValues("viewusers", users);
+		inAsset.setValue("viewusers", users);
 		inArchive.saveAsset(inAsset, null);
 
 	}
@@ -220,7 +220,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		}
 		users.add(inGroupname);
 		inAsset.removeProperty("public");
-		inAsset.setValues("viewgroups", users);
+		inAsset.setValue("viewgroups", users);
 		inArchive.saveAsset(inAsset, null);
 	}
 
@@ -238,7 +238,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		}
 		users.addAll(inGroupnames);
 		inAsset.removeProperty("public");
-		inAsset.setValues("viewgroups", users);
+		inAsset.setValue("viewgroups", users);
 		inArchive.saveAsset(inAsset, null);
 
 	}

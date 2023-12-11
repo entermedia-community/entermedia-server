@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -34,9 +33,7 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.XmlUtil;
 import org.openedit.util.ZipUtil;
-import org.openedit.xml.ElementData;
 
 public class MediaAdminModule extends BaseMediaModule
 {

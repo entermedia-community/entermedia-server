@@ -3,6 +3,7 @@ package org.entermediadb.data;
 import java.io.File;
 
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.AssetEditModule;
@@ -157,7 +158,7 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 	{
 		String catalog = "entermedia/catalogs/test";
 		MediaArchive archive = getMediaArchive(catalog);
-		Asset asset = new Asset(archive);
+		Asset asset = new BaseAsset(archive);
 		//asset.setCatalogId(catalog);
 		String sourcepath = "another/new/sourcepath";
 		asset.setSourcePath(sourcepath);

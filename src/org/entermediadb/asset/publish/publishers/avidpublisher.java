@@ -13,7 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.*;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.ProfileModule;
 import org.entermediadb.asset.publishing.BasePublisher;
