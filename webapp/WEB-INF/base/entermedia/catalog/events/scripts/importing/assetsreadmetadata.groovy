@@ -18,6 +18,9 @@ public void init()
 			HitTracker assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
 			assets.enableBulkOperations();
 			assets.setHitsPerPage(100);
+			
+			long start = System.currentTimeMillis();
+			
 			List assetsToSave = new ArrayList();
 			MetaDataReader reader = moduleManager.getBean("metaDataReader");
 			for (Data hit in assets)
@@ -36,11 +39,17 @@ public void init()
 						archive.saveAssets( assetsToSave );
 						archive.firePathEvent("importing/assetsimported",user,assetsToSave);
 						assetsToSave.clear();
-						log.info("saved 100 metadata readings");
+						long end = System.currentTimeMillis();
+						end = end - start;
+						log.info("saved 100 metadata readings in: " + end);
+						start = System.currentTimeMillis();
 					}
 				}
 			}
 			archive.saveAssets( assetsToSave );
+			long end = System.currentTimeMillis();
+			end = end - start;
+			log.info("saved "+ assetsToSave.size() +" metadata readings in: " + end);
 			archive.firePathEvent("importing/assetsimported",user,assetsToSave);
 			//log.info("metadata reading complete");
 			

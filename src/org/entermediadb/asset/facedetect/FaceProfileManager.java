@@ -125,7 +125,7 @@ public class FaceProfileManager implements CatalogEnabled
 				ContentItem input = null;
 				long filesize = inAsset.getLong("filesize");
 				//if( inAsset.getFileFormat().equals("jpg") || inAsset.getFileFormat().equals("jpeg")) 
-				if (filesize < 5000000)
+				if (filesize < 50000000)
 				{
 					input = getMediaArchive().getOriginalContent(inAsset);
 				}
@@ -239,6 +239,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		double similaritycheck = .99D;
+		double boxprobability = .999D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -265,6 +266,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			List subjects = (List)map.get("subjects");
 			Map found = null;
+			
 			if( subjects != null && !subjects.isEmpty())
 			{
 				/*
@@ -304,8 +306,7 @@ public class FaceProfileManager implements CatalogEnabled
 				if( similrity < similaritycheck)
 				{
 					found = null;//
-				}				
-				
+				}
 			}
 			//Upload as another subject so we have plenty similar ones
 //			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
@@ -314,6 +315,15 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			//tosendparams.put("det_prob_threshold",".6");
 			ValuesMap box = new ValuesMap((Map)map.get("box"));
+			
+			//verify probability that a found face is actually a face
+			double boxp = box.getDouble("probability");
+			if( boxp < boxprobability)
+			{
+				log.info("Low probability of found face: " + boxp );
+				continue;
+			}
+			
 			int x = box.getInteger("x_min");
 			int y = box.getInteger("y_min");
 			int x2 = box.getInteger("x_max");
@@ -325,7 +335,7 @@ public class FaceProfileManager implements CatalogEnabled
 			int maxh = 75;
 			
 			long filesize = inAsset.getLong("filesize");
-			if (filesize < 5000000)
+			if (filesize < 50000000)
 			{
 				maxw = 250;
 				maxh = 260;
@@ -523,9 +533,10 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			url = "http://localhost:8000";
 		}
-		log.info("Sending " + input.getPath() );
+		long start = System.currentTimeMillis();
+		log.info("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info("Returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() );
+		log.info("Facial Profile Detection returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() + " in: " + (System.currentTimeMillis() - start) + "ms");
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
@@ -534,6 +545,8 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 
 		JSONObject json = getSharedConnection().parseJson(resp);
+		log.info(json.toString());
+		
 		JSONArray results = (JSONArray)json.get("result");
 		
 		return results;
