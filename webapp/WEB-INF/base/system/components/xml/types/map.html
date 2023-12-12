@@ -14,7 +14,7 @@
    
    #set( $lat = $latandlong.getLatitude() )
    #set( $lng = $latandlong.getLongitude() )
-   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
+   #set($icon = $mediaarchive.getCachedData("geoicon", $data.geoicon))
 
   
    Position: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$lat,$lng"/>

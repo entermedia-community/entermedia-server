@@ -45,15 +45,13 @@ $context.putPageValue("insearch",true)
 			$context.putPageValue("val",$value)
 		#end
 		$context.putPageValue("detail",$detail)
-		
-		##$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-		
-		##SLOW???
-		###if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
+
+		#if( $viewtype.equals("list") || $viewtype.equals("boolean"))		
 			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-		###else
-		##	$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-		###end
+		#else	
+			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		#end	
+		
 	</td>
 </tr>
 #end

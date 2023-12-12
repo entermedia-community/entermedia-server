@@ -11,7 +11,7 @@
 
 #set( $foundrow = false )
 #if($val && $val != "")
-	#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
+	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
 
 #set($label = $searcherManager.getLabel($detail,$foundrow,$context) )
@@ -45,7 +45,7 @@
 
 
 #if( $idprefix != "search"  && $foundrow )
-	#set($module = $searcherManager.getData($catalogid, "module", $detail.listId ) )
+	#set($module = $searcherManager.getCachedData($catalogid, "module", $detail.listId ) )
 	#if($module)
 	
 		#if($module.id == "asset")

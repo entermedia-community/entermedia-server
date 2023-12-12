@@ -84,7 +84,7 @@
 	<bean id="pageManager" class="org.openedit.page.manage.PageManager">
 		<property name="repository"><ref bean="repository"/></property>
 		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>
-		<property name="cacheManager"><ref bean="systemExpireCacheManager"/></property>
+		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
 		
 	</bean>
 	

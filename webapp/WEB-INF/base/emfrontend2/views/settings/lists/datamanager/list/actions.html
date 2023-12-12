@@ -25,6 +25,7 @@
         				All
         				$context.putPageValue("hits",false)
         			#end
+        			
                     $pages.include("/${applicationid}/components/xml/searchfields.html",$context)
                     <input type="hidden" name="catalogid" value="$!searcher.catalogId" />
                     <input type="hidden" name="searchtype" value="$!searcher.searchType" />

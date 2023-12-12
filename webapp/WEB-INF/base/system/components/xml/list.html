@@ -58,9 +58,9 @@ $query.setSortBy($detail.getDefaultSort())
 ##end
 
 #set( $valueid = "$fieldname" )
+$types.enableBulkOperations()
 
 #if($types)
-$types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
@@ -69,7 +69,7 @@ $types.enableBulkOperations()
 	#end
 
 	<select  id="$csslistid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
-		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
+		class="listautocomplete choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"
 		data-listid="$listid" 
 		data-searchtype= '$searchtype'
@@ -85,7 +85,7 @@ $types.enableBulkOperations()
 		#else
    		#set($label = $type.getName($context.getLanguage()))
 		#end
-		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
+		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
 	#end
    </select>
  

@@ -2,7 +2,7 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
+#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #set($label = $foundrow.getName($context.getLanguage()))
 #esc($!label)
 #debug("ListID: $detail.listId")

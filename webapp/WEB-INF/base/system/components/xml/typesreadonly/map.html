@@ -7,7 +7,7 @@
   
    #set( $lat = $latandlong.getLatitude() )
    #set( $lng = $latandlong.getLongitude() )
-   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
+   #set($icon = $mediaarchive.getCachedData("geoicon", $data.geoicon))
 
 
 <div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>

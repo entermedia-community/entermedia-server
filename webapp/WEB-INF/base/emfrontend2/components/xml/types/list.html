@@ -40,10 +40,6 @@
 #if( $listfilterid)
 	#set( $listfilterdetail = $originalsearcher.getDetailForView($view, $listfilterid, $user) )
 	
-	<script type="text/javascript">
-		##this is to list to the parent and to update itself fieldname
-		addListListener("$listfilterid", "${fieldname}");
-	</script>
 	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
 	#if(!$remotevalue)
 		#set( $remotevalue  = $data.get($listfilterid) )
@@ -94,13 +90,12 @@
 			data-listid="$listid" 
 			data-searchtype= '$listid'
 			data-searchfield="$searchfield"
-        	onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searcher.getSearchType()','$!view','$fieldname');"
         	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")
 	<option value="">$!detail.blankoption</option>
 	#end
-	$types.setHitsPerPage(1000)
+	$types.setHitsPerPage(500)
 	#foreach( $type in $types.getPageOfHits() )
 		#set( $key = $type.id)
 		#if($detail.render)
@@ -108,10 +103,10 @@
 		#else
    		#set($label = $type.getName($context.getLanguage()))
 		#end
-		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
+		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
 	#end
-	#if($hits && $hits.size() > 1000 )
-		<option value="-1">1000 [[limit reached]]</option>
+	#if($hits && $hits.size() > 500 )
+		<option value="-1">500 [[limit reached]]</option>
 	#end
    </select>
  

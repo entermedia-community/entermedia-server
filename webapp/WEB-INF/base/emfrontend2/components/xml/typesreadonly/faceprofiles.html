@@ -1,5 +1,6 @@
 #set($collection = $data.getValues($detail.getId()))
-#if($collection.size()>0)
+#ifnotnull($collection)
+#if(!$collection.isEmpty())
 <div class="emfield-scroll">
 <ul class="entity-value-list">
 	#foreach( $profile in $collection )
@@ -24,4 +25,5 @@
 	#end	
 </ul>
 </div>
+#end
 #end
