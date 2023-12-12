@@ -40,10 +40,12 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
 	{
-		super(inMediaArchive.getAssetSearcher(),inMediaArchive.getEventManager(), inHits);
 		setMediaArchive(inMediaArchive);
-		setInitialSearchResults(inHits);
 		setSearcher(inMediaArchive.getAssetSearcher());
+		setInitialSearchResults(inHits);
+		setEventManager(inMediaArchive.getEventManager());
+
+		//super(inMediaArchive.getAssetSearcher(),inMediaArchive.getEventManager(), inHits);
 		reloadData();
 
 	}
@@ -503,7 +505,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
 	protected Collection fieldEditFields;
-	protected Map<String, Object> commonValues = new HashMap();
 
 	public Collection getEditFields()
 	{
@@ -815,88 +816,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		return null;
 	}
 
-	protected Object getValueFromResults(String inKey)
-	{
-		Object val = commonValues.get(inKey);
-		if (val != null)
-		{
-			return val;
-		}
-		Iterator iterator = getSelectedResults().iterator();
-		if (!iterator.hasNext())
-		{
-			return null;
-		}
-		Data firstrow = (Data) iterator.next();
-		String text = firstrow.get(inKey);
-		while (iterator.hasNext())
-		{
-			Data data = (Data) iterator.next();
-			String dataval = data.get(inKey);
-			if (text == null)
-			{
-				if (text != dataval)
-				{
-					text = "";
-					break;
-				}
-			}
-			else if (text.length() > 0 && !text.equals(dataval))
-			{
-				//Maybe just out of order?
-				boolean multi = isMulti(inKey);
 
-				if (dataval != null && multi)
-				{
-					String[] vals = VALUEDELMITER.split(text);
-					text = "";
-					for (int i = 0; i < vals.length; i++)
-					{
-						if (dataval.contains(vals[i])) //vals are in an array
-						{
-							if (text.length() == 0)
-							{
-								text = vals[i];
-							}
-							else
-							{
-								text = text + " | " + vals[i];
-							}
-						}
-					}
-				}
-				else
-				{
-					text = "";
-					break;
-				}
-
-			}
-		}
-		if (text == null)
-		{
-			text = "";
-		}
-		val = text;
-
-		if (text != null && !text.isEmpty())
-		{
-
-			PropertyDetail detail = getPropertyDetails().getDetail(inKey);
-			if (detail.isMultiLanguage())
-			{
-				Object currentval = firstrow.getValue(inKey);
-
-				if (currentval instanceof LanguageMap)
-				{
-					val = currentval;
-				}
-			}
-		}
-
-		commonValues.put(inKey, val);
-		return val;
-	}
 
 	public void setValue(String inKey, Object inValue)
 	{
