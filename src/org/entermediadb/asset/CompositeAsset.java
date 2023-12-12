@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseCompositeData;
@@ -41,6 +42,10 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	{
 		super(inMediaArchive.getAssetSearcher(),inMediaArchive.getEventManager(), inHits);
 		setMediaArchive(inMediaArchive);
+		setInitialSearchResults(inHits);
+		setSearcher(inMediaArchive.getAssetSearcher());
+		reloadData();
+
 	}
 
 	@Override
@@ -140,12 +145,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		
 	}
 
-	@Override
-	public void removeCategory(Category inCategory)
-	{
-		throw new OpenEditException("Unimplemented");
-		
-	}
+	
 
 	@Override
 	public Set buildCategorySet()
@@ -154,13 +154,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		//return null;
 	}
 
-	@Override
-	public Collection<Category> getCategories()
-	{
-		throw new OpenEditException("Unimplemented");
-		//return null;
-	}
-
+	
 	@Override
 	public boolean isInCatalog(Category inCategory)
 	{
@@ -224,19 +218,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		
 	}
 
-	@Override
-	public Collection<String> getKeywords()
-	{
-		throw new OpenEditException("Unimplemented");
-		//return null;
-	}
 
-	@Override
-	public void removeKeyword(String inKey)
-	{
-		throw new OpenEditException("Unimplemented");
-		
-	}
 
 	@Override
 	public Date getDate(String inField, String inDateFormat)
@@ -512,7 +494,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	}
 	
 	
-	/*
 	private static final long serialVersionUID = -7154445212382362391L;
 	protected HitTracker fieldInitialSearchResults;
 	protected HitTracker fieldSelectedResults;
@@ -532,14 +513,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	public void setEditFields(Collection inEditFields)
 	{
 		fieldEditFields = inEditFields;
-	}
-
-	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
-	{
-		setMediaArchive(inMediaArchive);
-		setInitialSearchResults(inHits);
-		setSearcher(inMediaArchive.getAssetSearcher());
-		reloadData();
 	}
 
 	public HitTracker getInitialSearchResults()
@@ -696,7 +669,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 	public void removeKeyword(String inKey)
 	{
-		super.removeKeyword(inKey);
+		//super.removeKeyword(inKey);
 		getRemovedKeywords().add(inKey);
 	}
 
@@ -781,7 +754,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 	public void removeCategory(Category inCategory)
 	{
-		super.removeCategory(inCategory);
+		//super.removeCategory(inCategory);
 		getRemovedCategories().add(inCategory);
 
 	}
@@ -1305,13 +1278,4 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 	}
 
-	@Override
-	public Collection<String> getValues(String inPreference)
-	{
-
-		Object currentlist = getValueFromResults(inPreference);
-		return collect(currentlist);
-
-	}
-	*/
 }

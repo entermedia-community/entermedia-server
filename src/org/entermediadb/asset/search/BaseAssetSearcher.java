@@ -24,6 +24,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseCompositeData;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetailsArchive;
@@ -162,6 +163,13 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 //			getAssetPaths().put(asset.getId(), asset.getSourcePath()); // This
 //		}
 
+	}
+
+	protected BaseCompositeData createCompositeData(HitTracker hits)
+	{
+		CompositeAsset asset = new CompositeAsset(getMediaArchive(), hits);
+		//asset.setMediaArchive(getMediaArchive());
+		return asset;
 	}
 
 	public void reIndexAll()
