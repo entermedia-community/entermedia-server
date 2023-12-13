@@ -39,7 +39,7 @@ public abstract class CatalogConverter extends Scanner
 			{
 				asset.setOrdering(i);
 			}
-			inStore.getAssetArchive().saveAsset(asset);
+			inStore.saveAsset(asset);
 			// inStore.getAssetArchive().saveBlankAssetDescription(asset);
 		}
 	}

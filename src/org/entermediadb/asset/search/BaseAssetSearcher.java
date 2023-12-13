@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.AssetArchive;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
@@ -213,10 +212,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 		return fieldMediaArchive;
 	}
 	
-	public void deleteData(Data inData)
-	{
-		getAssetArchive().deleteAsset((Asset)inData);
-	}
+//	public void deleteData(Data inData)
+//	{
+//		getAssetArchive().deleteAsset((Asset)inData);
+//	}
 	
 	public void deleteFromIndex(Asset inAsset)
 	{
@@ -345,10 +344,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 		fieldCategorySearcher = inCategorySearcher;
 	}
 
-	public AssetArchive getAssetArchive()
-	{
-		return getMediaArchive().getAssetArchive();
-	}
+
 /*	
 	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
 	{

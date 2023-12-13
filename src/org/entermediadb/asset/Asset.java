@@ -71,7 +71,7 @@ public interface Asset  extends MultiValued, SaveableData, SearchData, RecordSta
 
 	Collection getCollections();
 
-	Collection getLibraries();
+	//Collection getLibraries();
 
 	void clearCategories();
 

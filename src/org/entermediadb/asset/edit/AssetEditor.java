@@ -214,7 +214,6 @@ public class AssetEditor
 		
 		
 		getMediaArchive().saveAsset(inAsset, inUser);
-		getMediaArchive().getAssetArchive().clearAssets();
 
 		//Save a file here for future use
 		Page attachments = pageManager.getPage(dataRoot + "/originals/" + newSourcePath + "/attachments.txt");

@@ -603,6 +603,8 @@ String viewbase = null;
 				compositedata.setEditFields(Arrays.asList(fields));
 				
 				count = compositedata.size();
+				searcher.updateData(inReq, fields, data);
+
 				compositedata.saveChanges(inReq);
 				
 				//getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());

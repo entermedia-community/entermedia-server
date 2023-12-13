@@ -168,7 +168,7 @@ public class DvdImportConverter extends CatalogConverter
 			asset.setProperty("originalpath", out.getAbsolutePath());
 			asset.setProperty("dvdtitle", inDvd.getTitle());
 			// Aspect ration?
-			inArchive.getAssetArchive().saveAsset(asset);
+			inArchive.saveAsset(asset);
 			assets.add(asset);
 		}
 		inArchive.getCategoryArchive().saveCategory(inCategory);

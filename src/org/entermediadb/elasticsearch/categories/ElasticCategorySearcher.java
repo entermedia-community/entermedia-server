@@ -41,20 +41,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 
 
-	public XmlCategoryArchive getXmlCategoryArchive()
-	{
-		if( fieldXmlCategoryArchive == null)
-		{
-			fieldXmlCategoryArchive = (XmlCategoryArchive)getModuleManager().getBean(getCatalogId(),"xmlCategoryArchive");
-		}
-		return fieldXmlCategoryArchive;
-	}
-
-	public void setXmlCategoryArchive(XmlCategoryArchive inXmlCategoryArchive)
-	{
-		fieldXmlCategoryArchive = inXmlCategoryArchive;
-	}
-
 	
 	public Data createNewData()
 	{
@@ -100,7 +86,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		setReIndexing(true);
 		try
 		{
-			getXmlCategoryArchive().clearCategories();
+			//getXmlCategoryArchive().clearCategories();
 			getCacheManager().clear("category");
 			
 			HitTracker tracker = query().all().sort("categorypath").search();
@@ -148,7 +134,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			
 			
 			
-			getXmlCategoryArchive().clearCategories();
+			//getXmlCategoryArchive().clearCategories();
 			getCacheManager().clear("category");
 			
 			HitTracker tracker = query().all().sort("categorypath").search();
@@ -255,7 +241,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		
 		if( root == null)
 		{
-			root = getXmlCategoryArchive().getRootCategory();
+			//root = getXmlCategoryArchive().getRootCategory();
 			fieldXmlCategoryArchive = null;
 			if( root == null)
 			{
@@ -490,7 +476,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void clearCategories()
 	{
 		clearIndex();
-		getXmlCategoryArchive().clearCategories();
 		getCacheManager().clear("category");
 		
 	}

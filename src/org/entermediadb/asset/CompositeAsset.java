@@ -186,13 +186,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	}
 
 	@Override
-	public Collection getLibraries()
-	{
-		throw new OpenEditException("Unimplemented");
-		//return null;
-	}
-
-	@Override
 	public void clearCategories()
 	{
 		throw new OpenEditException("Unimplemented");
@@ -771,7 +764,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		if (size() > 0)
 		{
 			Object val = getValue(inId);
-			return getMap().toString(val);
+			return getPropertiesSet().toString(val);
 		}
 
 		return null;
@@ -781,7 +774,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	{
 		if (size() > 0)
 		{
-			Object val = getMap().getValue(inId); //set by the user since last save
+			Object val = getPropertiesSet().getValue(inId); //set by the user since last save
 			if (val != null) //already set to a value
 			{
 				return val;
@@ -885,16 +878,23 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		//compare keywords, categories and data. 
 		List<Data> tosave = new ArrayList(500);
 
-		Map savedvalues = new HashMap();
+		Map safevalues = new HashMap();
 
 		for (Iterator iterator = getEditFields().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
-			Object newval = getMap().getObject(field); //set by the user since last save
+			Object newval = getPropertiesSet().getObject(field); //set by the user since last save
 			//See if the values changed
-			Object oldval = getValueFromResults(field);
+			Object oldval = getValueFromResults(field); 
+			//A bank string means no common value.
+			//A null means empty
 
-			if (newval != null)
+			if( newval == null && oldval == null)
+			{
+				continue;  //Empty on both sides
+			}
+			
+			if (newval != null)  //Clean up the newval
 			{
 				String snewval = newval.toString();
 				if( snewval == null)
@@ -906,32 +906,41 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 					newval = null;
 				}
 			}
-			if (oldval != null && oldval.toString().isEmpty())
-			{
-				oldval = null;
-			}
+			
+//			if (oldval != null && oldval.toString().isEmpty())
+//			{
+//				oldval = null;
+//			}
+			
+			//See if there is a newval
 			if (newval != oldval)
 			{
+				if (newval == null && "NOTEQUAL".equals(oldval))
+				{
+					//There was not agreement so we should not delete em
+					continue;
+				}
+
 				if (newval == null && oldval != null)
 				{
-					savedvalues.put(field, ValuesMap.NULLVALUE);
+					safevalues.put(field, ValuesMap.NULLVALUE);
 				}
 				else
 				{
 					if (oldval == null && newval != null)
 					{
-						Object obj = getMap().getObject(field);
-						savedvalues.put(field, obj);
+						Object obj = getPropertiesSet().getObject(field);
+						safevalues.put(field, obj);
 					}
 					else
 					{
 						if (field.equals("category-exact"))
 						{
-							savedvalues.put(field, collectCats(newval));
+							safevalues.put(field, collectCats(newval));
 						}
 						else
 						{
-							savedvalues.put(field, newval);
+							safevalues.put(field, newval);
 						}
 					}
 				}
@@ -1002,7 +1011,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 					}
 				}
 			}
-			for (Iterator iterator2 = savedvalues.keySet().iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = safevalues.keySet().iterator(); iterator2.hasNext();)
 			{
 				String key = (String) iterator2.next();
 				if ("assetid".equals(key))
@@ -1010,7 +1019,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 					continue;
 				}
 				Object datavalue = data.getValue(key);
-				Object newval = savedvalues.get(key);
+				Object newval = safevalues.get(key);
 				if (datavalue == newval)
 				{
 					continue;
@@ -1194,7 +1203,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 	public void refresh()
 	{
-		getMap().clear();
+		getPropertiesSet().clear();
 		setValue("category-exact", null);
 
 	}

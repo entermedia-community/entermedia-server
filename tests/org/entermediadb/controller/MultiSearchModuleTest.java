@@ -68,7 +68,7 @@ public class MultiSearchModuleTest extends BaseEnterMediaTest
 		assertEquals("asset/details", detail.getView());
 		assertEquals("name", detail.getId());
 				
-		archive.getAssetArchive().deleteAsset(p);
+		archive.deleteAsset(p,false);
 	}
 	 
 	 public void testAddTerm() throws Exception

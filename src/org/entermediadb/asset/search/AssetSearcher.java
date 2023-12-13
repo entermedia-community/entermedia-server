@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.AssetArchive;
 import org.entermediadb.asset.Category;
-import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -30,8 +28,6 @@ public interface AssetSearcher extends Searcher
 	public abstract void updateIndex(Data inAsset);
 
 	public abstract void updateIndex(List inAssets);
-
-	public abstract AssetArchive getAssetArchive();
 
 	public abstract void deleteFromIndex(Asset inAsset);
 

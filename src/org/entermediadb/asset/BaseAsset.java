@@ -357,8 +357,8 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		}	
 		return collections;
 	}
-	
-	@Override
+
+/*
 	public Collection getLibraries()
 	{
 		Collection cats = getCategories();
@@ -381,7 +381,8 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 		HitTracker hits = librarysearcher.query().orgroup("categoryid", ids).search();
 		return hits;
 	}
-
+*/
+	
 	/*
 	 * @deprecated
 	 * 

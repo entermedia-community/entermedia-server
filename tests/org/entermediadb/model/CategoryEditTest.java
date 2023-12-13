@@ -38,7 +38,7 @@ public class CategoryEditTest extends BaseEnterMediaTest
 		Category category = getCategoryEditor().getCategory("GOODSTUFF");
 		assertNotNull( category );
 		getCategoryEditor().deleteCategory(category);
-		getMediaArchive().getAssetArchive().clearAssets();
+		getMediaArchive().clearAll();
 
 		Category deletedCategory = getCategoryEditor().getCategory("GOODSTUFF");
 		assertNull( deletedCategory );

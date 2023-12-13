@@ -338,7 +338,7 @@ public class MediaArchiveModule extends BaseMediaModule
 				}
 				String sourcepath = inContent.getPath();
 				sourcepath = sourcepath.substring(datapath.length() + 1, sourcepath.length() - "data.xml".length() - 1);
-				Asset asset = archive.getAssetArchive().getAssetBySourcePath(sourcepath);
+				Asset asset = archive.getAssetBySourcePath(sourcepath);
 				tosave.add(asset);
 				if (tosave.size() == 500)
 				{

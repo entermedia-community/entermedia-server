@@ -102,8 +102,6 @@ public class MediaArchive implements CatalogEnabled
 	}
 
 	protected TranscodeTools fieldTranscodeTools;
-	protected AssetArchive fieldAssetArchive;
-	protected AssetArchive fieldMirrorAssetArchive;
 	//	protected Map fieldTaxRates;
 	protected AssetSearcher fieldAssetSearcher;
 	protected CatalogConverter fieldImportConverter;
@@ -391,7 +389,8 @@ public class MediaArchive implements CatalogEnabled
 //		}
 		return presets;
 	}
-	
+
+	/*
 	public int countSeries(String inAssetID) throws OpenEditException
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inAssetID);
@@ -428,7 +427,8 @@ public class MediaArchive implements CatalogEnabled
 			return Integer.parseInt(count);
 		}
 	}
-
+	*/
+	
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -872,24 +872,7 @@ public class MediaArchive implements CatalogEnabled
 		fieldAssetExport = assetExport;
 	}
 
-	public AssetArchive getAssetArchive()
-	{
-		if (fieldAssetArchive == null)
-		{
-			fieldAssetArchive = (AssetArchive) getModuleManager().getBean(getCatalogId(), "assetDataArchive");
-		}
-		return fieldAssetArchive;
-	}
 
-	public AssetArchive getMirrorAssetArchive()
-	{
-		return fieldMirrorAssetArchive;
-	}
-
-	public void setMirrorAssetArchive(AssetArchive mirrorAssetArchive)
-	{
-		fieldMirrorAssetArchive = mirrorAssetArchive;
-	}
 
 	public AssetSearcher getAssetSearcher()
 	{
@@ -958,7 +941,7 @@ public class MediaArchive implements CatalogEnabled
 
 	public void reindexAll() throws OpenEditException
 	{
-		getAssetArchive().clearAssets(); // lets hope they are all saved
+		//getAssetArchive().clearAssets(); // lets hope they are all saved
 		// before we delete em
 		getAssetSearcher().reIndexAll();
 	}

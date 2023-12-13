@@ -19,7 +19,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.AssetArchive;
 import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
@@ -546,11 +545,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return data;
 
 	}
-	protected AssetArchive getAssetArchive()
-	{
-		return getMediaArchive().getAssetArchive();
-	}
-
+	
 	public Data getDataBySourcePath(String inSourcePath)
 	{
 		if (inSourcePath.endsWith("/"))

@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchSecurity;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;

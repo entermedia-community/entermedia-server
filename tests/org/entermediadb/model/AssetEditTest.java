@@ -139,7 +139,6 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 		User user = getFixture().createPageRequest().getUser();
 		getMediaArchive().saveAsset(asset, user);
-		getMediaArchive().getAssetArchive().clearAssets();
 		asset = getMediaArchive().getAsset(asset.getId());
 		String returntext = asset.get("assettitle");
 		assertEquals(originaltext, returntext);
@@ -173,7 +172,6 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 		try
 		{
-			getMediaArchive().getAssetArchive().clearAssets();
 			asset = getMediaArchive().getAsset(asset.getId());
 			assertEquals("Number of related products", 1, asset.getRelatedAssets().size());
 			relationship = (RelatedAsset) asset.getRelatedAssets().iterator().next();
@@ -339,7 +337,6 @@ public class AssetEditTest extends BaseEnterMediaTest
 		HitTracker tracker = getMediaArchive().getAssetSearcher().search(q);
 		int size = tracker.size();
 		
-		getMediaArchive().getAssetArchive().deleteAsset(asset);
 		getMediaArchive().getAssetSearcher().deleteFromIndex(asset);
 
 		tracker = getMediaArchive().getAssetSearcher().search(q);
