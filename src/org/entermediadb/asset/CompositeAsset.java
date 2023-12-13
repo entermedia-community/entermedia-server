@@ -372,7 +372,8 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	@Override
 	public String getFileFormat()
 	{
-		throw new OpenEditException("Unimplemented");
+		String value = get("fileformat");
+		return value;
 		//return null;
 	}
 
