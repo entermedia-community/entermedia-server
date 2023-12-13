@@ -120,9 +120,19 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			List<Map> faceprofiles = new ArrayList();
 			
-			if( "image".equalsIgnoreCase(type) )
+			if( "image".equalsIgnoreCase(type) && inAsset.getFileFormat()!= null)
 			{
-				ContentItem input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
+				ContentItem input = null;
+				long filesize = inAsset.getLong("filesize");
+				//if( inAsset.getFileFormat().equals("jpg") || inAsset.getFileFormat().equals("jpeg")) 
+				if (filesize < 50000000)
+				{
+					input = getMediaArchive().getOriginalContent(inAsset);
+				}
+				else 
+				{
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
+				}
 				if( !input.exists() )
 				{
 					//probblem
@@ -132,7 +142,7 @@ public class FaceProfileManager implements CatalogEnabled
 					//may not be ready?
 					return false;
 				}
-				List<Map> json = findFaces(input);
+				List<Map> json = findFaces(inAsset, input);
 				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
 				faceprofiles.addAll(moreprofiles);
 			}
@@ -179,7 +189,7 @@ public class FaceProfileManager implements CatalogEnabled
 					}
 					else
 					{
-						List<Map> json = findFaces(item);	
+						List<Map> json = findFaces(inAsset, item);	
 						List<Map> moreprofiles = makeProfilesForEachFace(inAsset,block.getStartOffset(),item,json);
 						faceprofiles.addAll(moreprofiles);
 					}
@@ -229,6 +239,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		double similaritycheck = .99D;
+		double boxprobability = .999D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -255,6 +266,7 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			List subjects = (List)map.get("subjects");
 			Map found = null;
+			
 			if( subjects != null && !subjects.isEmpty())
 			{
 				/*
@@ -294,8 +306,7 @@ public class FaceProfileManager implements CatalogEnabled
 				if( similrity < similaritycheck)
 				{
 					found = null;//
-				}				
-				
+				}
 			}
 			//Upload as another subject so we have plenty similar ones
 //			curl -X POST "http://localhost:8000/api/v1/recognition/faces?subject=<subject>&det_prob_threshold=<det_prob_threshold>" \
@@ -304,13 +315,33 @@ public class FaceProfileManager implements CatalogEnabled
 			
 			//tosendparams.put("det_prob_threshold",".6");
 			ValuesMap box = new ValuesMap((Map)map.get("box"));
+			
+			//verify probability that a found face is actually a face
+			double boxp = box.getDouble("probability");
+			if( boxp < boxprobability)
+			{
+				log.info("Low probability of found face: " + boxp );
+				continue;
+			}
+			
 			int x = box.getInteger("x_min");
 			int y = box.getInteger("y_min");
 			int x2 = box.getInteger("x_max");
 			int y2 = box.getInteger("y_max");
 			int w = x2 - x;
 			int h = y2 - y;
-			if( w < 70 || h < 75)
+			
+			int maxw = 70;
+			int maxh = 75;
+			
+			long filesize = inAsset.getLong("filesize");
+			if (filesize < 50000000)
+			{
+				maxw = 250;
+				maxh = 260;
+			}
+			
+			if( w < maxw || h < maxh)
 			{
 				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
 				continue;
@@ -337,14 +368,11 @@ public class FaceProfileManager implements CatalogEnabled
 				{
 					int count = oldgroup.getInt("samplecount");
 					count++;
-					if( count > 10)
+					if( count > 20)
 					{
 						morethan10 = true;
 					}
-					else
-					{
-						oldgroup.setValue("samplecount", count);
-					}
+					oldgroup.setValue("samplecount", count);
 				}
 				
 				oldgroup.setValue("entity_date", new Date());
@@ -473,13 +501,18 @@ public class FaceProfileManager implements CatalogEnabled
 		return result.getOutput();
 	}
 
-	protected List<Map> findFaces(ContentItem input) throws ParseException
+	protected List<Map> findFaces(Asset inAsset, ContentItem input) throws ParseException
 	{
 		//Scan via REST and get faces
 		//1. Take image and scan it for faces https://github.com/exadel-inc/CompreFace/blob/master/docs/Rest-API-description.md#recognize-faces-from-a-given-image
 		
 		Map tosendparams = new HashMap();
-		tosendparams.put("limit","20");
+		Integer limit = 20;
+		Integer assetwidth = inAsset.getInt("width"); 
+		if(assetwidth > 0) {
+			limit = assetwidth/ 600;
+		}
+		tosendparams.put("limit", limit.toString());
 		tosendparams.put("prediction_count","1"); //Return only most likely subject
 		//tosendparams.put("face_plugins","detector");
 		
@@ -500,9 +533,10 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			url = "http://localhost:8000";
 		}
-		log.info("Sending " + input.getPath() );
+		long start = System.currentTimeMillis();
+		log.info("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info("Returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() );
+		log.info("Facial Profile Detection returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() + " in: " + (System.currentTimeMillis() - start) + "ms");
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
@@ -511,6 +545,8 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 
 		JSONObject json = getSharedConnection().parseJson(resp);
+		log.info(json.toString());
+		
 		JSONArray results = (JSONArray)json.get("result");
 		
 		return results;

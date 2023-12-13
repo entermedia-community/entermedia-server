@@ -5,22 +5,26 @@
 <ul class="entity-value-list">
 	#foreach( $profile in $collection )
 		#set( $row = false )
+		#set( $name = "")
 		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
 	    #if( $row )
+	    
 			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
 			#ifnotnull($person)
 		    	#set($name = $context.getText( $person) )
 			#end
-	    	#ifnull( $name)
+	    	#if( $name == "")
 	    		#set($name = "[[Profile]] $!row.get('facecounter')") 
 	    	#end
 	    	#if($profile.timecodestart)
-	    	#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
-	    	#set($name = "$name &nbsp;($secs)")
+	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+	    		#set($name = "$name &nbsp;($secs)")
 	    	#end
 		    
 		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?id=$row.id&hitssessionid=$!hits.sessionId")
-		    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
+		    <li><a href="$link" 
+		    	class="emdialog entity-dialog"
+		    	>$!name</a></li>
 	    #end 
 	#end	
 </ul>
