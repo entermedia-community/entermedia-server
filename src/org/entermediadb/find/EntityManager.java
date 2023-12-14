@@ -272,10 +272,10 @@ public class EntityManager implements CatalogEnabled
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
-		Category category = loadDefaultFolder(module, entity, inUser);
+		Category category = loadDefaultFolder(module, entity, inUser, true);
 		
 		List tosave = new ArrayList();
-		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null) {
+		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null) {
 			
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
