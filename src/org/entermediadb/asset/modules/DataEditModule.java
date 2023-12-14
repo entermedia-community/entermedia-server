@@ -673,7 +673,15 @@ String viewbase = null;
 
 				}
 			}
-			inReq.putPageValue("data", data);
+			
+			String variablename = inReq.findValue("pageval");
+			if (variablename == null)
+			{
+				variablename = "data";
+			}
+			
+			inReq.putPageValue(variablename, data);
+			
 			if (data instanceof UserProfile)
 			{
 				//saving our own user profile while logged in was immediately getting overridden by the one in memory

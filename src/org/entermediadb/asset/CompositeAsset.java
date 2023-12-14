@@ -1088,7 +1088,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
-		commonValues = new HashMap();
+		commonCachedValues = new HashMap();
 	}
 
 	
