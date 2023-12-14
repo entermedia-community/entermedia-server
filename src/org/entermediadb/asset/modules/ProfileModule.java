@@ -3,8 +3,10 @@ package org.entermediadb.asset.modules;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -760,5 +762,28 @@ public class ProfileModule extends MediaArchiveModule
 		}
 		inReq.putPageValue("profile",prof);
 	}
+	
+	public void updateLocation(WebPageRequest inReq) 
+	{
+		UserProfile prof = loadUserProfile(inReq);
+		String geopoint = inReq.getRequestParameter("geo_point");
+
+		String[] locations = geopoint.split(",");
+		Map point = new HashMap();
+		point.put("lat",locations[0]);
+		point.put("long",locations[1]);
+		prof.setValue("geo_point", point);
+		
+		try
+		{
+			getUserProfileManager().saveUserProfile(prof);
+		}
+		catch( Exception ex)
+		{
+			log.error("Could not save ", ex);
+		}
+		inReq.putPageValue("profile",prof);
+	}
+
 	
 }

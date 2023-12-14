@@ -171,6 +171,14 @@
       <language id="en"><![CDATA[Last Viewed Application]]></language>  
     </name> 
   </property>  
+  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Position]]></language>  
+      <language id="en"><![CDATA[GEO Location]]></language>  
+      <language id="es"><![CDATA[Posición]]></language>  
+      <language id="fr"><![CDATA[Position]]></language> 
+    </name> 
+  </property>  
   
   
 </properties>
