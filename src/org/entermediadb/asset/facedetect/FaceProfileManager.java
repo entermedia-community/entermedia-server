@@ -1,7 +1,5 @@
 package org.entermediadb.asset.facedetect;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.elasticsearch.discovery.zen.publish.PublishClusterStateAction.NewClusterStateListener;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -126,8 +123,8 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				ContentItem input = null;
 				long filesize = inAsset.getLong("filesize");
-				//if( inAsset.getFileFormat().equals("jpg") || inAsset.getFileFormat().equals("jpeg")) 
-				if (filesize < 50000000)
+				//if() 
+				if (filesize < 50000000 &&  (inAsset.getFileFormat().equals("jpg") || inAsset.getFileFormat().equals("jpeg")))
 				{
 					input = getMediaArchive().getOriginalContent(inAsset);
 				}
@@ -333,15 +330,8 @@ public class FaceProfileManager implements CatalogEnabled
 			int w = x2 - x;
 			int h = y2 - y;
 			
-			int maxw = 70;
-			int maxh = 75;
-			
-			long filesize = inAsset.getLong("filesize");
-			if (filesize < 50000000)
-			{
-				maxw = 250;
-				maxh = 260;
-			}
+			int maxw = 200;
+			int maxh = 200;
 			
 			if( w < maxw || h < maxh)
 			{
