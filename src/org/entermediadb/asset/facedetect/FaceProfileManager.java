@@ -1,5 +1,7 @@
 package org.entermediadb.asset.facedetect;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -764,6 +766,10 @@ public class FaceProfileManager implements CatalogEnabled
 	public Collection<FaceAsset> findAssetsForPerson(Data inPersonEntity, int maxnumber)
 	{
 		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("entityperson", inPersonEntity.getId()).search();
+		if (profiles.isEmpty()) {
+			return null;
+		}
+		
 		Collection<Data> assets = getMediaArchive().query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).hitsPerPage(maxnumber).search();
 
 		Map allprofiles = new HashMap();
