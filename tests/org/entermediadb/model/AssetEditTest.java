@@ -236,7 +236,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		{
 			product = getMediaArchive().createAsset("1","multitest/1");
 		}
-		product.setProperty("keywords", "1");
+		product.setProperty("keywords", "1common");
 		product.setProperty("categories", "index");
 		WebPageRequest req = getFixture().createPageRequest();
 		User user = req.getUser();
@@ -248,8 +248,8 @@ public class AssetEditTest extends BaseEnterMediaTest
 			product2 = getMediaArchive().createAsset("2","multitest/2");
 		}
 		ArrayList libs = new ArrayList();
-		libs.add("1");
-		libs.add("2");
+		libs.add("1common");
+		libs.add("2onproduct2");
 		product2.setValue("keywords", libs);
 		product2.setProperty("categories", "index");
 		getMediaArchive().saveAsset(product2, user);
@@ -280,41 +280,42 @@ public class AssetEditTest extends BaseEnterMediaTest
 		composite.setEditFields(fields);
 		composite.setSearcher(getMediaArchive().getAssetSearcher());
 		Collection existing = composite.getValues("keywords");
-		assertEquals(existing.size() , 1);
-		assertTrue(existing.contains("1"));
-		existing.add("3");
-		composite.setValue("keywords",existing); //We removed 1 (common) and added 3
+		assertEquals(existing.size() , 1);  //So "1common" is common and 2 is not
+		assertTrue(existing.contains("1common"));
+		existing.add("3addedtoboth");  //Add 3 to both records
+		composite.setValue("keywords",existing); //We removed ("1common") and added 3
 		composite.saveChanges(req);
 		Collection values = composite.getValues("keywords");
 		assertEquals( 2 , values.size());
-		assertTrue(values.contains("1"));
-		assertTrue(values.contains("3"));
+		assertTrue(values.contains("1common"));
+		assertTrue(values.contains("3addedtoboth"));
 
 
 		product = getMediaArchive().getAsset("1");
 		values = product.getValues("keywords");
 		assertEquals( 2 , values.size());
-		assertTrue(values.contains("1"));
-		assertTrue(values.contains("3"));
+		assertTrue(values.contains("1common"));
+		assertTrue(values.contains("3addedtoboth"));
 
 		product = getMediaArchive().getAsset("2");
 		values = product.getValues("keywords");
 		assertEquals( 3 , values.size());
-		assertTrue(values.contains("1"));
-		assertTrue(values.contains("2"));
-		assertTrue(values.contains("3"));
+		assertTrue(values.contains("1common"));
+		assertTrue(values.contains("2onproduct2"));
+		assertTrue(values.contains("3addedtoboth"));
 
 		//Now set it again and it will fail since results are not updated
 		composite.setValue("keywords" , new ArrayList() );
-		composite.saveChanges(req); //removed 3
+		composite.saveChanges(req); //removed 1common and  3addedtoboth, should be empty
 		values = composite.getValues("keywords");
-		assertEquals( 0 , values.size());
+		int size = values.size();
+		assertEquals( 0 , size);
 
 		//We remved all the common ones 1 and 3
 		product = getMediaArchive().getAsset("2");
 		values = product.getValues("keywords");
 		assertEquals( 1 , values.size());
-		assertTrue(values.contains("2"));
+		assertTrue(values.contains("2onproduct2"));
 		LanguageMap map = (LanguageMap) product.getValue("headline");
 		assertNotNull(map);
 
