@@ -12,10 +12,12 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.find.EntityManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
+import org.openedit.hittracker.HitTracker;
 
 public class EntityModule extends BaseMediaModule
 {
@@ -102,6 +104,43 @@ public class EntityModule extends BaseMediaModule
 		}
 	}
 	
+	
+	public void addAssetsToEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String pickedmoduleid = inPageRequest.getRequestParameter("moduleid");
+		String pickedentityid = inPageRequest.getRequestParameter("id");
+		String catalogid = inPageRequest.getRequestParameter("catalogid");
+		String assethitssessionid = inPageRequest.getRequestParameter("assethitssessionid");
+		
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		
+		
+		Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid,pickedentityid, assethits);
+		inPageRequest.putPageValue("assets", added);
+		
+	}
+	
+	public void addAssetstoNewEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+		String actiononsave = inPageRequest.getRequestParameter("actiononsave");
+		if(actiononsave.equals("addassets")) 
+		{
+			addAssetsToEntity(inPageRequest);
+		}
+	}
+	
+	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
+	{
+		String catalogid = inPageRequest.findValue("catalogid");
+		EntityManager entity = (EntityManager) getModuleManager().getBean(catalogid, "entityManager");
+		return entity;
+	}
+
+
 	private List<ValuesMap> createListMap(Collection inValues)
 	{
 		ArrayList copy = new ArrayList();

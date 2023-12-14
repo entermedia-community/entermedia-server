@@ -5,27 +5,26 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.profile.ModuleData;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.PathUtilities;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -267,6 +266,26 @@ public class EntityManager implements CatalogEnabled
 		double size= hits.getSum("assettype_filesize","assettype_sum");
 		values.put("filesize", size);
 		return values;
+	}
+
+	public Integer addAssetsToEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		Category category = loadDefaultFolder(module, entity, inUser);
+		
+		List tosave = new ArrayList();
+		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null) {
+			
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+				Data hit = (Data) iterator.next();
+				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+				asset.addCategory(category);
+				tosave.add(asset);
+			}
+			getMediaArchive().saveAssets(tosave);
+		}
+		return tosave.size();
 	}
 
 }
