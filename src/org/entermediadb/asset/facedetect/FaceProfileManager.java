@@ -787,17 +787,19 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			Asset asset = (Asset)searcher.loadData(data);
 			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
-			for( Map facedata : faceprofiles)
-			{
-				String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
-				Data group = (Data)allprofiles.get(faceprofilegroupid);
-				if( group != null)
+			if (faceprofiles != null) {
+				for( Map facedata : faceprofiles)
 				{
-					FaceAsset faceasset = new FaceAsset();
-					faceasset.setAsset(asset);
-					faceasset.setFaceProfileGroup(group);
-					faceasset.setFaceLocationData(new ValuesMap(facedata));
-					faceassets.add(faceasset);
+					String faceprofilegroupid = (String)facedata.get("faceprofilegroup");
+					Data group = (Data)allprofiles.get(faceprofilegroupid);
+					if( group != null)
+					{
+						FaceAsset faceasset = new FaceAsset();
+						faceasset.setAsset(asset);
+						faceasset.setFaceProfileGroup(group);
+						faceasset.setFaceLocationData(new ValuesMap(facedata));
+						faceassets.add(faceasset);
+					}
 				}
 			}
 		}
