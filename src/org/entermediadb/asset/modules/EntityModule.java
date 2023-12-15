@@ -127,7 +127,7 @@ public class EntityModule extends BaseMediaModule
 	public void addAssetstoNewEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 		String actiononsave = inPageRequest.getRequestParameter("actiononsave");
-		if(actiononsave.equals("addassets")) 
+		if(actiononsave != null && actiononsave.equals("addassets")) 
 		{
 			addAssetsToEntity(inPageRequest);
 		}
