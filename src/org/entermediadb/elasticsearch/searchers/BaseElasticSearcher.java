@@ -1811,6 +1811,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage());
 					}
 				}
+				/*
+				"_geo_distance": {
+			        "coords": {
+			          "lat": -27.87,
+			          "lon": -54.43
+			        },
+			        "order": "asc",
+			        "unit": "km",
+			        "mode": "min",
+			        "distance_type": "arc",
+			        "ignore_unmapped": true
+			      }*/
+				
 				else if (detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
 				{
 					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
