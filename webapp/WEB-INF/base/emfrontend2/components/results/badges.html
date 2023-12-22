@@ -1,11 +1,17 @@
 #set( $badges = $mediaarchive.getBadges($hit) )
 #if($canshowbadge && $badges)
 	<div class="badgecontainer">
-		<div class="badgetarget">
-			#foreach($badge in $badges)
-				<span id="badge_${hit.id}_$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
-			#end
+	#foreach($badge in $badges)
+		#if($badge.getName() == "Pending")
+		<div id="badge_${hit.id}_$badge.getId()" class="embadge bg-warning text-dark" title="$badge.getName()">
+			<i class="fas fa-hourglass-half"></i>
 		</div>
+		#elseif($badge.getName() == "Duplicate")
+		<div id="badge_${hit.id}_$badge.getId()" class="embadge bg-info text-white" title="$badge.getName()">
+			<i class="fas fa-clone"></i>
+		</div>
+		#end
+	#end
 	</div>
 #end
 
