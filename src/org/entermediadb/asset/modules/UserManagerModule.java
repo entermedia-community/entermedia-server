@@ -1544,6 +1544,18 @@ public class UserManagerModule extends BaseMediaModule
 				}
 			}
 	}
-	
+
+	public void listNearby(WebPageRequest inReq)
+	{
+		String selecteduser = inReq.getRequestParameter("userid");
+
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		HitTracker all = archive.query("user").all().sort("").search(inReq);
+		
+		inReq.putPageValue("hits",all);
+		
+	}
+
 	
 }

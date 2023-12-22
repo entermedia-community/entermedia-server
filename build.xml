@@ -70,7 +70,7 @@
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
-	<get dest="${build}/tmp/oesite.war" src="${remotehome}/em10_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
+	<get dest="${build}/tmp/oesite.war" src="${remotehome}/em11_entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
 	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
 	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
 		<fileset dir="${build}/tmp/WEB-INF/lib"	>
@@ -90,9 +90,6 @@
 
     <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.8" source="1.8">
       <classpath>
-      	  <!--      <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar">
-      	 </fileset>
-      	 -->
       	<fileset dir="${lib}">
           <include name="*.jar"/>
           <include name="compile/*.jar"/>
@@ -138,9 +135,7 @@
 		<mkdir dir="${wardir}/WEB-INF/lib/" />
 		<mkdir dir="${deployDir}/builds/" />
 		<jar jarfile="${wardir}/WEB-INF/lib/${branch}${appname}-${version}.jar" basedir="${build}/compile" >
-			<!--
-			<exclude name="**/*Test*"/>
-			-->
+
 			<manifest>
 		    	<attribute name="Built-By" value="${user.name}"/>
 			    <attribute name="Implementation-Title" value="${appname}"/>
