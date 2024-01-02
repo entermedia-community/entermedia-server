@@ -259,8 +259,8 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			}
 			catch (Throwable ex)
 			{
-				log.error("Could not originals process sync files ", ex);
-				inLog.error("Could not originals process sync files " + ex);
+				log.error(inArchive.getCatalogId() + " Could not originals process sync files ", ex);
+				inLog.error(inArchive.getCatalogId() + " Could not originals process sync files " + ex);
 				if (node != null)
 				{
 					String message = URLUtilities.fixPath(ex.getMessage());
@@ -299,7 +299,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 			node.setValue("lasterrormessageoriginals", "Could not list originals " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 			node.setValue("lasterrordateoriginals", new Date());
 			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
-			log.error("Initial originals server error " + sl);
+			log.error("(" + inArchive.getCatalogId()  + ") Initial originals server error " + sl);
 			return -1;
 		}
 		JSONObject	remotechanges = connection.parseJson(response2);
@@ -352,7 +352,7 @@ public class OriginalPuller extends BasePuller implements CatalogEnabled
 		}
 		else if (ok.equals("empty"))
 		{
-			log.info("No changes found");
+			log.info("(" + inArchive.getCatalogId()  + ") No changes found");
 			return 0;
 		}
 		else
