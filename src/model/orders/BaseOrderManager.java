@@ -127,6 +127,21 @@ public class BaseOrderManager implements OrderManager {
 		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
+	
+	public HitTracker findOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser, String ordertype) {
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
+		SearchQuery query = ordersearcher.createSearchQuery();
+		query.addExact("ordertype", ordertype);
+		//orderstatus
+		query.addOrsGroup("orderreadystatus","false"); //Open ones
+		
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.add(Calendar.MONTH, -3);
+		query.addAfter("date", cal.getTime());
+		query.addSortBy("dateDown");
+		query.addExact("userid", inUser.getId());
+		return ordersearcher.search(query);
+	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#loadOrderHistoryForPage(org.openedit.hittracker.HitTracker)
 	 */
@@ -923,6 +938,8 @@ public class BaseOrderManager implements OrderManager {
 			if((itemErrorCount + itemSuccessCount) == size )
 			{
 				inOrder.setOrderStatus("complete");
+				
+				inOrder.setValue("orderreadystatus", "false");
 				try
 				{
 					sendOrderNotifications(archive, inOrder);
@@ -937,6 +954,33 @@ public class BaseOrderManager implements OrderManager {
 				temphistory.setProperty("historytype","ordercomplete");
 				saveOrderHistory(archive, temphistory, inOrder)	;
 			}
+		}
+		finally
+		{
+			archive.releaseLock(lock);
+		}
+	}
+	
+	public void updateReadyStatus(MediaArchive archive, Order inOrder)
+	{
+		
+		//look up all the tasks
+		//if all done then save order status
+		Lock lock = archive.getLockManager().lockIfPossible("orders" + inOrder.getId(), "BaseOrderManager");
+		if( lock == null)
+		{
+			return;
+		}
+		try
+		{
+			if( inOrder.getOrderStatus() == "complete" );
+			{
+				
+				inOrder.setValue("orderreadystatus", "true");  //false will not notify again
+				saveOrder(archive.getCatalogId(), null, inOrder);
+				
+			}
+
 		}
 		finally
 		{
@@ -1296,6 +1340,7 @@ public class BaseOrderManager implements OrderManager {
 	public void setPageManager(PageManager inManager)
 	{
 		fieldPageManager = inManager;
-	}	
+	}
+
 
 }

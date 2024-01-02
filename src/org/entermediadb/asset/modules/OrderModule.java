@@ -375,6 +375,21 @@ public class OrderModule extends BaseMediaModule
 		
 		return orders;
 	}
+	
+	public HitTracker findDownloadOrdersForUser(WebPageRequest req)
+	{
+		String catalogid = req.findPathValue("catalogid");
+		User owner = (User) req.getPageValue("owner");
+		if (owner == null)
+		{
+			owner = req.getUser();
+		}
+		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download");
+		req.putPageValue("orders", orders);
+		req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
+		
+		return orders;
+	}
 
 	public HitTracker findOrderItems(WebPageRequest req)
 	{
@@ -1020,6 +1035,22 @@ public class OrderModule extends BaseMediaModule
 			getOrderManager().updatePendingOrders(archive);
 		}
 	}
+	
+	
+	public void updateReadyStatusOrder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Order order = loadOrder(inReq);
+		if (order != null)
+		{
+			getOrderManager().updateReadyStatus(archive, order);
+		}
+		else
+		{
+			//getOrderManager().updatePendingOrders(archive);
+		}
+	}
+	
 
 	public void clearOrderItems(WebPageRequest inReq)
 	{

@@ -29,6 +29,8 @@ public interface OrderManager
 	Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties);
 
 	HitTracker findOrdersForUser(String inCatlogId, User inUser);
+	
+	HitTracker findOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser, String ordertype);
 
 	void loadOrderHistoryForPage(HitTracker inPage);
 
@@ -99,5 +101,7 @@ public interface OrderManager
 	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder);
 
 	Order findOrderFromAssets(String inCatalogId, User inUser, List inAssetids);
+
+	void updateReadyStatus(MediaArchive archive, Order order);
 	
 }
