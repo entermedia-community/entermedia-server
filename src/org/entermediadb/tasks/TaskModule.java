@@ -1824,5 +1824,40 @@ public class TaskModule extends BaseMediaModule
 		}
 		return null;
 	}
-	
+
+	public void saveTaskRole(WebPageRequest inReq)
+	{
+		String taskid = inReq.getRequestParameter("taskid");
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Data task = (Data)tasksearcher.searchById(taskid);
+		
+		List roles = (List)task.getValue("taskroles");
+		
+		if( roles == null)
+		{
+			roles = new ArrayList();
+		}
+		
+		Map addrole = new HashMap();
+		addrole.put("date",new Date());
+		
+		String roleid = inReq.getRequestParameter("addrole");
+		addrole.put("collectiverole",roleid);
+		addrole.put("actioncount",0);
+		addrole.put("id",tasksearcher.nextId());
+		
+		roles.add(addrole);
+		
+		task.setValue("taskroles",roles);
+		tasksearcher.saveData(task);
+		
+		inReq.putPageValue("task", task);
+		
+		
+		
+		
+	}
+
 }
