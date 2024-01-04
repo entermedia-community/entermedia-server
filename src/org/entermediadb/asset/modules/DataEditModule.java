@@ -2050,15 +2050,15 @@ String viewbase = null;
 
 	public void loadOrSearch(WebPageRequest inReq) throws Exception
 	{
-		String searchtype = resolveSearchType(inReq);
-		String clear = inReq.getRequestParameter( searchtype + "clearresults");
-		if(clear== null) {
-			clear = (String) inReq.findValue( searchtype + "clearresults");
-		}
+//		String searchtype = resolveSearchType(inReq);
+//		String clear = inReq.getRequestParameter( searchtype + "clearresults");
+//		if(clear== null) {
+//			clear = (String) inReq.findValue( searchtype + "clearresults");
+//		}
 		HitTracker hits = null;
-		if (Boolean.parseBoolean(clear))
-		{
-			hits = loadHits(inReq);
+//		if (Boolean.parseBoolean(clear))
+//		{
+//			hits = loadHits(inReq);
 //			if (hits != null)
 //			{
 //				String input = hits.getSearchQuery().get("userinputsearch");
@@ -2067,24 +2067,30 @@ String viewbase = null;
 //					hits = null;
 //				}
 //			}
-		}
-		if (hits == null)
-		{
+//		}
+//		if (hits == null)
+//		{
 			//hits = search(inReq);
 			Searcher searcher = loadSearcher(inReq);
-			if(searcher != null) {
+			if(searcher != null)
+			{
 				SearchQuery q = searcher.addStandardSearchTerms(inReq);
 				if( q != null)
 				{
 					hits = searcher.cachedSearch(inReq, q);
 				}
-				else
+				if( hits == null)
+				{
+					hits = loadHits(inReq);
+				}
+
+				if( hits == null)
 				{
 					hits = searcher.getAllHits(inReq);				
 				}
 			}
 //			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
-		}
+//		}
 //		String name = inReq.findValue("hitsname");
 //		if( name == null)
 //		{
