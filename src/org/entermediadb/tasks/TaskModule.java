@@ -1846,18 +1846,54 @@ public class TaskModule extends BaseMediaModule
 		String roleid = inReq.getRequestParameter("addrole");
 		addrole.put("collectiverole",roleid);
 		addrole.put("actioncount",0);
-		addrole.put("id",tasksearcher.nextId());
 		
+		//addrole.put("id",tasksearcher.nextId());
+		String id = taskid+"_"+roleid;
+		addrole.put("id",id);
+	
 		roles.add(addrole);
 		
 		task.setValue("taskroles",roles);
 		tasksearcher.saveData(task);
 		
 		inReq.putPageValue("task", task);
-		
-		
-		
-		
 	}
+	public void taskRoleAddOne(WebPageRequest inReq)
+	{
+		String taskid = inReq.getRequestParameter("taskid");
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Data task = (Data)tasksearcher.searchById(taskid);
+		
+		List roles = (List)task.getValue("taskroles");
+		
+		if( roles == null)
+		{
+			//roles = new ArrayList();
+			return;
+		}
+		
+		//interate roles and search for taskactionid
+		/*
+		Map addrole = new HashMap();
+		addrole.put("date",new Date());
+		
+		String roleid = inReq.getRequestParameter("addrole");
+		addrole.put("collectiverole",roleid);
+		addrole.put("actioncount",0);
+		
+		//addrole.put("id",tasksearcher.nextId());
+		String id = taskid+"_"+roleid;
+		addrole.put("id",id);
+	
+		roles.add(addrole);
+		
+		task.setValue("taskroles",roles);
+		tasksearcher.saveData(task);
+		
+		inReq.putPageValue("task", task);*/
+	}
+	
 
 }
