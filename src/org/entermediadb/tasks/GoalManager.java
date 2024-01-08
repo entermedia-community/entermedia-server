@@ -1,6 +1,7 @@
 package org.entermediadb.tasks;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import org.entermediadb.asset.MediaArchive;
@@ -13,11 +14,17 @@ import org.openedit.data.Searcher;
 public class GoalManager implements CatalogEnabled
 {
 	protected ModuleManager fieldModuleManager;
+	
+	public GoalManager()
+	{
+		// TODO Auto-generated constructor stub
+	}
+	
 	protected ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
 	}
-	protected void setModuleManager(ModuleManager inModuleManager)
+	public void setModuleManager(ModuleManager inModuleManager)
 	{
 		fieldModuleManager = inModuleManager;
 	}
@@ -33,7 +40,7 @@ public class GoalManager implements CatalogEnabled
 	
 	protected MediaArchive getMediaArchive()
 	{
-		MediaArchive archive = (MediaArchive)getModuleManager().getBean("mediaArchive",getCatalogId());
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 		return archive;
 	}
 	
@@ -44,32 +51,33 @@ public class GoalManager implements CatalogEnabled
 		Data task = (Data)archive.getData("goaltask", taskid);
 
 		Searcher searcher = archive.getSearcher("goaltaskuserrole");
-		MultiValued newpoints = (MultiValued)searcher.query().exact("roleuserid",roleuserid).exact("collectiverole",collectiverole).exact("goaltaskid",taskid).searchOne();
-		int count = 0;
-		if( newpoints == null)
-		{
-			newpoints = (MultiValued)searcher.createNewData();
+		Collection existing = searcher.query().exact("roleuserid",roleuserid).exact("collectiverole",collectiverole).exact("goaltaskid",taskid).search();
+		
+		Data newpoints = (MultiValued)searcher.createNewData();
 			//Set theuser based on the team?
 			newpoints.setValue("roleuserid",roleuserid);
 			newpoints.setValue("collectiverole",collectiverole);
 			newpoints.setValue("goaltaskid",taskid);
-		}
-		else
-		{
-			count = newpoints.getInt("actioncount");
-		}
-		count++;
-		
-		newpoints.setValue("actioncount",count);
+		newpoints.setValue("date",new Date());
+		newpoints.setValue("actioncount",1);
 		searcher.saveData(newpoints);
 		
 		Map role = findRole(task,collectiverole, roleuserid);
 		Object totalcountobj = role.get("actioncount");
 		int totalcount = Integer.parseInt(totalcountobj.toString());
 		totalcount++;
-		role.put("actioncount",totalcount);
+		role.put("actioncount",existing.size());
 		archive.saveData("goaltask",task);
 		return task;
+	}
+
+	public Map findRole(String inTaskId, String collectiverole, String roleuserid)
+	{
+		Data task = (Data)getMediaArchive().getCachedData("goaltask", inTaskId);
+
+		Collection roles = (Collection)task.getValue("taskroles");
+		Map role = findRole(roles,collectiverole, roleuserid);
+		return role;
 	}
 
 	public Map findRole(Data inTask, String collectiverole, String roleuserid)
@@ -99,5 +107,17 @@ public class GoalManager implements CatalogEnabled
 		return null;
 	}
 
+	public Collection listActions(String inTaskId, String inRoleId, String roleuserid)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("goaltaskuserrole");
+		
+		Collection points = searcher.query().exact("roleuserid",roleuserid).exact("collectiverole",inRoleId)
+				.exact("goaltaskid",inTaskId).sort("date").search();
+		
+		return points;
+		
+	}
+	
+	
 	
 }
