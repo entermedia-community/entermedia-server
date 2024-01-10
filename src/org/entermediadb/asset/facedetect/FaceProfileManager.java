@@ -349,10 +349,14 @@ public class FaceProfileManager implements CatalogEnabled
 			h = Math.min(h,imageImput.getHeight() - y);
 			w = Math.min(w,imageImput.getWidth() - x);
 			
-			int maxw = 200;
-			int maxh = 200;
+			int max = 400;
 			
-			if( w < maxw || h < maxh)
+			String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
+			if(minumfaceimagesize != null) {
+				max = Integer.parseInt(minumfaceimagesize);
+			}
+			
+			if( w < max || h < max)
 			{
 				//log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
 				continue;
@@ -547,7 +551,7 @@ public class FaceProfileManager implements CatalogEnabled
 		long start = System.currentTimeMillis();
 		log.debug("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info((System.currentTimeMillis() - start) + "ms face detection for: " + input.getName());
+		log.info((System.currentTimeMillis() - start) + "ms face detection for: "+ input.getId() + " " + input.getName());
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
