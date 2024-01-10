@@ -551,7 +551,7 @@ public class FaceProfileManager implements CatalogEnabled
 		long start = System.currentTimeMillis();
 		log.debug("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info((System.currentTimeMillis() - start) + "ms face detection for: "+ input.getId() + " " + input.getName());
+		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + input.getName());
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
