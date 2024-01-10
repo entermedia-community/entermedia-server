@@ -224,7 +224,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		catch( Throwable ex)
 		{
-			throw new OpenEditException("Error on: " + inAsset.getSourcePath(),ex);
+			throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
 		}
 		
 	}
@@ -392,8 +392,8 @@ public class FaceProfileManager implements CatalogEnabled
 			faceprofile.put("locationx",x);
 			faceprofile.put("locationy",y);
 			faceprofile.put("locationw",w);
-			faceprofile.put("locationh",h);
-			
+				faceprofile.put("locationh",h);
+				
 	        faceprofile.put("inputwidth",imageImput.getWidth());
 	        
 	        faceprofile.put("inputheight",imageImput.getHeight());
