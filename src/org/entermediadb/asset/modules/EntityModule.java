@@ -113,14 +113,24 @@ public class EntityModule extends BaseMediaModule
 		String pickedmoduleid = inPageRequest.getRequestParameter("moduleid");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
 		String catalogid = inPageRequest.getRequestParameter("catalogid");
-		String assethitssessionid = inPageRequest.getRequestParameter("assethitssessionid");
+		
 		
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
 		
-		
-		Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid,pickedentityid, assethits);
-		inPageRequest.putPageValue("assets", added);
+		String assetid = inPageRequest.getRequestParameter("assetid");
+		if(assetid != null) {
+			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assetid))
+			{
+				inPageRequest.putPageValue("assets", "1");
+			}
+		}
+		else 
+		{
+			String assethitssessionid = inPageRequest.getRequestParameter("assethitssessionid");
+			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+			Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid,pickedentityid, assethits);
+			inPageRequest.putPageValue("assets", added);
+		}
 		
 	}
 	

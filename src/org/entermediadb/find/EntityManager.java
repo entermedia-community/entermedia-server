@@ -287,5 +287,18 @@ public class EntityManager implements CatalogEnabled
 		}
 		return tosave.size();
 	}
+	
+	public Boolean addAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		Category category = loadDefaultFolder(module, entity, inUser, true);
+
+		Asset asset = (Asset)getMediaArchive().getAsset(assetid);
+		asset.addCategory(category);
+		getMediaArchive().saveAsset(asset);
+		return true;
+
+	}
 
 }
