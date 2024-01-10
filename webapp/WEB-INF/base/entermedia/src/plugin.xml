@@ -2140,6 +2140,12 @@
  	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
 	</bean>	
 
+ 	<bean id="goalManager" class="org.entermediadb.tasks.GoalManager" scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>	
+
  	<bean id="projectGoal" class="org.entermediadb.tasks.ProjectGoal" scope="prototype">
  	</bean>
 

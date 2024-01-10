@@ -74,7 +74,14 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			log.info("Could not lock " + inPath + " trying again  " + tries);
 			lock = loadLock(inPath);
 		}
-		throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getNodeId() + " " + lock.getOwnerId());
+		if( lock != null)
+		{
+			throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getNodeId() + " " + lock.getOwnerId());
+		}
+		else
+		{
+			throw new OpenEditException("Could not lock file " + inPath );
+		}
 	}
 
 	public Lock grabLock(Lock lock, String inOwner, String inPath)

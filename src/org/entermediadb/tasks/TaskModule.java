@@ -1846,10 +1846,16 @@ public class TaskModule extends BaseMediaModule
 		String roleid = inReq.getRequestParameter("addrole");
 		addrole.put("collectiverole",roleid);
 		addrole.put("actioncount",0);
+		Data user = archive.query("librarycollectionusers").exact("teamroles",roleid).searchOne();
+
+		if( user != null)
+		{
+			addrole.put("roleuserid",user.get("followeruser"));
+		}
+		
 		
 		//addrole.put("id",tasksearcher.nextId());
-		String id = taskid+"_"+roleid;
-		addrole.put("id",id);
+		addrole.put("id",roleid);
 	
 		roles.add(addrole);
 		
@@ -1860,40 +1866,18 @@ public class TaskModule extends BaseMediaModule
 	}
 	public void taskRoleAddOne(WebPageRequest inReq)
 	{
-		String taskid = inReq.getRequestParameter("taskid");
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Searcher tasksearcher = archive.getSearcher("goaltask");
-		Data task = (Data)tasksearcher.searchById(taskid);
+		String taskid = inReq.getRequestParameter("taskid");
+		String roleuserid = inReq.getRequestParameter("roleuserid");
+		String collectiverole = inReq.getRequestParameter("collectiverole");
 		
-		List roles = (List)task.getValue("taskroles");
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 		
-		if( roles == null)
-		{
-			//roles = new ArrayList();
-			return;
-		}
-		
-		//interate roles and search for taskactionid
-		/*
-		Map addrole = new HashMap();
-		addrole.put("date",new Date());
-		
-		String roleid = inReq.getRequestParameter("addrole");
-		addrole.put("collectiverole",roleid);
-		addrole.put("actioncount",0);
-		
-		//addrole.put("id",tasksearcher.nextId());
-		String id = taskid+"_"+roleid;
-		addrole.put("id",id);
-	
-		roles.add(addrole);
-		
-		task.setValue("taskroles",roles);
-		tasksearcher.saveData(task);
-		
-		inReq.putPageValue("task", task);*/
+		Data task = goalm.addOne(taskid, collectiverole, roleuserid);
+		inReq.putPageValue("task", task);
 	}
-	
+
+
 
 }
