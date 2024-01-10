@@ -816,7 +816,8 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			allprofiles.put(profile.getId(), profile);
 		}
-		
+
+		log.info(assets.size() +" assets found for profile id: " + inFaceProfileId);
 //
 //		Collection profiles = archive.query("faceprofilegroup").exact("entityperson", person.getId()).search();
 //		inPageRequest.putPageValue("faceprofiles", profiles);
