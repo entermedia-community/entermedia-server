@@ -1,7 +1,10 @@
 package org.entermediadb.tasks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.asset.MediaArchive;
@@ -9,7 +12,10 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.users.Group;
+import org.openedit.users.User;
 
 public class GoalManager implements CatalogEnabled
 {
@@ -117,7 +123,163 @@ public class GoalManager implements CatalogEnabled
 		return points;
 		
 	}
+
+	public void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
+	{
+		
+		Collection userids = new HashSet();
+		Collection likes = selectedgoal.getValues("userlikes");
+		if (likes != null) 
+		{
+			userids.addAll(likes);
+		}
+			String owner = selectedgoal.get("owner");
+		if( owner != null)
+		{
+			userids.add(owner);
+		}
+		
+
+		String collectionid = selectedgoal.get("collectionid");
+		//Find all the users
+		Collection team = archive.query("librarycollectionusers").
+				exact("collectionid",collectionid).
+				exact("ontheteam","true").search();
+
+		for (Iterator iterator = team.iterator(); iterator.hasNext();)
+		{
+			Data follower = (Data)iterator.next();
+			String userid = follower.get("followeruser");
+			if( userid != null)
+			{
+				userids.add(userid);
+			}
+		}		
+		
+		Group agents = archive.getGroup("agents");
+		if( agents != null)
+		{
+			Collection users = archive.getUserManager().getUsersInGroup(agents);
+			for (Iterator iterator = users.iterator(); iterator.hasNext();)
+			{
+				Data auser = (Data)iterator.next();
+				userids.add(auser.getId());
+			}
+		}
+		
+		Collection tosave = new ArrayList();
+		
+		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", selectedgoal.getId()).exact("userid", userid).searchOne();
+
+			String existingstatus = (String)selectedgoal.get("projectstatus");
+			if( status == null)
+			{
+				status = (MultiValued)archive.getSearcher("statuschanges").createNewData();
+				status.setValue("goalid",selectedgoal.getId());
+				status.setValue("userid",userid);
+				status.setValue("previousstatus",existingstatus);
+			}
+			else
+			{
+//				String previous = status.get("previousstatus");
+//				if( !existingstatus.equals(previous))
+//				{
+//					status.setValue("previousstatus",existingstatus);
+					status.setValue("notified",false);
+//				}
+			}
+			status.setValue("collectionid",collectionid);
+			status.setValue("date",new Date());
+			status.setValue("editedbyid",editedby);
+			
+			tosave.add(status);
+		}
+		archive.saveData("statuschanges", tosave);
+	}
+	
+	public Data createGoal(WebPageRequest inReq, Data message)
+	{
+		MediaArchive archive = getMediaArchive();
+		Searcher chatsearcher = archive.getSearcher("chatterbox");
+		
+		String topic = message.get("channel");
+		String content = message.get("message");
+		String collectionid = inReq.getRequestParameter("collectionid");
+
+		Searcher searcher = archive.getSearcher("projectgoal");
+		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", message.getId()).searchOne();
+		if( goal == null)
+		{
+			goal = (MultiValued)searcher.createNewData();
+			goal.setValue("goaltrackercolumn", topic);
+			goal.setValue("tickettype", "chat");
+			goal.setValue("ticketlevel", "2");
+			goal.setValue("projectstatus", "open");
+			goal.setValue("creationdate",new Date());
+			goal.setValue("collectionid", collectionid);
+			goal.setValue("chatparentid", message.getId());
+			goal.addValue("userlikes",inReq.getUserName());
+			goal.setValue("owner", inReq.getUserName());
+			goal.addValue("details",content);
+			if( content != null && content.length() > 70)
+			{
+				content = content.substring(0,70) + "...";
+			}
+			User user = archive.getUser(message.get("user"));
+			if( user != null)
+			{
+				goal.setName(user.getScreenName() + ": " + content);
+			}
+			else
+			{
+				goal.setName("Anonymous : " + content);				
+			}
+			searcher.saveData(goal);
+			addStatus(archive, goal,inReq.getUserName());
+
+			//Create actions/Tasks on this goal
+			createActions(goal,message);
+			
+		}
+		
+		
+		return goal;
+	}
 	
 	
+	
+	public void createActions(MultiValued inGoal, Data inMessage)
+	{
+		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
+
+		String content = inMessage.get("message");
+		
+		//Split on numbers
+		String[] tasks = content.split("[\\r\\n]+"); //, /gm);
+		//"[{}]"
+		Collection tosave = new ArrayList();
+		for (int i = 0; i < tasks.length; i++)
+		{
+			Data task = tasksearcher.createNewData();
+			String userid = inMessage.get("user");
+			task.setValue("projectgoal",inGoal.getId());
+			String collectionid = inGoal.get("collectionid");
+			task.setValue("collectionid",collectionid);
+			//task.setValue("projectdepartment",categoryid);
+			task.setValue("completedby", userid );
+			task.setValue("taskstatus", "6"); //On Agenda
+			//task.setValue("projectdepartmentparents",cat.getParentCategories());
+			task.setValue("creationdate",new Date());
+			task.setValue("comment", tasks[i]);
+			//task.setName(tasks[i]);
+			tosave.add(task);
+			
+		}
+		tasksearcher.saveAllData(tosave,null);
+		
+	}	
 	
 }

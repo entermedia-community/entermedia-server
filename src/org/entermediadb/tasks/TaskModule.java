@@ -763,11 +763,16 @@ public class TaskModule extends BaseMediaModule
 			completedby = inReq.getUserName();
 		}
 		task.setValue("completedby", completedby);
-		
-		task.setValue("comment",taskcomment);
+		if( taskcomment != null)
+		{
+			task.setValue("comment",taskcomment);
+		}
 		
 		String[] keywords = inReq.getRequestParameters("keywords.value");
-		task.setValue("keywords", keywords);
+		if( keywords != null)
+		{
+			task.setValue("keywords", keywords);
+		}
 		
 		
 		tasksearcher.saveData(task);	
@@ -1529,7 +1534,8 @@ public class TaskModule extends BaseMediaModule
 		selectedgoal.setValue("projectstatus","completed");
 		selectedgoal.setValue("lasteditedby", inReq.getUser());
 		archive.saveData("projectgoal",selectedgoal);
-		addStatus(archive, selectedgoal,inReq.getUserName());
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+		goalm.addStatus(archive, selectedgoal,inReq.getUserName());
 		inReq.putPageValue("goal",selectedgoal);
 		Map params = new HashMap();
 		params.put("dataid", selectedgoal.getId());
@@ -1546,7 +1552,9 @@ public class TaskModule extends BaseMediaModule
 		}
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 
-		addStatus(archive, selectedgoal,inReq.getUserName());
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+
+		goalm.addStatus(archive, selectedgoal,inReq.getUserName());
 		
 		recalculateSessions(archive, selectedgoal, inReq.getUserName());
 		
@@ -1583,81 +1591,7 @@ public class TaskModule extends BaseMediaModule
 	
 	
 	
-	protected void addStatus(MediaArchive archive, MultiValued selectedgoal, String editedby)
-	{
-		
-		Collection userids = new HashSet();
-		Collection likes = selectedgoal.getValues("userlikes");
-		if (likes != null) 
-		{
-			userids.addAll(likes);
-		}
-			String owner = selectedgoal.get("owner");
-		if( owner != null)
-		{
-			userids.add(owner);
-		}
-		
 
-		String collectionid = selectedgoal.get("collectionid");
-		//Find all the users
-		Collection team = archive.query("librarycollectionusers").
-				exact("collectionid",collectionid).
-				exact("ontheteam","true").search();
-
-		for (Iterator iterator = team.iterator(); iterator.hasNext();)
-		{
-			Data follower = (Data)iterator.next();
-			String userid = follower.get("followeruser");
-			if( userid != null)
-			{
-				userids.add(userid);
-			}
-		}		
-		
-		Group agents = archive.getGroup("agents");
-		if( agents != null)
-		{
-			Collection users = archive.getUserManager().getUsersInGroup(agents);
-			for (Iterator iterator = users.iterator(); iterator.hasNext();)
-			{
-				Data auser = (Data)iterator.next();
-				userids.add(auser.getId());
-			}
-		}
-		
-		Collection tosave = new ArrayList();
-		
-		for (Iterator iterator = userids.iterator(); iterator.hasNext();)
-		{
-			String userid = (String) iterator.next();
-			MultiValued status = (MultiValued)archive.query("statuschanges").exact("goalid", selectedgoal.getId()).exact("userid", userid).searchOne();
-
-			String existingstatus = (String)selectedgoal.get("projectstatus");
-			if( status == null)
-			{
-				status = (MultiValued)archive.getSearcher("statuschanges").createNewData();
-				status.setValue("goalid",selectedgoal.getId());
-				status.setValue("userid",userid);
-				status.setValue("previousstatus",existingstatus);
-			}
-			else
-			{
-//				String previous = status.get("previousstatus");
-//				if( !existingstatus.equals(previous))
-//				{
-//					status.setValue("previousstatus",existingstatus);
-					status.setValue("notified",false);
-//				}
-			}
-			status.setValue("collectionid",collectionid);
-			status.setValue("date",new Date());
-			status.setValue("editedbyid",editedby);
-			
-			tosave.add(status);
-		}
-		archive.saveData("statuschanges", tosave);
-	}
 	
 	public void clearNotify(WebPageRequest inReq)
 	{
@@ -1703,7 +1637,9 @@ public class TaskModule extends BaseMediaModule
 
 		Data message = (Data)chatsearcher.searchById(messageid);
 
-		Data goal = createGoal(inReq, message);
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+
+		Data goal = goalm.createGoal(inReq, message);
 //		Searcher searcher = archive.getSearcher("projectgoal");
 //		searcher.saveData(goal);
 
@@ -1735,7 +1671,9 @@ public class TaskModule extends BaseMediaModule
 		}
 		searcher.saveAllData(tosave, inReq.getUser());
 		
-		Data goal = createGoal(inReq, message);
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+
+		Data goal = goalm.createGoal(inReq, message);
 		goal.setValue("ticketlevel", "1");
 		searcher.saveData(goal);
 
@@ -1745,51 +1683,10 @@ public class TaskModule extends BaseMediaModule
 	
 
 	
-	protected Data createGoal(WebPageRequest inReq, Data message)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		Searcher chatsearcher = archive.getSearcher("chatterbox");
-		
-		String topic = message.get("channel");
-		String content = message.get("message");
-		String collectionid = inReq.getRequestParameter("collectionid");
 
-		Searcher searcher = archive.getSearcher("projectgoal");
-		MultiValued goal = (MultiValued)searcher.query().exact("chatparentid", message.getId()).searchOne();
-		if( goal == null)
-		{
-			goal = (MultiValued)searcher.createNewData();
-			goal.setValue("goaltrackercolumn", topic);
-			goal.setValue("tickettype", "chat");
-			goal.setValue("ticketlevel", "2");
-			goal.setValue("projectstatus", "open");
-			goal.setValue("creationdate",new Date());
-			goal.setValue("collectionid", collectionid);
-			goal.setValue("chatparentid", message.getId());
-			goal.addValue("userlikes",inReq.getUserName());
-			goal.setValue("owner", inReq.getUserName());
-			goal.addValue("details",content);
-			if( content != null && content.length() > 70)
-			{
-				content = content.substring(0,70) + "...";
-			}
-			User user = archive.getUser(message.get("user"));
-			if( user != null)
-			{
-				goal.setName(user.getScreenName() + ": " + content);
-			}
-			else
-			{
-				goal.setName("Anonymous : " + content);				
-			}
-			searcher.saveData(goal);
-			addStatus(archive, goal,inReq.getUserName());
-		}
-		return goal;
-	}
 	
-	
-	
+
+
 	public void loadTicketReport(WebPageRequest inReq) throws Exception
 	{
 		long ago = System.currentTimeMillis() - 24*60*60*1000;
