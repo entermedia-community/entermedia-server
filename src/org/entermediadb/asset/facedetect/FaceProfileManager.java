@@ -124,7 +124,22 @@ public class FaceProfileManager implements CatalogEnabled
 				ContentItem input = null;
 				long filesize = inAsset.getLong("filesize");
 				//if() 
-				if (filesize < 50000000 &&  (inAsset.getFileFormat().equals("jpg") || inAsset.getFileFormat().equals("jpeg")))
+				Boolean useoriginal = true;
+				if (filesize > 10000000)
+				{
+					useoriginal = false;
+				}
+				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
+				{
+					useoriginal = false;
+				}
+				else {
+					String colorpsace = inAsset.get("colorspace");
+					if("4".equals(colorpsace) || "5".equals(colorpsace)) {
+						useoriginal = false;
+					}
+				}
+				if (useoriginal)
 				{
 					input = getMediaArchive().getOriginalContent(inAsset);
 				}
@@ -300,7 +315,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				*/
 				found  = (Map)subjects.get(0); //We only get up to one result
-				log.info(found);
+				//log.info(found);
 				double similrity = (Double)found.get("similarity");
 				if( similrity < similaritycheck)
 				{
@@ -319,7 +334,7 @@ public class FaceProfileManager implements CatalogEnabled
 			double boxp = box.getDouble("probability");
 			if( boxp < boxprobability)
 			{
-				log.info("Low probability of found face: " + boxp );
+				//log.info("Low probability of found face: " + boxp );
 				continue;
 			}
 			
@@ -330,12 +345,20 @@ public class FaceProfileManager implements CatalogEnabled
 			int w = x2 - x;
 			int h = y2 - y;
 			
-			int maxw = 200;
-			int maxh = 200;
 			
-			if( w < maxw || h < maxh)
+			h = Math.min(h,imageImput.getHeight() - y);
+			w = Math.min(w,imageImput.getWidth() - x);
+			
+			int max = 400;
+			
+			String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
+			if(minumfaceimagesize != null) {
+				max = Integer.parseInt(minumfaceimagesize);
+			}
+			
+			if( w < max || h < max)
 			{
-				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
+				//log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
 				continue;
 			}
 			Map faceprofile = new HashMap();
@@ -446,7 +469,7 @@ public class FaceProfileManager implements CatalogEnabled
 		if( json.get("image_id") != null)
 		{
 			//OK
-			log.info("Profile: "+groupId+" created at server. Image id" + json.get("image_id"));
+			//log.info("Profile: "+groupId+" created at server. Image id" + json.get("image_id"));
 		}
 		else 
 		{
@@ -526,9 +549,9 @@ public class FaceProfileManager implements CatalogEnabled
 			url = "http://localhost:8000";
 		}
 		long start = System.currentTimeMillis();
-		log.info("Facial Profile Detection sending " + input.getPath() );
+		log.debug("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info("Facial Profile Detection returned " + resp.getStatusLine().getStatusCode() + " " + input.getPath() + " in: " + (System.currentTimeMillis() - start) + "ms");
+		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + input.getName());
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
@@ -537,7 +560,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 
 		JSONObject json = getSharedConnection().parseJson(resp);
-		log.info(json.toString());
+		//log.info(json.toString());
 		
 		JSONArray results = (JSONArray)json.get("result");
 		
