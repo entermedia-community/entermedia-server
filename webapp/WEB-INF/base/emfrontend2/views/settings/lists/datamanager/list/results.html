@@ -61,8 +61,8 @@ $context.putPageValue("details",$details)
 			#foreach( $detail in $details )
 				
 				<td>
-				
-				 	$context.putPageValue('val',  $!hit.get($detail.id))
+				 	#set( $val = $!hit.get($detail.id))
+				 	$context.putPageValue('val',  $val)
               		$context.putPageValue('detail',  $detail)
               		#if($detail.viewType == "html")
               			$context.putPageValue('viewtype', "htmlescaped")
