@@ -263,6 +263,9 @@ public class GoalManager implements CatalogEnabled
 		Collection tosave = new ArrayList();
 		for (int i = 0; i < tasks.length; i++)
 		{
+			//TODO: Check for items with numbers?
+			//Spit out everything else back to chat?
+			
 			Data task = tasksearcher.createNewData();
 			String userid = inMessage.get("user");
 			task.setValue("projectgoal",inGoal.getId());
@@ -273,6 +276,7 @@ public class GoalManager implements CatalogEnabled
 			task.setValue("taskstatus", "6"); //On Agenda
 			//task.setValue("projectdepartmentparents",cat.getParentCategories());
 			task.setValue("creationdate",new Date());
+			//TODO add Ordering and add when pyshing agendas
 			task.setValue("comment", tasks[i]);
 			//task.setName(tasks[i]);
 			tosave.add(task);
