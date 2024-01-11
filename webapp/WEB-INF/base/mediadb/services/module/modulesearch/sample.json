@@ -60,7 +60,7 @@
 							 		#else
 										#set($thumbpath = $mediaarchive.asLinkToPreview($assethit,"image200x200.jpg"))
 							 		#end
-							 		"#urlencode("$thumbpath")"
+							 		"$thumbpath"
 							 	}
 							 	
 							#end

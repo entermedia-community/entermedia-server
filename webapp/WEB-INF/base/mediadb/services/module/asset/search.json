@@ -31,7 +31,8 @@
 	"results":[
 		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
 		{
-			#jsonpartial($hit $searcher.getPropertyDetails()) 
+			#jsonpartial($hit $searcher.getPropertyDetails())
+			,"mediarendertype":"$!mediaarchive.getMediaRenderType($hit)" 
 			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
 			#set($presets = $mediaarchive.asListOfPreviewLinks($hit) )
 			
