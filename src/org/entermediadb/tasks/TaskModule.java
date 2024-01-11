@@ -1670,19 +1670,26 @@ public class TaskModule extends BaseMediaModule
 			tosave.add(record);
 		}
 		searcher.saveAllData(tosave, inReq.getUser());
+		tosave.clear();
 		
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 
 		Data goal = goalm.createGoal(inReq, message);
 		goal.setValue("ticketlevel", "1");
 		searcher.saveData(goal);
+		
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Collection agendatasks = tasksearcher.query().exact("collectionid",collectionid).exact("taskstatus", "6").search();
 
+		for (Iterator iterator = agendatasks.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setValue("goalid",goal.getId());
+			tosave.add(data);
+		}
+		tasksearcher.saveAllData(tosave, null);
 		inReq.putPageValue("chat",message);
 	}
-
-	
-
-	
 
 	
 
