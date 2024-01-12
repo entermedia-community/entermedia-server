@@ -129,7 +129,7 @@ public class FaceProfileManager implements CatalogEnabled
 				long imagesize = imagew * imageh;
 				
 				Boolean useoriginal = true;
-				if (filesize > 10000000)
+				if (filesize > 6000000)
 				{
 					useoriginal = false;
 				}
@@ -137,7 +137,7 @@ public class FaceProfileManager implements CatalogEnabled
 				{
 					useoriginal = false;
 				}
-				else if ( imagesize > 178956970) {
+				else if ( imagesize > 36000000) {   //4x 3000x0000 MAX: 178956970
 					//Default Copreface imagesize limit
 					useoriginal = false;
 				}
@@ -153,7 +153,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				else 
 				{
-					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg");
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
 				}
 				if( !input.exists() )
 				{
