@@ -214,6 +214,7 @@ public class FaceProfileManager implements CatalogEnabled
 						List<Map> json = findFaces(inAsset, item);	
 						List<Map> moreprofiles = makeProfilesForEachFace(inAsset,block.getStartOffset(),item,json);
 						faceprofiles.addAll(moreprofiles);
+						
 					}
 				}
 				faceprofiles = combineVideoMatches(faceprofiles,mili);
@@ -242,6 +243,7 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			//For each box make sure we have a profile
 			getMediaArchive().saveAsset(inAsset);
+			log.info("Faces profiles saved: "+faceprofiles.size());
 			
 			return detected;
 		}
@@ -419,11 +421,10 @@ public class FaceProfileManager implements CatalogEnabled
 				
 			}
 			
-			
 			faceprofile.put("locationx",x);
 			faceprofile.put("locationy",y);
 			faceprofile.put("locationw",w);
-				faceprofile.put("locationh",h);
+			faceprofile.put("locationh",h);
 				
 	        faceprofile.put("inputwidth",imageImput.getWidth());
 	        
@@ -559,7 +560,6 @@ public class FaceProfileManager implements CatalogEnabled
 		long start = System.currentTimeMillis();
 		log.debug("Facial Profile Detection sending " + input.getPath() );
 		resp = getSharedConnection().sharedMimePost(url + "/api/v1/recognition/recognize",tosendparams);
-		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + input.getName());
 		if (resp.getStatusLine().getStatusCode() == 400)
 		{
 			//No faces found error
@@ -571,6 +571,8 @@ public class FaceProfileManager implements CatalogEnabled
 		//log.info(json.toString());
 		
 		JSONArray results = (JSONArray)json.get("result");
+		
+		log.info((System.currentTimeMillis() - start) + "ms face detection for asset: "+ inAsset.getId() + " " + input.getName() + " Found: " + results.size());
 		
 		return results;
 	}
