@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -663,6 +664,10 @@ String viewbase = null;
 					
 					getEventManager().fireDataEditEvent(inReq, searcher, data);
 					searcher.updateData(inReq, fields, data);
+					
+					
+					checkDefaults(inReq, searcher, data);
+					
 					searcher.saveData(data);
 					getEventManager().fireDataSavedEvent(inReq, searcher, data);
 					//getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
@@ -699,6 +704,19 @@ String viewbase = null;
 
 			//rowsedited="$!rowsedited}
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
+		}
+	}
+
+	private void checkDefaults(WebPageRequest inReq, Searcher searcher, Data data) {
+		
+		PropertyDetail owner =  searcher.getDetail("owner");
+		if(owner != null && data.getValue("owner") != null) {
+			data.setValue("owner", inReq.getUserName());
+		}
+		
+		PropertyDetail entity_date =  searcher.getDetail("entity_date");
+		if(entity_date != null && data.getValue("entity_date") != null) {
+			data.setValue("entity_date", new Date());
 		}
 	}
 
