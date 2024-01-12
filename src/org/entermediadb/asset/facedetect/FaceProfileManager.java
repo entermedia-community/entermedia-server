@@ -123,7 +123,11 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				ContentItem input = null;
 				long filesize = inAsset.getLong("filesize");
-				//if() 
+				
+				long imagew = inAsset.getLong("width");
+				long imageh = inAsset.getLong("height");
+				long imagesize = imagew * imageh;
+				
 				Boolean useoriginal = true;
 				if (filesize > 10000000)
 				{
@@ -131,6 +135,10 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				else if (!inAsset.getFileFormat().equals("jpg") && !inAsset.getFileFormat().equals("jpeg")) 
 				{
+					useoriginal = false;
+				}
+				else if ( imagesize > 178956970) {
+					//Default Copreface imagesize limit
 					useoriginal = false;
 				}
 				else {
