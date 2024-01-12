@@ -931,7 +931,9 @@ public class UserManagerModule extends BaseMediaModule
 				{
 					throw new UserManagerException( "Could not find user " + userNames[i] );
 				}
-				user.addGroup(group );
+				if (group != null ) {
+					user.addGroup(group );
+				}
 				getUserSearcher(inReq).saveData(user,inReq.getUser());
 			}
 			getGroupSearcher(inReq).saveData(group,null); //This is probably called to update the index
