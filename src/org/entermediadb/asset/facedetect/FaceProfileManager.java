@@ -372,7 +372,7 @@ public class FaceProfileManager implements CatalogEnabled
 			Map faceprofile = new HashMap();
 			faceprofile.put("timecodestart",timecodestart);
 
-			boolean morethan10 = false;
+			boolean morethan20 = false;
 			String groupid = null;
 			if( found != null)
 			{
@@ -393,7 +393,7 @@ public class FaceProfileManager implements CatalogEnabled
 					count++;
 					if( count > 20)
 					{
-						morethan10 = true;
+						morethan20 = true;
 					}
 					oldgroup.setValue("samplecount", count);
 				}
@@ -429,7 +429,7 @@ public class FaceProfileManager implements CatalogEnabled
 	        
 	        faceprofile.put("inputheight",imageImput.getHeight());
 			
-			if( !morethan10)
+			if( !morethan20)
 			{
 				uploadAProfile(faceprofile, timecodestart, imageImput, inAsset, groupid);
 			}
