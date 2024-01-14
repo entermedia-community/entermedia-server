@@ -71,6 +71,14 @@ public class ImageCacheLoader implements InputLoader
 		{
 			Dimension box = inStructions.getMaxScaledSize();
 
+			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
+			{
+				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
+				if (input.exists())
+				{
+					return input;
+				}
+			}
 			if (box.getWidth() < 1501) //Make sure we dont use the same file as the input and output
 			{
 				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500" + page + "." + cachetype);

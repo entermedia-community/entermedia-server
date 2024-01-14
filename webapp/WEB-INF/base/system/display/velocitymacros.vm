@@ -128,7 +128,7 @@ $invalue
 #end
 #end
 
-
+#macro(datetime $inDate)$context.getDateTime($inDate)#end
 #macro(date $inData $inField)$context.getDate($inData.getDate($inField))#end
 #macro(dash $intext)$!url_util.getPathUtilities().dash($intext)#end
 
