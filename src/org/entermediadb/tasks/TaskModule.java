@@ -1732,6 +1732,7 @@ public class TaskModule extends BaseMediaModule
 	public void saveTaskRole(WebPageRequest inReq)
 	{
 		String taskid = inReq.getRequestParameter("taskid");
+		String collectionid = inReq.getRequestParameter("collectionid");
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Searcher tasksearcher = archive.getSearcher("goaltask");
@@ -1750,7 +1751,7 @@ public class TaskModule extends BaseMediaModule
 		String roleid = inReq.getRequestParameter("addrole");
 		addrole.put("collectiverole",roleid);
 		addrole.put("actioncount",0);
-		Data user = archive.query("librarycollectionusers").exact("teamroles",roleid).searchOne();
+		Data user = archive.query("librarycollectionusers").exact("collectionid",collectionid).exact("teamroles",roleid).searchOne();
 
 		if( user != null)
 		{
@@ -1781,6 +1782,23 @@ public class TaskModule extends BaseMediaModule
 		Data task = goalm.addOne(taskid, collectiverole, roleuserid);
 		inReq.putPageValue("task", task);
 	}
+	public void taskRoleSave(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String taskid = inReq.getRequestParameter("taskid");
+		String roleuserid = inReq.getRequestParameter("roleuserid");
+		String name = inReq.getRequestParameter("name");
+		String collectiverole = inReq.getRequestParameter("collectiverole");
+		
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+		
+		Map role = goalm.saveRole(taskid,collectiverole, roleuserid, name);
+
+		Data task = (Data)archive.getData("goaltask", taskid);
+		inReq.putPageValue("task", task);
+	}
+
 
 
 

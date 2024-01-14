@@ -12,6 +12,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.users.Group;
@@ -104,10 +105,15 @@ public class GoalManager implements CatalogEnabled
 			if(inCollectiverole.equals(roleid))
 			{
 				String roleuserid = (String)row.get("roleuserid");
-				if( roleuserid == null || inroleuserid.equals(inroleuserid))
+				if( roleuserid == null && inroleuserid == null)
 				{
 					return row;
 				}
+				else if( roleuserid != null && inroleuserid.equals(inroleuserid))
+				{
+					return row;
+				}
+				//?
 			}
 		}
 		return null;
@@ -245,7 +251,6 @@ public class GoalManager implements CatalogEnabled
 			
 		}
 		
-		
 		return goal;
 	}
 	
@@ -284,6 +289,27 @@ public class GoalManager implements CatalogEnabled
 		}
 		tasksearcher.saveAllData(tosave,null);
 		
+	}
+
+	public Map saveRole(String inTaskid, String inCollectiverole, String inRoleuserid, String notes)
+	{
+		MediaArchive archive = getMediaArchive(); 
+		Data task = (Data)archive.getData("goaltask", inTaskid);
+		
+		Map role = findRole(task,inCollectiverole, inRoleuserid);
+		if( role == null)
+		{
+			role = findRole(task,inCollectiverole, null);
+		}
+		if( role == null)
+		{
+			throw new OpenEditException("No such role");
+		}
+		role.put("name",notes);
+		role.put("roleuserid",inRoleuserid);
+		
+		archive.saveData("goaltask",task);
+		return role;
 	}	
 	
 }
