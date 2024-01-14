@@ -52,7 +52,7 @@ public class GoalManager implements CatalogEnabled
 	}
 	
 	
-	protected Data addOne( String taskid, String collectiverole, String roleuserid)
+	protected Data addOne(String inOwner, String taskid, String collectiverole, String roleuserid)
 	{
 		MediaArchive archive = getMediaArchive(); 
 		Data task = (Data)archive.getData("goaltask", taskid);
@@ -65,6 +65,8 @@ public class GoalManager implements CatalogEnabled
 			newpoints.setValue("roleuserid",roleuserid);
 			newpoints.setValue("collectiverole",collectiverole);
 			newpoints.setValue("goaltaskid",taskid);
+			
+			newpoints.setValue("owner",inOwner);
 		newpoints.setValue("date",new Date());
 		newpoints.setValue("actioncount",1);
 		searcher.saveData(newpoints);

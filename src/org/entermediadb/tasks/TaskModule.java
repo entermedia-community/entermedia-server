@@ -1779,7 +1779,7 @@ public class TaskModule extends BaseMediaModule
 		
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 		
-		Data task = goalm.addOne(taskid, collectiverole, roleuserid);
+		Data task = goalm.addOne(inReq.getUserName(),taskid, collectiverole, roleuserid);
 		inReq.putPageValue("task", task);
 	}
 	public void taskRoleSave(WebPageRequest inReq)
