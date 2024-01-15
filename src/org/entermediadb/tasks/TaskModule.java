@@ -1065,6 +1065,31 @@ public class TaskModule extends BaseMediaModule
 				}
 			}
 		}
+		
+		Searcher searcher = archive.getSearcher("goaltaskuserrole");
+		Collection existingactions = searcher.query().exact("roleuserid","*").between("date", start,onemonth).sort("dateDown").search();
+
+//		
+//		QueryBuilder gq = archive.query("projectgoal");
+//		if( !collectionid.equals("*") )
+//		{
+//				gq.exact("collectionid",collectionid);
+//		}
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+		for (Iterator iterator = existingactions.iterator(); iterator.hasNext();)
+		{
+			MultiValued  roleaction = (MultiValued) iterator.next();
+			String userid = roleaction.get("roleuserid");
+			if( userid != null)
+			{		
+				String goaltaskid = roleaction.get("goaltaskid");
+				Data task = archive.getCachedData("goaltask", goaltaskid);
+				String collectiverole = roleaction.get("collectiverole");
+				Map rolemap = goalm.findRole(task,collectiverole,userid);
+				completed.addRole(rolemap, task, roleaction);
+			}
+		}
+		
 		ArrayList users = new ArrayList();
 
 		for (Iterator iterator = completed.getUserIds().iterator(); iterator.hasNext();)

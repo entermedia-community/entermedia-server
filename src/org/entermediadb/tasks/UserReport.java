@@ -19,6 +19,8 @@ import org.openedit.MultiValued;
 public class UserReport
 {
 	List points = new ArrayList();
+	List tickets = new ArrayList();
+	Map roleactions = new HashMap();
 	public List getPoints()
 	{
 		return points;
@@ -35,7 +37,6 @@ public class UserReport
 	{
 		tickets = inTickets;
 	}
-	List tickets = new ArrayList();
 	
 	public void addTicket(Data inTicket)
 	{
@@ -44,6 +45,19 @@ public class UserReport
 	public void addTask(Data inTicket)
 	{
 		points.add(inTicket);
+	}
+	public void addUserRole(Data inTask,Map inUserRole,Data inRoleAction)
+	{
+		String roleid = (String)inUserRole.get("collectiverole");
+		String taskid = (String)inUserRole.get("taskid");
+		UserRoleWithActions userrole = (UserRoleWithActions)roleactions.get(taskid + roleid);
+		if( userrole == null)
+		{
+			userrole = new UserRoleWithActions();
+			userrole.setUserRole(inUserRole);
+			userrole.addRoleAction(inRoleAction);
+		}
+		roleactions.put(taskid + roleid,userrole);
 	}
 	
 	public Collection getTicketsForWeek(int inweek)
@@ -72,6 +86,33 @@ public class UserReport
 			}
 		});
 		return tickets;
+	}
+	public Collection getRoleActionsForWeek(int inweek)
+	{
+		List roleactions = new ArrayList();
+		for (Iterator iterator = roleactions.iterator(); iterator.hasNext();)
+		{
+			UserRoleWithAction rolewithaction = (UserRoleWithAction) iterator.next();
+			Date completedon = rolewithaction.getDate();
+			GregorianCalendar completedweek = new GregorianCalendar();
+			completedweek.setTime(completedon);
+			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+			if( week == inweek)
+			{
+				roleactions.add(rolewithaction);
+			}
+		}
+		Collections.sort(roleactions,new Comparator<UserRoleWithAction>()
+		{
+			@Override
+			public int compare(UserRoleWithAction inO1, UserRoleWithAction inO2)
+			{
+				Date completedon = inO1.getDate();
+				Date completedon2 = inO2.getDate();
+				return completedon.compareTo(completedon2);
+			}
+		});
+		return roleactions;
 	}
 
 	public Collection getTasksForWeek(int inWeek)

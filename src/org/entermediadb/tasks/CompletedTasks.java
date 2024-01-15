@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.users.User;
 
@@ -49,6 +50,20 @@ public class CompletedTasks
 		report.addTask(inTask);
 				
 	}
+	public void addRole(Map<String,Object> inRole,Data inTask, MultiValued inRoleAction)
+	{
+		String inUserId = (String)inRole.get("roleuserid");
+		UserReport report = byUserUserReport.get(inUserId);
+		if( report == null) {
+			report = new UserReport();
+			byUserUserReport.put(inUserId, report);
+		}
+		
+		report.addUserRole(inTask,inRole, inRoleAction);
+				
+	}
+
+	
 	public void addTicket(String inUserId,MultiValued inTicket)
 	{
 		UserReport report = byUserUserReport.get(inUserId);
