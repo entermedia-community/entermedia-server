@@ -1799,7 +1799,22 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("task", task);
 	}
 
+	public void taskRoleDelete(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
 
+		String taskid = inReq.getRequestParameter("taskid");
+		String roleuserid = inReq.getRequestParameter("roleuserid");
+		String name = inReq.getRequestParameter("name");
+		String collectiverole = inReq.getRequestParameter("collectiverole");
+		
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+		
+		goalm.removeRole(taskid,collectiverole, roleuserid);
+
+		Data task = (Data)archive.getData("goaltask", taskid);
+		inReq.putPageValue("task", task);
+	}
 
 
 }

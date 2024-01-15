@@ -312,6 +312,27 @@ public class GoalManager implements CatalogEnabled
 		
 		archive.saveData("goaltask",task);
 		return role;
+	}
+
+	public void removeRole(String inTaskid, String inCollectiverole, String inRoleuserid)
+	{
+		MediaArchive archive = getMediaArchive(); 
+		Data task = (Data)archive.getData("goaltask", inTaskid);
+		
+		Collection roles = (Collection)task.getValue("taskroles");
+
+		Map role = findRole(task,inCollectiverole, inRoleuserid);
+		if( role == null)
+		{
+			role = findRole(task,inCollectiverole, null);
+		}
+		if( role == null)
+		{
+			throw new OpenEditException("No such role");
+		}
+		//TODO: Delete all the actions
+		roles.remove(role);
+		archive.saveData("goaltask",task);
 	}	
 	
 }
