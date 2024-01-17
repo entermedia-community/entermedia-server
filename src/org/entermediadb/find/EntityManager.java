@@ -141,16 +141,30 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
-		String sourcepath = loadUploadSourcepath(module,entity,inUser);
 		Category cat = null;
-		if( create )
+		
+		String categoryid = entity.get("rootcategory");
+		if( categoryid != null)
 		{
-			cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+			cat = getMediaArchive().getCategory(categoryid);
 		}
-		else
-		{
-			cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
 
+		if( cat == null)
+		{
+			String sourcepath = loadUploadSourcepath(module,entity,inUser);
+			if( create )
+			{
+				cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
+			}
+			else
+			{
+				cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
+			}
+			if( cat != null)
+			{
+				entity.setValue("rootcategory",cat.getId());
+				getMediaArchive().saveData(module.getId(), entity);
+			}
 		}
 		if( cat == null)
 		{
@@ -173,6 +187,20 @@ public class EntityManager implements CatalogEnabled
 		{
 			return entity.get("uploadsourcepath");
 		}
+		
+		String categoryid = entity.get("rootcategory");
+		if( categoryid != null)
+		{
+			Category cat = getMediaArchive().getCategory(categoryid);
+			if( cat != null)
+			{
+				String sourcepath = cat.getCategoryPath();
+				entity.setValue("uploadsourcepath",sourcepath );
+				getMediaArchive().saveData(module.getId(), entity);
+				return sourcepath;
+			}
+		}
+		
 		String mask = (String) module.getValue("uploadsourcepath");
 		String sourcepath = "";
 		if(mask != null)

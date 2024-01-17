@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.modules.BaseDataEntity;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -15,10 +16,9 @@ import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 import org.openedit.util.strainer.FilterReader;
 
-public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
+public class LibraryCollection extends BaseDataEntity implements SaveableData, CatalogEnabled
 {
 	protected Collection fieldLibraries;
-	protected Category fieldCategoryRoot;
 	protected int fieldAssetCount;
 	protected String fieldCatalogId;
 	protected ModuleManager fieldModuleManager;
@@ -110,21 +110,6 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 		}
 
 		return revisionnumber;
-	}
-	public boolean hasRootCategory()
-	{
-		
-		return getRootCategoryId() != null;
-	}
-	public String getRootCategoryId()
-	{
-		String catid = get("rootcategory");
-		if(catid == null || catid.isEmpty()) {
-			return null;
-
-		}
-		 
-return catid;
 	}
 
 	@Override
