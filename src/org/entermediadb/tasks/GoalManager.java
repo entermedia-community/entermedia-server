@@ -1,7 +1,9 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -123,6 +125,11 @@ public class GoalManager implements CatalogEnabled
 
 	public Collection listActions(String inTaskId, String inRoleId, String roleuserid)
 	{
+		if( roleuserid == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
+		
 		Searcher searcher = getMediaArchive().getSearcher("goaltaskuserrole");
 		
 		Collection points = searcher.query().exact("roleuserid",roleuserid).exact("collectiverole",inRoleId)

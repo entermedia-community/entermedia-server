@@ -1,5 +1,6 @@
 package org.entermediadb.tasks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class UserRoleWithActions
 	{
 		fieldUserActions = inUserActions;
 	}
-	Collection fieldUserActions;
+	Collection fieldUserActions = new ArrayList();
 	public void addRoleAction(Data inRoleAction)
 	{
 		fieldUserActions.add(inRoleAction);

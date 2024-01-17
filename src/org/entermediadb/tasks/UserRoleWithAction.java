@@ -1,6 +1,5 @@
 package org.entermediadb.tasks;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
@@ -12,19 +11,19 @@ public class UserRoleWithAction
 	Map fieldUserRole;
 	Data fieldRoleAction;
 	
-	protected Data getRoleAction()
+	public Data getRoleAction()
 	{
 		return fieldRoleAction;
 	}
-	protected void setRoleAction(Data inRoleAction)
+	public void setRoleAction(Data inRoleAction)
 	{
 		fieldRoleAction = inRoleAction;
 	}
-	protected Map getUserRole()
+	public Map getUserRole()
 	{
 		return fieldUserRole;
 	}
-	protected void setUserRole(Map inUserRole)
+	public void setUserRole(Map inUserRole)
 	{
 		fieldUserRole = inUserRole;
 	}
@@ -33,6 +32,12 @@ public class UserRoleWithAction
 		Object obj = getRoleAction().getValue("date");
 		Date adate = DateStorageUtil.getStorageUtil().parseFromObject(obj);
 		return adate;
+	}
+	
+	public String get(String inKey)
+	{
+		String val = getRoleAction().get(inKey);
+		return val;
 	}
 	
 }

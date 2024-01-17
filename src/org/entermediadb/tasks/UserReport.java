@@ -10,8 +10,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -89,20 +89,29 @@ public class UserReport
 	}
 	public Collection getRoleActionsForWeek(int inweek)
 	{
-		List roleactions = new ArrayList();
-		for (Iterator iterator = roleactions.iterator(); iterator.hasNext();)
+		List weeklyroleactions = new ArrayList<UserRoleWithAction>();
+		
+		
+		for (Iterator iterator = roleactions.values().iterator(); iterator.hasNext();)
 		{
-			UserRoleWithAction rolewithaction = (UserRoleWithAction) iterator.next();
-			Date completedon = rolewithaction.getDate();
-			GregorianCalendar completedweek = new GregorianCalendar();
-			completedweek.setTime(completedon);
-			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
-			if( week == inweek)
+			UserRoleWithActions rolewithactions = (UserRoleWithActions) iterator.next();
+			for (Iterator iterator2 = rolewithactions.getUserActions().iterator(); iterator2.hasNext();)
 			{
-				roleactions.add(rolewithaction);
+				MultiValued action = (MultiValued)iterator2.next();
+				Date completedon = action.getDate("date");
+				GregorianCalendar completedweek = new GregorianCalendar();
+				completedweek.setTime(completedon);
+				int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+				if( week == inweek)
+				{
+					UserRoleWithAction oneaction = new UserRoleWithAction();
+					oneaction.setUserRole(rolewithactions.getUserRole());
+					oneaction.setRoleAction(action);
+					weeklyroleactions.add(oneaction);
+				}
 			}
 		}
-		Collections.sort(roleactions,new Comparator<UserRoleWithAction>()
+		Collections.sort(weeklyroleactions,new Comparator<UserRoleWithAction>()
 		{
 			@Override
 			public int compare(UserRoleWithAction inO1, UserRoleWithAction inO2)
@@ -112,7 +121,7 @@ public class UserReport
 				return completedon.compareTo(completedon2);
 			}
 		});
-		return roleactions;
+		return weeklyroleactions;
 	}
 
 	public Collection getTasksForWeek(int inWeek)

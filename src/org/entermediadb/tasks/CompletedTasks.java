@@ -86,4 +86,12 @@ public class CompletedTasks
 		return report.getTicketsForWeek(inWeek);
 	}
 
+	public Collection getRoleActionsForWeek(User inUser, int inWeek)
+	{
+		UserReport report = byUserUserReport.get(inUser.getId());
+		Collection hits = report.getRoleActionsForWeek(inWeek);
+		return hits;
+	}
+
+
 }
