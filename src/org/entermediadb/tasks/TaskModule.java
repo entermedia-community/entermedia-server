@@ -1667,7 +1667,9 @@ public class TaskModule extends BaseMediaModule
 
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 
-		Data goal = goalm.createGoal(inReq, message);
+		String taskstatus = inReq.getRequestParameter("taskstatus");
+
+		Data goal = goalm.createGoal(inReq, message, taskstatus);
 //		Searcher searcher = archive.getSearcher("projectgoal");
 //		searcher.saveData(goal);
 
@@ -1702,7 +1704,9 @@ public class TaskModule extends BaseMediaModule
 		
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 
-		Data goal = goalm.createGoal(inReq, message);
+		String taskstatus = inReq.getRequestParameter("taskstatus");
+
+		Data goal = goalm.createGoal(inReq, message, taskstatus);
 		goal.setValue("ticketlevel", "1");
 		searcher.saveData(goal);
 		

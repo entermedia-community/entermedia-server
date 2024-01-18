@@ -215,7 +215,7 @@ public class GoalManager implements CatalogEnabled
 		archive.saveData("statuschanges", tosave);
 	}
 	
-	public Data createGoal(WebPageRequest inReq, Data message)
+	public Data createGoal(WebPageRequest inReq, Data message, String intaskstatus)
 	{
 		MediaArchive archive = getMediaArchive();
 		Searcher chatsearcher = archive.getSearcher("chatterbox");
@@ -256,7 +256,7 @@ public class GoalManager implements CatalogEnabled
 			addStatus(archive, goal,inReq.getUserName());
 
 			//Create actions/Tasks on this goal
-			createActions(goal,message);
+			createActions(goal,message, intaskstatus);
 			
 		}
 		
@@ -265,7 +265,7 @@ public class GoalManager implements CatalogEnabled
 	
 	
 	
-	public void createActions(MultiValued inGoal, Data inMessage)
+	public void createActions(MultiValued inGoal, Data inMessage, String intaskstatus)
 	{
 		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
 
@@ -277,6 +277,11 @@ public class GoalManager implements CatalogEnabled
 		Collection tosave = new ArrayList();
 		
 		long now = System.currentTimeMillis();
+		
+		if(intaskstatus == null)
+		{
+			intaskstatus = "0;";  //6
+		}
 		
 		for (int i = 0; i < tasks.length; i++)
 		{
@@ -290,7 +295,7 @@ public class GoalManager implements CatalogEnabled
 			task.setValue("collectionid",collectionid);
 			//task.setValue("projectdepartment",categoryid);
 			task.setValue("completedby", userid );
-			task.setValue("taskstatus", "6"); //On Agenda
+			task.setValue("taskstatus", intaskstatus); //On Agenda
 			//task.setValue("projectdepartmentparents",cat.getParentCategories());
 			
 			task.setValue("creationdate",new Date(now + i));
