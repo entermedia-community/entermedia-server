@@ -275,6 +275,9 @@ public class GoalManager implements CatalogEnabled
 		String[] tasks = content.split("[\\r\\n]+"); //, /gm);
 		//"[{}]"
 		Collection tosave = new ArrayList();
+		
+		long now = System.currentTimeMillis();
+		
 		for (int i = 0; i < tasks.length; i++)
 		{
 			//TODO: Check for items with numbers?
@@ -289,7 +292,8 @@ public class GoalManager implements CatalogEnabled
 			task.setValue("completedby", userid );
 			task.setValue("taskstatus", "6"); //On Agenda
 			//task.setValue("projectdepartmentparents",cat.getParentCategories());
-			task.setValue("creationdate",new Date());
+			
+			task.setValue("creationdate",new Date(now + i));
 			//TODO add Ordering and add when pyshing agendas
 			task.setValue("comment", tasks[i]);
 			//task.setName(tasks[i]);
