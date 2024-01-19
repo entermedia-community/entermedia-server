@@ -107,7 +107,10 @@ public class ChatModule extends BaseMediaModule
 		  
 		 // log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
-		  inReq.putPageValue("messages", new ListHitTracker(loaded));
+		  ListHitTracker newtracker = new ListHitTracker(loaded);
+		  newtracker.setHitsPerPage(results.getHitsPerPage());
+		  
+		  inReq.putPageValue("messages", newtracker);
 		  inReq.putPageValue("messagesthitracker", results);
 		  inReq.putPageValue("lastloaded", lastdateloaded);
 		 
