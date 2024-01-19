@@ -93,7 +93,7 @@
   <!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->  
-  <property id="hasfulltext" index="true" type="boolean" stored="true"   editable="false" sortable="true">Has Full Text 
+  <property id="hasfulltext" index="true" type="boolean" stored="true"   editable="false" sortable="true" internalfield="true"> 
     <name> 
       <language id="de"><![CDATA[hat Volltext]]></language>  
       <language id="en"><![CDATA[Has Full Text]]></language>  
