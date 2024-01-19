@@ -105,7 +105,7 @@ public class ChatModule extends BaseMediaModule
 		  loadAttachments(inReq);
 
 		  
-		  log.info("Chat loaded messages: " + loaded.size());
+		 // log.info("Chat loaded messages: " + loaded.size());
 		  Collections.reverse(loaded); 
 		  inReq.putPageValue("messages", new ListHitTracker(loaded));
 		  inReq.putPageValue("messagesthitracker", results);

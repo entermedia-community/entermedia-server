@@ -55,8 +55,8 @@ public class UserReport
 		{
 			userrole = new UserRoleWithActions();
 			userrole.setUserRole(inUserRole);
-			userrole.addRoleAction(inRoleAction);
 		}
+		userrole.addRoleAction(inRoleAction);
 		roleactions.put(taskid + roleid,userrole);
 	}
 	
