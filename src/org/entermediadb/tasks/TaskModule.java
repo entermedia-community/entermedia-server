@@ -1716,7 +1716,7 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = agendatasks.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			data.setValue("goalid",goal.getId());
+			data.setValue("projectgoal",goal.getId());
 			tosave.add(data);
 		}
 		tasksearcher.saveAllData(tosave, null);
