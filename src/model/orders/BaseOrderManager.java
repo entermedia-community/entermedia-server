@@ -128,12 +128,15 @@ public class BaseOrderManager implements OrderManager {
 		return ordersearcher.search(query);
 	}
 	
-	public HitTracker findOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser, String ordertype) {
+	public HitTracker findOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser, String ordertype, Boolean readystatus) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
 		query.addExact("ordertype", ordertype);
-		//orderstatus
-		query.addOrsGroup("orderreadystatus","false"); //Open ones
+		
+		if(readystatus) {
+			//orderstatus
+			query.addOrsGroup("orderreadystatus","false"); //Open ones
+		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.add(Calendar.MONTH, -3);

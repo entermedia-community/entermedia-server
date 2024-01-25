@@ -710,12 +710,12 @@ String viewbase = null;
 	private void checkDefaults(WebPageRequest inReq, Searcher searcher, Data data) {
 		
 		PropertyDetail owner =  searcher.getDetail("owner");
-		if(owner != null && data.getValue("owner") != null) {
+		if(owner != null && data.getValue("owner") == null) {
 			data.setValue("owner", inReq.getUserName());
 		}
 		
 		PropertyDetail entity_date =  searcher.getDetail("entity_date");
-		if(entity_date != null && data.getValue("entity_date") != null) {
+		if(entity_date != null && data.getValue("entity_date") == null) {
 			data.setValue("entity_date", new Date());
 		}
 	}
