@@ -30,7 +30,7 @@ public interface OrderManager
 
 	HitTracker findOrdersForUser(String inCatlogId, User inUser);
 	
-	HitTracker findOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser, String ordertype);
+	HitTracker findOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser, String ordertype, Boolean readystatus);
 
 	void loadOrderHistoryForPage(HitTracker inPage);
 
