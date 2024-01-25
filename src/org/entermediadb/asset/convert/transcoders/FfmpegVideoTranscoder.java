@@ -181,12 +181,18 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		setValue("filter:v", null, inStructions, comm); //videofilters (yadif, hqn3d, ...) 
 //more audio / why here?
 		setValue("b:a", null, inStructions, comm); // Bitrate Audio. same as 'ab' above.
+		
 		setValue("profile:a", null, inStructions, comm); // aac_low (default) aac_main
 		setValue("filter:a", null, inStructions, comm); //audiofilters (channelmap, volume, ...) 
 
 		setValue("max_muxing_queue_size", null, inStructions, comm); // 0=auto, but leave some cores for the server's workload
 
 		
+		if (inStructions.get("map_metadata") != null) 
+		{
+			//setValue("-map_metadata", "0:s:2", inStructions, comm); //audiofilters (channelmap, volume, ...) 
+			comm.add("--map_metadata 0:s:2");
+		}
 		
 		//comm.add("-aspect");
 		//comm.add("640:480");
