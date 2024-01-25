@@ -325,22 +325,23 @@ public class ProfileModule extends MediaArchiveModule
 		
 			//hits per page custom for module or userprofile
 			String moduleid = inReq.getRequestParameter("moduleid");
+			if(moduleid != null) {
+				String customhitsperpage = userProfile.get(moduleid+changerequest+"hitsperpage");
+				if (customhitsperpage == null) {
+					customhitsperpage = userProfile.get(moduleid+"hitsperpage");
+				}
+				if (customhitsperpage != null) {
+					if (hits != null) {
+						hits.setHitsPerPage(Integer.parseInt(customhitsperpage));
+					}
+				}
+				inReq.putPageValue(moduleid+"hitsperpage", Integer.parseInt(customhitsperpage));
+			}
+			else {
+				//inReq.putPageValue("hitsperpage", Integer.parseInt(customhitsperpage));
+			}
 			//Search userprofile first
-			String customhitsperpage = userProfile.get(moduleid+resultviewtype+"hitsperpage");
-			if (customhitsperpage == null) {
-				customhitsperpage = userProfile.get("modulehitsperpage");
-			}
-			if (customhitsperpage != null) {
-				if(moduleid != null) {
-					inReq.putPageValue(moduleid+"hitsperpage", Integer.parseInt(customhitsperpage));
-				}
-				else {
-					inReq.putPageValue("hitsperpage", Integer.parseInt(customhitsperpage));
-				}
-				if (hits != null) {
-					hits.setHitsPerPage(Integer.parseInt(customhitsperpage));
-				}
-			}
+			
 		
 	}
 	
@@ -357,8 +358,8 @@ public class ProfileModule extends MediaArchiveModule
 			String moduleid = inReq.getRequestParameter("moduleid");
 			
 			String resultview = inReq.getRequestParameter("resultview");
-			if(resultview != null) {
-				userProfile.setProperty(resultview+"assethitsperpage", hitsperpage);
+			if(resultview != null && !"stackedgallery".equals(resultview)) {
+				userProfile.setProperty(moduleid+resultview+"hitsperpage", hitsperpage);
 			}
 			else {
 				if(moduleid != null) {
