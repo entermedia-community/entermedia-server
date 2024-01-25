@@ -183,7 +183,7 @@ public class AdminModule extends BaseMediaModule
 			lastName = foundUser.getLastName();
 			username = foundUser.getId();
 			
-			String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
+			String userCode = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
 			
 			
 			
@@ -210,7 +210,7 @@ public class AdminModule extends BaseMediaModule
 			else {
 				firstName = inReq.getRequestParameter("firstName");
 				lastName = inReq.getRequestParameter("lastName");
-				String userCode = getUserManager(inReq).createNewTempLoginKey(null,emailaddress,firstName,lastName);
+				String userCode = getUserManager(inReq).createNewTempLoginKey(null,emailaddress,firstName,lastName,false);
 				String subject = inReq.getRequestParameter("subject");
 				inReq.putPageValue("subject", subject);
 				passwordHelper.emailPasswordReminder(inReq, getPageManager(), userCode, emailaddress);
@@ -289,7 +289,7 @@ public class AdminModule extends BaseMediaModule
 			
 			 
 			
-			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName);
+			String tempsecuritykey = getUserManager(inReq).createNewTempLoginKey(username,emailaddress,firstName,lastName,false);
 			
 			PasswordHelper passwordHelper = getPasswordHelper(inReq);
 			String key = null;
