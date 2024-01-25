@@ -376,6 +376,29 @@ public class OrderModule extends BaseMediaModule
 		return orders;
 	}
 	
+	public HitTracker findActiveDownloadOrdersForUser(WebPageRequest req)
+	{
+		String catalogid = req.findPathValue("catalogid");
+		User owner = (User) req.getPageValue("owner");
+		if (owner == null)
+		{
+			owner = req.getUser();
+		}
+		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download", true);
+		if(orders.size() > 0) {
+			req.putPageValue("activeorders", orders);
+			//already tracking an order?
+			Order order = (Order) req.getPageValue("order");
+			if (order == null) {
+				req.putPageValue("order", orders.first());
+			}
+		}
+		//req.putPageValue("activeorders", orders);
+		//req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
+		
+		return orders;
+	}
+	
 	public HitTracker findDownloadOrdersForUser(WebPageRequest req)
 	{
 		String catalogid = req.findPathValue("catalogid");
@@ -384,7 +407,7 @@ public class OrderModule extends BaseMediaModule
 		{
 			owner = req.getUser();
 		}
-		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download");
+		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download", false);
 		req.putPageValue("orders", orders);
 		req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
 		
