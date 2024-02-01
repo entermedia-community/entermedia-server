@@ -6,10 +6,13 @@
 	#if( $rolesarray && !$rolesarray.isEmpty() )
 	  , "taskroles":[ 
 		#foreach( $role in $rolesarray )
+		 	#if( ${foreach.count} != 1), #end 
 			{
 			#set($collectiverole = $mediaarchive.getCachedData("collectiverole",$role.collectiverole))
 			#ifnotnull( $collectiverole )
-			"collectiverole":#jsonpartial($collectiverole $mediaarchive.getSearcher("collectiverole").getPropertyDetails())
+			"collectiverole": {
+				#jsonpartial($collectiverole $mediaarchive.getSearcher("collectiverole").getPropertyDetails())
+			}
 			#end
 			#set($collectiveuser = $mediaarchive.getCachedData("user",$role.roleuserid))
 				#if( $collectiveuser )
