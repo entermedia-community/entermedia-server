@@ -18,6 +18,7 @@
 			#if( $second ), #end
 			#set( $second = true )
 			{
+				#jsonfields($member $mediaarchive.getSearcher("librarycollectionusers").getPropertyDetails()) ,
 				"userid" : "$person.id",
 				"screenname": "$person.screenName",
 				"email": "$person.email",
