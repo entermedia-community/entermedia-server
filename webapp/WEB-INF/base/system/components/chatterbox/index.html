@@ -27,21 +27,21 @@
 				  	</div>
 				  	<div class="col-sm-auto">
 					  <button class="btn btn-primary btn-sm chatter-send float-left" data-command="messagereceived" type="button">[[Send]]</button>
-										 #if($caneditasset)
-					
-					  <div class="dropdown dropup  float-left" style="margin-left:10px;">
-					  <button class="btn btn-secondary  btn-sm dropdown-toggle" type="button" id="dropdownChatterMenuActions" 
-					  			data-toggle="dropdown" data-bs-toggle="dropdown"
-					  			aria-haspopup="true" aria-expanded="false">
-					    [[Edit Status]]
-					  </button>
-					  <div class="dropdown-menu " aria-labelledby="dropdownChatterMenuActions">
-							<a class="dropdown-item chatter-send chatter-toggle" #if($asset.editstatus.equals("6"))  style="display:none;" #end href="#" data-command="approveasset" data-toggle="true">[[Approve]]  </a>
-						    <a class="dropdown-item chatter-send chatter-toggle" href="#" #if($asset.editstatus.equals("rejected")) style="display:none;" #end data-command="rejectasset" data-toggle="true">[[Reject]]</a>
-					
-						    ##<a class="dropdown-item" href="#"data-command="replaceasset">[[Replace]]</a>
-					  </div>
-					  </div>
+					 
+					 #if($caneditasset && $canviewapprovereject )
+						  <div class="dropdown dropup  float-left" style="margin-left:10px;">
+						  <button class="btn btn-secondary  btn-sm dropdown-toggle" type="button" id="dropdownChatterMenuActions" 
+						  			data-toggle="dropdown" data-bs-toggle="dropdown"
+						  			aria-haspopup="true" aria-expanded="false">
+						    [[Edit Status]]
+						  </button>
+						  <div class="dropdown-menu " aria-labelledby="dropdownChatterMenuActions">
+								<a class="dropdown-item chatter-send chatter-toggle" #if($asset.editstatus.equals("6"))  style="display:none;" #end href="#" data-command="approveasset" data-toggle="true">[[Approve]]  </a>
+							    <a class="dropdown-item chatter-send chatter-toggle" href="#" #if($asset.editstatus.equals("rejected")) style="display:none;" #end data-command="rejectasset" data-toggle="true">[[Reject]]</a>
+						
+							    ##<a class="dropdown-item" href="#"data-command="replaceasset">[[Replace]]</a>
+						  </div>
+						  </div>
 					  #end
 					</div>
 				</div>

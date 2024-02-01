@@ -677,12 +677,16 @@ public class FinderModule extends BaseMediaModule
 		List topmenufinal = new ArrayList();
 		if(topmenu != null && !topmenu.isEmpty())
 		{
-			Collection<String> usermodules = inReq.getUserProfile().getEntitiesIds();
-			for (Iterator iterator = topmenu.iterator(); iterator.hasNext();)
+			UserProfile userprofile = inReq.getUserProfile();
+			if (userprofile != null)
 			{
-				Data data = (Data) iterator.next();
-				if(usermodules.contains(data.getValue("toplevelentity"))) {
-					topmenufinal.add(data);
+				Collection<String> usermodules = inReq.getUserProfile().getEntitiesIds();
+				for (Iterator iterator = topmenu.iterator(); iterator.hasNext();)
+				{
+					Data data = (Data) iterator.next();
+					if(usermodules.contains(data.getValue("toplevelentity"))) {
+						topmenufinal.add(data);
+					}
 				}
 			}
 			Data first = (Data)topmenu.iterator().next();
