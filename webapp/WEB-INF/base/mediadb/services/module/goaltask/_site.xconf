@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="module">goaltask</property>
+  <property name="searchtype">goaltask</property>
+  <property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+  
+</page>

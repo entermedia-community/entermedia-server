@@ -1,0 +1,29 @@
+#set( $taskid = $context.getRequestParameter("taskid") )
+#set( $collectiverole = $context.getRequestParameter("collectiverole") )
+#set( $roleuserid = $context.getRequestParameter("roleuserid") )
+#set($collectionid = $librarycol.id)
+#set( $goalManager = $mediaarchive.getBean("goalManager") )
+#set( $task = $mediaarchive.getCachedData("goaltask", $taskid) )
+#set( $taskrole = $goalManager.findRole($task,$collectiverole,$roleuserid) )
+
+{
+"data":
+	{
+	    "collectiverole": {"id":"$taskrole.id","name":"$taskrole.name" },
+	    #set( $user = $mediaarchive.getCachedData("user", $taskrole.roleuserid) )
+	    $context.putPageValue("person",$user)
+		"roleuser": $pages.include("/${applicationid}/services/module/user/data/user.json",$context)
+	}
+
+"actions":
+[
+#set( $actions = $goalManager.listActions($taskid,$collectiverole,$roleuserid) )
+#foreach( $goaltaskuserrole in $actions)
+     {
+       "id":"$goaltaskuserrole.id",
+       "date","$goaltaskuserrole.date",
+       "owner":"$goaltaskuserrole.owner"
+     }
+#end
+]
+}
