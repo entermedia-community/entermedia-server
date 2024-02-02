@@ -653,12 +653,28 @@ public class GoogleManager implements CatalogEnabled
 	{
 		MediaArchive archive = getMediaArchive();
 
-		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg";
+		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg";
 
 		Page inputpage = archive.getPageManager().getPage(input);
 		if (!inputpage.exists())
 		{
-			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.png";
+			inputpage = archive.getPageManager().getPage(input);
+		}
+		if (!inputpage.exists())
+		{
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.png";
+			inputpage = archive.getPageManager().getPage(input);
+		}
+		if (!inputpage.exists())
+		{
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg";
+			inputpage = archive.getPageManager().getPage(input);
+
+		}
+		if (!inputpage.exists())
+		{
+			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
 			inputpage = archive.getPageManager().getPage(input);
 
 		}
