@@ -1,0 +1,3 @@
+<page>
+	<path-action name="JsonDataModule.handleSearch" alltypes="true"/>
+</page>
