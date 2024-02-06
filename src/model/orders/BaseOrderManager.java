@@ -547,8 +547,8 @@ public class BaseOrderManager implements OrderManager {
 		}
 
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
-		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+		//Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
+		//Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
@@ -956,6 +956,7 @@ public class BaseOrderManager implements OrderManager {
 				//complete the order
 				temphistory.setProperty("historytype","ordercomplete");
 				saveOrderHistory(archive, temphistory, inOrder)	;
+				inOrder.setRecentOrderHistory(temphistory);
 			}
 		}
 		finally
@@ -998,9 +999,7 @@ public class BaseOrderManager implements OrderManager {
 
 		inHistory.addItemCount();
 
-		//Is the conversion done?
-		//Make sure preset does not already exists?
-
+		//Publishassets.groovy updates the publish status if there is a error in conversions 
 
 		boolean publishcomplete = false;
 		String publishqueueid = orderitemhit.get("publishqueueid");

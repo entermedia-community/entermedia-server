@@ -974,11 +974,15 @@
 	<bean id="order" class="org.entermediadb.asset.orders.Order" scope="prototype">
 	</bean>
 	<bean id="orderhistory" class="org.entermediadb.asset.orders.OrderHistory" scope="prototype"/>
+
+	<bean id="PublishModule" class="org.entermediadb.asset.publishing.PublishModule" >
+	</bean>
 	
-	<bean id="publishManager" class="org.entermediadb.asset.publishing.PublishManager" >
-			<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
+	<bean id="publishManager" class="org.entermediadb.asset.publishing.PublishManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		
 	</bean>
 	
 	<bean id="SpreadSheetModule" class="org.openedit.modules.spreadsheet.SpreadSheetModule" >

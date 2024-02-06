@@ -139,6 +139,22 @@ public class GoalManager implements CatalogEnabled
 		Collection points = searcher.query().exact("roleuserid",roleuserid).exact("collectiverole",inRoleId)
 				.exact("goaltaskid",inTaskId).sort("date").search();
 		
+		Data task = (Data)getMediaArchive().getCachedData("goaltask", inTaskId);
+
+		
+		Map role = findRole(task, inRoleId, roleuserid);
+		if( role != null )
+		{
+			Object roleactioncount = role.get("roleactioncount");
+			if(roleactioncount == null || points.size() != Integer.parseInt(roleactioncount.toString()))
+			{
+				role.put("roleactioncount",points.size());
+				getMediaArchive().saveData("goaltask", task);
+			}
+			
+		}
+
+		
 		return points;
 		
 	}
