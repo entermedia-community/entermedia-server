@@ -190,8 +190,16 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		
 		if (inStructions.get("map_metadata") != null) 
 		{
-			//setValue("-map_metadata", "0:s:2", inStructions, comm); //audiofilters (channelmap, volume, ...) 
-			comm.add("--map_metadata 0:s:2");
+			setValue("map_metadata", "0:s:2", inStructions, comm); //audiofilters (channelmap, volume, ...) 
+			//comm.add("--map_metadata 0:s:2");
+		}
+		if (inStructions.get("c:a") != null) 
+		{
+			setValue("c:a", "copy", inStructions, comm); 
+		}
+		if (inStructions.get("c:s") != null) 
+		{
+			setValue("c:s", "copy", inStructions, comm); 
 		}
 		
 		//comm.add("-aspect");
