@@ -99,7 +99,13 @@ public class OrderModule extends BaseMediaModule
 		inReq.putPageValue("order", order);
 
 		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
-
+		
+		
+		String desktopid = inReq.findValue("desktop"); 
+		if(desktopid != null) {
+			order.setProperty("desktopid", desktopid);
+		}
+		
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		return order;
@@ -178,6 +184,11 @@ public class OrderModule extends BaseMediaModule
 				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime()));
 			}
+			
+			String desktopid = inReq.findValue("desktop"); 
+			if(desktopid != null) {
+				order.setProperty("desktopid", desktopid);
+			}
 
 			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
@@ -236,6 +247,11 @@ public class OrderModule extends BaseMediaModule
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime()));
+			}
+			
+			String desktopid = inReq.findValue("desktop"); 
+			if(desktopid != null) {
+				order.setProperty("desktopid", desktopid);
 			}
 
 			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
@@ -983,6 +999,12 @@ public class OrderModule extends BaseMediaModule
 			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
 		order.setValue("orderassetids",assetids);
+		
+		String desktopid = inReq.findValue("desktop"); 
+		if(desktopid != null) {
+			order.setProperty("desktopid", desktopid);
+		}
+		
 		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
 		
 		inReq.putPageValue("order", order);

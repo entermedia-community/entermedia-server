@@ -340,6 +340,13 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getAssetManager().getOriginalDocumentStream(inAsset);
 	}
+	
+	public ContentItem getGeneratedContent(Data asset, String outputfile)
+	{
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		return page;
+
+	}
 
 	public PropertyDetails getAssetPropertyDetails()
 	{
