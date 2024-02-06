@@ -942,7 +942,7 @@ public class BaseOrderManager implements OrderManager {
 			{
 				inOrder.setOrderStatus("complete");
 				
-				inOrder.setValue("orderreadystatus", "false");
+				inOrder.setValue("downloadedstatus", "false");
 				try
 				{
 					sendOrderNotifications(archive, inOrder);

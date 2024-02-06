@@ -50,7 +50,15 @@ public class Order extends BaseData implements SaveableData, CatalogEnabled
 	public void setRecentOrderHistory(OrderHistory inRecentOrderHistory)
 	{
 		fieldRecentOrderHistory = inRecentOrderHistory;
+		//Copy all the fields
+		if(inRecentOrderHistory != null )
+		{
+			setValue("itemcount",inRecentOrderHistory.getValue("itemcount"));
+			setValue("itemsuccesscount",inRecentOrderHistory.getValue("itemsuccesscount"));
+			setValue("itemerrorcount",inRecentOrderHistory.getValue("itemerrorcount"));
+		}
 	}
+		
 
 	public String findValue(Data inChild, String inKey)
 	{
