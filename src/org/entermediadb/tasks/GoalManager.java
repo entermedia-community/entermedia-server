@@ -145,10 +145,10 @@ public class GoalManager implements CatalogEnabled
 		Map role = findRole(task, inRoleId, roleuserid);
 		if( role != null )
 		{
-			Object roleactioncount = role.get("roleactioncount");
+			Object roleactioncount = role.get("actioncount");
 			if(roleactioncount == null || points.size() != Integer.parseInt(roleactioncount.toString()))
 			{
-				role.put("roleactioncount",points.size());
+				role.put("actioncount",points.size());
 				getMediaArchive().saveData("goaltask", task);
 			}
 			
