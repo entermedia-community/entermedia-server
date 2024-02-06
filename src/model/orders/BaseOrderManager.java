@@ -135,7 +135,7 @@ public class BaseOrderManager implements OrderManager {
 		
 		if(readystatus) {
 			//orderstatus
-			query.addOrsGroup("orderreadystatus","false"); //Open ones
+			query.addOrsGroup("downloadedstatus","false"); //Open ones
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -980,7 +980,7 @@ public class BaseOrderManager implements OrderManager {
 			if( inOrder.getOrderStatus() == "complete" );
 			{
 				
-				inOrder.setValue("orderreadystatus", "true");  //false will not notify again
+				inOrder.setValue("downloadedstatus", "true");  //false will not notify again
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				
 			}
