@@ -135,7 +135,7 @@ public class BaseOrderManager implements OrderManager {
 		
 		if(readystatus) {
 			//orderstatus
-			query.addOrsGroup("downloadedstatus","false"); //Open ones
+			query.addExact("downloadedstatus", "new"); //Open ones 
 		}
 		
 		GregorianCalendar cal = new GregorianCalendar();
@@ -350,6 +350,8 @@ public class BaseOrderManager implements OrderManager {
 		}
 		else {
 		*/
+		
+			
 			saveOrder(catalogid, inReq.getUser(), order);
 		//}
 		return order;
@@ -942,7 +944,7 @@ public class BaseOrderManager implements OrderManager {
 			{
 				inOrder.setOrderStatus("complete");
 				
-				inOrder.setValue("downloadedstatus", "false");
+				inOrder.setValue("downloadedstatus", "ready"); //initial status
 				try
 				{
 					sendOrderNotifications(archive, inOrder);
@@ -980,7 +982,7 @@ public class BaseOrderManager implements OrderManager {
 			if( inOrder.getOrderStatus() == "complete" );
 			{
 				
-				inOrder.setValue("downloadedstatus", "true");  //false will not notify again
+				inOrder.setValue("downloadedstatus", "complete");  //false will not notify again
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				
 			}

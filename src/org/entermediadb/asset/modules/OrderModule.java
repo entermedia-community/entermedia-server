@@ -106,6 +106,8 @@ public class OrderModule extends BaseMediaModule
 			order.setProperty("desktopid", desktopid);
 		}
 		
+		order.setProperty("downloadedstatus", "new"); 
+		
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		return order;
@@ -189,7 +191,9 @@ public class OrderModule extends BaseMediaModule
 			if(desktopid != null) {
 				order.setProperty("desktopid", desktopid);
 			}
-
+			
+			order.setProperty("downloadedstatus", "new");
+			
 			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
 			return order;
@@ -253,6 +257,8 @@ public class OrderModule extends BaseMediaModule
 			if(desktopid != null) {
 				order.setProperty("desktopid", desktopid);
 			}
+			
+			order.setProperty("downloadedstatus", "new");
 
 			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
