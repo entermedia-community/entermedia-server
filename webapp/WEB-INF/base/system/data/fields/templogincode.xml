@@ -18,7 +18,7 @@
   
   <property id="user"  index="true" viewtype="userdefault" type="list" listcatalogid="system" listid="user" filter="true"  keyword="true" stored="true" editable="true" >
     <name> 
-      <language id="en"><![CDATA[Expense Approval]]></language> 
+      <language id="en"><![CDATA[User]]></language> 
     </name> 
   </property>  
   <property id="securitycode" index="true" editable="true" stored="true" >
