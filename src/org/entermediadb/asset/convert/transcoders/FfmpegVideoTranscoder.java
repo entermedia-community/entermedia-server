@@ -49,7 +49,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			result = createMp4Output(inStructions);
+			result = createVideoOutput(inStructions);
 		}
 		return result;
 	}
@@ -132,7 +132,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 	}
 
 
-	public ConvertResult createMp4Output(ConvertInstructions inStructions)
+	public ConvertResult createVideoOutput(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
@@ -142,6 +142,13 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		String outputExt = inStructions.getOutputExtension();
 		long timeout = inStructions.getConversionTimeout();
 		ContentItem inputpage = inStructions.getInputFile();
+		
+		boolean mp4 = false;
+		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v"))) {
+			mp4 = true;
+		}
+
+		
 		ArrayList<String> comm = new ArrayList<String>();
 		comm.add("-i");
 		comm.add(inputpage.getAbsolutePath());
@@ -152,19 +159,35 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		comm.add("experimental");
 
 		//audio
+		setValue("c:a", "copy", inStructions, comm); //Keep all audio tracks
+		setValue("c:s", "copy", inStructions, comm); //Keep sub-titles
+		
+//		Collection audiostreamids = inAsset.getValues("audiostreamids");
+//		if( audiostreamids == null)
+//		{
 		setValue("acodec", "aac", inStructions, comm); // libmp3lame libopus
-
 		if (inStructions.get("pre") == null)  // changed to 'pre' in avconv. presetname: 'foo' -> 'libx264-foo.avpreset' in '~/.avconv' / filename: [codec]-[presetname].avpreset / http://libav.org/avconv.html#Preset-files
 		{
 			setValue("ab", "96k", inStructions, comm); //legacy. audio bit rate, alias for 'b:a', see code below.
 			setValue("ar", "44100", inStructions, comm); //audio sample rate
-			setValue("ac", "1", inStructions, comm); //audiochannels
+			if(inStructions.get("ac") != null)
+			{	
+				setValue("ac", "1", inStructions, comm); //audiochannels
+			}
 		}
 		else
 		{
 			comm.add("-pre");
 			comm.add(inStructions.get("pre"));
 		}
+//		String videodatastreamid = inAsset.get("videodatastreamid");
+//
+		if (!mp4) 
+		{
+			setValue("map_metadata", "0", inStructions, comm); //audiofilters (channelmap, volume, ...) 
+			//comm.add("--map_metadata 0:s:2");
+		}
+		
 		comm.add("-nostats");
 
 		setValue("threads", "2", inStructions, comm); // 0=auto, but leave some cores for the server's workload
@@ -187,21 +210,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 
 		setValue("max_muxing_queue_size", null, inStructions, comm); // 0=auto, but leave some cores for the server's workload
 
-		
-		if (inStructions.get("map_metadata") != null) 
-		{
-			setValue("map_metadata", "0", inStructions, comm); //audiofilters (channelmap, volume, ...) 
-			//comm.add("--map_metadata 0:s:2");
-		}
-		if (inStructions.get("c:a") != null) 
-		{
-			setValue("c:a", "copy", inStructions, comm); 
-		}
-		if (inStructions.get("c:s") != null) 
-		{
-			setValue("c:s", "copy", inStructions, comm); 
-		}
-		
 		//comm.add("-aspect");
 		//comm.add("640:480");
 
@@ -300,13 +308,9 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		 * -acodec pcm_s16le -s vga -ar 44100 -ac 1 pcmmono2k960output2p.avi
 		 */
 		String outpath = null;
-		boolean h264 = false;
-		if (outputExt != null && (outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v"))) {
-			h264 = true;
-		}
 		
 
-		if (h264)
+		if (mp4)
 		{
 			outpath = inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4";
 			File tmp = new File(outpath);
@@ -343,7 +347,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			result.setError("Error: " + output);
 			return result;
 		}
-		if (h264)
+		if (mp4)
 		{
 			comm = new ArrayList();
 			comm.add(inStructions.getOutputFile().getAbsolutePath() + "tmp.mp4");
