@@ -224,8 +224,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 
 		//add calculations to fix letterbox problems
 		//http://howto-pages.org/ffmpeg/
-		int width = inStructions.intValue("prefwidth", 640);
-		int height = inStructions.intValue("prefheight", 360);
+		int width = inStructions.intValue("prefwidth", 0);
+		int height = inStructions.intValue("prefheight", 0);
 
 		//				if( inStructions.getMaxScaledSize() != null )
 		//				{
@@ -233,46 +233,49 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		//					height = inStructions.getMaxScaledSize().height;
 		//				}
 
-		int aw = inAsset.getInt("width");
-		int ah = inAsset.getInt("height");
-		if (aw > width || ah > height)
+		if( width != 0)
 		{
-			float ratio = (float) aw / (float) ah;
-			float ratiodest = (float) width / (float) height;
-			if (ratiodest > ratio) //is dest wider than the input
+			int aw = inAsset.getInt("width");
+			int ah = inAsset.getInt("height");
+			if (aw > width || ah > height)
 			{
-				//original video has a wider ratio so we need to adjust height in proportion
-				float change = (float) height / (float) ah;
-				width = Math.round((float) aw * change);
-			}
-			else if (ratiodest < ratio)
-			{
-				//too wide, need to padd top
-				float change = (float) width / (float) aw;
-				height = Math.round((float) ah * change);
+				float ratio = (float) aw / (float) ah;
+				float ratiodest = (float) width / (float) height;
+				if (ratiodest > ratio) //is dest wider than the input
+				{
+					//original video has a wider ratio so we need to adjust height in proportion
+					float change = (float) height / (float) ah;
+					width = Math.round((float) aw * change);
+				}
+				else if (ratiodest < ratio)
+				{
+					//too wide, need to padd top
+					float change = (float) width / (float) aw;
+					height = Math.round((float) ah * change);
+				}
+				else
+				{
+					//no math needed
+				}
 			}
 			else
 			{
-				//no math needed
-			}
-		}
-		else
-		{
-			// Asset has smaller size than destination
-
-			boolean scaledownonly = true;
-			if (inStructions.get("scaledownonly") != null)
-			{
-				scaledownonly = new Boolean(inStructions.get("scaledownonly"));
-			}
-
-			//log.info(scaledownonly);
-
-			if (scaledownonly)
-			{
-				// Make destination size the same as original
-				width = aw;
-				height = ah;
+				// Asset has smaller size than destination
+	
+				boolean scaledownonly = true;
+				if (inStructions.get("scaledownonly") != null)
+				{
+					scaledownonly = new Boolean(inStructions.get("scaledownonly"));
+				}
+	
+				//log.info(scaledownonly);
+	
+				if (scaledownonly)
+				{
+					// Make destination size the same as original
+					width = aw;
+					height = ah;
+				}
 			}
 		}
 		if (width > 1 && height > 1)
