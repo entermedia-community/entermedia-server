@@ -64,6 +64,10 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 				textinfo = textinfo.substring(startjson,textinfo.length());
 				JSONObject config = (JSONObject)new JSONParser().parse(textinfo);
 				Collection streams = (Collection)config.get("streams");
+				
+				Collection audiostreamids = new ArrayList();
+				String videotimecodeid = null;
+				
 				for (Iterator iterator = streams.iterator(); iterator.hasNext();)
 				{
 					Map stream = (Map) iterator.next();
@@ -82,11 +86,19 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
 						}
 					}
-					if( "audio".equals( stream.get("codec_type") ) )
+					else if( "audio".equals( stream.get("codec_type") ) )
 					{
+						audiostreamids.add((String)stream.get("index"));
 						inAsset.setProperty("audiocodec", (String)stream.get("codec_name"));						
 					}
+					else if( "data".equals( stream.get("codec_type") ) )
+					{
+						videotimecodeid = (String)stream.get("index");
+					}
+					//Subtitles?
 				}
+				inAsset.setValue("audiostreamids",audiostreamids);
+				inAsset.setValue("videotimecodeid",videotimecodeid);
 				
 				if("audio".equals(mediatype)){
 					
