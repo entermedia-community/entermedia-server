@@ -159,6 +159,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		comm.add("experimental");
 
 		//audio
+		setValue("map", "0:v", inStructions, comm); //Keep all audio tracks
+		setValue("map", "0:a", inStructions, comm); //Keep all audio tracks
 		setValue("c:a", "copy", inStructions, comm); //Keep all audio tracks
 		setValue("c:s", "copy", inStructions, comm); //Keep sub-titles
 		
@@ -181,7 +183,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			comm.add(inStructions.get("pre"));
 		}
 //		String videodatastreamid = inAsset.get("videodatastreamid");
-//
 		if (!mp4) 
 		{
 			setValue("map_metadata", "0", inStructions, comm); //audiofilters (channelmap, volume, ...) 
