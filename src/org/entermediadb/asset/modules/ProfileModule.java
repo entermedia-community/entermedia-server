@@ -334,8 +334,9 @@ public class ProfileModule extends MediaArchiveModule
 					if (hits != null) {
 						hits.setHitsPerPage(Integer.parseInt(customhitsperpage));
 					}
+					inReq.putPageValue(moduleid+"hitsperpage", Integer.parseInt(customhitsperpage));
 				}
-				inReq.putPageValue(moduleid+"hitsperpage", Integer.parseInt(customhitsperpage));
+				
 			}
 			else {
 				//inReq.putPageValue("hitsperpage", Integer.parseInt(customhitsperpage));
