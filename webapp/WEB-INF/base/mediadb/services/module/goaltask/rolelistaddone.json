@@ -1,2 +1,0 @@
-$context.putPageValue("hit",$data)
-$pages.include("./hit.json",$context)

@@ -1,8 +1,0 @@
-<page>
-	<path-action name="JsonAssetModule.preprocess" />
-
-	<path-action name="DataEditModule.deleteData">
-    	<property name='searchtype'>goaltaskuserrole</property>
-    </path-action>	
-
-</page>
