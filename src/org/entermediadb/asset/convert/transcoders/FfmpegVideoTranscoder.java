@@ -182,13 +182,15 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			comm.add("-pre");
 			comm.add(inStructions.get("pre"));
 		}
-//		String videodatastreamid = inAsset.get("videodatastreamid");
-		if (!mp4) 
+		if (mp4) 
 		{
-			setValue("map_metadata", "0", inStructions, comm); //audiofilters (channelmap, volume, ...) 
+			String videodatastreamid = inAsset.get("videodatastreamid");
+			if( videodatastreamid != null)
+			{
+				setValue("map_metadata", "0:s:" + videodatastreamid, inStructions, comm); //audiofilters (channelmap, volume, ...)
+			}
 			//comm.add("--map_metadata 0:s:2");
 		}
-		
 		comm.add("-nostats");
 
 		setValue("threads", "2", inStructions, comm); // 0=auto, but leave some cores for the server's workload
