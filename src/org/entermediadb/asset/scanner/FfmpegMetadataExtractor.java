@@ -88,12 +88,12 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 					}
 					else if( "audio".equals( stream.get("codec_type") ) )
 					{
-						audiostreamids.add((String)stream.get("index"));
+						audiostreamids.add(String.valueOf( stream.get("index")));
 						inAsset.setProperty("audiocodec", (String)stream.get("codec_name"));						
 					}
 					else if( "data".equals( stream.get("codec_type") ) )
 					{
-						videotimecodeid = (String)stream.get("index");
+						videotimecodeid = String.valueOf( stream.get("index"));
 					}
 					//Subtitles?
 				}
@@ -103,21 +103,21 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 				if("audio".equals(mediatype)){
 					
 					 Map format = (Map) config.get("format");
-					 String bitrate = (String) format.get("bit_rate");
-					 inAsset.setProperty("audiobitrate", bitrate);
+					 Object bitrate =  format.get("bit_rate");
+					 inAsset.setValue("audiobitrate", bitrate);
 				}
 				
 				if("video".equals(mediatype)){
 					
 					 Map format = (Map) config.get("format");
-					 String bitrate = (String) format.get("bit_rate");
-					 inAsset.setProperty("videobitrate", bitrate);
+					 Object bitrate = format.get("bit_rate");
+					 inAsset.setValue("videobitrate", bitrate);
 				}
 				
 			} 
 			catch ( Throwable ex)
 			{
-				log.error("Could not read metadata on " + inAsset.getName() );
+				log.error("Could not read metadata on " + inAsset.getName(), ex );
 			}
 			return true;
 		}
