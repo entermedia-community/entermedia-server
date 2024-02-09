@@ -182,9 +182,9 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			comm.add("-pre");
 			comm.add(inStructions.get("pre"));
 		}
-		if (mp4) 
+		if ("mp4".equals(inAsset.getFileFormat()))  
 		{
-			String videodatastreamid = inAsset.get("videodatastreamid");
+			String videodatastreamid = inAsset.get("videotimecodeid"); 
 			if( videodatastreamid != null)
 			{
 				setValue("map_metadata", "0:s:" + videodatastreamid, inStructions, comm); //audiofilters (channelmap, volume, ...)
