@@ -31,6 +31,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
@@ -39,7 +40,6 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
-import org.openedit.page.PageRequestKeys;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -47,7 +47,6 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
-import org.openedit.util.URLUtilities;
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -128,19 +127,50 @@ public class BaseOrderManager implements OrderManager {
 		return ordersearcher.search(query);
 	}
 	
-	public HitTracker findOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser, String ordertype, Boolean readystatus) {
+
+	public HitTracker findDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser) 
+	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
-		query.addExact("ordertype", ordertype);
-		
-		if(readystatus) {
-			//orderstatus
-			query.addExact("downloadedstatus", "new"); //Open ones 
-		}
-		
+		query.setName("downloadorders");
+		//query.addOrsGroup("orderstatus","ordered finalizing complete"); //Open ones
+		query.addExact("ordertype", "download");
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.add(Calendar.MONTH, -3);
 		query.addAfter("date", cal.getTime());
+		query.addSortBy("dateDown");
+		query.addExact("userid", inUser.getId());
+		return ordersearcher.cachedSearch(inReq,query);
+	}
+	
+	public boolean hasPendingDownloadForUser(WebPageRequest inPage, String inCatlogId, User inUser) {
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
+		QueryBuilder query = ordersearcher.query();
+		query.named("hasdownloadorders");
+		query.exact("ordertype", "download");
+		query.not("orderstatus", "complete"); //Open ones 
+		
+//		GregorianCalendar cal = new GregorianCalendar();
+//		cal.add(Calendar.MONTH, -3);
+//		query.addAfter("date", cal.getTime());
+		query.exact("userid", inUser.getId());
+		Data one = query.searchOne(inPage);
+		if( one != null)
+		{
+			return true;
+		}
+		return false;
+	}
+	public HitTracker findUnshownDownloadOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser) {
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
+		SearchQuery query = ordersearcher.createSearchQuery();
+		query.setName("unshowndownloadorders");
+		query.addExact("ordertype", "download");
+		query.addExact("downloadedstatus", "new"); //Open ones 
+		
+//		GregorianCalendar cal = new GregorianCalendar();
+//		cal.add(Calendar.MONTH, -3);
+//		query.addAfter("date", cal.getTime());
 		query.addSortBy("dateDown");
 		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
@@ -656,6 +686,32 @@ public class BaseOrderManager implements OrderManager {
 				String path = archive.asLinkToDownload(asset, preset);
 				orderItem.setProperty("downloadpath", path);
 			}			
+			
+			//make sure task exists
+			Data conversiontask = archive.query("conversiontask").exact("assetid",asset).exact("presetid",presetid).searchOne();
+			if( conversiontask == null )
+			{
+				conversiontask = archive.getSearcher("conversiontask").createNewData();
+				conversiontask.setValue("assetid",asset.getId());
+				conversiontask.setValue("presetid",presetid);
+				conversiontask.setValue("status","new");
+				archive.getSearcher("conversiontask").saveData(conversiontask);
+			}
+			else
+			{
+				//Check output file for existance
+				if( "complete".equals( conversiontask.get("status") ) )
+				{
+					String generatedfilename = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
+					if( !archive.getContent(generatedfilename).exists() )
+					{
+						conversiontask.setValue("status","retry");
+						archive.getSearcher("conversiontask").saveData(conversiontask);
+					}
+				}
+			}
+			
+			
 			if( "preview".equals(presetid) )   //This never touches publishing
 			{
 				orderItemSearcher.saveData(orderItem, inUser);
@@ -749,7 +805,8 @@ public class BaseOrderManager implements OrderManager {
 		}
 		order.setOrderStatus("processing");
 		saveOrder(archive.getCatalogId(), inUser, order);
-		archive.fireSharedMediaEvent("publishing/publishassets"); //this might add conversions
+		archive.fireSharedMediaEvent("conversions/runconversions");
+		archive.fireSharedMediaEvent("publishing/publishassets"); //If conversions are already done
 		return assetids;
 	}
 
@@ -943,8 +1000,6 @@ public class BaseOrderManager implements OrderManager {
 			if((itemErrorCount + itemSuccessCount) == size )
 			{
 				inOrder.setOrderStatus("complete");
-				
-				inOrder.setValue("downloadedstatus", "ready"); //initial status
 				try
 				{
 					sendOrderNotifications(archive, inOrder);
@@ -1045,6 +1100,10 @@ public class BaseOrderManager implements OrderManager {
 		SearchQuery query = ordersearcher.createSearchQuery();
 		query.addOrsGroup("orderstatus","processing"); //pending is depreacted
 		Collection hits = ordersearcher.search(query);
+		if( !hits.isEmpty())
+		{
+			
+		}
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();

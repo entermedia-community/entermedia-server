@@ -166,9 +166,15 @@ public class PublishManager implements CatalogEnabled {
 					
 					//	log.info("Publishing  Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 					
-					if(Boolean.parseBoolean(destination.get("includemetadata"))){
-					
+					if(Boolean.parseBoolean(destination.get("includemetadata")))
+					{
+
 						Page inputpage = findInputPage(mediaArchive, asset, preset);
+						if( !inputpage.exists() )
+						{
+							//Make sure we have a preset conversion task
+						}
+
 						XmpWriter writer = (XmpWriter) mediaArchive.getModuleManager().getBean("xmpWriter");
 						if(inputpage.exists()){
 							writer.saveMetadata(mediaArchive, inputpage.getContentItem(), asset, new HashMap());
@@ -245,12 +251,13 @@ public class PublishManager implements CatalogEnabled {
 	protected void firePublishEvent(String inOrderItemId)
 	{
 		WebEvent event = new WebEvent();
+		event.setCatalogId(getMediaArchive().getCatalogId());
 		event.setSearchType("publishqueue");
 		event.setProperty("publishqueueid", inOrderItemId);
 		event.setOperation("publishing/publishcomplete");
-		//event.setUser(inUser);
-		event.setCatalogId(getMediaArchive().getCatalogId());
 		getMediaArchive().getEventManager().fireEvent(event);
+		
+		getMediaArchive().fireSharedMediaEvent("ordering/checkorderstatus");
 
 	}
 

@@ -398,7 +398,7 @@ public class OrderModule extends BaseMediaModule
 		return orders;
 	}
 	
-	public HitTracker findActiveDownloadOrdersForUser(WebPageRequest req)
+	public void findActiveDownloadOrdersForUser(WebPageRequest req)
 	{
 		String catalogid = req.findPathValue("catalogid");
 		User owner = (User) req.getPageValue("owner");
@@ -406,19 +406,35 @@ public class OrderModule extends BaseMediaModule
 		{
 			owner = req.getUser();
 		}
-		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download", true);
-		if(orders.size() > 0) {
-			req.putPageValue("activeorders", orders);
-			//already tracking an order?
-			Order order = (Order) req.getPageValue("order");
-			if (order == null) {
-				req.putPageValue("order", orders.first());
-			}
+		
+		//Any pending orders?
+		boolean yespending = getOrderManager().hasPendingDownloadForUser(req, catalogid, owner);
+		
+
+		//Any complete order not yet show
+		Collection unshown = getOrderManager().findUnshownDownloadOrdersForUser(req, catalogid, owner);
+		req.putPageValue("showorders", unshown);
+		
+		//Browser should have shown order so flip flag
+		for (Iterator iterator = unshown.iterator(); iterator.hasNext();)
+		{
+			Data order = (Data) iterator.next();
+			order.setValue("downloadedstatus","complete");
 		}
+		getMediaArchive(req).getSearcher("order").saveAllData(unshown,null);
+//			//already tracking an order?
+//			Order order = (Order) req.getPageValue("order");
+//			if (order == null) {
+//				req.putPageValue("order", pendingorders.first());
+//				//order.setValue("downloadedstatus", "shown"); 
+//
+//			}
+//		}
+		
+		
 		//req.putPageValue("activeorders", orders);
 		//req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
 		
-		return orders;
 	}
 	
 	public HitTracker findDownloadOrdersForUser(WebPageRequest req)
@@ -429,7 +445,7 @@ public class OrderModule extends BaseMediaModule
 		{
 			owner = req.getUser();
 		}
-		HitTracker orders = getOrderManager().findOrdersForUser(req, catalogid, owner, "download", false);
+		HitTracker orders = getOrderManager().findDownloadOrdersForUser(req, catalogid, owner);
 		req.putPageValue("orders", orders);
 		req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
 		
@@ -883,6 +899,7 @@ public class OrderModule extends BaseMediaModule
 		return order;
 		// change the status of all the items and the order and save everything
 		// fire event
+		
 
 	}
 
@@ -1395,4 +1412,14 @@ public class OrderModule extends BaseMediaModule
 		inReq.putPageValue("rendertypeoptions",rendertypeoptions);
 	}	
 
+	public void refreshPendingOrders(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//If there are pending. fire publish,conversion and order status events
+		archive.fireSharedMediaEvent("conversions/runconversions");
+		archive.fireSharedMediaEvent("publishing/publishassets"); //This calls update order status
+
+	}
+
+	
 }

@@ -29,8 +29,11 @@ public interface OrderManager
 	Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties);
 
 	HitTracker findOrdersForUser(String inCatlogId, User inUser);
+
+	HitTracker findDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser);
+
 	
-	HitTracker findOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser, String ordertype, Boolean readystatus);
+	HitTracker findUnshownDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser);
 
 	void loadOrderHistoryForPage(HitTracker inPage);
 
@@ -103,5 +106,7 @@ public interface OrderManager
 	Order findOrderFromAssets(String inCatalogId, User inUser, List inAssetids);
 
 	void updateReadyStatus(MediaArchive archive, Order order);
+
+	boolean hasPendingDownloadForUser(WebPageRequest inReq, String inCatalogid, User inOwner);
 	
 }

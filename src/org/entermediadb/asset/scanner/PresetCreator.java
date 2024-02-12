@@ -310,6 +310,7 @@ public class PresetCreator
 			{
 				if(founderror && "error".equals(existingimportstatus) || ("complete".equals(existingimportstatus) && "2".equals(existingpreviewstatus)))
 				{
+					inArchive.fireSharedMediaEvent("publishing/publishassets"); 
 					return;						
 				}
 				Asset target = (Asset)inArchive.getAssetSearcher().searchById(asset.getId());
