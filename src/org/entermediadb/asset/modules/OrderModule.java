@@ -409,19 +409,24 @@ public class OrderModule extends BaseMediaModule
 		
 		//Any pending orders?
 		boolean yespending = getOrderManager().hasPendingDownloadForUser(req, catalogid, owner);
-		
+		req.putPageValue("haspendingorders", yespending);
 
 		//Any complete order not yet show
-		Collection unshown = getOrderManager().findUnshownDownloadOrdersForUser(req, catalogid, owner);
+		HitTracker unshown = getOrderManager().findUnshownDownloadOrdersForUser(req, catalogid, owner);
 		req.putPageValue("showorders", unshown);
 		
 		//Browser should have shown order so flip flag
-		for (Iterator iterator = unshown.iterator(); iterator.hasNext();)
+		if (!unshown.isEmpty()) 
 		{
-			Data order = (Data) iterator.next();
-			order.setValue("downloadedstatus","complete");
+			for (Iterator iterator = unshown.iterator(); iterator.hasNext();)
+			{
+				Data order = (Data) iterator.next();
+				order.setValue("downloadedstatus","complete");
+			}
+			getMediaArchive(req).getSearcher("order").saveAllData(unshown,null);
+			
+			req.putPageValue("showorder", unshown.first());
 		}
-		getMediaArchive(req).getSearcher("order").saveAllData(unshown,null);
 //			//already tracking an order?
 //			Order order = (Order) req.getPageValue("order");
 //			if (order == null) {

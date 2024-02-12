@@ -149,6 +149,7 @@ public class BaseOrderManager implements OrderManager {
 		query.named("hasdownloadorders");
 		query.exact("ordertype", "download");
 		query.not("orderstatus", "complete"); //Open ones 
+		query.not("orderstatus", "preorder"); //Open ones
 		
 //		GregorianCalendar cal = new GregorianCalendar();
 //		cal.add(Calendar.MONTH, -3);
@@ -165,6 +166,7 @@ public class BaseOrderManager implements OrderManager {
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
 		query.setName("unshowndownloadorders");
+		query.addExact("orderstatus", "complete"); //Open ones
 		query.addExact("ordertype", "download");
 		query.addExact("downloadedstatus", "new"); //Open ones 
 		
