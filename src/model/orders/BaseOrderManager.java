@@ -500,6 +500,12 @@ public class BaseOrderManager implements OrderManager {
 	public void saveOrder(String inCatalogId, User inUser, Order inBasket)
 	{
 		Searcher orderearcher = getSearcherManager().getSearcher(inCatalogId, "order");
+		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogId, "orderitem");
+		HitTracker items = itemsearcher.query().exact("orderid",inBasket.getId()).hitsPerPage(1).search();
+		
+		inBasket.setValue("itemcount",items.size());
+		//setValue("itemsuccesscount",inRecentOrderHistory.getValue("itemsuccesscount"));
+		
 		orderearcher.saveData(inBasket, inUser );
 	}
 
@@ -955,9 +961,9 @@ public class BaseOrderManager implements OrderManager {
 			query.addExact("orderid", inOrder.getId());
 			query.setHitsName("orderitems");
 			//query.addNot("status", "complete");
-			HitTracker hits =  itemsearcher.search(query); //not cached
+			HitTracker itemhits =  itemsearcher.search(query); //not cached
 
-			int size = hits.size();
+			int size = itemhits.size();
 			if( size == 0)
 			{
 				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
@@ -974,7 +980,8 @@ public class BaseOrderManager implements OrderManager {
 				{
 					inOrder.setValue("orderstatus", "complete");
 					inOrder.setValue("orderstatusdetails", "order expired after one month");
-					saveOrder(archive.getCatalogId(), null, inOrder);
+					archive.saveData("order",inOrder);
+					//saveOrder(archive.getCatalogId(), null, inOrder);
 				}
 				return;
 			}
@@ -982,7 +989,7 @@ public class BaseOrderManager implements OrderManager {
 			Searcher historysearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderhistory");
 			OrderHistory temphistory = (OrderHistory)historysearcher.createNewData();
 
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			for (Iterator iterator = itemhits.iterator(); iterator.hasNext();)
 			{
 				Data orderitemhit = (Data) iterator.next();
 				addItemToHistory(archive, temphistory,  orderitemhit);
@@ -1009,11 +1016,12 @@ public class BaseOrderManager implements OrderManager {
 					log.error("Could not send order notification" , ex);
 					inOrder.setOrderStatus("complete",": could not send notification " + ex );
 				}
-				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
 				temphistory.setProperty("historytype","ordercomplete");
 				saveOrderHistory(archive, temphistory, inOrder)	;
-				inOrder.setRecentOrderHistory(temphistory);
+				//saveOrder(archive.getCatalogId(), null, inOrder);
+				archive.saveData("order",inOrder);
+
 			}
 		}
 		finally
