@@ -158,10 +158,15 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 		comm.add("-strict");
 		comm.add("experimental");
 
-		//audio
 		setValue("map", "0:v", inStructions, comm); //Keep all audio tracks
-		setValue("map", "0:a", inStructions, comm); //Keep all audio tracks
-		setValue("c:a", "copy", inStructions, comm); //Keep all audio tracks
+		
+		//audio
+		Collection audios = inAsset.getValues("audiostreamids");
+		if( audios != null && !audios.isEmpty())
+		{
+			setValue("map", "0:a", inStructions, comm); //Keep all audio tracks
+			setValue("c:a", "copy", inStructions, comm); //Keep all audio tracks
+		}		
 		setValue("c:s", "copy", inStructions, comm); //Keep sub-titles
 		
 //		Collection audiostreamids = inAsset.getValues("audiostreamids");

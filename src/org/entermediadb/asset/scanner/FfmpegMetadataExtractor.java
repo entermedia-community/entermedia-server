@@ -66,6 +66,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 				Collection streams = (Collection)config.get("streams");
 				
 				Collection audiostreamids = new ArrayList();
+				Collection videostreamids = new ArrayList();
 				String videotimecodeid = null;
 				
 				for (Iterator iterator = streams.iterator(); iterator.hasNext();)
@@ -78,13 +79,14 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("height", String.valueOf( stream.get("height")) );
 						
 						String val =  (String)stream.get("duration");
-						if(val != null){
-						inAsset.setProperty("duration",val);
-											val = processDuration(val);
-					
-						inAsset.setValue("length",  Double.parseDouble( val ) ); //in fractional seconds
-						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
+						if(val != null)
+						{
+							inAsset.setProperty("duration",val);
+							val = processDuration(val);
+							inAsset.setValue("length",  Double.parseDouble( val ) ); //in fractional seconds
+							inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
 						}
+						videostreamids.add(String.valueOf( stream.get("index")));
 					}
 					else if( "audio".equals( stream.get("codec_type") ) )
 					{
@@ -97,6 +99,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 					}
 					//Subtitles?
 				}
+				inAsset.setValue("videostreamids",videostreamids);
 				inAsset.setValue("audiostreamids",audiostreamids);
 				inAsset.setValue("videotimecodeid",videotimecodeid);
 				
