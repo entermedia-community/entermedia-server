@@ -499,13 +499,16 @@ public class ProfileModule extends MediaArchiveModule
 			{
 				return;
 			}
+
 		}
-
-		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
-
-		profilesearcher.updateData(inReq, fields, prof);
-		getUserProfileManager().saveUserProfile(prof);
-
+		if(prof != null) 
+		{
+			Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
+	
+			profilesearcher.updateData(inReq, fields, prof);
+			getUserProfileManager().saveUserProfile(prof);
+		}
+		
 	}
 
 	public void toggleUserPreference(WebPageRequest inReq)
