@@ -11,7 +11,6 @@ import org.openedit.util.DateStorageUtil;
 
 public class Order extends BaseData implements SaveableData, CatalogEnabled
 {
-	protected OrderHistory fieldRecentOrderHistory;
 	protected OrderManager fieldOrderManager;
 	protected String fieldCatalogId;
 	
@@ -34,31 +33,7 @@ public class Order extends BaseData implements SaveableData, CatalogEnabled
 		this.fieldOrderManager = inOrderManager;
 	}
 
-	public OrderHistory getRecentOrderHistory()
-	{
-		if( fieldRecentOrderHistory == null)
-		{
-			fieldRecentOrderHistory = getOrderManager().loadOrderHistory(getCatalogId(), this);
-			if( fieldRecentOrderHistory == null)
-			{
-				fieldRecentOrderHistory = new OrderHistory();
-			}
-		}
-		return fieldRecentOrderHistory;
-	}
 
-	public void setRecentOrderHistory(OrderHistory inRecentOrderHistory)
-	{
-		fieldRecentOrderHistory = inRecentOrderHistory;
-		//Copy all the fields
-		if(inRecentOrderHistory != null )
-		{
-			setValue("itemcount",inRecentOrderHistory.getValue("itemcount"));
-			setValue("itemsuccesscount",inRecentOrderHistory.getValue("itemsuccesscount"));
-			setValue("itemerrorcount",inRecentOrderHistory.getValue("itemerrorcount"));
-		}
-	}
-		
 
 	public String findValue(Data inChild, String inKey)
 	{
@@ -91,28 +66,7 @@ public class Order extends BaseData implements SaveableData, CatalogEnabled
 		return getId();
 	}
 	
-	@Override
-	public Object getValue(String inId)
-	{
-		if( inId.startsWith("history"))
-		{
-			String key = inId.substring(7);
-			if( getRecentOrderHistory() == null )
-			{
-				return null;
-			}
-			return getRecentOrderHistory().get(key); //may be OrderHistory.EMPTY
-		}
-		return super.getValue(inId);
-	}
 
-	@Override
-	public void setProperty(String inId, String inValue)
-	{
-		// TODO Auto-generated method stub
-		super.setProperty(inId, inValue);
-	}
-	
 	public boolean isExpired()
 	{
 		String expiration = get("expireson");

@@ -41,4 +41,10 @@
   <endpoint id="updatestatus" name="[[Update Order Status]]" url="/${applicationid}/services/module/order/updateorderstatus" docsection="moduleorder" caption="[[Check the conversion status of a pending order]]" httpmethod="POST">
 	<samplerequest><![CDATA[{"orderid":"ertFGErre3234"}]]></samplerequest>
   </endpoint>
+
+  <endpoint id="updateitemstatus" name="[[Update Item Status]]" url="/${applicationid}/services/module/order/updateorderitemstatus" docsection="moduleorder" caption="[[Save the status of a pending item]]" httpmethod="POST">
+	<samplerequest><![CDATA[{"orderitemid":"ertFGErre3234"}]]></samplerequest>
+  </endpoint>
+
+
  </endpoints>

@@ -1741,7 +1741,7 @@ public class TaskModule extends BaseMediaModule
 			Map<String,Collection> goalhits = new HashMap();
 			
 			MediaArchive archive = getMediaArchive(inReq);
-			Collection sorted = archive.query("goaltask").named("goaltasks").orgroup("projectgoal", hits).sort("creationdate").search();
+			Collection sorted = archive.query("goaltask").named("goaltasks").orgroup("projectgoal", hits.getPageOfHits()).sort("creationdate").search();
 			
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{

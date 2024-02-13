@@ -32,7 +32,7 @@ public class ElasticXmlOrderSearcher extends ElasticXmlFileSearcher
 	@Override
 	protected void saveToElasticSearch(PropertyDetails inDetails, Data inData, boolean delete, User inUser)
 	{
-		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
+		//getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
 		super.saveToElasticSearch(inDetails, inData, delete, inUser);
 	}
 	
