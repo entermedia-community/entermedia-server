@@ -21,7 +21,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
-import org.entermediadb.asset.orders.OrderHistory;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
@@ -177,34 +176,8 @@ public class BaseOrderManager implements OrderManager {
 		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.orders.OrderManager#loadOrderHistoryForPage(org.openedit.hittracker.HitTracker)
-	 */
 
-	public void loadOrderHistoryForPage(HitTracker inPage) {
-		for (Iterator iterator = inPage.getPageOfHits().iterator(); iterator.hasNext();) {
-			Order order = (Order) iterator.next();
-			loadOrderHistory(inPage.getCatalogId(), order);
-		}
-	}
 
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.orders.OrderManager#loadOrderHistory(java.lang.String, org.entermediadb.asset.orders.Order)
-	 */
-
-	public OrderHistory loadOrderHistory(String inCataId, Order order) {
-		if( order == null) {
-			return null;
-		}
-		//if( order.getRecentOrderHistory() == null) {
-			OrderHistory history = findRecentOrderHistory(inCataId,order.getId());
-			if( history == null) {
-				history = OrderHistory.EMPTY;
-			}
-			order.setRecentOrderHistory(history);
-		//}
-		return order.getRecentOrderHistory();
-	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#findOrderItems(org.openedit.WebPageRequest, java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
@@ -304,40 +277,6 @@ public class BaseOrderManager implements OrderManager {
 	 * @see org.entermediadb.asset.orders.OrderManager#findOrderHistory(java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
 
-	public HitTracker findOrderHistory(String inCatalogid, Order inOrder) {
-		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderhistory");
-		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addExact("orderid", inOrder.getId());
-		query.addSortBy("dateDown");
-		HitTracker items =  itemsearcher.search(query);
-
-		OrderHistory history = OrderHistory.EMPTY;
-		Data hit = (Data)items.first();
-		if( hit != null) {
-			history = (OrderHistory)itemsearcher.searchById(hit.getId());
-		}
-
-		inOrder.setRecentOrderHistory(history);
-
-		return items;
-	}
-	/* (non-Javadoc)
-	 * @see org.entermediadb.asset.orders.OrderManager#findRecentOrderHistory(java.lang.String, java.lang.String)
-	 */
-
-	public OrderHistory findRecentOrderHistory(String inCatalogid, String inOrderId) {
-		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderhistory");
-		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addExact("orderid", inOrderId);
-		query.addSortBy("dateDown");
-		Data index =  (Data)itemsearcher.uniqueResult(query);
-		if( index != null) {
-			OrderHistory history = (OrderHistory)itemsearcher.searchById(index.getId());
-			return history;
-		}
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#loadOrder(java.lang.String, java.lang.String)
 	 */
@@ -345,7 +284,6 @@ public class BaseOrderManager implements OrderManager {
 	public Order loadOrder(String catalogid, String orderid) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(catalogid, "order");
 		Order order =  (Order) ordersearcher.searchById(orderid);
-		loadOrderHistory(catalogid,order);
 		return order;
 	}
 
@@ -502,12 +440,14 @@ public class BaseOrderManager implements OrderManager {
 	public void saveOrder(String inCatalogId, User inUser, Order inBasket)
 	{
 		Searcher orderearcher = getSearcherManager().getSearcher(inCatalogId, "order");
-		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogId, "orderitem");
-		HitTracker items = itemsearcher.query().exact("orderid",inBasket.getId()).hitsPerPage(1).search();
-		
-		inBasket.setValue("itemcount",items.size());
-		//setValue("itemsuccesscount",inRecentOrderHistory.getValue("itemsuccesscount"));
-		
+		if( inBasket.getInt("itemcount") == 0)
+		{
+			Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogId, "orderitem");
+			HitTracker items = itemsearcher.query().exact("orderid",inBasket.getId()).hitsPerPage(1).search();
+			
+			inBasket.setValue("itemcount",items.size());
+			//setValue("itemsuccesscount",inRecentOrderHistory.getValue("itemsuccesscount"));
+		}		
 		orderearcher.saveData(inBasket, inUser );
 	}
 
@@ -947,6 +887,7 @@ public class BaseOrderManager implements OrderManager {
 		Lock lock = archive.getLockManager().lockIfPossible("orders" + inOrder.getId(), "BaseOrderManager");
 		if( lock == null)
 		{
+			log.info("Order locked already " + inOrder.getId());
 			return;
 		}
 		try
@@ -977,6 +918,7 @@ public class BaseOrderManager implements OrderManager {
 					inOrder.setValue("date", date);
 					archive.getSearcher("order").saveData(inOrder);
 				}
+				inOrder.setValue("itemcount",0);
 				Date monthold = new Date(System.currentTimeMillis() - (1000*60*60*24*30));
 				if( date.before(monthold))
 				{
@@ -988,27 +930,42 @@ public class BaseOrderManager implements OrderManager {
 				return;
 			}
 
-			Searcher historysearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderhistory");
-			OrderHistory temphistory = (OrderHistory)historysearcher.createNewData();
+			int itemsuccesscount = 0;
+			int itemerrorcount = 0;
 
 			for (Iterator iterator = itemhits.iterator(); iterator.hasNext();)
 			{
 				Data orderitemhit = (Data) iterator.next();
-				addItemToHistory(archive, temphistory,  orderitemhit);
-			}
-			OrderHistory recent = inOrder.getRecentOrderHistory();//loadOrderHistory(archive.getCatalogId(), inOrder);
-			if(temphistory.hasCountChanged(recent))
-			{
-				temphistory.setProperty("historytype","countchange");
-				saveOrderHistory(archive, temphistory, inOrder)	;
+				Data publish = findPublishQuue(archive, inOrder, orderitemhit);
+				if( publish == null)
+				{
+					itemerrorcount++;
+				}
+				else
+				{
+					if( "complete".equals( publish.get("status") ) )
+					{
+						itemsuccesscount++;
+					}
+					else if ("error".equals( publish.get("status") ) )
+					{
+						itemerrorcount++;
+						orderitemhit.setProperty("status","error");
+						orderitemhit.setProperty("errordetails",publish.get("errordetails"));
+						archive.saveData("orderitem",orderitemhit);
+					}
+				}
+
 			}
 			//If changed then save history and update order
-
-			int itemErrorCount = temphistory.getItemErrorCount();
-			int itemSuccessCount = temphistory.getItemSuccessCount();
-			if((itemErrorCount + itemSuccessCount) == size )
+			inOrder.setValue("itemerrorcount",itemerrorcount);
+			inOrder.setValue("itemcount",itemhits.size());
+			inOrder.setValue("itemsuccesscount",itemsuccesscount);
+			
+			if((itemerrorcount + itemsuccesscount) == itemhits.size() )
 			{
 				inOrder.setOrderStatus("complete");
+				saveOrder(archive.getCatalogId(), null, inOrder);
 				try
 				{
 					sendOrderNotifications(archive, inOrder);
@@ -1018,12 +975,10 @@ public class BaseOrderManager implements OrderManager {
 					log.error("Could not send order notification" , ex);
 					inOrder.setOrderStatus("complete",": could not send notification " + ex );
 				}
-				//complete the order
-				temphistory.setProperty("historytype","ordercomplete");
-				saveOrderHistory(archive, temphistory, inOrder)	;
-				//saveOrder(archive.getCatalogId(), null, inOrder);
-				archive.saveData("order",inOrder);
-
+			}
+			else
+			{
+				saveOrder(archive.getCatalogId(), null, inOrder);
 			}
 		}
 		finally
@@ -1059,12 +1014,10 @@ public class BaseOrderManager implements OrderManager {
 		}
 	}
 
-	protected boolean addItemToHistory(MediaArchive archive, OrderHistory inHistory, Data orderitemhit)
+	protected Data findPublishQuue(MediaArchive archive, Order inHistory, Data orderitemhit)
 	{
 		//Go find if there are any publishing or conversion errors
 		//If both are done then mark as complete
-
-		inHistory.addItemCount();
 
 		//Publishassets.groovy updates the publish status if there is a error in conversions 
 
@@ -1072,36 +1025,13 @@ public class BaseOrderManager implements OrderManager {
 		String publishqueueid = orderitemhit.get("publishqueueid");
 		if( publishqueueid == null)
 		{
-			publishcomplete = true;
+			return null;
 		}
 		else
 		{
 			Data publish = (Data)archive.getSearcher("publishqueue").searchById(publishqueueid);
-			if( publish == null)
-			{
-				inHistory.addItemErrorCount();
-			}
-			else
-			{
-				if( "complete".equals( publish.get("status") ) )
-				{
-					publishcomplete = true;
-				}
-				else if ("error".equals( publish.get("status") ) )
-				{
-					inHistory.addItemErrorCount();
-					orderitemhit.setProperty("status","error");
-					orderitemhit.setProperty("errordetails",publish.get("errordetails"));
-					archive.saveData("orderitem",orderitemhit);
-					return false;
-				}
-			}
+			return publish;
 		}
-		if( publishcomplete )
-		{
-			inHistory.addItemSuccessCount();
-		}
-		return publishcomplete;
 	}
 
 	public void updatePendingOrders(MediaArchive archive)
@@ -1292,7 +1222,7 @@ public class BaseOrderManager implements OrderManager {
 		//String notes = inOrder.get("sharenote");
 		if(emailto != null) 
 		{
-			if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
+			if( inOrder.getInt("itemerrorcount") == 0)
 			{
 				String expireson=inOrder.get("expireson");
 				if ((expireson!=null) && (expireson.trim().length()>0))
@@ -1389,14 +1319,7 @@ public class BaseOrderManager implements OrderManager {
 	    log.info("Sent approval request to " + email);
 	}
 	
-	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
-		Searcher orderHistorySearcher = inArchive.getSearcher("orderhistory");
-		inOrder.setRecentOrderHistory(inHistory);
-		inHistory.setProperty("orderid", inOrder.getId());
-		inHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		orderHistorySearcher.saveData(inHistory, null);
-	}
-
+	
 	protected ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;

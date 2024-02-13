@@ -545,23 +545,6 @@ public class OrderModule extends BaseMediaModule
 		return null;
 	}
 
-	public HitTracker findOrderHistory(WebPageRequest req)
-	{
-		Order order = loadOrder(req);
-		if (order != null)
-		{
-			String catalogid = req.findPathValue("catalogid");
-			String orderid = order.getId();
-			if (orderid == null)
-			{
-				orderid = req.getRequestParameter("orderid");
-			}
-			HitTracker items = getOrderManager().findOrderHistory(catalogid, order);
-			req.putPageValue("orderhistory", items);
-			return items;
-		}
-		return null;
-	}
 
 	public boolean checkItemApproval(WebPageRequest inReq) throws Exception
 	{

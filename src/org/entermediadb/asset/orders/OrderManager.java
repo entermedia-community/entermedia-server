@@ -35,10 +35,6 @@ public interface OrderManager
 	
 	HitTracker findUnshownDownloadOrdersForUser(WebPageRequest inReq, String inCatlogId, User inUser);
 
-	void loadOrderHistoryForPage(HitTracker inPage);
-
-	OrderHistory loadOrderHistory(String inCataId, Order order);
-
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, Order inOrder);
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId);
@@ -55,9 +51,6 @@ public interface OrderManager
 
 	HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder);
 
-	HitTracker findOrderHistory(String inCatalogid, Order inOrder);
-
-	OrderHistory findRecentOrderHistory(String inCatalogid, String inOrderId);
 
 	Order loadOrder(String catalogid, String orderid);
 
