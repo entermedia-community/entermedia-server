@@ -14,7 +14,10 @@
 , "orderitems": [
 #foreach( $item in $orderManager.findOrderItems($context,$catalogid,$order) )
 #if( ${foreach.count} != 1), #end 
-{"id":"$item.getId()",
+{
+
+#jsonfields($item $itemsearcher.getPropertyDetails()) 
+,
 #set($pqueue = false)#set($pqueue = $pqsearcher.searchById($item.publishqueueid) )
 "publishqueue": #json($pqueue $pqsearcher.getPropertyDetails()),
 "preset": {
@@ -38,11 +41,4 @@
 }
 #end  
 ]
-, "history": [
-#set( $historyhits = $orderManager.findOrderHistory( $catalogid,$order) )
-	#foreach( $history in $historyhits ) 
-	 #if( ${foreach.count} != 1), #end 
-	 #json($history $hsearcher.getPropertyDetails())
-	#end
- ] 
 }

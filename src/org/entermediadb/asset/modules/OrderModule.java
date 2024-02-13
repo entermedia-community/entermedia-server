@@ -1409,5 +1409,29 @@ public class OrderModule extends BaseMediaModule
 
 	}
 
+	public void updateOrderItem(WebPageRequest inReq)
+	{
+		//just a basic email download
+		MediaArchive archive = getMediaArchive(inReq);
+		String orderitemid = inReq.getRequestParameter("orderitemid");
+		String downloaditemstatus = inReq.getRequestParameter("downloaditemstatus");
+		String downloaditemdownloadedfilesize = inReq.getRequestParameter("downloaditemdownloadedfilesize");
+		
+		Data data = archive.getData("orderitem", orderitemid);
+		if( data != null)
+		{
+			data.setValue("downloaditemstatus",downloaditemstatus);
+			data.setValue("downloaditemdownloadedfilesize",downloaditemdownloadedfilesize);
+			archive.saveData("orderitem",data);
+		}
+		else
+		{
+			throw new OpenEditException("No such item");
+		}
+		Data order = archive.getData("order", data.get("orderid"));
+		inReq.putPageValue("order",order);
+		
+		//String[] organizations = inReq.getRequestParameters("organization.value");
+	}
 	
 }
