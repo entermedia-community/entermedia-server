@@ -1011,6 +1011,8 @@ public class OrderModule extends BaseMediaModule
 		}
 		order.setValue("orderassetids",assetids);
 		
+		order.setProperty("downloadedstatus", "new");
+		
 		String desktopid = inReq.findValue("desktop"); 
 		if(desktopid != null) {
 			order.setProperty("desktopid", desktopid);
