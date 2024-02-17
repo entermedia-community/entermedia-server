@@ -272,6 +272,7 @@ public abstract class BaseConversionManager implements ConversionManager
     		ConvertResult result = new ConvertResult();
     		result.setInstructions(inStructions);
     		result.setError("Input is " + input + " input loaders failed to load");
+			result.setComplete(true);
     		return result;
 		}
     	if( !inStructions.isForce() && !inStructions.isStreaming() )
