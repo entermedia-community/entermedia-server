@@ -19,7 +19,7 @@
 #end
 
 #set( $listid = $detail.getListId())
-#set( $csslistid = "list-$!detailprefix${detail.id}")
+#set( $csslistid = "$!detailprefix${detail.id}")
 
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 
@@ -76,11 +76,12 @@ $types.enableBulkOperations()
 		</script>
 	#end
 
-	<select id="${valueid}value" 
+	<select 
 		multiple="multiple" 
 		name="$!detailprefix${valueid}.values" 
 		class="select2  #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" 
+		id="${valueid}value"
 		data-listid="$listid" 
 		data-placeholder="[[Search ]]#text($detail)"
 		data-searchtype='$!searchtype'
@@ -104,7 +105,7 @@ $types.enableBulkOperations()
  #if( $caneditlists)
 		<a class="emdialog addnewitem btn btn-xs btn-light"
 		data-dialogid="entitypick$listid" 
-		href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+		href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${csslistid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
   #end
 
 </div>
