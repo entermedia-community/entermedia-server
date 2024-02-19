@@ -29,11 +29,10 @@ $invalue
 #end
 #end
 #macro(jsonmap $detail $map)
-#set($totext = $map.toJson())
-#if( $totext )$totext
-#else
-#jesc($map)
+$!jsonUtil.toJson($map)
 #end
+#macro(jsonarray $detail $list)
+$!jsonUtil.toJsonArray($list)
 #end
 #macro(datajsonmin $detail $value)
 #if( $detail.isList() )
@@ -121,6 +120,8 @@ $invalue
 #elseif($detail.isMultiLanguage()) 
 #jsonmap($detail $value)
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
+#elseif($detail.isDataType("nested"))
+$!jsonUtil.toJsonArray($value)
 #else #jesc($hit.getText($detail.id,$context.getLocale()))
 #end
 #end
