@@ -1811,7 +1811,33 @@ public class TaskModule extends BaseMediaModule
 		
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 		
-		Data task = goalm.addOne(inReq.getUserName(),taskid, collectiverole, roleuserid);
+		Data task = goalm.addAction(inReq.getUserName(),taskid, collectiverole, roleuserid);
+		inReq.putPageValue("task", task);
+	}
+	public void taskRoleRemoveAction(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String actionid = inReq.getRequestParameter("roleactionid");
+		
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+
+		Data task = goalm.removeAction(actionid);
+		inReq.putPageValue("task", task);
+	}
+	public void taskRoleLoad(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String taskid = inReq.getRequestParameter("taskid");
+		String roleuserid = inReq.getRequestParameter("roleuserid");
+		String collectiverole = inReq.getRequestParameter("collectiverole");
+		
+		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
+		
+		Map role = goalm.findRole(taskid,collectiverole, roleuserid);
+
+		Data task = (Data)archive.getData("goaltask", taskid);
 		inReq.putPageValue("task", task);
 	}
 	public void taskRoleSave(WebPageRequest inReq)

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -235,5 +236,24 @@ public class JsonUtil
 		return squery;
 	}
 
+	public String toJson(Map inMap)
+	{
+		if( inMap == null )
+		{
+			return "{}"; 
+		}
+		JSONObject obj = new JSONObject(inMap);
+		return obj.toJSONString();
+	}
+	public String toJsonArray(Collection inMap)
+	{
+		if( inMap == null )
+		{
+			return "[]"; 
+		}
+		JSONArray obj = new JSONArray();
+		obj.addAll(inMap);
+		return obj.toJSONString();
+	}
 	
 }
