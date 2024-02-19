@@ -1109,6 +1109,23 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 	
+	
+	public void updateDownloadedStatus(WebPageRequest inReq) throws Exception
+	{
+		String catalogId = inReq.findPathValue("catalogid");
+		MediaArchive archive = getMediaArchive(catalogId);
+		Order order = loadOrder(inReq);
+		if (order != null)
+		{
+			order.setValue("downloadedstatus", "complete");
+			getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
+		}
+		else
+		{
+			//getOrderManager().updatePendingOrders(archive);
+		}
+	}
+	
 
 	public void clearOrderItems(WebPageRequest inReq)
 	{
