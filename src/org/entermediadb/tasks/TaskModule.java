@@ -1836,7 +1836,7 @@ public class TaskModule extends BaseMediaModule
 		GoalManager goalm = (GoalManager)archive.getBean("goalManager");
 		
 		Map role = goalm.findRole(taskid,collectiverole, roleuserid);
-
+		inReq.putPageValue("taskrole", role);
 		Data task = (Data)archive.getData("goaltask", taskid);
 		inReq.putPageValue("task", task);
 	}

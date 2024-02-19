@@ -103,7 +103,10 @@ public class GoalManager implements CatalogEnabled
 	public Map findRole(String inTaskId, String collectiverole, String roleuserid)
 	{
 		Data task = (Data)getMediaArchive().getCachedData("goaltask", inTaskId);
-
+		if( task == null)
+		{
+			return null;
+		}
 		Collection roles = (Collection)task.getValue("taskroles");
 		Map role = findRole(roles,collectiverole, roleuserid);
 		return role;
