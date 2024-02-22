@@ -39,7 +39,7 @@ public interface OrderManager
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId);
 
-	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination);
+	//public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination);
 
 	/**
 	 * @deprecated Use {@link WebPageRequest}
@@ -101,5 +101,8 @@ public interface OrderManager
 	void updateReadyStatus(MediaArchive archive, Order order);
 
 	boolean hasPendingDownloadForUser(WebPageRequest inReq, String inCatalogid, User inOwner);
+	
+	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser);
+
 	
 }

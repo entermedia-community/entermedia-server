@@ -1,5 +1,4 @@
 #set($searcher = $searcherManager.getSearcher($catalogid,"order") )
-#set($hsearcher = $searcherManager.getSearcher($catalogid,"orderhistory") )
 #set($psearcher = $searcherManager.getSearcher($catalogid,"convertpreset") )
 #set($pqsearcher = $searcherManager.getSearcher($catalogid,"publishqueue") )
  #set($itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem") )

@@ -1,0 +1,30 @@
+#set($itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem") )
+#set($psearcher = $searcherManager.getSearcher($catalogid,"convertpreset") )
+{
+  "response":
+      {
+        "status":"ok",
+        "count":"$downloaditems.size()"
+      }
+, "orderitems": [
+#foreach( $item in $downloaditems )
+#if( ${foreach.count} != 1), #end 
+{
+
+#jsonfields($item $itemsearcher.getPropertyDetails()) 
+,
+#set($preset = false)#set($preset = $psearcher.searchById($item.presetid) )
+"preset": {
+	"id":#jesc($item.assetid),
+	"name":#jesc($preset.name)
+},
+#set($asset = false)#set($asset = $mediaarchive.getAsset($item.assetid) )
+"asset": { 
+	"id":#jesc($asset.getId()),
+	"name":#jesc($asset.getName()),
+	"sourcepath":#jesc($asset.getSourcePath())
+}	
+}
+#end  
+]
+}

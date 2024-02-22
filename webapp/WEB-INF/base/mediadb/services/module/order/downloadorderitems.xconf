@@ -1,0 +1,4 @@
+<page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+	<path-action name="OrderModule.findUserDownloadOrderItems"/>
+</page>

@@ -7,6 +7,18 @@ public class PublishResult
 	protected boolean fieldComplete;
 	protected boolean fieldPending;
 
+	protected boolean fieldReadyToPublish;
+	
+	public boolean isReadyToPublish()
+	{
+		return fieldReadyToPublish;
+	}
+
+	public void setReadyToPublish(boolean inReadyToPublish)
+	{
+		fieldReadyToPublish = inReadyToPublish;
+	}
+
 	public boolean isPending()
 	{
 		return fieldPending;

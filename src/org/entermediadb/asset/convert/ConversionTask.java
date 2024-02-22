@@ -12,6 +12,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
@@ -113,6 +114,16 @@ public void convert()
 				//The item should have a pointer to the conversion, not the other way around
 				Data item = (Data)itemsearcher.searchById(itemid);
 				item.setProperty("status", "converted");
+				ContentItem output = result.getInstructions().getOutputFile();
+				if( output != null && output.exists() )
+				{
+					item.setProperty("publishstatus", "readytopublish"); ////new readytopublish publishing complete
+					item.setValue("downloaditemtotalfilesize", output.getLength());
+				}
+				else
+				{
+					item.setProperty("publishstatus", "error"); //Not Possible?
+				}
 				itemsearcher.saveData(item, null);
 			}
 			realtask.setProperty("externalid", result.get("externalid"));

@@ -964,10 +964,6 @@
 	</bean>
  -->
 	<bean id="OrderModule" class="org.entermediadb.asset.modules.OrderModule" >
-		<property name="orderManager">
-			<ref bean="orderManager" />
-		</property>
-		
 	</bean>
 
 
@@ -1579,30 +1575,10 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>		
-		<property name="orderManager"><ref bean="orderManager" /></property>
 		<property name="newDataName"><value>order</value></property>
     </bean>
 	
 	
-<bean id="elasticXmlOrderSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticXmlOrderSearcher" scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-
-		<property name="elasticNodeManager">
-			<ref bean="elasticNodeManager" />
-		</property>
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>		
-		<property name="orderManager"><ref bean="orderManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="newDataName"><value>order</value></property>
-</bean>
-
 
 	<bean id="assetAutoCompleteElasticSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticAutoCompleteSearcher" scope="prototype">
 		<property name="elasticNodeManager">
@@ -1807,7 +1783,7 @@
 			</property>
 			<property name="timedCache"><ref bean="systemExpireCacheManager"/></property>
 	</bean>		
-	<bean id="OrderManager" class="model.orders.BaseOrderManager" >
+	<bean id="orderManager" class="model.orders.BaseOrderManager"  scope="prototype" >
 		<property name="searcherManager">
 			<ref bean="searcherManager"/>
 		</property>
@@ -1832,16 +1808,7 @@
 	<bean id="AdvancedAssetEditModule" class="modules.assets.AdvancedAssetEditModule" />
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" />
 	
-	
-	<bean id="orderManager" class="model.orders.BaseOrderManager" >
-	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="eventManager"><ref bean="eventManager" /></property>
-		<property name="lockManager"><ref bean="lockManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-	</bean>
-	
-	
+		
 	
 	
 

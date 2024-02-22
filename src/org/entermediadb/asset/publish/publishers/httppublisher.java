@@ -20,26 +20,26 @@ public class httppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(httppublisher.class);
 	
-	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inOrderItem,  Data inDestination, Data inPreset)
 	{
-		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,inAsset,inPreset); 
-		if( result != null)
-		{
-			return result;
-		}
-
-		result = new PublishResult();
-		
-		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
-		if( inputpage.exists() )
-		{
-			result.setComplete(true);
-		}
-		else
-		{
-			result.setErrorMessage("Input file is missing");
-		}
+		PublishResult result = 
+		checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset); 
 		return result;
+
+		//We are not We dont know the status other than conversion
+		//PublishResult result = new PublishResult();
+
+//		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+//		if( inputpage.exists() )
+//		{
+//			result.setComplete(true);
+//		}
+//		else
+//		{
+//			result.setErrorMessage("Input file is missing");
+//		}
+		//return result;
+		//return null; //browsers will set status when they start to publishingexternal
 	}
 	
 }

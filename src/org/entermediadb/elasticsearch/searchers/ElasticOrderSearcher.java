@@ -10,17 +10,9 @@ import org.openedit.users.User;
 public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
 {
 	
-	protected OrderManager fieldOrderManager;
-	
-	
 	public OrderManager getOrderManager()
 	{
-		return fieldOrderManager;
-	}
-
-	public void setOrderManager(OrderManager inOrderManager)
-	{
-		fieldOrderManager = inOrderManager;
+		return (OrderManager)getModuleManager().getBean(getCatalogId(),"orderManager");
 	}
 
 	public Data createNewData()

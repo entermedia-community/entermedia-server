@@ -21,11 +21,13 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
+import org.entermediadb.asset.orders.OrderDownload;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.email.WebEmail;
 import org.openedit.BaseWebPageRequest;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -39,6 +41,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
+import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -47,13 +50,30 @@ import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
-public class BaseOrderManager implements OrderManager {
+public class BaseOrderManager implements OrderManager, CatalogEnabled {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected EventManager fieldEventManager;
 	protected LockManager fieldLockManager;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
+	protected String fieldCatalogId;
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+
+	protected MediaArchive getMediaArchive()
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return archive;
+	}
 	
 	public EventManager getEventManager() {
 		return fieldEventManager;
@@ -142,6 +162,8 @@ public class BaseOrderManager implements OrderManager {
 		return ordersearcher.cachedSearch(inReq,query);
 	}
 	
+	
+	//Delete
 	public boolean hasPendingDownloadForUser(WebPageRequest inPage, String inCatlogId, User inUser) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		QueryBuilder query = ordersearcher.query();
@@ -161,6 +183,7 @@ public class BaseOrderManager implements OrderManager {
 		}
 		return false;
 	}
+	//Delete
 	public HitTracker findUnshownDownloadOrdersForUser(WebPageRequest inPage, String inCatlogId, User inUser) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
@@ -533,6 +556,7 @@ public class BaseOrderManager implements OrderManager {
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 		log.info("Processing " + hits.size() + " order items ");
+		String publishstatus = "new";
 		List<String> assetids = new ArrayList<String>();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
@@ -632,26 +656,46 @@ public class BaseOrderManager implements OrderManager {
 			if( preset != null)
 			{
 				String path = archive.asLinkToDownload(asset, preset);
-				orderItem.setProperty("downloadpath", path);
+				orderItem.setProperty("itemdownloadurl", path);
 			}			
-			
+
+			//orderItem.setProperty("downloaditemstatus", "pending");
+			orderItem.setProperty("itemsourcepath", asset.getSourcePath());
+			String exportname = archive.asExportFileName(asset,preset);
+			orderItem.setProperty("itemexportname", exportname);
+
 			//make sure task exists
-			Data conversiontask = archive.query("conversiontask").exact("assetid",asset).exact("presetid",presetid).searchOne();
-			if( conversiontask == null )
+			if( "0".equals( presetid) )
 			{
-				conversiontask = archive.getSearcher("conversiontask").createNewData();
-				conversiontask.setValue("assetid",asset.getId());
-				conversiontask.setValue("presetid",presetid);
-				conversiontask.setValue("status","new");
-				archive.getSearcher("conversiontask").saveData(conversiontask);
+				Page orig = archive.getOriginalDocument(asset);
+				orderItem.setProperty("itemfilepath", orig.getPath());
+				if(orig.exists() )
+				{
+					orderItem.setValue("downloaditemtotalfilesize", orig.length());
+				}				
 			}
 			else
 			{
+				Data conversiontask = archive.query("conversiontask").exact("assetid",asset).exact("presetid",presetid).searchOne();
+				if( conversiontask == null )
+				{
+					conversiontask = archive.getSearcher("conversiontask").createNewData();
+					conversiontask.setValue("assetid",asset.getId());
+					conversiontask.setValue("presetid",presetid);
+					conversiontask.setValue("status","new");
+					archive.getSearcher("conversiontask").saveData(conversiontask);
+				}
 				//Check output file for existance
+				String generatedfilename = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
+				orderItem.setProperty("itemfilepath", generatedfilename);
 				if( "complete".equals( conversiontask.get("status") ) )
 				{
-					String generatedfilename = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
-					if( !archive.getContent(generatedfilename).exists() )
+					ContentItem output = archive.getContent(generatedfilename);
+					if(output.exists() )
+					{
+						orderItem.setValue("downloaditemtotalfilesize", output.getLength());
+					}
+					else
 					{
 						conversiontask.setValue("status","retry");
 						archive.getSearcher("conversiontask").saveData(conversiontask);
@@ -659,12 +703,11 @@ public class BaseOrderManager implements OrderManager {
 				}
 			}
 			
-			
-			if( "preview".equals(presetid) )   //This never touches publishing
-			{
-				orderItemSearcher.saveData(orderItem, inUser);
-				continue;
-			}
+//			if( "preview".equals(presetid) )   //Browser download never touches publishing
+//			{
+//				orderItemSearcher.saveData(orderItem, inUser);
+//				continue;
+//			}
 
 			String destination = orderitemhit.get("publishdestination");
 			if(destination == null){
@@ -686,67 +729,18 @@ public class BaseOrderManager implements OrderManager {
 					throw new OpenEditException("publishdestination.value is missing");
 				}
 			}
-			Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
+			//Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
 
-
-			String publishstatus = "new";
-			Data publishqeuerow = publishQueueSearcher.createNewData();
-
-
-			String []fields = inReq.getRequestParameters("presetfield");
-			if (fields!=null && fields.length!=0)
+			//Data publishqueuerow = checkPublishing();
+			//orderItem.setProperty("publishqueueid",publishqeuerow.getId());
+			
+			orderItem.setProperty("publishdestination", destination);
+			if( orderItem.getValue("downloaditemtotalfilesize") != null )
 			{
-				for (int i = 0; i < fields.length; i++) {
-					String field = fields[i];
-					String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
-
-					publishqeuerow.setProperty(field, value);
-				}
+				publishstatus = "readytopublish";
 			}
-			//Add and shared fields across the entire order/publish request
-			String [] sharedfields = inReq.getRequestParameters("field");
-			if (sharedfields!=null && sharedfields.length!=0)
-			{
-				for (int i = 0; i < sharedfields.length; i++) {
-					String field = sharedfields[i];
-					String value = inReq.getRequestParameter( field + ".value");
-
-					publishqeuerow.setProperty(field, value);
-				}
-			}
-			publishqeuerow.setProperty("assetid", assetid);
-			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
-
-			publishqeuerow.setProperty("publishdestination", destination);
-			publishqeuerow.setProperty("presetid", presetid);
-
-			String userid = order.get("userid");
-			User user = null;
-			if( userid != null )
-			{
-				user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
-			} else{
-				user = inUser;
-			}
-			//Data preset = (Data) presets.searchById(presetid);
-			if( preset == null)
-			{
-				throw new OpenEditException("Preset missing " + presetid);
-			}
-			String exportname = archive.asExportFileName(user, asset, preset);
-			publishqeuerow.setProperty("exportname", exportname);
-			publishqeuerow.setProperty("status", publishstatus);
-			publishqeuerow.setValue("user", inUser.getId());
-			publishqeuerow.setSourcePath(asset.getSourcePath());
-			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			publishQueueSearcher.saveData(publishqeuerow, inUser);
-
-			if( publishqeuerow.getId() == null )
-			{
-				throw new OpenEditException("Id should not be null");
-			}
-
-			orderItem.setProperty("publishqueueid",publishqeuerow.getId());
+			orderItem.setProperty("publishstatus", publishstatus);   ////new readytopublish publishing publishingexternal complete error excluded
+			orderItem.setValue("publishstartdate", new Date());
 
 			orderItemSearcher.saveData(orderItem, inUser);
 			
@@ -758,6 +752,67 @@ public class BaseOrderManager implements OrderManager {
 		return assetids;
 	}
 
+	/*
+	protected Data checkPublishing()
+	{
+
+		String publishstatus = "new";
+		Data publishqeuerow = publishQueueSearcher.createNewData();
+
+
+		String []fields = inReq.getRequestParameters("presetfield");
+		if (fields!=null && fields.length!=0)
+		{
+			for (int i = 0; i < fields.length; i++) {
+				String field = fields[i];
+				String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
+
+				publishqeuerow.setProperty(field, value);
+			}
+		}
+		//Add and shared fields across the entire order/publish request
+		String [] sharedfields = inReq.getRequestParameters("field");
+		if (sharedfields!=null && sharedfields.length!=0)
+		{
+			for (int i = 0; i < sharedfields.length; i++) {
+				String field = sharedfields[i];
+				String value = inReq.getRequestParameter( field + ".value");
+
+				publishqeuerow.setProperty(field, value);
+			}
+		}
+		publishqeuerow.setProperty("assetid", assetid);
+		publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
+
+		publishqeuerow.setProperty("publishdestination", destination);
+		publishqeuerow.setProperty("presetid", presetid);
+
+		String userid = order.get("userid");
+		User user = null;
+		if( userid != null )
+		{
+			user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
+		} else{
+			user = inUser;
+		}
+		//Data preset = (Data) presets.searchById(presetid);
+		if( preset == null)
+		{
+			throw new OpenEditException("Preset missing " + presetid);
+		}
+		publishqeuerow.setProperty("exportname", exportname);
+		publishqeuerow.setProperty("status", publishstatus);
+		publishqeuerow.setValue("user", inUser.getId());
+		publishqeuerow.setSourcePath(asset.getSourcePath());
+		publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		publishQueueSearcher.saveData(publishqeuerow, inUser);
+
+		if( publishqeuerow.getId() == null )
+		{
+			throw new OpenEditException("Id should not be null");
+		}
+		return null;
+	}
 	
 	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination) {
 		return createPublishQueue(archive, inUser, inAsset, inPresetId, inPublishDestination, true);
@@ -829,6 +884,8 @@ public class BaseOrderManager implements OrderManager {
 		}
 		return publishqeuerow;
 	}
+	*/
+
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
 	 */
@@ -936,26 +993,14 @@ public class BaseOrderManager implements OrderManager {
 			for (Iterator iterator = itemhits.iterator(); iterator.hasNext();)
 			{
 				Data orderitemhit = (Data) iterator.next();
-				Data publish = findPublishQuue(archive, inOrder, orderitemhit);
-				if( publish == null)
+				if( "complete".equals( orderitemhit.get("publishstatus") ) )
+				{
+					itemsuccesscount++;
+				}
+				else if ("error".equals( orderitemhit.get("publishstatus") ) )
 				{
 					itemerrorcount++;
 				}
-				else
-				{
-					if( "complete".equals( publish.get("status") ) )
-					{
-						itemsuccesscount++;
-					}
-					else if ("error".equals( publish.get("status") ) )
-					{
-						itemerrorcount++;
-						orderitemhit.setProperty("status","error");
-						orderitemhit.setProperty("errordetails",publish.get("errordetails"));
-						archive.saveData("orderitem",orderitemhit);
-					}
-				}
-
 			}
 			//If changed then save history and update order
 			inOrder.setValue("itemerrorcount",itemerrorcount);
@@ -1336,6 +1381,28 @@ public class BaseOrderManager implements OrderManager {
 	public void setPageManager(PageManager inManager)
 	{
 		fieldPageManager = inManager;
+	}
+
+	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser)
+	{
+		HitTracker orders = findDownloadOrdersForUser(inReq, getCatalogId(), inUser);
+
+		Searcher ordersearcher = getMediaArchive().getSearcher("order");
+		
+		Collection orderdownloads = new ArrayList();
+		
+		for (Iterator iterator = orders.getPageOfHits().iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Order order = (Order)ordersearcher.loadData(data);
+			OrderDownload odownload = new OrderDownload();
+			odownload.setOrder(order);
+			HitTracker items = getMediaArchive().query("orderitem").exact("orderid",order).search();
+			odownload.setItemList(items);
+			orderdownloads.add(odownload);
+		}
+		
+		return orderdownloads;
 	}
 
 

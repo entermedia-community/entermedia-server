@@ -69,7 +69,7 @@ public class PublishManager implements CatalogEnabled {
 
 		MediaArchive  mediaArchive = getMediaArchive();
 
-		Searcher queuesearcher = getMediaArchive().getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "publishqueue");
+		Searcher queuesearcher = getMediaArchive().getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
 
 		SearchQuery query = queuesearcher.createSearchQuery();
 		WebEvent webevent = (WebEvent)inRequest.getPageValue("webevent");
@@ -90,7 +90,7 @@ public class PublishManager implements CatalogEnabled {
 		if(assetid != null){
 			query.addExact("assetid", assetid);
 		}
-		query.addOrsGroup("status","new pending retry");
+		query.addOrsGroup("publishstatus","new readytopublish publishing retry"); //new readytopublish publishing publishingexternal complete
 		//query.addNot("remotepublish","true");
 		
 		HitTracker<Data> publishtasks = queuesearcher.search(query);
@@ -123,7 +123,7 @@ public class PublishManager implements CatalogEnabled {
 				Data destination = getMediaArchive().getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 				if( destination == null)
 				{
-					publishrequest.setProperty("status", "error");
+					publishrequest.setProperty("publishstatus", "error");
 					publishrequest.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
 					queuesearcher.saveData(publishrequest);
 					log.error("Publish destination is invalid " + publishdestination);
@@ -140,8 +140,7 @@ public class PublishManager implements CatalogEnabled {
 					}
 					if( excludes.contains(type))
 					{
-						publishrequest.setProperty("status", "error");
-						
+						publishrequest.setProperty("publishstatus", "excluded");
 						Data assetttype = getMediaArchive().getData("assettype",type);
 						publishrequest.setProperty("errordetails", "667: Asset Type excluded from publishing");
 						queuesearcher.saveData(publishrequest);
@@ -189,28 +188,39 @@ public class PublishManager implements CatalogEnabled {
 					
 					if (presult == null)
 					{
-						log.info("result from publisher is null, continuing");
+						//log.info("result from publisher is null, continuing");
 						continue;
 					}
 					if( presult.isError() )
 					{
-						publishrequest.setProperty("status", "error");
+						publishrequest.setProperty("publishstatus", "error");
 						publishrequest.setProperty("errordetails", presult.getErrorMessage());
 						queuesearcher.saveData(publishrequest);
 						firePublishEvent(publishrequest.getId());
 						continue;
 					}
-					if( presult.isComplete() )
+					if( presult.isReadyToPublish() )   //Possibly externally published
+					{
+						if(!"readytopublish".equals(publishrequest.getValue("publishstatus")))
+						{
+							log.info("Conversion Ready on " +  asset + " to " + destination);
+							publishrequest.setProperty("publishstatus", "readytopublish");
+							publishrequest.setProperty("errordetails", " ");
+							queuesearcher.saveData(publishrequest);
+							firePublishEvent(publishrequest.getId());
+						}
+					}
+					else if( presult.isComplete() )
 					{
 						log.info("Published " +  asset + " to " + destination);
-						publishrequest.setProperty("status", "complete");
+						publishrequest.setProperty("publishstatus", "complete");
 						publishrequest.setProperty("errordetails", " ");
 						queuesearcher.saveData(publishrequest);
 						firePublishEvent(publishrequest.getId());
 					}
 					else if( presult.isPending() )
 					{
-						publishrequest.setProperty("status", "pending");
+						publishrequest.setProperty("publishstatus", "publishing");  
 						publishrequest.setProperty("errordetails", " ");
 						queuesearcher.saveData(publishrequest);
 					}

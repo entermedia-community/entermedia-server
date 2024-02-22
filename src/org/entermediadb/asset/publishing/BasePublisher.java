@@ -20,9 +20,9 @@ public abstract class BasePublisher implements Publisher
 	
 	private static final Log log = LogFactory.getLog(BasePublisher.class);
 
-	protected void publishFailure(MediaArchive mediaArchive,Data inPublishRequest, String inMessage) {
-		inPublishRequest.setProperty("errormessage", inMessage);
-		inPublishRequest.setProperty("status", "error");
+	protected void publishFailure(MediaArchive mediaArchive,Data inOrderItem, String inMessage) {
+		inOrderItem.setProperty("errormessage", inMessage);
+		inOrderItem.setProperty("status", "error");
 	}
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset) {
 		String transcodeid = inPreset.get("transcoderid");
@@ -44,11 +44,11 @@ public abstract class BasePublisher implements Publisher
 	}
 	 */
 
-	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, List inPresets) {
+	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inOrderItem,  Data inDestination, List inPresets) {
 		PublishResult result = new PublishResult();
 		for (Iterator iterator = inPresets.iterator(); iterator.hasNext();) {
 			Data preset = (Data) iterator.next();
-			result = publish(mediaArchive, inAsset, inPublishRequest, inDestination, preset);
+			result = publish(mediaArchive, inAsset, inOrderItem, inDestination, preset);
 		}
 		return result;//should check all of these?
 	}
@@ -78,12 +78,14 @@ public abstract class BasePublisher implements Publisher
 		Searcher searcher = mediaArchive.getSearcher("conversiontask");
 		searcher.saveData(inTask, null); //locking?
 	}
-	protected PublishResult checkOnConversion(MediaArchive mediaArchive, Data inPublishRequest, Asset inAsset, Data inPreset)
+	protected PublishResult checkOnConversion(MediaArchive mediaArchive, Data inOrderItem, Asset inAsset, Data inPreset)
 	{
-		String status = inPublishRequest.get("status");
+		PublishResult result = new PublishResult();
+		String status = inOrderItem.get("publishstatus");
 		if( "0".equals(inPreset.getId()))// || isremote)
 		{
-			return null;
+			result.setReadyToPublish(true);
+			return result;
 		}
 		else if("new".equals(status))
 		{
@@ -100,13 +102,11 @@ public abstract class BasePublisher implements Publisher
 				mediaArchive.fireSharedMediaEvent("conversions/runconversions");				
 			}
 			//then return pending so we only do this once per publish
-			PublishResult result = new PublishResult();
 			result.setPending(true);
 			return result;
 		}
 		else
 		{
-			PublishResult result = new PublishResult();
 			Data conversiontask = loadConversionTask(mediaArchive, inAsset, inPreset.getId());
 			String cstatus = conversiontask.get("status");
 			if( "error".equals(cstatus)) //missinginput is ok
@@ -119,8 +119,8 @@ public abstract class BasePublisher implements Publisher
 				result.setPending(true);
 				return result;
 			}
-			//must be complete, return null
-			return null;
+			result.setReadyToPublish(true);
+			return result;
 		}
 		
 		//		result = checkOnRemoteConversion()
