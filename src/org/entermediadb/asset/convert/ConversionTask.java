@@ -108,24 +108,24 @@ public void convert()
 		if(result.isComplete())
 		{
 			realtask.setProperty("status", "complete");
-			String itemid = realtask.get("itemid");
-			if(itemid != null)
-			{
-				//The item should have a pointer to the conversion, not the other way around
-				Data item = (Data)itemsearcher.searchById(itemid);
-				item.setProperty("status", "converted");
-				ContentItem output = result.getInstructions().getOutputFile();
-				if( output != null && output.exists() )
-				{
-					item.setProperty("publishstatus", "readytopublish"); ////new readytopublish publishing complete
-					item.setValue("downloaditemtotalfilesize", output.getLength());
-				}
-				else
-				{
-					item.setProperty("publishstatus", "error"); //Not Possible?
-				}
-				itemsearcher.saveData(item, null);
-			}
+//			String itemid = realtask.get("itemid");
+//			if(itemid != null)
+//			{
+//				//The item should have a pointer to the conversion, not the other way around
+//				Data item = (Data)itemsearcher.searchById(itemid);
+//				item.setProperty("status", "converted");
+//				ContentItem output = result.getInstructions().getOutputFile();
+//				if( output != null && output.exists() )
+//				{
+//					item.setProperty("publishstatus", "readytopublish"); ////new readytopublish publishing complete
+//					item.setValue("downloaditemtotalfilesize", output.getLength());
+//				}
+//				else
+//				{
+//					item.setProperty("publishstatus", "error"); //Not Possible?
+//				}
+//				itemsearcher.saveData(item, null);
+//			}
 			realtask.setProperty("externalid", result.get("externalid"));
 			realtask.setValue("completed",new Date());
 			realtask.setProperty("errordetails","");
@@ -142,12 +142,12 @@ public void convert()
 				realtask.setProperty("externalid", result.get("externalid"));
 				tasksearcher.saveData(realtask, user);
 			} else{
-				try {
-					Thread.sleep(60*1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {  //What is this?
+//					Thread.sleep(60*1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 		
@@ -161,14 +161,14 @@ public void convert()
 		tasksearcher.saveData(realtask, user);
 		
 		//TODO: Remove this one day
-		String itemid = realtask.get("itemid");
-		if(itemid != null)
-		{
-			Data item = (Data)itemsearcher.searchById(itemid);
-			item.setProperty("status", "error");
-			item.setProperty("errordetails", result.getError() );
-			itemsearcher.saveData(item, null);
-		}
+//		String itemid = realtask.get("itemid");
+//		if(itemid != null)
+//		{
+//			Data item = (Data)itemsearcher.searchById(itemid);
+//			item.setProperty("status", "error");
+//			item.setProperty("errordetails", result.getError() );
+//			itemsearcher.saveData(item, null);
+//		}
 
 		//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
 		mediaarchive.fireMediaEvent("conversions","conversionerror",realtask.getId(),user);
