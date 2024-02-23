@@ -162,24 +162,33 @@ public class MediaArchive implements CatalogEnabled
 			mime = mime.replace('/', '-');
 			if (mime.startsWith("image"))
 			{
-				return "image-x-generic";
+				return "image";
 			}
 			if (mime.startsWith("video"))
 			{
-				return "video-x-generic";
+				return "camera-video";
 			}
 			if (mime.startsWith("audio"))
 			{
-				return "audio-x-generic";
+				return "file-music";
 			}
 			if (mime.startsWith("text"))
 			{
-				return "text-x-generic";
+				return "card-text";
 			}
+			if (mime.startsWith("pdf"))
+			{
+				return "file-earmark-pdf";
+			}
+			if (mime.startsWith("zip"))
+			{
+				return "file-earmark-zip";
+			}
+
 		}
 		else
 		{
-			return "missing";
+			return "file-earmark";
 		}
 		return mime;
 	}
