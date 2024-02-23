@@ -24,6 +24,9 @@ public class httppublisher extends BasePublisher implements Publisher
 	{
 		PublishResult result = 
 		checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset); 
+		
+		
+		//downloadstartdate
 		return result;
 
 		//We are not We dont know the status other than conversion

@@ -1,11 +1,13 @@
 package org.entermediadb.asset.orders;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.DateStorageUtil;
 
 public class OrderDownload
 {
@@ -19,15 +21,15 @@ public class OrderDownload
 		fieldOrder = inOrder;
 	}
 
-	public Data getCurrentItem()
+	public MultiValued getCurrentItem()
 	{
 		if( fieldCurrentItem == null)
 		{
-			fieldCurrentItem = (Data)getItemList().first();
+			fieldCurrentItem = (MultiValued)getItemList().first();
 		}
 		return fieldCurrentItem;
 	}
-	public void setCurrentItem(Data inCurrentItem)
+	public void setCurrentItem(MultiValued inCurrentItem)
 	{
 		fieldCurrentItem = inCurrentItem;
 	}
@@ -47,7 +49,7 @@ public class OrderDownload
 	{
 		fieldItemList = inItemList;
 	}
-	protected Data fieldCurrentItem;
+	protected MultiValued fieldCurrentItem;
 	
 	public long totalBytes()
 	{
@@ -79,4 +81,37 @@ public class OrderDownload
 		return per;
 	}
 
+	public Date getEstimatedEndDate()
+	{
+		Date start = getCurrentItem().getDate("downloadstartdate");
+		if( start == null)
+		{
+			return null;
+		}
+		Date now = new Date();
+		float difference = now.getTime() - start.getTime();
+		double percent = percentageRemaining();
+		if( percent == 0)
+		{
+			return null;
+		}
+		/*
+		 
+		 Spent time         Downloaded
+		 ----------     =    ---------------
+		 Total Time         Total Size 
+		 
+		 
+		 Total Time = Ratio / Spent time
+		 
+		 */
+		
+		double totaltime = MathUtils.divide(percent , difference );
+		long remainingtime = MathUtils.roundUp( totaltime - difference);
+		
+		Date future = new Date(now.getTime() + remainingtime);
+		return future;
+	}
+
+	
 }
