@@ -18,6 +18,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
@@ -380,6 +381,27 @@ public class PresetCreator
 
 		clearConversions(inArchive,tasksearcher,inAsset);
 		queueConversions(inArchive, tasksearcher, inAsset);
+	}
+	
+	
+	public long getLengthOfOutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
+	{
+		if( "0".equals( inPreset.getId()) )
+		{
+			Page orig = inArchive.getOriginalDocument(inAsset);
+			if(orig.exists() )
+			{
+				return orig.length();
+			}				
+		}
+		else
+		{
+			//Check output file for existance
+			String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
+			ContentItem output = inArchive.getContent(generatedfilename);
+			return output.getLength();
+		}
+		return -1;
 	}
 
 }

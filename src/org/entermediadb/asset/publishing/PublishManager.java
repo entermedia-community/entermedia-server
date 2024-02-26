@@ -100,8 +100,8 @@ public class PublishManager implements CatalogEnabled {
 			for (Iterator iterator = publishtasks.iterator(); iterator.hasNext();)
 			{
 				Data result = (Data) iterator.next();
-				Data publishrequest = (Data)queuesearcher.searchById(result.getId());
-				if( publishrequest == null)
+				Data orderitem = (Data)queuesearcher.searchById(result.getId());
+				if( orderitem == null)
 				{
 					log.error("Publish queue index out of date");
 					continue;
@@ -116,16 +116,16 @@ public class PublishManager implements CatalogEnabled {
 //					asset = mediaArchive.getAsset(resultassetid );
 //				}
 
-				String presetid = publishrequest.get("presetid");
+				String presetid = orderitem.get("presetid");
 				Data preset = getMediaArchive().getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
 						
-				String publishdestination = publishrequest.get("publishdestination");
+				String publishdestination = orderitem.get("publishdestination");
 				Data destination = getMediaArchive().getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 				if( destination == null)
 				{
-					publishrequest.setProperty("publishstatus", "error");
-					publishrequest.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
-					queuesearcher.saveData(publishrequest);
+					orderitem.setProperty("publishstatus", "error");
+					orderitem.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
+					queuesearcher.saveData(orderitem);
 					log.error("Publish destination is invalid " + publishdestination);
 					continue;
 				}
@@ -140,10 +140,10 @@ public class PublishManager implements CatalogEnabled {
 					}
 					if( excludes.contains(type))
 					{
-						publishrequest.setProperty("publishstatus", "excluded");
+						orderitem.setProperty("publishstatus", "excluded");
 						Data assetttype = getMediaArchive().getData("assettype",type);
-						publishrequest.setProperty("errordetails", "667: Asset Type excluded from publishing");
-						queuesearcher.saveData(publishrequest);
+						orderitem.setProperty("errordetails", "667: Asset Type excluded from publishing");
+						queuesearcher.saveData(orderitem);
 						log.error("Publish destination asset type excluded " + publishdestination);
 						continue;
 					}
@@ -183,7 +183,7 @@ public class PublishManager implements CatalogEnabled {
 					}
 						
 					//MAIN PUBLISH EVENT
-					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+					presult = publisher.publish(mediaArchive,asset,orderitem, destination,preset);
 					
 					
 					if (presult == null)
@@ -193,36 +193,36 @@ public class PublishManager implements CatalogEnabled {
 					}
 					if( presult.isError() )
 					{
-						publishrequest.setProperty("publishstatus", "error");
-						publishrequest.setProperty("errordetails", presult.getErrorMessage());
-						queuesearcher.saveData(publishrequest);
-						firePublishEvent(publishrequest.getId());
+						orderitem.setProperty("publishstatus", "error");
+						orderitem.setProperty("errordetails", presult.getErrorMessage());
+						queuesearcher.saveData(orderitem);
+						firePublishEvent(orderitem.getId());
 						continue;
 					}
 					if( presult.isReadyToPublish() )   //Possibly externally published
 					{
-						if(!"readytopublish".equals(publishrequest.getValue("publishstatus")))
+						if(!"readytopublish".equals(orderitem.getValue("publishstatus")))
 						{
 							log.info("Conversion Ready on " +  asset + " to " + destination);
-							publishrequest.setProperty("publishstatus", "readytopublish");
-							publishrequest.setProperty("errordetails", " ");
-							queuesearcher.saveData(publishrequest);
-							firePublishEvent(publishrequest.getId());
+							orderitem.setProperty("publishstatus", "readytopublish");
+							orderitem.setProperty("errordetails", " ");
+							queuesearcher.saveData(orderitem);
+							firePublishEvent(orderitem.getId());
 						}
 					}
 					else if( presult.isComplete() )
 					{
 						log.info("Published " +  asset + " to " + destination);
-						publishrequest.setProperty("publishstatus", "complete");
-						publishrequest.setProperty("errordetails", " ");
-						queuesearcher.saveData(publishrequest);
-						firePublishEvent(publishrequest.getId());
+						orderitem.setProperty("publishstatus", "complete");
+						orderitem.setProperty("errordetails", " ");
+						queuesearcher.saveData(orderitem);
+						firePublishEvent(orderitem.getId());
 					}
 					else if( presult.isPending() )
 					{
-						publishrequest.setProperty("publishstatus", "publishing");  
-						publishrequest.setProperty("errordetails", " ");
-						queuesearcher.saveData(publishrequest);
+						orderitem.setProperty("publishstatus", "publishing");  
+						orderitem.setProperty("errordetails", " ");
+						queuesearcher.saveData(orderitem);
 					}
 					//check for remotempublishstatus?
 				}
@@ -232,13 +232,13 @@ public class PublishManager implements CatalogEnabled {
 				catch( Throwable ex)
 				{
 					log.error("Problem publishing ${asset} to ${publishdestination}", ex);
-					publishrequest.setProperty("status", "error");
+					orderitem.setProperty("status", "error");
 					if(ex.getCause() != null)
 					{
 						ex = ex.getCause();
 					}
-					publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
-					queuesearcher.saveData(publishrequest);
+					orderitem.setProperty("errordetails", "${destination} publish failed ${ex}");
+					queuesearcher.saveData(orderitem);
 				}
 				
 				

@@ -85,6 +85,8 @@ public abstract class BasePublisher implements Publisher
 		if( "0".equals(inPreset.getId()))// || isremote)
 		{
 			result.setReadyToPublish(true);
+			long size = mediaArchive.getPresetManager().getLengthOfOutForPreset(mediaArchive, inAsset, inPreset);
+			inOrderItem.setValue("downloaditemtotalfilesize", size);
 			return result;
 		}
 		else if("new".equals(status))
@@ -120,6 +122,8 @@ public abstract class BasePublisher implements Publisher
 				return result;
 			}
 			result.setReadyToPublish(true);
+			long size = mediaArchive.getPresetManager().getLengthOfOutForPreset(mediaArchive, inAsset, inPreset);
+			inOrderItem.setValue("downloaditemtotalfilesize", size);
 			return result;
 		}
 		
