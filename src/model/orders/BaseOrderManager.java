@@ -997,6 +997,10 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 				{
 					itemsuccesscount++;
 				}
+				else if( "cancelled".equals( orderitemhit.get("publishstatus") ) )
+				{
+					itemsuccesscount++;
+				}
 				else if ("error".equals( orderitemhit.get("publishstatus") ) )
 				{
 					itemerrorcount++;
