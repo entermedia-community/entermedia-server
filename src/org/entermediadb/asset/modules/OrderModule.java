@@ -1376,12 +1376,25 @@ public class OrderModule extends BaseMediaModule
 		String orderitemid = inReq.getRequestParameter("orderitemid");
 		String publishstatus = inReq.getRequestParameter("publishstatus");   //new readytopublish publishing complete
 		String downloaditemdownloadedfilesize = inReq.getRequestParameter("downloaditemdownloadedfilesize");
+		String publisheddate = inReq.getRequestParameter("publisheddate");
+		String downloadstartdate = inReq.getRequestParameter("downloadstartdate");
 		
 		Data data = archive.getData("orderitem", orderitemid);
 		if( data != null)
 		{
 			data.setValue("publishstatus",publishstatus); //publishexternal or complete
-			data.setValue("downloaditemdownloadedfilesize",downloaditemdownloadedfilesize);
+			if( downloaditemdownloadedfilesize != null)
+			{
+				data.setValue("downloaditemdownloadedfilesize",downloaditemdownloadedfilesize);
+			}
+			if(publisheddate != null)
+			{
+				data.setValue("publisheddate",DateStorageUtil.getStorageUtil().parseFromStorage(publisheddate));
+			}
+			if (downloadstartdate != null) 
+			{
+				data.setValue("downloadstartdate",DateStorageUtil.getStorageUtil().parseFromStorage(downloadstartdate));
+			}
 			archive.saveData("orderitem",data);
 		}
 		else

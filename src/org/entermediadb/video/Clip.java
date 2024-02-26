@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.data.ValuesMap;
+import org.openedit.util.MathUtils;
 
 
 public class Clip implements Comparable

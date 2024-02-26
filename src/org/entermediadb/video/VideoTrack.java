@@ -2,8 +2,8 @@ package org.entermediadb.video;
 
 import java.util.Map;
 
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.data.BaseData;
+import org.openedit.util.MathUtils;
 
 public class VideoTrack extends BaseData
 {

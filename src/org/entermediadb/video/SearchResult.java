@@ -1,7 +1,7 @@
 package org.entermediadb.video;
 
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
+import org.openedit.util.MathUtils;
 
 public class SearchResult
 {

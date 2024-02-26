@@ -20,7 +20,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.video.CloudTranscodeManager;
 import org.entermediadb.video.Timeline;
 import org.entermediadb.video.TimelineManager;
@@ -39,6 +38,7 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
+import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 

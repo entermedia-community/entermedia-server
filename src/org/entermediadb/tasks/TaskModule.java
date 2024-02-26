@@ -20,7 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
@@ -36,6 +35,7 @@ import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.MathUtils;
 
 import com.google.common.collect.ComparisonChain;
 
