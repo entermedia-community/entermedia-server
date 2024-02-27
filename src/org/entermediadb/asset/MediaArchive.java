@@ -1839,7 +1839,7 @@ public class MediaArchive implements CatalogEnabled
 	}
 	
 	public String formatMilliseconds(String inMilliseconds) {
-		Double seconds = org.entermediadb.asset.util.MathUtils.divide(Long.parseLong(inMilliseconds), 1000);
+		Double seconds = org.openedit.util.MathUtils.divide(Long.parseLong(inMilliseconds), 1000);
 		return formatMinutesAndSeconds(seconds.toString());
 	}
 

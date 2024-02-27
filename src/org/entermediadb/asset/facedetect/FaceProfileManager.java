@@ -24,7 +24,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.net.HttpSharedConnection;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
@@ -40,6 +39,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.MathUtils;
 
 
 public class FaceProfileManager implements CatalogEnabled

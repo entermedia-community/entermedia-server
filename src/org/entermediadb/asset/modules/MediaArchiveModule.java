@@ -13,7 +13,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.ConvertStatus;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.error.EmailErrorHandler;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -24,6 +23,7 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.MathUtils;
 import org.openedit.util.PathProcessor;
 
 public class MediaArchiveModule extends BaseMediaModule

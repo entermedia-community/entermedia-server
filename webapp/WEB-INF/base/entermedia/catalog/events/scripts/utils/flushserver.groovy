@@ -1,6 +1,6 @@
 package utils
 
-import org.entermediadb.asset.util.MathUtils
+import org.openedit.util.MathUtils
 
 public void runit()
 {

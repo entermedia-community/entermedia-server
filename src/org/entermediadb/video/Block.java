@@ -1,6 +1,6 @@
 package org.entermediadb.video;
 
-import org.entermediadb.asset.util.MathUtils;
+import org.openedit.util.MathUtils;
 
 public class Block
 {

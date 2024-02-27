@@ -12,11 +12,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
 import org.openedit.data.ValuesMap;
+import org.openedit.util.MathUtils;
 
 public class Timeline
 {

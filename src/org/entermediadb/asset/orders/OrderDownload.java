@@ -3,11 +3,11 @@ package org.entermediadb.asset.orders;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.MathUtils;
 
 public class OrderDownload
 {
@@ -97,20 +97,29 @@ public class OrderDownload
 		}
 		/*
 		 
-		 Spent time         Downloaded
+		 Spent time         Downloaded size
 		 ----------     =    ---------------
 		 Total Time         Total Size 
 		 
 		 
-		 Total Time = Ratio / Spent time
-		 
+		 Total Time =  Spent time  /ratio		 
 		 */
 		
-		double totaltime = MathUtils.divide(percent , difference );
+		double totaltime = MathUtils.divide(difference , percent);
 		long remainingtime = MathUtils.roundUp( totaltime - difference);
 		
 		Date future = new Date(now.getTime() + remainingtime);
 		return future;
+	}
+	
+	public Date getPublishedDate()
+	{
+		Date date = getCurrentItem().getDate("publisheddate");
+		if( date == null)
+		{
+			return null;
+		}
+		return date;
 	}
 
 	

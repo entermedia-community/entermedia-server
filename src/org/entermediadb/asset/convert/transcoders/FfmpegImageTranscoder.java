@@ -12,8 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.util.MathUtils;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.MathUtils;
 
 public class FfmpegImageTranscoder extends BaseTranscoder
 {
