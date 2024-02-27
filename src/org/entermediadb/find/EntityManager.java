@@ -323,7 +323,10 @@ public class EntityManager implements CatalogEnabled
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 
 		Asset asset = (Asset)getMediaArchive().getAsset(assetid);
-		asset.addCategory(category);
+		if(category != null)
+		{
+			asset.addCategory(category);
+		}
 		getMediaArchive().saveAsset(asset);
 		return true;
 
