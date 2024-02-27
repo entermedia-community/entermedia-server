@@ -151,6 +151,19 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			search.addExact("category",category.getId());
 		}
+		
+		if( search.getHitsName() == null)
+		{
+			String hitsname = inPageRequest.getRequestParameter("hitsname");
+			if(hitsname == null)
+			{
+				hitsname = inPageRequest.findValue("hitsname");
+			}
+			if (hitsname != null )
+			{
+				search.setHitsName(hitsname);
+			}
+		}
 			
 		
 		tracker = assetsearcher.cachedSearch(inPageRequest, search);
