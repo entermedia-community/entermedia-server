@@ -1,8 +1,0 @@
-#set( $themesearcher = $mediaarchive.getSearcher("theme") )
-$!themesearcher.delete($theme,null)
-
-#set( $themeid = $content.get("themeid") )
-#set( $theme = $themesearcher.searchById($themeid) )
-$context.putPageValue("theme",$theme)
-
-$pages.include("./index.html?themeid=$themeid", $context)

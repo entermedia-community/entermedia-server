@@ -1,8 +1,0 @@
-<page>
-	<inner-layout>/${applicationid}/views/videoactivity/layout2.html</inner-layout>
-
-<path-action name="Admin.createGuestUser" />
-
-	<path-action name="TestBenchModule.createTest"/>
-
-</page>

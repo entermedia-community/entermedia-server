@@ -1,4 +1,0 @@
-<page>
-<property name="sectiontitle">Removed</property>
-	<path-action name="AssetEditModule.markAssetsDeleted" />
-</page>

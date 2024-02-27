@@ -1,8 +1,0 @@
-<page>
-<path-action name="DataEditModule.loadData"/>
-<property name="searchtype">contact</property>
-<path-action name="Script.run">
- 	<script>./draft.groovy</script>
-</path-action>
-
-</page>

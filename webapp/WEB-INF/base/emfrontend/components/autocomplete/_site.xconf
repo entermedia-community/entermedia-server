@@ -1,3 +1,0 @@
-<page>
-	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
-</page>

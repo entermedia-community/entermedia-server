@@ -1,8 +1,0 @@
-#set( $id = $context.getRequestParameter("id") )
-
-$nodeManager.restoreSnapShot($catalogid,$id)
-
-$pages.include("./snapshots.html",$context)
-
-<h3>$id Restore Complete</h3>
-

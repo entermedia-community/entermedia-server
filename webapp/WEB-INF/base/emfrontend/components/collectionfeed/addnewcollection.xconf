@@ -1,7 +1,0 @@
-<page>
-
-	<path-action name="ProjectModule.loadSelectedLibrary" />
-	
-	<inner-layout />
-
-</page>

@@ -1,4 +1,0 @@
-<page>
-<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
-<property name="showadmintoolbar">false</property>
-</page>

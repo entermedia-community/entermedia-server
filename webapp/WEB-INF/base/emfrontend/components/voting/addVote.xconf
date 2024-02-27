@@ -1,6 +1,0 @@
-<page>
-	<page-action name="AssetEditModule.voteForAsset"/>
-		<page-action name="ProjectModule.addAssetToCollection"/>
-	
-	<property name="oemaxlevel">1</property>
-</page>

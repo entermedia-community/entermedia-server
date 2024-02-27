@@ -1,5 +1,0 @@
-<page>
-	<page-action name="DataEditModule.loadHits">
-		<property name="hitssessionid">hitsasset${catalogid}</property>
-	</page-action>	
-</page>

@@ -1,7 +1,0 @@
-<page>
-<permission name="view">
-		<userprofile property="editcategorytree" equals="true" />
-	</permission>
-<property name="virtual">true</property>
-<path-action name="CategoryModule.removeNode"/>
-</page>

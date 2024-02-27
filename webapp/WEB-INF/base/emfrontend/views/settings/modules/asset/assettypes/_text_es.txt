@@ -1,6 +1,0 @@
-#
-#Fri Mar 27 15:56:18 EDT 2015
-Select\ an\ Asset\ Type=Seleccione un Tipo de activo
-Asset\ Types=Tipos de activos
-Add\ New=A\u00F1adir nuevo
-

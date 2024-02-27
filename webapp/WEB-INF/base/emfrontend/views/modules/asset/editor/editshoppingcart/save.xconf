@@ -1,4 +1,0 @@
-<page>
-	<path-action name="DataEditModule.saveData"/>
-	<property name="saveokpage">/views/modules/asset/editor/editshoppingcart/save.html?oemaxlevel=1</property>
-</page>

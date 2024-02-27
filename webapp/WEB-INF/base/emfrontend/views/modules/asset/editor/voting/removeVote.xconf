@@ -1,6 +1,0 @@
-<page>
-	<page-action name="AssetEditModule.deleteAssetVote"/>
-			<page-action name="ProjectModule.removeAssetFromCollection"/>
-	
-	<property name="oemaxlevel">1</property>
-</page>

@@ -1,5 +1,0 @@
-<page>
- <layout />
- <inner-layout />
- <property name="module">librarycollection</property>  
-</page>

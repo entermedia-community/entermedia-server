@@ -1,4 +1,0 @@
-<page>
-<path-action name="TimelineModule.switchLang"/>
-<path-action name="TimelineModule.loadCaptionEditor" />
-</page>

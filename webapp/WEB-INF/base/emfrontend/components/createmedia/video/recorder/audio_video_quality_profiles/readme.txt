@@ -1,1 +1,0 @@
-Edit avc_settings.php / avc_settings.asp to change the .xml audio/video quality profile used inside the video recorder

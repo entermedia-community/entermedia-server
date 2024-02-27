@@ -1,5 +1,0 @@
-<page>
-<path-action name="ProfileModule.saveProperties"/>
-  <property name="editPath">/${applicationid}/views/modules/${module}/_site.xconf</property>
-
-</page>

@@ -1,5 +1,0 @@
-<page>
-	<property name="subject">Assets Shared</property>
-	<page-action name="OrderModule.findOrderItems"/>
-	<permission name="view"><boolean value="true" /></permission>
-</page>

@@ -1,4 +1,0 @@
-<page>
-  <path-action name="PageValue.loadPageVariable" bean="resilioManager" />
-
-</page>

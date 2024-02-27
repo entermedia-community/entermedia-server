@@ -1,5 +1,0 @@
-<page>
- <inner-layout />
- <path-action name="ProjectModule.desktopOpenFolder"/>
-
-</page>

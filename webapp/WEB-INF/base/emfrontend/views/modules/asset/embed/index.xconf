@@ -1,5 +1,0 @@
-<page>
-<path-action name="MediaArchiveModule.getAsset"/>
-  	<path-action name="AssetStatsModule.addPreViewEvent" />
-
-</page>

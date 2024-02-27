@@ -1,4 +1,0 @@
-<page>
-<path-action name="CategoryModule.deselectNodes"/>
-<property name="virtual">true</property>
-</page>
