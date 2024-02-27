@@ -1670,6 +1670,8 @@ public class TaskModule extends BaseMediaModule
 		String taskstatus = inReq.getRequestParameter("taskstatus");
 
 		Data goal = goalm.createGoal(inReq, message, taskstatus);
+		goalm.createTask((MultiValued)goal,message, taskstatus);
+
 //		Searcher searcher = archive.getSearcher("projectgoal");
 //		searcher.saveData(goal);
 
@@ -1707,6 +1709,9 @@ public class TaskModule extends BaseMediaModule
 		String taskstatus = inReq.getRequestParameter("taskstatus");
 
 		Data goal = goalm.createGoal(inReq, message, taskstatus);
+		//Create actions/Tasks on this goal
+		goalm.createTasks((MultiValued)goal,message, taskstatus);
+
 		goal.setValue("ticketlevel", "1");
 		searcher.saveData(goal);
 		
@@ -1780,7 +1785,7 @@ public class TaskModule extends BaseMediaModule
 		Map addrole = new HashMap();
 		addrole.put("date",new Date());
 		
-		String roleid = inReq.getRequestParameter("addrole");
+		String roleid = inReq.getRequestParameter("collectiverole");
 		addrole.put("collectiverole",roleid);
 		addrole.put("actioncount",0);
 		Data user = archive.query("librarycollectionusers").exact("collectionid",collectionid).exact("teamroles",roleid).searchOne();
@@ -1855,6 +1860,10 @@ public class TaskModule extends BaseMediaModule
 
 		Data task = (Data)archive.getData("goaltask", taskid);
 		inReq.putPageValue("task", task);
+		Data goal = (MultiValued)archive.getData("projectgoal",task.get("projectgoal"));
+
+		inReq.putPageValue("goal", goal);
+		
 	}
 
 	public void taskRoleDelete(WebPageRequest inReq)

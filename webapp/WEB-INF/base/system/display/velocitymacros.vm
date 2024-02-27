@@ -121,7 +121,8 @@ $!jsonUtil.toJsonArray($list)
 #jsonmap($detail $value)
 #elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDateObj($value)"
 #elseif($detail.isDataType("nested"))
-$!jsonUtil.toJsonArray($value)
+##$!jsonUtil.toJsonArray($value)
+"nestedarray"
 #else #jesc($hit.getText($detail.id,$context.getLocale()))
 #end
 #end

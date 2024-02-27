@@ -19,6 +19,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.users.Group;
 import org.openedit.users.User;
+import org.openedit.util.XmlUtil;
 
 public class GoalManager implements CatalogEnabled
 {
@@ -128,19 +129,33 @@ public class GoalManager implements CatalogEnabled
 		{
 			return null;
 		}
+		if( inroleuserid != null)
+		{
+			for(Map row : inRows)
+			{
+				String roleid = (String)row.get("collectiverole");
+				if(inCollectiverole.equals(roleid))
+				{
+					String roleuserid = (String)row.get("roleuserid");
+					if( roleuserid != null && roleuserid.equals(inroleuserid))
+					{
+						return row;
+					}
+				}
+			}
+		}		
 		for(Map row : inRows)
 		{
 			String roleid = (String)row.get("collectiverole");
 			if(inCollectiverole.equals(roleid))
 			{
 				String roleuserid = (String)row.get("roleuserid");
-				if( roleuserid != null && inroleuserid.equals(inroleuserid))
+				if( inroleuserid != null && roleuserid == null)
 				{
 					return row;
 				}
 			}
 		}
-		
 		//Now be less picky
 		for(Map row : inRows)
 		{
@@ -148,7 +163,7 @@ public class GoalManager implements CatalogEnabled
 			if(inCollectiverole.equals(roleid))
 			{
 				String roleuserid = (String)row.get("roleuserid");
-				if( roleuserid == null || inroleuserid == null)
+				if( roleuserid == null )
 				{
 					return row;
 				}
@@ -305,17 +320,39 @@ public class GoalManager implements CatalogEnabled
 			searcher.saveData(goal);
 			addStatus(archive, goal,inReq.getUserName());
 
-			//Create actions/Tasks on this goal
-			createActions(goal,message, intaskstatus);
-			
 		}
 		
 		return goal;
 	}
 	
 	
-	
-	public void createActions(MultiValued inGoal, Data inMessage, String intaskstatus)
+	public void createTask(MultiValued inGoal, Data inMessage, String intaskstatus)
+	{
+		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
+
+		String content = inMessage.get("message");
+		
+		//String ashtml = XmlUtil.safeHtml(content);
+		
+		Data task = tasksearcher.createNewData();
+		String userid = inMessage.get("user");
+		task.setValue("projectgoal",inGoal.getId());
+		String collectionid = inGoal.get("collectionid");
+		task.setValue("collectionid",collectionid);
+		//task.setValue("projectdepartment",categoryid);
+		task.setValue("completedby", userid );
+		task.setValue("taskstatus", intaskstatus); //On Agenda
+		//task.setValue("projectdepartmentparents",cat.getParentCategories());
+		
+		task.setValue("creationdate",new Date());
+		//TODO add Ordering and add when pyshing agendas
+		task.setValue("comment", content);
+		//task.setName(tasks[i]);
+		tasksearcher.saveData(task);
+		
+	}
+
+	public void createTasks(MultiValued inGoal, Data inMessage, String intaskstatus)
 	{
 		Searcher tasksearcher = (Searcher)getMediaArchive().getSearcher("goaltask");
 
