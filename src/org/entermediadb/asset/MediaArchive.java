@@ -176,7 +176,7 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "card-text";
 			}
-			if (mime.startsWith("pdf"))
+			if (mime.contains("pdf"))
 			{
 				return "file-earmark-pdf";
 			}
@@ -184,6 +184,12 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-earmark-zip";
 			}
+			if (mime.contains("excel"))  //application-vnd.ms-excel
+			{
+				return "file-earmark-excel";
+			}
+			
+			
 
 		}
 		else
