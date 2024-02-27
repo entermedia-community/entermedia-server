@@ -46,10 +46,7 @@
 		[[Click to drag. Mouse wheel to zoom]]
 		
 		<div id="mainimageholder"> 
-			#set( $size = "image1500x1500.png")
-			#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
-				#set( $size = "image1024x768.jpg")
-			#end			
+			#set( $size = "image3000x3000.png")
 			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
 			<img id="mainimage" class="zoomable" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
