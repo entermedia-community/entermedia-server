@@ -1765,7 +1765,7 @@
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 	
-	<bean id="mathutil"  class="org.entermediadb.asset.util.MathUtils" />	
+	<bean id="mathutil"  class="org.openedit.util.MathUtils" />	
 	<bean id="JsonAssetModule" class="org.entermediadb.asset.mediadb.JsonAssetModule"  />
 	<bean id="JsonDataModule" class="org.entermediadb.asset.mediadb.JsonDataModule"  />
 	<bean id="JsonAdminModule" class="org.entermediadb.asset.mediadb.JsonAdminModule"  />
