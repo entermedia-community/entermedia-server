@@ -46,11 +46,18 @@ $context.putPageValue("insearch",true)
 		#end
 		$context.putPageValue("detail",$detail)
 
-		#if( $viewtype.equals("list") || $viewtype.equals("boolean"))		
-			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-		#else	
-			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-		#end	
+##		#if( $viewtype.equals("list") || $viewtype.equals("boolean") || $viewtype.equals("datesearch"))		
+##			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+##		#else	
+##			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+##		#end	
+
+
+	#if( $viewtype.equals("asset") || $viewtype.equals("primarymedia") || $viewtype.equals("category"))
+	$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+	#else
+	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+	#end
 		
 	</td>
 </tr>
@@ -59,5 +66,5 @@ $context.putPageValue("insearch",true)
 </table>
 
 #if( $details.size() == 0)
-	[[No search fields found with index]]=true
+	[[No search fields found with index]]=true 
 #end
