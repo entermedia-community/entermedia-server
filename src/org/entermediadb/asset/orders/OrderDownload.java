@@ -83,6 +83,10 @@ public class OrderDownload
 
 	public Date getEstimatedEndDate()
 	{
+		if( getCurrentItem() == null)
+		{
+			return null;
+		}
 		Date start = getCurrentItem().getDate("downloadstartdate");
 		if( start == null)
 		{

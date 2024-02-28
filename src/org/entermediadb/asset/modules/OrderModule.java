@@ -1049,7 +1049,7 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 	
-	
+	/*
 	public void updateDownloadedStatus(WebPageRequest inReq) throws Exception
 	{
 		String catalogId = inReq.findPathValue("catalogid");
@@ -1065,7 +1065,7 @@ public class OrderModule extends BaseMediaModule
 			//getOrderManager(inReq).updatePendingOrders(archive);
 		}
 	}
-	
+	*/
 
 	public void clearOrderItems(WebPageRequest inReq)
 	{
@@ -1366,7 +1366,7 @@ public class OrderModule extends BaseMediaModule
 		//If there are pending. fire publish,conversion and order status events
 		archive.fireSharedMediaEvent("conversions/runconversions");
 		archive.fireSharedMediaEvent("publishing/publishassets"); //This calls update order status
-
+		updatePendingOrders(inReq);
 	}
 
 	public void updateOrderItem(WebPageRequest inReq)
