@@ -672,8 +672,6 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection<Data> topmenu = archive.query("appsection").named("topmenuhits").all().sort("ordering").search(inReq);
-		//Collection<Data> topmenufinal = null;
-		//Map topmenufinal = new HashMap();
 		List topmenufinal = new ArrayList();
 		if(topmenu != null && !topmenu.isEmpty())
 		{
@@ -696,6 +694,13 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("firstmodule", firstmodule);
 		}
 		inReq.putPageValue("topmenu", topmenufinal);
+	}
+	
+	public void loadAppsMenu(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Data> menu = archive.query("app").named("appmenuhits").all().sort("ordering").search(inReq);
+		inReq.putPageValue("appsmenu", menu);
 	}
 	
 	public void loadOrSearchChildren(WebPageRequest inReq)
