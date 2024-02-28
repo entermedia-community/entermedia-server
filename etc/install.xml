@@ -54,8 +54,7 @@
 		</copy>
 		<copy todir="../WEB-INF/base/reporting" preservelastmodified="true" overwrite="true">
 					<fileset dir="${workdir}/WEB-INF/base/reporting" />
-				</copy>
-
+		</copy>
 
 		<copy todir="../WEB-INF/base/entermedia" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/entermedia" />
@@ -71,10 +70,6 @@
 
 		<copy todir="../WEB-INF/base/system" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/system" />
-		</copy>
-		
-		<copy todir="../WEB-INF/base/emgallery" preservelastmodified="true" overwrite="true">
-			<fileset dir="${workdir}/WEB-INF/base/emgallery" />
 		</copy>
 
 		<copy todir="../WEB-INF/base/mediadb" preservelastmodified="true" overwrite="true">
