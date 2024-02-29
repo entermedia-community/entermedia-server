@@ -8,11 +8,13 @@
 
 
 #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 
 #if (!$pages.doesExist($thumbpath))
-	#set ($thumbpath =  "$themeprefix/images/mimetypes/missing.png")
+	#set ($mime = "missing")
 #end
-<img id="main-media"
-	#if($cell.caption) alt = "${cell.caption}" #else alt="${cell.name}" #end 
-	src="$home$thumbpath" border="0">
+
+<div class="mimethumbcontainer">
+		<i class="bi bi-$!mime mimeicon" title="[[Conversion Error]]" #if($cell.caption) alt = "${cell.caption}" #else alt="${cell.name}" #end ></i>
+		
+</div>
+<
