@@ -340,7 +340,18 @@ public class FileUpload
 				}
 				if (values != null)
 				{
-					arguments.put(tmp.getFieldName(), values);
+					if( values.length == 1 && values[0].startsWith("data:image/png;base64,"))
+					{
+						FileUploadItem foundUpload = new FileUploadItem();
+						foundUpload.setBase64(true);
+						foundUpload.setFileItem(tmp);
+						foundUpload.setName(tmp.getFieldName());
+						upload.addUploadItem(foundUpload);
+					}
+					else
+					{
+						arguments.put(tmp.getFieldName(), values);
+					}
 				}
 			}
 		}

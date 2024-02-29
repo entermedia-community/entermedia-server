@@ -1,9 +1,12 @@
 package org.entermediadb.asset.upload;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -287,7 +290,22 @@ public class UploadRequest implements ProgressListener
 			}
 			if (input == null)
 			{
-				input = item.getInputStream();
+				//TODO: For Base 64 use string value
+				
+				if( inItem.isBase64())
+				{
+					//TODO: Write a class to streamthis
+					byte[] all = item.getInputStream().readAllBytes();
+					String code = new String(all,"UTF-8");
+					code = code.substring(code.indexOf(",") +1,code.length());
+					byte[] tosave = Base64.getDecoder().decode(code);
+					input = new ByteArrayInputStream(tosave);
+					
+				}
+				else
+				{
+					input = item.getInputStream();
+				}
 			}
 		}
 		catch ( IOException ex)
