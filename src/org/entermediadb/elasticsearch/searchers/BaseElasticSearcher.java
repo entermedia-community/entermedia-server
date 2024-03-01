@@ -66,6 +66,7 @@ import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
@@ -93,7 +94,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -1101,7 +1101,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				value = term.getValues();
 			}
-			QueryBuilder find = buildTerm(detail, term, value);
+			
+			QueryBuilder find = buildTerm(inQuery,detail, term, value);
 			if (find != null)
 			{
 				if (inAnd)
@@ -1139,10 +1140,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	// return null;
 	// }
 
-	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
+	protected QueryBuilder buildTerm(SearchQuery inQuery,PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
 		
-		QueryBuilder find = buildNewTerm(inDetail, inTerm, inValue);
+		QueryBuilder find = buildNewTerm(inQuery,inDetail, inTerm, inValue);
 
 		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 		{
@@ -1179,7 +1180,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		return find;
 	}
 
-	protected QueryBuilder buildNewTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
+	protected QueryBuilder buildNewTerm(SearchQuery inQuery,PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
 		// Check for quick date object
 		QueryBuilder find = null;
@@ -1518,7 +1519,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
 				before = c.getTime();
+			
 				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
+			
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
 			{
@@ -1532,7 +1535,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// Date(Long.MAX_VALUE));
 				Date before = (Date) inTerm.getValue("beforeDate");
 				Date after = (Date) inTerm.getValue("afterDate");
-
+				
 				// inTerm.getParameter("beforeDate");
 
 				// String before
@@ -1580,10 +1583,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				Date before = calendar.getTime();
 
 				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before);
-
+				
 				// find = QueryBuilders.termQuery(fieldid, valueof); //TODO make
 				// it a range query? from 0-24 hours
 			}
+			RangeQueryBuilder finalquery = (RangeQueryBuilder)find;
+			if(inQuery.getTimeZone() != null) {
+				finalquery.timeZone(inQuery.getTimeZone());
+			}
+			
 		}
 		else if (inDetail.isNumber())
 		{
