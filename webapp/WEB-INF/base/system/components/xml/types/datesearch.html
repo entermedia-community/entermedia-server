@@ -20,6 +20,8 @@
 	#set( $op = $term.getParameter("op") )
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" style="display: block;">
 		<option value="equals" >[[Equals]]</option>
+		<option value="ytd" #if( $op && $op == "ytd" )selected #end>[[Year To Date]]</option>
+		<option value="previousyear" #if( $op && $op == "previousyear" )selected #end>[[Previous Year]]</option>				
 		<option value="after" #if( $op && $op == "after" )selected #end>[[After Date]]</option>
 		<option value="before" #if( $op && $op == "before" )selected #end >[[Before Date]]</option>
 		<option value="betweendates" #if( $op && $op == "betweendates" )selected #end >[[Between]]</option>
@@ -72,5 +74,6 @@
 			}
 		}
 		updateDateInput${inputid}(document.getElementById('operation${inputid}').selectedIndex);
+		$(document).trigger("domchanged");
 	</script>
 #end

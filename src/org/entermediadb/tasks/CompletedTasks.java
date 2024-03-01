@@ -42,6 +42,11 @@ public class CompletedTasks
 	
 	public void addTask(String inUserId,MultiValued inTask)
 	{
+		if( inUserId == null)
+		{
+			return;
+		}
+
 		UserReport report = byUserUserReport.get(inUserId);
 		if( report == null) {
 			report = new UserReport();
@@ -53,6 +58,10 @@ public class CompletedTasks
 	public void addRole(Map<String,Object> inRole,Data inTask, MultiValued inRoleAction)
 	{
 		String inUserId = (String)inRole.get("roleuserid");
+		if( inUserId == null)
+		{
+			return;
+		}
 		UserReport report = byUserUserReport.get(inUserId);
 		if( report == null) {
 			report = new UserReport();
@@ -66,6 +75,10 @@ public class CompletedTasks
 	
 	public void addTicket(String inUserId,MultiValued inTicket)
 	{
+		if( inUserId == null)
+		{
+			return;
+		}
 		UserReport report = byUserUserReport.get(inUserId);
 		if( report == null) {
 			report = new UserReport();
