@@ -570,38 +570,40 @@ uiload = function() {
 				return false;
 			});
 
-	lQuery("form.autosubmit").livequery(function() {
-		var form = $(this);
-		var data = form.cleandata();
-		var targetdiv = form.data('targetdiv');
-		$("select",form).change(function() {
-			//data["jqxhr"] = null;
-			form.setformdata(data);
-			form.ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv) 
-			});
-		});
-		$("input",form).on("keyup", function() {
-			form.setformdata(data);
-			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
-			});
-		});
-		$('input[type="file"]',form).on("change", function() {
-			form.setformdata(data);
-			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
-			});
-		});
-		$('input[type="checkbox"]',form).on("change", function() {
-			form.setformdata(data);
-			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
-			});
-		});
-		
+  lQuery("form.autosubmit").livequery(function () {
+    var form = $(this);
+    var targetdiv = form.data("targetdiv");
+    if (!targetdiv) {
+      targetdiv = form.data("targetdivinner");
+    }
+    $("select", form).change(function () {
+      $(form).ajaxSubmit({
+        target: "#" + $.escapeSelector(targetdiv),
+      });
+    });
+    $("input", form).on("focus", function (event) {
+      $("#" + $.escapeSelector(targetdiv)).show();
+    });
 
-	});
+    $("input", form).on("keyup", function (e) {
+      $(form).trigger("submit");
+    });
+    $('input[name="date.after"]', form).on("change", function () {
+      $(form).ajaxSubmit({
+        target: "#" + $.escapeSelector(targetdiv),
+      });
+    });
+    $('input[type="file"]', form).on("change", function () {
+      $(form).ajaxSubmit({
+        target: "#" + $.escapeSelector(targetdiv),
+      });
+    });
+    $('input[type="checkbox"]', form).on("change", function () {
+      $(form).ajaxSubmit({
+        target: "#" + $.escapeSelector(targetdiv),
+      });
+    });
+  });
 
 	lQuery("form.ajaxautosubmit").livequery(function() {
 		var theform = $(this);
