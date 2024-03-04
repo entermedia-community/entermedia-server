@@ -442,6 +442,59 @@ public class FinderModule extends BaseMediaModule
 		
 
 	}
+	
+	public void removeFavorites(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		//get the user profile and do a module search
+		UserProfile profile = inReq.getUserProfile();
+		if( profile == null)
+		{
+			return;
+		}
+		
+		
+		String moduleid = inReq.findValue("moduleid");
+		if(moduleid != null) {
+			if("asset".equals(moduleid)) 
+			{
+				Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
+				SearchQuery query = searcher.createSearchQuery();
+				query.setHitsName("favoriteassets");
+				
+				User user = inReq.getUser();
+				
+				query.addExact("username", user.getId());
+				query.addSortBy("timeDown");
+				HitTracker assets = searcher.cachedSearch(inReq, query);
+				if( assets.size() > 0)
+				{
+					List todelete = new ArrayList();
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						String assetid = data.get("assetid");
+						todelete.add(data);
+					}
+					searcher.deleteAll(todelete, null);
+				}
+			}
+			else 
+			{
+				Data module = archive.getCachedData("module", moduleid);
+				if(module != null) {
+					profile.setValue("favorites_" + moduleid, "");
+				}
+				profile.save();
+			}
+			
+		}
+		
+
+	}
+	
+	
 	protected Collection<Data> listSearchModules(MediaArchive archive)
 	{
 		Collection<Data> modules = getSearcherManager().getList(archive.getCatalogId(), "module");
