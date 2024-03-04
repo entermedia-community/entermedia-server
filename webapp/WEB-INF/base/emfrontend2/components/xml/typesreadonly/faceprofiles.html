@@ -13,19 +13,23 @@
 			#ifnotnull($person)
 		    	#set($name = $context.getText( $person) )
 		    	#set($name= "$name ($!row.get('samplecount'))")
+		    	#set($link = "$siteroot$applink/views/modules/entityperson/components/gridsample/preview/entity.html?id=$person.id&hitssessionid=$!hits.sessionId")
+		    	#set($title = "[[Person]]: ")
 			#end
 	    	#if( $name == "")
-	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))") 
+	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
+	    		#set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?id=$row.id&hitssessionid=$!hits.sessionId")
+	    		#set($title = "[[Face Profile]] ") 
 	    	#end
 	    	#if($profile.timecodestart)
 	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
 	    		#set($name = "$name &nbsp;($secs)")
 	    	#end
 		    
-		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?id=$row.id&hitssessionid=$!hits.sessionId")
+		    
 		    <li><a href="$link" 
 		    	class="emdialog entity-dialog"
-		    	title="[[Face Profile]] ($!row.get('samplecount') [[Sample Count]])"
+		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
 		    	>$!name</a></li>
 	    #end 
 	#end	
