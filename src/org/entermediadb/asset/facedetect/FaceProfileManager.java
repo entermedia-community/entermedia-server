@@ -166,6 +166,7 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				List<Map> json = findFaces(inAsset, input);
 				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
+	
 				faceprofiles.addAll(moreprofiles);
 			}
 			else if( "video".equalsIgnoreCase(type) )
@@ -379,6 +380,12 @@ public class FaceProfileManager implements CatalogEnabled
 			if( found != null)
 			{
 				groupid = (String)found.get("subject");
+				
+				if( inAsset.containsValue("removedfaceprofilegroups",groupid))
+				{
+					log.info("Skipping group");
+					continue;
+				}
 				//TODO: Count how many times I have used this group.
 				MultiValued oldgroup = (MultiValued)getMediaArchive().getData("faceprofilegroup",groupid);
 				if( oldgroup == null)
