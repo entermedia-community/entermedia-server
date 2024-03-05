@@ -88,7 +88,7 @@
 		</fileset>
 	</copy>
 
-    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.8" source="1.8">
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  release="9">
       <classpath>
       	<fileset dir="${lib}">
           <include name="*.jar"/>
@@ -110,7 +110,7 @@
 		</fileset>
 	</copy>
 
-    <javac debug="true" destdir="${build}/compile" srcdir="${src}" source="1.5" target="1.5">
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}" release="9">
       <classpath>
 		<fileset dir="${corehome}">
 			<include name="lib/*.jar"/>
@@ -149,7 +149,7 @@
     
   <target name="junit">
   	
-    <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" target="1.8">
+    <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" release="9">
       <classpath>
         <fileset dir="${lib}" >
             <include name="*.jar"/>
