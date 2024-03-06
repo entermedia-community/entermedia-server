@@ -2290,6 +2290,9 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>		
+	
+	<bean id="FaceProfileModule" class="org.entermediadb.asset.facedetect.FaceProfileModule" >
+	</bean>
 
 
 	<bean id="customizationExportGenerator" class="org.entermediadb.workspace.CustomizationExportGenerator">

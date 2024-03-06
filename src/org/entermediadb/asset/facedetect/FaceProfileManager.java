@@ -35,6 +35,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.ListHitTracker;
@@ -818,7 +819,7 @@ public class FaceProfileManager implements CatalogEnabled
 
 		Collection<FaceAsset> faceassets = new ListHitTracker<FaceAsset>();
 
-		Searcher searcher = getMediaArchive().getSearcher("asset");
+		Searcher searcher = getMediaArchive().getSearcher( "asset");
 		for(Data data: assets)
 		{
 			Asset asset = (Asset)searcher.loadData(data);
@@ -929,5 +930,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		return result;
 	}
+	
+
 	
 }
