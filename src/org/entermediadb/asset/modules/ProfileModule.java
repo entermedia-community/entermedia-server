@@ -150,8 +150,11 @@ public class ProfileModule extends MediaArchiveModule
 		MediaArchive archive = getMediaArchive(inReq);
 		UserProfile userProfile = inReq.getUserProfile();
 		
-		String searchtype = inReq.getRequestParameter("searchtype");
+		String searchtype = inReq.findPathValue("searchtype");
 		String view = inReq.getRequestParameter("viewid");
+		
+		String viewcacheid = "view_" + searchtype + "_" + view + userProfile.get("settingsgroup");
+		
 		if( searchtype == null || "asset".equals(searchtype))
 		{
 			searchtype = "asset";
@@ -166,10 +169,12 @@ public class ProfileModule extends MediaArchiveModule
 		}
 		String viewpath = searchtype + "/" + view; 
 
+		Collection ids = new ArrayList();
+
 		String add = inReq.getRequestParameter("addcolumn");
 		if (add != null)
 		{
-			List details = archive.getAssetSearcher().getDetailsForView(viewpath, userProfile);
+			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
 			boolean exists = false;
 			if( details != null)
 			{
@@ -186,7 +191,6 @@ public class ProfileModule extends MediaArchiveModule
 			if (!exists)
 			{
 				// add it
-				Collection ids = new ArrayList();
 				if(details!=null) {
 					for (Iterator iterator = details.iterator(); iterator.hasNext();)
 					{
@@ -195,16 +199,13 @@ public class ProfileModule extends MediaArchiveModule
 					}
 				}
 				ids.add(add);
-				userProfile.setValues("view_" + searchtype + "_" + view, ids);
-				getUserProfileManager().saveUserProfile(userProfile);
 			}
 		}
 
 		String remove = inReq.getRequestParameter("removecolumn");
 		if (remove != null)
 		{
-			List details = archive.getAssetSearcher().getDetailsForView(viewpath, userProfile);
-			Collection ids = new ArrayList();
+			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
 			for (Iterator iterator = details.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -213,9 +214,10 @@ public class ProfileModule extends MediaArchiveModule
 					ids.add(detail.getId());
 				}
 			}
-			userProfile.setValues("view_" + searchtype + "_" + view, ids);
-			getUserProfileManager().saveUserProfile(userProfile);
 		}
+		userProfile.setValues(viewcacheid, ids);
+		getUserProfileManager().saveUserProfile(userProfile);
+
 	}
 
 	public void setView(WebPageRequest inReq) throws Exception
