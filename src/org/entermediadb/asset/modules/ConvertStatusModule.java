@@ -231,11 +231,22 @@ public class ConvertStatusModule extends BaseMediaModule
 			
 		}
 		String assetid = inReq.getRequestParameter("assetid");
+		Asset current = archive.getAsset(assetid);
 		
 		String presetid = inReq.getRequestParameter("presetid");
-		
-		Data preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
-		Asset current = archive.getAsset(assetid);
+		Data preset = null;
+		boolean createall = false;
+		if( "true".equals(presetid))
+		{
+			String fileFormat = current.getFileFormat();
+
+			preset = archive.getPresetManager().getPresetByOutputName(archive,fileFormat , "image3000x3000.jpg");
+			createall = true;
+		}
+		else
+		{
+			preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
+		}
 		String generated = "";
 		if(presetid.equals("0")) 
 		{
@@ -249,15 +260,16 @@ public class ConvertStatusModule extends BaseMediaModule
 		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 		
 		log.info("Asset: " + assetid + " Replaced " + generated);
-
-		boolean newdefault = Boolean.parseBoolean(inReq.getRequestParameter("replaceall"));
-		if(newdefault){
-			
-		}
-		archive.fireMediaEvent("saved", inReq.getUser(), current);
-
 		inReq.putPageValue("asset", current);
 		archive.saveAsset(current);
+		archive.fireMediaEvent("saved", inReq.getUser(), current);
+
+		if( createall)
+		{
+			rerunSmallerThumbnails(inReq);
+		}
+		
+		
 	}
 
 	public void handleCustomThumb(WebPageRequest inReq){
@@ -300,9 +312,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		if (asset != null) 
 		{
-			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
+			Page large = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image3000x3000.jpg"); 
 			Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-			getPageManager().copyPage(s1024, crop1024);
+			getPageManager().copyPage(large, crop1024);
 			archive.removeGeneratedImages(asset, false);
 			reloadThumbnails( inReq, archive, asset);
 		}
