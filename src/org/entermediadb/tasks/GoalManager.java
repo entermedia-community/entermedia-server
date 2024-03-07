@@ -169,6 +169,25 @@ public class GoalManager implements CatalogEnabled
 				}
 			}
 		}
+		//Super not picky
+		if( inroleuserid == null )
+		{
+			Map foundone = null;
+			int count = 0;
+			for(Map row : inRows)
+			{
+				String roleid = (String)row.get("collectiverole");
+				if(inCollectiverole.equals(roleid))
+				{
+					foundone = row;
+					count++;
+				}
+			}
+			if( count == 1) //If only one then send it
+			{
+				return foundone;
+			}
+		}
 		return null;
 	}
 
