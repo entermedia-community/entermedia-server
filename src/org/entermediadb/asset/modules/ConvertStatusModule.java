@@ -232,15 +232,18 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		String assetid = inReq.getRequestParameter("assetid");
 		Asset current = archive.getAsset(assetid);
-		
+
 		String presetid = inReq.getRequestParameter("presetid");
+		String all = inReq.getRequestParameter("replaceall");
+
 		Data preset = null;
 		boolean createall = false;
-		if( "true".equals(presetid))
+		if( "true".equals(all))
 		{
 			String fileFormat = current.getFileFormat();
 
 			preset = archive.getPresetManager().getPresetByOutputName(archive,fileFormat , "image3000x3000.jpg");
+			presetid = preset.getId();
 			createall = true;
 		}
 		else
