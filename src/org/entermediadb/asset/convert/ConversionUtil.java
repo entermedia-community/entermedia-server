@@ -18,6 +18,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
 
 public class ConversionUtil {
 	
@@ -216,89 +217,11 @@ public class ConversionUtil {
 		Data task = ctsearcher.query().exact("presetid", inPresetId).exact("assetid",inAssetId).searchOne();
 		return task;	
 	}
-	public String getConversionStatus(String inCatalogId, String inAssetId, String inPresetId) throws Exception {
-		String status = NOTHING_FOUND;
-		SearcherManager sm = getSearcherManager();
-		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
-		Searcher cssearcher = sm.getSearcher(inCatalogId, "convertstatus");
-		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
-		sq.addSortBy("id");
-		HitTracker hits = ctsearcher.search(sq);
-		if(hits.size() > 0){
-			Data hit = hits.get(0);
-			Data data2 = (Data) cssearcher.searchById(hit.get("status"));
-			status = data2.getName();
-			return status;
-		}
-		Asset asset = (Asset) sm.getData(inCatalogId, "asset", inAssetId);
-		if(doesExist(inCatalogId, inAssetId, asset.getSourcePath(), inPresetId)){
- 			Data data2 = (Data) cssearcher.searchById("complete");
-			if(data2 != null){
-			return  data2.getName();
-			} return "Complete";
 
-		}
-		return status;
-	}
-	
-	public Data getConversionStatusData(String inCatalogId, String inAssetId, String inPresetId) throws Exception {
-		Data status = null;
-		SearcherManager sm = getSearcherManager();
-		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
-		Searcher cssearcher = sm.getSearcher(inCatalogId, "convertstatus");
-		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
-		sq.addSortBy("id");
-		HitTracker hits = ctsearcher.search(sq);
-		if(hits.size() > 0){
-			Data hit = hits.get(0);
-			Data data2 = (Data) cssearcher.searchById(hit.get("status"));
-			//status = data2.getName();
-			return data2;
-		}
-		Asset asset = (Asset) sm.getData(inCatalogId, "asset", inAssetId);
-		if(doesExist(inCatalogId, inAssetId, asset.getSourcePath(), inPresetId)){
- 			Data data2 = (Data) cssearcher.searchById("complete");
-			if(data2 != null){
-				return  data2;
-			} 
-			return null;
-
-		}
-		return status;
-	}
-	
-	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String sourcepath, String inPresetId) throws Exception{
-		boolean isOk = false;
-		
-		if( "0".equals( inPresetId ) )
-		{
-			return true;
-		}
-		
-		SearcherManager sm = getSearcherManager();
-		if(doesConvertedFileExist(inCatalogId, sourcepath, inPresetId)){
-			return true;
-		}
-		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
-		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
-		sq.addSortBy("id");
-		HitTracker hits = ctsearcher.search(sq);
-		Iterator<?> itr = hits.iterator();
-		while (itr.hasNext()){
-			Data data = (Data) itr.next();
-			String str = data.get("status");
-			isOk =  ("complete".equals(str));
-		}
-		return isOk;
-	}
-
-	public boolean doesConvertedFileExist(String inCatalogId,
-			String sourcepath, String inPresetId) {
-		PageManager pm = (PageManager) getSearcherManager().getModuleManager().getBean("pageManager");
-		Data preset = getSearcherManager().getData(inCatalogId, "convertpreset", inPresetId);
-		String outputfile = preset.get("generatedoutputfile");
-		Page outputpage = pm.getPage("/WEB-INF/data/" + inCatalogId + "/generated/" + sourcepath + "/" + outputfile);
-		return outputpage.exists();
+	public boolean doesConvertedFileExist(MediaArchive inArchive, Asset inAsset, Data preset)
+	{
+		long size = inArchive.getPresetManager().getLengthOfOutForPreset(inArchive,inAsset,preset);
+		return size > -1;
 	}
 	
 	public HitTracker getUnprocessedFatwireConvertPresetList(String inCatalogId, String inAssetId, String inOmitPresetId) throws Exception {
@@ -356,6 +279,29 @@ public class ConversionUtil {
 		return all;
 	}
 	
+	public HitTracker getCompletedPresetList(MediaArchive inArchive, Asset inAsset)  
+	{
+		HitTracker conversions = inArchive.getSearcher("conversiontask").query().exact("assetid", inAsset.getId()).exact("status","complete").search();
+		Collection presets = conversions.collectValues("presetid");
+		HitTracker all = inArchive.getSearcher("convertpreset").query().ids(presets).sort("ordering").search();
+		return all;
+	}
+	
+	public boolean isReady(MediaArchive inArchive,Asset inAsset, Collection presets)
+	{
+		for (Iterator iterator = presets.iterator(); iterator.hasNext();)
+		{
+			Data preset = (Data) iterator.next();
+			
+			boolean exists = doesConvertedFileExist(inArchive, inAsset, preset);
+			if( !exists)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) {
 		SearcherManager sm = getSearcherManager();
 		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
@@ -379,31 +325,23 @@ public class ConversionUtil {
 		return null;
 	}
 
-	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId)
-	{
-		if( "0".equals( inPresetId ))
-		{
-			return true;
-		}
-		SearcherManager sm = getSearcherManager();
-		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
-		SearchQuery q = ctsearcher.createSearchQuery();
-		q.addExact("presetid", inPresetId);
-		q.addExact("assetid", inAssetId);
-		HitTracker hits = ctsearcher.search(q);
-		if(hits.size() > 0){
-			return true;
-			
-		}
-		return doesConvertedFileExist(inCatalogId, assetSourcePath, inPresetId);
-	}
-	
 
 	public boolean isEnforceAspectRatio(MediaArchive inArchive, String inPresetId) 
 	{
 		Data preset = inArchive.getData("convertpreset", inPresetId);
 		String enforce = preset.get("enforceaspectratio");
 		return Boolean.parseBoolean(enforce);
+	}
+
+	public boolean doesPresetExist(MediaArchive inArchive, Asset inAsset, String outputname)
+	{
+		if( inAsset == null)
+		{
+			return false;
+		}
+		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + outputname;
+		ContentItem output = inArchive.getContent(generatedfilename);
+		return output.getLength() > 0;
 	}
 
 	

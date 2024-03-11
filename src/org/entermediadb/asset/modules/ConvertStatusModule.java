@@ -233,34 +233,35 @@ public class ConvertStatusModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		Asset current = archive.getAsset(assetid);
 
-		String presetid = inReq.getRequestParameter("presetid");
 		String all = inReq.getRequestParameter("replaceall");
 
-		Data preset = null;
 		boolean createall = false;
+		String generated = "";
 		if( "true".equals(all))
 		{
 			String fileFormat = current.getFileFormat();
 
-			preset = archive.getPresetManager().getPresetByOutputName(archive,fileFormat , "image3000x3000.jpg");
-			presetid = preset.getId();
+			generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image3000x3000.jpg";
+			ContentItem saved = properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+			
+//			String copytogenerated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image3000x3000.jpg";
+//			archive.getPageManager().getRepository().copy(saved,archive.getContent(copytogenerated));
 			createall = true;
 		}
 		else
 		{
+			String presetid = inReq.getRequestParameter("presetid");
+			Data preset = null;
 			preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
+			if(presetid.equals("0")) 
+			{
+				generated  =  archive.getOriginalContent(current).getPath();
+			}
+			else {
+				generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
+			}
+			properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 		}
-		String generated = "";
-		if(presetid.equals("0")) 
-		{
-			generated  =  archive.getOriginalContent(current).getPath();
-			
-		}
-		else {
-			generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
-		}
-		
-		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 		
 		log.info("Asset: " + assetid + " Replaced " + generated);
 		inReq.putPageValue("asset", current);
@@ -315,9 +316,6 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		if (asset != null) 
 		{
-			Page large = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image3000x3000.jpg"); 
-			Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-			getPageManager().copyPage(large, crop1024);
 			archive.removeGeneratedImages(asset, false);
 			reloadThumbnails( inReq, archive, asset);
 		}

@@ -1097,7 +1097,7 @@ public class MediaArchive implements CatalogEnabled
 					return;
 				}
 				//getPageManager().removePage(page);
-				if (inContent.getName().startsWith("customthumb") || inContent.getName().equals("image1024x768.jpg"))
+				if (inContent.getName().startsWith("customthumb") || inContent.getName().startsWith("image3000x3000"))
 				{
 					return;
 				}
@@ -1119,7 +1119,7 @@ public class MediaArchive implements CatalogEnabled
 		processor.setRootPath(path);
 		processor.setPageManager(getPageManager());
 		processor.process();
-		ContentItem original = getOriginalContent(inAsset);
+		//ContentItem original = getOriginalContent(inAsset);
 		//Rerun Metadata
 		//Why read metadata on deletion?
 		//getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(MediaArchive.this, original, inAsset );
