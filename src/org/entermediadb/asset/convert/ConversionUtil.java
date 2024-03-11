@@ -218,10 +218,21 @@ public class ConversionUtil {
 		return task;	
 	}
 
+	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, Data preset)
+	{
+		ContentItem item = inArchive.getPresetManager().outPutForPreset(inArchive,inAsset,preset);
+		return item;
+	}
+	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String exportName)
+	{
+		ContentItem item = inArchive.getPresetManager().outPutForPreset(inArchive,inAsset,exportName);
+		return item;
+	}
+
 	public boolean doesConvertedFileExist(MediaArchive inArchive, Asset inAsset, Data preset)
 	{
 		long size = inArchive.getPresetManager().getLengthOfOutForPreset(inArchive,inAsset,preset);
-		return size > -1;
+		return size > 0;
 	}
 	
 	public HitTracker getUnprocessedFatwireConvertPresetList(String inCatalogId, String inAssetId, String inOmitPresetId) throws Exception {
@@ -267,40 +278,34 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public HitTracker getActivePresetList(String inCatalogId, String mediatype)  {
-		SearcherManager sm = getSearcherManager();
+	public HitTracker getActivePresetList(MediaArchive inArchive, Asset inAsset)
+	{
+		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
 		Collection both = new ArrayList();
 		both.add("all");
-		if(mediatype != null) {
-		both.add(mediatype);
+		if(rendertype != null) {
+		both.add(rendertype);
 		}
-		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
+		HitTracker all = inArchive.query("convertpreset").exact("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;
 	}
 	
-	public HitTracker getCompletedPresetList(MediaArchive inArchive, Asset inAsset)  
+	public Collection getOnImportPresetList(MediaArchive inArchive, Asset inAsset)  
 	{
-		HitTracker conversions = inArchive.getSearcher("conversiontask").query().exact("assetid", inAsset.getId()).exact("status","complete").search();
-		Collection presets = conversions.collectValues("presetid");
-		HitTracker all = inArchive.getSearcher("convertpreset").query().ids(presets).sort("ordering").search();
+		Collection all = inArchive.getPresetManager().getOnImportPresets(inArchive,inAsset);
 		return all;
 	}
 	
-	public boolean isReady(MediaArchive inArchive,Asset inAsset, Collection presets)
+	public boolean isConverting(MediaArchive inArchive,Asset inAsset)
 	{
-		for (Iterator iterator = presets.iterator(); iterator.hasNext();)
+		Data found = (Data)inArchive.query("conversiontask").exact("assetid", inAsset.getId()).not("status","complete").searchOne();
+		if( found == null)
 		{
-			Data preset = (Data) iterator.next();
-			
-			boolean exists = doesConvertedFileExist(inArchive, inAsset, preset);
-			if( !exists)
-			{
-				return false;
-			}
+			return false;
 		}
-		
 		return true;
+		
 	}
 	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) {
 		SearcherManager sm = getSearcherManager();

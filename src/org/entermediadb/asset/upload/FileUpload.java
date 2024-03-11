@@ -340,7 +340,7 @@ public class FileUpload
 				}
 				if (values != null)
 				{
-					if( values.length == 1 && values[0].startsWith("data:image/png;base64,"))
+					if( values.length == 1 && tmp.getFieldName().equals("image") && values[0].startsWith("data:"))
 					{
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setBase64(true);

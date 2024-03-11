@@ -41,6 +41,41 @@ public class PresetCreator
 	{
 		getCacheManager().clear("preset_lookup");
 	}
+	public Collection getOnImportPresets(MediaArchive inArchive, Asset inAsset)
+	{
+		if( inAsset == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
+		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
+
+		if(rendertype == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
+		
+		Collection both = new ArrayList();
+		both.add("all");
+		if(rendertype != null) 
+		{
+			both.add(rendertype);
+		}
+		
+		Collection hits = (Collection)getCacheManager().get("preset_lookup",both.toString());
+		if (hits == null)
+		{
+			Searcher presetsearcher = inArchive.getSearcher("convertpreset");
+			SearchQuery query = presetsearcher.createSearchQuery();
+			query.addExact("onimport", "true");
+			query.addExact("display", "true");
+			query.addOrsGroup("inputtype", both);
+			query.addSortBy("ordering");
+			hits = presetsearcher.search(query);
+			getCacheManager().put("preset_lookup",both.toString(), hits);
+		}
+		return hits;
+	}
+	
 	public Collection getPresets(MediaArchive inArchive, String rendertype)
 	{
 		if(rendertype == null)
@@ -54,6 +89,7 @@ public class PresetCreator
 			SearchQuery query = presetsearcher.createSearchQuery();
 			query.addMatches("onimport", "true");
 			query.addMatches("inputtype", rendertype);
+			query.addSortBy("ordering");
 			hits = presetsearcher.search(query);
 			getCacheManager().put("preset_lookup",rendertype, hits);
 		}
@@ -383,15 +419,23 @@ public class PresetCreator
 		queueConversions(inArchive, tasksearcher, inAsset);
 	}
 	
+	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String inExportName)
+	{
+		//Check output file for existance
+		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + inExportName;
+		ContentItem output = inArchive.getContent(generatedfilename);
+		return output;
+	}
+		
 	
-	public long getLengthOfOutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
+	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
 	{
 		if( "0".equals( inPreset.getId()) )
 		{
 			Page orig = inArchive.getOriginalDocument(inAsset);
 			if(orig.exists() )
 			{
-				return orig.length();
+				return orig.getContentItem();
 			}				
 		}
 		else
@@ -399,9 +443,17 @@ public class PresetCreator
 			//Check output file for existance
 			String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
 			ContentItem output = inArchive.getContent(generatedfilename);
-			return output.getLength();
+			return output;
 		}
-		return -1;
+		return null;
 	}
-
+	public long getLengthOfOutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
+	{
+		ContentItem item = outPutForPreset(inArchive, inAsset, inPreset);
+		if( item == null)
+		{
+			return -1;
+		}
+		return item.getLength();
+	}
 }
