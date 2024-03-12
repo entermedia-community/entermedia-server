@@ -518,21 +518,21 @@ public class JsonAssetModule extends BaseJsonModule {
 
 		asset.put("original", original);
 
-		HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(), inAsset.get("assettype"));
+		HitTracker conversions = util.getActivePresetList(inArchive, inAsset);
 		for (Iterator iterator = conversions.iterator(); iterator.hasNext();) {
-			Data it = (Data) iterator.next();
-			if (util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.getId())) {
-				Dimension dimension = (Dimension) util.getConvertPresetDimension(inArchive.getCatalogId(), it.getId());
+			Data preset = (Data) iterator.next();
+			if (util.doesConvertedFileExist(inArchive, inAsset,preset) ){
+				Dimension dimension = (Dimension) util.getConvertPresetDimension(inArchive.getCatalogId(), preset.getId());
 				JSONObject data = new JSONObject();
 				// <a class="thickbox btn"
 				// href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset,
 				// $presetdata)">Preview</a>
-				String exportfilename = inArchive.asExportFileName(inAsset, it);
+				String exportfilename = inArchive.asExportFileName(inAsset, preset);
 				String url = "/views/modules/asset/downloads/preview/" + inAsset.getSourcePath() + "/" + exportfilename;
 				data.put("URL", url);
 				data.put("height", dimension.getHeight());
 				data.put("width", dimension.getWidth());
-				asset.put(it.getId(), data);
+				asset.put(preset.getId(), data);
 			}
 		}
 		return asset;

@@ -1,6 +1,9 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +20,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
@@ -226,41 +230,44 @@ public class ConvertStatusModule extends BaseMediaModule
 		if (properties == null) {
 			return;
 		}
-		if (properties.getFirstItem() == null) {
+		if (properties.getFirstItem() == null) 
+		{
+			log.info("No upload found");
 			return;
 			
 		}
 		String assetid = inReq.getRequestParameter("assetid");
 		Asset current = archive.getAsset(assetid);
 
-		String presetid = inReq.getRequestParameter("presetid");
 		String all = inReq.getRequestParameter("replaceall");
 
-		Data preset = null;
 		boolean createall = false;
+		String generated = "";
 		if( "true".equals(all))
 		{
-			String fileFormat = current.getFileFormat();
+			//String fileFormat = current.getFileFormat();
 
-			preset = archive.getPresetManager().getPresetByOutputName(archive,fileFormat , "image3000x3000.jpg");
-			presetid = preset.getId();
+			generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image3000x3000.jpg";
+			ContentItem saved = properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+			
+//			String copytogenerated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image3000x3000.jpg";
+//			archive.getPageManager().getRepository().copy(saved,archive.getContent(copytogenerated));
 			createall = true;
 		}
 		else
 		{
+			String presetid = inReq.getRequestParameter("presetid");
+			Data preset = null;
 			preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
+			if(presetid.equals("0")) 
+			{
+				generated  =  archive.getOriginalContent(current).getPath();
+			}
+			else {
+				generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
+			}
+			properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 		}
-		String generated = "";
-		if(presetid.equals("0")) 
-		{
-			generated  =  archive.getOriginalContent(current).getPath();
-			
-		}
-		else {
-			generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
-		}
-		
-		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 		
 		log.info("Asset: " + assetid + " Replaced " + generated);
 		inReq.putPageValue("asset", current);
@@ -315,9 +322,6 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		if (asset != null) 
 		{
-			Page large = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image3000x3000.jpg"); 
-			Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-			getPageManager().copyPage(large, crop1024);
 			archive.removeGeneratedImages(asset, false);
 			reloadThumbnails( inReq, archive, asset);
 		}
@@ -330,17 +334,30 @@ public class ConvertStatusModule extends BaseMediaModule
 		reloadThumbnails( inReq, archive, asset);
 
 	}
-	protected void reloadThumbnails(WebPageRequest inReq, MediaArchive archive, Asset current)
+	protected void reloadThumbnails(WebPageRequest inReq, MediaArchive archive, Asset inAsset)
 	{
-		archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
+		//inReq.putPageValue("asset", inAsset);
+		HitTracker conversions = archive.query("conversiontask").exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
+		List tosave = new ArrayList();
+		
+		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			data.setProperty("status","retry");
+			data.setProperty("errordetails",null);
+			tosave.add(data);
+		}
+		archive.getSearcher("conversiontask").saveAllData(tosave, null);
+		//archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
 		//current.setProperty("importstatus", "imported");
 		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
 		//archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser(), current);
-		archive.fireMediaEvent("conversions","runconversion", inReq.getUser(), current);//block
+		
+		//Good idea?
+		//archive.fireMediaEvent("conversions","runconversion", inReq.getUser(), inAsset);//block?
 		//archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
-
-		inReq.putPageValue("asset", current);
-		archive.saveAsset(current);
+		archive.fireSharedMediaEvent("conversions/runconversions");
+		//archive.saveAsset(current);
 	}
 	public void reloadIndex(WebPageRequest inReq)
 	{

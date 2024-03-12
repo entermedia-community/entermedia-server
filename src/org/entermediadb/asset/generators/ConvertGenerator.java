@@ -49,7 +49,7 @@ public class ConvertGenerator extends FileGenerator
 		String catalogid = inReq.findPathValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");
-		
+//		sourcePath = inReq.getRequest().getRequestURL().toString();
 		if (sourcePath == null)
 		{
 			sourcePath = archive.getSourcePathForPage(inReq); //This already is decoded

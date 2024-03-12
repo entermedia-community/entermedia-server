@@ -326,7 +326,7 @@ public class TranscodeTools
 		{
 			if( result.getOutput() == null)
 			{
-				throw new OpenEditException("Output not found " + inSourcePath);
+				throw new OpenEditException("Conversion is complete but output not set " + inSourcePath);
 			}
 		}
 		return result;
