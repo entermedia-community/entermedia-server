@@ -153,7 +153,7 @@ public class ProfileModule extends MediaArchiveModule
 		String searchtype = inReq.findPathValue("searchtype");
 		String view = inReq.getRequestParameter("viewid");
 		
-		String viewcacheid = "view_" + searchtype + "_" + view + userProfile.get("settingsgroup");
+		
 		
 		if( searchtype == null || "asset".equals(searchtype))
 		{
@@ -167,7 +167,10 @@ public class ProfileModule extends MediaArchiveModule
 				view = searchtype+"resultstable";
 			}
 		}
-		String viewpath = searchtype + "/" + view; 
+		
+		String viewpath = searchtype + "/" + view;
+		
+		String viewcacheid = "view_" + searchtype + "_" + view + "_" + userProfile.get("settingsgroup");
 
 		Collection ids = new ArrayList();
 
