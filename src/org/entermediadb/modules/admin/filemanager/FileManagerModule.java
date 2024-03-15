@@ -3,6 +3,8 @@
  */
 package org.entermediadb.modules.admin.filemanager;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -425,7 +427,9 @@ public class FileManagerModule extends BaseModule
 	}
 	
 	
-	public void loadInEclipse(WebPageRequest inReq) throws Exception{
+	public void loadLocalEditor(WebPageRequest inReq) throws Exception
+	{
+		
 		//https://stackoverflow.com/questions/48545648/opening-files-in-eclipse-via-code
 		String path = inReq.getRequestParameter("path");
 		if (path.endsWith("/") && !path.equals("/"))
@@ -434,31 +438,31 @@ public class FileManagerModule extends BaseModule
 		}
 		String root = inReq.findValue("folderroot");
 		String absolutepath = getPageManager().getPage(path).getContentItem().getAbsolutePath();
-		String eclipsepath = inReq.findValue("eclipsepath");
-		Runtime.getRuntime().exec(new String[] {
-			    eclipsepath,
-			    "--launcher.openFile",
-			    absolutepath,
-			    // "path/to/file2.txt",
-			    // ...
-			});
+		String editorpath = inReq.findPathValue("localopencommand");
+		if( editorpath == null)
+		{
+			editorpath = inReq.findPathValue("eclipsepath");
+		}
+		if( editorpath == null)
+		{
+			return;
+		}
+		Collection params = new ArrayList(); 
+		params.add(editorpath);
+		String editorparams = inReq.findValue("editorparams");
+		if( editorparams == null)
+		{
+			editorparams = "--launcher.openFile";
+		}
+		if( editorparams != null && !editorparams.isEmpty())
+		{
+			params.add(editorparams);
+		}
+		params.add(absolutepath);
+		
+		Runtime.getRuntime().exec((String[])params.toArray(new String[params.size()]));
 	}
 	
 	
-	public void loadVue(WebPageRequest inReq) throws Exception{
-		//https://stackoverflow.com/questions/48545648/opening-files-in-eclipse-via-code
-		String file = inReq.getRequestParameter("file");
-		String root = inReq.findValue("folderroot");
-		String absolutepath = root + "/" + file;
-		String eclipsepath = inReq.findValue("eclipsepath");
-		Runtime.getRuntime().exec(new String[] {
-			    eclipsepath,
-			    "--launcher.openFile",
-			    absolutepath,
-			    // "path/to/file2.txt",
-			    // ...
-			});
-	}
-	
-	
+
 }
