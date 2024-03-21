@@ -415,25 +415,24 @@ public abstract class BaseAssetSource implements AssetSource
 		//remove any old hot folders for this catalog
 		getWebServer().reloadMounts();
 	
-		String external = getConfig().get("externalpath");
+		String originalpath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
+		String toplevelfolder =  getConfig().get("subfolder");
+		
+		String	type = "mount";
+		String fullpath = originalpath + "/" + toplevelfolder;
 	
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
-			if( config.getExternalPath().equals(external))
+			if( config.getPath().equals(fullpath))
 			{
 				getPageManager().getRepositoryManager().removeRepository(config.getPath());
 			}
 		}
-	
+		String external = getConfig().get("externalpath");
 		if( external != null )
 		{
-			String originalpath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
-			String toplevelfolder =  getConfig().get("subfolder");
-			
-			String	type = "mount";
-			String fullpath = originalpath + "/" + toplevelfolder;
 			//String versioncontrol = folder.get("versioncontrol");
 			Repository created = createRepo(type);
 			created.setPath(fullpath);
