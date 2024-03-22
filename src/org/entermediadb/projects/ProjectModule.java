@@ -933,6 +933,15 @@ public class ProjectModule extends BaseMediaModule
 	
 	
 	
+//	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
+//	{
+//		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
+//		String projectname = sections[3];
+//		QueryBuilder query = getMediaArchive().query("librarycollection").exact("urlname", projectname).hitsPerPage(1);
+//		HitTracker hits = getMediaArchive().getCachedSearch(query);
+//		Data librarycollection = (Data)hits.first();
+//	}
+	
 	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
 	{
 		String colid = PathUtilities.extractDirectoryName(inReq.getPath());

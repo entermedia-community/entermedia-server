@@ -14,6 +14,7 @@ import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.strainer.FilterReader;
 
 public class LibraryCollection extends BaseDataEntity implements SaveableData, CatalogEnabled
@@ -133,6 +134,16 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 			return values;
 		}
 		return super.getValue(inKey);
+	}
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		if( inKey.equals("name") && getValue("urlname") == null)
+		{
+			String url = PathUtilities.dash(String.valueOf( inValue ) );
+			setValue("urlname",url);
+		}
+		super.setValue(inKey, inValue);
 	}
 	
 	public Category getCategory()
