@@ -452,7 +452,7 @@ public class FileManagerModule extends BaseModule
 		String editorparams = inReq.findValue("editorparams");
 		if( editorparams == null)
 		{
-			editorparams = "--launcher.openFile";
+			//editorparams = "--launcher.openFile";
 		}
 		if( editorparams != null && !editorparams.isEmpty())
 		{

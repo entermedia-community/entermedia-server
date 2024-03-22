@@ -265,7 +265,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		double similaritycheck = .99D;
-		double boxprobability = .999D;
+		double boxprobability = .99D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -273,7 +273,19 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 
         BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
-
+        
+       
+        int minfacesize = 400;
+		
+		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
+		if(minumfaceimagesize != null) {
+			minfacesize = Integer.parseInt(minumfaceimagesize);
+		}
+		if (inJsonOfFaces.size() == 1) {
+			minfacesize = minfacesize - 100;
+		}
+		
+		
 		for (Iterator iterator = inJsonOfFaces.iterator(); iterator.hasNext();)
 		{
 			Map map = (Map) iterator.next();
@@ -346,7 +358,7 @@ public class FaceProfileManager implements CatalogEnabled
 			double boxp = box.getDouble("probability");
 			if( boxp < boxprobability)
 			{
-				//log.info("Low probability of found face: " + boxp );
+				log.info("Low probability of found face (" + boxp  + "<"+ boxprobability+"): " + inInput.getPath());
 				continue;
 			}
 			
@@ -361,16 +373,11 @@ public class FaceProfileManager implements CatalogEnabled
 			h = Math.min(h,imageImput.getHeight() - y);
 			w = Math.min(w,imageImput.getWidth() - x);
 			
-			int max = 400;
 			
-			String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
-			if(minumfaceimagesize != null) {
-				max = Integer.parseInt(minumfaceimagesize);
-			}
 			
-			if( w < max || h < max)
+			if( h < minfacesize)
 			{
-				//log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h );
+				log.info("Not enough data, small face detected assetid:" + inAsset.getId()+ " w:" + w + " h:" + h + " Min face size: " + minfacesize);
 				continue;
 			}
 			Map faceprofile = new HashMap();
