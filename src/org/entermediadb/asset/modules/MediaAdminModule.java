@@ -719,17 +719,27 @@ public class MediaAdminModule extends BaseMediaModule
 	}
 	public void clearCaches(WebPageRequest inReq)
 	{
-		 CacheManager cache = (CacheManager)getModuleManager().getBean("cacheManager");
+		 CacheManager cache = (CacheManager)getModuleManager().getBean("systemCacheManager");  //prototype
 		 if( cache != null)
 		 {
 			 cache.clearAll();
 		 }
-		 cache = (CacheManager)getModuleManager().getBean("timedCacheManager");
+		 cache = (CacheManager)getModuleManager().getBean("systemExpireCacheManager"); //shared
 		 if( cache != null)
 		 {
 			 cache.clearAll();
 		 }
 		 
+		 //Bean stuff?
+		 String catalogid = inReq.findPathValue("catalogid");
+		 if( catalogid != null)
+		 {
+			 cache = (CacheManager)getModuleManager().getBean(catalogid,"cacheManager"); 
+			 if( cache != null)
+			 {
+				 cache.clearAll();
+			 }
+		 }		 
 	}
 
 	public void reindexAll(WebPageRequest inReq)
