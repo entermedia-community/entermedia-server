@@ -149,6 +149,7 @@ public class BaseImporter extends EnterMediaObject
 			while ((trow = file.getNextRow()) != null)
 			{
 				rowNum++;
+				
 				if( skipRow(trow))
 				{
 					continue;

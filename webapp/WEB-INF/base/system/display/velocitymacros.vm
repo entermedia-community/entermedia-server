@@ -4,6 +4,7 @@
 #macro(urlencode $invalue)$!url_util.urlEscape($invalue)#end
 #macro(urlescape $invalue)$!url_util.urlEscape($invalue)#end
 #macro(esc $invalue)$!url_util.xmlEscape($invalue)#end
+#macro(escarea $invalue)$!url_util.xmlEscapeArea($invalue)#end
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)
 #set( $text = $context.getText($t) )
