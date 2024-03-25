@@ -617,13 +617,17 @@ public class TimelineModule extends BaseMediaModule
 		//make sure they match
 		if( labels.length != counter) //One based
  		{
-			log.error("SOmething bad");
+			log.error("Something bad");
 		}
 		for (int i = 0; i < labels.length; i++)
 		{
 			String label  = labels[i];
 			label = label.trim();
-			finishedlist.get(i + sofar).put("cliplabel",label);
+			int j = i + sofar;
+			if( finishedlist.size() < j) 
+			{
+				finishedlist.get(i + sofar).put("cliplabel",label);
+			}
 		}
 	}
 	
