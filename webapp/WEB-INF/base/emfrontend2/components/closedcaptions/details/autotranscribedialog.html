@@ -6,7 +6,7 @@
 		
 		<p>[[Language within the video is]]</p>
 		#set($languages = $mediaarchive.getList("locale"))
-		<select class="select2 lenguagepicker" name="selectedlang" >
+		<select class="select2 lenguagepicker" id="languagestranscribe" name="selectedlang" data-allowclear="false" >
 				#foreach($locale in $languages)
 				<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
 				#end
