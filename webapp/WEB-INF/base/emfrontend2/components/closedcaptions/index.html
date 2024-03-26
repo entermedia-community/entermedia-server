@@ -10,10 +10,6 @@
 	<div class="row no-gutters">
 		<div class="col-9">
 		
-		
-		
-
-		
 				<div class="timelineviewercontainer">
 				
 					<div id="closedcaptiondetails" style="margin-bottom:20px; padding:20px 10px; ">
@@ -23,7 +19,12 @@
 					<div style="float:left; width:250px;">
 					<form name="swaplang" id="cclangform" action="$clientroot/switchlang.html" class="ajaxform" data-targetdiv="closedcaptioneditor" data-onsuccess="ccreloadvideo" >
 						<input type="hidden" name="assetid" value="$asset.id" />
-						<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}" >	 
+						<select class="select2 lenguagepicker form-control form-control-sm" 
+							id="languages" 
+							name="selectedlang" 
+							data-count="$count" 
+							data-detailid="${detailid}" 
+							data-allowclear="false">	 
 							#foreach($locale in $languages)
 								<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
 							#end
@@ -32,9 +33,9 @@
 					</div>
 					<div style="float:right; width:350px; text-align: right;">
 					<a href="$clientroot/details/autotranscribedialog.html?assetid=$asset.id&selectedlang=$selectedlang" 
-						 data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Auto Generate Captions]]</a> 
+						 data-dialogid="ccautogenerate"  class="emdialog btn btn-dark" style="margin-left:0px;" >[[Auto Generate Captions]]</a> 
 					<a href="$clientroot/details/autotranslatedialog.html?assetid=$asset.id&selectedlang=$selectedlang" 
-					 data-width="90%" data-height="90%"  class="emdialog btn btn-dark" data-noesc="true" style="margin-left:0px;" >[[Auto Translate Captions]]</a>
+					 data-dialogid="ccautotranslate" class="emdialog btn btn-dark"  style="margin-left:0px;" >[[Auto Translate Captions]]</a>
 					</div>
 				</div>
 				
@@ -67,6 +68,7 @@
 					    </div>
 					    <div class="clearfix"></div>
 					</div>
+					
 					<div class="cctimelineviewer" >
 							$pages.include("$clientroot/viewcaptions.html",$context)
 					</div>

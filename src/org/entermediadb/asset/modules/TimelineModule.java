@@ -612,18 +612,22 @@ public class TimelineModule extends BaseMediaModule
 	{
 		//String cleanup = response.replaceAll("~~~~", "|");
 		//String[] labels = MultiValued.VALUEDELMITER.split(cleanup);
-		String[] labels = response.split("123456789");
+		String[] labels = response.split("123456789 ");
 		
 		//make sure they match
 		if( labels.length != counter) //One based
  		{
-			log.error("SOmething bad");
+			log.error("Something bad");
 		}
 		for (int i = 0; i < labels.length; i++)
 		{
 			String label  = labels[i];
 			label = label.trim();
-			finishedlist.get(i + sofar).put("cliplabel",label);
+			int j = i + sofar;
+			if( j < finishedlist.size()) 
+			{
+				finishedlist.get(i + sofar).put("cliplabel",label);
+			}
 		}
 	}
 	
