@@ -175,6 +175,9 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
 
 curl -XGET 'http://localhost:9200/assets_catalog/librarycollection/_search?q=id:AXVM1nWZ-rqBgwbiLUsK' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/tae_catalog/entitycapture/_search?q=id:AY53viMQxEcYhhVY3x47' | python -mjson.tool
+curl -XGET 'http://localhost:9200/tae_catalog/entitycapture/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/finder_catalog/lock/_search?q=id:AYeRa8VzKBD-eE6vn2wS' | python -mjson.tool
 curl -XGET 'http://localhost:9200/finder_catalog/module/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
@@ -537,7 +540,10 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
     }
 }'
 
-
+curl -XPUT 'http://localhost:9200/finder_catalog/catalogsettings/siteroot' -d '{
+    "value" :  "https://sddffdf"
+}'
+restart
 
 curl -XGET 'http://localhost:9200/_analyze' -d '
 {
