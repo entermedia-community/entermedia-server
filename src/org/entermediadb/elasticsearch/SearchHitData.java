@@ -1,6 +1,7 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -121,6 +122,23 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if (result instanceof Collection) {
 			return (Collection) result;
 		}
+		if( result instanceof String)
+		{
+			String inVal = (String)result;
+			String[] vals;
+			if (inVal.contains("|"))
+			{
+				vals = MultiValued.VALUEDELMITER.split(inVal);
+			}
+			else
+			{
+				vals = new String[] { inVal };
+			}
+			Collection collection = Arrays.asList(vals);
+			return collection;
+
+		}
+		
 		ArrayList one = new ArrayList(1);
 		one.add(result);
 		return one;
