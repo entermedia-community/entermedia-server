@@ -1053,13 +1053,15 @@ public class FinderModule extends BaseMediaModule
 		//Data module = archive.getCachedData("module", moduleid);
 		
 		Searcher searcher = archive.getSearcher(moduleid);
-		Data entity = (Data) searcher.searchByField("id", entityid);
-		if(entity != null)
-		{
-			entity.setProperty("enablepublishing", "true");
-			searcher.saveData(entity);
-		}
+		if(searcher != null) {
 		
+			Data entity = (Data) searcher.searchByField("id", entityid);
+			if(entity != null)
+			{
+				entity.setProperty("enablepublishing", "true");
+				searcher.saveData(entity);
+			}
+		}
 	}
 	
 	
