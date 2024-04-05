@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <style>
+	 
+	.emcarousel {
+	  overflow: hidden;
+	  height: 460px;
+	  display: grid;
+	  grid-template-rows: auto 80px;
+	  grid-gap: 10px;
+	
+	
+	}
+	
+	.emcarousel-inner  {
+	  overflow-x: scroll;
+	  overflow-y: hidden;
+	  display: flex;
+	  grid-row-start: 2;
+	}
+	
+	 .emcarousel-inner  .emcarousel-item {
+	    display: flex;
+	    margin-right: 10px;
+	 }
+	
+	
+	
+	.emcarousel-gallery {
+	  overflow-x: hidden;
+	  overflow-y: hidden;
+	  scroll-snap-type: x mandatory;
+	  scroll-behavior: smooth;
+	 /* display: flex;*/
+	 text-align: center;
+	
+	}
+	
+	.emcarousel-gallery img {
+	  scroll-snap-align: start;
+	  margin-bottom: 10px;
+	  
+	}
+	  
+  </style>
+</head>
+<body>
+	
+<div style="max-width: 1000px; margin: 0 auto;">
+	
+
+<div style="background-color: #fff; padding: 20px; height: 100%;  overflow-y: auto;">
+	<div style="text-align: center; padding: 2em; border: 2px solid #333; border-radius: 10px; background-color:rgb(158, 255, 225);">
+		#set($title = "[[Title]]")
+		#if($publishing.title_enabled=="true" && $publishing.title)
+			#set($title = $publishing.title)
+		#end
+		<h3 style="margin:0;">$title</h3>
+		</div>
+		#set($caption = "[[Caption Text]]")
+		#if($publishing.caption_enabled=="true" && $publishing.caption)
+			#set($caption = $publishing.caption)	
+		#end
+	<div style="padding:2em;text-align: center; ">$!caption</div>
+	
+	
+		#ifnull($defaultfolder)
+			#ifnull($entity)
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
+			#end
+			
+			#ifnotnull($entity)
+				#if($topmodule.getId()=="faceprofilegroup")
+					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+				#else
+					#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
+				#end
+			#end
+		#end
+		$context.putPageValue("defaultfolder", $defaultfolder)
+		#if(!$currentcategoryid && $defaultfolder)
+			#set( $currentcategoryid = $defaultfolder.getId())
+			$context.putPageValue("categoryid", $currentcategoryid)
+		#end
+		
+		$context.putPageValue("entitydialogid", "entitypublishing")
+		$pages.include("$apphome/views/modules/asset/publishing/index.html", $context)
+	
+	
+		#set($footer = "[[Footer]]")
+		#if($publishing.footer_enabled=="true" && $publishing.footer)
+			#set($footer = $publishing.footer)
+		#end
+	<div style="padding:0.5em; font-size: 0.9em;; margin:2em; text-align: center; border-top:2px solid #666;">$!footer</div>
+	</div>
+</div>
+</div>
+
+
+</div>
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$(".emcarousel-link").on("click", function (e) {
+			e.preventDefault();
+			var image = $("#emcarousel-image");
+			var link = $(this);
+			image.attr("src", link.attr("href"));
+			image.attr("alt", link.attr("title"));
+			image.data("assetid", link.data("assetid"));
+		});
+});
+
+	
+</script>
+
+</body>
+</html>

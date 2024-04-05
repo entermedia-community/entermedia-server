@@ -1042,4 +1042,52 @@ public class FinderModule extends BaseMediaModule
 			}
 		}
 	}
+	
+	
+	
+	public void enablePublishing(WebPageRequest inReq) 
+	{
+		String entityid =  inReq.getRequestParameter("entityid");
+		String moduleid = inReq.getRequestParameter("moduleid");
+		MediaArchive archive = getMediaArchive(inReq);
+		//Data module = archive.getCachedData("module", moduleid);
+		
+		Searcher searcher = archive.getSearcher(moduleid);
+		Data entity = (Data) searcher.searchByField("id", entityid);
+		if(entity != null)
+		{
+			entity.setProperty("enablepublishing", "true");
+			searcher.saveData(entity);
+		}
+		
+	}
+	
+	
+	public void getPublishing(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String publishingid =  inReq.getRequestParameter("publishingid");
+		Searcher searcher = archive.getSearcher("distributiongallery");
+		if(publishingid == null) {
+			String entityid =  inReq.getRequestParameter("entityid");
+			Data publishing = (Data) searcher.searchByField("entityid", entityid);
+			if(publishing != null)
+			{
+				publishingid = publishing.getId();
+			}
+			
+		}
+		
+		if(publishingid != null)
+		{
+			Data publishing = (Data) searcher.searchById(publishingid);
+			if(publishing != null)
+			{
+				inReq.putPageValue("publishing", publishing);
+			}
+		}
+	}
+
+	
+	
 }
