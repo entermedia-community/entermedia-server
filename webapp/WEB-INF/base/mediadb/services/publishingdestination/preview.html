@@ -5,6 +5,9 @@
   <meta charset="utf-8">
   <title></title>
   <style>
+	 * {
+		 font-family: sans-serif;
+	 }
 	 
 	.emcarousel {
 	  overflow: hidden;
@@ -54,18 +57,24 @@
 	
 
 <div style="background-color: #fff; padding: 20px; height: 100%;  overflow-y: auto;">
-	<div style="text-align: center; padding: 2em; border: 2px solid #333; border-radius: 10px; background-color:rgb(158, 255, 225);">
-		#set($title = "[[Title]]")
+	
+		#set($title = "")
 		#if($publishing.title_enabled=="true" && $publishing.title)
 			#set($title = $publishing.title)
 		#end
+		#if($title)
+		<div style="text-align: center; padding: 2em; border: 2px solid #333; border-radius: 10px; background-color:rgb(158, 255, 225);">
 		<h3 style="margin:0;">$title</h3>
 		</div>
-		#set($caption = "[[Caption Text]]")
+		#end
+		
+		#set($caption = "")
 		#if($publishing.caption_enabled=="true" && $publishing.caption)
 			#set($caption = $publishing.caption)	
 		#end
-	<div style="padding:2em;text-align: center; ">$!caption</div>
+		#if($caption)
+			<div style="padding:2em;text-align: center; ">$!caption</div>
+		#end
 	
 	
 		#ifnull($defaultfolder)
@@ -91,11 +100,13 @@
 		$pages.include("$apphome/views/modules/asset/publishing/index.html", $context)
 	
 	
-		#set($footer = "[[Footer]]")
+		#set($footer = "")
 		#if($publishing.footer_enabled=="true" && $publishing.footer)
 			#set($footer = $publishing.footer)
 		#end
-	<div style="padding:0.5em; font-size: 0.9em;; margin:2em; text-align: center; border-top:2px solid #666;">$!footer</div>
+		#if($footer)
+			<div style="padding:0.5em; font-size: 0.9em;; margin:2em; text-align: center; border-top:2px solid #666;">$!footer</div>
+		#end
 	</div>
 </div>
 </div>
