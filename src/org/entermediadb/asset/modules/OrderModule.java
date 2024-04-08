@@ -1207,7 +1207,7 @@ public class OrderModule extends BaseMediaModule
 		}
 		return false;
 	}
-	/**
+	
 	public Data checkoutCart(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findPathValue("catalogid");
@@ -1258,9 +1258,9 @@ public class OrderModule extends BaseMediaModule
 			String assetid = orderitem.get("assetid");
 			Asset asset = archive.getAsset(assetid);
 			//Save the publishqueue
-			Data publishqueue = getOrderManager(inReq).createPublishQueue(archive,inReq.getUser(),asset,"0","0");
+			//Data publishqueue = getOrderManager(inReq).createPublishQueue(archive,inReq.getUser(),asset,"0","0");
 			
-			orderitem.setValue("publishqueueid",publishqueue.getId());
+			//orderitem.setValue("publishqueueid",publishqueue.getId());
 			
 			tosave.add(orderitem);
 		}
@@ -1275,7 +1275,9 @@ public class OrderModule extends BaseMediaModule
 		
 		return order;
 	}
-	*/
+	
+	
+	
 	public void loadPresetOptionsForOrder(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1492,4 +1494,5 @@ public class OrderModule extends BaseMediaModule
 		inReq.putPageValue("downloaditems", openitems);
 		
 	}
+	
 }
