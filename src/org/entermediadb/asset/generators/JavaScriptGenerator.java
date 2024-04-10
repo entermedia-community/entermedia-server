@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,14 +49,21 @@ public class JavaScriptGenerator extends TempFileGenerator
 		HttpServletRequest req = inContext.getRequest();
 
 			//Loop over
-			String path = inPage.get("frompath");
-			Page rootpage = getPageManager().getPage(path, false);
+			String appid = inPage.get("applicationid");
+			Page rootpage = getPageManager().getPage("/" + appid + "/index.html", false);
 			
 			//Check on the last mod date. If file has changed then write out new file before sending
+			//TODO: Filter by top area or bottom area
 			
 			long mostrecentmod = 0;
 			long totalsize = 0;
-			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
+			
+			Collection scripts = rootpage.getScriptPaths();
+			if(scripts == null)
+			{
+				return;
+			}
+			for (Iterator iterator = scripts.iterator(); iterator.hasNext();)
 			{		
 				String script= (String) iterator.next();
 				if(!skip(script))

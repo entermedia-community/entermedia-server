@@ -58,6 +58,14 @@ public class WorkFlowModule extends BaseMediaModule
 		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
+	public void viewNoCacheMode(WebPageRequest inReq) 
+	{
+		inReq.getUser().setValue("oe_edit_mode","nocache");
+		inReq.getUser().setValue("showdebug","false");
+		inReq.putSessionValue("oe_edit_mode","nocache");
+		getUserManager(inReq).saveUser(inReq.getUser());
+		redirectBack(inReq);		
+	}
 	public void viewPreviewMode(WebPageRequest inReq) 
 	{
 		inReq.getUser().setValue("oe_edit_mode","preview");
