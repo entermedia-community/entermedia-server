@@ -2,6 +2,8 @@ package org.entermediadb.asset.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.zip.ZipOutputStream;
 
@@ -16,6 +18,7 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.links.Link;
 import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -559,4 +562,82 @@ public class CategoryModule extends BaseMediaModule
 	//		reloadTree(inReq);
 	//	}	
 
+	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException
+	{
+		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
+		
+		//Copy all the children and assets as well...
+		MediaArchive archive = getMediaArchive(inReq);
+		CategorySearcher searcher = archive.getCategorySearcher();
+		Category targetparent = archive.getCategory(targetcategoryid);
+		String[] catids = inReq.getRequestParameters("category.value");
+		for (int i = 0; i < catids.length; i++)
+		{
+			Category from = archive.getCategory(catids[i]);
+			copyTree(archive, targetparent, from);
+		}
+	}
+/*	  
+	public void copyCategory(MediaArchive inArchive, Category inSource, Category inDestination)
+	{
+		String finalpath = inFolder + "/" + inRoot.getName();
+		Searcher assets = inArchive.getAssetSearcher();
+		Searcher cats = inArchive.getSearcher("category");
+
+		HitTracker assetlist = assets.fieldSearch("category-exact", inRoot.getId());
+		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset) assets.loadData(hit);
+			Page fullpath = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath());
+			log.info(fullpath.isFolder());
+			if (!fullpath.exists())
+			{
+				log.info("Fullpath " + fullpath + "Did not exist");
+
+			}
+			log.info(fullpath);
+			Page target = inArchive.getPageManager().getPage(finalpath);
+			inArchive.getPageManager().copyPage(fullpath, target);
+
+		}
+
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			exportCategoryTree(inArchive, child, finalpath);
+		}
+
+	}	 
+*/
+
+	protected void copyTree(MediaArchive archive, Category totargetparent, Category fromchild)
+	{
+		
+		Category newchild = totargetparent.getChildByName(fromchild.getName());
+		if( newchild == null )
+		{
+			newchild = (Category)archive.getCategorySearcher().createNewData();
+			newchild.setName(fromchild.getName());
+			totargetparent.addChild(newchild);
+			archive.getCategorySearcher().saveCategory(newchild);
+		}
+		//copy assets to new category
+		Collection tosave = new ArrayList();
+		HitTracker assetlist = archive.getAssetSearcher().fieldSearch("category-exact", fromchild.getId());
+		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
+			asset.addCategory(newchild);
+			tosave.add(asset);
+		}
+		archive.getAssetSearcher().saveAllData(tosave,null);
+		//Now keep going
+		for (Iterator iterator = fromchild.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category subchild = (Category) iterator.next();
+			copyTree(archive,newchild,subchild);
+		}
+	}
 }

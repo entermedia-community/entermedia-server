@@ -676,38 +676,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 	}
 
-	/*
-	 * 
-	 * public void copyCategory(MediaArchive inArchive, Category inSource,
-	 * Category inDestination) { String finalpath = inFolder + "/" +
-	 * inRoot.getName(); Searcher assets = inArchive.getAssetSearcher();
-	 * Searcher cats = inArchive.getSearcher("category");
-	 * 
-	 * 
-	 * HitTracker assetlist = assets.fieldSearch("category-exact",
-	 * inRoot.getId()); for (Iterator iterator = assetlist.iterator();
-	 * iterator.hasNext();) { Data hit = (Data) iterator.next(); Asset asset =
-	 * (Asset) assets.loadData(hit); Page fullpath =
-	 * inArchive.getPageManager().getPage("/WEB-INF/data/" +
-	 * inArchive.getCatalogId() + "/originals/" + asset.getPath() );
-	 * log.info(fullpath.isFolder()); if(!fullpath.exists()){
-	 * log.info("Fullpath " + fullpath + "Did not exist");
-	 * 
-	 * } log.info(fullpath ); Page target =
-	 * inArchive.getPageManager().getPage(finalpath);
-	 * inArchive.getPageManager().copyPage(fullpath, target);
-	 * 
-	 * }
-	 * 
-	 * for (Iterator iterator = inRoot.getChildren().iterator();
-	 * iterator.hasNext();) { Category child = (Category) iterator.next();
-	 * exportCategoryTree(inArchive, child, finalpath); }
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
+
 
 }
