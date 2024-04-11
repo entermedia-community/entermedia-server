@@ -571,10 +571,13 @@ public class CategoryModule extends BaseMediaModule
 		CategorySearcher searcher = archive.getCategorySearcher();
 		Category targetparent = archive.getCategory(targetcategoryid);
 		String[] catids = inReq.getRequestParameters("category.value");
-		for (int i = 0; i < catids.length; i++)
+		if( catids != null)
 		{
-			Category from = archive.getCategory(catids[i]);
-			copyTree(archive, targetparent, from);
+			for (int i = 0; i < catids.length; i++)
+			{
+				Category from = archive.getCategory(catids[i]);
+				copyTree(archive, targetparent, from);
+			}
 		}
 	}
 /*	  

@@ -2241,4 +2241,24 @@ public class AssetEditModule extends BaseMediaModule
 
 	}
 
+	public void addAssetsToCategory(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
+		Category targetparent = archive.getCategory(targetcategoryid);
+		String[] assetids = inReq.getRequestParameters("assetid");
+		if( assetids != null)
+		{
+			Collection tosave = new ArrayList();
+
+			for (int i = 0; i < assetids.length; i++)
+			{
+				Asset asset = archive.getAsset(assetids[i]);
+				asset.addCategory(targetparent);
+				tosave.add(asset);
+			}
+			archive.saveAssets(tosave);
+		}
+
+	}
 }
