@@ -1495,4 +1495,13 @@ public class OrderModule extends BaseMediaModule
 		
 	}
 	
+	public void searchPendingCheckoutOrders(WebPageRequest inReq) {
+		//?field=checkoutstatus&checkoutstatus.value=pending&operation=exact
+		HitTracker orders = getOrderManager(inReq).findPendingCheckoutOrders(inReq, inReq.findPathValue("catalogid"));
+		inReq.putPageValue("orders", orders);
+		
+	}
+	
+	
+	
 }
