@@ -406,7 +406,7 @@ public class PresetCreator
 
 	public void clearConversions(MediaArchive inArchive, Searcher tasksearcher, Asset inAsset)
 	{
-		// TODO Auto-generated method stub
+		// TODO We should clear all generated files 
 		HitTracker assetconversions = tasksearcher.query().exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
 		tasksearcher.deleteAll(assetconversions, null);
 	}
