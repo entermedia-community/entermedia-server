@@ -103,6 +103,8 @@ public interface OrderManager
 	boolean hasPendingDownloadForUser(WebPageRequest inReq, String inCatalogid, User inOwner);
 	
 	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser);
+	
+	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId);
 
 	
 }
