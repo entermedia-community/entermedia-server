@@ -570,7 +570,7 @@ public class CategoryModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		CategorySearcher searcher = archive.getCategorySearcher();
 		Category targetparent = archive.getCategory(targetcategoryid);
-		String[] catids = inReq.getRequestParameters("category.value");
+		String[] catids = inReq.getRequestParameters("categoryid");
 		if( catids != null)
 		{
 			for (int i = 0; i < catids.length; i++)
