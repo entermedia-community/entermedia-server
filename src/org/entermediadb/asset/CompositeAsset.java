@@ -1051,14 +1051,17 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 						{
 							map = new LanguageMap();
 						}
-
-						LanguageMap langs = (LanguageMap) newval;
-						for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
+						if( newval instanceof LanguageMap ) 
 						{
-							String code = (String) iterator3.next();
-							map.setText(code, langs.getText(code));
+							LanguageMap langs = (LanguageMap) newval;
+							for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
+							{
+								String code = (String) iterator3.next();
+								map.setText(code, langs.getText(code));
+							}
+							asset.setValue(key, map);
 						}
-						asset.setValue(key, map);
+
 					}
 					else if (detail.getId().equals("category-exact"))
 					{
