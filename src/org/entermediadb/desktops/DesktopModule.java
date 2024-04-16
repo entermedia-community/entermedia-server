@@ -102,6 +102,10 @@ public class DesktopModule extends BaseMediaModule
 	
 	public void loadDesktop(WebPageRequest inReq)
 	{
+		if(inReq.getRequest() == null) {
+			return;
+		}
+		
 		String isDesktopParameter = inReq.getRequestParameter("desktop");
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
 		if(desktop == null || isDesktopParameter != null) 
