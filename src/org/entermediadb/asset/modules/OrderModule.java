@@ -550,16 +550,17 @@ public class OrderModule extends BaseMediaModule
 		Order basket = loadOrderBasket(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		HitTracker assets = (HitTracker) inReq.getSessionValue(hitssessionid);
-
-		for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
-		{
-
-			Data hit = (Data) iterator.next();
-			Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
-			getOrderManager(inReq).removeItemFromOrder(archive.getCatalogId(), basket, asset);
+		if(assets != null) {
+			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
+			{
+	
+				Data hit = (Data) iterator.next();
+				Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
+				getOrderManager(inReq).removeItemFromOrder(archive.getCatalogId(), basket, asset);
+			}
+			inReq.removeSessionValue(hitssessionid);
+			loadAssets(inReq);
 		}
-		inReq.removeSessionValue(hitssessionid);
-		loadAssets(inReq);
 	}
 
 	public void toggleItemInOrderBasket(WebPageRequest inReq)
