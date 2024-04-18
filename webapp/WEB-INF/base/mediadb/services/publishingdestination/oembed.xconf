@@ -1,0 +1,9 @@
+<page>
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+
+	<path-action name="Script.run" alltypes="true">
+ 		<script>./render.groovy</script>
+	</path-action>	
+
+</page>
