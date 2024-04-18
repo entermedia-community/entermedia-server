@@ -639,6 +639,10 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data module = (Data)inReq.getPageValue("firstmodule");
+		if(module == null) {
+			loadTopMenu(inReq);
+			module = (Data)inReq.getPageValue("firstmodule");
+		}
 		if (module != null) 
 		{
 			inReq.putPageValue("module", module);
