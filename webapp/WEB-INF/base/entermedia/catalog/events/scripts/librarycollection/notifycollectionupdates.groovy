@@ -29,6 +29,9 @@ public void init()
 	String datestrinng = notificationsent.get("value");
 	Date since = DateStorageUtil.getStorageUtil().parseFromStorage(datestrinng);
 	Date started = new Date();
+	
+	log.info("Searching notifications since: " + since);
+	
 	//First get all the topics
 	HitTracker alltopicsmodified = mediaArchive.query("chattopiclastmodified").after("datemodified", since).search();
 	
