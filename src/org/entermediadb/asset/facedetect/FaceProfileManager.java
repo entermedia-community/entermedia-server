@@ -901,6 +901,26 @@ public class FaceProfileManager implements CatalogEnabled
 		
 	}
 
+	public FaceAsset loadFaceData(Data faceprofilegroup,Data inData)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("asset");
+		
+		Asset asset = (Asset)searcher.loadData(inData);
+		Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
+		for( Map facedata : faceprofiles)
+		{
+			String groupid = (String)facedata.get("faceprofilegroup");
+			if( faceprofilegroup.getId().equals( groupid ))
+			{
+				FaceAsset faceasset = new FaceAsset();
+				faceasset.setAsset(asset);
+				faceasset.setFaceProfileGroup(faceprofilegroup);
+				faceasset.setFaceLocationData(new ValuesMap(facedata));
+				return faceasset;
+			}
+		}
+		return null;
+	}
 	
 	public Map getImageAndLocationForFaceAsset(FaceAsset faceasset, int thumbheight)
 	{

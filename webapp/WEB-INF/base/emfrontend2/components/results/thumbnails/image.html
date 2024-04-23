@@ -15,6 +15,7 @@
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 #set( $imagesize = "image200x200.jpg")
+
 	#if($thumbsize == "mediumplus")
 		#if( $type == "video" )
 			#set($imagesize = "image640x480.jpg")
@@ -25,7 +26,8 @@
 		#set($imagesize = "image730x480cropped.jpg")
 	#elseif($thumbsize == "crop")
 		#set($imagesize = "image110x62cropped.jpg")
-	#end		
+	#end
+	
 
 #set($urlparams = $context.getPageValue("urlparams"))
 $context.putPageValue("thumbsize", $thumbsize)
