@@ -366,50 +366,48 @@ public class MediaSearchModule extends BaseMediaModule
 	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		String faceprofileid = (String)inPageRequest.getPageValue("entityid");
-		if( faceprofileid == null)
+		String entityid = (String)inPageRequest.getPageValue("entityid");
+		if( entityid == null)
 		{
-			faceprofileid = (String)inPageRequest.findValue("entityid");
+			entityid = (String)inPageRequest.findValue("entityid");
 		}
-		if( faceprofileid == null)
+		if( entityid == null)
 		{
-			log.info("No Face profile");
 			return;
 		}
-		
-		HitTracker tracker = null;
-		
-		String searchtype = resolveSearchType(inPageRequest);
-		if( searchtype == null)
-		{
-			searchtype = "asset";
-		}
-		
-		Searcher assetsearcher = archive.getSearcher(searchtype);
-		SearchQuery search = assetsearcher.addStandardSearchTerms(inPageRequest);
-		
-		if(search == null) {
-			search = assetsearcher.createSearchQuery();
-		}
-		
-		search.addExact("faceprofiles.faceprofilegroup", faceprofileid);
-		
-		if( search.getHitsName() == null)
-		{
-			String hitsname = inPageRequest.getRequestParameter("hitsname");
-			if(hitsname == null)
-			{
-				hitsname = inPageRequest.findValue("hitsname");
+		String topmoduleid = (String)inPageRequest.getPageValue("topmoduleid");
+		String personid = null;
+		HitTracker assets = null;
+
+		if("entityperson".equals(topmoduleid)) {
+			//Search by person id
+			Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
+			if (!profiles.isEmpty()) {
+			
+				assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
 			}
-			if (hitsname != null )
-			{
-				search.setHitsName(hitsname);
-			}
+			
+		}
+		else {
+			assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
 		}
 		
-		tracker = assetsearcher.cachedSearch(inPageRequest, search);
+		String hitsname = inPageRequest.getRequestParameter("hitsname");
+		if(hitsname == null)
+		{
+			hitsname = inPageRequest.findValue("hitsname");
+		}
+		if(hitsname == null)
+		{
+			hitsname = "faceassets";
+		}
+		inPageRequest.putPageValue(hitsname, assets);
+		
+		
 			
 	}
+	
+	
 
 	
 }
