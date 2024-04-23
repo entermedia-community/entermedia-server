@@ -341,7 +341,7 @@ public class MediaSearchModule extends BaseMediaModule
 
 	}
 	
-	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
+	public void searchProfileAssetsX(WebPageRequest inPageRequest) throws Exception
 	{
 		String faceprofileid = (String)inPageRequest.getPageValue("entityid");
 		if( faceprofileid == null)
@@ -356,9 +356,59 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
 		Collection assets = manager.findAssetsForProfile(faceprofileid,1000);
-		inPageRequest.putPageValue("faceassets", assets);
+		HitTracker hits = (HitTracker) assets;
+		inPageRequest.putPageValue("faceassets", hits);
 
 
+	}
+	
+	
+	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		String faceprofileid = (String)inPageRequest.getPageValue("entityid");
+		if( faceprofileid == null)
+		{
+			faceprofileid = (String)inPageRequest.findValue("entityid");
+		}
+		if( faceprofileid == null)
+		{
+			log.info("No Face profile");
+			return;
+		}
+		
+		HitTracker tracker = null;
+		
+		String searchtype = resolveSearchType(inPageRequest);
+		if( searchtype == null)
+		{
+			searchtype = "asset";
+		}
+		
+		Searcher assetsearcher = archive.getSearcher(searchtype);
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inPageRequest);
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
+		}
+		
+		search.addExact("faceprofiles.faceprofilegroup", faceprofileid);
+		
+		if( search.getHitsName() == null)
+		{
+			String hitsname = inPageRequest.getRequestParameter("hitsname");
+			if(hitsname == null)
+			{
+				hitsname = inPageRequest.findValue("hitsname");
+			}
+			if (hitsname != null )
+			{
+				search.setHitsName(hitsname);
+			}
+		}
+		
+		tracker = assetsearcher.cachedSearch(inPageRequest, search);
+			
 	}
 
 	
