@@ -356,8 +356,8 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		FaceProfileManager manager = (FaceProfileManager)archive.getBean("faceProfileManager");
 		Collection assets = manager.findAssetsForProfile(faceprofileid,1000);
-		HitTracker hits = (HitTracker) assets;
-		inPageRequest.putPageValue("faceassets", hits);
+//		HitTracker hits = (HitTracker) assets;
+		inPageRequest.putPageValue("faceassets", assets);
 
 
 	}
@@ -375,21 +375,32 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			return;
 		}
-		String topmoduleid = (String)inPageRequest.getPageValue("topmoduleid");
+		String topmoduleid = (String)inPageRequest.findValue("topmoduleid");
+		if(topmoduleid == null) {
+			topmoduleid = (String)inPageRequest.getPageValue("topmoduleid");
+		}
 		String personid = null;
-		HitTracker assets = null;
 
+		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
+		
+		if(aquery == null) {
+			aquery = archive.getAssetSearcher().createSearchQuery();
+		}
+		
+		
 		if("entityperson".equals(topmoduleid)) {
 			//Search by person id
 			Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
 			if (!profiles.isEmpty()) {
 			
-				assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+				//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+				aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles);
 			}
-			
 		}
 		else {
-			assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
+			//assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
+			aquery.addExact("faceprofiles.faceprofilegroup", entityid);
+			
 		}
 		
 		String hitsname = inPageRequest.getRequestParameter("hitsname");
@@ -401,7 +412,8 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			hitsname = "faceassets";
 		}
-		inPageRequest.putPageValue(hitsname, assets);
+		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
+		//inPageRequest.putPageValue(hitsname, assets);
 		
 		
 			
