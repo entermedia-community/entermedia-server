@@ -1,5 +1,9 @@
 <page>
 
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+
 	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
 
 	<path-action name="Script.run" alltypes="true">

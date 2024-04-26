@@ -698,6 +698,20 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 	
+	public Map getImageAndLocationForGroup(Asset asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
+		//Todo
+		for (Iterator iterator = infaceprofilegroup.iterator(); iterator.hasNext();)
+		{
+			Data group = (Data)  iterator.next();
+			Map found = getImageAndLocationForGroup(asset, group.getId(), thumbheight);
+			if( found != null)
+			{
+				return found;
+			}
+		}
+		return null;
+	}
+	
 	
 	public Map getImageAndLocationForGroup(Asset asset,String infaceprofilegroupid, Double thumbheight)
 	{
