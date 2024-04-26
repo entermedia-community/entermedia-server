@@ -55,8 +55,6 @@
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
-						$context.putPageValue("cdnprefix", $context.getSiteRoot())
-						##$context.putPageValue("thumbsize", "carousel")
 						$pages.include("$componenthome/results/thumbnails/small.html",$context) 
           			</a>
       			</div>
