@@ -50,11 +50,9 @@ public class JavaScriptGenerator extends TempFileGenerator
 
 			//Loop over
 			String appid = inPage.get("applicationid");
-			Page rootpage = getPageManager().getPage("/" + appid + "/index.html", false);
+			Page rootpage = getPageManager().getPage("/" + appid + "/_.html", false);  //Not a real page
 			
 			//Check on the last mod date. If file has changed then write out new file before sending
-			//TODO: Filter by top area or bottom area
-			
 			long mostrecentmod = 0;
 			long totalsize = 0;
 			
