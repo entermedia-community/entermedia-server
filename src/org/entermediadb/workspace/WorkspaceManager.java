@@ -1,7 +1,6 @@
 package org.entermediadb.workspace;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
@@ -27,7 +25,6 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.modules.MediaAdminModule;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
@@ -370,7 +367,10 @@ public class WorkspaceManager
 		//Data setup
 		Data setting = getSearcherManager().getData(inCatalogId, "catalogsettings", "mediadbappid");
 		String mediadb = setting.get("value");
-		
+		if( mediadb == null)
+		{
+			throw new OpenEditException("Must set the mediadbappid id");
+		}
 		
 		Replacer replacer = new Replacer();
 		Map lookup = new HashMap();
