@@ -15,7 +15,7 @@
 			#set($imagesize = "image550x350.jpg")
 			#set($imagelink = $mediaarchive.asLinkToPreview($asset, "", $imagesize, true))
 			
-			<img src="$!{context.getSiteRoot()}$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
+			<img src="$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
 			
 		</div>	
         <div class="emcarousel-inner">
