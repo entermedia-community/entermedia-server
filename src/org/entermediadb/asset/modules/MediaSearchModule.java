@@ -404,7 +404,7 @@ public class MediaSearchModule extends BaseMediaModule
 			//assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
 			aquery.addExact("faceprofiles.faceprofilegroup", entityid);
 			//faceprofilegroups
-			Data entity = archive.getCachedData("topmoduleid", entityid);
+			Data entity = archive.getCachedData(topmoduleid, entityid);
 			faceprofilegroups.add(entity);
 		}
 		aquery.setValue("faceprofilegroups", faceprofilegroups);

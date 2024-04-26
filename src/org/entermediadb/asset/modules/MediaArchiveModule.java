@@ -364,21 +364,7 @@ public class MediaArchiveModule extends BaseMediaModule
 	
 	}
 	
-	public Map readImageSize(Asset asset, String imagesize) 
-	{
-		Map result = new HashMap();
-		//image200x200.jpg
-		Pattern p = Pattern.compile("^(\\d+)x(\\d+)$");  
-		Matcher m = p.matcher(imagesize);
-		if (m.find()) 
-		{
-			result.put("x", m.group(1));
-			result.put("y", m.group(2));
-		}
-		
-		return result;
-	}
-	
+
 	
 }
 

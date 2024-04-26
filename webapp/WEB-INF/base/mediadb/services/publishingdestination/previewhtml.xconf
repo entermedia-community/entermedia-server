@@ -1,0 +1,10 @@
+<page>
+
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+
+	
+	<path-action name="FinderModule.getPublishing" />
+
+</page>
