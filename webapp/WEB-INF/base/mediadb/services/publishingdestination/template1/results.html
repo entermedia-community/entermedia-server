@@ -1,9 +1,7 @@
-
-
 #set($hits = $publishingentityassethits)
-#if($hits)
-$hits.setHitsPerPage(25)
 
+
+#if($hits)
     <div class="emcarousel" >
 		<div class="emcarousel-gallery">
 			#set($asset = $hits[0])
@@ -17,7 +15,7 @@ $hits.setHitsPerPage(25)
 			#set($imagesize = "image550x350.jpg")
 			#set($imagelink = $mediaarchive.asLinkToPreview($asset, "", $imagesize, true))
 			
-			<img src="$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
+			<img src="$!{context.getSiteRoot()}$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
 			
 		</div>	
         <div class="emcarousel-inner">
@@ -52,11 +50,12 @@ $hits.setHitsPerPage(25)
                         #set($hitcaption = $context.getText($hit.assettitle))
                     #end
 				   <div class="emcarousel-item" id="emgallery-$!{hit.id}">
-        			<a class="emcarousel-link" data-assetid="$!hit.id" title="$!{hitcaption}" href="$imagelink" >
+        			<a class="emcarousel-link" data-assetid="$!hit.id" title="$!{hitcaption}" href="$!{context.getSiteRoot()}$imagelink" >
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
+						$context.putPageValue("cdnprefix", $context.getSiteRoot())
 						##$context.putPageValue("thumbsize", "carousel")
 						$pages.include("$componenthome/results/thumbnails/small.html",$context) 
           			</a>

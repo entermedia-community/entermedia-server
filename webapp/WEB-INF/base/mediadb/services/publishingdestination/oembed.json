@@ -2,8 +2,8 @@
 	"version": "1.0",
 	"type": "html",
 	"provider_name": "EnterMedia",
-	"provider_url": "$!siteurl",
-	"title": "$!title",
+	"provider_url": "$!context.getSiteRoot()",
+	"title": "$!entity.getName()",
 	"html": #jesc($output)
 		
 }

@@ -2,11 +2,6 @@
 	<property name="module">asset</property>
 	
 	<property name="hitsname">publishingentityassethits</property>
-	
-	<page-action name="MediaSearchModule.searchCategories">
-		<property name="hitsname">publishingentityassethits</property>
-		<property name="assetcache">false</property>
-	</page-action>	
 		
 	<inner-layout>/${applicationid}/views/modules/asset/innerlayout.html</inner-layout>
 </page>
