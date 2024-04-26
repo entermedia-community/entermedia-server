@@ -1089,6 +1089,8 @@ public class FinderModule extends BaseMediaModule
 			Data publishing = (Data) searcher.searchById(publishingid);
 			if(publishing != null)
 			{
+				Data entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
+				inReq.putPageValue("entity", entity);
 				inReq.putPageValue("publishing", publishing);
 			}
 		}
