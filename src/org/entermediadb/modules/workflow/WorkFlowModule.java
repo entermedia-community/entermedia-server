@@ -174,6 +174,23 @@ public class WorkFlowModule extends BaseMediaModule
 	getWorkFlow().addWorkFlowListener(inListener);
 	}
 	
+
+	public void checkMode(WebPageRequest inReq) throws OpenEditException
+	{
+		if( inReq.getUser() == null)
+		{
+			return;
+		}
+		String existingmode = (String)inReq.getSessionValue("oe_edit_mode");
+		if( existingmode == null)
+		{
+			existingmode = 	inReq.getUser().get("oe_edit_mode");
+			if( existingmode != null)
+			{
+				inReq.putSessionValue("oe_edit_mode",existingmode);
+			}
+		}		
+	}
 	
 	
 }
