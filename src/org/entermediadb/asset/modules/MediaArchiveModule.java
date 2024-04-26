@@ -5,7 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -358,6 +362,21 @@ public class MediaArchiveModule extends BaseMediaModule
 		log.info("reindexed " + processor.getExecCount());
 
 	
+	}
+	
+	public Map readImageSize(Asset asset, String imagesize) 
+	{
+		Map result = new HashMap();
+		//image200x200.jpg
+		Pattern p = Pattern.compile("^(\\d+)x(\\d+)$");  
+		Matcher m = p.matcher(imagesize);
+		if (m.find()) 
+		{
+			result.put("x", m.group(1));
+			result.put("y", m.group(2));
+		}
+		
+		return result;
 	}
 	
 	

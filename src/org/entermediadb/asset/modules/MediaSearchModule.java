@@ -3,6 +3,7 @@
  */
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -387,6 +388,7 @@ public class MediaSearchModule extends BaseMediaModule
 			aquery = archive.getAssetSearcher().createSearchQuery();
 		}
 		
+		Collection faceprofilegroups = new ArrayList();
 		
 		if("entityperson".equals(topmoduleid)) {
 			//Search by person id
@@ -395,13 +397,18 @@ public class MediaSearchModule extends BaseMediaModule
 			
 				//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
 				aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles);
+				faceprofilegroups = profiles;
 			}
 		}
 		else {
 			//assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
 			aquery.addExact("faceprofiles.faceprofilegroup", entityid);
-			
+			//faceprofilegroups
+			Data entity = archive.getCachedData("topmoduleid", entityid);
+			faceprofilegroups.add(entity);
 		}
+		aquery.setValue("faceprofilegroups", faceprofilegroups);
+		aquery.setValue("showfacebox", true);
 		
 		String hitsname = inPageRequest.getRequestParameter("hitsname");
 		if(hitsname == null)
