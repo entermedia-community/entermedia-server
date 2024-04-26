@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  	<property name="fallbackdirectory">/WEB-INF/base/finder/find</property>
-
+  	
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2</property>
+	
 	<generator  name="velocityGenerator" mimetypes="text/html"/>
 	<generator  name="velocityGenerator" mimetypes="text/json"/>
 
