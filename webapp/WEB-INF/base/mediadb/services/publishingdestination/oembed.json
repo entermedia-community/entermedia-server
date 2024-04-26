@@ -2,8 +2,8 @@
 	"version": "1.0",
 	"type": "html",
 	"provider_name": "EnterMedia",
-	"provider_url": "https://entermediadb.org/",
-	"title": "$title",
-	"html": "$output",
+	"provider_url": "$!siteurl",
+	"title": "$!title",
+	"html": #jesc($output)
 		
 }
