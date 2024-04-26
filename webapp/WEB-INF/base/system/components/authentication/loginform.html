@@ -8,85 +8,100 @@
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 <div class="container" id="loginformdiv">
 	#if($user)
-		<p class="text-center"><strong>[[You are currently logged in as]] $user 
-		(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">[[Logout]]</a>)</strong></p>
+		<div class="text-warning rounded border border-warning px-2 py-1 mb-3" role="alert">
+		<i class="fs-small fas fa-exclamation-triangle"></i>
+			[[You are already logged in as]] <strong>$user</strong>
+		</div>
+	#else
+		<div class="row no-gutters justify-content-sm-center loginformcontainer">
+			#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
+			#ifnotnull($customloginmessage)
+				$customloginmessage
+			#end
+		
+			#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+
+			<div class="loginform-col">
+				<h1 class="page-title text-center mb-3">[[Sign-in]] / [[Sign-up]]</h1>
+
+				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
+			
+				#if($allowloginbyemail == "true")
+					###set( $to = $context.getRequestParameter("email") )	
+					###set( $username = $context.getRequestParameter("username") )
+					<form class="ajaxform d-flex flex-column" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+						#ifnotnull( $userCategory)
+							<input type="hidden" name="categoryid" value="$userCategory.id" />
+						#end
+						#if( $content.allowguestregistration == "true")
+							#set($placeholder = "Login or Register with your Email Address")
+						#else
+							#set($placeholder = "Login with your Email Address")
+						#end
+						<label for="email">$placeholder</label>
+						<input class="form-control form-control-sm required grabfocus mb-3" type="text" name="email" placeholder="[[Enter you email address]]" required />
+						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
+						<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					</form>
+				#end
+
+				<div class="d-flex flex-column align-items-center mt-3">
+					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-bs-toggle="collapse" data-bs-target="#loginForm" title="[[Login]]">
+						[[Log in with User Name and Password]]
+					</button>
+		
+					<form class="collapse" id="loginForm" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+						<div class="form-group">
+							<label for="accountname">[[Email or Username]]</label>
+							<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" />
+							<label for="password">[[Password]]</label>
+							<input class="form-control" id="password" name="password" type="password" />
+						</div>
+						
+						#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
+							<input type="hidden" name="field" value="googlekeystring"/>
+							<div class="form-group">
+								<label for="Google Key">[[Two Factor Authenticator Key]]</label>
+								<input class="form-control" id="googleauth" name="googlekeystring.value" type="text" />
+							</div>
+							<a href="$home$content.loginroot/getkey.html">[[If you haven't yet generated a two factor key, click here]]</a>
+						#end
+						
+						#if ( $context.getPageValue("oe-exception") )
+							<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+							$context.removeSessionValue("oe-exception")
+						#end
+
+						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Login]]" />
+					</form>   
+				</div>
+
+				#if( !$providers.isEmpty() )
+					<div class="text-center my-3">
+						<span class="divider divider-xs divider-text">OR</span>
+					</div>
+					<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
+						$pages.include("$home$content.loginroot/oauth/providers.html", $context)
+					</div>
+				#end
+			
+				<div style="text-align: center;">
+					##<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
+					##<br>	
+					<br>
+					#set( $error = $context.getPageValue("oe-exception") )
+					#if ( $error ) 
+						<div class="text-error rounded border border-error px-2 py-1 mb-3" role="alert">
+							$error
+						</div>
+						$context.removeSessionValue("oe-exception")
+					#end
+				</div>
+			</div>
+		</div>
 	#end
 
-	<div class="row no-gutters justify-content-sm-center loginformcontainer">
-	
-		#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
-		#ifnotnull($customloginmessage)
-			$customloginmessage
-		#end
-	
-		#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
-		
-		<div class="">
-		<div class="loginform-col">
-		
-		<h1 class="page-title">
-		[[Sign-in with]]</h1>
-
-		#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
-		
-		#if($allowloginbyemail == "true")
-		
-			###set( $to = $context.getRequestParameter("email") )	
-			###set( $username = $context.getRequestParameter("username") )
-	        <div style="text-align: center;">
-						
-			<form class="ajaxform" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
-				#ifnotnull( $userCategory)
-					<input type="hidden" name="categoryid" value="$userCategory.id" />
-				#end
-				<p>
-				
-				#if( $content.allowguestregistration == "true")
-					#set($placeholder = "Login or Register with your Email Address")
-				#else
-					#set($placeholder = "Login with your Email Address")
-				#end
-				
-				<input class="form-control form-control-sm required grabfocus" type="text" name="email"  style="width: 400px;" placeholder="$placeholder" required />
-				<input class="btn btn-primary" name="submit" type="submit" value="[[Next]]" />
-				</p>
-				
-				<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
-				
-	         </form>
-	         <h2>Or Other Options</h2>
-	         </div>
-		 #end
-
-
-		
-		#if( !$providers.isEmpty() )
-	        <div style="text-align: center;">
-			$pages.include("$home$content.loginroot/oauth/providers.html", $context)
-			</div>
-		#end
-		
-	    <div style="text-align: center;">
-			##<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
-			##<br>	
-				
-			<a href="$home$content.loginroot/logindialog.html" class="emdialog btn btn-primary" title="[[Login]]" style="text-align:center; margin:12px;">[[User Name and Password]]</a> 
-		<br>
-		<br>
-				#set( $error = $context.getPageValue("oe-exception") )
-			#if ( $error )
-				<br><span style="width: 60%; text-align: center">$error</span>
-				$context.removeSessionValue("oe-exception")
-			#end
-	
-		</div>
+	<div class="text-center loginformquestions">
+		[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.
 	</div>
-	</div>
-	
-	
-	</div>
-
-	<div class="text-center loginformquestions">[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.</div>
-
 </div>
-
