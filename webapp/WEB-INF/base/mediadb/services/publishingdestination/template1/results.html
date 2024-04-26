@@ -50,7 +50,7 @@
                         #set($hitcaption = $context.getText($hit.assettitle))
                     #end
 				   <div class="emcarousel-item" id="emgallery-$!{hit.id}">
-        			<a class="emcarousel-link" data-assetid="$!hit.id" title="$!{hitcaption}" href="$!{context.getSiteRoot()}$imagelink" >
+        			<a class="emcarousel-link" data-assetid="$!hit.id" title="$!{hitcaption}" href="$imagelink" >
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
