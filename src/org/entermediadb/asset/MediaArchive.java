@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.InternetAddress;
 
@@ -2931,5 +2933,21 @@ public class MediaArchive implements CatalogEnabled
 		log.info("saved 100 metadata readings");
 
 	}
+	
+	public Map readImageSize(Asset asset, String imagesize) 
+	{
+		Map result = new HashMap();
+		//image200x200.jpg
+		Pattern p = Pattern.compile("(\\d+)x(\\d+)");  
+		Matcher m = p.matcher(imagesize);
+		while (m.find())  
+		{
+			result.put("w", m.group(1));
+			result.put("h", m.group(2));
+		}
+		
+		return result;
+	}
+	
 	
 }
