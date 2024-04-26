@@ -40,6 +40,9 @@ public class JsonUtil
 	}
 	public String escape(String inVal){
 		String escape = JSONObject.escape(inVal);
+		//setEscapeForwardSlashAlways
+		escape = escape.replaceAll("\\/","/");
+		
 		return escape;
 	}
 	
