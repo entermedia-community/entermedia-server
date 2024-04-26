@@ -6,5 +6,7 @@
 
 	
 	<path-action name="FinderModule.getPublishing" />
-
+<path-action name="Script.run" alltypes="true">
+ 		<script>./render.groovy</script>
+	</path-action>	
 </page>
