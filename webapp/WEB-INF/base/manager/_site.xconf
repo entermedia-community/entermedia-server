@@ -42,10 +42,8 @@
 	  
   <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
   
-	<!-- Bootstrap -->
-	<script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
-	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
-	<style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/5.2.1/js/bootstrap.min.js" />
+	<style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/5.2.1/css/bootstrap.min.css" />
 	<style id="fonts-css"  href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css"/>
   
   <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>

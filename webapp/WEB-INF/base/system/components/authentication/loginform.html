@@ -22,7 +22,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
 			<div class="loginform-col">
-				<h1 class="page-title text-center mb-3">[[Sign-in]] / [[Sign-up]]</h1>
+				<h1 class="page-title text-center mb-4">[[Sign-in]] / [[Sign-up]]</h1>
 
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 			
@@ -41,14 +41,21 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 						<label for="email">$placeholder</label>
 						<input class="form-control form-control-sm required grabfocus mb-3" type="text" name="email" placeholder="[[Enter you email address]]" required />
 						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
-						<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+						<input type="hidden" name="subject" value="[[Your Login Info]]"/>
 					</form>
 				#end
 
-				<div class="d-flex flex-column align-items-center mt-3">
-					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-bs-toggle="collapse" data-bs-target="#loginForm" title="[[Login]]">
+				<div class="d-flex flex-column align-items-center mt-4">
+					#if($content.bs == "4")
+					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-toggle="collapse" data-target="#loginForm" title="[[Login]]">
 						[[Log in with User Name and Password]]
 					</button>
+					#else
+					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-bs-toggle="collapse"
+						data-bs-target="#loginForm" title="[[Login]]">
+						[[Log in with User Name and Password]]
+					</button>
+					#end
 		
 					<form class="collapse" id="loginForm" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 						<div class="form-group">
