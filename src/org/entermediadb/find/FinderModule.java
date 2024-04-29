@@ -1076,6 +1076,9 @@ public class FinderModule extends BaseMediaModule
 		Searcher searcher = archive.getSearcher("distributiongallery");
 		if(publishingid == null) {
 			String entityid =  inReq.getRequestParameter("entityid");
+			if(entityid == null) {
+				entityid =  inReq.getRequestParameter("id"); //safe to search id
+			}
 			Data publishing = (Data) searcher.searchByField("entityid", entityid);
 			if(publishing != null)
 			{
@@ -1089,9 +1092,14 @@ public class FinderModule extends BaseMediaModule
 			Data publishing = (Data) searcher.searchById(publishingid);
 			if(publishing != null)
 			{
-				Data entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
-				inReq.putPageValue("entity", entity);
 				inReq.putPageValue("publishing", publishing);
+				
+				Data entity = (Data) inReq.getPageValue("entity");
+				if (entity == null) {
+					entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
+					inReq.putPageValue("entity", entity);
+				}
+				
 			}
 		}
 	}
