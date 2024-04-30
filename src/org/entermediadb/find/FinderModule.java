@@ -740,6 +740,12 @@ public class FinderModule extends BaseMediaModule
 				{
 					Data data = (Data) iterator.next();
 					if(usermodules.contains(data.getValue("toplevelentity"))) {
+						//search submenu
+						Collection<Data> topsubmenudata = archive.query("appsubsection").named("topsubmenuhits").exact("parentsection", data.getId()).sort("ordering").search(inReq);
+						if (topsubmenudata.size()>0) {
+							data.setValue("submenu", topsubmenudata);
+							
+						}
 						topmenufinal.add(data);
 					}
 				}
