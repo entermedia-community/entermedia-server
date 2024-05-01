@@ -332,14 +332,18 @@ public class WorkspaceManager
 	{
 		String mid = module.getId();
 		String basepath = "default";
-		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
+		Page modulehome = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
 		
 		//TODO: Can we remove this one day?
 		
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
-		PageSettings homesettings = home.getPageSettings();
+		PageSettings homesettings = modulehome.getPageSettings();
 		PageSettings modulesettings = settings.getPageSettings();
-		if( mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
+
+		Page parentfallback = getPageManager().getPage(modulehome.getPageSettings().getFallback().getPath());
+
+		
+		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId())) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
 		{
 			basepath = mid;
 			homesettings.removeProperty("fallbackdirectory");
