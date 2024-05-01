@@ -126,7 +126,7 @@ public class EntityModule extends BaseMediaModule
 		}
 		else 
 		{
-			String assethitssessionid = inPageRequest.getRequestParameter("assethitssessionid");
+			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
 			Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid,pickedentityid, assethits);
 			inPageRequest.putPageValue("assets", added);
@@ -136,11 +136,29 @@ public class EntityModule extends BaseMediaModule
 	
 	public void addAssetstoNewEntity(WebPageRequest inPageRequest) throws Exception 
 	{
-		String actiononsave = inPageRequest.getRequestParameter("actiononsave");
-		if(actiononsave != null && actiononsave.equals("addassets")) 
+		String saveaction = inPageRequest.getRequestParameter("saveaction");
+		String copyingsearchtype = inPageRequest.getRequestParameter("copyingsearchtype");
+		if(saveaction != null && "assets".equals(copyingsearchtype)) 
 		{
 			addAssetsToEntity(inPageRequest);
 		}
+	}
+	
+	public void copyEntities(WebPageRequest inPageRequest) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);	
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String pickedmoduleid = inPageRequest.getRequestParameter("moduleid");
+		String catalogid = inPageRequest.getRequestParameter("catalogid");
+		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
+		Integer added = entityManager.copyEntities(inPageRequest.getUser(), pickedmoduleid, hits);
+
+		inPageRequest.putPageValue("saved", added);
+		inPageRequest.putPageValue("moduleid", pickedmoduleid);
+		
+		
 	}
 	
 	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
