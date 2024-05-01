@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultRowSorter;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -19,6 +21,7 @@ import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
@@ -345,17 +348,22 @@ public class EntityManager implements CatalogEnabled
 				//map fields?
 				Data newchild = entitysearcher.createNewData();
 				newchild.setName(hit.getName());
+				newchild.setValue("entitysourcetype",pickedmoduleid);
 				tosave.add(newchild);
-			 	//newchild.setId();
-				//newchild.setName(categoryname);
+				
+				Category targetcategory = createDefaultFolder(newchild, inUser);
+				Category sourcecategory = getMediaArchive().getCategory(hit.get("rootcategory"));
+				if(sourcecategory == null)
+				{
+					throw new OpenEditException("No source category");
+				}
+				
+				getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
 				
 			}
 			getMediaArchive().saveData(pickedmoduleid, tosave);
 		}
-		
-		//Copy assets?
-		//Category category = loadDefaultFolder(module, entity, inUser, true);
-		
+				
 		return tosave.size();
 	}
 	

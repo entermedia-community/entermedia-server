@@ -427,7 +427,7 @@ public class CategoryEditor {
 	}	 
 */
 
-	protected void copyTree(Category fromchild, Category totargetparent)
+	public void copyTree(Category fromchild, Category totargetparent)
 	{
 		
 		Category newchild = totargetparent.getChildByName(fromchild.getName());
