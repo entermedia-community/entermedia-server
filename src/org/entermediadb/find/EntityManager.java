@@ -21,6 +21,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
@@ -330,6 +331,32 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().saveAsset(asset);
 		return true;
 
+	}
+	
+	public Integer copyEntities(User inUser,String pickedmoduleid, HitTracker hits) 
+	{
+		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
+
+		List tosave = new ArrayList();
+		if(hits != null && hits.getSelectedHitracker() != null) {
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+				Data hit = (Data) iterator.next();
+				//map fields?
+				Data newchild = entitysearcher.createNewData();
+				newchild.setName(hit.getName());
+				tosave.add(newchild);
+			 	//newchild.setId();
+				//newchild.setName(categoryname);
+				
+			}
+			getMediaArchive().saveData(pickedmoduleid, tosave);
+		}
+		
+		//Copy assets?
+		//Category category = loadDefaultFolder(module, entity, inUser, true);
+		
+		return tosave.size();
 	}
 	
 
