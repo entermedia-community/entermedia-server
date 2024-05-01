@@ -216,13 +216,13 @@ public class WorkspaceManager
 						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
 					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
-					Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
 					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
-					if( !destination.exists() && !destinationbase.exists() )
+					if( !destinationbase.exists() )
 					{
 						String templatepermissionfields = "/" + catalogid + "/configuration/baseentitytemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
-						getPageManager().copyPage(template, destination);
+						Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
+						getPageManager().copyPage(template, destination); //Always update these
 					}					
 					//Add corresponding fields to Asset
 					
