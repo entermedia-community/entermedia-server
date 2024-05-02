@@ -908,6 +908,9 @@ public class FinderModule extends BaseMediaModule
 		}
 		Searcher searcher = archive.getSearcher("modulesearch");
 		SearchQuery search = searcher.addStandardSearchTerms(inReq);
+
+		String excludemodule = inReq.findPathValue("excludemodule");
+		searchmodules.remove(excludemodule);
 		
 		String entityid = inReq.findPathValue("entityid");
 		String externalid = inReq.findPathValue("externalid");
