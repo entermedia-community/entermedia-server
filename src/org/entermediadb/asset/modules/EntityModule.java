@@ -108,14 +108,11 @@ public class EntityModule extends BaseMediaModule
 	public void addAssetsToEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 	
+		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("moduleid");
+		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
-		String catalogid = inPageRequest.getRequestParameter("catalogid");
-		
-		
-		MediaArchive archive = getMediaArchive(inPageRequest);
 		
 		String assetid = inPageRequest.getRequestParameter("assetid");
 		if(assetid != null) {
@@ -128,7 +125,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-			Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid,pickedentityid, assethits);
+			Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assethits);
 			inPageRequest.putPageValue("assets", added);
 		}
 		
@@ -149,15 +146,29 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);	
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("moduleid");
-		String catalogid = inPageRequest.getRequestParameter("catalogid");
+		String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
+		String sourceentityid = inPageRequest.getRequestParameter("copyingentityid");
+		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
-		Integer added = entityManager.copyEntities(inPageRequest.getUser(), pickedmoduleid, hits);
+		Integer added = 0;
+		if(hits == null) {
+			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+		}
+		else {
+			added = entityManager.copyEntities(inPageRequest, pickedmoduleid, hits);
+		}
 
 		inPageRequest.putPageValue("saved", added);
-		inPageRequest.putPageValue("moduleid", pickedmoduleid);
+		inPageRequest.putPageValue("moduleid", sourcemoduleid);
 		
+		
+		String action = inPageRequest.getRequestParameter("action");
+		
+		if("moveentity".equals(action)) {
+			Boolean deleted = entityManager.deleteEntity(inPageRequest, sourcemoduleid, sourceentityid);
+			inPageRequest.putPageValue("deleted", deleted);
+		}
 		
 	}
 	
