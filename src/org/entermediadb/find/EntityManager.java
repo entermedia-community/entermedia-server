@@ -336,35 +336,70 @@ public class EntityManager implements CatalogEnabled
 
 	}
 	
-	public Integer copyEntities(User inUser,String pickedmoduleid, HitTracker hits) 
+	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) {
+		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
+		Data newchild = entitysearcher.createNewData();
+		
+		String name = inContext.getRequestParameter("nameoverwrite");
+		if(name == null) {
+			name = source.getName();
+		}
+		newchild.setName(name);
+		newchild.setValue("entitysourcetype",pickedmoduleid);
+		
+		Category targetcategory = createDefaultFolder(newchild, inContext.getUser());
+		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
+		if(sourcecategory == null)
+		{
+			throw new OpenEditException("No source category");
+		}
+		
+		getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
+		return newchild;
+	}
+	
+	public Integer copyEntities(WebPageRequest inContext, String pickedmoduleid, HitTracker hits) 
 	{
 		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
-		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
+		
 
 		List tosave = new ArrayList();
 		if(hits != null && hits.getSelectedHitracker() != null) {
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
-				//map fields?
-				Data newchild = entitysearcher.createNewData();
-				newchild.setName(hit.getName());
-				newchild.setValue("entitysourcetype",pickedmoduleid);
-				tosave.add(newchild);
-				
-				Category targetcategory = createDefaultFolder(newchild, inUser);
-				Category sourcecategory = getMediaArchive().getCategory(hit.get("rootcategory"));
-				if(sourcecategory == null)
-				{
-					throw new OpenEditException("No source category");
+				Data newchild = copyEntity(inContext, pickedmoduleid, hit);
+				if(newchild != null) {
+					tosave.add(newchild);
 				}
-				
-				getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
 				
 			}
 			getMediaArchive().saveData(pickedmoduleid, tosave);
 		}
 				
 		return tosave.size();
+	}
+	
+	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid) 
+	{
+		Data source = getMediaArchive().getData(sourcemoduleid, sourceentityid);
+		if(source != null) {
+			Data newchild = copyEntity(inContext, pickedmoduleid, source);
+			if(newchild != null) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	
+	public Boolean deleteEntity(WebPageRequest inContext, String moduleid, String entityid) {
+		Searcher entitysearcher = getMediaArchive().getSearcher(moduleid);
+		Data data = (Data) entitysearcher.searchById(entityid);
+		if(data != null) {
+			entitysearcher.delete(data, inContext.getUser());
+			return true;
+		}
+		return false;
 	}
 	
 
