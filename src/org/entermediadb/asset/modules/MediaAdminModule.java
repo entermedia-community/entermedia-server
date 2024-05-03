@@ -292,7 +292,26 @@ public class MediaAdminModule extends BaseMediaModule
 		getMediaArchive(inReq).clearAll();
 	}
 
+	public void saveNewModule(WebPageRequest inReq) throws Exception
+	{
+		String name = inReq.getRequestParameter("name.value");
+		String id = inReq.getRequestParameter("id");
+		MediaArchive archive  = getMediaArchive(inReq);
+		Data module  = archive.getSearcher("module").createNewData();
+		module.setId(id);
+		module.setName(name);
+		module.setValue("isentity",true);
+		//archive.saveData("module", module);
+		//Data module = (Data) inReq.getPageValue("data");
 
+		String appid = inReq.findValue("applicationid");
+		String catalogid = inReq.findPathValue("catalogid");
+		getWorkspaceManager().saveModule(catalogid, appid, module);
+		archive.saveData("module", module);
+		getMediaArchive(inReq).clearAll();
+	}
+
+	
 	public void checkModulePath(WebPageRequest inReq) throws Exception
 	{
 		String moduleid = inReq.findValue("moduleid");

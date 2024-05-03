@@ -147,18 +147,20 @@ public class WorkspaceManager
 			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
 			details = new PropertyDetails(archive,searchtype);
 			details.setDetails(defaultdetails.getDetails());
-		}
-		if( details.getPrefix() == null )
-		{
-			details.setPrefix(inPrefix);
-		}
-		// will default to defaults
-		if (details.getDetail("sourcepath") == null)
-		{
-			PropertyDetail sourcepath = new PropertyDetail();
-			sourcepath.setId("sourcepath");
-			sourcepath.setName("SourcePath");
-			details.addDetail(sourcepath);
+
+			if( details.getPrefix() == null )
+			{
+				details.setPrefix(inPrefix);
+			}
+			// will default to defaults
+			if (details.getDetail("sourcepath") == null)
+			{
+				PropertyDetail sourcepath = new PropertyDetail();
+				sourcepath.setId("sourcepath");
+				sourcepath.setName("SourcePath");
+				details.addDetail(sourcepath);
+			}
+
 		}
 		if( details.getBeanName() == null )
 		{
@@ -168,12 +170,14 @@ public class WorkspaceManager
 
 		archive.savePropertyDetails(details, tablename, null, file);
 		
+		/*
 		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			archive.savePropertyDetail(detail, searchtype, null);
 
 			
 		}
+		 */
 
 		// edit beans.xml
 //		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");
