@@ -521,13 +521,25 @@ public class FinderModule extends BaseMediaModule
 			return;
 		}		
 		//String plainquery = String.join(" ", query);
-		Collection searchmodules = loadUserSearchTypes(inReq);
-		Collection searchmodulescopy = new ArrayList(searchmodules);
-		searchmodulescopy.remove("asset");
+		
+		
 		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
-		dq.getQuery().setValue("searchtypes", searchmodulescopy);
-
 		dq.getQuery().setIncludeDescription(true);
+		
+		Collection searchmodules = new ArrayList();
+		String mainsearchmodule = inReq.getRequestParameter("mainsearchmodule");
+		if(mainsearchmodule != null) {
+			searchmodules.add(mainsearchmodule);
+			dq.getQuery().setValue("searchtypes", searchmodules);
+		}
+		else 
+		{
+			searchmodules = loadUserSearchTypes(inReq);
+			Collection searchmodulescopy = new ArrayList(searchmodules);
+			searchmodulescopy.remove("asset");
+			dq.getQuery().setValue("searchtypes", searchmodulescopy);
+		}
+		
 		
 		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
 		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
