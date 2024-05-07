@@ -141,27 +141,10 @@ public class WorkspaceManager
 		{
 			return searchtype;
 		}
-		PropertyDetails details = archive.getPropertyDetails(searchtype);
-		if (details == null)
-		{
-			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
-			details = new PropertyDetails(archive,searchtype);
-			details.setDetails(defaultdetails.getDetails());
-
-			if( details.getPrefix() == null )
-			{
-				details.setPrefix(inPrefix);
-			}
-			// will default to defaults
-			if (details.getDetail("sourcepath") == null)
-			{
-				PropertyDetail sourcepath = new PropertyDetail();
-				sourcepath.setId("sourcepath");
-				sourcepath.setName("SourcePath");
-				details.addDetail(sourcepath);
-			}
-
-		}
+		//Create a new one
+		PropertyDetails defaultdetails = archive.getPropertyDetails("default");
+		PropertyDetails details = new PropertyDetails(archive,searchtype);
+		//details.setDetails(defaultdetails.getDetails()); //Entities have everything in the folder
 		if( details.getBeanName() == null )
 		{
 			details.setBeanName("dataSearcher");
