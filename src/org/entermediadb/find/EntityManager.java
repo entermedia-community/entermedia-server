@@ -304,6 +304,9 @@ public class EntityManager implements CatalogEnabled
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		if(entity == null) {
+			return 0;
+		}
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 		
 		List tosave = new ArrayList();
