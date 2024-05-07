@@ -265,7 +265,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		double similaritycheck = .99D;
-		double boxprobability = .99D;
+		double boxprobability = .999D;
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
@@ -275,7 +275,7 @@ public class FaceProfileManager implements CatalogEnabled
         BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
         
        
-        int minfacesize = 400;
+        int minfacesize = 450;
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
 		if(minumfaceimagesize != null) {
