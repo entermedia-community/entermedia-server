@@ -21,6 +21,7 @@ import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -392,6 +393,21 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		return 0;
+	}
+	
+	public Integer addToSearchCategory(WebPageRequest inContext, String sourcemoduleid, HitTracker hits, String id) 
+	{
+		List tosave = new ArrayList();
+		if(hits != null && hits.getSelectedHitracker() != null) {
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+				MultiValued hit = (MultiValued) iterator.next();
+				hit.addValue("searchcategory", id);
+				tosave.add(hit);
+			}
+			getMediaArchive().saveData(sourcemoduleid, tosave);
+		}
+				
+		return tosave.size();
 	}
 	
 	
