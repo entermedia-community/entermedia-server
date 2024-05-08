@@ -141,6 +141,20 @@ public class EntityModule extends BaseMediaModule
 		}
 	}
 	
+	public void addToSearchCategory(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		//String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
+		String id = inPageRequest.getRequestParameter("id");
+		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
+		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
+		Integer added = entityManager.addToSearchCategory(inPageRequest, sourcemoduleid, hits, id);
+	}
+	
 	public void copyEntities(WebPageRequest inPageRequest) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);	
