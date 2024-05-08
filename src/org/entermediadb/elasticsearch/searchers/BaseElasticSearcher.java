@@ -474,18 +474,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
 			{
+				AggregationBuilder b = null;
 				if (detail.isViewType("tageditor"))
 				{
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-					inSearch.addAggregation(b);
+					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
 				}
 				else
 				{
 
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
-					inSearch.addAggregation(b);
-
+					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
 				}
+				inSearch.addAggregation(b);
 			}
 			else
 			{
