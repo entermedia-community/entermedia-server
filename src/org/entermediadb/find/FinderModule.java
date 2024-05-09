@@ -1,5 +1,6 @@
 package org.entermediadb.find;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +20,6 @@ import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
-import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -32,6 +32,7 @@ import org.openedit.hittracker.Term;
 import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class FinderModule extends BaseMediaModule
 {
@@ -1093,36 +1094,52 @@ public class FinderModule extends BaseMediaModule
 	public void getPublishing(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String publishingid =  inReq.getRequestParameter("publishingid");
-		Searcher searcher = archive.getSearcher("distributiongallery");
-		if(publishingid == null) {
-			String entityid =  inReq.getRequestParameter("entityid");
-			if(entityid == null) {
-				entityid =  inReq.getRequestParameter("id"); //safe to search id
-			}
-			Data publishing = (Data) searcher.searchByField("entityid", entityid);
-			if(publishing != null)
-			{
-				publishingid = publishing.getId();
-			}
-			
-		}
 		
+		String publishingurl =  inReq.getRequestParameter("url");
+		
+		Data entity = null;
+		
+		//parse url
+		//URL pURL = new URL(publishingurl);
+		//String publishingid = pURL.getQuery(); 
+		
+		String publishingid =  inReq.getRequestParameter("publishingid");
+		if(publishingid == null) {
+			publishingid = PathUtilities.extractDirectoryName(publishingurl);
+		}
 		if(publishingid != null)
-		{
-			Data publishing = (Data) searcher.searchById(publishingid);
-			if(publishing != null)
 			{
-				inReq.putPageValue("publishing", publishing);
-				
-				Data entity = (Data) inReq.getPageValue("entity");
-				if (entity == null) {
-					entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
-					inReq.putPageValue("entity", entity);
+			Searcher searcher = archive.getSearcher("distributiongallery");
+			if(publishingid == null) {
+				String entityid =  inReq.getRequestParameter("entityid");
+				if(entityid == null) {
+					entityid =  inReq.getRequestParameter("id"); //safe to search id
+				}
+				Data publishing = (Data) searcher.searchByField("entityid", entityid);
+				if(publishing != null)
+				{
+					publishingid = publishing.getId();
 				}
 				
 			}
+			
+			if(publishingid != null)
+			{
+				Data publishing = (Data) searcher.searchById(publishingid);
+				if(publishing != null)
+				{
+					inReq.putPageValue("publishing", publishing);
+					
+					entity = (Data) inReq.getPageValue("entity");
+					if (entity == null) {
+						entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
+						
+					}
+					
+				}
+			}
 		}
+		inReq.putPageValue("entity", entity);
 	}
 
 	

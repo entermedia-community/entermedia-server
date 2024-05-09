@@ -13,6 +13,9 @@ import org.openedit.WebPageRequest
 
 public void init(){
 
+	if(entity == null) {
+		return;
+	}
 	String applicationid = context.findPathValue("applicationid");
 	MediaArchive archive = context.getPageValue("mediaarchive")
 	
@@ -46,7 +49,9 @@ public void init(){
 	
 	context.putPageValue("output", output.toString()); 
 	
-	log.info(output.toString());
+	//log.info(output.toString());
+	
+	log.info("Output generated");
 }
 
 
