@@ -153,6 +153,7 @@ public class EntityModule extends BaseMediaModule
 		String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
 		Integer added = entityManager.addToSearchCategory(inPageRequest, sourcemoduleid, hits, id);
+		inPageRequest.putPageValue("saved", added);
 	}
 	
 	public void copyEntities(WebPageRequest inPageRequest) throws Exception 
