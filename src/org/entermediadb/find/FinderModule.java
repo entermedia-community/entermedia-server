@@ -1132,17 +1132,17 @@ public class FinderModule extends BaseMediaModule
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		if(publishingid == null) {
 			String publishingurl =  inReq.getRequestParameter("url");
-			log.info("publishurl: " + publishingurl);
+			
 			if( publishingurl == null)
 			{
 				publishingurl = inReq.getPath();
 			}
 			publishingid = PathUtilities.extractPageName(publishingurl);
-			log.info("publishingid:" + publishingid);
+			
 		}
 		Data publishing = (Data) archive.getData("distributiongallery", publishingid);
 		inReq.putPageValue("publishing", publishing);
-		log.info("publishing:" + publishing);
+		
 		Searcher assetsearcher = archive.getSearcher("asset");
 		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
 		Data entity = null;
