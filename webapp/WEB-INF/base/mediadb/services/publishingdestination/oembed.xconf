@@ -4,9 +4,11 @@
 			<boolean value="true" />
 	</permission>
 
+	<property name="alternative_extension">json</property>
+
 	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
 	
-	<path-action name="FinderModule.getPublishing" />
+	<path-action name="FinderModule.loadPublishAssets" />
 
 	<path-action name="Script.run" alltypes="true">
  		<script>./render.groovy</script>

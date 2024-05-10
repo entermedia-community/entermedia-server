@@ -3,20 +3,17 @@
 	<property name="forcelayout">true</property>
 
 	<property name="virtual">true</property>
-
-	<property name="alternative_extension">json</property>
 	
+	<property name="alternative_extension">html</property>
+	
+	<path-action name="FinderModule.loadPublishAssets" />
+
 	<permission name="view">
 			<boolean value="true" />
 	</permission>
-
-	
-	<path-action name="FinderModule.getPublishing" />
-	<path-action name="Script.run" alltypes="true">
- 		<script>/${applicationid}/services/publishingdestination/render.groovy</script>
-	</path-action>	
 	
 	
-	<layout>/${applicationid}/services/publishingdestination/oembed.json</layout>
+	
+	<inner-layout>/${applicationid}/services/publishingdestination/view/previewhtml.html</inner-layout>
 </page>
 

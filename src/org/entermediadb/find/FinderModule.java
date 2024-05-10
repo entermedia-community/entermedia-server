@@ -1094,52 +1094,78 @@ public class FinderModule extends BaseMediaModule
 	public void getPublishing(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
-		String publishingurl =  inReq.getRequestParameter("url");
-		
+
 		Data entity = null;
-		
-		//parse url
-		//URL pURL = new URL(publishingurl);
-		//String publishingid = pURL.getQuery(); 
-		
+
 		String publishingid =  inReq.getRequestParameter("publishingid");
-		if(publishingid == null) {
-			publishingid = PathUtilities.extractDirectoryName(publishingurl);
-		}
-		if(publishingid != null)
+		if(publishingid == null)
+		{
+			String entityid =  inReq.getRequestParameter("entityid");
+			if( entityid != null)
 			{
-			Searcher searcher = archive.getSearcher("distributiongallery");
-			if(publishingid == null) {
-				String entityid =  inReq.getRequestParameter("entityid");
-				if(entityid == null) {
-					entityid =  inReq.getRequestParameter("id"); //safe to search id
-				}
+				Searcher searcher = archive.getSearcher("distributiongallery");
 				Data publishing = (Data) searcher.searchByField("entityid", entityid);
 				if(publishing != null)
 				{
 					publishingid = publishing.getId();
 				}
-				
-			}
-			
-			if(publishingid != null)
-			{
-				Data publishing = (Data) searcher.searchById(publishingid);
-				if(publishing != null)
-				{
-					inReq.putPageValue("publishing", publishing);
-					
-					entity = (Data) inReq.getPageValue("entity");
-					if (entity == null) {
-						entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
-						
-					}
-					
-				}
 			}
 		}
-		inReq.putPageValue("entity", entity);
+		if(publishingid == null)
+		{
+			publishingid =  inReq.getRequestParameter("id"); //saved record
+		}
+		if(publishingid != null)
+		{
+			Data publishing = (Data) archive.getCachedData("distributiongallery",publishingid);
+			if(publishing != null)
+			{
+				inReq.putPageValue("publishing", publishing);
+			}
+		}
+	}
+	
+	
+	public void loadPublishAssets(WebPageRequest inReq)  {
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String publishingid =  inReq.getRequestParameter("publishingid");
+		if(publishingid == null) {
+			String publishingurl =  inReq.getRequestParameter("url");
+			if( publishingurl == null)
+			{
+				publishingurl = inReq.getPath();
+			}
+			publishingid = PathUtilities.extractPageName(publishingurl);
+		}
+		Data publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
+		inReq.putPageValue("publishing", publishing);
+		
+		Searcher assetsearcher = archive.getSearcher("asset");
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+		Data entity = null;
+		entity = (Data) inReq.getPageValue("entity");
+		if (entity == null) {
+			entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
+			
+		}
+		
+		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
+		}
+		
+		search.addExact("category", category.getId());
+		//TODO: Add approved only to query
+		
+		String hitsname = "publishingentityassethits";
+		search.setHitsName(hitsname);
+			
+		
+		HitTracker tracker = assetsearcher.search(search);
+		tracker.setHitsPerPage(25);
+		inReq.putPageValue(hitsname,tracker);
 	}
 
 	
