@@ -1138,7 +1138,7 @@ public class FinderModule extends BaseMediaModule
 			}
 			publishingid = PathUtilities.extractPageName(publishingurl);
 		}
-		Data publishing = (Data) archive.getCachedData("distributiongallery", publishingid);
+		Data publishing = (Data) archive.getData("distributiongallery", publishingid);
 		inReq.putPageValue("publishing", publishing);
 		
 		Searcher assetsearcher = archive.getSearcher("asset");
@@ -1146,7 +1146,7 @@ public class FinderModule extends BaseMediaModule
 		Data entity = null;
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
-			entity = archive.getCachedData(publishing.get("moduleid"), publishing.get("entityid"));
+			entity = archive.getData(publishing.get("moduleid"), publishing.get("entityid"));
 			
 		}
 		
