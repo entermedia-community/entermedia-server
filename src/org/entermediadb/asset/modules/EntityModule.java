@@ -18,6 +18,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
 {
@@ -233,7 +234,15 @@ public class EntityModule extends BaseMediaModule
 	{
 		
 		String entityid = inPageRequest.getRequestParameter("entityid");
+		if(entityid == null) {
+			//get it from URL
+			entityid = PathUtilities.extractDirectoryName(inPageRequest.getPath());
+		}
+		inPageRequest.putPageValue("selectedentityid", entityid);
 		String moduleid = inPageRequest.getRequestParameter("entitytype");
+		if(moduleid == null) {
+			moduleid = inPageRequest.findValue("module");
+		}
 		if( entityid == null || moduleid == null)
 		{
 			return null;
