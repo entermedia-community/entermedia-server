@@ -1117,7 +1117,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		if(publishingid != null)
 		{
-			Data publishing = (Data) archive.getCachedData("distributiongallery",publishingid);
+			Data publishing = (Data) archive.getData("distributiongallery",publishingid);
 			if(publishing != null)
 			{
 				inReq.putPageValue("publishing", publishing);
