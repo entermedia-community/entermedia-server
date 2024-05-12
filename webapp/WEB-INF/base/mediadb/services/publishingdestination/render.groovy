@@ -12,29 +12,12 @@ import org.openedit.WebPageRequest
 
 
 public void init(){
+	
 
 	String applicationid = context.findPathValue("applicationid");
-	MediaArchive archive = context.getPageValue("mediaarchive")
+	MediaArchive archive = context.getPageValue("mediaarchive");
 	
-	Searcher assetsearcher = archive.getSearcher("asset");
-	SearchQuery search = assetsearcher.addStandardSearchTerms(context);
 	
-	Category category = archive.getBean("entityManager").createDefaultFolder(entity, context.getUser());
-	
-	if(search == null) {
-		search = assetsearcher.createSearchQuery();
-	}
-	
-	search.addExact("category", category.getId());
-	//TODO: Add approved only to query
-	
-	String hitsname = "publishingentityassethits";
-	search.setHitsName(hitsname);
-		
-	
-	HitTracker tracker = assetsearcher.search(search);
-	tracker.setHitsPerPage(25);
-	context.putPageValue(hitsname,tracker);
 	
 	Page preview = pageManager.getPage("/"+ applicationid + "/services/publishingdestination/preview.html");
 	
@@ -46,7 +29,9 @@ public void init(){
 	
 	context.putPageValue("output", output.toString()); 
 	
-	log.info(output.toString());
+	//log.info(output.toString());
+	
+	log.info("Output generated");
 }
 
 

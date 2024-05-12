@@ -1,0 +1,19 @@
+<page>
+
+	<property name="forcelayout">true</property>
+
+	<property name="virtual">true</property>
+	
+	<property name="alternative_extension">html</property>
+	
+	<path-action name="FinderModule.loadPublishAssets" />
+
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+	
+	
+	
+	<inner-layout>/${applicationid}/services/publishingdestination/view/previewhtml.html</inner-layout>
+</page>
+
