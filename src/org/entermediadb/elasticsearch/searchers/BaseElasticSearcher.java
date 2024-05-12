@@ -443,23 +443,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			if (detail.isDate())
 			{
-				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.DAY);
-				builder.order(Order.KEY_DESC);
-				//	String timezone = TimeZone.getDefault().getID();
-				//		builder.timeZone(timezone);
-				inSearch.addAggregation(builder);
-
-				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-				builder.field(detail.getId());
-				//	builder.timeZone(timezone);
-
-				builder.interval(DateHistogramInterval.WEEK);
-				builder.order(Order.COUNT_DESC);
-
-				inSearch.addAggregation(builder);
-
+				//TODO: Is this slow? seems kinda like a waste of CPU
+//				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
+//				builder.field(detail.getId());
+//				builder.interval(DateHistogramInterval.DAY);
+//				builder.order(Order.KEY_DESC);
+//				//	String timezone = TimeZone.getDefault().getID();
+//				//		builder.timeZone(timezone);
+//				inSearch.addAggregation(builder);
+//
+//				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+//				builder.field(detail.getId());
+//				//	builder.timeZone(timezone);
+//
+//				builder.interval(DateHistogramInterval.WEEK);
+//				builder.order(Order.COUNT_DESC);
+//
+//				inSearch.addAggregation(builder);
+				continue;
 			}
 
 			else if (detail.isNumber())
@@ -475,16 +476,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
 			{
 				AggregationBuilder b = null;
-				if (detail.isViewType("tageditor"))
-				{
-					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-				}
-				else
-				{
-
+//				if (detail.isViewType("tageditor"))
+//				{
+//					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+//					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+//				}
+//				else
+//				{
+//
 					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
-				}
+//				}
 				inSearch.addAggregation(b);
 			}
 			else
