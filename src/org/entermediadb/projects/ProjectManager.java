@@ -64,17 +64,6 @@ public class ProjectManager implements CatalogEnabled
 	private int COPY = 1;
 	private int MOVE = 2;
 	protected ModuleManager fieldModuleManager;
-	protected DesktopManager fieldDesktopManager;
-
-	public DesktopManager getDesktopManager()
-	{
-		if (fieldDesktopManager == null)
-		{
-			fieldDesktopManager = (DesktopManager) getModuleManager().getBean("desktopManager");
-		}
-
-		return fieldDesktopManager;
-	}
 
 	public ModuleManager getModuleManager()
 	{
@@ -1225,21 +1214,7 @@ public class ProjectManager implements CatalogEnabled
 		return usercollection;
 	}
 
-	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
-	{
-		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
-		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
-		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
 
-		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
-		if (desktop == null)
-		{
-			throw new OpenEditException("Desktop disconnected");
-		}
-		desktop.checkoutCollection(inMediaArchive, collection);
-	}
 
 	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inRevision, String inNote)
 	{
@@ -1649,73 +1624,6 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
-	{
-		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
-		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
-		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
-
-		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.importCollection(inMediaArchive, collection); //This eventually will cause saveCheckinRequest to get called by the desktop 
-
-	}
-
-	public Map listAssetMap(String serverPrefix, MediaArchive inArchive, Category inCat)
-	{
-		List tosend = new ArrayList();
-
-		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
-		assets.enableBulkOperations();
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-		{
-			MultiValued asset = (MultiValued) iterator.next();
-			Map map = new HashMap();
-			map.put("id", asset.getId());
-
-			String assetpath = inArchive.asLinkToOriginal(asset);
-
-			String url = serverPrefix + "/" + inArchive.getMediaDbId() + "/services/module/asset/downloads/originals/" + assetpath;
-			map.put("url", url);
-
-			String primaryImageName = asset.get("primaryfile");
-			if (primaryImageName == null)
-			{
-				primaryImageName = asset.getName();
-			}
-			String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
-			map.put("savepath", savepath);
-
-			map.put("filesize", asset.get("filesize"));
-			long time = asset.getDate("assetmodificationdate").getTime();
-			if (time > 0)
-			{
-				map.put("assetmodificationdate", String.valueOf(time));
-			}
-			tosend.add(map);
-		}
-
-		Collection<String> subfolders = new ArrayList();
-		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category subcat = (Category) iterator.next();
-			subfolders.add(subcat.getName());
-		}
-		Map response = new HashMap();
-		//response.put("folder", inRootCategory.getName());
-		response.put("subpath", inCat.getCategoryPath());
-		response.put("subfolders", subfolders);
-		response.put("assets", tosend);
-		return response;
-		//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
-		//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		//		{
-		//			Category child = (Category) iterator.next();
-		//			downloadCat(inArchive, inCollection, child);
-		//		}
-
-	}
 
 	/*
 	 * 

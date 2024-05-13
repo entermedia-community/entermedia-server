@@ -1,0 +1,9 @@
+<page>
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+	<path-action name="ProjectModule.uploadRemoteFolderCache" alltypes="true"/>
+	<permission name="view">
+			<userprofile property="api-load-data" equals="true" />
+	</permission>
+	
+</page>

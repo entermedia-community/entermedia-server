@@ -8,7 +8,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.projects.ProjectManager;
+import org.entermediadb.find.FolderManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -17,16 +17,16 @@ public class DesktopModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(DesktopModule.class);
 
-	public ProjectManager getProjectManager(WebPageRequest inReq) {
+	public FolderManager getFolderManager(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
-		inReq.putPageValue("projectmanager", manager);
+		FolderManager manager = (FolderManager) getModuleManager().getBean(archive.getCatalogId(), "FolderManager");
+		inReq.putPageValue("FolderManager", manager);
 		return manager;
 	}
 	public void startDownload(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
+		FolderManager manager = getFolderManager(inReq);
 		
 		String assetid = inReq.getRequestParameter("assetid");
 		String categoryid = inReq.getRequestParameter("categoryid");
@@ -80,7 +80,7 @@ public class DesktopModule extends BaseMediaModule
 	public void open(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
+		FolderManager manager = getFolderManager(inReq);
 		
 		String downloadid = inReq.getRequestParameter("userdownloadid");
 		Data userdownload = archive.query("userdownloads").id(downloadid).searchOne();
@@ -120,7 +120,7 @@ public class DesktopModule extends BaseMediaModule
 			String isDesktop = inReq.getRequest().getHeader("User-Agent");
 			if(Boolean.parseBoolean(isDesktopParameter) || (isDesktop.contains("eMediaWorkspace") && inReq.getUser() != null)) 
 			{
-				ProjectManager manager = getProjectManager(inReq);
+				FolderManager manager = getFolderManager(inReq);
 				desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 				if(desktop == null) {
 					desktop = manager.getDesktopManager().connectDesktop(inReq.getUser());

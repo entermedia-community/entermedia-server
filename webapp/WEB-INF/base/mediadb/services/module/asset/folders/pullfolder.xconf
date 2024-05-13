@@ -1,0 +1,9 @@
+<page>
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+	<path-action name="AssetImportModule.downloadRemoteFolder" alltypes="true"/>
+	<permission name="view">
+			<userprofile property="api-load-data" equals="true" />
+	</permission>
+	
+</page>

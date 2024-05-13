@@ -1233,6 +1233,9 @@
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 			<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
+	<bean  id="folderManager" class="org.entermediadb.find.FolderManager" lazy-init="default" scope="prototype"  >
+			<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
 
 	
 	<bean id="OauthModule" class="org.openedit.entermedia.modules.OauthModule">
@@ -1242,9 +1245,7 @@
 		<property name="eventManager">
 			<ref bean="eventManager" />
 		</property>
-		
 	</bean>
-
 
 	<bean id="transcodeTools" class="org.entermediadb.asset.convert.TranscodeTools" scope="prototype" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -1252,10 +1253,6 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		
 	</bean>
-
-	
-	
-	
 	
 	<!-- Elastic Search -->
 	<bean id="elasticNodeManager" class="org.entermediadb.elasticsearch.ElasticNodeManager">

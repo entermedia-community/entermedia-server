@@ -404,6 +404,16 @@ public class ProjectModule extends BaseMediaModule
 		
 	}
 
+	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
+	{
+		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq), colid);
+		inReq.putPageValue("librarycol", col);
+		return col;
+
+	}
+
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
 		String collectionid = loadCollectionId(inReq);
@@ -770,12 +780,6 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 
-	public void listConnectedDesktop(WebPageRequest inReq)
-	{
-		ProjectManager manager = getProjectManager(inReq);
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUser());
-		inReq.putPageValue("desktop",desktop);
-	}
 	
 	
 	public void changeLock(WebPageRequest inReq) {
@@ -790,167 +794,8 @@ public class ProjectModule extends BaseMediaModule
 		
 	}
 	
-	public void exportCollection(WebPageRequest inReq) {
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		if( desktop.isBusy())
-		{
-			log.info("Desktop still busy");
-			return;
-		}
-		String collectionid = loadCollectionId(inReq);
-		User user = inReq.getUser();
-		if (user == null) 
-		{
-			throw new OpenEditException("User required ");
-		}
-//		Data collection = archive.getData("librarycollection", collectionid);
 
-		// The trailing slash is needed for the recursive algorithm. Don't
-		// delete.
-//		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
-//				+ collection.getName();
-//
-//		Date now = new Date();
-//
-//		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
-//
-//		infolder = infolder + "/" + stamp + "/";
 
-		manager.downloadCollectionToClient(inReq, archive, collectionid);
-		
-		
-		boolean lock = Boolean.parseBoolean(inReq.getRequestParameter("lockcollection"));
-		if(lock) {
-			archive.updateAndSave("librarycollection", collectionid, "lockedby", inReq.getUserName());
-		}
-		
-		//inReq.putPageValue("exportpath", infolder);
-
-		// if(getWebEventListener() != null)
-		// {
-		// WebEvent event = new WebEvent();
-		// event.setSearchType(searcher.getSearchType());
-		// event.setCatalogId(searcher.getCatalogId());
-		// event.setOperation(searcher.getSearchType() + "/saved");
-		// event.setProperty("dataid", data.getId());
-		// event.setProperty("id", data.getId());
-		//
-		// event.setProperty("applicationid", inReq.findValue("applicationid"));
-		//
-		// getWebEventListener().eventFired(event);
-		// }
-
-		// Searcher librarycollectiondownloads =
-		// archive.getSearcher("librarycollectiondownloads");
-		//
-		// Data history = librarycollectiondownloads.createNewData();
-		//
-		// history.setValue("owner", inReq.getUserName());
-		// history.setValue("librarycollection", collectionid);
-		// history.setValue("date", new Date());
-		// history.setValue("revision", collection.get("revisions"));
-		//
-		// String fields[] = inReq.getRequestParameters("field");
-		// librarycollectiondownloads.updateData(inReq, fields, history);
-		// librarycollectiondownloads.saveData(history);
-
-		// boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
-
-	}
-
-	
-	
-	
-	public void importCollection(WebPageRequest inReq) {
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		if( desktop.isBusy())
-		{
-			log.info("Desktop still busy");
-			return;
-		}
-
-		String collectionid = loadCollectionId(inReq);
-		User user = inReq.getUser();
-		if (user == null) 
-		{
-			throw new OpenEditException("User required ");
-		}
-//		Data collection = archive.getData("librarycollection", collectionid);
-
-		// The trailing slash is needed for the recursive algorithm. Don't
-		// delete.
-//		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
-//				+ collection.getName();
-//
-//		Date now = new Date();
-//
-//		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
-//
-//		infolder = infolder + "/" + stamp + "/";
-
-		manager.retrieveFilesFromClient(inReq, archive, collectionid);
-
-		
-		//inReq.putPageValue("exportpath", infolder);
-
-		// if(getWebEventListener() != null)
-		// {
-		// WebEvent event = new WebEvent();
-		// event.setSearchType(searcher.getSearchType());
-		// event.setCatalogId(searcher.getCatalogId());
-		// event.setOperation(searcher.getSearchType() + "/saved");
-		// event.setProperty("dataid", data.getId());
-		// event.setProperty("id", data.getId());
-		//
-		// event.setProperty("applicationid", inReq.findValue("applicationid"));
-		//
-		// getWebEventListener().eventFired(event);
-		// }
-
-		// Searcher librarycollectiondownloads =
-		// archive.getSearcher("librarycollectiondownloads");
-		//
-		// Data history = librarycollectiondownloads.createNewData();
-		//
-		// history.setValue("owner", inReq.getUserName());
-		// history.setValue("librarycollection", collectionid);
-		// history.setValue("date", new Date());
-		// history.setValue("revision", collection.get("revisions"));
-		//
-		// String fields[] = inReq.getRequestParameters("field");
-		// librarycollectiondownloads.updateData(inReq, fields, history);
-		// librarycollectiondownloads.saveData(history);
-
-		// boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
-
-	}
-
-	
-	
-	
-//	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
-//	{
-//		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
-//		String projectname = sections[3];
-//		QueryBuilder query = getMediaArchive().query("librarycollection").exact("urlname", projectname).hitsPerPage(1);
-//		HitTracker hits = getMediaArchive().getCachedSearch(query);
-//		Data librarycollection = (Data)hits.first();
-//	}
-	
-	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
-	{
-		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
-		ProjectManager manager = getProjectManager(inReq);
-		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq), colid);
-		inReq.putPageValue("librarycol", col);
-		return col;
-
-	}
 	
 
 	public boolean checkViewCollection(WebPageRequest inReq) {
@@ -1078,156 +923,7 @@ public class ProjectModule extends BaseMediaModule
 		Data upload = userupload.query().exact("uploadcategory", PathUtilities.extractPageName(page)).searchOne();
 		inReq.putPageValue("userupload", upload);
 	}
-	public void downloadRemoteFolder(WebPageRequest inReq)
-	{
-		Map params = inReq.getJsonRequest();
-			
-		String catalogid = (String)params.get("catalogid");
-		MediaArchive archive = getMediaArchive(catalogid);
-		String categoryid = (String)params.get("categoryid");
-		String collectionid = (String)params.get("collectionid");
-		String server = (String)params.get("server");
-	
-		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive,collectionid);
-		
-		Category cat = archive.getCategory(categoryid);
-		
-		Map assets = archive.getProjectManager().listAssetMap(server, archive, cat);
-		inReq.putPageValue("assetmap", new JSONObject(assets));
-		
-	}
-	public void uploadRemoteFolder(WebPageRequest inReq)
-	{
-		
-		Map params = inReq.getJsonRequest();
-		
-		String catalogid = (String)params.get("catalogid");
-		MediaArchive archive = getMediaArchive(catalogid);
-		Map folderdetails = (Map)params.get("folderdetails");
-		
-		//Loop over the existing files and diff it
-		String collectionid  = (String)params.get("collectionid");
-		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
-		String catpath = collection.getCategory().getCategoryPath();
-		String subfolder = (String)folderdetails.get("subfolder");
-		Category subcat = null;
-		if( subfolder != null && !subfolder.isEmpty() )
-		{
-			catpath = catpath + subfolder;
-			subcat = archive.createCategoryPath(catpath);
-		}
-		else
-		{
-			subcat = collection.getCategory();
-		}
-		HitTracker tracker = archive.query("asset").exact("category-exact", subcat.getId() ).search();
-		Map existingassets = new HashMap(tracker.size());
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
-			Data asset = (Data) iterator.next();
-			existingassets.put(asset.getName(), asset);
-		}
-		
-		Collection toupload = new ArrayList();
-		Collection files = (Collection)folderdetails.get("filelist");
-		log.info("Keep these files: " + files);
-		for (Iterator iterator = files.iterator(); iterator.hasNext();)
-		{
-			Map fileinfo = (Map) iterator.next();
-			String filename = (String)fileinfo.get("filename");
-			long filesize = getLong(fileinfo.get("filesize"));
-			Data data = (Data)existingassets.get(filename);
-			existingassets.remove(filename);
-			if( data == null)
-			{
-				data = (Asset)archive.getAssetSearcher().query().exact("name",filename ).exact("filesize", String.valueOf(filesize)).searchOne();
-			}
-			if( data != null)
-			{
-				fileinfo.put("assetid", data.getId());
-			}
-			
-			boolean addit = false;
-			if( data == null)
-			{
-				addit = true;
-			}
-			else if( filesize != -1)
-			{
-				Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
-				ContentItem item = archive.getOriginalContent(asset);
-				if( item.getLength() != filesize)
-				{
-					addit = true;
-				} else{
-					asset.addCategory(subcat);//make sure it's in the category!
-					archive.saveAsset(asset);
-				}
-			}
-			//TODO: md5?
-			if( addit )
-			{
-				toupload.add(fileinfo);
-			} 
-		}
-		Collection toremove = new ArrayList();
-		for (Iterator iterator = existingassets.values().iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
-			log.info("removed old asset " + data.getName());
-			asset.removeCategory(subcat);
-			toremove.add(asset);
-		}
-		archive.getAssetSearcher().saveAllData(toremove, null);
-		
-		Map existingcats = new HashMap();
-		for (Iterator iterator = subcat.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category cat = (Category) iterator.next();
-			existingcats.put(cat.getName(), cat);
-		}
-		Collection childfolders = (Collection)folderdetails.get("childfolders");
-		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();)
-		{
-			Map clientfolder = (Map) iterator.next();
-			String foldername = (String)clientfolder.get("foldername");
-			if( existingcats.containsKey(foldername))
-			{
-				existingcats.remove(foldername);
-			}
-			else
-			{
-				//add child
-				Category newsub = (Category)archive.getCategorySearcher().createNewData();
-				newsub.setName(foldername);
-				subcat.addChild(newsub);
-				archive.getCategorySearcher().saveCategory(newsub);
-			}
-		}
-		for (Iterator iterator = existingcats.values().iterator(); iterator.hasNext();)
-		{
-			Category child = (Category) iterator.next();
-			//TODO: Remove this form it's assets
-			HitTracker existingcatassets = archive.query("asset").exact("category-exact", child.getId() ).search();
-			Collection tosave = new ArrayList();
-			for (Iterator iterator2 = existingcatassets.iterator(); iterator2.hasNext();)
-			{
-				Data data = (Data) iterator2.next();
-				Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
-				asset.removeCategory(child);
-				tosave.add(asset);
-			}
-			archive.getAssetSearcher().saveAllData(tosave, null);
-			archive.getCategorySearcher().delete(child, null);
-		}
-		
-		params.remove("folderdetails");
-		params.put("toupload",toupload);
-		log.info("Requesting to upload " + toupload);
-		inReq.putPageValue("params",new JSONObject(params));
-				
-	}
+
 
 	/*
 	 *
@@ -1240,25 +936,25 @@ Client EnterMediaModule.uploadFilesIntoCollection
 Server ProjectModule.uploadFile
 
 	 */
-	public void uploadMedia(WebPageRequest inReq) throws Exception
-	{
-		FileUpload command = new FileUpload();
-		command.setPageManager(getPageManager());
-		UploadRequest properties = command.parseArguments(inReq);
-		if (properties == null)
-		{
-			return;
-		}
-
-		//MediaArchive archive = getMediaArchive(inReq);
-
-		String savepath = inReq.getRequestParameter("savepath");
-		FileUploadItem item = properties.getFirstItem();
-		
-		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
-		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
-		
-	}
+//	public void uploadMedia(WebPageRequest inReq) throws Exception
+//	{
+//		FileUpload command = new FileUpload();
+//		command.setPageManager(getPageManager());
+//		UploadRequest properties = command.parseArguments(inReq);
+//		if (properties == null)
+//		{
+//			return;
+//		}
+//
+//		//MediaArchive archive = getMediaArchive(inReq);
+//
+//		String savepath = inReq.getRequestParameter("savepath");
+//		FileUploadItem item = properties.getFirstItem();
+//		
+//		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
+//		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+//		
+//	}
 	
 	public void uploadFile(WebPageRequest inReq) throws Exception
 	{
@@ -1325,77 +1021,7 @@ Server ProjectModule.uploadFile
 		archive.fireSharedMediaEvent("importing/assetscreated");
 
 	}
-	private long getLong(Object inObject)
-	{
-		if( inObject == null)
-		{
-			return -1;
-		}
-		if( inObject instanceof String)
-		{
-			return Long.parseLong((String)inObject);
-		}
-		if( inObject instanceof Integer)
-		{
-			return Integer.valueOf((int)inObject);
-		}
-		return (long)inObject;
-	}
 
-	
-	public void desktopOpenFolder(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = inReq.getRequestParameter("collectionid");
-		LibraryCollection col = manager.getLibraryCollection(archive, collectionid);
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.openRemoteFolder(archive, col);
-		
-	}
-	
-	
-	public void desktopOpenAsset(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String assetid = inReq.getRequestParameter("assetid");
-		ProjectManager manager = getProjectManager(inReq);
-
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		desktop.openAsset(archive, assetid);
-		Asset asset = getAsset(inReq);
-		
-		
-		if(!asset.isLocked()) {
-		asset.toggleLock(inReq.getUser());
-		archive.saveAsset(asset);
-		}
-		
-	}
-	
-	
-	
-	public void sendDesktopCommand(WebPageRequest inReq)
-	{
-		try
-		{
-			MediaArchive archive = getMediaArchive(inReq);
-			String commands = inReq.getRequestParameter("command");
-			ProjectManager manager = getProjectManager(inReq);
-
-			Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-			JSONParser parser = new JSONParser();
-			JSONObject command = (JSONObject) parser.parse(commands);
-			
-			desktop.sendCommand(archive, command);
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-		
-	}
-	
 	
 	
 	

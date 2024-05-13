@@ -40,6 +40,7 @@ import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.find.FolderManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
@@ -2099,6 +2100,11 @@ public class MediaArchive implements CatalogEnabled
 	public ProjectManager getProjectManager()
 	{
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(getCatalogId(), "projectManager");
+		return manager;
+	}
+	public FolderManager getFolderManager()
+	{
+		FolderManager manager = (FolderManager) getModuleManager().getBean(getCatalogId(), "folderManager");
 		return manager;
 	}
 

@@ -52,7 +52,7 @@ public class DesktopWebTreeModel  extends CategoryWebTreeModel implements Catalo
 			if( subfolders == null)
 			{
 				//GOTO The desktop API and get files
-				Desktop desktop = getMediaArchive().getProjectManager().getDesktopManager().getDesktop(getUserId());
+				Desktop desktop = getMediaArchive().getFolderManager().getDesktopManager().getDesktop(getUserId());
 				if( desktop == null)
 				{
 					//Let them know,desktop not available
