@@ -76,6 +76,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
@@ -2954,6 +2955,10 @@ public class MediaArchive implements CatalogEnabled
 		
 		return result;
 	}
-	
+
+	public DateStorageUtil getDateStorageUtil()
+	{
+		return DateStorageUtil.getStorageUtil();
+	}
 	
 }
