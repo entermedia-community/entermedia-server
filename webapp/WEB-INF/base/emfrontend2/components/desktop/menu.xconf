@@ -12,6 +12,5 @@
 			<searchtype>category</searchtype>
     </path-action>
 
-	<path-action name="ProjectModule.listConnectedDesktop"/>
 
 </page>
