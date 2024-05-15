@@ -1,11 +1,12 @@
 {
-	"version": "1.0",
+	"version": "1.0.3",
 	"type": "rich",
 	"provider_name": "EnterMedia",
 	"provider_url": "$!context.getSiteRoot()",
 	"title": "$!entity.getName()",
 	"width": 1000,
 	"height": 420,
+	"cache_age": "60",
 	"html": #jesc($output)
 		
 }

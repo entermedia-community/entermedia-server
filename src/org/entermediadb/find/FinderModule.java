@@ -1149,7 +1149,7 @@ public class FinderModule extends BaseMediaModule
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
 			entity = archive.getData(publishing.get("moduleid"), publishing.get("entityid"));
-			
+			inReq.putPageValue("entity",entity);
 		}
 		
 		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
