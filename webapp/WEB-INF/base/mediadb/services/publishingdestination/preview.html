@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="$applink/components/splide/splide.min.css">
+<link type="text/css" rel="stylesheet" href="$!siteroot$applink/components/splide/splide.min.css">
 <style type="text/css">
 	body {
 		font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
 		color: #fff;
 		text-align: center;
 		padding-bottom: 16px;
-		margin: 0 auto 16px;
+		margin: 0 auto;
 	}
 	.__caption::after {
 		content: "";
@@ -67,7 +67,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-bottom: 14px;
+		padding: 14px 0;
 	}
 	#__carousel .splide__slide img {
 		width: 100%;
@@ -164,7 +164,7 @@
 		<div class="__footer">$!footer</div>
 	#end 
 </div>
-<script src="$applink/components/splide/splide.min.js"></script>
+<script type="text/javascript" src="$!siteroot$applink/components/splide/splide.min.js"></script>
 <script type="text/javascript">
 	document.addEventListener("DOMContentLoaded", function () {
 		var __main = new Splide("#__carousel", {
