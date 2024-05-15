@@ -1,123 +1,43 @@
-  <style>
-	 * {
-		 font-family: sans-serif;
-	 }
-	 
-	.emcarousel {
-	  overflow: hidden;
-	  height: 460px;
-	  display: grid;
-	  grid-template-rows: auto 80px;
-	  grid-gap: 10px;
+<div class="__main-container"> 
+	#if($publishing.title_enabled == "true" && $publishing.title)
+		<h1 class="__title">$publishing.title</h3>
+	#end
+	#if($publishing.caption_enabled == "true" && $publishing.caption)
+		<div class="__caption">$publishing.caption</div>
+	#end
 	
-	
-	}
-	
-	.emcarousel-inner  {
-	  overflow-x: auto;
-	  overflow-y: hidden;
-	  display: flex;
-	  grid-row-start: 2;
-	}
-	
-	 .emcarousel-inner  .emcarousel-item {
-	    display: flex;
-	    margin-right: 10px;
-	 }
-	
-	
-	
-	.emcarousel-gallery {
-	  overflow-x: hidden;
-	  overflow-y: hidden;
-	  scroll-snap-type: x mandatory;
-	  scroll-behavior: smooth;
-	 /* display: flex;*/
-	 text-align: center;
-	
-	}
-	
-	.emcarousel-gallery img {
-	  scroll-snap-align: start;
-	  margin-bottom: 10px;
-	  
-	}
-	  
-  </style>
-  <script
-  src="https://code.jquery.com/jquery-3.7.1.min.js"
-  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-  crossorigin="anonymous"></script>
-	
-<div style="max-width: 1000px; margin: 0 auto;">
-<div style=" padding: 20px; height: 100%;  overflow-y: auto;">
-	
-		#set($title = "")
-		#if($publishing.title_enabled=="true" && $publishing.title)
-			#set($title = $publishing.title)
+	#ifnull($defaultfolder)
+		#ifnull($entity)
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
 		#end
-		#if($title)
-		<div style="text-align: center; margin:0.5em 0em 2em;">
-		<h3 style="margin:0;">$title</h3>
-		</div>
-		#end
-		
-		#set($caption = "")
-		#if($publishing.caption_enabled=="true" && $publishing.caption)
-			#set($caption = $publishing.caption)	
-		#end
-		#if($caption)
-			<div style="padding:2em;text-align: center; ">$!caption</div>
-		#end
-	
-	
-		#ifnull($defaultfolder)
-			#ifnull($entity)
-				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
-			#end
-			
-			#ifnotnull($entity)
-				#if($topmodule.getId()=="faceprofilegroup")
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
-				#else
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
-				#end
+		#ifnotnull($entity)
+			#if($topmodule.getId()=="faceprofilegroup")
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+			#else
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 			#end
 		#end
-		$context.putPageValue("defaultfolder", $defaultfolder)
-		#if(!$currentcategoryid && $defaultfolder)
-			#set( $currentcategoryid = $defaultfolder.getId())
-			$context.putPageValue("categoryid", $currentcategoryid)
-		#end
+	#end
+
+	$context.putPageValue("defaultfolder", $defaultfolder)
+
+	#if(!$currentcategoryid && $defaultfolder)
+		#set( $currentcategoryid = $defaultfolder.getId())
+		$context.putPageValue("categoryid", $currentcategoryid)
+	#end
 		
-		$context.putPageValue("entitydialogid", "entitypublishing")
+	$context.putPageValue("entitydialogid", "entitypublishing")
+
+	<div class="__carousel-container">
 		$pages.include("/$mediadbappid/services/publishingdestination/template1/results.html", $context)
-	
-	
-		#set($footer = "")
-		#if($publishing.footer_enabled=="true" && $publishing.footer)
-			#set($footer = $publishing.footer)
-		#end
-		#if($footer)
-			<div style="padding:0.5em; font-size: 0.9em;; margin:2em; text-align: center; border-top:2px solid #666;">$!footer</div>
-		#end
 	</div>
-</div>
-
-
-
-
-<script type="text/javascript">
-	$(document).ready(function () {
-		$(".emcarousel-link").on("click", function (e) {
-			e.preventDefault();
-			var image = $("#emcarousel-image");
-			var link = $(this);
-			image.attr("src", link.attr("href"));
-			image.attr("alt", link.attr("title"));
-			image.data("assetid", link.data("assetid"));
-		});
-});
-
 	
-</script>
+	#set($footer = "")
+	#if($publishing.footer_enabled=="true" && $publishing.footer)
+		#set($footer = $publishing.footer)
+	#end
+
+	#if($footer)
+		<div class="__footer">$!footer</div>
+	#end 
+</div>
