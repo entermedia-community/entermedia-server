@@ -9,8 +9,6 @@ import org.openedit.page.Page
 import org.openedit.WebPageRequest
 
 
-
-
 public void init(){
 	
 
