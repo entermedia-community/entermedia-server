@@ -5,7 +5,7 @@
 	"provider_url": "$!context.getSiteRoot()",
 	"title": "$!entity.getName()",
 	"width": 1000,
-	"height": 420,
+	"height": 620,
 	"cache_age": "60",
 	"html": #jesc($output)
 		
