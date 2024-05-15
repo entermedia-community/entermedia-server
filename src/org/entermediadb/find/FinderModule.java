@@ -99,6 +99,15 @@ public class FinderModule extends BaseMediaModule
 				
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
+				Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
+				if(types.size() > 1)
+				{
+					String maxhitsperpagemultiple = inReq.findValue("maxhitsperpagemultiple");
+					if( maxhitsperpagemultiple != null)
+					{
+						smaxsize = maxhitsperpagemultiple;
+					}
+				}
 				int targetsize = 10;
 				
 				if( smaxsize != null)
@@ -119,7 +128,6 @@ public class FinderModule extends BaseMediaModule
 				
 				if( moduleid == null || !moduleid.equals("asset"))
 				{
-					Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
 					if( types == null || types.contains("asset"))
 					{
 						SearchQuery copy = hits.getSearchQuery().copy();
@@ -942,7 +950,7 @@ public class FinderModule extends BaseMediaModule
 		}
 
 		search.setValue("searchtypes", searchmodules);
-		
+		search.addAggregation("entitysourcetype");
 		HitTracker hits = searcher.cachedSearch(inReq, search);
 
 		//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
