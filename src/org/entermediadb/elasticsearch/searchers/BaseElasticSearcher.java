@@ -2579,6 +2579,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
 								String text = values[i];
+								if( text.length() < 2)
+								{
+									continue;
+								}
 								text = text.substring(1, text.length() - 1);
 								String[] parts = text.split(",");
 								Map chunk = new HashMap();
@@ -2650,7 +2654,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value != null)
 					{
-						val = Double.valueOf((String) value);
+						try
+						{
+							val = Double.valueOf((String) value);
+						}
+						catch (NumberFormatException ef)
+						{
+							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value,ef);
+							continue;
+						}
+						
 					}
 					inContent.field(key, val);
 				}
@@ -2764,10 +2777,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value instanceof String)
 					{
-						GeoPoint point = new GeoPoint((String) value);
+						/*GeoPoint point = new GeoPoint((String) value);
 						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
-						inData.setValue(key, position); //For next time?
+						*/
+						inData.setValue(key, value); //For next time?
 					}
 					else if (value instanceof GeoPoint)
 					{
