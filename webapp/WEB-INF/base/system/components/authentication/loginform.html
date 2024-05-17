@@ -23,6 +23,16 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 			<div class="loginform-col mb-4">
 				<h1 class="page-title text-center my-4">[[Sign-in]] / [[Sign-up]]</h1>
+				
+			
+				#set( $error = $context.getPageValue("oe-exception") )
+				#if ( $error ) 
+					<div class="text-center text-error rounded border border-error px-2 py-1 my-6" role="alert">
+						$error
+					</div>
+					$context.removeSessionValue("oe-exception")
+				#end
+		
 
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 			
@@ -59,8 +69,8 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</button>
 					#end
 					</div>
-					<div class="collapse">
-					<form class="d-flex flex-column" id="loginForm" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+					<div class="collapse" id="loginForm">
+					<form class="d-flex flex-column mt-4"  name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 						<div class="form-group">
 							<label for="accountname">[[Email or Username]]</label>
 							<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" required />
@@ -96,18 +106,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</div>
 				#end
 			
-				<div style="text-align: center;">
-					##<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
-					##<br>	
-					<br>
-					#set( $error = $context.getPageValue("oe-exception") )
-					#if ( $error ) 
-						<div class="text-error rounded border border-error px-2 py-1 mb-3" role="alert">
-							$error
-						</div>
-						$context.removeSessionValue("oe-exception")
-					#end
-				</div>
+
 			</div>
 		</div>
 	#end
