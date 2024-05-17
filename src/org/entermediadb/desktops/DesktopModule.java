@@ -19,8 +19,8 @@ public class DesktopModule extends BaseMediaModule
 
 	public FolderManager getFolderManager(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		FolderManager manager = (FolderManager) getModuleManager().getBean(archive.getCatalogId(), "FolderManager");
-		inReq.putPageValue("FolderManager", manager);
+		FolderManager manager = (FolderManager) getModuleManager().getBean(archive.getCatalogId(), "folderManager");
+		inReq.putPageValue("folderManager", manager);
 		return manager;
 	}
 	public void startDownload(WebPageRequest inReq)
