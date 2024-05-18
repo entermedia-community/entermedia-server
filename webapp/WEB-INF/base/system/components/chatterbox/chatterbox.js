@@ -1,10 +1,12 @@
+const chatterbox_duplication_error = "This const should only be loaded once";
+
 var chatconnection;
 var chatopen = false;
 var loadingmore = false;
 
 function chatterbox() {	
 	
-	console.log('loaded');
+	//console.log('loaded');
 	
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");

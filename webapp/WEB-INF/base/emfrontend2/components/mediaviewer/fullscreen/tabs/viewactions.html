@@ -13,7 +13,7 @@
 		#end
 		
 		<div class="assetpanel-editor">
-		#foreach( $script in $targetpage.getScriptPathsOfContent() )
+		#foreach( $script in $targetpage.getScriptsAfterApp() )
 			<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
 		#end
 		#foreach( $style in $targetpage.getStylePathsOfContent() )
