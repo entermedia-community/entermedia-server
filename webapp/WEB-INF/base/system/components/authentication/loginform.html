@@ -21,8 +21,18 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		
 			#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
 
-			<div class="loginform-col">
-				<h1 class="page-title text-center mb-4">[[Sign-in]] / [[Sign-up]]</h1>
+			<div class="loginform-col mb-4">
+				<h1 class="page-title text-center my-4">[[Sign-in]] / [[Sign-up]]</h1>
+				
+			
+				#set( $error = $context.getPageValue("oe-exception") )
+				#if ( $error ) 
+					<div class="text-center text-error rounded border border-error px-2 py-1 my-6" role="alert">
+						$error
+					</div>
+					$context.removeSessionValue("oe-exception")
+				#end
+		
 
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 			
@@ -34,9 +44,9 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 							<input type="hidden" name="categoryid" value="$userCategory.id" />
 						#end
 						#if( $content.allowguestregistration == "true")
-							#set($placeholder = "Login or Register with your Email Address")
+							#set($placeholder = "[[Login or Register with your Email Address]]")
 						#else
-							#set($placeholder = "Login with your Email Address")
+							#set($placeholder = "[[Login with your Email Address]]")
 						#end
 						<label for="email">$placeholder</label>
 						<input class="form-control form-control-sm required grabfocus mb-3" type="text" name="email" placeholder="[[Enter you email address]]" required />
@@ -45,24 +55,27 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</form>
 				#end
 
-				<div class="d-flex flex-column align-items-center mt-4">
+				<div class="my-4">
+					<div class="d-flex flex-column" >
 					#if($content.bs == "4")
-					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-toggle="collapse" data-target="#loginForm" title="[[Login]]">
-						[[Log in with User Name and Password]]
+					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-toggle="collapse" 
+					data-target="#loginForm" title="[[Login]]">
+						[[Log in with Username and Password]]
 					</button>
 					#else
 					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-bs-toggle="collapse"
 						data-bs-target="#loginForm" title="[[Login]]">
-						[[Log in with User Name and Password]]
+						[[Log in with Username and Password]]
 					</button>
 					#end
-		
-					<form class="collapse" id="loginForm" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+					</div>
+					<div class="collapse" id="loginForm">
+					<form class="d-flex flex-column mt-4"  name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 						<div class="form-group">
 							<label for="accountname">[[Email or Username]]</label>
-							<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" />
+							<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" required />
 							<label for="password">[[Password]]</label>
-							<input class="form-control" id="password" name="password" type="password" />
+							<input class="form-control" id="password" name="password" type="password" required />
 						</div>
 						
 						#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
@@ -81,6 +94,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Login]]" />
 					</form>   
+					</div>
 				</div>
 
 				#if( !$providers.isEmpty() )
@@ -92,23 +106,12 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</div>
 				#end
 			
-				<div style="text-align: center;">
-					##<a href="$home$content.loginroot/emkeysignin.html" class="emdialog btn btn-primary" title="[[Enter App Key]]" style="text-align:center; margin-top:20px;">[[App Key]]</a> 
-					##<br>	
-					<br>
-					#set( $error = $context.getPageValue("oe-exception") )
-					#if ( $error ) 
-						<div class="text-error rounded border border-error px-2 py-1 mb-3" role="alert">
-							$error
-						</div>
-						$context.removeSessionValue("oe-exception")
-					#end
-				</div>
+
 			</div>
 		</div>
 	#end
 
-	<div class="text-center loginformquestions">
+	<div class="text-center loginformquestions my-4">
 		[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.
 	</div>
 </div>

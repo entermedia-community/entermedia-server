@@ -1,10 +1,14 @@
 <link type="text/css" rel="stylesheet" href="$!siteroot$applink/components/splide/splide.min.css">
 <style type="text/css">
+	:root {
+		--bg-color: #if($publishing.publishingfeedlayout=="light") #fff #else #000 #end;
+		--text-color: #if($publishing.publishingfeedlayout=="light") #000 #else #fff #end;
+	}
 	body {
 		font-family: Arial, sans-serif;
 		margin: 0;
 		padding: 0;
-		background-color: #000;
+		background-color: var(--bg-color);
 		height: 100vh;
 		width: 100vw;
 	}
@@ -15,14 +19,14 @@
 		height: 100%;
 	}
 	.__title {
-		color: #fff;
+		color: var(--text-color);
 		text-align: center;
 		margin: 16px 0;
 	}
 	.__caption {
 		max-width: 800px;
 		font-size: small;
-		color: #fff;
+		color: var(--text-color);
 		text-align: center;
 		padding-bottom: 16px;
 		margin: 0 auto;
@@ -43,7 +47,7 @@
 	}
 	.__footer {
 		font-size: small;
-		color: #fff;
+		color: var(--text-color);
 		text-align: center;
 		padding-top: 16px;
 		padding-bottom: 8px;
@@ -101,7 +105,7 @@
 		left: 1rem;
 	}
 	#__carousel .splide__arrow svg {
-		fill: #fff;
+		fill: var(--text-color);
 		width: 100%;
 		height: 100%;
 	}
@@ -118,7 +122,12 @@
 		color: #fff;
 		text-decoration: none;
 		background-color: rgba(255, 255, 255, 0.1);
+		opacity: 0;
+		transition: opacity 0.5s;
 		z-index: 100;
+	}
+	#__carousel .is-active .__download {
+		opacity: 1;
 	}
 </style>
 <div class="__main-container"> 
@@ -167,6 +176,7 @@
 			pagination: false,
 			lazyLoad: "nearby",
 			keyboard: 'global',
+			autoplay: $publishing.autoplay_enabled,
 		});
 		var __thumbnail = new Splide("#__carousel-thumbnails", {
 			fixedWidth: 95,
