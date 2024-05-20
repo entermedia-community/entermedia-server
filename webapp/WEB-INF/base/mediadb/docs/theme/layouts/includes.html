@@ -1,8 +1,10 @@
 
-#foreach( $script in $content.getScriptPaths() )
+<script type="text/javascript" src="$siteroot$applink/components/javascript/index.js" ></script>
+
+#foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
 	<script type="text/javascript" src="$home$script">  </script>
 #end
 
-#foreach( $style in $content.getStylePaths() )
+#foreach( $style in $pageManager.getStylePathsFor($content) )
 	<link rel="stylesheet" type="text/css" href="$home$style" />
 #end
