@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-#foreach( $script in $content.getScriptPaths() )
+#foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
 <script type="text/javascript" src="$home$script">
 	
 </script>
-#end #foreach( $style in $content.getStylePaths() )
+#end
+#foreach( $style in $pageManager.getStylePathsFor($content) )
 <link rel="stylesheet" type="text/css" href="$home$style" />
 #end
 </head>

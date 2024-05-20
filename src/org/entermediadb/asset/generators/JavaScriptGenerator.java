@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,13 +51,13 @@ public class JavaScriptGenerator extends TempFileGenerator
 
 			//Loop over
 			String appid = inPage.get("applicationid");
-			Page rootpage = getPageManager().getPage("/" + appid + "/_.html", false);  //Not a real page
+			Page rootpage = getPageManager().getPage("/" + appid + "/", false);  //Not a real page
 			
 			//Check on the last mod date. If file has changed then write out new file before sending
 			long mostrecentmod = 0;
 			long totalsize = 0;
 			
-			Collection scripts = rootpage.getScriptPaths();
+			List<String> scripts = getPageManager().getScriptPathsForApp(rootpage);
 			if(scripts == null)
 			{
 				return;
@@ -107,7 +108,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 			}
 			if(oldtotal != totalsize ||  mostrecentmod != inPage.getLastModified().getTime())
 			{
-				saveLocally(rootpage, inPage, inOut, mostrecentmod);
+				saveLocally(scripts, inPage, inOut, mostrecentmod);
 				cachedSizeCounts.put(inPage.getPath(),totalsize); //TODO check count change or size change
 			}
 			sendBack(inPage, mostrecentmod, inOut, res);
@@ -165,7 +166,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 	}
 
 
-	protected void saveLocally(Page rootpage, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
+	protected void saveLocally(List scriptpaths, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
 	{
 		synchronized( inPage )
 		{
@@ -173,7 +174,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			Writer out = new OutputStreamWriter( tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding() );
 			
-			for (Iterator iterator = rootpage.getScriptPaths().iterator(); iterator.hasNext();)
+			for (Iterator iterator = scriptpaths.iterator(); iterator.hasNext();)
 			{		
 				String script= (String) iterator.next();
 				if(!skip(script))
