@@ -9,14 +9,15 @@
 	
 	
 	
-<script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
-<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
-<script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
-<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
-<script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
-  
-
-
-<inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
-<property name="title">EnterMediaDB</property>
+	<script cancel="true" id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
+	<style cancel="true"  id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+	<script cancel="true"  id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
+	<script cancel="true"  id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
+	<script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
+	  
+	
+	
+	<inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
+	
+	<property name="title">EnterMediaDB</property>
 </page>
