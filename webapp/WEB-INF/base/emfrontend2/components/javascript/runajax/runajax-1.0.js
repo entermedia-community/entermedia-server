@@ -1,9 +1,9 @@
-runajaxonthis = function (inlink, e) {
-  $(".ajaxprogress").show();
+(function ( $ ) {
+ 
+$.fn.runajax = function (options) {
+ // $(".ajaxprogress").show();
   var inText = $(inlink).data("confirm");
   if (e && inText && !confirm(inText)) {
-    e.stopPropagation();
-    e.preventDefault();
     return false;
   }
   inlink.attr("disabled", "disabled");
@@ -164,7 +164,7 @@ runajaxonthis = function (inlink, e) {
 
         $(window).trigger("resize");
 
-        hideLoader();
+      //  hideLoader();
 
         if (
           typeof global_updateurl !== "undefined" &&
@@ -183,12 +183,14 @@ runajaxonthis = function (inlink, e) {
 
   inlink.css("cursor", "");
   $("body").css("cursor", "");
-};
-runajax = function (e) {
+}
+}( jQuery ));
+
+/*
+lQuery("a.ajax").livequery("click", function (e) {
   e.stopPropagation();
   e.preventDefault();
-  runajaxonthis($(this), e);
+  $(this).runajax();
   return false;
-};
-
-lQuery("a.ajax").livequery("click", runajax);
+});
+*/
