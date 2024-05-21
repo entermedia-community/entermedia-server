@@ -115,6 +115,14 @@ public class PublishManager implements CatalogEnabled {
 //				{
 //					asset = mediaArchive.getAsset(resultassetid );
 //				}
+				
+				if(asset == null) {
+					orderitem.setProperty("publishstatus", "error");
+					orderitem.setProperty("errordetails", "Publish asset is null " + assetid);
+					queuesearcher.saveData(orderitem);
+					log.error("Publish asset is null " + assetid);
+					continue;
+				}
 
 				String presetid = orderitem.get("presetid");
 				Data preset = getMediaArchive().getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
