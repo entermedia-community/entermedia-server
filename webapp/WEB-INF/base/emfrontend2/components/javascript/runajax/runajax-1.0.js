@@ -2,9 +2,40 @@
  
 $.fn.runajax = function (options) {
  // $(".ajaxprogress").show();
+ 
+ finddata = function (inlink, inname) {
+  var item = $(inlink);
+  var value = item.data(inname);
+  if (!value) {
+    value = inlink.attr(inname);
+  }
+  var parent = inlink;
+  //debugger;
+  while (!value) {
+    parent = parent.parent().closest(".domdatacontext");
+    if (parent.length == 0) {
+      break;
+    }
+    value = parent.data(inname);
+  }
+  return value;
+};
+
+findclosest = function (link, inid) {
+  var result = link.closest(inid);
+  if (result.length == 0) {
+    result = link.children(inid);
+    if (result.length == 0) {
+      result = $(inid);
+    }
+  }
+  return result.first();
+};
+
+ 
  var inlink = $(this);
   var inText = $(inlink).data("confirm");
-  if (e && inText && !confirm(inText)) {
+  if (inText && !confirm(inText)) {
     return false;
   }
   inlink.attr("disabled", "disabled");
@@ -72,8 +103,6 @@ $.fn.runajax = function (options) {
         fnc(inlink); //execute it
       }
     }
-
-    showLoader();
 
     jQuery
       .ajax({
@@ -187,11 +216,13 @@ $.fn.runajax = function (options) {
 }
 }( jQuery ));
 
-/*
-lQuery("a.ajax").livequery("click", function (e) {
-  e.stopPropagation();
-  e.preventDefault();
-  $(this).runajax();
-  return false;
+$(document).ready(function() 
+{
+	lQuery("a.ajax").livequery("click", function (e) {
+  	e.stopPropagation();
+  	e.preventDefault();
+  	$(this).runajax();
+  	return false;
+  	});
 });
-*/
+
