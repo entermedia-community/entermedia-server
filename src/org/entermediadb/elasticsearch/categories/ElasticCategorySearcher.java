@@ -439,12 +439,25 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category found = loadCategoryByPath(inPath);
 		if( found == null)
 		{
+			String cleanpath = null;
+			if (inPath.endsWith("/"))
+			{
+				cleanpath  = inPath.substring(0,inPath.length()-1);
+			}
+			else
+			{
+				cleanpath  = inPath;
+			}
+			if( cleanpath.isEmpty())
+			{
+				throw new OpenEditException("Blank path");
+			}
 			//log.info("Category not found: "+ inPath);
 			found = (Category)createNewData();
-			String name = PathUtilities.extractFileName(inPath);
+			String name = PathUtilities.extractFileName(cleanpath);
 			found.setName(name);
 			//create parents and itself
-			String parent = PathUtilities.extractDirectoryPath(inPath);
+			String parent = PathUtilities.extractDirectoryPath(cleanpath);
 			Category parentcategory = createCategoryPath(parent);
 			if( parentcategory != null)
 			{
