@@ -429,32 +429,35 @@ public class CategoryEditor {
 
 	public void copyTree(Category fromchild, Category totargetparent)
 	{
-		
-		Category newchild = totargetparent.getChildByName(fromchild.getName());
-		if( newchild == null )
-		{
-			newchild = (Category)getMediaArchive().getCategorySearcher().createNewData();
-			newchild.setName(fromchild.getName());
-			totargetparent.addChild(newchild);
-			getMediaArchive().getCategorySearcher().saveCategory(newchild);
-		}
-		//copy assets to new category
+		//Grab the contents of fromchild
 		Collection tosave = new ArrayList();
 		HitTracker assetlist = getMediaArchive().getAssetSearcher().fieldSearch("category-exact", fromchild.getId());
 		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
-			asset.addCategory(newchild);
+			asset.addCategory(totargetparent);
 			tosave.add(asset);
 		}
+		//copy assets to new category
 		getMediaArchive().getAssetSearcher().saveAllData(tosave,null);
+		
+
 		//Now keep going
 		for (Iterator iterator = fromchild.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category subchild = (Category) iterator.next();
+			Category newchild = totargetparent.getChildByName(subchild.getName()); //Aleady exists?
+			if( newchild == null )
+			{
+				newchild = (Category)getMediaArchive().getCategorySearcher().createNewData();
+				newchild.setName(subchild.getName());
+				totargetparent.addChild(newchild);
+				getMediaArchive().getCategorySearcher().saveCategory(newchild);
+			}
 			copyTree(subchild, newchild);
 		}
+
 	}
 	
 	
