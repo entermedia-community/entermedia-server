@@ -213,7 +213,7 @@ public class WorkspaceManager
 					}					
 					//Add corresponding fields to Asset
 					
-					
+/*					
 					AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
 					CategorySearcher cats = (CategorySearcher) getSearcherManager().getSearcher(catalogid, "category");
 
@@ -240,7 +240,7 @@ public class WorkspaceManager
 
 												
 					}
-				
+				*/
 					
 					
 				}else {

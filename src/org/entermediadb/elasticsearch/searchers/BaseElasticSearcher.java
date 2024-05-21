@@ -72,9 +72,6 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -112,6 +109,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.Replacer;
+import org.openedit.xml.XmlSearcher;
 
 import groovy.json.JsonOutput;
 
@@ -3363,7 +3361,18 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
-				ElasticHitTracker allhits = (ElasticHitTracker) getAllHits();
+				
+				HitTracker allhits = (ElasticHitTracker) getAllHits();
+				if( allhits.isEmpty())
+				{
+					//get them from XML as a backup
+					XmlSearcher fieldXmlSearcher = (XmlSearcher)getModuleManager().getBean(getCatalogId(), "xmlSearcher");
+					fieldXmlSearcher.setCatalogId(getCatalogId());
+					fieldXmlSearcher.setSearchType(getSearchType());
+					fieldXmlSearcher.setPropertyDetailsArchive(getPropertyDetailsArchive());
+					allhits = fieldXmlSearcher.getAllHits();
+
+				}
 				allhits.enableBulkOperations();
 				ArrayList tosave = new ArrayList();
 				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
@@ -3383,9 +3392,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 				}
 				updateIndex(tosave, null);
-				ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
-				clearScrollRequest.addScrollId(allhits.getLastScrollId());
-				getClient().clearScroll(clearScrollRequest).actionGet();
+				if( allhits instanceof ElasticHitTracker)
+				{
+					//Save memory
+					ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+					clearScrollRequest.addScrollId(((ElasticHitTracker)allhits).getLastScrollId());
+					getClient().clearScroll(clearScrollRequest).actionGet();
+				}
 				//System.gc();
 
 			}
