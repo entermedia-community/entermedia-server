@@ -120,27 +120,9 @@ public class BaseMediaModule extends BaseModule
 				site = null;
 			}
 		}
-		if( site == null && inReq.getRequest() != null)
+		if( site == null)
 		{
-			StringBuffer ctx = inReq.getRequest().getRequestURL();
-			site = ctx.substring( 0, ctx.indexOf("/", 8) ); //8 comes from https://
-			if( site.startsWith("http://") )
-			{
-				
-			}
-			else
-			{
-				String forcehttp = inReq.findValue("forcehttp");
-				if( !Boolean.parseBoolean(forcehttp))
-				{
-					site = site.replace("http://", "https://");
-				}
-				if( site != null)
-				{
-					//MediaArchive archive = getMediaArchive(inReq);
-					//archive.setCatalogSettingValue("siteroot", site);
-				}
-			}
+			site = "";
 		}
 		inReq.putPageValue("siteroot",site);
 		
