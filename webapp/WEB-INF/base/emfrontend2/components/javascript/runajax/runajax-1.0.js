@@ -2,6 +2,7 @@
  
 $.fn.runajax = function (options) {
  // $(".ajaxprogress").show();
+ var inlink = $(this);
   var inText = $(inlink).data("confirm");
   if (e && inText && !confirm(inText)) {
     return false;
