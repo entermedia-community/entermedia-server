@@ -1148,7 +1148,18 @@ public class FinderModule extends BaseMediaModule
 			publishingid = PathUtilities.extractPageName(publishingurl);
 			
 		}
+		
+		if(publishingid == null) {	
+			log.info("Publishing id not found " +publishingid);
+			return;
+		}
+		
 		Data publishing = (Data) archive.getData("distributiongallery", publishingid);
+		if(publishing == null) {
+			log.info("Publishing id " + publishingid+ " not found ");
+			return;
+		}
+		
 		inReq.putPageValue("publishing", publishing);
 		
 		Searcher assetsearcher = archive.getSearcher("asset");
