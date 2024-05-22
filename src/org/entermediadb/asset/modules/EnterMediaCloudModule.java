@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.StatusLine;
@@ -234,4 +236,54 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		User user = userManager.getUser("admin");
 		inReq.putPageValue("user", user);
 	}
+	
+	public void searchEnterMediaAssets(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String endpointurl = archive.getCatalogSettingValue("remote-assetsearch-mediadb-endpoint");
+		if( endpointurl == null)
+		{
+			return;
+		}
+		
+		String input = inReq.getRequestParameter("id");
+		
+		if(input == null) {
+			return;
+		}
+		//Search category and asset and combine results
+		String [] splits = input.split("-");
+		String searchstring = splits[splits.length -1];
+		
+
+		String remotekey = archive.getCatalogSettingValue("remote-assetsearch-endpoint-key");
+
+		JSONObject params = new JSONObject();
+		params.put("entermedia.key",remotekey);
+		
+		String url = endpointurl + "/services/module/asset/search.json";  //?
+		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
+		StatusLine filestatus = resp.getStatusLine();
+		if (filestatus.getStatusCode() != 200)
+		{
+			//Problem
+			log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + remotekey);
+			inReq.setCancelActions(true);
+			return;
+		}
+		JSONObject data = getConnection().parseJson(resp);
+		inReq.putPageValue("assets", data);
+		
+		
+		
+		String status = (String)data.get("status");
+		inReq.putPageValue("status",status);
+		if( "ok".equals(status))
+		{			
+			return;
+		}
+	}
+	
+	
 }
