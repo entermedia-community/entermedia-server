@@ -1,5 +1,5 @@
 {
-	"version": "1.0.3",
+	"version": "1.0",
 	"type": "rich",
 	"provider_name": "EnterMedia",
 	"provider_url": "$!context.getSiteRoot()",
