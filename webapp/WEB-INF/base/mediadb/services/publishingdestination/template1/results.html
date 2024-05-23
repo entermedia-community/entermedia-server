@@ -6,14 +6,18 @@
 	<div id="__carousel" class="splide" role="group">
 		<div class="splide__arrows">
 			<button class="splide__arrow splide__arrow--prev">
-				<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
-				</svg>
+				<div class="__arrow-btn">
+					<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+					</svg>
+				</div>
 			</button>
 			<button class="splide__arrow splide__arrow--next">
-				<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-				</svg>
+				<div class="__arrow-btn">
+					<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+					</svg>
+				</div>
 			</button>
 		</div>
 		<div class="splide__track">
@@ -31,20 +35,32 @@
 					
 					#set($imagelink = $mediaarchive.asLinkToPreview($hit, "", $imagesize, true))
 											
-					#set($hitcaption = "")
+					#set($hittitle = "")
 					#if ($hit.name)
-							#set($hitcaption = $context.getText($hit.name))
+							#set($hittitle = $context.getText($hit.name))
 					#elseif($hit.assettitle)
-							#set($hitcaption = $context.getText($hit.assettitle))
+							#set($hittitle = $context.getText($hit.assettitle))
 					#end
-					<li class="splide__slide" title="$!{hitcaption}">
-						<a class="__download" title="[[Download]]" href="$imagelink" download="$!{hitcaption}">
+					
+					#set($hitcaption = "")
+					#if ($hit.headline)
+							#set($hitcaption = $hit.headline)
+					#elseif($hit.longcaption)
+							#set($hitcaption = $hit.longcaption)
+					#end
+					<li class="splide__slide" title="$!{hittitle}">
+						<a class="__download" title="[[Download]]" href="$imagelink" download="$!{hittitle}">
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
 								<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
 								<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
 							</svg>
 						</a>
-						<img src="$imagelink" alt="$!{hitcaption}">
+						<div style="position: relative;height: 100%;width: 100%;">
+							#if($hitcaption != "")
+								<span class="__img_caption">$!{hitcaption}</span>
+							#end
+							<img src="$imagelink" alt="$!{hittitle}">
+						</div>
 					</li>
 				#end
 			</ul>
@@ -63,16 +79,16 @@
 						$context.putPageValue("alwaysmime", $alwaysmime)
 					#end
 											
-					#set($hitcaption = "")
+					#set($hittitle = "")
 					#if ($hit.name)
-							#set($hitcaption = $context.getText($hit.name))
+							#set($hittitle = $context.getText($hit.name))
 					#elseif($hit.assettitle)
-							#set($hitcaption = $context.getText($hit.assettitle))
+							#set($hittitle = $context.getText($hit.assettitle))
 					#end
 
 					#set($imagelink = $mediaarchive.asLinkToPreview($hit, "", $imagesize, true))
-					<li class="splide__slide" title="$!{hitcaption}">
-						<img src="$imagelink" alt="$!{hitcaption}">
+					<li class="splide__slide" title="$!{hittitle}">
+						<img src="$imagelink" alt="$!{hittitle}">
 					</li>
 				#end
 			</ul>
