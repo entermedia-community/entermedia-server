@@ -188,6 +188,35 @@ public class EntityModule extends BaseMediaModule
 		
 	}
 	
+	public void removeFromEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		
+		String assetid = inPageRequest.getRequestParameter("assetid");
+		if(assetid != null) {
+			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), moduleid, entityid, assetid))
+			{
+				inPageRequest.putPageValue("assets", "1");
+			}
+		}
+		else 
+		{
+			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+			Integer removed = entityManager.removeAssetsToEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
+			inPageRequest.putPageValue("assets", removed);
+		}
+		inPageRequest.putPageValue("moduleid", moduleid);
+		inPageRequest.putPageValue("entityid", entityid);
+		
+		inPageRequest.putPageValue("assetclearselection", true);
+	}
+	
 	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
 	{
 		String catalogid = inPageRequest.findValue("catalogid");

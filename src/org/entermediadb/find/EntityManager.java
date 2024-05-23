@@ -339,6 +339,44 @@ public class EntityManager implements CatalogEnabled
 		return true;
 
 	}
+	public Integer removeAssetsToEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		if(entity == null) {
+			return 0;
+		}
+		Category category = loadDefaultFolder(module, entity, inUser, true);
+		
+		List tosave = new ArrayList();
+		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null) {
+			
+			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+				Data hit = (Data) iterator.next();
+				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
+				asset.removeCategory(category);
+				tosave.add(asset);
+			}
+			getMediaArchive().saveAssets(tosave);
+		}
+		return tosave.size();
+	}
+	
+	public Boolean removeAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		Category category = loadDefaultFolder(module, entity, inUser, true);
+
+		Asset asset = (Asset)getMediaArchive().getAsset(assetid);
+		if(category != null)
+		{
+			asset.removeCategory(category);
+		}
+		getMediaArchive().saveAsset(asset);
+		return true;
+
+	}
 	
 	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) {
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
