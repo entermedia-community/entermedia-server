@@ -6,10 +6,12 @@
 	#foreach( $profile in $collection )
 		#set( $row = false )
 		#set( $name = "")
+		
 		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
 	    #if( $row )
 	    
-			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+			#set( $person = $mediaarchive.getData("entityperson", $row.entityperson) )
+			
 			#ifnotnull($person)
 		    	#set($name = $context.getText( $person) )
 		    	#set($name= "$name ($!row.get('samplecount'))")
