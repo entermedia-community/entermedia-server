@@ -238,20 +238,5 @@
 		__main.sync(__thumbnail);
 		__main.mount();
 		__thumbnail.mount();
-
-		var downloadBtns = document.querySelectorAll(".__download");
-		downloadBtns.forEach(function (btn) {
-			btn.addEventListener("click", function (e) {
-				e.preventDefault();
-				var link = e.target.getAttribute("href");
-				var title = e.target.getAttribute("title");
-				var a = document.createElement("a");
-				a.href = link;
-				a.download = title;
-				document.body.appendChild(a);
-				a.click();
-				document.body.removeChild(a);
-			});
-		});
 	});
 </script>
