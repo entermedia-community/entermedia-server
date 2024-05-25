@@ -1,6 +1,6 @@
 package org.entermediadb.asset.modules;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +9,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -209,7 +210,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			return false;
 		}
 		String url = base + "/services/authentication/validateuser.json";
-		
+		 
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)
@@ -256,13 +257,26 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		String [] splits = input.split("-");
 		String searchstring = splits[splits.length -1];
 		
+		JSONArray termsarray = new JSONArray();
+		JSONObject terms = new JSONObject();
+		terms.put("field", "description");
+		terms.put("value", searchstring);
+		terms.put("operation", "matches");
+		
+		termsarray.add(terms);
+		
+		JSONObject search = new JSONObject();
+		search.put("terms", termsarray);
+		
 
 		String remotekey = archive.getCatalogSettingValue("remote-assetsearch-endpoint-key");
 
 		JSONObject params = new JSONObject();
 		params.put("entermedia.key",remotekey);
+		params.put("query", search);
 		
 		String url = endpointurl + "/services/module/asset/search.json";  //?
+		log.info("Searching Remote: " + url + " Params: " + params.toString());
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)
@@ -273,7 +287,8 @@ public class EnterMediaCloudModule extends BaseMediaModule
 			return;
 		}
 		JSONObject data = getConnection().parseJson(resp);
-		inReq.putPageValue("assets", data);
+		Collection jsonarray = (Collection)data.get("results");
+		inReq.putPageValue("assets", jsonarray);
 		
 		
 		

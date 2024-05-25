@@ -25,6 +25,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.net.HttpSharedConnection;
+import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
@@ -544,7 +545,7 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		//Scan via REST and get faces
 		//1. Take image and scan it for faces https://github.com/exadel-inc/CompreFace/blob/master/docs/Rest-API-description.md#recognize-faces-from-a-given-image
-		
+				
 		Map tosendparams = new HashMap();
 		Integer limit = 20;
 		Integer assetwidth = inAsset.getInt("width"); 
@@ -579,6 +580,13 @@ public class FaceProfileManager implements CatalogEnabled
 		{
 			//No faces found error
 			getSharedConnection().release(resp);
+			return Collections.EMPTY_LIST;
+		}
+		if (resp.getStatusLine().getStatusCode() == 500)
+		{
+			//remote server error, may be a broken image
+			getSharedConnection().release(resp);
+			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
 			return Collections.EMPTY_LIST;
 		}
 

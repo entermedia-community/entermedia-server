@@ -143,7 +143,7 @@ public class JsonUtil
 	public HitTracker searchByJson(Searcher inSearcher, WebPageRequest inReq)
 	{
 		SearchQuery squery = parseJson(inSearcher, inReq);
-		
+			
 		HitTracker hits = inSearcher.cachedSearch(inReq, squery);
 		
 		Map request = inReq.getJsonRequest();
@@ -241,6 +241,7 @@ public class JsonUtil
 		inReq.setRequestParameter("operation", opsarray);
 
 		SearchQuery squery = inSearcher.addStandardSearchTerms(inReq);
+		inReq.putPageValue("searchquery", squery.toString());
 		return squery;
 	}
 

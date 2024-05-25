@@ -78,7 +78,9 @@ public class JsonDataModule extends BaseJsonModule
 		}
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("searcher", searcher);
-
+		
+		String search = (String)inReq.getPageValue("searchquery");
+		log.info(search);
 	}
 	
 
