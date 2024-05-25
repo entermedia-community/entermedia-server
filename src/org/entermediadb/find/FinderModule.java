@@ -100,7 +100,7 @@ public class FinderModule extends BaseMediaModule
 				String smaxsize = inReq.findValue("maxhitsperpage");
 				
 				Collection types = (Collection)hits.getSearchQuery().getValues("searchtypes");
-				if(types.size() > 1)
+				if(types != null && types.size() > 1)
 				{
 					String maxhitsperpagemultiple = inReq.findValue("maxhitsperpagemultiple");
 					if( maxhitsperpagemultiple != null)
