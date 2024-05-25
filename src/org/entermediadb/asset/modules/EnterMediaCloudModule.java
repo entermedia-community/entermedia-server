@@ -276,6 +276,7 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		params.put("query", search);
 		
 		String url = endpointurl + "/services/module/asset/search.json";  //?
+		log.info("Searching Remote: " + url + " Params: " + params.toString());
 		CloseableHttpResponse resp = getConnection().sharedPostWithJson(url, params);
 		StatusLine filestatus = resp.getStatusLine();
 		if (filestatus.getStatusCode() != 200)
