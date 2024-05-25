@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
@@ -33,6 +34,7 @@ import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.Replacer;
 
 public class FinderModule extends BaseMediaModule
 {
@@ -751,6 +753,10 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection<Data> topmenu = archive.query("appsection").named("topmenuhits").all().sort("ordering").search(inReq);
 		List topmenufinal = new ArrayList();
+		
+		Map vals = new HashedMap();
+		vals.put("apphome", (String)inReq.getPageValue("apphome"));
+		
 		if(topmenu != null && !topmenu.isEmpty())
 		{
 			UserProfile userprofile = inReq.getUserProfile();
@@ -760,14 +766,30 @@ public class FinderModule extends BaseMediaModule
 				for (Iterator iterator = topmenu.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
-					if(usermodules.contains(data.getValue("toplevelentity"))) {
-						//search submenu
-						Collection<Data> topsubmenudata = archive.query("appsubsection").named("topsubmenuhits").exact("parentsection", data.getId()).sort("ordering").search(inReq);
-						if (topsubmenudata.size()>0) {
-							data.setValue("submenu", topsubmenudata);
-							
-						}
+					if(data.getValue("custompath") != null) {
+						String custompath = (String)data.getValue("custompath");
+						
+						Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
+
+						replacer.setSearcherManager(archive.getSearcherManager());
+						replacer.setCatalogId(archive.getCatalogId());
+						replacer.setAlwaysReplace(true);
+						String custompathfinal = replacer.replace(custompath, vals);
+						data.setProperty("custompathfinal", custompathfinal);
 						topmenufinal.add(data);
+						
+					}
+					else 
+					{
+						if(usermodules.contains(data.getValue("toplevelentity"))) {
+							//search submenu
+							Collection<Data> topsubmenudata = archive.query("appsubsection").named("topsubmenuhits").exact("parentsection", data.getId()).sort("ordering").search(inReq);
+							if (topsubmenudata.size()>0) {
+								data.setValue("submenu", topsubmenudata);
+								
+							}
+							topmenufinal.add(data);
+						}
 					}
 				}
 			}
