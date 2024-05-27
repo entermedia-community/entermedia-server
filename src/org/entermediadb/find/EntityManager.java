@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.DefaultRowSorter;
+import java.util.Set;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -355,6 +355,18 @@ public class EntityManager implements CatalogEnabled
 				Data hit = (Data) iterator.next();
 				Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(hit);
 				asset.removeCategory(category);
+				
+				//Make sure its totally removed from any child categories
+				Set tokeep = new HashSet();
+				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();) {
+					Category exact = (Category) iterator2.next();
+					if( !category.hasCatalog(exact.getId()))
+					{
+						tokeep.add(exact);
+					}
+				};
+				asset.setCategories(tokeep);
+				
 				tosave.add(asset);
 			}
 			getMediaArchive().saveAssets(tosave);
