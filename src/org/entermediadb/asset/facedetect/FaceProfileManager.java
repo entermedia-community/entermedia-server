@@ -130,6 +130,10 @@ public class FaceProfileManager implements CatalogEnabled
 				long imageh = inAsset.getLong("height");
 				long imagesize = imagew * imageh;
 				
+				if(imagesize < 90000) {
+					return false;
+				}
+				
 				Boolean useoriginal = true;
 				if (filesize > 6000000)
 				{
