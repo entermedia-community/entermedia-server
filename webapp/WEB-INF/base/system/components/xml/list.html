@@ -23,9 +23,10 @@
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##optional things to filter the list
 #set ($foreignkeyid = $detail.get("foreignkeyid") )
-
 #set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
-
+#ifnull( $foreignkeyvalue )
+	#set ($foreignkeyvalue =  $detail.get("foreignkeyvalue") )
+#end
 #set ($squery = $detail.query )
 
 #if ($foreignkeyid && $foreignkeyvalue)
