@@ -2529,11 +2529,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					continue;
 				}
 				Object value  = null;
-				String mask = detail.get("rendermask");
-				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
-				{
-					value = getReplacer().replace(mask, inData);
-				}
+//				String mask = detail.get("rendermask");
+//				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
+//				{
+//					value = getReplacer().replace(mask, inData);
+//				}
 				if( value == null)
 				{
 					value = inData.getValue(key);

@@ -80,12 +80,7 @@ $types.enableBulkOperations()
 	#end
 	#foreach( $type in $types )
 		#set( $key = $type.id)
-		#if($detail.render)
-   			#set($label = $searcherManager.getValue($catalogid, $detail.render, $type.properties))
-		#else
-   		#set($label = $type.getName($context.getLanguage()))
-		#end
-		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
+		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#text($type)</option>
 	#end
    </select>
  
