@@ -660,41 +660,60 @@ public class FinderModule extends BaseMediaModule
 	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-
-		Data module = (Data)inReq.getPageValue("firstmodule");
-		if(module == null) {
+		
+		Data firstmenu = (Data)inReq.getPageValue("firstmenu");
+		if(firstmenu == null)
+		{
 			loadTopMenu(inReq);
-			module = (Data)inReq.getPageValue("firstmodule");
+			firstmenu = (Data)inReq.getPageValue("firstmenu");
 		}
+		Data module = (Data)inReq.getPageValue("firstmodule");
 		if (module != null) 
 		{
 			inReq.putPageValue("module", module);
-			Searcher searcher = archive.getSearcher(module.getId());
 			HitTracker hits = null;
-			if (searcher != null)
+			
+			String custompathfinal = firstmenu.get("custompathfinal");
+			if( custompathfinal == null)
 			{
-				hits = searcher.fieldSearch(inReq);
-
-				if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
+				Searcher searcher = archive.getSearcher(module.getId());
+				
+				if (searcher != null)
 				{
-					String defaultsort = (String) module.getValue("defaultsort");
-					if (defaultsort != null) {
-						inReq.putPageValue("sortby", defaultsort);
+					
+	//				if(firstmenu.getValue("toplevelentityid") != null) {
+	//					String moduleid = firstmenu.get("toplevelentity");
+	//					inReq.setRequestParameter("field", moduleid);
+	//					inReq.setRequestParameter(moduleid+".value", firstmenu.get("toplevelentityid"));
+	//					inReq.setRequestParameter("operation", "exact");
+	//				}
+					
+					hits = searcher.fieldSearch(inReq);
+	
+					if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
+					{
+						String defaultsort = (String) module.getValue("defaultsort");
+						if (defaultsort != null) {
+							inReq.putPageValue("sortby", defaultsort);
+						}
+						
+						hits = searcher.getAllHits(inReq);
+					}
+					//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
+					if (hits != null)
+					{
+						String name = inReq.findValue("hitsname");
+						inReq.putPageValue(name, hits);
+						inReq.putSessionValue(hits.getSessionId(), hits);
 					}
 					
-					hits = searcher.getAllHits(inReq);
 				}
-				//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
-				if (hits != null)
-				{
-					String name = inReq.findValue("hitsname");
-					inReq.putPageValue(name, hits);
-					inReq.putSessionValue(hits.getSessionId(), hits);
-				}
-			}
-			inReq.putPageValue("defaultmodule", module.getId());
-			inReq.putPageValue("moduleid", module.getId());
-			inReq.putPageValue("searcher", searcher);
+				inReq.putPageValue("defaultmodule", module.getId());
+				inReq.putPageValue("moduleid", module.getId());
+				inReq.putPageValue("searcher", searcher);
+			}			
+			
+			
 			return hits;
 		}
 		
@@ -776,6 +795,19 @@ public class FinderModule extends BaseMediaModule
 						replacer.setAlwaysReplace(true);
 						String custompathfinal = replacer.replace(custompath, vals);
 						data.setProperty("custompathfinal", custompathfinal);
+						
+						
+						String[] parts = custompathfinal.split("[?]");
+						if (parts.length > 1)
+						{
+							Map arguments = PathUtilities.extractArguments(parts[1]);
+							for (Iterator iterator2 = arguments.keySet().iterator(); iterator2.hasNext();)
+							{
+								String param = (String)iterator2.next();
+								inReq.setRequestParameter(param, (String[])arguments.get(param));
+							}
+						}
+
 						topmenufinal.add(data);
 						
 					}
@@ -797,6 +829,7 @@ public class FinderModule extends BaseMediaModule
 			String entityid = (String)first.getValue("toplevelentity");
 			Data firstmodule = archive.getCachedData("module", entityid);
 			
+			inReq.putPageValue("firstmenu", first);
 			inReq.putPageValue("firstmodule", firstmodule);
 		}
 		inReq.putPageValue("topmenu", topmenufinal);
