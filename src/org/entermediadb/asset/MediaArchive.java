@@ -2467,7 +2467,7 @@ public class MediaArchive implements CatalogEnabled
 		
 		return asLinkToPreview(inAsset, null, inGeneratedName);
 	}	
-	
+
 	
 	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
 		
@@ -2498,7 +2498,7 @@ public class MediaArchive implements CatalogEnabled
 		if(inCollectionId != null) {
 			downloadroot = "/services/module/librarycollection/downloads/createpreset";
 		} else {
-			downloadroot = "/services/module/asset/downloads/createpreset";
+			downloadroot = "/services/module/asset/downloads/generated";
 
 		}
 		
