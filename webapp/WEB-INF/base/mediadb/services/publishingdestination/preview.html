@@ -7,22 +7,28 @@
 		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
-		--container-width: #if($publishing.containerwidth) ${publishing.containerwidth}px #else 1000px #end;
-		--container-height: #if($publishing.containerheight) ${publishing.containerheight}px #else 824px #end;
+		#if($publishing.containerdimension_enabled=="true")
+			--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
+			--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
+		#else
+			--container-width: 100%;
+			--container-height: 100%;
+		#end
 	}
 	body {
 		font-family: Arial, sans-serif;
 		margin: 0;
 		padding: 0;
+		width: 100vw;
+		height: 100vh;
 	}
 	.__main-container {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		height: 100%;
 		background-color: var(--bg-color);
-		height: var(--container-height);
 		width: var(--container-width);
+		height: var(--container-height);
 		overflow: hidden;
 	}
 	.__title {
