@@ -6,11 +6,11 @@
 	"title": "$!entity.getName()",
 	#set($width = $context.getRequestParameter("maxwidth"))
 	#ifnull($width)
-		#set($width = 1000)
+		#set($width = $publishing.containerwidth)
 	#end
 	#set($height = $context.getRequestParameter("maxheight"))
 	#ifnull($height)
-		#set($height = 680)
+		#set($height = $publishing.containerheight)
 	#end
 	"width": $width,
 	"height": $height,
