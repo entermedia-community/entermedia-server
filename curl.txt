@@ -6,6 +6,8 @@ curl -H "Content-Type: application/json" -XPOST https://emediafinder.com/enterme
 }'| python -mjson.tool
 
 
+dam_program_sched_request
+
 
 
 curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
@@ -63,7 +65,7 @@ curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
   }
  }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/site_catalog/collectiveinvoice/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XGET 'http://localhost:9200/finder_catalog/dam_program_sched_request/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 

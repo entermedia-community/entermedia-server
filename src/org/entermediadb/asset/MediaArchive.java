@@ -2480,12 +2480,7 @@ public class MediaArchive implements CatalogEnabled
 		String finalroot = null;
 		if (cdnprefix == null)
 		{
-			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-			cdnprefix = rutil.getSiteRoot();
-			if (cdnprefix.contains("localhost"))
-			{
-				cdnprefix = "";
-			}
+			cdnprefix = "";
 			//			//TODO: Look up the home variable?
 			//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
 			//			Data prefix = (Data)searcher.searchById("cdn_prefix");
@@ -2607,12 +2602,7 @@ public class MediaArchive implements CatalogEnabled
 
 		if (cdnprefix == null)
 		{
-			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-			cdnprefix = rutil.getSiteRoot();
-			if (cdnprefix == null || cdnprefix.contains("localhost"))
-			{
-				cdnprefix = "";
-			}
+			cdnprefix = "";
 		}
 		String downloadroot = "/services/module/asset/downloads/";
 		String	finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName;
@@ -2632,12 +2622,7 @@ public class MediaArchive implements CatalogEnabled
 		String finalroot = null;
 		if (cdnprefix == null)
 		{
-			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-			cdnprefix = rutil.getSiteRoot();
-			if (cdnprefix == null || cdnprefix.contains("localhost"))
-			{
-				cdnprefix = "";
-			}
+			cdnprefix = "";
 			//			//TODO: Look up the home variable?
 			//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
 			//			Data prefix = (Data)searcher.searchById("cdn_prefix");

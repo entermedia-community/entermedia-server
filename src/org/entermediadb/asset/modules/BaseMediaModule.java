@@ -97,22 +97,10 @@ public class BaseMediaModule extends BaseModule
 			MediaArchive archive = getMediaArchive(inReq);
 			if( archive != null)
 			{
-				site = (String)archive.getCacheManager().get("siteroot", "siteroot");
+				site = archive.getCatalogSettingValue("siteroot");
 				if( site == null)
 				{
-					site = archive.getCatalogSettingValue("siteroot");
-					if( site == null)
-					{
-						site = inReq.getContentProperty("siteRoot");
-					}
-					if( site == null)
-					{
-						site = ""; //Cache this to speed up loads
-					}
-					if( site != null)
-					{
-						archive.getCacheManager().put("siteroot", "siteroot",site);
-					}
+					site = ""; //Cache this to speed up loads
 				}
 			}
 			if( site != null && site.isEmpty() )
