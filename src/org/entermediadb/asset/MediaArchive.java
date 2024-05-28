@@ -2505,11 +2505,15 @@ public class MediaArchive implements CatalogEnabled
 		
 		
 		String sourcepath = inAsset.getSourcePath();
-		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
-		if(inCollectionId != null) {
-		finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
+		
+		String name = asExportFileName(inAsset, inPreset);
+		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + name;
+		if(inCollectionId != null) 
+		{
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
 		}
-		else {
+		else
+		{
 			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename;
 
 		}
