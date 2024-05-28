@@ -43,10 +43,12 @@
 					#end
 					
 					#set($hitcaption = "")
+					#if( $publishing.image_caption_enabled  == true)
 					#if ($hit.headline)
 							#set($hitcaption = $hit.headline)
 					#elseif($hit.longcaption)
 							#set($hitcaption = $hit.longcaption)
+					#end
 					#end
 					<li class="splide__slide" title="$!{hittitle}">
 						<a class="__download" title="[[Download]]" href="$imagelink" download="$!{hittitle}" target="_blank">
