@@ -7,8 +7,8 @@
 		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
-		--container-width: #if($publishing.containerwidth) $publishing.containerwidth #else 1000px #end;
-		--container-height: #if($publishing.containerheight) $publishing.containerheight #else 824px #end;
+		--container-width: #if($publishing.containerwidth) ${publishing.containerwidth}px #else 1000px #end;
+		--container-height: #if($publishing.containerheight) ${publishing.containerheight}px #else 824px #end;
 	}
 	body {
 		font-family: Arial, sans-serif;
@@ -23,6 +23,7 @@
 		background-color: var(--bg-color);
 		height: var(--container-height);
 		width: var(--container-width);
+		overflow: hidden;
 	}
 	.__title {
 		color: var(--text-color);
