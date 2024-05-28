@@ -2467,7 +2467,7 @@ public class MediaArchive implements CatalogEnabled
 		
 		return asLinkToPreview(inAsset, null, inGeneratedName);
 	}	
-	
+
 	
 	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
 		
@@ -2498,18 +2498,22 @@ public class MediaArchive implements CatalogEnabled
 		if(inCollectionId != null) {
 			downloadroot = "/services/module/librarycollection/downloads/createpreset";
 		} else {
-			downloadroot = "/services/module/asset/downloads/createpreset";
+			downloadroot = "/services/module/asset/downloads/generated";
 
 		}
 		
 		
 		
 		String sourcepath = inAsset.getSourcePath();
-		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
-		if(inCollectionId != null) {
-		finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
+		
+		String name = asExportFileName(inAsset, inPreset);
+		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + name;
+		if(inCollectionId != null) 
+		{
+			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot +"/" + inCollectionId +"/" + sourcepath + "/" + generatedfilename;
 		}
-		else {
+		else
+		{
 			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename;
 
 		}
