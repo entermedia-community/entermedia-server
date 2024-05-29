@@ -321,6 +321,8 @@ public class EntityManager implements CatalogEnabled
 			}
 			getMediaArchive().saveAssets(tosave);
 		}
+		//deSelect assets after copy
+		hits.getSelectedHitracker().deselectAll();
 		return tosave.size();
 	}
 	
@@ -337,7 +339,6 @@ public class EntityManager implements CatalogEnabled
 		}
 		getMediaArchive().saveAsset(asset);
 		return true;
-
 	}
 	public Integer removeAssetsToEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
 	{
