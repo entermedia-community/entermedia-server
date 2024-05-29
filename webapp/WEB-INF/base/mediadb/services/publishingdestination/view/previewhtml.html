@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title></title>
-  </head>
-  <body>
-    #ifnotnull($publishing)
-      $pages.include("$apphome/services/publishingdestination/preview.html", $context)
-    #end
-    #ifnull($publishing)
-      <h1>Preview not available</h1>
-    #end
-  </body>
-</html>
+#ifnotnull($publishing)
+  $pages.include("$apphome/services/publishingdestination/preview.html", $context)
+#end
+#ifnull($publishing)
+  <h1>Preview not available</h1>
+#end
