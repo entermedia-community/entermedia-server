@@ -8,11 +8,11 @@
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
 		#if($publishing.containerdimension_enabled=="true")
-			--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
-			--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
+		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
+		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
 		#else
-			--container-width: 100%;
-			--container-height: 100%;
+		--container-width: 100%;
+		--container-height: 100%;
 		#end
 	}
 	.__main-container {
@@ -226,7 +226,6 @@
 </div>
 <script type="text/javascript" src="$!siteroot$applink/components/splide/splide.min.js"></script>
 <script type="text/javascript">
-	document.addEventListener("DOMContentLoaded", function () {
 		var __main = new Splide("#__carousel", {
 			rewind: true,
 			pagination: false,
@@ -252,5 +251,4 @@
 		__main.sync(__thumbnail);
 		__main.mount();
 		__thumbnail.mount();
-	});
 </script>
