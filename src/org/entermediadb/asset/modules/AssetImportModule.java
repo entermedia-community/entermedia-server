@@ -12,6 +12,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.desktops.Desktop;
+import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
@@ -192,12 +193,17 @@ public class AssetImportModule  extends BaseMediaModule
 		Map params = inReq.getJsonRequest();
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		Data entity = archive.getCachedData( (String)params.get("moduleid"),(String)params.get("entityid"));
+		String moduleid = (String)params.get("moduleid");
+		Data module = archive.getCachedData("module", moduleid);
+		Data entity = archive.getCachedData( moduleid ,(String)params.get("entityid"));
 		
-		String categorypath = inReq.getRequestParameter("categorypath"); 
-		Category cat = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+		String categorypath = (String)params.get("categorypath");
+		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+		//EntityManager entityManager = getEntityManager(inReq);
+		//Category category = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
+
 		FolderManager manager = getFolderManager(inReq);
-		Map assetmap = manager.listAssetMap(archive, cat);
+		Map assetmap = manager.listAssetMap(archive, category);
 		
 		//List remoteassets = (List)params.get("files");
 		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
@@ -314,6 +320,13 @@ public class AssetImportModule  extends BaseMediaModule
 		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
 		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
 		
+	}
+	
+	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
+	{
+		String catalogid = inPageRequest.findValue("catalogid");
+		EntityManager entity = (EntityManager) getModuleManager().getBean(catalogid, "entityManager");
+		return entity;
 	}
 	
 	
