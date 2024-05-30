@@ -2,44 +2,28 @@ package org.entermediadb.find;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.swing.DefaultRowSorter;
-
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.projects.LibraryCollection;
-import org.entermediadb.projects.ProjectManager;
-import org.entermediadb.projects.ProjectModule;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.cache.CacheManager;
-import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
-import org.openedit.util.PathUtilities;
 
 public class FolderManager implements CatalogEnabled
 {
@@ -297,8 +281,8 @@ public class FolderManager implements CatalogEnabled
 		Map response = new HashMap();
 		//response.put("folder", inRootCategory.getName());
 		response.put("subpath", inCat.getCategoryPath());
-		response.put("subfolders", subfolders);
-		response.put("assets", tosend);
+		response.put("folders", subfolders);
+		response.put("files", tosend);
 		return response;
 		//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
 		//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
@@ -326,6 +310,48 @@ public class FolderManager implements CatalogEnabled
 //		}
 //
 //	}
+
+	public Map removeDuplicateAssetsFrom(Map assetmap, Map inParams) 
+	{
+	
+		Map response = new HashMap(assetmap);
+
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		
+		//Remove all duplicate assets
+		List remotecopy = (List)response.get("files");
+		Set alreadydownloaded = new HashSet();
+		for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
+			Map clientfile = (Map) iterator2.next();
+			String path = (String)clientfile.get("path");
+			long size = (Long)clientfile.get("size");
+			alreadydownloaded.add(path  + "|" +size);
+		}
+
+		List assetservercopy = (List)response.get("files");
+		
+		List mixedcopy = new ArrayList();
+		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
+			Map	serverfile = (Map) iterator.next();
+			String path = (String)serverfile.get("path");
+			long size = (Long)serverfile.get("size");
+			if( !alreadydownloaded.contains(path  + "|" +size) )
+			{
+				mixedcopy.add(serverfile);
+			}
+		}
+		
+		//Folders
+		response.put("files",mixedcopy);
+		return response;
+	}
 
 	/*
 	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)

@@ -45,6 +45,10 @@ public class DesktopManager
 		getConnectedClients().put(inDesktop.getUserId(),inDesktop);
 	}
 
+	public void removeDesktop(String inUserId)
+	{
+		getConnectedClients().remove(inUserId);
+	}
 
 	public void removeDesktop(Desktop inDesktop)
 	{

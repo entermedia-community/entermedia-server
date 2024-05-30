@@ -13,16 +13,15 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.find.FolderManager;
-import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.User;
 
 import model.assets.AssetTypeManager;
 import model.assets.LibraryManager;
@@ -180,7 +179,33 @@ public class AssetImportModule  extends BaseMediaModule
 		}
 		//desktop.checkoutCollection(inMediaArchive, collection);
 	}
-	public void downloadRemoteFolder(WebPageRequest inReq)
+	public void checkPullRemoteFolder(WebPageRequest inReq)
+	{
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		Map params = inReq.getJsonRequest();
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity = archive.getCachedData( (String)params.get("moduleid"),(String)params.get("entityid"));
+		
+		String categorypath = inReq.getRequestParameter("categorypath"); 
+		Category cat = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+		FolderManager manager = getFolderManager(inReq);
+		Map assetmap = manager.listAssetMap(archive, cat);
+		
+		//List remoteassets = (List)params.get("files");
+		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
+		
+		inReq.putPageValue("assetmap", new JSONObject(finallist));
+		
+	}
+	public void checkPushRemoteFolder(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String categorypath = inReq.getRequestParameter("categorypath"); 
@@ -190,7 +215,6 @@ public class AssetImportModule  extends BaseMediaModule
 		inReq.putPageValue("assetmap", new JSONObject(assets));
 		
 	}
-
 	public void listConnectedDesktop(WebPageRequest inReq)
 	{
 		FolderManager manager = getFolderManager(inReq);
