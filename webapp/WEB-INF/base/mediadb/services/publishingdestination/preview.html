@@ -1,26 +1,34 @@
 <link type="text/css" rel="stylesheet" href="$!siteroot$applink/components/splide/splide.min.css">
 #if($publishing.externalcss_enabled == "true" && $publishing.externalcss)
-	<link type="text/css" rel="stylesheet" href="$publishing.externalcss">
+<link type="text/css" rel="stylesheet" href="$publishing.externalcss">
 #end
 <style type="text/css">
 	:root {
 		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
+		#if($publishing.containerdimension_enabled=="true")
+		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
+		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
+		#else
+		--container-width: 100%;
+		--container-height: 100%;
+		#end
 	}
 	body {
-		font-family: Arial, sans-serif;
+		width: 100vw;
+		height: 100vh;
 		margin: 0;
 		padding: 0;
-		background-color: var(--bg-color);
-		height: 100vh;
-		width: 100vw;
 	}
 	.__main-container {
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		height: 100%;
+		background-color: var(--bg-color);
+		width: var(--container-width);
+		height: var(--container-height);
+		overflow: hidden;
 	}
 	.__title {
 		color: var(--text-color);
@@ -43,7 +51,7 @@
 		content: "";
 		display: block;
 		position: absolute;
-		width: 100vw;
+		width: var(--container-width);
 		left: 0;
 		height: 1px;
 		background-color: rgba(255, 255, 255, 0.1);
@@ -85,7 +93,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
-		filter: drop-shadow(4px 0 10px rgba(0, 0, 0, 0.5));
+		filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 	}
 	#__carousel-thumbnails .splide__slide img {
 		width: 100%; 
@@ -163,7 +171,7 @@
 	#__carousel .splide__arrow--prev .__arrow-btn {
 		transform: translateY(-30px);
 	}
-	#__carousel .__download {
+	#__carousel .__download-img {
 		position: absolute;
 		top: 16px;
 		left: 16px;
@@ -180,7 +188,7 @@
 		transition: opacity 0.5s;
 		z-index: 100;
 	}
-	#__carousel .splide__slide:hover .__download {
+	#__carousel .splide__slide:hover .__download-img {
 		opacity: 1;
 	}
 </style>
@@ -224,7 +232,6 @@
 </div>
 <script type="text/javascript" src="$!siteroot$applink/components/splide/splide.min.js"></script>
 <script type="text/javascript">
-	document.addEventListener("DOMContentLoaded", function () {
 		var __main = new Splide("#__carousel", {
 			rewind: true,
 			pagination: false,
@@ -250,5 +257,4 @@
 		__main.sync(__thumbnail);
 		__main.mount();
 		__thumbnail.mount();
-	});
 </script>
