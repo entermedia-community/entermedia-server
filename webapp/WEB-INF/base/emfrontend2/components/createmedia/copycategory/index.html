@@ -16,13 +16,12 @@
 	<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
 		action="$home$apphome/components/createmedia/copycategory/createnew.html">
 	    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
-	#if($auto == "true")
-	<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
-	
-	#end
+		#if($auto == "true")
+		<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
+		#end
 	    <a #if($auto == "true") style="display: none;" #end class="ajax btn" id="poptrigger" targetdivinner="auto-pop"  
-				  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" >
-				  	<i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
+		  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" >
+		  	<i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
 
 		
 	   <a class="emdialog btn btn-primary" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
@@ -46,10 +45,7 @@
 	<script type="text/javascript">
 	lQuery(".auto-remove").livequery("click", function() {
 		var catid = jQuery(this).data('categoryid');
-		
 		jQuery("#auto-" + catid).remove();
-		
-		
 	});
 
 	##TODO: Move this sompleace else or use jquery more

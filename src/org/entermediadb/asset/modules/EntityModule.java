@@ -132,13 +132,36 @@ public class EntityModule extends BaseMediaModule
 		
 	}
 	
-	public void addAssetstoNewEntity(WebPageRequest inPageRequest) throws Exception 
+	public void addtoNewEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 		String saveaction = inPageRequest.getRequestParameter("saveaction");
 		String copyingsearchtype = inPageRequest.getRequestParameter("copyingsearchtype");
 		if(saveaction != null && "assets".equals(copyingsearchtype)) 
 		{
 			addAssetsToEntity(inPageRequest);
+		}
+		else if(saveaction != null && "category".equals(copyingsearchtype)) 
+		{
+			addCategoryToEntity(inPageRequest);
+		}
+	}
+	
+	public void addCategoryToEntity(WebPageRequest inPageRequest) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String pickedentityid = inPageRequest.getRequestParameter("id");
+		
+		String copyingcategoryid = inPageRequest.getRequestParameter("copyingcategoryid");
+		if(copyingcategoryid != null) {
+			if(entityManager.addCategoryToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, copyingcategoryid))
+			{
+				inPageRequest.putPageValue("categories", "1");
+				//add assets
+				
+			}
 		}
 	}
 	

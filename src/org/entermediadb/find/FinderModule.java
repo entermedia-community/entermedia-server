@@ -1213,7 +1213,7 @@ public class FinderModule extends BaseMediaModule
 		if(publishing == null) {
 			log.info("Publishing id " + publishingid+ " not found ");
 			return;
-		}
+		}	
 		
 		inReq.putPageValue("publishing", publishing);
 		

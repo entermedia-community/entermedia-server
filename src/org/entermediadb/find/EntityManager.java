@@ -391,6 +391,30 @@ public class EntityManager implements CatalogEnabled
 
 	}
 	
+	public Boolean addCategoryToEntity(User inUser,String pickedmoduleid, String pickedentityid, String categoryid) 
+	{
+		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
+		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		
+		Category rootcategory = loadDefaultFolder(module, entity, inUser, true);
+		
+		Category copyingcategory =  getMediaArchive().getCategory(categoryid);
+		
+		if(copyingcategory != null)
+		{
+			String[] catids = new String [] {categoryid};
+			
+			getMediaArchive().getCategoryEditor().copyCategory(catids, rootcategory.getId());
+			//Searcher categorysearcher = getMediaArchive().getSearcher("category");
+			/*Category child = (Category) categorysearcher.createNewData();
+			child.setName(copyingcategory.getName());
+			rootcategory.addChild(child);
+			categorysearcher.saveData(child);*/
+		}
+		
+		return true;
+	}
+	
 	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) {
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
 		Data newchild = entitysearcher.createNewData();
@@ -400,7 +424,7 @@ public class EntityManager implements CatalogEnabled
 			name = source.getName();
 		}
 		newchild.setName(name);
-		newchild.setValue("entitysourcetype",pickedmoduleid);
+		newchild.setValue("entitysourcetype", pickedmoduleid);
 		
 		Category targetcategory = createDefaultFolder(newchild, inContext.getUser());
 		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
@@ -412,6 +436,8 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
 		return newchild;
 	}
+	
+	
 	
 	public Integer copyEntities(WebPageRequest inContext, String pickedmoduleid, HitTracker hits) 
 	{
