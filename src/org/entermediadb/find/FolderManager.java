@@ -260,10 +260,10 @@ public class FolderManager implements CatalogEnabled
 			{
 				primaryImageName = asset.getName();
 			}
-			String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
-			map.put("savepath", savepath);
+			//String savepath = inCat.getCategoryPath() + "/" + primaryImageName;
+			map.put("path", primaryImageName);
 
-			map.put("filesize", asset.get("filesize"));
+			map.put("size", asset.getLong("filesize"));
 			long time = asset.getDate("assetmodificationdate").getTime();
 			if (time > 0)
 			{
@@ -280,7 +280,7 @@ public class FolderManager implements CatalogEnabled
 		}
 		Map response = new HashMap();
 		//response.put("folder", inRootCategory.getName());
-		response.put("subpath", inCat.getCategoryPath());
+		response.put("categorypath", inCat.getCategoryPath());
 		response.put("folders", subfolders);
 		response.put("files", tosend);
 		return response;
@@ -326,7 +326,7 @@ public class FolderManager implements CatalogEnabled
 		*/
 		
 		//Remove all duplicate assets
-		List remotecopy = (List)response.get("files");
+		List remotecopy = (List)inParams.get("files");
 		Set alreadydownloaded = new HashSet();
 		for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
 			Map clientfile = (Map) iterator2.next();

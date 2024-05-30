@@ -1,5 +1,5 @@
 <page>
-
+	
 	<path-action name="AssetImportModule.checkPullRemoteFolder" alltypes="true"/>
 	<permission name="view">
 			<userprofile property="api-load-data" equals="true" />
