@@ -114,6 +114,8 @@ public class DesktopModule extends BaseMediaModule
 			{
 				inReq.removeSessionValue("desktop");
 				inReq.putPageValue("desktop", null);
+				FolderManager manager = getFolderManager(inReq);
+				manager.getDesktopManager().removeDesktop(inReq.getUserName());
 				return;
 			}
 			
