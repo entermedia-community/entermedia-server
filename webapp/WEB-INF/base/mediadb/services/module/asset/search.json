@@ -32,8 +32,14 @@
 		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
 		{
 			#jsonpartial($hit $searcher.getPropertyDetails())
-			,"mediarendertype":"$!mediaarchive.getMediaRenderType($hit)" 
+			,"mediarendertype":"$!mediaarchive.getMediaRenderType($hit)"
+			 
 			##set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+			
+			#set($origUrl = $mediaarchive.asLinkToOriginal($hit))
+			,"originalurl" : "$!origUrl"
+			
+			
 			#set($presets = $mediaarchive.asListOfPreviewLinks($hit) )
 			
 			,"downloads":[
@@ -42,8 +48,8 @@
 			"name":#jesc($preset.name),	
 			"id":#jesc($preset.id),	
 			#if( $preset.getId() == "0")
-				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
-				"url":"#urlencode($url)"
+				###set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+				##"url":"#urlencode($url)"
 			#else
 				#set( $url = $mediaarchive.asLinkToPreview($hit, $preset.get("generatedoutputfile") ) )
 				"url":"$url"
