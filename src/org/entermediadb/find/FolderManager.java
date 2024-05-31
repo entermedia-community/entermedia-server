@@ -325,16 +325,19 @@ public class FolderManager implements CatalogEnabled
 			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
 		*/
 		
+		response.put("filedownloadpath", inParams.get("filedownloadpath"));
+		
 		//Remove all duplicate assets
 		List remotecopy = (List)inParams.get("files");
 		Set alreadydownloaded = new HashSet();
-		for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
-			Map clientfile = (Map) iterator2.next();
-			String path = (String)clientfile.get("path");
-			long size = (Long)clientfile.get("size");
-			alreadydownloaded.add(path  + "|" +size);
+		if(remotecopy != null) { 
+			for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
+				Map clientfile = (Map) iterator2.next();
+				String path = (String)clientfile.get("path");
+				long size = (Long)clientfile.get("size");
+				alreadydownloaded.add(path  + "|" +size);
+			}
 		}
-
 		List assetservercopy = (List)response.get("files");
 		
 		List mixedcopy = new ArrayList();

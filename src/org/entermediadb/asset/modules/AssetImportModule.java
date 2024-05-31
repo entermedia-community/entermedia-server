@@ -188,16 +188,16 @@ public class AssetImportModule  extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String categorypath = inReq.getRequestParameter("categorypath");
-		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
-
-		HitTracker hits = archive.getAssetSearcher().query().named("serverassets").exact("category", category.getId()).search(inReq);
-
-		Map finallist = new HashMap();
-		finallist.put("serverassetcount", hits.size());
-		String count = inReq.getRequestParameter("desktopfilecount");
-		finallist.put("desktopfilecount",count);
-		inReq.putPageValue("summary", new JSONObject(finallist));
+//		String categorypath = inReq.getRequestParameter("categorypath");
+//		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+//
+//		HitTracker hits = archive.getAssetSearcher().query().named("serverassets").exact("category", category.getId()).search(inReq);
+//
+//		Map finallist = new HashMap();
+//		finallist.put("serverassetcount", hits.size());
+//		String count = inReq.getRequestParameter("desktopfilecount");
+//		finallist.put("desktopfilecount",count);
+//		inReq.putPageValue("summary", new JSONObject(finallist));
 	}
 	
 	public void checkPullRemoteFolder(WebPageRequest inReq)
