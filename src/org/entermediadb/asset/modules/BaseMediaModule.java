@@ -6,10 +6,12 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.modules.BaseModule;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.servlet.SiteData;
 import org.openedit.users.GroupSearcher;
@@ -91,29 +93,28 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("themeprefix", prefix);
 		
 		
-		String site = (String)inReq.getPageValue("siteroot");
+		String site = (String)inReq.getPageValue(PageRequestKeys.SITEROOT);
 		if( site == null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
 			if( archive != null)
 			{
 				site = archive.getCatalogSettingValue("siteroot");
-				if( site == null)
+				if( site != null && !site.isEmpty() )
 				{
-					site = ""; //Cache this to speed up loads
+					log.info("Found site root in database " + site + archive.getCatalogId());
 				}
 			}
-			if( site != null && site.isEmpty() )
+			if( site == null)
 			{
-				site = null;
+				site = "";
 			}
+			if( !site.isEmpty())
+			{
+				//throw new OpenEditException("Dont set this");
+			}
+			inReq.putProtectedPageValue(PageRequestKeys.SITEROOT, site);
 		}
-		if( site == null)
-		{
-			site = "";
-		}
-		inReq.putPageValue("siteroot",site);
-		
 		return applicationid;
 	}
 

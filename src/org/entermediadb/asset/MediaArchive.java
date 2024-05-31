@@ -134,6 +134,7 @@ public class MediaArchive implements CatalogEnabled
 		if( fieldCacheManager == null)
 		{
 			fieldCacheManager = (CacheManager)getModuleManager().getBean(getCatalogId(), "cacheManager",true);
+			//slog.info(getCatalogId() + "/fieldCacheManager" + fieldCacheManager.hashCode());
 		}
 		return fieldCacheManager;
 	}

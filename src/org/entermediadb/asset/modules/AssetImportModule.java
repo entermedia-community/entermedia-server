@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -21,6 +22,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 
@@ -180,12 +182,32 @@ public class AssetImportModule  extends BaseMediaModule
 		}
 		//desktop.checkoutCollection(inMediaArchive, collection);
 	}
+	
+	
+	public void checkPullSummary(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+//		String categorypath = inReq.getRequestParameter("categorypath");
+//		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+//
+//		HitTracker hits = archive.getAssetSearcher().query().named("serverassets").exact("category", category.getId()).search(inReq);
+//
+//		Map finallist = new HashMap();
+//		finallist.put("serverassetcount", hits.size());
+//		String count = inReq.getRequestParameter("desktopfilecount");
+//		finallist.put("desktopfilecount",count);
+//		inReq.putPageValue("summary", new JSONObject(finallist));
+	}
+	
 	public void checkPullRemoteFolder(WebPageRequest inReq)
 	{
 		/*
 		"entityid": "1234",
 		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",		
+		"rootpath": "/home/user/eMedia/",	
+		"desktopfilecount": "123",	
+			
 		"categorypath": "Activities/Paris",
         "files": [{path: filepath, size: 43232}], 
 			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
@@ -207,6 +229,8 @@ public class AssetImportModule  extends BaseMediaModule
 		
 		//List remoteassets = (List)params.get("files");
 		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
+		
+
 		
 		inReq.putPageValue("assetmap", new JSONObject(finallist));
 		
