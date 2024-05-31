@@ -6,6 +6,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -100,13 +101,16 @@ public class BaseMediaModule extends BaseModule
 				site = archive.getCatalogSettingValue("siteroot");
 				log.info("Found site root in database " + site);
 			}
+			if( site == null)
+			{
+				site = "";
+			}
+			if( !site.isEmpty())
+			{
+				throw new OpenEditException("Dont set this");
+			}
+			inReq.putPageValue("siteroot",site);
 		}
-		if( site == null)
-		{
-			site = "";
-		}
-		inReq.putPageValue("siteroot",site);
-		
 		return applicationid;
 	}
 
