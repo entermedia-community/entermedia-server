@@ -272,11 +272,14 @@ public class FolderManager implements CatalogEnabled
 			tosend.add(map);
 		}
 
-		Collection<String> subfolders = new ArrayList();
+		Collection<Map> subfolders = new ArrayList();
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category subcat = (Category) iterator.next();
-			subfolders.add(subcat.getName());
+			Map map = new HashMap();
+			map.put("id", subcat.getId());
+			map.put("path", subcat.getName());
+			subfolders.add(map);
 		}
 		Map response = new HashMap();
 		//response.put("folder", inRootCategory.getName());
