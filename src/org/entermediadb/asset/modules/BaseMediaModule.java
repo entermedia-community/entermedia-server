@@ -11,6 +11,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.modules.BaseModule;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.servlet.SiteData;
 import org.openedit.users.GroupSearcher;
@@ -92,7 +93,7 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("themeprefix", prefix);
 		
 		
-		String site = (String)inReq.getPageValue("siteroot");
+		String site = (String)inReq.getPageValue(PageRequestKeys.SITEROOT);
 		if( site == null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
@@ -109,7 +110,7 @@ public class BaseMediaModule extends BaseModule
 			{
 				throw new OpenEditException("Dont set this");
 			}
-			inReq.putPageValue("siteroot",site);
+			inReq.putProtectedPageValue(PageRequestKeys.SITEROOT, site);
 		}
 		return applicationid;
 	}
