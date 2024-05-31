@@ -2,6 +2,7 @@ package org.entermediadb.find;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -264,10 +265,13 @@ public class FolderManager implements CatalogEnabled
 			map.put("path", primaryImageName);
 
 			map.put("size", asset.getLong("filesize"));
-			long time = asset.getDate("assetmodificationdate").getTime();
-			if (time > 0)
-			{
-				map.put("assetmodificationdate", String.valueOf(time));
+			Date assetmodificationdate = asset.getDate("assetmodificationdate");
+			if(assetmodificationdate != null) {
+			long time = assetmodificationdate.getTime();
+				if (time > 0)
+				{
+					map.put("assetmodificationdate", String.valueOf(time));
+				}
 			}
 			tosend.add(map);
 		}
