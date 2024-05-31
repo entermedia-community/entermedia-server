@@ -100,7 +100,10 @@ public class BaseMediaModule extends BaseModule
 			if( archive != null)
 			{
 				site = archive.getCatalogSettingValue("siteroot");
-				log.info("Found site root in database " + site + archive.getCatalogId());
+				if( site != null && !site.isEmpty() )
+				{
+					log.info("Found site root in database " + site + archive.getCatalogId());
+				}
 			}
 			if( site == null)
 			{
@@ -108,7 +111,7 @@ public class BaseMediaModule extends BaseModule
 			}
 			if( !site.isEmpty())
 			{
-				throw new OpenEditException("Dont set this");
+				//throw new OpenEditException("Dont set this");
 			}
 			inReq.putProtectedPageValue(PageRequestKeys.SITEROOT, site);
 		}
