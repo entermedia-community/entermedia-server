@@ -100,7 +100,7 @@ public class BaseMediaModule extends BaseModule
 			if( archive != null)
 			{
 				site = archive.getCatalogSettingValue("siteroot");
-				log.info("Found site root in database " + site);
+				log.info("Found site root in database " + site + archive.getCatalogId());
 			}
 			if( site == null)
 			{
