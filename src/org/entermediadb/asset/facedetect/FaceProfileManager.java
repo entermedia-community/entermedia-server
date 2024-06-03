@@ -171,6 +171,12 @@ public class FaceProfileManager implements CatalogEnabled
 					return false;
 				}
 				List<Map> json = findFaces(inAsset, input);
+				if(json == null) {
+					inAsset.setValue("facescancomplete","true");
+					inAsset.setValue("facescanerror","true");
+					getMediaArchive().saveAsset(inAsset);
+					return false;
+				}
 				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
 	
 				faceprofiles.addAll(moreprofiles);
@@ -586,12 +592,17 @@ public class FaceProfileManager implements CatalogEnabled
 			getSharedConnection().release(resp);
 			return Collections.EMPTY_LIST;
 		}
-		if (resp.getStatusLine().getStatusCode() == 500)
+		else if (resp.getStatusLine().getStatusCode() == 413)
+		{
+			getSharedConnection().release(resp);
+			return null;
+		}
+		else if (resp.getStatusLine().getStatusCode() == 500)
 		{
 			//remote server error, may be a broken image
 			getSharedConnection().release(resp);
 			log.info("Face detection Remote Error on asset: " + inAsset.getId() + " " + resp.getStatusLine().toString() ) ;
-			return Collections.EMPTY_LIST;
+			return null;
 		}
 
 		JSONObject json = getSharedConnection().parseJson(resp);
