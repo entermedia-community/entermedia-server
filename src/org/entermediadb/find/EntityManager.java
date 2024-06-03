@@ -419,6 +419,13 @@ public class EntityManager implements CatalogEnabled
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
 		Data newchild = entitysearcher.createNewData();
 		
+		
+		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			Object val = source.getValue(key);
+			newchild.setValue(key, val);
+		}
+		
 		String name = inContext.getRequestParameter("nameoverwrite");
 		if(name == null) {
 			name = source.getName();
@@ -434,6 +441,8 @@ public class EntityManager implements CatalogEnabled
 		}
 		
 		getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
+		newchild.setValue("uploadsourcepath", targetcategory.getCategoryPath());
+		
 		return newchild;
 	}
 	
@@ -466,6 +475,7 @@ public class EntityManager implements CatalogEnabled
 		if(source != null) {
 			Data newchild = copyEntity(inContext, pickedmoduleid, source);
 			if(newchild != null) {
+				getMediaArchive().saveData(pickedmoduleid, newchild);
 				return 1;
 			}
 		}
