@@ -1472,6 +1472,7 @@ public class OrderModule extends BaseMediaModule
 			hitsperpage = Integer.parseInt(inReq.getRequestParameter("hitsperpage"));
 		}
 		Collection openitems = new ArrayList();
+		Collection openorders = new ArrayList();
 		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
 		{
 			OrderDownload download = (OrderDownload) iterator.next();
@@ -1481,6 +1482,7 @@ public class OrderModule extends BaseMediaModule
 				String status = orderitem.get("publishstatus");
 				if("readytopublish".equals(status) || "publishingexternal".equals(status))
 				{
+					orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
 					openitems.add(orderitem);
 				}
 				if( openitems.size() >= hitsperpage)
