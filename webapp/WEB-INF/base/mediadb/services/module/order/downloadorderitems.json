@@ -5,14 +5,15 @@
       {
         "status":"ok",
         "count":"$downloaditems.size()"
-      },
-      "order":#json($order $searcher.getPropertyDetails())
+      }
 , "orderitems": [
 #foreach( $item in $downloaditems )
 #if( ${foreach.count} != 1), #end 
 {
 
 #jsonfields($item $itemsearcher.getPropertyDetails()) 
+,
+"orderustatus": "$item.orderstatus"
 ,
 #set($preset = false)#set($preset = $psearcher.searchById($item.presetid) )
 "preset": {
