@@ -1421,4 +1421,28 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		return ordersearcher.cachedSearch(inReq,query);
 	}
 
+	@Override
+	public void cancelOrder(Order inOrder) 
+	{
+		Lock lock = getMediaArchive().getLockManager().lock("orders" + inOrder.getId(), "BaseOrderManager");
+		try
+		{
+			inOrder.setOrderStatus("complete");
+			inOrder.setValue( "orderstatusdetails","Order canceled" );
+			getMediaArchive().saveData("order", inOrder);
+			
+			Collection items = inOrder.findOrderAssets();
+			for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+				Data item = (Data) iterator.next();
+				item.setValue("publishstatus","cancelled");
+			}
+			getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
+		}
+		finally
+		{
+			getMediaArchive().getLockManager().release(lock);
+		}
+
+	}
+
 }
