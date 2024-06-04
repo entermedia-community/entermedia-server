@@ -25,6 +25,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -443,6 +444,13 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
 		newchild.setValue("uploadsourcepath", targetcategory.getCategoryPath());
 		
+		//Make a path
+		String parenttype = source.get("entitysourcetype");
+		PropertyDetail detail = entitysearcher.getDetail(parenttype);
+		if( detail != null)
+		{
+			newchild.setValue(parenttype, source.getId() );
+		}
 		return newchild;
 	}
 	
@@ -451,8 +459,6 @@ public class EntityManager implements CatalogEnabled
 	public Integer copyEntities(WebPageRequest inContext, String pickedmoduleid, HitTracker hits) 
 	{
 		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
-		
-
 		List tosave = new ArrayList();
 		if(hits != null && hits.getSelectedHitracker() != null) {
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
@@ -461,7 +467,6 @@ public class EntityManager implements CatalogEnabled
 				if(newchild != null) {
 					tosave.add(newchild);
 				}
-				
 			}
 			getMediaArchive().saveData(pickedmoduleid, tosave);
 		}
