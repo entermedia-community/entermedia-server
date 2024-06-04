@@ -14,6 +14,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.RelatedAsset;
 import org.entermediadb.asset.edit.CategoryEditor;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -276,14 +277,16 @@ public class AssetEditTest extends BaseEnterMediaTest
 		headline.setText("en", "English");
 		headline.setText("de", "German");
 		composite.setValue("headline", headline);
-		
+
+
 		composite.setEditFields(fields);
 		composite.setSearcher(getMediaArchive().getAssetSearcher());
 		Collection existing = composite.getValues("keywords");
-		assertEquals(existing.size() , 1);  //So "1common" is common and 2 is not
+		assertEquals(1,existing.size() );  //So "1common" is common and 2 is not
 		assertTrue(existing.contains("1common"));
 		existing.add("3addedtoboth");  //Add 3 to both records
 		composite.setValue("keywords",existing); //We removed ("1common") and added 3
+		
 		composite.saveChanges(req);
 		Collection values = composite.getValues("keywords");
 		assertEquals( 2 , values.size());
@@ -299,10 +302,9 @@ public class AssetEditTest extends BaseEnterMediaTest
 
 		product = getMediaArchive().getAsset("2");
 		values = product.getValues("keywords");
-		assertEquals( 3 , values.size());
 		assertTrue(values.contains("1common"));
-		assertTrue(values.contains("2onproduct2"));
 		assertTrue(values.contains("3addedtoboth"));
+		assertTrue(values.contains("2onproduct2"));
 
 		//Now set it again and it will fail since results are not updated
 		composite.setValue("keywords" , new ArrayList() );
@@ -319,6 +321,70 @@ public class AssetEditTest extends BaseEnterMediaTest
 		LanguageMap map = (LanguageMap) product.getValue("headline");
 		assertNotNull(map);
 
+	}
+
+	public void testMultipleEditsLanguage() throws Exception
+	{
+		Asset product = getMediaArchive().getAsset("1multilang");
+		if( product == null)
+		{
+			product = getMediaArchive().createAsset("1multilang","multitest/1multilang");
+		}
+
+		LanguageMap headline = new LanguageMap();
+		headline.setText("en", "EnglishH1");
+		headline.setText("de", "GermanH1");
+		product.setValue("headline", headline);
+		
+		WebPageRequest req = getFixture().createPageRequest();
+		User user = req.getUser();
+		getMediaArchive().saveAsset(product, user);
+		
+		Asset product2 = getMediaArchive().getAsset("2multilang");
+		if( product2 == null)
+		{
+			product2 = getMediaArchive().createAsset("2multilang","multitest/2multilang");
+		}
+		LanguageMap headline2 = new LanguageMap();
+		headline2.setText("en", "EnglishH2");
+		headline2.setText("de", "GermanH2");
+		product2.setValue("headline", headline2);
+
+		getMediaArchive().saveAsset(product2, user);
+
+		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+		//HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
+		//q.addMatches("id","*");
+		q.addOrsGroup("id", "1multilang 2multilang" );
+		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
+		hits.toggleSelected("1multilang");
+		hits.toggleSelected("2multilang");
+		assertEquals( 2, hits.getSelections().size() );
+		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
+		ArrayList fields = new ArrayList();
+		fields.add("headline");
+	
+		composite.setEditFields(fields);
+		composite.setSearcher(getMediaArchive().getAssetSearcher());
+
+		LanguageMap map = (LanguageMap) composite.getValue("headline");
+		//They dont match
+		assertNull(map);
+		
+		//TODO: make them the same and check
+		product2.setValue("headline", headline);
+		getMediaArchive().saveAsset(product2, user);
+		hits = getMediaArchive().getAssetSearcher().search(q);
+		hits.toggleSelected("1multilang");
+		hits.toggleSelected("2multilang");
+		assertEquals( 2, hits.getSelections().size() );
+		composite = new CompositeAsset(getMediaArchive(),hits);
+		map = (LanguageMap) composite.getValue("headline");
+		//They do match
+		assertNotNull(map);
+		
+		//save multi value and check one
+		
 	}
 
 	

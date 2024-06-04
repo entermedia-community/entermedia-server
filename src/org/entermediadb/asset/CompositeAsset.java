@@ -880,6 +880,8 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 		Map safevalues = new HashMap();
 
+	
+
 		for (Iterator iterator = getEditFields().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
@@ -897,10 +899,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 			if (newval != null)  //Clean up the newval
 			{
 				String snewval = newval.toString();
-				if( snewval == null)
-				{
-					throw new OpenEditException("toString() should not return null "+ newval.getClass());
-				}
 				if( snewval.isEmpty())
 				{
 					newval = null;
@@ -913,9 +911,9 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 //			}
 			
 			//See if there is a newval
-			if (newval != oldval)
+			if (newval != null && !newval.equals(oldval))
 			{
-				if (newval == null && "NOTEQUAL".equals(oldval))
+				if (newval == null && oldval == ValuesMap.NULLVALUE)
 				{
 					//There was not agreement so we should not delete em
 					continue;
@@ -947,9 +945,14 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 			}
 		}
 
+		
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
+			
+			getEventManager().fireDataEditEvent(inReq, getSearcher(), data);
+
+			
 			Asset inloopasset = null;
 
 			//			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
