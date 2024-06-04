@@ -1503,6 +1503,15 @@ public class OrderModule extends BaseMediaModule
 		
 	}
 	
-	
+
+	public Order cancelOrder(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		order.setOrderStatus("complete");
+		order.setValue( "orderstatusdetails","Order canceled by user " + inReq.getUserName() );
+		getMediaArchive(inReq).saveData("order", order);
+		//getOrderManager(inReq).saveOrder(null, null, order);
+		return order;
+	}
 	
 }
