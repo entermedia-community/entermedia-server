@@ -5,7 +5,8 @@
       {
         "status":"ok",
         "count":"$downloaditems.size()"
-      }
+      },
+      "order":#json($order $searcher.getPropertyDetails())
 , "orderitems": [
 #foreach( $item in $downloaditems )
 #if( ${foreach.count} != 1), #end 
