@@ -13,7 +13,7 @@
 
 #jsonfields($item $itemsearcher.getPropertyDetails()) 
 ,
-"orderustatus": "$item.orderstatus"
+"orderstatus": "$item.orderstatus"
 ,
 #set($preset = false)#set($preset = $psearcher.searchById($item.presetid) )
 "preset": {
