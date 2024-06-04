@@ -1005,7 +1005,11 @@ public class FinderModule extends BaseMediaModule
 		}
 
 		search.setValue("searchtypes", searchmodules);
+		
 		search.addAggregation("entitysourcetype");
+		
+		search.addSortBy("name");
+		
 		HitTracker hits = searcher.cachedSearch(inReq, search);
 
 		//log.info("Report ran " +  hits.getSearchType() + ": " + hits.getSearchQuery().toQuery() + " size:" + hits.size() );
