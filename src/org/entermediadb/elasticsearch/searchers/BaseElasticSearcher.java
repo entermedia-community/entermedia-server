@@ -2479,7 +2479,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					detail = inDetails.getLegacyDetail(propid);
 				}
-
+				if( detail.isDeleted() )
+				{
+					continue;
+				}
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
