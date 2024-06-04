@@ -102,11 +102,11 @@ public class FaceProfileManager implements CatalogEnabled
 		try
 		{
 			String type = getMediaArchive().getMediaRenderType(inAsset);
-				
+			
+			inAsset.setValue("facescancomplete","true");
+			
 			if (!"image".equalsIgnoreCase(type) && !"video".equalsIgnoreCase(type)  )
 			{
-				inAsset.setValue("facescancomplete","true");
-				getMediaArchive().saveAsset(inAsset);
 				return false;
 			}
 			
@@ -163,8 +163,8 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				if( !input.exists() )
 				{
-					//probblem
-					log.info("No thumbnail " + inAsset.getSourcePath());
+					//problem
+					log.info("Faceprofile scan, no thumbnail found for assetid: " +inAsset.getId() + " "+ inAsset.getSourcePath());
 					//inAsset.setValue("facescancomplete","true");
 					//getMediaArchive().saveAsset(inAsset);
 					//may not be ready?
@@ -172,9 +172,6 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				List<Map> json = findFaces(inAsset, input);
 				if(json == null) {
-					inAsset.setValue("facescancomplete","true");
-					inAsset.setValue("facescanerror","true");
-					getMediaArchive().saveAsset(inAsset);
 					return false;
 				}
 				List<Map> moreprofiles = makeProfilesForEachFace(inAsset,0L,input,json);
@@ -187,7 +184,6 @@ public class FaceProfileManager implements CatalogEnabled
 				Double videolength = (Double)inAsset.getDouble("length");
 				if( videolength == null)
 				{
-					inAsset.setValue("facescancomplete","true");
 					return true;
 				}
 				Timeline timeline = new Timeline();
@@ -220,7 +216,7 @@ public class FaceProfileManager implements CatalogEnabled
 					if( !item.exists() )
 					{
 						//probblem
-						log.debug("No thumbnail " + inAsset.getSourcePath());
+						log.info("Faceprofile scan, no thumbnail found for assetid: " +inAsset.getId() + " "+ inAsset.getSourcePath());
 					}
 					else
 					{
@@ -246,17 +242,12 @@ public class FaceProfileManager implements CatalogEnabled
 			}
 			boolean detected = false;
 			inAsset.setValue("faceprofiles",faceprofiles);  //box  and subjects
-			inAsset.setValue("facescancomplete","true");
-			//inAsset.setValue("facematchcomplete","false");
 			if(faceprofiles != null &&  !faceprofiles.isEmpty())
 			{
 				inAsset.setValue("facehasprofile",true);
-				
 				detected = true;
 			}
-			//For each box make sure we have a profile
-			getMediaArchive().saveAsset(inAsset);
-			log.info("Faces profiles saved: "+faceprofiles.size());
+			log.info("Faceprofile found: "+faceprofiles.size());
 			
 			return detected;
 		}
