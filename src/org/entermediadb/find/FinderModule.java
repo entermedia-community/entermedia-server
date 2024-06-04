@@ -1,6 +1,5 @@
 package org.entermediadb.find;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1162,7 +1161,7 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Data entity = null;
+		MultiValued entity = null;
 
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		if(publishingid == null)
@@ -1171,7 +1170,7 @@ public class FinderModule extends BaseMediaModule
 			if( entityid != null)
 			{
 				Searcher searcher = archive.getSearcher("distributiongallery");
-				Data publishing = (Data) searcher.searchByField("entityid", entityid);
+				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
 				if(publishing != null)
 				{
 					publishingid = publishing.getId();
@@ -1188,6 +1187,29 @@ public class FinderModule extends BaseMediaModule
 			if(publishing != null)
 			{
 				inReq.putPageValue("publishing", publishing);
+				
+				if(Boolean.parseBoolean(publishing.get("enabled")))
+				{
+					entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
+					if( !entity.getBoolean("enablepublishing"))
+					{
+						entity.setValue("enablepublishing",true);
+						archive.saveData(publishing.get("moduleid"),entity);
+					}
+				}
+				else
+				{
+					if(!Boolean.parseBoolean(publishing.get("enabled")))
+					{
+						entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
+						if( entity.getBoolean("enablepublishing"))
+						{
+							entity.setValue("enablepublishing",false);
+							archive.saveData(publishing.get("moduleid"),entity);
+						}
+					}
+
+				}
 			}
 		}
 	}
