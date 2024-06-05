@@ -1483,6 +1483,10 @@ public class OrderModule extends BaseMediaModule
 		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
 		{
 			OrderDownload download = (OrderDownload) iterator.next();
+			if(download.getOrder().get("orderstatus").equals("complete") ) 
+			{
+				continue; //skip complete orders
+			}
 			for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
 			{
 				Data orderitem = (Data) iterator2.next();
