@@ -4,6 +4,17 @@
 	"provider_name": "EnterMedia",
 	"provider_url": "$!context.getSiteRoot()",
 	"title": "$!entity.getName()",
+
+	#set($thumb = $entity.get("primarymedia"))
+	#ifnull( $thumb )
+		#set($thumb = $entity.get("primaryimage"))
+	#end
+	#ifnotnull( $thumb )
+		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image200x200.jpg"))
+		"thumbnail_url":"$!siteroot$link",
+		"thumbnail_width":200,
+		"thumbnail_height":200,
+	#end
 	#set($width = $context.getRequestParameter("maxwidth"))
 	#ifnull($width)
 		#set($width = $publishing.containerwidth)
