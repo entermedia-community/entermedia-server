@@ -18,14 +18,14 @@
 	#set($width = $context.getRequestParameter("maxwidth"))
 	#ifnull($width)
 		#set($width = $publishing.containerwidth)
-		#if($width == 0)
+		#if(!$width)
 			#set($width = 1000) 
 		#end
 	#end
 	#set($height = $context.getRequestParameter("maxheight"))
 	#ifnull($height)
 		#set($height = $publishing.containerheight)
-		#if($height == 0)
+		#if(!$height)
 			#set($height = 824) 
 		#end
 	#end
