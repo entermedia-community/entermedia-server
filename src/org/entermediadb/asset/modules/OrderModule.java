@@ -1384,6 +1384,13 @@ public class OrderModule extends BaseMediaModule
 		String downloadstartdate = inReq.getRequestParameter("downloadstartdate");
 		
 		Data data = archive.getData("orderitem", orderitemid);
+		Order order = (Order)archive.getData("order", data.get("orderid"));
+		inReq.putPageValue("order",order);
+		
+		if(order.getOrderStatus().equals("complete"))
+		{
+			return;
+		}
 		if( data != null)
 		{
 			data.setValue("publishstatus",publishstatus); //publishexternal or complete
@@ -1405,8 +1412,8 @@ public class OrderModule extends BaseMediaModule
 		{
 			throw new OpenEditException("No such item");
 		}
-		Data order = archive.getData("order", data.get("orderid"));
-		inReq.putPageValue("order",order);
+		
+		
 		
 		//String[] organizations = inReq.getRequestParameters("organization.value");
 	}
