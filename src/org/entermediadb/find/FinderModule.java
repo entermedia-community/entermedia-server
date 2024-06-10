@@ -415,6 +415,7 @@ public class FinderModule extends BaseMediaModule
 			aquery.setSortBy(inReq.findValue("sortby"));
 			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
 			orquery.setAndTogether(false);
+			assets.setHitsPerPage(500);
 			for (Iterator iterator = assets.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
@@ -424,6 +425,7 @@ public class FinderModule extends BaseMediaModule
 				}
 			}
 			aquery.addChildQuery(orquery);
+			aquery.setHitsName("favoriteassetsmatch");
 			
 			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
 			

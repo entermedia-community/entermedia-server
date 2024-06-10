@@ -1465,7 +1465,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							booleans.mustNot(pair);
 						}
-						if (operator.equals("OR"))
+						else if (operator.equals("OR"))
 						{
 							booleans.should(pair);
 						}
