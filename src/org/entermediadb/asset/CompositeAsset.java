@@ -896,7 +896,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 				continue;  //Empty on both sides
 			}
 			
-			if (newval != null)  //Clean up the newval
+			if (newval != null && newval instanceof String)  //Clean up the newval
 			{
 				String snewval = newval.toString();
 				if( snewval.isEmpty())
