@@ -3145,7 +3145,7 @@ label.error {
 .chatterbox-body-inside {
   overflow-y: auto;
   height: 100%;
-
+  max-height: calc(100vh - 490px);
   padding: 10px 20px;
 }
 
