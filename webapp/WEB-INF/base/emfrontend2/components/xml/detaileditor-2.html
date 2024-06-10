@@ -69,6 +69,8 @@
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
+	
+	
 	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)

@@ -36,8 +36,14 @@ public class BaseExporter
 		String searchtype = inReq.findValue("searchtype");
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		String isfriendly = inReq.getRequestParameter("friendly");	
+
 		boolean friendly = true;
 	
+		if( isfriendly != null)
+		{
+			friendly = Boolean.parseBoolean(isfriendly);
+		}
 		PropertyDetails	details = searcher.getPropertyDetails();
 	
 		int count = 0;
@@ -71,7 +77,7 @@ public class BaseExporter
 				} 
 				else
 				{
-					headers[count] = detail.getName();
+					headers[count] = detail.getId();
 				}
 				count++;
 			}		
