@@ -393,7 +393,7 @@ public class FaceProfileManager implements CatalogEnabled
 				
 				if( inAsset.containsValue("removedfaceprofilegroups",groupid))
 				{
-					log.info("Skipping group");
+					log.info("Skipping group for asset: " + inAsset.getId());
 					continue;
 				}
 				//TODO: Count how many times I have used this group.
