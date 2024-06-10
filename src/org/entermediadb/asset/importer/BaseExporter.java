@@ -77,7 +77,7 @@ public class BaseExporter
 				} 
 				else
 				{
-					headers[count] = detail.getName();
+					headers[count] = detail.getId();
 				}
 				count++;
 			}		
