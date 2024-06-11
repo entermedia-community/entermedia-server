@@ -437,12 +437,21 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 		String[] array = (String[])fields.toArray(new String[fields.size()]);
 		getMediaArchive().getAssetSearcher().updateData(req, array, composite);
-		
 		composite.saveChanges(req);
 		Asset productreloaded = getMediaArchive().getAsset("1multilang");
 		LanguageMap langnew = (LanguageMap)productreloaded.getValue("headline");
 		assertEquals("EnglishH3",langnew.getText("en"));
 		assertEquals("GermanH1",langnew.getText("de"));
+		
+		req.setRequestParameter("headline.en.value", "EnglishH4");
+		getMediaArchive().getAssetSearcher().updateData(req, array, composite);
+		composite.saveChanges(req);
+
+		productreloaded = getMediaArchive().getAsset("1multilang");
+		langnew = (LanguageMap)productreloaded.getValue("headline");
+		assertEquals("EnglishH4",langnew.getText("en"));
+		assertEquals("GermanH1",langnew.getText("de"));
+
 		
 
 	}
