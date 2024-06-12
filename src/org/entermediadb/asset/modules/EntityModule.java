@@ -138,7 +138,7 @@ public class EntityModule extends BaseMediaModule
 	{
 		String saveaction = inPageRequest.getRequestParameter("saveaction");
 		String copyingsearchtype = inPageRequest.getRequestParameter("copyingsearchtype");
-		if(saveaction != null && "assets".equals(copyingsearchtype)) 
+		if(saveaction != null && "asset".equals(copyingsearchtype)) 
 		{
 			addAssetsToEntity(inPageRequest);
 		}
