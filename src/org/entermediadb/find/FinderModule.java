@@ -415,7 +415,7 @@ public class FinderModule extends BaseMediaModule
 			aquery.setSortBy(inReq.findValue("sortby"));
 			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
 			orquery.setAndTogether(false);
-			assets.setHitsPerPage(500);
+			assets.setHitsPerPage(999);
 			for (Iterator iterator = assets.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
