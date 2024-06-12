@@ -380,7 +380,7 @@ public class AssetEditModule extends BaseMediaModule
 			return;
 		}
 		Asset asset;
-
+		String deleteoriginal = inContext.getRequestParameter("deleteoriginal");
 		HitTracker tracker = editor.getMediaArchive().getAssetSearcher().loadHits(inContext);
 
 		for (int i = 0; i < assetIds.length; i++)
@@ -399,14 +399,14 @@ public class AssetEditModule extends BaseMediaModule
 						}
 						editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 						editor.deleteAsset(asset, inContext.getUser());
-						String ok = inContext.getRequestParameter("deleteoriginal");
-						if (Boolean.parseBoolean(ok))
+						
+						if (Boolean.parseBoolean(deleteoriginal))
 						{
 							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 						}
 						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 						deleted++;
-						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
+						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
 					}
 				}
 				catch (Exception e)
@@ -425,14 +425,13 @@ public class AssetEditModule extends BaseMediaModule
 					}
 					editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 					editor.deleteAsset(asset,inContext.getUser());
-					String ok = inContext.getRequestParameter("deleteoriginal");
-					if (Boolean.parseBoolean(ok))
+					if (Boolean.parseBoolean(deleteoriginal))
 					{
 						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 					}
 					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
-					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
+					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
 				}
 			}
 		}

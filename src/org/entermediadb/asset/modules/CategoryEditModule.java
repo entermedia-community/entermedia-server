@@ -294,6 +294,8 @@ public class CategoryEditModule extends BaseMediaModule {
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					List tosave = new ArrayList();
+					Integer count = 0;
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
@@ -302,8 +304,21 @@ public class CategoryEditModule extends BaseMediaModule {
 							return;
 						}
 						asset.removeCategory(c);
-						archive.saveAsset(asset, inPageRequest.getUser());
+						tosave.add(asset);
+						if( tosave.size() > 100)
+						{
+							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+							tosave.clear();
+						}
+						count = count +1;
+						//archive.saveAsset(asset, inPageRequest.getUser());
 					}
+					if( tosave.size() > 0)
+					{
+						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+						tosave.clear();
+					}
+					log.info("Removed category from assets: " + count);
 				}
 				catch (Exception e)
 				{
@@ -373,15 +388,31 @@ public class CategoryEditModule extends BaseMediaModule {
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					log.info("Saving assets: " + assets.size());
+					List tosave = new ArrayList();
+					Integer count = 0;
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
 						if (asset == null) {
 							log.error("No asset id passed in");
-							return;
+							continue;
 						}
 						addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+						tosave.add(asset);
+						if( tosave.size() > 100)
+						{
+							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+							tosave.clear();
+						}
+						count = count +1;
 					}
+					if( tosave.size() > 0)
+					{
+						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+						tosave.clear();
+					}
+					log.info("Saved: " + count);
 				}
 				catch (Exception e)
 				{
@@ -423,8 +454,10 @@ public class CategoryEditModule extends BaseMediaModule {
 			}
 			asset.addCategory(c);
 		}
-		archive.saveAsset(asset, inPageRequest.getUser());
-		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+		
+		//Save externally
+		//archive.saveAsset(asset, inPageRequest.getUser());
+		//archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 	}
 
 	public void setAssetCategories(WebPageRequest inPageRequest)
