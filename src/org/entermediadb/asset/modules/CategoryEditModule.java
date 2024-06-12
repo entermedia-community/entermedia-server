@@ -275,11 +275,54 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 
 		String message = "Removed from category \"" + c.getName() + "\"";
+		/*
 		Asset asset = (Asset)archive.getAssetSearcher().loadData(inPageRequest,assetid);
 		asset.removeCategory(c);
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-		inPageRequest.putPageValue("asset", asset);
+		inPageRequest.putPageValue("asset", asset);*/
+		
+		
+		Asset asset;
+		
+		String[] assetIds = inPageRequest.getRequestParameters("assetid");
+		for (int i = 0; i < assetIds.length; i++)
+		{
+		
+			if (assetIds[i].startsWith("multiedit:"))
+			{
+				try
+				{
+					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+					{
+						asset = (Asset) iterator.next();
+						if (asset == null) {
+							log.error("No asset id passed in");
+							return;
+						}
+						asset.removeCategory(c);
+						archive.saveAsset(asset, inPageRequest.getUser());
+					}
+				}
+				catch (Exception e)
+				{
+					continue;
+				}
+			}
+			else 
+			{
+				asset = getAsset(inPageRequest);
+				if (asset == null) {
+					log.error("No asset id passed in");
+					return;
+				}
+				asset.removeCategory(c);
+				inPageRequest.putPageValue("removed" , "1");
+				inPageRequest.putPageValue("asset", asset);
+			}
+		}
+		inPageRequest.setRequestParameter("assetid", assetid);
 	}
 
 	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
