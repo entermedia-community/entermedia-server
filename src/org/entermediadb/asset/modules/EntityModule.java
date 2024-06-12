@@ -115,11 +115,13 @@ public class EntityModule extends BaseMediaModule
 		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
 		
-		String assetid = inPageRequest.getRequestParameter("assetid");
-		if(assetid != null) {
-			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assetid))
+		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
+		if(pickedassetid != null) {
+			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, pickedassetid))
 			{
 				inPageRequest.putPageValue("assets", "1");
+				Asset asset = archive.getAsset(pickedassetid);
+				inPageRequest.putPageValue("asset", asset);
 			}
 		}
 		else 

@@ -880,8 +880,6 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 		Map safevalues = new HashMap();
 
-	
-
 		for (Iterator iterator = getEditFields().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
@@ -909,7 +907,7 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 //			{
 //				oldval = null;
 //			}
-			
+			PropertyDetail detail = getPropertyDetails().getDetail(field);
 			//See if there is a newval
 			if (newval != null && !newval.equals(oldval))
 			{
@@ -923,24 +921,30 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 				{
 					safevalues.put(field, ValuesMap.NULLVALUE);
 				}
+				else if (field.equals("category-exact"))
+				{
+					safevalues.put(field, collectCats(newval));
+				}
+				
+				else if (detail.isMultiLanguage() && oldval != null)
+				{
+					
+					LanguageMap newvall = (LanguageMap)newval;
+					LanguageMap oldvall = (LanguageMap)oldval;
+					LanguageMap langs = (LanguageMap) oldvall;
+					for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
+					{
+						String code = (String) iterator3.next();
+						if(newvall.getText(code) == null)
+						{
+							newvall.setText(code, "");
+						}
+					}
+					safevalues.put(field, newvall);
+				}
 				else
 				{
-					if (oldval == null && newval != null)
-					{
-						Object obj = getPropertiesSet().getObject(field);
-						safevalues.put(field, obj);
-					}
-					else
-					{
-						if (field.equals("category-exact"))
-						{
-							safevalues.put(field, collectCats(newval));
-						}
-						else
-						{
-							safevalues.put(field, newval);
-						}
-					}
+					safevalues.put(field, newval);
 				}
 			}
 		}
