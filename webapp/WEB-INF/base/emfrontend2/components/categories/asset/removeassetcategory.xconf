@@ -2,5 +2,6 @@
 
 <page>
 	<path-action name="CategoryEditModule.removeCategoryFromAsset"/>
+	<path-action name="MediaArchiveModule.getAsset"  />
 	<inner-layout />
 </page>
