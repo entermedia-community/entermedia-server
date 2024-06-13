@@ -302,11 +302,11 @@ public class BaseMediaModule extends BaseModule
 			Searcher found = getSearcherManager().getExistingSearcher(catalogid, searchtype);
 			if( found != null)
 			{
-				//only for lists
-				if( !"listSearcher".equals(found.getPropertyDetails().getBeanName()))
-				{
-					return null;
-				}
+//				//Private data should have security applied anyways
+//				if( !"listSearcher".equals(found.getPropertyDetails().getBeanName()))
+//				{
+//					return null;
+//				}
 			}
 			else
 			{
