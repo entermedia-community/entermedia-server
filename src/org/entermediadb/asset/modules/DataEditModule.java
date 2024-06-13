@@ -60,6 +60,17 @@ public class DataEditModule extends BaseMediaModule
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
 		inReq.putPageValue("searcher", searcher);
 		Data data = loadData(inReq);
+		if( data== null) 
+		{
+			data = searcher.createNewData();
+			String fieldexternalid = inReq.getRequestParameter("fieldexternalid");
+			String fieldexternalvalue = inReq.getRequestParameter("fieldexternalvalue");
+			if (fieldexternalid != null && fieldexternalvalue != null)
+			{
+				data.setValue(fieldexternalid, fieldexternalvalue);
+			}
+		}
+		inReq.putPageValue("data", data);
 		return data;
 	}
 	
