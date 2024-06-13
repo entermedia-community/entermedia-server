@@ -287,9 +287,34 @@ public class BaseMediaModule extends BaseModule
 		if(searchtype == null) {
 			if(inReq.getUser() != null && inReq.getUser().isInGroup("administrators")) {
 				 searchtype = inReq.findValue("searchtype");
-
 			}
 		}
+		
+		if(searchtype == null) 
+		{
+			String searchtypeFromRequest = inReq.getContentPage().get("searchtypeFromRequest");
+			if(Boolean.parseBoolean(searchtypeFromRequest)) 
+			{
+				searchtype = inReq.getRequestParameter("searchtype");
+			}
+			//Security
+			String catalogid = inReq.findPathValue("catalogid");
+			Searcher found = getSearcherManager().getExistingSearcher(catalogid, searchtype);
+			if( found != null)
+			{
+				//only for lists
+				if( !"listSearcher".equals(found.getPropertyDetails().getBeanName()))
+				{
+					return null;
+				}
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		
 		inReq.putPageValue("searchtype", searchtype);
 		return searchtype;
 	}
