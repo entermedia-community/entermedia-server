@@ -217,6 +217,23 @@ public class EntityManager implements CatalogEnabled
 			values.put(module.getId(), entity);
 			
 			sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values);
+
+			for (int i = 0; i < 20; i++) {
+				//Already exists
+				Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
+				if( cat != null)
+				{
+					sourcepath = sourcepath + "_" + (i+2);
+				}
+				else if(i == 19)
+				{
+					throw new OpenEditException("Too many duplicate source paths");
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
 		if( sourcepath.isEmpty() && entity != null)
 		{
