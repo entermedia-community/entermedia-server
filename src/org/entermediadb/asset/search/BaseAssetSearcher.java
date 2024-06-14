@@ -245,6 +245,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 //		}
 		SearchQuery query = createSearchQuery();
 		query.addMatches("id", "*");
+		query.setShowAll(true);
 //		if (root != null)
 //		{
 //			query.addMatches("category", root.getId());

@@ -413,6 +413,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
+	/**
+	 * This is the main way to enable agregations and added to the query
+	 * They are then run in the hit tracker
+	 * @param inQuery
+	 * @param inSearch
+	 * @return
+	 */
+	
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();

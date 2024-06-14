@@ -230,7 +230,7 @@ public class ElasticHitTracker extends HitTracker
 					
 					if(fieldActiveFilterValues == null && response.getAggregations() != null ) 
 					{
-						fieldActiveFilterValues = loadValuesFromResults(response); //This will load the values
+						setActiveFilterValues( loadValuesFromResults(response) ); //This will load the values
 					    getSearcheRequestBuilder().setAggregations(new HashMap());  //this keeps is from loading the same values on page 2,3+ etc
 					}
 					else
