@@ -21,42 +21,39 @@
 	#set ($viewtype = "booleansearch")
 #end
 
-<div class="emsearchfieldrow">
-	<div id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue emsearchcomponent-$!viewtype" nowrap >
-		<div class="emsearchfield"> 
-	#if ($edit == "true")
-		<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-		<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
-		</a>
-	#end
-		$!detail.getText($context) 
-		</div>
-		<input name="field" value="${detail.getId()}" type="hidden">
+	
+	<div class="emsearchfieldrow">
+		<div id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue emsearchcomponent-$!viewtype" nowrap >
 
-		
-
-		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
-				#if($detail.defaultoperation && $detail.defaultoperation != "")
-				<input name="operation" value="$detail.defaultoperation" type="hidden" />
-				#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
-				<input name="operation" value="matches" type="hidden" />
-				#else
-				<input name="operation" value="contains" type="hidden" />
-				#end
-		#end
+			<input name="field" value="${detail.getId()}" type="hidden">
+	
 			
-
-
-		#if( $hits.getSearchQuery() )
-			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
-			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
-			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
-			$context.putPageValue("term",$term)			
-			$context.putPageValue("val",$value)
-			$context.putPageValue("values",$values)
-		#end	
-		
-		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+	
+			#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
+					#if($detail.defaultoperation && $detail.defaultoperation != "")
+					<input name="operation" value="$detail.defaultoperation" type="hidden" />
+					#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
+					<input name="operation" value="matches" type="hidden" />
+					#else
+					<input name="operation" value="contains" type="hidden" />
+					#end
+			#end
+				
+	
+	
+			#if( $hits.getSearchQuery() )
+				#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+				#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
+				#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+				$context.putPageValue("term",$term)			
+				$context.putPageValue("val",$value)
+				$context.putPageValue("values",$values)
+			#end	
+			
+			$context.putPageValue("inlinelabels",true)
+			$context.putPageValue("caneditlists",false)
+			
+			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		</div>
 	</div>
-</div>
 
