@@ -24,7 +24,7 @@ public void init(){
         //log.info("*** MAP B ***" + req.getRequest().getParameterMap());
         //searcher.putMappings();//just in case it's never been done.
 
-        Searcher searcher = searcherManager.getSearcher(catalogid, "assetdownloadLog");
+        Searcher searcher = searcherManager.getSearcher(catalogid, "publishqueue");
         //searcher.putMappings();
         SearchQuery query = searcher.addStandardSearchTerms(req);
         //log.info("*** assetpublish.groovy query : "+query);
@@ -33,8 +33,7 @@ public void init(){
                 query.addMatches("id", "*");
 
         }
-        AggregationBuilder b = AggregationBuilders.dateHistogram("event_breakdown_day")
-			.field("date").interval(DateHistogramInterval.DAY);//"query"
+        AggregationBuilder b = AggregationBuilders.dateHistogram("event_breakdown_day").field("date").interval(DateHistogramInterval.DAY);//"query"
 
         query.setAggregation(b);
         HitTracker hits = searcher.search(query);

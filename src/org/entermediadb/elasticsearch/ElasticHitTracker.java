@@ -474,14 +474,13 @@ public class ElasticHitTracker extends HitTracker
 	public List loadHistogram(String inField, boolean inReverse) //parse em
 	{
 		ArrayList topfacets = new ArrayList();
-		SearchResponse response = getSearchResponse(0);
+		Aggregations facets = getAggregations();
+		
+		//log.info(getSearchQuery().getFacets());
 		//TODO: Should save the response and only load it if someone needs the data
-		if (response.getAggregations() != null)
+		if (facets != null)
 		{
 			//log.info(response.toString());
-			Aggregations facets = response.getAggregations();
-			
-			
 				Object agg = facets.get(inField);
 				if (agg instanceof Histogram)
 				{

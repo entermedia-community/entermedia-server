@@ -1,7 +1,0 @@
-<page>
-<page-action name="DataEditModule.search">
-	<searchtype>${module}</searchtype>
-</page-action>
-<property name="hitssessionid">hits${module}${catalogid}</property>
-
-</page>

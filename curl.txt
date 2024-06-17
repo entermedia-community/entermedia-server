@@ -542,8 +542,15 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
     }
 }'
 
+curl -XGET 'http://localhost:9200/finder_catalog/catalogsettings/siteroot'| python3 -mjson.tool
+
+curl -XPUT 'http://localhost:9200/media_catalogs_public/catalogsettings/siteroot' -d '{
+    "value" :  "http://localhost.mediacatalogpublic:8080"
+}'
+
+
 curl -XPUT 'http://localhost:9200/finder_catalog/catalogsettings/siteroot' -d '{
-    "value" :  "https://sddffdf"
+    "value" :  ""
 }'
 restart
 

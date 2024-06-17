@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <reportss> 
-  <reports id="AVaTqBP6ygVLwyOAiTEp" ordering="0" searchtype="asset" outputtype="assetusage" script="asset/assetdiskusage.groovy"> 
+  <reports id="AVaTqBP6ygVLwyOAiTEp" ordering="0" searchtype="asset" outputtype="assetusage" runfilterview="historyedits" script="asset/assetdiskusage.groovy"> 
     <name><![CDATA[Asset Disk Usage]]></name>  
     <name><![CDATA[Asset Disk Usage]]></name> 
-  </reports> 
-  <reports id="Publish" ordering="1" searchtype="publishqueue" outputtype="publishdestination" script="asset/assetpublish.groovy" dashboard="true">
-    <name><![CDATA[Publish Assets]]></name>
   </reports> 
 <!--  
   <reports id="AVaUgHarnzduSDGX3LDR" ordering="0" searchtype="assetdownloadLog" outputtype="downloadhistory" dashboard="true"> 
@@ -14,7 +11,7 @@
     <name><![CDATA[Download History]]></name> 
   </reports>
 -->
-  <reports id="AVaUgHarnzduSDGX3LDR" ordering="2" searchtype="assetdownloadLog" outputtype="downloadhistory" script="asset/assetdownloadLog.groovy" dashboard="true">
+  <reports id="AVaUgHarnzduSDGX3LDR" ordering="2" searchtype="assetdownloadLog" outputtype="downloadhistory" script="asset/assetdownload.groovy" dashboard="true">
     <name><![CDATA[Download History]]></name>
   </reports>
 
@@ -37,13 +34,13 @@
     <name><![CDATA[Disk Space By File Format]]></name>  
     <name><![CDATA[Disk Space By File Format]]></name> 
   </reports>  
-  <reports id="assetscreated" ordering="6" searchtype="asset" outputtype="assetadded" dashboard="true">
-    <name><![CDATA[Assets over time]]></name>
+  <reports id="assetscreated" ordering="6" searchtype="asset" outputtype="assetadded" dashboard="true" script="asset/assetscreated.groovy" >
+    <name><![CDATA[New Assets]]></name>
   </reports>
   <reports id="transcribereport" ordering="7" searchtype="videotrack" outputtype="captions" dashboard="false" script="videotrack/closecaptions.groovy">
     <name><![CDATA[Automatic Transcriptions]]></name>
   </reports>
-  <reports id="assetedits" ordering="8" searchtype="asseteditLog" outputtype="assetedits" dashboard="true"> 
+  <reports id="assetedits" ordering="8" searchtype="asseteditLog" outputtype="assetedits" dashboard="true" runfilterview="reportbydate"> 
     <name><![CDATA[Asset Edits]]></name>  
     <name><![CDATA[Asset Edits]]></name> 
   </reports>  

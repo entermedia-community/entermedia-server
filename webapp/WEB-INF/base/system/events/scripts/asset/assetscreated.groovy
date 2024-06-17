@@ -21,20 +21,16 @@ public void init(){
         WebPageRequest req = context;
 
         String[] ar = req.getRequestParameters("field")
-        //log.info("*** MAP B ***" + req.getRequest().getParameterMap());
-        //searcher.putMappings();//just in case it's never been done.
 
-        Searcher searcher = searcherManager.getSearcher(catalogid, "assetdownloadLog");
-        //searcher.putMappings();
+        Searcher searcher = searcherManager.getSearcher(catalogid, "asset");
         SearchQuery query = searcher.addStandardSearchTerms(req);
-        //log.info("*** assetpublish.groovy query : "+query);
         if(query == null){
                 query = searcher.createSearchQuery();
                 query.addMatches("id", "*");
 
         }
         AggregationBuilder b = AggregationBuilders.dateHistogram("event_breakdown_day")
-			.field("date").interval(DateHistogramInterval.DAY);//"query"
+			.field("assetaddeddate").interval(DateHistogramInterval.DAY);//"query"
 
         query.setAggregation(b);
         HitTracker hits = searcher.search(query);

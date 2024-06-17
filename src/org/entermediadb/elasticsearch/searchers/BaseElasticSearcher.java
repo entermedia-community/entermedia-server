@@ -72,6 +72,9 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -449,7 +452,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			if (detail.isDate())
 			{
-				//TODO: Is this slow? seems kinda like a waste of CPU
+				//TODO: Is this slow? seems kinda like a waste of CPU Use Groovy
 //				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 //				builder.field(detail.getId());
 //				builder.interval(DateHistogramInterval.DAY);
