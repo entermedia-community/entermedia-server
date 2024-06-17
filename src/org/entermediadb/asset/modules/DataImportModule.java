@@ -243,6 +243,10 @@ public class DataImportModule extends DataEditModule
 		String searchtype = inReq.getRequestParameter("searchtype");
 		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
 		getPageManager().removePage(xml);
+
+		Page folder = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +"/" );
+		getPageManager().removePage(folder);
+
 		Page list = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/" + searchtype +".xml" );
 		getPageManager().removePage(list);
 
