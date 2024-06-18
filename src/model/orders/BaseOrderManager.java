@@ -159,7 +159,9 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		query.addAfter("date", cal.getTime());
 		query.addSortBy("dateDown");
 		query.addExact("userid", inUser.getId());
-		return ordersearcher.cachedSearch(inReq,query);
+		HitTracker tracker = ordersearcher.cachedSearch(inReq,query);
+		log.info("Searching " + tracker);
+		return tracker;
 	}
 	
 	
