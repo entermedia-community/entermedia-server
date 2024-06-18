@@ -427,6 +427,8 @@ public class CategoryEditModule extends BaseMediaModule {
 					return;
 				}
 				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				archive.saveAsset(asset, inPageRequest.getUser());
+				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 				inPageRequest.putPageValue("added" , "1");
 			}
 		}
