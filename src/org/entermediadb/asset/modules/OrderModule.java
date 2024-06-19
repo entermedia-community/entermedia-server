@@ -1471,7 +1471,7 @@ public class OrderModule extends BaseMediaModule
 			owner = inReq.getUser();
 		}
 		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser( inReq,  owner);
-		log.info("order download list " + orders.size());
+		//log.info("order download list " + orders.size());
 		int hitsperpage = 3;
 		if(inReq.getRequestParameter("hitsperpage") != null)
 		{
@@ -1484,7 +1484,7 @@ public class OrderModule extends BaseMediaModule
 			OrderDownload download = (OrderDownload) iterator.next();
 			if(download.getOrder().get("orderstatus").equals("complete") ) 
 			{
-				log.info("Skipping " + download.getOrder().getId() );
+				//log.info("Skipping " + download.getOrder().getId() );
 				continue; //skip complete orders
 			}
 			for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
@@ -1493,7 +1493,7 @@ public class OrderModule extends BaseMediaModule
 				String status = orderitem.get("publishstatus");
 				if("readytopublish".equals(status) || "publishingexternal".equals(status))
 				{
-					log.info("added " + orderitem.getName() );
+					//log.info("added " + orderitem.getName() );
 					orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
 					openitems.add(orderitem);
 				}
@@ -1507,7 +1507,7 @@ public class OrderModule extends BaseMediaModule
 				break;
 			}
 		}
-		log.info("found " + openitems.size() );
+		//log.info("found " + openitems.size() );
 		inReq.putPageValue("downloaditems", openitems);
 		
 	}
