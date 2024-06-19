@@ -1466,10 +1466,6 @@ public class OrderModule extends BaseMediaModule
 	public void findUserDownloadOrderItems(WebPageRequest inReq)
 	{
 		User owner = (User) inReq.getUser();
-		if (owner == null)
-		{
-			owner = inReq.getUser();
-		}
 		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser( inReq,  owner);
 		//log.info("order download list " + orders.size());
 		int hitsperpage = 3;
@@ -1523,6 +1519,10 @@ public class OrderModule extends BaseMediaModule
 	public Order cancelOrder(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
+		if( order == null)
+		{
+			throw new OpenEditException("Order not found, check catalogid");
+		}
 		getOrderManager(inReq).cancelOrder(order);
 		return order;
 	}
