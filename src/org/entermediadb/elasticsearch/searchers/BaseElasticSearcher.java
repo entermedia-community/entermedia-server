@@ -1195,14 +1195,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// Check for quick date object
 		QueryBuilder find = null;
 		String valueof = null;
-
+		Date valuedate = null;
 		if (inValue instanceof Date)
 		{
+			valuedate = (Date)inValue;
 			valueof = DateStorageUtil.getStorageUtil().formatForStorage((Date) inValue);
 		}
 		else
 		{
-			valueof = String.valueOf(inValue);
+			valueof = String.valueOf(inValue); //Value is never null
 		}
 
 		String fieldid = inDetail.getId();
