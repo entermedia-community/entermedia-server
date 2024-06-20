@@ -574,11 +574,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "HH"); //TODO: Use DataStorage
 		vals.put("formattedhour", date);
 
-		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
+		//Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
+		inArchive.getSearcherManager().getValue(inArchive.getCatalogId(),parentData null);
 
-		replacer.setSearcherManager(inArchive.getSearcherManager());
-		replacer.setCatalogId(inArchive.getCatalogId());
-		replacer.setAlwaysReplace(true);
 		String sourcepath = replacer.replace(sourcepathmask, vals);
 		//sourcepath = sourcepath + "/" + item.getName();
 		if (sourcepath.endsWith("/"))
