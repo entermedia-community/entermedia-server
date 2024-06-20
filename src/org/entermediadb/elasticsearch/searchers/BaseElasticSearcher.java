@@ -2702,7 +2702,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					inContent.field(key, val);
 				}
-				else if (detail.isDataType("number"))
+				else if (detail.isDataType("number") || detail.isViewType("autoincrement"))
 				{
 					Number val = 0;
 
