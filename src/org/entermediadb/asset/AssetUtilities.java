@@ -513,29 +513,20 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			}
 		}
 		
-		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), savefilename, sourcepathmask, vals);
+		String sourcepath = createSourcePathFromMask(inArchive, null, inReq.getUser(), savefilename, sourcepathmask, vals);
 
 		return sourcepath;
 	}
 
+	
 	public String createSourcePathFromMask(MediaArchive inArchive, User inUser, String fileName, String sourcepathmask, Map vals)
 	{
-		String sp = createSourcePathFromMask( inArchive,  "asset", null,  inUser,  fileName,  sourcepathmask,  vals);
-		return sp;
+		return createSourcePathFromMask(inArchive, null, inUser, fileName, sourcepathmask, vals);
 	}
 	
-	public String createSourcePathFromMask(MediaArchive inArchive, String inModuleId, Data parentData, User inUser, String fileName, String sourcepathmask, Map vals)
+	public String createSourcePathFromMask(MediaArchive inArchive, Data parentData, User inUser, String fileName, String sourcepathmask, Map vals)
 	{
-		if( parentData != null && !inModuleId.equals("asset"))
-		{
-			MultiValued module = (MultiValued)inArchive.getCachedData("module", inModuleId);
-			if( module != null && module.getBoolean("isentity"))
-			{
-				EntityManager manager = inArchive.getEntityManager();
-				manager.loadUploadSourcepath(module, parentData, inUser);
-			}
-			vals.put(inModuleId,parentData);
-		}
+		
 		if (inUser != null)
 		{
 			vals.put("user", inUser);
@@ -575,9 +566,10 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		vals.put("formattedhour", date);
 
 		//Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
-		inArchive.getSearcherManager().getValue(inArchive.getCatalogId(),parentData null);
-
-		String sourcepath = replacer.replace(sourcepathmask, vals);
+		//String sourcepath = replacer.replace(sourcepathmask, vals);
+		String sourcepath = inArchive.replaceFromMask(sourcepathmask, parentData, "asset", vals, null); 
+		
+		
 		//sourcepath = sourcepath + "/" + item.getName();
 		if (sourcepath.endsWith("/"))
 		{

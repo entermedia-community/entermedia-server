@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.openedit.Data;
@@ -117,11 +118,55 @@ public class EntityModule extends BaseMediaModule
 		
 		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
 		if(pickedassetid != null) {
-			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, pickedassetid))
+			
+			Asset asset;
+			if (pickedassetid.startsWith("multiedit:"))
 			{
-				inPageRequest.putPageValue("assets", "1");
-				Asset asset = archive.getAsset(pickedassetid);
-				inPageRequest.putPageValue("asset", asset);
+				try
+				{
+					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(pickedassetid);
+					List tosave = new ArrayList();
+					Integer count = 0;
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+					{
+						asset = (Asset) iterator.next();
+						if (asset == null) {
+							log.error("No asset id passed in");
+							return;
+						}
+						if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, pickedassetid))
+						{
+							tosave.add(asset);
+							if( tosave.size() > 100)
+							{
+								archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+								tosave.clear();
+							}
+							count = count +1;
+						}
+					}
+					if( tosave.size() > 0)
+					{
+						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+					}
+					log.info("Added to entity: " + count + " assets.");
+				}
+				catch (Exception e)
+				{
+					//continue;
+				}
+			}
+			else
+			{
+				
+				asset = archive.getAsset(pickedassetid);
+				if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset.getId()))
+				{
+					archive.getAssetSearcher().saveData(asset);
+					inPageRequest.putPageValue("asset", asset);
+					inPageRequest.putPageValue("assets", "1");
+				}
+				
 			}
 		}
 		else 

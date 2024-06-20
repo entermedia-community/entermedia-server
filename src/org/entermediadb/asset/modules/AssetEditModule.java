@@ -2095,7 +2095,7 @@ public class AssetEditModule extends BaseMediaModule
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null && detail.get("sourcepath") != null)
 				{
-					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,searchtype,target,inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
+					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
 					//OLD style sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
 					if( sourcepath.endsWith("/"))
 					{

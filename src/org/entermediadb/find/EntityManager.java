@@ -109,7 +109,8 @@ public class EntityManager implements CatalogEnabled
 		return cat;
 
 	}
-	public Category createDefaultFolder(Data entity, User inUser)
+
+	public Category createDefaultFolder(Data entity,  User inUser)
 	{
 		if( entity == null)
 		{
@@ -121,7 +122,7 @@ public class EntityManager implements CatalogEnabled
 		{
 			return null;
 		}
-		Category cat = loadDefaultFolder(module, entity,inUser,true);
+		Category cat = loadDefaultFolder(module, entity, inUser, true);
 		return cat;		
 	}
 	public Category loadDefaultFolder(Data entity, User inUser)
@@ -216,7 +217,9 @@ public class EntityManager implements CatalogEnabled
 			values.put("module", module);
 			values.put(module.getId(), entity);
 			
-			sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values);
+			//sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values, null);
+			
+			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);
 
 			for (int i = 0; i < 20; i++) {
 				//Already exists

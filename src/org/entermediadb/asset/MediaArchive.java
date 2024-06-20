@@ -230,6 +230,16 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldReplacer = inReplacer;
 	}
+	
+	
+	public String replaceFromMask(String inMask, Data inData, String inSearchType,  Map extraVals, String locale) 
+	{
+
+		String sourcepath = getSearcherManager().getValue(getCatalogId(), inMask, inSearchType,  inData, extraVals, locale);
+		return sourcepath;
+	}
+	
+	
 
 	public AssetStatsManager getAssetStatsManager()
 	{

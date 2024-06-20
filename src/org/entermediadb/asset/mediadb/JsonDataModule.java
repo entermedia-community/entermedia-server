@@ -278,7 +278,8 @@ public class JsonDataModule extends BaseJsonModule
 			throw new OpenEditException("sourcepath must be set on " + inDetails);
 		}
 
-		String sourcepath = importer.getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), inDetails.get("sourcepath"), vals);
+		//String sourcepath = importer.getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), inDetails.get("sourcepath"), vals);
+		String sourcepath = archive.replaceFromMask(inDetails.get("sourcepath"), null, "asset", vals, null);
 		
 		Asset asset = null;
 		String 	id = (String) vals.get("id");

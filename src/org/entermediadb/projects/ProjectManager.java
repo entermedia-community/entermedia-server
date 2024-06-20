@@ -979,7 +979,7 @@ public class ProjectManager implements CatalogEnabled
 				if (asset == null)
 				{
 
-					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
+					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, null, item.getName(), sourcepathmask, vals);
 
 					String destpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath;
 					if (!destpath.endsWith("/"))
