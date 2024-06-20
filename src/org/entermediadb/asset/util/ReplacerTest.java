@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.openedit.BaseTestCase;
 import org.openedit.data.SearcherManager;
+import org.openedit.users.User;
 import org.openedit.util.Replacer;
 
 public class ReplacerTest extends BaseTestCase
@@ -17,18 +18,22 @@ public class ReplacerTest extends BaseTestCase
 		replacer.setCatalogId("system");
 		replacer.setAlwaysReplace(true);
 		replacer.setSearcherManager(manager);
-		String code = "${one}/${longvariable}/${user.email}/${notfound}/${two}/${user.id}${nogap1}${nogap2}";
 		Map vars = new HashMap();
-		vars.put("user", "admin");
+		
+		User user = (User)manager.getSearcher("system","user").searchById("admin");
+		vars.put("user", user);
 		vars.put("one", "Uno");
 		vars.put("nogap1", "123");
 		vars.put("nogap2", "456");
 		vars.put("two", "TOOOOLONG");
 		vars.put("longvariable", "short");
 		
+		String code = "${one}/${longvariable}/${user.email}/${notfound}/${two}/${user.id}${nogap1}${nogap2}";
 		String returned = replacer.replace(code, vars);
 		assertEquals("Uno/short/support@openedit.org//TOOOOLONG/admin123456",returned);
 		
-		
+		code = "${user.email||$user.id}";
+		returned = replacer.replace(code, vars);
+		assertEquals("support@openedit.org",returned);
 	}
 }
