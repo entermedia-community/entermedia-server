@@ -124,6 +124,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
 		    if(inReq.getResponse() != null && !skipheader )
 			{
+		    	inReq.getResponse().setHeader("Content-Type", "application/octet-stream; charset=utf-8");
 				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
 			}
 			WebPageRequest req = inReq.copy(content);
