@@ -1543,14 +1543,32 @@ Server ProjectModule.uploadFile
 
 	}
 
-	public void loadCollectionObject(WebPageRequest inReq)
+	public void checkUrlName(WebPageRequest inReq)
 	{
-		Searcher searcher = loadSearcher(inReq);
-		
 		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
 		if( collection != null)
 		{
+			Searcher searcher = loadSearcher(inReq); //Product?
+			String name = inReq.getContentPage().getName();
+			Data found = searcher.query().exact("urlname", name).searchOne();
 			
+			inReq.putPageValue(searcher.getSearchType(), found);
+		}
+ 
+	}
+
+	public void loadCollectionChild(WebPageRequest inReq)
+	{
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection != null)
+		{
+			Searcher searcher = loadSearcher(inReq); //Product?
+			String name = inReq.getContentPage().getDirectoryName();
+			Data found = searcher.query().exact("urlname", name).searchOne();
+			if( found != null)
+			{
+				inReq.putPageValue(searcher.getSearchType(), found);
+			}
 		}
  
 	}

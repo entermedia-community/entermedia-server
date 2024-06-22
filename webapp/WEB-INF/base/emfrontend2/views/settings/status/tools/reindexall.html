@@ -1,6 +1,11 @@
 <p>Reindexing</p>
 	
 #if($mappingerror)
+
+<p>
+<a class="btn btn-sm btn-primary" href="mappingerrors.html" id="tools-view-errors">[[View Mapping Conflicts]]</a>
+</p>
+
 	$pages.include("./mappingerrors.html")
 #end
 

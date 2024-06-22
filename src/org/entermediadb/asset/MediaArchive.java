@@ -80,7 +80,6 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
-import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
 public class MediaArchive implements CatalogEnabled
@@ -1913,7 +1912,12 @@ public class MediaArchive implements CatalogEnabled
 
 	public HitTracker getCachedSearch(QueryBuilder inBuilder)
 	{
-		HitTracker tracker = (HitTracker)getCacheManager().get("sm", inBuilder.getQuery().toQuery());
+		if( inBuilder == null)
+		{
+			throw new OpenEditException("Invalid search");
+		}
+		SearchQuery q = inBuilder.getQuery();
+		HitTracker tracker = (HitTracker)getCacheManager().get("sm", q.toQuery());
 		if( tracker == null)
 		{
 			tracker = inBuilder.search();
