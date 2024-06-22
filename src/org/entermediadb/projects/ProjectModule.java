@@ -1542,5 +1542,17 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("hits",hits);
 
 	}
+
+	public void loadCollectionObject(WebPageRequest inReq)
+	{
+		Searcher searcher = loadSearcher(inReq);
+		
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection != null)
+		{
+			
+		}
+ 
+	}
 	
 }
