@@ -5,7 +5,7 @@
 		##Uses and admin to create the user
 		$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
 	#else
-	    #if( !$allowguestregistration )
+	    #if( $allowguestregistration == "false" )
 	    	[[No user found]]
 	    	$pages.include("./loginform.html")  ##to try again or register
 	    #else
