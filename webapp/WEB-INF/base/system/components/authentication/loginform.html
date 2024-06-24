@@ -20,9 +20,13 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			#end
 		
 			#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
-
+			#set( $allowguestregistration = $context.findValue("allowguestregistration") )
 			<div class="loginform-col mb-4">
-				<h1 class="page-title text-center my-4">[[Sign-in]] / [[Sign-up]]</h1>
+				<h1 class="page-title text-center my-4">
+					[[Sign-in]]
+					 #if( $allowguestregistration == "ture" )
+					 / [[Sign-up]]
+					 #end</h1>
 				
 			
 				#set( $error = $context.getPageValue("oe-exception") )
