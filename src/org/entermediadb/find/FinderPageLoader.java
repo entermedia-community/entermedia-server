@@ -103,7 +103,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			return right;
 		}
 			
-		log.info("Do the default");
+	//log.info("Do the default");
 		return null;
 		//We only care about the home page
 	}
