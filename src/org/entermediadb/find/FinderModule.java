@@ -675,8 +675,9 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("module", module);
 			HitTracker hits = null;
 			
-			String custompathfinal = firstmenu.get("custompathfinal");
-			if( custompathfinal == null)
+			String custompath = firstmenu.get("custompath");
+			
+			if( custompath == null)
 			{
 				Searcher searcher = archive.getSearcher(module.getId());
 				
@@ -788,27 +789,6 @@ public class FinderModule extends BaseMediaModule
 				{
 					Data data = (Data) iterator.next();
 					if(data.getValue("custompath") != null) {
-						String custompath = (String)data.getValue("custompath");
-						
-						Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
-
-						replacer.setSearcherManager(archive.getSearcherManager());
-						replacer.setCatalogId(archive.getCatalogId());
-						replacer.setAlwaysReplace(true);
-						String custompathfinal = replacer.replace(custompath, vals);
-						data.setProperty("custompathfinal", custompathfinal);
-						
-						
-						String[] parts = custompathfinal.split("[?]");
-						if (parts.length > 1)
-						{
-							Map arguments = PathUtilities.extractArguments(parts[1]);
-							for (Iterator iterator2 = arguments.keySet().iterator(); iterator2.hasNext();)
-							{
-								String param = (String)iterator2.next();
-								inReq.setRequestParameter(param, (String[])arguments.get(param));
-							}
-						}
 
 						topmenufinal.add(data);
 						
