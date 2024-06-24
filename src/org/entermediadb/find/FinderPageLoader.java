@@ -68,6 +68,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		Data topmenu = (Data)getMediaArchive().getCachedSearch(query).first();
 		if( topmenu == null)
 		{
+			log.info("No top menu");
 			return null;
 		}
 
@@ -93,6 +94,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			Page page = getPageManager().getPage(parts[0]);
 			if( !page.exists())
 			{
+				log.info("page missing "+ parts[0]);
 				return null; //?
 			}
 
@@ -101,6 +103,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			return right;
 		}
 			
+		log.info("Do the default");
 		return null;
 		//We only care about the home page
 	}
