@@ -658,6 +658,7 @@ public class FinderModule extends BaseMediaModule
 		
 	}
 	
+	/*
 	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -766,7 +767,7 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("moduleid", defaultmodule);
 		return hits;
 	}
-
+*/
 	
 	public void loadTopMenu(WebPageRequest inReq)
 	{

@@ -2245,6 +2245,16 @@
 	<bean id="FinderModule" class="org.entermediadb.find.FinderModule" >
 	</bean>
 
+	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+
+
 	<bean id="publishedGenerator" class="org.entermediadb.asset.generators.PublishedGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
