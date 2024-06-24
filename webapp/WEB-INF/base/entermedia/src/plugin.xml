@@ -2245,7 +2245,7 @@
 	<bean id="FinderModule" class="org.entermediadb.find.FinderModule" >
 	</bean>
 
-	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader" >
+	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader"  scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
