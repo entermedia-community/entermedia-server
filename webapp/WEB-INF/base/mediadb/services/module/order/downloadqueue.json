@@ -23,7 +23,7 @@
     {
       "id":#jesc($item.getId()),
       "url":#jesc($item.itemdownloadurl), 
-      "fileame":#jesc($item.itemexportname)
+      "filename":#jesc($item.itemexportname)
     }
   #end
   ]
