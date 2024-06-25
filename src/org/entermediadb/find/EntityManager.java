@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
@@ -29,11 +31,13 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.servlet.BaseOpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 public class EntityManager implements CatalogEnabled
 {
+	private static final Log log = LogFactory.getLog(EntityManager.class);
 	protected String fieldCatalogId;
 	protected ModuleManager fieldModuleManager;
 	protected CacheManager fieldCacheManager;
@@ -467,10 +471,12 @@ public class EntityManager implements CatalogEnabled
 		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
 		if(sourcecategory == null)
 		{
-			throw new OpenEditException("No source category");
+			log.info("No source category to copy " + source);
 		}
-		
-		getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
+		else
+		{
+			getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
+		}
 		newchild.setValue("uploadsourcepath", targetcategory.getCategoryPath());
 		
 		//Make a path
