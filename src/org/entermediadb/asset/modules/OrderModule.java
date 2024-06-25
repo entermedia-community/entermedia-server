@@ -29,7 +29,6 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
@@ -1559,5 +1558,63 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	
+	public void downloadQueue(WebPageRequest inReq)
+	{
+		User owner = (User) inReq.getUser();
+		Collection<OrderDownload> orders = getOrderManager(inReq).findDownloadOrdersForUser( inReq,  owner);
+		//log.info("order download list " + orders.size());
+		int hitsperpage = 10;
+		if(inReq.getRequestParameter("hitsperpage") != null)
+		{
+			hitsperpage = Integer.parseInt(inReq.getRequestParameter("hitsperpage"));
+		}
+		Collection openitems = new ArrayList();
+		Collection openorders = new ArrayList();
+		Collection zipdownloads = new ArrayList();
+		
+		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
+		{
+			OrderDownload download = (OrderDownload) iterator.next();
+			if(download.getOrder().get("orderstatus").equals("complete") ) 
+			{
+				continue; //skip complete orders
+			}
+			
+			if(download.getItemCount() > 3 && download.allReadyForDownload() )
+			{
+				//Add an order to the queue
+				zipdownloads.add(download);
+			}	
+			else
+			{
+				for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
+				{
+					Data orderitem = (Data) iterator2.next();
+					String status = orderitem.get("publishstatus");
+					if("readytopublish".equals(status) || "publishingexternal".equals(status))
+					{
+						//log.info("added " + orderitem.getName() );
+						orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
+						openitems.add(orderitem);
+					}
+					if( openitems.size() >= hitsperpage)
+					{
+						break;
+					}
+				}
+			}
+		}
+		//log.info("found " + openitems.size() );
+		inReq.putPageValue("downloaditems", openitems);
+		inReq.putPageValue("downloadorderzip", zipdownloads);
+		inReq.putPageValue("queuesize",openitems.size() + zipdownloads.size() );
+		
+//		Calendar cal = Calendar.getInstance(inReq.getLocale());
+//
+//		inReq.putPageValue("storeddate",DateStorageUtil.getStorageUtil().formatForStorage(date));
+
+		
+//		inReq.putPageValue("formateddate",openitems.size() + zipdownloads.size() );
+		
+	}	
 }
