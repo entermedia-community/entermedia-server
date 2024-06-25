@@ -436,7 +436,16 @@ public class EntityManager implements CatalogEnabled
 		return true;
 	}
 	
-	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) {
+	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) 
+	{
+		
+		String name = inContext.getRequestParameter("nameoverwrite");
+		
+		Data copy  = copyEntity(inContext.getUser(), name, pickedmoduleid, source);
+
+		return copy;
+	}
+	public Data copyEntity(User inUser, String customname, String pickedmoduleid, Data source) {
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
 		Data newchild = entitysearcher.createNewData();
 		
@@ -446,15 +455,15 @@ public class EntityManager implements CatalogEnabled
 			Object val = source.getValue(key);
 			newchild.setValue(key, val);
 		}
-		
-		String name = inContext.getRequestParameter("nameoverwrite");
-		if(name == null) {
+		String name = customname;
+		if(name == null) 
+		{
 			name = source.getName();
 		}
 		newchild.setName(name);
 		newchild.setValue("entitysourcetype", pickedmoduleid);
 		
-		Category targetcategory = createDefaultFolder(newchild, inContext.getUser());
+		Category targetcategory = createDefaultFolder(newchild, inUser);
 		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
 		if(sourcecategory == null)
 		{
