@@ -1423,22 +1423,25 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		return ordersearcher.cachedSearch(inReq,query);
 	}
 
-	@Override
-	public void cancelOrder(Order inOrder) 
+
+	public void changeStatus(Order inOrder, String inStatus)
 	{
 		Lock lock = getMediaArchive().getLockManager().lock("orders" + inOrder.getId(), "BaseOrderManager");
 		try
 		{
-			inOrder.setOrderStatus("complete");
-			inOrder.setValue( "orderstatusdetails","Order canceled" );
+			inOrder.setOrderStatus(inStatus);
+			inOrder.setValue( "orderstatusdetails","Order " + inStatus );
 			getMediaArchive().saveData("order", inOrder);
-			
-			Collection items = inOrder.findOrderAssets();
-			for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-				Data item = (Data) iterator.next();
-				item.setValue("publishstatus","cancelled");
+
+			if( inStatus.equals("canceled"))
+			{
+				Collection items = inOrder.findOrderAssets();
+				for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+					Data item = (Data) iterator.next();
+					item.setValue("publishstatus","cancelled");
+				}
+				getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
 			}
-			getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
 		}
 		finally
 		{
@@ -1446,5 +1449,6 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		}
 
 	}
+	
 
 }

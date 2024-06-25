@@ -1,4 +1,4 @@
 <page>
 	<path-action name="JsonAssetModule.preprocess" />
-    <path-action name="OrderModule.cancelOrder"/>
+    <path-action name="OrderModule.changeOrderStatus"/>
 </page>    

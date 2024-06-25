@@ -1523,8 +1523,41 @@ public class OrderModule extends BaseMediaModule
 		{
 			throw new OpenEditException("Order not found, check catalogid");
 		}
-		getOrderManager(inReq).cancelOrder(order);
+		//getOrderManager(inReq).cancelOrder(order);
+		getOrderManager(inReq).changeStatus(order,"canceled");
 		return order;
 	}
+
+	public Order changeOrderStatus(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		if( order == null)
+		{
+			throw new OpenEditException("Order not found, check catalogid");
+		}
+		boolean canedit = false;
+		Object canview = inReq.getPageValue("canviewsettings");
+		if( canview instanceof Boolean && ((Boolean)canview))
+		{
+			canedit = true;
+		}
+		else
+		{
+			if( inReq.getUser() != null && inReq.getUserName().equals(order.get("owner") ))
+			{
+				canedit= true;
+			}
+		}
+		if( canedit)
+		{
+			String status = inReq.getRequestParameter("orderstatus");
+			if( status == null)
+			{
+				getOrderManager(inReq).changeStatus(order,status);
+			}
+		}
+		return order;
+	}
+
 	
 }
