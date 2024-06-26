@@ -1423,22 +1423,33 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		return ordersearcher.cachedSearch(inReq,query);
 	}
 
-	@Override
-	public void cancelOrder(Order inOrder) 
+//downloadedstatus
+	public void changeStatus(Order inOrder, String inOrderStatus, String downloadedstatus)
 	{
 		Lock lock = getMediaArchive().getLockManager().lock("orders" + inOrder.getId(), "BaseOrderManager");
 		try
 		{
-			inOrder.setOrderStatus("complete");
-			inOrder.setValue( "orderstatusdetails","Order canceled" );
-			getMediaArchive().saveData("order", inOrder);
-			
-			Collection items = inOrder.findOrderAssets();
-			for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-				Data item = (Data) iterator.next();
-				item.setValue("publishstatus","cancelled");
+			if(inOrderStatus != null)
+			{
+				inOrder.setOrderStatus(inOrderStatus);
+				inOrder.setValue( "orderstatusdetails","Order " + inOrderStatus );
 			}
-			getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
+
+			if( downloadedstatus != null)
+			{
+				inOrder.setValue("downloadedstatus",downloadedstatus );
+			}
+			getMediaArchive().saveData("order", inOrder);
+
+			if( inOrderStatus.equals("canceled"))
+			{
+				Collection items = inOrder.findOrderAssets();
+				for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+					Data item = (Data) iterator.next();
+					item.setValue("publishstatus","cancelled");
+				}
+				getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
+			}
 		}
 		finally
 		{
@@ -1446,5 +1457,6 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		}
 
 	}
+	
 
 }

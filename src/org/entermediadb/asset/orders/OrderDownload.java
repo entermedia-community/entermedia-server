@@ -126,5 +126,27 @@ public class OrderDownload
 		return date;
 	}
 
+	public boolean allReadyForDownload()
+	{
+		//TODO: replace with agregation of downloaditemtotalfilesize
+		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
+		{
+			MultiValued item = (MultiValued) iterator.next();
+			if(
+					"readytopublish".equals(item.get("publishstatus") ) ||
+					"complete".equals(item.get("publishstatus") )
+		
+			)
+			{
+				//done
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	
 }
