@@ -29,6 +29,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.locks.Lock;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
@@ -1571,6 +1572,12 @@ public class OrderModule extends BaseMediaModule
 		Collection openorders = new ArrayList();
 		Collection zipdownloads = new ArrayList();
 		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		int count = 0;
+		
+		Collection itemstosave = new ArrayList();
+		
 		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
 		{
 			OrderDownload download = (OrderDownload) iterator.next();
@@ -1580,36 +1587,55 @@ public class OrderModule extends BaseMediaModule
 				continue; //skip complete orders
 			}
 			
-			
 			if("complete".equals( download.getOrder().get("downloadedstatus") ) )
 			{
 				continue; //skip complete orders
 			}
-			
-			if(download.getItemCount() > 3 && download.allReadyForDownload() )
+
+			Lock lock = archive.getLockManager().lock("orders" + download.getOrder().getId(), "BaseOrderManager");
+
+			try
 			{
-				//Add an order to the queue
-				zipdownloads.add(download);
-			}	
-			else
-			{
-				for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
+				
+				if(download.getItemCount() > 3 && download.allReadyForDownload() )
 				{
-					Data orderitem = (Data) iterator2.next();
-					String status = orderitem.get("publishstatus");
-					if("readytopublish".equals(status) || "publishingexternal".equals(status))
+					//Add an order to the queue
+					zipdownloads.add(download);
+				}	
+				else
+				{
+					for (Iterator iterator2 = download.getItemList().iterator(); iterator2.hasNext();)
 					{
-						//log.info("added " + orderitem.getName() );
-						orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
-						openitems.add(orderitem);
-					}
-					if( openitems.size() >= hitsperpage)
-					{
-						break;
+						Data orderitem = (Data) iterator2.next();
+						String status = orderitem.get("publishstatus");
+						if("readytopublish".equals(status) || "publishingexternal".equals(status))
+						{
+							//log.info("added " + orderitem.getName() );
+							//orderitem.setValue("orderstatus", download.getOrder().get("orderstatus"));
+							orderitem.setValue("publishstatus","complete");
+							openitems.add(orderitem);
+							itemstosave.add(orderitem);
+						}
+						if( openitems.size() >= hitsperpage)
+						{
+							break;
+						}
 					}
 				}
+				
+				//Save order
+				download.getOrder().setOrderStatus("complete");
+				archive.getOrderManager().saveOrder(archive, download.getOrder());
+				
+			}
+			finally
+			{
+				archive.getLockManager().release(lock);
 			}
 		}
+		
+		
+		
 		//log.info("found " + openitems.size() );
 		inReq.putPageValue("downloaditems", openitems);
 		inReq.putPageValue("downloadorderzip", zipdownloads);

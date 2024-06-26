@@ -108,5 +108,7 @@ public interface OrderManager
 
 	void changeStatus(Order inOrder, String inStatus, String downloadedstatus);
 
+	void saveOrder(MediaArchive inArchive, Order inOrder);
+
 	
 }
