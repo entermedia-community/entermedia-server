@@ -1412,7 +1412,7 @@ public class OrderModule extends BaseMediaModule
 			throw new OpenEditException("No such item");
 		}
 		
-		
+		archive.getOrderManager().updateStatus(archive, order);
 		
 		//String[] organizations = inReq.getRequestParameters("organization.value");
 	}
