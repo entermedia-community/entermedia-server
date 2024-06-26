@@ -1592,6 +1592,8 @@ public class OrderModule extends BaseMediaModule
 				continue; //skip complete orders
 			}
 
+			//Make sure this order is totally ready for download
+			
 			Lock lock = archive.getLockManager().lock("orders" + download.getOrder().getId(), "BaseOrderManager");
 
 			try
@@ -1622,7 +1624,7 @@ public class OrderModule extends BaseMediaModule
 						}
 					}
 				}
-				
+				archive.saveData("orderitem", itemstosave);
 				//Save order
 				download.getOrder().setOrderStatus("complete");
 				archive.getOrderManager().saveOrder(archive, download.getOrder());
