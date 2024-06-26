@@ -1246,9 +1246,10 @@ public class FinderModule extends BaseMediaModule
 		
 		String hitsname = "publishingentityassethits";
 		search.setHitsName(hitsname);
-			
+		search.addSortBy("assetaddeddateDown");	
 		
 		HitTracker tracker = assetsearcher.search(search);
+		
 		tracker.setHitsPerPage(25);
 		inReq.putPageValue(hitsname,tracker);
 	}
