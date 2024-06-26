@@ -1523,7 +1523,7 @@ public class OrderModule extends BaseMediaModule
 			throw new OpenEditException("Order not found, check catalogid");
 		}
 		//getOrderManager(inReq).cancelOrder(order);
-		getOrderManager(inReq).changeStatus(order,"canceled");
+		getOrderManager(inReq).changeStatus(order,"canceled", "canceled");
 		return order;
 	}
 
@@ -1550,10 +1550,9 @@ public class OrderModule extends BaseMediaModule
 		if( canedit)
 		{
 			String status = inReq.getRequestParameter("orderstatus");
-			if( status == null)
-			{
-				getOrderManager(inReq).changeStatus(order,status);
-			}
+			String downloadedstatus = inReq.getRequestParameter("downloadedstatus");
+			getOrderManager(inReq).changeStatus(order,status, downloadedstatus);
+			
 		}
 		return order;
 	}
@@ -1575,7 +1574,14 @@ public class OrderModule extends BaseMediaModule
 		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
 		{
 			OrderDownload download = (OrderDownload) iterator.next();
-			if(download.getOrder().get("orderstatus").equals("complete") ) 
+
+			if("canceled".equals( download.getOrder().getOrderStatus()  ) ) 
+			{
+				continue; //skip complete orders
+			}
+			
+			
+			if("complete".equals( download.getOrder().get("downloadedstatus") ) )
 			{
 				continue; //skip complete orders
 			}

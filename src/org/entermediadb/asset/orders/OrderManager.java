@@ -106,7 +106,7 @@ public interface OrderManager
 	
 	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId);
 
-	void changeStatus(Order inOrder, String inStatus);
+	void changeStatus(Order inOrder, String inStatus, String downloadedstatus);
 
 	
 }
