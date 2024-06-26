@@ -21,7 +21,7 @@
 #foreach( $item in $downloaditems )
 #if( ${foreach.count} != 1), #end 
 {
-"itemid":#jesc($item.getId()), 
+"id":#jesc($item.getId()), 
 "url":#jesc($item.itemdownloadurl), 
 "fileame":#jesc($item.itemexportname)
 }
