@@ -1389,28 +1389,6 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		fieldPageManager = inManager;
 	}
 
-	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser)
-	{
-		HitTracker orders = findDownloadOrdersForUser(inReq, getCatalogId(), inUser);
-
-		Searcher ordersearcher = getMediaArchive().getSearcher("order");
-		
-		Collection orderdownloads = new ArrayList();
-		
-		for (Iterator iterator = orders.getPageOfHits().iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			Order order = (Order)ordersearcher.loadData(data);
-			OrderDownload odownload = new OrderDownload();
-			odownload.setOrder(order);
-			HitTracker items = getMediaArchive().query("orderitem").exact("orderid",order).search();
-			odownload.setItemList(items);
-			orderdownloads.add(odownload);
-		}
-		
-		return orderdownloads;
-	}
-
 
 	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId) 
 	{
@@ -1458,5 +1436,27 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 
 	}
 	
+	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser)
+	{
+		HitTracker orders = findDownloadOrdersForUser(inReq, getCatalogId(), inUser);
+
+		Searcher ordersearcher = getMediaArchive().getSearcher("order");
+		
+		Collection<OrderDownload> orderdownloads = new ArrayList<OrderDownload>();
+		
+		for (Iterator iterator = orders.getPageOfHits().iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Order order = (Order)ordersearcher.loadData(data);
+			OrderDownload odownload = new OrderDownload();
+			odownload.setOrder(order);
+			HitTracker items = getMediaArchive().query("orderitem").exact("orderid",order).search();
+			odownload.setItemList(items);
+			orderdownloads.add(odownload);
+		}
+		
+		return orderdownloads;
+	}
+
 
 }
