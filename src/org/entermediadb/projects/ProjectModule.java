@@ -1559,7 +1559,12 @@ Server ProjectModule.uploadFile
 
 	public void loadCollectionChild(WebPageRequest inReq)
 	{
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( inReq.getContentPage().exists())
+		{
+			return;
+		}
+		
+		Data collection = (Data)inReq.getPageValue("librarycol");
 		if( collection != null)
 		{
 			Searcher searcher = loadSearcher(inReq); //Product?
