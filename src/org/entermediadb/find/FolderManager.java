@@ -362,6 +362,54 @@ public class FolderManager implements CatalogEnabled
 		response.put("files",mixedcopy);
 		return response;
 	}
+	
+	
+	
+	public Map removeDuplicateAssetsPush(Map assetmap, Map inParams) 
+	{
+	
+		Map response = new HashMap(assetmap);
+
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		
+		response.put("filedownloadpath", inParams.get("filedownloadpath"));
+		
+		List assetservercopy = (List)response.get("files");
+		Set serverfiles = new HashSet();
+		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
+			Map	serverfile = (Map) iterator.next();
+			String path = (String)serverfile.get("path");
+			long size = (Long)serverfile.get("size");
+			serverfiles.add(path  + "|" +size);
+		}
+		
+		
+		//Remove all duplicate assets
+		List remotecopy = (List)inParams.get("files");
+		List mixedcopy = new ArrayList();
+		if(remotecopy != null) { 
+			for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
+				Map clientfile = (Map) iterator2.next();
+				String path = (String)clientfile.get("path");
+				long size = (Long)clientfile.get("size");
+				if( !serverfiles.contains(path  + "|" +size) )
+				{
+					mixedcopy.add(clientfile);
+				}
+			}
+		}
+	
+		//Folders
+		response.put("files",mixedcopy);
+		return response;
+	}
 
 	/*
 	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
