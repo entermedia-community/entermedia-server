@@ -1595,6 +1595,11 @@ public class OrderModule extends BaseMediaModule
 			//Make sure this order is totally ready for download
 			
 			Lock lock = archive.getLockManager().lock("orders" + download.getOrder().getId(), "BaseOrderManager");
+//			if( lock == null)
+//			{
+//				log.error("Could not get lock on order");
+//				continue;
+//			}
 
 			try
 			{
@@ -1627,6 +1632,7 @@ public class OrderModule extends BaseMediaModule
 				archive.saveData("orderitem", itemstosave);
 				//Save order
 				download.getOrder().setOrderStatus("complete");
+				download.getOrder().setValue("downloadedstatus","complete");
 				archive.getOrderManager().saveOrder(archive, download.getOrder());
 				
 			}
