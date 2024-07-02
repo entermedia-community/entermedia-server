@@ -213,7 +213,9 @@ public class AssetImportModule  extends BaseMediaModule
 			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
 		*/
 		Map params = inReq.getJsonRequest();
-		
+		if (params == null) {
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = (String)params.get("moduleid");
 		Data module = archive.getCachedData("module", moduleid);
@@ -230,21 +232,47 @@ public class AssetImportModule  extends BaseMediaModule
 		//List remoteassets = (List)params.get("files");
 		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
 		
+		inReq.putPageValue("assetmap", new JSONObject(finallist));
+		
+	}
+	
+	
+	public void checkPushRemoteFolder(WebPageRequest inReq)
+	{
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",	
+		"desktopfilecount": "123",	
+			
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		Map params = inReq.getJsonRequest();
+		if (params == null) {
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		String moduleid = (String)params.get("moduleid");
+		Data module = archive.getCachedData("module", moduleid);
+		Data entity = archive.getCachedData( moduleid ,(String)params.get("entityid"));
+		
+		String categorypath = (String)params.get("categorypath");
+		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+		//EntityManager entityManager = getEntityManager(inReq);
+		//Category category = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
 
+		FolderManager manager = getFolderManager(inReq);
+		Map assetmap = manager.listAssetMap(archive, category);
+		
+		//List remoteassets = (List)params.get("files");
+		Map finallist = manager.removeDuplicateAssetsPush(assetmap,params);
 		
 		inReq.putPageValue("assetmap", new JSONObject(finallist));
 		
 	}
-	public void checkPushRemoteFolder(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String categorypath = inReq.getRequestParameter("categorypath"); 
-		Category cat = archive.getCategorySearcher().loadCategoryByPath(categorypath);
-		FolderManager manager = getFolderManager(inReq);
-		Map assets = manager.listAssetMap(archive, cat);
-		inReq.putPageValue("assetmap", new JSONObject(assets));
-		
-	}
+
 	public void listConnectedDesktop(WebPageRequest inReq)
 	{
 		FolderManager manager = getFolderManager(inReq);
