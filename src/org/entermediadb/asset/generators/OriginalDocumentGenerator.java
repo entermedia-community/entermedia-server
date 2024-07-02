@@ -127,6 +127,12 @@ public class OriginalDocumentGenerator extends FileGenerator
 		    	inReq.getResponse().setHeader("Content-Type", "application/octet-stream; charset=utf-8");
 				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
 		    	//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\"");
+				
+				String md5 = asset.get("md5hex");
+				if( md5 != null)
+				{
+			    	inReq.getResponse().setHeader("ETag", md5);					
+				}
 			}
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
