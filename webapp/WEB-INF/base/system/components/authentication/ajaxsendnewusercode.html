@@ -1,0 +1,42 @@
+<div id="magiclinkcontainer">
+		#set( $to = $context.getRequestParameter("email") )	
+		#set( $username = $context.getRequestParameter("username") )
+		<div class="my-4">
+		<form class="ajaxform  row justify-content-md-center g-3" 
+				action="$home$content.loginroot/ajaxsendusercode.html"
+				id="password-reminder" 
+				name="passwordReminder"  
+				method="post"
+				data-targetdiv="magiclinkcontainer">
+
+				<div class="p-2 text-center">[[Email was not found. Enter first and last name to register]]</div>
+												
+				
+					
+				<div class="col-6">
+				<input class="form-control required grabfocus" type="text" name="firstName"  size="50"
+					 placeholder="[[First Name]]" required />
+				</div>
+					 
+				 <div class="col-6"><input class="form-control required " type="text" name="lastName"   
+					 placeholder="[[Last Name]]" required />
+				</div>
+				
+				<div class="col-6">
+					<input class="form-control  required" type="text" name="email" size="50" value="$!to" 
+				    placeholder="[[Enter your Email Address]]" required /> 		
+				</div>
+					 
+				<div class="col-auto">
+					<input class="btn btn-primary" name="submit" type="submit" value="[[Send New User Code]]" />
+				</div>
+		
+				
+				#ifnotnull( $userCategory)
+				<input type="hidden" name="categoryid" value="$userCategory.id" />
+				#end
+				<input type="hidden" name="subject" value="[[Login Code]]" />
+        </form>
+	</div>
+</div>
+
