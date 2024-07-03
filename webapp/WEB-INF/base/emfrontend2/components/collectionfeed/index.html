@@ -45,7 +45,7 @@
 						#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
 						$!collectionassets.setHitsPerPage(100)
 						#set( $colid = $collection.getCollection().getId() )
-						<div class="ui-widget-header" style="">
+						<div class="ui-widget-header" >
 							 <span class="ui-icon ui-icon-newwin" data-collectionid="$colid" ></span>
 							<span class="widget-header-title">$collection.getCollection()</span> 
 						</div>
