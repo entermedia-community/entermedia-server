@@ -11,8 +11,8 @@
 	
 	<div class="modal-header">
         <h5 class="modal-title"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close closemodal" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Close">
+          <span class="visually-hidden" aria-hidden="true">&times;</span>
         </button>
       </div>
 	<div class="modal-body">
@@ -21,7 +21,7 @@ $pages.includeContent()
 
 	</div>
 	<div class="modal-footer">
-	      <button id="closebutton" type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
+	      <button id="closebutton" type="button" class="btn btn-sm btn-secondary closemodal" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
 	      <input  id="submitbutton" type="submit" form="notset"  value="[[Ok]]" name="submitbutton" class="btn btn-sm btn-primary dialogsubmitbtn">
     </div>
     

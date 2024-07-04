@@ -1,0 +1,20 @@
+#set( $allowguestregistration = $context.findValue("allowguestregistration") )	
+
+#ifnull( $selecteduser )
+	#if( $userapproveremail)
+		##Uses and admin to create the user
+		$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
+	#else
+	    #if( $allowguestregistration == "false" )
+	    	[[No user found]]
+	    	$pages.include("./ajaxloginform.html")  ##to try again or register
+	    #else
+		    ##asks for the first and last name then sends a code
+			$pages.include("./ajaxsendnewusercode.html")
+		#end	
+	#end	
+#end
+#ifnotnull( $selecteduser )
+	##Sends a code right away and asks for the numbers
+	$pages.include("./ajaxsendusercode.html")  ##to try again or register
+#end

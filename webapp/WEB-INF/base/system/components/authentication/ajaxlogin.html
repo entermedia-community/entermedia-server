@@ -1,0 +1,5 @@
+#if($user)	
+	<div class="reloadpage"></div>
+#else
+	$pages.include("$content.loginroot/ajaxloginform.html",$context)
+#end
