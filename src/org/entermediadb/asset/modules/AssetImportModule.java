@@ -230,10 +230,11 @@ public class AssetImportModule  extends BaseMediaModule
 		Map assetmap = manager.listAssetMap(archive, category);
 		
 		//List remoteassets = (List)params.get("files");
-		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
+		Map pendingdownloads = manager.removeDuplicateAssetsFrom(assetmap,params);
+		inReq.putPageValue("assetmap", new JSONObject(pendingdownloads));
 		
-		inReq.putPageValue("assetmap", new JSONObject(finallist));
-		
+		Map missingassets = manager.findMissingAssetsToPull(assetmap,params);
+		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
 	}
 	
 	
@@ -265,11 +266,14 @@ public class AssetImportModule  extends BaseMediaModule
 
 		FolderManager manager = getFolderManager(inReq);
 		Map assetmap = manager.listAssetMap(archive, category);
-		
+	
 		//List remoteassets = (List)params.get("files");
-		Map finallist = manager.removeDuplicateAssetsPush(assetmap,params);
+		Map pendinguploads = manager.removeDuplicateAssetsPush(assetmap,params);
+		inReq.putPageValue("assetmap", new JSONObject(pendinguploads));
 		
-		inReq.putPageValue("assetmap", new JSONObject(finallist));
+		//Removed files locally
+		Map missingassets = manager.findMissingAssetsFromPush(assetmap, params);
+		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
 		
 	}
 
