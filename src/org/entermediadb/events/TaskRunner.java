@@ -130,13 +130,14 @@ public class TaskRunner extends java.util.TimerTask
 			}
 			if( fieldPageValues != null)
 			{
-				for (Iterator iterator = fieldPageValues.keySet().iterator(); iterator.hasNext();)
-				{
-					String  key = (String ) iterator.next();
-					Object value = fieldPageValues.get(key);
-					fieldWebPageRequest.putPageValue(key, value);
-					fieldWebPageRequest.putSessionValue(key, value); //seems redudant
-				}
+				fieldWebPageRequest.putPageValues(fieldPageValues);
+//				for (Iterator iterator = fieldPageValues.keySet().iterator(); iterator.hasNext();)
+//				{
+//					String  key = (String ) iterator.next();
+//					Object value = fieldPageValues.get(key);
+//					fieldWebPageRequest.putPageValue(key, value);
+//					fieldWebPageRequest.putSessionValue(key, value); //seems redudant
+//				}
 			}
 		}
 		return fieldWebPageRequest;
