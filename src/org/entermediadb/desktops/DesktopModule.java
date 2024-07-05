@@ -120,7 +120,7 @@ public class DesktopModule extends BaseMediaModule
 			}
 			
 			String isDesktop = inReq.getRequest().getHeader("User-Agent");
-			if(Boolean.parseBoolean(isDesktopParameter) || (isDesktop.contains("eMediaWorkspace") && inReq.getUser() != null)) 
+			if(Boolean.parseBoolean(isDesktopParameter) || (isDesktop.contains("eMediaLibrary") && inReq.getUser() != null)) 
 			{
 				FolderManager manager = getFolderManager(inReq);
 				desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
