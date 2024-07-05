@@ -128,7 +128,9 @@ function chatterbox() {
 
   chatopen = true;
 }
-
+lQuery("#supportchat").livequery("shown.bs.collapse	", function (e) {
+  scrollToChat();
+});
 function scrollToChat() {
   var inside = $(".chatterbox-body-inside");
   if (inside.length > 0) {
