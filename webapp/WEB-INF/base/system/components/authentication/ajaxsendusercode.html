@@ -23,10 +23,9 @@
 			<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
 			</div>
 			#end
-			
-			
+
 			<div class="col-auto">
-				<input class="btn btn-primary" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+				<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
 			</div>
 			#if($loginok)
 			#set( $loginok = "$context.siteRoot" + "$loginok")
