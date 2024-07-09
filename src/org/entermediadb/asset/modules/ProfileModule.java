@@ -222,6 +222,45 @@ public class ProfileModule extends MediaArchiveModule
 		getUserProfileManager().saveUserProfile(userProfile);
 
 	}
+	
+	
+	public void resetColumnsModule(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		UserProfile userProfile = inReq.getUserProfile();
+		
+		String searchtype = inReq.findPathValue("searchtype");
+		String view = inReq.getRequestParameter("viewid");
+		
+		if( searchtype == null || "asset".equals(searchtype))
+		{
+			searchtype = "asset";
+		}
+		if( view == null) {
+			if("asset".equals(searchtype)) {
+				view = "resultstable";
+			}
+			else {
+				view = searchtype+"resultstable";
+			}
+		}
+		
+		String viewpath = searchtype + "/" + view;
+		
+		String viewcacheid = "view_" + searchtype + "_" + view + "_" + userProfile.get("settingsgroup");
+		String viewcacheidsort = "view_" + searchtype + "_" + view;
+
+		Collection ids = new ArrayList();
+		
+		inReq.getUserProfile().setValues(viewcacheid, ids);
+		inReq.getUserProfile().setValues(viewcacheidsort, ids);
+		
+		userProfile.setValues(viewcacheid, ids);
+		userProfile.setValues(viewcacheidsort, ids);
+		getUserProfileManager().saveUserProfile(userProfile);
+		inReq.setUserProfile(userProfile);
+
+	}
 
 	public void setView(WebPageRequest inReq) throws Exception
 	{
