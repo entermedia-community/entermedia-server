@@ -110,7 +110,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Iterator iter = tracker.iterator();
 			if (!iter.hasNext())
 			{
-				log.error("Searching by sourcepath not working!! Catalog ID was : " + inSearcher.getCatalogId() + " reindex required");
+				log.error("Searching by sourcepath not working!! Catalog ID was : " + inSearcher.getCatalogId() + " reindex required, Searchtype: " + inSearcher.getSearchType());
 				return lock;
 			}
 			Data first = (Data) iter.next();
