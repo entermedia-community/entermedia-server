@@ -1249,8 +1249,8 @@ public class FinderModule extends BaseMediaModule
 		search.addSortBy("assetaddeddateDown");	
 		
 		HitTracker tracker = assetsearcher.search(search);
-		
-		tracker.setHitsPerPage(25);
+		tracker.enableBulkOperations();
+		//tracker.setHitsPerPage(100);
 		inReq.putPageValue(hitsname,tracker);
 	}
 
