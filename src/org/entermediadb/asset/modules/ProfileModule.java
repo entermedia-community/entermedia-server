@@ -259,6 +259,7 @@ public class ProfileModule extends MediaArchiveModule
 		userProfile.setValues(viewcacheidsort, ids);
 		getUserProfileManager().saveUserProfile(userProfile);
 		inReq.setUserProfile(userProfile);
+		getSearcherManager().getPropertyDetailsArchive(archive.getCatalogId()).clearCache();
 
 	}
 
