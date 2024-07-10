@@ -60,6 +60,11 @@ public class ChatModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
+		
+		if(channel == null) {
+			return;
+		}
+		
 		Searcher chats = archive.getSearcher("chatterbox");
 
 		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
