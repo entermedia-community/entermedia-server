@@ -393,16 +393,18 @@ public class FolderManager implements CatalogEnabled
 		
 		List remotecopy = (List)inParams.get("files");
 		List mixedcopy = new ArrayList();
-		for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
-			Map	clientfile = (Map) iterator.next();
-			String path = (String)clientfile.get("path");
-			long size = (Long)clientfile.get("size");
-			if( !remotecopy.contains(path  + "|" +size) )
-			{
-				mixedcopy.add(clientfile);
+		if(remotecopy != null) 
+		{
+			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
+				Map	clientfile = (Map) iterator.next();
+				String path = (String)clientfile.get("path");
+				long size = (Long)clientfile.get("size");
+				if( !remotecopy.contains(path  + "|" +size) )
+				{
+					mixedcopy.add(clientfile);
+				}
 			}
 		}
-		
 		//Folders
 		response.put("files",mixedcopy);
 		return response;
