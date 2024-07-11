@@ -23,7 +23,7 @@
 		<div class="splide__track">
 			<ul class="splide__list">
 				#set( $preset = $mediaarchive.getCachedData("convertpreset","largeimage"))
-				#foreach($hit in $hits.getPageOfHits())
+				#foreach($hit in $hits)
 					#set ($sourcepath = $hit.sourcepath)    		
 					#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 					$context.putPageValue("type", $type)
