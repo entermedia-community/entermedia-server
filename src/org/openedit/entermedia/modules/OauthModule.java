@@ -208,6 +208,18 @@ public class OauthModule extends BaseMediaModule
 		String appid = inReq.findValue("applicationid");
 		MediaArchive archive = getMediaArchive(inReq);
 
+		
+		String error = inReq.getRequestParameter("error");
+		if(error != null) {
+			inReq.putPageValue("oatherror", error);
+			String errorurl = inReq.findActionValue("errorurl");
+			if(errorurl != null) {
+				inReq.redirect(errorurl);
+			}
+			return;//login didn't work. 
+		}
+		
+		
 		if ("google".equals(provider))
 		{
 
@@ -254,6 +266,8 @@ public class OauthModule extends BaseMediaModule
 				}
 				
 			}
+			
+			
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 			//GOOGLE
