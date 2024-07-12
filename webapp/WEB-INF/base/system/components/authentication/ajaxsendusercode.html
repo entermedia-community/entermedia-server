@@ -12,20 +12,22 @@
 		data-targetdiv="ajaxloginformdiv"
 		action="$home$content.loginroot/ajaxlogin.html" 
 		method="POST" >
-			<div class="col-6">
+			<div class="col-12 col-md-6">
 				<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
 			</div>	
 				
 			#if( $email )
 			<input  type="hidden" name="email" value="$email" />
 			#else
-			<div class="col-6">
+			<div class="col-12 col-md-6">
 			<input class="form-control required grabfocus" type="text" name="email" size="50" placeholder="[[Enter your Email Address]]" required />
 			</div>
 			#end
 
-			<div class="col-auto">
-				<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+			<div class="col-12 col-md-auto">
+				<div class="d-flex justify-content-center">
+					<input class="btn themed-btn" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+				</div>
 			</div>
 			#if($loginok)
 			#set( $loginok = "$context.siteRoot" + "$loginok")
