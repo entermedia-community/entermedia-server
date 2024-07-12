@@ -1578,4 +1578,55 @@ Server ProjectModule.uploadFile
  
 	}
 	
+	
+	public void trackReferralCode(WebPageRequest inReq)
+	{
+		String referralcode = inReq.getRequestParameter("fbclid");
+		
+		if( referralcode != null)
+		{
+			MediaArchive mediaArchive = getMediaArchive(inReq);
+			Data exists = (Data) mediaArchive.getCachedData("collectivelinkreferralcode", referralcode);
+			if(exists != null) {
+				Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
+				newcode.setValue("collectionid", exists.getValue("collectionid"));
+				newcode.setValue("referralcode", exists.getId());
+				
+				populateTracker(inReq, newcode);
+				
+				mediaArchive.saveData("collectivelinktracker", newcode);
+				inReq.putSessionValue("trackingsession",newcode);
+			}
+			
+		}
+		else
+		{
+			MediaArchive mediaArchive = getMediaArchive(inReq);
+
+			Data trackingsession = (Data)inReq.getSessionValue("trackingsession");
+			if( trackingsession != null)
+			{
+				Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
+				newcode.setValue("collectionid", trackingsession.getValue("collectionid"));
+				newcode.setValue("referralcode", trackingsession.getValue("referralcode"));
+				newcode.setValue("firsttrakedlink", trackingsession.getId());
+				populateTracker(inReq, newcode);
+				mediaArchive.saveData("collectivelinktracker", newcode);
+			}
+		}
+		
+		
+ 
+	}
+
+	private void populateTracker(WebPageRequest inReq, Data newcode) {
+		newcode.setValue("date", new Date());
+		newcode.setValue("user", inReq.getUserName());
+		String ipaddress = inReq.getRequest().getHeader("X-Real-IP");
+		newcode.setValue("ipaddress", ipaddress);
+		String referral = inReq.getRequest().getHeader("Referer");
+		newcode.setValue("referralurl", referral);
+		newcode.setValue("path", inReq.getPath());
+	}
+	
 }
