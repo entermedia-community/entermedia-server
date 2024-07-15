@@ -187,8 +187,13 @@ function connect() {
     message.id = id;
     var existing = jQuery("#chatter-message-" + id);
     if (existing.length) {
-      $(existing).find(".chat-msg").html(message.content);
-
+      var chatMsg = $(existing).find(".chat-msg");
+      var msgBody = $(chatMsg).find(".msg-body-content");
+      if (msgBody.length) {
+        msgBody.html(message.content);
+      } else {
+        chatMsg.html(message.content);
+      }
       return;
     }
     var chatter = jQuery('div[data-channel="' + channel + '"]');
