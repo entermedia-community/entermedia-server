@@ -23,7 +23,8 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 				inComplete.call(this);
 			}
 			//console.log("html complete");
-			$(document).trigger("domchanged");
+			$(document).trigger("domchanged",$(oldscope).parent()); //Child got replaced	 
+
 		});
 		return returned;
     };
@@ -38,16 +39,19 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     	}
     	
 		var returned = oldhtml.call($(this),arg);
-		$(document).trigger("domchanged"); //a component may be adding html that will call this
+		$(document).trigger("domchanged",$(this)); //a component may be adding html that will call this
 		return returned;
     };
    
     var oldreplaceWith = $.fn.replaceWith;
     $.fn.replaceWith = function(arg) 
     {
+		var parent = $(this).parent();
+		
 		var returned = oldreplaceWith.call($(this),arg);
 		//console.log("Called replacewith on " +	$(this).selector, arg.length );	
-		$(document).trigger("domchanged");
+		//$(document).trigger("domchanged");
+		$(document).trigger("domchanged",parent); //Child got replaced	 
 		
 		return returned;
     };
@@ -57,7 +61,8 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     {
 		var returned = oldappend.call($(this),arg);
 		//console.log("Called replacewith on " +	$(this).selector, arg.length );	
-		$(document).trigger("domchanged");
+		$(document).trigger("domchanged",$(this)); 	 
+
 		
 		return returned;
     };
@@ -75,7 +80,16 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 			{
 				oldsucess.call(form,arg1,arg2,arg3,arg4);
 			}	
-			$(document).trigger("domchanged"); //TODO: Put this in the success section	
+			//Grab target div? 		$(document).trigger("domchanged",null,$(this)); 	
+			var targetdiv = form.data("targetdiv");
+			if(targetdiv)
+			{
+				$(document).trigger("domchanged",$("#" + targetdiv)); 
+			} 
+			else
+			{
+				$(document).trigger("domchanged");
+			}	
 		};
 		var returned  = oldajaxSubmit.call(form,params);
 		params.success = oldsucess;
@@ -118,28 +132,36 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  	var livequeryrunning = false;
  	//Listener
  	
- 	$(document).on( "domchanged", function(event,args)
+ 	$(document).on( "domchanged", function(event, args)
  	{
  		if( livequeryrunning )
  		{
- 			//console.log("Skipping reload");
+ 			console.log("Skipping reload");
  			return;
  		}
- 		//console.log("domchanged reload");
-		var chunck;
+		var element;
  		if( typeof args == Array )
  		{
- 			chunck = $(args[0],args[1]);
+			if( args.length > 1)
+			{
+ 				element = $(args[0],args[1]);
+ 			}
  		}
- 		else
+ 		else if( args != null)
  		{
- 			chunck = document;
+			element = args;
  		}
- 		$.each(regelements,function()
+ 		
+ 		if( element == null)
+ 		{
+			element = document;
+ 		}
+ 		console.log("domchanged reload on ",element);
+ 		$.each(regelements,function() //Everyone
  		{
  			var item = this;
  			var funct = item.function;
- 			$(item.selector,chunck).each(function()
+ 			$(item.selector,element).each(function()
  			{
  				try
  				{
