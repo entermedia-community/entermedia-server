@@ -333,6 +333,7 @@ public class CategoryEditModule extends BaseMediaModule {
 					return;
 				}
 				asset.removeCategory(c);
+				archive.saveAsset(asset);
 				inPageRequest.putPageValue("removed" , "1");
 				inPageRequest.putPageValue("asset", asset);
 			}
