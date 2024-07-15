@@ -129,16 +129,15 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 (function( $ ) { 
  	var regelements = new Array();
  	var eventregistry = new Array();
- 	var livequeryrunning = false;
  	//Listener
  	
  	$(document).on( "domchanged", function(event, args)
  	{
- 		if( livequeryrunning )
- 		{
- 			console.log("Skipping reload");
- 			return;
- 		}
+// 		if( livequeryrunning && args == null )
+// 		{
+ 			//console.log("Skipping reload" , args);
+ 			//return;
+// 		}
 		var element;
  		if( typeof args == Array )
  		{
@@ -156,7 +155,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  		{
 			element = document;
  		}
- 		console.log("domchanged reload on ",element);
+ 		//console.log("domchanged reload on ",element);
  		$.each(regelements,function() //Everyone
  		{
  			var item = this;
@@ -217,7 +216,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 		var runner = {};
 		runner.livequery = function()
 		{
-			livequeryrunning  = true;
 			var nodes = jQuery(selector);
 			if( arguments.length == 1 )
 			{
@@ -264,7 +262,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	 			});	
 		    	
 			}
-			livequeryrunning = false;
 		    return this;
 		}
 		return runner;
