@@ -217,14 +217,10 @@ public class AssetImportModule  extends BaseMediaModule
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
-		String moduleid = (String)params.get("moduleid");
-		Data module = archive.getCachedData("module", moduleid);
-		Data entity = archive.getCachedData( moduleid ,(String)params.get("entityid"));
-		
 		String categorypath = (String)params.get("categorypath");
+		inReq.putPageValue("categorypath", categorypath);
+		
 		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
-		//EntityManager entityManager = getEntityManager(inReq);
-		//Category category = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
 
 		FolderManager manager = getFolderManager(inReq);
 		Map assetmap = manager.listAssetMap(archive, category);
@@ -254,6 +250,8 @@ public class AssetImportModule  extends BaseMediaModule
 		if (params == null) {
 			return;
 		}
+		inReq.putPageValue("remotemap", new JSONObject(params));
+		
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = (String)params.get("moduleid");
 		Data module = archive.getCachedData("module", moduleid);
@@ -274,6 +272,18 @@ public class AssetImportModule  extends BaseMediaModule
 		//Removed files locally
 		Map missingassets = manager.findMissingAssetsFromPush(assetmap, params);
 		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
+		
+	}
+	
+	public void listServerSubFolders(WebPageRequest inReq)
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		String defaultcategoryid = (String) inReq.getRequestParameter("defaultcategoryid");
+		Category category = archive.getCategory(defaultcategoryid);
+		
+		inReq.putPageValue("category", category);
+		
 		
 	}
 

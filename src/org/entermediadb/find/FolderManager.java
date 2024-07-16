@@ -399,7 +399,7 @@ public class FolderManager implements CatalogEnabled
 				Map	clientfile = (Map) iterator.next();
 				String path = (String)clientfile.get("path");
 				long size = (Long)clientfile.get("size");
-				if( !remotecopy.contains(path  + "|" +size) )
+				if( !serverfiles.contains(path  + "|" +size) )
 				{
 					mixedcopy.add(clientfile);
 				}
