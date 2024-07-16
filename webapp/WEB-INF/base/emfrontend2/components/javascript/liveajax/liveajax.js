@@ -80,41 +80,41 @@ If list2 not init: Make sure .html is correct and livequeryrunning
   };
 
   /*
-    //This is problematic because we call get for various reasons
-    var oldget = $.fn.get;
-    $.fn.get = function() 
-    {			
-    	if( arguments.length == 3 )
-		{
-			//console.log("Called FAKE get on " ,arguments );
-			var oldsucess = arguments[2];
-			return oldget.call($(this),arguments[0],arguments[1],function()
-			{
-				oldsucess.call(this);	
-				//console.log("Called get on " +	$(this).selector );	
-				$(document).trigger("domchanged"); 
-			});
-		}
-		else
-		{
-			//console.error("Wrong number of params for get ", arguments);
-			return oldget.call($(this));
-		}
-    };
-    */
+  //This is problematic because we call get for various reasons
+  var oldget = $.fn.get;
+  $.fn.get = function() 
+  {			
+    if( arguments.length == 3 )
+  {
+    //console.log("Called FAKE get on " ,arguments );
+    var oldsucess = arguments[2];
+    return oldget.call($(this),arguments[0],arguments[1],function()
+    {
+      oldsucess.call(this);	
+      //console.log("Called get on " +	$(this).selector );	
+      $(document).trigger("domchanged"); 
+    });
+  }
+  else
+  {
+    //console.error("Wrong number of params for get ", arguments);
+    return oldget.call($(this));
+  }
+  };
+  */
 })(jQuery);
 
 (function ($) {
   var regelements = new Array();
   var eventregistry = new Array();
-  var livequeryrunning = false;
   //Listener
 
   $(document).on("domchanged", function (event, args) {
-    if (livequeryrunning) {
-      // console.log("Skipping reload");
-      return;
-    }
+    // 		if( livequeryrunning && args == null )
+    // 		{
+    //console.log("Skipping reload" , args);
+    //return;
+    // 		}
     var element;
     if (typeof args == Array) {
       if (args.length > 1) {
@@ -127,7 +127,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     if (element == null) {
       element = document;
     }
-    // console.log("domchanged reload on ",element);
+    //console.log("domchanged reload on ",element);
     $.each(regelements, function () //Everyone
     {
       var item = this;
@@ -175,7 +175,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
   ) {
     var runner = {};
     runner.livequery = function () {
-      livequeryrunning = true;
       var nodes = jQuery(selector);
       if (arguments.length == 1) {
         var func = arguments[0];
@@ -218,7 +217,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
           }
         );
       }
-      livequeryrunning = false;
       return this;
     };
     return runner;
