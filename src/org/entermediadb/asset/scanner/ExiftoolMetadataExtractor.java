@@ -200,12 +200,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{
-		String[] supportedTypes = new String[] { "audio", "video", "image", "document" };
+		String[] supportedTypes = new String[] { "audio", "video", "image", "document", "default" };
 		String type = PathUtilities.extractPageType(inputFile.getName());
 
 		if (type != null)
 		{
-			String mediatype = inArchive.getMediaRenderType(type);
+			String mediatype = inArchive.getMediaRenderType(type); 
 			if (!Arrays.asList(supportedTypes).contains(mediatype))
 			{
 				return false;
@@ -415,7 +415,9 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				//				}
 				else if ("FileType".equals(key))
 				{
-					if (inAsset.get("fileformat") == null)
+					String mediatype = inArchive.getMediaRenderType(value.toLowerCase());
+					
+					if (!mediatype.equals("default"))
 					{
 						inAsset.setProperty("fileformat", value.toLowerCase());
 					}
