@@ -930,5 +930,18 @@ public class MediaAdminModule extends BaseMediaModule
 		
 		s.saveData(copy);
 	}
+
+	public void deleteSmartOrganizer(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		if( template != null)
+		{
+			Searcher s = archive.getSearcher("smartorganizer");
+			s.delete(template,inReq.getUser());
+		}
+	}
+
 	
 }

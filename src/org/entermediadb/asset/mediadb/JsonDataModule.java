@@ -231,16 +231,17 @@ public class JsonDataModule extends BaseJsonModule
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		Data newdata = loadData(inReq);
-		if(newdata != null)
+		if(newdata == null)
 		{
-			checkAssetUploads(inReq, archive, searcher, newdata);
-			Map request = inReq.getJsonRequest();
-			populateJsonData(request,searcher,newdata);
-			searcher.saveData(newdata, inReq.getUser());
-			archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
-			inReq.putPageValue("searcher", searcher);
-			inReq.putPageValue("data", newdata);
+			newdata = searcher.createNewData();
 		}
+		checkAssetUploads(inReq, archive, searcher, newdata);
+		Map request = inReq.getJsonRequest();
+		populateJsonData(request,searcher,newdata);
+		searcher.saveData(newdata, inReq.getUser());
+		archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
+		inReq.putPageValue("searcher", searcher);
+		inReq.putPageValue("data", newdata);
 	}
 	
 	public  void getUUID(WebPageRequest inReq) {
