@@ -916,5 +916,19 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().importCustomizations(mediaArchive,files);
 	}
 
+	public void copySmartOrganizer(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		Data copy = s.createNewData();
+		copy.setProperties(template.getProperties());
+		copy.setId(null);
+		copy.setName(template.getName() + " copy");
+		
+		s.saveData(copy);
+	}
 	
 }
