@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
+import org.openedit.util.Replacer;
 
 public class ShellScriptRunner implements ScriptRunner
 {
@@ -18,13 +20,18 @@ public class ShellScriptRunner implements ScriptRunner
 	
 	protected Exec fieldExec;
 	protected SearcherManager fieldSearcherManager;
+	protected ModuleManager fieldModuleManager;
 	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
 	
-	
+	/*
 	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
-
+	 */
 
 
 	public void setSearcherManager(SearcherManager inSearcherManager) {
@@ -54,8 +61,11 @@ public class ShellScriptRunner implements ScriptRunner
 		String catalogid = req.findPathValue("catalogid");
 		String mask = req.findValue("scriptargs");
 		if(catalogid != null && mask != null) {
-			//#TODO change to replacer
-			String value =  getSearcherManager().getValue(catalogid, mask, variableMap);
+			
+			//String value =  getSearcherManager().getValue(catalogid, mask, variableMap);
+			Replacer replacer = getReplacer(catalogid);
+			String value = replacer.replace(mask, variableMap);
+			
 			if(value != null) {
 				args.add(value);
 			}
@@ -68,6 +78,11 @@ public class ShellScriptRunner implements ScriptRunner
 		
 		return result;
 	}
+	
+	public Replacer getReplacer(String inCatalogId)
+	{
+		return (Replacer)getModuleManager().getBean(inCatalogId, "replacer");
+	}		
 
 
 }
