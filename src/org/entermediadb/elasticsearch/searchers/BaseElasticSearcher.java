@@ -2549,16 +2549,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 //				{
 //					value = getReplacer().replace(mask, inData);
 //				}
-				if( value == null)
+				value = inData.getValue(key);
+				if (value != null)
 				{
-					value = inData.getValue(key);
-					if (value != null)
+					if (value instanceof String && ((String) value).isEmpty())  //Standarize
 					{
-						if (value instanceof String && ((String) value).isEmpty())  //Standarize
-						{
-							value = null;
-						}
+						value = null;
 					}
+				}
+				else
+				{
+					if( detail.isAutoIncrement())
+					{
+						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+
+						value = manager.nextNumber(getSearchType() + "_" + detail.getId());
+					}
+					
+
 				}
 				//				if( isReIndexing() ) //When reindexing dont mess with this data
 				//				{
@@ -2702,7 +2710,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					inContent.field(key, val);
 				}
-				else if (detail.isDataType("number") || detail.isViewType("autoincrement"))
+				else if (detail.isDataType("number"))
 				{
 					Number val = 0;
 
@@ -2723,13 +2731,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 						}
 					}
-					if( value == null && detail.isViewType("autoincrement"))
-					{
-						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
-
-						val = manager.nextNumber(getSearchType() + "_" + detail.getId());
-					}
-					
 					inContent.field(key, val);
 				}
 				else if (detail.isMultiValue() || detail.isList())
