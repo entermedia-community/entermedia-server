@@ -286,8 +286,8 @@ public class XmpWriter {
 
 			if (detail.get("xmpmask") != null) {
 				inExtraDetails.putAll(inAsset.getProperties());
-				val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"),
-						inExtraDetails);
+				val = inArchive.replaceFromMask(detail.get("xmpmask"), inAsset, detail.getSearchType(), inExtraDetails, null); 
+				//val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"), inExtraDetails);
 				inExtraDetails.remove(detail.getId());
 			}
 

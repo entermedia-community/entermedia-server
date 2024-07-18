@@ -176,7 +176,8 @@ public class JsonAssetModule extends BaseJsonModule {
 			if (sourcepath == null || sourcepath.length() == 0) {
 				sourcepath = "receivedfiles/${id}";
 			}
-			sourcepath = sm.getValue(catalogid, sourcepath, vals);
+			//sourcepath = sm.getValue(catalogid, sourcepath, vals);
+			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, inReq.getUser(), (String) vals.get("filename"), sourcepath, vals);
 		}
 		//String legacysourcepath = archive.getCatalogSettingValue("catalogassetuploadalwaysappend"); //PRN? ${division.uploadpath}/${user.userName}/${formateddate}
 		if (properties.getFirstItem() != null) 
@@ -603,7 +604,7 @@ public class JsonAssetModule extends BaseJsonModule {
 	 * @deprecated only works within app. Use createAsset
 	 * @param inReq
 	 */
-
+/*
 	public void importAssetJson(WebPageRequest inReq) {
 		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
 
@@ -704,7 +705,7 @@ public class JsonAssetModule extends BaseJsonModule {
 
 	}
 	
-
+*/
 	
 	public void createCategoryTree(WebPageRequest inReq) {
 		JSONObject object = new JSONObject();

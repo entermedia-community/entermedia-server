@@ -54,7 +54,8 @@ public class ShellScriptRunner implements ScriptRunner
 		String catalogid = req.findPathValue("catalogid");
 		String mask = req.findValue("scriptargs");
 		if(catalogid != null && mask != null) {
-			String value = getSearcherManager().getValue(catalogid, mask, variableMap);
+			//#TODO change to replacer
+			String value =  getSearcherManager().getValue(catalogid, mask, variableMap);
 			if(value != null) {
 				args.add(value);
 			}

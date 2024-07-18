@@ -234,8 +234,22 @@ public class MediaArchive implements CatalogEnabled
 	public String replaceFromMask(String inMask, Data inData, String inSearchType,  Map extraVals, String locale) 
 	{
 
-		String sourcepath = getSearcherManager().getValue(getCatalogId(), inMask, inSearchType,  inData, extraVals, locale);
-		return sourcepath;
+		Replacer replacer = getReplacer();
+		
+		Map newvals = new HashMap();
+		newvals.put("formatteddate", DateStorageUtil.getStorageUtil().getTodayForDisplay());
+		if(extraVals != null) 
+		{
+			newvals.putAll(extraVals);
+		}
+		
+		String val = replacer.replace(inMask, newvals);
+		if( val.startsWith("$") && val.equals(inMask) )
+		{
+			return "";
+		}
+		//String val = getSearcherManager().getValue(getCatalogId(), inMask, inSearchType,  inData, extraVals, locale);
+		return val;
 	}
 	
 	

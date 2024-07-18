@@ -116,23 +116,7 @@ public class BaseExporter
 //									continue;
 //								}
 //							}
-							String value = null;
-							//do special logic here
-							if(detail.isList() && friendly)
-							{
-								//detail.get
-								value = hit.get(detail.getId());
-								Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
-								if(remote != null)
-								{
-									value= remote.getName();
-								}
-							}
-							String render = detail.get("render");
-							if(render != null)
-							{
-								value = searcherManager.getValue(detail.getListCatalogId(), render, hit.getProperties());
-							}
+								
 							if(detail.isMultiLanguage())
 							{
 								Object vals = hit.getValue(detail.getId());
@@ -154,11 +138,31 @@ public class BaseExporter
 							}
 							else
 							{
-								if( value == null)
+								Object value = null;
+								//do special logic here
+								if(detail.isList() && friendly)
+								{
+									//detail.get
+									String val = hit.get(detail.getId());
+									Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), val);
+									if(remote != null)
+									{
+										value= remote.getName();
+									}
+								}
+								if(value == null && detail.get("rendermask") != null)
+								{
+									value = searcherManager.getValue(hit, detail, inReq.getLocale());
+								}
+								else 
 								{
 									value = hit.get(detail.getId());
 								}
-								nextrow[fieldcount] = value;
+								if(value == null)
+								{
+									value = "";
+								}
+								nextrow[fieldcount] = value.toString();
 								fieldcount++;
 							}
 						}	
