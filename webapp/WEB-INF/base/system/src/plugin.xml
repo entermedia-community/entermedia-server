@@ -85,7 +85,7 @@
 		<property name="repository"><ref bean="repository"/></property>
 		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>
 		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
-		
+		<property name="textLabelManager"><ref bean="textLabelManager" /></property>		
 	</bean>
 	
 	<bean id="moduleManager" class="org.openedit.ModuleManager">
