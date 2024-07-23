@@ -370,6 +370,8 @@ public class CategoryEditModule extends BaseMediaModule {
 					Data data = (Data) iterator.next();
 					Asset asset = archive.getAsset(data.getId());
 					addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+					archive.saveAsset(asset, inPageRequest.getUser());
+					archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 					added++;
 				}
 				
