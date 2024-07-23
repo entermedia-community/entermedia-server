@@ -508,10 +508,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 		protected int checkForExtraCategories(Collection entities, ContentItem inFolder, Category inParent)
 		{
 			HashMap names = new HashMap();
-			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+			if(inParent != null) 
 			{
-				Category cat = (Category)iterator.next();
-				names.put(cat.getName(),cat);
+				for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+				{
+					Category cat = (Category)iterator.next();
+					names.put(cat.getName(),cat);
+				}
 			}
 			
 			List paths = getPageManager().getChildrenPaths(inFolder.getPath());
@@ -547,7 +550,10 @@ public class OriginalsAssetSource extends BaseAssetSource
 				inParent.removeChild(oldjunk);
 			}
 			int deleted = names.size();
-			getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
+			if(deleted > 0) 
+			{
+				getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
+			}
 			return deleted;
 		}
 
