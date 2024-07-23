@@ -552,6 +552,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 			int deleted = names.size();
 			if(deleted > 0) 
 			{
+				log.info("Removing: " + names.values());
 				getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
 			}
 			return deleted;
