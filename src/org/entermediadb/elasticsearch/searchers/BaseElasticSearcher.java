@@ -2400,10 +2400,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			throw new OpenEditException(ex);
 		}
-		if( fieldCacheManager != null)
-		{
-			getCacheManager().remove("data" + getSearchType(), data.getId());
-		}
+		
+		getCacheManager().remove("data" + getSearchType(), data.getId());
 	}
 
 	public void setIndexId(long inIndexId)
