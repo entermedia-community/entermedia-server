@@ -27,8 +27,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.desktops.Desktop;
-import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
