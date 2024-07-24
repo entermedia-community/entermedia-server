@@ -1,5 +1,5 @@
 #set($id = $context.getRequestParameter('id'))
-#set($products = $mediaarchive.getInvoiceProductList($id))
+#set($products = $mediaarchive.getBean("invoiceManager").getInvoiceProductList($id))
 <div>
 	<table>
 		<colgroup>
@@ -14,7 +14,7 @@
 		</tr>
 		#foreach($product in $products)
 		<tr >
-			<td style="text-align: left!important">$mediaarchive.getProductName($product.productid)</td>
+			<td style="text-align: left!important">#text($product)</td>
 			<td>$product.productquantity</td>
 			<td>$product.productprice</td>
 		</tr>

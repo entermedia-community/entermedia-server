@@ -522,8 +522,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
-		// TODO Auto-generated method stub
-
+		//For custom overries
+		
 	}
 
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
