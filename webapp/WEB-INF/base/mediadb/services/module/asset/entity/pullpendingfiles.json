@@ -1,0 +1,13 @@
+#set( $files = $assetmap.files )
+  {
+  "files" : [
+  #foreach( $file in $files) #if( ${foreach.count} != 1 ), #end
+  	{ 
+		"path": "$file.path",
+  		"url": "$file.url",
+  		"id": "$file.id"
+  		}
+	#end
+ 	]
+	
+}

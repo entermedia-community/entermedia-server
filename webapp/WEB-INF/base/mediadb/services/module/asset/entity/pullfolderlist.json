@@ -1,0 +1,32 @@
+
+#macro(listcategory $parent)
+	{
+	"id": "$parent.getId()",
+	"name": "$parent.getName()",
+	"path": "$parent.getCategoryPath()"
+	
+	#if($parent.hasChildren()) ,
+	"children": [
+		#set($subfolders = $parent.getChildren())
+		#foreach( $subfolder in $subfolders) #if( ${foreach.count} != 1 ), #end
+			#listcategory($subfolder)
+		#end
+		]
+	#end
+	}
+#end
+
+
+{
+  "response":
+      {
+		  #if( $category)
+	        "status":"ok"
+	      #else 
+	      	"status": "notfound" 
+	      #end 
+      }
+  ,
+  "tree": #listcategory($category)
+
+}

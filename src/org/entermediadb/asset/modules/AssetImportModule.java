@@ -214,6 +214,7 @@ public class AssetImportModule  extends BaseMediaModule
 		*/
 		Map params = inReq.getJsonRequest();
 		if (params == null) {
+			log.info("No JSON parameters");
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
@@ -225,10 +226,11 @@ public class AssetImportModule  extends BaseMediaModule
 		FolderManager manager = getFolderManager(inReq);
 		Map assetmap = manager.listAssetMap(archive, category);
 		
-		//List remoteassets = (List)params.get("files");
+		////Missing Files on Local
 		Map pendingdownloads = manager.removeDuplicateAssetsFrom(assetmap,params);
 		inReq.putPageValue("assetmap", new JSONObject(pendingdownloads));
 		
+		//Missing Files on Server
 		Map missingassets = manager.findMissingAssetsToPull(assetmap,params);
 		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
 	}

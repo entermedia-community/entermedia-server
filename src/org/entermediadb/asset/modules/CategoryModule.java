@@ -554,6 +554,22 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
+	
+	public void loadCategoryByPath(WebPageRequest inContext) throws OpenEditException
+	{
+		String categorypath = inContext.getRequestParameter("categorypath");
+
+		if (categorypath != null)
+		{
+			// load up catalog and assets
+			Category category = getMediaArchive(inContext).getCategorySearcher().loadCategoryByPath(categorypath);
+			if (category != null)
+			{
+				inContext.putPageValue("category", category);
+			}
+		}
+	}
+	
 	//	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
 	//	{
 	//		WebTree tree = getCatalogTree(inReq);
