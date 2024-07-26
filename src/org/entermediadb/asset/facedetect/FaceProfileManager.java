@@ -572,7 +572,9 @@ public class FaceProfileManager implements CatalogEnabled
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 		if( url == null)
 		{
-			url = "http://localhost:8000";
+			log.error("No faceprofileserver URL configured" );
+			return null;
+			//url = "http://localhost:8000";
 		}
 		long start = System.currentTimeMillis();
 		log.debug("Facial Profile Detection sending " + input.getPath() );

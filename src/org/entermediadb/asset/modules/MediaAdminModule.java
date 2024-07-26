@@ -22,6 +22,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
@@ -927,10 +928,55 @@ public class MediaAdminModule extends BaseMediaModule
 		copy.setProperties(template.getProperties());
 		copy.setId(null);
 		copy.setName(template.getName() + " copy");
-		
+		copy.setValue("updatedby",inReq.getUserName());
+		copy.setValue("updatedon",new Date());
 		s.saveData(copy);
 	}
 
+	public void smartOrganizerRestore(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("restoreid");
+
+		if( id == null)
+		{
+			return;
+		}
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+
+		Data template = archive.getData("smartorganizer", "current");
+		Data copy = new BaseData();
+		copy.setProperties(template.getProperties());
+		copy.setId(null);
+		s.saveData(copy);
+				
+		template = archive.getData("smartorganizer", id);
+		s.delete(template,inReq.getUser());
+		
+		template.setId("current");
+		template.setValue("updatedby",inReq.getUserName());
+		template.setValue("updatedon",new Date());
+
+		s.saveData(template);
+		
+	}
+
+	
+	public void smartOrganizerRename(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		
+		String newname = inReq.getRequestParameter("newname");
+		template.setName(newname);
+		s.saveData(template);
+	}
+
+	
 	public void deleteSmartOrganizer(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
