@@ -222,7 +222,10 @@ public class AssetImportModule  extends BaseMediaModule
 		inReq.putPageValue("categorypath", categorypath);
 		
 		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
-
+		if(category == null) 
+		{
+			return;
+		}
 		FolderManager manager = getFolderManager(inReq);
 		Map assetmap = manager.listAssetMap(archive, category);
 		
