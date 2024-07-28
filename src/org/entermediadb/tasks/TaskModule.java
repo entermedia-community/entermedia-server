@@ -1025,6 +1025,10 @@ public class TaskModule extends BaseMediaModule
 		}
 		else
 		{
+			if( inReq.getUser() == null)
+			{
+				return;
+			}
 			Collection projects = archive.getProjectManager().listCollectionsOnTeam(inReq.getUser());
 			qall.orgroup("collectionid",projects);
 		}

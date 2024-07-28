@@ -1878,6 +1878,11 @@ public class ProjectManager implements CatalogEnabled
 	
 	public Collection<LibraryCollection> listCollectionsOnTeam(User inUser)
 	{
+		if( inUser == null)
+		{
+			return null;
+		}
+		
 		List<LibraryCollection> libraryCollections = (List<LibraryCollection>)getMediaArchive().getCacheManager().get("collections", inUser.getId());
 
 		if( libraryCollections == null)
