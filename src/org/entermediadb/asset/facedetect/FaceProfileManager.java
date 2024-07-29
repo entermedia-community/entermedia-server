@@ -101,6 +101,12 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		try
 		{
+			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
+			if( url == null)
+			{
+				log.error("No face server configured");
+				return false;
+			}
 			String type = getMediaArchive().getMediaRenderType(inAsset);
 			
 			inAsset.setValue("facescancomplete","true");
