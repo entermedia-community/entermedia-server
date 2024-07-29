@@ -18,12 +18,16 @@ import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
 import org.openedit.node.NodeManager;
@@ -283,7 +287,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 	}
 
-	public void saveModule(WebPageRequest inReq) throws Exception
+	public void saveModule(WebPageRequest inReq) 
 	{
 		Data module = (Data) inReq.getPageValue("data");
 
@@ -293,7 +297,7 @@ public class MediaAdminModule extends BaseMediaModule
 		getMediaArchive(inReq).clearAll();
 	}
 
-	public void saveNewModule(WebPageRequest inReq) throws Exception
+	public void saveNewModule(WebPageRequest inReq)
 	{
 		String name = inReq.getRequestParameter("name.value");
 		String id = inReq.getRequestParameter("id");
@@ -987,6 +991,46 @@ public class MediaAdminModule extends BaseMediaModule
 			Searcher s = archive.getSearcher("smartorganizer");
 			s.delete(template,inReq.getUser());
 		}
+	}
+	
+	
+	public void deploySmartOrganizer(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		String json = template.get("json");
+		JSONParser parser = new JSONParser();
+		JSONArray jsonarray = null;
+		jsonarray = (JSONArray) parser.parse(json);
+		if ( jsonarray != null)
+		{
+			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
+				ValuesMap map = new ValuesMap((Map) iterator.next());
+				if("folderLabel".equals(map.get("cssClass")))
+				{
+					Map userdatamap = (Map) parser.parse(map.getString("userData"));
+					ValuesMap  userdata  = new ValuesMap(userdatamap);
+					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
+					String modulename = map.getString("text"); 
+					
+					Data found = archive.getData("module",moduleid);
+					if(found == null)
+					{
+						found  = archive.getSearcher("module").createNewData();
+						found.setId(moduleid);
+					}
+					found.setName(modulename);
+					found.setValue("isentity", true); 
+					archive.saveData("module",found);
+					inReq.putPageValue("data",found);
+					saveModule(inReq);
+				}
+			}
+		}
+
 	}
 
 	
