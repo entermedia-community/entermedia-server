@@ -130,7 +130,7 @@ public class WorkspaceManager
 		finalZip.close();
 	}
 
-	public String createTable(String catalogid, String tablename, String inPrefix) throws Exception
+	public String createTable(String catalogid, String tablename, String inPrefix) 
 	{
 		String searchtype = PathUtilities.makeId(tablename);
 		searchtype = searchtype.toLowerCase();
@@ -176,7 +176,7 @@ public class WorkspaceManager
 		return searchtype;
 	}
 
-	public void saveModule(String catalogid, String appid, Data module) throws Exception
+	public void saveModule(String catalogid, String appid, Data module) 
 	{
 		/** APP STUFF **/
 		if( !appid.endsWith("mediadb"))
