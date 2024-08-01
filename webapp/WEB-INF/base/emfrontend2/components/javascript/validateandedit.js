@@ -10,8 +10,13 @@ $(document).ready(function()
 	
 	app = $("#application");
 	home =  app.data("home");
-	apphome = home + app.data("apphome");
-	themeprefix = app.data("home") + app.data("themeprefix");
+	apphome = app.data("apphome");
+	themeprefix = app.data("themeprefix");
+	if(home !== undefined) 
+	{
+		apphome = home + apphome;
+		themeprefix = home + themeprefix;
+	}
 	
 	$(document).on('change', ".lenguagepicker", function()
 	{
