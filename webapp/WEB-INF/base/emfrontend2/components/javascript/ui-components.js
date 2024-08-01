@@ -20,6 +20,17 @@ lQuery(".redirecttopage").livequery(function () {
  	window.location.href = url;
  }); 
 uiload = function() {
+  var app = jQuery("#application");
+  var siteroot = app.data("siteroot");
+  var apphome = app.data("apphome");
+  var themeprefix =  app.data("themeprefix");
+  if (siteroot !== undefined) {
+	  //legacy siteroot
+	  apphome = siteroot + apphome;
+	  themeprefix = siteroot + themeprefix;
+  }
+  var mediadb = $("#application").data("mediadbappid");
+
 	
 	$.fn.cleandata = function(){
 		  var element = $(this);

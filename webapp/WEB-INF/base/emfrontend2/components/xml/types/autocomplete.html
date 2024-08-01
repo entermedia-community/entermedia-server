@@ -11,10 +11,10 @@
 
 #set( $foundrow = false )
 #if($val && $val != "")
-	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$val) )  
+	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $val) )  
 #end
 
-#set($label = $searcherManager.getValue($foundrow,$detail,$context.getLocale()) )
+##set($label = $searcherManager.getValue($foundrow, $detail, $context.getLocale()) )
 
 #if( $searcherManager.getSearcher( $detail.getListCatalogId(),$detail.getListId() ).getPropertyDetails().getRender() )
 	#set($searchfield = "description")
@@ -31,15 +31,17 @@
 		data-placeholder="$detail.getText($context)" 
 		data-sortby="$!detail.sort">
 #if( $foundrow )
-  <option value="$!val" selected="selected">#esc($label)</option>
+  <option value="$!val" selected="selected">#text($foundrow)</option>
 #end
 </select>
 
  #if( $caneditlists)
+ <span>
 	<a class="emdialog addnewitem btn btn-xs btn-light" 
 	data-dialogid="inlineedit" 
 	href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()&update=${valueid}" 
 	title="[[Add New]] $detail" data-hidefooter="true" >+ [[New]] $detail</a>
+</span>
 #end
 
 
@@ -70,7 +72,9 @@
 
 #if($link)
 #if($pages.canView($link))
- 	<a class="btn btn-xs btn-light addnewitem" href="$link">[[View]]</a>
+ 	<span>
+		 <a class="btn btn-xs btn-light addnewitem" href="$link">[[View]]</a>
+ 	</span>
 
 #end
 #end

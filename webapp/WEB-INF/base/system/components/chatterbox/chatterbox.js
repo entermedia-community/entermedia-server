@@ -63,6 +63,12 @@ function chatterbox() {
       scrollToChat();
     }
   });
+  
+  
+  lQuery("#chatterboxreplycancel").livequery("click", function () {
+    var button = jQuery(this);
+    button.closest(".chatterboxreplyto").hide();
+    });
 
   lQuery(".chatter-text").livequery("keydown", function (e) {
     if (e.keyCode == 13 && !e.shiftKey) {
