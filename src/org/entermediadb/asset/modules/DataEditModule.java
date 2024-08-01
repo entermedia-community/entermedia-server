@@ -1765,7 +1765,7 @@ String viewbase = null;
 			Element sourceelement = loadViewElement(file, id);
 			if (sourceelement != null)
 			{
-				sourceelement.setParent(null);
+				sourceelement = (Element)sourceelement.clone();
 				tosave.add(sourceelement);
 			}
 		}
