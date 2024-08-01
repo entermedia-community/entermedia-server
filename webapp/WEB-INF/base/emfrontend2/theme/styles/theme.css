@@ -1,3 +1,4 @@
+/* emfrontent2 */
 /*Color*/
 body {
   background-color: #d5d5d5;
@@ -5772,6 +5773,10 @@ a.collectionbox.favorite {
 
 .activitydetailscontainer .settings-table {
   border-top: 1px solid #6663;
+}
+
+.emfield-user {
+	flex-direction: column;
 }
 
 .emfield-time {

@@ -1,7 +1,8 @@
+<span class="datetimepicker-date pl-2">
 #if($errors.get($detail.id) == "error-format")
 	#set($val = "")
 	<span style="color: red;">
-	[[Sorry - wrong format]]
+	[[Wrong format]]
 	</span><br>
 #end
 #set($idcount = $context.getRequestParameter("idcount"))
@@ -9,14 +10,11 @@
 	#set($idcount = "")
 #end
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="$!val"  type="hidden" >
- <br/>
 <input type="text" class="form-control datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
-
-
-
 #if ($detail.picker == "false" && $detail.format)
 	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>
 #end
+</span>
 
 #set($hour = $context.getRequestParameter("${detail.id}.hour"))
 #if(!$hour)
@@ -27,8 +25,9 @@
 #if(!$minute)
 	#set($minute =  $context.getMinutes($val))
 #end
-
-[[Time]]:  <select class="form-control-sm hour" name="${detail.id}.hour" style="width:65px;">
+<span class="datetimepicker-time">
+<span class="datetimepicker-time-label">[[Time]]:</span>
+	<select class="form-control-sm hour" name="${detail.id}.hour" style="width:65px;">
 		#foreach($val in [0..23])
 		<option value="#if($val < 10)0#end$val" #if($hour == $val || $hour == "0$val")) selected #end >#if($val < 10)0#end$val</option>
 		#end
@@ -37,3 +36,4 @@
 		<option value="#if($val < 10)0#end$val" #if($minute == $val || $minute == "0$val")) selected #end>#if($val < 10)0#end$val</option>
 		#end
 	</select> 
+</span>
