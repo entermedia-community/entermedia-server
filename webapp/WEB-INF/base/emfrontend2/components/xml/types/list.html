@@ -83,24 +83,24 @@
 #if($types)
 
 
-	<select name="${fieldname}.value" 
-			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
-			listid="$listid" 
-			id="${valueid}value"
-			data-listid="$listid" 
-			data-searchtype= '$listid'
-			data-searchfield="$searchfield"
-        	#if($removeclear) data-allowclear="false" #end
+
+ <select name="${fieldname}.value"
+	class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+	listid="$listid"
+	id="${valueid}value"
+	data-listid="$listid"
+	data-searchtype= '$listid'
+	data-searchfield="$searchfield"
+	#if($removeclear) data-allowclear="false" #end
 	>
+
 	#if ($detail.blankoption != "false")
 	<option value="">$!detail.blankoption</option>
 	#end
 	$types.setHitsPerPage(500)
 	#foreach( $type in $types.getPageOfHits() )
 		#set( $key = $type.id)
-
    		#set($label = $type.getName($context.getLanguage()))
-
 		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
 	#end
 	#if($hits && $hits.size() > 500 )
