@@ -460,10 +460,11 @@ public class EntityManager implements CatalogEnabled
 			newchild.setValue(key, val);
 		}
 		String name = customname;
-		if(name == null) 
+		if(name == null || name.equals(source.getName())) 
 		{
-			name = source.getName();
+			name = source.getName() + " (copy)";
 		}
+		newchild.setId(null);
 		newchild.setName(name);
 		newchild.setValue("entitysourcetype", pickedmoduleid);
 		
