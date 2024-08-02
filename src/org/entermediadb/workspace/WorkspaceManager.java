@@ -208,8 +208,10 @@ public class WorkspaceManager
 					{
 						String templatepermissionfields = "/" + catalogid + "/configuration/baseentitytemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
-						Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
-						getPageManager().copyPage(template, destination); //Always update these
+						if(template.exists()) {
+							Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
+							getPageManager().copyPage(template, destination); //Always update these
+						}
 					}					
 					//Add corresponding fields to Asset
 					
@@ -315,7 +317,13 @@ public class WorkspaceManager
 		
 	}
 
+	
 	public String createModuleFallbacks(String appid, Data module)
+	{
+		return createModuleFallbacks(appid, module, false);
+	}
+	
+	public String createModuleFallbacks(String appid, Data module, boolean force)
 	{
 		String mid = module.getId();
 		String basepath = "default";
@@ -330,7 +338,7 @@ public class WorkspaceManager
 		Page parentfallback = getPageManager().getPage(modulehome.getPageSettings().getFallback().getPath());
 
 		
-		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId())) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
+		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId()) && !force) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
 		{
 			basepath = mid;
 			homesettings.removeProperty("fallbackdirectory");

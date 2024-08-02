@@ -1002,6 +1002,9 @@ public class MediaAdminModule extends BaseMediaModule
 		
 		Searcher s = archive.getSearcher("smartorganizer");
 		String json = template.get("json");
+		if(json == null) {
+			return;
+		}
 		JSONParser parser = new JSONParser();
 		JSONArray jsonarray = null;
 		jsonarray = (JSONArray) parser.parse(json);

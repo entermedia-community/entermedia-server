@@ -172,7 +172,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		}
 
 		Object svalue = getMap().getObject(inId);
-		if( svalue == ValuesMap.NULLVALUE)
+		if( svalue == ValuesMap.NULLVALUE || svalue == ValuesMap.NULLSTRING)
 		{
 			return null;
 		}
