@@ -160,12 +160,16 @@ public class ChatServer
 	}
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
-		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
+		
 		String collectionid = String.valueOf(inMap.get("collectionid"));
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
 
-		if( catalogid != null  )
+		if( catalogid != null && collection != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
+			
+			log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
 			
 			String channelid = (String)inMap.get("channel");
 			String userid = null;
@@ -182,9 +186,8 @@ public class ChatServer
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				
-				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
-				if( inMap.get("topic") == null)
+				
+				if(collection != null &&  inMap.get("topic") == null)
 				{
 					inMap.put("topic",collection.getName());
 				}
@@ -238,6 +241,9 @@ public class ChatServer
 					}	
 				}
 			});
+		}
+		else {
+			log.info("Error broadcasting message, missing collection: " + collectionid + " or catalog: " + catalogid);
 		}
 	}
 
