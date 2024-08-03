@@ -2132,7 +2132,7 @@ public class AssetEditModule extends BaseMediaModule
 			//log.info(current.getId());
 			//This will create a new one if current was null.
 			 current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
-			 log.info(current.getId());
+			 log.info("Asset saved: " + current.getId());
 			archive.saveAsset(current, inReq.getUser());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
