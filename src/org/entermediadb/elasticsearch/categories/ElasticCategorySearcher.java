@@ -543,5 +543,23 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category found = (Category)loadData(hit);
 		return found;
 	}
+
+	public List listAllCategories(Category inTopCategory)
+	{
+		List all = new ArrayList(300);
+		addChildren(inTopCategory,all);
+		return all;
+	}
 	
+	protected void addChildren(Category parent,List all)
+	{
+		all.add(parent);
+		if( parent.hasChildren())
+		{
+			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();) {
+				Category category = (Category ) iterator.next();
+				addChildren(category,all);
+			}
+		}
+	}
 }

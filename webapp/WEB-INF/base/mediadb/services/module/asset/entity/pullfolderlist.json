@@ -1,22 +1,5 @@
 
-#macro(listcategory $parent)
-	{
-	"id": "$parent.getId()",
-	"name": "$parent.getName()",
-	"path": "$parent.getCategoryPath()"
-	
-	#if($parent.hasChildren()) ,
-	"children": [
-		#set($subfolders = $parent.getChildren())
-		#foreach( $subfolder in $subfolders) #if( ${foreach.count} != 1 ), #end
-			#listcategory($subfolder)
-		#end
-		]
-	#end
-	}
-#end
-
-
+#set( $allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category) )
 {
   "response":
       {
@@ -24,9 +7,19 @@
 	        "status":"ok"
 	      #else 
 	      	"status": "notfound" 
-	      #end 
+	      #end
+	      #ifnotnull($category)
+	      ,"size":"$allchildren.size()" 
       }
   ,
-  "tree": #listcategory($category)
+  "categories": [
 
+	#foreach( $subfolder in $allchildren) #if( ${foreach.count} != 1 ), #end
+	{
+	"id": "$parent.getId()",
+	"name": "$parent.getName()",
+	"path": "$parent.getCategoryPath()"
+	}
+	#end
+  ]
 }
