@@ -69,6 +69,9 @@ curl -XGET 'http://localhost:9200/finder_catalog/dam_program_sched_request/_sear
 
 curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/site_catalog/trackedtopics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
+
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/insights_catalog/insight_project_mip/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
