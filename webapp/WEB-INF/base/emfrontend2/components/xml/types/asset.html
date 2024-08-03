@@ -30,7 +30,7 @@
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
 
 
-<span class="btn btn-sm btn-primary btn-default btn-file">
+<span class="btn btn-xs btn-primary btn-file">
     [[Choose a File]] 
 	<input type="file" name="file.${detail.getId()}" id="${detail.id}-file" onchange='var name = $(this).val().split("\\").pop().split("/"	).pop();$("#${detail.id}-file-info").html(name);$("#${detail.id}-clearselected").show();'>
 </span>
@@ -42,7 +42,7 @@
 	data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}"
 	data-dialogid="assetsearchdialog" 
 	data-maxwidth="760"  
-	class="emdialog  btn btn-primary" >[[View Catalog]]</a> 
+	class="btn btn-xs btn-primary btn-file emdialog" >[[View Catalog]]</a> 
 
 
 </div>

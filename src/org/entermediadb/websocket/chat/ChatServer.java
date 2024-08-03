@@ -187,7 +187,7 @@ public class ChatServer
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				
 				
-				if(collection != null &&  inMap.get("topic") == null)
+				if(inMap.get("topic") == null)
 				{
 					inMap.put("topic",collection.getName());
 				}

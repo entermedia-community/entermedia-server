@@ -1372,21 +1372,30 @@ Server ProjectModule.uploadFile
 		Map goalspermessage = new HashMap<String,Data>();
 		
 		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
-		if( messages == null)	
+		String messageid = inReq.getRequestParameter("chatid");
+		List ids = new ArrayList();
+		if(messages != null) {
+			for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
+			{
+				Data message = (Data) iterator.next();
+				ids.add(message.getId());
+			}
+			if( ids.isEmpty() )
+			{
+				ids.add("NONE");
+			}
+			
+		}
+		else if (messageid != null) {
+				ids.add(messageid);
+		}
+		
+		if( ids.size() < 1)	
 		{
 			log.error("No messages found");
 			return null;
 		}
-		List ids = new ArrayList(messages.getHitsPerPage());
-		for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
-		{
-			Data message = (Data) iterator.next();
-			ids.add(message.getId());
-		}
-		if( ids.isEmpty() )
-		{
-			ids.add("NONE");
-		}
+		
 		Collection goals = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",ids ).search();
 		inReq.putPageValue("goalhits",goals);
 		for (Iterator iterator = goals.iterator(); iterator.hasNext();)
