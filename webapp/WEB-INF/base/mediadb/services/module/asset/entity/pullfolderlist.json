@@ -10,15 +10,18 @@
 	      #end
 	      #ifnotnull($category)
 	      ,"size":"$allchildren.size()" 
+	      #end
       }
   ,
   "categories": [
 
 	#foreach( $subfolder in $allchildren) #if( ${foreach.count} != 1 ), #end
+	#set($index = $foreach.count - 1)
 	{
-	"id": "$parent.getId()",
-	"name": "$parent.getName()",
-	"path": "$parent.getCategoryPath()"
+	"id": "$subfolder.getId()",
+	"index": "$index",
+	"name": "$subfolder.getName()",
+	"path": "$subfolder.getCategoryPath()"
 	}
 	#end
   ]
