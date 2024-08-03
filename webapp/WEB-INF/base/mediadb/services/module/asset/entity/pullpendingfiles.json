@@ -5,6 +5,7 @@
   	{ 
 		"path": "$file.path",
   		"url": "$file.url",
+  		"size":"$file.size",
   		"id": "$file.id"
   		}
 	#end
