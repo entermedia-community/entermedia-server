@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -110,6 +111,21 @@ public class ThemeModule extends BaseMediaModule {
 		xconf.setProperty("themeid",theme.getId());
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
 		
+	}
+	
+	public void saveLogo(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		Data theme = loadTheme(inReq);
+		String logoassetid = theme.get("logoasset");
+		if (logoassetid != null) {
+			Asset logoasset = archive.getAsset(logoassetid);
+			if(logoasset != null) {
+				Page page = archive.getOriginalDocument(logoasset);
+				String applicationid = inReq.findValue("applicationid");
+				Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
+				getPageManager().copyPage(page, destpage);
+			}
+		}
 	}
 
 	public void saveTheme(WebPageRequest inReq) {
