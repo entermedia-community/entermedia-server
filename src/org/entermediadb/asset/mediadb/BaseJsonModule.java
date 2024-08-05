@@ -203,8 +203,10 @@ public class BaseJsonModule extends BaseMediaModule
 			
 			PropertyDetail detail = searcher.getDetail(key);
 			//only save valid fields?
-			if( detail == null) {
-				return;
+			if( detail == null) 
+			{
+				log.info("No such field:  " + key);
+				continue;
 			}
 			if( detail != null && detail.isMultiLanguage())
 			{
