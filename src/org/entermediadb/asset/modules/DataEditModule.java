@@ -587,7 +587,6 @@ String viewbase = null;
 			}
 			if (id != null && id.startsWith("multiedit:"))
 			{
-
 				data = (CompositeData) inReq.getSessionValue(id);
 				if (data == null)
 				{

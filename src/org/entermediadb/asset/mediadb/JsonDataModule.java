@@ -102,6 +102,10 @@ public class JsonDataModule extends BaseJsonModule
 			if(id == null) {
 				id = (String)inReq.getPageValue("id");
 			}
+			if (id != null && id.isEmpty()) {
+				id = null;
+			}
+			
 			String sourcepath = (String) request.get("sourcepath");
 			populateJsonData(request,searcher,newdata);
 

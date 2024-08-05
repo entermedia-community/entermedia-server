@@ -948,20 +948,18 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		
 		Searcher s = archive.getSearcher("smartorganizer");
-
-		Data template = archive.getData("smartorganizer", "current");
-		Data copy = new BaseData();
-		copy.setProperties(template.getProperties());
-		copy.setId(null);
-		s.saveData(copy);
-				
-		template = archive.getData("smartorganizer", id);
-		s.delete(template,inReq.getUser());
+		Collection existing = s.query().exact("iscurrent",true).search();
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+			Data data = (Data) iterator.next();
+			data.setValue("iscurrent",false);
+			s.saveData(data);
+		}
+		//s.saveAllData(existing,null);
 		
-		template.setId("current");
-		template.setValue("updatedby",inReq.getUserName());
-		template.setValue("updatedon",new Date());
-
+		Data template = archive.getData("smartorganizer", id);
+		//template.setValue("updatedby",inReq.getUserName());
+		//template.setValue("updatedon",new Date());
+		template.setValue("iscurrent",true);
 		s.saveData(template);
 		
 	}
