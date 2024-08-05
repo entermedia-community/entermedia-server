@@ -60,10 +60,6 @@
 			<fileset dir="${workdir}/WEB-INF/base/emfrontend2" />
 		</copy>
 
-		<copy todir="../WEB-INF/base/modulefrontend" preservelastmodified="true" overwrite="true">
-			<fileset dir="${workdir}/WEB-INF/base/modulefrontend" />
-		</copy>
-
 		<copy todir="../WEB-INF/base/system" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/system" />
 		</copy>
