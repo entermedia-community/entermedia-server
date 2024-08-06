@@ -14,7 +14,7 @@
       },
   
   "filestodownload" : [
-  #foreach( $file in $files) #if( ${foreach.count} != 1 ), #end
+  #foreach( $file in $filestodownload) #if( ${foreach.count} != 1 ), #end
   	{ 
 		"path": "$file.path",
   		"url": "$file.url",
