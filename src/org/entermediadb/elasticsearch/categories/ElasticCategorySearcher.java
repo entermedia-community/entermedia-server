@@ -546,6 +546,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 	public List listAllCategories(Category inTopCategory)
 	{
+		if(inTopCategory == null) {
+			return null;
+		}
 		List all = new ArrayList(300);
 		addChildren(inTopCategory,all);
 		return all;
