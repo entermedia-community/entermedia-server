@@ -1,6 +1,19 @@
-#set( $files = $assetmap.files )
+#set( $filestodownload = $pendingpull.files )
+#set( $filestoupload = $pendingpush.files )
   {
-  "files" : [
+  
+   "response":
+      {
+		  #if( $filestodownload)
+	        "status":"ok"
+	      #else 
+	      	"status": "error" 
+	      #end
+	      ,"filestodownload":"$filestodownload.size()"
+	      ,"filestoupload":"$filestoupload.size()" 
+      },
+  
+  "filestodownload" : [
   #foreach( $file in $files) #if( ${foreach.count} != 1 ), #end
   	{ 
 		"path": "$file.path",
@@ -9,8 +22,15 @@
   		"id": "$file.id"
   		}
 	#end
+ 	],
+ 	 "filestoupload" : [
+  #foreach( $file in $filestoupload) #if( ${foreach.count} != 1 ), #end
+  	{ 
+		"path": "$file.path",
+  		"url": "$file.url",
+  		"size":"$file.size",
+  		"id": "$file.id"
+  		}
+	#end
  	]
- 	
- 	##TODO: list Extra files
-	
 }

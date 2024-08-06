@@ -364,7 +364,7 @@ public class FolderManager implements CatalogEnabled
 	}
 	
 	
-	public Map findMissingAssetsToPull(Map assetmap, Map inParams) 
+	public Map findMissingAssetsToUpload(Map assetmap, Map inParams) 
 	{
 	
 		Map response = new HashMap(assetmap);

@@ -227,30 +227,23 @@ public class AssetImportModule  extends BaseMediaModule
 			return;
 		}
 		FolderManager manager = getFolderManager(inReq);
-		Map assetmap = manager.listAssetMap(archive, category);
+		Map allserverfiles = manager.listAssetMap(archive, category);
 		
 		////Missing Files on Local
-		Map pendingdownloads = manager.removeDuplicateAssetsFrom(assetmap,params);
-		inReq.putPageValue("assetmap", new JSONObject(pendingdownloads));
+		Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
+		inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
 		
 		//Missing Files on Server
-		Map missingassets = manager.findMissingAssetsToPull(assetmap,params);
-		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
+		Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
+		inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
+		
+		
 	}
 	
+	/*
 	
 	public void checkPushRemoteFolder(WebPageRequest inReq)
 	{
-		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",	
-		"desktopfilecount": "123",	
-			
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
 		Map params = inReq.getJsonRequest();
 		if (params == null) {
 			return;
@@ -279,7 +272,7 @@ public class AssetImportModule  extends BaseMediaModule
 		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
 		
 	}
-	
+	*/
 	public void listServerSubFolders(WebPageRequest inReq)
 	{
 		
