@@ -934,6 +934,7 @@ public class MediaAdminModule extends BaseMediaModule
 		copy.setName(template.getName() + " copy");
 		copy.setValue("updatedby",inReq.getUserName());
 		copy.setValue("updatedon",new Date());
+		copy.setValue("iscurrent",false);
 		s.saveData(copy);
 	}
 
