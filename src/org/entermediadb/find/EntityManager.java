@@ -27,6 +27,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -219,12 +220,18 @@ public class EntityManager implements CatalogEnabled
 			Map values = new HashedMap();
 			
 			values.put("module", module);
-			values.put(module.getId(), entity);
 			
 			//sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values, null);
 			
-			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);
+			DataWithSearcher smartdata = new DataWithSearcher(getMediaArchive().getSearcherManager(), getCatalogId(), module.getId(), entity);
+			values.put(module.getId(), smartdata);
+			values.put("data", smartdata);
 
+			
+			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
+
+			sourcepath = sourcepath.replaceAll("////", "/");
+			
 			for (int i = 0; i < 20; i++) {
 				//Already exists
 				Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
