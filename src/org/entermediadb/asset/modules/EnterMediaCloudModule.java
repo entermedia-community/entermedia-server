@@ -1,24 +1,33 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.mediadb.BaseJsonModule;
 import org.entermediadb.authenticate.BaseAutoLogin;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.authenticate.PasswordGenerator;
 
-public class EnterMediaCloudModule extends BaseMediaModule
+public class EnterMediaCloudModule extends BaseJsonModule
 {
 	private static final Log log = LogFactory.getLog(EnterMediaCloudModule.class);
 
@@ -298,6 +307,90 @@ public class EnterMediaCloudModule extends BaseMediaModule
 		{			
 			return;
 		}
+	}
+	
+	
+	
+	public void importRemote(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String endpointurl = archive.getCatalogSettingValue("remote-assetsearch-mediadb-endpoint");
+		if( endpointurl == null)
+		{
+			return;
+		}
+		
+		String[] assetids = inReq.getRequestParameters("assetid");
+		
+		if(assetids == null) {
+			return;
+		}
+		//Search category and asset and combine results
+		
+		
+
+		String remotekey = archive.getCatalogSettingValue("remote-assetsearch-endpoint-key");
+		HttpSharedConnection connection = createConnection(remotekey);
+		
+		String url = endpointurl + "/services/module/asset/data/";
+		List tosave = new ArrayList();
+		for (int i = 0; i < assetids.length; i++) {
+			//assetdata
+			CloseableHttpResponse resp = connection.sharedGet(url+assetids[i]);
+			StatusLine filestatus = resp.getStatusLine();
+			if (filestatus.getStatusCode() != 200)
+			{
+				//Problem
+				log.info( filestatus.getStatusCode() + " URL issue " + " " + url + " with " + remotekey);
+				inReq.setCancelActions(true);
+				return;
+			}
+			JSONObject data = getConnection().parseJson(resp);
+			String newid = "rm"+assetids[i];
+			Data newasset = archive.getAsset(newid);
+			if( newasset == null)
+			{
+				newasset = archive.getAssetSearcher().createNewData();
+			}
+			Map newassetdata =(Map)data.get("data"); 
+			newassetdata.put("emrecordstatus", null);
+			
+			populateJsonData(newassetdata, archive.getAssetSearcher(), newasset);
+			newasset.setId(newid);
+			
+			tosave.add(newasset);
+		}
+		String categoryid = inReq.getRequestParameter("targetcategoryid");
+		Category category = archive.getCategory(categoryid);
+		String savepath = category.getCategoryPath() + "/imported/";
+		Page savefolder = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + savepath);
+		
+		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
+			Asset newasset = (Asset) iterator.next();
+			newasset.addCategory(category);
+			newasset.setValue("importstatus", "needsmetadata");
+			String download  = endpointurl + "/services/module/asset/downloads/originals/" + archive.asLinkToOriginal(newasset);
+			log.info("Downloading original: " + download);
+			CloseableHttpResponse resp = connection.sharedGet(download);
+			String abspath = savefolder.getContentItem().getAbsolutePath() +  "" + newasset.getName();
+			
+			connection.parseFile(resp, abspath);
+			newasset.setSourcePath(savepath +  newasset.getName());
+			
+		}
+		archive.getAssetSearcher().saveAllData(tosave,inReq.getUser());
+		
+		archive.fireSharedMediaEvent("importing/assetsreadmetadata");
+
+	}
+	
+	protected HttpSharedConnection createConnection(String entermediakey)
+	{
+		HttpSharedConnection connection = new HttpSharedConnection();
+		connection.addSharedHeader("X-token", entermediakey);
+		connection.addSharedHeader("X-tokentype", "entermedia");
+		return connection;
 	}
 	
 	
