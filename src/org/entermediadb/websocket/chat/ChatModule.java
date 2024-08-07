@@ -60,21 +60,28 @@ public class ChatModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
+		String collectionid = inReq.getRequestParameter("collectionid");
 		
-		if(channel == null) {
-			return;
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		Data currenttopic = null;
+		if(channel != null) {
+			
+			currenttopic = topicsearcher.query().match("parentcollectionid",  collectionid).exact("id", channel).searchOne();
 		}
-		
-		Searcher chats = archive.getSearcher("chatterbox");
+		if (currenttopic == null) {
+			currenttopic = topicsearcher.query().match("parentcollectionid",collectionid).sort("name").searchOne();
+		}
+		if (currenttopic == null) {
+			currenttopic = topicsearcher.createNewData();
+			currenttopic.setValue("parentcollectionid", collectionid);
+			currenttopic.setName("General");
+			topicsearcher.saveData(currenttopic);
+		}
+		inReq.putPageValue("currenttopic", currenttopic);
 
-		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
-		
-		//inReq.putPageValue("messages", recent);
 
 		QueryBuilder builder = archive.query("chatterbox");
-		
-		builder.named("messagesthitracker").exact("channel", channel).sort("dateDown");
-		
+		builder.named("messagesthitracker").exact("channel", currenttopic.getId()).sort("dateDown");
 		
 		UserProfile prof = inReq.getUserProfile();
 		if( prof != null)
@@ -88,10 +95,21 @@ public class ChatModule extends BaseMediaModule
 		
 
 		HitTracker results = builder.search(inReq);
-		
 		results.setHitsPerPage(20);
 		  
-		  Collection page = results.getPageOfHits(); 
+		inReq.putPageValue(results.getHitsName(),results);
+		//loadPageOfChat(inReq);
+
+	}
+	public void loadPageOfChat(WebPageRequest inReq) {
+		
+		String name= inReq.findValue("hitsname");
+		HitTracker results = (HitTracker)inReq.getPageValue(name);
+		if (results == null) {
+			return;
+		}
+		Searcher chats = results.getSearcher();
+		Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
 		  List messageids = new ArrayList(results.size());
@@ -127,11 +145,11 @@ public class ChatModule extends BaseMediaModule
 		if (userid != null)
 		{
 			ChatManager manager = getChatManager(inReq);
+			String channel = results.getSearchQuery().getInput("channel");
 			manager.updateChatTopicLastChecked(channel, userid);
 		}
 		
 		inReq.getSession().setAttribute("chatuser", inReq.getUser());
-
 	}
 
 
