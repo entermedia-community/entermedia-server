@@ -600,6 +600,11 @@ public class MediaAdminModule extends BaseMediaModule
 
 		String snapid = inReq.getContentPage().getDirectoryName();
 		Data snap = getSearcherManager().getData("system", "sitesnapshot",snapid);
+		if (snap == null) {
+			inReq.redirect("/manager/");
+			log.error("Site snapshot missing: " + snapid);
+			return;
+		}
 		Data site = getSearcherManager().getData("system", "site", snap.get("site"));
 
 		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + snap.get("folder");
