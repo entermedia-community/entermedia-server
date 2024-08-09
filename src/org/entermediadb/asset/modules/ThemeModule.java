@@ -115,16 +115,22 @@ public class ThemeModule extends BaseMediaModule {
 	
 	public void saveLogo(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
+		String applicationid = inReq.findValue("applicationid");
 		Data theme = loadTheme(inReq);
 		String logoassetid = theme.get("logoasset");
+		Page logopage = null;
 		if (logoassetid != null) {
 			Asset logoasset = archive.getAsset(logoassetid);
 			if(logoasset != null) {
-				Page page = archive.getOriginalDocument(logoasset);
-				String applicationid = inReq.findValue("applicationid");
-				Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
-				getPageManager().copyPage(page, destpage);
+				logopage = archive.getOriginalDocument(logoasset);
 			}
+		}
+		else if(theme.get("logopath") != null) {
+			logopage = getPageManager().getPage("/" + applicationid + theme.get("logopath"));
+		}
+		if(logopage != null) {
+			Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
+			getPageManager().copyPage(logopage, destpage);
 		}
 	}
 
