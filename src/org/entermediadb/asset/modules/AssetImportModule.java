@@ -202,16 +202,6 @@ public class AssetImportModule  extends BaseMediaModule
 	
 	public void checkPullRemoteFolder(WebPageRequest inReq)
 	{
-		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",	
-		"desktopfilecount": "123",	
-			
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
 		Map params = inReq.getJsonRequest();
 		if (params == null) {
 			log.info("No JSON parameters");
@@ -224,20 +214,23 @@ public class AssetImportModule  extends BaseMediaModule
 		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
 		if(category == null) 
 		{
-			return;
+			Map pendingdownloads = new HashMap();
+			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
+			inReq.putPageValue("pendingpush", new JSONObject(params));
+		} else {
+
+			FolderManager manager = getFolderManager(inReq);
+			Map allserverfiles = manager.listAssetMap(archive, category);
+			
+			//Missing Files on Local
+			Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
+			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
+			
+			//Missing Files on Server
+			Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
+			inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
+			
 		}
-		FolderManager manager = getFolderManager(inReq);
-		Map allserverfiles = manager.listAssetMap(archive, category);
-		
-		////Missing Files on Local
-		Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
-		inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
-		
-		//Missing Files on Server
-		Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
-		inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
-		
-		
 	}
 	
 	/*
