@@ -41,6 +41,10 @@ public class ThemeModule extends BaseMediaModule {
 		String outputfile = inReq.findValue("outputcss");
 
 		Data theme = loadTheme(inReq);
+		
+		if(theme== null) {
+			return;
+		}
 
 		Page page = getPageManager().getPage(inputfile);
 
@@ -117,6 +121,9 @@ public class ThemeModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		String applicationid = inReq.findValue("applicationid");
 		Data theme = loadTheme(inReq);
+		if(theme == null) {
+			return;
+		}
 		String logoassetid = theme.get("logoasset");
 		Page logopage = null;
 		if (logoassetid != null) {
