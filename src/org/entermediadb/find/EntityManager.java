@@ -447,35 +447,41 @@ public class EntityManager implements CatalogEnabled
 		return true;
 	}
 	
-	public Data copyEntity(WebPageRequest inContext, String pickedmoduleid, Data source) 
+	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, Data source) 
 	{
 		
-		String name = inContext.getRequestParameter("nameoverwrite");
-		
-		Data copy  = copyEntity(inContext.getUser(), name, pickedmoduleid, source);
-
-		return copy;
-	}
-	public Data copyEntity(User inUser, String customname, String pickedmoduleid, Data source) {
 		Searcher entitysearcher = getMediaArchive().getSearcher(pickedmoduleid);
 		Data newchild = entitysearcher.createNewData();
 		
-		
+
 		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			Object val = source.getValue(key);
 			newchild.setValue(key, val);
 		}
+		
+		String customname = inContext.getRequestParameter("nameoverwrite");
 		String name = customname;
-		if(name == null || name.equals(source.getName())) 
+		String nameoriginal = source.getName();
+		if(name == null) 
 		{
-			name = source.getName() + " (copy)";
+			name = nameoriginal;
 		}
+		String action = inContext.getRequestParameter("action");
+		if(!"moveentity".equals(action)) {
+			//It is a copy, if copying  to same Module add  (copy)
+			if(pickedmoduleid.equals(sourcemoduleid)) {
+				if(name.equals(nameoriginal)) {
+					name = nameoriginal + " (copy)";
+				}
+			}
+		}
+		
 		newchild.setId(null);
 		newchild.setName(name);
 		newchild.setValue("entitysourcetype", pickedmoduleid);
 		
-		Category targetcategory = createDefaultFolder(newchild, inUser);
+		Category targetcategory = createDefaultFolder(newchild, inContext.getUser());
 		Category sourcecategory = getMediaArchive().getCategory(source.get("rootcategory"));
 		if(sourcecategory == null)
 		{
@@ -499,14 +505,14 @@ public class EntityManager implements CatalogEnabled
 	
 	
 	
-	public Integer copyEntities(WebPageRequest inContext, String pickedmoduleid, HitTracker hits) 
+	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits) 
 	{
 		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		List tosave = new ArrayList();
 		if(hits != null && hits.getSelectedHitracker() != null) {
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				Data hit = (Data) iterator.next();
-				Data newchild = copyEntity(inContext, pickedmoduleid, hit);
+				Data newchild = copyEntity(inContext, sourcemoduleid, pickedmoduleid, hit);
 				if(newchild != null) {
 					tosave.add(newchild);
 				}
@@ -521,9 +527,10 @@ public class EntityManager implements CatalogEnabled
 	{
 		Data source = getMediaArchive().getData(sourcemoduleid, sourceentityid);
 		if(source != null) {
-			Data newchild = copyEntity(inContext, pickedmoduleid, source);
+			Data newchild = copyEntity(inContext, sourcemoduleid, pickedmoduleid, source);
 			if(newchild != null) {
 				getMediaArchive().saveData(pickedmoduleid, newchild);
+				inContext.putPageValue("newentity", newchild);
 				return 1;
 			}
 		}
