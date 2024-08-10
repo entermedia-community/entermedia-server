@@ -306,11 +306,23 @@ public class ChatModule extends BaseMediaModule
 	public void attachFiles(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
-		
 		String topicid = inReq.getRequestParameter("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
 		String messageid = inReq.getRequestParameter("messageid");
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		if(savedassets == null)
+		{
+			String attachedassetid = inReq.getRequestParameter("attachedassetid");
+			if (attachedassetid != null) {
+				Data attachedasset = archive.getCachedData("chatterboxattachment", attachedassetid);
+				if (attachedasset != null) {
+					archive.getSearcher("chatterboxattachment").delete(attachedasset, inReq.getUser());
+				}
+				
+			}
+			return;
+		}
+
 		
 		Data chat = null;
 		if( messageid != null)
@@ -337,7 +349,7 @@ public class ChatModule extends BaseMediaModule
 			chatattchment.setValue("user", inReq.getUserName());
 			chatattchment.setValue("assetid", asset.getId());
 			
-			archive.getSearcher("chatterboxattachment").saveData(chatattchment,inReq.getUser());
+			archive.getSearcher("chatterboxattachment").saveData(chatattchment, inReq.getUser());
 		}
 
 	}
