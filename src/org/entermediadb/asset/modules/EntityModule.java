@@ -242,7 +242,7 @@ public class EntityModule extends BaseMediaModule
 			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
 		}
 		else {
-			added = entityManager.copyEntities(inPageRequest, pickedmoduleid, hits);
+			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
 		}
 
 		inPageRequest.putPageValue("saved", added);
@@ -253,6 +253,7 @@ public class EntityModule extends BaseMediaModule
 		
 		if("moveentity".equals(action)) {
 			Boolean deleted = entityManager.deleteEntity(inPageRequest, sourcemoduleid, sourceentityid);
+			inPageRequest.putPageValue("moduleid", pickedmoduleid);
 			inPageRequest.putPageValue("deleted", deleted);
 		}
 		
