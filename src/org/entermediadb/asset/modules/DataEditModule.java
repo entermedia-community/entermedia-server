@@ -58,6 +58,11 @@ public class DataEditModule extends BaseMediaModule
 	public  Data loadDataForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
+		if( searcher == null)
+		{
+			log.error("searcher required");
+			return null;
+		}
 		inReq.putPageValue("searcher", searcher);
 		Data data = loadData(inReq);
 		if( data== null) 
