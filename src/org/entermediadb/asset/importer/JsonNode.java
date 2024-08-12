@@ -7,7 +7,29 @@ import org.dom4j.Element;
 
 public class JsonNode {
 	protected String fieldId;
-
+	protected String fieldCode;
+	protected String fieldSourceId;
+	public String getSourceId() {
+		return fieldSourceId;
+	}
+	public void setSourceId(String inSourceId) {
+		fieldSourceId = inSourceId;
+	}
+	protected String fieldTargetId;
+	
+	public String getCode() {
+		return fieldCode;
+	}
+	public void setCode(String inCode) {
+		fieldCode = inCode;
+	}
+	public String getText() {
+		return fieldText;
+	}
+	public void setText(String inText) {
+		fieldText = inText;
+	}
+	protected String fieldText;
 	public String getId() {
 		if( fieldId == null)
 		{
@@ -66,9 +88,13 @@ public class JsonNode {
 	public void setJson(String inJson) {
 		fieldJson = inJson;
 	}
-	public void addChild(JsonNode inParentnode) 
+	public void addChild(JsonNode inChildNode) 
 	{
-		getChildren().add(inParentnode);
+		//Source is us
+		inChildNode.setSourceId(getId());
+		
+		//Target is them
+		getChildren().add(inChildNode);
 	
 	}
 	public String getTextTrim() {
@@ -95,6 +121,11 @@ public class JsonNode {
 	{
 		int total = (getRow()) * height + offset;
 		return total;
+	}
+
+	@Override
+	public String toString() {
+		return getName() + " " + getId() + " children: " + getChildren();
 	}
 	
 }

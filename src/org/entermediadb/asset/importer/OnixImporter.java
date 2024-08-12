@@ -25,6 +25,7 @@ import org.openedit.util.XmlUtil;
 public class OnixImporter extends BaseImporter{
 
 	protected Map<String,Page> foundtypes = new HashMap();
+	Map<String,JsonNode> multiplevalues = new HashMap();
 	protected Data fieldEntity;
 	public Data getEntity() {
 		return fieldEntity;
@@ -81,31 +82,19 @@ public class OnixImporter extends BaseImporter{
 		rootjson.addChild(datanode);
 
 		Element toplevel = root.element("Product");
+		multiplevalues.clear();
+		findRedundant(toplevel, datanode, multiplevalues);
 		
-		Map<String,JsonNode> multiplevalues = new HashMap();
-		defineDataFields(toplevel, datanode, multiplevalues);
-		
-		for (Iterator iterator = toplevel.elements().iterator(); iterator.hasNext();) 
-		{
-			Element child = (Element) iterator.next();
-			JsonNode duplicate = multiplevalues.get(child.getName());
-			JsonNode childdata = createJsonNodes(3,child);
-			if( duplicate != null)
-			{
-				duplicate.addChild(childdata);
-			}
-			else
-			{
-				datanode.addChild(childdata);
-			}
-		}		
-		
+		defineDataView();
+
+		addTopChildren(datanode, toplevel);		
+
 		//Now render allJSON recursively
 		Map<Integer,Integer> rowcounts = new HashMap();
 		fixMath(rootjson,rowcounts);
 		renderJson(rootjson,rowcounts);
 		
-		
+		//getSearcher().saveData(getEntity());
 		getMediaArchive().saveData(getModule().getId(),getEntity());
 		//Now collect all the nodes into a big list
 		List collecteddatarows = new ArrayList();
@@ -123,6 +112,39 @@ public class OnixImporter extends BaseImporter{
 		}
 		
 		componentsearcher.saveAllData(collecteddatarows, null);
+	}
+
+
+	protected void addTopChildren(JsonNode datanode, Element toplevel) {
+		for (Iterator iterator = toplevel.elements().iterator(); iterator.hasNext();) 
+		{
+			Element child = (Element) iterator.next();
+			JsonNode placeholder = multiplevalues.get(child.getName());
+			JsonNode childdata = createJsonNodes(3,child);
+			if( placeholder == null)
+			{
+				datanode.addChild(childdata);
+			}
+			else
+			{
+				placeholder.addChild(childdata);
+			}
+		}
+	}
+
+
+	protected void defineDataView() {
+		Searcher searcher = getMediaArchive().getSearcher("view");
+		Data data = (Data) searcher.searchById(getModule().getId() + "onix");
+		if( data == null)
+		{
+			data = searcher.createNewData();
+			data.setValue("moduleid",getModule().getId());
+			data.setId(getModule().getId() + "onix");
+			data.setValue("entitytabrendertype","tabrenderonix");
+			data.setName("ONIX");
+			searcher.saveData(data);
+		}
 	}
 
 	protected void fixMath(JsonNode inRootjson, Map<Integer, Integer> inRowcounts) 
@@ -160,7 +182,7 @@ public class OnixImporter extends BaseImporter{
 	}
 
 
-	protected void defineDataFields(Element toplevel, JsonNode datanode, Map<String, JsonNode> multiplevalues) 
+	protected void findRedundant(Element toplevel, JsonNode topnode, Map<String, JsonNode> multiplevalues) 
 	{
 		Set allnodes = new HashSet();
 		
@@ -176,28 +198,11 @@ public class OnixImporter extends BaseImporter{
 				{
 					placeholdernode.setName(placeholdernode.getName() + "s"); //Silly
 				}
-				multiplevalues.put(child.getName(), placeholdernode); //To Store children
-				datanode.addChild(placeholdernode);
+				multiplevalues.put(child.getName(), placeholdernode); //Only have one of these
+				topnode.addChild(placeholdernode);
 			}
 			allnodes.add(child.getName());
-			List children = child.elements();
-			if( children.isEmpty())  //Create properties
-			{
-				saveFieldData(child.getName(), child); //These are nice to have on Detail Editor
-			}
 		}
-		Searcher searcher = getMediaArchive().getSearcher("view");
-		Data data = (Data) searcher.searchById(getModule().getId() + "onix");
-		if( data == null)
-		{
-			data = searcher.createNewData();
-			data.setValue("moduleid",getModule().getId());
-			data.setId(getModule().getId() + "onix");
-			data.setValue("entitytabrendertype","tabrenderonix");
-			data.setName("ONIX");
-			searcher.saveData(data);
-		}
-		getSearcher().saveData(getEntity());
 	}
 	
 	private JsonNode createJsonNodes(int level,Element inChildNode) {
@@ -205,7 +210,7 @@ public class OnixImporter extends BaseImporter{
 		datanode.setName(inChildNode.getName());
 		datanode.setLevel(level);
 		datanode.setElement(inChildNode);
-
+		
 		for (Iterator iterator = inChildNode.elementIterator(); iterator.hasNext();) {
 			Element child = (Element) iterator.next();
 			JsonNode node = createJsonNodes(level + 1,child);
@@ -253,21 +258,29 @@ public class OnixImporter extends BaseImporter{
 		foundtypes.put(type,found);
 		return found;
 	}
-	protected void renderJson(JsonNode inParent , Map<Integer,Integer> rowcounts) 
+	protected void renderJson(JsonNode inNode , Map<Integer,Integer> rowcounts) 
 	{	
-		Page render = getType(inParent);
-		String json = renderVelocity(render,inParent,rowcounts);
-		inParent.setJson(json);
+		Page render = getType(inNode);
+		String json = renderVelocity(render,inNode,rowcounts);
+		inNode.setJson(json);
 		
-		List<JsonNode> children = inParent.getChildren();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			JsonNode jsonNode = (JsonNode) iterator.next();
-			renderJson(jsonNode,rowcounts);
+		List<JsonNode> children = inNode.getChildren();
+		if( children != null && !children.isEmpty())
+		{
+			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+				JsonNode jsonNode = (JsonNode) iterator.next();
+				renderJson(jsonNode,rowcounts);
+			}
 		}
-		
+		else
+		{
+			//Create property?
+			saveValueIsPossible(inNode);
+			
+		}
 	}
 
-	protected String renderVelocity(Page inRender, JsonNode inParent ,Map<Integer,Integer> rowcounts) 
+	protected String renderVelocity(Page inRender, JsonNode inNode ,Map<Integer,Integer> rowcounts) 
 	{
 		if( !inRender.exists())
 		{
@@ -283,7 +296,7 @@ public class OnixImporter extends BaseImporter{
 
 		WebPageRequest context = getContext().copy(inRender);
 		context.putPageStreamer(streamer);
-		context.putPageValue("node", inParent);
+		context.putPageValue("node", inNode);
 		context.putPageValue("rowcounts", rowcounts);
 		
 		int maxcount = 0;
@@ -304,33 +317,37 @@ public class OnixImporter extends BaseImporter{
 		return outtext.toString();
 	}
 
-	protected void saveFieldData(String parentId, Element inRoot) {
+	protected PropertyDetail saveValueIsPossible(JsonNode inRoot) {
+		
+		if( multiplevalues.get(inRoot.getName()) != null )
+		{
+			return null;
+		}
+		
 		String text = inRoot.getTextTrim();
 		if( text != null)
 		{
-		
-			PropertyDetail detail = getSearcher().getDetail(parentId);
+			//TODO: Make sure no children?
+			PropertyDetail detail = getSearcher().getDetail(inRoot.getName());
 			if( detail == null)
 			{
 				detail = new PropertyDetail();
-				detail.setId(parentId);
-				detail.setDataType("list");
-				detail.setListId("onix/" + inRoot.getName());
+				detail.setId(inRoot.getName());
+				
+				//See if its a list or not
+				String path = "/" + getSearcher().getCatalogId() + "/lists/onix/" + inRoot.getName() + ".xml"; 
+				boolean islist = getPageManager().getRepository().doesExist(text);
+				if( islist)
+				{
+					detail.setDataType("list");
+					detail.setListId("onix/" + inRoot.getName());
+				}
 				detail.setName(inRoot.getName());
 				detail.setEditable(true);
 				detail.setStored(true);
 				detail.setIndex(true);
 				detail.setKeyword(true);
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), null);
-			}
-			else
-			{
-				if(  getEntity().getValue(parentId) != null)
-				{
-					//If there is already a field here then it might be a multi value situation
-					//Create a table and delete the old detail
-					//Also we need to add the views to the relationship view DB
-				}
 			}
 			//Add to the view for this panel
 			String viewpath  = getModule().getId() + "/" + getModule().getId() + "general";
@@ -343,7 +360,7 @@ public class OnixImporter extends BaseImporter{
 			boolean findview = false;
 			for (Iterator iterator = onixview.iterator(); iterator.hasNext();) {
 				PropertyDetail found = (PropertyDetail) iterator.next();
-				if( found.getId().equals(parentId) )
+				if( found.getId().equals(inRoot.getName()) )
 				{
 					findview = true;
 					break;
@@ -354,8 +371,10 @@ public class OnixImporter extends BaseImporter{
 				onixview.add(detail);
 				getSearcher().getPropertyDetailsArchive().saveView(onixview, null);
 			}
-			getEntity().setValue(parentId, text);
+			getEntity().setValue(inRoot.getName(), text);
+			return detail;
 		}
+		return null;
 	}
 
 }
