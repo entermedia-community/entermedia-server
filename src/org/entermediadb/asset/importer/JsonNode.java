@@ -104,6 +104,10 @@ public class JsonNode {
 	}
 	public String getTextTrim() {
 		String text =  getElement().getTextTrim();
+		if( text == null)
+		{
+			text = getElement().getName();
+		}
 		if( text != null && text.length() > 30)
 		{
 			text = text.substring(0,30) + "~";

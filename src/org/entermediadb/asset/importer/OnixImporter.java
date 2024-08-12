@@ -117,15 +117,15 @@ public class OnixImporter extends BaseImporter{
 	}
 
 
-	protected void addTopChildren(JsonNode datanode, Element toplevel) {
+	protected void addTopChildren(JsonNode shareddatanode, Element toplevel) {
 		for (Iterator iterator = toplevel.elements().iterator(); iterator.hasNext();) 
 		{
 			Element child = (Element) iterator.next();
 			JsonNode placeholder = multiplevalues.get(child.getName());
-			JsonNode childdata = createJsonNodes(3,child);
+			JsonNode childdata = createJsonNodes(2,child);
 			if( placeholder == null)
 			{
-				datanode.addChild(childdata);
+				shareddatanode.addChild(childdata);
 			}
 			else
 			{
