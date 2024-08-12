@@ -317,6 +317,10 @@ public class OnixImporter extends BaseImporter{
 				detail.setDataType("list");
 				detail.setListId("ONIX" + inRoot.getName());
 				detail.setName(inRoot.getName());
+				detail.setEditable(true);
+				detail.setStored(true);
+				detail.setIndex(true);
+				detail.setKeyword(true);
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), null);
 			}
 			else
