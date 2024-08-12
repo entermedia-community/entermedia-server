@@ -92,7 +92,9 @@ public class OnixImporter extends BaseImporter{
 		//Now render allJSON recursively
 		Map<Integer,Integer> rowcounts = new HashMap();
 		fixMath(rootjson,rowcounts);
-		renderJson(rootjson,rowcounts);
+
+		Map<Integer,Integer> rowspent= new HashMap();
+		renderJson(rootjson,rowcounts,rowspent);
 		
 		//getSearcher().saveData(getEntity());
 		getMediaArchive().saveData(getModule().getId(),getEntity());
@@ -127,6 +129,7 @@ public class OnixImporter extends BaseImporter{
 			}
 			else
 			{
+				childdata.addToLevel(1); //Push out
 				placeholder.addChild(childdata);
 			}
 		}
@@ -264,18 +267,27 @@ public class OnixImporter extends BaseImporter{
 		foundtypes.put(type,found);
 		return found;
 	}
-	protected void renderJson(JsonNode inNode , Map<Integer,Integer> rowcounts) 
+	protected void renderJson(JsonNode inNode , Map<Integer,Integer> maxrowcounts,Map<Integer,Integer> rowsspent) 
 	{	
 		Page render = getType(inNode);
-		String json = renderVelocity(render,inNode,rowcounts);
+		Integer spent = rowsspent.get(inNode.getLevel());
+		if( spent == null)
+		{
+			spent = 0;
+		}
+		spent++;
+		inNode.setRowPosition(spent + 1);
+		rowsspent.put(inNode.getLevel(),spent);
+		String json = renderVelocity(render,inNode,maxrowcounts);
 		inNode.setJson(json);
+
 		
 		List<JsonNode> children = inNode.getChildren();
 		if( children != null && !children.isEmpty())
 		{
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				JsonNode jsonNode = (JsonNode) iterator.next();
-				renderJson(jsonNode,rowcounts);
+				renderJson(jsonNode,maxrowcounts,rowsspent);
 			}
 		}
 		else

@@ -1,6 +1,7 @@
 package org.entermediadb.asset.importer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Element;
@@ -9,6 +10,14 @@ public class JsonNode {
 	protected String fieldId;
 	protected String fieldCode;
 	protected String fieldSourceId;
+	protected int fieldRowPosition;
+	
+	public int getRowPosition() {
+		return fieldRowPosition;
+	}
+	public void setRowPosition(int inRowPosition) {
+		fieldRowPosition = inRowPosition;
+	}
 	public String getSourceId() {
 		return fieldSourceId;
 	}
@@ -122,10 +131,23 @@ public class JsonNode {
 		int total = (getRow()) * height + offset;
 		return total;
 	}
+	public int rowoffet(int height)
+	{
+		int total = (getRowPosition()) * height;
+		return total;
+	}
 
 	@Override
 	public String toString() {
 		return getName() + " " + getId() + " children: " + getChildren();
+	}
+	public void addToLevel(int inI) {
+		setLevel(getLevel()+inI);
+		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
+			JsonNode node = (JsonNode) iterator.next();
+			node.addToLevel(inI);
+			
+		}
 	}
 	
 }
