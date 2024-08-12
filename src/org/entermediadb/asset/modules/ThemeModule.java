@@ -135,6 +135,9 @@ public class ThemeModule extends BaseMediaModule {
 		else if(theme.get("logopath") != null) {
 			logopage = getPageManager().getPage("/" + applicationid + theme.get("logopath"));
 		}
+		else {
+			logopage = getPageManager().getPage("/"+ applicationid + "/theme/images/emedialibrarylogo.png");
+		}
 		if(logopage != null) {
 			Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
 			getPageManager().copyPage(logopage, destpage);
