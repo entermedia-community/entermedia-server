@@ -103,11 +103,21 @@ public class JsonNode {
 	
 	}
 	public String getTextTrim() {
-		String text =  getElement().getTextTrim();
-		if( text == null)
+		
+		if( getElement() == null)
+		{
+			return getName();
+		}
+		String text = null;
+		if(getChildren().isEmpty())
+		{
+			text =  getElement().getTextTrim();
+		}
+		if( text == null || text.isEmpty())
 		{
 			text = getElement().getName();
 		}
+			
 		if( text != null && text.length() > 30)
 		{
 			text = text.substring(0,30) + "~";
@@ -123,7 +133,7 @@ public class JsonNode {
 
 	public int offetX(int width, int offset)
 	{
-		int total = (getLevel()) * width + offset;
+		int total = (getLevel() - 1) * width + offset;
 		return total;
 	}
 	public int offetY(int width)
@@ -136,9 +146,9 @@ public class JsonNode {
 		int total = (getRow()) * height + offset;
 		return total;
 	}
-	public int rowoffet(int height)
+	public int rowoffet(int height, int padding)
 	{
-		int total = (getRowPosition()) * height;
+		int total = (getRowPosition()) * height + padding;
 		return total;
 	}
 

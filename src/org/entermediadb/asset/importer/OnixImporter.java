@@ -129,7 +129,7 @@ public class OnixImporter extends BaseImporter{
 			}
 			else
 			{
-				childdata.addToLevel(1); //Push out
+				childdata.addToLevel(2); //Push out
 				placeholder.addChild(childdata);
 			}
 		}
@@ -200,7 +200,7 @@ public class OnixImporter extends BaseImporter{
 				{
 					placeholdernode = new JsonNode();
 				}
-				placeholdernode.setLevel(2); //connector
+				placeholdernode.setLevel(3); //connector
 				placeholdernode.setName(child.getName());
 				if( !placeholdernode.getName().endsWith("s"))
 				{
