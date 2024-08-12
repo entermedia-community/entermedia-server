@@ -191,7 +191,11 @@ public class OnixImporter extends BaseImporter{
 			Element child = (Element) iterator.next();
 			if( allnodes.contains(child.getName()) )  //Its a duplicates. Put it under a placeholder
 			{
-				JsonNode placeholdernode = new JsonNode(); //Placeholder
+				JsonNode placeholdernode = multiplevalues.get(child.getName()); //Placeholder
+				if( placeholdernode == null )
+				{
+					placeholdernode = new JsonNode();
+				}
 				placeholdernode.setLevel(2); //connector
 				placeholdernode.setName(child.getName());
 				if( !placeholdernode.getName().endsWith("s"))
@@ -199,6 +203,7 @@ public class OnixImporter extends BaseImporter{
 					placeholdernode.setName(placeholdernode.getName() + "s"); //Silly
 				}
 				multiplevalues.put(child.getName(), placeholdernode); //Only have one of these
+				
 				topnode.addChild(placeholdernode);
 			}
 			allnodes.add(child.getName());
