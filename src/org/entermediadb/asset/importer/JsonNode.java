@@ -99,16 +99,17 @@ public class JsonNode {
 	}
 	public void addChild(JsonNode inChildNode) 
 	{
-		//Source is us
-		inChildNode.setSourceId(getId());
-		
-		//Target is them
 		getChildren().add(inChildNode);
 	
 	}
 	public String getTextTrim() {
-		// TODO Auto-generated method stub
-		return getElement().getTextTrim();
+		String text =  getElement().getTextTrim();
+		if( text != null && text.length() > 30)
+		{
+			text = text.substring(0,30) + "~";
+		}
+		
+		return text;
 	}
 
 	public int offetX(int width)

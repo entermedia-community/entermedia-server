@@ -91,7 +91,7 @@ public class OnixImporter extends BaseImporter{
 
 		//Now render allJSON recursively
 		Map<Integer,Integer> rowcounts = new HashMap();
-		fixMath(rootjson,rowcounts);
+		fixMath(rootjson,rowcounts);  //Levels shoudl be good?
 
 		Map<Integer,Integer> rowspent= new HashMap();
 		renderJson(rootjson,rowcounts,rowspent);
