@@ -183,7 +183,7 @@ public class OnixImporter extends BaseImporter{
 			List children = child.elements();
 			if( children.isEmpty())  //Create properties
 			{
-				saveFieldData(toplevel.getName() + "-" + child.getName(), child); //These are nice to have on Detail Editor
+				saveFieldData(child.getName(), child); //These are nice to have on Detail Editor
 			}
 		}
 		Searcher searcher = getMediaArchive().getSearcher("view");
@@ -315,7 +315,7 @@ public class OnixImporter extends BaseImporter{
 				detail = new PropertyDetail();
 				detail.setId(parentId);
 				detail.setDataType("list");
-				detail.setListId("ONIX" + inRoot.getName());
+				detail.setListId("onix/" + inRoot.getName());
 				detail.setName(inRoot.getName());
 				detail.setEditable(true);
 				detail.setStored(true);
