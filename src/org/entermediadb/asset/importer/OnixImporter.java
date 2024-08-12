@@ -161,6 +161,7 @@ public class OnixImporter extends BaseImporter{
 		{
 			JsonNode node = (JsonNode)iterator.next();
 			fixMath(node,inRowcounts);
+			node.setSourceId(inRootjson.getId());
 		}
 	}
 
