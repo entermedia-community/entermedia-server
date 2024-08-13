@@ -3,7 +3,7 @@
 	<div class="badgecontainer">
 	#foreach($badge in $badges)
 	
-		<div id="badge_${hit.id}_$badge.getId()" class="embadge badge-primary" title="$badge.getName()">
+		<div id="badge_${hit.id}_$badge.getId()" class="embadge " title="$badge.getName()">
 			#if($badge.icon)
 				<i class="$!badge.icon"></i>
 			#else
