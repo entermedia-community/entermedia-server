@@ -612,39 +612,36 @@ public class EntityManager implements CatalogEnabled
 		return items;
 	}
 
-	// entityversionLog
 	
-		public void fireAssetAddedToEntity(String applicationid,User inUser,Collection inAssets, Data entity)
+	public void fireAssetAddedToEntity(String applicationid, User inUser, Collection inAssets, Data entity)
+	{
+		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded", "Assets added");
+	}
+	
+	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Collection inAssets, Data entity)
+	{
+		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved", "Assets removed");
+	}
+	
+	
+	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection inAssets, String inOperation, String inNote) {
+		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
+		Data event = searcher.createNewData();
+		event.setProperty("applicationid", applicationid);
+		if( inUser != null)
 		{
-
-			saveAssetActivity(entity, applicationid, inUser, inAssets, "assetsadded");
-			
+			event.setProperty("user", inUser.getId());
 		}
 
+		event.setProperty("operation", inOperation);
+		event.setProperty("moduleid", entity.get("entitysourcetype"));
+		event.setProperty("entityid", entity.getId()); //data.getId() ??
+		event.setValue("assetids", inAssets); 
+		event.setValue("date", new Date()); 
+		event.setProperty("note", inNote);
 		
-		public void fireAssetRemovedFromEntity(String applicationid,User inUser,Collection inAssets, Data entity)
-		{
-			saveAssetActivity(entity, applicationid, inUser, inAssets, "assetsremoved");
-		}
-		protected void saveAssetActivity(Data entity, String applicationid,  User inUser, Collection inAssets, String inoperation) {
-			Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
-			Data event = searcher.createNewData();
-			event.setProperty("applicationid", applicationid);
-			if( inUser != null)
-			{
-				event.setProperty("user", inUser.getId());
-			}
-
-			event.setProperty("operation", inoperation);
-
-			event.setProperty("moduleid", entity.get("entitysourcetype"));
-			event.setProperty("entityid", entity.getId()); //data.getId() ??
-			event.setValue("assetids", inAssets); 
-			event.setValue("date", new Date()); 
-			event.setProperty("note", "data added to entity");
-			
-			searcher.saveData(event, null);
-		}
+		searcher.saveData(event, null);
+	}
 	
 
 }
