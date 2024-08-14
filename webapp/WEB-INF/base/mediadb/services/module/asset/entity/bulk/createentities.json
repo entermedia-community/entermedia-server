@@ -14,9 +14,9 @@
   , "existingfolders": [
 	#foreach( $folder in $existingfolders) #if( ${foreach.count} != 1 ), #end
 		{
-			"id": "$folder.getId()",
-			"name": "$folder.getName()",
-			"path": "${folder.entitysourcetype}"
+			"id": #jesc($folder.getId()),
+			"name": #jesc($folder.getName()),
+			"path": #jesc($folder.entitysourcetype)
 		}
 	#end
     ]
