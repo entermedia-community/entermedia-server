@@ -25,7 +25,7 @@ import org.openedit.util.XmlUtil;
 public class OnixImporter extends BaseImporter{
 
 	protected Map<String,Page> foundtypes = new HashMap();
-	Map<String,JsonNode> multiplevalues = new HashMap();
+	Map<String,JsonNode> level2dupnodes = new HashMap();
 	protected Data fieldEntity;
 	public Data getEntity() {
 		return fieldEntity;
@@ -76,25 +76,25 @@ public class OnixImporter extends BaseImporter{
 	//	headernode.setLevel(1);
 		rootjson.addChild(headernode);
 
-		JsonNode datanode = new JsonNode();
-		datanode.setLevel(2);
-		datanode.setName("Metadata");
-		rootjson.addChild(datanode);
+		JsonNode metadatanode = new JsonNode();
+		metadatanode.setLevel(2);
+		metadatanode.setName("Metadata");
+		rootjson.addChild(metadatanode);
 
-		Element toplevel = root.element("Product");
-		multiplevalues.clear();
-		findRedundant(toplevel, datanode, multiplevalues);
+		Element productelement = root.element("Product");
+		level2dupnodes.clear();
+		allnodes.clear();
+		findRedundant(productelement, rootjson);
 		
 		defineDataView();
 
-		addTopChildren(datanode, toplevel);		
+		addTopChildren(metadatanode, productelement);		
 
 		//Now render allJSON recursively
-		Map<Integer,Integer> rowcounts = new HashMap();
-		fixMath(rootjson,rowcounts);  //Levels shoudl be good?
+		fixMath(rootjson);  //Levels shoudl be good?
 
 		Map<Integer,Integer> rowspent= new HashMap();
-		renderJson(rootjson,rowcounts,rowspent);
+		renderJson(rootjson,rowspent);
 		
 		//getSearcher().saveData(getEntity());
 		getMediaArchive().saveData(getModule().getId(),getEntity());
@@ -103,34 +103,30 @@ public class OnixImporter extends BaseImporter{
 		Searcher componentsearcher = getMediaArchive().getSearcher("componentdata");
 		Collection hits = componentsearcher.query().exact("entityid", getEntity()).search();
 		componentsearcher.deleteAll(hits,null);
+		ordering=0;
 		collectJson(componentsearcher,rootjson,collecteddatarows);
 		//getEntity().setValue("onixjson",collectedjson);
-		
-		int counted = 0;
-		for (Iterator iterator = collecteddatarows.iterator(); iterator.hasNext();) 
-		{
-			Data node = (Data)iterator.next();
-			node.setValue("ordering",counted++);
-		}
-		
 		componentsearcher.saveAllData(collecteddatarows, null);
 	}
+	int ordering = 0;
+	//Hard code levels. 1 is root 2 is metadata 3 are children 2 is placeholder for dups
 
-
-	protected void addTopChildren(JsonNode shareddatanode, Element toplevel) {
-		for (Iterator iterator = toplevel.elements().iterator(); iterator.hasNext();) 
+	protected void addTopChildren(JsonNode metadatanode, Element productelement) {
+		for (Iterator iterator = productelement.elements().iterator(); iterator.hasNext();) 
 		{
 			Element child = (Element) iterator.next();
-			JsonNode placeholder = multiplevalues.get(child.getName());
-			JsonNode childdata = createJsonNodes(2,child);
-			if( placeholder == null)
+			JsonNode level2dupholder = level2dupnodes.get(child.getName());
+		
+			//Need to make this recursive?
+			if( level2dupholder == null)
 			{
-				shareddatanode.addChild(childdata);
+				JsonNode level3child = createJsonNodes(3,child);
+				metadatanode.addChild(level3child);
 			}
 			else
 			{
-				childdata.addToLevel(2); //Push out
-				placeholder.addChild(childdata);
+				JsonNode level3child = createJsonNodes(3,child);
+				level2dupholder.addChild(level3child);
 			}
 		}
 	}
@@ -150,33 +146,30 @@ public class OnixImporter extends BaseImporter{
 		}
 	}
 
-	protected void fixMath(JsonNode inRootjson, Map<Integer, Integer> inRowcounts) 
+	protected void fixMath(JsonNode inRootjson) 
 	{
-		Integer row = inRowcounts.get(inRootjson.getLevel());
-		if(row == null)
-		{
-			row = 0;
-		}
-		row++;
-		inRowcounts.put(inRootjson.getLevel(),row);
-		inRootjson.setRow(row);
+		int row = 0;
 		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();) 
 		{
 			JsonNode node = (JsonNode)iterator.next();
-			fixMath(node,inRowcounts);
-			node.setSourceId(inRootjson.getId());
+			node.setRow(row++);
+			fixMath(node);
 		}
 	}
 
 
 	private void collectJson(Searcher inOnixSearcher, JsonNode inRootjson, List inCollectedjson) 
 	{
-		Data tosave = inOnixSearcher.createNewData();
-		tosave.setName(inRootjson.getName());
-		tosave.setValue("nodelevel",inRootjson.getLevel());
-		tosave.setValue("json",inRootjson.getJson());
-		tosave.setValue("entityid",getEntity().getId());
-		inCollectedjson.add(tosave);
+		if( inRootjson.getJson() != null)
+		{
+			Data tosave = inOnixSearcher.createNewData();
+			tosave.setName(inRootjson.getName());
+			tosave.setValue("nodelevel",inRootjson.getLevel());
+			tosave.setValue("json",inRootjson.getJson());
+			tosave.setValue("entityid",getEntity().getId());
+			tosave.setValue("ordering",ordering++);
+			inCollectedjson.add(tosave);
+		}
 		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();) 
 		{
 			JsonNode node = (JsonNode)iterator.next();
@@ -185,30 +178,30 @@ public class OnixImporter extends BaseImporter{
 
 	}
 
+	Set allnodes = new HashSet();
 
-	protected void findRedundant(Element toplevel, JsonNode topnode, Map<String, JsonNode> multiplevalues) 
+	protected void findRedundant(Element productelement, JsonNode inRootNode) 
 	{
-		Set allnodes = new HashSet();
 		
-		for (Iterator iterator = toplevel.elements().iterator(); iterator.hasNext();) 
+		for (Iterator iterator = productelement.elements().iterator(); iterator.hasNext();) 
 		{
 			Element child = (Element) iterator.next();
 			if( allnodes.contains(child.getName()) )  //Its a duplicates. Put it under a placeholder
 			{
-				JsonNode placeholdernode = multiplevalues.get(child.getName()); //Placeholder
+				JsonNode placeholdernode = level2dupnodes.get(child.getName()); //Placeholder
 				if( placeholdernode == null )
 				{
 					placeholdernode = new JsonNode();
+					placeholdernode.setLevel(2); //connector
+					placeholdernode.setName(child.getName());
+					if( !placeholdernode.getName().endsWith("s"))
+					{
+						placeholdernode.setName(placeholdernode.getName() + "s"); //Silly
+					}
+					level2dupnodes.put(child.getName(), placeholdernode); //Only have one of these
+					inRootNode.addChild(placeholdernode);
 				}
-				placeholdernode.setLevel(3); //connector
-				placeholdernode.setName(child.getName());
-				if( !placeholdernode.getName().endsWith("s"))
-				{
-					placeholdernode.setName(placeholdernode.getName() + "s"); //Silly
-				}
-				multiplevalues.put(child.getName(), placeholdernode); //Only have one of these
 				
-				topnode.addChild(placeholdernode);
 			}
 			allnodes.add(child.getName());
 		}
@@ -236,7 +229,7 @@ public class OnixImporter extends BaseImporter{
 		{
 			type = "root";
 		}
-		else if( inParent.getLevel() == 2 && inParent.getChildren() != null)
+		else if( inParent.getLevel() == 2)
 		{
 			type ="connector";
 		}
@@ -267,8 +260,13 @@ public class OnixImporter extends BaseImporter{
 		foundtypes.put(type,found);
 		return found;
 	}
-	protected void renderJson(JsonNode inNode , Map<Integer,Integer> maxrowcounts,Map<Integer,Integer> rowsspent) 
+	protected void renderJson(JsonNode inNode ,Map<Integer,Integer> rowsspent) 
 	{	
+//		if( inNode.getLevel() > 3)
+//		{
+//			return;
+//		}
+		
 		Page render = getType(inNode);
 		Integer spent = rowsspent.get(inNode.getLevel());
 		if( spent == null)
@@ -276,9 +274,9 @@ public class OnixImporter extends BaseImporter{
 			spent = 0;
 		}
 		spent++;
-		inNode.setRowPosition(spent + 1);
+		inNode.setRowPosition(spent);
 		rowsspent.put(inNode.getLevel(),spent);
-		String json = renderVelocity(render,inNode,maxrowcounts);
+		String json = renderVelocity(render,inNode);
 		inNode.setJson(json);
 
 		
@@ -287,7 +285,7 @@ public class OnixImporter extends BaseImporter{
 		{
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				JsonNode jsonNode = (JsonNode) iterator.next();
-				renderJson(jsonNode,maxrowcounts,rowsspent);
+				renderJson(jsonNode,rowsspent);
 			}
 		}
 		else
@@ -298,7 +296,7 @@ public class OnixImporter extends BaseImporter{
 		}
 	}
 
-	protected String renderVelocity(Page inRender, JsonNode inNode ,Map<Integer,Integer> rowcounts) 
+	protected String renderVelocity(Page inRender, JsonNode inNode) 
 	{
 		if( !inRender.exists())
 		{
@@ -315,19 +313,7 @@ public class OnixImporter extends BaseImporter{
 		WebPageRequest context = getContext().copy(inRender);
 		context.putPageStreamer(streamer);
 		context.putPageValue("node", inNode);
-		context.putPageValue("rowcounts", rowcounts);
-		
-		int maxcount = 0;
-		for (Iterator iterator = rowcounts.keySet().iterator(); iterator.hasNext();) {
-			Integer level = (Integer) iterator.next();
-			Integer count = rowcounts.get(level);
-			if( count > maxcount)
-			{
-				maxcount = count; 
-			}
-		}
-		
-		context.putPageValue("maxcounts",maxcount);
+	
 		//Map params = context.getParameterMap();
 		//Set keys = params.keySet();
 		streamer.include(inRender, context);
@@ -335,32 +321,32 @@ public class OnixImporter extends BaseImporter{
 		return outtext.toString();
 	}
 
-	protected PropertyDetail saveValueIsPossible(JsonNode inRoot) {
+	protected PropertyDetail saveValueIsPossible(JsonNode inMetadata) {
 		
-		if( multiplevalues.get(inRoot.getName()) != null )
+		if( inMetadata.getLevel() != 3 |inMetadata.getChildren().isEmpty())
 		{
 			return null;
 		}
 		
-		String text = inRoot.getTextTrim();
+		String text = inMetadata.getTextTrim();
 		if( text != null)
 		{
 			//TODO: Make sure no children?
-			PropertyDetail detail = getSearcher().getDetail(inRoot.getName());
+			PropertyDetail detail = getSearcher().getDetail(inMetadata.getName());
 			if( detail == null)
 			{
 				detail = new PropertyDetail();
-				detail.setId(inRoot.getName());
+				detail.setId(inMetadata.getName());
 				
 				//See if its a list or not
-				String path = "/" + getSearcher().getCatalogId() + "/lists/onix/" + inRoot.getName() + ".xml"; 
+				String path = "/" + getSearcher().getCatalogId() + "/lists/onix/" + inMetadata.getName() + ".xml"; 
 				boolean islist = getPageManager().getRepository().doesExist(text);
 				if( islist)
 				{
 					detail.setDataType("list");
-					detail.setListId("onix/" + inRoot.getName());
+					detail.setListId("onix/" + inMetadata.getName());
 				}
-				detail.setName(inRoot.getName());
+				detail.setName(inMetadata.getName());
 				detail.setEditable(true);
 				detail.setStored(true);
 				detail.setIndex(true);
@@ -378,7 +364,7 @@ public class OnixImporter extends BaseImporter{
 			boolean findview = false;
 			for (Iterator iterator = onixview.iterator(); iterator.hasNext();) {
 				PropertyDetail found = (PropertyDetail) iterator.next();
-				if( found.getId().equals(inRoot.getName()) )
+				if( found.getId().equals(inMetadata.getName()) )
 				{
 					findview = true;
 					break;
@@ -389,7 +375,7 @@ public class OnixImporter extends BaseImporter{
 				onixview.add(detail);
 				getSearcher().getPropertyDetailsArchive().saveView(onixview, null);
 			}
-			getEntity().setValue(inRoot.getName(), text);
+			getEntity().setValue(inMetadata.getName(), text);
 			return detail;
 		}
 		return null;

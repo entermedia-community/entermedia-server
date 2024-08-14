@@ -9,9 +9,15 @@ import org.dom4j.Element;
 public class JsonNode {
 	protected String fieldId;
 	protected String fieldCode;
-	protected String fieldSourceId;
 	protected int fieldRowPosition;
+	protected JsonNode fieldParent;
 	
+	public JsonNode getParent() {
+		return fieldParent;
+	}
+	public void setParent(JsonNode inParent) {
+		fieldParent = inParent;
+	}
 	public int getRowPosition() {
 		return fieldRowPosition;
 	}
@@ -19,10 +25,11 @@ public class JsonNode {
 		fieldRowPosition = inRowPosition;
 	}
 	public String getSourceId() {
-		return fieldSourceId;
-	}
-	public void setSourceId(String inSourceId) {
-		fieldSourceId = inSourceId;
+		if( fieldParent != null)
+		{
+			return getParent().getId();
+		}
+		return "0";
 	}
 	protected String fieldTargetId;
 	
@@ -40,11 +47,11 @@ public class JsonNode {
 	}
 	protected String fieldText;
 	public String getId() {
-		if( fieldId == null)
+		if( getParent() == null)
 		{
-			return getLevel() + "_" + getRow();
+			return "0";
 		}
-		return fieldId;
+		return getParent().getId() + "_" + getRow();
 	}
 	public void setId(String inId) {
 		fieldId = inId;
@@ -99,6 +106,7 @@ public class JsonNode {
 	}
 	public void addChild(JsonNode inChildNode) 
 	{
+		inChildNode.setParent(this);
 		getChildren().add(inChildNode);
 	
 	}
@@ -118,9 +126,9 @@ public class JsonNode {
 			text = getElement().getName();
 		}
 			
-		if( text != null && text.length() > 30)
+		if( text != null && text.length() > 20)
 		{
-			text = text.substring(0,30) + "~";
+			text = text.substring(0,20) + "~";
 		}
 		
 		return text;
@@ -148,14 +156,30 @@ public class JsonNode {
 	}
 	public int rowoffet(int height, int padding)
 	{
-		int total = (getRowPosition()) * height + padding;
+		int total = (getRowPosition() * height )+ padding;
 		return total;
 	}
 
 	@Override
 	public String toString() {
-		return getName() + " " + getId() + " children: " + getChildren();
+		StringBuffer text = new StringBuffer();
+		renderTree(this,0,text);
+		return text.toString();
 	}
+	
+	protected void renderTree(JsonNode inRoot,int deep, StringBuffer inBuffer)
+	{
+		for (int i = 0; i < deep; i++) {
+			inBuffer.append("  ");
+		}
+		inBuffer.append(inRoot.getLevel() + ":" + inRoot.getName() + inRoot.getId() + "\n");	
+		deep++;
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();) {
+			JsonNode node = (JsonNode) iterator.next();
+			renderTree(node,deep,inBuffer);
+		}
+	}
+	
 	public void addToLevel(int inI) {
 		setLevel(getLevel()+inI);
 		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
