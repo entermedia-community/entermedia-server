@@ -1,7 +1,10 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -27,7 +30,6 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 
 import model.assets.AssetTypeManager;
-import model.assets.LibraryManager;
 
 public class AssetImportModule  extends BaseMediaModule
 {
@@ -39,21 +41,56 @@ public class AssetImportModule  extends BaseMediaModule
 		inReq.putPageValue("foldermanager", manager);
 		return manager;
 	}	
-	public void assetsImported(WebPageRequest inReq)
+	public void assetsCreated(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection hits = loadAssetHits(archive, inReq);
+		//Search for these new assets
+		Searcher asssetsearcher = archive.getAssetSearcher();
+		//Search for created 
+		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
+		Collection<Asset> assets = new ArrayList(hits.size());
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset)asssetsearcher.loadData(hit);
+			assets.add(asset);
+		}
+		inReq.putPageValue("hits", assets);
+		archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
+		
+	}
+	
+	public void importAssets(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Asset> hits = (Collection<Asset>)inReq.getPageValue("hits");
 		if( hits == null)
 		{
 			log.error("No hits found");
+			return;
 		}
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+		{
+			Asset newasset = (Asset) iterator.next();
+			newasset.setValue("importstatus", "needsmetadata"); //Will be saved at bottom
+		}
+
+		
 		//Set the asset type
 		AssetTypeManager manager = new AssetTypeManager();
 		manager.setContext(inReq);
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
 		manager.setLog(logger);
-		manager.saveAssetTypes(hits, true);
+		manager.setAssetTypes(hits, true); 
 
+		//save everything
+		List tosave = new ArrayList();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Asset asset = (Asset) iterator.next();
+			tosave.add(asset);
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+		inReq.putPageValue("hits", tosave);
 		//TODO: Move this to AssetUtilities
 //		boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
 //		if(assigncategory) {
@@ -67,34 +104,20 @@ public class AssetImportModule  extends BaseMediaModule
 //			}
 //		}	
 		
+		//Fire category add events
+		//archive.getCategoryEditor().fireAssetsAddedEvents(hits);
+		
+		
+		
 		//Look for collections and libraries
+		/*
 		LibraryManager librarymanager = new LibraryManager();
 		librarymanager.setLog(logger);
 		librarymanager.assignLibraries(archive, hits);
+		*/
 	}
 
-	protected Collection loadAssetHits(MediaArchive archive, WebPageRequest inReq)
-	{
-		Collection hits = (Collection)inReq.getPageValue("hits");
-		if( hits == null)
-		{
-			String ids = inReq.getRequestParameter("assetids");
-			if( ids == null)
-			{
-			   log.info("AssetIDS required");
-			   return null;
-			}
-			Searcher assetsearcher = archive.getAssetSearcher();
-			SearchQuery q = assetsearcher.createSearchQuery();
-			String assetids = ids.replace(","," ");
-			q.addOrsGroup( "id", assetids );
-		
-			hits = assetsearcher.search(q);
-		}
-		return hits;
-	}
 	
-
 	private long getLong(Object inObject)
 	{
 		if( inObject == null)

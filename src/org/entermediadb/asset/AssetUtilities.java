@@ -193,7 +193,14 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		//		if (importedasset)
 		//		{
 		String status = asset.get("importstatus");
-		asset.setProperty("importstatus", "needsmetadata");
+		if( status == null)
+		{
+			asset.setProperty("importstatus", "created");
+		}
+		else
+		{
+			asset.setProperty("importstatus", "needsmetadata");
+		}
 		asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 		String previewstatus = asset.get("previewstatus");
 		//			if( previewstatus == null || status.equals("2"))

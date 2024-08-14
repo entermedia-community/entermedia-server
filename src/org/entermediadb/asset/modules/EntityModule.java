@@ -356,4 +356,14 @@ public class EntityModule extends BaseMediaModule
 		
 		return entity;
 	}
+	
+	
+	public void handleAssetAddedEvent(WebPageRequest inPageRequest) throws Exception
+	{
+		//Search the hits for category
+	}
+	public void handleAssetRemovedEvent(WebPageRequest inPageRequest) throws Exception
+	{
+		//Search the hits for category
+	}
 }

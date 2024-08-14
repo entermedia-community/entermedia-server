@@ -228,8 +228,8 @@ public class AssetSourceManager implements CatalogEnabled
 			log.info("Asset saved: " + asset.getId());
 		}
 		
-		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);
-		archive.firePathEvent("importing/assetsimported",inUser,tracker);
+		archive.fireSharedMediaEvent("importing/assetscreated"); //
+		//archive.firePathEvent("importing/assetsimported",inUser,tracker);
 		log.info("Saved uploaded assets " + tracker.size() );
 	}
 
