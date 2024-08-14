@@ -2154,7 +2154,7 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current);
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);
-			archive.fireMediaEvent("importing", "assetsimported", inReq.getUser(), current);
+			archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
 
 			if (currentcollection != null)
 			{
