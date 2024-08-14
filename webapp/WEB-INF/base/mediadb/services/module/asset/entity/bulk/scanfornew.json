@@ -1,0 +1,19 @@
+{
+  "response":
+		{
+		#if( $$newfolders)
+				"status":"ok"
+		#else 
+				"status": "notfound" 
+		#end
+			#ifnotnull($$newfolders)
+			,"size":"$$newfolders.size()" 
+			#end
+		}
+  ,
+  "newfolders": [
+	#foreach( $newfolder in $newfolders) #if( ${foreach.count} != 1 ), #end
+	$newfolder
+	#end
+    ]
+}

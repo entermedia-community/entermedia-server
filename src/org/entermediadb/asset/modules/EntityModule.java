@@ -1,11 +1,14 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -377,11 +380,53 @@ public class EntityModule extends BaseMediaModule
 			
 		}
 		
-		
-		
 	}
 	public void handleAssetRemovedEvent(WebPageRequest inPageRequest) throws Exception
 	{
 		//Search the hits for category
 	}
+	
+	public void scanForNewEntitiesNames(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String moduleid = inReq.getRequestParameter("moduleid");
+		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
+
+		String[] existingfoldernames = inReq.getRequestParameters("name");
+		String[] fields = inReq.getRequestParameters("field");
+		for (int i = 0; i < fields.length; i++) {
+			String[] values = inReq.getRequestParameters(fields + ".value");
+			tmpdata.setValue(fields[i],values);
+		}
+		List all = Arrays.asList(existingfoldernames);
+		HitTracker existing = archive.getSearcher(moduleid).query().orsgroup("name",all).search();
+		
+		Set newfolders = new HashSet(all);
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+			Data found = (Data) iterator.next();
+			newfolders.remove(found.getName());
+		}
+		inReq.putPageValue("newfolders",newfolders);
+	}
+	
+	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String[] foldernames = inReq.getRequestParameters("name");
+		String[] fields = inReq.getRequestParameters("field");
+		
+		
+		
+		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
+			String afield = (String) iterator.next();
+			params.get()
+			
+		}
+		
+		String moduleid = (String)params.get("moduleid");
+		
+	}
+	
 }

@@ -1,0 +1,28 @@
+
+#set( $allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category) )
+{
+  "response":
+		{
+		#if( $category)
+				"status":"ok"
+			#else 
+				"status": "notfound" 
+			#end
+			#ifnotnull($category)
+			,"size":"$allchildren.size()" 
+			#end
+		}
+  ,
+  "categories": [
+	#foreach( $subfolder in $allchildren) #if( ${foreach.count} != 1 ), #end
+		#set($index = $foreach.count - 1)
+		{
+			"index": "$index",
+			"id": "$subfolder.getId()",
+			"name": "$subfolder.getName()",
+			"level": "$subfolder.getLevel()",
+			"path": "$subfolder.getCategoryPath()"
+		}
+	#end
+  ]
+}
