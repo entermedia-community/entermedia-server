@@ -1,21 +1,16 @@
+
 {
   "response":
 		{
-		#if( $newfolders)
+		#if( $existingfolders)
 				"status":"ok"
 		#else 
 				"status": "notfound" 
 		#end
-			#ifnotnull($newfolders)
-			,"size":"$$newfolders.size()" 
+			#ifnotnull($existingfolders)
+			,"size":"$existingfolders.size()" 
 			#end
 		}
-  ,
-  "newfolders": [
-	#foreach( $newfolder in $newfolders) #if( ${foreach.count} != 1 ), #end
-	$newfolder
-	#end
-    ]
   , "existingfolders": [
 	#foreach( $folder in $existingfolders) #if( ${foreach.count} != 1 ), #end
 		{

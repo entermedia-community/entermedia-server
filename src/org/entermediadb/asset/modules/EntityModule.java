@@ -19,6 +19,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.find.EntityManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -400,32 +401,40 @@ public class EntityModule extends BaseMediaModule
 			tmpdata.setValue(fields[i],values);
 		}
 		List all = Arrays.asList(existingfoldernames);
-		HitTracker existing = archive.getSearcher(moduleid).query().orsgroup("name",all).search();
+		HitTracker existing = archive.getSearcher(moduleid).query().orgroup("name",all).search();
 		
 		Set newfolders = new HashSet(all);
 		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
 			Data found = (Data) iterator.next();
 			newfolders.remove(found.getName());
 		}
+		inReq.putPageValue("existingfolders",existing);
 		inReq.putPageValue("newfolders",newfolders);
 	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
-		String[] foldernames = inReq.getRequestParameters("name");
+
+		String moduleid = inReq.getRequestParameter("moduleid");
+		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
+		tmpdata.setValue("entitysourcetype",moduleid);
+		String[] existingfolders = inReq.getRequestParameters("name");
 		String[] fields = inReq.getRequestParameters("field");
-		
-		
-		
-		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
-			String afield = (String) iterator.next();
-			params.get()
+		for (int i = 0; i < fields.length; i++) {
+			String[] values = inReq.getRequestParameters(fields + ".value");
+			tmpdata.setValue(fields[i],values);
+		}
+		List tosave = new ArrayList();
+		for (int i = 0; i < existingfolders.length; i++) {
+			Data newfolder = ((BaseData)tmpdata).copy();
+			tmpdata.setName(existingfolders[i]);
+			archive.getEntityManager().loadDefaultFolder(tmpdata, inReq.getUser());  //This saves it
+			tosave.add(newfolder);
 			
 		}
-		
-		String moduleid = (String)params.get("moduleid");
+		archive.getSearcher(moduleid).saveAllData(tosave, null);
+		inReq.putPageValue("existingfolders",tosave);
 		
 	}
 	
