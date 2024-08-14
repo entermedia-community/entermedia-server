@@ -32,6 +32,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.profile.ModuleData;
 import org.openedit.servlet.BaseOpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
@@ -561,6 +562,53 @@ public class EntityManager implements CatalogEnabled
 			return true;
 		}
 		return false;
+	}
+	
+	
+	public Collection<Data> getEntitiesForCategories(Collection<Category> inParentCategories)
+	{
+		if (inParentCategories == null) {
+			return null;
+		}
+		Collection<Data> items = new ArrayList();
+		
+		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();) 
+		{
+			Category cat = (Category) iterator1.next();
+			for (Iterator iterator = getMediaArchive().getList("module").iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				Object value = cat.findValue(module.getId());
+				if( value != null)
+				{
+					if( value instanceof Collection)
+					{
+						Collection all = (Collection) value;
+						for (Iterator iterator2 = all.iterator(); iterator2.hasNext();)
+						{
+							String item = (String) iterator2.next();
+							Data entity = getMediaArchive().getCachedData(module.getId(), item);
+							if (entity != null)
+							{
+								//entity.setValue("moduleid", module.getId());
+								items.add( entity);
+							}
+						}
+					}
+					else 
+					{
+						Data entity = getMediaArchive().getCachedData(module.getId(), (String) value);
+						if (entity != null)
+						{
+							//entity.setValue("moduleid", module.getId());
+							items.add(entity);
+						}	
+					}
+					
+				}
+			}
+		}
+		return items;
 	}
 	
 
