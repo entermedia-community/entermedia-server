@@ -3,6 +3,12 @@
     #set($currentpreview = $context.findValue('currentpreview'))
     #set($pagenum = $context.findValue('documentpagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
+    
+    #if($totalpages == 0)
+    	##set it back to 1
+    	#set($totalpages = 1)	
+    #end
+    
     #set ( $hitssessionid = $context.findValue("hitssessionid"))
     #if( !$currentpreview )
       #if ( !$pagenum )
