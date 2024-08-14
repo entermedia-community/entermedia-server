@@ -654,7 +654,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			// https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			// https://github.com/jprante/elasticsearch-knapsack
-			log.info("Could not put mapping over existing mapping.", ex);
+			log.info("Could not put mapping over existing mapping on catalog: " + getCatalogId() + " Searchtype: " + getSearchType(), ex);
 			getElasticNodeManager().addMappingError(getSearchType(), ex.getMessage());
 			//throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
 			return false;

@@ -1,1 +1,5 @@
-<textarea name="${detail.getId()}.value" id="${detail.getId()}" cols="40" rows="3" class="form-control"  >#esc($value)</textarea>
+<textarea name="${detail.getId()}.value"
+	class="form-control #if($detail.isRequired() && !$multiedit) required #end" 
+	id="${detail.getId()}" 
+	cols="40" 
+	rows="3">#esc($value)</textarea>
