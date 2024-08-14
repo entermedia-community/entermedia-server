@@ -396,6 +396,26 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String moduleid = inReq.getRequestParameter("moduleid");
+
+		String[] existingfoldernames = inReq.getRequestParameters("name");
+		List all = Arrays.asList(existingfoldernames);
+		HitTracker existing = archive.getSearcher(moduleid).query().orgroup("name",all).search();
+		
+		Set newfolders = new HashSet(all);
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+			Data found = (Data) iterator.next();
+			newfolders.remove(found.getName());
+		}
+		inReq.putPageValue("existingfolders",existing);
+		inReq.putPageValue("newfolders",newfolders);
+	}
+	
+	
+	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String moduleid = inReq.getRequestParameter("moduleid");
 		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
 
 		String[] existingfoldernames = inReq.getRequestParameters("name");
@@ -414,9 +434,24 @@ public class EntityModule extends BaseMediaModule
 			Data found = (Data) iterator.next();
 			newfolders.remove(found.getName());
 		}
-		inReq.putPageValue("existingfolders",existing);
-		inReq.putPageValue("newfolders",newfolders);
+		List tosave = new ArrayList();
+		Searcher entitysearcher = archive.getSearcher(moduleid);
+		for (Iterator iterator = newfolders.iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			Data entity = ((BaseData)tmpdata).copy();
+			entity.setName(name);
+			archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+			
+			tosave.add(entity);
+			
+		}
+		entitysearcher.saveAllData(tosave, null);
+		HitTracker existingconfirmed = archive.getSearcher(moduleid).query().orgroup("name",all).search();
+
+		inReq.putPageValue("existingfolders",existingconfirmed);
 	}
+
+	
 	/*
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
 	{
