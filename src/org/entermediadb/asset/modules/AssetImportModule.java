@@ -386,5 +386,23 @@ public class AssetImportModule  extends BaseMediaModule
 		return entity;
 	}
 	
-	
+	public void listHotFolders(WebPageRequest inReq)
+	{
+		try {
+			Map params = inReq.getJsonRequest();
+		
+			if (params == null) {
+				log.info("No JSON parameters");
+				return;
+			}
+			String rootPath = (String) params.get("rootPath");
+			inReq.putPageValue("rootPath", rootPath);
+			
+			Map folderTree = (Map) params.get("folderTree");
+		
+			inReq.putPageValue("folderTree", new JSONObject(folderTree));
+		} catch (Exception e) {
+			throw new OpenEditException(e);
+		}
+	}
 }
