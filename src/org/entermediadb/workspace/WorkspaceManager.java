@@ -215,35 +215,31 @@ public class WorkspaceManager
 					}					
 					//Add corresponding fields to Asset
 					
-/*					
-					AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
+					
+					//AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
 					CategorySearcher cats = (CategorySearcher) getSearcherManager().getSearcher(catalogid, "category");
 
-					PropertyDetailsArchive propertyDetailsArchive = searcher.getPropertyDetailsArchive();
+					PropertyDetailsArchive propertyDetailsArchive = cats.getPropertyDetailsArchive();
 
-					PropertyDetail detail = searcher.getDetail(mid);
 					PropertyDetail catdetail = cats.getDetail(mid);
 
-					if(detail == null || catdetail == null) {
+					if(catdetail == null) {
 
-						detail = propertyDetailsArchive.createDetail(mid, mid );
-						detail.setDeleted(false);
+						catdetail = propertyDetailsArchive.createDetail(mid, mid );
+						catdetail.setDeleted(false);
 						Object name = module.getValue("name");
-						detail.setDataType("list");
+						catdetail.setDataType("list");
 						if(name instanceof String){
-							detail.setName((String) name);
+							catdetail.setName((String) name);
 						} 
 						else if(name instanceof LanguageMap) {
-							detail.setName((LanguageMap)name);
+							catdetail.setName((LanguageMap)name);
 						}
 						
-						propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
-						propertyDetailsArchive.savePropertyDetail(detail, "category", null);
-
+						//propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
+						propertyDetailsArchive.savePropertyDetail(catdetail, "category", null);
 												
 					}
-				*/
-					
 					
 				}else {
 					String template = "/" + catalogid + "/data/lists/view/default.xml";
