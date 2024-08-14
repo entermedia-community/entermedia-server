@@ -21,7 +21,7 @@
 		{
 			"id": "$folder.getId()",
 			"name": "$folder.getName()",
-			"path": "$folder.getCategoryPath()"
+			"path": "${folder.entitysourcetype}"
 		}
 	#end
     ]
