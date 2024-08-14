@@ -358,9 +358,27 @@ public class EntityModule extends BaseMediaModule
 	}
 	
 	
-	public void handleAssetAddedEvent(WebPageRequest inPageRequest) throws Exception
+	public void handleNewAssetCreated(WebPageRequest inPageRequest) throws Exception
 	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
 		//Search the hits for category
+		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits");
+		
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
+		{
+			Asset asset = (Asset) iterator.next();
+			
+			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+			for (Iterator iterator2 = assets.iterator(); iterator2.hasNext();) {
+				Asset asset2 = (Asset) iterator2.next();
+				
+			}
+			archive.getEntityManager().fireAssetAddedToEntity(null, null, null, asset);
+			
+		}
+		
+		
+		
 	}
 	public void handleAssetRemovedEvent(WebPageRequest inPageRequest) throws Exception
 	{

@@ -30,6 +30,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.ModuleData;
@@ -610,6 +611,40 @@ public class EntityManager implements CatalogEnabled
 		}
 		return items;
 	}
+
+	// entityversionLog
+	
+		public void fireAssetAddedToEntity(String applicationid,User inUser,Collection inAssets, Data entity)
+		{
+
+			saveAssetActivity(entity, applicationid, inUser, inAssets, "assetsadded");
+			
+		}
+
+		
+		public void fireAssetRemovedFromEntity(String applicationid,User inUser,Collection inAssets, Data entity)
+		{
+			saveAssetActivity(entity, applicationid, inUser, inAssets, "assetsremoved");
+		}
+		protected void saveAssetActivity(Data entity, String applicationid,  User inUser, Collection inAssets, String inoperation) {
+			Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
+			Data event = searcher.createNewData();
+			event.setProperty("applicationid", applicationid);
+			if( inUser != null)
+			{
+				event.setProperty("user", inUser.getId());
+			}
+
+			event.setProperty("operation", inoperation);
+
+			event.setProperty("moduleid", entity.get("entitysourcetype"));
+			event.setProperty("entityid", entity.getId()); //data.getId() ??
+			event.setValue("assetids", inAssets); 
+			event.setValue("date", new Date()); 
+			event.setProperty("note", "data added to entity");
+			
+			searcher.saveData(event, null);
+		}
 	
 
 }
