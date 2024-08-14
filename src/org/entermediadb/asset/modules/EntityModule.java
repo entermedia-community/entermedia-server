@@ -365,6 +365,7 @@ public class EntityModule extends BaseMediaModule
 	public void handleNewAssetCreated(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
+		String appid = inPageRequest.findValue("applicationid");
 		//Search the hits for category
 		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits");
 		
@@ -373,11 +374,14 @@ public class EntityModule extends BaseMediaModule
 			Asset asset = (Asset) iterator.next();
 			
 			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
-			for (Iterator iterator2 = assets.iterator(); iterator2.hasNext();) {
-				Asset asset2 = (Asset) iterator2.next();
-				
+			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
+				//Asset asset2 = (Asset) iterator2.next();
+				Data entity = (Data) iterator2.next();
+				Collection currentassets = new ArrayList();
+				currentassets.add(asset);
+				archive.getEntityManager().fireAssetAddedToEntity(appid, inPageRequest.getUser(), currentassets, entity);
 			}
-			archive.getEntityManager().fireAssetAddedToEntity(null, null, null, asset);
+			
 			
 		}
 		
@@ -396,9 +400,11 @@ public class EntityModule extends BaseMediaModule
 
 		String[] existingfoldernames = inReq.getRequestParameters("name");
 		String[] fields = inReq.getRequestParameters("field");
-		for (int i = 0; i < fields.length; i++) {
-			String[] values = inReq.getRequestParameters(fields + ".value");
-			tmpdata.setValue(fields[i],values);
+		if (fields != null) {
+			for (int i = 0; i < fields.length; i++) {
+				String[] values = inReq.getRequestParameters(fields + ".value");
+				tmpdata.setValue(fields[i],values);
+			}
 		}
 		List all = Arrays.asList(existingfoldernames);
 		HitTracker existing = archive.getSearcher(moduleid).query().orgroup("name",all).search();
@@ -411,7 +417,7 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("existingfolders",existing);
 		inReq.putPageValue("newfolders",newfolders);
 	}
-	
+	/*
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -437,5 +443,5 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("existingfolders",tosave);
 		
 	}
-	
+	*/
 }
