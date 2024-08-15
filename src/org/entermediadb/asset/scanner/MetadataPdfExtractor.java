@@ -38,10 +38,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
-		if(!inArchive.isCatalogSettingTrue("extractfulltext"))
-		{
-			return false;
-		}
+		
 		String type = PathUtilities.extractPageType(inFile.getPath());
 		if (type == null || "data".equals(type.toLowerCase()))
 		{
@@ -83,37 +80,39 @@ public class MetadataPdfExtractor extends MetadataExtractor
 //						FileUtils.safeClose(in);
 //					}
 //					byte[] bytes = out.toByteArray();
-					
+
 					
 					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
-					if(inFile.getLength() > maxsize){
+					if(inFile.getLength() > maxsize && !inArchive.isCatalogSettingTrue("extractfulltext")){
 						log.info("PDF was too large to extract metadata. Consider increasing max size: " + sizeval);
 						//Lets still get page numbers, this is fast enough.
-						PDFParser np = new PDFParser(new RandomAccessFile(new File(inFile.getAbsolutePath()), "r"));
-						np.parse();
-						COSDocument cosDoc = np.getDocument();
-						PDDocument pdDoc = new PDDocument(cosDoc);
-						int pages= pdDoc.getNumberOfPages();
-						inAsset.setValue("pages", pages);
+						//PDFParser np = new PDFParser(new RandomAccessFile(new File(inFile.getAbsolutePath()), "r"));
+						//np.parse();
+						//COSDocument cosDoc = np.getDocument();
+						//PDDocument pdDoc = new PDDocument(cosDoc);
+						//int pages= pdDoc.getNumberOfPages();
+						//inAsset.setValue("pages", pages);
 						
-						return false;
+						//return false;
 					} else {
-					String fulltext = results.getText();
-					if( fulltext != null && fulltext.length() > 0)
-					{
-						
-						ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
-						if( item instanceof FileItem)
+						String fulltext = results.getText();
+						if( fulltext != null && fulltext.length() > 0)
 						{
-							((FileItem)item).getFile().getParentFile().mkdirs();
+							
+							ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+							if( item instanceof FileItem)
+							{
+								((FileItem)item).getFile().getParentFile().mkdirs();
+							}
+							PrintWriter output = new PrintWriter(item.getOutputStream());
+							filler.fill(new StringReader(fulltext), output );
+							filler.close(output);
+							inAsset.setProperty("hasfulltext", "true");
 						}
-						PrintWriter output = new PrintWriter(item.getOutputStream());
-						filler.fill(new StringReader(fulltext), output );
-						filler.close(output);
-						inAsset.setProperty("hasfulltext", "true");
 					}
-					}
+					String pages = String.valueOf(results.getPages());
+					inAsset.setProperty("pages", pages);
 					if( inAsset.getInt("width") == 0)
 					{
 						String val = results.get("width");
@@ -124,9 +123,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 						String val = results.get("height");
 						inAsset.setProperty("height", val);
 					}
-					String pages = String.valueOf(results.getPages());
-					inAsset.setProperty("pages", pages);
-					log.info("PDF pages: " + pages);
+
 					if (inAsset.get("assettitle") == null)
 					{
 						String title  = results.getTitle();
