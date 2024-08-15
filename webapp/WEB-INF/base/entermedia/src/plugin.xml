@@ -1924,6 +1924,7 @@
 	
 	<bean id="oofficeTextExtractor" class="org.entermediadb.ooffice.OofficeTextExtractor" >
 		<property name="metadataPdfExtractor"><ref bean="pdfExtractor" /></property>
+		<property name="exiftoolMetadataExtractor"><ref bean="exiftoolMetadataExtractor" /></property>
 		<property name="mediaCreator"><ref bean="oofficeTranscoder" /></property>
 	</bean>
  	
