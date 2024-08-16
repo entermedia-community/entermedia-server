@@ -273,10 +273,13 @@ public class EntityModule extends BaseMediaModule
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
 		String assetid = inPageRequest.getRequestParameter("assetid");
+		String appid = inPageRequest.getRequestParameter("applicationid");
+		Data entity = archive.getCachedData(moduleid,entityid);
 		if(assetid != null) {
 			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), moduleid, entityid, assetid))
 			{
 				inPageRequest.putPageValue("assets", "1");
+				archive.getEntityManager().fireAssetRemovedFromEntity(appid, inPageRequest.getUser(), assetid, entity);
 			}
 		}
 		else 
@@ -284,6 +287,9 @@ public class EntityModule extends BaseMediaModule
 			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
 			Integer removed = entityManager.removeAssetsToEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
+			Collection<String> ids = assethits.getSelectedHitracker().collectValues("id");
+			archive.getEntityManager().fireAssetsRemovedFromEntity(appid, inPageRequest.getUser(), ids , entity);
+
 			inPageRequest.putPageValue("assets", removed);
 		}
 		inPageRequest.putPageValue("moduleid", moduleid);
@@ -379,7 +385,7 @@ public class EntityModule extends BaseMediaModule
 				Data entity = (Data) iterator2.next();
 				Collection currentassets = new ArrayList();
 				currentassets.add(asset);
-				archive.getEntityManager().fireAssetAddedToEntity(appid, inPageRequest.getUser(), currentassets, entity);
+				archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(), currentassets, entity);
 			}
 			
 			
