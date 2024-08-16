@@ -612,19 +612,33 @@ public class EntityManager implements CatalogEnabled
 		return items;
 	}
 
+	public void fireAssetAddedToEntity(String applicationid, User inUser, String inAssetId, Data entity)
+	{
+		Collection<String> ids = new ArrayList(1);
+		ids.add(inAssetId);
+		saveAssetActivity(applicationid, inUser, entity, ids, "assetsadded");
+	}
 	
-	public void fireAssetAddedToEntity(String applicationid, User inUser, Collection inAssets, Data entity)
+	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<String> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
 	}
-	
-	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Collection inAssets, Data entity)
+
+	public void fireAssetRemovedFromEntity(String applicationid, User inUser, String inAssetId, Data entity)
+	{
+		Collection<String> ids = new ArrayList(1);
+		ids.add(inAssetId);
+		saveAssetActivity(applicationid, inUser, entity, ids, "assetsremoved");
+
+	}
+
+	public void fireAssetsRemovedFromEntity(String applicationid, User inUser, Collection<String> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved");
 	}
 	
 	
-	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection inAssets, String inOperation) {
+	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection<String> inAssets, String inOperation) {
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 		Data event = searcher.createNewData();
 		event.setProperty("applicationid", applicationid);

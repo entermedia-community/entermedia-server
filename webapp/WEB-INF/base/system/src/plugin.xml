@@ -112,6 +112,7 @@
 	
 	<bean id="repository" class="org.openedit.repository.CompoundRepository">
 		<property name="root"><ref bean="root"/></property>
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
 	
 	<bean id="pageSettingsManager" class="org.openedit.page.manage.PageSettingsManager">
