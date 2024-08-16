@@ -374,7 +374,7 @@ public class EntityManager implements CatalogEnabled
 		getMediaArchive().saveAsset(asset);
 		return true;
 	}
-	public Integer removeAssetsToEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
+	public Integer removeAssetsFromEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);

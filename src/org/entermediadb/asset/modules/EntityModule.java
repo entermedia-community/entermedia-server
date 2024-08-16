@@ -286,8 +286,9 @@ public class EntityModule extends BaseMediaModule
 		{
 			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-			Integer removed = entityManager.removeAssetsToEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
 			Collection<String> ids = assethits.getSelectedHitracker().collectValues("id");
+			Integer removed = entityManager.removeAssetsFromEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
+			
 			archive.getEntityManager().fireAssetsRemovedFromEntity(appid, inPageRequest.getUser(), ids , entity);
 
 			inPageRequest.putPageValue("assets", removed);
