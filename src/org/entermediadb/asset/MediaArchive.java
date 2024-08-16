@@ -1305,11 +1305,23 @@ public class MediaArchive implements CatalogEnabled
 	 */
 	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
 	{
-		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			fireMediaEvent(operation, inUser, asset);
+		WebEvent event = new WebEvent();
+		event.setSearchType("asset");
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+		
+		String[] all = new String[inAsset.size()];
+		int i = 0;
+		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();) {
+			Data child = (Data) iterator.next();
+			all[i++] = child.getId();
 		}
+		
+		event.setValue("assetids", all); //This is turned into reques params
+		//event.setSourcePath("/"); //TODO: This should not be needed any more
+		getEventManager().fireEvent(event);
 	}
 
 	public void fireMediaEvent(String operation, User inUser, Asset asset)

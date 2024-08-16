@@ -390,6 +390,7 @@ public class AssetEditModule extends BaseMediaModule
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
+					editor.getMediaArchive().fireMediaEvent("deletingbulk", inContext.getUser(), assets);
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
@@ -397,17 +398,16 @@ public class AssetEditModule extends BaseMediaModule
 						{
 							tracker.removeSelection(asset.getId());
 						}
-						editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 						editor.deleteAsset(asset, inContext.getUser());
 						
 						if (Boolean.parseBoolean(deleteoriginal))
 						{
 							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 						}
-						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 						deleted++;
 						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
 					}
+					editor.getMediaArchive().fireMediaEvent("deletedbulk", inContext.getUser(), assets);
 				}
 				catch (Exception e)
 				{
