@@ -417,6 +417,7 @@ public class EntityModule extends BaseMediaModule
 
 		String moduleid = inReq.getRequestParameter("moduleid");
 		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
+		tmpdata.setValue("entitysourcetype", moduleid);
 
 		String[] existingfoldernames = inReq.getRequestParameters("name");
 		String[] fields = inReq.getRequestParameters("field");
@@ -427,6 +428,10 @@ public class EntityModule extends BaseMediaModule
 			}
 		}
 		List all = Arrays.asList(existingfoldernames);
+		if(all.isEmpty()) {
+			log.info("No folders selected");
+			return;
+		}
 		HitTracker existing = archive.getSearcher(moduleid).query().orgroup("name",all).search();
 		
 		Set newfolders = new HashSet(all);

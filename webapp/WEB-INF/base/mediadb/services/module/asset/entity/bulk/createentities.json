@@ -16,7 +16,7 @@
 		{
 			"id": #jesc($folder.getId()),
 			"name": #jesc($folder.getName()),
-			"path": #jesc($folder.entitysourcetype)
+			"path": #jesc($folder.uploadsourcepath)
 		}
 	#end
     ]
