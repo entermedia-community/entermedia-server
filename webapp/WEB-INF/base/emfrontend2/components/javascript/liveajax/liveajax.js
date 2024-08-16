@@ -63,11 +63,14 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     var params = arguments[0];
     var oldsucess = params.success;
     params.success = function (arg1, arg2, arg3, arg4) {
+      var targetdiv = form.data("targetdiv");
+      //var oldcontent = $(targetdiv);
+      //oldcontent.html("");
+      
       if (oldsucess != null) {
         oldsucess.call(form, arg1, arg2, arg3, arg4);
       }
       //Grab target div? 		$(document).trigger("domchanged",null,$(this));
-      var targetdiv = form.data("targetdiv");
       if (targetdiv) {
         $(document).trigger("domchanged", $("#" + targetdiv));
       } else {
@@ -179,6 +182,19 @@ If list2 not init: Make sure .html is correct and livequeryrunning
       if (arguments.length == 1) {
         var func = arguments[0];
         var item = { selector: selector, function: func };
+        /*
+        if( selector.startsWith("#"))
+        {
+			regelements = $.grep(regelements, function (el, index) {
+				 
+			  	if( el.selector == selector)
+			  	{
+			        return false;
+			    }
+			    return true; // keep the element in the array
+			});
+		}
+		*/
         regelements.push(item);
         try {
           nodes.each(
