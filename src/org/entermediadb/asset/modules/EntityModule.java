@@ -375,6 +375,9 @@ public class EntityModule extends BaseMediaModule
 		//Search the hits for category
 		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits");
 		
+		Map<String,Data> foundentites = new HashMap();
+		Map<String,Collection> foundentitesassets = new HashMap();
+
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
 		{
 			Asset asset = (Asset) iterator.next();
@@ -383,12 +386,23 @@ public class EntityModule extends BaseMediaModule
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
 				//Asset asset2 = (Asset) iterator2.next();
 				Data entity = (Data) iterator2.next();
-				Collection currentassets = new ArrayList();
-				currentassets.add(asset);
-				archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(), currentassets, entity);
+				
+				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				if( assetstoentity == null)
+				{
+					assetstoentity = new ArrayList();
+					foundentites.put(entity.getId(),entity);
+					foundentitesassets.put(entity.getId(),assetstoentity);
+				}
+				assetstoentity.add(asset.getId());
 			}
-			
-			
+		}
+		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
+		{
+			String entityid = (String) iterator.next();
+			Data entity = foundentites.get(entityid);
+			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
 		}
 		
 	}
