@@ -429,7 +429,7 @@ public class EntityModule extends BaseMediaModule
 		String[] fields = inReq.getRequestParameters("field");
 		if (fields != null) {
 			for (int i = 0; i < fields.length; i++) {
-				String[] values = inReq.getRequestParameters(fields + ".value");
+				String[] values = inReq.getRequestParameters(fields[i] + ".value");
 				tmpdata.setValue(fields[i],values);
 			}
 		}
