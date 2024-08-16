@@ -615,16 +615,16 @@ public class EntityManager implements CatalogEnabled
 	
 	public void fireAssetAddedToEntity(String applicationid, User inUser, Collection inAssets, Data entity)
 	{
-		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded", "Assets added");
+		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
 	}
 	
 	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Collection inAssets, Data entity)
 	{
-		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved", "Assets removed");
+		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved");
 	}
 	
 	
-	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection inAssets, String inOperation, String inNote) {
+	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection inAssets, String inOperation) {
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 		Data event = searcher.createNewData();
 		event.setProperty("applicationid", applicationid);
@@ -638,7 +638,6 @@ public class EntityManager implements CatalogEnabled
 		event.setProperty("entityid", entity.getId()); //data.getId() ??
 		event.setValue("assetids", inAssets); 
 		event.setValue("date", new Date()); 
-		event.setProperty("note", inNote);
 		
 		searcher.saveData(event, null);
 	}
