@@ -10,7 +10,7 @@ function chatterbox() {
   var app = jQuery("#application");
   var apphome = app.data("home") + app.data("apphome");
 
-  reloadAll();
+  //reloadAll();
 
   if (chatopen) {
     return;
@@ -330,7 +330,7 @@ function keepAlive() {
 
   if (chatconnection.readyState === chatconnection.CLOSED) {
     connect();
-    reloadAll();
+    //reloadAll();
   }
 
   timerId = setTimeout(keepAlive, timeout);
@@ -356,7 +356,9 @@ const pushServerPublicKey =
   "BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
 
 function registerServiceWorker() {
-  navigator.serviceWorker.register("sw.js");
+  if(navigator.serviceWorker !== undefined) {
+  	navigator.serviceWorker.register("sw.js");
+  }
 }
 
 function initializePushNotifications() {
