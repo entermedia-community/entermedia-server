@@ -31,15 +31,11 @@
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
 
 <div id="$csslistid" class="listdetailpicker">
-
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
-
 ##require both 
 #set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
-
 #if( $listfilterid)
 	#set( $listfilterdetail = $originalsearcher.getDetailForView($view, $listfilterid, $user) )
-	
 	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
 	#if(!$remotevalue)
 		#set( $remotevalue  = $data.get($listfilterid) )
@@ -57,14 +53,11 @@
 #else
 	#set($query = $lsearcher.query().all().getQuery() )
 #end
-
 #if($query)
 	$query.setSortBy($detail.getDefaultSort())
 #end
-
 ####$lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
-
 #ifnull ($value)
 	#set ($value = $context.getRequestParameter('val'))
 #end
@@ -81,10 +74,7 @@
 
 #set( $valueid = "$fieldname" )
 #if($types)
-
-
-
- <select name="${fieldname}.value"
+<select name="${fieldname}.value"
 	class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 	listid="$listid"
 	id="${valueid}value"
@@ -93,7 +83,6 @@
 	data-searchfield="$searchfield"
 	#if($removeclear) data-allowclear="false" #end
 	>
-
 	#if ($detail.blankoption != "false")
 	<option value="">$!detail.blankoption</option>
 	#end
@@ -107,8 +96,6 @@
 		<option value="-1">500 [[limit reached]]</option>
 	#end
    </select>
- 
-   
 #else
 	[[No values found]] 
 #end

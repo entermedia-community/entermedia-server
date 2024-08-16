@@ -426,7 +426,8 @@ a {
   display: block;
 }
 select.form-control:not([size]):not([multiple]) {
-  height: calc(2rem);
+  /*height: calc(2rem);*/
+  position: absolute;
 }
 select.form-control-sm:not([size]):not([multiple]) {
   height: calc(1.7rem);

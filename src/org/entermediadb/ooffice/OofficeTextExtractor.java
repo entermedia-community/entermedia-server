@@ -9,6 +9,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.scanner.ExiftoolMetadataExtractor;
 import org.entermediadb.asset.scanner.MetadataExtractor;
 import org.entermediadb.asset.scanner.MetadataPdfExtractor;
 import org.openedit.repository.ContentItem;
@@ -19,17 +20,27 @@ public class OofficeTextExtractor extends MetadataExtractor
 	public static final Collection FORMATS = Arrays.asList(new String[] {"doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx"});
 
 	private static final Log log = LogFactory.getLog(OofficeTextExtractor.class);
+	
 	protected MetadataPdfExtractor fieldMetadataPdfExtractor;
-
+	protected ExiftoolMetadataExtractor fieldExiftoolMetadataExtractor;
 
 	public MetadataPdfExtractor getMetadataPdfExtractor()
 	{
 		return fieldMetadataPdfExtractor;
 	}
+	
+	public ExiftoolMetadataExtractor getExiftoolMetadataExtractor()
+	{
+		return fieldExiftoolMetadataExtractor;
+	}
 
 	public void setMetadataPdfExtractor(MetadataPdfExtractor inMetadataPdfExtractor)
 	{
 		fieldMetadataPdfExtractor = inMetadataPdfExtractor;
+	}
+	public void setExiftoolMetadataExtractor(ExiftoolMetadataExtractor inExiftoolMetadataExtractor)
+	{
+		fieldExiftoolMetadataExtractor = inExiftoolMetadataExtractor;
 	}
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
@@ -77,8 +88,12 @@ public class OofficeTextExtractor extends MetadataExtractor
 		
 		//String tmppath = getMediaCreator().populateOutputPath(inArchive, inst);
 		
+		//use exiftool to extract standard data
+		getExiftoolMetadataExtractor().extractData(inArchive, custom, inAsset);
 		//now use the PDF extractor
 		getMetadataPdfExtractor().extractData(inArchive, custom, inAsset);
+		
+
 		
 //		//now get the page info out of the PDF?
 //		Asset tmp = inArchive.createAsset("tmp/" + inAsset.getSourcePath());

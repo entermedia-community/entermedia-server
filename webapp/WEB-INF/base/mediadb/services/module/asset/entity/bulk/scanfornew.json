@@ -7,7 +7,7 @@
 				"status": "notfound" 
 		#end
 			#ifnotnull($newfolders)
-			,"size":"$$newfolders.size()" 
+			,"size":"$!{newfolders.size()}" 
 			#end
 		}
   ,
