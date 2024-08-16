@@ -46,6 +46,10 @@ public class PathEventHandler implements WebEventListener
 			{
 				request.setRequestParameter(key, (String)value);
 			}
+			else if(value instanceof String[])
+			{
+				request.setRequestParameter(key, (String[])value);
+			}
 			if( !key.equals(PageRequestKeys.USER))
 			{
 				request.putPageValue(key, value);

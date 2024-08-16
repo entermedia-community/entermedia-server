@@ -462,6 +462,59 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("existingfolders",existingconfirmed);
 	}
 
+	public void assetDeletingHandler(WebPageRequest inReq)
+	{
+		//Look for entities
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("dataid"); //From the event
+		Asset deleted = archive.getAsset(id);
+		String appid = inReq.findPathValue("applicationid");
+		Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
+		for (Iterator iterator = entities.iterator(); iterator.hasNext();) {
+			Data entity = (Data) iterator.next();
+			archive.getEntityManager().fireAssetRemovedFromEntity(appid, inReq.getUser(), deleted.getId(), entity);
+		}
+		
+	}
+	//Bulk delete
+	public void assetsDeleteingHandler(WebPageRequest inReq)
+	{
+		String appid = inReq.findPathValue("applicationid");
+		//Look for entities
+		MediaArchive archive = getMediaArchive(inReq);
+		String[] assetids = inReq.getRequestParameters("assetids");
+		
+		//Nullcheck?
+		
+		Map<String,Data> foundentites = new HashMap();
+		Map<String,Collection> foundentitesassets = new HashMap();
+
+		for (int i = 0; i < assetids.length; i++) {
+			String assetid = assetids[i];
+			Asset deleted = archive.getAsset(assetid);
+			Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
+			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
+				Data entity = (Data) iterator2.next();
+				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				if( assetstoentity == null)
+				{
+					assetstoentity = new ArrayList();
+					foundentites.put(entity.getId(),entity);
+					foundentitesassets.put(entity.getId(),assetstoentity);
+				}
+				assetstoentity.add(assetid);
+			}
+		}
+		
+		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
+		{
+			String entityid = (String) iterator.next();
+			Data entity = foundentites.get(entityid);
+			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			archive.getEntityManager().fireAssetsRemovedFromEntity(appid, inReq.getUser(),bulkassets, entity);
+		}
+		
+	}
 	
 	/*
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
