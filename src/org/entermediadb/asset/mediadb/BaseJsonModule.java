@@ -46,7 +46,7 @@ public class BaseJsonModule extends BaseMediaModule
 		{
 			inReq.getJsonRequest(); //This will read in the body and setup the parameters
 		}
-		else if (type == null || type.startsWith("multipart"))
+		else if (type != null && type.startsWith("multipart"))
 		{
 			final FileUpload uploadparser = new FileUpload();
 			uploadparser.parseArguments(inReq);
