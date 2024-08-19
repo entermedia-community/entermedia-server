@@ -1710,7 +1710,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
-				if( inDetail.isList() )
+				if( inDetail.isList() || !inDetail.isAnalyzed() )
 				{
 					find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
 				}
