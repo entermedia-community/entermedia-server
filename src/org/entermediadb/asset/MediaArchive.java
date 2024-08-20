@@ -1286,6 +1286,21 @@ public class MediaArchive implements CatalogEnabled
 		getEventManager().fireEvent(event);
 	}
 
+	public void fireDataEvent(User inUser, String inSearchType, String inAction, Collection<Data> inDatas)
+	{
+		WebEvent event = new WebEvent();
+		event.setSearchType(inSearchType);
+
+		event.setCatalogId(getCatalogId());
+		event.setOperation(inAction);
+		event.setUser(inUser);
+		event.setSource(this);
+		event.setValue("hits", inDatas);
+		
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
+	}
+
 	/*
 	 * public void fireMediaEvent(String operation, User inUser, Asset asset,
 	 * List<String> inids) { WebEvent event = new WebEvent();
@@ -1303,22 +1318,28 @@ public class MediaArchive implements CatalogEnabled
 	 * event.setValue("dataids", inids); //archive.getWebEventListener()
 	 * getMediaEventHandler().eventFired(event); }
 	 */
-	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
+	public void fireMediaEvent(String operation, User inUser, Collection inAssets)
+	{
+		 fireMediaEvent( inUser,  "asset",  operation,  inAssets);
+	}
+	public void fireMediaEvent(User inUser, String inSearchType, String operation, Collection inAssets)
 	{
 		WebEvent event = new WebEvent();
-		event.setSearchType("asset");
+		event.setSearchType(inSearchType);
 		event.setCatalogId(getCatalogId());
 		event.setOperation(operation);
 		event.setUser(inUser);
 		event.setSource(this);
 		
-		String[] all = new String[inAsset.size()];
+
+		//Support values?
+		event.setValue("hits",inAssets);
+		String[] all = new String[inAssets.size()];
 		int i = 0;
-		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
 			Data child = (Data) iterator.next();
 			all[i++] = child.getId();
 		}
-		
 		event.setValue("assetids", all); //This is turned into reques params
 		//event.setSourcePath("/"); //TODO: This should not be needed any more
 		getEventManager().fireEvent(event);

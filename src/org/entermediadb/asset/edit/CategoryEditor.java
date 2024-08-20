@@ -7,16 +7,18 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
-import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.RepositoryException;
+import org.openedit.users.User;
 
 public class CategoryEditor {
 	
@@ -380,7 +382,7 @@ public class CategoryEditor {
 		fieldCurrentCategory = currentCategory;
 	}
 
-	public void copyCategory(String[] inSourcecategoryids, String inTargetcategoryid)
+	public void copyEverything(User inUser, String[] inSourcecategoryids, String inTargetcategoryid)
 	{
 		CategorySearcher searcher = getMediaArchive().getCategorySearcher();
 		Category targetparent = getMediaArchive().getCategory(inTargetcategoryid);
@@ -389,7 +391,7 @@ public class CategoryEditor {
 			for (int i = 0; i < inSourcecategoryids.length; i++)
 			{
 				Category from = getMediaArchive().getCategory(inSourcecategoryids[i]);
-				copyTree(from, targetparent);
+				copyEverything(inUser,from, targetparent);
 			}
 		}
 	}
@@ -426,8 +428,15 @@ public class CategoryEditor {
 
 	}	 
 */
+	public void copyEverything(User inUser, Category fromchild, Category target)
+	{
+		copyTree(fromchild, target);
+		//Search for all ids
 
-	public void copyTree(Category fromchild, Category totargetparent)
+		HitTracker assetlist = getMediaArchive().getAssetSearcher().fieldSearch("category", target.getId());
+		getMediaArchive().fireMediaEvent(inUser, "category","assetsaddded", assetlist);
+	}
+	public void copyTree(Category fromchild, Category target)
 	{
 		//Grab the contents of fromchild
 		Collection tosave = new ArrayList();
@@ -436,9 +445,11 @@ public class CategoryEditor {
 		{
 			Data data = (Data) iterator.next();
 			Asset asset = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
-			asset.addCategory(totargetparent);
+			asset.addCategory(target);
 			tosave.add(asset);
 		}
+		//<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/categories/assetsadded.html"  allowduplicates="true"/>
+
 		//copy assets to new category
 		getMediaArchive().getAssetSearcher().saveAllData(tosave,null);
 		
@@ -447,12 +458,12 @@ public class CategoryEditor {
 		for (Iterator iterator = fromchild.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category subchild = (Category) iterator.next();
-			Category newchild = totargetparent.getChildByName(subchild.getName()); //Aleady exists?
+			Category newchild = target.getChildByName(subchild.getName()); //Aleady exists?
 			if( newchild == null )
 			{
 				newchild = (Category)getMediaArchive().getCategorySearcher().createNewData();
 				newchild.setName(subchild.getName());
-				totargetparent.addChild(newchild);
+				target.addChild(newchild);
 				getMediaArchive().getCategorySearcher().saveCategory(newchild);
 			}
 			copyTree(subchild, newchild);

@@ -443,7 +443,7 @@ public class EntityManager implements CatalogEnabled
 			categorysearcher.saveData(child);
 			
 			String[] catids = new String [] {categoryid};
-			getMediaArchive().getCategoryEditor().copyCategory(catids, child.getId());
+			getMediaArchive().getCategoryEditor().copyEverything(inUser,catids, child.getId());
 		}
 		
 		return true;
@@ -491,7 +491,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		else
 		{
-			getMediaArchive().getCategoryEditor().copyTree(sourcecategory, targetcategory);
+			getMediaArchive().getCategoryEditor().copyEverything(inContext.getUser(), sourcecategory, targetcategory);
 		}
 		newchild.setValue("uploadsourcepath", targetcategory.getCategoryPath());
 		

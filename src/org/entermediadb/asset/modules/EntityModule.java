@@ -369,12 +369,32 @@ public class EntityModule extends BaseMediaModule
 	}
 	
 	
-	public void handleNewAssetCreated(WebPageRequest inPageRequest) throws Exception
+	/**
+	 * This is called after new assets are uploaded.
+	 * It is also called when assets are added to one specific category
+	 * @param inPageRequest
+	 * @throws Exception
+	 */
+	
+	public void handleAssetsImported(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		String appid = inPageRequest.findValue("applicationid");
+		
+		//TODO: Get the actual category added
+		
 		//Search the hits for category
-		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits");
+		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits"); 
+		if( assets == null)
+		{
+			String[] assetids = inPageRequest.getRequestParameters("assetids");
+			if( assetids == null)
+			{
+				log.info("No assets ");
+				return;
+			}
+			assets = archive.query("asset").ids(assetids).search();
+		}
 		
 		Map<String,Data> foundentites = new HashMap();
 		Map<String,Collection> foundentitesassets = new HashMap();
@@ -407,9 +427,63 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 	}
-	public void handleAssetRemovedEvent(WebPageRequest inPageRequest) throws Exception
+	
+	public void handleAssetsAddedToCategory(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		String appid = inPageRequest.findValue("applicationid");
+		
+		//TODO: Get the actual category added
+		
+		//Search the hits for category
+		Collection<Asset> assets = (Collection<Asset>)inPageRequest.getPageValue("hits"); 
+		if( assets == null)
+		{
+			String[] assetids = inPageRequest.getRequestParameters("assetids");
+			if( assetids == null)
+			{
+				log.info("No assets ");
+				return;
+			}
+			assets = archive.query("asset").ids(assetids).search();
+		}
+		
+		Map<String,Data> foundentites = new HashMap();
+		Map<String,Collection> foundentitesassets = new HashMap();
+
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
+		{
+			Asset asset = (Asset) iterator.next();
+			
+			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
+				//Asset asset2 = (Asset) iterator2.next();
+				Data entity = (Data) iterator2.next();
+				
+				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				if( assetstoentity == null)
+				{
+					assetstoentity = new ArrayList();
+					foundentites.put(entity.getId(),entity);
+					foundentitesassets.put(entity.getId(),assetstoentity);
+				}
+				assetstoentity.add(asset.getId());
+			}
+		}
+		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
+		{
+			String entityid = (String) iterator.next();
+			Data entity = foundentites.get(entityid);
+			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
+		}
+		
+	}
+	public void handleAssetsRemovedFromCategory(WebPageRequest inPageRequest) throws Exception
 	{
 		//Search the hits for category
+		 //* It is also called when assets are added to one specific category
+
 	}
 	
 	public void scanForNewEntitiesNames(WebPageRequest inReq) throws Exception
