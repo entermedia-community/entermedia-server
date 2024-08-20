@@ -586,6 +586,6 @@ public class CategoryModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String[] catids = inReq.getRequestParameters("categoryid");
 
-		archive.getCategoryEditor().copyCategory(catids,targetcategoryid);
+		archive.getCategoryEditor().copyEverything(inReq.getUser(), catids,targetcategoryid);
 	}
 }
