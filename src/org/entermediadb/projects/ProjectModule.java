@@ -436,7 +436,7 @@ public class ProjectModule extends BaseMediaModule
 		{
 			inReq.putPageValue("librarycol", collection);
 			inReq.putPageValue("library", collection.getLibrary());
-			inReq.putPageValue("projectlink", "/" + collection.getValue("urlname"));
+			inReq.putPageValue("projectlink", "/" + collection.get("urlname"));
 		}
 		return collection;
 	}
