@@ -116,10 +116,13 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 	@Override
 	public Object getValue(String inKey)
 	{
-		if( inKey.equals("urlname") && getValue("urlname") == null)
+		if( inKey.equals("urlname") && super.getValue("urlname") == null)
 		{
+			if(getName() != null)
+			{
 			String url = PathUtilities.dash(String.valueOf( getName() ) );
 			return url;
+			}
 		}
 
 		if( inKey.equals("parentcategories"))
