@@ -401,7 +401,9 @@ public class EntityModule extends BaseMediaModule
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
 		{
-			Asset asset = (Asset) iterator.next();
+			Data data = (Data) iterator.next();
+			
+			Asset asset = archive.getAsset(data.getId());
 			
 			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
