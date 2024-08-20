@@ -116,6 +116,12 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 	@Override
 	public Object getValue(String inKey)
 	{
+		if( inKey.equals("urlname") && getValue("urlname") == null)
+		{
+			String url = PathUtilities.dash(String.valueOf( getName() ) );
+			return url;
+		}
+
 		if( inKey.equals("parentcategories"))
 		{
 			if(getRootCategoryId() == null){
@@ -134,16 +140,6 @@ public class LibraryCollection extends BaseDataEntity implements SaveableData, C
 			return values;
 		}
 		return super.getValue(inKey);
-	}
-	@Override
-	public void setValue(String inKey, Object inValue)
-	{
-		if( inKey.equals("name") && getValue("urlname") == null)
-		{
-			String url = PathUtilities.dash(String.valueOf( inValue ) );
-			setValue("urlname",url);
-		}
-		super.setValue(inKey, inValue);
 	}
 	
 	public Category getCategory()
