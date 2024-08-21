@@ -338,16 +338,9 @@ public class ConvertStatusModule extends BaseMediaModule
 	{
 		//inReq.putPageValue("asset", inAsset);
 		HitTracker conversions = archive.query("conversiontask").exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
-		List tosave = new ArrayList();
+		archive.getSearcher("conversiontask").deleteAll(conversions, null);
+		archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), inAsset, true);
 		
-		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			data.setProperty("status","retry");
-			data.setProperty("errordetails",null);
-			tosave.add(data);
-		}
-		archive.getSearcher("conversiontask").saveAllData(tosave, null);
 		//archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
 		//current.setProperty("importstatus", "imported");
 		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
