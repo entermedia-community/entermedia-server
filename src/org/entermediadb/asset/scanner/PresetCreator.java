@@ -345,11 +345,13 @@ public class PresetCreator
 			//load the asset and save the import status to complete		
 			if( asset != null )
 			{
+				/*
+				 * Event fired on importcomplete
 				if(founderror && "error".equals(existingimportstatus) || ("complete".equals(existingimportstatus) && "2".equals(existingpreviewstatus)))
 				{
 					inArchive.fireSharedMediaEvent("publishing/publishassets"); 
 					return;						
-				}
+				}*/
 				Asset target = (Asset)inArchive.getAssetSearcher().searchById(asset.getId());
 				if( target != null )
 				{
@@ -371,7 +373,7 @@ public class PresetCreator
 						}
 					}
 					inArchive.saveAsset(target, null);
-					inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
+					inArchive.fireMediaEvent("conversionsfinished",null,target); 
 				}
 				inArchive.fireSharedMediaEvent("importing/importcomplete"); //TODO: add importscomplete for when we have saved a number of items
 			}
