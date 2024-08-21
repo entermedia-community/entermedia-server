@@ -12,17 +12,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.desktops.Desktop;
 import org.entermediadb.webui.tree.CategoryCollectionCache;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -1597,16 +1594,35 @@ Server ProjectModule.uploadFile
 		{
 			MediaArchive mediaArchive = getMediaArchive(inReq);
 			Data exists = (Data) mediaArchive.getCachedData("collectivelinkreferralcode", referralcode);
-			if(exists != null) {
-				Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
-				newcode.setValue("collectionid", exists.getValue("collectionid"));
-				newcode.setValue("referralcode", exists.getId());
+			if(exists == null) 
+			{
+				exists = (Data) mediaArchive.getSearcher("collectivelinkreferralcode").createNewData();
+				exists.setId(referralcode);
+				exists.setName("Auto Created");
+				exists.setValue("collectionid", referralcode); //Assume this is a project could be OI from community area tho
+				mediaArchive.saveData("collectivelinkreferralcode",exists);
 				
-				populateTracker(inReq, newcode);
+				Data collection = (Data)mediaArchive.getCachedData("librarycollection",referralcode);
+				if( collection == null)
+				{
+					Searcher searcher = mediaArchive.getSearcher("librarycollection");
+					Data librarycol = searcher.createNewData();
+					librarycol.setId( referralcode);
+					librarycol.setName(referralcode);
+					librarycol.setValue("collectiontype","4");
+					searcher.saveData(librarycol);
+				}
 				
-				mediaArchive.saveData("collectivelinktracker", newcode);
-				inReq.putSessionValue("trackingsession",newcode);
 			}
+			Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
+			newcode.setValue("collectionid", exists.getValue("collectionid"));
+			newcode.setValue("referralcode", exists.getId());
+			
+			populateTracker(inReq, newcode);
+			
+			mediaArchive.saveData("collectivelinktracker", newcode);
+			inReq.putSessionValue("trackingsession",newcode);
+			
 			
 		}
 		else
