@@ -650,7 +650,14 @@ public class EntityManager implements CatalogEnabled
 		event.setProperty("operation", inOperation);
 		event.setProperty("moduleid", entity.get("entitysourcetype"));
 		event.setProperty("entityid", entity.getId()); //data.getId() ??
-		event.setValue("assetids", inAssets); 
+		event.setValue("assetids", inAssets);
+		Collection names = new ArrayList();
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+			String assetid = (String) iterator.next();
+			Asset asset = getMediaArchive().getAsset(assetid);
+			names.add(asset.getName());
+		}
+		event.setValue("assetnames", names);
 		event.setValue("date", new Date()); 
 		
 		searcher.saveData(event, null);

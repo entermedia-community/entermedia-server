@@ -390,7 +390,7 @@ public class AssetEditModule extends BaseMediaModule
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
-					editor.getMediaArchive().fireMediaEvent("deletingbulk", inContext.getUser(), assets);
+					editor.getMediaArchive().fireMediaEvent(inContext.getUser(), "asset", "deletingbulk", assets.getSelectedResults());
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
@@ -411,6 +411,7 @@ public class AssetEditModule extends BaseMediaModule
 				}
 				catch (Exception e)
 				{
+					log.info(e);
 					continue;
 				}
 			}
@@ -591,6 +592,28 @@ public class AssetEditModule extends BaseMediaModule
 		archive.fireSharedMediaEvent("conversions/runconversions");
 
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
+		inReq.putPageValue("asset", asset);
+	}
+	
+	public void replaceOriginal(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
+		Asset asset = getAsset(inReq);
+		UploadRequest uploadRequest = getUploadedPages(inReq);
+		List temppages = uploadRequest.getSavedContentItems();
+		if (temppages.isEmpty())
+		{
+			throw new OpenEditException("No uploads found");
+		}
+
+		archive.getAssetManager().replaceOriginal(asset, temppages); 
+
+		inReq.setRequestParameter("assetids", new String[] { asset.getId() });
+
+		archive.getPresetManager().reQueueConversions(archive, asset);
+		archive.fireSharedMediaEvent("conversions/runconversions");
+
 		inReq.putPageValue("asset", asset);
 	}
 
