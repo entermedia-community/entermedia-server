@@ -141,20 +141,16 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 
 	String catalogid = mediaarchive.getCatalogId();
 
-	ElasticNodeManager nodeManager = mediaarchive.getNodeManager();
-	Date date = new Date();
-	String tempindex =  nodeManager.toId(mediaarchive.getCatalogId().replaceAll("_", "") +  date.getTime());
-	if( !configonly )
-	{
-		nodeManager.prepareIndex(tempindex);
-	}
 	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
-
+	
 	Collection files = mediaarchive.getPageManager().getChildrenPaths(rootfolder);
 	if( files.isEmpty() )
 	{
 		throw new OpenEditException("No files in " + rootfolder);
 	}
+	Date date = new Date();
+	ElasticNodeManager nodeManager = mediaarchive.getNodeManager();
+	String tempindex =  nodeManager.toId(mediaarchive.getCatalogId().replaceAll("_", "") +  date.getTime());
 
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 
@@ -222,6 +218,13 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	}
 	pdarchive.clearCache();
 
+	
+	if( !configonly )
+	{
+		nodeManager.prepareIndex(tempindex);
+	}
+
+	
 	if( configonly )
 	{
 		//Reindex all lists tables?
@@ -360,6 +363,7 @@ public void fixXconfs(PageManager pageManager, Page site,String catalogid)
 		if( settings.exists() )
 		{
 			settings.setProperty("catalogid", catalogid);
+			//settings.setFallBack("");
 			String appid = site.getPath().substring(1) + "/" + PathUtilities.extractPageName(path);
 			settings.setProperty("applicationid", appid);
 			pageManager.getPageSettingsManager().saveSetting(settings);

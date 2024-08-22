@@ -11,7 +11,26 @@ public class JsonNode {
 	protected String fieldCode;
 	protected int fieldRowPosition;
 	protected JsonNode fieldParent;
+	protected String fieldTopLevelParent;
+	protected boolean fieldAlwaysRender;
 	
+	public boolean isAlwaysRender() {
+		return fieldAlwaysRender;
+	}
+	public void setAlwaysRender(boolean inAlwaysRender) {
+		fieldAlwaysRender = inAlwaysRender;
+	}
+	public String getTopLevelParent() {
+		if (fieldTopLevelParent == null && fieldParent != null)
+		{
+			return getParent().getTopLevelParent();
+		}
+
+		return fieldTopLevelParent;
+	}
+	public void setTopLevelParent(String inTopLevelParent) {
+		fieldTopLevelParent = inTopLevelParent;
+	}
 	public JsonNode getParent() {
 		return fieldParent;
 	}

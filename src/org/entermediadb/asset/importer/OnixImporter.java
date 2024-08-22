@@ -93,8 +93,22 @@ public class OnixImporter extends BaseImporter{
 		//Now render allJSON recursively
 		fixMath(rootjson);  //Levels shoudl be good?
 
+		
+		rootjson.setRowPosition(0);
+		rootjson.setAlwaysRender(true);
+		Page render = getType(rootjson);
+		String json = renderVelocity(render,rootjson);
+		rootjson.setJson(json);
+
+		
+		//Loop over top ones
 		Map<Integer,Integer> rowspent= new HashMap();
-		renderJson(rootjson,rowspent);
+		for (Iterator iterator = rootjson.getChildren().iterator(); iterator.hasNext();) {
+			JsonNode toplevel = (JsonNode) iterator.next();
+			toplevel.setAlwaysRender(true);
+			toplevel.setTopLevelParent(toplevel.getId());
+			renderJson(toplevel,rowspent);
+		}
 		
 		//getSearcher().saveData(getEntity());
 		getMediaArchive().saveData(getModule().getId(),getEntity());
@@ -166,6 +180,8 @@ public class OnixImporter extends BaseImporter{
 			tosave.setName(inRootjson.getName());
 			tosave.setValue("nodelevel",inRootjson.getLevel());
 			tosave.setValue("json",inRootjson.getJson());
+			tosave.setValue("alwaysrender",inRootjson.isAlwaysRender());
+			tosave.setValue("toplevelparent",inRootjson.getTopLevelParent());
 			tosave.setValue("entityid",getEntity().getId());
 			tosave.setValue("ordering",ordering++);
 			inCollectedjson.add(tosave);
@@ -283,9 +299,11 @@ public class OnixImporter extends BaseImporter{
 		List<JsonNode> children = inNode.getChildren();
 		if( children != null && !children.isEmpty())
 		{
+			Map<Integer,Integer> childrowspent= new HashMap();
+
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				JsonNode jsonNode = (JsonNode) iterator.next();
-				renderJson(jsonNode,rowsspent);
+				renderJson(jsonNode,childrowspent);
 			}
 		}
 		else

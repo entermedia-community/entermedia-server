@@ -178,12 +178,39 @@ public class JsonUtil
 		
 	public SearchQuery parseJson(Searcher inSearcher, WebPageRequest inReq)
 	{
+		Map request = inReq.getJsonRequest();
+		
+		SearchQuery squery =  null;
+		Map query = (Map)request.get("query");
+		if( query != null)
+		{
+			squery = parseQuery(inReq, query, inSearcher);
+		}
+		else
+		{
+			Collection queries = (Collection)request.get("orqueries");
+			SearchQuery or = inSearcher.createSearchQuery();
+			or.setSortBy( (String)request.get(inSearcher.getSearchType() +"sortby") );
+			or.setAndTogether(false);
+			for (Iterator iterator = queries.iterator(); iterator.hasNext();) {
+				Map childq = (Map) iterator.next();
+				WebPageRequest context = inReq.copy();
+				SearchQuery found = parseQuery(context, childq, inSearcher);
+				or.addChildQuery(found);
+			}
+			squery = or;
+		}
+		
+		return squery;
+	}
+	protected SearchQuery parseQuery(WebPageRequest inReq, Map query, Searcher inSearcher) {
+		
+		
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
 		
-		Map request = inReq.getJsonRequest();
+
 		
-		Map query = (Map)request.get("query");
 		Collection terms = (Collection)query.get("terms");
 		
 		for (Iterator iterator = terms.iterator(); iterator.hasNext();)
