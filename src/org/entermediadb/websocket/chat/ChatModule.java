@@ -217,10 +217,12 @@ public class ChatModule extends BaseMediaModule
 		{
 			//look into the request?
 			String[] requestmessageids = inReq.getRequestParameters("messageids");
-			messageids = Arrays.asList(requestmessageids);
-			if( messageids == null || messageids.isEmpty())
-			{
-				return;
+			if(requestmessageids != null) {
+				messageids = Arrays.asList(requestmessageids);
+				if( messageids == null || messageids.isEmpty())
+				{
+					return;
+				}
 			}
 		}
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
