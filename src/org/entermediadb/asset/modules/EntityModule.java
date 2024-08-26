@@ -634,4 +634,32 @@ public class EntityModule extends BaseMediaModule
 		
 	}
 	*/
+	
+	public void createEntitiesForLocalFolder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String moduleid = inReq.getRequestParameter("module");
+
+		Data folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
+	
+		String desktopid = inReq.getRequestParameter("desktop");
+		folder.setValue("desktop",desktopid);
+		folder.setValue("module",moduleid);
+				
+		String localpath = inReq.getRequestParameter("localpath");
+		folder.setValue("localpath",localpath);
+		 archive.saveData("desktopsyncfolder",folder);
+		
+		
+		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
+		
+		String[] fields = inReq.getRequestParameters("field");
+		archive.getSearcher(moduleid).updateData(inReq, null, tmpdata);
+		tmpdata.setValue("entitysourcetype", moduleid);
+
+		
+		archive.getEntityManager().createDefaultFolder(tmpdata, inReq.getUser());
+		archive.saveData(moduleid,tmpdata);
+	}
+	
 }
