@@ -635,7 +635,7 @@ public class EntityModule extends BaseMediaModule
 	}
 	*/
 	
-	public void createEntitiesForLocalFolder(WebPageRequest inReq) throws Exception
+	public void createEntityForLocalFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = inReq.getRequestParameter("module");
