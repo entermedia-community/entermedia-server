@@ -7,6 +7,7 @@ import java.util.Map;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class DesktopManager
 {
@@ -62,14 +63,17 @@ public class DesktopManager
 
 	public Desktop loadDesktop(User inUser, String computername) 
 	{
-		Desktop desktop = (Desktop)getConnectedClients().get(inUser.getId() + computername);
+		String id = inUser.getId() + computername;
+		id = PathUtilities.extractId(id);
+		Desktop desktop = (Desktop)getConnectedClients().get(id);
 
 		if( desktop == null)
 		{
 			desktop = (Desktop) getModuleManager().getBean("desktop");
+			desktop.setId(id);
 			desktop.setComputerName(computername);
 			desktop.setUser(inUser);
-			getConnectedClients().put(inUser.getId() + computername,desktop);
+			getConnectedClients().put(id,desktop);
 		}
 		return desktop;
 	}

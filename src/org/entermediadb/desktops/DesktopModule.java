@@ -106,7 +106,7 @@ public class DesktopModule extends BaseMediaModule
 			return null;
 		}
 		
-		String isDesktopParameter = inReq.getRequestParameter("desktop");
+		String isDesktopParameter = inReq.getRequestParameter	("desktop");
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
 		if(desktop == null || isDesktopParameter != null) 
 		{
@@ -118,7 +118,7 @@ public class DesktopModule extends BaseMediaModule
 				manager.getDesktopManager().removeDesktop(inReq.getUserName());
 				return null;
 			}
-			
+				
 			String computername = inReq.getRequest().getHeader("X-computername");
 			if(Boolean.parseBoolean(isDesktopParameter) || (computername != null && inReq.getUser() != null)) 
 			{

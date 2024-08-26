@@ -27,7 +27,17 @@ public class Desktop
 	protected DesktopEventListener fieldListener;
 	protected boolean fieldBusy;
 	protected String fieldComputerName;
+	protected String fieldId;
 	
+	
+	public String getId() {
+		return fieldId;
+	}
+
+	public void setId(String inId) {
+		fieldId = inId;
+	}
+
 	public String getComputerName() {
 		return fieldComputerName;
 	}
