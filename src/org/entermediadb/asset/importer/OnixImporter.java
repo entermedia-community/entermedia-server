@@ -65,34 +65,23 @@ public class OnixImporter extends BaseImporter{
 //		detail.setId(detailid);
 //		detail.setDataType("list");
 //
-//		ONIXMessage
+		allnodes.clear();
+
+		//		ONIXMessage
 		//Now render JSON. One for each level
-		JsonNode rootjson = new JsonNode();
-		rootjson.setLevel(1);
+		Element productelement = root.element("Product");
+		JsonNode rootjson = createJsonNodes(productelement);
 		rootjson.setName("ONIXMessage");
 		//Add Header and Misc Metadata
 		Element header = root.element("Header");
-		JsonNode headernode = createJsonNodes(2,header);
+		JsonNode headernode = createJsonNodes(header);
 	//	headernode.setLevel(1);
-		rootjson.addChild(headernode);
-
-		JsonNode metadatanode = new JsonNode();
-		metadatanode.setLevel(2);
-		metadatanode.setName("Metadata");
-		rootjson.addChild(metadatanode);
-
-		Element productelement = root.element("Product");
-		level2dupnodes.clear();
-		allnodes.clear();
-		findRedundant(productelement, rootjson);
+		rootjson.addChildToTop(headernode);
 		
 		defineDataView();
 
-		addTopChildren(metadatanode, productelement);		
-
 		//Now render allJSON recursively
 		fixMath(rootjson);  //Levels shoudl be good?
-
 		
 		rootjson.setRowPosition(0);
 		rootjson.setAlwaysRender(true);
@@ -102,11 +91,13 @@ public class OnixImporter extends BaseImporter{
 
 		
 		//Loop over top ones
-		Map<Integer,Integer> rowspent= new HashMap();
+		int startingfrom = 0;
 		for (Iterator iterator = rootjson.getChildren().iterator(); iterator.hasNext();) {
 			JsonNode toplevel = (JsonNode) iterator.next();
 			toplevel.setAlwaysRender(true);
 			toplevel.setTopLevelParent(toplevel.getId());
+			toplevel.setRowPosition(startingfrom++);
+			Map<Integer,Integer> rowspent= new HashMap();
 			renderJson(toplevel,rowspent);
 		}
 		
@@ -134,12 +125,12 @@ public class OnixImporter extends BaseImporter{
 			//Need to make this recursive?
 			if( level2dupholder == null)
 			{
-				JsonNode level3child = createJsonNodes(3,child);
+				JsonNode level3child = createJsonNodes(child);
 				metadatanode.addChild(level3child);
 			}
 			else
 			{
-				JsonNode level3child = createJsonNodes(3,child);
+				JsonNode level3child = createJsonNodes(child);
 				level2dupholder.addChild(level3child);
 			}
 		}
@@ -185,6 +176,19 @@ public class OnixImporter extends BaseImporter{
 			tosave.setValue("entityid",getEntity().getId());
 			tosave.setValue("ordering",ordering++);
 			inCollectedjson.add(tosave);
+
+			if( !inRootjson.getDataChildren().isEmpty())
+			{
+				Data databox = inOnixSearcher.createNewData();
+				databox.setName(inRootjson.getName() + " Data");
+				databox.setValue("nodelevel",inRootjson.getLevel() + 1);
+				databox.setValue("json",inRootjson.getDataJson());
+				databox.setValue("toplevelparent",inRootjson.getId());
+				databox.setValue("entityid",getEntity().getId());
+				databox.setValue("ordering",ordering++);
+				inCollectedjson.add(databox);
+			}
+			
 		}
 		for (Iterator iterator = inRootjson.getChildren().iterator(); iterator.hasNext();) 
 		{
@@ -208,7 +212,7 @@ public class OnixImporter extends BaseImporter{
 				if( placeholdernode == null )
 				{
 					placeholdernode = new JsonNode();
-					placeholdernode.setLevel(2); //connector
+					//placeholdernode.setLevel(2); //connector
 					placeholdernode.setName(child.getName());
 					if( !placeholdernode.getName().endsWith("s"))
 					{
@@ -223,15 +227,15 @@ public class OnixImporter extends BaseImporter{
 		}
 	}
 	
-	private JsonNode createJsonNodes(int level,Element inChildNode) {
+	private JsonNode createJsonNodes(Element inChildNode) {
 		JsonNode datanode = new JsonNode();
 		datanode.setName(inChildNode.getName());
-		datanode.setLevel(level);
+		//datanode.setLevel(level);
 		datanode.setElement(inChildNode);
 		
 		for (Iterator iterator = inChildNode.elementIterator(); iterator.hasNext();) {
 			Element child = (Element) iterator.next();
-			JsonNode node = createJsonNodes(level + 1,child);
+			JsonNode node = createJsonNodes(child);
 			datanode.addChild(node);
 		}
 		return datanode;
@@ -249,10 +253,17 @@ public class OnixImporter extends BaseImporter{
 		{
 			type ="connector";
 		}
+		
 		if( type == null)
 		{
 			type = inParent.getName();
 		}
+		Page found = loadPage(type);
+		return found;
+	}
+
+
+	protected Page loadPage(String type) {
 		Page found = foundtypes.get(type);
 
 		if( found == null && !type.equals("connector") && !type.equals("root") )
@@ -278,32 +289,40 @@ public class OnixImporter extends BaseImporter{
 	}
 	protected void renderJson(JsonNode inNode ,Map<Integer,Integer> rowsspent) 
 	{	
-//		if( inNode.getLevel() > 3)
-//		{
-//			return;
-//		}
-		
 		Page render = getType(inNode);
-		Integer spent = rowsspent.get(inNode.getLevel());
-		if( spent == null)
-		{
-			spent = 0;
-		}
-		spent++;
-		inNode.setRowPosition(spent);
-		rowsspent.put(inNode.getLevel(),spent);
 		String json = renderVelocity(render,inNode);
 		inNode.setJson(json);
 
+		//
+		List<JsonNode> simplechildren = inNode.getDataChildren();
+		if( !simplechildren.isEmpty())
+		{
+			Page found = loadPage("databox");
+			json = renderVelocity(found,inNode);
+			inNode.setDataJson(json);			
+		}
 		
 		List<JsonNode> children = inNode.getChildren();
 		if( children != null && !children.isEmpty())
 		{
-			Map<Integer,Integer> childrowspent= new HashMap();
-
+			Integer startingfrom = rowsspent.get(inNode.getLevel() + 1);
+			if( startingfrom == null)
+			{
+				if( inNode.getDataChildren().isEmpty())
+				{
+					startingfrom = 0;
+				}
+				else
+				{
+					startingfrom = inNode.getDataChildren().size();
+				}
+			}
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				JsonNode jsonNode = (JsonNode) iterator.next();
-				renderJson(jsonNode,childrowspent);
+				jsonNode.setRowPosition(startingfrom);
+				startingfrom++;
+				rowsspent.put(jsonNode.getLevel(),startingfrom);
+				renderJson(jsonNode,rowsspent);
 			}
 		}
 		else

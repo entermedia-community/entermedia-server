@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openedit.ModuleManager;
+import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 
 public class DesktopManager
@@ -58,30 +59,21 @@ public class DesktopManager
 	{
 		return getConnectedClients().keySet();
 	}
-	public Desktop getDesktop(User inUser)
+
+	public Desktop loadDesktop(User inUser, String computername) 
 	{
-		if( inUser == null)
+		Desktop desktop = (Desktop)getConnectedClients().get(inUser.getId() + computername);
+
+		if( desktop == null)
 		{
-			return null;
+			desktop = (Desktop) getModuleManager().getBean("desktop");
+			desktop.setComputerName(computername);
+			desktop.setUser(inUser);
+			getConnectedClients().put(inUser.getId() + computername,desktop);
 		}
-		return getDesktop(inUser.getId());
-	}
-
-	public Desktop getDesktop(String inUserId)
-	{
-		Desktop desktop = getConnectedClients().get(inUserId);
 		return desktop;
 	}
 
-
-	public Desktop connectDesktop(User inUser) {
-		// TODO Auto-generated method stub
-		
-		Desktop desktop = (Desktop) getModuleManager().getBean("desktop");
-		desktop.setUser(inUser);
-		setDesktop(desktop);
-		return desktop;
-	}
 	
 	
 }

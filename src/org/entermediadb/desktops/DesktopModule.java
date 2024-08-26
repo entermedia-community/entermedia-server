@@ -59,7 +59,7 @@ public class DesktopModule extends BaseMediaModule
 
 
 		//TODO: Desktop to start download this
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		Desktop desktop = loadDesktop(inReq);
 		if(asset != null)
 		{
 			desktop.downloadAsset(archive, link);
@@ -86,7 +86,7 @@ public class DesktopModule extends BaseMediaModule
 		Data userdownload = archive.query("userdownloads").id(downloadid).searchOne();
 
 		//TODO: Desktop to start download this
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		Desktop desktop = loadDesktop(inReq);
 		if( userdownload.get("assetid") != null)
 		{
 			desktop.openAsset(archive, userdownload.get("assetid"));
@@ -100,36 +100,34 @@ public class DesktopModule extends BaseMediaModule
 	}
 	
 	
-	public void loadDesktop(WebPageRequest inReq)
+	public Desktop loadDesktop(WebPageRequest inReq)
 	{
 		if(inReq.getRequest() == null) {
-			return;
+			return null;
 		}
 		
 		String isDesktopParameter = inReq.getRequestParameter("desktop");
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
 		if(desktop == null || isDesktopParameter != null) 
 		{
-			if( "false".equals(isDesktopParameter) )
+			if( "false".equals(isDesktopParameter) ) //Not used anymore
 			{
 				inReq.removeSessionValue("desktop");
 				inReq.putPageValue("desktop", null);
 				FolderManager manager = getFolderManager(inReq);
 				manager.getDesktopManager().removeDesktop(inReq.getUserName());
-				return;
+				return null;
 			}
 			
-			String isDesktop = inReq.getRequest().getHeader("User-Agent");
-			if(Boolean.parseBoolean(isDesktopParameter) || (isDesktop.contains("eMediaLibrary") && inReq.getUser() != null)) 
+			String computername = inReq.getRequest().getHeader("Computer-Name");
+			if(Boolean.parseBoolean(isDesktopParameter) || (computername != null && inReq.getUser() != null)) 
 			{
 				FolderManager manager = getFolderManager(inReq);
-				desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-				if(desktop == null) {
-					desktop = manager.getDesktopManager().connectDesktop(inReq.getUser());
-				}
+				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),computername);
 				inReq.putSessionValue("desktop", desktop);
 			}
 		}
+		return desktop;
 	}
 	
 }

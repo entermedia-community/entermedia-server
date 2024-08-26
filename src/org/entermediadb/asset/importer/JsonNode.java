@@ -12,7 +12,25 @@ public class JsonNode {
 	protected int fieldRowPosition;
 	protected JsonNode fieldParent;
 	protected String fieldTopLevelParent;
+	protected String fieldDataJson;
+	
+	public String getDataJson() {
+		return fieldDataJson;
+	}
+	public void setDataJson(String inDataJson) {
+		fieldDataJson = inDataJson;
+	}
 	protected boolean fieldAlwaysRender;
+	protected List fieldChildren;
+	protected List fieldDataChildren;
+	public List getDataChildren() {
+		if (fieldDataChildren == null) {
+			fieldDataChildren = new ArrayList();
+		}
+		return fieldDataChildren;
+	}
+	protected String fieldName;
+	protected String fieldJson;
 	
 	public boolean isAlwaysRender() {
 		return fieldAlwaysRender;
@@ -75,7 +93,6 @@ public class JsonNode {
 	public void setId(String inId) {
 		fieldId = inId;
 	}
-	protected int fieldLevel; //Column
 	protected int fieldRow;
 
 	public int getRow() {
@@ -84,9 +101,6 @@ public class JsonNode {
 	public void setRow(int inRow) {
 		fieldRow = inRow;
 	}
-	protected List fieldChildren;
-	protected String fieldName;
-	protected String fieldJson;
 
 	public Element getElement() {
 		return fieldElement;
@@ -95,12 +109,18 @@ public class JsonNode {
 		fieldElement = inElement;
 	}
 	protected Element fieldElement;
-	public int getLevel() {
-		return fieldLevel;
+	public int getLevel() 
+	{
+		int level = 1;
+		JsonNode node = getParent();
+		while( node != null)
+		{
+			node = node.getParent();
+			level++;
+		}
+		return level;
 	}
-	public void setLevel(int inLevel) {
-		fieldLevel = inLevel;
-	}
+
 	public List getChildren() {
 		if (fieldChildren == null) {
 			fieldChildren = new ArrayList();
@@ -123,11 +143,34 @@ public class JsonNode {
 	public void setJson(String inJson) {
 		fieldJson = inJson;
 	}
+	
+	public void addChildToTop(JsonNode inChildNode) 
+	{
+		inChildNode.setParent(this);
+		if( getChildren().isEmpty())
+		{
+			getChildren().add(inChildNode);
+		}
+		else
+		{
+			getChildren().add(0,inChildNode);
+		}
+		
+	}
 	public void addChild(JsonNode inChildNode) 
 	{
 		inChildNode.setParent(this);
-		getChildren().add(inChildNode);
-	
+		if( inChildNode.hasChildren() || inChildNode.getDataChildren().size() > 0)
+		{
+			getChildren().add(inChildNode);
+		}
+		else
+		{
+			getDataChildren().add(inChildNode);
+		}
+	}
+	public boolean hasChildren() {
+		return !getChildren().isEmpty();
 	}
 	public String getTextTrim() {
 		
@@ -179,6 +222,14 @@ public class JsonNode {
 		return total;
 	}
 
+	public int getDataTotalHeight(int height)
+	{
+		int total = (getDataChildren().size() * height );
+		return total;
+	}
+
+		
+	
 	@Override
 	public String toString() {
 		StringBuffer text = new StringBuffer();
@@ -199,13 +250,13 @@ public class JsonNode {
 		}
 	}
 	
-	public void addToLevel(int inI) {
-		setLevel(getLevel()+inI);
-		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
-			JsonNode node = (JsonNode) iterator.next();
-			node.addToLevel(inI);
-			
-		}
-	}
+//	public void addToLevel(int inI) {
+//		setLevel(getLevel()+inI);
+//		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
+//			JsonNode node = (JsonNode) iterator.next();
+//			node.addToLevel(inI);
+//			
+//		}
+//	}
 	
 }
