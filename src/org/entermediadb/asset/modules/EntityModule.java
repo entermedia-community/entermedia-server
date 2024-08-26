@@ -645,7 +645,10 @@ public class EntityModule extends BaseMediaModule
 		String desktopid = inReq.getRequestParameter("desktop");
 		folder.setValue("desktop",desktopid);
 		folder.setValue("module",moduleid);
-				
+
+		String name = inReq.getRequestParameter("name.value");
+		folder.setName(name);
+
 		String localpath = inReq.getRequestParameter("localpath");
 		folder.setValue("localpath",localpath);
 		 archive.saveData("desktopsyncfolder",folder);
