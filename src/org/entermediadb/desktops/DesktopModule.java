@@ -119,7 +119,7 @@ public class DesktopModule extends BaseMediaModule
 				return null;
 			}
 			
-			String computername = inReq.getRequest().getHeader("Computer-Name");
+			String computername = inReq.getRequest().getHeader("X-computername");
 			if(Boolean.parseBoolean(isDesktopParameter) || (computername != null && inReq.getUser() != null)) 
 			{
 				FolderManager manager = getFolderManager(inReq);
