@@ -657,7 +657,7 @@ public class EntityModule extends BaseMediaModule
 		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
 		
 		String[] fields = inReq.getRequestParameters("field");
-		archive.getSearcher(moduleid).updateData(inReq, null, tmpdata);
+		archive.getSearcher(moduleid).updateData(inReq, fields, tmpdata);
 		tmpdata.setValue("entitysourcetype", moduleid);
 
 		
