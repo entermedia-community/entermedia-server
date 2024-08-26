@@ -102,15 +102,15 @@ public class DesktopModule extends BaseMediaModule
 	
 	public Desktop loadDesktop(WebPageRequest inReq)
 	{
-		if(inReq.getRequest() == null) {
+		if(inReq.getRequest() == null || inReq.getUser() == null) {
 			return null;
 		}
 		
-		String computername = inReq.getRequestParameter("desktopname");
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
-		if(desktop == null || computername != null) 
+		if(desktop == null) 
 		{
-			if(computername != null && inReq.getUser() != null) 
+			String computername = inReq.getRequestParameter("desktopname");
+			if(computername != null) 
 			{
 				FolderManager manager = getFolderManager(inReq);
 				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),computername);
