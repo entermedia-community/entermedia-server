@@ -153,9 +153,10 @@ public class AssetImportModule  extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
 		FolderManager manager = getFolderManager(inReq);
-
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		desktop.openAsset(archive, assetid);
+		*/
 		Asset asset = getAsset(inReq);
 		
 		
@@ -175,11 +176,12 @@ public class AssetImportModule  extends BaseMediaModule
 			String commands = inReq.getRequestParameter("command");
 			FolderManager manager = getFolderManager(inReq);
 
-			Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+			/*Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 			JSONParser parser = new JSONParser();
 			JSONObject command = (JSONObject) parser.parse(commands);
 			
 			desktop.sendCommand(archive, command);
+			*/
 		}
 		catch (Exception e)
 		{
@@ -198,11 +200,13 @@ public class AssetImportModule  extends BaseMediaModule
 		//Send the client a download request
 		FolderManager manager = getFolderManager(inReq);
 
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		if (desktop == null)
 		{
 			throw new OpenEditException("Desktop disconnected");
 		}
+		*/
 		//desktop.checkoutCollection(inMediaArchive, collection);
 	}
 	
@@ -303,21 +307,26 @@ public class AssetImportModule  extends BaseMediaModule
 
 	public void listConnectedDesktop(WebPageRequest inReq)
 	{
+		/*
 		FolderManager manager = getFolderManager(inReq);
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUser());
 		inReq.putPageValue("desktop",desktop);
+		*/
+		return;
 	}
 
 	public void exportCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		FolderManager manager = getFolderManager(inReq);
 		
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		if( desktop.isBusy())
 		{
 			log.info("Desktop still busy");
 			return;
 		}
+		*/
 		/*
 		 * String collectionid = loadCollectionId(inReq);
 		 
