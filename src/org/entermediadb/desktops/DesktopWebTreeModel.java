@@ -49,51 +49,51 @@ public class DesktopWebTreeModel  extends CategoryWebTreeModel implements Catalo
 			log.info("Loading " + inPath);
 
 			List<Category> subfolders = (List)getMediaArchive().getCacheManager().get("desktoptree",id);
-			if( subfolders == null)
-			{
-				//GOTO The desktop API and get files
-				Desktop desktop = getMediaArchive().getFolderManager().getDesktopManager().getDesktop(getUserId());
-				if( desktop == null)
-				{
-					//Let them know,desktop not available
-					log.error("No desktop");
-					return null;
-				}
-				
-				Map filesandfolders = null;
-				if( inCat == getRoot() )
-				{
-					filesandfolders = desktop.getTopLevelFolders(getMediaArchive());
-				}
-				else
-				{
-					String abspath = inCat.get("abspath");
-					if( abspath == null)
-					{
-						throw new OpenEditException("abs path is empty ");
-					}
-					filesandfolders = desktop.getLocalFiles(getMediaArchive(), abspath);
-				}
-				if( filesandfolders == null)
-				{
-					//Let them know desktop not available
-					log.error("No data found for " + inPath);
-					return Collections.EMPTY_LIST;
-				}
-				Collection 	folders = (Collection)filesandfolders.get("childfolders");
-				for (Iterator iterator = folders.iterator(); iterator.hasNext();)
-				{
-					Map details = (Map) iterator.next();
-					String name = (String)details.get("foldername");
-					String catid = PathUtilities.extractId(name);
-					BaseCategory newchild = new BaseCategory(catid,name);
-					String abspath = (String)details.get("abspath");
-					newchild.setProperty("abspath", abspath);
-					inCat.addChild(newchild);
-				}
-				subfolders = inCat.getChildren();
-				getMediaArchive().getCacheManager().put("desktoptree",id,subfolders);
-			}
+//			if( subfolders == null)
+//			{
+//				//GOTO The desktop API and get files
+//				Desktop desktop = getMediaArchive().getFolderManager().getDesktopManager().getDesktop(getUserId());
+//				if( desktop == null)
+//				{
+//					//Let them know,desktop not available
+//					log.error("No desktop");
+//					return null;
+//				}
+//				
+//				Map filesandfolders = null;
+//				if( inCat == getRoot() )
+//				{
+//					filesandfolders = desktop.getTopLevelFolders(getMediaArchive());
+//				}
+//				else
+//				{
+//					String abspath = inCat.get("abspath");
+//					if( abspath == null)
+//					{
+//						throw new OpenEditException("abs path is empty ");
+//					}
+//					filesandfolders = desktop.getLocalFiles(getMediaArchive(), abspath);
+//				}
+//				if( filesandfolders == null)
+//				{
+//					//Let them know desktop not available
+//					log.error("No data found for " + inPath);
+//					return Collections.EMPTY_LIST;
+//				}
+//				Collection 	folders = (Collection)filesandfolders.get("childfolders");
+//				for (Iterator iterator = folders.iterator(); iterator.hasNext();)
+//				{
+//					Map details = (Map) iterator.next();
+//					String name = (String)details.get("foldername");
+//					String catid = PathUtilities.extractId(name);
+//					BaseCategory newchild = new BaseCategory(catid,name);
+//					String abspath = (String)details.get("abspath");
+//					newchild.setProperty("abspath", abspath);
+//					inCat.addChild(newchild);
+//				}
+//				subfolders = inCat.getChildren();
+//				getMediaArchive().getCacheManager().put("desktoptree",id,subfolders);
+//			}
 			return subfolders;
 	}
 
