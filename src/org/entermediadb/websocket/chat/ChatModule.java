@@ -17,6 +17,7 @@
 package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -214,7 +215,15 @@ public class ChatModule extends BaseMediaModule
 		Collection messageids = (Collection)inReq.getPageValue("messageids");
 		if( messageids == null || messageids.isEmpty())
 		{
-			return;
+			//look into the request?
+			String[] requestmessageids = inReq.getRequestParameters("messageids");
+			if(requestmessageids != null) {
+				messageids = Arrays.asList(requestmessageids);
+				if( messageids == null || messageids.isEmpty())
+				{
+					return;
+				}
+			}
 		}
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();

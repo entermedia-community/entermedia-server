@@ -390,7 +390,7 @@ public class EntityModule extends BaseMediaModule
 			String[] assetids = inPageRequest.getRequestParameters("assetids");
 			if( assetids == null)
 			{
-				log.info("No assets ");
+				//log.info("No assets ");
 				return;
 			}
 			assets = archive.query("asset").ids(assetids).search();

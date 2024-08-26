@@ -2154,9 +2154,9 @@ public class AssetEditModule extends BaseMediaModule
 			Asset current = archive.getAssetBySourcePath(sourcepath);
 			//log.info(current.getId());
 			//This will create a new one if current was null.
-			 current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
-			 log.info("Asset saved: " + current.getId());
+			current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
+			log.info("Asset saved: " + current.getId());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
 
@@ -2175,9 +2175,13 @@ public class AssetEditModule extends BaseMediaModule
 			archive.saveAsset(current, null);
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
-			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current);
+			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
+			
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);
+			archive.fireSharedMediaEvent("importing/assetscreated");  //TODO: is duplcicated with previous?
+			
 			archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
+			
 
 			if (currentcollection != null)
 			{
@@ -2187,6 +2191,7 @@ public class AssetEditModule extends BaseMediaModule
 			savedassets.add(current);
 		}
 		inReq.putPageValue("savedassets", savedassets);
+		inReq.putPageValue("hits", savedassets);  //Some evets requires hits variable
 
 	}
 
