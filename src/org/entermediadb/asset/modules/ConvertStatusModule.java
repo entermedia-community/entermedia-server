@@ -281,6 +281,34 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 	}
+	
+	
+	public void replaceOriginal(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) {
+			return;
+			
+		}
+		Asset current = getAsset(inReq);
+		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
+		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
+		
+		log.info("Original replaced: " + current.getId() + " Sourcepath: " + input);
+		
+		//Read New Metadata
+		ContentItem original = archive.getOriginalContent(current);
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
+		archive.saveAsset(current);
+		 archive.removeGeneratedImages(current, true);
+		 reloadThumbnails( inReq, archive, current);
+		
+	}
 
 	public void handleCustomThumb(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
