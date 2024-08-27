@@ -651,7 +651,6 @@ public class EntityModule extends BaseMediaModule
 
 		String localpath = inReq.getRequestParameter("localpath");
 		folder.setValue("localpath",localpath);
-		 archive.saveData("desktopsyncfolder",folder);
 		
 		
 		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
@@ -663,6 +662,38 @@ public class EntityModule extends BaseMediaModule
 		
 		archive.getEntityManager().createDefaultFolder(tmpdata, inReq.getUser());
 		archive.saveData(moduleid,tmpdata);
+		folder.setValue("categorypath",tmpdata.getValue("uploadsourcepath"));
+		folder.setValue("entityid",tmpdata.getId());
+		
+		archive.saveData("desktopsyncfolder",folder);
+
+	}
+	
+	public void createSyncFolderForEntity(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String entityid = inReq.getRequestParameter("entityid");
+		String moduleid = inReq.getRequestParameter("moduleid");
+		String desktopid = inReq.getRequestParameter("desktop");
+		
+		Data entity = archive.getData(moduleid,entityid);
+		Data folder = archive.query("desktopsyncfolder").exact("entityid",entityid).exact("desktop",desktopid).searchOne();
+		if( folder == null)
+		{
+			folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
+		}
+		
+		folder.setValue("desktop",desktopid);
+		folder.setValue("module",moduleid);
+		folder.setName(entity.getName());
+
+		//Optional
+		String localpath = inReq.getRequestParameter("localpath");
+		folder.setValue("localpath",localpath);
+		folder.setValue("categorypath",entity.getValue("uploadsourcepath"));
+		folder.setValue("entityid",entity.getId());
+		archive.saveData("desktopsyncfolder",folder);
+
 	}
 	
 }
