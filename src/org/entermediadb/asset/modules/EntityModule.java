@@ -684,6 +684,15 @@ public class EntityModule extends BaseMediaModule
 		String localpath = inReq.getRequestParameter("localpath");
 		folder.setValue("localpath",localpath);
 		
+		String localsubfoldercount = inReq.getRequestParameter("localsubfoldercount");
+		folder.setValue("localsubfoldercount",localsubfoldercount);
+		
+		String localitemcount = inReq.getRequestParameter("localitemcount");
+		folder.setValue("localitemcount",localitemcount);
+		
+		String localtotalsize = inReq.getRequestParameter("localtotalsize");
+		folder.setValue("localtotalsize",localtotalsize);
+		
 		
 		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
 		
@@ -698,6 +707,9 @@ public class EntityModule extends BaseMediaModule
 		folder.setValue("entityid",tmpdata.getId());
 		
 		archive.saveData("desktopsyncfolder",folder);
+		
+		inReq.putPageValue("newFolder", folder);
+		inReq.putPageValue("status", "OK");
 
 	}
 	
