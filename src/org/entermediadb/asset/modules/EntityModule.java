@@ -668,49 +668,47 @@ public class EntityModule extends BaseMediaModule
 	*/
 	
 	public void createEntityForLocalFolder(WebPageRequest inReq) throws Exception
-	{
+	{	
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = inReq.getRequestParameter("module");
-
-		Data folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
-	
 		String desktopid = inReq.getRequestParameter("desktop");
-		folder.setValue("desktop",desktopid);
-		folder.setValue("module",moduleid);
-
-		String name = inReq.getRequestParameter("name.value");
-		folder.setName(name);
-
-		String localpath = inReq.getRequestParameter("localpath");
-		folder.setValue("localpath",localpath);
-		
-		String localsubfoldercount = inReq.getRequestParameter("localsubfoldercount");
-		folder.setValue("localsubfoldercount",localsubfoldercount);
-		
-		String localitemcount = inReq.getRequestParameter("localitemcount");
-		folder.setValue("localitemcount",localitemcount);
-		
-		String localtotalsize = inReq.getRequestParameter("localtotalsize");
-		folder.setValue("localtotalsize",localtotalsize);
-		
-		
-		Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
 		
 		String[] fields = inReq.getRequestParameters("field");
-		archive.getSearcher(moduleid).updateData(inReq, fields, tmpdata);
-		tmpdata.setValue("entitysourcetype", moduleid);
-
 		
-		archive.getEntityManager().createDefaultFolder(tmpdata, inReq.getUser());
-		archive.saveData(moduleid,tmpdata);
-		folder.setValue("categorypath",tmpdata.getValue("uploadsourcepath"));
-		folder.setValue("entityid",tmpdata.getId());
+		String[] localpaths = inReq.getRequestParameters("localpath");
+		String[] names = inReq.getRequestParameters("name.value");
+		String[] localsubfoldercounts = inReq.getRequestParameters("localsubfoldercount");
+		String[] localitemcounts = inReq.getRequestParameters("localitemcount");
+		String[] localtotalsizes = inReq.getRequestParameters("localtotalsize");
 		
-		archive.saveData("desktopsyncfolder",folder);
+		Data[] folders = new Data[localpaths.length];
+		for (int i = 0; i < localpaths.length; i++) {
+			Data folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
+			folder.setValue("desktop",desktopid);
+			folder.setValue("module",moduleid);
+			folder.setValue("localpath",localpaths[i]);
+			folder.setValue("localsubfoldercount",localsubfoldercounts[i]);
+			folder.setValue("localitemcount",localitemcounts[i]);
+			folder.setValue("localtotalsize",localtotalsizes[i]);
+			folder.setName(names[i]);
+			
+			Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
+			archive.getSearcher(moduleid).updateData(inReq, fields, tmpdata);
+			tmpdata.setValue("entitysourcetype", moduleid);
+			tmpdata.setName(names[i]);
+			archive.getEntityManager().createDefaultFolder(tmpdata, inReq.getUser());
+			archive.saveData(moduleid,tmpdata);
+			
+			folder.setValue("categorypath",tmpdata.getValue("uploadsourcepath"));
+			folder.setValue("entityid",tmpdata.getId());
+			
+			archive.saveData("desktopsyncfolder",folder);
+			
+			folders[i] = folder;
+		}
 		
-		inReq.putPageValue("newFolder", folder);
+		inReq.putPageValue("newFolders", folders);
 		inReq.putPageValue("status", "OK");
-
 	}
 	
 	public void createSyncFolderForEntity(WebPageRequest inReq) throws Exception
