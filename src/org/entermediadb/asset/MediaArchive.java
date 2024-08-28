@@ -1947,7 +1947,11 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		Searcher searcher = getSearcher(inSearchType);
+		Searcher searcher = getSearcherManager().getExistingSearcher(getCatalogId(),inSearchType);
+		if( searcher == null)
+		{
+			return null;
+		}
 		Data data = searcher.loadCachedData(inId);
 		return data;
 	}

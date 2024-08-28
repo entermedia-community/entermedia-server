@@ -7,28 +7,46 @@ import java.util.List;
 import org.dom4j.Element;
 
 public class JsonNode {
+	
+	
+	public int getX() {
+		return (getLevel()-1) * 300;
+	}
+	public int getY() {
+		return fieldY;
+	}
+	public void setY(int inY) {
+		fieldY = inY;
+	}
+	public int getHeight() {
+		return fieldHeight;
+	}
+	public void setHeight(int inHeight) {
+		fieldHeight = inHeight;
+	}
+	protected int fieldY = 0;
+	protected int fieldHeight = 40;
+	
 	protected String fieldId;
 	protected String fieldCode;
 	protected int fieldRowPosition;
 	protected JsonNode fieldParent;
+	protected JsonNode fieldDataHolder;
+	public JsonNode getDataHolder() {
+		if (fieldDataHolder == null) {
+			fieldDataHolder = new JsonNode();
+			fieldDataHolder.setParent(this);
+			fieldDataHolder.setName("Data");
+		}
+		return fieldDataHolder;
+	}
+	public void setDataHolder(JsonNode inDataHolder) {
+		fieldDataHolder = inDataHolder;
+	}
 	protected String fieldTopLevelParent;
-	protected String fieldDataJson;
-	
-	public String getDataJson() {
-		return fieldDataJson;
-	}
-	public void setDataJson(String inDataJson) {
-		fieldDataJson = inDataJson;
-	}
 	protected boolean fieldAlwaysRender;
 	protected List fieldChildren;
-	protected List fieldDataChildren;
-	public List getDataChildren() {
-		if (fieldDataChildren == null) {
-			fieldDataChildren = new ArrayList();
-		}
-		return fieldDataChildren;
-	}
+
 	protected String fieldName;
 	protected String fieldJson;
 	
@@ -160,17 +178,13 @@ public class JsonNode {
 	public void addChild(JsonNode inChildNode) 
 	{
 		inChildNode.setParent(this);
-		if( inChildNode.hasChildren() || inChildNode.getDataChildren().size() > 0)
-		{
-			getChildren().add(inChildNode);
-		}
-		else
-		{
-			getDataChildren().add(inChildNode);
-		}
+		getChildren().add(inChildNode);
 	}
 	public boolean hasChildren() {
 		return !getChildren().isEmpty();
+	}
+	public boolean hasDataHolder() {
+		return fieldDataHolder != null && !fieldDataHolder.getChildren().isEmpty();
 	}
 	public String getTextTrim() {
 		
@@ -206,28 +220,12 @@ public class JsonNode {
 		int total = (getLevel() - 1) * width + offset;
 		return total;
 	}
-	public int offetY(int width)
-	{
-		return offetY(width,0);
-	}
 
-	public int offetY(int height, int offset)
-	{
-		int total = (getRow()) * height + offset;
-		return total;
-	}
-	public int rowoffet(int height, int padding)
-	{
-		int total = (getRowPosition() * height )+ padding;
-		return total;
-	}
 
-	public int getDataTotalHeight(int height)
-	{
-		int total = (getDataChildren().size() * height );
-		return total;
+	public int getHeight(int rowheight) {
+		int count = getChildren().size() * rowheight;
+		return count;
 	}
-
 		
 	
 	@Override
@@ -239,15 +237,37 @@ public class JsonNode {
 	
 	protected void renderTree(JsonNode inRoot,int deep, StringBuffer inBuffer)
 	{
-		for (int i = 0; i < deep; i++) {
+		for (int i = 0; i < inRoot.getLevel(); i++) {
 			inBuffer.append("  ");
 		}
-		inBuffer.append(inRoot.getLevel() + ":" + inRoot.getName() + inRoot.getId() + "\n");	
+		inBuffer.append("L=" + inRoot.getLevel() + " x=" + inRoot.getX() +  " y=" + inRoot.getY() + inRoot.getName() + inRoot.getId() + "\n");
+		if( inRoot.hasDataHolder())
+		{
+			for (int i = 0; i < inRoot.getDataHolder().getLevel(); i++) {
+				inBuffer.append("  ");
+			}
+			inBuffer.append("L=" + inRoot.getDataHolder().getLevel() + " x=" + inRoot.getDataHolder().getX() + " y=" + inRoot.getDataHolder().getY() + " DATA (" + inRoot.getDataHolder().getChildren().size() + ")\n");
+		}
 		deep++;
 		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();) {
 			JsonNode node = (JsonNode) iterator.next();
 			renderTree(node,deep,inBuffer);
 		}
+	}
+	public void optimizeData() 
+	{
+		List children = new ArrayList(getChildren());
+		getDataHolder().setChildren(null);
+		for (int i = 0; i < getChildren().size(); i++) {
+			JsonNode node = (JsonNode)getChildren().get(i);
+			if( !node.hasChildren())
+			{
+				getDataHolder().addChild(node);
+				children.remove(node);
+			}
+			node.optimizeData();
+		}
+		setChildren(children);		
 	}
 	
 //	public void addToLevel(int inI) {
