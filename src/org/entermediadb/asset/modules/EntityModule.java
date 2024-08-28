@@ -138,7 +138,7 @@ public class EntityModule extends BaseMediaModule
 							log.error("No asset id passed in");
 							return;
 						}
-						if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, pickedassetid))
+						if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
 						{
 							tosave.add(asset);
 							if( tosave.size() > 100)
@@ -164,7 +164,7 @@ public class EntityModule extends BaseMediaModule
 			{
 				
 				asset = archive.getAsset(pickedassetid);
-				if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset.getId()))
+				if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
 				{
 					archive.getAssetSearcher().saveData(asset);
 					inPageRequest.putPageValue("asset", asset);
@@ -297,6 +297,38 @@ public class EntityModule extends BaseMediaModule
 		inPageRequest.putPageValue("entityid", entityid);
 		
 		inPageRequest.putPageValue("assetclearselection", true);
+	}
+	
+	public void removeOneToMany(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		
+		String removemoduleid = inPageRequest.getRequestParameter("removemoduleid");
+		String removeentityid = inPageRequest.getRequestParameter("removeentityid");
+		
+		
+		if(entityid != null && moduleid != null) {
+			Data entity = archive.getCachedData(moduleid, entityid);
+			if(entity != null) {
+				Collection entities = entity.getValues(removemoduleid);
+				if(entities != null) {
+					entities.remove(removeentityid);
+					entity.setValue(removemoduleid, entities);
+					Searcher searcher = archive.getSearcher(moduleid);
+					searcher.saveData(entity);
+				}
+			}
+		}
+
+		inPageRequest.putPageValue("moduleid", removemoduleid);
+		inPageRequest.putPageValue("entityid", removeentityid);
+		
+		inPageRequest.putPageValue("removed", "1");
 	}
 	
 	protected EntityManager getEntityManager(WebPageRequest inPageRequest) 
