@@ -671,6 +671,7 @@ public class EntityModule extends BaseMediaModule
 	{	
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = inReq.getRequestParameter("module");
+		Data module = archive.getCachedData("module", moduleid);
 		String desktopid = inReq.getRequestParameter("desktop");
 		
 		String[] fields = inReq.getRequestParameters("field");
@@ -683,7 +684,14 @@ public class EntityModule extends BaseMediaModule
 		
 		Data[] folders = new Data[localpaths.length];
 		for (int i = 0; i < localpaths.length; i++) {
-			Data folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
+			
+			Data folder = archive.query(moduleid).exact("name", names[i]).searchOne();
+			if( folder != null)
+			{
+				log.info("Existing folder found. Skipping");
+				return;
+			}
+			folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
 			folder.setValue("desktop",desktopid);
 			folder.setValue("module",moduleid);
 			folder.setValue("localpath",localpaths[i]);
@@ -692,15 +700,26 @@ public class EntityModule extends BaseMediaModule
 			folder.setValue("localtotalsize",localtotalsizes[i]);
 			folder.setName(names[i]);
 			
-			Data tmpdata = archive.getSearcher(moduleid).createNewData(); //tmp
-			archive.getSearcher(moduleid).updateData(inReq, fields, tmpdata);
-			tmpdata.setValue("entitysourcetype", moduleid);
-			tmpdata.setName(names[i]);
-			archive.getEntityManager().createDefaultFolder(tmpdata, inReq.getUser());
-			archive.saveData(moduleid,tmpdata);
+			Data tmpentity = archive.getSearcher(moduleid).createNewData(); //tmp
+			archive.getSearcher(moduleid).updateData(inReq, fields, tmpentity);
+			tmpentity.setValue("entitysourcetype", moduleid);
+			tmpentity.setName(names[i]);
+			String path = archive.getEntityManager().loadUploadSourcepath(module,tmpentity,inReq.getUser());
 			
-			folder.setValue("categorypath",tmpdata.getValue("uploadsourcepath"));
-			folder.setValue("entityid",tmpdata.getId());
+			Data existing = archive.query(moduleid).exact("uploadsourcepath", path).searchOne();
+			if( existing == null)
+			{
+				log.info("Existing folder found. Skipping");
+				archive.getEntityManager().createDefaultFolder(tmpentity, inReq.getUser());
+				archive.saveData(moduleid,tmpentity);
+			}
+			else
+			{
+				tmpentity = existing;
+			}
+			
+			folder.setValue("categorypath",tmpentity.getValue("uploadsourcepath"));
+			folder.setValue("entityid",tmpentity.getId());
 			
 			archive.saveData("desktopsyncfolder",folder);
 			
