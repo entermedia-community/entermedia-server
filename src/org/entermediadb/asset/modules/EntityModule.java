@@ -572,14 +572,14 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("newfolders",newfolders);
 	}
 	
-	public void saveEntitiesForFolders(WebPageRequest inReq) throws Exception
+	public void updateLocalSyncFolders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String[] ids = inReq.getRequestParameters("id");
 
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
-		Collection folders = searcher.query().ids(ids).search();
+		Collection folders = searcher.query().ids(ids).sort("name").search();
 		
 		List tosave = new ArrayList();
 		
@@ -587,10 +587,17 @@ public class EntityModule extends BaseMediaModule
 			Data folder = (Data) iterator.next();
 			String localitemcount = inReq.getRequestParameter(folder.getId() + ".localitemcount");
 			folder.setValue("localitemcount",localitemcount);
+			String localsubfoldercount = inReq.getRequestParameter(folder.getId() + ".localsubfoldercount");
+			folder.setValue("localsubfoldercount",localsubfoldercount);
+			String localtotalsize = inReq.getRequestParameter(folder.getId() + ".localtotalsize");
+			folder.setValue("localtotalsize",localtotalsize);
+			
+			//TODO: add status field & lastscanned
+			
 			tosave.add(folder);
 		}
 		searcher.saveAllData(tosave, null);
-		inReq.putPageValue("existingfolders",tosave);
+		inReq.putPageValue("syncfolders",tosave);
 	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
