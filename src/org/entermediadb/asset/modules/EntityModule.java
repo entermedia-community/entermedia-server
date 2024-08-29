@@ -685,7 +685,7 @@ public class EntityModule extends BaseMediaModule
 		Data[] folders = new Data[localpaths.length];
 		for (int i = 0; i < localpaths.length; i++) {
 			
-			Data folder = archive.query(moduleid).exact("name", names[i]).searchOne();
+			Data folder = archive.query("desktopsyncfolder").exact("name", names[i]).exact("desktop", desktopid).searchOne();
 			if( folder != null)
 			{
 				log.info("Existing folder found. Skipping");
