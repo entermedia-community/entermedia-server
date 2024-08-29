@@ -461,7 +461,32 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 	}
-	
+	public void handleAssetModified(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		String appid = inPageRequest.findValue("applicationid");
+		
+		String assetid = inPageRequest.getRequestParameter("assetid");
+		
+		//Search the hits for category
+
+		Asset asset = archive.getAsset(assetid);
+		
+		Collection assets = new ArrayList();
+		assets.add(asset);
+		
+		Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+		String applicationid = inPageRequest.findPathValue("applicationid");	
+		
+		
+		for (Iterator iterator = entities.iterator(); iterator.hasNext();)
+		{
+			Data entity = (Data)iterator.next();
+			//Log event
+			archive.getEntityManager().saveAssetActivity(applicationid, inPageRequest.getUser(), entity, assets, "assetsmodified");
+		}
+		
+	}
 	public void handleAssetsAddedToCategory(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -481,9 +506,24 @@ public class EntityModule extends BaseMediaModule
 			}
 			assets = archive.query("asset").ids(assetids).search();
 		}
-		
-		Map<String,Data> foundentites = new HashMap();
+
 		Map<String,Collection> foundentitesassets = new HashMap();
+
+		Map<String, Data> foundentites = findEntityAssets(archive, assets, foundentitesassets);
+		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
+		{
+			String entityid = (String) iterator.next();
+			Data entity = foundentites.get(entityid);
+			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
+		}
+		
+	}
+
+
+	protected Map<String, Data> findEntityAssets(MediaArchive archive, Collection<Asset> assets,
+			Map<String, Collection> foundentitesassets) {
+		Map<String,Data> foundentites = new HashMap();
 
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
 		{
@@ -504,14 +544,7 @@ public class EntityModule extends BaseMediaModule
 				assetstoentity.add(asset.getId());
 			}
 		}
-		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
-		{
-			String entityid = (String) iterator.next();
-			Data entity = foundentites.get(entityid);
-			Collection<String> bulkassets = foundentitesassets.get(entityid);
-			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
-		}
-		
+		return foundentites;
 	}
 	public void handleAssetsRemovedFromCategory(WebPageRequest inPageRequest) throws Exception
 	{
@@ -539,6 +572,26 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("newfolders",newfolders);
 	}
 	
+	public void saveEntitiesForFolders(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String[] ids = inReq.getRequestParameters("id");
+
+		Searcher searcher = archive.getSearcher("desktopsyncfolder");
+		Collection folders = searcher.query().ids(ids).search();
+		
+		List tosave = new ArrayList();
+		
+		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
+			Data folder = (Data) iterator.next();
+			String localitemcount = inReq.getRequestParameter(folder.getId() + ".localitemcount");
+			folder.setValue("localitemcount",localitemcount);
+			tosave.add(folder);
+		}
+		searcher.saveAllData(tosave, null);
+		inReq.putPageValue("existingfolders",tosave);
+	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
 	{

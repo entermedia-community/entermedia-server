@@ -637,7 +637,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	
 	
-	protected void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection<String> inAssets, String inOperation) {
+	public void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection<String> inAssets, String inOperation) {
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 		Data event = searcher.createNewData();
 		event.setProperty("applicationid", applicationid);
