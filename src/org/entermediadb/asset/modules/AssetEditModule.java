@@ -608,6 +608,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 
 		archive.getAssetManager().replaceOriginal(asset, temppages); 
+		archive.fireMediaEvent("originalreplaced", inReq.getUser(), asset);
 
 		inReq.setRequestParameter("assetids", new String[] { asset.getId() });
 

@@ -106,17 +106,46 @@ public class DesktopModule extends BaseMediaModule
 			return null;
 		}
 		
+		String isDesktopParameter = inReq.getRequestParameter("desktop");
+		
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
-		if(desktop == null) 
+		
+		if(isDesktopParameter != null) 
 		{
-			String computername = inReq.getRequestParameter("desktopname");
-			if(computername != null) 
+			if( "false".equals(isDesktopParameter) ) //Not used anymore
+			{
+				inReq.removeSessionValue("desktop");
+				inReq.putPageValue("desktop", null);
+				FolderManager manager = getFolderManager(inReq);
+				manager.getDesktopManager().removeDesktop(inReq.getUserName());
+				return null;
+			}
+			else if( Boolean.parseBoolean(isDesktopParameter))
 			{
 				FolderManager manager = getFolderManager(inReq);
-				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),computername);
+				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),System.getenv("HOSTNAME"));
 				inReq.putSessionValue("desktop", desktop);
 			}
 		}
+		if(desktop == null) 
+		{
+			String useragent = inReq.getRequest().getHeader("User-Agent");
+			if(useragent.contains("eMediaLibrary")) 
+			{
+				int found = useragent.indexOf("ComputerName/");
+				if( found > -1)
+				{
+					String computername = useragent.substring("ComputerName/".length(),useragent.length());
+					if(computername != null) 
+					{
+						FolderManager manager = getFolderManager(inReq);
+						desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),computername);
+						inReq.putSessionValue("desktop", desktop);
+					}
+				}
+			}
+		}
+
 		return desktop;
 	}
 	
