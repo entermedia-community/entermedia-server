@@ -738,7 +738,7 @@ public class EntityModule extends BaseMediaModule
 		Data[] folders = new Data[localpaths.length];
 		for (int i = 0; i < localpaths.length; i++) {
 			
-			Data folder = archive.query(moduleid).exact("name", names[i]).searchOne();
+			Data folder = archive.query("desktopsyncfolder").exact("name", names[i]).exact("desktop", desktopid).searchOne();
 			if( folder != null)
 			{
 				log.info("Existing folder found. Skipping");
@@ -790,6 +790,8 @@ public class EntityModule extends BaseMediaModule
 		String moduleid = inReq.getRequestParameter("moduleid");
 		String desktopid = inReq.getRequestParameter("desktop");
 		
+		
+		
 		Data entity = archive.getData(moduleid,entityid);
 		Data folder = archive.query("desktopsyncfolder").exact("entityid",entityid).exact("desktop",desktopid).searchOne();
 		if( folder == null)
@@ -802,11 +804,15 @@ public class EntityModule extends BaseMediaModule
 		folder.setName(entity.getName());
 
 		//Optional
-		String localpath = inReq.getRequestParameter("localpath");
-		folder.setValue("localpath",localpath);
+		String abspath = inReq.getRequestParameter("abspath");
+		folder.setValue("localpath",abspath);
 		folder.setValue("categorypath",entity.getValue("uploadsourcepath"));
 		folder.setValue("entityid",entity.getId());
 		archive.saveData("desktopsyncfolder",folder);
+		
+		Data module = archive.getCachedData("module", moduleid);
+		inReq.putPageValue("module", module);
+		inReq.putPageValue("verifynow", true);
 
 	}
 	
