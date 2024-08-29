@@ -240,6 +240,23 @@ public class FileManagerModule extends BaseModule
 	{
 		return getPageManager().getPage( inPath );
 	}
+	
+	
+	public void parseMultiPart( WebPageRequest inReq ) throws OpenEditException
+	{
+		UploadRequest request = (UploadRequest)inReq.getPageValue("uploadrequest");
+		if( request == null)
+		{
+			request = getFileUpload().parseArguments( inReq );
+			
+			if (request == null)
+			{
+				return;
+			}
+			inReq.putPageValue("uploadrequest", request);
+		}
+	}
+	
 	public void uploadFile( WebPageRequest inReq ) throws OpenEditException
 	{
 		String reload = inReq.getRequestParameter("reload");
