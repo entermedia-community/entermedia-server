@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Date; 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +24,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
@@ -572,31 +574,76 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("newfolders",newfolders);
 	}
 	
-	public void updateLocalSyncFolders(WebPageRequest inReq) throws Exception
+//	public void updateLocalSyncFolders(WebPageRequest inReq) throws Exception
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//
+//		String[] ids = inReq.getRequestParameters("id");
+//
+//		Searcher searcher = archive.getSearcher("desktopsyncfolder");
+//		Collection folders = searcher.query().ids(ids).sort("name").search();
+//		
+//		List tosave = new ArrayList();
+//		
+//		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
+//			Data folder = (Data) iterator.next();
+//			String localitemcount = inReq.getRequestParameter(folder.getId() + ".localitemcount");
+//			folder.setValue("localitemcount",localitemcount);
+//			String localsubfoldercount = inReq.getRequestParameter(folder.getId() + ".localsubfoldercount");
+//			folder.setValue("localsubfoldercount",localsubfoldercount);
+//			String localtotalsize = inReq.getRequestParameter(folder.getId() + ".localtotalsize");
+//			folder.setValue("localtotalsize",localtotalsize);
+//			
+//			//TODO: add status field & lastscanned
+//			
+//			tosave.add(folder);
+//		}
+//		searcher.saveAllData(tosave, null);
+//		inReq.putPageValue("syncfolders",tosave);
+//	}
+	
+	public void updateScanStatus(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String[] ids = inReq.getRequestParameters("id");
-
+		
+		String timestampStr = inReq.getRequestParameter("timestamp");
+		Date timestamp = DateStorageUtil.getStorageUtil().parseFromStorage(timestampStr);
+		
+		String status = inReq.getRequestParameter("desktopimportstatus");
+		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 		Collection folders = searcher.query().ids(ids).sort("name").search();
 		
 		List tosave = new ArrayList();
 		
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
-			Data folder = (Data) iterator.next();
-			String localitemcount = inReq.getRequestParameter(folder.getId() + ".localitemcount");
-			folder.setValue("localitemcount",localitemcount);
-			String localsubfoldercount = inReq.getRequestParameter(folder.getId() + ".localsubfoldercount");
-			folder.setValue("localsubfoldercount",localsubfoldercount);
-			String localtotalsize = inReq.getRequestParameter(folder.getId() + ".localtotalsize");
-			folder.setValue("localtotalsize",localtotalsize);
+			Data folder = (Data) iterator.next();	
+
+			String desktopimportstatus = (String) folder.getValue("desktopimportstatus");
+			Boolean isSame = false;
+			if(desktopimportstatus != null) {
+				isSame = desktopimportstatus.equals(status);
+			}
 			
-			//TODO: add status field & lastscanned
-			
+			Date lastscandate = (Date) folder.getValue("lastscandate");
+			Boolean isLatest = true;
+			if(lastscandate != null) {				 
+				isLatest = DateStorageUtil.getStorageUtil().newerThan(timestamp, lastscandate);
+			}
+			 
+			if(isLatest && !isSame) {
+				folder.setValue("lastscandate", timestamp);
+				folder.setValue("desktopimportstatus", status);
+			} else {
+				status = desktopimportstatus;
+			}
+ 
 			tosave.add(folder);
 		}
 		searcher.saveAllData(tosave, null);
+		inReq.putPageValue("scanstatus", status);
 		inReq.putPageValue("syncfolders",tosave);
 	}
 	
@@ -758,15 +805,18 @@ public class EntityModule extends BaseMediaModule
 			folder.setValue("localsubfoldercount",localsubfoldercounts[i]);
 			folder.setValue("localitemcount",localitemcounts[i]);
 			folder.setValue("localtotalsize",localtotalsizes[i]);
+			folder.setValue("lastscandate", new Date());
 			folder.setName(names[i]);
 			
 			Data tmpentity = archive.getSearcher(moduleid).createNewData(); //tmp
 			archive.getSearcher(moduleid).updateData(inReq, fields, tmpentity);
 			tmpentity.setValue("entitysourcetype", moduleid);
 			tmpentity.setName(names[i]);
+			
 			String path = archive.getEntityManager().loadUploadSourcepath(module,tmpentity,inReq.getUser());
 			
 			Data existing = archive.query(moduleid).exact("uploadsourcepath", path).searchOne();
+			
 			if( existing == null)
 			{
 				log.info("Existing folder found. Skipping");
@@ -814,6 +864,7 @@ public class EntityModule extends BaseMediaModule
 		//Optional
 		String abspath = inReq.getRequestParameter("abspath");
 		folder.setValue("localpath",abspath);
+		folder.setValue("lastscandate", new Date());
 		folder.setValue("categorypath",entity.getValue("uploadsourcepath"));
 		folder.setValue("entityid",entity.getId());
 		archive.saveData("desktopsyncfolder",folder);

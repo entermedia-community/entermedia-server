@@ -135,7 +135,7 @@ public class DesktopModule extends BaseMediaModule
 				int found = useragent.indexOf("ComputerName/");
 				if( found > -1)
 				{
-					String computername = useragent.substring("ComputerName/".length(),useragent.length());
+					String computername = useragent.substring(found + "ComputerName/".length(), useragent.length());
 					if(computername != null) 
 					{
 						FolderManager manager = getFolderManager(inReq);
