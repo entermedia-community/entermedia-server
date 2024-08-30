@@ -194,6 +194,10 @@ public class EntityManager implements CatalogEnabled
 	}	
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
+		return loadUploadSourcepath(module, entity, inUser,true);
+	}
+	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inSave)
+	{
 		if (entity == null ) {
 			return null;
 		}
@@ -233,21 +237,23 @@ public class EntityManager implements CatalogEnabled
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
 
 			sourcepath = sourcepath.replaceAll("////", "/");
-			
-			for (int i = 0; i < 20; i++) {
-				//Already exists
-				Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
-				if( cat != null)
-				{
-					sourcepath = sourcepath + "_" + (i+2);
-				}
-				else if(i == 19)
-				{
-					throw new OpenEditException("Too many duplicate source paths");
-				}
-				else
-				{
-					break;
+			if( inSave)
+			{
+				for (int i = 0; i < 20; i++) {
+					//Already exists
+					Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
+					if( cat != null)
+					{
+						sourcepath = sourcepath + "_" + (i+2);
+					}
+					else if(i == 19)
+					{
+						throw new OpenEditException("Too many duplicate source paths");
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -258,22 +264,20 @@ public class EntityManager implements CatalogEnabled
 				LibraryCollection coll = (LibraryCollection) getMediaArchive().getData("librarycollection", entity.getId());
 				if (coll != null)
 				{
-				
-				
-				Category uploadto  = null;
-				uploadto = coll.getCategory();
-				if(uploadto != null) 
-				{
-					sourcepath = uploadto.getCategoryPath(); 
-					String year = getMediaArchive().getCatalogSettingValue("collectionuploadwithyear");
-					if( year == null || Boolean.parseBoolean(year)) //Not reindexed yet
+					Category uploadto  = null;
+					uploadto = coll.getCategory();
+					if(uploadto != null) 
 					{
-						String thisyear = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy"); 
-						sourcepath = sourcepath + "/" + thisyear;
+						sourcepath = uploadto.getCategoryPath(); 
+						String year = getMediaArchive().getCatalogSettingValue("collectionuploadwithyear");
+						if( year == null || Boolean.parseBoolean(year)) //Not reindexed yet
+						{
+							String thisyear = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy"); 
+							sourcepath = sourcepath + "/" + thisyear;
+						}
+						sourcepath = sourcepath + "/";
 					}
-					sourcepath = sourcepath + "/";
-				}
-				}
+					}
 			}
 			if( sourcepath.isEmpty())
 			{
@@ -282,7 +286,11 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		entity.setValue("uploadsourcepath",sourcepath );
-		getMediaArchive().saveData(module.getId(), entity);
+		
+		if( inSave)
+		{
+			getMediaArchive().saveData(module.getId(), entity);
+		}
 		return sourcepath;
 	}	
 
