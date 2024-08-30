@@ -787,6 +787,7 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 		inReq.putPageValue("newFolders", folders);
+		inReq.putPageValue("verifynow", true);
 		inReq.putPageValue("status", "OK");
 	}
 	
