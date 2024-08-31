@@ -618,6 +618,25 @@ public class EntityManager implements CatalogEnabled
 		}
 		return items;
 	}
+	
+	
+	
+	public Collection loadHistoryForEntity(String applicationid, User inUser, Data inModule, Data inEntity) {
+		
+		Collection history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
+		
+		if(history.isEmpty() && inEntity.get("rootcategory") != null) {
+			HitTracker hits = getMediaArchive().query("asset").named("sizecheck").exact("category", inEntity.get("rootcategory") ).search();
+			if(!hits.isEmpty()) {
+				saveAssetActivity(applicationid, inUser, inEntity, hits.collectValues("id"), "assetsadded");
+				history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
+			}
+		}
+		return history;
+
+	}
+	
+	
 
 	public void fireAssetAddedToEntity(String applicationid, User inUser, String inAssetId, Data entity)
 	{
