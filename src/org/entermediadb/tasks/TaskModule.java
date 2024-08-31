@@ -453,7 +453,6 @@ public class TaskModule extends BaseMediaModule
 			query.exact("completedby", selected);
 		}
 		
-		
 		String keyword = inReq.getRequestParameter("keyword");
 		if( keyword != null)
 		{
