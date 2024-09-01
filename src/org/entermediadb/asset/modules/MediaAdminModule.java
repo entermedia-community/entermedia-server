@@ -20,12 +20,10 @@ import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
-import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -1014,6 +1012,9 @@ public class MediaAdminModule extends BaseMediaModule
 		jsonarray = (JSONArray) parser.parse(json);
 		if ( jsonarray != null)
 		{
+			Collection tosavemenu = new ArrayList();
+
+			boolean replacemenu = false;
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
 				ValuesMap map = new ValuesMap((Map) iterator.next());
 				if("folderLabel".equals(map.get("cssClass")))
@@ -1022,19 +1023,47 @@ public class MediaAdminModule extends BaseMediaModule
 					ValuesMap  userdata  = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
 					String modulename = map.getString("text"); 
-					
-					Data found = archive.getData("module",moduleid);
-					if(found == null)
+					Data module = archive.getData("module",moduleid);
+					if(module == null)
 					{
-						found  = archive.getSearcher("module").createNewData();
-						found.setId(moduleid);
+						module  = archive.getSearcher("module").createNewData();
+						module.setId(moduleid);
 					}
-					found.setName(modulename);
-					found.setValue("isentity", true); 
-					archive.saveData("module",found);
-					inReq.putPageValue("data",found);
+					module.setName(modulename);
+					module.setValue("isentity", true); 
+					archive.saveData("module",module);
+					inReq.putPageValue("data",module);
 					saveModule(inReq);
+
+				
+					String ordering = userdata.getString("ordering"); 
+
+					if( ordering != null )
+					{
+						Data existingmenu = archive.query("appsection").exact("toplevelentity",moduleid).searchOne();
+						if( existingmenu == null)
+						{
+							existingmenu = archive.getSearcher("appsection").createNewData();
+							existingmenu.setValue("toplevelentity",moduleid);
+						}
+						existingmenu.setValue("name",module.getValue("name"));
+						int i = Integer.parseInt(ordering);
+						existingmenu.setValue("ordering",i);
+						tosavemenu.add(existingmenu);
+
+						if( i > 0)
+						{
+							replacemenu = true;
+						}
+					}
+					
+
 				}
+			}
+			if(replacemenu)
+			{
+				archive.getSearcher("appsection").deleteAll(inReq.getUser());
+				archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
 			}
 		}
 
