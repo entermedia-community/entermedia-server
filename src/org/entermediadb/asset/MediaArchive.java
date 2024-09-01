@@ -2386,6 +2386,13 @@ public class MediaArchive implements CatalogEnabled
 
 	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
 	{
+		
+		User found = getUserManager().getUserByEmail(email);
+		if( found != null)
+		{
+			return createSystemEmail(found, inTemplatePath);
+		}
+		
 		TemplateWebEmail webmail = null;
 		try
 		{
