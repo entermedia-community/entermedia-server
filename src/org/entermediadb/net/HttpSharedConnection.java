@@ -343,12 +343,13 @@ public class HttpSharedConnection
 				Header header =  (Header)iterator.next();
 				method.addHeader(header);
 			}
-
+			log.info(method);
 			resp = (CloseableHttpResponse)getSharedClient().execute(method);
 			return resp;
 		} 
 		catch (Throwable e)
 		{
+			log.info(resp);
 			release(resp);
 			throw new OpenEditException(e);
 		}

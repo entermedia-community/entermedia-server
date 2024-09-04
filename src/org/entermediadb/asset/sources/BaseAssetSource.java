@@ -370,7 +370,10 @@ public abstract class BaseAssetSource implements AssetSource
 	{
 		String sp = inAsset.getPath();
 		sp = sp.substring(getFolderPath().length() + 1);
-		String abpath = getExternalPath() + "/" + sp;
+		String abpath = sp;
+		if (getExternalPath() != null) {
+			abpath = getExternalPath() + "/" + sp;
+		}
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )
 		{
