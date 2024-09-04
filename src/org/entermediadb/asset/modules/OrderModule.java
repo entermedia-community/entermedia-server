@@ -1629,7 +1629,6 @@ public class OrderModule extends BaseMediaModule
 						}
 						if( openitems.size() >= hitsperpage)
 						{
-							log.info("Skip order items: " + openitems.size());
 							break;
 						}
 					}
@@ -1639,7 +1638,7 @@ public class OrderModule extends BaseMediaModule
 				download.getOrder().setOrderStatus("complete");
 				download.getOrder().setValue("downloadedstatus","complete");
 				archive.getOrderManager().saveOrder(archive, download.getOrder());
-				log.info("Order saved ok.");
+				log.info("Order saved: " + download.getOrder() + " - "+ download.getOrder().getOrderStatus());
 			}
 			finally
 			{
