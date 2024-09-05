@@ -1499,9 +1499,21 @@ Server ProjectModule.uploadFile
 		
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
-
-		HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(1000).exact("followeruser", userid).search(inReq);
-		Collection librarycollections = workspaces.collectValues("collectionid");
+		
+		Collection librarycollections = null;
+		
+		boolean loadAll = Boolean.parseBoolean( inReq.findValue("loadAllMessages"));
+		if(loadAll && inReq.getUserProfile().isInRole("administrator")) {
+			HitTracker workspaces = mediaArchive.query("librarycollectio").exact("library", "userscollections").hitsPerPage(100).search(inReq);
+			librarycollections = workspaces.collectValues("id");
+		}
+		else {
+			HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(1000).exact("followeruser", userid).search(inReq);
+			librarycollections = workspaces.collectValues("collectionid");
+		}
+		
+		
+		
 		if( librarycollections.isEmpty())
 		{
 			inReq.putPageValue("error", "No such user in any collection");
