@@ -63,6 +63,10 @@ public class ChatModule extends BaseMediaModule
 		String channel = inReq.findValue("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
 		
+		if(collectionid == null) {
+			collectionid = inReq.findValue("collectionid");
+		}
+		
 		Searcher topicsearcher = archive.getSearcher("collectiveproject");
 		Data currenttopic = null;
 		if(channel != null) {
