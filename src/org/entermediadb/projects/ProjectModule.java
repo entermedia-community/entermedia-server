@@ -1504,7 +1504,7 @@ Server ProjectModule.uploadFile
 		
 		boolean loadAll = Boolean.parseBoolean( inReq.findValue("loadAllMessages"));
 		if(loadAll && inReq.getUserProfile().isInRole("administrator")) {
-			HitTracker workspaces = mediaArchive.query("librarycollectio").exact("library", "userscollections").hitsPerPage(100).search(inReq);
+			HitTracker workspaces = mediaArchive.query("librarycollection").exact("library", "userscollections").hitsPerPage(100).search(inReq);
 			librarycollections = workspaces.collectValues("id");
 		}
 		else {
