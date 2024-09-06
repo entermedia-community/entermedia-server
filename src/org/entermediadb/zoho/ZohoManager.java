@@ -283,48 +283,7 @@ public class ZohoManager implements CatalogEnabled
 		return files;
 	}
 	
-	public File saveFile(String inAccessToken, Asset inAsset) throws Exception
-	{
-
-		String url =  inAsset.get("zohodownloadurl");
-		HttpRequestBase httpmethod = new HttpGet(url);
-		HttpSharedConnection connection = getConnection();
-		connection.putSharedHeader("Authorization", "Bearer " + inAccessToken);
-		CloseableHttpResponse resp = connection.sharedExecute(httpmethod);
-		try
-		{
-			if (resp.getStatusLine().getStatusCode() != 200)
-			{
-				log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
-				log.info("Zoho Server error returned " + resp.getStatusLine());
-				throw new OpenEditException("Could not save: " + inAsset.getName());
-			}
 	
-			HttpEntity entity = resp.getEntity();
-	
-			ContentItem item = getMediaArchive().getOriginalContent(inAsset);
-	
-			File output = new File(item.getAbsolutePath());
-			output.getParentFile().mkdirs();
-			log.info("Zoho Manager Downloading " + item.getPath());
-			filler.fill(entity.getContent(), new FileOutputStream(output), false);
-		
-			// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
-			// inAsset);
-			// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
-			//inAsset.setProperty("importstatus", "needsmetadata");
-			//getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
-			//inAsset.setProperty("previewstatus", "converting");
-			getMediaArchive().saveAsset(inAsset);
-			//getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-			return output;
-		}
-		finally
-		{
-			connection.release(resp);
-		}
-
-	}
 
 	
 	//TODO: Validate this token before running any API. Cache results
@@ -486,7 +445,7 @@ public class ZohoManager implements CatalogEnabled
 				}
 			}
 
-			if (onepage.size() == 100)
+			if (onepage.size() == 30)
 			{
 				createAssetsIfNeeded(inAccessToken, onepage, category, savenow);
 				onepage.clear();
@@ -590,6 +549,63 @@ public class ZohoManager implements CatalogEnabled
 						return;
 					}
 				}
+			}
+		}
+		
+		//retry Download Errors
+		HitTracker existingerror = getMediaArchive().getAssetSearcher().query().orgroup("importstatus", "error imported").orgroup("zohoid", inOnepage.keySet()).search();
+		if(!existingerror.isEmpty()) {
+			log.info("Eror or Pending found: " + existingerror.size());
+			for (Iterator iterator = existingerror.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
+				log.info("Retring Download: " + existing);
+				saveFile(inAccessToken, existing);
+			}
+		}
+	}
+	
+	public void saveFile(String inAccessToken, Asset inAsset) throws Exception
+	{
+
+		String url =  inAsset.get("zohodownloadurl");
+		if(url != null) {
+			HttpRequestBase httpmethod = new HttpGet(url);
+			HttpSharedConnection connection = getConnection();
+			connection.putSharedHeader("Authorization", "Bearer " + inAccessToken);
+			CloseableHttpResponse resp = connection.sharedExecute(httpmethod);
+			try
+			{
+				if (resp.getStatusLine().getStatusCode() != 200)
+				{
+					log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
+					log.info("Zoho Server error returned " + resp.getStatusLine());
+					throw new OpenEditException("Could not save: " + inAsset.getName());
+				}
+		
+				HttpEntity entity = resp.getEntity();
+		
+				ContentItem item = getMediaArchive().getOriginalContent(inAsset);
+		
+				File output = new File(item.getAbsolutePath());
+				output.getParentFile().mkdirs();
+				log.info("Zoho Manager Downloading " + item.getPath());
+				filler.fill(entity.getContent(), new FileOutputStream(output), false);
+			
+				// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
+				// inAsset);
+				// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
+				inAsset.setProperty("importstatus", "needsmetadata");
+				//getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
+				//inAsset.setProperty("previewstatus", "converting");
+				getMediaArchive().saveAsset(inAsset);
+				//getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
+				return;
+			}
+			finally
+			{
+				connection.release(resp);
 			}
 		}
 	}

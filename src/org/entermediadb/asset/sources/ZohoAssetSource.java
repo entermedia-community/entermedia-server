@@ -52,10 +52,10 @@ public class ZohoAssetSource extends BaseAssetSource
 	
 	
 	
-	protected File download(Asset inAsset, File file)
+	protected void download(Asset inAsset, File file)
 	{
 		try {
-			return getZohoManager().saveFile(getAccessToken(), inAsset);
+			getZohoManager().saveFile(getAccessToken(), inAsset);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
