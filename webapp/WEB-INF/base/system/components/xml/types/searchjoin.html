@@ -14,7 +14,7 @@ $context.putPageValue("detail",$newdetail)
 #set ($viewtype = $newdetail.viewType)
 #if( $data)
 	#if( $detail.render )
-		#set($val = $searcherManager.getValue($newdetail.getListCatalogId(), $detail.render, $data.properties))
+		#set($val = $searcherManager.getValue($newdetail.getListCatalogId(), $detail.render, $data.properties, $context.getLocale()))
 	#else
 		#set($val = $data.name)
 	#end

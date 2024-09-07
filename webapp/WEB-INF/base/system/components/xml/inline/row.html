@@ -23,7 +23,7 @@
 	#end
 	
 	#if( !$value && $detail.render )	
-		#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties) ) 
+		#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties, $context.getLocale()) ) 
 	#end	
 	
 	$!context.putPageValue("detail",$detail)

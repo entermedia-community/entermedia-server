@@ -84,7 +84,7 @@ public void init(){
 				//Join?
 				//#set($label = $searcherManager.getValue($catalogid, $detail.render, $type.properties))
 				if(detail.render){
-					value = searcherManager.getValue(catalogid, detail.render, tracker.properties);
+					value = searcherManager.getValue(catalogid, detail.render, tracker.properties,$context.getLocale());
 				} else{
 
 					Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);

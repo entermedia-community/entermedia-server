@@ -26,7 +26,7 @@ $pages.include("./pages.html", $context)
 				<td style="padding:4px;" >
 					#set( $val = "$!hit.get($detail.id)" )
 					#if($detail.render)
-						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties,$context.getLocale()))
 					#end
 					$context.putPageValue("detail",$detail)
 					$context.putPageValue("val",$val)

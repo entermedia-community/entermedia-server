@@ -120,7 +120,7 @@ $context.putPageValue("viewpostfix",".html")
 					<td style="padding:4px;">
 						#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
 						#if($detail.render)
-							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties, $context.getLocale() ))
 						#end
 						$context.putPageValue("detail",$detail)
 						$context.putPageValue("val",$val)
