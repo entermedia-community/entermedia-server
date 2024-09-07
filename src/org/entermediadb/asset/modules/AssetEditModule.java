@@ -2179,9 +2179,9 @@ public class AssetEditModule extends BaseMediaModule
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
 			
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);
-			archive.fireSharedMediaEvent("importing/assetscreated");  //TODO: is duplcicated with previous?
+			archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
 			
-			archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
+			//archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
 			
 
 			if (currentcollection != null)
