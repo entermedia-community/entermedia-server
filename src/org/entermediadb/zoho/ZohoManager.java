@@ -456,7 +456,7 @@ public class ZohoManager implements CatalogEnabled
 		return assetcount;
 	}
 
-	private void createAssetsIfNeeded(String inAccessToken, Map inOnepage, Category category, boolean savenow) throws Exception
+	private void createAssetsIfNeeded(String inAccessToken, Map<String, JSONObject> inOnepage, Category category, boolean savenow) throws Exception
 	{
 		if (inOnepage.isEmpty())
 		{
@@ -464,6 +464,7 @@ public class ZohoManager implements CatalogEnabled
 			return;
 		}
 		Collection tosave = new ArrayList();
+		Map existingAssets = new  HashMap();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("zohoid", inOnepage.keySet()).search();
 		log.info("checking " + existingassets.size() + " assets ");
@@ -473,6 +474,10 @@ public class ZohoManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// Remove existing assets
+			existingAssets.put(existing.get("zohoid"), existing);
+			if(existing.get("importstatus").equals("error") ) {
+				continue;
+			}
 			inOnepage.remove(existing.get("zohoid"));
 			// existing.clearCategories();
 			if (!existing.isInCategory(category))
@@ -502,7 +507,11 @@ public class ZohoManager implements CatalogEnabled
 
 			// log.info(object.get("kind"));// "kind": "drive#file",
 			// String md5 = object.get("md5Checksum").getAsString();
-			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			Asset newasset = (Asset)existingAssets.get(id);
+			if( newasset == null)
+			{
+				newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			}
 			String filename = (String)object.get("name");
 			filename = filename.trim();
 			// JsonElement webcontentelem = object.get("webContentLink");
@@ -512,7 +521,7 @@ public class ZohoManager implements CatalogEnabled
 			newasset.setValue("zohoid", id);
 			newasset.setValue("assetaddeddate", new Date());
 			//newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
-			newasset.setValue("importstatus", "needsmetadata");
+			newasset.setValue("importstatus", "uploading");
 			String downloadurl = (String)object.get("download_url");
 			if (downloadurl != null)
 			{
@@ -527,30 +536,25 @@ public class ZohoManager implements CatalogEnabled
 			{
 				newasset.setValue("linkurl", weblink);
 			}
-
-
 			// inArchive.getAssetSearcher().saveData(newasset);
 			tosave.add(newasset);
 		}
 		if (!tosave.isEmpty())
 		{
-
-			getMediaArchive().saveAssets(tosave);
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				saveFile(inAccessToken, asset);
+			}
 
 			log.info("Saving new assets " + tosave.size());
-			if (savenow)
-			{
-				for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
-				{
-					Asset asset = (Asset) iterator.next();
-					saveFile(inAccessToken, asset);
-					if( true)
-					{
-						return;
-					}
-				}
-			}
+			getMediaArchive().saveAssets(tosave);
+			//getMediaArchive().fireMediaEvent("importing/importassets", null, tosave); // Will launch events for "importstatus=created" assets
+			getMediaArchive().fireSharedMediaEvent("importing/assetscreated"); 
 		}
+		
+		
+		/*
 		
 		//retry Download Errors
 		HitTracker existingerror = getMediaArchive().getAssetSearcher().query().orgroup("importstatus", "error imported").orgroup("zohoid", inOnepage.keySet()).search();
@@ -564,6 +568,7 @@ public class ZohoManager implements CatalogEnabled
 				saveFile(inAccessToken, existing);
 			}
 		}
+		*/
 	}
 	
 	public void saveFile(String inAccessToken, Asset inAsset) throws Exception
@@ -581,7 +586,9 @@ public class ZohoManager implements CatalogEnabled
 				{
 					log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
 					log.info("Zoho Server error returned " + resp.getStatusLine());
-					throw new OpenEditException("Could not save: " + inAsset.getName());
+					inAsset.setProperty("importstatus", "error");
+					return;
+					//throw new OpenEditException("Could not save: " + inAsset.getName());
 				}
 		
 				HttpEntity entity = resp.getEntity();
@@ -596,12 +603,11 @@ public class ZohoManager implements CatalogEnabled
 				// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
 				// inAsset);
 				// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
-				inAsset.setProperty("importstatus", "needsmetadata");
+				inAsset.setProperty("importstatus", "created");
 				//getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
 				//inAsset.setProperty("previewstatus", "converting");
-				getMediaArchive().saveAsset(inAsset);
+				//getMediaArchive().saveAsset(inAsset);
 				//getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-				return;
 			}
 			finally
 			{
