@@ -609,6 +609,9 @@ public class EntityModule extends BaseMediaModule
 		String[] ids = inReq.getRequestParameters("id");
 		
 		String timestampStr = inReq.getRequestParameter("timestamp");
+		String updatelastscandate = inReq.getRequestParameter("updatelastscandate");
+		
+		
 		Date timestamp = DateStorageUtil.getStorageUtil().parseFromStorage(timestampStr);
 		
 		String status = inReq.getRequestParameter("desktopimportstatus");
@@ -626,18 +629,14 @@ public class EntityModule extends BaseMediaModule
 			if(desktopimportstatus != null) {
 				isSame = desktopimportstatus.equals(status);
 			}
-			
-			Date lastscandate = (Date) folder.getValue("lastscandate");
-			Boolean isLatest = true;
-			if(lastscandate != null) {				 
-				isLatest = DateStorageUtil.getStorageUtil().newerThan(timestamp, lastscandate);
-			}
-			 
-			if(isLatest && !isSame) {
-				folder.setValue("lastscandate", timestamp);
+			if(!isSame) {
 				folder.setValue("desktopimportstatus", status);
 			} else {
 				status = desktopimportstatus;
+			}
+			
+			if(updatelastscandate == "true") {
+				folder.setValue("lastscandate", timestamp);
 			}
  
 			tosave.add(folder);
