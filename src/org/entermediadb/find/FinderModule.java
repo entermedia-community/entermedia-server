@@ -1120,7 +1120,7 @@ public class FinderModule extends BaseMediaModule
 	
 	
 	
-	public void enablePublishing(WebPageRequest inReq) 
+	public void enablePublishingGallery(WebPageRequest inReq) 
 	{
 		String entityid =  inReq.getRequestParameter("entityid");
 		String moduleid = inReq.getRequestParameter("moduleid");
@@ -1133,7 +1133,26 @@ public class FinderModule extends BaseMediaModule
 			Data entity = (Data) searcher.searchByField("id", entityid);
 			if(entity != null)
 			{
-				entity.setProperty("enablepublishing", "true");
+				entity.setProperty("enablepublishinggallery", "true");
+				searcher.saveData(entity);
+			}
+		}
+	}
+	
+	public void enablePublishingCarousel(WebPageRequest inReq) 
+	{
+		String entityid =  inReq.getRequestParameter("entityid");
+		String moduleid = inReq.getRequestParameter("moduleid");
+		MediaArchive archive = getMediaArchive(inReq);
+		//Data module = archive.getCachedData("module", moduleid);
+		
+		Searcher searcher = archive.getSearcher(moduleid);
+		if(searcher != null) {
+		
+			Data entity = (Data) searcher.searchByField("id", entityid);
+			if(entity != null)
+			{
+				entity.setProperty("enablepublishingcarousel", "true");
 				searcher.saveData(entity);
 			}
 		}
@@ -1174,9 +1193,9 @@ public class FinderModule extends BaseMediaModule
 				if(Boolean.parseBoolean(publishing.get("enabled")))
 				{
 					entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-					if( !entity.getBoolean("enablepublishing"))
+					if( !entity.getBoolean("enablepublishinggallery"))
 					{
-						entity.setValue("enablepublishing",true);
+						entity.setValue("enablepublishinggallery",true);
 						archive.saveData(publishing.get("moduleid"),entity);
 					}
 				}
@@ -1185,9 +1204,9 @@ public class FinderModule extends BaseMediaModule
 					if(!Boolean.parseBoolean(publishing.get("enabled")))
 					{
 						entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-						if( entity.getBoolean("enablepublishing"))
+						if( entity.getBoolean("enablepublishinggallery"))
 						{
-							entity.setValue("enablepublishing",false);
+							entity.setValue("enablepublishinggallery",false);
 							archive.saveData(publishing.get("moduleid"),entity);
 						}
 					}
