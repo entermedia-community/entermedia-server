@@ -62,7 +62,10 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
-		
+		String sortby = inReq.findActionValue("sortorder");
+		if(sortby == null) {
+			sortby = "dateDown";
+		}
 		Searcher topicsearcher = archive.getSearcher("collectiveproject");
 		Data currenttopic = null;
 		if(channel != null) {
@@ -82,7 +85,12 @@ public class ChatModule extends BaseMediaModule
 
 
 		QueryBuilder builder = archive.query("chatterbox");
-		builder.named("messagesthitracker").exact("channel", currenttopic.getId()).sort("dateDown");
+		
+		if(collectionid != null) {
+			builder.named("messagesthitracker").exact("channel", currenttopic.getId()).sort(sortby);
+		} else {
+			builder.named("messagesthitracker").exact("channel", channel).sort(sortby);
+		}
 		
 		UserProfile prof = inReq.getUserProfile();
 		if( prof != null)
