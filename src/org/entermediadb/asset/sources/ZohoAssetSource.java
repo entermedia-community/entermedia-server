@@ -63,7 +63,8 @@ public class ZohoAssetSource extends BaseAssetSource
 
 	protected void upload(Asset inAsset, File file)
 	{
-		getZohoManager().uploadToDrive(getAccessToken(), inAsset, file);
+		//Handles Uploading assets to Zoho
+		//getZohoManager().uploadToDrive(getAccessToken(), inAsset, file);
 	}
 
 	
