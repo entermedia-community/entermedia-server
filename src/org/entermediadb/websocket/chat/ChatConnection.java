@@ -322,9 +322,13 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
          Map<String, String> map = new HashMap<String, String>();  
          for (String param : params)  
          {  
-             String name = param.split("=")[0];  
-             String value = param.split("=")[1];  
-             map.put(name, value);  
+        	 String[] param_ = param.split("=");
+        	 if(param_.length == 2) {
+	             String name = param_[0];  
+	             String value = param_[1];
+	             map.put(name, value);
+        	 }
+               
          }  
          return map;  
     }

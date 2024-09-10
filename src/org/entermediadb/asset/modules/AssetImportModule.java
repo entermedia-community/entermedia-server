@@ -15,18 +15,15 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.desktops.Desktop;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 
 import model.assets.AssetTypeManager;
@@ -47,6 +44,10 @@ public class AssetImportModule  extends BaseMediaModule
 		//Search for these new assets
 		Searcher asssetsearcher = archive.getAssetSearcher();
 		//Search for created 
+		
+		//TODO: Take out a lock? Event should be locked
+		//archive.getLockManager().loadLock("AssetImportModule.assetsCreated");
+		
 		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
 		Collection<Asset> assets = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {

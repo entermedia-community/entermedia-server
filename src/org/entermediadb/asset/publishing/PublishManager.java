@@ -94,9 +94,10 @@ public class PublishManager implements CatalogEnabled {
 		//query.addNot("remotepublish","true");
 		
 		HitTracker<Data> publishtasks = queuesearcher.search(query);
-		log.info("publishing " + publishtasks.size() + " assets" + queuesearcher.getCatalogId());
+		
 		if( publishtasks.size() > 0)
 		{
+			log.info("publishing " + publishtasks.size() + " assets" + queuesearcher.getCatalogId());
 			for (Iterator iterator = publishtasks.iterator(); iterator.hasNext();)
 			{
 				Data result = (Data) iterator.next();

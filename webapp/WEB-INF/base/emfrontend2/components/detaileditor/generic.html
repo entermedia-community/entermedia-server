@@ -186,7 +186,7 @@ $context.putPageValue("searchtype", $searchtype)
 			#set( $value = false)
 			
 			#if( $searcherManager )
-				#set( $value = $searcherManager.getValue($data,$detail) )	
+				#set( $value = $searcherManager.getValue($data,$detail,$context.getLocale()) )	
 			#else
 				#set( $value = $data.get($detail.getId()))
 			#end

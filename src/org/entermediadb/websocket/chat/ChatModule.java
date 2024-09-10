@@ -62,10 +62,18 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
+
 		String sortby = inReq.findActionValue("sortorder");
 		if(sortby == null) {
 			sortby = "dateDown";
 		}
+
+		
+		if(collectionid == null) {
+			collectionid = inReq.findValue("collectionid");
+		}
+		
+
 		Searcher topicsearcher = archive.getSearcher("collectiveproject");
 		Data currenttopic = null;
 		if(channel != null) {

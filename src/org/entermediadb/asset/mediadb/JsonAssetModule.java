@@ -308,9 +308,6 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset.addCategory(cat);
 		}
 		
-		
-		
-		
 		importer.saveAsset(archive, inReq.getUser(), asset);
 
 		// JSONObject result = getAssetJson(sm, searcher, asset);
@@ -320,6 +317,8 @@ public class JsonAssetModule extends BaseJsonModule {
 		inReq.putPageValue("data", asset);
 		// inReq.putPageValue("json", jsondata);
 		// return result;
+		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
+
 
 	}
 

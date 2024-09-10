@@ -67,7 +67,7 @@
 				#set($val = false)	
 				#set( $val =  $asset.get($detail.id) )
 		      	#if( !$val && $detail.render )	
-					#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+					#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties,$context.getLocale()) ) 
 				#end	
 				#if( !$val )
 					#set($val = "")	

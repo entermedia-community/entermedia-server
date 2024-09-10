@@ -1568,6 +1568,7 @@ public class OrderModule extends BaseMediaModule
 		{
 			hitsperpage = Integer.parseInt(inReq.getRequestParameter("hitsperpage"));
 		}
+		
 		Collection openitems = new ArrayList();
 		Collection openorders = new ArrayList();
 		Collection zipdownloads = new ArrayList();
@@ -1581,13 +1582,14 @@ public class OrderModule extends BaseMediaModule
 		for (Iterator iterator = orders.iterator(); iterator.hasNext();)
 		{
 			OrderDownload download = (OrderDownload) iterator.next();
-
-			if("canceled".equals( download.getOrder().getOrderStatus()  ) ) 
+			
+			
+			if("canceled".equals( download.getOrder().getOrderStatus()  )) 
 			{
 				continue; //skip complete orders
 			}
 			
-			if("complete".equals( download.getOrder().get("downloadedstatus") ) )
+			if("complete".equals( download.getOrder().getOrderStatus() ))
 			{
 				continue; //skip complete orders
 			}
@@ -1604,10 +1606,12 @@ public class OrderModule extends BaseMediaModule
 			try
 			{
 				
-				if(download.getItemCount() > 3 && download.allReadyForDownload() )
+				if(download.getItemCount() > 3 )
 				{
-					//Add an order to the queue
-					zipdownloads.add(download);
+					if (download.allReadyForDownload()) {
+						//Add an order to the queue
+						zipdownloads.add(download);
+					}
 				}	
 				else
 				{
@@ -1634,7 +1638,7 @@ public class OrderModule extends BaseMediaModule
 				download.getOrder().setOrderStatus("complete");
 				download.getOrder().setValue("downloadedstatus","complete");
 				archive.getOrderManager().saveOrder(archive, download.getOrder());
-				
+				log.info("Order saved: " + download.getOrder() + " - "+ download.getOrder().getOrderStatus());
 			}
 			finally
 			{

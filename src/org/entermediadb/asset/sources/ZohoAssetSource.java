@@ -52,10 +52,10 @@ public class ZohoAssetSource extends BaseAssetSource
 	
 	
 	
-	protected File download(Asset inAsset, File file)
+	protected void download(Asset inAsset, File file)
 	{
 		try {
-			return getZohoManager().saveFile(getAccessToken(), inAsset);
+			getZohoManager().saveFile(getAccessToken(), inAsset);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
@@ -76,9 +76,6 @@ public class ZohoAssetSource extends BaseAssetSource
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
 		
-		
-		
-		
 		File file = getFile(inAsset);
 		FileItem item = new FileItem(file);
 		
@@ -97,7 +94,7 @@ public class ZohoAssetSource extends BaseAssetSource
 			long size = inAsset.getLong("filesize");
 			if( item.getLength() != size)
 			{
-				download(inAsset, file);
+				//download(inAsset, file);
 			}
 		}
 		
@@ -192,12 +189,13 @@ public class ZohoAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
-		String subfolder = getConfig().get("subfolder");
-		if(subfolder == null) {
-			subfolder = getName();
+		String portalid = getConfig().get("portalid");
+		if(portalid == null) {
+			log.info("Missing portalid in HotFolder Configuration");
+			return 0;
 		}
-		Results r= getZohoManager().syncAssets(getAccessToken(), subfolder, true);
-		return r.getFiles().size();
+		return getZohoManager().syncAssets(getAccessToken(), portalid, true);
+
 	}
 
 		
@@ -234,6 +232,11 @@ public class ZohoAssetSource extends BaseAssetSource
 		return dest;
 	}
 
+	
+	
+	public void getProjects() {
+		
+	}
 
-
+	
 }
