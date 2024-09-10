@@ -456,7 +456,7 @@ public class ZohoManager implements CatalogEnabled
 		return assetcount;
 	}
 
-	private void createAssetsIfNeeded(String inAccessToken, Map inOnepage, Category category, boolean savenow) throws Exception
+	private void createAssetsIfNeeded(String inAccessToken, Map<String, JSONObject> inOnepage, Category category, boolean savenow) throws Exception
 	{
 		if (inOnepage.isEmpty())
 		{
@@ -464,6 +464,7 @@ public class ZohoManager implements CatalogEnabled
 			return;
 		}
 		Collection tosave = new ArrayList();
+		Map existingAssets = new  HashMap();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("zohoid", inOnepage.keySet()).search();
 		log.info("checking " + existingassets.size() + " assets ");
@@ -473,6 +474,10 @@ public class ZohoManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// Remove existing assets
+			existingAssets.put(existing.get("zohoid"), existing);
+			if(existing.get("importstatus").equals("error") ) {
+				continue;
+			}
 			inOnepage.remove(existing.get("zohoid"));
 			// existing.clearCategories();
 			if (!existing.isInCategory(category))
@@ -502,7 +507,11 @@ public class ZohoManager implements CatalogEnabled
 
 			// log.info(object.get("kind"));// "kind": "drive#file",
 			// String md5 = object.get("md5Checksum").getAsString();
-			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			Asset newasset = (Asset)existingAssets.get(id);
+			if( newasset == null)
+			{
+				newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			}
 			String filename = (String)object.get("name");
 			filename = filename.trim();
 			// JsonElement webcontentelem = object.get("webContentLink");
@@ -512,7 +521,7 @@ public class ZohoManager implements CatalogEnabled
 			newasset.setValue("zohoid", id);
 			newasset.setValue("assetaddeddate", new Date());
 			//newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
-			newasset.setValue("importstatus", "needsmetadata");
+			newasset.setValue("importstatus", "uploading");
 			String downloadurl = (String)object.get("download_url");
 			if (downloadurl != null)
 			{
@@ -527,30 +536,25 @@ public class ZohoManager implements CatalogEnabled
 			{
 				newasset.setValue("linkurl", weblink);
 			}
-
-
 			// inArchive.getAssetSearcher().saveData(newasset);
 			tosave.add(newasset);
 		}
 		if (!tosave.isEmpty())
 		{
-
-			getMediaArchive().saveAssets(tosave);
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				saveFile(inAccessToken, asset);
+			}
 
 			log.info("Saving new assets " + tosave.size());
-			if (savenow)
-			{
-				for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
-				{
-					Asset asset = (Asset) iterator.next();
-					saveFile(inAccessToken, asset);
-					if( true)
-					{
-						return;
-					}
-				}
-			}
+			getMediaArchive().saveAssets(tosave);
+			//getMediaArchive().fireMediaEvent("importing/importassets", null, tosave); // Will launch events for "importstatus=created" assets
+			getMediaArchive().fireSharedMediaEvent("importing/assetscreated"); 
 		}
+		
+		
+		/*
 		
 		//retry Download Errors
 		HitTracker existingerror = getMediaArchive().getAssetSearcher().query().orgroup("importstatus", "error imported").orgroup("zohoid", inOnepage.keySet()).search();
@@ -564,6 +568,7 @@ public class ZohoManager implements CatalogEnabled
 				saveFile(inAccessToken, existing);
 			}
 		}
+		*/
 	}
 	
 	public void saveFile(String inAccessToken, Asset inAsset) throws Exception
@@ -581,7 +586,9 @@ public class ZohoManager implements CatalogEnabled
 				{
 					log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
 					log.info("Zoho Server error returned " + resp.getStatusLine());
-					throw new OpenEditException("Could not save: " + inAsset.getName());
+					inAsset.setProperty("importstatus", "error");
+					return;
+					//throw new OpenEditException("Could not save: " + inAsset.getName());
 				}
 		
 				HttpEntity entity = resp.getEntity();
@@ -596,12 +603,11 @@ public class ZohoManager implements CatalogEnabled
 				// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
 				// inAsset);
 				// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
-				inAsset.setProperty("importstatus", "needsmetadata");
+				inAsset.setProperty("importstatus", "created");
 				//getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
 				//inAsset.setProperty("previewstatus", "converting");
-				getMediaArchive().saveAsset(inAsset);
+				//getMediaArchive().saveAsset(inAsset);
 				//getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-				return;
 			}
 			finally
 			{
@@ -722,172 +728,6 @@ public class ZohoManager implements CatalogEnabled
 
 	}
 
-	public JSONObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, JSONObject inMetadata) throws Exception
-	{
-		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload
-
-		String filename = URLUtilities.encode((String)inMetadata.get("name"));
-		String geturl = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/" + filename;
-
-		File file = new File(inItem.getAbsolutePath());
-
-		if (!file.exists())
-		{
-			throw new OpenEditException("Input file missing " + file.getPath());
-		}
-		
-		String accesstoken = getAccessToken(inAuthInfo);
-		
-		Map headers = new HashMap(1);
-		headers.put("authorization", "Bearer " + accesstoken);
-
-		JSONObject json = getConnection().getJson(geturl,headers);
-		if( json != null)
-		{
-			//chek the size of the file
-			Object existingsize = json.get("size");
-			if( existingsize == null)
-			{
-				
-			}
-			if (file.length() == Long.parseLong( existingsize.toString() ) )
-			{
-				return json;
-			}
-		}
-
-		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
-		//TODO: Use HttpRequestBuilder.addPart()
-		HttpPost method = new HttpPost(url);
-		method.addHeader("authorization", "Bearer " + accesstoken);
-
-		HttpRequestBuilder builder = new HttpRequestBuilder();
-
-		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-		builder.addPart("metadata", inMetadata.toJSONString(), "application/json"); //What should this be called?
-
-		builder.addPart("file", file);
-		//long size = inMetadata.getBytes().length + file.getTotalSpace();
-
-		//method.setHeader("Content-Length",String.valueOf(size));
-
-		method.setEntity(builder.build());
-		String contenttype = method.getEntity().getContentType().getValue();
-		String boundary = contenttype.substring(contenttype.indexOf("boundary=") + 9, contenttype.length());
-		method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
-
-		CloseableHttpResponse resp = getConnection().sharedPost(method);
-		JSONObject json2 = getConnection().parseJson(resp);
-		return json2;
-
-	}
-
-	/**
-	 * @deprecated
-	 * @param bucket
-	 * @return
-	 * @throws Exception
-	 */
-	
-	public JSONObject listFiles(String bucket) throws Exception
-	{
-		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
-		String url = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/";
-		//TODO: Use HttpRequestBuilder.addPart()
-
-		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-
-		String accesstoken = getAccessToken(getMediaArchive().getData("oauthprovider", "google")); //TODO: Cache this?
-		
-		Map headers = new HashMap(1);
-		headers.put("authorization", "Bearer " + accesstoken);
-		
-		JSONObject json = getConnection().getJson(url, headers);
-		return json;
-		//This needs to loop over to get more than 1000 results
-	}
-
-	public void saveCloudFile(Data authinfo, String inUrl, ContentItem inItem) throws Exception
-	{
-
-		// GET
-		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
-		// Authorization: Bearer <ACCESS_TOKEN>
-
-		HttpRequestBase httpmethod = new HttpGet(inUrl);
-		String accesstoken = getAccessToken(authinfo);
-		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(httpmethod);
-
-		if (resp.getStatusLine().getStatusCode() != 200)
-		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
-		}
-
-		try
-		{
-			HttpEntity entity = resp.getEntity();
-	
-			File output = new File(inItem.getAbsolutePath());
-			output.getParentFile().mkdirs();
-			log.info("Google Manager Downloading " + inItem.getPath());
-			filler.fill(entity.getContent(), new FileOutputStream(output), true);
-		}
-		finally
-		{
-			getConnection().release(resp);
-		}
-		// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
-		// inAsset);
-
-		// if( assettype != null && assettype.equals("embedded") )
-		// {
-		// current.setValue("assettype","embedded");
-		// }
-
-	}
-
-	public void uploadToDrive(String inAccessToken, Asset inAsset, File file)
-	{
-		//	POST https://www.googleapis.com/upload/drive/v3/files?uploadType=media
-
-		String geturl = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
-
-		try
-		{
-			HttpMimeBuilder builder = new HttpMimeBuilder();
-
-			HttpPost method = new HttpPost(geturl);
-			method.addHeader("authorization", "Bearer " + inAccessToken);
-
-			//HttpResponse getresp = httpclient.execute(method);
-			JSONObject object = new JSONObject();
-			object.put("name", inAsset.getName());
-			String metadata = object.toString();
-			//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-			builder.addPart("file", metadata, "application/json"); //What should this be called?
-		//	builder.addPart("file", "", "imagetype/jpeg");
-			Charset UTF8 = Charset.forName("UTF-8");
-
-			builder.addPart("file", file, ContentType.create("image/jpeg",UTF8));
-
-			method.setEntity(builder.build());
-			String contenttype = method.getEntity().getContentType().getValue();
-			String boundary = contenttype.substring(contenttype.indexOf("boundary=") + 9, contenttype.length());
-			method.setHeader("Content-Type", "multipart/related; boundary=" + boundary);
-
-			CloseableHttpResponse resp = getConnection().sharedExecute(method);
-			JSONObject json = getConnection().parseJson(resp);
-			
-			//ok?
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-
-	}
 
 	public ExecutorManager getExecutorManager()
 	{
