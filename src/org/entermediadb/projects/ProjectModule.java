@@ -171,6 +171,10 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("selectedlibrary", selected);
 
 	}
+	
+	public void listConnectedDesktops(WebPageRequest inReq) throws Exception {
+		//NOOP
+	}
 
 	public void setCurrentLibrary(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
