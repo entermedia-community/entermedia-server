@@ -57,7 +57,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		padding-top: 16px;
 	}
-	.__carousel-container {
+	._gridgallery-container {
 		flex: 1;
 		overflow: hidden;
 	}
@@ -71,47 +71,47 @@
 		border-top: 0.5px solid rgba(255, 255, 255, 0.1);
 		background-color: #fff;
 	}
-	#__carousel {
+	#_gridgallery {
 		height: calc(100% - 60px);
 	}
 	@media screen and (max-width: 600px) {
-		#__carousel {
+		#_gridgallery {
 			height: calc(100% - 44px);
 		}
 	}
-	#__carousel .splide__track {
+	#_gridgallery .splide__track {
 		height: 100%;
 	}
-	#__carousel .splide__slide {
+	#_gridgallery .splide__slide {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 8px 0;
 		overflow: hidden;
 	}
-	#__carousel .splide__slide img {
+	#_gridgallery .splide__slide img {
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
 		filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 	}
-	#__carousel-thumbnails .splide__slide img {
+	#_gridgallery-thumbnails .splide__slide img {
 		width: 100%; 
 		height: 100%;
 		object-fit: cover;
 	}
-	#__carousel-thumbnails .splide__slide {
+	#_gridgallery-thumbnails .splide__slide {
 		opacity: 0.95;
 	}
-	#__carousel-thumbnails .splide__slide.is-active {
+	#_gridgallery-thumbnails .splide__slide.is-active {
 		opacity: 1;
 		border: 2px solid lime;
 		box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5) inset;
 	}
-	#__carousel-thumbnails.splide:not(.is-overflow) .splide__list {
+	#_gridgallery-thumbnails.splide:not(.is-overflow) .splide__list {
 		justify-content: center;
 }
-	#__carousel .splide__arrow {
+	#_gridgallery .splide__arrow {
 		color: #fff; 
 		width: 7em;
 		height: 3.5em;
@@ -120,19 +120,19 @@
 		border-radius: 0;
 		background-color: transparent;
 	} 
-	#__carousel .splide__arrow--next {
+	#_gridgallery .splide__arrow--next {
 		padding-left: 0;
 		right: 0;
 		cursor: e-resize;
 	}
-	#__carousel .splide__arrow--prev {
+	#_gridgallery .splide__arrow--prev {
 		left: 0;
 		bottom: 0;
 		margin-top: 30px;
 		height: calc(100% - 60px);
 		cursor: w-resize;
 	}
-	#__carousel .splide__arrow svg {
+	#_gridgallery .splide__arrow svg {
 		fill: var(--text-color);
 		stroke: var(--text-color);
 		stroke-width: 1;
@@ -168,10 +168,10 @@
 		opacity: 0;
 		transform: translateX(-50%) translateY(100%);
 	}
-	#__carousel .splide__arrow--prev .__arrow-btn {
+	#_gridgallery .splide__arrow--prev .__arrow-btn {
 		transform: translateY(-30px);
 	}
-	#__carousel .__download-img {
+	#_gridgallery .__download-img {
 		position: absolute;
 		top: 16px;
 		left: 16px;
@@ -188,7 +188,7 @@
 		transition: opacity 0.5s;
 		z-index: 100;
 	}
-	#__carousel .splide__slide:hover .__download-img {
+	#_gridgallery .splide__slide:hover .__download-img {
 		opacity: 1;
 	}
 </style>
@@ -222,39 +222,16 @@
 		
 	$context.putPageValue("entitydialogid", "entitypublishing")
 
-	<div class="__carousel-container">
-		$pages.include("/$mediadbappid/services/publishingdestination/template1/results.html", $context)
+	<div class="_gridgallery-container">
+		$pages.include("/$mediadbappid/services/publishingdestination/stackedmedia/results.html", $context)
 	</div>
 	
 	#if($publishing.footer_enabled=="true" && $publishing.footer)
 		<div class="__footer">$publishing.footer</div>
 	#end
 </div>
-<script type="text/javascript" src="$!siteroot$applink/components/splide/splide.min.js"></script>
+<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
+<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brick.js"></script>
 <script type="text/javascript">
-		var __main = new Splide("#__carousel", {
-			rewind: true,
-			pagination: false,
-			lazyLoad: "nearby",
-			keyboard: 'global',
-			autoplay: $publishing.autoplay_enabled,
-		});
-		var __thumbnail = new Splide("#__carousel-thumbnails", {
-			fixedWidth: 95,
-			fixedHeight: 60,
-			gap: 10,
-			rewind: true,
-			pagination: false,
-			isNavigation: true,
-			arrows: false,
-			breakpoints: {
-				600: {
-					fixedWidth: 60,
-					fixedHeight: 44,
-				},
-			},
-		});
-		__main.sync(__thumbnail);
-		__main.mount();
-		__thumbnail.mount();
+		
 </script>
