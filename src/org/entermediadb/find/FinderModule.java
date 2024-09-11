@@ -1229,7 +1229,7 @@ public class FinderModule extends BaseMediaModule
 			String entityid =  inReq.getRequestParameter("entityid");
 			if( entityid != null)
 			{
-				Searcher searcher = archive.getSearcher("distributioncarousel");
+				Searcher searcher = archive.getSearcher("distribution");
 				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
 				if(publishing != null)
 				{
@@ -1243,7 +1243,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		if(publishingid != null)
 		{
-			Data publishing = (Data) archive.getData("distributioncarousel",publishingid);
+			Data publishing = (Data) archive.getData("distribution",publishingid);
 			if(publishing != null)
 			{
 				inReq.putPageValue("publishing", publishing);
