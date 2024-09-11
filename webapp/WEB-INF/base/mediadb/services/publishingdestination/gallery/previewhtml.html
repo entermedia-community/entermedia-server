@@ -1,0 +1,7 @@
+#ifnotnull($publishing)
+
+  $pages.include("$apphome/services/publishingdestination/gallery/stackedmedia/index.html", $context)
+#end
+#ifnull($publishing)
+  <h2>Preview Gallery not available</h2>
+#end

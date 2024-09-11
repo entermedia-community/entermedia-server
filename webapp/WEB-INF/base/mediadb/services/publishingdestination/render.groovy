@@ -17,7 +17,7 @@ public void init(){
 	
 	
 	
-	Page preview = pageManager.getPage("/"+ applicationid + "/services/publishingdestination/caurosel/index.html");
+	Page preview = pageManager.getPage("/"+ applicationid + "/services/publishingdestination/carousel/index.html");
 	
 	WebPageRequest newcontext = context.copy(preview);
 	

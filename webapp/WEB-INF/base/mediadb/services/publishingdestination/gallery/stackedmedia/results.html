@@ -1,9 +1,11 @@
+#set($hits = $publishingentityassethits)
 #if(!$ismodulesearch)
 		#set ( $ismodulesearch = $content.get("ismodulesearch") )
 #end
 #if(!$ismodulesearch)
 	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
 #end
+
 
 <div id="resultsdiv" 
 class="scroll-resultsdiv"

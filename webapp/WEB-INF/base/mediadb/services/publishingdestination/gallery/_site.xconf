@@ -6,7 +6,7 @@
 	
 	<property name="alternative_extension">html</property>
 	
-	<path-action name="FinderModule.loadPublishAssetsCarousel" />
+	<path-action name="FinderModule.loadPublishAssetsGallery" />
 
 	<permission name="view">
 			<boolean value="true" />
@@ -14,6 +14,6 @@
 	
 	
 	
-	<inner-layout>/${applicationid}/services/publishingdestination/view/previewhtml.html</inner-layout>
+	<inner-layout>/${applicationid}/services/publishingdestination/gallery/previewhtml.html</inner-layout>
 </page>
 

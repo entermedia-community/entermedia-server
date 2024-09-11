@@ -1,0 +1,14 @@
+<page>
+
+	
+	<page-action name="FinderModule.loadPublishAssetsGallery" />
+
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+	
+	
+	
+	
+</page>
+
