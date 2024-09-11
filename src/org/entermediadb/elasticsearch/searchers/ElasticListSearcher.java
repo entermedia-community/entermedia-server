@@ -26,7 +26,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	protected DataArchive fieldDataArchive; //lazy loaded
 	protected String fieldPrefix;
 	protected String fieldDataFileName;
-	protected XmlFile fieldXmlFile;
+	//protected XmlFile fieldXmlFile;
 	protected XmlSearcher fieldXmlSearcher;
 
 	
@@ -55,6 +55,15 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		return false;
 	}
 
+	@Override
+	public String getIndexId() {
+		return getXmlSearcher().getIndexId();
+	}
+	public void clearIndex() 
+	{
+		super.clearIndex();
+		getXmlSearcher().clearIndex();
+	}
 	
 	
 	public String getDataFileName()
@@ -81,7 +90,6 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		}
 		return (Data)getModuleManager().getBean(getNewDataName());
 	}
-
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
@@ -113,6 +121,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		finally
 		{
 			setReIndexing(false);
+			clearIndex();
 		}
 	}
 
@@ -133,7 +142,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			//deleteOldMapping();
 			putMappings(); 
 
-			getXmlSearcher().clearIndex();
+			getXmlSearcher().reIndexAll();
 			HitTracker settings = getXmlSearcher().getAllHits();
 			Collection toindex = new ArrayList();
 			log.info("settings " + settings.size() + " " + getSearchType());
