@@ -1159,7 +1159,7 @@ public class FinderModule extends BaseMediaModule
 	}
 	
 	
-	public void getPublishing(WebPageRequest inReq) 
+	public void getPublishingGallery(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -1275,7 +1275,7 @@ public class FinderModule extends BaseMediaModule
 	}
 	
 	
-	public void loadPublishAssets(WebPageRequest inReq)  {
+	public void loadPublishAssetsGallery(WebPageRequest inReq)  {
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String publishingid =  inReq.getRequestParameter("publishingid");
@@ -1330,7 +1330,65 @@ public class FinderModule extends BaseMediaModule
 		//tracker.setHitsPerPage(100);
 		inReq.putPageValue(hitsname,tracker);
 	}
-
+	
+	
+	public void loadPublishAssetsCarousel(WebPageRequest inReq)  {
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String publishingid =  inReq.getRequestParameter("publishingid");
+		if(publishingid == null) {
+			String publishingurl =  inReq.getRequestParameter("url");
+			
+			if( publishingurl == null)
+			{
+				publishingurl = inReq.getPath();
+			}
+			publishingid = PathUtilities.extractPageName(publishingurl);
+			
+		}
+		
+		if(publishingid == null) {	
+			log.info("Publishing id not found " +publishingid);
+			return;
+		}
+		
+		Data publishing = (Data) archive.getData("distribution", publishingid);
+		if(publishing == null) {
+			log.info("Publishing id " + publishingid+ " not found ");
+			return;
+		}	
+		
+		inReq.putPageValue("publishing", publishing);
+		
+		Searcher assetsearcher = archive.getSearcher("asset");
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+		Data entity = null;
+		entity = (Data) inReq.getPageValue("entity");
+		if (entity == null) {
+			entity = archive.getData(publishing.get("moduleid"), publishing.get("entityid"));
+			inReq.putPageValue("entity",entity);
+		}
+		
+		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
+		}
+		
+		search.addExact("category", category.getId());
+		//TODO: Add approved only to query
+		
+		String hitsname = "publishingentityassethits";
+		search.setHitsName(hitsname);
+		search.addSortBy("assetaddeddateDown");	
+		
+		HitTracker tracker = assetsearcher.search(search);
+		tracker.enableBulkOperations();
+		//tracker.setHitsPerPage(100);
+		inReq.putPageValue(hitsname,tracker);
+	}
 	
 	
 }
+
+
