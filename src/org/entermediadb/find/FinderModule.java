@@ -1159,7 +1159,7 @@ public class FinderModule extends BaseMediaModule
 	}
 	
 	
-	public void getPublishingGallery(WebPageRequest inReq) 
+	public void getPublishing(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -1217,122 +1217,9 @@ public class FinderModule extends BaseMediaModule
 	}
 	
 	
-	public void getPublishingCarousel(WebPageRequest inReq) 
-	{
-		MediaArchive archive = getMediaArchive(inReq);
 
-		MultiValued entity = null;
-
-		String publishingid =  inReq.getRequestParameter("publishingid");
-		if(publishingid == null)
-		{
-			String entityid =  inReq.getRequestParameter("entityid");
-			if( entityid != null)
-			{
-				Searcher searcher = archive.getSearcher("distribution");
-				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
-				if(publishing != null)
-				{
-					publishingid = publishing.getId();
-				}
-			}
-		}
-		if(publishingid == null)
-		{
-			publishingid =  inReq.getRequestParameter("id"); //saved record
-		}
-		if(publishingid != null)
-		{
-			Data publishing = (Data) archive.getData("distribution",publishingid);
-			if(publishing != null)
-			{
-				inReq.putPageValue("publishing", publishing);
-				
-				if(Boolean.parseBoolean(publishing.get("enabled")))
-				{
-					entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-					if( !entity.getBoolean("enablepublishingcarousel"))
-					{
-						entity.setValue("enablepublishingcarousel",true);
-						archive.saveData(publishing.get("moduleid"),entity);
-					}
-				}
-				else
-				{
-					if(!Boolean.parseBoolean(publishing.get("enabled")))
-					{
-						entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-						if( entity.getBoolean("enablepublishingcarousel"))
-						{
-							entity.setValue("enablepublishingcarousel",false);
-							archive.saveData(publishing.get("moduleid"),entity);
-						}
-					}
-
-				}
-			}
-		}
-	}
 	
-	
-	public void loadPublishAssetsGallery(WebPageRequest inReq)  {
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		String publishingid =  inReq.getRequestParameter("publishingid");
-		if(publishingid == null) {
-			String publishingurl =  inReq.getRequestParameter("url");
-			
-			if( publishingurl == null)
-			{
-				publishingurl = inReq.getPath();
-			}
-			publishingid = PathUtilities.extractPageName(publishingurl);
-			
-		}
-		
-		if(publishingid == null) {	
-			log.info("Publishing id not found " +publishingid);
-			return;
-		}
-		
-		Data publishing = (Data) archive.getData("distributiongallery", publishingid);
-		if(publishing == null) {
-			log.info("Publishing id " + publishingid+ " not found ");
-			return;
-		}	
-		
-		inReq.putPageValue("publishing", publishing);
-		
-		Searcher assetsearcher = archive.getSearcher("asset");
-		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
-		Data entity = null;
-		entity = (Data) inReq.getPageValue("entity");
-		if (entity == null) {
-			entity = archive.getData(publishing.get("moduleid"), publishing.get("entityid"));
-			inReq.putPageValue("entity",entity);
-		}
-		
-		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
-		
-		if(search == null) {
-			search = assetsearcher.createSearchQuery();
-		}
-		
-		search.addExact("category", category.getId());
-		//TODO: Add approved only to query
-		
-		String hitsname = "publishingentityassethits";
-		search.setHitsName(hitsname);
-		search.addSortBy("assetaddeddateDown");	
-		
-		HitTracker tracker = assetsearcher.search(search);
-		tracker.enableBulkOperations();
-		//tracker.setHitsPerPage(100);
-		inReq.putPageValue(hitsname,tracker);
-	}
-	
-	
-	public void loadPublishAssetsCarousel(WebPageRequest inReq)  {
+	public void loadPublishAssets(WebPageRequest inReq)  {
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String publishingid =  inReq.getRequestParameter("publishingid");
@@ -1387,6 +1274,9 @@ public class FinderModule extends BaseMediaModule
 		//tracker.setHitsPerPage(100);
 		inReq.putPageValue(hitsname,tracker);
 	}
+	
+	
+
 	
 	
 }
