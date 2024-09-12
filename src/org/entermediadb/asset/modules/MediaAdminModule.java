@@ -1022,6 +1022,10 @@ public class MediaAdminModule extends BaseMediaModule
 					Map userdatamap = (Map) parser.parse(map.getString("userData"));
 					ValuesMap  userdata  = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
+					if( moduleid == null || moduleid.trim().isEmpty())
+					{
+						continue;
+					}
 					String modulename = map.getString("text"); 
 					Data module = archive.getData("module",moduleid);
 					if(module == null)
