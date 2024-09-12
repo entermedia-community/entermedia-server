@@ -18,23 +18,23 @@ gridResize = function (grid) {
     return;
   }
   //console.log("gridResize resizing "	);
-  var fixedheight = grid.data("maxheight");
+  var fixedheight = grid.data("maxwidth");
   if (fixedheight == null || fixedheight.length == 0) {
     fixedheight = 200;
   }
   fixedheight = parseInt(fixedheight);
 
-  var totalheight = fixedheight;
-  var rownum = 0;
-  var totalavailablew = grid.width();
+  var totalwidth = fixedheight;
+  var colnum = 0;
+  var totalavailableh = grid.height();
 
   // Two loops, one to make rows and one to render cells
-  var sofarusedw = 0;
   var sofarusedh = 0;
+  var sofarusedw = 0;
 
-  var row = new Array();
-  var rows = new Array();
-  rows.push(row);
+  var col = new Array();
+  var cols = new Array();
+  cols.push(col);
   $(grid)
     .find(".masonry-grid-cell")
     .each(function () {
@@ -54,27 +54,28 @@ gridResize = function (grid) {
         a = h / w;
       }
       cell.data("aspect", a);
-      var neww = Math.floor(a * fixedheight);
-      cell.data("targetw", Math.ceil(neww));
-      var isover = sofarusedw + neww;
-      if (isover > totalavailablew) {
-        // Just to make a row
+      var newh = Math.floor(a * fixedheight);
+      cell.data("targetw", Math.ceil(newh));
+      var isover = sofarusedh + newh;
+      if (isover > totalavailableh) {
+        // Just to make a column
         // Process previously added cell
-        var newheight = trimRowToFit(grid,row);
-        totalheight = totalheight + newheight + 8;
-        row = new Array();
-        rows.push(row);
-        sofarusedw = 0;
-        rownum = rownum + 1;
+        var newwidth = trimRowToFit(grid,row);
+        totalwidth = totalwidth + newwidth + 8;
+        col = new Array();
+        rows.push(col);
+        sofarusedh = 0;
+        colnum = colnum + 1;
       }
       sofarusedw = sofarusedw + neww;
-      row.push(cell);
-      cell.data("rownum", rownum);
+      col.push(cell);
+      cell.data("colnum", colnum);
     });
 
+
   if (row.length > 0) {
-    trimRowToFit(grid,row);
-    //if( makebox && makebox == true && rownum >= 3)
+    trimColToFit(grid,col);
+    //if( makebox && makebox == true && colnum >= 3)
     {
       grid.css("height", totalheight + "px");
       //grid.css("overflow","hidden");
@@ -88,62 +89,62 @@ gridResize = function (grid) {
    checkScroll();
 };
 
-trimRowToFit = function(grid, row ) {  
-  var totalwidthused = 0;
-  var targetheight = grid.data("maxheight");
+trimColToFit = function(grid, col ) {  
+  var totalheightused = 0;
+  var targetwidth = grid.data("maxwidth");
   $.each(row, function () {
     var div = this;
-    var usedw = div.data("targetw");
-    totalwidthused = totalwidthused + usedw;
+    var usedh = div.data("targeth");
+    totalheightused = totalheightused + usedh;
   });
   
-  var totalavailablew = grid.width();
-  var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
-  var overwidth = Math.abs(totalwidthused - totalavailablew);
-  var changeheight = existingaspect * overwidth;
-  var fixedheight = Math.floor(targetheight + changeheight);
+  var totalavailableh = grid.height();
+  var existingaspect = targetwidth / totalheightused; // Existing aspec ratio
+  var overage= Math.abs(totalheightused - totalavailableh);
+  var changewidth = existingaspect * overage;
+  var fixedwidth = Math.floor(targetwidth + changewidth);
   
-  if (fixedheight > targetheight * 1.7) {
-    fixedheight = targetheight;
+  if (fixedwidth > targetwidth * 1.7) {
+    fixedwidth = targetwidth;
   }
   
   // The overwidth may not be able to be divided out evenly depending on
   // number of
-  var totalwused = 0;
-  $.each(row, function () {
+  var totalhused = 0;
+  $.each(col, function () {
     var div = this;
     var image = $("img.imagethumb", div);
-    // div.css("line-height",fixedheight + "px");
-    div.css("height", fixedheight + "px");
-    image.height(fixedheight);
-    image.data("fixedheight", fixedheight);
+    // div.css("line-height",fixedwidth + "px");
+    div.css("width", fixedwidth + "px");
+    image.width(fixedwidth);
+    image.data("fixedwidth", fixedwidth);
 
     var a = div.data("aspect");
-    var neww = fixedheight * a;
+    var newh = fixedwidth * a;
 
-    neww = Math.floor(neww); // make sure we dont round too high across lots
+    newh = Math.floor(newh); // make sure we dont round too high across lots
     // of widths
-    div.css("width", neww + "px");
-    image.width(neww);
-    totalwused = totalwused + neww;
+    div.css("height", newh + "px");
+    image.height(newh);
+    totalhused = totalhused + newh;
   });
 
-  totalavailablew = grid.width();
-  if (totalwused != totalavailablew && fixedheight != targetheight) {
+  totalavailableh = grid.height();
+  if (totalwused != totalavailableh && fixedheight != targetwidth) {
     // Deal
     // with
     // fraction
     // of a
     // pixel
     // We have a fraction of a pixel to add to last item
-    var toadd = totalavailablew - totalwused;
-    var div = row[row.length - 1];
+    var toadd = totalavailableh - totalhused;
+    var div = col[col.length - 1];
     if (div) {
-      var w = div.width();
-      w = w + toadd;
-      div.css("width", w + "px");
+      var h = div.height();
+      h = h + toadd;
+      div.css("height", h + "px");
       var image = $("img.imagethumb", div);
-      image.width(w);
+      image.height(h);
     }
   }
   return fixedheight;

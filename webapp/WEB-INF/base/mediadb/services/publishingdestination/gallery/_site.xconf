@@ -1,9 +1,10 @@
 <page>
 
 	<property name="virtual">true</property>
+	<property name="alternative_extension">html</property>
 
 	
-	<page-action name="FinderModule.loadPublishAssets" />
+	<path-action name="FinderModule.loadPublishAssets" />
 
 	<permission name="view">
 			<boolean value="true" />

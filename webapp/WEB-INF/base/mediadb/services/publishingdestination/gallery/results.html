@@ -34,9 +34,10 @@ class="scroll-resultsdiv"
 	$pages.include("$componenthome/results/header.html",$context) 
 #end
 <div class="scrollview">
-<div class="masonry-grid" 
-	data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
+<div class="masonry-grid2" 
 	data-maxheight="180" 
+	data-maxwidth="180"
+	data-targeth="180"
 	data-cellpadding="4"
 
 >
@@ -82,10 +83,6 @@ class="scroll-resultsdiv"
 		 
 		>
 		<div class="grid-cell-hover"></div>
-		<input type="checkbox" class="selectionbox resultsselection" name="count" id="${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}"  />
-		<label class="selectionbox-label" for="${hit.id}">
-			<i class="bi bi-check-lg"></i>
-		</label>
 		<div class="grid-gallery-checked"></div>
 		#if(!$rendertype || $type =="rendertype")
 			#set( $rendertype = "mime" )
@@ -114,7 +111,7 @@ class="scroll-resultsdiv"
 				$context.putPageValue("data",$hit)	
 				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 				$context.putPageValue("view", "asset/stackedgallery")
-				$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+				##$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
 			</a>
 			
 	
@@ -128,18 +125,10 @@ class="scroll-resultsdiv"
 					#end
 				</span>
 				<div class="d-flex align-items-center">
-					#if($canaddtofavorites)
-						<div id="gsassetfavorite-${hit.id}" class="media-info-icons mr-1">
-							$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
-						</div>
-					#end
-					#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-						#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
 					   	<a href="$dlink" 
 					   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
-					       	<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+					       download
 					    </a>
-					#end 
 				</div>
 			</div>
 		</div>

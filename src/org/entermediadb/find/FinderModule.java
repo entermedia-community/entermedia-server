@@ -1216,9 +1216,6 @@ public class FinderModule extends BaseMediaModule
 		}
 	}
 	
-	
-
-	
 	public void loadPublishAssets(WebPageRequest inReq)  {
 		MediaArchive archive = getMediaArchive(inReq);
 		

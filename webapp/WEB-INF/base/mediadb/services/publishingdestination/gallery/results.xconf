@@ -3,6 +3,5 @@
 	
 	<property name="hitsname">publishingentityassethits</property>
 		
-	<inner-layout>/${applicationid}/views/modules/asset/innerlayout.html</inner-layout>
 </page>
 
