@@ -1068,6 +1068,7 @@ public class MediaAdminModule extends BaseMediaModule
 			{
 				archive.getSearcher("appsection").deleteAll(inReq.getUser());
 				archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
+				archive.clearAll();
 			}
 		}
 
