@@ -60,31 +60,31 @@ gridResize = function (grid) {
       if (isover > totalavailableh) {
         // Just to make a column
         // Process previously added cell
-        var newwidth = trimRowToFit(grid,row);
+        var newwidth = trimColToFit(grid,row);
         totalwidth = totalwidth + newwidth + 8;
         col = new Array();
         rows.push(col);
         sofarusedh = 0;
         colnum = colnum + 1;
       }
-      sofarusedw = sofarusedw + neww;
+      sofarusedw = sofarusedw + newh;
       col.push(cell);
       cell.data("colnum", colnum);
     });
 
 
-  if (row.length > 0) {
+  if (col.length > 0) {
     trimColToFit(grid,col);
     //if( makebox && makebox == true && colnum >= 3)
     {
-      grid.css("height", totalheight + "px");
+      grid.css("height", totalwidth + "px");
       //grid.css("overflow","hidden");
     }
   }
 
-	$.each(rows, function () { 
-		var row = $(this);
-		trimRowToFit(grid,row);
+	$.each(cols, function () { 
+		var col = $(this);
+		trimColToFit(grid,col);
 	});
    checkScroll();
 };
@@ -92,7 +92,7 @@ gridResize = function (grid) {
 trimColToFit = function(grid, col ) {  
   var totalheightused = 0;
   var targetwidth = grid.data("maxwidth");
-  $.each(row, function () {
+  $.each(col, function () {
     var div = this;
     var usedh = div.data("targeth");
     totalheightused = totalheightused + usedh;
@@ -130,7 +130,7 @@ trimColToFit = function(grid, col ) {
   });
 
   totalavailableh = grid.height();
-  if (totalwused != totalavailableh && fixedheight != targetwidth) {
+  if (totalhused != totalavailableh && fixedwidth != targetwidth) {
     // Deal
     // with
     // fraction
@@ -147,7 +147,7 @@ trimColToFit = function(grid, col ) {
       image.height(h);
     }
   }
-  return fixedheight;
+  return fixedwidth;
 };
 
 
