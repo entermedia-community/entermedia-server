@@ -3,7 +3,11 @@
     #set($loginok = $context.findValue("loginokpage") ) 
 	#set( $email = $context.getRequestParameter("email") )
 	<div class="my-4">
-		<div class="pb-4 text-center"><strong>[[Please check your email]]</strong></div>
+	#if( $commandSucceeded == "ok")
+    	<div class="pb-4 text-center"><strong>[[Please check your email]]</strong></div>
+    #else
+    	$error
+    #end
 	<form name="login" 
 		id="login"
 		class="ajaxform  row justify-content-md-center g-3" 

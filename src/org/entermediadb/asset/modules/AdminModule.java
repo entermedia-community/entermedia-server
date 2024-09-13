@@ -219,8 +219,13 @@ public class AdminModule extends BaseMediaModule
 		}
 		if(inReq.getPageValue("error") != null) {
 			log.info("Error sending Email. " + inReq.getPageValue("error"));
+			inReq.putPageValue("commandSucceeded", "error");
+			
 		}
-		inReq.putPageValue("commandSucceeded", "ok");
+		else
+		{
+			inReq.putPageValue("commandSucceeded", "ok");
+		}
 	}
 	
 	
