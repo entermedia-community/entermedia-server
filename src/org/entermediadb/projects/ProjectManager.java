@@ -1749,6 +1749,13 @@ public class ProjectManager implements CatalogEnabled
 			if( collectionquery == null )
 			{
 				collectionquery = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+				
+				String communitytagcategory = inReq.findPathValue("communitytagcategory");
+				if(communitytagcategory != null)
+				{
+					collectionquery.addExact("communitytagcategory",communitytagcategory);
+				}
+				
 			}
 		}
 		QueryBuilder builder = getMediaArchive().query("userupload");
