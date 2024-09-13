@@ -178,6 +178,11 @@ public class WorkspaceManager
 
 	public void saveModule(String catalogid, String appid, Data module) 
 	{
+		if( module.getId() == null || module.getId().isEmpty())
+		{
+			throw new OpenEditException("Invalid module id");
+		}
+		
 		/** APP STUFF **/
 		if( !appid.endsWith("mediadb"))
 		{

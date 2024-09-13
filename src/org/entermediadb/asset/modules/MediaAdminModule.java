@@ -539,29 +539,29 @@ public class MediaAdminModule extends BaseMediaModule
 		sites.saveData(site);
 		inReq.setRequestParameter("siteid", site.getId());
 
-		String frontendid = inReq.getRequestParameter("frontendid");
-		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
-		String url = frontend.get("initurl");
-		if( url != null)
-		{
-			inReq.setRequestParameter("url", url);
-			Data snapshot = downloadSnapshot(inReq);
-			Page root = getPageManager().getPage(rootpath);
-			if( root.exists() )
-			{
-				//dont mess with it
-				snapshot.setValue("snapshotstatus","downloaded");
-			}
-			else
-			{
-				snapshot.setValue("snapshotstatus","pendingrestore");
-			}
-			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
-			snaps.saveData(snapshot);
-			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
-			manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
-			inReq.putPageValue("snapshot", snapshot);
-		}
+//		String frontendid = inReq.getRequestParameter("frontendid");
+//		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
+//		String url = frontend.get("initurl");
+//		if( url != null)
+//		{
+//			inReq.setRequestParameter("url", url);
+//			Data snapshot = downloadSnapshot(inReq);
+//			Page root = getPageManager().getPage(rootpath);
+//			if( root.exists() )
+//			{
+//				//dont mess with it
+//				snapshot.setValue("snapshotstatus","downloaded");
+//			}
+//			else
+//			{
+//				snapshot.setValue("snapshotstatus","pendingrestore");
+//			}
+//			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+//			snaps.saveData(snapshot);
+//			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+//			manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
+//			inReq.putPageValue("snapshot", snapshot);
+//		}
 		
 
 		
@@ -1022,6 +1022,10 @@ public class MediaAdminModule extends BaseMediaModule
 					Map userdatamap = (Map) parser.parse(map.getString("userData"));
 					ValuesMap  userdata  = new ValuesMap(userdatamap);
 					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
+					if( moduleid == null || moduleid.trim().isEmpty())
+					{
+						continue;
+					}
 					String modulename = map.getString("text"); 
 					Data module = archive.getData("module",moduleid);
 					if(module == null)
@@ -1064,6 +1068,7 @@ public class MediaAdminModule extends BaseMediaModule
 			{
 				archive.getSearcher("appsection").deleteAll(inReq.getUser());
 				archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
+				archive.clearAll();
 			}
 		}
 

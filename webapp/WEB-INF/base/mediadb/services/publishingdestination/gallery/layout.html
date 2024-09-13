@@ -2,12 +2,13 @@
 <link type="text/css" rel="stylesheet" href="$publishing.externalcss">
 #end
 
-XXX
-$publishing
+<h1>Event</h1>
+Shatokhin.pro
+
 
 <style type="text/css">
 	:root {
-		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #efefef #end;
+		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
 		#if($publishing.containerdimension_enabled=="true")
@@ -201,10 +202,12 @@ $publishing
   flex-flow: row wrap;
   justify-content: center;
   padding: 2px;
+  position: relative;
 }
 
 .masonry-grid2 .masonry-grid-cell {
-  justify-self: flex-start;
+  position: absolute;
+
 }
 
 .masonry-grid-cell .grid-thumbimage {
