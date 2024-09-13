@@ -8,7 +8,7 @@
 
 	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
 	
-	<path-action name="FinderModule.loadPublishAssetsCarousel" />
+	<path-action name="FinderModule.loadPublishAssets" />
 
 	<path-action name="Script.run" alltypes="true">
  		<script>./render.groovy</script>

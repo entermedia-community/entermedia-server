@@ -1,14 +1,13 @@
 <page>
 
 	
-	<page-action name="FinderModule.loadPublishAssetsCarousel" />
+	<page-action name="FinderModule.loadPublishAssets" />
 
 	<permission name="view">
 			<boolean value="true" />
 	</permission>
 	
 	
-	<property></property>
 	
 </page>
 

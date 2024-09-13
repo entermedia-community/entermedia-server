@@ -6,7 +6,7 @@
 	
 	<property name="alternative_extension">html</property>
 	
-	<path-action name="FinderModule.loadPublishAssetsCarousel" />
+	<path-action name="FinderModule.loadPublishAssets" />
 
 	<permission name="view">
 			<boolean value="true" />
