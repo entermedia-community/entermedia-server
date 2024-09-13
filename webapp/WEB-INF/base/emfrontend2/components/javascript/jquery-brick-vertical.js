@@ -18,136 +18,87 @@ gridResize = function (grid) {
     return;
   }
   //console.log("gridResize resizing "	);
-  var fixedheight = grid.data("maxwidth");
-  if (fixedheight == null || fixedheight.length == 0) {
-    fixedheight = 200;
+  var minwidth = grid.data("minwidth");
+  if (minwidth == null || minwidth.length == 0) {
+    minwidth = 350;
   }
-  fixedheight = parseInt(fixedheight);
+  var totalavailablew = grid.width();
 
-  var totalwidth = fixedheight;
-  var colnum = 0;
-  var totalavailableh = grid.height();
+  var maxcols = 5;
+
+  var eachwidth = 0;
+  while( eachwidth < minwidth)
+  {
+	  eachwidth = totalavailablew / maxcols;
+	  maxcols--;
+  }
+  maxcols++;
+  
+  if( maxcols == 0)
+  {
+	maxcols = 1;
+  }
+
+eachwidth = eachwidth -8;
+//totalavailablew = totalavailablew - (maxcols*8);
 
   // Two loops, one to make rows and one to render cells
-  var sofarusedh = 0;
+  var colwidthpx = totalavailablew/maxcols;
   var sofarusedw = 0;
 
-  var col = new Array();
-  var cols = new Array();
-  cols.push(col);
+ var colheight = {};
+
+  var rows = new Array();
+  var row = new Array();
+  
+  var colnum = 0;
+  rows.push(row);
   $(grid)
     .find(".masonry-grid-cell")
     .each(function () {
       var cell = $(this);
       var w = cell.data("width");
       var h = cell.data("height");
-      w = parseInt(w);
+       w = parseInt(w);
       h = parseInt(h);
       if (w == 0) {
-        w = fixedheight;
-        h = fixedheight;
+        w = eachwidth;
+        h = eachwidth;
       }
       var a = 1;
-      if (w >= h) {
-        a = w / h;
-      } else {
-        a = h / w;
-      }
+      a = w / h;
+      
       cell.data("aspect", a);
-      var newh = Math.floor(a * fixedheight);
-      cell.data("targetw", Math.ceil(newh));
-      var isover = sofarusedh + newh;
-      if (isover > totalavailableh) {
-        // Just to make a column
-        // Process previously added cell
-        var newwidth = trimColToFit(grid,row);
-        totalwidth = totalwidth + newwidth + 8;
-        col = new Array();
-        rows.push(col);
-        sofarusedh = 0;
-        colnum = colnum + 1;
-      }
-      sofarusedw = sofarusedw + newh;
-      col.push(cell);
+      var newheight = Math.floor(eachwidth / a);
+      
       cell.data("colnum", colnum);
+      row.push(cell);
+      
+      var runningtotal = colheight[colnum]??0;
+      runningtotal = runningtotal + 8;
+      colheight[colnum] = runningtotal + newheight;
+       
+      cell.css("top",runningtotal + "px");
+      cell.width(eachwidth);
+      cell.height(newheight);
+      
+      var colx = colwidthpx * colnum;
+      cell.css("left",colx + "px");
+      
+      if( (colnum + 1) == maxcols)
+      {
+		colnum = 0;
+		row = new Array();
+		rows.push(row);
+	  }
+	  else
+	  {
+		colnum++;
+	  }
+      
     });
 
-
-  if (col.length > 0) {
-    trimColToFit(grid,col);
-    //if( makebox && makebox == true && colnum >= 3)
-    {
-      grid.css("height", totalwidth + "px");
-      //grid.css("overflow","hidden");
-    }
-  }
-
-	$.each(cols, function () { 
-		var col = $(this);
-		trimColToFit(grid,col);
-	});
    checkScroll();
-};
-
-trimColToFit = function(grid, col ) {  
-  var totalheightused = 0;
-  var targetwidth = grid.data("maxwidth");
-  $.each(col, function () {
-    var div = this;
-    var usedh = div.data("targeth");
-    totalheightused = totalheightused + usedh;
-  });
-  
-  var totalavailableh = grid.height();
-  var existingaspect = targetwidth / totalheightused; // Existing aspec ratio
-  var overage= Math.abs(totalheightused - totalavailableh);
-  var changewidth = existingaspect * overage;
-  var fixedwidth = Math.floor(targetwidth + changewidth);
-  
-  if (fixedwidth > targetwidth * 1.7) {
-    fixedwidth = targetwidth;
-  }
-  
-  // The overwidth may not be able to be divided out evenly depending on
-  // number of
-  var totalhused = 0;
-  $.each(col, function () {
-    var div = this;
-    var image = $("img.imagethumb", div);
-    // div.css("line-height",fixedwidth + "px");
-    div.css("width", fixedwidth + "px");
-    image.width(fixedwidth);
-    image.data("fixedwidth", fixedwidth);
-
-    var a = div.data("aspect");
-    var newh = fixedwidth * a;
-
-    newh = Math.floor(newh); // make sure we dont round too high across lots
-    // of widths
-    div.css("height", newh + "px");
-    image.height(newh);
-    totalhused = totalhused + newh;
-  });
-
-  totalavailableh = grid.height();
-  if (totalhused != totalavailableh && fixedwidth != targetwidth) {
-    // Deal
-    // with
-    // fraction
-    // of a
-    // pixel
-    // We have a fraction of a pixel to add to last item
-    var toadd = totalavailableh - totalhused;
-    var div = col[col.length - 1];
-    if (div) {
-      var h = div.height();
-      h = h + toadd;
-      div.css("height", h + "px");
-      var image = $("img.imagethumb", div);
-      image.height(h);
-    }
-  }
-  return fixedwidth;
 };
 
 
@@ -184,40 +135,6 @@ replaceelement = function (url, div, options, callback) {
   });
 };
 
-
-gridupdatepositions = function(grid) {
-  //console.log("Checking Old Position: " + oldposition);
-  var resultsdiv = grid.closest(".resultsdiv");
-  if (!resultsdiv) {
-    resultsdiv = grid.closest(".resultsdiv");
-  }
-
-  var positionsDiv = resultsdiv.find(".resultspositions");
-  //console.log("positionsDiv:", positionsDiv);
-
-  if (positionsDiv.length > 0) {
-    var oldpage = grid.data("currentpagenum");
-
-    $(".masonry-grid-cell", grid).each(function (index, cell) {
-      var elementviewport = isInViewport(cell);
-      if (elementviewport) {
-        var pagenum = $(cell).data("pagenum");
-        if (pagenum != oldpage) {
-          grid.data("currentpagenum", pagenum);
-          positionsDiv.data("currentpagenum", pagenum);
-          //var currentscroll = $(window).scrollTop();
-
-          //console.log("Firing dom event: ",oldpage, pagenum, $(window).scrollTop());
-          var url = positionsDiv.data("url");
-          //positionsDiv.data("currentpage",pagenum); //Where we are at
-          var options = positionsDiv.data();
-          replaceelement(url, positionsDiv, options);
-        }
-        return false;
-      }
-    });
-  }
-};
 
 checkScroll = function (grid) {
   var appdiv = $("#application");
