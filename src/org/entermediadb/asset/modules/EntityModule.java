@@ -608,12 +608,6 @@ public class EntityModule extends BaseMediaModule
 
 		String[] ids = inReq.getRequestParameters("id");
 		
-		String timestampStr = inReq.getRequestParameter("timestamp");
-		String updatelastscandate = inReq.getRequestParameter("updatelastscandate");
-		
-		
-		Date timestamp = DateStorageUtil.getStorageUtil().parseFromStorage(timestampStr);
-		
 		String status = inReq.getRequestParameter("desktopimportstatus");
 		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
@@ -634,16 +628,12 @@ public class EntityModule extends BaseMediaModule
 			} else {
 				status = desktopimportstatus;
 			}
-			
-			if(updatelastscandate == "true") {
-				folder.setValue("lastscandate", timestamp);
-			}
  
 			tosave.add(folder);
 		}
 		searcher.saveAllData(tosave, null);
 		inReq.putPageValue("scanstatus", status);
-		inReq.putPageValue("syncfolders",tosave);
+		inReq.putPageValue("syncfolders", tosave);
 	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
