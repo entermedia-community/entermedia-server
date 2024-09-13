@@ -2,10 +2,6 @@
 <link type="text/css" rel="stylesheet" href="$publishing.externalcss">
 #end
 
-<h1>Event</h1>
-Shatokhin.pro
-
-
 <style type="text/css">
 	:root {
 		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
@@ -63,7 +59,7 @@ Shatokhin.pro
 	}
 	._gridgallery-container {
 		flex: 1;
-		overflow: hidden;
+		height: 100%;
 	}
 	.__footer {
 		font-size: small;
@@ -75,127 +71,6 @@ Shatokhin.pro
 		border-top: 0.5px solid rgba(255, 255, 255, 0.1);
 		background-color: #fff;
 	}
-	#_gridgallery {
-		height: calc(100% - 60px);
-	}
-	@media screen and (max-width: 600px) {
-		#_gridgallery {
-			height: calc(100% - 44px);
-		}
-	}
-	#_gridgallery .splide__track {
-		height: 100%;
-	}
-	#_gridgallery .splide__slide {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 8px 0;
-		overflow: hidden;
-	}
-	#_gridgallery .splide__slide img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
-	}
-	#_gridgallery-thumbnails .splide__slide img {
-		width: 100%; 
-		height: 100%;
-		object-fit: cover;
-	}
-	#_gridgallery-thumbnails .splide__slide {
-		opacity: 0.95;
-	}
-	#_gridgallery-thumbnails .splide__slide.is-active {
-		opacity: 1;
-		border: 2px solid lime;
-		box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5) inset;
-	}
-	#_gridgallery-thumbnails.splide:not(.is-overflow) .splide__list {
-		justify-content: center;
-}
-	#_gridgallery .splide__arrow {
-		color: #fff; 
-		width: 7em;
-		height: 3.5em;
-		padding: 0.5em;
-		height: 100%;
-		border-radius: 0;
-		background-color: transparent;
-	} 
-	#_gridgallery .splide__arrow--next {
-		padding-left: 0;
-		right: 0;
-		cursor: e-resize;
-	}
-	#_gridgallery .splide__arrow--prev {
-		left: 0;
-		bottom: 0;
-		margin-top: 30px;
-		height: calc(100% - 60px);
-		cursor: w-resize;
-	}
-	#_gridgallery .splide__arrow svg {
-		fill: var(--text-color);
-		stroke: var(--text-color);
-		stroke-width: 1;
-		width: 40px;
-		height: 40px;
-	}
-	.__arrow-btn {
-		width: 50px;
-		height: 50px;
-		border-radius: 25px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-color: rgba(255, 255, 255, 0.35);
-	}
-	.__img_caption {
-		position: absolute;
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
-		display: inline-block;
-		color: #fff;
-		background: rgba(0, 0, 0, 0.35);
-		text-align: center;
-		font-style: italic;
-		font-size: 1.2rem;
-		padding: 12px 16px;
-		border-radius: 8px;
-		z-index: 10;
-		transition: opacity 0.3s ease, transform 0.3s ease;
-	}
-  .__image:hover .__img_caption {
-		opacity: 0;
-		transform: translateX(-50%) translateY(100%);
-	}
-	#_gridgallery .splide__arrow--prev .__arrow-btn {
-		transform: translateY(-30px);
-	}
-	#_gridgallery .__download-img {
-		position: absolute;
-		top: 16px;
-		left: 16px;
-		width: 40px;
-		height: 40px;
-		border-radius: 20px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		color: #fff;
-		background-color: var(--highlight-color);
-		text-decoration: none;
-		opacity: 0;
-		transition: opacity 0.5s;
-		z-index: 100;
-	}
-	#_gridgallery .splide__slide:hover .__download-img {
-		opacity: 1;
-	}
-	
 	
 .masonry-grid2 {
   display: flex;
@@ -204,7 +79,17 @@ Shatokhin.pro
   padding: 2px;
   position: relative;
 }
-
+.scrollview {
+	overflow-y: auto;
+	height: 100%;
+}
+.scroll-resultsdiv {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}	
 .masonry-grid2 .masonry-grid-cell {
   position: absolute;
 
@@ -261,6 +146,7 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
 	#end
 		
 	$context.putPageValue("entitydialogid", "entitypublishing")
+	$context.putPageValue("publishingid", "$publishing.getId()")
 
 	<div class="_gridgallery-container">
 		$pages.include("/$mediadbappid/services/publishingdestination/gallery/results.html", $context)
@@ -273,5 +159,9 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
 <script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
 <script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brick-vertical.js"></script>
 <script type="text/javascript">
-		$(".masonry-grid2").brick();
+		var grid = $(".masonry-grid2");
+		grid.brick();
+		$(".scrollview").on("scroll", function () {
+		    checkScroll(grid);
+		});
 </script>

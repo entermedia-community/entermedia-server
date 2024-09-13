@@ -1171,7 +1171,7 @@ public class FinderModule extends BaseMediaModule
 			String entityid =  inReq.getRequestParameter("entityid");
 			if( entityid != null)
 			{
-				Searcher searcher = archive.getSearcher("distributiongallery");
+				Searcher searcher = archive.getSearcher("distribution");
 				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
 				if(publishing != null)
 				{
@@ -1185,7 +1185,7 @@ public class FinderModule extends BaseMediaModule
 		}
 		if(publishingid != null)
 		{
-			Data publishing = (Data) archive.getData("distributiongallery",publishingid);
+			Data publishing = (Data) archive.getData("distribution",publishingid);
 			if(publishing != null)
 			{
 				inReq.putPageValue("publishing", publishing);
@@ -1268,7 +1268,26 @@ public class FinderModule extends BaseMediaModule
 		
 		HitTracker tracker = assetsearcher.search(search);
 		tracker.enableBulkOperations();
-		//tracker.setHitsPerPage(100);
+		tracker.setHitsPerPage(20);
+		
+		//Pagination
+		int totalPages = tracker.getTotalPages();
+		String page = inReq.getRequestParameter("pagenum");
+
+		if (page != null)
+		{
+			int jumpToPage = Integer.parseInt(page);
+			if (jumpToPage <= totalPages && jumpToPage > 0)
+			{
+				tracker.setPage(jumpToPage);
+			}
+			else
+			{
+				tracker.setPage(1);
+			}
+			
+		}
+		
 		inReq.putPageValue(hitsname,tracker);
 	}
 	

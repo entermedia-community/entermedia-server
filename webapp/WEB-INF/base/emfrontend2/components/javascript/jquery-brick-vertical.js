@@ -95,6 +95,8 @@ eachwidth = eachwidth -8;
 	  {
 		colnum++;
 	  }
+	  
+	  grid.css("height", runningtotal + "px");
       
     });
 
@@ -106,11 +108,8 @@ eachwidth = eachwidth -8;
 isInViewport = function( cell ) { 
   const rect = cell.getBoundingClientRect();
   var isin =
-    rect.top >= 0 &&
-    rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+      (window.innerHeight || document.documentElement.clientHeight);
   return isin;
 };
 
@@ -137,6 +136,7 @@ replaceelement = function (url, div, options, callback) {
 
 
 checkScroll = function (grid) {
+	
   var appdiv = $("#application");
   var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
   var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
@@ -181,7 +181,7 @@ checkScroll = function (grid) {
     return; //No results?
   }
 
-  gridupdatepositions(grid);
+  //gridupdatepositions(grid);
 
   var page = parseInt(resultsdiv.data("pagenum"));
   if (isNaN(page)) {
@@ -192,8 +192,7 @@ checkScroll = function (grid) {
   if (isNaN(total)) {
     total = 1;
   }
-  // console.log("checking scroll " + stopautoscroll + " page " + page + " of
-  // " + total);
+   console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
   if (page == total) {
     //Last page. dont load more
     //console.log("Last page, dont load more")
@@ -209,7 +208,6 @@ checkScroll = function (grid) {
 
   var lastcell = gridcells.last().get(0);
   if (!isInViewport(lastcell)) {
-    //console.log("up top, dont load more yet")
     return; //not yet at bottom (-500px)
   }
 
@@ -222,21 +220,26 @@ checkScroll = function (grid) {
   if (!stackedviewpath) {
     stackedviewpath = "stackedgallery.html";
   }
-  var link = componenthome + "/results/" + stackedviewpath;
+  
   var collectionid = $(resultsdiv).data("collectionid");
+  var publishingid = $(resultsdiv).data("publishingid");
+  
   var params = {
     hitssessionid: session,
-    page: page,
+    pagenum: page,
     oemaxlevel: "1",
   };
   if (collectionid) {
     params.collectionid = collectionid;
   }
+  if (publishingid) {
+    params.publishingid = publishingid;
+  }
 
-  console.log("Loading page: #" + page + " - " + link);
+  console.log("Loading page: #" + page + " - " + stackedviewpath);
 
   $.ajax({
-    url: link,
+    url: stackedviewpath,
     xhrFields: {
       withCredentials: true,
     },
@@ -244,18 +247,14 @@ checkScroll = function (grid) {
     data: params,
     success: function (data) {
       var jdata = $(data);
-      var code = $(".masonry-grid", jdata).html();
+      var code = $(".masonry-grid2", jdata).html();
       //$(".masonry-grid",resultsdiv).append(code);
       $(grid).append(code);
       // $(resultsdiv).append(code);
-      //gridResize();
-      $(window).trigger("resize");
-
+      gridResize(grid);
+      //$(window).trigger("resize");
       stopautoscroll = false;
-
-      if (getOverlay().is(":hidden")) {
-        checkScroll(grid);
-      }
+      checkScroll(grid);
     },
   });
 };
@@ -271,6 +270,8 @@ var methods = {
 		gridResize($(this));
 	}
 }; //Methods end
+
+
 
 
 $.fn.brick = function(methodOrOptions) { //Generic brick caller

@@ -1,141 +1,136 @@
 #set($hits = $publishingentityassethits)
 #if(!$ismodulesearch)
-		#set ( $ismodulesearch = $content.get("ismodulesearch") )
+	#set ( $ismodulesearch = $content.get("ismodulesearch") )
 #end
 #if(!$ismodulesearch)
 	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
 #end
+#if(!$publishingid)
+	#set ( $publishingid = $context.getRequestParameter("publishingid") )
+#end
+
+<div id="resultsdiv" class="scroll-resultsdiv"
+	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
+	data-hitsname="$!hits.getHitsName()"
+	data-componenthome="$!componenthome"
+	data-searchhome="$!home$!{componenthome}/results"
+	data-category="$!category.getId()"
+	data-collectionid="$!librarycol.getId()" 
+	data-publishingid="$!publishingid"
+	data-rendertype="$!rendertype"
+	data-searchtype="asset" 
+	data-pagenum="$!hits.getPage()" 
+	data-totalpages="$!hits.getTotalPages()"
+	data-module="$!module"
+	data-section="$!content.section"
+	#set( $inputid = $context.getRequestParameter("inputid"))
+	data-inputid="$!inputid"
+	data-ismaingrid="true"
+	data-stackedviewpath="/$!mediadbappid/services/publishingdestination/gallery/results.html">
 
 
-<div id="resultsdiv" 
-class="scroll-resultsdiv"
-		data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
-		data-hitsname="$hits.getHitsName()"
-		data-componenthome="$!componenthome"
-		data-searchhome="$home$componenthome/results"
-		data-category="$!category.getId()"
-		data-collectionid="$!librarycol.getId()" 
-		data-rendertype="$!rendertype"
-		data-searchtype="asset" 
-		data-pagenum="$!hits.getPage()" 
-		data-totalpages="$!hits.getTotalPages()"
-		data-module="$!module"
-		data-section="$!content.section"
+	#if( $hideheader &&  $hideheader != "true")
+		$pages.include("$componenthome/results/header.html",$context) 
+	#end
+	<div class="scrollview">
+		<div class="masonry-grid2" 
+			data-maxheight="180" 
+			data-maxwidth="180"
+			data-targeth="180"
+			data-cellpadding="4">
 		
-		#set( $inputid = $context.getRequestParameter("inputid"))
-		data-inputid="$!inputid"
-		data-ismaingrid="true"
-	
-		data-stackedviewpath="stackedmedia.html"
-	>
-
-
-#if( $hideheader &&  $hideheader != "true")
-	$pages.include("$componenthome/results/header.html",$context) 
-#end
-<div class="scrollview">
-<div class="masonry-grid2" 
-	data-maxheight="180" 
-	data-maxwidth="180"
-	data-targeth="180"
-	data-cellpadding="4"
-
->
-
-#set($count = 0)
-#set($viewerlink = $content.get("assetviewerlink") )
-#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-
-#foreach( $hit in $hits.getPageOfHits())
-	
-	$context.putPageValue("hit", $hit)
-	#set($asset = $mediaarchive.getAsset($hit.id))
-	$context.putPageValue("asset", $asset)
-	
-	#set($type = $hit.getSearchHit().getType())
-	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-	$context.putPageValue("type", $rendertype)
-	
-	$context.putPageValue("assetid", $hit.id)
-	$context.putPageValue("count", $count )
-	$context.putPageValue("sourcepath", $hit.sourcepath )
-	$context.putPageValue("thumbsize", "mediumplus" )
-	
-	#set($sourcepath = $hit.sourcepath)
-	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
-	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
-	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
-	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
-       
-	<div 
-		class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($isselected) emrowselected #end" 
-		id="gallerycell_${hit.id}"
-		data-assetid="$hit.id"
-		style="height:180px;width:250px;" 
-		#if($rendertype == "audio")
-			data-width="220"
-			data-height="180"
-		#else
-			data-width="$assetwidth"
-			data-height="$assetheight"
-			$context.putPageValue("thumbheight", "180" ) 
-		#end
-		 
-		>
-		<div class="grid-cell-hover"></div>
-		<div class="grid-gallery-checked"></div>
-		#if(!$rendertype || $type =="rendertype")
-			#set( $rendertype = "mime" )
-		#elseif( $rendertype =="video")
-			#set( $rendertype = "image" )
-		#end
-		<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+		#set($count = 0)
+		#set($viewerlink = $content.get("assetviewerlink") )
+		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		
+		#foreach( $hit in $hits.getPageOfHits())
 			
-				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			$context.putPageValue("hit", $hit)
+			#set($asset = $mediaarchive.getAsset($hit.id))
+			$context.putPageValue("asset", $asset)
 			
-		</div>
-	    
-	    ##Caption
-		<div class="draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
-			#if($stackedfield)
-				#set($title = $hit.get($stackedfield))
-				#end
-				#if(!$title)		         	
-				#if( $hit.assettitle )
-					#set($title =  $hit.assettitle) 
-				#else 
-					#set($title = $hit.name) 
-				#end
-				#end
-				<a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-				$context.putPageValue("data",$hit)	
-				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-				$context.putPageValue("view", "asset/stackedgallery")
-				##$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
-			</a>
+			#set($type = $hit.getSearchHit().getType())
+			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+			$context.putPageValue("type", $rendertype)
 			
-	
-				
-			$pages.include("$componenthome/results/badges.html", $context)
-
-			<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
-				<span>
-					#if ($hit.assetaddeddate)
-						$!context.getDate($hit.assetaddeddate)
-					#end
-				</span>
-				<div class="d-flex align-items-center">
-					   	<a href="$dlink" 
-					   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
-					       download
-					    </a>
+			$context.putPageValue("assetid", $hit.id)
+			$context.putPageValue("count", $count )
+			$context.putPageValue("sourcepath", $hit.sourcepath )
+			$context.putPageValue("thumbsize", "mediumplus" )
+			
+			#set($sourcepath = $hit.sourcepath)
+			#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+			#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=$!{hit.id}")
+			#set($isselected = $!hits.isSelectedOnPage($!{hit.id}) )
+		       
+			<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($!isselected) emrowselected #end" 
+				id="gallerycell_$!{hit.id}"
+				data-assetid="$!{hit.id}"
+				style="height:180px;width:250px;" 
+				#if($rendertype == "audio")
+					data-width="220"
+					data-height="180"
+				#else
+					data-width="$assetwidth"
+					data-height="$assetheight"
+					$context.putPageValue("thumbheight", "180" ) 
+				#end
+				>
+				<div class="grid-cell-hover"></div>
+				<div class="grid-gallery-checked"></div>
+				#if(!$rendertype || $type =="rendertype")
+					#set( $rendertype = "mime" )
+				#elseif( $rendertype =="video")
+					#set( $rendertype = "image" )
+				#end
+				<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+					$pages.include("$componenthome/results/thumbnails/$!{rendertype}.html", $context)
 				</div>
+			    
+			    ##Caption
+			    #if(false)
+				<div class="draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
+					#if($stackedfield)
+						#set($title = $hit.get($stackedfield))
+						#end
+						#if(!$title)		         	
+						#if( $hit.assettitle )
+							#set($title =  $hit.assettitle) 
+						#else 
+							#set($title = $hit.name) 
+						#end
+						#end
+						<a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
+						$context.putPageValue("data",$hit)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						$context.putPageValue("view", "asset/stackedgallery")
+						##$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+					</a>
+					
+			
+						
+					##$pages.include("$componenthome/results/badges.html", $context)
+		
+					<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
+						<span>
+							#if ($hit.assetaddeddate)
+								$!context.getDate($hit.assetaddeddate)
+							#end
+						</span>
+						<div class="d-flex align-items-center">
+							   	<a href="$dlink" 
+							   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+							       download
+							    </a>
+						</div>
+					</div>
+				</div>
+				#end
 			</div>
-		</div>
+		    #set ( $count = $count + 1) 
+		#end
+		
 	</div>
-    #set ( $count = $count + 1) 
-#end
-
-</div>
-</div>
+	</div>
 </div>
