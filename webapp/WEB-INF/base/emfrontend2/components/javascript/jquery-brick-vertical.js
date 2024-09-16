@@ -20,7 +20,7 @@ gridResize = function (grid) {
 
   var minwidth = grid.data("minwidth");
   if (minwidth == null || minwidth.length == 0) {
-    minwidth = 350;
+    minwidth = 250;
   }
   var totalavailablew = grid.width();
   var maxcols = 5;
@@ -59,7 +59,7 @@ gridResize = function (grid) {
       var w = cell.data("width");
       var h = cell.data("height");
        w = parseInt(w);
-      h = parseInt(h);
+       h = parseInt(h);
       if (w == 0) {
         w = eachwidth;
         h = eachwidth;

@@ -107,11 +107,14 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
     font-weight: 400;
     font-style: normal;
     color: #fff;
+    text-shadow:0 0 black;
 }
 .videoplay-icon::before {
     content: "►";
 }
-	
+.audio-thumb-container {
+	padding-top: 2.5rem;
+}
 </style>
 <div class="__main-container"> 
 	#if($publishing.title_enabled == "true" && $publishing.title)
@@ -160,9 +163,6 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
 		checkScroll(grid);	
 		$(".scrollview").on("scroll", function () {
 		    checkScroll(grid);
-		});
-		$(window).on("resize", function () {
-		  grid.resize();
 		});
 
 </script>

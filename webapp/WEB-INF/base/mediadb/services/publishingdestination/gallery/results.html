@@ -69,8 +69,8 @@
 				data-assetid="$!{hit.id}"
 				style="height:180px;width:250px;" 
 				#if($rendertype == "audio")
-					data-width="220"
-					data-height="180"
+					data-width="250"
+					data-height="110"
 				#else
 					data-width="$assetwidth"
 					data-height="$assetheight"
@@ -78,7 +78,7 @@
 				#end
 				>
 				<div class="grid-cell-hover"></div>
-				<div class="grid-gallery-checked"></div>
+				##<div class="grid-gallery-checked"></div>
 				#if(!$rendertype || $type =="rendertype")
 					#set( $rendertype = "mime" )
 				#elseif( $rendertype =="video" || $rendertype =="document")
