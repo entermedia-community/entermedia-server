@@ -7,6 +7,7 @@
 		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
 		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
 		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
+		--filler-color: #ccc;
 		#if($publishing.containerdimension_enabled=="true")
 		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
 		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
@@ -30,58 +31,24 @@
 		height: var(--container-height);
 		overflow: hidden;
 	}
-	.__title {
-		color: var(--text-color);
-		text-align: center;
-		padding: 16px;
-		margin: 0;
-		background-color: #fff;
-	}
-	.__caption {
-		font-size: small;
-		color: var(--text-color);
-		text-align: center;
-		margin-bottom: 16px;
-		margin: 0 auto;
-		background-color: #fff;
-		padding-bottom: 8px;
-		width: 100%;
-	}
-	.__caption::after {
-		content: "";
-		display: block;
-		position: absolute;
-		width: var(--container-width);
-		left: 0;
-		height: 1px;
-		background-color: rgba(255, 255, 255, 0.1);
-		padding-top: 16px;
-	}
+	
 	._gridgallery-container {
 		flex: 1;
 		height: 100%;
 	}
-	.__footer {
-		font-size: small;
-		color: var(--text-color);
-		text-align: center;
-		padding-top: 16px;
-		padding-bottom: 8px;
-		margin-top: 8px;
-		border-top: 0.5px solid rgba(255, 255, 255, 0.1);
-		background-color: #fff;
-	}
+	
 	
 .masonry-grid2 {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  padding: 2px;
   position: relative;
 }
 .scrollview {
 	overflow-y: auto;
+	overflow-x: hidden;
 	height: 100%;
+	padding: 0 8px 8px;
 }
 .scroll-resultsdiv {
     display: flex;
@@ -92,7 +59,6 @@
 }	
 .masonry-grid2 .masonry-grid-cell {
   position: absolute;
-
 }
 
 .masonry-grid-cell .grid-thumbimage {
@@ -105,7 +71,7 @@
 
 div.masonry-grid-cell .grid-thumbimage img.imagethumb {
   padding: 0;
-  display: inline-block;
+  display: none;
   margin: 0 auto;
   vertical-align: middle;
   width: 100%;
@@ -114,7 +80,37 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
   object-fit: cover;
   transition: all 0.1s ease;
 }
-	
+.grid-filler {
+	background-color: var(--filler-color);
+}
+.videoplay-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: transparent;
+    height: 0.5em !important;
+    font-size: 4em;
+    line-height: 1em !important;
+    margin-top: -0.5em !important;
+    margin-left: -0.5em;
+    background-color: rgba(0, 0, 0, 0);
+    width: 0.5em;
+    border: none;
+    cursor: pointer;
+    display: block;
+    padding: 0;
+    outline: none;
+    opacity: 0.7;
+}
+.videoplay-icon {
+    font-family: VideoJS;
+    font-weight: 400;
+    font-style: normal;
+    color: #fff;
+}
+.videoplay-icon::before {
+    content: "►";
+}
 	
 </style>
 <div class="__main-container"> 
@@ -161,7 +157,12 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb {
 <script type="text/javascript">
 		var grid = $(".masonry-grid2");
 		grid.brick();
+		checkScroll(grid);	
 		$(".scrollview").on("scroll", function () {
 		    checkScroll(grid);
 		});
+		$(window).on("resize", function () {
+		  grid.resize();
+		});
+
 </script>

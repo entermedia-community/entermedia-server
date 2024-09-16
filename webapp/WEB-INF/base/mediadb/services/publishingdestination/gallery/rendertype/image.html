@@ -1,0 +1,78 @@
+#if ($asset)
+	#set ($hit = $asset)
+#end
+#if (!$hit)
+	#set ($hit = $asset)
+#end
+$context.putPageValue("hit", $hit)
+
+#if(!$title)
+	#if(!$asset)
+		#set( $asset = $mediaarchive.getAsset($hit.getId()) )
+	#end		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
+#set ($thumbsize = $context.getPageValue("thumbsize"))
+#if( $type == "video" )
+	#set($imagesize = "image640x480.jpg")
+#else
+	#set($imagesize = "image550x350.jpg")
+#end
+
+$context.putPageValue("thumbsize", $thumbsize)
+
+#set($urlparams = $context.getPageValue("urlparams"))
+
+<div class="emthumbholder draggholder"> 
+	#if( $hit.importstatus && $hit.importstatus == "uploading" )
+		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
+	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
+		$pages.include("$componenthome/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
+	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		
+		<div class="mimethumbcontainer">
+       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+       </div>
+	#else	
+		#if($useoriginal)
+			#set($imagepath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+		#else
+			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			
+		#end
+		
+		#if($tstamp)
+			#set($imagepath = "${imagepath}?_=$tstamp")
+		#end
+
+		$context.putPageValue("imagepath", $imagepath)
+		$context.putPageValue("asset", $asset)
+		$context.putPageValue("imagesize", $imagesize)
+		
+		#if($moduleid == "faceprofilegroup")
+			#set($faceprofilegroups = [$data] )	
+			$context.putPageValue("faceprofilegroups", $faceprofilegroups)		
+			$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+		#elseif($hits.getInput("showfacebox"))
+				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
+				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+		#else
+			<img class="imagethumb img-fluid  img$!thumbsize "
+					catalogid="$catalogid" 
+					assetid="$hit.id" 
+					alt="#if($title)#esc($title)#else$!{hit.name}#end"
+					draggable="true"  
+					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+					data-imagesrc="$imagepath$!urlparams"	/>
+			#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+		#end			
+	#end
+</div>
+
+

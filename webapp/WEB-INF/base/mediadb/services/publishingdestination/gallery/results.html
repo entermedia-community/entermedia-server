@@ -81,11 +81,11 @@
 				<div class="grid-gallery-checked"></div>
 				#if(!$rendertype || $type =="rendertype")
 					#set( $rendertype = "mime" )
-				#elseif( $rendertype =="video")
+				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
 				<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
-					$pages.include("$componenthome/results/thumbnails/$!{rendertype}.html", $context)
+					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
 				</div>
 			    
 			    ##Caption
@@ -108,10 +108,6 @@
 						##$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
 					</a>
 					
-			
-						
-					##$pages.include("$componenthome/results/badges.html", $context)
-		
 					<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
 						<span>
 							#if ($hit.assetaddeddate)
