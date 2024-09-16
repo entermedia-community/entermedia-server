@@ -28,8 +28,14 @@ public class BaseExporter
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		if(hits == null)
 		{
-			 String sessionid = inReq.getRequestParameter("hitssessionid");
-			 hits = (HitTracker)inReq.getSessionValue(sessionid);
+			log.error("No such hits: " + name);
+			String sessionid = inReq.getRequestParameter("hitssessionid");
+			hits = (HitTracker)inReq.getSessionValue(sessionid);
+			if(hits == null)
+			{
+				log.error("No such sessions: " + sessionid);
+				return;
+			}
 		}
 		hits.enableBulkOperations();
 		SearcherManager searcherManager = (SearcherManager)inReq.getPageValue("searcherManager");
