@@ -39,6 +39,8 @@ gridResize = function (grid) {
 	maxcols = 1;
   }
 
+   var innerheight = (window.innerHeight || document.documentElement.clientHeight);
+
 eachwidth = eachwidth -8;
 //totalavailablew = totalavailablew - (maxcols*8);
 
@@ -95,10 +97,35 @@ eachwidth = eachwidth -8;
 	  {
 		colnum++;
 	  }
-	  
 	  grid.css("height", runningtotal + "px");
       
     });
+
+	//Gray boxes on bottom    
+    var maxheight = 0;
+   for (let column in Object.keys(colheight)) {
+		if( colheight[column] > maxheight)
+		{
+			maxheight = colheight[column]; 
+		}
+    }
+ 	for (let column in Object.keys(colheight)) 
+ 	{
+		var onecolheight = colheight[column];
+		if( onecolheight < maxheight)
+		{
+			var cell = $('<div></div>');
+			cell.addClass("grid-filler");
+			cell.css("top",onecolheight + "px");
+	        var colx = colwidthpx * colnum;
+			cell.css("left",colx + "px");
+      		cell.width(eachwidth);
+      		var h = maxheight - onecolheight;
+      		cell.height(h);
+   	 	    grid.append(cell);
+		}
+    }
+    
 
    checkScroll();
 };
@@ -134,8 +161,28 @@ replaceelement = function (url, div, options, callback) {
   });
 };
 
-
 checkScroll = function (grid) {
+
+ var currentscroll = $(".scrollview").scrollTop();
+
+ //From the top to this height. Set the src
+ $(grid)
+    .find(".masonry-grid-cell")
+    .each(function () {
+			var cell = $(this);
+			var bottom = cell.top() + cell.height();
+			if( bottom < currentscroll)
+			{
+				if( cell.image.src !== undefined )
+				{
+  				  cell.image.src = cell.data("imagesrc"); 			
+				}
+			}	
+	});
+}
+
+
+checkScrollOLD = function (grid) {
 	
   var appdiv = $("#application");
   var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
