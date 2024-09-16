@@ -1,0 +1,28 @@
+#if ( !$hit )
+     #set ( $hit = $asset )
+#end
+## Required: path, id
+## Optional: width, autostart, hit or asset (for the file name)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $hit.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($hit.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+#if ($viewer)
+	#set ($viewer = "${viewer}_")
+#end
+
+#set ($path = "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")   
+
+<div class="audio-thumb-container" >
+	
+<audio controls>
+  <source src="$path " type="audio/mpeg" />
+	Your browser does not support the audio element.
+</audio>
+ 
+##<div class="smallname">$hit.getName()</div>
+</div>

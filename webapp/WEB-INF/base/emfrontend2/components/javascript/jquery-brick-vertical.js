@@ -17,16 +17,15 @@ gridResize = function (grid) {
   if (!grid.is(":visible")) {
     return;
   }
-  //console.log("gridResize resizing "	);
+
   var minwidth = grid.data("minwidth");
   if (minwidth == null || minwidth.length == 0) {
-    minwidth = 350;
+    minwidth = 250;
   }
   var totalavailablew = grid.width();
-
   var maxcols = 5;
-
   var eachwidth = 0;
+  
   while( eachwidth < minwidth)
   {
 	  eachwidth = totalavailablew / maxcols;
@@ -39,11 +38,9 @@ gridResize = function (grid) {
 	maxcols = 1;
   }
 
-   var innerheight = (window.innerHeight || document.documentElement.clientHeight);
+  var innerheight = (window.innerHeight || document.documentElement.clientHeight);
 
-eachwidth = eachwidth -8;
-//totalavailablew = totalavailablew - (maxcols*8);
-
+  eachwidth = eachwidth -8;
   // Two loops, one to make rows and one to render cells
   var colwidthpx = totalavailablew/maxcols;
   var sofarusedw = 0;
@@ -62,7 +59,7 @@ eachwidth = eachwidth -8;
       var w = cell.data("width");
       var h = cell.data("height");
        w = parseInt(w);
-      h = parseInt(h);
+       h = parseInt(h);
       if (w == 0) {
         w = eachwidth;
         h = eachwidth;
@@ -86,6 +83,7 @@ eachwidth = eachwidth -8;
       
       var colx = colwidthpx * colnum;
       cell.css("left",colx + "px");
+      grid.css("height", colheight[colnum] + "px");
       
       if( (colnum + 1) == maxcols)
       {
@@ -97,12 +95,12 @@ eachwidth = eachwidth -8;
 	  {
 		colnum++;
 	  }
-	  grid.css("height", runningtotal + "px");
+	  
       
     });
 
 	//Gray boxes on bottom    
-    var maxheight = 0;
+   var maxheight = 0;
    for (let column in Object.keys(colheight)) {
 		if( colheight[column] > maxheight)
 		{
@@ -111,13 +109,13 @@ eachwidth = eachwidth -8;
     }
  	for (let column in Object.keys(colheight)) 
  	{
-		var onecolheight = colheight[column];
+		var onecolheight = colheight[column] + 8;
 		if( onecolheight < maxheight)
 		{
 			var cell = $('<div></div>');
-			cell.addClass("grid-filler");
+			cell.addClass("masonry-grid-cell grid-filler");
 			cell.css("top",onecolheight + "px");
-	        var colx = colwidthpx * colnum;
+	        var colx = colwidthpx * column;
 			cell.css("left",colx + "px");
       		cell.width(eachwidth);
       		var h = maxheight - onecolheight;
@@ -135,31 +133,11 @@ eachwidth = eachwidth -8;
 isInViewport = function( cell ) { 
   const rect = cell.getBoundingClientRect();
   var isin =
-    rect.bottom <=
+    rect.top <=
       (window.innerHeight || document.documentElement.clientHeight);
   return isin;
 };
 
-
-replaceelement = function (url, div, options, callback) {
-  jQuery.ajax({
-    url: url,
-    async: false,
-    data: options,
-    success: function (data) {
-      div.replaceWith(data);
-
-      if (callback && typeof callback === "function") {
-        //make sure it exists and it is a function
-        callback(); //execute it
-      }
-    },
-    xhrFields: {
-      withCredentials: true,
-    },
-    crossDomain: true,
-  });
-};
 
 checkScroll = function (grid) {
 
@@ -170,155 +148,28 @@ checkScroll = function (grid) {
     .find(".masonry-grid-cell")
     .each(function () {
 			var cell = $(this);
-			var bottom = cell.top() + cell.height();
-			if( bottom < currentscroll)
+			//var bottom = cell.top() + cell.height();
+			//if( bottom < currentscroll)
+			if (isInViewport(cell.get(0)))
 			{
-				if( cell.image.src !== undefined )
+				var image = cell.find("img");
+				if( image.prop("src") == undefined ||  image.prop("src") == "")
 				{
-  				  cell.image.src = cell.data("imagesrc"); 			
+  				  image.prop("src", image.data("imagesrc")); 
+  				  image.show();			
 				}
 			}	
 	});
 }
-
-
-checkScrollOLD = function (grid) {
-	
-  var appdiv = $("#application");
-  var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-  var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
-
-  if (!grid) {
-    return;
-  }
-  if (grid.data("singlepage") == true) {
-    return;
-  }
-
-  var resultsdiv = $(grid).closest("#resultsdiv");
-  var lastcheck = $(resultsdiv).data("lastscrollcheck");
-  var currentscroll = 0;
-
-  //currentscroll = $(window).scrollTop();
-  currentscroll = $(".scrollview").scrollTop();
-
-  if (lastcheck == currentscroll) {
-    //Dom events cause it to fire recursively
-    return false;
-  }
-  $(resultsdiv).data("lastscrollcheck", currentscroll);
-  if (stopautoscroll) {
-    // ignore scrolls
-    if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
-      var lastscroll = getOverlay().data("lastscroll");
-
-      if (Math.abs(lastscroll - currentscroll) > 50) {
-        $(window).scrollTop(lastscroll);
-      }
-    }
-    return;
-  }
-
-  // No results?
-
-  var gridcells = $(".masonry-grid-cell", resultsdiv);
-  if (gridcells.length == 0) {
-    //console.log("No grid found")
-
-    return; //No results?
-  }
-
-  //gridupdatepositions(grid);
-
-  var page = parseInt(resultsdiv.data("pagenum"));
-  if (isNaN(page)) {
-    page = 1;
-  }
-
-  var total = parseInt(resultsdiv.data("totalpages"));
-  if (isNaN(total)) {
-    total = 1;
-  }
-   console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
-  if (page == total) {
-    //Last page. dont load more
-    //console.log("Last page, dont load more")
-    return;
-  }
-
-  // console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
-  // ">=" + totalHeight);
-  //	var visibleHeight = $(window).height();
-  //	var totalHeight = $(document).height();
-  //	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
-  // equal to the total height?
-
-  var lastcell = gridcells.last().get(0);
-  if (!isInViewport(lastcell)) {
-    return; //not yet at bottom (-500px)
-  }
-
-  stopautoscroll = true;
-  var session = resultsdiv.data("hitssessionid");
-  page = page + 1;
-  resultsdiv.data("pagenum", page);
-
-  var stackedviewpath = resultsdiv.data("stackedviewpath");
-  if (!stackedviewpath) {
-    stackedviewpath = "stackedgallery.html";
-  }
-  
-  var collectionid = $(resultsdiv).data("collectionid");
-  var publishingid = $(resultsdiv).data("publishingid");
-  
-  var params = {
-    hitssessionid: session,
-    pagenum: page,
-    oemaxlevel: "1",
-  };
-  if (collectionid) {
-    params.collectionid = collectionid;
-  }
-  if (publishingid) {
-    params.publishingid = publishingid;
-  }
-
-  console.log("Loading page: #" + page + " - " + stackedviewpath);
-
-  $.ajax({
-    url: stackedviewpath,
-    xhrFields: {
-      withCredentials: true,
-    },
-    cache: false,
-    data: params,
-    success: function (data) {
-      var jdata = $(data);
-      var code = $(".masonry-grid2", jdata).html();
-      //$(".masonry-grid",resultsdiv).append(code);
-      $(grid).append(code);
-      // $(resultsdiv).append(code);
-      gridResize(grid);
-      //$(window).trigger("resize");
-      stopautoscroll = false;
-      checkScroll(grid);
-    },
-  });
-};
-
 	
 var methods = {
     init : function(options) {
-		//Any details?
 		gridResize($(this));
     },
-    render: function()
-    {
+    resize: function()    {
 		gridResize($(this));
 	}
 }; //Methods end
-
-
 
 
 $.fn.brick = function(methodOrOptions) { //Generic brick caller
