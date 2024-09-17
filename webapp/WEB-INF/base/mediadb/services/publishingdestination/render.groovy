@@ -15,9 +15,18 @@ public void init(){
 	String applicationid = context.findPathValue("applicationid");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
+	String previewpath = "/"+ applicationid + "/services/publishingdestination";
 	
+	String distributiontype = context.getPageValue("distributiontype");
+	if(distributiontype.equals("gallery")) {
+		previewpath = previewpath  + "/gallery/layout.html";
+	}
+	else 
+	{
+		previewpath = previewpath  + "/carousel/index.html";
+	}
 	
-	Page preview = pageManager.getPage("/"+ applicationid + "/services/publishingdestination/carousel/index.html");
+	Page preview = pageManager.getPage(previewpath);
 	
 	WebPageRequest newcontext = context.copy(preview);
 	
