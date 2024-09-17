@@ -86,6 +86,11 @@
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
 				</div>
+				
+				
+				#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", "largeimage" ) )
+				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
 			    
 			    ##Caption
 			    #if(false)
