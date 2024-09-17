@@ -281,18 +281,14 @@ public class EntityModule extends BaseMediaModule
 			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), moduleid, entityid, assetid))
 			{
 				inPageRequest.putPageValue("assets", "1");
-				archive.getEntityManager().fireAssetRemovedFromEntity(appid, inPageRequest.getUser(), assetid, entity);
 			}
 		}
 		else 
 		{
 			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-			Collection<String> ids = assethits.getSelectedHitracker().collectValues("id");
+			//Collection<String> ids = assethits.getSelectedHitracker().collectValues("id");
 			Integer removed = entityManager.removeAssetsFromEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
-			
-			archive.getEntityManager().fireAssetsRemovedFromEntity(appid, inPageRequest.getUser(), ids , entity);
-
 			inPageRequest.putPageValue("assets", removed);
 		}
 		inPageRequest.putPageValue("moduleid", moduleid);
@@ -444,21 +440,21 @@ public class EntityModule extends BaseMediaModule
 				//Asset asset2 = (Asset) iterator2.next();
 				Data entity = (Data) iterator2.next();
 				
-				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				Collection<Data> assetstoentity = foundentitesassets.get(entity.getId());
 				if( assetstoentity == null)
 				{
 					assetstoentity = new ArrayList();
 					foundentites.put(entity.getId(),entity);
 					foundentitesassets.put(entity.getId(),assetstoentity);
 				}
-				assetstoentity.add(asset.getId());
+				assetstoentity.add(asset);
 			}
 		}
 		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
 		{
 			String entityid = (String) iterator.next();
 			Data entity = foundentites.get(entityid);
-			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			Collection<Data> bulkassets = foundentitesassets.get(entityid);
 			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
 		}
 		
@@ -516,7 +512,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			String entityid = (String) iterator.next();
 			Data entity = foundentites.get(entityid);
-			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			Collection<Data> bulkassets = foundentitesassets.get(entityid);
 			archive.getEntityManager().fireAssetsAddedToEntity(appid, inPageRequest.getUser(),bulkassets, entity);
 		}
 		
@@ -536,14 +532,14 @@ public class EntityModule extends BaseMediaModule
 				//Asset asset2 = (Asset) iterator2.next();
 				Data entity = (Data) iterator2.next();
 				
-				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				Collection<Data> assetstoentity = foundentitesassets.get(entity.getId());
 				if( assetstoentity == null)
 				{
 					assetstoentity = new ArrayList();
 					foundentites.put(entity.getId(),entity);
 					foundentitesassets.put(entity.getId(),assetstoentity);
 				}
-				assetstoentity.add(asset.getId());
+				assetstoentity.add(asset);
 			}
 		}
 		return foundentites;
@@ -691,7 +687,7 @@ public class EntityModule extends BaseMediaModule
 		Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
 		for (Iterator iterator = entities.iterator(); iterator.hasNext();) {
 			Data entity = (Data) iterator.next();
-			archive.getEntityManager().fireAssetRemovedFromEntity(appid, inReq.getUser(), deleted.getId(), entity);
+			archive.getEntityManager().fireAssetRemovedFromEntity(appid, inReq.getUser(), deleted, entity);
 		}
 		
 	}
@@ -714,14 +710,14 @@ public class EntityModule extends BaseMediaModule
 			Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
 				Data entity = (Data) iterator2.next();
-				Collection<String> assetstoentity = foundentitesassets.get(entity.getId());
+				Collection<Data> assetstoentity = foundentitesassets.get(entity.getId());
 				if( assetstoentity == null)
 				{
 					assetstoentity = new ArrayList();
 					foundentites.put(entity.getId(),entity);
 					foundentitesassets.put(entity.getId(),assetstoentity);
 				}
-				assetstoentity.add(assetid);
+				assetstoentity.add(deleted);
 			}
 		}
 		
@@ -729,7 +725,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			String entityid = (String) iterator.next();
 			Data entity = foundentites.get(entityid);
-			Collection<String> bulkassets = foundentitesassets.get(entityid);
+			Collection<Data> bulkassets = foundentitesassets.get(entityid);
 			archive.getEntityManager().fireAssetsRemovedFromEntity(appid, inReq.getUser(),bulkassets, entity);
 		}
 		
