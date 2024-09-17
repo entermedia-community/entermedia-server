@@ -1342,7 +1342,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		String email = inArchive.getCatalogSettingValue("requestapproveremail");
 		if (email == null || (email != null && email.isEmpty()))
 		{
-			throw new OpenEditException("No approver email provided, please contact your administrator");
+			throw new OpenEditException("No approver email provided (requestapproveremail), please contact your administrator");
 		}
 
 		User followerUser = (User) userManager.getUserByEmail(email);

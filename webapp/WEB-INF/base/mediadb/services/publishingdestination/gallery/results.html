@@ -64,10 +64,9 @@
 			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=$!{hit.id}")
 			#set($isselected = $!hits.isSelectedOnPage($!{hit.id}) )
 		       
-			<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($!isselected) emrowselected #end" 
+			<div class="masonry-grid-cell" 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
-				style="height:180px;width:250px;" 
 				#if($rendertype == "audio")
 					data-width="250"
 					data-height="110"
@@ -84,9 +83,14 @@
 				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
-				<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
 				</div>
+				
+				
+				#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", "largeimage" ) )
+				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
 			    
 			    ##Caption
 			    #if(false)

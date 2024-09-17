@@ -413,7 +413,12 @@ public class EntityManager implements CatalogEnabled
 			}
 			getMediaArchive().saveAssets(tosave);
 		}
+		
+		fireAssetsRemovedFromEntity(null, inUser, tosave , entity);
+		
 		return tosave.size();
+		
+
 	}
 	
 	public Boolean removeAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, String assetid) 
@@ -428,6 +433,8 @@ public class EntityManager implements CatalogEnabled
 			asset.removeCategory(category);
 		}
 		getMediaArchive().saveAsset(asset);
+		
+		fireAssetRemovedFromEntity(null, inUser, asset, entity);
 		return true;
 
 	}
@@ -638,33 +645,33 @@ public class EntityManager implements CatalogEnabled
 	
 	
 
-	public void fireAssetAddedToEntity(String applicationid, User inUser, String inAssetId, Data entity)
+	public void fireAssetAddedToEntity(String applicationid, User inUser, Data inAsset, Data entity)
 	{
-		Collection<String> ids = new ArrayList(1);
-		ids.add(inAssetId);
-		saveAssetActivity(applicationid, inUser, entity, ids, "assetsadded");
+		Collection<Data> assets = new ArrayList(1);
+		assets.add(inAsset);
+		saveAssetActivity(applicationid, inUser, entity, assets, "assetsadded");
 	}
 	
-	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<String> inAssets, Data entity)
+	public void fireAssetsAddedToEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsadded");
 	}
 
-	public void fireAssetRemovedFromEntity(String applicationid, User inUser, String inAssetId, Data entity)
+	public void fireAssetRemovedFromEntity(String applicationid, User inUser, Data inAsset, Data entity)
 	{
-		Collection<String> ids = new ArrayList(1);
-		ids.add(inAssetId);
-		saveAssetActivity(applicationid, inUser, entity, ids, "assetsremoved");
+		Collection<Data> assets = new ArrayList(1);
+		assets.add(inAsset);
+		saveAssetActivity(applicationid, inUser, entity, assets, "assetsremoved");
 
 	}
 
-	public void fireAssetsRemovedFromEntity(String applicationid, User inUser, Collection<String> inAssets, Data entity)
+	public void fireAssetsRemovedFromEntity(String applicationid, User inUser, Collection<Data> inAssets, Data entity)
 	{
 		saveAssetActivity(applicationid, inUser, entity, inAssets, "assetsremoved");
 	}
 	
 	
-	public void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection<String> inAssets, String inOperation) {
+	public void saveAssetActivity(String applicationid,  User inUser, Data entity, Collection<Data> inAssets, String inOperation) {
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
 		Data event = searcher.createNewData();
 		event.setProperty("applicationid", applicationid);
@@ -679,8 +686,7 @@ public class EntityManager implements CatalogEnabled
 		event.setValue("assetids", inAssets);
 		Collection names = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
-			String assetid = (String) iterator.next();
-			Asset asset = getMediaArchive().getAsset(assetid);
+			Asset asset = (Asset) iterator.next();
 			names.add(asset.getName());
 		}
 		event.setValue("assetnames", names);

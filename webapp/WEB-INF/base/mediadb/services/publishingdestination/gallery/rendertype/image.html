@@ -63,6 +63,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
 				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
 		#else
+			#set($imagelink = $mediaarchive.asLinkToPreview($hit, $librarycol.id, "image3000x3000.jpg", true))
+			<a href="$imagelink" class="lightbox">
 			<img class="imagethumb img-fluid  img$!thumbsize "
 					catalogid="$catalogid" 
 					assetid="$hit.id" 
@@ -71,6 +73,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 					data-imagesrc="$imagepath$!urlparams"	/>
 			#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+			</a>
 		#end			
 	#end
 </div>
