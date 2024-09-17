@@ -1034,7 +1034,16 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setId(moduleid);
 					}
 					module.setName(modulename);
-					module.setValue("isentity", true); 
+					
+					String icon = userdata.getString("moduleicon");
+					if( icon != null)
+					{
+						icon = PathUtilities.extractPageName(icon);
+						module.setValue("moduleicon", icon ); //Clean this up on server 
+					}
+					module.setValue("isentity", true); //Not used anymore?
+					module.setValue("enableuploading", true); 
+					module.setValue("showonsearch", true);
 					archive.saveData("module",module);
 					inReq.putPageValue("data",module);
 					saveModule(inReq);
