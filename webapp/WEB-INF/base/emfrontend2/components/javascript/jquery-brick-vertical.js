@@ -37,7 +37,10 @@ gridResize = function (grid) {
   {
 	maxcols = 1;
   }
-
+   var colheight = {};
+  for (let col=0; col<maxcols; col++) {
+		colheight[col] = 0;
+  }
   var innerheight = (window.innerHeight || document.documentElement.clientHeight);
 
   eachwidth = eachwidth -8;
@@ -45,13 +48,9 @@ gridResize = function (grid) {
   var colwidthpx = totalavailablew/maxcols;
   var sofarusedw = 0;
 
- var colheight = {};
 
-  var rows = new Array();
-  var row = new Array();
-  
+
   var colnum = 0;
-  rows.push(row);
   $(grid)
     .find(".masonry-grid-cell")
     .each(function () {
@@ -69,9 +68,8 @@ gridResize = function (grid) {
       
       cell.data("aspect", a);
       var newheight = Math.floor(eachwidth / a);
-      
+      colnum = shortestColumn(colheight);
       cell.data("colnum", colnum);
-      row.push(cell);
       
       var runningtotal = colheight[colnum]??0;
       runningtotal = runningtotal + 8;
@@ -85,16 +83,8 @@ gridResize = function (grid) {
       cell.css("left",colx + "px");
       grid.css("height", colheight[colnum] + "px");
       
-      if( (colnum + 1) == maxcols)
-      {
-		colnum = 0;
-		row = new Array();
-		rows.push(row);
-	  }
-	  else
-	  {
-		colnum++;
-	  }
+      
+      
 	  
       
     });
@@ -128,6 +118,20 @@ gridResize = function (grid) {
    checkScroll();
 };
 
+
+shortestColumn = function (colheight) {
+	var shortColumn = 0;
+	var shortColumnHeight = -1;
+	for (let column in Object.keys(colheight)) 
+ 	{
+		var onecolheight = colheight[column];
+		if(shortColumnHeight == -1 || onecolheight < shortColumnHeight) {
+			shortColumnHeight = onecolheight;
+			shortColumn = column;
+		}
+    }
+    return shortColumn;
+}
 
 
 isInViewport = function( cell ) { 
