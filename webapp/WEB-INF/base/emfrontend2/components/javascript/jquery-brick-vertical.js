@@ -41,15 +41,9 @@ gridResize = function (grid) {
   for (let col=0; col<maxcols; col++) {
 		colheight[col] = 0;
   }
-  var innerheight = (window.innerHeight || document.documentElement.clientHeight);
 
   eachwidth = eachwidth -8;
-  // Two loops, one to make rows and one to render cells
   var colwidthpx = totalavailablew/maxcols;
-  var sofarusedw = 0;
-
-
-
   var colnum = 0;
   $(grid)
     .find(".masonry-grid-cell")
@@ -82,10 +76,6 @@ gridResize = function (grid) {
       var colx = colwidthpx * colnum;
       cell.css("left",colx + "px");
       grid.css("height", colheight[colnum] + "px");
-      
-      
-      
-	  
       
     });
 
@@ -135,8 +125,10 @@ shortestColumn = function (colheight) {
 
 isInViewport = function( cell ) { 
   const rect = cell.getBoundingClientRect();
+  var top  = rect.top;
+  top = top - 600;
   var isin =
-    rect.top <=
+     top <=
       (window.innerHeight || document.documentElement.clientHeight);
   return isin;
 };
