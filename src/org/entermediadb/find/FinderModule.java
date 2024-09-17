@@ -1164,7 +1164,10 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		MultiValued entity = null;
-
+		String distributiongallerytype = inReq.findValue("distributiongallerytype");
+		if(distributiongallerytype == null) {
+			distributiongallerytype = "carousel"; //defaults to carousel
+		}
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		if(publishingid == null)
 		{
@@ -1172,7 +1175,13 @@ public class FinderModule extends BaseMediaModule
 			if( entityid != null)
 			{
 				Searcher searcher = archive.getSearcher("distributiongallery");
-				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
+				//Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
+				SearchQuery query = searcher.createSearchQuery();
+				query.addExact("entityid", entityid);
+				if (distributiongallerytype != null) {
+					query.addExact("distributiontype", distributiongallerytype);
+				}
+				Data publishing = searcher.searchByQuery(query);
 				if(publishing != null)
 				{
 					publishingid = publishing.getId();
