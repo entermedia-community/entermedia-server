@@ -1268,7 +1268,7 @@ public class FinderModule extends BaseMediaModule
 		
 		HitTracker tracker = assetsearcher.search(search);
 		tracker.enableBulkOperations();
-		tracker.setHitsPerPage(200);
+		tracker.setHitsPerPage(1000);
 		
 		//Pagination
 		int totalPages = tracker.getTotalPages();
