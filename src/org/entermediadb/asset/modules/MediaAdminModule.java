@@ -24,6 +24,8 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -37,6 +39,7 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
+import org.openedit.xml.XmlFile;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -1014,6 +1017,8 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			Collection tosavemenu = new ArrayList();
 
+			Map<String,Data> parents = new HashMap<String,Data>();
+			
 			boolean replacemenu = false;
 			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
 				ValuesMap map = new ValuesMap((Map) iterator.next());
@@ -1034,7 +1039,6 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setId(moduleid);
 					}
 					module.setName(modulename);
-					
 					String icon = userdata.getString("moduleicon");
 					if( icon != null)
 					{
@@ -1048,7 +1052,14 @@ public class MediaAdminModule extends BaseMediaModule
 					inReq.putPageValue("data",module);
 					saveModule(inReq);
 
-				
+					//Children
+					String parentmoduleid = userdata.getString("parent");
+					if( parentmoduleid != null)
+					{
+						parents.put(parentmoduleid,module);
+					}
+					
+					//Menu
 					String ordering = userdata.getString("ordering"); 
 
 					if( ordering != null && !ordering.equals("-1" ) )
@@ -1064,15 +1075,17 @@ public class MediaAdminModule extends BaseMediaModule
 						existingmenu.setValue("ordering",i);
 						tosavemenu.add(existingmenu);
 
-						if( i > 0)
+						if( i > -1)
 						{
 							replacemenu = true;
 						}
 					}
-					
-
 				}
 			}
+			
+			//Check parents
+			checkParents(archive,parents);
+			
 			if(replacemenu)
 			{
 				archive.getSearcher("appsection").deleteAll(inReq.getUser());
@@ -1081,6 +1094,63 @@ public class MediaAdminModule extends BaseMediaModule
 			}
 		}
 
+	}
+
+	private void checkParents(MediaArchive archive, Map<String, Data> parents) {
+		for (Iterator iterator = parents.keySet().iterator(); iterator.hasNext();) 
+		{
+			String parentid = (String) iterator.next();
+			Data childmodule = parents.get(parentid);
+			
+			//Make field and a one to many view? Add all the "Add New" columns to the view
+			Searcher childsearcher = archive.getSearcher(childmodule.getId());
+			PropertyDetails details = childsearcher.getPropertyDetails();
+			Data parentmodule = archive.getData("module",parentid);
+			if( details.getDetail(parentid) == null)
+			{
+				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(parentid, parentmodule.getName());
+				newprop.setValue("name",parentmodule.getValue("name"));  //Int?
+				newprop.setDataType("list");
+				newprop.setValue("viewtype","entity");
+				newprop.setEditable(true);
+				newprop.setIndex(true);
+				archive.getPropertyDetailsArchive().savePropertyDetail(newprop, childmodule.getId(), null);
+				archive.getPropertyDetailsArchive().clearCache();
+			}
+			//Make views
+			Searcher viewsearcher = archive.getSearcher("view");
+
+			String viewid = PathUtilities.makeId(parentmodule.getName());
+			viewid = viewid.toLowerCase();
+			
+			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
+			Page from = getPageManager().getPage(addpath);
+			
+			//entityparent/entitychildparent
+			String targetpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + parentmodule.getId() + "/" + childmodule.getId() + viewid + ".xml";
+			Page to = getPageManager().getPage(targetpath );
+
+			if( !to.exists())
+			{
+				getPageManager().copyPage(from, to);
+			}
+			Data data =  (Data)viewsearcher.searchById(parentmodule.getId() + viewid);
+			if( data == null)
+			{
+				data = viewsearcher.createNewData();
+				//Copy the add new
+				data.setId(childmodule.getId() + viewid);
+				data.setName(childmodule.getName());
+
+				data.setProperty("moduleid", parentmodule.getId());
+				data.setProperty("rendertype", "table"); //POne to manuy
+				data.setProperty("rendertable", childmodule.getId());
+				data.setProperty("renderexternalid", parentmodule.getId());
+				data.setProperty("systemdefined", "false");
+				data.setProperty("ordering", System.currentTimeMillis() + "");
+				viewsearcher.saveData(data);
+			}
+		}
 	}
 
 	
