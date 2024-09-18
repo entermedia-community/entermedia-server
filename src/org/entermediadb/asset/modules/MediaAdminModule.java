@@ -1051,7 +1051,7 @@ public class MediaAdminModule extends BaseMediaModule
 				
 					String ordering = userdata.getString("ordering"); 
 
-					if( ordering != null )
+					if( ordering != null && !ordering.equals("-1" ) )
 					{
 						Data existingmenu = archive.query("appsection").exact("toplevelentity",moduleid).searchOne();
 						if( existingmenu == null)
