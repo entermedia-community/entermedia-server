@@ -16,12 +16,15 @@
 		--container-height: 100%;
 		#end
 	}
+	html,
+	body { overflow-y: auto; }
 	body {
 		width: 100vw;
 		height: 100vh;
 		margin: 0;
 		padding: 0;
 	}
+	
 	.__main-container {
 		position: relative;
 		display: flex;
@@ -45,8 +48,6 @@
   position: relative;
 }
 .scrollview {
-	overflow-y: auto;
-	overflow-x: hidden;
 	height: 100%;
 	padding: 0 8px 8px;
 }
@@ -563,15 +564,6 @@ div.masonry-grid-cell .grid-cell-footer  {
 		<div class="__footer">$publishing.footer</div>
 	#end
 </div>
-<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brick-vertical.js"></script>
-<script type="text/javascript">
-		var grid = $(".masonry-grid2");
-		grid.brick();
-		checkScroll(grid);	
-		$(".scrollview").on("scroll", function () {
-		    checkScroll(grid);
-		});
-		$('.lightbox').simpleLightbox();
 
-</script>
+
+

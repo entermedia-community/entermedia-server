@@ -10,8 +10,5 @@
 			<boolean value="true" />
 	</permission>
 	
-	<inner-layout>/${applicationid}/services/publishingdestination/gallery/layout.html</inner-layout>
-	
-	
 </page>
 
