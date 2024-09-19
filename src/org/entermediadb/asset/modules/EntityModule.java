@@ -860,4 +860,30 @@ public class EntityModule extends BaseMediaModule
 
 	}
 	
+	
+	
+	public void addToWorkflow(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String pickedentityid = inPageRequest.getRequestParameter("id");
+		
+		
+		String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) {
+			Data asset = (Data) iterator.next();
+			
+			Data workflow = entityManager.createWorkflow(asset);
+			
+		}
+		Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assethits);
+		inPageRequest.putPageValue("assets", added);
+		
+		
+	}
+	
 }
