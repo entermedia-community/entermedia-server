@@ -834,7 +834,6 @@ public class EntityModule extends BaseMediaModule
 		String desktopid = inReq.getRequestParameter("desktop");
 		
 		
-		
 		Data entity = archive.getData(moduleid,entityid);
 		Data folder = archive.query("desktopsyncfolder").exact("entityid",entityid).exact("desktop",desktopid).searchOne();
 		if( folder == null)
@@ -861,29 +860,20 @@ public class EntityModule extends BaseMediaModule
 	}
 	
 	
-	
-	public void addToWorkflow(WebPageRequest inPageRequest) throws Exception 
+	public void setWorkflowStatus(WebPageRequest inPageRequest) throws Exception 
 	{
-	
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
+		String setworkflowstatus = inPageRequest.getRequestParameter("setworkflowstatus");
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
-		String pickedentityid = inPageRequest.getRequestParameter("id");
-		
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
 		
 		String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		
 		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) {
-			Data asset = (Data) iterator.next();
-			
-			Data workflow = entityManager.createWorkflow(asset);
-			
-		}
-		Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assethits);
-		inPageRequest.putPageValue("assets", added);
-		
-		
+		entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,setworkflowstatus);
+		//inPageRequest.putPageValue("assets", tosave.size());
 	}
 	
 }

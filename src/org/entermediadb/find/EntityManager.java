@@ -694,6 +694,41 @@ public class EntityManager implements CatalogEnabled
 		
 		searcher.saveData(event, null);
 	}
-	
+
+	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String setworkflowstatus)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
+		
+		Collection ids = inAssethits.collectValues("id");
+		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid",inModuleid).exact("parententityid",inEntityid).exact("workflowstatus", setworkflowstatus).search();
+		
+		Map<String,Data> byassets = new HashMap();
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
+		{
+			Data data = (Data) iterator.next();
+			byassets.put(data.get("primarymedia"),data);
+		}
+		
+		List tosave = new ArrayList();
+		
+		//TODO: Check for existing workflows
+		//Add more
+		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) 
+		{
+			Data asset = (Data) iterator.next();
+			//Look for existing?
+			Data event = searcher.createNewData();
+			event.setProperty("parententityid", inEntityid);
+			event.setProperty("parentmoduleid", inModuleid);
+			event.setValue("name", asset.getName());
+			event.setValue("primarymedia", asset.getId());
+			event.setValue("owner", inUser.getName());
+			event.setValue("entity_date", new Date()); 
+			tosave.add(event);
+		}
+		getMediaArchive().saveData("entityassetworkflow", tosave);
+		
+	}
+
 
 }
