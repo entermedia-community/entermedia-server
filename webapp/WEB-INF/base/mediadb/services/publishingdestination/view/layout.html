@@ -1,0 +1,30 @@
+#ifnotnull($publishing)
+
+	#if($publishing.get("distributiontype") == "gallery") 
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brick-vertical.js"></script>
+		<style type="text/css">
+			.scrollview {
+				overflow-y: auto;
+				}
+		</style>
+		<div id="previewgallery" style="height: 100%; overflow-y: auto;">
+		$pages.include("$apphome/services/publishingdestination/gallery/index.html", $context)
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function () {
+		    	var grid = $(".masonry-grid2");
+				$(".scrollview").scroll(function(){
+			    checkScroll(grid);
+				});
+			});
+		</script>
+	#else 
+	
+		$pages.include("$apphome/services/publishingdestination/carousel/index.html", $context)
+	#end
+  
+#end
+#ifnull($publishing)
+  <h2>Preview not available</h2>
+#end

@@ -180,7 +180,9 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
 
 
 
-
+/**
+ * SimpleLightbox
+ */
 
 
 
@@ -716,3 +718,20 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
     return SimpleLightbox;
 
 }));
+
+
+/**
+ * Init
+ */
+(function ($) {
+	jQuery(document).ready(function () {
+	    var grid = $(".masonry-grid2");
+		grid.brick();
+		checkScroll(grid);	
+		$(document).scroll(function(){
+		    checkScroll(grid);
+		});
+		$('.lightbox').simpleLightbox();
+	});
+}(jQuery));		
+

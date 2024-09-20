@@ -12,8 +12,6 @@
 			<boolean value="true" />
 	</permission>
 	
-	
-	
-	<inner-layout>/${applicationid}/services/publishingdestination/view/previewhtml.html</inner-layout>
+	<inner-layout>/${applicationid}/services/publishingdestination/view/layout.html</inner-layout>
 </page>
 

@@ -19,7 +19,7 @@ public void init(){
 	
 	String distributiontype = context.getPageValue("distributiontype");
 	if(distributiontype.equals("gallery")) {
-		previewpath = previewpath  + "/gallery/layout.html";
+		previewpath = previewpath  + "/gallery/index.html";
 	}
 	else 
 	{
