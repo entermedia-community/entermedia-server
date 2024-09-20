@@ -581,7 +581,10 @@ public class CategoryModule extends BaseMediaModule
 	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException
 	{
 		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
-		
+		if (targetcategoryid == null) {
+			return;
+		}
+			
 		//Copy all the children and assets as well...
 		MediaArchive archive = getMediaArchive(inReq);
 		String[] catids = inReq.getRequestParameters("categoryid");
