@@ -30,11 +30,9 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.profile.ModuleData;
-import org.openedit.servlet.BaseOpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
@@ -695,6 +693,36 @@ public class EntityManager implements CatalogEnabled
 		searcher.saveData(event, null);
 	}
 
+	//Add API to restore deleted assets
+	
+	public Map loadWorkStatusForPage(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits)
+	{
+		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
+		
+		List page = inAssethits.getPageOfHits();
+		ListHitTracker tracker = new ListHitTracker(page);
+		tracker.setHitsPerPage(inAssethits.getHitsPerPage());
+		Collection ids = tracker.collectValues("id");
+		
+		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid",inModuleid).exact("parententityid",inEntityid).search();
+
+		Map<String,Set> assetstatuses = new HashMap();
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
+		{
+			Data data = (Data) iterator.next();
+			String assetid = data.get("primarymedia");
+			Set<String> statuses = assetstatuses.get(assetid);
+			if( statuses == null)
+			{
+				statuses = new HashSet();
+			}
+			String workflowstatus = data.get("workflowstatus");
+			statuses.add(workflowstatus);
+			assetstatuses.put(assetid,statuses);
+		}
+		return assetstatuses;
+	}	
+	
 	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String setworkflowstatus)
 	{
 		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
@@ -727,8 +755,30 @@ public class EntityManager implements CatalogEnabled
 			tosave.add(event);
 		}
 		getMediaArchive().saveData("entityassetworkflow", tosave);
-		
 	}
 
+	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+	{
+	
+		//Search for all the boxes that match. 
+		HitTracker boxes = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
+				exact("parentmoduleid", inModule.getId()).sort("orderingUp").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return boxes;
+	}
+	
+	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
+	{
+	
+		//Search for all the boxes that match. 
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inBoxes).
+				exact("parentmoduleid", inModule.getId()).
+				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return assets;
+	}
 
+	
 }
