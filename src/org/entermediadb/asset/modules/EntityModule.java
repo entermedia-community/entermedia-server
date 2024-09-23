@@ -858,22 +858,24 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("verifynow", true);
 
 	}
-	
-	
-	public void setWorkflowStatus(WebPageRequest inPageRequest) throws Exception 
+
+	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
+	
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
-		String setworkflowstatus = inPageRequest.getRequestParameter("setworkflowstatus");
 		
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
-		String entityid = inPageRequest.getRequestParameter("entityid");
+		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String pickedentityid = inPageRequest.getRequestParameter("id");
+		
+		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
 		
 		String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 		
 		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-		entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,setworkflowstatus);
-		//inPageRequest.putPageValue("assets", tosave.size());
+	//	entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,setworkflowstatus);
+
+	
 	}
 	
 }
