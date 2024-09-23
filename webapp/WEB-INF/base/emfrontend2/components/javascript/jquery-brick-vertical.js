@@ -285,9 +285,11 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
         closeOnEscapeKey: true,
         nextOnImageClick: true,
         showCaptions: true,
+        showDownloadLinks: true,
 
         captionAttribute: 'title', // choose data source for library to glean image caption from
         urlAttribute: 'href', // where to expect large image
+        downloadlinkAttribute: 'data-downloadlink',
 
         startAt: 0, // start gallery at custom index
         loadingTimeout: 100, // time after loading element will appear
@@ -328,6 +330,7 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
             this.eventRegistry = {lightbox: [], thumbnails: []};
             this.items = [];
             this.captions = [];
+            this.downloadlinks = [];
 
             if (elements) {
 
@@ -335,6 +338,7 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
 
                     self.items.push(element.getAttribute(options.urlAttribute));
                     self.captions.push(element.getAttribute(options.captionAttribute));
+                    self.downloadlinks.push(element.getAttribute(options.downloadlinkAttribute));
 
                     if (options.bindToItems) {
 
@@ -357,6 +361,9 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
 
             if (options.captions) {
                 this.captions = options.captions;
+            }
+             if (options.downloadlinks) {
+                this.downloadlinks = options.downloadlinks;
             }
 
         },
@@ -481,6 +488,12 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
                         '<div class="slbCaption">' + this.captions[position] + '</div>')
                     );
                 }
+                
+                if (this.options.showDownloadLinks && this.downloadlinks[position]) {
+                    $imageCont.appendChild(parseHtml(
+                        '<div class="slbDownloadLink"><a href="' + this.downloadlinks[position] + '"></a></div>')
+                    );
+                }
 
                 this.loadImage(url, function() {
 
@@ -489,6 +502,8 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
                     callback.call(self, $imageCont);
 
                     self.loadImage(self.items[self.normalizePosition(self.currentPosition + 1)]);
+                    
+                    self.setDownloadlinkPosition();
 
                 });
 
@@ -598,6 +613,16 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
             if (this.$currentImage) {
                 this.$currentImage.style.maxHeight = getWindowHeight() + 'px';
             }
+            if(this.$currentImage.nextSibling) {
+				this.$currentImage.nextSibling.style.top = this.$currentImage.clientHeight;
+			}
+
+        },
+        
+        setDownloadlinkPosition: function() {
+            if(this.$currentImage.nextSibling) {
+				this.$currentImage.nextSibling.style.top = this.$currentImage.height - 26;
+			}
 
         },
 
@@ -639,6 +664,7 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
             }).addEvent(window, 'resize', function() {
 
                 self.setImageDimensions();
+                self.setDownloadlinkPosition();
 
             });
 
