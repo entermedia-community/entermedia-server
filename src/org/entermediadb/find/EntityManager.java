@@ -762,7 +762,7 @@ public class EntityManager implements CatalogEnabled
 	
 		//Search for all the boxes that match. 
 		HitTracker boxes = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
-				exact("parentmoduleid", inModule.getId()).sort("orderingDown").search();
+				exact("parentmoduleid", inModule.getId()).sort("orderingUp").search();
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
 		return boxes;
