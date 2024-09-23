@@ -30,6 +30,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -723,38 +724,52 @@ public class EntityManager implements CatalogEnabled
 		return assetstatuses;
 	}	
 	
-	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String setworkflowstatus)
+	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
 	{
-		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
-		
-		Collection ids = inAssethits.collectValues("id");
-		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid",inModuleid).exact("parententityid",inEntityid).exact("workflowstatus", setworkflowstatus).search();
-		
-		Map<String,Data> byassets = new HashMap();
-		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
+		if( lightboxid == null)
 		{
-			Data data = (Data) iterator.next();
-			byassets.put(data.get("primarymedia"),data);
+			log.error("No box selected");
+			return;
 		}
+		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
 		
+		Collection assetstoadd =  inAssethits.collectValues("id");
+		HitTracker existing = searcher.query().orgroup("primarymedia", assetstoadd).exact("parentmoduleid",inModuleid)
+				.exact("parententityid",inEntityid).exact("lightboxid", lightboxid).search();
+
+		Set alreadyadded =  new HashSet( existing.collectValues("primarymedia"));
+//		Map<String,Data> byassets = new HashMap();
+//		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
+//		{
+//			Data data = (Data) iterator.next();
+//			byassets.put(data.get("primarymedia"),data);
+//		}
+//		
 		List tosave = new ArrayList();
 		
 		//TODO: Check for existing workflows
 		//Add more
+		long count = System.currentTimeMillis();
+		
 		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) 
 		{
 			Data asset = (Data) iterator.next();
 			//Look for existing?
-			Data event = searcher.createNewData();
-			event.setProperty("parententityid", inEntityid);
-			event.setProperty("parentmoduleid", inModuleid);
-			event.setValue("name", asset.getName());
-			event.setValue("primarymedia", asset.getId());
-			event.setValue("owner", inUser.getName());
-			event.setValue("entity_date", new Date()); 
-			tosave.add(event);
+			if( !alreadyadded.contains(asset.getId()) )
+			{
+				Data event = searcher.createNewData();
+				event.setProperty("lightboxid", lightboxid);
+				event.setProperty("parententityid", inEntityid);
+				event.setProperty("parentmoduleid", inModuleid);
+				event.setValue("name", asset.getName());
+				event.setValue("primarymedia", asset.getId());
+				event.setValue("owner", inUser.getName());
+				event.setValue("entity_date", new Date()); 
+				event.setValue("ordering", count++);
+				tosave.add(event);
+			}
 		}
-		getMediaArchive().saveData("entityassetworkflow", tosave);
+		getMediaArchive().saveData("emedialightboxasset", tosave);
 	}
 
 	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
@@ -778,6 +793,30 @@ public class EntityManager implements CatalogEnabled
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
 		return assets;
+	}
+	
+	public HitTracker loadLightBoxAssets(String inModule, String inEntity, String inLightBoxId, User inUser)
+	{
+		//Search for all the boxes that match. 
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inLightBoxId).
+				exact("parentmoduleid", inModule).
+				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return assets;
+	}
+
+	public Data findFirstSelectedLightBox(HitTracker boxes, HitTracker assets)
+	{
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+			Data lightbox = (Data) iterator.next();
+			FilterNode node = assets.findFilterChildValue("lightboxid", lightbox.getId());
+			if( node != null)
+			{
+				return lightbox;
+			}
+		}
+		return null;
 	}
 
 	

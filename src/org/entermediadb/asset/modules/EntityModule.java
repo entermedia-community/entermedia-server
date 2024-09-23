@@ -3,13 +3,13 @@ package org.entermediadb.asset.modules;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date; 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.DateStorageUtil;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
@@ -865,16 +865,58 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
-		String pickedentityid = inPageRequest.getRequestParameter("id");
+		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
 		
-		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
+		String assetid = inPageRequest.getRequestParameter("assetid");
 		
-		String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
 		
 		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-	//	entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,setworkflowstatus);
+		
+		if( assethits != null && assethits.hasSelections())
+		{
+			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+			assethits.deselectAll();
+			assethits = assethitscopy;
+		}
+		else
+		{
+			List one = new ArrayList();
+			Asset asset = archive.getAsset(assetid);
+			one.add(asset);
+			assethits = new ListHitTracker(one); 
+		}
+		
+		entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
 
+	
+	}
+
+	public void loadLightBoxResults(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		EntityManager entityManager = getEntityManager(inReq);
+		String moduleid = inReq.getRequestParameter("moduleid");
+		String entityid = inReq.getRequestParameter("entityid");
+		String lightboxid = inReq.getRequestParameter("lightboxid");
+		HitTracker lightboxassets = entityManager.loadLightBoxAssets(moduleid,entityid,lightboxid,inReq.getUser());
+		inReq.putPageValue("lightboxassets",lightboxassets);
+		
+		Map assetidlookup = new HashMap();
+		Collection assetids = lightboxassets.collectValues("primarymedia");
+		
+		//TODO: only support up to 1000 assets. Break down into chunks?
+		Collection hits = archive.query("asset").ids(assetids).search();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Data asset = (Data) iterator.next();
+			assetidlookup.put(asset.getId(),asset);
+		}
+		
+		inReq.putPageValue("lightboxassets",lightboxassets);
+		inReq.putPageValue("assetlookup",assetidlookup);
 	
 	}
 	
