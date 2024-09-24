@@ -22,7 +22,6 @@ import java.util.TimeZone;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.*;
-import org.entermediadb.asset.Category;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -181,7 +180,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 		//aws s3 rm s3://mybucket/test2.txt
 		List cmd = new ArrayList();

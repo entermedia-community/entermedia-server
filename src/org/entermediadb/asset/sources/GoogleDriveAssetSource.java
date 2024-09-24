@@ -115,7 +115,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 	
 

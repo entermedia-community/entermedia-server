@@ -402,7 +402,7 @@ public class AssetEditModule extends BaseMediaModule
 						
 						if (Boolean.parseBoolean(deleteoriginal))
 						{
-							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+							editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 						}
 						deleted++;
 						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
@@ -428,7 +428,7 @@ public class AssetEditModule extends BaseMediaModule
 					editor.deleteAsset(asset,inContext.getUser());
 					if (Boolean.parseBoolean(deleteoriginal))
 					{
-						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+						editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 					}
 					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);

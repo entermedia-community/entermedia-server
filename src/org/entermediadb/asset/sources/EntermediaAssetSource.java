@@ -82,7 +82,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 		// TODO Auto-generated method stub
 		return false;

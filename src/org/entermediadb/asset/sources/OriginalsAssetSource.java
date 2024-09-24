@@ -107,9 +107,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 		ContentItem item = getOriginalContent(inAsset);
+		if(inUser != null) {
+			item.setAuthor(inUser.getId());
+		}
+		item.setMessage("deleted");
 		getPageManager().getRepository().remove(item);
 		return true;
 	}
