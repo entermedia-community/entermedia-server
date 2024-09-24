@@ -110,7 +110,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			if ("7".equals(editstatus)) //Not deleted anymore
 			{
 				//restore
-				asset.setProperty("importstatus", "needsmetadata");
+				asset.setProperty("importstatus", "created");
 				asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
@@ -137,6 +137,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				if (asset.isEquals(filemmod))
 				{
 					return null;
+				}
+				else {
+					asset.setProperty("importstatus", "modified");
 				}
 			}
 		}
@@ -192,15 +195,11 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 		//		if (importedasset)
 		//		{
-		String status = asset.get("importstatus");
-		if( status == null)
-		{
+		
+		if (!"modified".equals(asset.getProperty("importstatus"))) {
 			asset.setProperty("importstatus", "created");
 		}
-		else
-		{
-			asset.setProperty("importstatus", "needsmetadata");
-		}
+		
 		asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 		String previewstatus = asset.get("previewstatus");
 		//			if( previewstatus == null || status.equals("2"))
