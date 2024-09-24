@@ -104,7 +104,7 @@ verticalGridResize = function (grid) {
 		}
     }
     
-   checkScroll();
+   checkScroll(grid);
 };
 
 
@@ -613,15 +613,12 @@ $.fn.brick = function(methodOrOptions) { //Generic brick caller
             if (this.$currentImage) {
                 this.$currentImage.style.maxHeight = getWindowHeight() + 'px';
             }
-            if(this.$currentImage.nextSibling) {
-				this.$currentImage.nextSibling.style.top = this.$currentImage.clientHeight;
-			}
-
         },
         
         setDownloadlinkPosition: function() {
             if(this.$currentImage.nextSibling) {
-				this.$currentImage.nextSibling.style.top = this.$currentImage.height - 26;
+				var top = this.$currentImage.height - 26;
+				this.$currentImage.nextSibling.style.top = top  + 'px';
 			}
 
         },
