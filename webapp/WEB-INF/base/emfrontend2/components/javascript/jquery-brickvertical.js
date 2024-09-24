@@ -157,10 +157,14 @@ checkScroll = function (grid) {
 	
 var methods = {
     init : function(options) {
-		verticalGridResize($(this));
+		var grid = $(this);
+		verticalGridResize(grid);
+		jQuery(window).on("resize", function () {
+				verticalGridResize(grid);
+		});
     },
     resize: function()    {
-		verticalGridResize($(this));
+		verticalGridResize(grid);
 	}
 }; //Methods end
 

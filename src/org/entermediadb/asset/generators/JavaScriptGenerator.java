@@ -181,8 +181,13 @@ public class JavaScriptGenerator extends TempFileGenerator
 				{
 					Page infile = getPageManager().getPage(script);
 					InputStreamReader reader = null;
+					if (!infile.exists()) {
+						log.info("Missing file: " + infile.getName());
+						continue;
+					}
 					if ( infile.getCharacterEncoding() != null )
 					{
+						
 						reader = new InputStreamReader( infile.getInputStream(), infile.getCharacterEncoding() );
 					}
 					else

@@ -352,6 +352,7 @@ var methods = {
 		  checkScroll(grid);
 		});
 		
+		
 		jQuery(window).on("resize", function () {
 				gridResize(grid);
 		});
