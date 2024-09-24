@@ -4,7 +4,7 @@
 	var gridlastscroll = 0;
 
 
-gridResize = function (grid) {
+verticalGridResize = function (grid) {
   //TODO: Put these on grid.data()
   stopautoscroll = false;
   gridcurrentpageviewport = 1;
@@ -157,10 +157,10 @@ checkScroll = function (grid) {
 	
 var methods = {
     init : function(options) {
-		gridResize($(this));
+		verticalGridResize($(this));
     },
     resize: function()    {
-		gridResize($(this));
+		verticalGridResize($(this));
 	}
 }; //Methods end
 

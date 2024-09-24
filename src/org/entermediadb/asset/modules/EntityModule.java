@@ -890,7 +890,9 @@ public class EntityModule extends BaseMediaModule
 			assethits = new ListHitTracker(one); 
 		}
 		
-		entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
+		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
+		inPageRequest.putPageValue("assetsadded", added);
+		
 
 	
 	}

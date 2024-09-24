@@ -67,7 +67,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			<a href="$imagelink" class="lightbox" data-downloadlink="$!downloadlink">
 			<img class="imagethumb img-fluid  img$!thumbsize "
 					catalogid="$catalogid" 
-					assetid="$hit.id" 
+					assetid="$!{hit.id}" 
 					alt="#if($title)#esc($title)#else$!{hit.name}#end"
 					draggable="true"  
 					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		

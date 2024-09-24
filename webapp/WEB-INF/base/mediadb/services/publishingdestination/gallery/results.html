@@ -46,8 +46,6 @@
 		#foreach( $hit in $hits.getPageOfHits())
 			
 			$context.putPageValue("hit", $hit)
-			#set($asset = $mediaarchive.getAsset($hit.id))
-			$context.putPageValue("asset", $asset)
 			
 			#set($type = $hit.getSearchHit().getType())
 			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))

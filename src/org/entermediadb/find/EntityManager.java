@@ -724,12 +724,12 @@ public class EntityManager implements CatalogEnabled
 		return assetstatuses;
 	}	
 	
-	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
+	public int addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
 	{
 		if( lightboxid == null)
 		{
 			log.error("No box selected");
-			return;
+			return 0;
 		}
 		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
 		
@@ -770,6 +770,8 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		getMediaArchive().saveData("emedialightboxasset", tosave);
+		
+		return tosave.size();
 	}
 
 	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
