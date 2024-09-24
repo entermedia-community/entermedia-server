@@ -158,9 +158,9 @@ public class AssetSourceManager implements CatalogEnabled
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
-		boolean ok = findAssetSource(inAsset).removeOriginal(inAsset);
+		boolean ok = findAssetSource(inAsset).removeOriginal(inUser, inAsset);
 		return ok;
 	}
 
