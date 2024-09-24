@@ -85,8 +85,9 @@ gridResize = function (grid) {
 		var row = $(this);
 		trimRowToFit(grid,row);
 	});
-   checkScroll();
+   checkScroll(grid);
 };
+
 
 trimRowToFit = function(grid, row ) {  
   var totalwidthused = 0;
@@ -346,13 +347,23 @@ checkScroll = function (grid) {
 var methods = {
     init : function(options) {
 		//Any details?
-		gridResize($(this));
+		var grid = $(this);
+		document.addEventListener("touchmove", function (e) {
+		  checkScroll(grid);
+		});
+		
+		jQuery(window).on("resize", function () {
+				gridResize(grid);
+		});
+
+		gridResize(grid);
     },
     render: function()
     {
 		gridResize($(this));
 	}
 }; //Methods end
+
 
 
 $.fn.brick = function(methodOrOptions) { //Generic brick caller
