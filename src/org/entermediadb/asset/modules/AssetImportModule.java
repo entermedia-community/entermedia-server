@@ -47,6 +47,20 @@ public class AssetImportModule  extends BaseMediaModule
 		
 		//TODO: Take out a lock? Event should be locked
 		//archive.getLockManager().loadLock("AssetImportModule.assetsCreated");
+		HitTracker mhits = archive.query("asset").exact("importstatus", "modified").search();
+		Collection<Asset> massets = new ArrayList(mhits.size());
+		for (Iterator iterator = mhits.iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset)asssetsearcher.loadData(hit);
+			
+			archive.removeGeneratedImages(asset,true);
+			
+			massets.add(asset);
+		}
+		inReq.putPageValue("hits", massets);
+		archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
+
+		
 		
 		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
 		Collection<Asset> assets = new ArrayList(hits.size());
