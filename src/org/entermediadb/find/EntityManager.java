@@ -634,7 +634,7 @@ public class EntityManager implements CatalogEnabled
 		if(history.isEmpty() && inEntity.get("rootcategory") != null) {
 			HitTracker hits = getMediaArchive().query("asset").named("sizecheck").exact("category", inEntity.get("rootcategory") ).search();
 			if(!hits.isEmpty()) {
-				saveAssetActivity(applicationid, inUser, inEntity, hits.collectValues("id"), "assetsadded");
+				saveAssetActivity(applicationid, inUser, inEntity, hits, "assetsadded"); 
 				history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
 			}
 		}
@@ -685,7 +685,7 @@ public class EntityManager implements CatalogEnabled
 		event.setValue("assetids", inAssets);
 		Collection names = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
-			Asset asset = (Asset) iterator.next();
+			Data asset = (Data) iterator.next();
 			names.add(asset.getName());
 		}
 		event.setValue("assetnames", names);
