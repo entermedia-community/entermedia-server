@@ -800,7 +800,7 @@ public class EntityManager implements CatalogEnabled
 	public HitTracker loadLightBoxAssets(String inModule, String inEntity, String inLightBoxId, User inUser)
 	{
 		//Search for all the boxes that match. 
-		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inLightBoxId).
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").orgroup("lightboxid", inLightBoxId).
 				exact("parentmoduleid", inModule).
 				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
 		//Then each box has a child record with an assetid and comments/statuses

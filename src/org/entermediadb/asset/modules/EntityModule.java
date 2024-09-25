@@ -879,7 +879,6 @@ public class EntityModule extends BaseMediaModule
 		if( assethits != null && assethits.hasSelections())
 		{
 			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
-			assethits.deselectAll();
 			assethits = assethitscopy;
 		}
 		else
@@ -892,7 +891,7 @@ public class EntityModule extends BaseMediaModule
 		
 		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
 		inPageRequest.putPageValue("assetsadded", added);
-		
+		assethits.deselectAll();
 
 	
 	}
@@ -906,6 +905,7 @@ public class EntityModule extends BaseMediaModule
 		String lightboxid = inReq.getRequestParameter("lightboxid");
 		HitTracker lightboxassets = entityManager.loadLightBoxAssets(moduleid,entityid,lightboxid,inReq.getUser());
 		inReq.putPageValue("lightboxassets",lightboxassets);
+		inReq.putSessionValue(lightboxassets.getSessionId(), lightboxassets);
 		
 		Map<String,Data> assetidlookup = new HashMap();
 		Collection assetids = lightboxassets.collectValues("primarymedia");
