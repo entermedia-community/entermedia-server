@@ -198,8 +198,13 @@ public class AssetSourceManager implements CatalogEnabled
 //				continue;
 //			}
 
-			Asset asset = (Asset)archive.getAssetSearcher().createNewData();
-			asset.setSourcePath(sourcepath);
+			Asset asset = (Asset)archive.getAssetSearcher().getAssetBySourcePath(sourcepath);
+			if( asset == null)
+			{
+				//NOTE: We dont replace files from other sourcepaths
+				asset = (Asset)archive.getAssetSearcher().createNewData();
+				asset.setSourcePath(sourcepath);
+			}
 			
 			AssetSource source = findAssetSource(asset);
 			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);

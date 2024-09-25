@@ -1004,19 +1004,19 @@ public class AssetEditModule extends BaseMediaModule
 			else
 			{
 				ContentItem dest = getPageManager().getContent(basepath + assetsourcepath);
-				int i = 2;
-				while (dest.exists())
-				{
-					String pagename = PathUtilities.extractPageName(assetsourcepath);
-					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-					dest = getPageManager().getContent(basepath + tmppath);
-					if (!dest.exists())
-					{
-						assetsourcepath = tmppath;
-						break;
-					}
-					i++;
-				}
+//				int i = 2;
+//				while (dest.exists())
+//				{
+//					String pagename = PathUtilities.extractPageName(assetsourcepath);
+//					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+//					dest = getPageManager().getContent(basepath + tmppath);
+//					if (!dest.exists())
+//					{
+//						assetsourcepath = tmppath;
+//						break;
+//					}
+//					i++;
+//				}
 				pages.put(assetsourcepath, contentitem);
 			}
 		}
