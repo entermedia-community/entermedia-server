@@ -907,7 +907,7 @@ public class EntityModule extends BaseMediaModule
 		HitTracker lightboxassets = entityManager.loadLightBoxAssets(moduleid,entityid,lightboxid,inReq.getUser());
 		inReq.putPageValue("lightboxassets",lightboxassets);
 		
-		Map assetidlookup = new HashMap();
+		Map<String,Data> assetidlookup = new HashMap();
 		Collection assetids = lightboxassets.collectValues("primarymedia");
 		
 		//TODO: only support up to 1000 assets. Break down into chunks?
@@ -916,9 +916,14 @@ public class EntityModule extends BaseMediaModule
 			Data asset = (Data) iterator.next();
 			assetidlookup.put(asset.getId(),asset);
 		}
+		Map<String,Data> hitassetlookup = new HashMap();
+		for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) {
+			Data lightboxhit = (Data) iterator.next();
+			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
+			hitassetlookup.put(lightboxhit.getId(),asset);
+		}
 		
-		inReq.putPageValue("lightboxassets",lightboxassets);
-		inReq.putPageValue("assetlookup",assetidlookup);
+		inReq.putPageValue("hitassetlookup",hitassetlookup);
 	
 	}
 	

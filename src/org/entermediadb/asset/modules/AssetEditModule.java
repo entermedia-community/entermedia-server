@@ -30,6 +30,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
@@ -1736,14 +1737,17 @@ public class AssetEditModule extends BaseMediaModule
 	 */
 	public void loadAssetVotes(WebPageRequest inReq)
 	{
-		Asset asset = (Asset) inReq.getPageValue("asset");
-		if (asset == null)
+		MultiValued data = (MultiValued) inReq.getPageValue("asset");
+		if (data == null)
 		{
 			return;
 		}
-		if (asset.getId().contains("multiedit:")) {
+		//Asset asset = getM
+		if (data.getId().contains("multiedit:")) {
 			return;
 		}
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
 		String catalogid = inReq.findPathValue("catalogid");
 
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
@@ -1772,7 +1776,6 @@ public class AssetEditModule extends BaseMediaModule
 		if (count != hits.size())
 		{
 			asset.setProperty("assetvotes", String.valueOf(hits.size()));
-			MediaArchive archive = getMediaArchive(inReq);
 			//async asset save?
 			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
 		}
