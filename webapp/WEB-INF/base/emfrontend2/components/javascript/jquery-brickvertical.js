@@ -4,7 +4,7 @@
 	var gridlastscroll = 0;
 
 
-verticalGridResize = function (grid) {
+function verticalGridResize(grid) {
   //TODO: Put these on grid.data()
   stopautoscroll = false;
   gridcurrentpageviewport = 1;
@@ -72,7 +72,6 @@ verticalGridResize = function (grid) {
       {
 		 debugger;  
 	  }
-      console.log(currenth);
       colheight[colnum] = currenth;
        
       cell.css("top",runningtotal + "px");
@@ -117,7 +116,7 @@ verticalGridResize = function (grid) {
 };
 
 
-shortestColumn = function (colheight) {
+function shortestColumn(colheight) {
 	var shortColumn = 0;
 	var shortColumnHeight = -1;
 	for (let column in Object.keys(colheight)) 
@@ -132,7 +131,7 @@ shortestColumn = function (colheight) {
 }
 
 
-isInViewport = function( cell ) { 
+function isInViewport( cell ) { 
   const rect = cell.getBoundingClientRect();
   var top  = rect.top;
   top = top - 600;
@@ -143,7 +142,7 @@ isInViewport = function( cell ) {
 };
 
 
-checkScroll = function (grid) {
+function checkScroll(grid) {
 
  var currentscroll = $(".scrollview").scrollTop();
 

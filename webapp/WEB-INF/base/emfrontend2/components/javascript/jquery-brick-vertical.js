@@ -53,7 +53,7 @@ verticalGridResize = function (grid) {
       var h = cell.data("height");
        w = parseInt(w);
        h = parseInt(h);
-      if (w == 0) {
+      if (isNaN(w) || w == 0) {
         w = eachwidth;
         h = eachwidth;
       }
@@ -65,9 +65,14 @@ verticalGridResize = function (grid) {
       colnum = shortestColumn(colheight);
       cell.data("colnum", colnum);
       
-      var runningtotal = colheight[colnum]??0;
+      var runningtotal = colheight[colnum];
       runningtotal = runningtotal + 8;
-      colheight[colnum] = runningtotal + newheight;
+      var currenth = runningtotal + newheight;
+      if(isNaN(currenth) )
+      {
+		 debugger;  
+	  }
+      colheight[colnum] = currenth;
        
       cell.css("top",runningtotal + "px");
       cell.width(eachwidth);
@@ -87,18 +92,21 @@ verticalGridResize = function (grid) {
 			maxheight = colheight[column]; 
 		}
     }
+
+	$(".grid-filler",grid).remove();
+	
  	for (let column in Object.keys(colheight)) 
  	{
 		var onecolheight = colheight[column] + 8;
 		if( onecolheight < maxheight)
 		{
 			var cell = $('<div></div>');
-			cell.addClass("masonry-grid-cell grid-filler");
+			cell.addClass("grid-filler");
 			cell.css("top",onecolheight + "px");
 	        var colx = colwidthpx * column;
 			cell.css("left",colx + "px");
       		cell.width(eachwidth);
-      		var h = maxheight - onecolheight;
+      		var h = maxheight - onecolheight - 4;
       		cell.height(h);
    	 	    grid.append(cell);
 		}
