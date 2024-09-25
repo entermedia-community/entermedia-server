@@ -308,7 +308,7 @@ public abstract class BaseAssetSource implements AssetSource
 
 	public void assetUploaded(Asset inAsset)
 	{
-		//Do nothing
+		//Do nothing because asset is already in place?
 	}
 
 	@Override
