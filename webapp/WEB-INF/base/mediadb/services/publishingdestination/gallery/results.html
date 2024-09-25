@@ -81,7 +81,7 @@
 				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
-				#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", "largeimage" ) )
+				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
 				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
 				$context.putPageValue("downloadlink", $downloadlink)
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
