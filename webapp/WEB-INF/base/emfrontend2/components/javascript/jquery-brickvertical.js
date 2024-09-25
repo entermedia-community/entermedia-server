@@ -170,6 +170,9 @@ var methods = {
 		jQuery(window).on("resize", function () {
 				verticalGridResize(grid);
 		});
+		lQuery(".scrollview").livequery("scroll", function () {
+		    checkScroll(grid);
+		});
     },
     resize: function()    {
 		verticalGridResize(grid);
