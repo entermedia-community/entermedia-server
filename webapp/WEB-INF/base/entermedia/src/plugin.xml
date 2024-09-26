@@ -271,6 +271,9 @@
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	scope="prototype">
 		<property name="xmlArchive">
@@ -278,6 +281,9 @@
 		</property>
 		<property name="eventManager">
 			<ref bean="eventManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
 

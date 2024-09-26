@@ -130,6 +130,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		//setReIndexing(false);
 		if( isReIndexing())
 		{
+			log.info("Reaready reindexing" + getSearchType());
 			return;
 		}
 		setReIndexing(true);
