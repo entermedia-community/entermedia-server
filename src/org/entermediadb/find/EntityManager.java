@@ -764,8 +764,9 @@ public class EntityManager implements CatalogEnabled
 				event.setValue("name", asset.getName());
 				event.setValue("primarymedia", asset.getId());
 				event.setValue("owner", inUser.getName());
-				event.setValue("entity_date", new Date()); 
-				event.setValue("ordering", count++);
+				event.setValue("entity_date", new Date());
+				count = count + 200;
+				event.setValue("ordering", count);
 				tosave.add(event);
 			}
 		}
