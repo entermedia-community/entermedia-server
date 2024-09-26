@@ -900,7 +900,7 @@ public class EntityModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		EntityManager entityManager = getEntityManager(inReq);
-		String moduleid = inReq.getRequestParameter("moduleid");
+		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		String lightboxid = inReq.getRequestParameter("lightboxid");
 		HitTracker lightboxassets = entityManager.loadLightBoxAssets(moduleid,entityid,lightboxid,inReq.getUser());
@@ -925,6 +925,19 @@ public class EntityModule extends BaseMediaModule
 		
 		inReq.putPageValue("hitassetlookup",hitassetlookup);
 	
+	}
+	
+	public void insertLightBoxAsset(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		EntityManager entityManager = getEntityManager(inReq);
+		String lightboxid = inReq.getRequestParameter("lightboxid");
+		String[] neworderings = inReq.getRequestParameters("neworderings");
+		String[] boxassetid = inReq.getRequestParameters("boxassetid");
+		if(boxassetid.length > 0 && neworderings.length ==  boxassetid.length )
+		{
+			entityManager.updateLightBoxAssetOrderings(lightboxid,boxassetid,neworderings);
+		}
 	}
 	
 }

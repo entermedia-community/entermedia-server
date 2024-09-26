@@ -62,15 +62,15 @@ function verticalGridResize(grid) {
       
       cell.data("aspect", a);
       var newheight = Math.floor(eachwidth / a);
-      colnum = shortestColumn(colheight);
-      cell.data("colnum", colnum);
+      //colnum = shortestColumn(colheight);
       
+      cell.data("colnum", colnum);
       var runningtotal = colheight[colnum];
       runningtotal = runningtotal + 8;
       var currenth = runningtotal + newheight;
       if(isNaN(currenth) )
       {
-		 debugger;  
+		// debugger;  
 	  }
       colheight[colnum] = currenth;
        
@@ -82,6 +82,12 @@ function verticalGridResize(grid) {
       cell.css("left",colx + "px");
       grid.css("height", colheight[colnum] + "px");
       
+      colnum++;
+      if( colnum > maxcols)
+      {
+		colnum = 0;
+	  }
+
     });
 
 	//Gray boxes on bottom    

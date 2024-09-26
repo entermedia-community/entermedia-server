@@ -1,6 +1,7 @@
 package org.entermediadb.find;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -749,7 +750,7 @@ public class EntityManager implements CatalogEnabled
 		
 		//TODO: Check for existing workflows
 		//Add more
-		long count = System.currentTimeMillis();
+		long count = 0;//System.currentTimeMillis();
 		
 		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) 
 		{
@@ -765,7 +766,7 @@ public class EntityManager implements CatalogEnabled
 				event.setValue("primarymedia", asset.getId());
 				event.setValue("owner", inUser.getName());
 				event.setValue("entity_date", new Date());
-				count = count + 200;
+				count = count + 10000;
 				event.setValue("ordering", count);
 				tosave.add(event);
 			}
@@ -801,7 +802,7 @@ public class EntityManager implements CatalogEnabled
 	public HitTracker loadLightBoxAssets(String inModule, String inEntity, String inLightBoxId, User inUser)
 	{
 		//Search for all the boxes that match. 
-		HitTracker assets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").orgroup("lightboxid", inLightBoxId).
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").exact("lightboxid", inLightBoxId).
 				exact("parentmoduleid", inModule).
 				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
 		//Then each box has a child record with an assetid and comments/statuses
@@ -820,6 +821,31 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		return null;
+	}
+
+	public void updateLightBoxAssetOrderings(String inLightBox, String[] inBoxAssets, String[] inNewOrderings) 
+	{
+		Collection ids = Arrays.asList(inBoxAssets);
+		Collection exiting = getMediaArchive().query("emedialightboxasset").ids(ids).search();
+		Map<String,String> ordering = new HashMap();
+		for (int i = 0; i < inBoxAssets.length; i++) {
+			ordering.put(inBoxAssets[i],inNewOrderings[i]);
+		}
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = exiting.iterator(); iterator.hasNext();) {
+			Data brick = (Data) iterator.next();
+			String order = ordering.get(brick.getId());
+			brick.setValue("ordering",order);
+			tosave.add(brick);
+		}
+		
+		getMediaArchive().saveData("emedialightboxasset", tosave);
+//		tosave = getMediaArchive().query("emedialightboxasset").ids(ids).search();
+//		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
+//			Data brick = (Data) iterator.next();
+//			String order = brick.get("ordering");
+//			log.info(order);
+//		}
 	}
 
 	
