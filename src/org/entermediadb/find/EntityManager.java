@@ -778,7 +778,11 @@ public class EntityManager implements CatalogEnabled
 
 	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
 	{
-	
+		if( inModule == null)
+		{
+			log.error("No module");
+			return null;
+		}
 		//Search for all the boxes that match. 
 		HitTracker boxes = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
 				exact("parentmoduleid", inModule.getId()).sort("orderingUp").search();
@@ -872,10 +876,12 @@ public class EntityManager implements CatalogEnabled
 	}
 
 	
-	public void lightBoxRemoveAssets(User inUser,  HitTracker inAssethits)
+	public void lightBoxRemoveAssets(User inUser, String inLightBoxId, HitTracker inAssethits)
 	{
+		Collection assetids = inAssethits.collectValues("id");
+		Collection boxassets  = getMediaArchive().query("emedialightboxasset").exact("lightboxid",inLightBoxId).orgroup("primarymedia", assetids).search();
 		
-		getMediaArchive().getSearcher("emedialightboxasset").deleteAll(inAssethits, inUser);
+		getMediaArchive().getSearcher("emedialightboxasset").deleteAll(boxassets, inUser);
 	
 	}
 	

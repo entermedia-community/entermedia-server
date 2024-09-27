@@ -900,7 +900,7 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
+	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
 		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
@@ -910,7 +910,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
 			assethits = assethitscopy;
-			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), assethits);
+			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
 			assethits.deselectAll();
 		}
 
