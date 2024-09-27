@@ -847,6 +847,36 @@ public class EntityManager implements CatalogEnabled
 //			log.info(order);
 //		}
 	}
+	
+	public Map loadLightBoxResults(User inUser, String inModuleid, String inEntityid, String inLightboxid)
+	{
+		HitTracker lightboxassets = loadLightBoxAssets(inModuleid,inEntityid,inLightboxid, inUser);
+		Map<String,Data> assetidlookup = new HashMap();
+		Collection assetids = lightboxassets.collectValues("primarymedia");
+		
+		//TODO: only support up to 1000 assets. Break down into chunks?
+		Collection hits = getMediaArchive().query("asset").ids(assetids).search();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Data asset = (Data) iterator.next();
+			assetidlookup.put(asset.getId(),asset);
+		}
+		Map<String,Object> hitassetlookup = new HashMap();
+		for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) {
+			Data lightboxhit = (Data) iterator.next();
+			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
+			hitassetlookup.put(lightboxhit.getId(),asset);
+		}
+		hitassetlookup.put("all", lightboxassets);
+		return hitassetlookup;
+	
+	}
 
+	
+	public void lightBoxRemoveAssets(User inUser,  HitTracker inAssethits)
+	{
+		
+		getMediaArchive().getSearcher("emedialightboxasset").deleteAll(inAssethits, inUser);
+	
+	}
 	
 }
