@@ -892,39 +892,58 @@ public class EntityModule extends BaseMediaModule
 		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
 		inPageRequest.putPageValue("assetsadded", added);
 		assethits.deselectAll();
-
+	}
 	
+	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		
+		if( assethits != null && assethits.hasSelections())
+		{
+			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+			assethits = assethitscopy;
+			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
+			assethits.deselectAll();
+		}
+
+		
 	}
 
 	public void loadLightBoxResults(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		EntityManager entityManager = getEntityManager(inReq);
-		String moduleid = inReq.getRequestParameter("moduleid");
+		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		String lightboxid = inReq.getRequestParameter("lightboxid");
-		HitTracker lightboxassets = entityManager.loadLightBoxAssets(moduleid,entityid,lightboxid,inReq.getUser());
-		inReq.putPageValue("lightboxassets",lightboxassets);
-		inReq.putSessionValue(lightboxassets.getSessionId(), lightboxassets);
-		
-		Map<String,Data> assetidlookup = new HashMap();
-		Collection assetids = lightboxassets.collectValues("primarymedia");
-		
-		//TODO: only support up to 1000 assets. Break down into chunks?
-		Collection hits = archive.query("asset").ids(assetids).search();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-			Data asset = (Data) iterator.next();
-			assetidlookup.put(asset.getId(),asset);
-		}
-		Map<String,Data> hitassetlookup = new HashMap();
-		for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) {
-			Data lightboxhit = (Data) iterator.next();
-			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
-			hitassetlookup.put(lightboxhit.getId(),asset);
-		}
-		
+		Map hitassetlookup = entityManager.loadLightBoxResults(inReq.getUser(), moduleid,entityid,lightboxid);
 		inReq.putPageValue("hitassetlookup",hitassetlookup);
+		HitTracker lightboxassets = (HitTracker) hitassetlookup.get("all");
+		inReq.putPageValue("lightboxassets",lightboxassets);
+		
+		inReq.putSessionValue(lightboxassets.getSessionId(), lightboxassets);
 	
+	}
+	
+	public void insertLightBoxAsset(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		EntityManager entityManager = getEntityManager(inReq);
+		String lightboxid = inReq.getRequestParameter("lightboxid");
+		String[] neworderings = inReq.getRequestParameters("neworderings");
+		String[] boxassetid = inReq.getRequestParameters("boxassetid");
+		if(boxassetid.length > 0 && neworderings.length ==  boxassetid.length )
+		{
+			entityManager.updateLightBoxAssetOrderings(lightboxid,boxassetid,neworderings);
+		}
 	}
 	
 }

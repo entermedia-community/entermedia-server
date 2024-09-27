@@ -1517,6 +1517,12 @@ String viewbase = null;
 
 	}
 
+	public void parseMultPart(WebPageRequest inReq) throws Exception
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+	}
 	public void uploadFiles(WebPageRequest inReq) throws Exception
 	{
 		FileUpload command = new FileUpload();

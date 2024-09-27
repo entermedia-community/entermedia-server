@@ -43,9 +43,17 @@
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 		
-		#foreach( $hit in $hits.getPageOfHits())
-			
+		#foreach( $brick in $hits.getPageOfHits())
+		 
+		 	#ifnotnull( $hitassetlookup )
+			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
+		 	#end
+		 	#ifnull( $hitassetlookup )
+				#set( $hit = $brick)
+		 	#end
+			$context.putPageValue("brick", $brick)
 			$context.putPageValue("hit", $hit)
+			$context.putPageValue("asset", $hit)
 			
 			#set($type = $hit.getSearchHit().getType())
 			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))

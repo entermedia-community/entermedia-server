@@ -2,7 +2,8 @@
 
 	#if($publishing.get("distributiontype") == "gallery") 
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
-		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brick-vertical.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brickvertical.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-simpleLightbox.js"></script>
 		<style type="text/css">
 			.scrollview {
 				overflow-y: auto;
@@ -11,14 +12,7 @@
 		<div id="previewgallery" style="height: 100%; overflow-y: auto;">
 		$pages.include("$apphome/services/publishingdestination/gallery/index.html", $context)
 		</div>
-		<script type="text/javascript">
-			jQuery(document).ready(function () {
-		    	var grid = $(".masonry-grid2");
-				$(".scrollview").scroll(function(){
-			    checkScroll(grid);
-				});
-			});
-		</script>
+
 	#else 
 	
 		$pages.include("$apphome/services/publishingdestination/carousel/index.html", $context)
