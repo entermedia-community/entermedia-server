@@ -874,6 +874,7 @@ public class EntityModule extends BaseMediaModule
 		
 		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
 		
+		//Might be assets or might be lighboxassets
 		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
 		
 		if( assethits != null && assethits.hasSelections())
@@ -887,6 +888,7 @@ public class EntityModule extends BaseMediaModule
 			Asset asset = archive.getAsset(assetid);
 			one.add(asset);
 			assethits = new ListHitTracker(one); 
+			assethits.setSearcher(archive.getAssetSearcher());
 		}
 		
 		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
@@ -926,10 +928,13 @@ public class EntityModule extends BaseMediaModule
 		String lightboxid = inReq.getRequestParameter("lightboxid");
 		Map hitassetlookup = entityManager.loadLightBoxResults(inReq.getUser(), moduleid,entityid,lightboxid);
 		inReq.putPageValue("hitassetlookup",hitassetlookup);
-		HitTracker lightboxassets = (HitTracker) hitassetlookup.get("all");
-		inReq.putPageValue("lightboxassets",lightboxassets);
-		
-		inReq.putSessionValue(lightboxassets.getSessionId(), lightboxassets);
+		HitTracker emedialightboxassets = (HitTracker) hitassetlookup.get("emedialightboxasset");
+		inReq.putPageValue("lightboxassets",emedialightboxassets);
+		inReq.putSessionValue(emedialightboxassets.getSessionId(), emedialightboxassets);
+
+		HitTracker assethits = (HitTracker) hitassetlookup.get("asset");
+		inReq.putPageValue("assethits",assethits);
+		inReq.putSessionValue(assethits.getSessionId(), assethits);
 	
 	}
 	

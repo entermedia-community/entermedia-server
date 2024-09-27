@@ -732,9 +732,17 @@ public class EntityManager implements CatalogEnabled
 			log.error("No box selected");
 			return 0;
 		}
-		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
+		Collection assetstoadd =  null;
 		
-		Collection assetstoadd =  inAssethits.collectValues("id");
+		if(!inAssethits.getSearchType().equals("asset")) {
+			throw new OpenEditException("Noting to add. Wrong Searchtype");
+		}
+		assetstoadd =  inAssethits.collectValues("id");
+		if( assetstoadd.isEmpty())
+		{
+			throw new OpenEditException("Noting to add");
+		}
+		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
 		HitTracker existing = searcher.query().orgroup("primarymedia", assetstoadd).exact("parentmoduleid",inModuleid)
 				.exact("parententityid",inEntityid).exact("lightboxid", lightboxid).search();
 
@@ -754,16 +762,23 @@ public class EntityManager implements CatalogEnabled
 		
 		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) 
 		{
-			Data asset = (Data) iterator.next();
+			Data data = (Data) iterator.next();
+			String assetid = null;
+			if(inAssethits.getSearchType().equals("asset")) {
+				assetid =  data.getId();
+			}
+			else if(inAssethits.getSearchType().equals("emedialightboxasset")) {
+				assetid =  data.get("primarymedia");
+			}
 			//Look for existing?
-			if( !alreadyadded.contains(asset.getId()) )
+			if( !alreadyadded.contains(assetid) )
 			{
 				Data event = searcher.createNewData();
 				event.setProperty("lightboxid", lightboxid);
 				event.setProperty("parententityid", inEntityid);
 				event.setProperty("parentmoduleid", inModuleid);
-				event.setValue("name", asset.getName());
-				event.setValue("primarymedia", asset.getId());
+				event.setValue("name", data.getName());
+				event.setValue("primarymedia", assetid);
 				event.setValue("owner", inUser.getName());
 				event.setValue("entity_date", new Date());
 				count = count + 10000;
@@ -860,9 +875,9 @@ public class EntityManager implements CatalogEnabled
 		Collection assetids = lightboxassets.collectValues("primarymedia");
 		
 		//TODO: only support up to 1000 assets. Break down into chunks?
-		HitTracker hits = getMediaArchive().query("asset").ids(assetids).search();
-		hits.enableBulkOperations();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		HitTracker assethits = getMediaArchive().query("asset").ids(assetids).named("assethits").search();
+		assethits.enableBulkOperations();
+		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) {
 			Data asset = (Data) iterator.next();
 			assetidlookup.put(asset.getId(),asset);
 		}
@@ -872,7 +887,8 @@ public class EntityManager implements CatalogEnabled
 			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
 			hitassetlookup.put(lightboxhit.getId(),asset);
 		}
-		hitassetlookup.put("all", lightboxassets);
+		hitassetlookup.put("asset", assethits);
+		hitassetlookup.put("emedialightboxasset", lightboxassets);
 		return hitassetlookup;
 	
 	}
