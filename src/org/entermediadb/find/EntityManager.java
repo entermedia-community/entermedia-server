@@ -1,6 +1,7 @@
 package org.entermediadb.find;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,11 +31,10 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.event.WebEvent;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.profile.ModuleData;
-import org.openedit.servlet.BaseOpenEditEngine;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
@@ -635,7 +635,7 @@ public class EntityManager implements CatalogEnabled
 		if(history.isEmpty() && inEntity.get("rootcategory") != null) {
 			HitTracker hits = getMediaArchive().query("asset").named("sizecheck").exact("category", inEntity.get("rootcategory") ).search();
 			if(!hits.isEmpty()) {
-				saveAssetActivity(applicationid, inUser, inEntity, hits.collectValues("id"), "assetsadded");
+				saveAssetActivity(applicationid, inUser, inEntity, hits, "assetsadded"); 
 				history = getMediaArchive().query("entityactivityhistory").exact("entityid", inEntity.getId()).sort("dateDown").search();
 			}
 		}
@@ -686,7 +686,7 @@ public class EntityManager implements CatalogEnabled
 		event.setValue("assetids", inAssets);
 		Collection names = new ArrayList();
 		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
-			Asset asset = (Asset) iterator.next();
+			Data asset = (Data) iterator.next();
 			names.add(asset.getName());
 		}
 		event.setValue("assetnames", names);
@@ -695,40 +695,194 @@ public class EntityManager implements CatalogEnabled
 		searcher.saveData(event, null);
 	}
 
-	public void addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String setworkflowstatus)
+	//Add API to restore deleted assets
+	
+	public Map loadWorkStatusForPage(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits)
 	{
 		Searcher searcher = getMediaArchive().getSearcher("entityassetworkflow");
 		
-		Collection ids = inAssethits.collectValues("id");
-		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid",inModuleid).exact("parententityid",inEntityid).exact("workflowstatus", setworkflowstatus).search();
+		List page = inAssethits.getPageOfHits();
+		ListHitTracker tracker = new ListHitTracker(page);
+		tracker.setHitsPerPage(inAssethits.getHitsPerPage());
+		Collection ids = tracker.collectValues("id");
 		
-		Map<String,Data> byassets = new HashMap();
+		Collection existing = searcher.query().orgroup("primarymedia", ids).exact("parentmoduleid",inModuleid).exact("parententityid",inEntityid).search();
+
+		Map<String,Set> assetstatuses = new HashMap();
 		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
 		{
 			Data data = (Data) iterator.next();
-			byassets.put(data.get("primarymedia"),data);
+			String assetid = data.get("primarymedia");
+			Set<String> statuses = assetstatuses.get(assetid);
+			if( statuses == null)
+			{
+				statuses = new HashSet();
+			}
+			String workflowstatus = data.get("workflowstatus");
+			statuses.add(workflowstatus);
+			assetstatuses.put(assetid,statuses);
 		}
+		return assetstatuses;
+	}	
+	
+	public int addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
+	{
+		if( lightboxid == null)
+		{
+			log.error("No box selected");
+			return 0;
+		}
+		Searcher searcher = getMediaArchive().getSearcher("emedialightboxasset");
 		
+		Collection assetstoadd =  inAssethits.collectValues("id");
+		HitTracker existing = searcher.query().orgroup("primarymedia", assetstoadd).exact("parentmoduleid",inModuleid)
+				.exact("parententityid",inEntityid).exact("lightboxid", lightboxid).search();
+
+		Set alreadyadded =  new HashSet( existing.collectValues("primarymedia"));
+//		Map<String,Data> byassets = new HashMap();
+//		for (Iterator iterator = existing.iterator(); iterator.hasNext();) 
+//		{
+//			Data data = (Data) iterator.next();
+//			byassets.put(data.get("primarymedia"),data);
+//		}
+//		
 		List tosave = new ArrayList();
 		
 		//TODO: Check for existing workflows
 		//Add more
+		long count = 0;//System.currentTimeMillis();
+		
 		for (Iterator iterator = inAssethits.iterator(); iterator.hasNext();) 
 		{
 			Data asset = (Data) iterator.next();
 			//Look for existing?
-			Data event = searcher.createNewData();
-			event.setProperty("parententityid", inEntityid);
-			event.setProperty("parentmoduleid", inModuleid);
-			event.setValue("name", asset.getName());
-			event.setValue("primarymedia", asset.getId());
-			event.setValue("owner", inUser.getName());
-			event.setValue("entity_date", new Date()); 
-			tosave.add(event);
+			if( !alreadyadded.contains(asset.getId()) )
+			{
+				Data event = searcher.createNewData();
+				event.setProperty("lightboxid", lightboxid);
+				event.setProperty("parententityid", inEntityid);
+				event.setProperty("parentmoduleid", inModuleid);
+				event.setValue("name", asset.getName());
+				event.setValue("primarymedia", asset.getId());
+				event.setValue("owner", inUser.getName());
+				event.setValue("entity_date", new Date());
+				count = count + 10000;
+				event.setValue("ordering", count);
+				tosave.add(event);
+			}
 		}
-		getMediaArchive().saveData("entityassetworkflow", tosave);
+		getMediaArchive().saveData("emedialightboxasset", tosave);
 		
+		return tosave.size();
 	}
 
+	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+	{
+		if( inModule == null)
+		{
+			log.error("No module");
+			return null;
+		}
+		//Search for all the boxes that match. 
+		HitTracker boxes = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
+				exact("parentmoduleid", inModule.getId()).sort("orderingUp").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return boxes;
+	}
+	
+	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
+	{
+	
+		//Search for all the boxes that match. 
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inBoxes).
+				exact("parentmoduleid", inModule.getId()).
+				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return assets;
+	}
+	
+	public HitTracker loadLightBoxAssets(String inModule, String inEntity, String inLightBoxId, User inUser)
+	{
+		//Search for all the boxes that match. 
+		HitTracker assets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").exact("lightboxid", inLightBoxId).
+				exact("parentmoduleid", inModule).
+				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+		//Then each box has a child record with an assetid and comments/statuses
+		//TODO: Search for each box for total assets using facets?
+		return assets;
+	}
 
+	public Data findFirstSelectedLightBox(HitTracker boxes, HitTracker assets)
+	{
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+			Data lightbox = (Data) iterator.next();
+			FilterNode node = assets.findFilterChildValue("lightboxid", lightbox.getId());
+			if( node != null)
+			{
+				return lightbox;
+			}
+		}
+		return null;
+	}
+
+	public void updateLightBoxAssetOrderings(String inLightBox, String[] inBoxAssets, String[] inNewOrderings) 
+	{
+		Collection ids = Arrays.asList(inBoxAssets);
+		Collection exiting = getMediaArchive().query("emedialightboxasset").ids(ids).search();
+		Map<String,String> ordering = new HashMap();
+		for (int i = 0; i < inBoxAssets.length; i++) {
+			ordering.put(inBoxAssets[i],inNewOrderings[i]);
+		}
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = exiting.iterator(); iterator.hasNext();) {
+			Data brick = (Data) iterator.next();
+			String order = ordering.get(brick.getId());
+			brick.setValue("ordering",order);
+			tosave.add(brick);
+		}
+		
+		getMediaArchive().saveData("emedialightboxasset", tosave);
+//		tosave = getMediaArchive().query("emedialightboxasset").ids(ids).search();
+//		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
+//			Data brick = (Data) iterator.next();
+//			String order = brick.get("ordering");
+//			log.info(order);
+//		}
+	}
+	
+	public Map loadLightBoxResults(User inUser, String inModuleid, String inEntityid, String inLightboxid)
+	{
+		HitTracker lightboxassets = loadLightBoxAssets(inModuleid,inEntityid,inLightboxid, inUser);
+		Map<String,Data> assetidlookup = new HashMap();
+		Collection assetids = lightboxassets.collectValues("primarymedia");
+		
+		//TODO: only support up to 1000 assets. Break down into chunks?
+		Collection hits = getMediaArchive().query("asset").ids(assetids).search();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Data asset = (Data) iterator.next();
+			assetidlookup.put(asset.getId(),asset);
+		}
+		Map<String,Object> hitassetlookup = new HashMap();
+		for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) {
+			Data lightboxhit = (Data) iterator.next();
+			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
+			hitassetlookup.put(lightboxhit.getId(),asset);
+		}
+		hitassetlookup.put("all", lightboxassets);
+		return hitassetlookup;
+	
+	}
+
+	
+	public void lightBoxRemoveAssets(User inUser, String inLightBoxId, HitTracker inAssethits)
+	{
+		Collection assetids = inAssethits.collectValues("id");
+		Collection boxassets  = getMediaArchive().query("emedialightboxasset").exact("lightboxid",inLightBoxId).orgroup("primarymedia", assetids).search();
+		
+		getMediaArchive().getSearcher("emedialightboxasset").deleteAll(boxassets, inUser);
+	
+	}
+	
 }

@@ -43,11 +43,17 @@
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 		
-		#foreach( $hit in $hits.getPageOfHits())
-			
+		#foreach( $brick in $hits.getPageOfHits())
+		 
+		 	#ifnotnull( $hitassetlookup )
+			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
+		 	#end
+		 	#ifnull( $hitassetlookup )
+				#set( $hit = $brick)
+		 	#end
+			$context.putPageValue("brick", $brick)
 			$context.putPageValue("hit", $hit)
-			#set($asset = $mediaarchive.getAsset($hit.id))
-			$context.putPageValue("asset", $asset)
+			$context.putPageValue("asset", $hit)
 			
 			#set($type = $hit.getSearchHit().getType())
 			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
@@ -83,13 +89,15 @@
 				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
+				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
+				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				$context.putPageValue("downloadlink", $downloadlink)
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
 				</div>
 				
 				
-				#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", "largeimage" ) )
-				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				
 				<div class="grid-cell-footer"><a class="downloadicon" href="${downloadlink}" title="[[Download]] $!hit.getName()"><span>[[Download]]</span></a></div>
 			    
 			    ##Caption

@@ -33,7 +33,6 @@ import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.Replacer;
 
 public class FinderModule extends BaseMediaModule
 {
@@ -1171,6 +1170,7 @@ public class FinderModule extends BaseMediaModule
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		if(publishingid == null)
 		{
+			
 			String entityid =  inReq.getRequestParameter("entityid");
 			if( entityid != null)
 			{
@@ -1254,8 +1254,6 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("publishing", publishing);
 		inReq.putPageValue("distributiontype", publishing.get("distributiontype"));
 		
-		Searcher assetsearcher = archive.getSearcher("asset");
-		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
 		Data entity = null;
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
@@ -1263,22 +1261,34 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("entity",entity);
 		}
 		
-		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
-		
-		if(search == null) {
-			search = assetsearcher.createSearchQuery();
-		}
-		
-		search.addExact("category", category.getId());
-		//TODO: Add approved only to query
-		
+		HitTracker tracker = null;
 		String hitsname = "publishingentityassethits";
-		search.setHitsName(hitsname);
-		search.addSortBy("assetaddeddateDown");	
 		
-		HitTracker tracker = assetsearcher.search(search);
-		tracker.enableBulkOperations();
-		tracker.setHitsPerPage(1000);
+		String lightboxid = publishing.get("lightboxid");
+		if(lightboxid != null) {
+			
+			Map hitassetlookup = archive.getEntityManager().loadLightBoxResults(inReq.getUser(), publishing.get("moduleid"), publishing.get("entityid"),lightboxid);
+			inReq.putPageValue("hitassetlookup",hitassetlookup);
+			tracker = (HitTracker) hitassetlookup.get("all");
+			inReq.putPageValue("lightboxassets",tracker);
+			inReq.putSessionValue(tracker.getSessionId(), tracker);
+			inReq.putPageValue("hitassetlookup",hitassetlookup);
+		}
+		else {
+			Searcher assetsearcher = archive.getSearcher("asset");
+			SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+			Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+			if(search == null) {
+				search = assetsearcher.createSearchQuery();
+			}
+			search.addExact("category", category.getId());
+			
+			search.setHitsName(hitsname);
+			search.addSortBy("assetaddeddateDown");	
+			tracker = assetsearcher.search(search);
+			tracker.enableBulkOperations();
+			tracker.setHitsPerPage(1000);
+		}
 		
 		//Pagination
 		int totalPages = tracker.getTotalPages();

@@ -15,7 +15,7 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
-import org.openedit.page.PageStreamer;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -116,8 +116,15 @@ public class OriginalDocumentGenerator extends FileGenerator
 		{
 			filename = filename + "/" + asset.getPrimaryFile();
 		}
-
+		
 		Page content = archive.getOriginalDocument(asset);
+		
+		String version = inReq.getRequestParameter("version");
+		if (version != null) {
+			ContentItem revision = archive.getPageManager().getRepository().getVersion(content.getContentItem(), version);
+			content = archive.getPageManager().getPage(revision.getPath());
+		}
+		
 		if( content.exists() )
 		{
 			//its a regular file

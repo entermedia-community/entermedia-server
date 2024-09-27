@@ -268,7 +268,7 @@
 	</bean>
 
 	<bean id="executorManager" class="org.openedit.util.ExecutorManager" >
-	</bean>
+	</bean>Xml
 
 	<bean id="systemCacheManager" class="org.openedit.cache.CacheManager" >
 	</bean>

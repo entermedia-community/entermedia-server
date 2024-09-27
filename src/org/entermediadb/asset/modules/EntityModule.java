@@ -3,13 +3,13 @@ package org.entermediadb.asset.modules;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date; 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.DateStorageUtil;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
@@ -858,22 +858,92 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("verifynow", true);
 
 	}
-	
-	
-	public void setWorkflowStatus(WebPageRequest inPageRequest) throws Exception 
+
+	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
+	
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
-		String setworkflowstatus = inPageRequest.getRequestParameter("setworkflowstatus");
 		
 		String moduleid = inPageRequest.getRequestParameter("moduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
-		String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+		String assetid = inPageRequest.getRequestParameter("assetid");
+		
+		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
 		
 		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-		entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,setworkflowstatus);
-		//inPageRequest.putPageValue("assets", tosave.size());
+		
+		if( assethits != null && assethits.hasSelections())
+		{
+			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+			assethits = assethitscopy;
+		}
+		else
+		{
+			List one = new ArrayList();
+			Asset asset = archive.getAsset(assetid);
+			one.add(asset);
+			assethits = new ListHitTracker(one); 
+		}
+		
+		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
+		inPageRequest.putPageValue("assetsadded", added);
+		assethits.deselectAll();
+	}
+	
+	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
+	{
+	
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		
+		if( assethits != null && assethits.hasSelections())
+		{
+			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+			assethits = assethitscopy;
+			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
+			assethits.deselectAll();
+		}
+
+		
+	}
+
+	public void loadLightBoxResults(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		EntityManager entityManager = getEntityManager(inReq);
+		String moduleid = inReq.findPathValue("module");
+		String entityid = inReq.getRequestParameter("entityid");
+		String lightboxid = inReq.getRequestParameter("lightboxid");
+		Map hitassetlookup = entityManager.loadLightBoxResults(inReq.getUser(), moduleid,entityid,lightboxid);
+		inReq.putPageValue("hitassetlookup",hitassetlookup);
+		HitTracker lightboxassets = (HitTracker) hitassetlookup.get("all");
+		inReq.putPageValue("lightboxassets",lightboxassets);
+		
+		inReq.putSessionValue(lightboxassets.getSessionId(), lightboxassets);
+	
+	}
+	
+	public void insertLightBoxAsset(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		EntityManager entityManager = getEntityManager(inReq);
+		String lightboxid = inReq.getRequestParameter("lightboxid");
+		String[] neworderings = inReq.getRequestParameters("neworderings");
+		String[] boxassetid = inReq.getRequestParameters("boxassetid");
+		if(boxassetid.length > 0 && neworderings.length ==  boxassetid.length )
+		{
+			entityManager.updateLightBoxAssetOrderings(lightboxid,boxassetid,neworderings);
+		}
 	}
 	
 }

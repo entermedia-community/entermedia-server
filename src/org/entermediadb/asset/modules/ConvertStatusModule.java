@@ -298,17 +298,35 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset current = getAsset(inReq);
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
-		
-		log.info("Original replaced: " + current.getId() + " Sourcepath: " + input);
-		
 		//Read New Metadata
 		ContentItem original = archive.getOriginalContent(current);
 		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
 		archive.saveAsset(current);
 		 archive.removeGeneratedImages(current, true);
 		 reloadThumbnails( inReq, archive, current);
+		 log.info("Original replaced: " + current.getId() + " Sourcepath: " + input);
 		
 	}
+	
+	public void restoreVersion(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String version = inReq.getRequestParameter("version");
+	
+		Asset current = getAsset(inReq);
+		ContentItem original = archive.getOriginalContent(current);
+		original.setAuthor(inReq.getUserName());
+		original.setMessage("version " + version + " restored");
+		archive.getPageManager().getRepository().restoreVersion(original, version);
+		
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
+		archive.saveAsset(current);
+		 archive.removeGeneratedImages(current, true);
+		 reloadThumbnails( inReq, archive, current);
+		 log.info("Original restored: " + current.getId());
+	}
+	
+	
 
 	public void handleCustomThumb(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);

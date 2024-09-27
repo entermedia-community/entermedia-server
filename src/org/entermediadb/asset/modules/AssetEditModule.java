@@ -30,6 +30,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
@@ -402,7 +403,7 @@ public class AssetEditModule extends BaseMediaModule
 						
 						if (Boolean.parseBoolean(deleteoriginal))
 						{
-							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+							editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 						}
 						deleted++;
 						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
@@ -428,7 +429,7 @@ public class AssetEditModule extends BaseMediaModule
 					editor.deleteAsset(asset,inContext.getUser());
 					if (Boolean.parseBoolean(deleteoriginal))
 					{
-						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+						editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 					}
 					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
@@ -1003,19 +1004,19 @@ public class AssetEditModule extends BaseMediaModule
 			else
 			{
 				ContentItem dest = getPageManager().getContent(basepath + assetsourcepath);
-				int i = 2;
-				while (dest.exists())
-				{
-					String pagename = PathUtilities.extractPageName(assetsourcepath);
-					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-					dest = getPageManager().getContent(basepath + tmppath);
-					if (!dest.exists())
-					{
-						assetsourcepath = tmppath;
-						break;
-					}
-					i++;
-				}
+//				int i = 2;
+//				while (dest.exists())
+//				{
+//					String pagename = PathUtilities.extractPageName(assetsourcepath);
+//					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+//					dest = getPageManager().getContent(basepath + tmppath);
+//					if (!dest.exists())
+//					{
+//						assetsourcepath = tmppath;
+//						break;
+//					}
+//					i++;
+//				}
 				pages.put(assetsourcepath, contentitem);
 			}
 		}
@@ -1736,14 +1737,17 @@ public class AssetEditModule extends BaseMediaModule
 	 */
 	public void loadAssetVotes(WebPageRequest inReq)
 	{
-		Asset asset = (Asset) inReq.getPageValue("asset");
-		if (asset == null)
+		MultiValued data = (MultiValued) inReq.getPageValue("asset");
+		if (data == null)
 		{
 			return;
 		}
-		if (asset.getId().contains("multiedit:")) {
+		//Asset asset = getM
+		if (data.getId().contains("multiedit:")) {
 			return;
 		}
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
 		String catalogid = inReq.findPathValue("catalogid");
 
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
@@ -1772,7 +1776,6 @@ public class AssetEditModule extends BaseMediaModule
 		if (count != hits.size())
 		{
 			asset.setProperty("assetvotes", String.valueOf(hits.size()));
-			MediaArchive archive = getMediaArchive(inReq);
 			//async asset save?
 			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
 		}
