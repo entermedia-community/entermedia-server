@@ -12,6 +12,20 @@
 		<div id="previewgallery" style="height: 100%; overflow-y: auto;">
 		$pages.include("$apphome/services/publishingdestination/gallery/index.html", $context)
 		</div>
+				
+		<script type="text/javascript">
+		/**
+		 * Init
+		 */
+		(function ($) {
+			jQuery(document).ready(function () {
+			    var grid = $(".masonry-grid2");
+				grid.brickvertical();
+				
+				$('.lightbox').simpleLightbox();
+			});
+		}(jQuery));		
+		</script>
 
 	#else 
 	
