@@ -9,6 +9,13 @@
 	#set ( $publishingid = $context.getRequestParameter("publishingid") )
 #end
 
+#set($loop = $hits)
+#ifnotnull($lightboxassets)
+	#set($loop = $lightboxassets)
+	#set( $hits = $assethits )
+	$context.putPageValue("hits",$hits)
+#end
+
 <div id="resultsdiv" class="scroll-resultsdiv"
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	data-hitsname="$!hits.getHitsName()"
@@ -43,7 +50,7 @@
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 		
-		#foreach( $brick in $hits.getPageOfHits())
+		#foreach( $brick in $loop.getPageOfHits())
 		 
 		 	#ifnotnull( $hitassetlookup )
 			 	#set( $hit = $hitassetlookup.get($brick.getId()) )

@@ -1269,10 +1269,15 @@ public class FinderModule extends BaseMediaModule
 			
 			Map hitassetlookup = archive.getEntityManager().loadLightBoxResults(inReq.getUser(), publishing.get("moduleid"), publishing.get("entityid"),lightboxid);
 			inReq.putPageValue("hitassetlookup",hitassetlookup);
-			tracker = (HitTracker) hitassetlookup.get("all");
-			inReq.putPageValue("lightboxassets",tracker);
-			inReq.putSessionValue(tracker.getSessionId(), tracker);
-			inReq.putPageValue("hitassetlookup",hitassetlookup);
+			HitTracker emedialightboxassets = (HitTracker) hitassetlookup.get("emedialightboxasset");
+			inReq.putPageValue("lightboxassets",emedialightboxassets);
+			inReq.putSessionValue(emedialightboxassets.getSessionId(), emedialightboxassets);
+
+			HitTracker assethits = (HitTracker) hitassetlookup.get("asset");
+			inReq.putPageValue("assethits",assethits);
+			inReq.putSessionValue(assethits.getSessionId(), assethits);
+			
+			tracker = assethits;
 		}
 		else {
 			Searcher assetsearcher = archive.getSearcher("asset");
