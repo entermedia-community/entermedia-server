@@ -83,7 +83,7 @@ function verticalGridResize(grid) {
       grid.css("height", colheight[colnum] + "px");
       
       colnum++;
-      if( colnum > maxcols)
+      if( colnum >= maxcols)
       {
 		colnum = 0;
 	  }
@@ -176,9 +176,16 @@ var methods = {
 		jQuery(window).on("resize", function () {
 				verticalGridResize(grid);
 		});
-		jQuery(".scrollview").on("scroll", function () {
-		    checkScroll(grid);
+		
+		grid.parents().filter(function() {
+			var element =jQuery(this); 
+			if(element.css("overflow-y") == "auto" || element.css("overflow") == "auto") {
+				element.on("scroll", function () {
+				    checkScroll(grid);
+				});		
+			}
 		});
+		
 		
     },
     resize: function()    {
