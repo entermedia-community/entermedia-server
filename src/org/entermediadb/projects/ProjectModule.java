@@ -172,7 +172,7 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 	
-	public void listConnectedDesktops(WebPageRequest inReq) throws Exception {
+	public void listConnectedDesktop(WebPageRequest inReq) throws Exception {
 		//NOOP
 	}
 

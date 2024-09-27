@@ -2156,12 +2156,16 @@ String viewbase = null;
 		{
 			dataid = currentdata.getId();
 		}
-
+		if(dataid == null) {
+			return;
+		}
+		
 		MediaArchive archive = getMediaArchive(inReq);
 		if (searcher == null)
 		{
 			return;
 		}
+		
 		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
 
 	}

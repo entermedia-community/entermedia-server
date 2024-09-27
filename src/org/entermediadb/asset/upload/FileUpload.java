@@ -254,13 +254,18 @@ public class FileUpload
 				{
 					if (tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
 					{
-						JsonSlurper slurper = new JsonSlurper();
-						String content = tmp.getString(encoding).trim();
-						Object target = slurper.parseText(content);
-						if (target instanceof Map)
-						{
-							Map jsonRequest = (Map) target;
-							inContext.setJsonRequest(jsonRequest);
+						try {
+							JsonSlurper slurper = new JsonSlurper();
+							String content = tmp.getString(encoding).trim();
+							Object target = slurper.parseText(content);
+							if (target instanceof Map)
+							{
+								Map jsonRequest = (Map) target;
+								inContext.setJsonRequest(jsonRequest);
+								continue;
+							}
+						} catch (Exception e) {
+							//Let the file be uploaded even if it's corrupt.
 							continue;
 						}
 					}
