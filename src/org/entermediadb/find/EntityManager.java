@@ -855,11 +855,13 @@ public class EntityManager implements CatalogEnabled
 	public Map loadLightBoxResults(User inUser, String inModuleid, String inEntityid, String inLightboxid)
 	{
 		HitTracker lightboxassets = loadLightBoxAssets(inModuleid,inEntityid,inLightboxid, inUser);
+		lightboxassets.enableBulkOperations();
 		Map<String,Data> assetidlookup = new HashMap();
 		Collection assetids = lightboxassets.collectValues("primarymedia");
 		
 		//TODO: only support up to 1000 assets. Break down into chunks?
-		Collection hits = getMediaArchive().query("asset").ids(assetids).search();
+		HitTracker hits = getMediaArchive().query("asset").ids(assetids).search();
+		hits.enableBulkOperations();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data asset = (Data) iterator.next();
 			assetidlookup.put(asset.getId(),asset);
