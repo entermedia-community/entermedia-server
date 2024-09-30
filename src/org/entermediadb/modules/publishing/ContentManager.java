@@ -14,6 +14,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
@@ -84,7 +85,7 @@ public class ContentManager implements CatalogEnabled {
 		
 		//https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
 		
-		Map tosendparams = new HashMap();
+		Map inputdata = new HashMap();
 
 		String createtype= entity.get("ai-lastcreationtype");
 		
@@ -95,7 +96,7 @@ public class ContentManager implements CatalogEnabled {
 		{
 			extra = "Create a new " + targetmodule.getName();
 		}
-		tosendparams.put("inputdata", extra);
+		inputdata.put("directions", extra);
 	
 		
 		//Loop over all the tabs on the UI
@@ -110,14 +111,22 @@ public class ContentManager implements CatalogEnabled {
 			String render = data.get("rendertype");
 			if( render == null)
 			{
+				JsonUtil util = new JsonUtil();
 				//get fields
 				String viewpath = inModuleid + "/" + data.getId();
 				View view = (View)getMediaArchive().getPropertyDetailsArchive().getView(inModuleid, viewpath,null);
 				for (Iterator iterator2 = view.iterator(); iterator2.hasNext();) {
 					PropertyDetail detail = (PropertyDetail) iterator2.next();
 					Object value = entity.getValue(detail.getId());
-					//TODO: use SeacherMaager.getValue
-					entitymetadata.put(detail.getId(),value);
+					if( value != null)
+					{
+						//TODO: use SeacherMaager.getValue
+						if( value instanceof Date)
+						{
+							value = util.formatDateObj(value);
+						}
+						entitymetadata.put(detail.getId(),value);
+					}
 				}
 			}
 			else if(render.equals("table") )
@@ -130,13 +139,18 @@ public class ContentManager implements CatalogEnabled {
 				//get a list of files as URLs
 			}
 		}
-		tosendparams.put("metadata", entitymetadata);
+		inputdata.put("metadata", entitymetadata);
         
-        //=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
+        //=Fish%20Recipie&
+		//entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
         
 		String url = "https://oneliveweb.com/oneliveweb/ditachat";
 		CloseableHttpResponse resp = null;
-		resp = getSharedConnection().sharedMimePost(url + "/llm/api/ditapayload.json",tosendparams);
+		
+		JSONObject obj = new JSONObject();
+		obj.put("inputdata",inputdata);
+		log.info("Sending: \n" + obj.toJSONString() );
+		resp = getSharedConnection().sharedPostWithJson(url + "/llm/api/ditapayload.json?entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==",obj);
 		if (resp.getStatusLine().getStatusCode() != 200)
 		{
 			//error
@@ -145,7 +159,7 @@ public class ContentManager implements CatalogEnabled {
 			return;
 		}
 		JSONObject json = getSharedConnection().parseJson(resp);
-	
+		log.info("Received: \n" + json.toJSONString() );
 		//Pare DITA xml stuff
 		Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
 		Map<String, Object> returned = (Map)json.get("metadata");
