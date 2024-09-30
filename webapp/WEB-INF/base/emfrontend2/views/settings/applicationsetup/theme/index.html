@@ -4,10 +4,10 @@
 #set($searcher = $mediaarchive.getSearcher("theme"))
 
 #set( $themeid = $context.getRequestParameter("themeid"))
-#if(!$themeid)
-
+#ifnull($themeid)
 	#set( $themeid = $content.get("themeid") )
 #end
+
 	<div class="eml-content-title">
 	<div class="float-left">
 	<h2>[[Theme Editor]]</h2>
