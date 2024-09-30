@@ -114,6 +114,7 @@ public class ThemeModule extends BaseMediaModule {
 		
 		xconf.setProperty("themeid",theme.getId());
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
+		getPageManager().clearCache();
 		
 	}
 	
@@ -177,5 +178,20 @@ public class ThemeModule extends BaseMediaModule {
 		return theme;
 	}
 
-
+	public void changeTheme(WebPageRequest inReq) {
+		String appid = inReq.findValue("applicationid");
+		String themeid = inReq.getRequestParameter("themeid");
+		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
+		
+		xconf.setProperty("themeid",themeid);
+		getPageManager().getPageSettingsManager().saveSetting(xconf);
+		getPageManager().clearCache();
+		
+		try {
+			saveCSS(inReq);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
