@@ -1010,6 +1010,9 @@ public class MediaAdminModule extends BaseMediaModule
 		if(json == null) {
 			return;
 		}
+		
+		List tosave = new ArrayList();
+		
 		JSONParser parser = new JSONParser();
 		JSONArray jsonarray = null;
 		jsonarray = (JSONArray) parser.parse(json);
@@ -1048,9 +1051,6 @@ public class MediaAdminModule extends BaseMediaModule
 					module.setValue("isentity", true); //Not used anymore?
 					module.setValue("enableuploading", true); 
 					module.setValue("showonsearch", true);
-					archive.saveData("module",module);
-					inReq.putPageValue("data",module);
-					saveModule(inReq);
 
 					//Children
 					String parentmoduleid = userdata.getString("parent");
@@ -1058,7 +1058,7 @@ public class MediaAdminModule extends BaseMediaModule
 					{
 						parents.put(parentmoduleid,module);
 					}
-					
+					tosave.add(module);
 					//Menu
 					String ordering = userdata.getString("ordering"); 
 
@@ -1085,6 +1085,14 @@ public class MediaAdminModule extends BaseMediaModule
 			
 			//Check parents
 			checkParents(archive,parents);
+			archive.saveData("module", tosave);  //Save children and parents
+
+			String appid = inReq.findValue("applicationid");
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();) 
+			{
+				Data module = (Data) iterator.next();
+				getWorkspaceManager().saveModule(archive.getCatalogId(), appid, module);	 //Save views	
+			}
 			
 			if(replacemenu)
 			{

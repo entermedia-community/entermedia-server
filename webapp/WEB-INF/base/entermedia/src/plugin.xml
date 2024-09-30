@@ -2325,5 +2325,14 @@
 	<bean id="BaseExporter" class="org.entermediadb.asset.importer.BaseExporter" >
 	</bean>
 
+	
+	<bean id="ContentModule" class="org.entermediadb.modules.publishing.ContentModule" >
+	</bean>
+
 		
+
+	<bean id="contentManager" class="org.entermediadb.modules.publishing.ContentManager"  lazy-init="default" scope="prototype">
+		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
+	</bean>		
+			
 </beans>
