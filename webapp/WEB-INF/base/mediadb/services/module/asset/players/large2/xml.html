@@ -1,4 +1,14 @@
-#set($xml = $mediaarchive.getOriginalContent($asset))
-<textarea id="xml-code" style="display: none;">$xml.getContent()</textarea>
-<code class="language-xml xml hljs"></code>
-<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+#ifnull($hit)
+	#set ($hit = $asset)
+#end
+
+#set($xml = $mediaarchive.getOriginalDocument($hit))
+#if( $xml.exists() )
+	<textarea id="xml-code" style="display: none;">$xml.getContent()</textarea>
+	<code class="language-xml xml hljs"></code>
+	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+#else
+
+404: Asset does not exist
+
+#end

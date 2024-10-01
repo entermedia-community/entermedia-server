@@ -1,0 +1,21 @@
+#ifnull($hit)
+	#set ($hit = $asset)
+#end
+
+#ifnull($hit)
+	#set ($hit = $data)
+#end
+
+#set($xml = $mediaarchive.getOriginalDocument($hit))
+#if( $xml.exists() )
+	<textarea id="xml-code" >$xml.getContent()</textarea>
+	<code class="language-xml xml hljs"></code>
+#else
+
+404: Asset does not exist
+	
+#end
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	<div class="format-thumb">
+		<i class="bi bi-$mime"></i> $asset.getName()
+	</div>

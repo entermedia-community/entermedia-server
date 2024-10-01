@@ -350,8 +350,10 @@ public class MediaArchive implements CatalogEnabled
 	 * @return The location where the original document ought to be, or
 	 *         <code>null</code> if that could not be determined
 	 */
-	public Page getOriginalDocument(Asset inAsset)
+	public Page getOriginalDocument(Data inData)
 	{
+		Asset inAsset = (Asset)getAssetSearcher().loadData(inData);
+		
 		ContentItem item = getAssetManager().getOriginalContent(inAsset);
 		if (item == null)
 		{
