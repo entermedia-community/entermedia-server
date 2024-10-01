@@ -121,10 +121,8 @@ public class ContentManager implements CatalogEnabled {
 		
 		Map inputdata = new HashMap();
 
-		String createtype= entity.get("ai-lastcreationtype");
-		
 		Data targetmodule = getMediaArchive().getCachedData("module",inTargetentity);
-		String extra = entity.get("ai-extrainstructions");
+		String extra = entity.get("lastprompt");
 		
 		if( extra == null)
 		{
@@ -207,34 +205,33 @@ public class ContentManager implements CatalogEnabled {
 		child.setValue("entity_date",new Date());
 		child.setValue(inModuleid,inEntityid); //Lookup
 		
-		String xml = (String)json.get("xml");
-		Element root = getXmlUtil().getXml(xml, "UTF-8");
-		String name = root.attributeValue("id");
-		child.setName(name);
-		String id = PathUtilities.makeId(name);
-		String path = child.getSourcePath() + "/" + id + ".xml";
+//		String xml = (String)json.get("xml");
+//		Element root = getXmlUtil().getXml(xml, "UTF-8");
+//		String name = root.attributeValue("id");
+//		child.setName(name);
+//		String id = PathUtilities.makeId(name);
+//		String path = child.getSourcePath() + "/" + id + ".xml";
+//		
+//		ContentItem item = getMediaArchive().getContent(path);
+//		
+//		//Version control?
+//		if( item.exists())
+//		{
+//			item.setMessage("replace");
+//			getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
+//		}
+//		getXmlUtil().saveXml(root, item.getOutputStream(), "UTF-8");
 		
-		ContentItem item = getMediaArchive().getContent(path);
-		
-		//Version control?
-		if( item.exists())
-		{
-			item.setMessage("replace");
-			getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
-		}
-		getXmlUtil().saveXml(root, item.getOutputStream(), "UTF-8");
-		
-		//Make asset
-		Asset asset = getMediaArchive().getAssetImporter().createAsset(getMediaArchive(), path);
-		getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(asset, item, getMediaArchive(), path, null);
+//		//Make asset
+//		Asset asset = getMediaArchive().getAssetImporter().createAsset(getMediaArchive(), path);
+//		getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(asset, item, getMediaArchive(), path, null);
 		//send Thumbnail?
-		
-		//Needed?
-		Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
-		asset.addCategory(folder);
-		getMediaArchive().saveData("asset",asset);
-		
-		child.setValue("primarymedia",asset.getId());
+//		//Needed?
+//		Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
+//		asset.addCategory(folder);
+//		getMediaArchive().saveData("asset",asset);
+//		
+//		child.setValue("primarymedia",asset.getId());
 		getMediaArchive().saveData(inTargetentity,child);
 			
 	}

@@ -44,10 +44,9 @@ public class ContentModule extends BaseMediaModule {
 		
 		Data entity = getMediaArchive(inReq).getData(topmodule, entityid);
 
-		String extrainstructions= inReq.getRequestParameter("ai-extrainstructions");
-		String lastcreationtype= inReq.getRequestParameter("ai-lastcreationtype");
-		entity.setValue("ai-extrainstructions",extrainstructions);
-		entity.setValue("ai-lastcreationtype",lastcreationtype);
+		String lastprompt= inReq.getRequestParameter("lastprompt.value");
+		entity.setValue("lastprompt",lastprompt);
+		
 		getMediaArchive(inReq).saveData(topmodule,entity);
 		
 		ContentManager manager = getContentManager(inReq);		
