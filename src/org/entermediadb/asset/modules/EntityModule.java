@@ -467,7 +467,11 @@ public class EntityModule extends BaseMediaModule
 		String assetid = inPageRequest.getRequestParameter("assetid");
 		
 		//Search the hits for category
-
+		if( assetid == null)
+		{
+			log.error("Invalid assetid ");
+			return;
+		}
 		Asset asset = archive.getAsset(assetid);
 		
 		Collection assets = new ArrayList();

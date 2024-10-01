@@ -1,17 +1,17 @@
 package org.entermediadb.asset.importer;
 
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.dom4j.Element;
+import org.entermediadb.asset.Asset;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
@@ -20,6 +20,7 @@ import org.openedit.data.View;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageStreamer;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.XmlUtil;
 
 public class DitaImporter extends BaseImporter{
@@ -27,6 +28,18 @@ public class DitaImporter extends BaseImporter{
 	protected Map<String,Page> foundtypes = new HashMap();
 	Map<Integer,Integer> levelheights = new HashMap();
 	protected Data fieldEntity;
+	protected Asset fieldAsset;
+	
+	public Asset getAsset() {
+		return fieldAsset;
+	}
+
+
+	public void setAsset(Asset inAsset) {
+		fieldAsset = inAsset;
+	}
+
+
 	public Data getEntity() {
 		return fieldEntity;
 	}
@@ -51,12 +64,13 @@ public class DitaImporter extends BaseImporter{
 	{
 		fieldSearcher = loadSearcher(context);
 
-		Page uploadedpage = (Page)context.getPageValue("uploadedpage");
-		if( uploadedpage  == null )
-		{
-			uploadedpage = getPageManager().getPage("/WEB-INF/import/recipe1.xml");
-		}
-		Reader reader = uploadedpage.getReader();
+//		Page uploadedpage = (Page)context.getPageValue("uploadedpage");
+//		if( uploadedpage  == null )
+//		{
+//			uploadedpage = getPageManager().getPage("/WEB-INF/import/recipe1.xml");
+//		}
+		ContentItem item  = getMediaArchive().getOriginalContent(getAsset());
+		Reader reader = new InputStreamReader(item.getInputStream(),"UTF-8");
 		
 		XmlUtil util = (XmlUtil)getMediaArchive().getBean("xmlUtil");
 		Element root = util.getXml(reader, "UTF-8");

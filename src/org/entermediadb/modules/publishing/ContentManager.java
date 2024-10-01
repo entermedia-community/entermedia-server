@@ -1,5 +1,6 @@
 package org.entermediadb.modules.publishing;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -14,14 +15,18 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.View;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.Exec;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 
@@ -29,7 +34,19 @@ public class ContentManager implements CatalogEnabled {
 
 	private static final Log log = LogFactory.getLog(ContentManager.class);
 	protected XmlUtil fieldXmlUtil;
+	protected ModuleManager fieldModuleManager;
 	
+	
+	public ModuleManager getModuleManager() {
+		return fieldModuleManager;
+	}
+
+
+	public void setModuleManager(ModuleManager inModuleManager) {
+		fieldModuleManager = inModuleManager;
+	}
+
+
 	public XmlUtil getXmlUtil()
 	{
 		return fieldXmlUtil;
@@ -41,7 +58,18 @@ public class ContentManager implements CatalogEnabled {
 		fieldXmlUtil = inXmlUtil;
 	}
 
+	protected Exec fieldExec;
+	
 
+
+	public Exec getExec() {
+		return fieldExec;
+	}
+
+
+	public void setExec(Exec inExec) {
+		fieldExec = inExec;
+	}
 
 	protected HttpSharedConnection fieldHttpSharedConnection;
 	protected MediaArchive fieldMediaArchive;
@@ -56,6 +84,12 @@ public class ContentManager implements CatalogEnabled {
 	}
 
 	public MediaArchive getMediaArchive() {
+		
+		if( fieldMediaArchive == null)
+		{
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		}
+			
 		return fieldMediaArchive;
 	}
 
@@ -203,5 +237,88 @@ public class ContentManager implements CatalogEnabled {
 		child.setValue("primarymedia",asset.getId());
 		getMediaArchive().saveData(inTargetentity,child);
 			
+	}
+	
+	public String loadVisual(String inModuleId, Data inEntity, Asset inDita)
+	{
+		ContentItem item = getMediaArchive().getOriginalContent(inDita);
+		 //bin/dita -i ../90130_SPC_C-EFM/DITA-OUTPUT/90130_SPC_C-EFM/90130_SPC_C-EFM.ditamap -o out -f html 
+		//output a folder of HTML and read it in
+		Collection<String> args = new ArrayList();
+		args.add("-i");
+		args.add(item.getAbsolutePath());
+		
+		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
+		
+		String stub = PathUtilities.extractPageName(inDita.getName());
+		String root = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
+		String basesourcepath = cat.getCategoryPath() +"/Rendered/" + stub;
+		Page outdirectory = getMediaArchive().getPageManager().getPage(root + basesourcepath);
+
+		String outputpath = findOutputSourcePath(item, basesourcepath);
+		Page finalpage = getMediaArchive().getPageManager().getPage(root + outputpath); //mkdir
+		
+		if(finalpage.exists()) //Reload?
+		{
+			return outputpath;
+		}
+		//getMediaArchive().getPageManager().putPage(finalpage); //mkdir
+
+		args.add("-o");
+		args.add(outdirectory.getContentItem().getAbsolutePath());
+		
+		args.add("-f");
+		args.add("html5");
+		
+		getExec().runExec("dita", args);
+		
+		//Now import assets like crazy?
+		Collection assetids = getMediaArchive().getAssetImporter().processOn(outdirectory.getPath(), outdirectory.getPath(),true,getMediaArchive(), null);
+		
+		//Load all the HTML?
+		return outputpath;
+	}
+
+
+	protected String findOutputSourcePath(ContentItem item, String basesourcepath ) 
+	{
+		File xml = new File(item.getAbsolutePath());
+		Element input = getXmlUtil().getXml(xml, "UTF-8");
+		String finalpage = null;
+		if( "bookmap".equals(input.getName()) )
+		{
+			finalpage = basesourcepath + "/index.html";	
+		}
+		else if( "learningAssessment".equals(input.getName()) )
+		{
+			finalpage = basesourcepath + "/learningassesment/" + PathUtilities.extractPageName( item.getName() ) + ".html";
+		}
+		return finalpage;
+	}
+	
+	public Collection findDitaAssets(Data inEntity)
+	{
+		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
+		Collection assets = getMediaArchive().query("asset").exact("category", cat).orgroup("fileformat", "dita,ditamap").search();
+		return assets;
+	}
+	
+	public void loadTree(String inModuleId, Data inEntity, Asset inDita) throws Exception
+	{
+		
+		//See if we have data already. If not check on version?
+		
+		ContentItem item = getMediaArchive().getOriginalContent(inDita);
+		DitaImporter oniximporter = new DitaImporter();
+		oniximporter.setMediaArchive(getMediaArchive());
+		oniximporter.setMakeId(false);
+		
+		Data module = getMediaArchive().getCachedData("module", inModuleId);
+		oniximporter.setModule(module);
+		oniximporter.setAsset(inDita);
+		oniximporter.setEntity(inEntity);
+		oniximporter.importData();
+		
+		//Search using jquery
 	}
 }
