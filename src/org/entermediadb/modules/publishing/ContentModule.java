@@ -1,11 +1,11 @@
 package org.entermediadb.modules.publishing;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
+import org.openedit.hittracker.HitTracker;
 
 public class ContentModule extends BaseMediaModule {
 
@@ -47,6 +47,28 @@ public class ContentModule extends BaseMediaModule {
 		
 	}
 	
+	public void loadVisual(WebPageRequest inReq)
+	{
+		String moduleid = inReq.findPathValue("module");
+		String entityid = inReq.getRequestParameter("entityid");
+		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset asset = getMediaArchive(inReq).getAsset(assetid);
+		ContentManager manager = getContentManager(inReq);		
+		String path = manager.loadVisual(moduleid,entity,asset);
+		inReq.putPageValue("renderedpath",path);
+	}
+	public void loadXml(WebPageRequest inReq) throws Exception
+	{
+		String moduleid = inReq.findPathValue("module");
+		String entityid = inReq.getRequestParameter("entityid");
+		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset asset = getMediaArchive(inReq).getAsset(assetid);
+		ContentManager manager = getContentManager(inReq);		
+		manager.loadTree(moduleid,entity,asset);
+		//inReq.putPageValue("components",components);
+	}
 	protected ContentManager getContentManager(WebPageRequest inReq)
 	{
 		MediaArchive archive  = getMediaArchive(inReq);

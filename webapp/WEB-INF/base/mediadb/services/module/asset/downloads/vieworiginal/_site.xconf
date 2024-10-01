@@ -3,31 +3,13 @@
 <page>
 
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/vieworiginal</property>
-	<property name="sourcepathhasfilename">true</property>
 	
-	<property name="sourcepathhasfilename">true</property>
+	<property name="exactsourcepath">true</property>
 		<property name="skipheader">true</property>
 	
 	<generator name="originalDownloadGenerator"/>
 	
-	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
-	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true">
-		<property name="module">asset</property>
-		<property name="parameterid">assetid</property>
-		<property name="parentparameterid">collectionid</property>
-	</path-action>
-	
-	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true" allowduplicates="true">
-		<property name="module">asset</property>
-
-		<property name="parameterid">collectionid</property>
-		<property name="parametertype">librarycollection</property>
-
-		<property name="parentparameterid">library</property>
-		<property name="parentparametertype">library</property>
-
-	</path-action>
-	
+	<!-- TODO: Add entity view permission check from profile -->	
 	
 	<path-action name="Admin.allowViewing" alltypes="true">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>

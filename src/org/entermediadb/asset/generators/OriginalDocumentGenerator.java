@@ -77,18 +77,23 @@ public class OriginalDocumentGenerator extends FileGenerator
 		}
 		// source path cut off the beginning
 		// source path cut off the parent folder name. Put a / back in there?
-		sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
-
+		String exactsourcepath  = inPage.get("exactsourcepath");
+		if(!Boolean.parseBoolean(exactsourcepath) )
+		{
+			sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
+		}
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
 
-		if (asset == null)
+		if (asset == null  )
 		{
-			asset = archive.getAssetBySourcePath(sourcePath);
-			if (asset == null)
+			if(Boolean.parseBoolean(exactsourcepath))
 			{
-				asset = archive.createAsset("tmp",sourcePath);
-				//throw new OpenEditException("No asset with source path " + sourcePath);
+				//use regular downloading?
+				Page realpage = archive.getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcePath);
+				super.generate(inReq, realpage, inOut);
+				return;
 			}
+			asset = archive.createAsset("tmp",sourcePath);
 		}
 		
 		

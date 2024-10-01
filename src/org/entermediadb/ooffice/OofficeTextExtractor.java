@@ -17,7 +17,7 @@ import org.openedit.util.PathUtilities;
 
 public class OofficeTextExtractor extends MetadataExtractor
 {
-	public static final Collection FORMATS = Arrays.asList(new String[] {"doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx"});
+	public static final Collection FORMATS = Arrays.asList(new String[] {"doc","docx","rtf","ppt","pptx","wps","odt"}); //,"html","xml","csv", "xls", "xlsx"
 
 	private static final Log log = LogFactory.getLog(OofficeTextExtractor.class);
 	

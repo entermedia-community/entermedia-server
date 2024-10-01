@@ -192,9 +192,18 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-earmark-excel";
 			}
-			
-			
-
+			if (mime.endsWith("xml"))  
+			{
+				return "filetype-xml";
+			}
+			if (mime.endsWith("html")) 
+			{
+				return "filetype-html";
+			}
+			if (mime.endsWith("css")) 
+			{
+				return "filetype-css";
+			}
 		}
 		else
 		{

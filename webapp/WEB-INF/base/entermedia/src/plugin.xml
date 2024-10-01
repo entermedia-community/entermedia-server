@@ -2333,6 +2333,13 @@
 
 	<bean id="contentManager" class="org.entermediadb.modules.publishing.ContentManager"  lazy-init="default" scope="prototype">
 		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+				<property name="exec">
+			<ref bean="exec" />
+		</property>
+		
 	</bean>		
 			
 </beans>
