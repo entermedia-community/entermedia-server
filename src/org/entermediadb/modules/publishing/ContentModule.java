@@ -110,7 +110,7 @@ public class ContentModule extends BaseMediaModule {
 		WebPageRequest newcontext = inReq.copy(ditatemplate);
 		Collection savedtopics = new ArrayList();
 		String root = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/";
-		
+		int it = 0;
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) 
 		{
 			Data subentity = (Data) iterator.next();
@@ -128,7 +128,11 @@ public class ContentModule extends BaseMediaModule {
 			//Save content
 			mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITA");
 			savedtopics.add(ending);
-			break;
+			if( it > 10)
+			{
+				break;
+			}
+			it++;
 		}
 		
 		Page ditatemplatemap = mediaArchive.getPageManager().getPage("/" + appid + "/views/modules/" + parentmodule + "/components/entities/renderdita/templateditamap.ditamap");
