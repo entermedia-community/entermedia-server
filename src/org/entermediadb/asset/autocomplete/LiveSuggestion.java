@@ -1,7 +1,5 @@
 package org.entermediadb.asset.autocomplete;
 
-import java.util.Comparator;
-
 import org.openedit.util.URLUtilities;
 
 public class LiveSuggestion implements Comparable<LiveSuggestion>

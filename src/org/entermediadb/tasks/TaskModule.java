@@ -32,7 +32,6 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.MathUtils;

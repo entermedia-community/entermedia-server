@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import org.json.simple.JSONObject;
 
-import com.google.gson.JsonObject;
-
 public class Results
 {
 Collection fieldFolders;

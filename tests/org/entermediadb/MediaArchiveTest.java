@@ -1,7 +1,7 @@
 
 package org.entermediadb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.entermediadb.asset.MediaArchive;
 import org.junit.Test;

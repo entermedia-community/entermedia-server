@@ -17,7 +17,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.MediaArchiveModule;
 import org.entermediadb.asset.orders.Order;
-import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;

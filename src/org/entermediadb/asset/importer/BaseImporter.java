@@ -16,6 +16,7 @@ import org.entermediadb.asset.util.Row;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -126,14 +127,27 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return fieldSearcher;
 	}
+	protected Page fieldImportPage;
+	
+	
+	public Page getImportPage() {
+		return fieldImportPage;
+	}
+
+	public void setImportPage(Page inImportPage) {
+		fieldImportPage = inImportPage;
+	}
 
 	public void importData() throws Exception
 	{
 		fieldSearcher = loadSearcher(context);
 
-		String importpath = context.findValue("importpath");
-		Page upload = getPageManager().getPage(importpath);
-		Reader reader = upload.getReader();
+		if( fieldImportPage == null)
+		{
+			String importpath = context.findValue("importpath");
+			fieldImportPage = getPageManager().getPage(importpath);
+		}
+		Reader reader = fieldImportPage.getReader();
 		ArrayList data = new ArrayList();
 		int rowNum = 0;
 
@@ -223,7 +237,7 @@ public class BaseImporter extends EnterMediaObject
 		finally
 		{
 			FileUtils.safeClose(reader);
-			getPageManager().removePage(upload);
+			getPageManager().removePage(getImportPage());
 		}
 		getSearcher().saveAllData(data, context.getUser());
 		log.info("imported " + rowNum);
@@ -418,6 +432,10 @@ public class BaseImporter extends EnterMediaObject
 			if(detail == null){
 				detail = details.getDetail(id);
 			}			
+			if(detail == null){
+				id = "user" + id;
+				detail = details.getDetail(id);
+			}			
 			if(detail == null)
 			{
 				detail = details.getDetailByName(header);
@@ -425,7 +443,7 @@ public class BaseImporter extends EnterMediaObject
 			
 			if (detail == null && !header.contains("."))
 			{				
-				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, id);
+				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, header);
 				
 				if( getDbLookUps().contains(id))
 				{
@@ -454,7 +472,8 @@ public class BaseImporter extends EnterMediaObject
 				String splits[] = header.split("\\.");
 				if (splits.length > 1)
 				{
-					PropertyDetail detail = getSearcher().getDetail(splits[0]);
+					PropertyDetail detail = getDetail(splits[0]);
+					
 					if (detail != null && detail.isMultiLanguage())
 					{
 						LanguageMap map = null;
@@ -473,7 +492,7 @@ public class BaseImporter extends EnterMediaObject
 							map = new LanguageMap();
 						}
 						map.put(splits[1], val);
-						inData.setValue(splits[0], map);
+						inData.setValue(detail.getId(), map);
 					}
 				}
 				continue;
@@ -495,24 +514,34 @@ public class BaseImporter extends EnterMediaObject
 				PropertyDetail detail = details.getDetailByName(header);
 				if(detail == null)
 				{
-					detail = getSearcher().getDetail(headerid);
+					detail = getDetail(headerid);
 				}
 
-				if(detail != null) 
+				if(detail == null) 
 				{
-					Object value = lookUpListValIfNeeded(detail,val);
-					inData.setValue(detail.getId(), value);
+					//throw new OpenEditException("No detail found");
+					Object value = getSearcher().createValue(headerid, val);
+					inData.setValue(headerid, value); //Really?
 				} 
 				else
 				{
-					Object value = getSearcher().createValue(headerid, val);
-					inData.setValue(headerid, value);
+					Object value = lookUpListValIfNeeded(detail,val);
+					inData.setValue(detail.getId(), value);
 
 				}
 			}
 		}
 		addCustomProperties(inRow,inData);
 	}
+	private PropertyDetail getDetail(String inId) {
+		PropertyDetail detail = getSearcher().getDetail(inId);
+		if( detail == null)
+		{
+			detail = getSearcher().getDetail("user" + inId);
+		}
+		return detail;
+	}
+
 	protected void addCustomProperties(Row inRow, Data inData)
 	{
 		//Uerride as needed

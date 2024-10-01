@@ -19,7 +19,6 @@ import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.locks.Lock;
 import org.openedit.page.Page;
-import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.IntCounter;

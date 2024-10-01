@@ -3,7 +3,6 @@ package org.entermediadb.email;
 import java.util.Map;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
 
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;

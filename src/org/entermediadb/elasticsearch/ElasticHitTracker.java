@@ -29,7 +29,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;

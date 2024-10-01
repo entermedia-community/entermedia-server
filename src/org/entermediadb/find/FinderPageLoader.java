@@ -1,7 +1,5 @@
 package org.entermediadb.find;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,9 +8,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
-import org.openedit.OpenEditException;
 import org.openedit.data.QueryBuilder;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageLoader;
 import org.openedit.page.manage.PageManager;

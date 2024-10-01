@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.hittracker.HitTracker;
 

@@ -12,7 +12,6 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
-import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.strainer.FilterReader;

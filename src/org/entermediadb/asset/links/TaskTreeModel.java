@@ -1,23 +1,18 @@
 package org.entermediadb.asset.links;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.elasticsearch.categories.ElasticCategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.CatalogEnabled;
 import org.openedit.page.manage.PageManager;
-import org.openedit.profile.UserProfile;
 import org.openedit.util.RequestUtils;
 
 public class TaskTreeModel extends BaseTreeModel implements CatalogEnabled

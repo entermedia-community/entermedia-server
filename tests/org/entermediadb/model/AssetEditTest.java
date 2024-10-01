@@ -14,7 +14,6 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.RelatedAsset;
 import org.entermediadb.asset.edit.CategoryEditor;
-import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;

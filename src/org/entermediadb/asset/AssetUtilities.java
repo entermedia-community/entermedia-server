@@ -13,10 +13,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.scanner.MetaDataReader;
-import org.entermediadb.find.EntityManager;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -25,7 +23,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.Replacer;
 
 public class AssetUtilities //TODO: Rename to AssetManager
 {

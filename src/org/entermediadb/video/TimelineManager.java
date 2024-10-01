@@ -13,7 +13,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
-import org.openedit.data.ValuesMap;
 
 public class TimelineManager
 {

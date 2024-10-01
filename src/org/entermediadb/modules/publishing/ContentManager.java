@@ -299,7 +299,7 @@ public class ContentManager implements CatalogEnabled {
 	public Collection findDitaAssets(Data inEntity)
 	{
 		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
-		Collection assets = getMediaArchive().query("asset").exact("category", cat).orgroup("fileformat", "dita,ditamap").search();
+		Collection assets = getMediaArchive().query("asset").exact("category", cat).orgroup("fileformat", "ditamap").search();
 		return assets;
 	}
 	

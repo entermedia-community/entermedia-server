@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
@@ -22,7 +21,6 @@ import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.page.Page;
 import org.openedit.util.HttpRequestBuilder;
 

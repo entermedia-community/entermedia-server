@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -15,7 +14,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.EntityPermissions;

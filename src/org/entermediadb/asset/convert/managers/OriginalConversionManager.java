@@ -3,7 +3,6 @@ package org.entermediadb.asset.convert.managers;
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
 public class OriginalConversionManager extends BaseConversionManager

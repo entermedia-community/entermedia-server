@@ -9,8 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.zoho.Results;
 import org.entermediadb.zoho.ZohoManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;

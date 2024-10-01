@@ -2,9 +2,6 @@ package org.entermediadb.websocket.usernotify;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
@@ -15,19 +12,10 @@ import javax.websocket.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.desktops.Desktop;
-import org.entermediadb.desktops.DesktopEventListener;
-import org.entermediadb.desktops.DesktopManager;
-import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.ModuleManager;
-import org.openedit.data.SearcherManager;
-import org.openedit.users.User;
-import org.openedit.util.StringEncryption;
 
 public class UserNotifyConnection  extends Endpoint implements MessageHandler.Partial<String>
 {

@@ -10,10 +10,8 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
-import org.openedit.util.PathUtilities;
 
 public class GsTranscoder extends BaseTranscoder
 {

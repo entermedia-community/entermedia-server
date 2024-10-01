@@ -25,7 +25,6 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;

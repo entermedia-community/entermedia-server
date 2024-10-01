@@ -2,14 +2,12 @@ package org.entermediadb.websocket.annotation;
 
 import java.io.StringReader;
 
-import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

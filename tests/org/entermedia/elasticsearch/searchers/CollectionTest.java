@@ -3,7 +3,8 @@ package org.entermedia.elasticsearch.searchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;

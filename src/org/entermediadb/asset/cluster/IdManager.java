@@ -12,7 +12,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
 import org.openedit.node.NodeManager;
 
 public class IdManager 

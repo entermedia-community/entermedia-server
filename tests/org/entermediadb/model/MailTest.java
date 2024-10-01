@@ -6,8 +6,6 @@ import javax.mail.internet.InternetAddress;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.email.PostMail;
-import org.entermediadb.email.PostMailStatus;
-import org.entermediadb.email.Recipient;
 import org.entermediadb.email.TemplateWebEmail;
 import org.openedit.TestFixture;
 

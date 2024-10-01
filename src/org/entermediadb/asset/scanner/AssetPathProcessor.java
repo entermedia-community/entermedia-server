@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.OpenEditException;

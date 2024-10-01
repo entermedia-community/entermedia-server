@@ -1,12 +1,9 @@
 package org.entermediadb.data;
 
-import java.util.Collection;
-
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.modules.ProfileModule;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.UserProfileManager;
-import org.entermediadb.projects.LibraryCollection;
 import org.junit.Test;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;

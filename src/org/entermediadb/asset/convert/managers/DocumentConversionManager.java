@@ -8,7 +8,6 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.entermediadb.asset.convert.transcoders.CMYKTranscoder;
-import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 

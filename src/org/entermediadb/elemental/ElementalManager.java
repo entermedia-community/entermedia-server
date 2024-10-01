@@ -24,8 +24,6 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
-import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;

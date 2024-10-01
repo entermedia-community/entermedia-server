@@ -39,7 +39,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
-import org.openedit.xml.XmlFile;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -1084,7 +1083,6 @@ public class MediaAdminModule extends BaseMediaModule
 			}
 			
 			//Check parents
-			checkParents(archive,parents);
 			archive.saveData("module", tosave);  //Save children and parents
 
 			String appid = inReq.findValue("applicationid");
@@ -1093,6 +1091,8 @@ public class MediaAdminModule extends BaseMediaModule
 				Data module = (Data) iterator.next();
 				getWorkspaceManager().saveModule(archive.getCatalogId(), appid, module);	 //Save views	
 			}
+			checkParents(archive,parents);
+			archive.saveData("module", tosave);  //Save children and parents
 			
 			if(replacemenu)
 			{

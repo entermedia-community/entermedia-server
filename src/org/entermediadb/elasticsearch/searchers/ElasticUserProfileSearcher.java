@@ -3,28 +3,14 @@
  */
 package org.entermediadb.elasticsearch.searchers;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetails;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.BaseUser;
-import org.openedit.users.Group;
-import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.users.filesystem.XmlUserArchive;
-import org.openedit.util.StringEncryption;
 
 /**
  *

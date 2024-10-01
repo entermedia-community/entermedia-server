@@ -12,7 +12,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 

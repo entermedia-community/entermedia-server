@@ -16,8 +16,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.DataHitTracker;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
-import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 
 public class ConversionUtil {

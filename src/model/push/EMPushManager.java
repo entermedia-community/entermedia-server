@@ -41,7 +41,6 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.PathUtilities;
 public class EMPushManager extends BasePushManager implements PushManager

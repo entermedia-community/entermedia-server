@@ -6,7 +6,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;

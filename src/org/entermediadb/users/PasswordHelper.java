@@ -13,7 +13,6 @@ import org.entermediadb.email.TemplateWebEmail;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.page.manage.PageManager;
-import org.openedit.users.User;
 
 /**
  * @author mcgaha_b

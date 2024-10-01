@@ -2,15 +2,12 @@ package org.entermediadb.authenticate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
-import org.openedit.util.PathUtilities;
-import org.openedit.util.StringEncryption;
 
 public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvider
 {

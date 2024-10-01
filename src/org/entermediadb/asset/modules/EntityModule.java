@@ -17,7 +17,14 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.importer.CsvImporter;
+import org.entermediadb.asset.importer.XlsImporter;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.asset.util.Row;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
@@ -25,6 +32,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
+import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
@@ -954,5 +962,79 @@ public class EntityModule extends BaseMediaModule
 			entityManager.updateLightBoxAssetOrderings(lightboxid,boxassetid,neworderings);
 		}
 	}
+
 	
+	public void uploadSubTable(WebPageRequest inReq) throws Exception
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+		if (properties.getFirstItem() == null)
+		{
+			return;
+		}
+
+		String entityid = inReq.getRequestParameter("entityid");
+		String parentmodule = inReq.getRequestParameter("module");
+
+		String targetmodule = inReq.getRequestParameter("targetmodule");
+		final String externalfieldname = inReq.getRequestParameter("fieldexternalid");
+		final String externalfieldvalue = inReq.getRequestParameter("fieldexternalvalue");
+		
+		ScriptLogger logger = new ScriptLogger();
+		for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
+		{
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			Page tmp = getPageManager().getPage("/WEB-INF/temp/uploads/" + inReq.getUserName() + "/uploaded" + item.getName());
+			properties.saveFileAs(item, tmp.getPath(), inReq.getUser());
+
+			//Now process it
+			String mime = tmp.getMimeType();
+			if( mime.endsWith("csv"))
+			{
+				CsvImporter csvimporter = new CsvImporter()
+				{
+					protected void addProperties(Row inRow, Data inData) 
+					{
+						super.addProperties(inRow, inData);
+						inData.setValue(externalfieldname,externalfieldvalue);
+					}
+				};
+				csvimporter.setModuleManager(getModuleManager());
+				csvimporter.setContext(inReq);
+				csvimporter.setImportPage(tmp);
+				csvimporter.setLog(logger);
+				csvimporter.setMakeId(false);
+				csvimporter.importData();
+			}
+			else if (mime.contains("ms-excel"))
+			{
+				XlsImporter csvimporter = new XlsImporter();
+				csvimporter.setModuleManager(getModuleManager());
+				csvimporter.setContext(inReq);
+				csvimporter.setImportPage(tmp);
+				csvimporter.setLog(logger);
+				csvimporter.setMakeId(false);
+				csvimporter.importData();
+				
+			}
+			else if (mime.endsWith("ditamap"))
+			{
+				
+			}
+			else if (mime.endsWith("dita"))
+			{
+				
+			}
+			getPageManager().removePage(tmp);
+			
+		}
+
+		// inIn.delete();
+
+	}
 }

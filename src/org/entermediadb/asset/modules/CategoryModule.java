@@ -2,8 +2,6 @@ package org.entermediadb.asset.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.zip.ZipOutputStream;
 
@@ -18,7 +16,6 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.links.Link;
 import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;

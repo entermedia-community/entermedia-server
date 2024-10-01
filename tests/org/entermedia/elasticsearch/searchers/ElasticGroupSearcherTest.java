@@ -7,7 +7,6 @@ import org.openedit.Data;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.Group;
-import org.openedit.users.UserManager;
 
 public class ElasticGroupSearcherTest extends BaseElasticTest
 {

@@ -1,11 +1,9 @@
 package org.entermediadb.desktops;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,8 +11,6 @@ import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.links.CategoryWebTreeModel;
 import org.openedit.CatalogEnabled;
-import org.openedit.OpenEditException;
-import org.openedit.util.PathUtilities;
 
 public class DesktopWebTreeModel  extends CategoryWebTreeModel implements CatalogEnabled
 {

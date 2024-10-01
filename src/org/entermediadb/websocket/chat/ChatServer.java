@@ -24,9 +24,7 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 

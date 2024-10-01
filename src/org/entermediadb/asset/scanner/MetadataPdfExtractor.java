@@ -1,17 +1,12 @@
 package org.entermediadb.asset.scanner;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.cos.COSDocument;
-import org.apache.pdfbox.io.RandomAccessFile;
-import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.page.manage.PageManager;

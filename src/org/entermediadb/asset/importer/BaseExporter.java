@@ -6,7 +6,6 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.util.CSVWriter;
-import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -16,7 +15,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
-import org.openedit.util.DateStorageUtil;
 
 public class BaseExporter
 {

@@ -14,7 +14,6 @@ import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.PathUtilities;
 
 /**
  * This generator generates original asset documents from an MediaArchive based

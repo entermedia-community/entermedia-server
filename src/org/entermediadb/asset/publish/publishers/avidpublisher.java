@@ -2,6 +2,14 @@ package org.entermediadb.asset.publish.publishers;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,7 +21,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.ProfileModule;
 import org.entermediadb.asset.publishing.BasePublisher;
@@ -24,15 +32,6 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.users.UserManager;
-
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.FileOutputStream;
-import java.io.IOException;
   
 
 public class avidpublisher extends BasePublisher implements Publisher

@@ -14,9 +14,7 @@ import org.entermediadb.modules.scriptrunner.ScriptModule;
 import org.entermediadb.scripts.Script;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.PlugIn;
-import org.openedit.Shutdownable;
 import org.openedit.WebPageRequest;
-import org.openedit.node.NodeManager;
 
 public class PluginUpgrader
 {

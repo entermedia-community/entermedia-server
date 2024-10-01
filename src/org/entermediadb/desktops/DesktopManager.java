@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openedit.ModuleManager;
-import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 

@@ -7,7 +7,6 @@ import org.openedit.users.UserManagerException;
 import org.openedit.users.authenticate.AuthenticationRequest;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
-import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 
 public class GoogleTwoFactorAuthenticator implements Authenticator{
 

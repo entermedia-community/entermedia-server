@@ -1,11 +1,19 @@
 package org.entermediadb.modules.publishing;
 
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
 
 public class ContentModule extends BaseMediaModule {
 
@@ -30,20 +38,20 @@ public class ContentModule extends BaseMediaModule {
 	public void createNewEntityFromAI(WebPageRequest inReq)
 	{
 		//Add as child
-		String moduleid = inReq.findPathValue("module");
+		String topmodule = inReq.findPathValue("topmodule");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetentity= inReq.getRequestParameter("targetentity");
 		
-		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
+		Data entity = getMediaArchive(inReq).getData(topmodule, entityid);
 
 		String extrainstructions= inReq.getRequestParameter("ai-extrainstructions");
 		String lastcreationtype= inReq.getRequestParameter("ai-lastcreationtype");
 		entity.setValue("ai-extrainstructions",extrainstructions);
 		entity.setValue("ai-lastcreationtype",lastcreationtype);
-		getMediaArchive(inReq).saveData(moduleid,entity);
+		getMediaArchive(inReq).saveData(topmodule,entity);
 		
 		ContentManager manager = getContentManager(inReq);		
-		manager.createNewEntityFromAI(moduleid,entityid,targetentity);
+		manager.createNewEntityFromAI(topmodule,entityid,targetentity);
 		
 	}
 	
@@ -78,6 +86,87 @@ public class ContentModule extends BaseMediaModule {
 			manager.setMediaArchive(archive);
 		}
 		return manager;
+	}
+	
+	public void renderDitaTable(WebPageRequest inReq) throws Exception
+	{
+		String entityid = inReq.getRequestParameter("entityid");
+		String parentmodule = inReq.getRequestParameter("topmodule");
+
+		String targetmodule = inReq.getRequestParameter("entitymodule");
+		final String externalfieldname = inReq.getRequestParameter("fieldexternalid");
+		final String externalfieldvalue = inReq.getRequestParameter("fieldexternalvalue");
+
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+
+		Data entity = mediaArchive.getCachedData(parentmodule, entityid);
+		Category cat = mediaArchive.getEntityManager().createDefaultFolder(entity, null);
+		
+		HitTracker children = mediaArchive.query(targetmodule).exact(externalfieldname,externalfieldvalue).search();
+		
+		//Render DITAS for each question and a map
+		String appid = inReq.findPathValue("applicationid");
+		Page ditatemplate = mediaArchive.getPageManager().getPage("/" + appid + "/views/modules/" + parentmodule + "/components/entities/renderdita/templatedita.dita");
+		PropertyDetail detail = mediaArchive.getSearcher(targetmodule).getDetail("name");
+		WebPageRequest newcontext = inReq.copy(ditatemplate);
+		Collection savedtopics = new ArrayList();
+		String root = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/";
+		
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) 
+		{
+			Data subentity = (Data) iterator.next();
+			newcontext.putPageValue("subdata",subentity);
+			String name = (String)mediaArchive.getSearcherManager().getValue(subentity, detail, null);
+			name= name.replace('/', '-');
+			newcontext.putPageValue("entityname",name);
+
+			StringWriter output = new StringWriter();
+			ditatemplate.generate(newcontext, output);
+
+			String ending = "learningassesment/" + name + ".dita";
+			String basesourcepath = cat.getCategoryPath() +"/Rendered/" + ending;
+			Page outputfile = mediaArchive.getPageManager().getPage(root + basesourcepath);
+			//Save content
+			mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITA");
+			savedtopics.add(ending);
+			break;
+		}
+		
+		Page ditatemplatemap = mediaArchive.getPageManager().getPage("/" + appid + "/views/modules/" + parentmodule + "/components/entities/renderdita/templateditamap.ditamap");
+
+		String exportname = inReq.getRequestParameter("exportname");
+		if( exportname == null)
+		{
+			exportname = entity.getName() + ".ditamap";
+			exportname  = exportname.replace('/', '-');
+		}
+		
+
+		StringWriter output = new StringWriter();
+		newcontext = inReq.copy(ditatemplatemap);
+		newcontext.putPageValue("exportname", entity.getName());
+		newcontext.putPageValue("savedtopics",savedtopics);
+		ditatemplatemap.generate(newcontext, output);
+		
+		
+		String basesourcepath = cat.getCategoryPath() +"/Rendered/" + exportname;
+		Page outputfile = mediaArchive.getPageManager().getPage(root + basesourcepath);
+		//Save content
+		mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITAMMAP");
+
+		//Now import assets like crazy?
+		Page outdirectory = mediaArchive.getPageManager().getPage(root + cat.getCategoryPath() +"/Rendered/");
+		Collection assetids = mediaArchive.getAssetImporter().processOn(outdirectory.getPath(), outdirectory.getPath(),true,mediaArchive, null);
+		
+		//Save to Question Area? Or parent or both
+		ContentManager manager = (ContentManager)mediaArchive.getBean("contentManager");
+		Asset asset = mediaArchive.getAssetBySourcePath(basesourcepath);
+		if( asset != null)
+		{
+			manager.loadVisual(parentmodule, entity, asset);
+		}
+
+
 	}
 	
 }

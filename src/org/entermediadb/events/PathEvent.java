@@ -16,7 +16,6 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
 import org.openedit.page.Page;
-import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 

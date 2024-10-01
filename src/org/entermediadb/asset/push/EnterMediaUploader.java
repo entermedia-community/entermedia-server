@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.util.EntityUtils;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpMimeBuilder;
 import org.entermediadb.net.HttpSharedConnection;

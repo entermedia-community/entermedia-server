@@ -6,9 +6,6 @@ import java.util.List;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.modules.AssetControlModule;
 import org.openedit.WebPageRequest;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
-import org.openedit.users.BaseUser;
 import org.openedit.users.User;
 
 public class AssetControlModuleTest extends BaseEnterMediaTest

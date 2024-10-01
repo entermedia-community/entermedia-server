@@ -1,7 +1,5 @@
 package org.entermediadb.asset.mediadb;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,10 +9,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -27,8 +23,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
-import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 

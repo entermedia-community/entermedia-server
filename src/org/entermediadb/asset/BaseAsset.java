@@ -25,8 +25,6 @@ import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
-import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;

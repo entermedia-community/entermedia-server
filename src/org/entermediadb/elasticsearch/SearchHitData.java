@@ -16,7 +16,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.highlight.HighlightField;
 import org.entermediadb.data.FullTextLoader;
-import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;

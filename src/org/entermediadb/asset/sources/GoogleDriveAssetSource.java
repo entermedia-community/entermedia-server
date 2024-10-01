@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.google.GoogleManager;
 import org.entermediadb.google.Results;
 import org.openedit.MultiValued;

@@ -1,12 +1,10 @@
 package model.assets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.scripts.EnterMediaObject;
