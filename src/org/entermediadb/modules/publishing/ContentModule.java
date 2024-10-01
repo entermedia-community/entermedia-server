@@ -40,7 +40,7 @@ public class ContentModule extends BaseMediaModule {
 		//Add as child
 		String topmodule = inReq.findPathValue("topmodule");
 		String entityid = inReq.getRequestParameter("entityid");
-		String targetentity= inReq.getRequestParameter("targetentity");
+		String targetentity= inReq.getRequestParameter("moduleid");
 		
 		Data entity = getMediaArchive(inReq).getData(topmodule, entityid);
 

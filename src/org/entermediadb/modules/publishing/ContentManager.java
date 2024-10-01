@@ -201,37 +201,50 @@ public class ContentManager implements CatalogEnabled {
 			Object val = entry.getValue();
 			child.setValue(key,val);
 		}
+		String xml = (String)json.get("xml");
+		child.setValue("ditatopic", xml);
 		
 		child.setValue("entity_date",new Date());
 		child.setValue(inModuleid,inEntityid); //Lookup
 		
-//		String xml = (String)json.get("xml");
-//		Element root = getXmlUtil().getXml(xml, "UTF-8");
-//		String name = root.attributeValue("id");
-//		child.setName(name);
-//		String id = PathUtilities.makeId(name);
-//		String path = child.getSourcePath() + "/" + id + ".xml";
-//		
-//		ContentItem item = getMediaArchive().getContent(path);
-//		
-//		//Version control?
-//		if( item.exists())
-//		{
-//			item.setMessage("replace");
-//			getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
-//		}
-//		getXmlUtil().saveXml(root, item.getOutputStream(), "UTF-8");
+		Element root = getXmlUtil().getXml(xml, "UTF-8");
+		String name = root.attributeValue("id");
+		child.setName(name);
+		String id = PathUtilities.makeId(name);
 		
-//		//Make asset
-//		Asset asset = getMediaArchive().getAssetImporter().createAsset(getMediaArchive(), path);
-//		getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(asset, item, getMediaArchive(), path, null);
+		
+		Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
+		
+		
+		String basesourcepath = folder.getCategoryPath() + "/AI/" + id + ".dita";
+		String rootpath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
+		String path =  rootpath+ basesourcepath;
+	
+				
+		ContentItem item = getMediaArchive().getContent(path);
+		
+		//Version control?
+		if( item.exists())
+		{
+			item.setMessage("replace");
+			getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
+		}
+		getXmlUtil().saveXml(root, item.getOutputStream(), "UTF-8");
+		
+		Page outdirectory = getMediaArchive().getPageManager().getPage(rootpath + folder.getCategoryPath() +"/AI/");
+		Collection assetids = getMediaArchive().getAssetImporter().processOn(outdirectory.getPath(), outdirectory.getPath(),true,getMediaArchive(), null);
+		
+		//Save to Question Area? Or parent or both
+		Asset asset = getMediaArchive().getAssetBySourcePath(basesourcepath);
+		if( asset != null)
+		{
+			asset.addCategory(folder);
+			getMediaArchive().saveData("asset",asset);
+			child.setValue("primarymedia",asset.getId());
+		}
+
 		//send Thumbnail?
-//		//Needed?
-//		Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
-//		asset.addCategory(folder);
-//		getMediaArchive().saveData("asset",asset);
-//		
-//		child.setValue("primarymedia",asset.getId());
+		//Needed?
 		getMediaArchive().saveData(inTargetentity,child);
 			
 	}
