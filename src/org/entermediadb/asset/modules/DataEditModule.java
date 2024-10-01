@@ -337,7 +337,7 @@ public class DataEditModule extends BaseMediaModule
 			viewbase = archive.getCatalogSettingValue("viewbase");
 		}
 		if(viewbase == null) {
-			 viewbase = "/WEB-INF/data/" + searcher.getCatalogId() + "/views/";
+			 viewbase = "/WEB-INF/data/" + catalogid+ "/views/";
 
 		}
 		String path = viewbase + viewpath + ".xml";
