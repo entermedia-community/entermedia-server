@@ -1,0 +1,4 @@
+#set($xml = $mediaarchive.getOriginalContent($asset))
+<textarea id="xml-code" style="display: none;">$xml.getContent()</textarea>
+<code class="language-xml xml hljs"></code>
+<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
