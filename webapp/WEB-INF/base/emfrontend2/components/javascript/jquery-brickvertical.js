@@ -42,6 +42,8 @@ function verticalGridResize(grid) {
 		colheight[col] = 0;
   }
 
+  var autosort = true;
+
   eachwidth = eachwidth -8;
   var colwidthpx = totalavailablew/maxcols;
   var colnum = 0;
@@ -62,8 +64,10 @@ function verticalGridResize(grid) {
       
       cell.data("aspect", a);
       var newheight = Math.floor(eachwidth / a);
-      //colnum = shortestColumn(colheight);
-      
+      if( autosort )
+      {
+		colnum = shortestColumn(colheight);
+      }
       cell.data("colnum", colnum);
       var runningtotal = colheight[colnum];
       runningtotal = runningtotal + 8;
@@ -82,10 +86,13 @@ function verticalGridResize(grid) {
       cell.css("left",colx + "px");
       grid.css("height", colheight[colnum] + "px");
       
-      colnum++;
-      if( colnum >= maxcols)
+      if( autosort)
       {
-		colnum = 0;
+	      colnum++;
+	      if( colnum >= maxcols)
+	      {
+			colnum = 0;
+		  }
 	  }
 
     });
