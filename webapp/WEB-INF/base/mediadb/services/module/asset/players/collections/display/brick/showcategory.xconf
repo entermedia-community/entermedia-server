@@ -1,0 +1,8 @@
+<page>
+	<property name="assethitsperpage">1000</property>
+	<page-action name="DataEditModule.search">
+		
+	</page-action>
+
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/brickgallery.html</inner-layout>
+</page>
