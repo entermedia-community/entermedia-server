@@ -1742,7 +1742,7 @@ String viewbase = null;
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 
-		Collection todelete = hits.getSelectedHitracker();
+		HitTracker todelete = hits.getSelectedHitracker();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
