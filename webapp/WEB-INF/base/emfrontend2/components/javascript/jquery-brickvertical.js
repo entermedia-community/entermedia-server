@@ -196,6 +196,7 @@ var methods = {
 		
     },
     resize: function()    {
+		var grid = $(this);
 		verticalGridResize(grid);
 	}
 }; //Methods end
