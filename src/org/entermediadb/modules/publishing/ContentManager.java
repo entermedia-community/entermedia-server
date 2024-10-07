@@ -373,7 +373,7 @@ public class ContentManager implements CatalogEnabled {
 		return text;
 	}
 	
-	public String loadVisual(String inModuleId, Data inEntity, Asset inDita)
+	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Asset inDita)
 	{
 		ContentItem item = getMediaArchive().getOriginalContent(inDita);
 		 //bin/dita -i ../90130_SPC_C-EFM/DITA-OUTPUT/90130_SPC_C-EFM/90130_SPC_C-EFM.ditamap -o out -f html 
@@ -402,7 +402,7 @@ public class ContentManager implements CatalogEnabled {
 		args.add(outdirectory.getContentItem().getAbsolutePath());
 		
 		args.add("-f");
-		args.add("html5");
+		args.add(inFormat);
 		
 		getExec().runExec("dita", args);
 		getMediaArchive().getPageManager().clearCache();
@@ -548,7 +548,8 @@ public class ContentManager implements CatalogEnabled {
 		Asset asset = mediaArchive.getAssetBySourcePath(mapsourcepath);
 		if( asset != null)
 		{
-			loadVisual(parentmodule, entity, asset);
+			loadVisual(parentmodule, entity, "html5", asset);
+			loadVisual(parentmodule, entity, "pdf", asset);
 		}
 	}
 
