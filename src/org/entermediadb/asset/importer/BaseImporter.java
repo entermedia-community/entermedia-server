@@ -36,6 +36,17 @@ public class BaseImporter extends EnterMediaObject
 	}
 	protected Data fieldLastNonSkipData;
 	protected char fieldSeparator = ',';
+	protected String fieldNewdDetailPrefix = "";
+	
+	
+	public String getNewdDetailPrefix() {
+		return fieldNewdDetailPrefix;
+	}
+
+	public void setNewdDetailPrefix(String inNewdDetailPrefix) {
+		fieldNewdDetailPrefix = inNewdDetailPrefix;
+	}
+
 	public char getSeparator()
 	{
 		return fieldSeparator;
@@ -156,8 +167,6 @@ public class BaseImporter extends EnterMediaObject
 			ImportFile file = new ImportFile();
 			file.setParser(new CSVReader(reader, getSeparator(), '\"'));
 			file.read(reader);
-
-			createMetadata(file.getHeader());
 
 			Row trow = null;
 			while ((trow = file.getNextRow()) != null)
@@ -416,43 +425,46 @@ public class BaseImporter extends EnterMediaObject
 		return data;
 	}
 
-	protected void createMetadata(Header inHeader)
-	{
-		PropertyDetails details = getSearcher().getPropertyDetails();
+//	protected void createMetadata(Header inHeader)
+//	{
+//		PropertyDetails details = getSearcher().getPropertyDetails();
+//
+//		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
+//		{
+//			String header = (String) iterator.next();
+//			if(header.contains(".")){  //TODO: What about english and spanish language imports?
+//				continue;
+//			}
+//			//String header = inHeaders[i];
+//			PropertyDetail detail = getDetailByColLabel(header);  //Creates em
+//		}
+//	}
 
-		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
-		{
-			String header = (String) iterator.next();
-			if(header.contains(".")){  //TODO: What about english and spanish language imports?
-				continue;
-			}
-			//String header = inHeaders[i];
-			PropertyDetail detail = details.getDetailByName(header);
-			String id = PathUtilities.extractId(header, true);
-			if(detail == null){
-				detail = details.getDetail(id);
-			}			
-			if(detail == null){
-				id = "user" + id;
-				detail = details.getDetail(id);
-			}			
-			if(detail == null)
-			{
-				detail = details.getDetailByName(header);
-			}
+	protected PropertyDetail getDetailByColLabel(String inHeader) {
+		
+		PropertyDetails details = getSearcher().getPropertyDetails();
+		PropertyDetail detail = details.getDetailByName(inHeader);
+		String id = PathUtilities.extractId(inHeader, true);
+		if(detail == null){
+			detail = details.getDetail(id);
+		}			
+		if(detail == null){
+			id = getNewdDetailPrefix() + id;
+			detail = details.getDetail(id);
+		}			
+		if (detail == null && !inHeader.contains("."))
+		{				
+			detail = getSearcher().getPropertyDetailsArchive().createDetail(id, inHeader);
 			
-			if (detail == null && !header.contains("."))
-			{				
-				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, header);
-				
-				if( getDbLookUps().contains(id))
-				{
-					detail.setDataType("list");
-				}
-				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
-				getSearcher().putMappings();
+			if( getDbLookUps().contains(id))
+			{
+				detail.setDataType("list");
 			}
+			getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
+			getSearcher().putMappings();
 		}
+		
+		return detail;
 	}
 
 	protected void addProperties(Row inRow, Data inData)
@@ -469,10 +481,11 @@ public class BaseImporter extends EnterMediaObject
 			String header = inRow.getHeader().getColumn(i);
 			if (header.contains("."))
 			{
+				//Assume Language map import
 				String splits[] = header.split("\\.");
 				if (splits.length > 1)
 				{
-					PropertyDetail detail = getDetail(splits[0]);
+					PropertyDetail detail = getDetailByColLabel(splits[0]);
 					
 					if (detail != null && detail.isMultiLanguage())
 					{
@@ -493,53 +506,30 @@ public class BaseImporter extends EnterMediaObject
 						}
 						map.put(splits[1], val);
 						inData.setValue(detail.getId(), map);
+						continue;
+					}
+					else
+					{
+						header = splits[0]; //No . allowed
 					}
 				}
-				continue;
 			}
 			
-			//trim spaces and clean
-			String headerid = PathUtilities.extractId(header, true);
+			PropertyDetail detail = getDetailByColLabel(header);
+			
 			val = URLUtilities.escapeUtf8(val); //The XML parser will clean up the & and stuff when it saves it
-			if( val != null)
+//			if ("sourcepath".equals(headerid))
+//			{
+//				inData.setSourcePath(val);
+//			}
+			if (val != null && val.length() > 0)
 			{
-				val = val.trim();
-			}
-			if ("sourcepath".equals(headerid))
-			{
-				inData.setSourcePath(val);
-			}
-			else if (val != null && val.length() > 0)
-			{
-				PropertyDetail detail = details.getDetailByName(header);
-				if(detail == null)
-				{
-					detail = getDetail(headerid);
-				}
-
-				if(detail == null) 
-				{
-					//throw new OpenEditException("No detail found");
-					Object value = getSearcher().createValue(headerid, val);
-					inData.setValue(headerid, value); //Really?
-				} 
-				else
-				{
-					Object value = lookUpListValIfNeeded(detail,val);
-					inData.setValue(detail.getId(), value);
-
-				}
+				val = val.trim(); 	//trim spaces and clean
+				Object value = lookUpListValIfNeeded(detail,val);
+				inData.setValue(detail.getId(), value);
 			}
 		}
 		addCustomProperties(inRow,inData);
-	}
-	private PropertyDetail getDetail(String inId) {
-		PropertyDetail detail = getSearcher().getDetail(inId);
-		if( detail == null)
-		{
-			detail = getSearcher().getDetail("user" + inId);
-		}
-		return detail;
 	}
 
 	protected void addCustomProperties(Row inRow, Data inData)

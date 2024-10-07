@@ -949,6 +949,17 @@ public class EntityModule extends BaseMediaModule
 		inReq.putSessionValue(assethits.getSessionId(), assethits);
 	
 	}
+	public void lightBoxAssetToTop(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String assetlightboxid = inReq.getRequestParameter("assetlightboxid");
+		String topordering = inReq.getRequestParameter("topordering");
+		Data selected = archive.getCachedData("emedialightboxasset",assetlightboxid);
+		long ordering = Long.parseLong(topordering);
+		ordering--;
+		selected.setValue("ordering",String.valueOf(ordering)); //Goes negative
+		archive.saveData("emedialightboxasset",selected);
+	}
 	
 	public void insertLightBoxAsset(WebPageRequest inReq)
 	{
@@ -1009,6 +1020,7 @@ public class EntityModule extends BaseMediaModule
 				csvimporter.setImportPage(tmp);
 				csvimporter.setLog(logger);
 				csvimporter.setMakeId(false);
+				csvimporter.setNewdDetailPrefix("user");
 				csvimporter.importData();
 			}
 			else if (mime.contains("ms-excel"))

@@ -314,6 +314,16 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return asLinkToOriginal(inAsset.getSourcePath(), inAsset.get("primaryfile"));
 	}
+	public String asLinkToOriginal(String inAssetId)
+	{
+		Asset asset = getAsset(inAssetId);
+		
+		if (asset == null)
+		{
+			return null;
+		}
+		return asLinkToOriginal(asset.getSourcePath(), asset.get("primaryfile"));
+	}
 
 	//TODO: Remove the inName option since that should be the  same as the originalattachment 
 	public String asLinkToOriginal(String inSourcePath, String inPrimaryImageName)
@@ -1375,7 +1385,8 @@ public class MediaArchive implements CatalogEnabled
 			event.setSource(this);
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
-			event.setProperty("assetids", asset.getId());
+			event.setProperty("assetids",  asset.getId() );
+			event.setProperty("assetid", asset.getId());
 			event.setProperty("dataid", asset.getId()); //Needed?
 			event.setValue("asset", asset);
 			//archive.getWebEventListener()
