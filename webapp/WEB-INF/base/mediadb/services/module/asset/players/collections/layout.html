@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	#set( $section = $content.section)
+
+	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
+	<title data-titlebase="$title">
+	$title
+	</title>
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=10">
+	<meta name="keywords" content="$!content.keywords"/>
+	<meta name="description" content="$!content.caption"/>
+	<meta http-equiv="imagetoolbar" CONTENT="no" />
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta charset="UTF-8" />
+	<meta name="google" content="notranslate">
+	 
+	<meta name="MSSmartTagsPreventParsing" content="TRUE" />  
+	<meta name="robots" content="noindex">
+	<link rel="Shortcut Icon" type="image/x-icon" href="$siteroot$apphome/theme/images/favicon.png" />
+	  
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	
+	<script type="text/javascript"  src="$applink/components/javascript/jquery-3.7.1.js" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
+
+	<script type="text/javascript" src="/${applicationid}/components/javascript/bootstrap/4.5.3/js/popper.min.js"></script>
+	<script type="text/javascript" src="/${applicationid}/components/javascript/bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+	
+	<script type="text/javascript" src="$applink/components/javascript/index.js" ></script>
+	
+	<link rel="stylesheet" type="text/css" href="/${applicationid}/components/javascript/bootstrap/4.5.3/css/bootstrap.min.css" />
+	##<link rel="stylesheet" type="text/css" href="/${applicationid}/components/javascript/videojs/7.8.2/video-js.css" />
+	##<link rel="stylesheet" type="text/css" href="/${applicationid}/components/javascript/videojs-resolution-switcher/videojs-resolution-switcher-v7.css" />
+	
+	<link rel="stylesheet" type="text/css" href="/${applicationid}/theme/styles/pages/categorypicker.css" />
+	<link rel="stylesheet" type="text/css" href="/${applicationid}/theme/styles/pages/results.css" />
+
+	
+</head>
+<body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end>
+
+  	$pages.streamContent()
+
+</body>
+</html>

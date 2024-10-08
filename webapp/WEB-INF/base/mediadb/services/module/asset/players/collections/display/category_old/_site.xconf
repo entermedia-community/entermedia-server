@@ -1,6 +1,6 @@
 <page>
 
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/brick/showcategory.html</inner-layout>
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/category/showcategory.html</inner-layout>
 	
 	<permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
