@@ -194,6 +194,12 @@ public class MediaArchive implements CatalogEnabled
 			}
 			if (mime.endsWith("xml"))  
 			{
+				if(inFormat.equals("dita")) {
+					return "filetype-dita";
+				}
+				if(inFormat.equals("ditamap")) {
+					return "filetype-ditamap";
+				}
 				return "filetype-xml";
 			}
 			if (mime.endsWith("html")) 
