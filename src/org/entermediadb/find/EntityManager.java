@@ -352,7 +352,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 		
-		List tosave = new ArrayList();
+		List<Data> tosave = new ArrayList();
 		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null) {
 			
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
@@ -365,6 +365,10 @@ public class EntityManager implements CatalogEnabled
 		}
 		//deSelect assets after copy
 		hits.getSelectedHitracker().deselectAll();
+		
+		//Use Category events?
+		//fireAssetsAddedToEntity(null, inUser, tosave , entity);
+
 		return tosave.size();
 	}
 	

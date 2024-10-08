@@ -129,21 +129,30 @@ public class EntityModule extends BaseMediaModule
 		
 		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
+		Data entity = archive.getCachedData(pickedmoduleid ,pickedentityid );
 		
 		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
-		if(pickedassetid != null) {
-			
-			Asset asset;
-			if (pickedassetid.startsWith("multiedit:"))
+		if( pickedassetid != null)
+		{
+			Asset asset = archive.getAsset(pickedassetid);
+			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
 			{
+				archive.getAssetSearcher().saveData(asset);
+				inPageRequest.putPageValue("asset", asset);
+				inPageRequest.putPageValue("assets", "1");
+				entityManager.fireAssetAddedToEntity(null, inPageRequest.getUser(),asset, entity);
+			}
+		}
+		else
+		{
+				Collection assets = findPickedAssets(inPageRequest, pickedassetid);
 				try
 				{
-					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(pickedassetid);
-					List tosave = new ArrayList();
+					List<Data> tosave = new ArrayList();
 					Integer count = 0;
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
-						asset = (Asset) iterator.next();
+						Asset asset = (Asset)archive.getAssetSearcher().loadData((Data)iterator.next());
 						if (asset == null) {
 							log.error("No asset id passed in");
 							return;
@@ -162,37 +171,40 @@ public class EntityModule extends BaseMediaModule
 					if( tosave.size() > 0)
 					{
 						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+						entityManager.fireAssetsAddedToEntity(null, inPageRequest.getUser(),tosave, entity);
+						inPageRequest.putPageValue("assets", tosave);
 					}
 					log.info("Added to entity: " + count + " assets.");
 				}
 				catch (Exception e)
 				{
 					//continue;
+					log.error("Cant save, ",e);
 				}
 			}
-			else
-			{
-				
-				asset = archive.getAsset(pickedassetid);
-				if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
-				{
-					archive.getAssetSearcher().saveData(asset);
-					inPageRequest.putPageValue("asset", asset);
-					inPageRequest.putPageValue("assets", "1");
-				}
-				
-			}
-		}
-		else 
-		{
-			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
-			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-			Integer added = entityManager.addAssetsToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, assethits);
-			inPageRequest.putPageValue("assets", added);
-		}
-		
 	}
 	
+	private Collection findPickedAssets(WebPageRequest inPageRequest, String pickedassetid) 
+	{
+	
+		Collection found = null;
+		if (pickedassetid != null && pickedassetid.startsWith("multiedit:"))
+		{
+			found = (Collection) inPageRequest.getSessionValue(pickedassetid);
+		}
+		else
+		{
+			String copyinghitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(copyinghitssessionid);
+			if( tracker != null)
+			{
+				found = tracker.getSelectedHitracker();
+			}
+		}
+		return found;
+	}
+
+
 	public void addtoNewEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 		String saveaction = inPageRequest.getRequestParameter("saveaction");
@@ -497,6 +509,14 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 	}
+	
+	/**
+	 * 
+	 * This sould be called from the category edit operations?
+	 * @param inPageRequest
+	 * @throws Exception
+	 */
+	
 	public void handleAssetsAddedToCategory(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
