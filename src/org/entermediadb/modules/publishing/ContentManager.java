@@ -376,6 +376,7 @@ public class ContentManager implements CatalogEnabled {
 	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Asset inDita)
 	{
 		ContentItem item = getMediaArchive().getOriginalContent(inDita);
+		
 		 //bin/dita -i ../90130_SPC_C-EFM/DITA-OUTPUT/90130_SPC_C-EFM/90130_SPC_C-EFM.ditamap -o out -f html 
 		//output a folder of HTML and read it in
 		Collection<String> args = new ArrayList();
@@ -432,6 +433,11 @@ public class ContentManager implements CatalogEnabled {
 	
 	public Collection findDitaAssets(Data inEntity)
 	{
+		if( inEntity == null)
+		{
+			log.error("missing enityty");
+			return null;
+		}
 		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
 		Collection assets = getMediaArchive().query("asset").exact("category", cat).orgroup("fileformat", "ditamap").not("editstatus","7").search();
 		return assets;

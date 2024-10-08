@@ -1,21 +1,17 @@
 package org.entermediadb.modules.publishing;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
 public class ContentModule extends BaseMediaModule {
@@ -58,14 +54,38 @@ public class ContentModule extends BaseMediaModule {
 		manager.createNewEntityFromAI(topmodule,entityid,targetentity);
 		
 	}
-	
+	public void loadDitaXml(WebPageRequest inReq)
+	{
+		String moduleid = inReq.findPathValue("module");
+		String entityid = inReq.getRequestParameter("entityid");
+		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
+		String assetid = inReq.getRequestParameter("assetid");
+		String renderformat = inReq.findValue("renderformat");
+		Asset asset = getMediaArchive(inReq).getAsset(assetid);
+		ContentManager manager = getContentManager(inReq);		
+		
+		//Make sure file is still here?
+		ContentItem item = getMediaArchive(inReq).getOriginalContent(asset);
+		
+		//Load XML tree
+		File file = new File(item.getAbsolutePath());
+		Element root = manager.getXmlUtil().getXml(file, "UTF-8");
+		
+		inReq.putPageValue("rootelement",root);
+		
+		//Look for inlcudes
+		
+		//chchapter topicref
+		Collection nodes = root.element("chapter").elements("topicref");
+		inReq.putPageValue("chapters",nodes);
+	}	
 	public void loadVisual(WebPageRequest inReq)
 	{
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
 		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
 		String assetid = inReq.getRequestParameter("assetid");
-		String renderformat = inReq.getRequestParameter("renderformat");
+		String renderformat = inReq.findValue("renderformat");
 		Asset asset = getMediaArchive(inReq).getAsset(assetid);
 		ContentManager manager = getContentManager(inReq);		
 		
@@ -82,6 +102,7 @@ public class ContentModule extends BaseMediaModule {
 			asset.setValue("editstatus", "2"); //Undelete
 			getMediaArchive(inReq).saveAsset(asset);
 		}
+		
 		String path = manager.loadVisual(moduleid,entity,renderformat, asset);
 		inReq.putPageValue("renderedpath",path);
 	}
