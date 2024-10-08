@@ -65,6 +65,7 @@ public class ContentModule extends BaseMediaModule {
 		String entityid = inReq.getRequestParameter("entityid");
 		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
 		String assetid = inReq.getRequestParameter("assetid");
+		String renderformat = inReq.getRequestParameter("renderformat");
 		Asset asset = getMediaArchive(inReq).getAsset(assetid);
 		ContentManager manager = getContentManager(inReq);		
 		
@@ -81,7 +82,7 @@ public class ContentModule extends BaseMediaModule {
 			asset.setValue("editstatus", "2"); //Undelete
 			getMediaArchive(inReq).saveAsset(asset);
 		}
-		String path = manager.loadVisual(moduleid,entity,asset);
+		String path = manager.loadVisual(moduleid,entity,renderformat, asset);
 		inReq.putPageValue("renderedpath",path);
 	}
 	public void loadXml(WebPageRequest inReq) throws Exception
@@ -111,6 +112,7 @@ public class ContentModule extends BaseMediaModule {
 		String parentmodule = inReq.getRequestParameter("topmodule");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetmodule = inReq.getRequestParameter("submodule");
+		String renderformat = inReq.getRequestParameter("renderformat");
 
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
