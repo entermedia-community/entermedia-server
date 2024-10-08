@@ -484,47 +484,52 @@ public class ContentManager implements CatalogEnabled {
 		log.info("Creating DITAMAP" + mapsourcepath);
 		int it = 0;
 		
-		long currenchapter = 0;
+		long currenchapter = -1;
 		Collection tosave = new ArrayList();
-		Collection onechapter = null;
+		Collection onechapter = new ArrayList();
 		
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) 
 		{
 			Data subentity = (Data) iterator.next();
 			
 			Long thischapter = (Long)Long.valueOf(subentity.get("userchapter_number"));
-			
-			if( currenchapter != thischapter || !iterator.hasNext())
+
+			if(currenchapter == -1) 
 			{
-				if( onechapter == null)
-				{
-					onechapter = new ArrayList();
-				}
-				else
-				{
-					//proccess chapter
-					newcontext.putPageValue("chapter",currenchapter);
-					newcontext.putPageValue("onechapter",onechapter);
-
-					StringWriter output = new StringWriter();
-					ditatemplate.generate(newcontext, output);
-
-					//subentity.setValue("ditatopic",output.toString());
-					//tosave.add(subentity);
-					//Save content
-					//String.format("%03d", a);
-					String ending = String.format("learningassesment/%03d.dita", currenchapter );
-					String ditabasesourcepath = cat.getCategoryPath() +"/Rendered/" + ending;
-					Page outputfile = mediaArchive.getPageManager().getPage(root + ditabasesourcepath);
-					mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITA");
-					log.info("Saved DITA: " + outputfile);
-					savedtopics.add(ending);
-					//clear
-					currenchapter = thischapter;
-					onechapter.clear();
-				}
+				currenchapter = thischapter;
 			}
+			
+			
+			if( currenchapter != thischapter || !iterator.hasNext()) 
+			{
+				if(!iterator.hasNext())
+				{
+					onechapter.add(subentity);
+				}
+				//proccess chapter
+				newcontext.putPageValue("chapter",currenchapter);
+				newcontext.putPageValue("onechapter",onechapter);
+
+				StringWriter output = new StringWriter();
+				ditatemplate.generate(newcontext, output);
+
+				//subentity.setValue("ditatopic",output.toString());
+				//tosave.add(subentity);
+				//Save content
+				//String.format("%03d", a);
+				String ending = String.format("learningassesment/%03d.dita", currenchapter );
+				String ditabasesourcepath = cat.getCategoryPath() +"/Rendered/" + ending;
+				Page outputfile = mediaArchive.getPageManager().getPage(root + ditabasesourcepath);
+				mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITA");
+				log.info("Saved DITA: " + outputfile);
+				savedtopics.add(ending);
+				//clear
+				currenchapter = thischapter;
+				onechapter.clear();
+			
+			} 	
 			onechapter.add(subentity);
+			
 		}
 		
 		mediaArchive.saveData("targetmodule", tosave);
