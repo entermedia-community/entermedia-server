@@ -1,24 +1,17 @@
 <style type="text/css">
 	:root {
-		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
-		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
-		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
 		--filler-color: transparent;
-		#if($publishing.containerdimension_enabled=="true")
-		--container-width: #if($publishing.containerwidth > 0) ${publishing.containerwidth}px #else 1000px #end;
-		--container-height: #if($publishing.containerheight > 0) ${publishing.containerheight}px #else 824px #end;
-		#else
 		--container-width: 100%;
 		--container-height: 100%;
-		#end
+		
 	}
 	html,
 	body {
 		width: 100vw;
-		height: 100vw;
+		height: 100%;
 		margin: 0;
 		padding: 0;
-		overflow-y: auto;
+		overflow: hidden;
 	}
 	
 	.__main-container {
@@ -28,7 +21,7 @@
 		background-color: var(--bg-color);
 		width: var(--container-width);
 		height: var(--container-height);
-		overflow: hidden;
+		
 	}
 	
 	._gridgallery-container {
@@ -41,6 +34,7 @@
 	height: 100%;
 	padding: 0 8px 8px;
 	overflow-y: auto;
+	
 }
 .scroll-resultsdiv {
     display: flex;
@@ -504,10 +498,9 @@ div.masonry-grid-cell .grid-cell-footer  {
 </style>
 
 <div id="applicationX" 
-	data-user="$!user.getId()" 
 	data-home="$!siteroot" 
 	data-siteroot="$!siteroot"
-	data-apphome="$apphome" 
+	data-apphome="$!apphome" 
 	data-themeprefix="${themeprefix}" 
 	data-browserlanguage="$!{browserlanguage}" 
 	data-componenthome="$!componenthome"
@@ -527,7 +520,7 @@ div.masonry-grid-cell .grid-cell-footer  {
 	<div class="__main-container"> 
 		<div class="d-flex h-100" style="width: 100%;">
 	  	<div class="" style="position:inherit;border-right: 1px solid #e2eff4; width: 250px;">
-			#set($urlprefix = "$apphome/services/module/asset/players/collections/display/brick/${librarycol.getId()}.html")
+			#set($urlprefix = "$apphome/services/module/asset/players/collections/display/category/${librarycol.getId()}.html")
 			$context.putPageValue("urlprefix", $urlprefix)
 	  		#set($treeurl = "$apphome/services/module/asset/players/collections/tree.html")
 	  		#set($nodeID = $context.getRequestParameter("nodeID"))

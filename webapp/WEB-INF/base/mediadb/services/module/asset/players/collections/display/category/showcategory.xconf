@@ -1,6 +1,3 @@
 <page>
-
-	<page-action name="DataEditModule.loadPageOfSearch"/>
-
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/gallery.html</inner-layout>
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/brickgallery.html</inner-layout>
 </page>
