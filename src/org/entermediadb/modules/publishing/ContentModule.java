@@ -7,12 +7,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 
 public class ContentModule extends BaseMediaModule {
 
@@ -83,28 +85,32 @@ public class ContentModule extends BaseMediaModule {
 	{
 		String moduleid = inReq.findPathValue("module");
 		String entityid = inReq.getRequestParameter("entityid");
-		Data entity = getMediaArchive(inReq).getData(moduleid, entityid);
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		Data entity = mediaArchive.getData(moduleid, entityid);
 		String assetid = inReq.getRequestParameter("assetid");
 		String renderformat = inReq.findValue("renderformat");
-		Asset asset = getMediaArchive(inReq).getAsset(assetid);
+		Asset asset = mediaArchive.getAsset(assetid);
 		ContentManager manager = getContentManager(inReq);		
 		
 		//Make sure file is still here?
-		ContentItem item = getMediaArchive(inReq).getOriginalContent(asset);
+		ContentItem item = mediaArchive.getOriginalContent(asset);
 		if( !item.exists())
 		{
 			asset.setValue("editstatus", "7");
-			getMediaArchive(inReq).saveAsset(asset);
+			mediaArchive.saveAsset(asset);
 			return;
 		}
 		else if( "7".equals( asset.get("editstatus") ) )
 		{
 			asset.setValue("editstatus", "2"); //Undelete
-			getMediaArchive(inReq).saveAsset(asset);
+			mediaArchive.saveAsset(asset);
 		}
 		
 		String path = manager.loadVisual(moduleid,entity,renderformat, asset);
 		inReq.putPageValue("renderedpath",path);
+		String catpath = PathUtilities.extractDirectoryPath(path);
+		Category cat= mediaArchive.getCategorySearcher().createCategoryPath(catpath);
+		inReq.putPageValue("renderedcategory",cat);
 	}
 	public void loadXml(WebPageRequest inReq) throws Exception
 	{
@@ -133,7 +139,7 @@ public class ContentModule extends BaseMediaModule {
 		String parentmodule = inReq.getRequestParameter("topmodule");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetmodule = inReq.getRequestParameter("submodule");
-		String renderformat = inReq.getRequestParameter("renderformat");
+		//String renderformat = inReq.getRequestParameter("renderformat");
 
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 

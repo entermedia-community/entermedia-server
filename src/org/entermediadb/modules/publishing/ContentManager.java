@@ -35,6 +35,8 @@ import org.openedit.util.XmlUtil;
 
 public class ContentManager implements CatalogEnabled {
 
+	private static final String INPUTDIR = "/DITA/"; // /Inputs/";
+	private static final String RENDERED = "/DITA/";  //Rendered/";
 	private static final Log log = LogFactory.getLog(ContentManager.class);
 	protected XmlUtil fieldXmlUtil;
 	protected ModuleManager fieldModuleManager;
@@ -373,10 +375,14 @@ public class ContentManager implements CatalogEnabled {
 		return text;
 	}
 	
-	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Data inDita)
+	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Data inDitaAsset)
 	{
-		ContentItem item = getMediaArchive().getOriginalContent(inDita);
-		
+		ContentItem item = getMediaArchive().getOriginalContent(inDitaAsset);
+		if( !item.exists() )
+		{
+			log.info("No such assset");
+			return null;
+		}
 		 //bin/dita -i ../90130_SPC_C-EFM/DITA-OUTPUT/90130_SPC_C-EFM/90130_SPC_C-EFM.ditamap -o out -f html 
 		//output a folder of HTML and read it in
 		Collection<String> args = new ArrayList();
@@ -385,19 +391,19 @@ public class ContentManager implements CatalogEnabled {
 		
 		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
 		
-		String stub = PathUtilities.extractPageName(inDita.getName());
 		String root = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
-		String basesourcepath = cat.getCategoryPath() +"/Rendered/html/" + stub;
-		Page outdirectory = getMediaArchive().getPageManager().getPage(root + basesourcepath);
-
-		String outputpath = findOutputSourcePath(item, basesourcepath);
-		Page finalpage = getMediaArchive().getPageManager().getPage(root + outputpath); //mkdir
+		String outputbasefolder = cat.getCategoryPath() +RENDERED + PathUtilities.extractPageName(inDitaAsset.getName());
+		String finaloutputpage = findOutputSourcePath(item, outputbasefolder, inFormat);
+		
+		Page finalpage = getMediaArchive().getPageManager().getPage(root + finaloutputpage); //mkdir
 		
 		if(finalpage.exists()) //Reload?
 		{
-			return outputpath;
+			log.error("Already done " + finalpage);
+			return finaloutputpage;
 		}
 		//getMediaArchive().getPageManager().putPage(finalpage); //mkdir
+		Page outdirectory = getMediaArchive().getPageManager().getPage(finalpage.getDirectory());
 
 		args.add("-o");
 		args.add(outdirectory.getContentItem().getAbsolutePath());
@@ -411,22 +417,30 @@ public class ContentManager implements CatalogEnabled {
 		Collection assetids = getMediaArchive().getAssetImporter().processOn(outdirectory.getPath(), outdirectory.getPath(),true,getMediaArchive(), null);
 		
 		//Load all the HTML?
-		return outputpath;
+		return finaloutputpage;
 	}
 
 
-	protected String findOutputSourcePath(ContentItem item, String basesourcepath ) 
+	protected String findOutputSourcePath(ContentItem item, String outputbasefolder , String inType) 
 	{
 		File xml = new File(item.getAbsolutePath());
 		Element input = getXmlUtil().getXml(xml, "UTF-8");
 		String finalpage = null;
-		if( "bookmap".equals(input.getName()) )
+		
+		if( inType.equals("pdf"))
 		{
-			finalpage = basesourcepath + "/index.html";	
+			finalpage = outputbasefolder + "/" + PathUtilities.extractPageName( item.getName() ) + ".pdf";			
 		}
-		else if( "learningAssessment".equals(input.getName()) )
+		else
 		{
-			finalpage = basesourcepath + "/learningassesment/" + PathUtilities.extractPageName( item.getName() ) + ".html";
+			if( "bookmap".equals(input.getName()) )
+			{
+				finalpage = outputbasefolder + "/index.html";	
+			}
+			else if( "chapters".equals(input.getName()) )
+			{
+				finalpage = outputbasefolder + "/chapters/" + PathUtilities.extractPageName( item.getName() ) + ".html";
+			}
 		}
 		return finalpage;
 	}
@@ -461,6 +475,37 @@ public class ContentManager implements CatalogEnabled {
 		
 		//Search using jquery
 	}
+
+	public String saveImage(Page inputdirectory, String inAssetId,String size)
+	{
+		Asset asset = getMediaArchive().getAsset(inAssetId);
+		String rel = saveImage(inputdirectory,asset,size);
+		return rel;
+	}
+	public String saveImage(Page inputdirectory, Data inAsset,String size)
+	{
+		//Copy the file to a location
+		
+		String format = inAsset.get("fileformat");
+		String extention = "jpg";
+		if("png".equals(format))
+		{
+			//extention = "png";
+		}
+		String path = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + size + "." + extention;
+		ContentItem inputpage = getMediaArchive().getPageManager().getRepository().getStub(path);
+		//Copy it no version
+		String ending = "generated/" + inAsset.getSourcePath() + "/" + inputpage.getName();
+		
+		String outputpath = inputdirectory.getPath() + ending;
+		ContentItem outputcontent = getMediaArchive().getPageManager().getRepository().getStub(outputpath);
+		outputcontent.setMakeVersion(false);
+		getMediaArchive().getPageManager().getRepository().copy(inputpage, outputcontent);
+		
+		String relativepath = "../" + ending;
+		return relativepath;
+		
+	}
 	
 	protected void renderDita(WebPageRequest inReq, String parentmodule, Data entity, String targetmodule,
 			HitTracker children, MediaArchive mediaArchive) {
@@ -469,25 +514,30 @@ public class ContentManager implements CatalogEnabled {
 		String appid = inReq.findPathValue("applicationid");
 		Page ditatemplate = mediaArchive.getPageManager().getPage("/" + appid + "/views/modules/" + parentmodule + "/components/entities/renderdita/templatedita.dita");
 		PropertyDetail detail = mediaArchive.getSearcher(targetmodule).getDetail("name");
+		
 		WebPageRequest newcontext = inReq.copy(ditatemplate);
+		newcontext.putPageValue("contentmanager",this);
+		
 		Collection savedtopics = new ArrayList();
 		String root = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/";
 
-		//Get Names
-		Page outdirectory = mediaArchive.getPageManager().getPage(root + cat.getCategoryPath() +"/Rendered/");
+		
+		String basemapsourcepath = cat.getCategoryPath() +INPUTDIR;
+
+		
 		String exportname = inReq.getRequestParameter("exportname");
 		if( exportname == null)
 		{
 			exportname = entity.getName() + ".ditamap";
 			exportname  = exportname.replace('/', '-');
 		}
-		String mapsourcepath = cat.getCategoryPath() +"/Rendered/" + exportname;
-		Page mapoutputfile = mediaArchive.getPageManager().getPage(root + mapsourcepath);
+		String finalmapsourcepath = basemapsourcepath + PathUtilities.extractPageName(exportname) + "/" +  exportname;
+		Page inputdirectory = mediaArchive.getPageManager().getPage(root + basemapsourcepath + PathUtilities.extractPageName(exportname) + "/");
+		newcontext.putPageValue("inputdirectory",inputdirectory);
+		Page mapoutputpage = mediaArchive.getPageManager().getPage(root + finalmapsourcepath);
+
 		
-		Page folder = mediaArchive.getPageManager().getPage(mapoutputfile.getDirectory() + "/html/");
-		mediaArchive.getPageManager().removePage(folder); //Assets will still be linked?
-		
-		log.info("Creating DITAMAP" + mapsourcepath);
+		log.info("Creating DITAMAP" + finalmapsourcepath);
 		int it = 0;
 		
 		long currenchapter = -1;
@@ -523,11 +573,15 @@ public class ContentManager implements CatalogEnabled {
 				//tosave.add(subentity);
 				//Save content
 				//String.format("%03d", a);
-				String ending = String.format("learningassesment/%03d.dita", currenchapter );
-				String ditabasesourcepath = cat.getCategoryPath() +"/Rendered/" + ending;
+				String ending = String.format("chapters/%03d.dita", currenchapter );
+				String ditabasesourcepath = cat.getCategoryPath() +INPUTDIR + mapoutputpage.getDirectoryName() + "/" + ending;
 				Page outputfile = mediaArchive.getPageManager().getPage(root + ditabasesourcepath);
 				mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(), "Generated DITA");
 				log.info("Saved DITA: " + outputfile);
+				
+				//TODO: Put the image files inside  .images
+					
+				
 				savedtopics.add(ending);
 				//clear
 				currenchapter = thischapter;
@@ -548,18 +602,22 @@ public class ContentManager implements CatalogEnabled {
 		newcontext.putPageValue("exportname", entity.getName());
 		newcontext.putPageValue("savedtopics",savedtopics);
 		ditatemplatemap.generate(newcontext, output);
-		
-		
+		//Get Names
 		//Save content
-		mediaArchive.getPageManager().saveContent(mapoutputfile, inReq.getUser(), output.toString(), "Generated DITAMMAP");
+		mediaArchive.getPageManager().saveContent(mapoutputpage, inReq.getUser(), output.toString(), "Generated DITAMMAP");
+		log.info("Saved DITA MAP: " + mapoutputpage);
 
-		Collection assetids = mediaArchive.getAssetImporter().processOn(outdirectory.getPath(), outdirectory.getPath(),true,mediaArchive, null);
+//		Page outdirectory = mediaArchive.getPageManager().getPage(root + cat.getCategoryPath() +RENDERED + mapoutputpage.getDirectoryName() +"/");
+//		mediaArchive.getPageManager().removePage(outdirectory); //Assets will still be linked?
+
+		
+		Collection assetids = mediaArchive.getAssetImporter().processOn(inputdirectory.getPath(), inputdirectory.getPath(),true,mediaArchive, null);
 		
 		//Save to Question Area? Or parent or both
-		Asset asset = mediaArchive.getAssetBySourcePath(mapsourcepath);
+		Asset asset = mediaArchive.getAssetBySourcePath(finalmapsourcepath);
 		if( asset != null)
 		{
-			loadVisual(parentmodule, entity, "html5", asset);
+			loadVisual(parentmodule, entity, "xhtml", asset);
 			loadVisual(parentmodule, entity, "pdf", asset);
 		}
 	}
