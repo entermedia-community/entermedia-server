@@ -176,10 +176,6 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-music";
 			}
-			if (mime.startsWith("text"))
-			{
-				return "card-text";
-			}
 			if (mime.contains("pdf"))
 			{
 				return "file-earmark-pdf";
@@ -194,6 +190,12 @@ public class MediaArchive implements CatalogEnabled
 			}
 			if (mime.endsWith("xml"))  
 			{
+				if(inFormat.equals("dita")) {
+					return "filetype-dita";
+				}
+				if(inFormat.equals("ditamap")) {
+					return "filetype-ditamap";
+				}
 				return "filetype-xml";
 			}
 			if (mime.endsWith("html")) 
@@ -203,6 +205,10 @@ public class MediaArchive implements CatalogEnabled
 			if (mime.endsWith("css")) 
 			{
 				return "filetype-css";
+			}
+			if (mime.startsWith("text"))
+			{
+				return "card-text";
 			}
 		}
 		else
