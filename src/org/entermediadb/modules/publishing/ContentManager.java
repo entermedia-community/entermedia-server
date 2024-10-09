@@ -373,7 +373,7 @@ public class ContentManager implements CatalogEnabled {
 		return text;
 	}
 	
-	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Asset inDita)
+	public String loadVisual(String inModuleId, Data inEntity,String inFormat, Data inDita)
 	{
 		ContentItem item = getMediaArchive().getOriginalContent(inDita);
 		

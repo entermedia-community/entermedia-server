@@ -145,5 +145,22 @@ public class ContentModule extends BaseMediaModule {
 
 	}
 
+	public void loadDitaViewer(WebPageRequest inReq) throws Exception
+	{
+		Data entity = (Data)inReq.getPageValue("entity");
+		Data asset = (Data)inReq.getPageValue("asset");
+		ContentManager manager = getContentManager(inReq);		
+		Collection menu = (Collection)manager.findDitaAssets(entity); 
+		if( asset == null && !menu.isEmpty())
+		{
+			asset = (Data)menu.iterator().next();
+			inReq.putPageValue("asset",asset);
+			String path = manager.loadVisual(entity.get("entitysourcetype"),entity,"html", asset);
+			inReq.putPageValue("renderedpath",path);
+
+		}
+		inReq.putPageValue("found",menu);
+	}	
+
 	
 }
