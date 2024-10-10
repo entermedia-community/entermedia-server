@@ -956,21 +956,23 @@ public class EntityModule extends BaseMediaModule
 	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
 	{
 	
-//		MediaArchive archive = getMediaArchive(inPageRequest);
-//		EntityManager entityManager = getEntityManager(inPageRequest);
-//		
-//		String entityid = inPageRequest.getRequestParameter("entityid");
-//		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
-//		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
-//		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-//		
-//		if( assethits != null && assethits.hasSelections())
-//		{
-//			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
-//			assethits = assethitscopy;
-//			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
-//			assethits.deselectAll();
-//		}
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		EntityManager entityManager = getEntityManager(inPageRequest);
+		
+	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+		String categoryid = inPageRequest.getRequestParameter("categoryid");
+		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		
+		if( assethits != null && assethits.hasSelections())
+		{
+			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+			assethits = assethitscopy;
+			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), categoryid, assethits);
+			assethits.deselectAll();
+		}
 
 		
 	}
