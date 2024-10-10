@@ -1,7 +1,6 @@
 package org.entermediadb.find;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -866,6 +865,24 @@ public class EntityManager implements CatalogEnabled
 		
 	}
 	
+	public Map loadLightBoxCounts(Collection inBoxes, Data inModule, Data inEntity)
+	{
+		Category entityrootcategory = createDefaultFolder(inEntity, null);
+		HitTracker found = getMediaArchive().query("asset").orgroup("category", entityrootcategory.getChildren()).facet("category").search();
+		
+		Map categorycounts = new HashMap();
+		
+		for (Iterator iterator = entityrootcategory.getChildren().iterator(); iterator.hasNext();) {
+			Category cat = (Category) iterator.next();
+			FilterNode node = found.findFilterChildValue("category",cat.getId());
+			if( node != null)
+			{
+				categorycounts.put(cat.getName(),node.getCount());
+			}
+		}
+		return categorycounts;
+		
+	}
 	
 	
 	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
@@ -879,63 +896,27 @@ public class EntityManager implements CatalogEnabled
 		//TODO: Search for each box for total assets using facets?
 		return assets;
 	}
-	
-	public HitTracker loadLightBoxAssets(String inModule, String inEntity, String inLightBoxId, User inUser)
-	{
-		//Search for all the boxes that match. 
-		HitTracker assets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").exact("lightboxid", inLightBoxId).
-				exact("parentmoduleid", inModule).
-				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
-		//Then each box has a child record with an assetid and comments/statuses
-		//TODO: Search for each box for total assets using facets?
-		return assets;
-	}
 
-	public Data findFirstSelectedLightBox(HitTracker boxes, HitTracker assets)
-	{
-		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
-			Data lightbox = (Data) iterator.next();
-			FilterNode node = assets.findFilterChildValue("lightboxid", lightbox.getId());
-			if( node != null)
-			{
-				return lightbox;
-			}
-		}
-		return null;
-	}
-
-	public void updateLightBoxAssetOrderings(String inLightBox, String[] inBoxAssets, String[] inNewOrderings) 
-	{
-		Collection ids = Arrays.asList(inBoxAssets);
-		Collection exiting = getMediaArchive().query("emedialightboxasset").ids(ids).search();
-		Map<String,String> ordering = new HashMap();
-		for (int i = 0; i < inBoxAssets.length; i++) {
-			ordering.put(inBoxAssets[i],inNewOrderings[i]);
-		}
-		Collection tosave = new ArrayList();
-		for (Iterator iterator = exiting.iterator(); iterator.hasNext();) {
-			Data brick = (Data) iterator.next();
-			String order = ordering.get(brick.getId());
-			brick.setValue("ordering",order);
-			tosave.add(brick);
-		}
-		
-		getMediaArchive().saveData("emedialightboxasset", tosave);
-//		tosave = getMediaArchive().query("emedialightboxasset").ids(ids).search();
-//		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
-//			Data brick = (Data) iterator.next();
-//			String order = brick.get("ordering");
-//			log.info(order);
-//		}
-	}
-	
+	/**
+	 * This is good for finding related info on assets. To be used later
+	 * @param inUser
+	 * @param inModuleid
+	 * @param inEntityid
+	 * @param inLightboxid
+	 * @return
+	 
 	public Map loadLightBoxResults(User inUser, String inModuleid, String inEntityid, String inLightboxid)
 	{
-		HitTracker lightboxassets = loadLightBoxAssets(inModuleid,inEntityid,inLightboxid, inUser);
+		HitTracker lightboxassets = getMediaArchive().query("emedialightboxasset").named("lightboxassets").exact("lightboxid", inLightboxid).
+				exact("parentmoduleid", inModuleid).
+				exact("parententityid",inEntityid).facet("lightboxid").sort("ordering").search();
+		
 		lightboxassets.enableBulkOperations();
 		Map<String,Data> assetidlookup = new HashMap();
 		Collection assetids = lightboxassets.collectValues("primarymedia");
-		
+
+		Map<String,Object> hitassetlookup = new HashMap();
+
 		//TODO: only support up to 1000 assets. Break down into chunks?
 		HitTracker assethits = getMediaArchive().query("asset").ids(assetids).named("assethits").search();
 		assethits.enableBulkOperations();
@@ -943,26 +924,35 @@ public class EntityManager implements CatalogEnabled
 			Data asset = (Data) iterator.next();
 			assetidlookup.put(asset.getId(),asset);
 		}
-		Map<String,Object> hitassetlookup = new HashMap();
+		hitassetlookup.put("asset", assethits);
+		
 		for (Iterator iterator = lightboxassets.iterator(); iterator.hasNext();) {
 			Data lightboxhit = (Data) iterator.next();
 			Data asset = assetidlookup.get(lightboxhit.get("primarymedia")); 
 			hitassetlookup.put(lightboxhit.getId(),asset);
 		}
-		hitassetlookup.put("asset", assethits);
 		hitassetlookup.put("emedialightboxasset", lightboxassets);
+		
+		//Get the categories
+		
 		return hitassetlookup;
 	
 	}
-
+	*/
 	
-	public void lightBoxRemoveAssets(User inUser, String inLightBoxId, HitTracker inAssethits)
+	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
 	{
-		Collection assetids = inAssethits.collectValues("id");
-		Collection boxassets  = getMediaArchive().query("emedialightboxasset").exact("lightboxid",inLightBoxId).orgroup("primarymedia", assetids).search();
-		
-		getMediaArchive().getSearcher("emedialightboxasset").deleteAll(boxassets, inUser);
-	
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
+			Data lightbox = (Data) iterator.next();
+			Integer val = (Integer)inCounts.get( lightbox.getName() );
+			
+			if( val != null && val > 0)
+			{
+				return lightbox;
+			}
+		}
+		return null;
 	}
+	
 	
 }

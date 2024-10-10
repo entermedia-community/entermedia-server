@@ -956,44 +956,43 @@ public class EntityModule extends BaseMediaModule
 	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
 	{
 	
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		EntityManager entityManager = getEntityManager(inPageRequest);
-		
-	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
-		String entityid = inPageRequest.getRequestParameter("entityid");
-		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
-		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
-		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
-		
-		if( assethits != null && assethits.hasSelections())
-		{
-			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
-			assethits = assethitscopy;
-			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
-			assethits.deselectAll();
-		}
+//		MediaArchive archive = getMediaArchive(inPageRequest);
+//		EntityManager entityManager = getEntityManager(inPageRequest);
+//		
+//		String entityid = inPageRequest.getRequestParameter("entityid");
+//		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+//		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+//		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+//		
+//		if( assethits != null && assethits.hasSelections())
+//		{
+//			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+//			assethits = assethitscopy;
+//			archive.getEntityManager().lightBoxRemoveAssets(inPageRequest.getUser(), lightboxid, assethits);
+//			assethits.deselectAll();
+//		}
 
 		
 	}
 
-	public void loadLightBoxResults(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		EntityManager entityManager = getEntityManager(inReq);
-		String moduleid = inReq.findPathValue("module");
-		String entityid = inReq.getRequestParameter("entityid");
-		String lightboxid = inReq.getRequestParameter("lightboxid");
-		Map hitassetlookup = entityManager.loadLightBoxResults(inReq.getUser(), moduleid,entityid,lightboxid);
-		inReq.putPageValue("hitassetlookup",hitassetlookup);
-		HitTracker emedialightboxassets = (HitTracker) hitassetlookup.get("emedialightboxasset");
-		inReq.putPageValue("lightboxassets",emedialightboxassets);
-		inReq.putSessionValue(emedialightboxassets.getSessionId(), emedialightboxassets);
-
-		HitTracker assethits = (HitTracker) hitassetlookup.get("asset");
-		inReq.putPageValue("assethits",assethits);
-		inReq.putSessionValue(assethits.getSessionId(), assethits);
-	
-	}
+//	public void loadLightBoxResults(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		EntityManager entityManager = getEntityManager(inReq);
+//		String moduleid = inReq.findPathValue("module");
+//		String entityid = inReq.getRequestParameter("entityid");
+//		String lightboxid = inReq.getRequestParameter("lightboxid");
+//		Map hitassetlookup = entityManager.loadLightBoxResults(inReq.getUser(), moduleid,entityid,lightboxid);
+//		inReq.putPageValue("hitassetlookup",hitassetlookup);
+//		HitTracker emedialightboxassets = (HitTracker) hitassetlookup.get("emedialightboxasset");
+//		inReq.putPageValue("lightboxassets",emedialightboxassets);
+//		inReq.putSessionValue(emedialightboxassets.getSessionId(), emedialightboxassets);
+//
+//		HitTracker assethits = (HitTracker) hitassetlookup.get("asset");
+//		inReq.putPageValue("assethits",assethits);
+//		inReq.putSessionValue(assethits.getSessionId(), assethits);
+//	
+//	}
 
 	
 
