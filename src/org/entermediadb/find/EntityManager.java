@@ -794,7 +794,40 @@ public class EntityManager implements CatalogEnabled
 		
 		return tosave.size();
 	}
+/*
+	public Data createLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity, User inUser) {
+		
+		Data lightboxtype = getMediaArchive().getCachedData("emedialightboxtype", lightboxtypeid);
+		
+		Searcher searcher = getMediaArchive().getSearcher("emediaentitylightbox");
+		Data lightbox = searcher.createNewData();
+		lightbox.setValue("name", lightboxtype.getName());
+		lightbox.setValue("moduleid", inModule.getId());
+		lightbox.setValue("entityid", inEntity.getId());
+		lightbox.setValue("lightboxtype", lightboxtypeid);
+		Category entityrootcategory = createDefaultFolder(inEntity, inUser) ;
 
+		Category lightboxcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + lightboxtype.getName());
+
+		lightbox.setValue("rootcategory", lightboxcategory.getId());
+		lightbox.setValue("owner", inUser.getName());
+		searcher.saveData(lightbox);
+		return lightbox;
+	}
+	*/
+	public Data loadLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity)
+	{
+		if( inModule == null || inEntity == null)
+		{
+			log.error("No module");
+			return null;
+		}
+		Data box = getMediaArchive().query("emediaentitylightbox").exact("lightboxtype", lightboxtypeid)
+				.exact("moduleid", inModule.getId())
+				.exact("entityid", inEntity.getId())
+				.searchOne();
+		return box;
+	}
 	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
 	{
 		if( inModule == null)
@@ -809,6 +842,31 @@ public class EntityManager implements CatalogEnabled
 		//TODO: Search for each box for total assets using facets?
 		return boxes;
 	}
+	public HitTracker loadLightBoxesForEntity(Data inModule, Data inEntity,User inUser)
+	{
+		if( inModule == null)
+		{
+			log.error("No module");
+			return null;
+		}
+		//Search for all the boxes that match. 
+		HitTracker boxes = getMediaArchive().query("emediaentitylightbox")
+		.exact("moduleid", inModule.getId())
+		.exact("entityid", inEntity.getId())
+		.search();
+		return boxes;
+	}
+	
+	public Category loadLightboxCategory(Data inLightBox, Data inModule, Data inEntity, User inUser) {
+		
+		Category entityrootcategory = createDefaultFolder(inEntity, inUser) ;
+		Category lightboxcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inLightBox.getName());
+		
+		return lightboxcategory;
+		
+	}
+	
+	
 	
 	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
 	{

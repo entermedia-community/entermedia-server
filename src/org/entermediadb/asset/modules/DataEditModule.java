@@ -16,6 +16,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -2278,6 +2279,64 @@ String viewbase = null;
 		teamUser.setValue("isbillingcontact", !oldValue);
 		instanceSearcher.saveData(teamUser);
 	}
+
 	
+	public void orderDataToTop(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		MultiValued firstone = (MultiValued)tracker.first();
+		inReq.setRequestParameter("targetid",firstone.getId());
+		orderInsertData(inReq);
+	}
+	
+	public void orderInsertData(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		tracker.enableBulkOperations();
+		String dataid = inReq.getRequestParameter("dataid");
+		Data selected = archive.getData(searchtype, dataid);
+		String replacedassetid = inReq.getRequestParameter("targetid");
+		
+		long neworder = -1;
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
+			MultiValued data = (MultiValued) iterator.next();
+			if( data.getId().equals(replacedassetid))
+			{
+				Long currentorder = data.getLong("ordering");
+				if( currentorder ==null)
+				{
+					currentorder = 0L;
+				}
+				selected.setValue("ordering",currentorder);
+				tosave.add(selected);
+				neworder = currentorder + 1;
+				data.setValue("ordering",neworder++);
+				tosave.add(data);
+				
+			}
+			if( neworder > -1 && !selected.getId().equals(data.getId()))
+			{
+				Long otherorders = data.getLong("ordering");
+				if( otherorders == null)
+				{
+					otherorders = 0L;
+				}
+				if( otherorders > neworder)
+				{
+					break;
+				}
+				 data.setValue("ordering",neworder);
+				 tosave.add(data);
+				neworder++;
+			}
+		}
+		archive.saveData(searchtype,tosave);
+	
+	}
 	
 }

@@ -904,28 +904,53 @@ public class EntityModule extends BaseMediaModule
 		
 		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
 		
+	
 		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+		Data selectedbox = archive.getCachedData("emedialightbox",lightboxid );
+		Data module = archive.getCachedData("module", moduleid);
+		Data entity = archive.getCachedData(moduleid, entityid);
 		
-		//Might be assets or might be lighboxassets
-		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		Category category = entityManager.loadLightboxCategory(selectedbox, module, entity, inPageRequest.getUser() );
 		
-		if( assethits != null && assethits.hasSelections())
-		{
-			HitTracker assethitscopy = assethits.getSelectedHitracker(); 
-			assethits = assethitscopy;
+		Integer added = 0;
+		if(category != null) {
+			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+			
+			if( assethits != null && assethits.hasSelections())
+			{
+				HitTracker assethitscopy = assethits.getSelectedHitracker(); 
+				assethits = assethitscopy;
+				List<Data> tosave = new ArrayList();
+				for (Iterator iterator = assethits.iterator(); iterator.hasNext();) 
+				{
+					Data data = (Data) iterator.next();
+					Asset asset = archive.getAsset(data.getId());
+					asset.addCategory(category);
+					tosave.add(asset);
+				}
+				archive.saveAssets(tosave);
+				added = assethits.size();
+			}
+			else
+			{
+				Asset asset = archive.getAsset(assetid);
+				asset.addCategory(category);
+				archive.saveAsset(asset);
+				added = 1;
+			}
+			
+			inPageRequest.putPageValue("assetsadded", added);
+			assethits.deselectAll();
 		}
-		else
-		{
-			List one = new ArrayList();
-			Asset asset = archive.getAsset(assetid);
-			one.add(asset);
-			assethits = new ListHitTracker(one); 
-			assethits.setSearcher(archive.getAssetSearcher());
-		}
+		
+		/*
+		
+		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
+
 		
 		Integer added = entityManager.addToWorkflowStatus(inPageRequest.getUser(),moduleid,entityid,assethits,lightboxid);
 		inPageRequest.putPageValue("assetsadded", added);
-		assethits.deselectAll();
+		assethits.deselectAll();*/
 	}
 	
 	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
@@ -969,30 +994,9 @@ public class EntityModule extends BaseMediaModule
 		inReq.putSessionValue(assethits.getSessionId(), assethits);
 	
 	}
-	public void lightBoxAssetToTop(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String assetlightboxid = inReq.getRequestParameter("assetlightboxid");
-		String topordering = inReq.getRequestParameter("topordering");
-		Data selected = archive.getCachedData("emedialightboxasset",assetlightboxid);
-		long ordering = Long.parseLong(topordering);
-		ordering--;
-		selected.setValue("ordering",String.valueOf(ordering)); //Goes negative
-		archive.saveData("emedialightboxasset",selected);
-	}
+
 	
-	public void insertLightBoxAsset(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		EntityManager entityManager = getEntityManager(inReq);
-		String lightboxid = inReq.getRequestParameter("lightboxid");
-		String[] neworderings = inReq.getRequestParameters("neworderings");
-		String[] boxassetid = inReq.getRequestParameters("boxassetid");
-		if(boxassetid.length > 0 && neworderings.length ==  boxassetid.length )
-		{
-			entityManager.updateLightBoxAssetOrderings(lightboxid,boxassetid,neworderings);
-		}
-	}
+
 
 	
 	public void uploadSubTable(WebPageRequest inReq) throws Exception
