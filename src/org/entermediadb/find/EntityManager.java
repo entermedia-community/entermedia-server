@@ -941,7 +941,6 @@ public class EntityManager implements CatalogEnabled
 	*/
 	
 	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
-	public void lightBoxRemoveAssets(User inUser, String inCategoryid, HitTracker inAssethits)
 	{
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
 			Data lightbox = (Data) iterator.next();
@@ -953,6 +952,9 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		return null;
+	}
+	public void lightBoxRemoveAssets(User inUser, String inCategoryid, HitTracker inAssethits)
+	{
 		Category category = getMediaArchive().getCategory(inCategoryid);
 		if (category != null) {
 			List tosave = new ArrayList();
@@ -964,8 +966,6 @@ public class EntityManager implements CatalogEnabled
 			}
 			getMediaArchive().saveAssets(tosave);
 		}
-		
-	
 	}
 	
 	
