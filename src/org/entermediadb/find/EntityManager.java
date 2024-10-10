@@ -856,12 +856,20 @@ public class EntityManager implements CatalogEnabled
 		return boxes;
 	}
 	
-	public Category loadLightboxCategory(Data inLightBox, Data inModule, Data inEntity, User inUser) {
+	public Category loadLightboxCategory(Data inModule, Data inEntity, Data inLightBox, User inUser) {
 		
-		Category entityrootcategory = createDefaultFolder(inEntity, inUser) ;
-		Category lightboxcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inLightBox.getName());
-		
-		return lightboxcategory;
+		Category entityrootcategory = loadDefaultFolder(inModule, inEntity, inUser) ;
+		if( entityrootcategory == null)
+		{
+			log.error("No cat" + inEntity);
+			return null;
+		}
+		Category selectedcat = entityrootcategory.getChildByName(inLightBox.getName());
+		if( selectedcat == null)
+		{
+			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inLightBox.getName());
+		}
+		return selectedcat;
 		
 	}
 	
@@ -967,6 +975,17 @@ public class EntityManager implements CatalogEnabled
 			getMediaArchive().saveAssets(tosave);
 		}
 	}
+
 	
+	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, User inUser)
+	{
+		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox , null);
+		if( parent == null)
+		{
+			return null;
+		}
+		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort("ordering").named("catsearch").search();
+		return hits;
+	}
 	
 }
