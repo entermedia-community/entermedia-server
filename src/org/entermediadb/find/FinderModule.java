@@ -1266,18 +1266,9 @@ public class FinderModule extends BaseMediaModule
 		
 		String lightboxid = publishing.get("lightboxid");
 		if(lightboxid != null) {
-			
-			Map hitassetlookup = archive.getEntityManager().loadLightBoxResults(inReq.getUser(), publishing.get("moduleid"), publishing.get("entityid"),lightboxid);
-			inReq.putPageValue("hitassetlookup",hitassetlookup);
-			HitTracker emedialightboxassets = (HitTracker) hitassetlookup.get("emedialightboxasset");
-			inReq.putPageValue("lightboxassets",emedialightboxassets);
-			inReq.putSessionValue(emedialightboxassets.getSessionId(), emedialightboxassets);
-
-			HitTracker assethits = (HitTracker) hitassetlookup.get("asset");
-			inReq.putPageValue("assethits",assethits);
-			inReq.putSessionValue(assethits.getSessionId(), assethits);
-			
-			tracker = assethits;
+			Data module = archive.getCachedData("module", publishing.get("moduleid"));
+			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
+			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox,  inReq.getUser());
 		}
 		else {
 			Searcher assetsearcher = archive.getSearcher("asset");

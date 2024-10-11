@@ -142,6 +142,8 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		if(search == null) {
 			search = assetsearcher.createSearchQuery();
+			String	sort = inPageRequest.getRequestParameter(searchtype +"sortby");
+			search.addSortBy(sort);
 		}
 		
 		if( exact != null && Boolean.parseBoolean(exact))

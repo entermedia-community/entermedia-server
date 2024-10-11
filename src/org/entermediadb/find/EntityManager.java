@@ -864,12 +864,17 @@ public class EntityManager implements CatalogEnabled
 			log.error("No cat" + inEntity);
 			return null;
 		}
+		if (inLightBox == null) 
+		{
+			return entityrootcategory;
+		}
 		Category selectedcat = entityrootcategory.getChildByName(inLightBox.getName());
 		if( selectedcat == null)
 		{
 			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inLightBox.getName());
 		}
 		return selectedcat;
+		
 		
 	}
 	
