@@ -1269,6 +1269,7 @@ public class FinderModule extends BaseMediaModule
 			Data module = archive.getCachedData("module", publishing.get("moduleid"));
 			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
 			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox,  inReq.getUser());
+			tracker.setHitsPerPage(1000);
 		}
 		else {
 			Searcher assetsearcher = archive.getSearcher("asset");
