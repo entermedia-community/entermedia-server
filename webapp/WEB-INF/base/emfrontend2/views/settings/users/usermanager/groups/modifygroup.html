@@ -7,10 +7,13 @@
 	    	<span id="name">[[Properties]]</span>
 	    </li>
 	    <li id="editlayout" class="singlecontainer" style="height: auto; padding-bottom:10px;">
-	        <div id="groupeditarea" >
+	        <div id="groupeditarea" class="p-3" >
 	            <div id="groupeditareasaved"></div>
 	                #set( $groupsearcher = $searcherManager.getSearcher($catalogid,"group") )
-	                <form class="" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
+	                <form class="ajaxform" 
+	                	id="groupeditform" 
+	                	data-targetdiv="metadataeditarea" 
+	                	action="$home$usermanagerhome/groups/savegroup.html">
 	                    <input type="hidden" name="id" value="$group.id"/>
 	                    <input type="hidden" name="groupid" value="$group.id"/>
 	                    <input type="hidden" name="save" value="true"/>
@@ -23,8 +26,12 @@
 	                    $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 	                    
 	                    <p>
-	                    	<a class="btn btn-sm btn-primary" style="margin: 10px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
-	                    	<a class="btn btn-sm btn-danger red" style="margin:10px;"  href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
+	                    	<a class="btn btn-sm btn-primary submitform" style="margin: 10px;" href="#">[[Save Changes]]</a>
+	                    	<a class="btn btn-sm btn-danger red ajax"
+	                    		data-targetdiv="metadataeditarea" 
+	                    		data-oemaxlevel="1"
+	                    		style="margin:10px;"  
+	                    		href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
 	                    </p>
 	                </form>
 	    	</div>
