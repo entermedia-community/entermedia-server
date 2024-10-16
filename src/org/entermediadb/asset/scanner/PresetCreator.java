@@ -16,6 +16,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
@@ -96,6 +97,24 @@ public class PresetCreator
 		return hits;
 	}
 	
+	public Data getCachedPresetByExternalName(MediaArchive inArchive, String renderType, String inName)
+	{
+		Data preset = (Data)getCacheManager().get("preset_names",inName);
+		if( preset == null)
+		{
+			Data found = getPresetByOutputName(inArchive, renderType, inName);
+			if( found == null)
+			{
+				found = ValuesMap.NULLDATA;
+			}
+			getCacheManager().put("preset_names",inName,found);
+		}
+		if(  preset ==  ValuesMap.NULLDATA)
+		{
+			return null;
+		}
+		return found;
+	}
 	
 	public Collection getPushPresets(MediaArchive inArchive, String rendertype)
 	{

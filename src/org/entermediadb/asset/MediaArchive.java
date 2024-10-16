@@ -2633,6 +2633,19 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
+		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
+		
+		String usefile = inGeneratedName;
+		
+		if( inGeneratedName.endsWith("jpg"))
+		{
+			String basename = PathUtilities.extractPageName(inGeneratedName);
+			Data preset = getPresetManager().getCachedPresetByExternalName(this,rendertype,basename + ".webp");
+			if( Boolean.parseBoolean(preset.get("onimport")) )
+			{
+				usefile = basename + ".webp";
+			}
+		}		
 		String finalroot = null;
 		
 		String cdnprefix = "";
