@@ -49,13 +49,14 @@
 
 <div id="#makeid(${viewid})editor" >
 	#if( !$edit || $edit == "false")
-	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
-	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
-	
-	<div class="addnew-generic">
-	<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">[[Add New]]</a>
-	</div>
-	#end
+		
+		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
+		
+		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
+			<div class="addnew-generic">
+			<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">[[Add New]]</a>
+			</div>
+			#end
 	
 	#else
 	
