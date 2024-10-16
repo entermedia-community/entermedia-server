@@ -99,7 +99,7 @@ public class IdManager
 			Iterator iter = tracker.iterator();
 			if (!iter.hasNext())
 			{
-				throw new OpenEditException("Searching by sourcepath not working" + inPath);
+				throw new OpenEditException("Searching by sourcepath not working for:" + inPath);
 			}
 			Data first = (Data) iter.next();
 			if (first.get("version") != lock.getVersion())
@@ -338,6 +338,24 @@ public class IdManager
 		}
 		return current;
 		
+	}
+
+	public void setNumber(String inType, long inCurrentordering) {
+
+		UniqueId counter = lock(inType);
+		
+		Long current = null;
+		try
+		{
+			counter.setValue("countvalue", inCurrentordering);
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		finally{
+			release(counter);
+		}
 	}
 	
 	
