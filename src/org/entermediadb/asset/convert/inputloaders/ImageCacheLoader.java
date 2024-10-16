@@ -73,6 +73,16 @@ public class ImageCacheLoader implements InputLoader
 
 			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
 			{
+				//WEBP is a Universal type
+				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + "webp");
+				if (input.exists())
+				{
+					return input;
+				}
+			}
+
+			if (box.getWidth() < 3001) //Make sure we dont use the same file as the input and output
+			{
 				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image3000x3000" + page + "." + cachetype);
 				if (input.exists())
 				{
