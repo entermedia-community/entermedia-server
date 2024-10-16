@@ -1988,6 +1988,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		final List<Data> toprocess = new ArrayList(inBuffer);
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
+		int currentordering = -1;
+
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
 		{
 			@Override
@@ -2039,15 +2041,36 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
+		PropertyDetail ordering  = details.getDetail("ordering");
+		boolean fixordering = false;
+		if( !isReIndexing() &&  ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
+		{
+			fixordering = true;
+		}
+		
 		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 		{
 			try
 			{
 				Data data2 = (Data) iterator.next();
-//				if( data2.getId() == null || data2.getId().trim().isEmpty())
-//				{
-					//continue;
-//				}
+				if( fixordering)
+				{
+					Object order = data2.getValue("ordering");
+					if( order == null || (Integer)order == 0)
+					{
+						if( currentordering == -1)
+						{
+							IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+							currentordering = manager.nextNumber(getSearchType() + "_ordering").intValue();
+						}
+						else
+						{
+							currentordering++; 
+						}
+						data2.setValue("ordering",currentordering);
+					}
+				}
+				
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
@@ -2119,6 +2142,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
 		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
+		
+		if( currentordering != -1)
+		{
+			IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+			manager.setNumber(getSearchType() + "_ordering", currentordering );
+		}
+		
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
@@ -2564,14 +2594,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				else
 				{
-					if( detail.isAutoIncrement())
+					if(!isReIndexing() &&  detail.isAutoIncrement())
 					{
 						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
-
 						value = manager.nextNumber(getSearchType() + "_" + detail.getId());
 					}
-					
-
 				}
 				//				if( isReIndexing() ) //When reindexing dont mess with this data
 				//				{
