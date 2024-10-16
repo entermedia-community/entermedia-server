@@ -44,7 +44,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 
 				#if($allowloginbyemail == "true")
-				<ul class="nav nav-tabs" id="loginMethod"  style="min-width: 400px;color: #3884fd;">
+				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 400px;color: #3884fd;">
 					<li class="nav-item" style="flex:1">
 						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">Passwordless Login</div>
 					</li>
