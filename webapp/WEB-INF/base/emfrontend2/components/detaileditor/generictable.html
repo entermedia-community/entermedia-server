@@ -57,52 +57,51 @@
 			<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">[[Add New]]</a>
 			</div>
 			#end
-	
 	#else
 	
-	<form name="edit${viewid}" class="ajaxform" targetdiv="#makeid(${viewid})editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
-	
-		$context.putPageValue("view", $viewpath)
-		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
-		$context.putPageValue("searcher", $searcher)
-		#set( $data = $searcher.searchById($id) )
-		$context.putPageValue("data", $data)
+		<form name="edit${viewid}" class="ajaxform" targetdiv="#makeid(${viewid})editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
 		
-		<div id="default-fields">
-		  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
-		</div>
-		#if( $viewdetailspath )
-		<div style="text-align:right;padding: 10px;">
-		  <a href="$home${viewdetailspath}?id=$id">[[see more details]]</a>
-		</div>
-		#end
-		<div style="margin: 20px 20px 0 0;">
-			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
-			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='#makeid(${viewid})editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
-			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='#makeid(${viewid})editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-		</div>
-
-		<input name="field" type="hidden" value="$fieldexternalid" />
-		<input name="${fieldexternalid}.value" type="hidden" value="$parentid" />
-		<input name="parentid" type="hidden" value="$parentid" />
-
-		<input name="oemaxlevel" type="hidden" value="1" />
-		<input name="viewpath" type="hidden" value="$viewpath" />
-		<input name="viewid" type="hidden" value="$viewid" />
-
-		<input name="fieldexternalid" type="hidden" value="$fieldexternalid" />
-		<input name="fieldexternalvalue" type="hidden" value="$fieldexternalvalue" />
-		<input name="save" type="hidden" value="true" />
-		<input name="permissionname" type="hidden" value="$!permissionname" />
-		
-		<input name="searchtype" type="hidden" value="$searchtype" />
-		#if ($id)
-			<input name="id" type="hidden" value="$id"/>
-		#end
-	
-	</form>
+			$context.putPageValue("view", $viewpath)
+			#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+			$context.putPageValue("searcher", $searcher)
+			#set( $data = $searcher.searchById($id) )
+			$context.putPageValue("data", $data)
 			
+			<div class="p-4" style="width: 60%;">
+				<div id="default-fields">
+				  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
+				</div>
+			</div>
+			#if( $viewdetailspath )
+				<div style="text-align:right;padding: 10px;">
+				  <a href="$home${viewdetailspath}?id=$id">[[see more details]]</a>
+				</div>
+			#end
+			<div style="margin: 20px 20px 0 0;">
+				<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
+				<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='#makeid(${viewid})editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+				<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='#makeid(${viewid})editor' href="$home$componenthome/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			</div>
 	
+			<input name="field" type="hidden" value="$fieldexternalid" />
+			<input name="${fieldexternalid}.value" type="hidden" value="$parentid" />
+			<input name="parentid" type="hidden" value="$parentid" />
+	
+			<input name="oemaxlevel" type="hidden" value="1" />
+			<input name="viewpath" type="hidden" value="$viewpath" />
+			<input name="viewid" type="hidden" value="$viewid" />
+	
+			<input name="fieldexternalid" type="hidden" value="$fieldexternalid" />
+			<input name="fieldexternalvalue" type="hidden" value="$fieldexternalvalue" />
+			<input name="save" type="hidden" value="true" />
+			<input name="permissionname" type="hidden" value="$!permissionname" />
+			
+			<input name="searchtype" type="hidden" value="$searchtype" />
+			#if ($id)
+				<input name="id" type="hidden" value="$id"/>
+			#end
+		
+		</form>
 	#end
 </div>
 #else ##showit
