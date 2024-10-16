@@ -2641,7 +2641,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			String basename = PathUtilities.extractPageName(inGeneratedName);
 			Data preset = getPresetManager().getCachedPresetByExternalName(this,rendertype,basename + ".webp");
-			if( Boolean.parseBoolean(preset.get("onimport")) )
+			if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
 			{
 				usefile = basename + ".webp";
 			}
@@ -2684,17 +2684,17 @@ public class MediaArchive implements CatalogEnabled
 		{
 			if (inCollectionId != null)
 			{
-				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + inGeneratedName;
+				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + usefile;
 			}
 			else
 			{
 				if( inGeneratedName.endsWith("video.m3u8"))
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + inGeneratedName;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + usefile;
 				}
 				else
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + inGeneratedName;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
 				}
 			}
 		}

@@ -163,6 +163,10 @@ public class FaceProfileManager implements CatalogEnabled
 				}
 				else 
 				{
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
+				}
+				if( !input.exists() )
+				{
 					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
 				}
 				if( !input.exists() )

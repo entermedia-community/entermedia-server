@@ -100,20 +100,22 @@ public class PresetCreator
 	public Data getCachedPresetByExternalName(MediaArchive inArchive, String renderType, String inName)
 	{
 		Data preset = (Data)getCacheManager().get("preset_names",inName);
+		Data found = null;
 		if( preset == null)
 		{
-			Data found = getPresetByOutputName(inArchive, renderType, inName);
+			found = getPresetByOutputName(inArchive, renderType, inName);
 			if( found == null)
 			{
 				found = ValuesMap.NULLDATA;
 			}
 			getCacheManager().put("preset_names",inName,found);
+			return found;
 		}
 		if(  preset ==  ValuesMap.NULLDATA)
 		{
 			return null;
 		}
-		return found;
+		return preset;
 	}
 	
 	public Collection getPushPresets(MediaArchive inArchive, String rendertype)
