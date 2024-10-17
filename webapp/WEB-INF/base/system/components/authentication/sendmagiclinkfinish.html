@@ -6,7 +6,7 @@
 		$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
 	#else
 	    #if( $allowguestregistration == "false" )
-	    	[[No user found]]
+				$context.putPageValue("oe-exception", "[[User not found]]")
 	    	$pages.include("./loginform.html")  ##to try again or register
 	    #else
 		    ##asks for the first and last name then sends a code
