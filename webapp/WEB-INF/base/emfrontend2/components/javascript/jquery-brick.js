@@ -300,9 +300,9 @@
 	      $(grid).append(code);
 	      $(window).trigger("resize");
 	      stopautoscroll = false;
-	      if (getOverlay().is(":hidden")) {
+	      //if (getOverlay().is(":hidden")) {
 	        checkScroll(grid);
-	      }
+	      //}
 	    },
 	  });
 	};

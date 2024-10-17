@@ -156,10 +156,17 @@ function isInViewport( cell ) {
 
 
 function checkScroll(grid) {
-
+ var appdiv = $("#application"); 
+ var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
+ var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
  var currentscroll = $(".scrollview").scrollTop();
 
- //From the top to this height. Set the src
+ var gridcells = $(".masonry-grid-cell", grid);
+  if (gridcells.length == 0) {
+    return; //No results?
+  }
+  
+  //From the top to this height. Set the src
  $(grid)
     .find(".masonry-grid-cell")
     .each(function () {
@@ -174,6 +181,77 @@ function checkScroll(grid) {
 				}
 			}	
 	});
+  
+  
+ var resultsdiv = grid.closest(".resultsdiv");
+	  if (!resultsdiv) {
+	    resultsdiv = grid.closest(".resultsdiv");
+	  }
+  
+  //gridupdatepositions(grid);
+  
+  
+
+  var page = parseInt(resultsdiv.data("pagenum"));
+  if (isNaN(page)) {
+    page = 1;
+  }
+
+  var total = parseInt(resultsdiv.data("totalpages"));
+  if (isNaN(total)) {
+    total = 1;
+  }
+  if (page == total) {
+    return;
+  }
+
+  var lastcell = gridcells.last().get(0);
+  if (!isInViewport(lastcell)) {
+    return; //not yet at bottom
+  }
+
+  stopautoscroll = true;
+  var session = resultsdiv.data("hitssessionid");
+  page = page + 1;
+  resultsdiv.data("pagenum", page);
+
+  var stackedviewpath = resultsdiv.data("stackedviewpath");
+  if (!stackedviewpath) {
+    stackedviewpath = "stackedgallery.html";
+  }
+  var link = componenthome + "/results/" + stackedviewpath;
+  var collectionid = $(resultsdiv).data("collectionid");
+  var params = {
+    hitssessionid: session,
+    page: page,
+    oemaxlevel: "1",
+  };
+  if (collectionid) {
+    params.collectionid = collectionid;
+  }
+
+  console.log("Loading page: #" + page + " - " + link);
+
+  $.ajax({
+    url: link,
+    xhrFields: {
+      withCredentials: true,
+    },
+    cache: false,
+    data: params,
+    success: function (data) {
+      var jdata = $(data);
+      var code = $(".masonry-grid", jdata).html();
+      $(grid).append(code);
+      $(window).trigger("resize");
+      stopautoscroll = false;
+      //if (getOverlay().is(":hidden")) {
+        checkScroll(grid);
+      //}
+    },
+  });
+
+ 
 }
 	
 var methods = {
