@@ -391,7 +391,7 @@ public class AssetEditModule extends BaseMediaModule
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
-					editor.getMediaArchive().fireMediaEvent(inContext.getUser(), "asset", "deletingbulk", assets.getSelectedResults());
+					//editor.getMediaArchive().fireMediaEvent(inContext.getUser(), "asset", "deletingbulk", assets.getSelectedResults());
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
