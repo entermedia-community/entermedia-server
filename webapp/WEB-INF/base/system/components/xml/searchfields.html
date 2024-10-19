@@ -2,17 +2,15 @@
 ##requires $hits //Gets input from that
 ##requires $searcher //used to get the catalogid and searcherManager
 
-<table class="settings-table">
+<div class="d-flex align-items-center">
 $context.putPageValue("insearch",true)
 #foreach( $detail in $details)
 
-<tr class="emsearchfieldrow">
-	<td>
-		<div class="emsearchfield"> 
-		$!detail.getText($context) 
-		</div>
-	</td>
-	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
+<div class="d-flex align-items-center ml-2"> 
+	<div class="emsearchfield mr-2"> 
+	$!detail.getText($context) 
+	</div> 
+	<div id="detail_${detail.id}" class="emsearchfieldvalue">
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		#set( $viewtype = false )
 		#set( $viewtype = $detail.searchcomponent )
@@ -46,24 +44,14 @@ $context.putPageValue("insearch",true)
 		#end
 		$context.putPageValue("detail",$detail)
 
-##		#if( $viewtype.equals("list") || $viewtype.equals("boolean") || $viewtype.equals("datesearch"))		
-##			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-##		#else	
-##			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-##		#end	
-
-
-	#if( $viewtype.equals("asset") || $viewtype.equals("primarymedia") || $viewtype.equals("category"))
-	$pages.include("/${applicationid}/components/xml/types/default.html", $context)
-	#else
-	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-	#end
-		
-	</td>
-</tr>
+		#if( $viewtype.equals("asset") || $viewtype.equals("primarymedia") || $viewtype.equals("category"))
+			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		#else
+			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		#end
+	</div>
 #end
-
-</table>
+</div>
 
 #if( $details.size() == 0)
 	[[No search fields found with index]]=true 
