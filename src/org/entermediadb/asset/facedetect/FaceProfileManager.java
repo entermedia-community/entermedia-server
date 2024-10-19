@@ -284,6 +284,11 @@ public class FaceProfileManager implements CatalogEnabled
 
         BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
         
+       if (imageImput == null) 
+       {
+    	   log.info("Can't read image :" + inInput.getPath());
+    	   return faceprofiles;
+       }
        
         int minfacesize = 450;
 		
