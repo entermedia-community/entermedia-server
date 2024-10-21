@@ -311,19 +311,22 @@ public class ConvertStatusModule extends BaseMediaModule
 		String base = current.getSourcePath();
 		base = PathUtilities.extractDirectoryPath(base);
 		
-		String sourcepath =  base + "/newfilename." + newfiletype;
+		String sourcepath =  base + "/" + newfilename + "." + newfiletype;
+		
 		generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
 		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 
-		Collection assetids = archive.getAssetImporter().processOn(base, base,true,archive, null);
+		//String infolder = archive.getPageManager().getPage(generated).getDirectory();
+		Collection assetids = archive.getAssetImporter().processOn(generated, generated,true,archive, null);
 		//log.info("Asset: " + assetid + " Replaced " + generated);
 		Asset newasset = archive.getAssetBySourcePath(sourcepath);
-		newasset.setValue("parentid",assetid);
-		
+		if( newasset != null)
+		{
+			newasset.setValue("parentid",assetid);
+			archive.saveAsset(newasset);
+			//archive.fireMediaEvent("saved", inReq.getUser(), current);
+		}		
 		inReq.putPageValue("asset", current);
-		archive.saveAsset(current);
-		archive.fireMediaEvent("saved", inReq.getUser(), current);
-		
 		
 	}
 
