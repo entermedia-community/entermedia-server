@@ -269,53 +269,74 @@ public class ZohoManager implements CatalogEnabled
 	{
 		
 		Data authinfo = getMediaArchive().getData("oauthprovider", "zohoselfclient");
-		String accesstoken = authinfo.get("httprequesttoken"); // Expired in 14 days
-		Object age = authinfo.getValue("accesstokentime");
-		Date ageoftoken = null;
-		;
-		if (age instanceof Date)
-		{
-			ageoftoken = (Date) age;
-		}
-		if (ageoftoken == null && age != null)
-		{
-			ageoftoken = DateStorageUtil.getStorageUtil().parseFromStorage((String) age);
-		}
-		boolean force = false;
-		if (ageoftoken != null)
-		{
-			Date now = new Date();
-			long seconds = (now.getTime() - ageoftoken.getTime()) / 1000;
-			Long expiresin = Long.valueOf(authinfo.get("expiresin"));
-			if (seconds > (expiresin - 100))
-			{
-				force = true;
-				log.info("Expiring token after expiry min");
-			}
-		}
-		if (accesstoken == null || force)
-		{
-			String clientid = null;
-			String clientsecret = null;
-			String granttoken = null;
-			
-			String token = authinfo.get("refreshtoken");
+		String accesstoken = authinfo.get("httprequesttoken");
+		return accesstoken;
+//		String clientid = null;
+//		String clientsecret = null;
+//		String token = authinfo.get("refreshtoken");
+//		
+//		clientid = authinfo.get("clientid");
+//		clientsecret = authinfo.get("clientsecret");				
+//		
+//		String accountsUrl = "https://accounts.zoho.com/oauth/v2/token";
+//		
+//		Map params = new HashMap();
+//		params.put("client_id", clientid);
+//		params.put("client_secret", clientsecret);
+//		params.put("refresh_token", token);
+//		params.put("grant_type", "refresh_token");
+//		
+//		//String accesstoken = getAccessToken(authinfo);
+//		//httpmethod.addHeader("authorization", "Bearer " + accesstoken);
+//
+//		CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
+//
+//		if (resp.getStatusLine().getStatusCode() != 200)
+//		{
+//			log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
+//		}
+//		
+//
+//		JSONObject json = getConnection().parseJson(resp);
+//		if(json.get("access_token") != null) {
+//			accesstoken = (String)json.get("access_token"); 
+//			authinfo.setValue("httprequesttoken", json.get("access_token"));
+//			authinfo.setValue("accesstokentime", new Date());
+//			authinfo.setValue("expiresin", json.get("expires_in"));
+//			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
+//		}
+//		else {
+//			log.info(json);
+//			throw new OpenEditException("Token Expired, manually provide new oauthproviders granttoken: https://api-console.zoho.com - Required SCOPES: ZohoProjects.projects.ALL,ZohoProjects.documents.ALL,ZohoPC.files.ALL,WorkDrive.teamfolders.ALL,WorkDrive.team.ALL,WorkDrive.files.ALL,ZohoFiles.files.READ");
+//		}
+//			
 
-			clientid = authinfo.get("clientid");
-			clientsecret = authinfo.get("clientsecret");				
-			granttoken = authinfo.get("granttoken");
-			
-			String accountsUrl = "https://accounts.zoho.com/oauth/v2/token";
-			
+		
+	}
+	
+	
+	
+	public void refreshToken() throws OpenEditException
+	{
+		
+		Data authinfo = getMediaArchive().getData("oauthprovider", "zohoselfclient");
+		String accesstoken = authinfo.get("httprequesttoken");
+		String clientid = null;
+		String clientsecret = null;
+		String granttoken = null;
+		clientid = authinfo.get("clientid");
+		clientsecret = authinfo.get("clientsecret");				
+		granttoken = authinfo.get("granttoken");
+		String accountsUrl = "https://accounts.zoho.com/oauth/v2/token";
+		String token = authinfo.get("refreshtoken");
+
+		if(token == null) {
 			Map params = new HashMap();
 			params.put("client_id", clientid);
 			params.put("client_secret", clientsecret);
 			params.put("code", granttoken);
 			params.put("grant_type", "authorization_code");
 			
-			//String accesstoken = getAccessToken(authinfo);
-			//httpmethod.addHeader("authorization", "Bearer " + accesstoken);
-
 			CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
 
 			if (resp.getStatusLine().getStatusCode() != 200)
@@ -332,20 +353,42 @@ public class ZohoManager implements CatalogEnabled
 				authinfo.setValue("accesstokentime", new Date());
 				authinfo.setValue("expiresin", json.get("expires_in"));
 				getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
+				log.info("Refresh token granted");
 			}
 			else {
 				log.info(json);
-				authinfo.setValue("httprequesttoken", "");
-				authinfo.setValue("refreshtoken", "");
-				getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 				throw new OpenEditException("Token Expired, manually provide new oauthproviders granttoken: https://api-console.zoho.com - Required SCOPES: ZohoProjects.projects.ALL,ZohoProjects.documents.ALL,ZohoPC.files.ALL,WorkDrive.teamfolders.ALL,WorkDrive.team.ALL,WorkDrive.files.ALL,ZohoFiles.files.READ");
 			}
 			
-			//getMediaArchive().getSearcher(inType).saveData(config);
+		}
+		else {
+			Map params = new HashMap();
+			params.put("client_id", clientid);
+			params.put("client_secret", clientsecret);
+			params.put("refresh_token", token);
+			params.put("grant_type", "refresh_token");
+			
+			CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
+	
+			if (resp.getStatusLine().getStatusCode() != 200)
+			{
+				log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
+			}
+			
+	
+			JSONObject json = getConnection().parseJson(resp);
+			if(json.get("access_token") != null) {
+				accesstoken = (String)json.get("access_token"); 
+				authinfo.setValue("httprequesttoken", json.get("access_token"));
+				authinfo.setValue("accesstokentime", new Date());
+				authinfo.setValue("expiresin", json.get("expires_in"));
+				getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
+			}
 
 		}
-		return accesstoken;
+		
 	}
+	
 
 	public int syncAssets(String inAccessToken, String inRoot, boolean savenow)
 	{
