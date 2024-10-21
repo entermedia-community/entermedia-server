@@ -3012,8 +3012,7 @@ public class MediaArchive implements CatalogEnabled
 		Asset inAsset = instructions.getAsset();
 		String rendertype = getMediaRenderType(inAsset);
 		ConversionManager manager = getTranscodeTools().getManagerByRenderType(rendertype);
-		ContentItem item = manager.findInput(instructions);
-		instructions.setInputFile(item);
+		
 
 		instructions.setOutputExtension(PathUtilities.extractPageType(outputPage.getName()));
 		instructions.setOutputFile(outputPage);
