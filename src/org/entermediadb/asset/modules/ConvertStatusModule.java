@@ -9,8 +9,10 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.video.Block;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
@@ -302,23 +304,24 @@ public class ConvertStatusModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		Asset current = archive.getAsset(assetid);
 
-		//Add parentids
-
-		boolean createall = false;
-		String generated = "";
-			//String fileFormat = current.getFileFormat();
-
 		String base = current.getSourcePath();
 		base = PathUtilities.extractDirectoryPath(base);
 		
-		String sourcepath =  base + "/" + newfilename + "." + newfiletype;
+		String outname =  newfilename + "." + newfiletype;
+		String sourcepath =  base + "/" + outname;
+		//TODO: Check for formats
 		
-		generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
-		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+		//Save to temp place to change format
+		String tmpplace = "/WEB-INF/trash/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), tmpplace , inReq.getUser());
+		
+		//Convert
+		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		ContentItem finalpath = archive.getPageManager().getRepository().getStub(generated); 
+		ConvertInstructions instructions =  archive.createInstructions(current, saved);
+		archive.convertFile(instructions, finalpath);
 
-		//String infolder = archive.getPageManager().getPage(generated).getDirectory();
 		Collection assetids = archive.getAssetImporter().processOn(generated, generated,true,archive, null);
-		//log.info("Asset: " + assetid + " Replaced " + generated);
 		Asset newasset = archive.getAssetBySourcePath(sourcepath);
 		if( newasset != null)
 		{
@@ -330,6 +333,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 	}
 
+	
 	
 	public void replaceOriginal(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);

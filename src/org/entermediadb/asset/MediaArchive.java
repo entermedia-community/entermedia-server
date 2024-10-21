@@ -25,6 +25,9 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
@@ -44,6 +47,7 @@ import org.entermediadb.find.FolderManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
+import org.entermediadb.video.Block;
 import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -2993,6 +2997,30 @@ public class MediaArchive implements CatalogEnabled
 	public DateStorageUtil getDateStorageUtil()
 	{
 		return DateStorageUtil.getStorageUtil();
+	}
+
+	public ConvertInstructions createInstructions(Asset inAsset, ContentItem inputfile)
+	{
+		ConvertInstructions ins = new ConvertInstructions(this);
+		ins.setAsset(inAsset);
+		ins.setInputFile(inputfile);
+		return ins;
+	}
+	
+	public ContentItem convertFile(ConvertInstructions instructions, ContentItem outputPage)
+	{
+		Asset inAsset = instructions.getAsset();
+		String rendertype = getMediaRenderType(inAsset);
+		ConversionManager manager = getTranscodeTools().getManagerByRenderType(rendertype);
+		ContentItem item = manager.findInput(instructions);
+		instructions.setInputFile(item);
+
+		instructions.setOutputExtension(PathUtilities.extractPageType(outputPage.getName()));
+		instructions.setOutputFile(outputPage);
+		
+		ConvertResult result = manager.createOutput(instructions); //skips if it already there
+		
+		return result.getOutput();
 	}
 	
 }
