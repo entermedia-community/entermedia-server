@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -20,6 +21,7 @@ import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
@@ -279,6 +281,52 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 	}
 	
+
+	public void uploadSaveAsDocument(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) 
+		{
+			log.info("No upload found");
+			return;
+		}
+		
+		String newfilename = inReq.getRequestParameter("newfilename");
+		String newfiletype = inReq.getRequestParameter("newfiletype");
+		
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset current = archive.getAsset(assetid);
+
+		//Add parentids
+
+		boolean createall = false;
+		String generated = "";
+			//String fileFormat = current.getFileFormat();
+
+		String base = current.getSourcePath();
+		base = PathUtilities.extractDirectoryPath(base);
+		
+		String sourcepath =  base + "/newfilename." + newfiletype;
+		generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+
+		Collection assetids = archive.getAssetImporter().processOn(base, base,true,archive, null);
+		//log.info("Asset: " + assetid + " Replaced " + generated);
+		Asset newasset = archive.getAssetBySourcePath(sourcepath);
+		newasset.setValue("parentid",assetid);
+		
+		inReq.putPageValue("asset", current);
+		archive.saveAsset(current);
+		archive.fireMediaEvent("saved", inReq.getUser(), current);
+		
+		
+	}
+
 	
 	public void replaceOriginal(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
