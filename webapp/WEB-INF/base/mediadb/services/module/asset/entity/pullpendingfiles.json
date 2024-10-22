@@ -28,9 +28,9 @@
   #foreach( $file in $filestoupload) #if( ${foreach.count} != 1 ), #end
   	{ 
 			"path": "$file.path",
-  		"url": "$file.url",
   		"size":"$file.size",
-			"entityid":"$entityid"
+			"entityid":"$entityid",
+			"id": "$!file.id"
 		}
 	#end
  	]

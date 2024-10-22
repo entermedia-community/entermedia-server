@@ -381,13 +381,12 @@ public class FolderManager implements CatalogEnabled
 		response.put("filedownloadpath", inParams.get("filedownloadpath"));
 		
 		List assetservercopy = (List)response.get("files");
-		Set serverfiles = new HashSet();
+		HashMap<String,Map> serverfiles = new HashMap();
 		if(assetservercopy != null) { 
 			for (Iterator iterator2 = assetservercopy.iterator(); iterator2.hasNext();) {
 				Map serverfile = (Map) iterator2.next();
 				String path = (String)serverfile.get("path");
-				long size = (Long)serverfile.get("size");
-				serverfiles.add(path  + "|" +size);
+				serverfiles.put(path, serverfile);
 			}
 		}
 		
@@ -399,9 +398,17 @@ public class FolderManager implements CatalogEnabled
 				Map	clientfile = (Map) iterator.next();
 				String path = (String)clientfile.get("path");
 				long size = (Long)clientfile.get("size");
-				if( !serverfiles.contains(path  + "|" +size) )
+				Map existing = serverfiles.get(path);
+				if( existing == null)
 				{
 					mixedcopy.add(clientfile);
+				}
+				else
+				{
+					long existingsize = (Long)existing.get("size");
+					if(existingsize == size) {
+						mixedcopy.add(existing);
+					}
 				}
 			}
 		}
