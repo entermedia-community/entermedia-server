@@ -2056,7 +2056,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				if( fixordering)
 				{
 					Object order = data2.getValue("ordering");
-					if( order == null || (Integer)order == 0)
+					if( order == null || (Long)order == 0)
 					{
 						if( currentordering == -1)
 						{
