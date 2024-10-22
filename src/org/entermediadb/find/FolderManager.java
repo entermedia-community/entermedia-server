@@ -406,7 +406,7 @@ public class FolderManager implements CatalogEnabled
 				else
 				{
 					long existingsize = (Long)existing.get("size");
-					if(existingsize == size) {
+					if(existingsize != size) {
 						mixedcopy.add(existing);
 					}
 				}
