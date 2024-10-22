@@ -143,32 +143,22 @@ public class JsonAssetModule extends BaseJsonModule {
 		}
 		
 		Asset asset = null;
-		String sourcepath = null;
 		String id = null;
+		String sourcepath = inReq.getRequiredParameter("sourcepath");
+
 		if( request == null)
 		{
 			//throw new OpenEditException("JSON not parsed ");
-			
-			
 		}
 		else {
 			id = (String) request.get("id");
-			if (id == null) {
-				// id = searcher.nextAssetNumber();
-				vals.put("id", id);
-			}
-			else {
+			if( id != null && !id.isEmpty())
+			{
 				asset = archive.getAsset(id);
-				if(asset != null ){
-					sourcepath = asset.getSourcePath();
-				}
 			}
 		}
-		
 		if( asset == null)
 		{
-			//sourcepath = (String) vals.get("sourcepath");
-			sourcepath = inReq.getRequiredParameter("sourcepath");
 	
 			if (sourcepath == null) {
 				sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
@@ -194,8 +184,34 @@ public class JsonAssetModule extends BaseJsonModule {
 			path = path.replace("//", "/");
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
-			// THis will NOT append the filename to the source path
-			asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
+			if( asset == null)
+			{
+				asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
+				sourcepath = asset.getSourcePath();
+			}
+			else
+			{
+				//If the sourcepath does not match then we have to create a new asset and set parentid
+				if(asset.getSourcePath().equals(sourcepath) )
+				{
+					asset = importer.getAssetUtilities().populateAsset(asset, newfile.getContentItem(), archive, sourcepath, inReq.getUser());
+				}
+				else
+				{
+					//Remove old asset from new asset categories
+					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
+					Category parentcat = archive.getCategorySearcher().loadCategoryByPath(PathUtilities.extractDirectoryPath(sourcepath));
+					if( parentcat  != null)
+					{
+						asset.removeCategory(parentcat);
+						archive.saveAsset(asset);
+					}
+					assetcopy.setValue("parentid", asset.getId());
+					sourcepath = assetcopy.getSourcePath();
+					asset = assetcopy;
+				}
+				
+			}
 		}
 		else if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
