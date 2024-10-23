@@ -34,6 +34,7 @@ import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
@@ -582,14 +583,31 @@ public class EntityManager implements CatalogEnabled
 		return false;
 	}
 	
-	
+	public Collection<Data> getEntitiesForCategories(Collection<Category> inParentCategories, UserProfile inProfile)
+	{
+		Collection<Data> found = getEntitiesForCategories(inParentCategories);
+		Collection allowed = inProfile.getEntitiesIds();
+		
+		List<Data> finallist = new ArrayList();
+		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
+			Data entity = (Data)iterator.next();
+			String moduleid = entity.get("entitysourcetype");
+			if( moduleid == null || allowed.contains(moduleid))
+			{
+				finallist.add(entity);
+			}
+		}
+		return finallist;
+	}	
 	public Collection<Data> getEntitiesForCategories(Collection<Category> inParentCategories)
 	{
 		if (inParentCategories == null) {
 			return null;
 		}
+		
 		Collection<Data> items = new ArrayList();
 		
+		Set entityids = new HashSet();
 		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();) 
 		{
 			Category cat = (Category) iterator1.next();
@@ -605,20 +623,30 @@ public class EntityManager implements CatalogEnabled
 						for (Iterator iterator2 = all.iterator(); iterator2.hasNext();)
 						{
 							String item = (String) iterator2.next();
+							if( entityids.contains(item) )
+							{
+								continue;
+							}
 							Data entity = getMediaArchive().getCachedData(module.getId(), item);
 							if (entity != null)
 							{
 								//entity.setValue("moduleid", module.getId());
+								entityids.add(entity.getId());
 								items.add( entity);
 							}
 						}
 					}
 					else 
 					{
+						if( entityids.contains((String)value) )
+						{
+							continue;
+						}
 						Data entity = getMediaArchive().getCachedData(module.getId(), (String) value);
 						if (entity != null)
 						{
 							//entity.setValue("moduleid", module.getId());
+							entityids.add(entity.getId());
 							items.add(entity);
 						}	
 					}
