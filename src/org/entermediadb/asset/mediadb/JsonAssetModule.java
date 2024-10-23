@@ -199,7 +199,7 @@ public class JsonAssetModule extends BaseJsonModule {
 				else
 				{
 					//Remove old asset from new asset categories
-					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
+					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, null);
 					Category parentcat = archive.getCategorySearcher().loadCategoryByPath(PathUtilities.extractDirectoryPath(sourcepath));
 					if( parentcat  != null)
 					{
@@ -208,6 +208,7 @@ public class JsonAssetModule extends BaseJsonModule {
 					}
 					assetcopy.setValue("parentid", asset.getId());
 					sourcepath = assetcopy.getSourcePath();
+					request.remove("id");
 					asset = assetcopy;
 				}
 				
