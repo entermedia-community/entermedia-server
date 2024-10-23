@@ -203,6 +203,7 @@ public class ThemeModule extends BaseMediaModule {
 		themeSearcher.restoreSettings();
 		themeSearcher.reindexInternal();
 		inReq.putPageValue("message","Theme reset");
+		changeTheme(inReq);
 //		Data theme = (Data) themeSearcher.searchById(themeid);
 //			if (theme != null) {
 //				inReq.putPageValue("theme", theme);
