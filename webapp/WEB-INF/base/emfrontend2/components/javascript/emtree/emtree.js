@@ -112,6 +112,7 @@ $(document).ready(function () {
 				reloadurl = customprefix;
 			} else {
 				reloadurl = prefix;
+				reloadurl = reloadurl + "?nodeID="+ nodeid;
 			}
 		}
 
@@ -198,7 +199,8 @@ $(document).ready(function () {
 				$(window).trigger("resize");
 			})
 			.always(function () {
-				hideLoader();
+				
+				$(window).trigger("hideLoader");
 			});
 	};
 
