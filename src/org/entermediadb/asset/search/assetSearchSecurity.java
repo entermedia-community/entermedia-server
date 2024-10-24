@@ -56,14 +56,11 @@ public class assetSearchSecurity implements SearchSecurity
         {
             return inQuery;
         }
-		
-        
-        
         
 		//log.info( "security filer enabled "  + enabled );
 
 		//check for category joins
-		if (!inQuery.hasChildren())
+		if (!inQuery.isSecurityAttached() )
 		{
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
@@ -90,24 +87,25 @@ public class assetSearchSecurity implements SearchSecurity
 					}
 				}
 			}
-			if (profile != null && profile.isInRole("administrator"))
+			if (profile != null && profile.isInRole("administrator"))  //OR			//Boolean canviewallassets = (Boolean) inPageRequest.getPageValue("canviewallassets");
 			{
 				addJoins(inPageRequest,inSearcher,inQuery);
 				inQuery.setSecurityAttached(true);
 				return inQuery;					
 			}
+			
+			
 			if( required == null)
 			{
 				required = inSearcher.createSearchQuery();
 			}
 			
-			Collection allowedassetstypes = profile.getValues("hideassettype");
-			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
-			{
-				required.addNots("assettype", allowedassetstypes);
-			}
+//			Collection allowedassetstypes = profile.getValues("hideassettype");
+//			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
+//			{
+//				required.addNots("assettype", allowedassetstypes);
+//			}
 			
-			//Boolean canviewallassets = (Boolean) inPageRequest.getPageValue("canviewallassets");
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
@@ -116,7 +114,9 @@ public class assetSearchSecurity implements SearchSecurity
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
 			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-			Collection canview = profile.getViewCategories();
+			
+			
+			Collection canview = profile.getViewCategories(); //This has entities folders in it
 			if( canview != null )
 			{
 				allowed.addAll(canview);
@@ -135,23 +135,22 @@ public class assetSearchSecurity implements SearchSecurity
 				orchild.addExact("owner", user.getId());
 			}
 			
-			
 			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 			String editstatus = null;
 			if (caneditdata == null || !caneditdata )
 			{
 					Boolean showpendingassets = (Boolean) inPageRequest.getPageValue("canshowpendingassets");
-					if(showpendingassets == null || !showpendingassets)
+					if(showpendingassets == null || !showpendingassets)  //False
 					{
-						editstatus = "6";
+						editstatus = "6";  //Approved only
 					}
 				
 			}
-			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare
-			if(editstatus == null && onlyapproved ) 
-			{
-				editstatus="6";
-			}
+//			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare
+//			if(editstatus == null && onlyapproved ) 
+//			{
+//				editstatus="6";
+//			}
 			
 			if(editstatus != null) {
 				//OWNERS can always see their assets (from orchild.addExact))

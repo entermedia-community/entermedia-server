@@ -14,6 +14,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.EntityPermissions;
@@ -301,7 +302,6 @@ public class UserProfileManager
 		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
-		loadLibraries(userprofile, inCatalogId);
 		
 		if( user != null)
 		{
@@ -324,6 +324,7 @@ public class UserProfileManager
 
 					///log.info(modules.size() + " for " + modules.getSearchQuery().toQuery());
 				userprofile.setModules(new ArrayList(modules));
+				
 			}
 			else
 			{
@@ -345,6 +346,7 @@ public class UserProfileManager
 		{
 			userprofile.setModules(Collections.EMPTY_LIST);
 		}
+		loadLibraries(userprofile, inCatalogId);
 		if ( appid != null )
 		{
 				String lastviewedapp = userprofile.get("lastviewedapp");
@@ -364,6 +366,7 @@ public class UserProfileManager
 					}	
 				}
 		}
+
 		String id = findDbSearcherIndex(mediaArchive); 
 
 		userprofile.setSettingsGroupIndexId(id);
@@ -441,10 +444,9 @@ public class UserProfileManager
 		//log.info("Searching categories");
 
 		QueryBuilder querybuilder = searcher.query().or()
+				//						match("securityenabled", "false"). ?
 			.match("ownerid", inUserprofile.getUserId())
 			.orgroup("viewgroups", groupids)
-			.orgroup("viewonlygroups",groupids)
-			.exact("viewonlyroles", roleid)
 			.exact("viewroles", roleid)
 			.exact("viewusers", inUserprofile.getUserId() );
 		
@@ -464,9 +466,46 @@ public class UserProfileManager
 				okcategories.add(cat);
 			}
 		}
-		
+		addEntities(mediaArchive, inUserprofile,groupids,roleid, okcategories);
 		loadUsers(mediaArchive, inUserprofile, okcategories);
 		return okcategories;
+	}
+
+	private void addEntities(MediaArchive inMediaArchive, UserProfile inUserprofile, Collection groupids, String inRoleId, Set<Category> inOkcategories) {
+		
+		for (Iterator iterator = inUserprofile.getEntities().iterator(); iterator.hasNext();) {
+			MultiValued entity = (MultiValued) iterator.next();
+			if(entity.getBoolean("enableuploading") )
+			{
+				String visible = entity.get("recordvisibility");
+				if( visible == null || visible.equals("showbydefault"))
+				{
+					Category cat = inMediaArchive.getCategorySearcher().loadCategoryByPath(entity.getName());
+					if( cat != null)
+					{
+						inOkcategories.add(cat);
+					}
+				}
+				else //visible.equals("hiddenbydefault")
+				{
+					Collection userentities = inMediaArchive.query(entity.getId()).match("ownerid", inUserprofile.getUserId())
+					.orgroup("viewgroups", groupids)
+					.exact("viewroles", inRoleId)
+					.exact("viewusers", inUserprofile.getUserId() )
+					.search();
+					
+					for (Iterator iterator2 = userentities.iterator(); iterator2.hasNext();) 
+					{
+						Data userentity = (Data) iterator2.next();
+						Category cat = inMediaArchive.getEntityManager().loadDefaultFolder(userentity, inUserprofile.getUser());
+						if( cat != null)
+						{
+							inOkcategories.add(cat);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	protected void loadUsers(MediaArchive mediaArchive, UserProfile inUserprofile, Set<Category> okcategories)
