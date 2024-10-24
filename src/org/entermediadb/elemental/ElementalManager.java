@@ -160,13 +160,24 @@ public class ElementalManager implements CatalogEnabled
 
 	public Element createJob(ConvertInstructions inStructions)
 	{
-		//if( true ) return null;
+		/*
+		 * Catalog Settings required:
+		 * elementalserver
+		 * elementalgeneratedroot
+		 * elementaluser
+		 * elementalkey
+		 * 
+		 * Elemental Transcoder id: elemental
+		 * 
+		 * Video Preset set to Elemental Transcoder (Video MP4 Preview previewffmpeg)
+		 * 
+		 * */
 		
-		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
-		
+
 		///mnt/Meld-Playback/temp/18955.mp4  Input test file
-		
 		///mnt/Meld-Playback/temp-out 
+
+		String elementalroot = getMediaArchive().getCatalogSettingValue("elementalserver");
 		
 		ContentItem item = inStructions.getInputFile(); 
 		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");

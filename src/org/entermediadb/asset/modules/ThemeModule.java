@@ -194,4 +194,21 @@ public class ThemeModule extends BaseMediaModule {
 			e.printStackTrace();
 		}
 	}
+	
+	public void resetThemes(WebPageRequest inReq) {
+		String catalogid = inReq.findPathValue("catalogid");
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
+				"theme");
+		String themeid = inReq.getRequestParameter("themeid");
+		themeSearcher.restoreSettings();
+		themeSearcher.reindexInternal();
+		inReq.putPageValue("message","Theme reset");
+		changeTheme(inReq);
+//		Data theme = (Data) themeSearcher.searchById(themeid);
+//			if (theme != null) {
+//				inReq.putPageValue("theme", theme);
+//			}
+//		return theme;
+	}
+
 }

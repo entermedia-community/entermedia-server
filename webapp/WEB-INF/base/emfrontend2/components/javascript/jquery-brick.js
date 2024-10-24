@@ -217,16 +217,6 @@
 	  }
 	
 	  var resultsdiv = $(grid).closest("#resultsdiv");
-	  var lastcheck = $(resultsdiv).data("lastscrollcheck");
-	  var currentscroll = 0;
-	
-	  currentscroll = $(".scrollview").scrollTop();
-	
-	  if (lastcheck == currentscroll) {
-	    //Dom events cause it to fire recursively
-	    return false;
-	  }
-	  $(resultsdiv).data("lastscrollcheck", currentscroll);
 	  if (stopautoscroll) {
 	    // ignore scrolls
 	    if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
@@ -238,7 +228,6 @@
 	    }
 	    return;
 	  }
-	
 	
 	  var gridcells = $(".masonry-grid-cell", resultsdiv);
 	  if (gridcells.length == 0) {
