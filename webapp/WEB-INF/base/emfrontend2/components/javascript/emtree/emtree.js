@@ -181,7 +181,7 @@ $(document).ready(function () {
 
 				cell = findclosest(onpage, "#" + targetdiv);
 
-				$(window).trigger("setPageTitle",cell);
+				$(window).trigger("setPageTitle", [cell]);
 
 				if (
 					typeof global_updateurl !== "undefined" &&
