@@ -1405,7 +1405,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				String operator = null;
 				boolean keepgoing = true;
 				String nextoperator = null;
+				
+				BoolQueryBuilder bigOR = QueryBuilders.boolQuery();
 
+				//Aways add the enrire word just in case
+				String onebigword = QueryParser.escape(valueof);
+				MatchQueryBuilder onetext = QueryBuilders.matchPhraseQuery(inTerm.getId(), "+(" + onebigword + ")");
+				onetext.analyzer("lowersnowball");
+				bigOR.should(onetext);  //Always put the entire word. AND put all the parts in
+
+
+				//Or its a smaller items
 				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
 				while (keepgoing)
 				{
@@ -1425,76 +1435,57 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						start = m.end();
 					}
-
+					//Make a *xxx* OR xxx* search to deal with bugs
 					StringBuffer out = new StringBuffer();
-					out.append("+(");
-
-					
-					//If there are tokens then treat a one word with quotes
-					boolean hastoken =  TOKENS.matcher(word).find();
-					//Check for quotes..
-
-					if( hastoken)
+					if(word.startsWith("\"") && word.endsWith("\""))
 					{
-						//String quoted = "\"" + QueryParser.escape(word) + "\"";						
-						MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(word));
-						text.analyzer("lowersnowball");
-						booleans.must(text);
+						String sub = word.substring(1, word.length() - 1);
+						out.append("\"" + QueryParser.escape(sub) + "\"");
 					}
 					else
 					{
-						if(word.startsWith("\"") && word.endsWith("\""))
-						{
-							String sub = word.substring(1, word.length() - 1);
-							out.append("\"" + QueryParser.escape(sub) + "\"");
-						}
-						else
-						{
-							wildcard(out, word);
-						}
-						out.append(")");
-						//Make a *xxx* OR xxx* search to deal with bugs
-						BoolQueryBuilder pair = QueryBuilders.boolQuery();
-						QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
-						text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-						text.analyzeWildcard(true); //This is important
-						text.allowLeadingWildcard(true);
-						text.analyzer("lowersnowball");
-						text.defaultField("description");
-						pair.should(text);
-	
-						String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
-						QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
-						startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-						startw.analyzer("lowersnowball");
-						startw.defaultField("description");
-						pair.should(startw);
-
-						if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
-						{
-							operator = "OR";
-						}
-						else if (operator == null)
-						{
-							operator = "AND";
-						}
-						if (operator.equals("NOT"))
-						{
-							booleans.mustNot(pair);
-						}
-						else if (operator.equals("OR"))
-						{
-							booleans.should(pair);
-						}
-						else
-						{
-							booleans.must(pair);
-						}
+						wildcard(out, word);
 					}
-						operator = nextoperator;
-				}
+					BoolQueryBuilder pair = QueryBuilders.boolQuery();
+					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery("+(" + out.toString() + ")");
+					text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+					text.analyzeWildcard(true); //This is important
+					text.allowLeadingWildcard(true);
+					text.analyzer("lowersnowball");
+					text.defaultField("description");
+					pair.should(text);
 
-				find = booleans;
+					String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
+					QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
+					startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+					startw.analyzer("lowersnowball");
+					startw.defaultField("description");
+					pair.should(startw);
+
+					if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
+					{
+						operator = "OR";
+					}
+					else if (operator == null)
+					{
+						operator = "AND";
+					}
+					if (operator.equals("NOT"))
+					{
+						booleans.mustNot(pair);
+					}
+					else if (operator.equals("OR"))
+					{
+						booleans.should(pair);
+					}
+					else
+					{
+						booleans.must(pair); //Each word is a MUST?
+					}
+					operator = nextoperator;
+				}
+				bigOR.should(booleans);
+				find = bigOR;
 			}
 		}
 		else if (valueof.endsWith("*"))
