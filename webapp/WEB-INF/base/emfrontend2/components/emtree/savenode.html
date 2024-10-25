@@ -1,2 +1,7 @@
-$pages.include("$apphome/components/emtree/tree.html", $context)
+#set( $parentnodeid = $context.getRequestParameter("parentNodeID") )
+#if($parentnodeid)
+	$context.putPageValue("selectednodes", $parentnodeid)
+#end
+#set( $currentnodeid = $context.getRequestParameter("currentnodeID") )
+$pages.include("$apphome/components/emtree/tree.html?nodeID=$!currentnodeid", $context)
    

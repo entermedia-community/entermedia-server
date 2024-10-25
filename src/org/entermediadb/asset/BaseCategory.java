@@ -343,7 +343,7 @@ public class BaseCategory extends BaseData implements Category
 		for (Iterator children = getChildren().iterator(); children.hasNext();)
 		{
 			Category child = (Category) children.next();
-			if (child == inCatalog)
+			if (child.getId().equals(inCatalog.getId()))
 			{
 				return true;
 			}

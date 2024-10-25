@@ -1,6 +1,6 @@
 <page>
 
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/viewassets.html</inner-layout>
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/brickviewassets.html</inner-layout>
 	
 	<property name="hitsname">collectionhits</property>
 	<property name="virtual">true</property>
