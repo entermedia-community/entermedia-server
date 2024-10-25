@@ -496,8 +496,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
-				inSearch.addAggregation(b);
+				//text areas? lets skip some common ones:
+				if( detail.getId().equals("description") || detail.getId().equals("name") || detail.isMultiLanguage())
+				{
+					//Skip
+				}
+				else
+				{
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
+					inSearch.addAggregation(b);
+				}
 			}
 			added.add(detail.getId());
 

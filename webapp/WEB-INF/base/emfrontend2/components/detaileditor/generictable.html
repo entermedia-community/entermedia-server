@@ -53,8 +53,10 @@
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
-			<div class="addnew-generic">
-			<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">[[Add New]]</a>
+			<div class="addnew-generic mt-2 mr-2">
+				<a class="btn btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="#makeid(${viewid})editor">
+					<i class="bi bi-plus-lg mr-1"></i> [[Add New]]
+				</a>
 			</div>
 			#end
 	#else
