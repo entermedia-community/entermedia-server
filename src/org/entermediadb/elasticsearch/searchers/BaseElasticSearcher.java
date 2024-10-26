@@ -496,16 +496,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				//text areas? lets skip some common ones:
-				if( detail.getId().equals("description") || detail.getId().equals("name") || detail.isMultiLanguage())
-				{
-					//Skip
-				}
-				else
-				{
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
-					inSearch.addAggregation(b);
-				}
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(50);
+				inSearch.addAggregation(b);
 			}
 			added.add(detail.getId());
 
@@ -1368,8 +1360,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
+			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
+	        
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
+				Pattern pattern = Pattern.compile("(?<=\\s)[^a-zA-Z\\\\d\\\\s](?=\\s)");
+		        Matcher matcher = pattern.matcher(valueof);
+		        String oldvalueof = valueof;
+		        valueof = matcher.replaceAll("");
+		        
 				valueof = valueof.replace("\"", "");
 				valueof = QueryParser.escape(valueof);
 				String query = "+(" + valueof + ")";
@@ -1379,17 +1378,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ").replace(", ", " AND "); //Babson uses lots of commas
+				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of commas
 				//We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
 
-				Matcher customlogic = operators.matcher(uppercase);
-				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
-				{
-					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
-				}
+//				Matcher customlogic = operators.matcher(uppercase);
+//				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
+//				{
+//					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
+//				}
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
@@ -1398,94 +1397,90 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// "Big Deal" => "Big Deal"
 				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 
-				Matcher m = operators.matcher(uppercase);
+				//String orregex = "((.*?)\\s+(AND|OR)\\s+)+";
+				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
+				String orregex= "(.*?)\\s+(OR?|AND?|NOT?)+";
+				Pattern orpattern = Pattern.compile(orregex);
+		        Matcher andors  = orpattern.matcher(uppercase);
 
-				int start = 0;
-				int ending = uppercase.length();
 				String operator = null;
-				boolean keepgoing = true;
 				String nextoperator = null;
+
+				Collection searchpairs = new ArrayList();
 				
-				BoolQueryBuilder bigOR = QueryBuilders.boolQuery();
-
-				//Aways add the enrire word just in case
-				String onebigword = QueryParser.escape(valueof);
-				MatchQueryBuilder onetext = QueryBuilders.matchPhraseQuery(inTerm.getId(), "+(" + onebigword + ")");
-				onetext.analyzer("lowersnowball");
-				bigOR.should(onetext);  //Always put the entire word. AND put all the parts in
-
-
-				//Or its a smaller items
+				//String regex = "(.*?)\\s+(AND|OR)\\s)+";
 				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
-				while (keepgoing)
+				int lastterm = 0;
+				while (andors.find()) 
 				{
-					if (m.find())
-					{
-						ending = m.start();
-						nextoperator = m.group().trim();
-					}
-					else
-					{
-						keepgoing = false;
-						ending = uppercase.length();
-					}
-
-					String word = uppercase.substring(start, ending);
-					if (keepgoing)
-					{
-						start = m.end();
-					}
-					//Make a *xxx* OR xxx* search to deal with bugs
+		            // Get the matched character
+		            Map pair = new HashMap();
+		            pair.put("word",andors.group(1));
+		            pair.put("opertator",andors.group(2));
+		            searchpairs.add(pair);
+		            lastterm = andors.end();
+				} 
+	            Map lastpair = new HashMap();
+	            lastpair.put("word",uppercase.substring(lastterm));
+	            searchpairs.add(lastpair);
+				
+				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();) {
+					Map<String,String> pair = (Map) iterator.next();
+					String word = pair.get("word");
+					nextoperator = pair.get("operator");
 					StringBuffer out = new StringBuffer();
-					if(word.startsWith("\"") && word.endsWith("\""))
+					out.append("+(");
+					//If there are tokens then treat a one word with quotes
+					//Check for quotes..
+					//String regex = "(?<=[a-zA-Z\\d])(.*?)(?=[a-zA-Z\\d])";
+					//String regex = "(?<=\\W)(\\w+)(?=\\W)";
+					String regex = "([0-9a-zA-Z0-9_]+)";
+					Pattern pattern = Pattern.compile(regex);
+			        
+			        // Create a Matcher object
+			        Matcher matcher = pattern.matcher(word);
+					while (matcher.find()) 
 					{
-						String sub = word.substring(1, word.length() - 1);
-						out.append("\"" + QueryParser.escape(sub) + "\"");
+			            // Get the matched character
+			            String match = matcher.group();
+			            boolean onlastone = word.endsWith(match);
+			            
+						MatchQueryBuilder oneword = null;
+						if( onlastone )
+						{
+							oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getId(), QueryParser.escape(match));
+						}
+						else
+						{
+							oneword = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(match));
+						}
+						oneword.analyzer("lowersnowball");
+						if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
+						{
+							operator = "OR";
+						}
+						else if (operator == null)
+						{
+							operator = "AND";
+						}
+						
+						if (operator.equals("NOT"))
+						{
+							booleans.mustNot(oneword);
+						}
+						else if (operator.equals("OR"))
+						{
+							booleans.should(oneword);
+						}
+						else
+						{
+							booleans.must(oneword);
+						}
+						operator = nextoperator;
 					}
-					else
-					{
-						wildcard(out, word);
-					}
-					BoolQueryBuilder pair = QueryBuilders.boolQuery();
-					QueryStringQueryBuilder text = QueryBuilders.queryStringQuery("+(" + out.toString() + ")");
-					text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-					text.analyzeWildcard(true); //This is important
-					text.allowLeadingWildcard(true);
-					text.analyzer("lowersnowball");
-					text.defaultField("description");
-					pair.should(text);
-
-					String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
-					QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
-					startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-					startw.analyzer("lowersnowball");
-					startw.defaultField("description");
-					pair.should(startw);
-
-					if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
-					{
-						operator = "OR";
-					}
-					else if (operator == null)
-					{
-						operator = "AND";
-					}
-					if (operator.equals("NOT"))
-					{
-						booleans.mustNot(pair);
-					}
-					else if (operator.equals("OR"))
-					{
-						booleans.should(pair);
-					}
-					else
-					{
-						booleans.must(pair); //Each word is a MUST?
-					}
-					operator = nextoperator;
 				}
-				bigOR.should(booleans);
-				find = bigOR;
+
+				find = booleans;
 			}
 		}
 		else if (valueof.endsWith("*"))

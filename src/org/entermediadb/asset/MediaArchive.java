@@ -1999,13 +1999,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			throw new OpenEditException("Invalid search");
 		}
-		SearchQuery q = inBuilder.getQuery();
-		HitTracker tracker = (HitTracker)getCacheManager().get("sm", q.toQuery());
-		if( tracker == null)
-		{
-			tracker = inBuilder.search();
-			getCacheManager().put("sm", inBuilder.getQuery().toQuery(),tracker);
-		}
+		HitTracker tracker = inBuilder.getSearcher().getCachedSearch(inBuilder);
 		return tracker;
 	}
 

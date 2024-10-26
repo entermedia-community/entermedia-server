@@ -37,6 +37,7 @@ import org.openedit.WebServer;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
@@ -1746,19 +1747,23 @@ public class AssetEditModule extends BaseMediaModule
 		if (data.getId().contains("multiedit:")) {
 			return;
 		}
-		MediaArchive archive = getMediaArchive(inReq);
-		Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
-		String catalogid = inReq.findPathValue("catalogid");
 
+		int count = data.getInt("assetvotes");
+		if(count == 0)
+		{
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
 		if (searcher == null)
 		{
 			throw new OpenEditException("Unable to load searcher for assetvotes.");
 		}
-		SearchQuery q = searcher.createSearchQuery();
-		q.setHitsName("voteshits");
-		q.addMatches("assetid", asset.getId());
-		HitTracker hits = searcher.search(q);
+		QueryBuilder q = searcher.query();
+		q.named("voteshits");
+		q.exact("assetid", data.getId());
+		HitTracker hits = archive.getCachedSearch(q);
 
 		String username = inReq.getUserName();
 		if (username != null)
@@ -1772,11 +1777,11 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		int count = asset.getInt("assetvotes");
 		if (count != hits.size())
 		{
-			asset.setProperty("assetvotes", String.valueOf(hits.size()));
+			data.setProperty("assetvotes", String.valueOf(hits.size()));
 			//async asset save?
+			Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
 			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
 		}
 
@@ -1828,7 +1833,6 @@ public class AssetEditModule extends BaseMediaModule
 				asset = (Asset) archive.getAssetSearcher().loadData(assetdata);
 				if (asset != null) {
 					voteForAsset(asset, archive, inReq.getUser());
-					loadAssetVotes(inReq);
 				 }
 			}
 		}
@@ -1838,7 +1842,6 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				if (asset != null) {
 					voteForAsset(asset, archive, inReq.getUser());
-					loadAssetVotes(inReq);
 					inReq.putPageValue("assetid", asset.getId());
 				}
 			}
@@ -1850,14 +1853,23 @@ public class AssetEditModule extends BaseMediaModule
 	public void voteForAsset(Asset asset, MediaArchive archive, User inUser)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
-		//	DateFormat dateformat = searcher.getDetail("time").getDateFormat();
 		if (asset.getId().contains("multiedit:"))
 		{
 			throw new OpenEditException("Can't edit votes");
 		}
-		Data row = searcher.createNewData();
+		QueryBuilder q = searcher.query();
+		q.exact("assetid", asset.getId());
+		HitTracker hits = q.search();
 		String username = inUser.getUserName();
-
+		for (Object hit : hits)
+		{
+			if (username.equals(hits.getValue(hit, "username")))
+			{
+				return;
+			}
+		}
+		
+		Data row = searcher.createNewData();
 		row.setId(username + "_" + asset.getId());
 		String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 		row.setValue("votetime", date);
@@ -1866,7 +1878,10 @@ public class AssetEditModule extends BaseMediaModule
 		row.setSourcePath(asset.getSourcePath());
 		searcher.saveData(row, inUser);
 		archive.fireMediaEvent("userlikes", inUser, asset);
+
+		asset.setProperty("assetvotes", String.valueOf(hits.size() + 1));
 		//archive.getAssetSearcher().updateIndex(asset); //get the rank updated
+		archive.getAssetSearcher().saveData(asset);
 	}
 
 	public void saveAssetData(WebPageRequest inReq) throws Exception
