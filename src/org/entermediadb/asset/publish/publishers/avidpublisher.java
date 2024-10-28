@@ -139,12 +139,12 @@ public class avidpublisher extends BasePublisher implements Publisher
 		try
 		{
 			PublishResult result = checkOnConversion(inMediaArchive, inPublishRequest, inAsset, inPreset);
-			if (result != null)
+			if(!result.isReadyToPublish())
 			{
 				return result;
 			}
 
-			result = new PublishResult();
+			//result = new PublishResult();
 
 			Page inputpage = findInputPage(inMediaArchive, inAsset, inPreset);
 			
