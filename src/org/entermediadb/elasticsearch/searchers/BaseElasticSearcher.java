@@ -124,6 +124,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	public static final Pattern TOKENS = Pattern.compile("[^a-zA-Z\\d\\s]");
 	
+	protected static final Pattern specialchars = Pattern.compile("([0-9a-zA-Z0-9_]+)");
+	protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
+
+	
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -1399,8 +1403,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				//String orregex = "((.*?)\\s+(AND|OR)\\s+)+";
 				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
-				String orregex= "(.*?)\\s+(OR?|AND?|NOT?)+";
-				Pattern orpattern = Pattern.compile(orregex);
 		        Matcher andors  = orpattern.matcher(uppercase);
 
 				String operator = null;
@@ -1434,11 +1436,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					//Check for quotes..
 					//String regex = "(?<=[a-zA-Z\\d])(.*?)(?=[a-zA-Z\\d])";
 					//String regex = "(?<=\\W)(\\w+)(?=\\W)";
-					String regex = "([0-9a-zA-Z0-9_]+)";
-					Pattern pattern = Pattern.compile(regex);
 			        
 			        // Create a Matcher object
-			        Matcher matcher = pattern.matcher(word);
+			        Matcher matcher = specialchars.matcher(word);
 					while (matcher.find()) 
 					{
 			            // Get the matched character

@@ -166,10 +166,16 @@ public class FinderModule extends BaseMediaModule
 				
 
 				sortModules(foundmodules);
-				log.debug("Organized Modules: " + foundmodules);
+				if( log.isDebugEnabled())
+				{
+					log.debug("Organized Modules: " + foundmodules);
+				}
 				
 				if (foundmodules.size() == 0) {
-					log.info("Found no modules.");
+					if( log.isDebugEnabled())
+					{
+						log.debug("Found no modules.");
+					}
 				}
 				
 				inReq.putPageValue("organizedModules",foundmodules);
