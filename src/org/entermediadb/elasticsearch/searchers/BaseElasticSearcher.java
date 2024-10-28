@@ -2064,7 +2064,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						else
 						{
-							currentordering++; 
+							currentordering = currentordering + 100; 
 						}
 						data2.setValue("ordering",currentordering);
 					}
