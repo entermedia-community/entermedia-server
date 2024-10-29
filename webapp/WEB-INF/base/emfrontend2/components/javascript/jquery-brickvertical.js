@@ -154,6 +154,34 @@ function isInViewport( cell ) {
   return isin;
 };
 
+function gridupdatepositions(grid) {
+	  var resultsdiv = grid.closest(".resultsdiv");
+	  if (!resultsdiv) {
+	    resultsdiv = grid.closest(".resultsdiv");
+	  }
+	
+	  var positionsDiv = resultsdiv.find(".resultspositions");
+	
+	  if (positionsDiv.length > 0) {
+	    var oldpage = grid.data("currentpagenum");
+	
+	    $(".masonry-grid-cell", grid).each(function (index, cell) {
+	      var elementviewport = isInViewport(cell);
+	      if (elementviewport) {
+	        var pagenum = $(cell).data("pagenum");
+	        if (pagenum != oldpage) {
+	          grid.data("currentpagenum", pagenum);
+	          positionsDiv.data("currentpagenum", pagenum);
+	          var url = positionsDiv.data("url");
+	          var options = positionsDiv.data();
+	          replaceelement(url, positionsDiv, options);
+	        }
+	        return false;
+	      }
+	    });
+	  }
+	};
+
 
 function checkScroll(grid) {
  var appdiv = $("#application"); 
@@ -183,14 +211,24 @@ function checkScroll(grid) {
 	});
   
   
- var resultsdiv = grid.closest(".resultsdiv");
-	  if (!resultsdiv) {
-	    resultsdiv = grid.closest(".resultsdiv");
-	  }
+  var resultsdiv = grid.closest(".resultsdiv");
+  if (!resultsdiv) {
+    resultsdiv = grid.closest(".resultsdiv");
+  }
   
-  //gridupdatepositions(grid);
+  if (stopautoscroll) {
+    // ignore scrolls
+    if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
+      var lastscroll = getOverlay().data("lastscroll");
+
+      if (Math.abs(lastscroll - currentscroll) > 50) {
+        $(window).scrollTop(lastscroll);
+      }
+    }
+    return;
+  }
   
-  
+  gridupdatepositions(grid);
 
   var page = parseInt(resultsdiv.data("pagenum"));
   if (isNaN(page)) {
@@ -217,7 +255,7 @@ function checkScroll(grid) {
 
   var stackedviewpath = resultsdiv.data("stackedviewpath");
   if (!stackedviewpath) {
-    stackedviewpath = "stackedgallery.html";
+    stackedviewpath = "brickvertical.html";
   }
   var link = componenthome + "/results/" + stackedviewpath;
   var collectionid = $(resultsdiv).data("collectionid");
@@ -241,7 +279,7 @@ function checkScroll(grid) {
     data: params,
     success: function (data) {
       var jdata = $(data);
-      var code = $(".masonry-grid", jdata).html();
+      var code = $(".brickvertical", jdata).html();
       $(grid).append(code);
       $(window).trigger("resize");
       stopautoscroll = false;
@@ -250,8 +288,6 @@ function checkScroll(grid) {
       //}
     },
   });
-
- 
 }
 	
 var methods = {
