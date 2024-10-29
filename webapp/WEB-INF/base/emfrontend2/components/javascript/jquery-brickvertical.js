@@ -23,7 +23,7 @@
 			minwidth = 250;
 		}
 		var totalavailablew = grid.width();
-		console.log("grid width:" + totalavailablew);
+		//console.log("grid width:" + totalavailablew);
 		var maxcols = 5;
 		var eachwidth = 0;
 
@@ -283,7 +283,11 @@
 			jQuery(window).on("resize", function () {
 				verticalGridResize(grid);
 			});
-
+			
+			jQuery(window).on("scroll", function () {
+			    checkScroll(grid);
+			});	
+			
 			grid.parents().filter(function () {
 				var element = jQuery(this);
 				if (
