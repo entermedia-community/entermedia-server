@@ -44,11 +44,13 @@ $(document).ready(function () {
 		"click",
 		function (event) {
 			event.stopPropagation();
-
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest(".noderow");
+			$("ul li div.cat-current", tree).addClass("categorydroparea");
 			$("ul li div", tree).removeClass("selected cat-current");
-			$("div:first", node).addClass("cat-current");
+			$("div:first", node)
+				.addClass("cat-current")
+				.removeClass("categorydroparea");
 			var nodeid = node.data("nodeid");
 			tree.data("currentnodeid", nodeid);
 			var prefix = tree.data("urlprefix");
@@ -112,7 +114,7 @@ $(document).ready(function () {
 				reloadurl = customprefix;
 			} else {
 				reloadurl = prefix;
-				reloadurl = reloadurl + "?nodeID="+ nodeid;
+				reloadurl = reloadurl + "?nodeID=" + nodeid;
 			}
 		}
 
@@ -159,7 +161,7 @@ $(document).ready(function () {
 		}
 
 		$(window).trigger("showLoader");
-		
+
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery
 			.get(prefix, options, function (data) {
@@ -199,7 +201,6 @@ $(document).ready(function () {
 				$(window).trigger("resize");
 			})
 			.always(function () {
-				
 				$(window).trigger("hideLoader");
 			});
 	};
@@ -346,8 +347,10 @@ $(document).ready(function () {
 				options["sidebarcomponent"] = "categories";
 				gotopage(tree, node, maxlevel, url, options);
 			}
-			$(".treerow").removeClass("cat-current");
-			$("#" + nodeid + "_row > .treerow").addClass("cat-current");
+			$(".treerow").removeClass("cat-current").addClass("categorydroparea");
+			$("#" + nodeid + "_row > .treerow")
+				.addClass("cat-current")
+				.removeClass("categorydroparea");
 
 			return false;
 		}

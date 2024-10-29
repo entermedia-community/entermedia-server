@@ -65,7 +65,7 @@
 			#set($padding  = 4)
 		#end
 		<div 
-			class="treerow categorydroparea #if( $isselected ) cat-current #if( $scrolltocat ) scrolltocat #end #end  #if( $checked) idchecked #end #if($expanded) expanded #end" 
+			class="treerow #if( $isselected ) cat-current #if( $scrolltocat ) scrolltocat #end #else categorydroparea #end  #if( $checked) idchecked #end #if($expanded) expanded #end" 
 			style="padding-left: $!{padding}px" 
 			title="[[Category id]]: $cat.id">
 			#if($haschildren)
