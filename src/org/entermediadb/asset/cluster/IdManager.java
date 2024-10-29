@@ -293,7 +293,7 @@ public class IdManager
 			{
 				current = 1000L;
 			}
-			current++;
+			current = current + 10;
 			counter.setValue("countvalue", current);
 		}
 		catch (Exception e)
