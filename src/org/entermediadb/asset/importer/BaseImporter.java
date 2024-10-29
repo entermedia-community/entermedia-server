@@ -528,6 +528,10 @@ public class BaseImporter extends EnterMediaObject
 				Object value = lookUpListValIfNeeded(detail,val);
 				inData.setValue(detail.getId(), value);
 			}
+			else
+			{
+				inData.setValue(detail.getId(), null);  //This ok?
+			}
 		}
 		addCustomProperties(inRow,inData);
 	}
