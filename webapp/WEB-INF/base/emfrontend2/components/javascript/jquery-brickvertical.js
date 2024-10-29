@@ -15,6 +15,7 @@ function verticalGridResize(grid) {
   }
 
   if (!grid.is(":visible")) {
+	console.log("grid not visible yet");
     return;
   }
 
@@ -23,6 +24,7 @@ function verticalGridResize(grid) {
     minwidth = 250;
   }
   var totalavailablew = grid.width();
+  console.log("grid width:" + totalavailablew);
   var maxcols = 5;
   var eachwidth = 0;
   
@@ -96,7 +98,7 @@ function verticalGridResize(grid) {
 	  }
 
     });
-
+/*
 	//Gray boxes on bottom    
    var maxheight = 0;
    for (let column in Object.keys(colheight)) {
@@ -121,10 +123,10 @@ function verticalGridResize(grid) {
       		cell.width(eachwidth);
       		var h = maxheight - onecolheight - 4;
       		cell.height(h);
-   	 	    grid.append(cell);
+   	 	    grid.append(cell); //This is slow 25ms
 		}
     }
-    
+*/    
    checkScroll(grid);
 };
 
