@@ -2288,16 +2288,19 @@ String viewbase = null;
 		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
 		MultiValued firstone = (MultiValued)tracker.first();
 		inReq.setRequestParameter("targetid",firstone.getId());
-		orderInsertData(inReq);
+		orderInsertSelectedData(inReq);
 	}
 	
-	public void orderInsertData(WebPageRequest inReq)
+	/*public void orderInsertData(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = resolveSearchType(inReq);
 		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
 		tracker.enableBulkOperations();
 		String dataid = inReq.getRequestParameter("dataid");
+		if(dataid == null) {
+			
+		}
 		Data selected = archive.getData(searchtype, dataid);
 		String replacedassetid = inReq.getRequestParameter("targetid");
 		
@@ -2333,6 +2336,70 @@ String viewbase = null;
 				 data.setValue("ordering",neworder);
 				 tosave.add(data);
 				neworder++;
+			}
+		}
+		archive.saveData(searchtype,tosave);
+	
+	}*/
+	
+	
+	public void orderInsertSelectedData(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		tracker.enableBulkOperations();
+		String replacedassetid = inReq.getRequestParameter("targetid");
+		MultiValued target = (MultiValued) archive.getData(searchtype, replacedassetid);
+		Long startorder = target.getLong("ordering");
+		long neworder = startorder;
+		Collection tosave = new ArrayList();
+		Set existing = new HashSet();
+		
+		Collection selected = tracker.getSelectedHitracker();
+		if(selected != null && !selected.isEmpty()) {
+			for (Iterator iterator = selected.iterator(); iterator.hasNext();) 
+			{
+				MultiValued data = (MultiValued) iterator.next();
+				data.setValue("ordering",neworder);
+				neworder = neworder + 10;
+				existing.add(data.getId());
+				tosave.add(data);
+			}
+		}
+		else {
+			String dataid = inReq.getRequestParameter("dataid");
+			if(dataid != null) {
+				Data selectedone = archive.getData(searchtype, dataid);
+				selectedone.setValue("ordering",neworder);
+				tosave.add(selectedone);
+				existing.add(selectedone.getId());
+			}
+			
+		}
+		
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();) 
+		{
+			MultiValued data = (MultiValued) iterator.next();
+			if( !existing.contains( data.getId() ) )
+			{
+				Long currentorder = data.getLong("ordering");
+				if( currentorder ==null)
+				{
+					currentorder = 0L;
+				}
+				if(currentorder < startorder) {
+					continue;
+				}
+				if( currentorder > neworder)
+				{
+					break;
+				}
+				neworder = neworder + 10;
+				data.setValue("ordering",neworder);
+				tosave.add(data);
+			
+				
 			}
 		}
 		archive.saveData(searchtype,tosave);
