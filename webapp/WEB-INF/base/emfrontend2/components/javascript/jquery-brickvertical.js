@@ -64,7 +64,7 @@
 				cell.data("aspect", a);
 				var newheight = Math.floor(eachwidth / a);
 				if (autosort) {
-					colnum = shortestColumn(colheight);
+					colnum = shortestColumn(colheight, colnum);
 				}
 				cell.data("colnum", colnum);
 				var runningtotal = colheight[colnum];
@@ -83,11 +83,9 @@
 				cell.css("left", colx + "px");
 				grid.css("height", colheight[colnum] + "px");
 
-				if (autosort) {
-					colnum++;
-					if (colnum >= maxcols) {
-						colnum = 0;
-					}
+				colnum++;
+				if (colnum >= maxcols) {
+					colnum = 0;
 				}
 			});
 		/*
@@ -122,7 +120,8 @@
 		checkScroll(grid);
 	}
 
-	function shortestColumn(colheight) {
+	function shortestColumn(colheight, defaultcolumn) {
+
 		var shortColumn = 0;
 		var shortColumnHeight = -1;
 		for (let column in Object.keys(colheight)) {
@@ -132,7 +131,18 @@
 				shortColumn = column;
 			}
 		}
-		return shortColumn;
+		//	return shortColumn;
+		
+		//Only change if its over 50px in diference
+		var defaulttop = colheight[defaultcolumn];
+		var shortesttop = colheight[shortColumn];
+		if( (defaulttop - shortesttop) > 175)
+		{
+			return shortColumn;
+		}
+
+		return defaultcolumn;
+		
 	}
 
 	function isInViewport(cell) {
