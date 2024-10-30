@@ -325,8 +325,7 @@ public class IdManager
 			if(current == null){
 				current = 1L;
 			}
-			
-			current++;
+			current = current + 10;
 			counter.setValue("countvalue", current);
 		}
 		catch (Exception e)

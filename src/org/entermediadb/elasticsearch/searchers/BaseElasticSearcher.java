@@ -2037,7 +2037,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		PropertyDetail ordering  = details.getDetail("ordering");
 		boolean fixordering = false;
-		if( !isReIndexing() &&  ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
+		if( ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
 		{
 			fixordering = true;
 		}
@@ -2064,7 +2064,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						else
 						{
-							currentordering = currentordering + 100; 
+							currentordering = currentordering + 10; 
 						}
 						data2.setValue("ordering",currentordering);
 					}
