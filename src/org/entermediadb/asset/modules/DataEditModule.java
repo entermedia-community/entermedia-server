@@ -2362,7 +2362,7 @@ String viewbase = null;
 			{
 				MultiValued data = (MultiValued) iterator.next();
 				data.setValue("ordering",neworder);
-				neworder = neworder + 10;
+				neworder = neworder + 1;
 				existing.add(data.getId());
 				tosave.add(data);
 			}
@@ -2402,6 +2402,7 @@ String viewbase = null;
 				
 			}
 		}
+		tracker.deselectAll();
 		archive.saveData(searchtype,tosave);
 	
 	}

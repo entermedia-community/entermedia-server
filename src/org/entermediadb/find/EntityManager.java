@@ -29,6 +29,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
@@ -862,9 +863,11 @@ public class EntityManager implements CatalogEnabled
 			log.error("No module");
 			return null;
 		}
-		//Search for all the boxes that match. 
-		HitTracker boxes = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
-				exact("parentmoduleid", inModule.getId()).sort("orderingUp").search();
+		//Search for all the boxes that match.
+		QueryBuilder query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
+		exact("parentmoduleid", inModule.getId()).sort("orderingUp");
+		
+		HitTracker boxes = getMediaArchive().getCachedSearch(query);
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
 		return boxes;
