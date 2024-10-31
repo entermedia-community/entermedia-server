@@ -167,6 +167,10 @@ public class EntityManager implements CatalogEnabled
 		if( cat == null)
 		{
 			String sourcepath = loadUploadSourcepath(module,entity,inUser);
+			if( sourcepath == null)
+			{
+				return null;
+			}
 			if( create )
 			{
 				cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
@@ -284,13 +288,13 @@ public class EntityManager implements CatalogEnabled
 					}
 					}
 			}
-			if( sourcepath.isEmpty())
+			if( sourcepath.isEmpty() && entity.getName("en") != null)
 			{
 				//long year = Calendar.getInstance().get(Calendar.YEAR);
 				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 			}
 		}
-		if( sourcepath != null && !sourcepath.equals( entity.get("uploadsourcepath")) )
+		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
 		{
 			entity.setValue("uploadsourcepath",sourcepath );
 			inSave = true; 
@@ -299,6 +303,10 @@ public class EntityManager implements CatalogEnabled
 		if( inSave)
 		{
 			getMediaArchive().saveData(module.getId(), entity);
+		}
+		if( sourcepath != null && sourcepath.isEmpty())
+		{
+			return null;
 		}
 		return sourcepath;
 	}	
