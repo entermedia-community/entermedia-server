@@ -138,7 +138,7 @@ findclosest = function (link, inid) {
             }
           }
 
-          checkautoreload(inlink);
+		  $(window).trigger("checkautoreload", [inlink]);
 
           //actions after autoreload?
           var message = inlink.data("alertmessage");
