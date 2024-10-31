@@ -340,10 +340,14 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public boolean isAncestorOf(Category inCatalog)
 	{
+		if(inCatalog.getId() == null) {
+			return false;
+		}
 		for (Iterator children = getChildren().iterator(); children.hasNext();)
 		{
 			Category child = (Category) children.next();
-			if (child.getId().equals(inCatalog.getId()))
+			
+			if (child.getId() != null && child.getId().equals(inCatalog.getId()))
 			{
 				return true;
 			}
