@@ -153,7 +153,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 			if (!fieldFileUtils.isLegalFilename(sourcePath))
 			{
-				log.info("Path is not web friendly.  Will have archivepath set");
+				log.info("Path is not web friendly.  Will have archivepath set. " + sourcePath);
 				asset.setValue("archivesourcepath", sourcePath);
 				for (Iterator iterator = fieldFileUtils.getInvalidChars().iterator(); iterator.hasNext();)
 				{
