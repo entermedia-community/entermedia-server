@@ -2260,7 +2260,14 @@ String viewbase = null;
 		if (entity != null) {
 			String fieldexternalid = inPageRequest.getRequestParameter("fieldexternalid");
 			String fieldexternalvalue = inPageRequest.getRequestParameter("fieldexternalvalue");
-			entity.addValue(fieldexternalid, fieldexternalvalue);
+			PropertyDetail detail =  searcher.getDetail(fieldexternalid);
+			if(detail.isMultiValue()) 
+			{
+				entity.addValue(fieldexternalid, fieldexternalvalue);
+			}
+			else {
+				entity.setValue(fieldexternalid, fieldexternalvalue);
+			}
 			searcher.saveData(entity);
 		}
 		
