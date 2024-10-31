@@ -1443,7 +1443,7 @@ public class AdminModule extends BaseMediaModule
 			user.setVirtual(true);
 			user.setProperty("catalogid", catalogid);
 			user.setEnabled(false);
-			getUserManager(inReq).saveUser(user);
+			//getUserManager(inReq).saveUser(user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 
@@ -1623,9 +1623,13 @@ public class AdminModule extends BaseMediaModule
 	{
 		HttpServletResponse request = inReq.getResponse();
 		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
-		if( request != null)
+		if( httpRequest != null)
 		{
-			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
+			String method = inReq.getRequest().getMethod();
+			if(method == null) {
+				return;
+			}
+			boolean isoptions = method.equals("OPTIONS");
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			String origin = httpRequest.getHeader("Origin");
 			

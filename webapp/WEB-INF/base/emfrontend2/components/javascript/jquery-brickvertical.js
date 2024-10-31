@@ -14,7 +14,7 @@
 		}
 
 		if (!grid.is(":visible")) {
-			console.log("grid not visible yet", grid);
+			//console.log("grid not visible yet", grid);
 			return;
 		}
 
