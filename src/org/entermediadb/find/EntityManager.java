@@ -177,6 +177,10 @@ public class EntityManager implements CatalogEnabled
 			}
 			if( cat != null)
 			{
+				if( entity.getValue("uploadsourcepath") == null )
+				{
+					entity.setValue("uploadsourcepath",sourcepath);
+				}
 				entity.setValue("rootcategory",cat.getId());
 				getMediaArchive().saveData(module.getId(), entity);
 			}
@@ -286,7 +290,11 @@ public class EntityManager implements CatalogEnabled
 				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 			}
 		}
-		entity.setValue("uploadsourcepath",sourcepath );
+		if( sourcepath != null && !sourcepath.equals( entity.get("uploadsourcepath")) )
+		{
+			entity.setValue("uploadsourcepath",sourcepath );
+			inSave = true; 
+		}
 		
 		if( inSave)
 		{
