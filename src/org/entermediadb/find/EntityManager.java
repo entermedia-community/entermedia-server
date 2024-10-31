@@ -150,7 +150,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
-		Category cat = loadDefaultFolder(module, entity,inUser,false);
+		Category cat = loadDefaultFolder(module, entity,inUser,true);
 		return cat;
 		
 	}
