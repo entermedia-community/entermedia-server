@@ -257,6 +257,20 @@ public class MediaArchive implements CatalogEnabled
 		
 		Map newvals = new HashMap();
 		newvals.put("formatteddate", DateStorageUtil.getStorageUtil().getTodayForDisplay());
+		Date now = new Date();
+
+		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy"); //TODO: Use DataStorage
+		newvals.put("formattedyear", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "MM"); //TODO: Use DataStorage
+		newvals.put("formattedmonth", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "dd"); //TODO: Use DataStorage
+		newvals.put("formattedday", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "HH"); //TODO: Use DataStorage
+		newvals.put("formattedhour", date);
+		
 		if(extraVals != null) 
 		{
 			newvals.putAll(extraVals);

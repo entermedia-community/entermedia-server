@@ -150,7 +150,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
-		Category cat = loadDefaultFolder(module, entity,inUser,false);
+		Category cat = loadDefaultFolder(module, entity,inUser,true);
 		return cat;
 		
 	}
@@ -167,6 +167,10 @@ public class EntityManager implements CatalogEnabled
 		if( cat == null)
 		{
 			String sourcepath = loadUploadSourcepath(module,entity,inUser);
+			if( sourcepath == null)
+			{
+				return null;
+			}
 			if( create )
 			{
 				cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
@@ -177,6 +181,10 @@ public class EntityManager implements CatalogEnabled
 			}
 			if( cat != null)
 			{
+				if( entity.getValue("uploadsourcepath") == null )
+				{
+					entity.setValue("uploadsourcepath",sourcepath);
+				}
 				entity.setValue("rootcategory",cat.getId());
 				getMediaArchive().saveData(module.getId(), entity);
 			}
@@ -280,17 +288,25 @@ public class EntityManager implements CatalogEnabled
 					}
 					}
 			}
-			if( sourcepath.isEmpty())
+			if( sourcepath.isEmpty() && entity.getName("en") != null)
 			{
 				//long year = Calendar.getInstance().get(Calendar.YEAR);
 				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 			}
 		}
-		entity.setValue("uploadsourcepath",sourcepath );
+		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
+		{
+			entity.setValue("uploadsourcepath",sourcepath );
+			inSave = true; 
+		}
 		
 		if( inSave)
 		{
 			getMediaArchive().saveData(module.getId(), entity);
+		}
+		if( sourcepath != null && sourcepath.isEmpty())
+		{
+			return null;
 		}
 		return sourcepath;
 	}	
