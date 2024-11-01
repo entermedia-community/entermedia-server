@@ -8,15 +8,10 @@ $context.putPageValue("isselected", "isselected" )
 	#set( $rendertype = "image" )
 #end
 <div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+	#set($imagelink = $mediaarchive.asLinkToPreview($hit, $librarycol.id, "image3000x3000.jpg", true))
 	#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
-	#ifnull($convertpreset)
-		#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "webplargeimage" ) )
-	#end
-	#ifnotnull($convertpreset)
-		#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
-	#end
-	<a href="$!downloadlink" class="lightbox" data-downloadlink="$!downloadlink">
+	#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+	<a href="$imagelink" class="lightbox" data-downloadlink="$!downloadlink">
 	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	</a>
-	
 </div>
