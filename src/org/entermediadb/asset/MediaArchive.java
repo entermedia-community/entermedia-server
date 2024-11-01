@@ -2585,7 +2585,7 @@ public class MediaArchive implements CatalogEnabled
 	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
 		
 		
-		if (inAsset == null)
+		if (inAsset == null || inPreset == null)
 		{
 			return null;
 		}
