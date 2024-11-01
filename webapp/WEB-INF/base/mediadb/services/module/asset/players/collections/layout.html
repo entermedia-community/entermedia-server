@@ -50,7 +50,9 @@
 	
 </head>
 <body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end>
-
+	
+	$pages.include("$apphome/services/module/asset/players/collections/menu.html")
+	
   	$pages.streamContent()
 
 </body>
