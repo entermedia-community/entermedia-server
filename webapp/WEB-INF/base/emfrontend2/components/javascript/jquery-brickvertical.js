@@ -155,7 +155,7 @@
 	}
 
 	function gridupdatepositions(grid) {
-		var resultsdiv = grid.closest(".resultsdiv");
+		var resultsdiv = grid.closest(".lightboxresults");
 		if (!resultsdiv) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
@@ -207,7 +207,7 @@
 				}
 			});
 
-		var resultsdiv = grid.closest(".resultsdiv");
+		var resultsdiv = grid.closest(".lightboxresults");
 		if (!resultsdiv) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
