@@ -150,7 +150,20 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
-		Category cat = loadDefaultFolder(module, entity,inUser,true);
+		if( entity == null || entity.getId() == null)
+		{
+			return null;
+		}
+		
+		boolean createcat = true;
+		
+		Object val =  module.getValue("enableuploading");
+		if(val == null || !Boolean.parseBoolean(val.toString()))
+		{
+			createcat = false;
+		}
+		
+		Category cat = loadDefaultFolder(module, entity,inUser,createcat);
 		return cat;
 		
 	}
@@ -166,7 +179,7 @@ public class EntityManager implements CatalogEnabled
 
 		if( cat == null)
 		{
-			String sourcepath = loadUploadSourcepath(module,entity,inUser);
+			String sourcepath = loadUploadSourcepath(module,entity,inUser,create);
 			if( sourcepath == null)
 			{
 				return null;
@@ -205,7 +218,7 @@ public class EntityManager implements CatalogEnabled
 	{
 		return loadUploadSourcepath(module, entity, inUser,true);
 	}
-	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inSave)
+	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
 	{
 		if (entity == null ) {
 			return null;
@@ -214,7 +227,6 @@ public class EntityManager implements CatalogEnabled
 		{
 			return entity.get("uploadsourcepath");
 		}
-		
 		String categoryid = entity.get("rootcategory");
 		if( categoryid != null)
 		{
@@ -226,6 +238,11 @@ public class EntityManager implements CatalogEnabled
 				getMediaArchive().saveData(module.getId(), entity);
 				return sourcepath;
 			}
+		}
+
+		if(!inCreate)
+		{
+			return null;
 		}
 		
 		String mask = (String) module.getValue("uploadsourcepath");
@@ -246,7 +263,7 @@ public class EntityManager implements CatalogEnabled
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
 
 			sourcepath = sourcepath.replaceAll("////", "/");
-			if( inSave)
+			if( inCreate)
 			{
 				for (int i = 0; i < 20; i++) {
 					//Already exists
@@ -297,16 +314,16 @@ public class EntityManager implements CatalogEnabled
 		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
 		{
 			entity.setValue("uploadsourcepath",sourcepath );
-			inSave = true; 
+			inCreate = true; 
 		}
 		
-		if( inSave)
-		{
-			getMediaArchive().saveData(module.getId(), entity);
-		}
 		if( sourcepath != null && sourcepath.isEmpty())
 		{
 			return null;
+		}
+		if( inCreate)
+		{
+			getMediaArchive().saveData(module.getId(), entity);
 		}
 		return sourcepath;
 	}	
