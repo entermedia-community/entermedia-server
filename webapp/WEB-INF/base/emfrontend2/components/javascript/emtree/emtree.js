@@ -2,48 +2,59 @@ $(document).ready(function () {
 	//Open and close the tree
 	lQuery(".emtree-widget ul li div .cat-arrow").livequery(
 		"click",
-		function (event) {
-			event.stopPropagation();
-			var tree = $(this).closest(".emtree");
-			var node = $(this).closest(".noderow");
-			var iscurrent = $(this).hasClass("cat-current");
-			var nodeid = node.data("nodeid");
-			var depth = node.data("depth");
-			tree.find("ul li div").removeClass("selected");
-
-			var home = $(this).closest(".emtree").data("home");
-
-			if ($(this).find(".cat-arrow").hasClass("down")) {
-				$(this).find(".cat-arrow").removeClass("down");
-			} else {
-				//Open it. add a UL
-				$(this).find(".cat-arrow").addClass("down");
-			}
-
-			tree.find(nodeid + "_add").remove();
-			node.load(
-				home +
-					"/components/emtree/tree.html?toggle=true&treename=" +
-					tree.data("treename") +
-					"&nodeID=" +
-					nodeid +
-					"&depth=" +
-					depth +
-					"&canupload=" +
-					tree.data("canupload") +
-					(iscurrent ? "&currentnodeid=" + nodeid : ""),
-				function () {
-					$(window).trigger("resize");
-				}
-			);
+		function (e) {
+			e.stopPropagation();
+			toggleExpandNode.call(this);
 		}
 	);
+	function toggleExpandNode(selecting = false) {
+		console.log($(this), selecting);
+		var tree = $(this).closest(".emtree");
+		var node = $(this).closest(".noderow");
+		var iscurrent = $(this).hasClass("cat-current");
+		var nodeid = node.data("nodeid");
+		var depth = node.data("depth");
+		tree.find("ul li div").removeClass("selected");
+
+		var home = $(this).closest(".emtree").data("home");
+
+		if ($(this).find(".cat-arrow").hasClass("down")) {
+			$(this).find(".cat-arrow").removeClass("down");
+		} else {
+			//Open it. add a UL
+			$(this).find(".cat-arrow").addClass("down");
+		}
+
+		tree.find(nodeid + "_add").remove();
+		node.load(
+			home +
+				"/components/emtree/tree.html?toggle=true&treename=" +
+				tree.data("treename") +
+				"&nodeID=" +
+				nodeid +
+				"&depth=" +
+				depth +
+				"&canupload=" +
+				tree.data("canupload") +
+				(selecting ? "&selecting=true" : "") +
+				(iscurrent ? "&currentnodeid=" + nodeid : ""),
+			function () {
+				$(window).trigger("resize");
+			}
+		);
+	}
 
 	//Select a node
 	lQuery(".emtree-widget ul li div .cat-name").livequery(
 		"click",
 		function (event) {
 			event.stopPropagation();
+			if (
+				$(this).hasClass("cat-leaf") &&
+				!$(this).parent().hasClass("expanded")
+			) {
+				toggleExpandNode.call($(this).siblings(".cat-arrow"), true);
+			}
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest(".noderow");
 			$("ul li div.cat-current", tree).addClass("categorydroparea");
@@ -204,6 +215,11 @@ $(document).ready(function () {
 				$(window).trigger("hideLoader");
 			});
 	};
+
+	var treeTop = $(".cat-current");
+	if (treeTop.length) {
+		$("div#treeholder").scrollTop(parseInt(treeTop.offset().top));
+	}
 
 	//need to init this with the tree
 	lQuery("div#treeholder").livequery(function () {

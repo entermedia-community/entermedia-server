@@ -248,8 +248,8 @@ public class CategoryModule extends BaseMediaModule
 
 	public void selectNodes(WebPageRequest inReq)
 	{
-		String toggle = inReq.getRequestParameter("toggle");
-		if (Boolean.parseBoolean(toggle))
+		String selecting = inReq.getRequestParameter("selecting");
+		if (!Boolean.parseBoolean(selecting))
 		{
 			return;
 		}
