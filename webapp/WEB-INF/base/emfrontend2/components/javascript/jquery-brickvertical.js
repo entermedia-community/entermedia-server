@@ -280,7 +280,7 @@
 				$(window).trigger("resize");
 				stopautoscroll = false;
 				//if (getOverlay().is(":hidden")) {
-				checkScroll(grid);
+				//checkScroll(grid);
 				//}
 			},
 		});
