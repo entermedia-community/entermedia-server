@@ -13,7 +13,8 @@
 			#set( $person = $mediaarchive.getData("entityperson", $row.entityperson) )
 			
 			#ifnotnull($person)
-		    	#set($name = $context.getText( $person) )
+				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
 		    	#set($name= "$name ($!row.get('samplecount'))")
 		    	#set($link = "$siteroot$applink/views/modules/entityperson/components/gridsample/preview/entity.html?id=$person.id&hitssessionid=$!hits.sessionId")
 		    	#set($title = "[[Person]]: ")
