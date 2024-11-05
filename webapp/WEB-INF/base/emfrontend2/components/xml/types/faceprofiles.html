@@ -1,18 +1,51 @@
 #set($collection = $data.getValues($detail.getId()))
+#ifnotnull($collection)
+#if(!$collection.isEmpty())
 
+<div class="emfield-scroll" id="faceprofilefield">
 <ul class="entity-value-list">
 	#foreach( $profile in $collection )
 		#set( $row = false )
-		#set( $row = $mediaarchive.getCachedData("faceprofilegroup",$profile.faceprofilegroup) )
+		#set( $name = "")
+		
+		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
 	    #if( $row )
-	    	#set($name = $context.getText( $row ) )
-	    	#if( !$name)
-	    		#set($rname = $!row.get("facecounter") )
-	    		#set($name = "[[face]] $!rname") 
+	    
+			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+			
+			#ifnotnull($person)
+				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+		    	#set($name= "$name ($!row.get('samplecount'))")
+		    	#set($link = "$siteroot$applink/views/modules/entityperson/components/gridsample/preview/entity.html?id=$person.id&hitssessionid=$!hits.sessionId")
+		    	#set($title = "[[Person]]: ")
+			#end
+	    	#if( $name == "")
+	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
+	    		#set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?id=$row.id&hitssessionid=$!hits.sessionId")
+	    		#set($title = "[[Face Profile]] ") 
 	    	#end
-	    	##/find/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=AXmkjXDnqw92jqIo_9hS&searchtype=faceprofilegroup&hitssessionid=hitsfaceprofilegroupfinder/catalog
-		    #set($link = "$siteroot$applink/views/modules/faceprofilegroup/components/gridsample/preview/faceprofilegroup.html?id=$row.id&searchtype=faceprofilegroup&hitssessionid=$!hits.sessionId")
-		    <li><a href="$link" class="emdialog entity-dialog">$name</a></li>
+	    	#if($profile.timecodestart)
+	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+	    		#set($name = "$name &nbsp;($secs)")
+	    	#end
+		    
+		    
+		    <li><a href="$link" 
+		    	class="emdialog entity-dialog"
+		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
+		    	>$!name</a>
+		    	&nbsp;
+		    	<a href="$siteroot$applink/components/faceprofile/removefromprofile.html" 
+		    		data-assetid="$!asset.getId()" 
+		    		data-profileid="$row.id" 
+		    		class="ajax"
+		    		data-targetdiv="faceprofilefield" 
+		    		data-confirm="[[Remove face profile from this asset]]" title="[[Remove Face Profile]]"><i class="bi bi-person-fill-x"></i></a>	
+		    </li>
 	    #end 
 	#end	
 </ul>
+</div>
+#end
+#end

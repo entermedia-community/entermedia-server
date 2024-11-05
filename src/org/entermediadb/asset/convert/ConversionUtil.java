@@ -223,8 +223,11 @@ public class ConversionUtil {
 	}
 	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String exportName)
 	{
-		ContentItem item = inArchive.getPresetManager().outPutForPreset(inArchive,inAsset,exportName);
-		return item;
+		//Check output file for existance
+		String fileName = inArchive.exportOutputName(inAsset, exportName);
+		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + fileName;
+		ContentItem output = inArchive.getContent(generatedfilename);
+		return output;
 	}
 
 	public boolean doesConvertedFileExist(MediaArchive inArchive, Asset inAsset, Data preset)

@@ -441,15 +441,7 @@ public class PresetCreator
 		clearConversions(inArchive,tasksearcher,inAsset);
 		queueConversions(inArchive, tasksearcher, inAsset);
 	}
-	
-	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String inExportName)
-	{
-		//Check output file for existance
-		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + inExportName;
-		ContentItem output = inArchive.getContent(generatedfilename);
-		return output;
-	}
-		
+
 	
 	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
 	{

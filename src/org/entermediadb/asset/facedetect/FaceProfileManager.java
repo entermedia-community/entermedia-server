@@ -760,7 +760,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 	
-	public Map getImageAndLocationForGroup(Asset asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
+	public Map getImageAndLocationForGroup(MultiValued asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
 		//Todo
 		
 		for (Iterator iterator = infaceprofilegroup.iterator(); iterator.hasNext();)
@@ -779,7 +779,7 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 	
-	public Map getImageAndLocationForGroup(Asset asset,String infaceprofilegroupid, Double thumbheight)
+	public Map getImageAndLocationForGroup(MultiValued asset,String infaceprofilegroupid, Double thumbheight)
 	{
 		if(asset == null) {
 			return null;

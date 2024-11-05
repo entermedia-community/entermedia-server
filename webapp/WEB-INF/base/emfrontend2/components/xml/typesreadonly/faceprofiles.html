@@ -10,7 +10,7 @@
 		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
 	    #if( $row )
 	    
-			#set( $person = $mediaarchive.getData("entityperson", $row.entityperson) )
+			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
 			
 			#ifnotnull($person)
 				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))

@@ -2645,19 +2645,11 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
 		
-		String usefile = inGeneratedName;
 		
-		if( inGeneratedName.endsWith("jpg"))
-		{
-			String basename = PathUtilities.extractPageName(inGeneratedName);
-			Data preset = getPresetManager().getCachedPresetByExternalName(this,rendertype,basename + ".webp");
-			if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
-			{
-				usefile = basename + ".webp";
-			}
-		}		
+		String usefile = exportOutputName(inAsset, inGeneratedName);
+		
+	
 		String finalroot = null;
 		
 		String cdnprefix = "";
@@ -2692,7 +2684,7 @@ public class MediaArchive implements CatalogEnabled
 			downloadroot = "/services/module/asset/downloads/";
 		}
 
-		if (inGeneratedName.contains("."))
+		if (usefile.contains("."))
 		{
 			if (inCollectionId != null)
 			{
@@ -2719,6 +2711,22 @@ public class MediaArchive implements CatalogEnabled
 
 		return finalroot;
 
+	}
+	
+	public String exportOutputName (Data inAsset, String inGeneratedName) { 
+		String usefile = inGeneratedName;
+		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
+		String basename = PathUtilities.extractPageName(inGeneratedName);
+		Data preset = getPresetManager().getCachedPresetByExternalName(this,rendertype,basename + ".webp");
+		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
+		{
+			usefile = basename + ".webp";
+		}
+		else
+		{
+			usefile = basename + ".jpg";
+		}
+		return usefile;
 	}
 
 	public String asLinkToGenerated(Data inAsset, String inGeneratedName)
@@ -2987,7 +2995,7 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 	
-	public Map readImageSize(Asset asset, String imagesize) 
+	public Map readImageSize(String imagesize) 
 	{
 		Map result = new HashMap();
 		//image200x200.jpg
