@@ -141,7 +141,10 @@ public class ThemeModule extends BaseMediaModule {
 		}
 		if(logopage != null) {
 			Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
-			getPageManager().copyPage(logopage, destpage);
+			if( !logopage.getPath().equals(destpage.getPath()) )
+			{
+				getPageManager().copyPage(logopage, destpage);
+			}
 		}
 	}
 
