@@ -41,8 +41,9 @@
 
 <h3>[[Search Logs]]</h3>
 
-<a class="ajax btn btn-sm  btn-primary" href="togglesearchlogs.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="Toggling search logs...">
-  #if($mediaarchive.getSearcherManager().getShowSearchLogs($catalogid) )
+#set($isenabled = $mediaarchive.getSearcherManager().getShowSearchLogs($catalogid))
+<a class="ajax btn btn-sm  btn-primary" href="togglesearchlogs.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="#if($isenabled) [[Disabling]] #else [[Enabling]] #end search logs...">
+  #if($isenabled)
     [[Enabled]]
   #else
     [[Disabled]]
