@@ -830,7 +830,7 @@ public class EntityModule extends BaseMediaModule
 			tmpentity.setValue("entitysourcetype", moduleid);
 			tmpentity.setName(names[i]);
 			
-			String path = archive.getEntityManager().loadUploadSourcepath(module,tmpentity,inReq.getUser(), false);
+			String path = archive.getEntityManager().loadUploadSourcepath(module,tmpentity,inReq.getUser(), true);
 			
 			Data existing = archive.query(moduleid).exact("uploadsourcepath", path).searchOne();
 			
