@@ -427,7 +427,7 @@ public class FaceProfileManager implements CatalogEnabled
 					log.info("Skipping group for asset: " + inAsset.getId());
 					continue;
 				}
-				//TODO: Count how many times I have used this group.
+				//TODO: Count how many times I have used this group. 
 				MultiValued oldgroup = (MultiValued)getMediaArchive().getData("faceprofilegroup",groupid);
 				if( oldgroup == null)
 				{
