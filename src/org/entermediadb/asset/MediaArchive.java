@@ -393,7 +393,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		Page page = new Page() //SPEED UP
+		Page page = new Page(item.getPath(),null) //SPEED UP
 		{
 			public boolean isHtml()
 			{
