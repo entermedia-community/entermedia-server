@@ -191,22 +191,36 @@ public class ChatServer
 				}
 				if( inMap.get("name") == null)
 				{
-					User user = archive.getUser((String)inMap.get("user"));
+					User user = archive.getUser(userid);
 					if(user != null)
 					{
 						inMap.put("name",user.getScreenName());
 					}
 				}
 				
-				Set userids = projectmanager.listTeam(collection);
-				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-				{
-					ChatConnection chatConnection = (ChatConnection) iterator.next();
-					if( userids.contains(chatConnection.getUserId() ) )
+				Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
+				
+				if (broadcastAll != null && broadcastAll) {
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
 						chatConnection.sendMessage(inMap);
-					}
-				}	
+					}	
+				}
+				else {
+					
+					Set userids = projectmanager.listTeam(collection);
+					userids.add(userid);
+					
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
+						if( userids.contains(chatConnection.getUserId() ) )
+						{
+							chatConnection.sendMessage(inMap);
+						}
+					}	
+				}
 			} 
 			else 
 			{ 
