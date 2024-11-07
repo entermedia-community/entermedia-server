@@ -62,22 +62,19 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
-
-		String sortby = inReq.findActionValue("sortorder");
-		if(sortby == null) {
-			sortby = "dateDown";
-		}
-
 		
 		if(collectionid == null) {
 			collectionid = inReq.findValue("collectionid");
+		}
+		
+		if(collectionid == null) {
+			collectionid = inReq.findValue("entityid");
 		}
 		
 
 		Searcher topicsearcher = archive.getSearcher("collectiveproject");
 		Data currenttopic = null;
 		if(channel != null) {
-			
 			currenttopic = topicsearcher.query().match("parentcollectionid",  collectionid).exact("id", channel).searchOne();
 		}
 		if (currenttopic == null) {
@@ -91,13 +88,19 @@ public class ChatModule extends BaseMediaModule
 		}
 		inReq.putPageValue("currenttopic", currenttopic);
 
-
+		String sortby = inReq.findActionValue("sortorder");
+		if(sortby == null) {
+			sortby = "dateDown";
+		}
+		
 		QueryBuilder builder = archive.query("chatterbox");
 		
 		if(collectionid != null) {
 			builder.named("messagesthitracker").exact("channel", currenttopic.getId()).sort(sortby);
 		} else {
-			builder.named("messagesthitracker").exact("channel", channel).sort(sortby);
+			if(channel != null) {
+				builder.named("messagesthitracker").exact("channel", channel).sort(sortby);
+			}
 		}
 		
 		UserProfile prof = inReq.getUserProfile();
@@ -112,9 +115,12 @@ public class ChatModule extends BaseMediaModule
 		
 
 		HitTracker results = builder.search(inReq);
-		results.setHitsPerPage(20);
+		if(results != null) {
+			results.setHitsPerPage(20);
+			inReq.putPageValue(results.getHitsName(),results);
+		}
 		  
-		inReq.putPageValue(results.getHitsName(),results);
+		
 		//loadPageOfChat(inReq);
 
 	}

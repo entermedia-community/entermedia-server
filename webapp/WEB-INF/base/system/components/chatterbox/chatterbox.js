@@ -54,11 +54,8 @@ function chatterbox() {
       var area = jQuery("#chatterbox-write");
       $("#chatter-msg", area).val("");
       $("#chatter-msg").data("replytoid", "");
-
-      console.log($("#chatter-msg").data("replytoid"));
-
-      $(".chatterboxreplyto", area).hide();
-
+	  $(".chatterboxreplyto", area).hide();
+      //console.log($("#chatter-msg").data("replytoid"));
       //scroll down, delay a little?
       scrollToChat();
     }
