@@ -548,6 +548,13 @@
 		</property>
 	</bean>
 
+	<bean id="originalPreviewDownloadGenerator"
+		class="org.entermediadb.asset.generators.OriginalPreviewDocumentGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	<!-- bean id="originalArchiveDocument"
 		class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
 		<property name="mediaArchiveManager">

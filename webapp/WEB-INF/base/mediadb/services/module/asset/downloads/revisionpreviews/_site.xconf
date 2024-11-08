@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/revisionpreviews</property>
+	
+	<property name="exactsourcepath">true</property>
+		<property name="skipheader">true</property>
+	
+	<generator name="originalPreviewDownloadGenerator"/>
+	
+	<!-- TODO: Add entity view permission check from profile -->	
+	
+	<path-action name="Admin.allowViewing" alltypes="true">
+		<login-path>/${applicationid}/authentication/logon.html</login-path>
+	</path-action>
+	
+	<permission name="view">
+	<or>
+			<pagevalue name="candownload" equals="true"/>
+	
+		   <userprofile property="download" equals="true" />
+		<action name="OrderModule.canViewAsset" />
+	</or>
+	</permission>
+	
+	
+	<permission name="viewasset">
+		<or>
+			<and>
+			     <userprofile property="download" equals="true" />
+				<action name="AssetControlModule.canViewAsset" /> 
+			</and>
+			<action name="OrderModule.canViewAsset" />
+		</or>
+	</permission>	
+		
+</page>
