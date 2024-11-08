@@ -12,10 +12,11 @@ import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 
-public class OriginalPreviewDownloadGenerator extends FileGenerator
+public class OriginalPreviewDocumentGenerator extends FileGenerator
 {
-		private static final Log log = LogFactory.getLog(OriginalPreviewDownloadGenerator.class);
+		private static final Log log = LogFactory.getLog(OriginalPreviewDocumentGenerator.class);
 		protected ModuleManager moduleManager;
 
 		public ModuleManager getModuleManager()
@@ -33,7 +34,7 @@ public class OriginalPreviewDownloadGenerator extends FileGenerator
 			String catalogid = inReq.findPathValue("catalogid");
 			MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 			String assetid = inReq.getRequestParameter("assetid");
-			Asset asset = archive.getAsset(catalogid, inReq);
+			Asset asset = archive.getAsset(assetid, inReq);
 			
 			Page content = archive.getOriginalDocument(asset);
 			String version = inReq.getRequestParameter("version");
@@ -43,7 +44,8 @@ public class OriginalPreviewDownloadGenerator extends FileGenerator
 				//error
 			}
 			ContentItem revision = archive.getPageManager().getRepository().getVersion(content.getContentItem(), version);
-			Page preview = archive.getPageManager().getPage(revision.getPath() + inPage.getName());
+			String folder = PathUtilities.extractDirectoryPath(revision.getPath());
+			Page preview = archive.getPageManager().getPage( folder + "/" + inPage.getName());
 			
 			if (!preview.exists()) {
 				log.error("preview Not found " + preview.getPath());
