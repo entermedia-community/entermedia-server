@@ -2342,4 +2342,15 @@
 		
 	</bean>		
 			
+	<bean id="gptManager" class="org.entermediadb.llm.GptManager">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>		
+			
+			
+			
 </beans>
