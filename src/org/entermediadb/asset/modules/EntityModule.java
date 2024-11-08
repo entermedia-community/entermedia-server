@@ -930,6 +930,7 @@ public class EntityModule extends BaseMediaModule
 				}
 				archive.saveAssets(tosave);
 				added = assethits.size();
+				assethits.deselectAll();
 			}
 			else
 			{
@@ -940,7 +941,7 @@ public class EntityModule extends BaseMediaModule
 			}
 			
 			inPageRequest.putPageValue("assetsadded", added);
-			assethits.deselectAll();
+			
 		}
 		
 		/*

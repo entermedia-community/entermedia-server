@@ -87,6 +87,7 @@ public class ChatModule extends BaseMediaModule
 			topicsearcher.saveData(currenttopic);
 		}
 		inReq.putPageValue("currenttopic", currenttopic);
+		inReq.putPageValue("channel", currenttopic.getId());
 
 		String sortby = inReq.findActionValue("sortorder");
 		if(sortby == null) {
