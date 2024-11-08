@@ -22,6 +22,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class PresetCreator
 {
@@ -441,8 +442,32 @@ public class PresetCreator
 		clearConversions(inArchive,tasksearcher,inAsset);
 		queueConversions(inArchive, tasksearcher, inAsset);
 	}
-
 	
+	public String exportOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
+	{ 
+		String usefile = inGeneratedName;
+		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
+		String basename = PathUtilities.extractPageName(inGeneratedName);
+		Data preset = getCachedPresetByExternalName(inArchive,rendertype,basename + ".webp");
+		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
+		{
+			usefile = basename + ".webp";
+		}
+		else
+		{
+			usefile = basename + ".jpg";
+		}
+		return usefile;
+	}
+
+	public ContentItem outPutForGenerated(MediaArchive inArchive, Data inAsset, String inGeneratedType)
+	{
+		String savedname = exportOutputName(inArchive, inAsset, inGeneratedType);
+		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + savedname;
+		ContentItem output = inArchive.getContent(generatedfilename);
+		return output;
+		
+	}	
 	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
 	{
 		if( "0".equals( inPreset.getId()) )

@@ -313,15 +313,27 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		//Save to temp place to change format
 		String tmpplace = "/WEB-INF/trash/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
-		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), tmpplace , inReq.getUser());
+		ContentItem tosave = archive.getPageManager().getRepository().getStub(tmpplace);
+		
+		ContentItem saved = properties.saveFileAs(tosave, properties.getFirstItem(), inReq.getUser());
 		
 		//Convert
-		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
-		ContentItem finalpath = archive.getPageManager().getRepository().getStub(generated); 
+		String originalapath = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		
+		ContentItem finalpath = archive.getPageManager().getRepository().getStub(originalapath); 
 		ConvertInstructions instructions =  archive.createInstructions(current, saved);
+
+		if( finalpath.exists() )
+		{
+			ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
+			finalpath.setPreviewImage(preview.getPath());
+			finalpath.setMessage("Image Editor Saved");
+			finalpath.setAuthor(inReq.getUserName());
+			getPageManager().getRepository().saveVersion(finalpath);
+		}
 		archive.convertFile(instructions, finalpath);
 
-		Collection assetids = archive.getAssetImporter().processOn(generated, generated,true,archive, null);
+		Collection assetids = archive.getAssetImporter().processOn(originalapath, originalapath,true,archive, null);
 		Asset newasset = archive.getAssetBySourcePath(sourcepath);
 		if( newasset != null)
 		{
@@ -349,6 +361,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		Asset current = getAsset(inReq);
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
+		
+		//TODO: Make version of old file before replacing it
+		
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
 		//Read New Metadata
 		ContentItem original = archive.getOriginalContent(current);

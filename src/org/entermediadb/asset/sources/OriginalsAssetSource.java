@@ -114,6 +114,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 			item.setAuthor(inUser.getId());
 		}
 		item.setMessage("deleted");
+		
+		if( item.exists() )
+		{
+			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
+			item.setPreviewImage(preview.getPath());
+		}
+		
 		getPageManager().getRepository().remove(item);
 		return true;
 	}
@@ -146,7 +153,12 @@ public class OriginalsAssetSource extends BaseAssetSource
 			if(!page.exists()){
 				log.info("Could not attach file temp file doesn't exist: " + page.getPath());
 			}
-			//dest.setProperty("makeversion","true");
+			if( page.exists() )
+			{
+				ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
+				page.setPreviewImage(preview.getPath());
+			}
+
 			getPageManager().getRepository().move(page, dest);
 			Asset asset = getMediaArchive().getAssetBySourcePath(inAsset.getSourcePath());
 			asset.setPrimaryFile(page.getName());

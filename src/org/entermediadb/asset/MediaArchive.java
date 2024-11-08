@@ -2713,20 +2713,10 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 	
-	public String exportOutputName (Data inAsset, String inGeneratedName) { 
-		String usefile = inGeneratedName;
-		String rendertype = getMediaRenderType(inAsset.get("fileformat"));
-		String basename = PathUtilities.extractPageName(inGeneratedName);
-		Data preset = getPresetManager().getCachedPresetByExternalName(this,rendertype,basename + ".webp");
-		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
-		{
-			usefile = basename + ".webp";
-		}
-		else
-		{
-			usefile = basename + ".jpg";
-		}
-		return usefile;
+	public String exportOutputName(Data inAsset, String inGeneratedName) 
+	{ 
+		String name = getPresetManager().exportOutputName(this, inAsset, inGeneratedName); 
+		return name;
 	}
 
 	public String asLinkToGenerated(Data inAsset, String inGeneratedName)
@@ -2735,15 +2725,14 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		
+		String usefile = exportOutputName(inAsset, inGeneratedName);
+
+		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
 
-		if (cdnprefix == null)
-		{
-			cdnprefix = "";
-		}
 		String downloadroot = "/services/module/asset/downloads/";
-		String	finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName;
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
