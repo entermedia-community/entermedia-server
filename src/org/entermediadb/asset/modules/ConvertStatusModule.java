@@ -282,7 +282,6 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 	}
-	
 
 	public void uploadSaveAsDocument(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
@@ -360,11 +359,21 @@ public class ConvertStatusModule extends BaseMediaModule
 			
 		}
 		Asset current = getAsset(inReq);
-		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
 		
 		//TODO: Make version of old file before replacing it
-		
-		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
+		//Must be the same type
+		ContentItem tosave = archive.getOriginalContent(current);
+		if( tosave.exists() )
+		{
+			ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
+			tosave.setPreviewImage(preview.getPath());
+			tosave.setMessage("Image Editor Saved");
+			tosave.setAuthor(inReq.getUserName());
+			getPageManager().getRepository().saveVersion(tosave); //Makes a version
+		}
+
+		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
+		properties.saveFileAs(tosave, properties.getFirstItem(), inReq.getUser()); //Does not make a version
 		//Read New Metadata
 		ContentItem original = archive.getOriginalContent(current);
 		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
