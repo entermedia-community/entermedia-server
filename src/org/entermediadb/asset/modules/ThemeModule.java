@@ -2,7 +2,10 @@ package org.entermediadb.asset.modules;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -30,92 +33,78 @@ public class ThemeModule extends BaseMediaModule {
 	public void setRequestUtils(RequestUtils inRequestUtils) {
 		fieldRequestUtils = inRequestUtils;
 	}
+	
+	public void saveCSS(WebPageRequest inReq) throws Exception 
+	{
+		saveAllCustomThemes(inReq);	
 
-	// public void loadPortfolio(WebPageRequest inReq){
-	// String catalogid = inReq.findPathValue("catalogid");
-	// Searcher searcher = getSearcherManager().getSearcher(get, inFieldName);
-	// }
-	//
-	public void saveCSS(WebPageRequest inReq) throws Exception {
-		String inputfile = inReq.findValue("templatecss");
-		String outputfile = inReq.findValue("outputcss");
-
-		Data theme = loadTheme(inReq);
-		
-		if(theme== null) {
-			return;
-		}
-
-		Page page = getPageManager().getPage(inputfile);
-
-		
-		URLUtilities urlUtil = (URLUtilities) inReq
-				.getPageValue(PageRequestKeys.URL_UTILITIES);
-
-		// WebPageRequest req =
-		// getRequestUtils().createVirtualPageRequest(page.getPath(),
-		// inReq.getUser(), urlUtil);
-		WebPageRequest req = getRequestUtils().createPageRequest(
-				page,
-				inReq.getRequest(),
-				inReq.getResponse(),
-				inReq.getUser(),
-				(URLUtilities) inReq
-						.getPageValue(PageRequestKeys.URL_UTILITIES));
-		Page outputpage = getPageManager().getPage(outputfile);
-		getPageManager().putPage(outputpage);
-		//loadTheme(req);
-		req.putPageValue("theme", theme);
-
-		
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		req.putPageValue("mediaarchive", archive);
-		//req.putPageValue("numberutils", new NumberUtils());
-		
-		req.putProtectedPageValue(PageRequestKeys.HOME,
-				urlUtil.relativeHomePrefix());
-		ByteArrayOutputStream scapture = new ByteArrayOutputStream();
-		Writer capture = null;
-		capture = new OutputStreamWriter(scapture, page.getCharacterEncoding());
-		Output out = new Output(capture, outputpage.getContentItem()
-				.getOutputStream());
-		
-		page.generate(req, out);
-		String output = scapture.toString();
-		StringItem revision = new StringItem(outputpage.getPath(), output,
-				outputpage.getCharacterEncoding());
-		revision.setAuthor(inReq.getUserName());
-		
-		revision.setMessage("updated by  user");
-		outputpage.setContentItem(revision);
-		getPageManager().putPage(outputpage);
-		getPageManager().clearCache(outputpage);
-		
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
-
-		String title = theme.get("title");
-		if( title !=  null )
-		{
-			xconf.setProperty("title",title);
-		}
-		String systemfromemail = theme.get("systemfromemail");
-		if( systemfromemail !=  null )
-		{
-			xconf.setProperty("systemfromemail",systemfromemail);
-		}
-		String systemfromemailname = theme.get("systemfromemailname");
-		if( systemfromemailname !=  null )
-		{
-			xconf.setProperty("systemfromemailname",systemfromemailname);
-		}
-		// <property name="systemfromemail">noreply@entermediasoftware.com</property> 
-		
-		xconf.setProperty("themeid",theme.getId());
+		Data theme = loadTheme(inReq);
+		xconf.setProperty("themeid",theme.getId()); //Default
+			
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
 		getPageManager().clearCache();
 		
+	}
+
+	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//Process all the themes
+		String catalogid = inReq.findPathValue("catalogid");
+		Collection themes = getSearcherManager().query(catalogid, "theme").all().search();
+		String appid = inReq.findValue("applicationid");
+
+		for (Iterator iterator = themes.iterator(); iterator.hasNext();)
+		{
+			Data theme = (Data) iterator.next();
+			
+			String inputfile = theme.get("templatecss");
+			if( inputfile == null)
+			{
+				inputfile="/${applicationid}/theme/styles/overridestemplate.css";
+			}
+			inputfile = inReq.getContentPage().replaceProperty(inputfile);
+			
+			String outputfile = "/" + appid + "/theme/" + theme.getId() + "/custom.css";
+	
+			Page page = getPageManager().getPage(inputfile);
+			
+			URLUtilities urlUtil = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+	
+			WebPageRequest req = getRequestUtils().createPageRequest(
+					page,
+					inReq.getRequest(),
+					inReq.getResponse(),
+					inReq.getUser(),
+					(URLUtilities) inReq
+							.getPageValue(PageRequestKeys.URL_UTILITIES));
+			Page outputpage = getPageManager().getPage(outputfile);
+			getPageManager().putPage(outputpage);
+			//loadTheme(req);
+			req.putPageValue("theme", theme);
+			req.putPageValue("mediaarchive", archive);
+			//req.putPageValue("numberutils", new NumberUtils());
+			
+			req.putProtectedPageValue(PageRequestKeys.HOME,
+					urlUtil.relativeHomePrefix());
+			ByteArrayOutputStream scapture = new ByteArrayOutputStream();
+			Writer capture = null;
+			capture = new OutputStreamWriter(scapture, page.getCharacterEncoding());
+			Output out = new Output(capture, outputpage.getContentItem()
+					.getOutputStream());
+			
+			page.generate(req, out);
+			String output = scapture.toString();
+			StringItem revision = new StringItem(outputpage.getPath(), output,
+					outputpage.getCharacterEncoding());
+			revision.setAuthor(inReq.getUserName());
+			
+			revision.setMessage("updated by  user");
+			outputpage.setContentItem(revision);
+			getPageManager().putPage(outputpage);
+		}
 	}
 	
 	public void saveLogo(WebPageRequest inReq) {
