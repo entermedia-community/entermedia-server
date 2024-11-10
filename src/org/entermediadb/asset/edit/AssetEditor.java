@@ -371,7 +371,7 @@ public class AssetEditor
 	        List<Element> elements = root.elements("version");
 	        if( !elements.isEmpty() )
 	        {
-	        	previous = elements.getLast();
+	        	previous = elements.get(elements.size() - 1);
 	        }
 		}
 		if(  previous == null)
@@ -431,7 +431,7 @@ public class AssetEditor
 	        List<Element> elements = root.elements("version");
 	        if( !elements.isEmpty() )
 	        {
-	        	Element previous = elements.getLast();
+	        	Element previous = elements.get(elements.size() - 1 );
 	        	String versionnum = previous.attributeValue("number");
 	        	if( inVersion.equals(versionnum) )
 	        	{
