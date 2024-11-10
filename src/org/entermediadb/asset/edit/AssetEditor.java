@@ -1,7 +1,6 @@
 package org.entermediadb.asset.edit;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,12 +11,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.store.Directory;
-import org.bouncycastle.util.Arrays;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
@@ -30,14 +26,11 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
-
-import com.google.common.collect.Lists;
 
 public class AssetEditor
 {
@@ -576,7 +569,7 @@ public class AssetEditor
 			vers = new ArrayList();
 			vers.add(originalversion);
 		}
-		vers = Lists.reverse( vers.reversed() );
+		Collections.reverse(vers);
 		return vers;
 	}
 	public List<Version> getVersions(String inPath) 
