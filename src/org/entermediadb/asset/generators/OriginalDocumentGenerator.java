@@ -97,22 +97,28 @@ public class OriginalDocumentGenerator extends FileGenerator
 		}
 	
 		//	String fileName = URLEncoder.encode(asset.getName(), "UTF-8");
-		String	 fileName = asset.getName();
+		String	fileName = asset.getName();
 
-		String filename = asset.getSourcePath();
+		//String filename = asset.getSourcePath();
 		if (asset.isFolder() && asset.getPrimaryFile() != null)
 		{
-			filename = filename + "/" + asset.getPrimaryFile();
+			fileName =  asset.getPrimaryFile();
 		}
 		
-		Page content = archive.getOriginalDocument(asset);
+		Page content = null;
 		
 		String version = inReq.getRequestParameter("version");
 		if (version != null) {
-			Version revision = archive.getAssetEditor().getVersion(content.getPath(), version);
-			content = archive.getPageManager().getPage(revision.getBackUpPath());
+			Version revision = archive.getAssetEditor().getVersion(asset, version);
+			if( version != null || revision.getBackUpPath() != null)
+			{
+				content = archive.getPageManager().getPage(revision.getBackUpPath());
+			}
 		}
-		
+		if( content == null)
+		{
+			content = archive.getOriginalDocument(asset);
+		}
 		if( content.exists() )
 		{
 			//its a regular file
@@ -120,7 +126,12 @@ public class OriginalDocumentGenerator extends FileGenerator
 		    if(inReq.getResponse() != null && !skipheader )
 			{
 		    	inReq.getResponse().setHeader("Content-Type", "application/octet-stream; charset=utf-8");
-				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
+		    	String tweak = fileName;
+		    	if( version != null)
+		    	{
+		    		tweak = "version " + version + "~" + fileName; 
+		    	}
+				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ tweak +"\"");  //This seems to work on firefox
 		    	//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\"");
 				
 				String md5 = asset.get("md5hex");
@@ -132,12 +143,12 @@ public class OriginalDocumentGenerator extends FileGenerator
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 			super.generate(req, content, inOut);
-			archive.logDownload(filename, "success", inReq.getUser());
+			archive.logDownload(asset.getSourcePath(), "success", inReq.getUser());
 
 		}
 		else
 		{
-			stream(inReq, archive, inOut, asset, filename);
+			stream(inReq, archive, inOut, asset, fileName);
 		}
 	}
 

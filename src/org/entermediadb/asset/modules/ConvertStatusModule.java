@@ -329,7 +329,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset newasset = archive.getAssetBySourcePath(sourcepath); //New file
 		if( newasset != null)
 		{
-			archive.getAssetEditor().createNewVersionData(newasset, finalpath.getPath(), inReq.getUserName(), Version.REPLACE, null);
+			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.REPLACE, null);
 
 			newasset.setValue("parentid",assetid);
 			archive.saveAsset(newasset);
@@ -365,7 +365,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		archive.removeGeneratedImages(current, true);
 		archive.getAssetEditor().reloadThumbnails( current);
 		
-		archive.getAssetEditor().createNewVersionData(current, original.getPath(), inReq.getUserName(), Version.REPLACE, null);
+		archive.getAssetEditor().createNewVersionData(current, original, inReq.getUserName(), Version.REPLACE, null);
 		
 		log.info("Original replaced: " + current.getId() + " Sourcepath: " + current.getSourcePath());
 		

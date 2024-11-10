@@ -332,9 +332,9 @@ public class AssetEditor
 		}
 	}
 
-	public Element createNewVersionData(Asset inCurrent, String inTosavePath, String inUserName, String inChangeType, String inUserMessage)
+	public Element createNewVersionData(Asset inCurrent, ContentItem inTosavePath, String inUserName, String inChangeType, String inUserMessage)
 	{
-		ContentItem inXmlFile = getVersionDataFile(inTosavePath);
+		ContentItem inXmlFile = getVersionDataFile(inTosavePath.getPath());
         Document document = null;
 		if ( inXmlFile.exists() )
 		{
@@ -347,13 +347,14 @@ public class AssetEditor
 		}
         Element version = document.getRootElement().addElement("version");
         
-        int num = maxVersionNumber(inTosavePath);
+        int num = maxVersionNumber(inTosavePath.getPath());
         num++;
         
         version.addAttribute("number",Integer.toString( num )  );
         version.addAttribute("date",DateStorageUtil.getStorageUtil().getTodayForStorage());
        	version.addAttribute("author",inUserName);
         version.addAttribute("type",inChangeType);
+        version.addAttribute("filesize", String.valueOf( inTosavePath.getLength()) );
         if( inUserMessage != null)
         {
         	version.setText(inUserMessage);
@@ -379,7 +380,7 @@ public class AssetEditor
 		}
 		if(  previous == null)
 		{
-			previous = createNewVersionData(inCurrent,inPreviousFile.getPath(),inCurrent.get("owner"),Version.ORIGINAL,null);
+			previous = createNewVersionData(inCurrent,inPreviousFile,inCurrent.get("owner"),Version.ORIGINAL,null);
 		}
     	String versionnum = previous.attributeValue("number");
 
@@ -417,7 +418,7 @@ public class AssetEditor
 		getMediaArchive().saveAsset(current);
 		getMediaArchive().removeGeneratedImages(current, true);
 		
-		createNewVersionData(current,original.getPath(),inEditedBy, Version.REPLACE, null );
+		createNewVersionData(current,original,inEditedBy, Version.REPLACE, null );
 
 		reloadThumbnails( current);
 		 log.info("Original replaced: " + current.getId() + " Sourcepath: " + original.getPath());
@@ -453,7 +454,7 @@ public class AssetEditor
 		        		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(getMediaArchive(), original, current );
 		        		getMediaArchive().saveAsset(current);
 		        		getMediaArchive().removeGeneratedImages(current, true);
-		        		createNewVersionData(current,original.getPath(),inEditUser, Version.RESTORE, null );
+		        		createNewVersionData(current,original,inEditUser, Version.RESTORE, null );
 
 		        		reloadThumbnails( current);
 		        		
