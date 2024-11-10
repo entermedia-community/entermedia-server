@@ -43,7 +43,7 @@ public class OriginalPreviewDocumentGenerator extends FileGenerator
 				return;
 				//error
 			}
-			Version revision = archive.getAssetEditor().getVersion(content.getPath(), version);
+			Version revision = archive.getAssetEditor().getVersion(asset, version);
 			Page preview = archive.getPageManager().getPage( revision.getPreviewBackUpPath());
 			
 			if (!preview.exists()) {

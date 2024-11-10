@@ -396,11 +396,8 @@ public class AssetEditor
 			String type = PathUtilities.extractPageType(inPreviewImage.getName());
         	String previewcopypath = PathUtilities.extractDirectoryPath( inXmlFile.getPath() ) + "/" + versionnum + "~"  + inPreviousFile.getName() + "preview." + type;
         	ContentItem previewdest = getPageManager().getRepository().getStub(previewcopypath); 
-			if ( !destination.exists() )
-			{
-				getPageManager().getRepository().copy( inPreviewImage, previewdest );
-				previous.addAttribute("previewfilename", previewdest.getName());
-			}
+			getPageManager().getRepository().move( inPreviewImage, previewdest );
+			previous.addAttribute("previewfilename", previewdest.getName());
 		}
         getXmlUtil().saveXml(previous.getDocument(), inXmlFile.getOutputStream(), "UTF-8" );
 	}
@@ -513,12 +510,13 @@ public class AssetEditor
 		
 		String filename = PathUtilities.extractFileName(inPath);
 		
-		String backUpPath = inPath  + "/.versions/" + version.getVersion() + "~" + filename;
+		String basefolder = PathUtilities.extractDirectoryPath(inPath);
+		String backUpPath = basefolder  + "/.versions/" + version.getVersion() + "~" + filename;
 		version.setBackUpPath(backUpPath);
 		
 		if( version.getPreviewFileName() != null )
 		{
-			String previewBackUpPath = inPath  + "/.versions/" + version.getVersion() + "~" + version.getPreviewFileName();
+			String previewBackUpPath = basefolder + "/.versions/" + version.getPreviewFileName();
 			version.setPreviewBackUpPath(previewBackUpPath);
 		}
 		
@@ -537,9 +535,13 @@ public class AssetEditor
 		return version;
 	}
 
-	public Version getVersion(String inPath, String inVersion)  
+	public Version getVersion(Asset inAsset, String inVersion)  
 	{
-		List<Version> all = getVersions(inPath);
+		if( inVersion == null)
+		{
+			return null;
+		}
+		List<Version> all = getVersions(inAsset);
 		int inV = Integer.parseInt(inVersion);
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
