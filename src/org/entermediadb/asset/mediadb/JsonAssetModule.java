@@ -16,6 +16,7 @@ import org.entermediadb.asset.BaseAsset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionUtil;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderSearcher;
 import org.entermediadb.asset.scanner.AssetImporter;
@@ -169,6 +170,9 @@ public class JsonAssetModule extends BaseJsonModule {
 			//sourcepath = sm.getValue(catalogid, sourcepath, vals);
 			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, inReq.getUser(), (String) vals.get("filename"), sourcepath, vals);
 		}
+		
+		boolean replaceasset = false;
+		
 		//String legacysourcepath = archive.getCatalogSettingValue("catalogassetuploadalwaysappend"); //PRN? ${division.uploadpath}/${user.userName}/${formateddate}
 		if (properties.getFirstItem() != null) 
 		{
@@ -182,11 +186,22 @@ public class JsonAssetModule extends BaseJsonModule {
 				foldrbased = true;
 			}
 			path = path.replace("//", "/");
+
+			Page originalfile = archive.getPageManager().getPage(path);
+			if( originalfile.exists() )
+			{
+				Asset existingasset = archive.getAssetBySourcePath(sourcepath);
+				if( existingasset != null)
+				{
+					ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, existingasset, "image3000x3000");
+					archive.getAssetEditor().backUpFilesForLastVersion(existingasset,originalfile.getContentItem(),preview );
+					replaceasset = true;
+				}
+			}
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
-			Page newfile = archive.getPageManager().getPage(path);
 			if( asset == null)
 			{
-				asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, id);
+				asset = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), originalfile, id);
 				sourcepath = asset.getSourcePath();
 			}
 			else
@@ -194,12 +209,12 @@ public class JsonAssetModule extends BaseJsonModule {
 				//If the sourcepath does not match then we have to create a new asset and set parentid
 				if(asset.getSourcePath().equals(sourcepath) )
 				{
-					asset = importer.getAssetUtilities().populateAsset(asset, newfile.getContentItem(), archive, sourcepath, inReq.getUser());
+					asset = importer.getAssetUtilities().populateAsset(asset, originalfile.getContentItem(), archive, sourcepath, inReq.getUser());
 				}
 				else
 				{
 					//Remove old asset from new asset categories
-					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), newfile, null);
+					Asset assetcopy = importer.createAssetFromPage(archive, foldrbased, inReq.getUser(), originalfile, null);
 					Category parentcat = archive.getCategorySearcher().loadCategoryByPath(PathUtilities.extractDirectoryPath(sourcepath));
 					if( parentcat  != null)
 					{
@@ -324,6 +339,20 @@ public class JsonAssetModule extends BaseJsonModule {
 			Category cat = archive.createCategoryPath(path);
 			asset.addCategory(cat);
 		}
+		
+		if( asset != null)
+		{
+			ContentItem original = archive.getOriginalContent(asset);  //May not exist?
+			if( replaceasset )
+			{
+				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.SYNCED, null);
+			}
+			else
+			{
+				archive.getAssetEditor().createNewVersionData(asset, original, inReq.getUserName(), Version.UPLOADED, null);
+			}
+			//archive.fireMediaEvent("saved", inReq.getUser(), current);
+		}	
 		
 		importer.saveAsset(archive, inReq.getUser(), asset);
 

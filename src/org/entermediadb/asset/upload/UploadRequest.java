@@ -259,13 +259,19 @@ public class UploadRequest implements ProgressListener
 			final String path = PathUtilities.resolveRelativePath( inPath, "/");
 			saveFileAs(inItem, path, inReq.getUser());
 	}
+	
+	/**
+	 * 
+	 * Is this needed? Call the ContentItem One
+	 * */
+	
 	public ContentItem saveFileAs(FileUploadItem inItem, final String path, User inUser)
 			throws OpenEditException
 	{
 		Page page = getPageManager().getPage( path, true );
 		ContentItem item = page.getContentItem();
 		item.setMessage( "Uploaded file");
-		ContentItem saved = saveFileAs(item, inItem, inUser);
+		ContentItem saved = saveFileAs(inItem, item, inUser);
 		page.setContentItem(saved);
 		inItem.setSavedPage(page);
 		return page.getContentItem();
@@ -273,7 +279,7 @@ public class UploadRequest implements ProgressListener
 	
 	
 	
-	public ContentItem saveFileAs(ContentItem saveTo, FileUploadItem inUploadedField, User inUser)
+	public ContentItem saveFileAs(FileUploadItem inUploadedField, ContentItem saveTo, User inUser)
 			throws OpenEditException
 	{
 		InputStreamItem revision = new InputStreamItem();

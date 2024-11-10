@@ -305,7 +305,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
 		archive.getAssetEditor().backUpFilesForLastVersion(current,original,preview );
 
-		properties.saveFileAs(original, properties.getFirstItem(), inReq.getUser()); //Does not make a version
+		properties.saveFileAs(properties.getFirstItem(), original, inReq.getUser()); //Does not make a version
 
 		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
 		archive.saveAsset(current);
@@ -349,7 +349,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		String tmpplace = "/WEB-INF/trash/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
 		ContentItem tosave = archive.getPageManager().getRepository().getStub(tmpplace);
 		
-		ContentItem saved = properties.saveFileAs(tosave, properties.getFirstItem(), inReq.getUser());
+		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), tosave, inReq.getUser());
 		
 		//Convert
 		String originalapath = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
@@ -363,7 +363,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset newasset = archive.getAssetBySourcePath(sourcepath); //New file
 		if( newasset != null)
 		{
-			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.REPLACE, null);
+			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.UIREPLACE, null);
 
 			newasset.setValue("parentid",assetid);
 			archive.saveAsset(newasset);

@@ -21,6 +21,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.edit.AssetEditor;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.ExiftoolMetadataExtractor;
 import org.entermediadb.asset.search.AssetSearcher;
@@ -2159,6 +2160,16 @@ public class AssetEditModule extends BaseMediaModule
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 			path = path.replace("//", "/");
 
+			Page originalfile = archive.getPageManager().getPage(path);
+			if( originalfile.exists() )
+			{
+				Asset existingasset = archive.getAssetBySourcePath(sourcepath);
+				if( existingasset != null)
+				{
+					ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, existingasset, "image3000x3000");
+					archive.getAssetEditor().backUpFilesForLastVersion(existingasset,originalfile.getContentItem(),preview );
+				}
+			}
 			properties.saveFileAs(item, path, inReq.getUser());
 
 			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
@@ -2192,6 +2203,9 @@ public class AssetEditModule extends BaseMediaModule
 			//			current.setProperty("owner", inReq.getUser().getId());
 			archive.removeGeneratedImages(current, true);
 			archive.saveAsset(current, null);
+			
+			archive.getAssetEditor().createNewVersionData(current, originalfile.getContentItem(), inReq.getUserName(), Version.UPLOADED, null);
+			
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 

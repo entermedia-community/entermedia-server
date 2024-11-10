@@ -104,6 +104,12 @@ public class GeneratedMediaGenerator extends FileGenerator
 		{
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", output);
+			if(existed && inReq.getResponse() != null )
+			{
+				inReq.getResponse().setHeader("ETag", String.valueOf( output.lastModified() ));
+			}
+
+			
 			super.generate(copy, output, inOut);
 			// archive.logDownload(sourcePath, "success", inReq.getUser());
 		}

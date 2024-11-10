@@ -376,7 +376,7 @@ public class AssetEditor
 		}
 		if(  previous == null)
 		{
-			previous = createNewVersionData(inCurrent,inPreviousFile,inCurrent.get("owner"),Version.ORIGINAL,null);
+			previous = createNewVersionData(inCurrent,inPreviousFile,inCurrent.get("owner"),Version.IMPORTED,null);
 		}
     	String versionnum = previous.attributeValue("number");
 
@@ -414,7 +414,7 @@ public class AssetEditor
 		getMediaArchive().saveAsset(current);
 		getMediaArchive().removeGeneratedImages(current, true);
 		
-		createNewVersionData(current,original,inEditedBy, Version.REPLACE, null );
+		createNewVersionData(current,original,inEditedBy, Version.UIREPLACE, null );
 
 		reloadThumbnails( current);
 		 log.info("Original replaced: " + current.getId() + " Sourcepath: " + original.getPath());
@@ -551,7 +551,7 @@ public class AssetEditor
 			Version originalversion = new Version();
 			originalversion.setEditUser(inAsset.get("owner"));
 			originalversion.setEditDate(inAsset.getDate("assetaddeddate"));
-			originalversion.setChangeType(Version.ORIGINAL);
+			originalversion.setChangeType(Version.IMPORTED);
 			originalversion.setVersion(1);
 			originalversion.setFileSize( item.getLength() );
 			vers = new ArrayList();
