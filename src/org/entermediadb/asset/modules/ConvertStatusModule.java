@@ -223,7 +223,7 @@ public class ConvertStatusModule extends BaseMediaModule
 	}
 	
 	
-	
+	/*
 	public void uploadConversionDocument(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
@@ -283,6 +283,40 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 	}
+	*/
+	
+	public void replaceOriginal(WebPageRequest inReq)
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) {
+			return;
+			
+		}
+		Asset current = getAsset(inReq);
+		
+		ContentItem original = archive.getOriginalContent(current);
+		ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
+		archive.getAssetEditor().backUpFilesForLastVersion(current,original,preview );
+
+		properties.saveFileAs(original, properties.getFirstItem(), inReq.getUser()); //Does not make a version
+
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
+		archive.saveAsset(current);
+		archive.removeGeneratedImages(current, true);
+		archive.getAssetEditor().reloadThumbnails( current);
+		
+		archive.getAssetEditor().createNewVersionData(current, original, inReq.getUserName(), Version.ONLINEEDIT, null);
+		
+		log.info("Original replaced: " + current.getId() + " Sourcepath: " + current.getSourcePath());
+		
+	}
 
 	public void uploadSaveAsDocument(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
@@ -336,39 +370,6 @@ public class ConvertStatusModule extends BaseMediaModule
 			//archive.fireMediaEvent("saved", inReq.getUser(), current);
 		}		
 		inReq.putPageValue("asset", current);
-	}
-	
-	public void replaceOriginal(WebPageRequest inReq)
-	{
-		
-		MediaArchive archive = getMediaArchive(inReq);
-		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
-		UploadRequest properties = command.parseArguments(inReq);
-		
-		if (properties == null) {
-			return;
-		}
-		if (properties.getFirstItem() == null) {
-			return;
-			
-		}
-		Asset current = getAsset(inReq);
-		
-		ContentItem original = archive.getOriginalContent(current);
-		ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
-		archive.getAssetEditor().backUpFilesForLastVersion(current,original,preview );
-
-		properties.saveFileAs(original, properties.getFirstItem(), inReq.getUser()); //Does not make a version
-
-		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
-		archive.saveAsset(current);
-		archive.removeGeneratedImages(current, true);
-		archive.getAssetEditor().reloadThumbnails( current);
-		
-		archive.getAssetEditor().createNewVersionData(current, original, inReq.getUserName(), Version.REPLACE, null);
-		
-		log.info("Original replaced: " + current.getId() + " Sourcepath: " + current.getSourcePath());
-		
 	}
 	
 	public void restoreVersion(WebPageRequest inReq)
