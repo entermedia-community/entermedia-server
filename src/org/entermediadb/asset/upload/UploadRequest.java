@@ -270,6 +270,9 @@ public class UploadRequest implements ProgressListener
 		inItem.setSavedPage(page);
 		return page.getContentItem();
 	}
+	
+	
+	
 	public ContentItem saveFileAs(ContentItem saveTo, FileUploadItem inUploadedField, User inUser)
 			throws OpenEditException
 	{
@@ -285,7 +288,7 @@ public class UploadRequest implements ProgressListener
 		revision.setMessage( saveTo.getMessage());
 		//revision.setInputStream(saveTo.getInputStream());
 		revision.setPreviewImage(saveTo.getPreviewImage());
-		
+		revision.setMakeVersion(false); //Handled by AssetEditor
 		InputStream input = null;
 		try
 		{

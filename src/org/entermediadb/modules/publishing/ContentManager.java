@@ -231,8 +231,7 @@ public class ContentManager implements CatalogEnabled {
 		//Version control?
 		if( item.exists())
 		{
-			item.setMessage("replace");
-			getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
+			//getMediaArchive().getPageManager().getRepository().saveVersion(item); //About to replace it
 		}
 		getXmlUtil().saveXml(root, item.getOutputStream(), "UTF-8");
 		

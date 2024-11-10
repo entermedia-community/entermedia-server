@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.edit.Version;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -15,7 +16,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -95,26 +95,9 @@ public class OriginalDocumentGenerator extends FileGenerator
 			}
 			asset = archive.createAsset("tmp",sourcePath);
 		}
-		
-		
 	
 		//	String fileName = URLEncoder.encode(asset.getName(), "UTF-8");
 		String	 fileName = asset.getName();
-		
-			
-//		    
-//			//fileName=fileName.replaceAll(";", "/;");
-//			
-//			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
-//			fileName.replace("\"", "/\"");
-//		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
-//			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
-
-
-	
-		
-		
-	  //  inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=" + asset.getName()); This didn't work properly.
 
 		String filename = asset.getSourcePath();
 		if (asset.isFolder() && asset.getPrimaryFile() != null)
@@ -126,8 +109,8 @@ public class OriginalDocumentGenerator extends FileGenerator
 		
 		String version = inReq.getRequestParameter("version");
 		if (version != null) {
-			ContentItem revision = archive.getPageManager().getRepository().getVersion(content.getContentItem(), version);
-			content = archive.getPageManager().getPage(revision.getPath());
+			Version revision = archive.getAssetEditor().getVersion(content.getPath(), version);
+			content = archive.getPageManager().getPage(revision.getBackUpPath());
 		}
 		
 		if( content.exists() )

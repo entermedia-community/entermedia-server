@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.edit.Version;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -11,7 +12,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 public class OriginalPreviewDocumentGenerator extends FileGenerator
@@ -43,9 +43,8 @@ public class OriginalPreviewDocumentGenerator extends FileGenerator
 				return;
 				//error
 			}
-			ContentItem revision = archive.getPageManager().getRepository().getVersion(content.getContentItem(), version);
-			String folder = PathUtilities.extractDirectoryPath(revision.getPath());
-			Page preview = archive.getPageManager().getPage( folder + "/" + inPage.getName());
+			Version revision = archive.getAssetEditor().getVersion(content.getPath(), version);
+			Page preview = archive.getPageManager().getPage( revision.getPreviewBackUpPath());
 			
 			if (!preview.exists()) {
 				log.error("preview Not found " + preview.getPath());

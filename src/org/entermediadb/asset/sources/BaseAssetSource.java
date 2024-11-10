@@ -25,7 +25,6 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
-import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
@@ -471,16 +470,7 @@ public abstract class BaseAssetSource implements AssetSource
 
 	protected Repository createRepo(String inType)
 	{
-		Repository repo;
-		if("version".equals(inType) )
-		{
-			repo = new XmlVersionRepository();
-			repo.setRepositoryType("versionRepository");
-		}
-		else
-		{
-			repo = new FileRepository();
-		}
+		Repository 	repo = new FileRepository();
 		return repo;
 	}
 

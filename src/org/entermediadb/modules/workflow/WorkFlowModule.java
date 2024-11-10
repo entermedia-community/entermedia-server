@@ -96,26 +96,7 @@ public class WorkFlowModule extends BaseMediaModule
 		redirectBack(inReq);		
 	}
 
-	public void approveAll(WebPageRequest inReq) throws Exception
-	{
-		User user = inReq.getUser();
-		getWorkFlow().approveAll(user);
-		redirectBack(inReq);
-	}
-	public void approve(WebPageRequest inReq) throws Exception
-	{
-		String path = inReq.getRequestParameter("editPath");
-		if(!path.contains(".draft.")){
-			path = path.replace(".html", ".draft.");
-		}
 
-		if ( path.indexOf(".draft.") > -1)
-		{
-			getWorkFlow().approve(path, inReq.getUser() );
-			
-			redirectBack(inReq);
-		}
-	}
 	public void deleteDraft(WebPageRequest inReq) throws OpenEditException
 	{
 		String path = inReq.getRequestParameter("editPath");

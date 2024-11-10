@@ -1051,7 +1051,7 @@
     <bean id="rhinoScriptRunner" class="org.entermediadb.scripts.RhinoScriptRunner" />
     <bean id="bsfScriptRunner" class="org.entermediadb.scripts.BsfScriptRunner" />
 
-	<bean id="sizer" class="org.entermediadb.asset.util.Sizer" />
+	<bean id="sizer" class="org.openedit.util.Sizer" />
 <!--     
     <bean id="luceneUserProfileSearcher" class="org.openedit.profile.UserProfileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1239,7 +1239,6 @@
 	<bean id="EditModule" class="org.openedit.modules.edit.EditModule" />
 	
 	<bean id="Config" class="org.openedit.modules.settings.ConfigModule"/>
-	<bean id="RevisionEditor" class="org.openedit.modules.revisions.RevisionEditorModule"/>
 
  	<bean  id="ProjectModule" class="org.entermediadb.projects.ProjectModule" lazy-init="default" />
 	<bean  id="projectManager" class="org.entermediadb.projects.ProjectManager" lazy-init="default" scope="prototype"  >

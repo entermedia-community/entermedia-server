@@ -10,6 +10,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.video.Block;
@@ -322,31 +323,24 @@ public class ConvertStatusModule extends BaseMediaModule
 		ContentItem finalpath = archive.getPageManager().getRepository().getStub(originalapath); 
 		ConvertInstructions instructions =  archive.createInstructions(current, saved);
 
-		if( finalpath.exists() )
-		{
-			ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
-			finalpath.setPreviewImage(preview.getPath());
-			finalpath.setMessage("Image Editor Saved");
-			finalpath.setAuthor(inReq.getUserName());
-			getPageManager().getRepository().saveVersion(finalpath);
-		}
 		archive.convertFile(instructions, finalpath);
 
-		Collection assetids = archive.getAssetImporter().processOn(originalapath, originalapath,true,archive, null);
-		Asset newasset = archive.getAssetBySourcePath(sourcepath);
+		Collection assetids = archive.getAssetImporter().processOn(finalpath.getPath(), finalpath.getPath(),true,archive, null);
+		Asset newasset = archive.getAssetBySourcePath(sourcepath); //New file
 		if( newasset != null)
 		{
+			archive.getAssetEditor().createNewVersionData(newasset, finalpath.getPath(), inReq.getUserName(), Version.REPLACE, null);
+
 			newasset.setValue("parentid",assetid);
 			archive.saveAsset(newasset);
 			//archive.fireMediaEvent("saved", inReq.getUser(), current);
 		}		
 		inReq.putPageValue("asset", current);
-		
 	}
-
 	
-	
-	public void replaceOriginal(WebPageRequest inReq){
+	public void replaceOriginal(WebPageRequest inReq)
+	{
+		
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
@@ -360,27 +354,20 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		Asset current = getAsset(inReq);
 		
-		//TODO: Make version of old file before replacing it
-		//Must be the same type
-		ContentItem tosave = archive.getOriginalContent(current);
-		if( tosave.exists() )
-		{
-			ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
-			tosave.setPreviewImage(preview.getPath());
-			tosave.setMessage("Image Editor Saved");
-			tosave.setAuthor(inReq.getUserName());
-			getPageManager().getRepository().saveVersion(tosave); //Makes a version
-		}
-
-		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + current.getSourcePath(); 
-		properties.saveFileAs(tosave, properties.getFirstItem(), inReq.getUser()); //Does not make a version
-		//Read New Metadata
 		ContentItem original = archive.getOriginalContent(current);
+		ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
+		archive.getAssetEditor().backUpFilesForLastVersion(current,original,preview );
+
+		properties.saveFileAs(original, properties.getFirstItem(), inReq.getUser()); //Does not make a version
+
 		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
 		archive.saveAsset(current);
-		 archive.removeGeneratedImages(current, true);
-		 reloadThumbnails( inReq, archive, current);
-		 log.info("Original replaced: " + current.getId() + " Sourcepath: " + input);
+		archive.removeGeneratedImages(current, true);
+		archive.getAssetEditor().reloadThumbnails( current);
+		
+		archive.getAssetEditor().createNewVersionData(current, original.getPath(), inReq.getUserName(), Version.REPLACE, null);
+		
+		log.info("Original replaced: " + current.getId() + " Sourcepath: " + current.getSourcePath());
 		
 	}
 	
@@ -390,16 +377,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		String version = inReq.getRequestParameter("version");
 	
 		Asset current = getAsset(inReq);
-		ContentItem original = archive.getOriginalContent(current);
-		original.setAuthor(inReq.getUserName());
-		original.setMessage("version " + version + " restored");
-		archive.getPageManager().getRepository().restoreVersion(original, version);
+		archive.getAssetEditor().restoreVersion(current, inReq.getUserName(), version);
 		
-		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
-		archive.saveAsset(current);
-		 archive.removeGeneratedImages(current, true);
-		 reloadThumbnails( inReq, archive, current);
-		 log.info("Original restored: " + current.getId());
+		log.info("Original restored: " + current.getId());
 	}
 	
 	
@@ -456,23 +436,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		reloadThumbnails( inReq, archive, asset);
 
 	}
-	protected void reloadThumbnails(WebPageRequest inReq, MediaArchive archive, Asset inAsset)
+	protected void reloadThumbnails(WebPageRequest inReqX, MediaArchive archive, Asset inAsset)
 	{
-		//inReq.putPageValue("asset", inAsset);
-		HitTracker conversions = archive.query("conversiontask").exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
-		archive.getSearcher("conversiontask").deleteAll(conversions, null);
-		archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), inAsset, true);
-		
-		//archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
-		//current.setProperty("importstatus", "imported");
-		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
-		//archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser(), current);
-		
-		//Good idea?
-		//archive.fireMediaEvent("conversions","runconversion", inReq.getUser(), inAsset);//block?
-		//archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
-		archive.fireSharedMediaEvent("conversions/runconversions");
-		//archive.saveAsset(current);
+		archive.getAssetEditor().reloadThumbnails(inAsset);
 	}
 	public void reloadIndex(WebPageRequest inReq)
 	{
