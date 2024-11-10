@@ -104,10 +104,10 @@
 
 	
 	<!-- Repository config -->
-	<!-- 
-	<bean id="versionRepository" class="org.openedit.repository.filesystem.XmlVersionRepository" scope="prototype">
+	 <!-- We no longer support versions of files.   -->
+	<bean id="versionRepository" class="org.openedit.repository.filesystem.FileRepository" scope="prototype">
 	</bean>
-	 -->
+	
 	<bean id="fileRepository" class="org.openedit.repository.filesystem.FileRepository" scope="prototype">
 	</bean>
 	
