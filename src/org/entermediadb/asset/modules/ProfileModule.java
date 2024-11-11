@@ -620,17 +620,17 @@ public class ProfileModule extends MediaArchiveModule
 		String viewkey = "view_" + viewpath.replace('/', '_');  //This is missing the settingsgroup values. Not needed anyways
 
 		//Check for null starting condition
-		//initList(inReq, view, userProfile, viewkey);
+		//initList(inReq, viewpath, userProfile, viewkey);
 		List<PropertyDetail> details = searcher.getDetailsForView(viewpath, userProfile);
-		userProfile.removeValue(viewkey, detailid);
-		userProfile.removeValue(viewkey, searchtype +"." + detailid); //Needed?
-		String values = userProfile.get(viewkey);
-		if(values == null || values.trim().length() == 0)
-		{
-			userProfile.setProperty(viewkey, null); //Clear it
-			//initList(inReq, view, userProfile, viewkey); //Back to defaults
+		List<PropertyDetail> tosave = new ArrayList();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
+			if (!propertyDetail.getId().equals(detailid)) {
+				tosave.add(propertyDetail);
+			}
+			
 		}
-		
+		userProfile.setValuesFromDetails(viewkey, tosave);
 		userProfile.save(inReq.getUser());
 	}
 
