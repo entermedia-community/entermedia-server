@@ -2675,14 +2675,14 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-		if (inCollectionId != null)
-		{
-			downloadroot = "/services/module/librarycollection/downloads/";
-		}
-		else
-		{
+//		if (inCollectionId != null)
+//		{
+//			downloadroot = "/services/module/librarycollection/downloads/";
+//		}
+//		else
+//		{
 			downloadroot = "/services/module/asset/downloads/";
-		}
+//		}
 
 //		if (usefile.contains("."))
 //		{
