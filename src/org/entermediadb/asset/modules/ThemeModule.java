@@ -126,6 +126,7 @@ public class ThemeModule extends BaseMediaModule {
 						getPageManager().copyPage(logopage, destpage);
 						theme.setValue("logowith",logoasset.get("width"));
 						theme.setValue("logoheight",logoasset.get("height"));
+						archive.saveData("theme",theme);
 					}
 				}
 			}
