@@ -301,7 +301,10 @@ public class DataEditModule extends BaseMediaModule
 
 		searcher.reloadSettings();
 	}
-
+	
+	/**
+	 * @deprecated Not used?
+	 */
 	public void addViewById(WebPageRequest inReq) throws Exception
 	{
 		XmlFile file = (XmlFile) loadView(inReq);
@@ -326,87 +329,54 @@ public class DataEditModule extends BaseMediaModule
 
 	public void addToView(WebPageRequest inReq) throws Exception
 	{
-		XmlFile file = (XmlFile) loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		Searcher searcher = loadSearcher(inReq);
-		String viewbase = null;
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
+		String newdetailid = inReq.getRequestParameter("newone");
+		detailarchive.addToView(searcher, viewpath, newdetailid);
+			
 		MediaArchive archive = getMediaArchive(inReq);
-		if(archive != null) {
-			viewbase = archive.getCatalogSettingValue("viewbase");
-		}
-		if(viewbase == null) {
-			 viewbase = "/WEB-INF/data/" + catalogid+ "/views/";
-
-		}
-		String path = viewbase + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-
-		String newone = inReq.getRequestParameter("newone");
-
-		Element element = file.addNewElement();
-		element.addAttribute("id", newone);
-		element.clearContent();
-
-		getXmlArchive().saveXml(file, inReq.getUser());
-		//reload the archive
-		searcher.getPropertyDetailsArchive().clearCache();
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
 	}
 
+	public void saveView(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = resolveCatalogId(inReq);
+		String searchtype = resolveSearchType(inReq);
+		String viewpath = inReq.getRequestParameter("viewpath");
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+		
+
+		String[] sorted = inReq.getRequestParameters("ids");
+		if (sorted == null) {
+			throw new OpenEditException("Missing sort list ids");
+		}
+		detailarchive.saveView(searcher, viewpath, sorted);
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
+
+	}
 	//TODO: Allow disable of views
 	public void removeFromView(WebPageRequest inReq) throws Exception
 	{
-		XmlFile file = (XmlFile) loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		Searcher searcher = loadSearcher(inReq);
-
-String viewbase = null;
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
+		String newdetailid = inReq.getRequestParameter("newone"); //Does not seem right name
+		detailarchive.removeFromView(searcher, viewpath, newdetailid);
+			
 		MediaArchive archive = getMediaArchive(inReq);
-		if(archive != null) {
-			viewbase = archive.getCatalogSettingValue("viewbase");
-		}
-		if(viewbase == null) {
-			 viewbase = "/WEB-INF/data/" + searcher.getCatalogId() + "/views/";
-
-		}
-		
-		
-		String path = viewbase + viewpath + ".xml";
-		file.setPath(path);
-		String toremove = inReq.getRequestParameter("toremove");
-		//toremove might have a . in it
-
-		Element element = loadViewElement(file, toremove);
-		file.deleteElement(element);
-
-		if (file.getRoot().elements().size() == 0)
-		{
-			getXmlArchive().deleteXmlFile(file);
-		}
-		else
-		{
-			getXmlArchive().saveXml(file, inReq.getUser());
-		}
-		searcher.getPropertyDetailsArchive().clearCache();
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
 
 	}
 
-	protected Element loadViewElement(XmlFile file, String toremove)
-	{
-		Element element = file.getElementById(toremove);
-		if (element == null && toremove.contains("."))
-		{
-			toremove = toremove.substring(toremove.indexOf(".") + 1, toremove.length());
-			element = file.getElementById(toremove);
-		}
-		return element;
-	}
 
 	public PropertyDetail loadProperty(WebPageRequest inReq) throws Exception
 	{
@@ -1753,79 +1723,6 @@ String viewbase = null;
 
 	}
 
-	public void saveView(WebPageRequest inReq) throws Exception
-	{
-		//XmlFile file = (XmlFile)loadView(inReq);
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String[] sorted = inReq.getRequestParameters("ids");
-		if (sorted == null) {
-			throw new OpenEditException("Missing sort list ids");
-		}
-		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		XmlFile file = (XmlFile) loadView(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = propertyarchive.findSavePath() + "/views/" + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-		List tosave = new ArrayList();
-		for (int i = 0; i < sorted.length; i++)
-		{
-			//Element sourceelement = file.getElementById();
-			String id = sorted[i];
-			Element sourceelement = loadViewElement(file, id);
-			if (sourceelement != null)
-			{
-				sourceelement = (Element)sourceelement.clone();
-				tosave.add(sourceelement);
-			}
-		}
-		if (tosave.isEmpty())
-		{
-			throw new OpenEditException("Should not be removing all fields");
-		}
-		//TODO: Move to PropertyDetailsArchive.saveView
-		file.getElements().clear();
-		file.getElements().addAll(tosave);
-		getXmlArchive().saveXml(file, inReq.getUser());
-		propertyarchive.clearCache();
-
-		//log.info(catalogid + type + items);
-
-	}
-/**
- * @deprecated @see saveView
- * @param inReq
- * @throws Exception
- */
-	public void moveFieldInView(WebPageRequest inReq) throws Exception
-	{
-		XmlFile file = (XmlFile) loadView(inReq);
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-
-		String source = inReq.getRequestParameter("source");
-		Element sourceelement = loadViewElement(file, source);
-
-		String destination = inReq.getRequestParameter("destination");
-		Element destinationelement = loadViewElement(file, destination);
-
-		int sindex = file.getElements().indexOf(sourceelement);
-		int dindex = file.getElements().indexOf(destinationelement);
-		file.getElements().remove(sindex);
-		sourceelement.setParent(null);
-		if (dindex > sindex)
-		{
-			dindex--;
-		}
-		file.getElements().add(dindex, sourceelement);
-		getXmlArchive().saveXml(file, inReq.getUser());
-		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
-	}
 
 	public void sortList(WebPageRequest inReq) throws Exception
 	{
