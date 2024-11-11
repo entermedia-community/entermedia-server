@@ -115,24 +115,20 @@ public class ThemeModule extends BaseMediaModule {
 			return;
 		}
 		String logoassetid = theme.get("logoasset");
-		Page logopage = null;
 		if (logoassetid != null) {
 			Asset logoasset = archive.getAsset(logoassetid);
 			if(logoasset != null) {
-				logopage = archive.getOriginalDocument(logoasset);
-			}
-		}
-		else if(theme.get("logopath") != null) {
-			logopage = getPageManager().getPage("/" + applicationid + theme.get("logopath"));
-		}
-		else {
-			logopage = getPageManager().getPage("/"+ applicationid + "/theme/images/emedialibrarylogo.png");
-		}
-		if(logopage != null) {
-			Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/images/logo.png");
-			if( !destpage.getPath().equals(logopage.getPath()) )
-			{
-				getPageManager().copyPage(logopage, destpage);
+				Page logopage = archive.getOriginalDocument(logoasset);
+				if(logopage != null) {
+					Page destpage = getPageManager().getPage("/"+ applicationid + "/theme/" + theme.getId() + "/logo.png");
+					if( !destpage.getPath().equals(logopage.getPath()) )
+					{
+						getPageManager().copyPage(logopage, destpage);
+						theme.setValue("logowith",logoasset.get("width"));
+						theme.setValue("logoheight",logoasset.get("height"));
+						archive.saveData("theme",theme);
+					}
+				}
 			}
 		}
 	}

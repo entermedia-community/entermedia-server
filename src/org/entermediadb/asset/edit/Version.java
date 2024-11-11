@@ -5,11 +5,13 @@ import java.util.Date;
 public class Version
 {
 	
+	public static final String IMPORTED = "imported"; 
+	public static final String UPLOADED = "uploaded"; 
+	public static final String SYNCED = "synced"; 
 	public static final String ONLINEEDIT = "edited"; 
-	public static final String RESTORE = "restore"; 
-	public static final String DELETE = "delete"; 
-	public static final String ORIGINAL = "original"; 
-	public static final String REPLACE = "replace"; 
+	public static final String UIREPLACE = "uireplace"; 
+	public static final String RESTORE = "restored"; 
+	public static final String DELETE = "deleted"; 
 			
 	
 	protected int fieldVersion;

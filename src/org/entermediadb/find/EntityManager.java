@@ -192,24 +192,25 @@ public class EntityManager implements CatalogEnabled
 			{
 				cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
 			}
-			if( cat != null)
-			{
-				if( entity.getValue("uploadsourcepath") == null )
-				{
-					entity.setValue("uploadsourcepath",sourcepath);
-				}
-				entity.setValue("rootcategory",cat.getId());
-				getMediaArchive().saveData(module.getId(), entity);
-			}
 		}
 		if( cat == null)
 		{
 			//Cant find sourcepath
 			return null;
 		}
+		else
+		{
+			entity.setValue("rootcategory",cat.getId());
+			if( entity.getValue("uploadsourcepath") == null )
+			{
+				entity.setValue("uploadsourcepath",cat.getCategoryPath());
+				getMediaArchive().saveData(module.getId(), entity);
+			}
+		}
+
 		if( cat.getValue(module.getId()) == null)
 		{
-			cat.setValue(module.getId(),entity.getId());
+			cat.setValue(module.getId(),entity.getId()); //Is this smart?
 			getMediaArchive().getCategorySearcher().saveData(cat);
 		}
 		return cat;

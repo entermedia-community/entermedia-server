@@ -2675,38 +2675,39 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-		if (inCollectionId != null)
-		{
-			downloadroot = "/services/module/librarycollection/downloads/";
-		}
-		else
-		{
+//		if (inCollectionId != null)
+//		{
+//			downloadroot = "/services/module/librarycollection/downloads/";
+//		}
+//		else
+//		{
 			downloadroot = "/services/module/asset/downloads/";
-		}
+//		}
 
-		if (usefile.contains("."))
-		{
-			if (inCollectionId != null)
-			{
-				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + usefile;
-			}
-			else
-			{
+//		if (usefile.contains("."))
+//		{
+//			if (inCollectionId != null)
+//			{
+//				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + usefile;
+//			}
+//			else
+//			{
 				if( inGeneratedName.endsWith("video.m3u8"))
 				{
 					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + usefile;
 				}
 				else
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
 				}
-			}
-		}
-		else
-		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
-
-		}
+//			}
+//		}
+//		else
+//		{
+//			//Legacy?
+//			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
+//
+//		}
 		finalroot = URLUtilities.urlEscape(finalroot);
 
 		return finalroot;

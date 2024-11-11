@@ -376,7 +376,7 @@ public class AssetEditor
 		}
 		if(  previous == null)
 		{
-			previous = createNewVersionData(inCurrent,inPreviousFile,inCurrent.get("owner"),Version.ORIGINAL,null);
+			previous = createNewVersionData(inCurrent,inPreviousFile,inCurrent.get("owner"),Version.IMPORTED,null);
 		}
     	String versionnum = previous.attributeValue("number");
 
@@ -414,7 +414,7 @@ public class AssetEditor
 		getMediaArchive().saveAsset(current);
 		getMediaArchive().removeGeneratedImages(current, true);
 		
-		createNewVersionData(current,original,inEditedBy, Version.REPLACE, null );
+		createNewVersionData(current,original,inEditedBy, Version.UIREPLACE, null );
 
 		reloadThumbnails( current);
 		 log.info("Original replaced: " + current.getId() + " Sourcepath: " + original.getPath());
@@ -422,44 +422,32 @@ public class AssetEditor
 	
 	public void restoreVersion(Asset current, String inEditUser, String inVersion)  
 	{
-		ContentItem original = getMediaArchive().getOriginalContent(current);
-		ContentItem inXmlFile = getVersionDataFile(original.getPath());
-		if ( inXmlFile.exists() )
-		{
-	        Element root = getXmlUtil().getXml(inXmlFile, "UTF-8");
-	        //look for the last version
-	        List<Element> elements = root.elements("version");
-	        if( !elements.isEmpty() )
-	        {
-	        	Element previous = elements.get(elements.size() - 1 );
-	        	String versionnum = previous.attributeValue("number");
-	        	if( inVersion.equals(versionnum) )
-	        	{
-	        		
-		        	String originalcopy = PathUtilities.extractDirectoryPath( inXmlFile.getPath() ) + "/" + versionnum + "~" + original.getName();
-		        	ContentItem oldversion = getPageManager().getRepository().getStub(originalcopy); 
-		        	if ( !oldversion.exists() )
-	    			{
-		        		//Backup the old asset
-		        		ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), current, "image3000x3000");
-		        		backUpFilesForLastVersion(current,original,preview );
-		        		
-		        		getPageManager().getRepository().copy( oldversion, original);
-		        		
-		        		//Version the new one
-		        		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(getMediaArchive(), original, current );
-		        		getMediaArchive().saveAsset(current);
-		        		getMediaArchive().removeGeneratedImages(current, true);
-		        		createNewVersionData(current,original,inEditUser, Version.RESTORE, null );
 
-		        		reloadThumbnails( current);
-		        		
-	    			}
-	        	}	
-	        	
-	        }
+		Version version = getVersion(current,inVersion);
+		if( version.getBackUpPath() == null )
+		{
+			throw new OpenEditException("Must have backup");
 		}
+		ContentItem backup = getMediaArchive().getContent(version.getBackUpPath());
+		if( !backup.exists() )
+		{
+			log.error("No such backup: " + backup.getPath() );
+			return;
+		}
+		ContentItem original = getMediaArchive().getOriginalContent(current);
+		//Backup the old asset
+		ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), current, "image3000x3000");
+		backUpFilesForLastVersion(current,original,preview );
 		
+		getPageManager().getRepository().copy( backup, original);
+	        		
+		//Version the new one
+		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(getMediaArchive(), original, current );
+		getMediaArchive().saveAsset(current);
+		getMediaArchive().removeGeneratedImages(current, true);
+		createNewVersionData(current,original,inEditUser, Version.RESTORE, null );
+
+		reloadThumbnails( current);
 	}
 
 	public void reloadThumbnails( Asset inAsset)
@@ -563,7 +551,7 @@ public class AssetEditor
 			Version originalversion = new Version();
 			originalversion.setEditUser(inAsset.get("owner"));
 			originalversion.setEditDate(inAsset.getDate("assetaddeddate"));
-			originalversion.setChangeType(Version.ORIGINAL);
+			originalversion.setChangeType(Version.IMPORTED);
 			originalversion.setVersion(1);
 			originalversion.setFileSize( item.getLength() );
 			vers = new ArrayList();
