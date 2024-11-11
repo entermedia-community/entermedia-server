@@ -288,6 +288,7 @@ public class UploadRequest implements ProgressListener
 		{
 			throw new IllegalArgumentException("No user logged in");
 		}
+		revision.setAbsolutePath(saveTo.getAbsolutePath());
 		revision.setPath(saveTo.getPath());
 		revision.setAuthor( inUser.getUserName() );
 		revision.setType( ContentItem.TYPE_ADDED );
