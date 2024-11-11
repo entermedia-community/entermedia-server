@@ -1260,6 +1260,12 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("publishing", publishing);
 		inReq.putPageValue("distributiontype", publishing.get("distributiontype"));
 		
+		
+		String publishingSortby = publishing.get("sortby");
+		if(publishingSortby == null) {
+			publishingSortby = "ordering";
+		}
+		
 		Data entity = null;
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
@@ -1274,7 +1280,7 @@ public class FinderModule extends BaseMediaModule
 		if(lightboxid != null) {
 			Data module = archive.getCachedData("module", publishing.get("moduleid"));
 			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
-			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox,  inReq.getUser());
+			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox, publishingSortby, inReq.getUser());
 			tracker.setHitsPerPage(1000);
 		}
 		else {
@@ -1287,7 +1293,8 @@ public class FinderModule extends BaseMediaModule
 			search.addExact("category", category.getId());
 			
 			search.setHitsName(hitsname);
-			search.addSortBy("assetaddeddateDown");	
+			//search.addSortBy("assetaddeddateDown");	
+			search.addSortBy(publishingSortby);
 			tracker = assetsearcher.search(search);
 			tracker.enableBulkOperations();
 			tracker.setHitsPerPage(1000);

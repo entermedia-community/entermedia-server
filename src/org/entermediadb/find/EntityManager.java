@@ -1047,14 +1047,14 @@ public class EntityManager implements CatalogEnabled
 	}
 
 	
-	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, User inUser)
+	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, String sortby, User inUser)
 	{
 		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox , null);
 		if( parent == null)
 		{
 			return null;
 		}
-		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort("ordering").named("catsearch").search();
+		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort(sortby).named("catsearch").search();
 		return hits;
 	}
 	
