@@ -229,6 +229,11 @@
 				#else
 					data-canupload="false"
 				#end
+				
+				#set( $exactsearch = $context.getRequestParameter("exactsearch" ) )
+				#if($exactsearch)
+					data-exactsearch="$!exactsearch"
+				#end
 			
 			>
 				<ul  class="open" >
