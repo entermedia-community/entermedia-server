@@ -961,7 +961,10 @@ public class EntityManager implements CatalogEnabled
 		return categorycounts;
 		
 	}
-	
+	/*
+	 * @Deprecated
+	 * 
+	 * */
 	
 	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
 	{
@@ -969,7 +972,7 @@ public class EntityManager implements CatalogEnabled
 		//Search for all the boxes that match. 
 		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inBoxes).
 				exact("parentmoduleid", inModule.getId()).
-				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+				exact("parententityid",inEntity).facet("lightboxid").sort("orderingDown").search();
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
 		return assets;
