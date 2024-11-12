@@ -610,27 +610,21 @@ public class UserProfileManager
 	public void clearUserProfileViewValues(String inCatalogId, String inViewPath)
 	{
 		MediaArchive archive = getMediaArchive(inCatalogId);
-		Collection roles = archive.getList("settingsgroup");
 		
 		Collection userprofiles = archive.query("userprofile").all().search();
 		
 		Set tosave = new HashSet();
-		for (Iterator iterator = roles.iterator(); iterator.hasNext();)
+		String propId = "view_" + inViewPath.replace('/', '_');
+
+		//Loop over all the userprofiles
+		for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
 		{
-			Data settingsgroup = (Data) iterator.next();
-	
-			String propId = "view_" + inViewPath.replace('/', '_');
-	
-			//Loop over all the userprofiles
-			for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
+			MultiValued profile = (MultiValued) iterator2.next();
+			Object found = profile.getValue(propId);
+			if( found != null)
 			{
-				MultiValued profile = (MultiValued) iterator2.next();
-				Object found = profile.getValue(propId);
-				if( found != null)
-				{
-					profile.setValue(propId,null);
-					tosave.add(profile);
-				}
+				profile.setValue(propId,null);
+				tosave.add(profile);
 			}
 		}
 		archive.saveData("userprofile",tosave);

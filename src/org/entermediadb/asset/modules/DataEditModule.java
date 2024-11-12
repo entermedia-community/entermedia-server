@@ -335,7 +335,7 @@ public class DataEditModule extends BaseMediaModule
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
-		String newdetailid = inReq.getRequestParameter("newone");
+		String newdetailid = inReq.getRequestParameter("detailid");
 		detailarchive.addToView(searcher, viewpath, newdetailid);
 			
 		MediaArchive archive = getMediaArchive(inReq);
@@ -369,7 +369,7 @@ public class DataEditModule extends BaseMediaModule
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
-		String newdetailid = inReq.getRequestParameter("newone"); //Does not seem right name
+		String newdetailid = inReq.getRequestParameter("detailid"); //Does not seem right name
 		detailarchive.removeFromView(searcher, viewpath, newdetailid);
 			
 		MediaArchive archive = getMediaArchive(inReq);
