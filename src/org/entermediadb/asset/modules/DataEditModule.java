@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -2251,61 +2252,181 @@ public class DataEditModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = resolveSearchType(inReq);
+		
 		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
 		tracker.enableBulkOperations();
+		
 		String replacedassetid = inReq.getRequestParameter("targetid");
-		MultiValued target = (MultiValued) archive.getData(searchtype, replacedassetid);
-		Long startorder = target.getLong("ordering");
-		long neworder = startorder;
-		Collection tosave = new ArrayList();
-		Set existing = new HashSet();
+		MultiValued targetAsset = (MultiValued)tracker.findData("id",replacedassetid);
+		//long neworder = targetorder;
 		
-		Collection selected = tracker.getSelectedHitracker();
-		if(selected != null && !selected.isEmpty()) {
-			for (Iterator iterator = selected.iterator(); iterator.hasNext();) 
-			{
+		HashSet tosave = new HashSet();
+		HashSet customvalues = new HashSet();
+		
+		
+
+		Collection selected = tracker.getSelections();
+		String dataid = inReq.getRequestParameter("dataid");
+		if(dataid != null) {
+			selected.add(dataid);
+		}
+		List<Map> sorted  = new ArrayList();
+		//Sort the selections by ordering first
+	
+		for (Iterator iterator = selected.iterator(); iterator.hasNext();) 
+		{
+			String id = (String) iterator.next();
+			int row = tracker.findRow("id",id);
+			Map tomove = new HashMap();
+			tomove.put("row",row);
+			tomove.put("id",id);
+			sorted.add(tomove);
+		}
+		if( sorted.size() > 1)
+		{
+			sorted.sort(new Comparator<Map>() {
+				@Override
+				public int compare(Map arg0, Map arg1) {
+					int l0 = (Integer)arg0.get("row");
+					int l1 = (Integer)arg1.get("row");
+					if( l0 == l1)
+					{
+						return 0;
+					}
+					if( l0 > l1)
+					{
+						return 1;
+					}
+					return -1;
+				}
+			});
+		}
+			//Resort everyone to have correct ordering
+			Long previouscount  = -1L;  //Moved ot top selection
+		
+			//assets = new ArrayList();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
+				
 				MultiValued data = (MultiValued) iterator.next();
-				data.setValue("ordering",neworder);
-				neworder = neworder - 1;
-				existing.add(data.getId());
+				Long count = data.getLong("ordering");
+				if( previouscount.equals( -1L))
+				{
+					previouscount = count;
+					continue;
+				}
+				if( tracker.isAscending()) 
+				{
+					if(previouscount < count) 
+					{
+						previouscount = count;
+						continue;
+					}
+					count = count + 1000;
+				}
+				else
+				{
+					if(previouscount > count) 
+					{
+						previouscount = count;
+						continue;
+					}
+					count = count- 1000;
+				}
+				data.setValue("ordering",count);
 				tosave.add(data);
+				previouscount = count;
 			}
-		}
-		else {
-			String dataid = inReq.getRequestParameter("dataid");
-			if(dataid != null) {
-				Data selectedone = archive.getData(searchtype, dataid);
-				selectedone.setValue("ordering",neworder);
-				tosave.add(selectedone);
-				existing.add(selectedone.getId());
+			if( tracker.isAscending()) 
+			{
+				inReq.getUserProfile().setSortForSearchType("asset", "orderingUp"); 
 			}
-			
-		}
+			else {
+				inReq.getUserProfile().setSortForSearchType("asset", "orderingDown");
+			}
 		
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();) 
+		//Move this group to the top
+			Long targetorder = targetAsset.getLong("ordering");		
+			
+			for (Iterator iterator = sorted.iterator(); iterator.hasNext();) 
+			{
+				Map tomoveid =  (Map)iterator.next();
+				MultiValued tomove = (MultiValued)tracker.findData("id",(String)tomoveid.get("id"));
+
+				long neworder = targetorder;
+				int checked =0;
+				do
+				{
+					if( tracker.isAscending())
+					{
+						neworder = neworder - 1;
+					}
+					else {
+						neworder = neworder + 1;
+					}
+					MultiValued existing = (MultiValued)tracker.findData("ordering",String.valueOf(neworder));
+					tomove.setValue("ordering",neworder); 
+					customvalues.add(tomove.getId());
+					tosave.add(tomove);
+					if( existing == null)
+					{
+						break;
+					}
+					else
+					{
+						tomove = existing;
+					}
+				}
+				while( checked++ < 999);
+			}
+/*
+Long count;  //Moved ot top selection
+		if( tracker.isAscending()) 
+		{
+			count = 0L;//Past the selections
+		}
+		{
+			count = (assets.size()+1) * 1000L;
+		}
+		Long targetorder = targetAsset.getLong("ordering");
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
 		{
 			MultiValued data = (MultiValued) iterator.next();
-			if( !existing.contains( data.getId() ) )
+			if( customvalues.contains(data.getId()))
 			{
-				Long currentorder = data.getLong("ordering");
-				if( currentorder ==null)
-				{
-					currentorder = 0L;
-				}
-				if(currentorder > startorder) {
-					break;
-				}
-				if( currentorder < neworder)
-				{
-					break;
-				}
-				neworder = neworder - 10;
-				data.setValue("ordering",neworder);
-				tosave.add(data);
-			
-				
+				continue;
 			}
+			
+			Long currentorder = data.getLong("ordering");
+			if( tracker.isAscending()) 
+			{
+				count = count + 1000;
+				if( count < targetorder)
+				{
+					continue; //Wait till the numbers get bigger
+				}
+				if(currentorder > count) {
+					break;
+				}	
+			}
+			else 
+			{
+				if(currentorder.equals(count)) {
+					break;
+				}
+				count = count - 1000;
+				if( count >= targetorder)
+				{
+					continue; //Wait till the numbers get smaller
+				}
+				if(currentorder < count) {
+					break;
+				}
+			}
+			data.setValue("ordering",count);
+			tosave.add(data);
+			
 		}
+	*/	
 		tracker.deselectAll();
 		archive.saveData(searchtype,tosave);
 	
