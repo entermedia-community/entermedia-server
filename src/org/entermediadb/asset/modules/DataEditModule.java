@@ -2266,7 +2266,7 @@ public class DataEditModule extends BaseMediaModule
 			{
 				MultiValued data = (MultiValued) iterator.next();
 				data.setValue("ordering",neworder);
-				neworder = neworder + 1;
+				neworder = neworder - 1;
 				existing.add(data.getId());
 				tosave.add(data);
 			}
@@ -2292,14 +2292,14 @@ public class DataEditModule extends BaseMediaModule
 				{
 					currentorder = 0L;
 				}
-				if(currentorder < startorder) {
-					continue;
+				if(currentorder > startorder) {
+					break;
 				}
-				if( currentorder > neworder)
+				if( currentorder < neworder)
 				{
 					break;
 				}
-				neworder = neworder + 10;
+				neworder = neworder - 10;
 				data.setValue("ordering",neworder);
 				tosave.add(data);
 			
