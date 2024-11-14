@@ -169,6 +169,10 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
+		if( entity == null)
+		{
+			return null;
+		}
 		Category cat = null;
 		
 		String categoryid = entity.get("rootcategory");
@@ -946,6 +950,11 @@ public class EntityManager implements CatalogEnabled
 	public Map loadLightBoxCounts(Collection inBoxes, Data inModule, Data inEntity)
 	{
 		Category entityrootcategory = createDefaultFolder(inEntity, null);
+		if( entityrootcategory == null)
+		{
+			log.error("No folder");
+			return null;
+		}
 		HitTracker found = getMediaArchive().query("asset").orgroup("category", entityrootcategory.getChildren()).facet("category").search();
 		
 		Map categorycounts = new HashMap();
@@ -1023,6 +1032,10 @@ public class EntityManager implements CatalogEnabled
 	
 	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
 	{
+		if( inCounts == null)
+		{
+			return null;
+		}
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
 			Data lightbox = (Data) iterator.next();
 			Integer val = (Integer)inCounts.get( lightbox.getName() );

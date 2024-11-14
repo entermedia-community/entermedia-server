@@ -1224,7 +1224,7 @@ public class DataEditModule extends BaseMediaModule
 				inReq.getUserProfile().setValue(searcher.getSearchType()+"sort", sort);
 				inReq.getUserProfile().save(inReq.getUser());
 			}
-			searcher.changeSort(inReq);
+			searcher.changeSort(inReq);  //This sets the preference as well but does not save it forever
 		}
 	}
 
@@ -2437,5 +2437,10 @@ Long count;  //Moved ot top selection
 		archive.saveData(searchtype,tosave);
 	
 	}
-	
+
+	public void loadSearchHome(WebPageRequest inReq)
+	{
+		String searchhome = inReq.findPathValue("searchhome");
+		inReq.putPageValue("searchhome",searchhome);
+	}
 }
