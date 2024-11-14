@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.WebPageRequest;
+import org.openedit.config.Script;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
@@ -56,17 +57,27 @@ public class JavaScriptGenerator extends TempFileGenerator
 			long mostrecentmod = 0;
 			long totalsize = 0;
 			
-			List<String> scripts = getPageManager().getScriptPathsForApp(rootpage);
+//			String applicationid = inContent.get("applicationid");
+//			String apppath = "/" + applicationid + "/_site.xconf";
+//			PageSettings site = getPageSettingsManager().getPageSettings(apppath);
+//			List<String> appscripts = loadScriptPathsFor(site);
+//			return appscripts;
+
+			List<Script> scripts = getPageManager().getScriptsForApp(rootpage);
 			if(scripts == null)
 			{
 				return;
 			}
+			
+			boolean deferonly = Boolean.parseBoolean(inPage.getProperty("deferjs"));
 			for (Iterator iterator = scripts.iterator(); iterator.hasNext();)
 			{		
-				String script= (String) iterator.next();
-				if(!skip(script))
+				Script script= (Script) iterator.next();
+				
+				if(include(script,deferonly))
 				{
-					Page file = getPageManager().getPage(script);
+					String path = inPage.replaceProperty(script.getSrc());
+					Page file = getPageManager().getPage(path); //Cached
 					totalsize = totalsize + file.length();
 					long modifield = file.lastModified();
 					if( modifield > mostrecentmod )
@@ -75,7 +86,6 @@ public class JavaScriptGenerator extends TempFileGenerator
 					}
 				}
 			}
-			
 
 			String since = req.getHeader("If-Modified-Since");
 			if( since != null && since.endsWith("GMT"))
@@ -88,6 +98,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 					{
 						//log.info("if since"  + since);
 						res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+						//res.setHeader("ETag",length + "_" + mostrecentmod);
 						return;
 					}
 				}
@@ -107,10 +118,10 @@ public class JavaScriptGenerator extends TempFileGenerator
 			}
 			if(oldtotal != totalsize ||  mostrecentmod != inPage.getLastModified().getTime())
 			{
-				saveLocally(scripts, inPage, inOut, mostrecentmod);
+				saveLocally(scripts, deferonly, inPage, inOut, mostrecentmod);
 				cachedSizeCounts.put(inPage.getPath(),totalsize); //TODO check count change or size change
 			}
-			sendBack(inPage, mostrecentmod, inOut, res);
+			sendBack(inPage, deferonly, mostrecentmod, inOut, res);
 		}
 		catch ( Throwable ex)
 		{
@@ -121,13 +132,22 @@ public class JavaScriptGenerator extends TempFileGenerator
 	}
 
 
-	protected boolean skip(String script)
+	protected boolean include(Script script, boolean deferonly)
 	{
-		return script == null || script.isEmpty() || script.startsWith("http");
+		String html = script.getSrc();
+		boolean logic =  html != null && !html.isEmpty() && !html.startsWith("http");
+		if( logic )
+		{
+			if( script.isDefer()  == deferonly )
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 
-	protected void sendBack(Page inPage, long mostrecentmod, Output inOut, HttpServletResponse res) throws UnsupportedEncodingException, IOException
+	protected void sendBack(Page inPage, boolean deferonly, long mostrecentmod, Output inOut, HttpServletResponse res) throws UnsupportedEncodingException, IOException
 	{
 		long length = inPage.length();
 		if( length > -1)
@@ -135,6 +155,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 			res.setContentLength((int)length);
 		}
 		res.setDateHeader("Last-Modified",mostrecentmod);
+		//res.setHeader("ETag",length + "_" + mostrecentmod); //Too strong of a cache
 
 		InputStreamReader reader = null;
 		try
@@ -165,7 +186,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 	}
 
 
-	protected void saveLocally(List scriptpaths, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
+	protected void saveLocally(List<Script> scriptpaths,boolean deferonly, Page inPage, Output inOut, long mostrecentmod) throws FileNotFoundException, IOException
 	{
 		synchronized( inPage )
 		{
@@ -175,10 +196,12 @@ public class JavaScriptGenerator extends TempFileGenerator
 			
 			for (Iterator iterator = scriptpaths.iterator(); iterator.hasNext();)
 			{		
-				String script= (String) iterator.next();
-				if(!skip(script))
+				Script script= (Script) iterator.next();
+				
+				if(include(script,deferonly))
 				{
-					Page infile = getPageManager().getPage(script);
+					String path = inPage.replaceProperty(script.getSrc());
+					Page infile = getPageManager().getPage(path);
 					InputStreamReader reader = null;
 					if (!infile.exists()) {
 						log.info("Missing file: " + infile.getName());
@@ -195,7 +218,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 					}
 					try
 					{
-						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script + System.lineSeparator()  + "  **/" + System.lineSeparator() + System.lineSeparator() );
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + "  **/" + System.lineSeparator() + System.lineSeparator() );
 						getOutputFiller().fill(reader,out);
 						out.write(System.lineSeparator()  + System.lineSeparator() + System.lineSeparator());
 					}
