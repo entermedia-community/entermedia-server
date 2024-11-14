@@ -2321,7 +2321,7 @@ public class DataEditModule extends BaseMediaModule
 						previouscount = count;
 						continue;
 					}
-					count = count + 1000;
+					count = previouscount + 1000;
 				}
 				else
 				{
@@ -2330,7 +2330,7 @@ public class DataEditModule extends BaseMediaModule
 						previouscount = count;
 						continue;
 					}
-					count = count- 1000;
+					count = previouscount - 1000;
 				}
 				data.setValue("ordering",count);
 				tosave.add(data);
@@ -2343,7 +2343,13 @@ public class DataEditModule extends BaseMediaModule
 			else {
 				inReq.getUserProfile().setSortForSearchType("asset", "orderingDown");
 			}
-		
+
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				log.info("Fixed" + data.getName() + " = " + data.get("ordering") );
+
+			}
 		//Move this group to the top
 			Long targetorder = targetAsset.getLong("ordering");		
 			
