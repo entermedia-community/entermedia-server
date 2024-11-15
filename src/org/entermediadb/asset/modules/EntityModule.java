@@ -263,15 +263,17 @@ public class EntityModule extends BaseMediaModule
 		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
-		Integer added = 0;
+		Data newentity = null;
 		if(hits == null) {
-			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+			newentity = entityManager.copyEntity(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+			inPageRequest.putPageValue("saveddata", newentity);
+			inPageRequest.putPageValue("saved", "1");
 		}
 		else {
-			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
+			Collection saved = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
+			inPageRequest.putPageValue("saved", saved.size());
 		}
 
-		inPageRequest.putPageValue("saved", added);
 		inPageRequest.putPageValue("moduleid", sourcemoduleid);
 		
 		

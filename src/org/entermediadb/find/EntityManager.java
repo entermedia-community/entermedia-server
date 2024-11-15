@@ -515,6 +515,9 @@ public class EntityManager implements CatalogEnabled
 
 		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
+			if(key.equals("rootcategory") || key.equals("uploadsourcepath")) {
+				continue;
+			}
 			Object val = source.getValue(key);
 			newchild.setValue(key, val);
 		}
@@ -564,7 +567,7 @@ public class EntityManager implements CatalogEnabled
 	
 	
 	
-	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits) 
+	public Collection copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits) 
 	{
 		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		List tosave = new ArrayList();
@@ -579,10 +582,10 @@ public class EntityManager implements CatalogEnabled
 			getMediaArchive().saveData(pickedmoduleid, tosave);
 		}
 				
-		return tosave.size();
+		return tosave;
 	}
 	
-	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid) 
+	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid) 
 	{
 		Data source = getMediaArchive().getData(sourcemoduleid, sourceentityid);
 		if(source != null) {
@@ -590,10 +593,10 @@ public class EntityManager implements CatalogEnabled
 			if(newchild != null) {
 				getMediaArchive().saveData(pickedmoduleid, newchild);
 				inContext.putPageValue("newentity", newchild);
-				return 1;
+				return newchild;
 			}
 		}
-		return 0;
+		return null;
 	}
 	
 	public Integer addToSearchCategory(WebPageRequest inContext, String sourcemoduleid, HitTracker hits, String id) 
