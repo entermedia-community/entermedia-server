@@ -893,6 +893,15 @@ public class EntityModule extends BaseMediaModule
 
 	}
 
+	public void getEntity(WebPageRequest inPageRequest) 
+	{
+		String moduleid = inPageRequest.getRequestParameter("moduleid");  //Put this in a path?
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		
+		Data entity = getMediaArchive(inPageRequest).getCachedData(moduleid, entityid);
+		inPageRequest.putPageValue("entity",entity);
+		
+	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
 	
