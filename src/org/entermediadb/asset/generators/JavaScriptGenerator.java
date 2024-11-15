@@ -24,6 +24,8 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.FileUtils;
+import org.openedit.util.MathUtils;
+import org.openedit.util.Sizer;
 
 public class JavaScriptGenerator extends TempFileGenerator
 {
@@ -193,7 +195,8 @@ public class JavaScriptGenerator extends TempFileGenerator
 			Page tmpfile = getPageManager().getPage( inPage.getContentItem().getAbsolutePath() + ".tmp.js" );
 			
 			Writer out = new OutputStreamWriter( tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding() );
-			
+			Sizer sizer = new Sizer();						
+
 			for (Iterator iterator = scriptpaths.iterator(); iterator.hasNext();)
 			{		
 				Script script= (Script) iterator.next();
@@ -220,7 +223,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 					}
 					try
 					{
-						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + " Modified: " + infile.getLastModified() + "  **/" + System.lineSeparator() + System.lineSeparator() );
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + " Modified: " + infile.getLastModified() + " Size: " + sizer.inEnglish(infile.length()) + " **/" + System.lineSeparator() + System.lineSeparator() );
 						getOutputFiller().fill(reader,out);
 						out.write(System.lineSeparator()  + System.lineSeparator() + System.lineSeparator());
 					}
