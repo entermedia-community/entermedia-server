@@ -226,6 +226,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + " Modified: " + infile.getLastModified() + " Size: " + sizer.inEnglish(infile.length()) + " **/" + System.lineSeparator() + System.lineSeparator() );
 						getOutputFiller().fill(reader,out);
 						out.write(System.lineSeparator()  + System.lineSeparator() + System.lineSeparator());
+						out.write(System.lineSeparator() + "//Ended: " + script.getSrc() + " Size: " + sizer.inEnglish(infile.length()) + System.lineSeparator() +System.lineSeparator());
 					}
 					finally
 					{
