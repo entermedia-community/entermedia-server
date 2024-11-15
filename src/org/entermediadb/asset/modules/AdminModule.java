@@ -989,11 +989,12 @@ public class AdminModule extends BaseMediaModule
 		}
 	}
 
+	
 	public User createUserSession(WebPageRequest inReq)
 	{
 
 		User user = (User)inReq.getPageValue("user");
-		if( user != null)
+		if( user == null)
 		{
 			String catalogid = inReq.findPathValue("catalogid");
 			user = (User) inReq.getSessionValue(catalogid + "user");
