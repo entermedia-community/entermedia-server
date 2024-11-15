@@ -203,8 +203,10 @@ public class JavaScriptGenerator extends TempFileGenerator
 					String path = inPage.replaceProperty(script.getSrc());
 					Page infile = getPageManager().getPage(path);
 					InputStreamReader reader = null;
-					if (!infile.exists()) {
-						log.info("Missing file: " + infile.getName());
+					if (!infile.exists()) 
+					{
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : 404 NOT FOUND" + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + "  **/" + System.lineSeparator() + System.lineSeparator() );
+						out.write(System.lineSeparator()  + System.lineSeparator() + System.lineSeparator());
 						continue;
 					}
 					if ( infile.getCharacterEncoding() != null )
@@ -218,7 +220,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 					}
 					try
 					{
-						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + "  **/" + System.lineSeparator() + System.lineSeparator() );
+						out.write(System.lineSeparator() + "/** " + System.lineSeparator() + " EnterMediaDB javascriptGenerator : " + script.getSrc() + System.lineSeparator() + script.getPath() + System.lineSeparator()  + " Modified: " + infile.getLastModified() + "  **/" + System.lineSeparator() + System.lineSeparator() );
 						getOutputFiller().fill(reader,out);
 						out.write(System.lineSeparator()  + System.lineSeparator() + System.lineSeparator());
 					}
