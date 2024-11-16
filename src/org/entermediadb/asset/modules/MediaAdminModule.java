@@ -872,6 +872,8 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		
 	}
+	
+	//Not used. Delete this
 	public Data loadHomeModule(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
