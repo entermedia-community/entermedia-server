@@ -264,12 +264,22 @@ public class ProfileModule extends MediaArchiveModule
 
 	public void savePreference(WebPageRequest inReq)
 	{
-		String field = inReq.getRequestParameter("profilepreference");
+		UserProfile prof = loadUserProfile(inReq);
+
+		//Old style?
+		String field = inReq.getRequestParameter("propertyfield");
+		if (prof != null && field != null)
+		{
+			String value = inReq.getRequestParameter( "property.value");
+			prof.setValue(field, value);
+			getUserProfileManager().saveUserProfile(prof);
+		}
+
+		field = inReq.getRequestParameter("profilepreference");
 		if (field == null)
 		{
 			return;
 		}
-		UserProfile prof = loadUserProfile(inReq);
 		String value = inReq.getRequestParameter("profilepreference.value");
 		
 		String oldval = prof.get(field);
@@ -322,6 +332,10 @@ public class ProfileModule extends MediaArchiveModule
 		prof.removeValue(field, value);
 		getUserProfileManager().saveUserProfile(prof);
 	}
+	
+	/**
+	 * @deprecated This is too weird. Delete it
+	 * */
 	public void saveProperties(WebPageRequest inReq)
 	{
 		String[] fields = inReq.getRequestParameters("propertyfield");
