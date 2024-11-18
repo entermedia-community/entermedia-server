@@ -169,6 +169,10 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
+		if( entity == null)
+		{
+			return null;
+		}
 		Category cat = null;
 		
 		String categoryid = entity.get("rootcategory");
@@ -511,6 +515,9 @@ public class EntityManager implements CatalogEnabled
 
 		for (Iterator iterator = source.getProperties().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
+			if(key.equals("rootcategory") || key.equals("uploadsourcepath")) {
+				continue;
+			}
 			Object val = source.getValue(key);
 			newchild.setValue(key, val);
 		}
@@ -560,7 +567,7 @@ public class EntityManager implements CatalogEnabled
 	
 	
 	
-	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits) 
+	public Collection copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, HitTracker hits) 
 	{
 		//Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		List tosave = new ArrayList();
@@ -575,10 +582,10 @@ public class EntityManager implements CatalogEnabled
 			getMediaArchive().saveData(pickedmoduleid, tosave);
 		}
 				
-		return tosave.size();
+		return tosave;
 	}
 	
-	public Integer copyEntities(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid) 
+	public Data copyEntity(WebPageRequest inContext, String sourcemoduleid, String pickedmoduleid, String sourceentityid) 
 	{
 		Data source = getMediaArchive().getData(sourcemoduleid, sourceentityid);
 		if(source != null) {
@@ -586,10 +593,10 @@ public class EntityManager implements CatalogEnabled
 			if(newchild != null) {
 				getMediaArchive().saveData(pickedmoduleid, newchild);
 				inContext.putPageValue("newentity", newchild);
-				return 1;
+				return newchild;
 			}
 		}
-		return 0;
+		return null;
 	}
 	
 	public Integer addToSearchCategory(WebPageRequest inContext, String sourcemoduleid, HitTracker hits, String id) 
@@ -946,6 +953,11 @@ public class EntityManager implements CatalogEnabled
 	public Map loadLightBoxCounts(Collection inBoxes, Data inModule, Data inEntity)
 	{
 		Category entityrootcategory = createDefaultFolder(inEntity, null);
+		if( entityrootcategory == null)
+		{
+			log.error("No folder");
+			return null;
+		}
 		HitTracker found = getMediaArchive().query("asset").orgroup("category", entityrootcategory.getChildren()).facet("category").search();
 		
 		Map categorycounts = new HashMap();
@@ -961,7 +973,10 @@ public class EntityManager implements CatalogEnabled
 		return categorycounts;
 		
 	}
-	
+	/*
+	 * @Deprecated
+	 * 
+	 * */
 	
 	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
 	{
@@ -969,7 +984,7 @@ public class EntityManager implements CatalogEnabled
 		//Search for all the boxes that match. 
 		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inBoxes).
 				exact("parentmoduleid", inModule.getId()).
-				exact("parententityid",inEntity).facet("lightboxid").sort("ordering").search();
+				exact("parententityid",inEntity).facet("lightboxid").sort("orderingDown").search();
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
 		return assets;
@@ -1020,6 +1035,10 @@ public class EntityManager implements CatalogEnabled
 	
 	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
 	{
+		if( inCounts == null)
+		{
+			return null;
+		}
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
 			Data lightbox = (Data) iterator.next();
 			Integer val = (Integer)inCounts.get( lightbox.getName() );
@@ -1047,14 +1066,14 @@ public class EntityManager implements CatalogEnabled
 	}
 
 	
-	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, User inUser)
+	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, String sortby, User inUser)
 	{
 		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox , null);
 		if( parent == null)
 		{
 			return null;
 		}
-		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort("ordering").named("catsearch").search();
+		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort(sortby).named("catsearch").search();
 		return hits;
 	}
 	

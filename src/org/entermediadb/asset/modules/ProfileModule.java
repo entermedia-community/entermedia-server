@@ -14,8 +14,10 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
@@ -145,206 +147,7 @@ public class ProfileModule extends MediaArchiveModule
 		getUserProfileManager().saveUserProfile(inReq.getUserProfile());
 	}
 
-	public void addRemoveColumn(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		UserProfile userProfile = inReq.getUserProfile();
-		
-		String searchtype = inReq.findPathValue("searchtype");
-		String view = inReq.getRequestParameter("viewid");
-		
-		
-		
-		if( searchtype == null || "asset".equals(searchtype))
-		{
-			searchtype = "asset";
-		}
-		if( view == null) {
-			if("asset".equals(searchtype)) {
-				view = "resultstable";
-			}
-			else {
-				view = searchtype+"resultstable";
-			}
-		}
-		
-		String viewpath = searchtype + "/" + view;
-		
-		String viewcacheid = "view_" + searchtype + "_" + view + "_" + userProfile.get("settingsgroup");
 
-		Collection ids = new ArrayList();
-
-		String add = inReq.getRequestParameter("addcolumn");
-		if (add != null)
-		{
-			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
-			boolean exists = false;
-			if( details != null)
-			{
-				for (Iterator iterator = details.iterator(); iterator.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if (add.equals(detail.getId()))
-					{
-						exists = true;
-						break;
-					}
-				}
-			}
-			if (!exists)
-			{
-				// add it
-				if(details!=null) {
-					for (Iterator iterator = details.iterator(); iterator.hasNext();)
-					{
-						PropertyDetail detail = (PropertyDetail) iterator.next();
-						ids.add(detail.getId());
-					}
-				}
-				ids.add(add);
-			}
-		}
-
-		String remove = inReq.getRequestParameter("removecolumn");
-		if (remove != null)
-		{
-			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
-			for (Iterator iterator = details.iterator(); iterator.hasNext();)
-			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!remove.equals(detail.getId()))
-				{
-					ids.add(detail.getId());
-				}
-			}
-		}
-		userProfile.setValues(viewcacheid, ids);
-		getUserProfileManager().saveUserProfile(userProfile);
-
-	}
-	
-	
-	public void resetColumnsModule(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		UserProfile userProfile = inReq.getUserProfile();
-		
-		String searchtype = inReq.findPathValue("searchtype");
-		String view = inReq.getRequestParameter("viewid");
-		
-		if( searchtype == null || "asset".equals(searchtype))
-		{
-			searchtype = "asset";
-		}
-		if( view == null) {
-			if("asset".equals(searchtype)) {
-				view = "resultstable";
-			}
-			else {
-				view = searchtype+"resultstable";
-			}
-		}
-		
-		String viewpath = searchtype + "/" + view;
-		
-		String viewcacheid = "view_" + searchtype + "_" + view + "_" + userProfile.get("settingsgroup");
-		String viewcacheidsort = "view_" + searchtype + "_" + view;
-
-		Collection ids = new ArrayList();
-		
-		inReq.getUserProfile().setValues(viewcacheid, ids);
-		inReq.getUserProfile().setValues(viewcacheidsort, ids);
-		
-		userProfile.setValues(viewcacheid, ids);
-		userProfile.setValues(viewcacheidsort, ids);
-		getUserProfileManager().saveUserProfile(userProfile);
-		inReq.setUserProfile(userProfile);
-		getSearcherManager().getPropertyDetailsArchive(archive.getCatalogId()).clearCache();
-
-	}
-
-	public void setView(WebPageRequest inReq) throws Exception
-	{
-		String view = inReq.getRequestParameter("view");
-
-		UserProfile userProfile = inReq.getUserProfile();
-		String[] fields = inReq.getRequestParameters("field");
-		userProfile.setValues("view_" + view.replace('/', '_'), Arrays.asList(fields));
-		userProfile.save(inReq.getUser());
-	}
-
-	public void addFieldsToView(WebPageRequest inReq) throws Exception
-	{
-		String view = inReq.getRequestParameter("view");
-
-		UserProfile userProfile = inReq.getUserProfile();
-		String[] fields = inReq.getRequestParameters("field");
-
-		String viewkey = "view_" + view.replace('/', '_');
-
-		initList(inReq, view, userProfile, viewkey);
-
-		for (int i = 0; i < fields.length; i++)
-		{
-			userProfile.addValue(viewkey, fields[i]);
-		}
-
-		userProfile.save(inReq.getUser());
-	}
-	/**
-	 * This is only called once 
-	 * @param inReq
-	 * @param view
-	 * @param userProfile
-	 * @param viewkey
-	 */
-	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
-	{
-		String value = userProfile.get(viewkey);
-		if (value == null)
-		{
-			String type = inReq.findPathValue("searchtype"); 
-			if (type == null)
-			{
-				type = "asset";
-			}
-			Searcher searcher = getSearcherManager().getSearcher(inReq.findPathValue("catalogid"), type);
-			List<PropertyDetail> details = searcher.getDetailsForView(view, userProfile);
-			userProfile.setValuesFromDetails(viewkey, details);
-		}
-	}
-
-	public void removeFieldsFromView(WebPageRequest inReq) throws Exception
-	{
-		String view = inReq.getRequestParameter("view");
-
-		UserProfile userProfile = inReq.getUserProfile();
-		String[] fields = inReq.getRequestParameters("field");
-
-		String viewkey = "view_" + view.replace('/', '_');
-
-		//Check for null starting condition
-		initList(inReq, view, userProfile, viewkey);
-
-		String searchtype = inReq.getRequestParameter("searchtype");
-		
-		for (int i = 0; i < fields.length; i++)
-		{
-			userProfile.removeValue(viewkey, fields[i]);
-			if( searchtype != null)
-			{
-				userProfile.removeValue(viewkey, searchtype +"." + fields[i]);
-			}
-		}
-		String values = userProfile.get(viewkey);
-		if(values == null || values.trim().length() == 0)
-		{
-			userProfile.setProperty(viewkey, null);
-			initList(inReq, view, userProfile, viewkey);
-		}
-		
-		userProfile.save(inReq.getUser());
-	}
 
 	public void changeResultView(WebPageRequest inReq)
 	{
@@ -461,12 +264,22 @@ public class ProfileModule extends MediaArchiveModule
 
 	public void savePreference(WebPageRequest inReq)
 	{
-		String field = inReq.getRequestParameter("profilepreference");
+		UserProfile prof = loadUserProfile(inReq);
+
+		//Old style?
+		String field = inReq.getRequestParameter("propertyfield");
+		if (prof != null && field != null)
+		{
+			String value = inReq.getRequestParameter( "property.value");
+			prof.setValue(field, value);
+			getUserProfileManager().saveUserProfile(prof);
+		}
+
+		field = inReq.getRequestParameter("profilepreference");
 		if (field == null)
 		{
 			return;
 		}
-		UserProfile prof = loadUserProfile(inReq);
 		String value = inReq.getRequestParameter("profilepreference.value");
 		
 		String oldval = prof.get(field);
@@ -519,6 +332,10 @@ public class ProfileModule extends MediaArchiveModule
 		prof.removeValue(field, value);
 		getUserProfileManager().saveUserProfile(prof);
 	}
+	
+	/**
+	 * @deprecated This is too weird. Delete it
+	 * */
 	public void saveProperties(WebPageRequest inReq)
 	{
 		String[] fields = inReq.getRequestParameters("propertyfield");
@@ -678,104 +495,7 @@ public class ProfileModule extends MediaArchiveModule
 		}
 
 	}
-/*
-	public void updateIndex(WebPageRequest inReq)
-	{
-		// This is used if we've created a user profile but an associated user
-		// account does not yet exist.
-		String username = inReq.getRequestParameter("userid");
-		if (username == null)
-		{
-			username = inReq.getRequestParameter("username");
-		}
-		if (username == null)
-		{
-			username = inReq.getRequestParameter("id");
-		}
-		if (username == null)
-		{
-			return;
-		}
 
-		MediaArchive archive = getMediaArchive(inReq);
-		Searcher upsearcher = (Searcher) archive.getSearcher("userprofile");
-		Data up = (Data) upsearcher.searchById(username);
-		if (up != null)
-		{
-			upsearcher.updateIndex(up);
-		}
-	}
-*/
-	public void addRemoveColumnModule(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-
-		UserProfile userProfile = inReq.getUserProfile();
-		String searchtype = inReq.findPathValue("searchtype");
-		String view = "";
-		if (inReq.findValue("viewid") != null)
-		{
-			view = inReq.findValue("viewid");
-		}
-		else 
-		{
-			view = searchtype + "resultstable";
-		}
-		String viewpath = searchtype + "/" + view;
-
-		String add = inReq.getRequestParameter("addcolumn");
-		if (add != null)
-		{
-			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
-			boolean exists = false;
-			if (details != null)
-			{
-				for (Iterator iterator = details.iterator(); iterator.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if (add.equals(detail.getId()))
-					{
-						exists = true;
-						break;
-					}
-				}
-			}
-			if (!exists)
-			{
-				// add it
-				Collection ids = new ArrayList();
-				if (details != null)
-				{
-					for (Iterator iterator = details.iterator(); iterator.hasNext();)
-					{
-						PropertyDetail detail = (PropertyDetail) iterator.next();
-						ids.add(detail.getId());
-					}
-				}
-				ids.add(add);
-				userProfile.setValues("view_" + searchtype + "_" + view, ids);
-				getUserProfileManager().saveUserProfile(userProfile);
-			}
-		}
-
-		String remove = inReq.getRequestParameter("removecolumn");
-		if (remove != null)
-		{
-			List details = archive.getSearcher(searchtype).getDetailsForView(viewpath, userProfile);
-			Collection ids = new ArrayList();
-			for (Iterator iterator = details.iterator(); iterator.hasNext();)
-			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!remove.equals(detail.getId()))
-				{
-					ids.add(detail.getId());
-				}
-			}
-			userProfile.setValues("view_" + searchtype + "_" + view, ids);
-			getUserProfileManager().saveUserProfile(userProfile);
-		}
-	}
-	
 	
 	public void clearProfile(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
@@ -835,5 +555,164 @@ public class ProfileModule extends MediaArchiveModule
 		inReq.putPageValue("profile",prof);
 	}
 
+	/**
+	 * This is only called once 
+	 * @param inReq
+	 * @param view
+	 * @param userProfile
+	 * @param viewkey
+	 */
+	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
+	{
+		String value = userProfile.get(viewkey);
+		if (value == null)
+		{
+			String type = inReq.findPathValue("searchtype"); 
+			if (type == null)
+			{
+				type = "asset";
+			}
+			Searcher searcher = getSearcherManager().getSearcher(inReq.findPathValue("catalogid"), type);
+			List<PropertyDetail> details = searcher.getDetailsForView(view, userProfile);
+			userProfile.setValuesFromDetails(viewkey, details);
+		}
+	}	
+
+	public void saveView(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = inReq.findPathValue("searchtype");
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
+		Searcher searcher = archive.getSearcher(searchtype);
+		inReq.putPageValue("searcher",searcher);
+		String[] sorted = inReq.getRequestParameters("ids");
+
+		String propId = "view_" + viewpath.replace('/', '_');  //This is missing the settingsgroup values. Not needed anyways
+
+		if( Boolean.parseBoolean(saveforall) )
+		{
+			PropertyDetailsArchive detailarchive = archive.getPropertyDetailsArchive();
+			
+			if (sorted == null) {
+				throw new OpenEditException("Missing sort list ids");
+			}
+			detailarchive.saveView(searcher, viewpath, sorted);
+			
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
+			inReq.getUserProfile().setValue(propId,null);
+			return;
+		}
+		
+		UserProfile userProfile = inReq.getUserProfile();
+		userProfile.setValues(propId, Arrays.asList(sorted));
+		userProfile.save(inReq.getUser());
+	}
+
+	public void removeFieldsFromView(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//See if we neeed to make it system side
+		String searchtype = inReq.findPathValue("searchtype");
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
+		String detailid = inReq.getRequestParameter("detailid");
+		Searcher searcher = archive.getSearcher(searchtype);
+		inReq.putPageValue("searcher",searcher);
+
+		if( Boolean.parseBoolean(saveforall) )
+		{
+			PropertyDetailsArchive detailarchive = archive.getPropertyDetailsArchive();
+			
+			detailarchive.removeFromView(searcher, viewpath, detailid);
+			
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
+			String propId = "view_" + viewpath.replace('/', '_');
+			inReq.getUserProfile().setValue(propId,null);
+
+			return;
+		}
+
+		UserProfile userProfile = inReq.getUserProfile();
+
+		String viewkey = "view_" + viewpath.replace('/', '_');  //This is missing the settingsgroup values. Not needed anyways
+
+		//Check for null starting condition
+		//initList(inReq, viewpath, userProfile, viewkey);
+		List<PropertyDetail> details = searcher.getDetailsForView(viewpath, userProfile);
+		List<PropertyDetail> tosave = new ArrayList();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
+			if (!propertyDetail.getId().equals(detailid)) {
+				tosave.add(propertyDetail);
+			}
+			
+		}
+		userProfile.setValuesFromDetails(viewkey, tosave);
+		userProfile.save(inReq.getUser());
+	}
+
+	public void addFieldsToView(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//See if we neeed to make it system side
+		String searchtype = inReq.findPathValue("searchtype");
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
+		String detailid = inReq.getRequestParameter("detailid");
+		Searcher searcher = archive.getSearcher(searchtype);
+		inReq.putPageValue("searcher",searcher);
+		
+		String propId = "view_" + viewpath.replace('/', '_');
+
+		
+		if( Boolean.parseBoolean(saveforall) )
+		{
+			PropertyDetailsArchive detailarchive = archive.getPropertyDetailsArchive();
+			
+			detailarchive.addToView(searcher, viewpath, detailid); //System wide
+				
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
+			inReq.getUserProfile().setValue(propId,null);
+			return;
+		}
+		
+		UserProfile userProfile = inReq.getUserProfile();
+
+		
+		Collection ids = new ArrayList();  //Maintains the order
+
+		List details = searcher.getDetailsForView(viewpath, userProfile);
+		boolean exists = false;
+		if( details != null)
+		{
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if (detailid.equals(detail.getId()))
+				{
+					exists = true;
+					break;
+				}
+			}
+		}
+		if (!exists)
+		{
+			// add it
+			if(details!=null) {
+				for (Iterator iterator = details.iterator(); iterator.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					ids.add(detail.getId());
+				}
+			}
+			ids.add(detailid);
+		}
+		userProfile.setValues(propId, ids);
+		getUserProfileManager().saveUserProfile(userProfile);
+
+	}
+	
+	
 	
 }

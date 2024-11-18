@@ -263,15 +263,17 @@ public class EntityModule extends BaseMediaModule
 		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
 		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
-		Integer added = 0;
+		Data newentity = null;
 		if(hits == null) {
-			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+			newentity = entityManager.copyEntity(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+			inPageRequest.putPageValue("saveddata", newentity);
+			inPageRequest.putPageValue("saved", "1");
 		}
 		else {
-			added = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
+			Collection saved = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
+			inPageRequest.putPageValue("saved", saved.size());
 		}
 
-		inPageRequest.putPageValue("saved", added);
 		inPageRequest.putPageValue("moduleid", sourcemoduleid);
 		
 		
@@ -891,6 +893,15 @@ public class EntityModule extends BaseMediaModule
 
 	}
 
+	public void getEntity(WebPageRequest inPageRequest) 
+	{
+		String moduleid = inPageRequest.getRequestParameter("moduleid");  //Put this in a path?
+		String entityid = inPageRequest.getRequestParameter("entityid");
+		
+		Data entity = getMediaArchive(inPageRequest).getCachedData(moduleid, entityid);
+		inPageRequest.putPageValue("entity",entity);
+		
+	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
 	

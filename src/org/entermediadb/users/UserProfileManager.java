@@ -606,4 +606,28 @@ public class UserProfileManager
 		mediaArchive.clearCaches();
 		
 	}
+	
+	public void clearUserProfileViewValues(String inCatalogId, String inViewPath)
+	{
+		MediaArchive archive = getMediaArchive(inCatalogId);
+		
+		Collection userprofiles = archive.query("userprofile").all().search();
+		
+		Set tosave = new HashSet();
+		String propId = "view_" + inViewPath.replace('/', '_');
+
+		//Loop over all the userprofiles
+		for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)
+		{
+			MultiValued profile = (MultiValued) iterator2.next();
+			Object found = profile.getValue(propId);
+			if( found != null)
+			{
+				profile.setValue(propId,null);
+				tosave.add(profile);
+			}
+		}
+		archive.saveData("userprofile",tosave);
+	}
+	
 }

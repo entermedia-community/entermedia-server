@@ -127,7 +127,9 @@ public class MediaSearchModule extends BaseMediaModule
 		inPageRequest.putPageValue("category",category);
 		inPageRequest.putPageValue("selectedcategory",category);
 		
-		String exact = inPageRequest.findValue("exact-search");
+		String exact = inPageRequest.findValue("exactsearch");
+		inPageRequest.putPageValue("exactsearch",exact);
+		
 		HitTracker tracker = null;
 		
 		
