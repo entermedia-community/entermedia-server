@@ -896,9 +896,12 @@ public class EntityModule extends BaseMediaModule
 	
 	public void getEntity(WebPageRequest inPageRequest) 
 	{
-		String moduleid = inPageRequest.getRequestParameter("parentmoduleid");  //Put this in a path?
+		String moduleid = inPageRequest.getRequestParameter("parentmoduleid");  //TODO: remove, not secure
 		if(moduleid == null) {
-			 moduleid = inPageRequest.findPathValue("module");
+			moduleid = inPageRequest.getRequestParameter("moduleid");  //TODO: Remvoe this once find/ is done
+		}
+		if(moduleid == null) {
+			 moduleid = inPageRequest.findPathValue("module"); //This is prefered
 		}
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
