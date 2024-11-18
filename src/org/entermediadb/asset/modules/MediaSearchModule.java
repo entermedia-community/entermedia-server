@@ -380,9 +380,9 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			return;
 		}
-		String topmoduleid = (String)inPageRequest.findValue("topmoduleid");
+		String topmoduleid = (String)inPageRequest.findValue("parentmoduleid");
 		if(topmoduleid == null) {
-			topmoduleid = (String)inPageRequest.getPageValue("topmoduleid");
+			topmoduleid = (String)inPageRequest.getPageValue("parentmoduleid");
 		}
 		String personid = null;
 

@@ -41,7 +41,7 @@ public class ContentModule extends BaseMediaModule {
 	public void createNewEntityFromAI(WebPageRequest inReq)
 	{
 		//Add as child
-		String topmodule = inReq.findPathValue("topmodule");
+		String topmodule = inReq.findPathValue("parentmodule");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetentity= inReq.getRequestParameter("moduleid");
 		
@@ -136,7 +136,7 @@ public class ContentModule extends BaseMediaModule {
 	
 	public void renderDitaTable(WebPageRequest inReq) throws Exception
 	{
-		String parentmodule = inReq.getRequestParameter("topmodule");
+		String parentmodule = inReq.getRequestParameter("parentmodule");
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetmodule = inReq.getRequestParameter("submodule");
 		//String renderformat = inReq.getRequestParameter("renderformat");

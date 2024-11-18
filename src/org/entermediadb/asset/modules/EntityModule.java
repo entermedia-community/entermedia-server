@@ -896,9 +896,9 @@ public class EntityModule extends BaseMediaModule
 	
 	public void getEntity(WebPageRequest inPageRequest) 
 	{
-		String moduleid = inPageRequest.getRequestParameter("topmoduleid");  //Put this in a path?
+		String moduleid = inPageRequest.getRequestParameter("parentmoduleid");  //Put this in a path?
 		if(moduleid == null) {
-			 moduleid = inPageRequest.getRequestParameter("moduleid");
+			 moduleid = inPageRequest.findPathValue("module");
 		}
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
@@ -906,7 +906,7 @@ public class EntityModule extends BaseMediaModule
 		inPageRequest.putPageValue("entity",entity);
 		
 		Data topmodule = getMediaArchive(inPageRequest).getCachedData("module", moduleid);
-		inPageRequest.putPageValue("topmodule",topmodule);
+		inPageRequest.putPageValue("parentmodule",topmodule);
 		
 	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
