@@ -348,12 +348,12 @@ public class WorkspaceManager
 		{
 			homesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/${applicationid}/views/modules/" + basepath);
+			prop.setValue("../" + basepath);
 			homesettings.putProperty(prop);
 	
 			modulesettings.setProperty("module", module.getId());
 			prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/${applicationid}/views/settings/modules/" + basepath);
+			prop.setValue("../" + basepath);
 			modulesettings.putProperty(prop);
 		}		
 		getPageManager().getPageSettingsManager().saveSetting(homesettings);
