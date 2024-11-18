@@ -41,11 +41,13 @@ public class ThemeModule extends BaseMediaModule {
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
 		Data theme = loadTheme(inReq);
-		xconf.setProperty("themeid",theme.getId()); //Default
-			
-		getPageManager().getPageSettingsManager().saveSetting(xconf);
-		getPageManager().clearCache();
-		
+		if (theme != null) 
+		{
+			xconf.setProperty("themeid",theme.getId()); //Default
+				
+			getPageManager().getPageSettingsManager().saveSetting(xconf);
+			getPageManager().clearCache();
+		}
 	}
 
 	protected void saveAllCustomThemes(WebPageRequest inReq) throws UnsupportedEncodingException

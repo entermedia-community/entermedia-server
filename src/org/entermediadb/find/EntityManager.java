@@ -169,7 +169,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
-		if( entity == null)
+		if( entity == null || module == null)
 		{
 			return null;
 		}
@@ -1035,7 +1035,7 @@ public class EntityManager implements CatalogEnabled
 	
 	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
 	{
-		if( inCounts == null)
+		if( inCounts == null || boxes == null)
 		{
 			return null;
 		}

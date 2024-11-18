@@ -418,19 +418,26 @@ public class FinderModule extends BaseMediaModule
 			//Now do a big OR statement
 			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
 			aquery.setSortBy(inReq.findValue("sortby"));
-			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
-			orquery.setAndTogether(false);
+			
+			SearchQuery orquery = archive.getAssetSearcher().addStandardSearchTerms(inReq);
+			if(orquery == null) {
+				orquery = archive.getAssetSearcher().createSearchQuery();
+			}
+			//orquery.setAndTogether(false);
 			assets.setHitsPerPage(999);
 			for (Iterator iterator = assets.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
 				String assetid = data.get("assetid");
 				if(assetid != null){
-					orquery.addExact("id", data.get("assetid"));
+					orquery.addOrsGroup("id", data.get("assetid"));
 				}
 			}
+			
 			aquery.addChildQuery(orquery);
 			aquery.setHitsName("favoriteassetsmatch");
+			
+			
 			
 			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
 			
