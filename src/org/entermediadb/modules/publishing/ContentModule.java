@@ -157,6 +157,11 @@ public class ContentModule extends BaseMediaModule {
 		Data asset = (Data)inReq.getPageValue("asset");
 		ContentManager manager = getContentManager(inReq);		
 		Collection menu = (Collection)manager.findDitaAssets(entity); 
+		if( menu == null)
+		{
+			log.error("No menu");
+			return;
+		}
 		if( asset == null && !menu.isEmpty())
 		{
 			asset = (Data)menu.iterator().next();
