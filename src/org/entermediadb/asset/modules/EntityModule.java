@@ -901,7 +901,7 @@ public class EntityModule extends BaseMediaModule
 		
 		if(entityid == null)
 		{
-			entityid = inPageRequest.getRequestParameter("id");
+			entityid = inPageRequest.getRequestParameter("dataid");
 		}
 		
 		if (entitysourcetype == null || entityid == null)
