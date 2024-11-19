@@ -177,7 +177,7 @@ public class WorkspaceManager
 
 	public void saveModule(String catalogid, String appid, Data module) 
 	{
-		if( module.getId() == null || module.getId().isEmpty())
+		if(module == null ||  module.getId() == null || module.getId().isEmpty())
 		{
 			throw new OpenEditException("Invalid module id");
 		}
