@@ -153,9 +153,10 @@ public class ProfileModule extends MediaArchiveModule
 	{
 		UserProfile userProfile = inReq.getUserProfile();
 		String changerequest = inReq.getRequestParameter("resultview");
+		String moduleid = inReq.findPathValue("module");
 		if (changerequest != null )
 		{
-			String type = inReq.findPathValue("module") + "resultview";
+			String type = moduleid + "resultview";
 			userProfile.setProperty(type, changerequest);
 			userProfile.save();
 		}
@@ -166,9 +167,7 @@ public class ProfileModule extends MediaArchiveModule
 		}
 		inReq.putPageValue("hits", hits);
 		
-		
 			//hits per page custom for module or userprofile
-			String moduleid = inReq.getRequestParameter("moduleid");
 			if(moduleid != null) {
 				String customhitsperpage = userProfile.get(moduleid+changerequest+"hitsperpage");
 				if (customhitsperpage == null) {
