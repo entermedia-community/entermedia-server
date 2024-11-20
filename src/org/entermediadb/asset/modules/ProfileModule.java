@@ -152,15 +152,11 @@ public class ProfileModule extends MediaArchiveModule
 	public void changeResultView(WebPageRequest inReq)
 	{
 		UserProfile userProfile = inReq.getUserProfile();
-		String resultviewtype = inReq.getRequestParameter("resultviewtype");
-		if (resultviewtype == null) 
-		{
-			resultviewtype = "resultview";
-		}
 		String changerequest = inReq.getRequestParameter("resultview");
 		if (changerequest != null )
 		{
-			userProfile.setProperty(resultviewtype, changerequest);
+			String type = inReq.findPathValue("module") + "resultview";
+			userProfile.setProperty(type, changerequest);
 			userProfile.save();
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
