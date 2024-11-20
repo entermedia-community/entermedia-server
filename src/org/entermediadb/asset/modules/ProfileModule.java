@@ -199,7 +199,7 @@ public class ProfileModule extends MediaArchiveModule
 				hitsperpage = "15";
 			}
 			//custom for each resulttype
-			String moduleid = inReq.getRequestParameter("moduleid");
+			String moduleid = inReq.findValue("moduleid");
 			
 			String resultview = inReq.getRequestParameter("resultview");
 			if(resultview != null && !"stackedgallery".equals(resultview)) {
