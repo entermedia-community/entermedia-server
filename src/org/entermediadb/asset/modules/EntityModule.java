@@ -26,8 +26,10 @@ import org.entermediadb.asset.util.Row;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -1098,5 +1100,34 @@ public class EntityModule extends BaseMediaModule
 
 		// inIn.delete();
 
+	}
+	
+	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String searchtype = resolveSearchType(inPageRequest);
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		if (searchtype == null) 
+		{
+			
+			return;
+		}
+		Searcher searcher = archive.getSearcher(searchtype);
+		String id = inPageRequest.getRequestParameter("id");
+		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
+		if (entity != null) {
+			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
+			String entityid = inPageRequest.getRequestParameter("entityid");
+			PropertyDetail detail =  searcher.getDetail(entitytype);
+			if(detail.isMultiValue()) 
+			{
+				entity.addValue(entitytype, entityid);
+			}
+			else {
+				entity.setValue(entitytype, entityid);
+			}
+			searcher.saveData(entity);
+		}
+		
 	}
 }

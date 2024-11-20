@@ -2142,35 +2142,6 @@ public class DataEditModule extends BaseMediaModule
 	}
 */
 	
-	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
-	{
-		
-		String searchtype = resolveSearchType(inPageRequest);
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (searchtype == null) 
-		{
-			
-			return;
-		}
-		Searcher searcher = archive.getSearcher(searchtype);
-		String id = inPageRequest.getRequestParameter("id");
-		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
-		if (entity != null) {
-			String fieldexternalid = inPageRequest.getRequestParameter("fieldexternalid");
-			String fieldexternalvalue = inPageRequest.getRequestParameter("fieldexternalvalue");
-			PropertyDetail detail =  searcher.getDetail(fieldexternalid);
-			if(detail.isMultiValue()) 
-			{
-				entity.addValue(fieldexternalid, fieldexternalvalue);
-			}
-			else {
-				entity.setValue(fieldexternalid, fieldexternalvalue);
-			}
-			searcher.saveData(entity);
-		}
-		
-	}
-	
 	
 
 	public void toggleBillingContact(WebPageRequest context) {
