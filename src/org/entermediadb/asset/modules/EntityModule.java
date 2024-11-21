@@ -125,11 +125,13 @@ public class EntityModule extends BaseMediaModule
 	
 	public void addAssetsToEntity(WebPageRequest inPageRequest) throws Exception 
 	{
-	
+//		data-copyingsearchtype="$copyingsearchtype"
+//		data-copyinghitssessionid="$copyinghitssessionid"
+
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String pickedmoduleid = inPageRequest.findPathValue("module");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
 		Data entity = archive.getCachedData(pickedmoduleid ,pickedentityid );
 		
@@ -923,7 +925,7 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String moduleid = inPageRequest.findPathValue("module");
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
 		String assetid = inPageRequest.getRequestParameter("assetid");
@@ -936,7 +938,7 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getCachedData("module", moduleid);
 		Data entity = archive.getCachedData(moduleid, entityid);
 		
-		Category category = entityManager.loadLightboxCategory(module, entity, selectedbox, inPageRequest.getUser() );
+		Category category = entityManager.loadLightboxCategory(module, entity, selectedbox.getName(), inPageRequest.getUser() );
 		
 		Integer added = 0;
 		if(category != null) {

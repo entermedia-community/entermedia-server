@@ -884,6 +884,7 @@ public class EntityManager implements CatalogEnabled
 		return lightbox;
 	}
 	*/
+	
 	public Data loadLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity)
 	{
 		if( inModule == null || inEntity == null)
@@ -897,20 +898,42 @@ public class EntityManager implements CatalogEnabled
 				.searchOne();
 		return box;
 	}
-	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+
+
+	public HitTracker loadBoxesForModule(String inBoxModuleType, Data inModule, Data inEntity,User inUser)
 	{
 		if( inModule == null)
 		{
 			log.error("No module");
 			return null;
 		}
+		QueryBuilder query = null;
 		//Search for all the boxes that match.
-		QueryBuilder query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
-		exact("parentmoduleid", inModule.getId()).sort("orderingUp");
+		if( inBoxModuleType == null)
+		{
+			return null;
+		}
 		
+		if( inBoxModuleType.equals("emedialightbox") )
+		{		
+			query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
+			exact("parentmoduleid", inModule.getId()).sort("orderingUp");
+		}
+		else
+		{
+			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId());
+		}
 		HitTracker boxes = getMediaArchive().getCachedSearch(query);
 		//Then each box has a child record with an assetid and comments/statuses
 		//TODO: Search for each box for total assets using facets?
+		return boxes;
+	}
+
+
+	
+	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+	{
+		HitTracker boxes = loadBoxesForModule("emedialightbox",inModule, inEntity, inUser);
 		return boxes;
 	}
 	public HitTracker loadLightBoxesForEntity(Data inModule, Data inEntity,User inUser)
@@ -928,7 +951,7 @@ public class EntityManager implements CatalogEnabled
 		return boxes;
 	}
 	
-	public Category loadLightboxCategory(Data inModule, Data inEntity, Data inLightBox, User inUser) {
+	public Category loadLightboxCategory(Data inModule, Data inEntity, String inFolderName, User inUser) {
 		
 		Category entityrootcategory = loadDefaultFolder(inModule, inEntity, inUser) ;
 		if( entityrootcategory == null)
@@ -936,21 +959,21 @@ public class EntityManager implements CatalogEnabled
 			log.error("No cat" + inEntity);
 			return null;
 		}
-		if (inLightBox == null) 
+		if (inFolderName == null) 
 		{
 			return entityrootcategory;
 		}
-		Category selectedcat = entityrootcategory.getChildByName(inLightBox.getName());
+		Category selectedcat = entityrootcategory.getChildByName(inFolderName);
 		if( selectedcat == null)
 		{
-			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inLightBox.getName());
+			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inFolderName);
 		}
 		return selectedcat;
 		
 		
 	}
 	
-	public Map loadLightBoxCounts(Collection inBoxes, Data inModule, Data inEntity)
+	public Map loadLightBoxCounts(Data inModule, Data inEntity)
 	{
 		Category entityrootcategory = createDefaultFolder(inEntity, null);
 		if( entityrootcategory == null)
@@ -1068,7 +1091,7 @@ public class EntityManager implements CatalogEnabled
 	
 	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, String sortby, User inUser)
 	{
-		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox , null);
+		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox.getName() , null);
 		if( parent == null)
 		{
 			return null;
