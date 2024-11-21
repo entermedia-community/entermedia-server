@@ -272,7 +272,7 @@ public class AdminModule extends BaseMediaModule
 			username = foundUser.getId();
 		}
 		
-		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findValue("allowguestregistration"));
+		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findPathValue("allowguestregistration"));
 		if (foundUser == null && !allowguestregistration) {
 			
 			inReq.putPageValue("commandSucceeded", "nouser");

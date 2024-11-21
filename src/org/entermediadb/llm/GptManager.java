@@ -14,12 +14,14 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -334,6 +336,38 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		}
 		return null;
 
+	}
+
+	public Data updateData(JsonObject inObject, Data inData) {
+	    for (String key : inObject.keySet()) {
+	        JsonElement element = inObject.get(key);
+	        Object value = null;
+
+	        // Handle JSON array
+	        if (element.isJsonArray()) {
+	            JsonArray array = element.getAsJsonArray();
+	            if (array.size() > 0) {
+	                value = array.get(0).getAsString(); // Get the first element as a string
+	            }
+	        }
+	        // Handle JSON object
+	        else if (element.isJsonObject()) {
+	            JsonObject obj = element.getAsJsonObject();
+	            value = obj.toString(); // Serialize the object to a string or process it differently
+	        }
+	        // Handle JSON primitives
+	        else if (element.isJsonPrimitive()) {
+	            value = element.getAsString(); // Get the primitive value as a string
+	        }
+	        // Handle null or unexpected types
+	        else if (element.isJsonNull()) {
+	            value = null;
+	        }
+
+	        // Set the value in the Data object
+	        inData.setValue(key, value);
+	    }
+	    return inData;
 	}
 
 	
