@@ -497,6 +497,13 @@
 		</property>
 	</bean>	
 	
+	
+	<bean id="textExtractor" class="org.entermediadb.asset.scanner.TextMetadataExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
+	
 <bean id="scriptedExtractor" class="org.entermediadb.asset.scanner.ScriptMetadataExtractor" >
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1962,6 +1969,7 @@
 		<property name="metadataExtractors">
 			<list>
 				<ref bean="pdfExtractor" />
+				<ref bean="textExtractor" />				
 				<ref bean="oofficeTextExtractor" />
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />

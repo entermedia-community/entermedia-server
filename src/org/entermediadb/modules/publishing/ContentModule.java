@@ -38,10 +38,11 @@ public class ContentModule extends BaseMediaModule {
 		//PDF?
 	}
 
-	public void createNewEntityFromAI(WebPageRequest inReq)
+	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
 	{
 		//Add as child
-		String topmodule = inReq.findPathValue("parentmodule");
+		String topmodule = inReq.findPathValue("module");
+		
 		String entityid = inReq.getRequestParameter("entityid");
 		String targetentity= inReq.getRequestParameter("moduleid");
 		
@@ -53,7 +54,8 @@ public class ContentModule extends BaseMediaModule {
 		getMediaArchive(inReq).saveData(topmodule,entity);
 		
 		ContentManager manager = getContentManager(inReq);		
-		manager.createNewEntityFromAI(topmodule,entityid,targetentity);
+		//manager.createDitaEntityFromAI(topmodule,entityid,targetentity);
+		manager.createFromLLM(inReq,topmodule,entityid,targetentity);
 		
 	}
 	public void loadDitaXml(WebPageRequest inReq)

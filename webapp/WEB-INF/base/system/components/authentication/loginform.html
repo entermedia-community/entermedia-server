@@ -22,11 +22,11 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				</div>
 			#end
 			
-			#set( $allowguestregistration = $context.findValue("allowguestregistration") )
+			#set( $allowguestregistration = $context.findPathValue("allowguestregistration") )
 			<div class="loginform-col mb-2">
 				<h1 class="page-title text-center my-2">
 					[[Sign-in]]
-					 #if( $allowguestregistration == "ture" )
+					 #if( $allowguestregistration == "true" )
 					 / [[Sign-up]]
 					 #end
 				</h1>
@@ -46,10 +46,10 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				#if($allowloginbyemail == "true")
 				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 400px;color: #3884fd;">
 					<li class="nav-item" style="flex:1">
-						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">Passwordless Login</div>
+						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">[[Passwordless Login]]</div>
 					</li>
 					<li class="nav-item" style="flex:1">
-						<div class="nav-link" data-target="#passwordLogin" style="cursor: pointer;">Login with Password</div>
+						<div class="nav-link" data-target="#passwordLogin" style="cursor: pointer;">[[Login with Password]]</div>
 					</li>
 				</ul>
 				#end

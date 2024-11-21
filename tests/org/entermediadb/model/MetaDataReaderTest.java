@@ -93,6 +93,25 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		}
 	}
 	
+	public void testDita()
+	{
+		File testDir = new File(getRoot().getAbsoluteFile().getParentFile().getPath() + "/etc/testassets/dita/topics");
+		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
+		getMediaArchive().getSearcher("fileformat").reIndexAll();
+
+		File testFile = new File(testDir, "c_about_defining_payload.dita");
+		assertTrue(testFile.exists() && testFile.canRead());
+		Asset p = new BaseAsset(getMediaArchive());
+		FileItem item = new FileItem();
+		item.setPath(testFile.getName());
+		item.setFile(testFile);
+
+		reader.populateAsset(getMediaArchive(),item, p);
+		Object value = p.get("fulltext");
+		assertNotNull("fulltext", value);
+	}
+	
+	
 	public void XtestListLookups()
 	{
 		File testDir = new File(getRoot().getAbsoluteFile().getParentFile().getPath() + "/etc/testassets");
