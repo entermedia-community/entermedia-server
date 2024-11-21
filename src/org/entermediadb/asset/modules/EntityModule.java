@@ -933,8 +933,10 @@ public class EntityModule extends BaseMediaModule
 		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
 		
 	
-		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
-		Data selectedbox = archive.getCachedData("emedialightbox",lightboxid );
+		String lightboxtype = inPageRequest.getRequestParameter("lightboxtype");
+		String dataid = inPageRequest.getRequestParameter("lightboxid");
+		Data selectedbox = archive.getCachedData(lightboxtype,dataid);
+		
 		Data module = archive.getCachedData("module", moduleid);
 		Data entity = archive.getCachedData(moduleid, entityid);
 		

@@ -885,6 +885,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	*/
 	
+	//Not used
 	public Data loadLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity)
 	{
 		if( inModule == null || inEntity == null)
