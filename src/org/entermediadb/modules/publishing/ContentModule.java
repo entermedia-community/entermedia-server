@@ -138,18 +138,17 @@ public class ContentModule extends BaseMediaModule {
 	
 	public void renderDitaTable(WebPageRequest inReq) throws Exception
 	{
-		String parentmodule = inReq.getRequestParameter("parentmodule");
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 		String entityid = inReq.getRequestParameter("entityid");
-		String targetmodule = inReq.getRequestParameter("submodule");
-		//String renderformat = inReq.getRequestParameter("renderformat");
-
+		String targetmodule = inReq.findPathValue("submoduleid");
+		
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
-		Data entity = mediaArchive.getCachedData(parentmodule, entityid);
-		HitTracker children = mediaArchive.query(targetmodule).exact(parentmodule,entityid).sort("userchapter_number").sort("useritem_number").search();
+		Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
+		HitTracker children = mediaArchive.query(targetmodule).exact(entitymoduleid,entityid).sort("userchapter_number").sort("useritem_number").search();
 
 		ContentManager manager = getContentManager(inReq);		
-		manager.renderDita(inReq, parentmodule, entity, targetmodule, children, mediaArchive);
+		manager.renderDita(inReq, entitymoduleid, entity, targetmodule, children, mediaArchive);
 
 	}
 
