@@ -908,9 +908,14 @@ public class EntityModule extends BaseMediaModule
 			entityid = inPageRequest.getRequestParameter("dataid");
 		}
 		
-		if (entitysourcetype == null || entityid == null)
+		if (entityid == null)
 		{
 			return;
+		}
+		
+		if( entitysourcetype == null )
+		{
+			entitysourcetype = inPageRequest.findPathValue("module");
 		}
 		Data entity = getMediaArchive(inPageRequest).getCachedData(entitysourcetype, entityid);
 		inPageRequest.putPageValue("entity",entity);
