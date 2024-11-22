@@ -798,6 +798,7 @@ public class EntityManager implements CatalogEnabled
 		return assetstatuses;
 	}	
 	
+	//Not used?
 	public int addToWorkflowStatus(User inUser, String inModuleid, String inEntityid, HitTracker inAssethits, String lightboxid)
 	{
 		if( lightboxid == null)
@@ -885,7 +886,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	*/
 	
-	//Not used
+	//Not used?
 	public Data loadLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity)
 	{
 		if( inModule == null || inEntity == null)
@@ -900,7 +901,7 @@ public class EntityManager implements CatalogEnabled
 		return box;
 	}
 
-
+	//Not used?
 	public HitTracker loadBoxesForModule(String inBoxModuleType, Data inModule, Data inEntity,User inUser)
 	{
 		if( inModule == null)
@@ -922,7 +923,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		else
 		{
-			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId());
+			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId()).facet("rootcategory");
 		}
 		HitTracker boxes = getMediaArchive().getCachedSearch(query);
 		//Then each box has a child record with an assetid and comments/statuses
