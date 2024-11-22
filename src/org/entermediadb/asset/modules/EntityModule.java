@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
-import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.CsvImporter;
 import org.entermediadb.asset.importer.XlsImporter;
@@ -27,14 +26,15 @@ import org.entermediadb.find.EntityManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 public class EntityModule extends BaseMediaModule
@@ -1051,19 +1051,23 @@ public class EntityModule extends BaseMediaModule
 		}
 
 		String entityid = inReq.getRequestParameter("entityid");
-		String parentmodule = inReq.getRequestParameter("module");
+		String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
 
-		String targetmodule = inReq.getRequestParameter("targetmodule");
-		final String externalfieldname = inReq.getRequestParameter("fieldexternalid");
-		final String externalfieldvalue = inReq.getRequestParameter("fieldexternalvalue");
+		final String externalfieldname = entitymoduleid;
+		final String externalfieldvalue = entityid;
 		
 		ScriptLogger logger = new ScriptLogger();
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
 		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
 			Page tmp = getPageManager().getPage("/WEB-INF/temp/uploads/" + inReq.getUserName() + "/uploaded" + item.getName());
-			properties.saveFileAs(item, tmp.getPath(), inReq.getUser());
-
+			ContentItem saveditem = properties.saveFileAs(item, tmp.getPath(), inReq.getUser());
+			//tmp.setContentItem(saveditem);
+			tmp = getPageManager().getPage("/WEB-INF/temp/uploads/" + inReq.getUserName() + "/uploaded" + item.getName());
+			if( !tmp.exists() )
+			{
+				throw new OpenEditException("Upload issue");
+			}
 			//Now process it
 			String mime = tmp.getMimeType();
 			if( mime.endsWith("csv"))
@@ -1083,6 +1087,7 @@ public class EntityModule extends BaseMediaModule
 				csvimporter.setMakeId(false);
 				csvimporter.setNewdDetailPrefix("user");
 				csvimporter.importData();
+				inReq.putPageValue("importtotal", csvimporter.getImportTotal());
 			}
 			else if (mime.contains("ms-excel"))
 			{

@@ -72,7 +72,7 @@ public class BaseImporter extends EnterMediaObject
 	protected boolean fieldMakeId = false;
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
-	
+	protected int importTotal = 0;
 	protected boolean fieldLookUpLists = true;
 	
 	protected boolean isLookUpLists()
@@ -250,8 +250,14 @@ public class BaseImporter extends EnterMediaObject
 		}
 		getSearcher().saveAllData(data, context.getUser());
 		log.info("imported " + rowNum);
+		importTotal = rowNum;
 	}
 
+	public int getImportTotal()
+	{
+		return importTotal;
+	}
+	
 	public boolean skipRow(Row inTrow)
 	{
 		//Add fields to this string or two?
