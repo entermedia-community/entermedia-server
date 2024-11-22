@@ -922,7 +922,18 @@ public class EntityModule extends BaseMediaModule
 		
 		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitysourcetype);
 		inPageRequest.putPageValue("entitymodule",entitymodule);
-		
+
+		String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
+		if(entitymoduleviewid != null)
+		{
+			inPageRequest.putPageValue("entitymoduleviewid",entitymoduleviewid);
+			Data entitymoduleviewdata = getMediaArchive(inPageRequest).getCachedData("view", entitymoduleviewid);
+			if( entitymoduleviewdata != null)
+			{
+				inPageRequest.putPageValue("entitymoduleviewdata",entitymoduleviewdata);
+			}
+		}
+
 	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
 	{
