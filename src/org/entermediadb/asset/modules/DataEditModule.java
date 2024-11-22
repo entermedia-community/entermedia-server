@@ -2409,9 +2409,21 @@ Long count;  //Moved ot top selection
 	
 	}
 
+	public void loadEditHome(WebPageRequest inReq)
+	{
+		String edithome = inReq.findPathValue("edithome");
+		if( edithome != null)
+		{
+			inReq.putPageValue("edithome",edithome);
+		}
+	}
+	
 	public void loadSearchHome(WebPageRequest inReq)
 	{
 		String searchhome = inReq.findPathValue("searchhome");
-		inReq.putPageValue("searchhome",searchhome);
+		if( searchhome != null)
+		{
+			inReq.putPageValue("searchhome",searchhome);
+		}
 	}
 }
