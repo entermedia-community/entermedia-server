@@ -1215,7 +1215,7 @@ public class FinderModule extends BaseMediaModule
 				if(Boolean.parseBoolean(publishing.get("enabled")))
 				{
 					entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-					if( !entity.getBoolean("enablepublishinggallery"))
+					if(entity != null &&  !entity.getBoolean("enablepublishinggallery"))
 					{
 						entity.setValue("enablepublishinggallery",true);
 						archive.saveData(publishing.get("moduleid"),entity);
@@ -1234,6 +1234,7 @@ public class FinderModule extends BaseMediaModule
 					}
 
 				}
+				inReq.putPageValue("entity",entity);
 			}
 		}
 	}
@@ -1297,8 +1298,9 @@ public class FinderModule extends BaseMediaModule
 			if(search == null) {
 				search = assetsearcher.createSearchQuery();
 			}
-			search.addExact("category", category.getId());
-			
+			if (category != null) {
+				search.addExact("category", category.getId());
+			}
 			search.setHitsName(hitsname);
 			//search.addSortBy("assetaddeddateDown");	
 			search.addSortBy(publishingSortby);
