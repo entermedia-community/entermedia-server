@@ -1133,17 +1133,17 @@ public class MediaAdminModule extends BaseMediaModule
 			String viewid = PathUtilities.makeId(parentmodule.getName());
 			viewid = viewid.toLowerCase();
 			
-			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
-			Page from = getPageManager().getPage(addpath);
-			
-			//entityparent/entitychildparent
-			String targetpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + parentmodule.getId() + "/" + childmodule.getId() + viewid + ".xml";
-			Page to = getPageManager().getPage(targetpath );
+//			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
+//			Page from = getPageManager().getPage(addpath);
+//			
+//			//entityparent/entitychildparent
+//			String targetpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + parentmodule.getId() + "/" + childmodule.getId() + viewid + ".xml";
+//			Page to = getPageManager().getPage(targetpath );
 
-			if( !to.exists())
-			{
-				getPageManager().copyPage(from, to);
-			}
+//			if( !to.exists())
+//			{
+//				getPageManager().copyPage(from, to);
+//			}
 			Data data =  (Data)viewsearcher.searchById(parentmodule.getId() + viewid);
 			if( data == null)
 			{
