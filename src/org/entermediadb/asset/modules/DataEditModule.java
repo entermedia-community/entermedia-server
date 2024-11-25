@@ -2415,6 +2415,11 @@ Long count;  //Moved ot top selection
 		if( edithome != null)
 		{
 			inReq.putPageValue("edithome",edithome);
+			String edithomeid = inReq.findPathValue("edithomeid");
+			if( edithomeid != null)
+			{
+				inReq.putPageValue("edithomeid",edithomeid);
+			}
 		}
 	}
 	
