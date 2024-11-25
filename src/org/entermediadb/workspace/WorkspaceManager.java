@@ -257,6 +257,8 @@ public class WorkspaceManager
 				}
 				
 				//Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+				
+				/*
 				Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
 				
 				boolean copied = false;
@@ -286,8 +288,8 @@ public class WorkspaceManager
 						getPageManager().copyPage(input, destpath);
 						copied = true;
 					}
-					
 				}
+				*/
 //				if( copied )
 //				{
 //					views.reIndexAll();
