@@ -900,7 +900,18 @@ public class EntityModule extends BaseMediaModule
 	
 	public void getEntity(WebPageRequest inPageRequest) 
 	{
-		String entitysourcetype = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
+
+		String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
+		if(entitymoduleviewid != null)
+		{
+			inPageRequest.putPageValue("entitymoduleviewid",entitymoduleviewid);
+			Data entitymoduleviewdata = getMediaArchive(inPageRequest).getCachedData("view", entitymoduleviewid);
+			if( entitymoduleviewdata != null)
+			{
+				inPageRequest.putPageValue("entitymoduleviewdata",entitymoduleviewdata);
+			}
+		}
+
 		String entityid = inPageRequest.getRequestParameter("entityid");
 		
 		if(entityid == null)
@@ -913,6 +924,7 @@ public class EntityModule extends BaseMediaModule
 			return;
 		}
 		
+		String entitysourcetype = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
 		if( entitysourcetype == null )
 		{
 			entitysourcetype = inPageRequest.findPathValue("module");
@@ -923,16 +935,6 @@ public class EntityModule extends BaseMediaModule
 		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitysourcetype);
 		inPageRequest.putPageValue("entitymodule",entitymodule);
 
-		String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
-		if(entitymoduleviewid != null)
-		{
-			inPageRequest.putPageValue("entitymoduleviewid",entitymoduleviewid);
-			Data entitymoduleviewdata = getMediaArchive(inPageRequest).getCachedData("view", entitymoduleviewid);
-			if( entitymoduleviewdata != null)
-			{
-				inPageRequest.putPageValue("entitymoduleviewdata",entitymoduleviewdata);
-			}
-		}
 
 	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
