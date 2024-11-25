@@ -1153,7 +1153,7 @@ public class MediaAdminModule extends BaseMediaModule
 				data.setName(childmodule.getName());
 
 				data.setProperty("moduleid", parentmodule.getId());
-				data.setProperty("rendertype", "table"); //POne to manuy
+				data.setProperty("rendertype", "entitysubmodules"); //POne to manuy
 				data.setProperty("rendertable", childmodule.getId());
 				data.setProperty("renderexternalid", parentmodule.getId());
 				data.setProperty("systemdefined", "false");
