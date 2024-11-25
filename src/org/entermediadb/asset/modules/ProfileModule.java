@@ -266,6 +266,10 @@ public class ProfileModule extends MediaArchiveModule
 		if (prof != null && field != null)
 		{
 			String value = inReq.getRequestParameter( "property.value");
+			if( value == null)
+			{
+				value = inReq.getRequestParameter( "propertyvalue");
+			}
 			prof.setValue(field, value);
 			getUserProfileManager().saveUserProfile(prof);
 		}
