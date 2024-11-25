@@ -1,0 +1,36 @@
+<properties>
+	
+	<!-- 
+	
+	This is a list for all modules by default to have. They can delete the ones they dont need
+	
+	 -->
+	
+	<property id="defaultgeneral" moduleid="default" systemdefined="false" rendertype="data" >Data</property>
+	<property id="defaultlightboxes" moduleid="default" systemdefined="false" rendertype="tablightboxes" ordering="1000">Files</property>	
+	
+	<property id="defaultaddnew" moduleid="default" systemdefined="true" rendertype="data" >Add New</property>
+	<property id="defaultadvancedsearch" moduleid="default" systemdefined="true" >Advanced Search</property>
+	<property id="defaultresultstable" moduleid="default" systemdefined="true" >Results</property>
+	<property id="defaultheaderdetail" moduleid="default" systemdefined="true" >Header Details</property>
+	<property id="defaultgridfields" moduleid="default" systemdefined="true" >Grid Box</property>
+
+	<property id="defaultentityhistory" moduleid="default" systemdefined="true" rendertype="entityhistory" >History</property>
+	
+	<property id="defaultentityexports" moduleid="default" systemdefined="true"  >Export</property>
+	<property id="defaultentityshare" moduleid="default" systemdefined="true"  rendertype="entityshare" parentview="defaultentityexports" >Share</property>
+	<property id="defaultentitygallery" moduleid="default" systemdefined="true"  rendertype="entitygallery" parentview="defaultentityexports" >Publish Gallery</property>
+	<property id="defaultentitycarousel" moduleid="default" systemdefined="true"  rendertype="entitycarousel" parentview="defaultentityexports" >Publish Carousel</property>
+	<property id="defaultentitycopy" moduleid="default" systemdefined="true"  rendertype="entitycopy" parentview="defaultentityexports" >Copy</property>
+	<property id="defaultentitymove" moduleid="default" systemdefined="true"  rendertype="entitymove" parentview="defaultentityexports" >Move</property>
+	<property id="defaultentitydownloadzip" moduleid="default" systemdefined="true"  rendertype="entitydownloadzip" parentview="defaultentityexports" >Download Zip</property>
+	<property id="defaultentitybulkdownload" moduleid="default" systemdefined="true"  rendertype="entitybulkdownload" parentview="defaultentityexports" >Bulk Downloader</property>
+
+	<property id="defaultentityimports" moduleid="default" systemdefined="true" >Import</property>
+	<property id="defaultentityupload" moduleid="default" systemdefined="true"  rendertype="entityupload" parentview="defaultentityexports" >Upload</property>
+	<property id="defaultentityuploadwithurl" moduleid="default" systemdefined="true"  rendertype="entityuploadwithurl" parentview="defaultentityexports" >Upload With URL</property>
+	<property id="defaultentityaddexisting" moduleid="default" systemdefined="true"  rendertype="entityaddexisting" parentview="defaultentityexports" >Add Existing Folders</property>
+	
+	<property id="defaultentitybulkupload" moduleid="default" systemdefined="true"  rendertype="entitybulkupload" parentview="defaultentityexports" >Bulk Uploader</property>
+	
+</properties>

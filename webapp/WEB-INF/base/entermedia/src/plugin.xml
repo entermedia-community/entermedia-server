@@ -19,7 +19,7 @@
 		</property>
 		<property name="autoLoginProviders">
 			<list>
-				<ref 	bean="autoLoginWithCookie" />
+				<ref bean="autoLoginWithCookie" />
 				<ref bean="autoLoginByHeader" />
 				<ref bean="autoLoginLti" />
 				<ref bean="autoLoginByToken" />
@@ -1669,6 +1669,28 @@
 		<property name="checkVersions"><value>false</value></property>
 						
 		
+	</bean>
+	
+	<bean id="elasticViewSearcher"
+		class="org.entermediadb.elasticsearch.searchers.ElasticViewSearcher"
+		scope="prototype">
+		
+		<property name="xmlSearcher">
+			<ref bean="xmlFolderSearcher" />
+		</property>
+		
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="newDataName"><value>viewData</value></property>		
+		
+		<property name="checkVersions"><value>false</value></property>
 	</bean>
 	
 	  <bean id="elasticXmlFileSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticXmlFileSearcher" scope="prototype">
