@@ -909,6 +909,11 @@ public class EntityManager implements CatalogEnabled
 			log.error("No module");
 			return null;
 		}
+		if( inEntity == null)
+		{
+			log.error("No entity");
+			return null;
+		}
 		QueryBuilder query = null;
 		//Search for all the boxes that match.
 		if( inBoxModuleType == null)
