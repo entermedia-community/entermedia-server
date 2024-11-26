@@ -928,7 +928,7 @@ public class EntityManager implements CatalogEnabled
 		}
 		else
 		{
-			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId()).facet("rootcategory");
+			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId());
 		}
 		HitTracker boxes = getMediaArchive().getCachedSearch(query);
 		//Then each box has a child record with an assetid and comments/statuses
@@ -988,7 +988,7 @@ public class EntityManager implements CatalogEnabled
 			log.error("No folder");
 			return null;
 		}
-		HitTracker found = getMediaArchive().query("asset").orgroup("category", entityrootcategory.getChildren()).facet("category").search();
+		HitTracker found = getMediaArchive().query("asset").orgroup("category-exact", entityrootcategory.getChildren()).facet("category").search();
 		
 		Map categorycounts = new HashMap();
 		
