@@ -455,7 +455,10 @@ public class PresetCreator
 		}
 		else
 		{
-			usefile = basename + ".jpg";
+			if (rendertype== "image")
+			{
+				usefile = basename + ".jpg";
+			}
 		}
 		return usefile;
 	}
