@@ -103,6 +103,10 @@ public class ZohoAssetSource extends BaseAssetSource
 	@Override
 	public boolean handles(Asset inAsset)
 	{
+		if(inAsset == null)
+		{
+			return false;
+		}
 		String name = getFolderPath();
 		if(name != null &&  inAsset.getSourcePath().startsWith(name))
 		{

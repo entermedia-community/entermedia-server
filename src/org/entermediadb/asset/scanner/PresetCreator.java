@@ -448,6 +448,7 @@ public class PresetCreator
 		String usefile = inGeneratedName;
 		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
 		String basename = PathUtilities.extractPageName(inGeneratedName);
+		String baseextension = PathUtilities.extractPageType(inGeneratedName);
 		Data preset = getCachedPresetByExternalName(inArchive,rendertype,basename + ".webp");
 		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
 		{
@@ -455,7 +456,13 @@ public class PresetCreator
 		}
 		else
 		{
-			usefile = basename + ".jpg";
+			if(baseextension != null)
+			{
+				usefile = basename + "." + baseextension;
+			}
+			else {
+				usefile = basename + ".jpg";
+			}
 		}
 		return usefile;
 	}
