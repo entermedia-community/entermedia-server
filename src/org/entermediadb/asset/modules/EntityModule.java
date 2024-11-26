@@ -900,7 +900,8 @@ public class EntityModule extends BaseMediaModule
 	
 	public void getEntity(WebPageRequest inPageRequest) 
 	{
-
+		String entitymoduleid = null;
+		
 		String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
 		if(entitymoduleviewid != null)
 		{
@@ -909,6 +910,7 @@ public class EntityModule extends BaseMediaModule
 			if( entitymoduleviewdata != null)
 			{
 				inPageRequest.putPageValue("entitymoduleviewdata",entitymoduleviewdata);
+				entitymoduleid = entitymoduleviewdata.get("moduleid");
 			}
 		}
 
@@ -924,15 +926,18 @@ public class EntityModule extends BaseMediaModule
 			return;
 		}
 		
-		String entitysourcetype = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
-		if( entitysourcetype == null )
+		if( entitymoduleid == null )
 		{
-			entitysourcetype = inPageRequest.findPathValue("module");
+			entitymoduleid = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
+			if( entitymoduleid == null )
+			{
+				entitymoduleid = inPageRequest.findPathValue("module");
+			}
 		}
-		Data entity = getMediaArchive(inPageRequest).getCachedData(entitysourcetype, entityid);
+		Data entity = getMediaArchive(inPageRequest).getCachedData(entitymoduleid, entityid);
 		inPageRequest.putPageValue("entity",entity);
 		
-		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitysourcetype);
+		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitymoduleid);
 		inPageRequest.putPageValue("entitymodule",entitymodule);
 
 
