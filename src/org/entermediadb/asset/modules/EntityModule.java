@@ -228,7 +228,7 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String pickedmoduleid = inPageRequest.findPathValue("module");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
 		
 		String copyingcategoryid = inPageRequest.getRequestParameter("copyingcategoryid");
