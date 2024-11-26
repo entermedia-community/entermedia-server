@@ -100,7 +100,7 @@ public class VideoConversionManager extends BaseConversionManager
 		{
 			//Now make the input image needed using the video as the input
 			instructions2 = createInstructions(inStructions.getAsset(),preset);
-			instructions2.setProperty("outputfile", "image1900x1080.webp");
+			instructions2.setProperty("outputfile", defaultpresetoutput);
 			instructions2.setOutputFile(null);
 		}
 		else
