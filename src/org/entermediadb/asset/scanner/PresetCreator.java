@@ -456,7 +456,13 @@ public class PresetCreator
 		}
 		else
 		{
-			usefile = basename + "." + baseextension;
+			if(baseextension != null)
+			{
+				usefile = basename + "." + baseextension;
+			}
+			else {
+				usefile = basename + ".jpg";
+			}
 		}
 		return usefile;
 	}
