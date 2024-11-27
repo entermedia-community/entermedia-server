@@ -2411,11 +2411,16 @@ Long count;  //Moved ot top selection
 
 	public void loadEditHome(WebPageRequest inReq)
 	{
-		String edithome = inReq.findPathValue("edithome");
+		String edithome = inReq.getRequestParameter("edithome");
+		if( edithome == null)
+		{
+			edithome = inReq.findPathValue("edithome");
+		}
 		if( edithome != null)
 		{
 			inReq.putPageValue("edithome",edithome);
-			String edithomeid = inReq.findPathValue("edithomeid");
+			Page found = getPageManager().getPage(edithome);
+			String edithomeid = found.getProperty("edithomeid");
 			if( edithomeid != null)
 			{
 				inReq.putPageValue("edithomeid",edithomeid);
