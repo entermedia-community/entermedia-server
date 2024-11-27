@@ -1148,7 +1148,12 @@ public class DataEditModule extends BaseMediaModule
 
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
-		String name = inReq.getRequestParameter("hitssessionid");
+		String moduleid = inReq.findPathValue("module");
+		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
+		if (name == null)
+		{
+			name = inReq.getRequestParameter("hitssessionid");
+		}
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		if (hits != null)
 		{
@@ -1161,6 +1166,7 @@ public class DataEditModule extends BaseMediaModule
 					hits.toggleSelected(id);
 				}
 			}
+			inReq.putPageValue("hits", hits);
 			inReq.putPageValue(hits.getHitsName(), hits);
 			/*
 			if (inReq.getPageValue("hits") == null)
@@ -1174,7 +1180,12 @@ public class DataEditModule extends BaseMediaModule
 	public void selectHits(WebPageRequest inReq) throws Exception
 	{
 		// loadPageOfSearch(inReq);
-		String name = inReq.getRequestParameter("hitssessionid");
+		String moduleid = inReq.findPathValue("module");
+		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
+		if (name == null)
+		{
+			name = inReq.getRequestParameter("hitssessionid");
+		}
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
 		if (hits == null)
 		{
@@ -1199,6 +1210,7 @@ public class DataEditModule extends BaseMediaModule
 			hits.setShowOnlySelected(false);
 		}
 		inReq.putPageValue(hits.getHitsName(), hits);
+		inReq.putPageValue("hits", hits);
 
 	}
 
