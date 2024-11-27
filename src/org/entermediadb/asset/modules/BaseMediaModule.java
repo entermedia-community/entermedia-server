@@ -9,6 +9,7 @@ import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.BaseModule;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
@@ -21,6 +22,17 @@ import org.openedit.util.PathUtilities;
 public class BaseMediaModule extends BaseModule
 {
 	private static final Log log = LogFactory.getLog(BaseMediaModule.class);
+
+	protected HitTracker loadHitTracker(WebPageRequest inReq, String moduleid)
+	{
+		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
+		if (name == null)
+		{
+			name = inReq.getRequestParameter("hitssessionid");
+		}
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		return hits;
+	}
 
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{

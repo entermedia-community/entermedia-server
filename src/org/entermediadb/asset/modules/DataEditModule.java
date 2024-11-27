@@ -1149,12 +1149,7 @@ public class DataEditModule extends BaseMediaModule
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
 		String moduleid = inReq.findPathValue("module");
-		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
-		if (name == null)
-		{
-			name = inReq.getRequestParameter("hitssessionid");
-		}
-		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		if (hits != null)
 		{
 			String[] params = inReq.getRequestParameters("dataid");
@@ -1181,12 +1176,8 @@ public class DataEditModule extends BaseMediaModule
 	{
 		// loadPageOfSearch(inReq);
 		String moduleid = inReq.findPathValue("module");
-		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
-		if (name == null)
-		{
-			name = inReq.getRequestParameter("hitssessionid");
-		}
-		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
+
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		if (hits == null)
 		{
 			throw new OpenEditException("Session timed out, reload page");
@@ -1327,8 +1318,8 @@ public class DataEditModule extends BaseMediaModule
 	}
 	public HitTracker loadHitsWrapped(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
-		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker trackerOriginal = loadHitTracker(inReq, moduleid);
 		if (trackerOriginal == null)
 		{
 			return null;
@@ -1355,13 +1346,15 @@ public class DataEditModule extends BaseMediaModule
 	
 	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
-		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		
+		String moduleid = inReq.findPathValue("module");
+		HitTracker trackerOriginal = loadHitTracker(inReq, moduleid);
+
 		if (trackerOriginal == null)
 		{
 			return null;
 		}
-		inReq.setRequestParameter("hitssessionidOriginal", hitssessionidOriginal);
+		inReq.setRequestParameter("hitssessionidOriginal", trackerOriginal.getSessionId());
 		String othername = inReq.findValue("hitsname");
 
 		String hitssessionidCopy = othername + trackerOriginal.getSearchQuery().getResultType() + trackerOriginal.getCatalogId();

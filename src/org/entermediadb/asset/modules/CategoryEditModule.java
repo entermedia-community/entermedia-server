@@ -350,34 +350,30 @@ public class CategoryEditModule extends BaseMediaModule {
 		{
 			return;
 		}
-		
-		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		String moduleid = inPageRequest.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inPageRequest, moduleid);
 		boolean movecategory = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
 		String rootcategoryid = inPageRequest.getRequestParameter("rootcategoryid");
-		if( hitssessionid != null )
+		if( tracker != null )
 		{
-			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(hitssessionid);
-			if( tracker != null )
+			tracker = tracker.getSelectedHitracker();
+		}
+		if( tracker != null && tracker.size() > 0 )
+		{
+			int added = 0;
+			tracker.enableBulkOperations();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				tracker = tracker.getSelectedHitracker();
+				Data data = (Data) iterator.next();
+				Asset asset = archive.getAsset(data.getId());
+				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				archive.saveAsset(asset, inPageRequest.getUser());
+				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+				added++;
 			}
-			if( tracker != null && tracker.size() > 0 )
-			{
-				int added = 0;
-				tracker.enableBulkOperations();
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					Asset asset = archive.getAsset(data.getId());
-					addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
-					archive.saveAsset(asset, inPageRequest.getUser());
-					archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-					added++;
-				}
-				
-				inPageRequest.putPageValue("added" , String.valueOf( added ) );
-				return;
-			}
+			
+			inPageRequest.putPageValue("added" , String.valueOf( added ) );
+			return;
 		}
 		
 		Asset asset;
