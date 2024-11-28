@@ -1843,8 +1843,8 @@ public class DataEditModule extends BaseMediaModule
 		{
 			throw new OpenEditException("Module not defined");
 		}
-		query.addMatches("moduleid", module);
-		query.addNot("systemdefined", "true");
+		query.addExact("moduleid", module);
+		query.addExact("systemdefined", "false");
 		query.addSortBy("ordering");
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
@@ -1858,6 +1858,11 @@ public class DataEditModule extends BaseMediaModule
 		for (Iterator iterator = viewsearcher.search(query).iterator(); iterator.hasNext();)
 		{
 			Data view = (Data) iterator.next();
+			String rendertype = view.get("rendertype");
+			if (rendertype != null && !(rendertype.equals("data")  || rendertype.equals("default"))) 
+			{
+				continue;
+			}
 			Object permissionvalue = inReq.getPageValue("can" + view.getId());
 			if (permissionvalue == null || Boolean.parseBoolean(String.valueOf(permissionvalue)))
 			{
