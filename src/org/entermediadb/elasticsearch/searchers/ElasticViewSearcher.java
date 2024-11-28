@@ -95,6 +95,14 @@ public class ElasticViewSearcher extends ElasticListSearcher
 			ViewData data = (ViewData) iterator.next();
 			if( !data.getBoolean("deleted"))
 			{
+//				if( "asset".equals(moduleid.getValue() ) )
+//				{
+//					//Dont add the dataone
+//					if( data.getId().equals("assetgeneral") ) //legacy id 
+//					{
+//						continue;
+//					}
+//				}
 				finallist.add(data);
 			}
 		}

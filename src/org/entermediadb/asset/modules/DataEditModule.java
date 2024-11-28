@@ -2424,7 +2424,7 @@ Long count;  //Moved ot top selection
 		if( edithome != null)
 		{
 			inReq.putPageValue("edithome",edithome);
-			Page found = getPageManager().getPage(edithome + "/");
+			Page found = getPageManager().getPage(edithome + "/_site.xconf");
 			String edithomeid = found.get("edithomeid");
 			if( edithomeid != null)
 			{
