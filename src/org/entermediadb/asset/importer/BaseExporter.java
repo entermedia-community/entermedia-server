@@ -6,7 +6,6 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.util.CSVWriter;
-import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
@@ -16,7 +15,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
-import org.openedit.util.DateStorageUtil;
 
 public class BaseExporter
 {
@@ -28,16 +26,35 @@ public class BaseExporter
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		if(hits == null)
 		{
-			 String sessionid = inReq.getRequestParameter("hitssessionid");
-			 hits = (HitTracker)inReq.getSessionValue(sessionid);
+			log.error("No such hits: " + name);
+			String sessionid = inReq.getRequestParameter("hitssessionid");
+			hits = (HitTracker)inReq.getSessionValue(sessionid);
+			if(hits == null)
+			{
+				log.error("No such sessions: " + sessionid);
+				return;
+			}
+			// String moduleid = inReq.findPathValue("module");
+			// hits = loadHitTracker(inReq, moduleid);
+			// if(hits == null)
+			// {
+			// 	log.error("No hittracker found");
+			// 	return;
+			// }
 		}
 		hits.enableBulkOperations();
 		SearcherManager searcherManager = (SearcherManager)inReq.getPageValue("searcherManager");
 		String searchtype = inReq.findValue("searchtype");
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		String isfriendly = inReq.getRequestParameter("friendly");	
+
 		boolean friendly = true;
 	
+		if( isfriendly != null)
+		{
+			friendly = Boolean.parseBoolean(isfriendly);
+		}
 		PropertyDetails	details = searcher.getPropertyDetails();
 	
 		int count = 0;
@@ -71,7 +88,7 @@ public class BaseExporter
 				} 
 				else
 				{
-					headers[count] = detail.getName();
+					headers[count] = detail.getId();
 				}
 				count++;
 			}		
@@ -110,23 +127,7 @@ public class BaseExporter
 //									continue;
 //								}
 //							}
-							String value = null;
-							//do special logic here
-							if(detail.isList() && friendly)
-							{
-								//detail.get
-								value = hit.get(detail.getId());
-								Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
-								if(remote != null)
-								{
-									value= remote.getName();
-								}
-							}
-							String render = detail.get("render");
-							if(render != null)
-							{
-								value = searcherManager.getValue(detail.getListCatalogId(), render, hit.getProperties());
-							}
+								
 							if(detail.isMultiLanguage())
 							{
 								Object vals = hit.getValue(detail.getId());
@@ -148,11 +149,31 @@ public class BaseExporter
 							}
 							else
 							{
-								if( value == null)
+								Object value = null;
+								//do special logic here
+								if(detail.isList() && friendly)
+								{
+									//detail.get
+									String val = hit.get(detail.getId());
+									Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), val);
+									if(remote != null)
+									{
+										value= remote.getName();
+									}
+								}
+								if(value == null && detail.get("rendermask") != null)
+								{
+									value = searcherManager.getValue(hit, detail, inReq.getLocale());
+								}
+								else 
 								{
 									value = hit.get(detail.getId());
 								}
-								nextrow[fieldcount] = value;
+								if(value == null)
+								{
+									value = "";
+								}
+								nextrow[fieldcount] = value.toString();
 								fieldcount++;
 							}
 						}	

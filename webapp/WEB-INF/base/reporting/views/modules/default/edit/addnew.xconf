@@ -1,6 +1,0 @@
-<page>
-	<path-action name="DataEditModule.createNew" >
-			<searchtype>${module}</searchtype>
-	</path-action>
-	<property name="new">true</property>
-</page>

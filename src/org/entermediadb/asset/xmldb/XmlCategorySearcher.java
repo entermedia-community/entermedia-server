@@ -287,4 +287,24 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		return null;
 	}
 	
+	
+	public List listAllCategories(Category inTopCategory)
+	{
+		List all = new ArrayList(300);
+		addChildren(inTopCategory,all);
+		return all;
+	}
+	
+	protected void addChildren(Category parent,List all)
+	{
+		all.add(parent);
+		if( parent.hasChildren())
+		{
+			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();) {
+				Category category = (Category ) iterator.next();
+				addChildren(category,all);
+			}
+		}
+	}
+	
 }

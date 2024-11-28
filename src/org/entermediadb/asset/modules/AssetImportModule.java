@@ -1,7 +1,10 @@
 package org.entermediadb.asset.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -12,22 +15,18 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.desktops.Desktop;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.repository.ContentItem;
 
 import model.assets.AssetTypeManager;
-import model.assets.LibraryManager;
 
 public class AssetImportModule  extends BaseMediaModule
 {
@@ -39,21 +38,74 @@ public class AssetImportModule  extends BaseMediaModule
 		inReq.putPageValue("foldermanager", manager);
 		return manager;
 	}	
-	public void assetsImported(WebPageRequest inReq)
+	public void assetsCreated(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection hits = loadAssetHits(archive, inReq);
+		//Search for these new assets
+		Searcher asssetsearcher = archive.getAssetSearcher();
+		//Search for created 
+		
+		//TODO: Take out a lock? Event should be locked
+		//archive.getLockManager().loadLock("AssetImportModule.assetsCreated");
+		HitTracker mhits = archive.query("asset").exact("importstatus", "modified").search();
+		Collection<Asset> massets = new ArrayList(mhits.size());
+		for (Iterator iterator = mhits.iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset)asssetsearcher.loadData(hit);
+			
+			archive.removeGeneratedImages(asset,true);
+			
+			massets.add(asset);
+		}
+		inReq.putPageValue("hits", massets);
+		archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
+
+		
+		
+		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
+		Collection<Asset> assets = new ArrayList(hits.size());
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset)asssetsearcher.loadData(hit);
+			assets.add(asset);
+		}
+		inReq.putPageValue("hits", assets);
+		archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
+		
+	}
+	
+	public void importAssets(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<Asset> hits = (Collection<Asset>)inReq.getPageValue("hits");
 		if( hits == null)
 		{
 			log.error("No hits found");
+			return;
 		}
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+		{
+			Asset newasset = (Asset) iterator.next();
+			newasset.setValue("importstatus", "needsmetadata"); //Will be saved at bottom
+		}
+
+		
 		//Set the asset type
 		AssetTypeManager manager = new AssetTypeManager();
 		manager.setContext(inReq);
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
 		manager.setLog(logger);
-		manager.saveAssetTypes(hits, true);
+		manager.setAssetTypes(hits, true); 
 
+		//save everything
+		List tosave = new ArrayList();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			Asset asset = (Asset) iterator.next();
+			tosave.add(asset);
+		}
+		archive.getAssetSearcher().saveAllData(tosave, inReq.getUser());
+		inReq.putPageValue("hits", tosave);
 		//TODO: Move this to AssetUtilities
 //		boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
 //		if(assigncategory) {
@@ -67,34 +119,20 @@ public class AssetImportModule  extends BaseMediaModule
 //			}
 //		}	
 		
+		//Fire category add events
+		//archive.getCategoryEditor().fireAssetsAddedEvents(hits);
+		
+		
+		
 		//Look for collections and libraries
+		/*
 		LibraryManager librarymanager = new LibraryManager();
 		librarymanager.setLog(logger);
 		librarymanager.assignLibraries(archive, hits);
+		*/
 	}
 
-	protected Collection loadAssetHits(MediaArchive archive, WebPageRequest inReq)
-	{
-		Collection hits = (Collection)inReq.getPageValue("hits");
-		if( hits == null)
-		{
-			String ids = inReq.getRequestParameter("assetids");
-			if( ids == null)
-			{
-			   log.info("AssetIDS required");
-			   return null;
-			}
-			Searcher assetsearcher = archive.getAssetSearcher();
-			SearchQuery q = assetsearcher.createSearchQuery();
-			String assetids = ids.replace(","," ");
-			q.addOrsGroup( "id", assetids );
-		
-			hits = assetsearcher.search(q);
-		}
-		return hits;
-	}
 	
-
 	private long getLong(Object inObject)
 	{
 		if( inObject == null)
@@ -130,9 +168,10 @@ public class AssetImportModule  extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
 		FolderManager manager = getFolderManager(inReq);
-
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		desktop.openAsset(archive, assetid);
+		*/
 		Asset asset = getAsset(inReq);
 		
 		
@@ -152,11 +191,12 @@ public class AssetImportModule  extends BaseMediaModule
 			String commands = inReq.getRequestParameter("command");
 			FolderManager manager = getFolderManager(inReq);
 
-			Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+			/*Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 			JSONParser parser = new JSONParser();
 			JSONObject command = (JSONObject) parser.parse(commands);
 			
 			desktop.sendCommand(archive, command);
+			*/
 		}
 		catch (Exception e)
 		{
@@ -175,11 +215,13 @@ public class AssetImportModule  extends BaseMediaModule
 		//Send the client a download request
 		FolderManager manager = getFolderManager(inReq);
 
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		if (desktop == null)
 		{
 			throw new OpenEditException("Desktop disconnected");
 		}
+		*/
 		//desktop.checkoutCollection(inMediaArchive, collection);
 	}
 	
@@ -202,17 +244,46 @@ public class AssetImportModule  extends BaseMediaModule
 	
 	public void checkPullRemoteFolder(WebPageRequest inReq)
 	{
-		/*
-		"entityid": "1234",
-		"moduleid": "entityactivimoduleid,
-		"rootpath": "/home/user/eMedia/",	
-		"desktopfilecount": "123",	
-			
-		"categorypath": "Activities/Paris",
-        "files": [{path: filepath, size: 43232}], 
-			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
-		*/
 		Map params = inReq.getJsonRequest();
+		if (params == null) {
+			log.info("No JSON parameters");
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		String categorypath = (String)params.get("categorypath");
+		inReq.putPageValue("categorypath", categorypath);
+		
+		Category category = archive.getCategorySearcher().loadCategoryByPath(categorypath);
+		if(category == null) 
+		{
+			Map pendingdownloads = new HashMap();
+			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
+			inReq.putPageValue("pendingpush", new JSONObject(params));
+		} else {
+
+			FolderManager manager = getFolderManager(inReq);
+			Map allserverfiles = manager.listAssetMap(archive, category);
+			
+			//Missing Files on Local
+			Map pendingdownloads = manager.removeDuplicateAssetsFrom(allserverfiles,params);
+			inReq.putPageValue("pendingpull", new JSONObject(pendingdownloads));
+			
+			//Missing Files on Server
+			Map pendingupload = manager.findMissingAssetsToUpload(allserverfiles,params);
+			inReq.putPageValue("pendingpush", new JSONObject(pendingupload));
+			
+		}
+	}
+	
+	/*
+	
+	public void checkPushRemoteFolder(WebPageRequest inReq)
+	{
+		Map params = inReq.getJsonRequest();
+		if (params == null) {
+			return;
+		}
+		inReq.putPageValue("remotemap", new JSONObject(params));
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		String moduleid = (String)params.get("moduleid");
@@ -226,42 +297,51 @@ public class AssetImportModule  extends BaseMediaModule
 
 		FolderManager manager = getFolderManager(inReq);
 		Map assetmap = manager.listAssetMap(archive, category);
-		
+	
 		//List remoteassets = (List)params.get("files");
-		Map finallist = manager.removeDuplicateAssetsFrom(assetmap,params);
+		Map pendinguploads = manager.removeDuplicateAssetsPush(assetmap,params);
+		inReq.putPageValue("assetmap", new JSONObject(pendinguploads));
 		
-
-		
-		inReq.putPageValue("assetmap", new JSONObject(finallist));
+		//Removed files locally
+		Map missingassets = manager.findMissingAssetsFromPush(assetmap, params);
+		inReq.putPageValue("missingassetmap", new JSONObject(missingassets));
 		
 	}
-	public void checkPushRemoteFolder(WebPageRequest inReq)
+	*/
+	public void listServerSubFolders(WebPageRequest inReq)
 	{
+		
 		MediaArchive archive = getMediaArchive(inReq);
-		String categorypath = inReq.getRequestParameter("categorypath"); 
-		Category cat = archive.getCategorySearcher().loadCategoryByPath(categorypath);
-		FolderManager manager = getFolderManager(inReq);
-		Map assets = manager.listAssetMap(archive, cat);
-		inReq.putPageValue("assetmap", new JSONObject(assets));
+		String defaultcategoryid = (String) inReq.getRequestParameter("defaultcategoryid");
+		Category category = archive.getCategory(defaultcategoryid);
+		
+		inReq.putPageValue("category", category);
+		
 		
 	}
+
 	public void listConnectedDesktop(WebPageRequest inReq)
 	{
+		/*
 		FolderManager manager = getFolderManager(inReq);
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUser());
 		inReq.putPageValue("desktop",desktop);
+		*/
+		return;
 	}
 
 	public void exportCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		FolderManager manager = getFolderManager(inReq);
 		
+		/*
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		if( desktop.isBusy())
 		{
 			log.info("Desktop still busy");
 			return;
 		}
+		*/
 		/*
 		 * String collectionid = loadCollectionId(inReq);
 		 
@@ -353,5 +433,23 @@ public class AssetImportModule  extends BaseMediaModule
 		return entity;
 	}
 	
-	
+	public void listHotFolders(WebPageRequest inReq)
+	{
+		try {
+			Map params = inReq.getJsonRequest();
+		
+			if (params == null) {
+				log.info("No JSON parameters");
+				return;
+			}
+			String rootPath = (String) params.get("rootPath");
+			inReq.putPageValue("rootPath", rootPath);
+			
+			Map folderTree = (Map) params.get("folderTree");
+		
+			inReq.putPageValue("folderTree", new JSONObject(folderTree));
+		} catch (Exception e) {
+			throw new OpenEditException(e);
+		}
+	}
 }

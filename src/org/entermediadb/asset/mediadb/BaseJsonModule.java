@@ -2,19 +2,15 @@ package org.entermediadb.asset.mediadb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.upload.FileUpload;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
@@ -37,8 +33,24 @@ public class BaseJsonModule extends BaseMediaModule
 	
 	public void preprocess(WebPageRequest inReq)
 	{
+		//upload.setProperties(inContext.getParameterMap());
+		if (inReq.getRequest() == null) //used in unit tests
+		{
+			return;
+		}
 		
-		inReq.getJsonRequest();
+
+		String type = inReq.getRequest().getContentType();
+		if (type != null && type.startsWith("application/json"))
+		{
+			inReq.getJsonRequest(); //This will read in the body and setup the parameters
+		}
+		else if (type != null && type.startsWith("multipart"))
+		{
+			final FileUpload uploadparser = new FileUpload();
+			uploadparser.parseArguments(inReq);
+			//Old Stuff addAlreadyUploaded(inContext, upload);
+		}
 	}
 
 
@@ -203,8 +215,10 @@ public class BaseJsonModule extends BaseMediaModule
 			
 			PropertyDetail detail = searcher.getDetail(key);
 			//only save valid fields?
-			if( detail == null) {
-				return;
+			if( detail == null) 
+			{
+				log.info("No such field:  " + key);
+				continue;
 			}
 			if( detail != null && detail.isMultiLanguage())
 			{
@@ -309,6 +323,10 @@ public class BaseJsonModule extends BaseMediaModule
 			}
 			else
 			{
+				if (value instanceof String && ((String) value).isEmpty() ) 
+				{
+					value = null;
+				}
 				inData.setValue(key, value);				
 			}
 

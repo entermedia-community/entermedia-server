@@ -25,6 +25,9 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
@@ -44,6 +47,7 @@ import org.entermediadb.find.FolderManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
+import org.entermediadb.video.Block;
 import org.entermediadb.websocket.usernotify.UserNotifyManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -80,7 +84,6 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
-import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
 public class MediaArchive implements CatalogEnabled
@@ -177,10 +180,6 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-music";
 			}
-			if (mime.startsWith("text"))
-			{
-				return "card-text";
-			}
 			if (mime.contains("pdf"))
 			{
 				return "file-earmark-pdf";
@@ -193,9 +192,28 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-earmark-excel";
 			}
-			
-			
-
+			if (mime.endsWith("xml"))  
+			{
+				if(inFormat.equals("dita")) {
+					return "filetype-dita";
+				}
+				if(inFormat.equals("ditamap")) {
+					return "filetype-ditamap";
+				}
+				return "filetype-xml";
+			}
+			if (mime.endsWith("html")) 
+			{
+				return "filetype-html";
+			}
+			if (mime.endsWith("css")) 
+			{
+				return "filetype-css";
+			}
+			if (mime.startsWith("text"))
+			{
+				return "card-text";
+			}
 		}
 		else
 		{
@@ -230,6 +248,44 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldReplacer = inReplacer;
 	}
+	
+	
+	public String replaceFromMask(String inMask, Data inData, String inSearchType,  Map extraVals, String locale) 
+	{
+
+		Replacer replacer = getReplacer();
+		
+		Map newvals = new HashMap();
+		newvals.put("formatteddate", DateStorageUtil.getStorageUtil().getTodayForDisplay());
+		Date now = new Date();
+
+		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy"); //TODO: Use DataStorage
+		newvals.put("formattedyear", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "MM"); //TODO: Use DataStorage
+		newvals.put("formattedmonth", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "dd"); //TODO: Use DataStorage
+		newvals.put("formattedday", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "HH"); //TODO: Use DataStorage
+		newvals.put("formattedhour", date);
+		
+		if(extraVals != null) 
+		{
+			newvals.putAll(extraVals);
+		}
+		
+		String val = replacer.replace(inMask, newvals);
+		if( val.startsWith("$") && val.equals(inMask) )
+		{
+			return "";
+		}
+		//String val = getSearcherManager().getValue(getCatalogId(), inMask, inSearchType,  inData, extraVals, locale);
+		return val;
+	}
+	
+	
 
 	public AssetStatsManager getAssetStatsManager()
 	{
@@ -282,6 +338,16 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return asLinkToOriginal(inAsset.getSourcePath(), inAsset.get("primaryfile"));
 	}
+	public String asLinkToOriginal(String inAssetId)
+	{
+		Asset asset = getAsset(inAssetId);
+		
+		if (asset == null)
+		{
+			return null;
+		}
+		return asLinkToOriginal(asset.getSourcePath(), asset.get("primaryfile"));
+	}
 
 	//TODO: Remove the inName option since that should be the  same as the originalattachment 
 	public String asLinkToOriginal(String inSourcePath, String inPrimaryImageName)
@@ -318,14 +384,16 @@ public class MediaArchive implements CatalogEnabled
 	 * @return The location where the original document ought to be, or
 	 *         <code>null</code> if that could not be determined
 	 */
-	public Page getOriginalDocument(Asset inAsset)
+	public Page getOriginalDocument(Data inData)
 	{
+		Asset inAsset = (Asset)getAssetSearcher().loadData(inData);
+		
 		ContentItem item = getAssetManager().getOriginalContent(inAsset);
 		if (item == null)
 		{
 			return null;
 		}
-		Page page = new Page() //SPEED UP
+		Page page = new Page(item.getPath(),null) //SPEED UP
 		{
 			public boolean isHtml()
 			{
@@ -1263,6 +1331,21 @@ public class MediaArchive implements CatalogEnabled
 		getEventManager().fireEvent(event);
 	}
 
+	public void fireDataEvent(User inUser, String inSearchType, String inAction, Collection<Data> inDatas)
+	{
+		WebEvent event = new WebEvent();
+		event.setSearchType(inSearchType);
+
+		event.setCatalogId(getCatalogId());
+		event.setOperation(inAction);
+		event.setUser(inUser);
+		event.setSource(this);
+		event.setValue("hits", inDatas);
+		
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
+	}
+
 	/*
 	 * public void fireMediaEvent(String operation, User inUser, Asset asset,
 	 * List<String> inids) { WebEvent event = new WebEvent();
@@ -1280,13 +1363,31 @@ public class MediaArchive implements CatalogEnabled
 	 * event.setValue("dataids", inids); //archive.getWebEventListener()
 	 * getMediaEventHandler().eventFired(event); }
 	 */
-	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
+	public void fireMediaEvent(String operation, User inUser, Collection inAssets)
 	{
-		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			fireMediaEvent(operation, inUser, asset);
+		 fireMediaEvent( inUser,  "asset",  operation,  inAssets);
+	}
+	public void fireMediaEvent(User inUser, String inSearchType, String operation, Collection inAssets)
+	{
+		WebEvent event = new WebEvent();
+		event.setSearchType(inSearchType);
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+		
+
+		//Support values?
+		event.setValue("hits",inAssets);
+		String[] all = new String[inAssets.size()];
+		int i = 0;
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
+			Data child = (Data) iterator.next();
+			all[i++] = child.getId();
 		}
+		event.setValue("assetids", all); //This is turned into reques params
+		//event.setSourcePath("/"); //TODO: This should not be needed any more
+		getEventManager().fireEvent(event);
 	}
 
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
@@ -1308,7 +1409,8 @@ public class MediaArchive implements CatalogEnabled
 			event.setSource(this);
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
-			event.setProperty("assetids", asset.getId());
+			event.setProperty("assetids",  asset.getId() );
+			event.setProperty("assetid", asset.getId());
 			event.setProperty("dataid", asset.getId()); //Needed?
 			event.setValue("asset", asset);
 			//archive.getWebEventListener()
@@ -1891,7 +1993,11 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		Searcher searcher = getSearcher(inSearchType);
+		Searcher searcher = getSearcherManager().getExistingSearcher(getCatalogId(),inSearchType);
+		if( searcher == null)
+		{
+			return null;
+		}
 		Data data = searcher.loadCachedData(inId);
 		return data;
 	}
@@ -1903,12 +2009,11 @@ public class MediaArchive implements CatalogEnabled
 
 	public HitTracker getCachedSearch(QueryBuilder inBuilder)
 	{
-		HitTracker tracker = (HitTracker)getCacheManager().get("sm", inBuilder.getQuery().toQuery());
-		if( tracker == null)
+		if( inBuilder == null)
 		{
-			tracker = inBuilder.search();
-			getCacheManager().put("sm", inBuilder.getQuery().toQuery(),tracker);
+			throw new OpenEditException("Invalid search");
 		}
+		HitTracker tracker = inBuilder.getSearcher().getCachedSearch(inBuilder);
 		return tracker;
 	}
 
@@ -2321,6 +2426,13 @@ public class MediaArchive implements CatalogEnabled
 
 	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
 	{
+		
+		User found = getUserManager().getUserByEmail(email);
+		if( found != null)
+		{
+			return createSystemEmail(found, inTemplatePath);
+		}
+		
 		TemplateWebEmail webmail = null;
 		try
 		{
@@ -2473,7 +2585,7 @@ public class MediaArchive implements CatalogEnabled
 	public String asLinkToDownload(Data inAsset, String inCollectionId, Data inPreset) {
 		
 		
-		if (inAsset == null)
+		if (inAsset == null || inPreset == null)
 		{
 			return null;
 		}
@@ -2533,6 +2645,11 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
+		
+		
+		String usefile = exportOutputName(inAsset, inGeneratedName);
+		
+	
 		String finalroot = null;
 		
 		String cdnprefix = "";
@@ -2558,42 +2675,49 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = null;
-		if (inCollectionId != null)
-		{
-			downloadroot = "/services/module/librarycollection/downloads/";
-		}
-		else
-		{
+//		if (inCollectionId != null)
+//		{
+//			downloadroot = "/services/module/librarycollection/downloads/";
+//		}
+//		else
+//		{
 			downloadroot = "/services/module/asset/downloads/";
-		}
+//		}
 
-		if (inGeneratedName.contains("."))
-		{
-			if (inCollectionId != null)
-			{
-				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + inGeneratedName;
-			}
-			else
-			{
+//		if (usefile.contains("."))
+//		{
+//			if (inCollectionId != null)
+//			{
+//				finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + inCollectionId + "/" + sourcepath + "/" + usefile;
+//			}
+//			else
+//			{
 				if( inGeneratedName.endsWith("video.m3u8"))
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + inGeneratedName;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + usefile;
 				}
 				else
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + inGeneratedName;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
 				}
-			}
-		}
-		else
-		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
-
-		}
+//			}
+//		}
+//		else
+//		{
+//			//Legacy?
+//			finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preview/" + inGeneratedName + "/" + sourcepath + "/thumb.jpg";
+//
+//		}
 		finalroot = URLUtilities.urlEscape(finalroot);
 
 		return finalroot;
 
+	}
+	
+	public String exportOutputName(Data inAsset, String inGeneratedName) 
+	{ 
+		String name = getPresetManager().exportOutputName(this, inAsset, inGeneratedName); 
+		return name;
 	}
 
 	public String asLinkToGenerated(Data inAsset, String inGeneratedName)
@@ -2602,15 +2726,14 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		
+		String usefile = exportOutputName(inAsset, inGeneratedName);
+
+		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
 
-		if (cdnprefix == null)
-		{
-			cdnprefix = "";
-		}
 		String downloadroot = "/services/module/asset/downloads/";
-		String	finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName;
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
@@ -2714,75 +2837,6 @@ public class MediaArchive implements CatalogEnabled
 	{
 		Date today = Calendar.getInstance().getTime();
 		return today.getYear() + 1900;
-	}
-	
-	
-	//TODO: Move this to InvoiceManager
-	
-	public HitTracker getInvoiceFromMonth(String status, int year, int month) 
-	{
-		Calendar start = month == 0 ? new GregorianCalendar(year, 0, 1) :  new GregorianCalendar(year, month - 1, 1);
-		
-		//Calendar end = month == 0 ? new GregorianCalendar(year, 11, 31) : new GregorianCalendar(year, month, 1);
-		//end.add(Calendar.DAY_OF_YEAR, -1);
-		
-		Calendar end = month == 0 ? new GregorianCalendar(year, 11, 31) : new GregorianCalendar(year, month, 1);
-		//fix 31th
-		int days = end.getActualMaximum(Calendar.DAY_OF_MONTH);
-		end.set(Calendar.DAY_OF_MONTH, days);
-		end.set(Calendar.MINUTE, 59);
-		end.set(Calendar.HOUR_OF_DAY, 23);
-		end.set(Calendar.SECOND, 59);
-		
-		HitTracker invoice = query("collectiveinvoice")
-				.exact("paymentstatus", status)
-				.between("duedate", start.getTime(), end.getTime()) 
-				.sort("duedateDown").search();
-		return invoice;
-	}
-	//TODO: Move this to InvoiceManager
-	
-	public Data getInvoiceById(String invoiceId)
-	{
-		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
-		return invoice;
-	}
-	
-	//TODO: Move this to InvoiceManager
-	public ArrayList getInvoiceProductList(String invoiceId)
-	{
-		Data invoice = getSearcherManager().getData(getCatalogId(), "collectiveinvoice", invoiceId);
-		if (invoice == null) {
-			return null;
-		}
-		ArrayList products = (ArrayList)invoice.getValue("productlist");
-		return products;
-	}
-	//TODO: Move this to InvoiceManager
-	
-	public String getProductName (String productId) {
-		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
-		if (product == null) {
-			return null;
-		}
-		String name = (String) product.getValue("name");
-		return name;
-	}
-	
-	public Data getProductById (String productId) {
-		Data product = getSearcherManager().getData(getCatalogId(), "collectiveproduct", productId);
-		if (product == null) {
-			return null;
-		}
-		return product;
-	}
-	
-	public Data getWorkspaceById (String workspaceId) {
-		Data workspace = getSearcherManager().getData(getCatalogId(), "librarycollection", workspaceId);		
-		if (workspace == null) {
-			return null;
-		}
-		return workspace;
 	}
 	
 	public String specialValueCases(Object obj, String format) {
@@ -2931,7 +2985,7 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 	
-	public Map readImageSize(Asset asset, String imagesize) 
+	public Map readImageSize(String imagesize) 
 	{
 		Map result = new HashMap();
 		//image200x200.jpg
@@ -2949,6 +3003,29 @@ public class MediaArchive implements CatalogEnabled
 	public DateStorageUtil getDateStorageUtil()
 	{
 		return DateStorageUtil.getStorageUtil();
+	}
+
+	public ConvertInstructions createInstructions(Asset inAsset, ContentItem inputfile)
+	{
+		ConvertInstructions ins = new ConvertInstructions(this);
+		ins.setAsset(inAsset);
+		ins.setInputFile(inputfile);
+		return ins;
+	}
+	
+	public ContentItem convertFile(ConvertInstructions instructions, ContentItem outputPage)
+	{
+		Asset inAsset = instructions.getAsset();
+		String rendertype = getMediaRenderType(inAsset);
+		ConversionManager manager = getTranscodeTools().getManagerByRenderType(rendertype);
+		
+
+		instructions.setOutputExtension(PathUtilities.extractPageType(outputPage.getName()));
+		instructions.setOutputFile(outputPage);
+		
+		ConvertResult result = manager.createOutput(instructions); //skips if it already there
+		
+		return result.getOutput();
 	}
 	
 }

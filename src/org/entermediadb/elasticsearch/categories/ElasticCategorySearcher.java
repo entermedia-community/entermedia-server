@@ -2,7 +2,6 @@ package org.entermediadb.elasticsearch.categories;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +17,6 @@ import org.entermediadb.asset.xmldb.XmlCategoryArchive;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
@@ -543,5 +541,26 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category found = (Category)loadData(hit);
 		return found;
 	}
+
+	public List listAllCategories(Category inTopCategory)
+	{
+		if(inTopCategory == null) {
+			return null;
+		}
+		List all = new ArrayList(300);
+		addChildren(inTopCategory,all);
+		return all;
+	}
 	
+	protected void addChildren(Category parent,List all)
+	{
+		all.add(parent);
+		if( parent.hasChildren())
+		{
+			for (Iterator iterator = parent.getChildren().iterator(); iterator.hasNext();) {
+				Category category = (Category ) iterator.next();
+				addChildren(category,all);
+			}
+		}
+	}
 }

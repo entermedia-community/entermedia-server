@@ -1,12 +1,13 @@
 package org.entermediadb.asset.orders;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.MathUtils;
 
 public class OrderDownload
@@ -38,6 +39,21 @@ public class OrderDownload
 	public HitTracker getItemList()
 	{
 		return fieldItemList;
+	}
+	
+	public Collection<Data> getPendingItemList()
+	{
+		Collection<Data> pending = new ArrayList();
+		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();) {
+			Data item = (Data) iterator.next();
+			String publishstatus = item.get("publishstatus");
+			if( "readytopublish".equals(publishstatus))
+			{
+				pending.add(item);
+			}
+		}
+		
+		return pending;
 	}
 	
 	
@@ -124,6 +140,28 @@ public class OrderDownload
 			return null;
 		}
 		return date;
+	}
+
+	public boolean allReadyForDownload()
+	{
+		//TODO: replace with agregation of downloaditemtotalfilesize
+		for (Iterator iterator = getItemList().iterator(); iterator.hasNext();)
+		{
+			MultiValued item = (MultiValued) iterator.next();
+			if(
+					"readytopublish".equals(item.get("publishstatus") ) ||
+					"complete".equals(item.get("publishstatus") )
+		
+			)
+			{
+				//done
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	

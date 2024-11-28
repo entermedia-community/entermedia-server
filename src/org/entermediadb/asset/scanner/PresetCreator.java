@@ -16,11 +16,13 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class PresetCreator
 {
@@ -96,6 +98,26 @@ public class PresetCreator
 		return hits;
 	}
 	
+	public Data getCachedPresetByExternalName(MediaArchive inArchive, String renderType, String inName)
+	{
+		Data preset = (Data)getCacheManager().get("preset_names",inName);
+		Data found = null;
+		if( preset == null)
+		{
+			found = getPresetByOutputName(inArchive, renderType, inName);
+			if( found == null)
+			{
+				found = ValuesMap.NULLDATA;
+			}
+			getCacheManager().put("preset_names",inName,found);
+			return found;
+		}
+		if(  preset ==  ValuesMap.NULLDATA)
+		{
+			return null;
+		}
+		return preset;
+	}
 	
 	public Collection getPushPresets(MediaArchive inArchive, String rendertype)
 	{
@@ -345,11 +367,13 @@ public class PresetCreator
 			//load the asset and save the import status to complete		
 			if( asset != null )
 			{
+				/*
+				 * Event fired on importcomplete
 				if(founderror && "error".equals(existingimportstatus) || ("complete".equals(existingimportstatus) && "2".equals(existingpreviewstatus)))
 				{
 					inArchive.fireSharedMediaEvent("publishing/publishassets"); 
 					return;						
-				}
+				}*/
 				Asset target = (Asset)inArchive.getAssetSearcher().searchById(asset.getId());
 				if( target != null )
 				{
@@ -371,7 +395,7 @@ public class PresetCreator
 						}
 					}
 					inArchive.saveAsset(target, null);
-					inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
+					inArchive.fireMediaEvent("conversionsfinished",null,target); 
 				}
 				inArchive.fireSharedMediaEvent("importing/importcomplete"); //TODO: add importscomplete for when we have saved a number of items
 			}
@@ -419,15 +443,38 @@ public class PresetCreator
 		queueConversions(inArchive, tasksearcher, inAsset);
 	}
 	
-	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String inExportName)
+	public String exportOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
+	{ 
+		String usefile = inGeneratedName;
+		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
+		String basename = PathUtilities.extractPageName(inGeneratedName);
+		String baseextension = PathUtilities.extractPageType(inGeneratedName);
+		Data preset = getCachedPresetByExternalName(inArchive,rendertype,basename + ".webp");
+		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
+		{
+			usefile = basename + ".webp";
+		}
+		else
+		{
+			if(baseextension != null)
+			{
+				usefile = basename + "." + baseextension;
+			}
+			else {
+				usefile = basename + ".jpg";
+			}
+		}
+		return usefile;
+	}
+
+	public ContentItem outPutForGenerated(MediaArchive inArchive, Data inAsset, String inGeneratedType)
 	{
-		//Check output file for existance
-		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + inExportName;
+		String savedname = exportOutputName(inArchive, inAsset, inGeneratedType);
+		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + savedname;
 		ContentItem output = inArchive.getContent(generatedfilename);
 		return output;
-	}
 		
-	
+	}	
 	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, Data inPreset)
 	{
 		if( "0".equals( inPreset.getId()) )

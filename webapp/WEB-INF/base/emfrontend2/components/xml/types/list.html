@@ -31,15 +31,11 @@
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
 
 <div id="$csslistid" class="listdetailpicker">
-
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
-
 ##require both 
 #set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
-
 #if( $listfilterid)
 	#set( $listfilterdetail = $originalsearcher.getDetailForView($view, $listfilterid, $user) )
-	
 	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
 	#if(!$remotevalue)
 		#set( $remotevalue  = $data.get($listfilterid) )
@@ -57,14 +53,11 @@
 #else
 	#set($query = $lsearcher.query().all().getQuery() )
 #end
-
 #if($query)
 	$query.setSortBy($detail.getDefaultSort())
 #end
-
 ####$lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
-
 #ifnull ($value)
 	#set ($value = $context.getRequestParameter('val'))
 #end
@@ -81,16 +74,14 @@
 
 #set( $valueid = "$fieldname" )
 #if($types)
-
-
-	<select name="${fieldname}.value" 
-			class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
-			listid="$listid" 
-			id="${valueid}value"
-			data-listid="$listid" 
-			data-searchtype= '$listid'
-			data-searchfield="$searchfield"
-        	#if($removeclear) data-allowclear="false" #end
+<select name="${fieldname}.value"
+	class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+	listid="$listid"
+	id="${valueid}value"
+	data-listid="$listid"
+	data-searchtype= '$listid'
+	data-searchfield="$searchfield"
+	#if($removeclear) data-allowclear="false" #end
 	>
 	#if ($detail.blankoption != "false")
 	<option value="">$!detail.blankoption</option>
@@ -98,25 +89,21 @@
 	$types.setHitsPerPage(500)
 	#foreach( $type in $types.getPageOfHits() )
 		#set( $key = $type.id)
-		#if($detail.render)
-   			#set($label = $searcherManager.getValue($catalogid, $detail.render, $type.properties))
-		#else
    		#set($label = $type.getName($context.getLanguage()))
-		#end
 		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
 	#end
 	#if($hits && $hits.size() > 500 )
 		<option value="-1">500 [[limit reached]]</option>
 	#end
    </select>
- 
-   
 #else
 	[[No values found]] 
 #end
  #if( $caneditlists)
+ <span>
 		<a class="emdialog addnewitem btn btn-xs btn-light" data-dialogid="inlineedit" 
 			href="$!siteroot$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+</span>
   #end
   <div class="clearfix"></div>
 </div>

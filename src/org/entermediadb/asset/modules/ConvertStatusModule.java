@@ -1,9 +1,7 @@
 package org.entermediadb.asset.modules;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,8 +9,11 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.video.Block;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
@@ -23,6 +24,7 @@ import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
@@ -221,7 +223,7 @@ public class ConvertStatusModule extends BaseMediaModule
 	}
 	
 	
-	
+	/*
 	public void uploadConversionDocument(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
 		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
@@ -281,6 +283,107 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 	}
+	*/
+	
+	public void replaceOriginal(WebPageRequest inReq)
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) {
+			return;
+			
+		}
+		Asset current = getAsset(inReq);
+		
+		ContentItem original = archive.getOriginalContent(current);
+		ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, current, "image3000x3000");
+		archive.getAssetEditor().backUpFilesForLastVersion(current,original,preview );
+
+		properties.saveFileAs(properties.getFirstItem(), original, inReq.getUser()); //Does not make a version
+
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original, current );
+		archive.saveAsset(current);
+		archive.removeGeneratedImages(current, true);
+		archive.getAssetEditor().reloadThumbnails( current);
+		
+		archive.getAssetEditor().createNewVersionData(current, original, inReq.getUserName(), Version.ONLINEEDIT, null);
+		
+		log.info("Original replaced: " + current.getId() + " Sourcepath: " + current.getSourcePath());
+		
+	}
+
+	public void uploadSaveAsDocument(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) 
+		{
+			log.info("No upload found");
+			return;
+		}
+		
+		String newfilename = inReq.getRequestParameter("newfilename");
+		String newfiletype = inReq.getRequestParameter("newfiletype");
+		
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset current = archive.getAsset(assetid);
+
+		String base = current.getSourcePath();
+		base = PathUtilities.extractDirectoryPath(base);
+		
+		String outname =  newfilename + "." + newfiletype;
+		String sourcepath =  base + "/" + outname;
+		//TODO: Check for formats
+		
+		//Save to temp place to change format
+		String tmpplace = "/WEB-INF/trash/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		ContentItem tosave = archive.getPageManager().getRepository().getStub(tmpplace);
+		
+		ContentItem saved = properties.saveFileAs(properties.getFirstItem(), tosave, inReq.getUser());
+		
+		//Convert
+		String originalapath = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath;
+		
+		ContentItem finalpath = archive.getPageManager().getRepository().getStub(originalapath); 
+		ConvertInstructions instructions =  archive.createInstructions(current, saved);
+
+		archive.convertFile(instructions, finalpath);
+
+		Collection assetids = archive.getAssetImporter().processOn(finalpath.getPath(), finalpath.getPath(),true,archive, null);
+		Asset newasset = archive.getAssetBySourcePath(sourcepath); //New file
+		if( newasset != null)
+		{
+			archive.getAssetEditor().createNewVersionData(newasset, finalpath, inReq.getUserName(), Version.UIREPLACE, null);
+
+			newasset.setValue("parentid",assetid);
+			archive.saveAsset(newasset);
+			//archive.fireMediaEvent("saved", inReq.getUser(), current);
+		}		
+		inReq.putPageValue("asset", current);
+	}
+	
+	public void restoreVersion(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String version = inReq.getRequestParameter("version");
+	
+		Asset current = getAsset(inReq);
+		archive.getAssetEditor().restoreVersion(current, inReq.getUserName(), version);
+		
+		log.info("Original restored: " + current.getId());
+	}
+	
+	
 
 	public void handleCustomThumb(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
@@ -334,30 +437,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		reloadThumbnails( inReq, archive, asset);
 
 	}
-	protected void reloadThumbnails(WebPageRequest inReq, MediaArchive archive, Asset inAsset)
+	protected void reloadThumbnails(WebPageRequest inReqX, MediaArchive archive, Asset inAsset)
 	{
-		//inReq.putPageValue("asset", inAsset);
-		HitTracker conversions = archive.query("conversiontask").exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
-		List tosave = new ArrayList();
-		
-		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			data.setProperty("status","retry");
-			data.setProperty("errordetails",null);
-			tosave.add(data);
-		}
-		archive.getSearcher("conversiontask").saveAllData(tosave, null);
-		//archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
-		//current.setProperty("importstatus", "imported");
-		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
-		//archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser(), current);
-		
-		//Good idea?
-		//archive.fireMediaEvent("conversions","runconversion", inReq.getUser(), inAsset);//block?
-		//archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
-		archive.fireSharedMediaEvent("conversions/runconversions");
-		//archive.saveAsset(current);
+		archive.getAssetEditor().reloadThumbnails(inAsset);
 	}
 	public void reloadIndex(WebPageRequest inReq)
 	{

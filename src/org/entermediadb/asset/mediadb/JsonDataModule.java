@@ -1,7 +1,5 @@
 package org.entermediadb.asset.mediadb;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,10 +9,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -27,8 +23,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
-import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
@@ -71,6 +65,7 @@ public class JsonDataModule extends BaseJsonModule
 		if( inReq.getJsonRequest() == null)
 		{
 			hits = searcher.getAllHits(inReq);
+			//Add sort
 		}
 		else
 		{
@@ -102,6 +97,10 @@ public class JsonDataModule extends BaseJsonModule
 			if(id == null) {
 				id = (String)inReq.getPageValue("id");
 			}
+			if (id != null && id.isEmpty()) {
+				id = null;
+			}
+			
 			String sourcepath = (String) request.get("sourcepath");
 			populateJsonData(request,searcher,newdata);
 
@@ -231,16 +230,17 @@ public class JsonDataModule extends BaseJsonModule
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		Data newdata = loadData(inReq);
-		if(newdata != null)
+		if(newdata == null)
 		{
-			checkAssetUploads(inReq, archive, searcher, newdata);
-			Map request = inReq.getJsonRequest();
-			populateJsonData(request,searcher,newdata);
-			searcher.saveData(newdata, inReq.getUser());
-			archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
-			inReq.putPageValue("searcher", searcher);
-			inReq.putPageValue("data", newdata);
+			newdata = searcher.createNewData();
 		}
+		checkAssetUploads(inReq, archive, searcher, newdata);
+		Map request = inReq.getJsonRequest();
+		populateJsonData(request,searcher,newdata);
+		searcher.saveData(newdata, inReq.getUser());
+		archive.fireDataEvent(inReq.getUser(),searcher.getSearchType(), "saved", newdata);
+		inReq.putPageValue("searcher", searcher);
+		inReq.putPageValue("data", newdata);
 	}
 	
 	public  void getUUID(WebPageRequest inReq) {
@@ -278,7 +278,8 @@ public class JsonDataModule extends BaseJsonModule
 			throw new OpenEditException("sourcepath must be set on " + inDetails);
 		}
 
-		String sourcepath = importer.getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), inDetails.get("sourcepath"), vals);
+		//String sourcepath = importer.getAssetUtilities().createSourcePathFromMask(archive,inReq.getUser(), item.getName(), inDetails.get("sourcepath"), vals);
+		String sourcepath = archive.replaceFromMask(inDetails.get("sourcepath"), null, "asset", vals, null);
 		
 		Asset asset = null;
 		String 	id = (String) vals.get("id");

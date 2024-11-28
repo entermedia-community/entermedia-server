@@ -4,8 +4,6 @@ import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.orders.OrderSearcher;
 import org.openedit.Data;
-import org.openedit.data.PropertyDetails;
-import org.openedit.users.User;
 
 public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
 {

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.PathChangedListener;
@@ -107,9 +107,20 @@ public class OriginalsAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 		ContentItem item = getOriginalContent(inAsset);
+		if(inUser != null) {
+			item.setAuthor(inUser.getId());
+		}
+		item.setMessage("deleted");
+		
+		if( item.exists() )
+		{
+			ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
+			item.setPreviewImage(preview.getPath());
+		}
+		
 		getPageManager().getRepository().remove(item);
 		return true;
 	}
@@ -142,7 +153,12 @@ public class OriginalsAssetSource extends BaseAssetSource
 			if(!page.exists()){
 				log.info("Could not attach file temp file doesn't exist: " + page.getPath());
 			}
-			//dest.setProperty("makeversion","true");
+			if( page.exists() )
+			{
+				ContentItem preview = getMediaArchive().getPresetManager().outPutForGenerated(getMediaArchive(), inAsset, "image3000x3000");
+				page.setPreviewImage(preview.getPath());
+			}
+
 			getPageManager().getRepository().move(page, dest);
 			Asset asset = getMediaArchive().getAssetBySourcePath(inAsset.getSourcePath());
 			asset.setPrimaryFile(page.getName());
@@ -508,10 +524,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 		protected int checkForExtraCategories(Collection entities, ContentItem inFolder, Category inParent)
 		{
 			HashMap names = new HashMap();
-			for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+			if(inParent != null) 
 			{
-				Category cat = (Category)iterator.next();
-				names.put(cat.getName(),cat);
+				for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+				{
+					Category cat = (Category)iterator.next();
+					names.put(cat.getName(),cat);
+				}
 			}
 			
 			List paths = getPageManager().getChildrenPaths(inFolder.getPath());
@@ -547,7 +566,11 @@ public class OriginalsAssetSource extends BaseAssetSource
 				inParent.removeChild(oldjunk);
 			}
 			int deleted = names.size();
-			getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
+			if(deleted > 0) 
+			{
+				log.info("Removing: " + names.values());
+				getMediaArchive().getCategorySearcher().deleteAll(names.values(), null);
+			}
 			return deleted;
 		}
 

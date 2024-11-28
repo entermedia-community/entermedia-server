@@ -7,5 +7,7 @@
   <property id="searchtype" index="true" stored="true" editable="true" internalfield="false" searchtype="reports">Core Search Type</property>
   <property id="outputtype" index="true" stored="true" editable="true" internalfield="false" searchtype="reports">Output Type</property>
   <property id="ordering" index="true" stored="true" editable="true" searchtype="reports" >ordering</property>
+<property id="runfilterview" index="true" stored="true" editable="true"  >View ID</property>  
+  
   <property id="dashboard" index="true" stored="true" editable="true" internalfield="false" searchtype="reports" type="boolean">Shown on Dashboard</property>
 </properties>

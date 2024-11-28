@@ -159,7 +159,9 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		query.addAfter("date", cal.getTime());
 		query.addSortBy("dateDown");
 		query.addExact("userid", inUser.getId());
-		return ordersearcher.cachedSearch(inReq,query);
+		HitTracker tracker = ordersearcher.cachedSearch(inReq,query);
+		log.info("Searching " + tracker);
+		return tracker;
 	}
 	
 	
@@ -1340,7 +1342,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		String email = inArchive.getCatalogSettingValue("requestapproveremail");
 		if (email == null || (email != null && email.isEmpty()))
 		{
-			throw new OpenEditException("No approver email provided, please contact your administrator");
+			throw new OpenEditException("No approver email provided (requestapproveremail), please contact your administrator");
 		}
 
 		User followerUser = (User) userManager.getUserByEmail(email);
@@ -1387,13 +1389,60 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		fieldPageManager = inManager;
 	}
 
+
+	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId) 
+	{
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
+		SearchQuery query = ordersearcher.createSearchQuery();
+		query.setName("pendingorders");
+		//query.addOrsGroup("orderstatus","ordered finalizing complete"); //Open ones
+		query.addExact("checkoutstatus", "pending");
+		query.addSortBy("dateDown");
+		return ordersearcher.cachedSearch(inReq,query);
+	}
+
+//downloadedstatus
+	public void changeStatus(Order inOrder, String inOrderStatus, String downloadedstatus)
+	{
+		Lock lock = getMediaArchive().getLockManager().lock("orders" + inOrder.getId(), "BaseOrderManager");
+		try
+		{
+			if(inOrderStatus != null)
+			{
+				inOrder.setOrderStatus(inOrderStatus);
+				inOrder.setValue( "orderstatusdetails","Order " + inOrderStatus );
+			}
+
+			if( downloadedstatus != null)
+			{
+				inOrder.setValue("downloadedstatus",downloadedstatus );
+			}
+			getMediaArchive().saveData("order", inOrder);
+
+			if( inOrderStatus.equals("canceled"))
+			{
+				Collection items = inOrder.findOrderAssets();
+				for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+					Data item = (Data) iterator.next();
+					item.setValue("publishstatus","cancelled");
+				}
+				getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
+			}
+		}
+		finally
+		{
+			getMediaArchive().getLockManager().release(lock);
+		}
+
+	}
+	
 	public Collection<OrderDownload> findDownloadOrdersForUser(WebPageRequest inReq, User inUser)
 	{
 		HitTracker orders = findDownloadOrdersForUser(inReq, getCatalogId(), inUser);
 
 		Searcher ordersearcher = getMediaArchive().getSearcher("order");
 		
-		Collection orderdownloads = new ArrayList();
+		Collection<OrderDownload> orderdownloads = new ArrayList<OrderDownload>();
 		
 		for (Iterator iterator = orders.getPageOfHits().iterator(); iterator.hasNext();)
 		{
@@ -1409,40 +1458,11 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		return orderdownloads;
 	}
 
-
-	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId) 
-	{
-		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		SearchQuery query = ordersearcher.createSearchQuery();
-		query.setName("pendingorders");
-		//query.addOrsGroup("orderstatus","ordered finalizing complete"); //Open ones
-		query.addExact("checkoutstatus", "pending");
-		query.addSortBy("dateDown");
-		return ordersearcher.cachedSearch(inReq,query);
-	}
-
 	@Override
-	public void cancelOrder(Order inOrder) 
-	{
-		Lock lock = getMediaArchive().getLockManager().lock("orders" + inOrder.getId(), "BaseOrderManager");
-		try
-		{
-			inOrder.setOrderStatus("complete");
-			inOrder.setValue( "orderstatusdetails","Order canceled" );
-			getMediaArchive().saveData("order", inOrder);
-			
-			Collection items = inOrder.findOrderAssets();
-			for (Iterator iterator = items.iterator(); iterator.hasNext();) {
-				Data item = (Data) iterator.next();
-				item.setValue("publishstatus","cancelled");
-			}
-			getMediaArchive().getSearcher("orderitem").saveAllData(items, null);
-		}
-		finally
-		{
-			getMediaArchive().getLockManager().release(lock);
-		}
-
+	public void saveOrder(MediaArchive inArchive, Order inOrder) {
+		inArchive.saveData("orde", inOrder);
+		
 	}
+
 
 }

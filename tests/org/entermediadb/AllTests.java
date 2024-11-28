@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import org.entermediadb.model.AssetEditTest;
 import org.entermediadb.model.CategoryEditTest;
-import org.entermediadb.model.CollectionTest;
-import org.entermediadb.model.ConversionTest;
 import org.entermediadb.model.MetaDataReaderTest;
 import org.entermediadb.model.SourcePathTest;
 import org.entermediadb.model.VideoConvertionTest;

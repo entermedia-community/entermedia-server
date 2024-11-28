@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.util.ssh.SftpRepository;
 import org.openedit.page.Page;
 
 public class SFtpRepositoryTest extends BaseEnterMediaTest

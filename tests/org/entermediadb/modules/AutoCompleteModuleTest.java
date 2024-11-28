@@ -1,8 +1,5 @@
 package org.entermediadb.modules;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.modules.AutoCompleteModule;
 import org.junit.Test;

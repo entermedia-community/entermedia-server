@@ -7,6 +7,6 @@
 #set( $checked = $render.isIdSelected($cat.id) )
 #if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
 <span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end #if( $editable )editablecategory#end" >
-	<input class="form-control form-control-sm autosavename" type="text" value="$cat.name" data-action="rename" data-categoryid="${cat.id}" id="${cat.id}_edit_field" />		
+	<input class="form-control form-control-sm autosavename  focusme" type="text" value="$cat.name" data-action="rename" data-categoryid="${cat.id}" id="${cat.id}_edit_field" />		
 </span>
 

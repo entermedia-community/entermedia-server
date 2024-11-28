@@ -1,7 +1,6 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -19,7 +18,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.users.Group;
 import org.openedit.users.User;
-import org.openedit.util.XmlUtil;
 
 public class GoalManager implements CatalogEnabled
 {

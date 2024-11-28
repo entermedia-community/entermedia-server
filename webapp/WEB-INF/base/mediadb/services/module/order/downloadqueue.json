@@ -1,0 +1,30 @@
+#set($itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem") )
+#set($psearcher = $searcherManager.getSearcher($catalogid,"convertpreset") )
+{
+  "response":
+      {
+        "status":"ok",
+        "count":"$queuesize"
+      }
+, "downloadqueue": [
+#foreach( $orderzip in $downloadorderzip )
+#if( ${foreach.count} != 1), #end 
+{
+"orderid":#jesc($orderzip.getOrder().getId())
+}
+#end  
+
+#if( !$downloadorderzip.isEmpty() && !$downloaditems.isEmpty() )
+,
+#end
+
+#foreach( $item in $downloaditems )
+#if( ${foreach.count} != 1), #end 
+{
+"id":#jesc($item.getId()), 
+"url":#jesc($item.itemdownloadurl), 
+"filename":#jesc($item.itemexportname)
+}
+#end  
+]
+}

@@ -259,27 +259,50 @@ public class UploadRequest implements ProgressListener
 			final String path = PathUtilities.resolveRelativePath( inPath, "/");
 			saveFileAs(inItem, path, inReq.getUser());
 	}
+	
+	/**
+	 * 
+	 * Is this needed? Call the ContentItem One
+	 * */
+	
 	public ContentItem saveFileAs(FileUploadItem inItem, final String path, User inUser)
 			throws OpenEditException
 	{
 		Page page = getPageManager().getPage( path, true );
+		ContentItem item = page.getContentItem();
+		item.setMessage( "Uploaded file");
+		ContentItem saved = saveFileAs(inItem, item, inUser);
+		page.setContentItem(saved);
+		inItem.setSavedPage(page);
+		return page.getContentItem();
+	}
+	
+	
+	
+	public ContentItem saveFileAs(FileUploadItem inUploadedField, ContentItem saveTo, User inUser)
+			throws OpenEditException
+	{
 		InputStreamItem revision = new InputStreamItem();
 //	final Date lastModified = new Date();
 		if ( inUser == null)
 		{
 			throw new IllegalArgumentException("No user logged in");
 		}
+		revision.setAbsolutePath(saveTo.getAbsolutePath());
+		revision.setPath(saveTo.getPath());
 		revision.setAuthor( inUser.getUserName() );
 		revision.setType( ContentItem.TYPE_ADDED );
-		revision.setMessage( "Uploaded file");
-		revision.setPath(path);
+		revision.setMessage( saveTo.getMessage());
+		//revision.setInputStream(saveTo.getInputStream());
+		revision.setPreviewImage(saveTo.getPreviewImage());
+		revision.setMakeVersion(false); //Handled by AssetEditor
 		InputStream input = null;
 		try
 		{
-			FileItem item = inItem.getFileItem();
-			if (item instanceof DiskFileItem)
+			FileItem uploadeditem = inUploadedField.getFileItem();
+			if (uploadeditem instanceof DiskFileItem)
 			{
-				DiskFileItem fileItem = (DiskFileItem) item;
+				DiskFileItem fileItem = (DiskFileItem) uploadeditem;
 				if( fileItem.getHeaders() != null )
 				{
 					if ("gzip".equals(fileItem.getHeaders().getHeader("Content-Encoding")))
@@ -292,10 +315,10 @@ public class UploadRequest implements ProgressListener
 			{
 				//TODO: For Base 64 use string value
 				
-				if( inItem.isBase64())
+				if( inUploadedField.isBase64())
 				{
 					//TODO: Write a class to streamthis
-					byte[] all = IOUtils.toByteArray(item.getInputStream());
+					byte[] all = IOUtils.toByteArray(uploadeditem.getInputStream());
 					//byte[] all = item.getInputStream().readAllBytes();
 					String code = new String(all,"UTF-8");
 					code = code.substring(code.indexOf(",") +1,code.length());
@@ -305,7 +328,7 @@ public class UploadRequest implements ProgressListener
 				}
 				else
 				{
-					input = item.getInputStream();
+					input = uploadeditem.getInputStream();
 				}
 			}
 		}
@@ -314,8 +337,7 @@ public class UploadRequest implements ProgressListener
 			throw new OpenEditException(ex);
 		}
 		revision.setInputStream(input);
-		page.setContentItem(revision);
-		log.info("Saved " + page);
+		//log.info("Saved " + page);
 		
 		//OutputStreamItem item = new OutputStreamItem(page.getPath());
 //		String offset = inItem.get("offset");
@@ -324,9 +346,16 @@ public class UploadRequest implements ProgressListener
 //			item.setSeek(Long.parseLong(offset));
 //		}
 		//page.setContentItem(item);
-		getPageManager().putPage(page);  //FileReposityory will set the item.setOutputstream for us
-		inItem.setSavedPage(page);
-		return page.getContentItem();
+		
+		getPageManager().getRepository().put( revision );
+		getPageManager().clearCache(revision.getPath());
+		log.info("Uploaded To " + revision.getAbsolutePath());
+//		
+//		Page page = getPageManager().getPage(saveTo.getPath());
+//		page.setContentItem(revision);
+//		getPageManager().putPage(page);  //FileReposityory will set the item.setOutputstream for us
+//		inUploadedField.setSavedPage(page);
+		return revision;
 	}
 	public List unzipFiles(boolean inForceUnzip) throws OpenEditException
 	{

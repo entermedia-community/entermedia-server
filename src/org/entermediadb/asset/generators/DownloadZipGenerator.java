@@ -62,6 +62,16 @@ public class DownloadZipGenerator extends BaseGenerator
 
 	}
 
+	protected HitTracker loadHitTracker(WebPageRequest inReq, String moduleid)
+	{
+		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
+		if (name == null)
+		{
+			name = inReq.getRequestParameter("hitssessionid");
+		}
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		return hits;
+	}
 	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, MediaArchiveModule archiveModulex, Output inOut)
 	{
 		Map<Asset, ConvertInstructions> assets = new HashMap<Asset, ConvertInstructions>();
@@ -70,12 +80,8 @@ public class DownloadZipGenerator extends BaseGenerator
 		String[] assetids = inReq.getRequestParameters("assetselect_" + catalogid);
 		if (assetids == null)
 		{
-			String hitssessionid = inReq.getRequestParameter("hitssessionid");
-			if(hitssessionid == null)
-			{
-				return;
-			}
-			HitTracker hits = (HitTracker)inReq.getSessionValue(hitssessionid);
+			String moduleid = inReq.findPathValue("module");
+			HitTracker hits = loadHitTracker(inReq, moduleid);
 			for (Object object : hits) {
 				String id = null;
 				if( object instanceof Data)

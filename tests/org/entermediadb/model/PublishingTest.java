@@ -1,9 +1,7 @@
 package org.entermediadb.model;
 
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.publishing.PublishManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;

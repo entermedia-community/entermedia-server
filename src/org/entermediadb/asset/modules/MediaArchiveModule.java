@@ -5,11 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -291,9 +287,9 @@ public class MediaArchiveModule extends BaseMediaModule
 	public Asset getAssetAndPage(WebPageRequest inReq)
 	{
 		Asset asset = getAsset(inReq);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		String moduleid = inReq.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inReq, moduleid);
 		//Find this on this tracker and match up the page
-		HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
 		if( tracker != null)
 		{
 			//Asset could be deleted

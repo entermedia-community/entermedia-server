@@ -94,9 +94,10 @@ public class PublishManager implements CatalogEnabled {
 		//query.addNot("remotepublish","true");
 		
 		HitTracker<Data> publishtasks = queuesearcher.search(query);
-		log.info("publishing " + publishtasks.size() + " assets" + queuesearcher.getCatalogId());
+		
 		if( publishtasks.size() > 0)
 		{
+			log.info("publishing " + publishtasks.size() + " assets" + queuesearcher.getCatalogId());
 			for (Iterator iterator = publishtasks.iterator(); iterator.hasNext();)
 			{
 				Data result = (Data) iterator.next();
@@ -207,9 +208,17 @@ public class PublishManager implements CatalogEnabled {
 						firePublishEvent(orderitem.getId());
 						continue;
 					}
-					if( presult.isReadyToPublish() )   //Possibly externally published
+					if( presult.isComplete() )
 					{
-						if(!"readytopublish".equals(orderitem.getValue("publishstatus")))
+						log.info("Published " +  asset + " to " + destination);
+						orderitem.setProperty("publishstatus", "complete");
+						orderitem.setProperty("errordetails", " ");
+						queuesearcher.saveData(orderitem);
+						firePublishEvent(orderitem.getId());
+					}
+					else if( presult.isReadyToPublish() )   //Possibly externally published
+					{
+						if(!"readytopublish".equals(orderitem.getValue("publishstatus"))) 
 						{
 							log.info("Conversion Ready on " +  asset + " to " + destination);
 							orderitem.setProperty("publishstatus", "readytopublish");
@@ -217,14 +226,6 @@ public class PublishManager implements CatalogEnabled {
 							queuesearcher.saveData(orderitem);
 							firePublishEvent(orderitem.getId());
 						}
-					}
-					else if( presult.isComplete() )
-					{
-						log.info("Published " +  asset + " to " + destination);
-						orderitem.setProperty("publishstatus", "complete");
-						orderitem.setProperty("errordetails", " ");
-						queuesearcher.saveData(orderitem);
-						firePublishEvent(orderitem.getId());
 					}
 					else if( presult.isPending() )
 					{
@@ -240,7 +241,7 @@ public class PublishManager implements CatalogEnabled {
 				catch( Throwable ex)
 				{
 					log.error("Problem publishing ${asset} to ${publishdestination}", ex);
-					orderitem.setProperty("status", "error");
+					orderitem.setProperty("publishstatus", "error");
 					if(ex.getCause() != null)
 					{
 						ex = ex.getCause();

@@ -59,7 +59,7 @@ public class DesktopModule extends BaseMediaModule
 
 
 		//TODO: Desktop to start download this
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		Desktop desktop = loadDesktop(inReq);
 		if(asset != null)
 		{
 			desktop.downloadAsset(archive, link);
@@ -86,7 +86,7 @@ public class DesktopModule extends BaseMediaModule
 		Data userdownload = archive.query("userdownloads").id(downloadid).searchOne();
 
 		//TODO: Desktop to start download this
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		Desktop desktop = loadDesktop(inReq);
 		if( userdownload.get("assetid") != null)
 		{
 			desktop.openAsset(archive, userdownload.get("assetid"));
@@ -100,36 +100,53 @@ public class DesktopModule extends BaseMediaModule
 	}
 	
 	
-	public void loadDesktop(WebPageRequest inReq)
+	public Desktop loadDesktop(WebPageRequest inReq)
 	{
-		if(inReq.getRequest() == null) {
-			return;
+		if(inReq.getRequest() == null || inReq.getUser() == null) {
+			return null;
 		}
 		
 		String isDesktopParameter = inReq.getRequestParameter("desktop");
+		
 		Desktop desktop = (Desktop) inReq.getPageValue("desktop");
-		if(desktop == null || isDesktopParameter != null) 
+		
+		if(isDesktopParameter != null) 
 		{
-			if( "false".equals(isDesktopParameter) )
+			if( "false".equals(isDesktopParameter) ) //Not used anymore
 			{
 				inReq.removeSessionValue("desktop");
 				inReq.putPageValue("desktop", null);
 				FolderManager manager = getFolderManager(inReq);
 				manager.getDesktopManager().removeDesktop(inReq.getUserName());
-				return;
+				return null;
 			}
-			
-			String isDesktop = inReq.getRequest().getHeader("User-Agent");
-			if(Boolean.parseBoolean(isDesktopParameter) || (isDesktop.contains("eMediaWorkspace") && inReq.getUser() != null)) 
+			else if( Boolean.parseBoolean(isDesktopParameter))
 			{
 				FolderManager manager = getFolderManager(inReq);
-				desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-				if(desktop == null) {
-					desktop = manager.getDesktopManager().connectDesktop(inReq.getUser());
-				}
+				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),System.getenv("HOSTNAME"));
 				inReq.putSessionValue("desktop", desktop);
 			}
 		}
+		if(desktop == null) 
+		{
+			String useragent = inReq.getRequest().getHeader("User-Agent");
+			if(useragent.contains("eMediaLibrary")) 
+			{
+				int found = useragent.indexOf("ComputerName/");
+				if( found > -1)
+				{
+					String computername = useragent.substring(found + "ComputerName/".length(), useragent.length());
+					if(computername != null) 
+					{
+						FolderManager manager = getFolderManager(inReq);
+						desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),computername);
+						inReq.putSessionValue("desktop", desktop);
+					}
+				}
+			}
+		}
+
+		return desktop;
 	}
 	
 }

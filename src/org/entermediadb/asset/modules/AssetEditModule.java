@@ -21,6 +21,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.edit.AssetEditor;
+import org.entermediadb.asset.edit.Version;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.ExiftoolMetadataExtractor;
 import org.entermediadb.asset.search.AssetSearcher;
@@ -30,12 +31,14 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
@@ -380,7 +383,7 @@ public class AssetEditModule extends BaseMediaModule
 			return;
 		}
 		Asset asset;
-
+		String deleteoriginal = inContext.getRequestParameter("deleteoriginal");
 		HitTracker tracker = editor.getMediaArchive().getAssetSearcher().loadHits(inContext);
 
 		for (int i = 0; i < assetIds.length; i++)
@@ -390,6 +393,7 @@ public class AssetEditModule extends BaseMediaModule
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
+					//editor.getMediaArchive().fireMediaEvent(inContext.getUser(), "asset", "deletingbulk", assets.getSelectedResults());
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
@@ -397,20 +401,20 @@ public class AssetEditModule extends BaseMediaModule
 						{
 							tracker.removeSelection(asset.getId());
 						}
-						editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 						editor.deleteAsset(asset, inContext.getUser());
-						String ok = inContext.getRequestParameter("deleteoriginal");
-						if (Boolean.parseBoolean(ok))
+						
+						if (Boolean.parseBoolean(deleteoriginal))
 						{
-							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+							editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 						}
-						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 						deleted++;
-						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
+						log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
 					}
+					editor.getMediaArchive().fireMediaEvent("deletedbulk", inContext.getUser(), assets);
 				}
 				catch (Exception e)
 				{
+					log.info(e);
 					continue;
 				}
 			}
@@ -425,14 +429,13 @@ public class AssetEditModule extends BaseMediaModule
 					}
 					editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 					editor.deleteAsset(asset,inContext.getUser());
-					String ok = inContext.getRequestParameter("deleteoriginal");
-					if (Boolean.parseBoolean(ok))
+					if (Boolean.parseBoolean(deleteoriginal))
 					{
-						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
+						editor.getMediaArchive().getAssetManager().removeOriginal(inContext.getUser(), asset);
 					}
 					deleted++;
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
-					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + ok);
+					log.info("Asset Deleted - assetid " + asset.getId() + " - user " + inContext.getUserName() + " - sourcepath: " + asset.getSourcePath() + " original: " + deleteoriginal);
 				}
 			}
 		}
@@ -592,6 +595,29 @@ public class AssetEditModule extends BaseMediaModule
 		archive.fireSharedMediaEvent("conversions/runconversions");
 
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
+		inReq.putPageValue("asset", asset);
+	}
+	
+	public void replaceOriginal(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
+		Asset asset = getAsset(inReq);
+		UploadRequest uploadRequest = getUploadedPages(inReq);
+		List temppages = uploadRequest.getSavedContentItems();
+		if (temppages.isEmpty())
+		{
+			throw new OpenEditException("No uploads found");
+		}
+
+		archive.getAssetManager().replaceOriginal(asset, temppages); 
+		archive.fireMediaEvent("originalreplaced", inReq.getUser(), asset);
+
+		inReq.setRequestParameter("assetids", new String[] { asset.getId() });
+
+		archive.getPresetManager().reQueueConversions(archive, asset);
+		archive.fireSharedMediaEvent("conversions/runconversions");
+
 		inReq.putPageValue("asset", asset);
 	}
 
@@ -980,19 +1006,19 @@ public class AssetEditModule extends BaseMediaModule
 			else
 			{
 				ContentItem dest = getPageManager().getContent(basepath + assetsourcepath);
-				int i = 2;
-				while (dest.exists())
-				{
-					String pagename = PathUtilities.extractPageName(assetsourcepath);
-					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-					dest = getPageManager().getContent(basepath + tmppath);
-					if (!dest.exists())
-					{
-						assetsourcepath = tmppath;
-						break;
-					}
-					i++;
-				}
+//				int i = 2;
+//				while (dest.exists())
+//				{
+//					String pagename = PathUtilities.extractPageName(assetsourcepath);
+//					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+//					dest = getPageManager().getContent(basepath + tmppath);
+//					if (!dest.exists())
+//					{
+//						assetsourcepath = tmppath;
+//						break;
+//					}
+//					i++;
+//				}
 				pages.put(assetsourcepath, contentitem);
 			}
 		}
@@ -1713,25 +1739,32 @@ public class AssetEditModule extends BaseMediaModule
 	 */
 	public void loadAssetVotes(WebPageRequest inReq)
 	{
-		Asset asset = (Asset) inReq.getPageValue("asset");
-		if (asset == null)
+		MultiValued data = (MultiValued) inReq.getPageValue("asset");
+		if (data == null)
 		{
 			return;
 		}
-		if (asset.getId().contains("multiedit:")) {
+		//Asset asset = getM
+		if (data.getId().contains("multiedit:")) {
 			return;
 		}
-		String catalogid = inReq.findPathValue("catalogid");
 
+		int count = data.getInt("assetvotes");
+		if(count == 0)
+		{
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		String catalogid = inReq.findPathValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
 		if (searcher == null)
 		{
 			throw new OpenEditException("Unable to load searcher for assetvotes.");
 		}
-		SearchQuery q = searcher.createSearchQuery();
-		q.setHitsName("voteshits");
-		q.addMatches("assetid", asset.getId());
-		HitTracker hits = searcher.search(q);
+		QueryBuilder q = searcher.query();
+		q.named("voteshits");
+		q.exact("assetid", data.getId());
+		HitTracker hits = archive.getCachedSearch(q);
 
 		String username = inReq.getUserName();
 		if (username != null)
@@ -1745,12 +1778,11 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		int count = asset.getInt("assetvotes");
 		if (count != hits.size())
 		{
-			asset.setProperty("assetvotes", String.valueOf(hits.size()));
-			MediaArchive archive = getMediaArchive(inReq);
+			data.setProperty("assetvotes", String.valueOf(hits.size()));
 			//async asset save?
+			Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
 			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
 		}
 
@@ -1802,7 +1834,6 @@ public class AssetEditModule extends BaseMediaModule
 				asset = (Asset) archive.getAssetSearcher().loadData(assetdata);
 				if (asset != null) {
 					voteForAsset(asset, archive, inReq.getUser());
-					loadAssetVotes(inReq);
 				 }
 			}
 		}
@@ -1812,7 +1843,6 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				if (asset != null) {
 					voteForAsset(asset, archive, inReq.getUser());
-					loadAssetVotes(inReq);
 					inReq.putPageValue("assetid", asset.getId());
 				}
 			}
@@ -1824,14 +1854,23 @@ public class AssetEditModule extends BaseMediaModule
 	public void voteForAsset(Asset asset, MediaArchive archive, User inUser)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
-		//	DateFormat dateformat = searcher.getDetail("time").getDateFormat();
 		if (asset.getId().contains("multiedit:"))
 		{
 			throw new OpenEditException("Can't edit votes");
 		}
-		Data row = searcher.createNewData();
+		QueryBuilder q = searcher.query();
+		q.exact("assetid", asset.getId());
+		HitTracker hits = q.search();
 		String username = inUser.getUserName();
-
+		for (Object hit : hits)
+		{
+			if (username.equals(hits.getValue(hit, "username")))
+			{
+				return;
+			}
+		}
+		
+		Data row = searcher.createNewData();
 		row.setId(username + "_" + asset.getId());
 		String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 		row.setValue("votetime", date);
@@ -1840,7 +1879,10 @@ public class AssetEditModule extends BaseMediaModule
 		row.setSourcePath(asset.getSourcePath());
 		searcher.saveData(row, inUser);
 		archive.fireMediaEvent("userlikes", inUser, asset);
+
+		asset.setProperty("assetvotes", String.valueOf(hits.size() + 1));
 		//archive.getAssetSearcher().updateIndex(asset); //get the rank updated
+		archive.getAssetSearcher().saveData(asset);
 	}
 
 	public void saveAssetData(WebPageRequest inReq) throws Exception
@@ -1897,11 +1939,13 @@ public class AssetEditModule extends BaseMediaModule
 			hitssessionid = hitssessionid.substring("selected".length());
 		}
 
-		//Make a new search based on everyone being selected
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid); //this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		
+		//this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
 		if (hits == null)
 		{
-			log.error("Could not find " + hitssessionid);
+			log.error("Could not find hittracker" );
 			return null;
 		}
 
@@ -1915,7 +1959,7 @@ public class AssetEditModule extends BaseMediaModule
 		//		
 		if (!hits.hasSelections())
 		{
-			log.error("No assets selected " + hitssessionid);
+			log.error("No assets selected hittracker");
 			return null;
 		}
 
@@ -1942,6 +1986,7 @@ public class AssetEditModule extends BaseMediaModule
 		//		HitTracker freshhits = store.getAssetSearcher().cachedSearch(inReq,hits.getSearchQuery());
 		//freshhits.setSelections(hits.getSelections()); //TODO: What if the order changes?
 		//HitTracker selected = freshhits.getSelectedHitracker();
+		
 		String assetid = "multiedit:" + hitssessionid;
 		inReq.removeSessionValue(assetid);
 		Searcher searcher = archive.getSearcher("asset");
@@ -1986,28 +2031,26 @@ public class AssetEditModule extends BaseMediaModule
 			return (Asset) found;
 		}
 		Asset asset = null;
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
-		if (hitssessionid != null)
+
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		if (hits != null && hits.hasSelections())
 		{
-			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (hits != null && hits.hasSelections())
+			String assetid = inReq.getRequestParameter("assetid");
+			if (assetid != null && assetid.startsWith("multiedit:"))
 			{
-				String assetid = inReq.getRequestParameter("assetid");
-				if (assetid != null && assetid.startsWith("multiedit:"))
-				{
-					asset = (Asset) inReq.getSessionValue(assetid);
-				}
-				else if (assetid == null)
-				{
-					String id = hits.getFirstSelected();
-					asset = getMediaArchive(inReq).getAsset(id);
-				}
-				if (asset != null)
-				{
-					inReq.putPageValue("asset", asset);
-				}
+				asset = (Asset) inReq.getSessionValue(assetid);
 			}
-		}
+			else if (assetid == null)
+			{
+				String id = hits.getFirstSelected();
+				asset = getMediaArchive(inReq).getAsset(id);
+			}
+			if (asset != null)
+			{
+				inReq.putPageValue("asset", asset);
+			}
+		} 
 		//		if( asset == null )
 		//		{
 		//			return getAsset(inReq);
@@ -2096,7 +2139,7 @@ public class AssetEditModule extends BaseMediaModule
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null && detail.get("sourcepath") != null)
 				{
-					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive,searchtype,target,inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
+					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
 					//OLD style sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
 					if( sourcepath.endsWith("/"))
 					{
@@ -2118,6 +2161,16 @@ public class AssetEditModule extends BaseMediaModule
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 			path = path.replace("//", "/");
 
+			Page originalfile = archive.getPageManager().getPage(path);
+			if( originalfile.exists() )
+			{
+				Asset existingasset = archive.getAssetBySourcePath(sourcepath);
+				if( existingasset != null)
+				{
+					ContentItem preview = archive.getPresetManager().outPutForGenerated(archive, existingasset, "image3000x3000");
+					archive.getAssetEditor().backUpFilesForLastVersion(existingasset,originalfile.getContentItem(),preview );
+				}
+			}
 			properties.saveFileAs(item, path, inReq.getUser());
 
 			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
@@ -2132,9 +2185,9 @@ public class AssetEditModule extends BaseMediaModule
 			Asset current = archive.getAssetBySourcePath(sourcepath);
 			//log.info(current.getId());
 			//This will create a new one if current was null.
-			 current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
-			 log.info(current.getId());
+			current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
+			log.info("Asset saved: " + current.getId());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
 
@@ -2151,11 +2204,18 @@ public class AssetEditModule extends BaseMediaModule
 			//			current.setProperty("owner", inReq.getUser().getId());
 			archive.removeGeneratedImages(current, true);
 			archive.saveAsset(current, null);
+			
+			archive.getAssetEditor().createNewVersionData(current, originalfile.getContentItem(), inReq.getUserName(), Version.UPLOADED, null);
+			
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
-			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current);
+			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
+			
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);
-			archive.fireMediaEvent("importing", "assetsimported", inReq.getUser(), current);
+			archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
+			
+			//archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
+			
 
 			if (currentcollection != null)
 			{
@@ -2165,6 +2225,7 @@ public class AssetEditModule extends BaseMediaModule
 			savedassets.add(current);
 		}
 		inReq.putPageValue("savedassets", savedassets);
+		inReq.putPageValue("hits", savedassets);  //Some evets requires hits variable
 
 	}
 

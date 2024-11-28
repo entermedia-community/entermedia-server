@@ -9,3 +9,6 @@
 /webapp/WEB-INF/logs/*
 
 *.db
+*.DS_Store
+
+webapp/WEB-INF/data/entermedia/catalogs/testcatalog/

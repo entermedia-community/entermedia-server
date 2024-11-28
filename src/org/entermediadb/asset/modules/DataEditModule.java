@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -58,8 +60,24 @@ public class DataEditModule extends BaseMediaModule
 	public  Data loadDataForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
+		if( searcher == null)
+		{
+			log.error("searcher required");
+			return null;
+		}
 		inReq.putPageValue("searcher", searcher);
 		Data data = loadData(inReq);
+		if( data== null) 
+		{
+			data = searcher.createNewData();
+			String fieldexternalid = inReq.getRequestParameter("fieldexternalid");
+			String fieldexternalvalue = inReq.getRequestParameter("fieldexternalvalue");
+			if (fieldexternalid != null && fieldexternalvalue != null)
+			{
+				data.setValue(fieldexternalid, fieldexternalvalue);
+			}
+		}
+		inReq.putPageValue("data", data);
 		return data;
 	}
 	
@@ -284,7 +302,10 @@ public class DataEditModule extends BaseMediaModule
 
 		searcher.reloadSettings();
 	}
-
+	
+	/**
+	 * @deprecated Not used?
+	 */
 	public void addViewById(WebPageRequest inReq) throws Exception
 	{
 		XmlFile file = (XmlFile) loadView(inReq);
@@ -309,87 +330,54 @@ public class DataEditModule extends BaseMediaModule
 
 	public void addToView(WebPageRequest inReq) throws Exception
 	{
-		XmlFile file = (XmlFile) loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		Searcher searcher = loadSearcher(inReq);
-		String viewbase = null;
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
+		String newdetailid = inReq.getRequestParameter("detailid");
+		detailarchive.addToView(searcher, viewpath, newdetailid);
+			
 		MediaArchive archive = getMediaArchive(inReq);
-		if(archive != null) {
-			viewbase = archive.getCatalogSettingValue("viewbase");
-		}
-		if(viewbase == null) {
-			 viewbase = "/WEB-INF/data/" + searcher.getCatalogId() + "/views/";
-
-		}
-		String path = viewbase + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-
-		String newone = inReq.getRequestParameter("newone");
-
-		Element element = file.addNewElement();
-		element.addAttribute("id", newone);
-		element.clearContent();
-
-		getXmlArchive().saveXml(file, inReq.getUser());
-		//reload the archive
-		searcher.getPropertyDetailsArchive().clearCache();
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
 	}
 
+	public void saveView(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = resolveCatalogId(inReq);
+		String searchtype = resolveSearchType(inReq);
+		String viewpath = inReq.getRequestParameter("viewpath");
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+		
+
+		String[] sorted = inReq.getRequestParameters("ids");
+		if (sorted == null) {
+			throw new OpenEditException("Missing sort list ids");
+		}
+		detailarchive.saveView(searcher, viewpath, sorted);
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
+
+	}
 	//TODO: Allow disable of views
 	public void removeFromView(WebPageRequest inReq) throws Exception
 	{
-		XmlFile file = (XmlFile) loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		Searcher searcher = loadSearcher(inReq);
-
-String viewbase = null;
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
+		String newdetailid = inReq.getRequestParameter("detailid"); //Does not seem right name
+		detailarchive.removeFromView(searcher, viewpath, newdetailid);
+			
 		MediaArchive archive = getMediaArchive(inReq);
-		if(archive != null) {
-			viewbase = archive.getCatalogSettingValue("viewbase");
-		}
-		if(viewbase == null) {
-			 viewbase = "/WEB-INF/data/" + searcher.getCatalogId() + "/views/";
-
-		}
-		
-		
-		String path = viewbase + viewpath + ".xml";
-		file.setPath(path);
-		String toremove = inReq.getRequestParameter("toremove");
-		//toremove might have a . in it
-
-		Element element = loadViewElement(file, toremove);
-		file.deleteElement(element);
-
-		if (file.getRoot().elements().size() == 0)
-		{
-			getXmlArchive().deleteXmlFile(file);
-		}
-		else
-		{
-			getXmlArchive().saveXml(file, inReq.getUser());
-		}
-		searcher.getPropertyDetailsArchive().clearCache();
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
 
 	}
 
-	protected Element loadViewElement(XmlFile file, String toremove)
-	{
-		Element element = file.getElementById(toremove);
-		if (element == null && toremove.contains("."))
-		{
-			toremove = toremove.substring(toremove.indexOf(".") + 1, toremove.length());
-			element = file.getElementById(toremove);
-		}
-		return element;
-	}
 
 	public PropertyDetail loadProperty(WebPageRequest inReq) throws Exception
 	{
@@ -576,7 +564,6 @@ String viewbase = null;
 			}
 			if (id != null && id.startsWith("multiedit:"))
 			{
-
 				data = (CompositeData) inReq.getSessionValue(id);
 				if (data == null)
 				{
@@ -1161,8 +1148,8 @@ String viewbase = null;
 
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
-		String name = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		if (hits != null)
 		{
 			String[] params = inReq.getRequestParameters("dataid");
@@ -1174,6 +1161,7 @@ String viewbase = null;
 					hits.toggleSelected(id);
 				}
 			}
+			inReq.putPageValue("hits", hits);
 			inReq.putPageValue(hits.getHitsName(), hits);
 			/*
 			if (inReq.getPageValue("hits") == null)
@@ -1187,8 +1175,9 @@ String viewbase = null;
 	public void selectHits(WebPageRequest inReq) throws Exception
 	{
 		// loadPageOfSearch(inReq);
-		String name = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
+		String moduleid = inReq.findPathValue("module");
+
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		if (hits == null)
 		{
 			throw new OpenEditException("Session timed out, reload page");
@@ -1212,6 +1201,7 @@ String viewbase = null;
 			hits.setShowOnlySelected(false);
 		}
 		inReq.putPageValue(hits.getHitsName(), hits);
+		inReq.putPageValue("hits", hits);
 
 	}
 
@@ -1237,7 +1227,7 @@ String viewbase = null;
 				inReq.getUserProfile().setValue(searcher.getSearchType()+"sort", sort);
 				inReq.getUserProfile().save(inReq.getUser());
 			}
-			searcher.changeSort(inReq);
+			searcher.changeSort(inReq);  //This sets the preference as well but does not save it forever
 		}
 	}
 
@@ -1328,8 +1318,8 @@ String viewbase = null;
 	}
 	public HitTracker loadHitsWrapped(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
-		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker trackerOriginal = loadHitTracker(inReq, moduleid);
 		if (trackerOriginal == null)
 		{
 			return null;
@@ -1356,13 +1346,15 @@ String viewbase = null;
 	
 	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
-		HitTracker trackerOriginal = (HitTracker) inReq.getSessionValue(hitssessionidOriginal);
+		
+		String moduleid = inReq.findPathValue("module");
+		HitTracker trackerOriginal = loadHitTracker(inReq, moduleid);
+
 		if (trackerOriginal == null)
 		{
 			return null;
 		}
-		inReq.setRequestParameter("hitssessionidOriginal", hitssessionidOriginal);
+		inReq.setRequestParameter("hitssessionidOriginal", trackerOriginal.getSessionId());
 		String othername = inReq.findValue("hitsname");
 
 		String hitssessionidCopy = othername + trackerOriginal.getSearchQuery().getResultType() + trackerOriginal.getCatalogId();
@@ -1502,6 +1494,12 @@ String viewbase = null;
 
 	}
 
+	public void parseMultPart(WebPageRequest inReq) throws Exception
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+	}
 	public void uploadFiles(WebPageRequest inReq) throws Exception
 	{
 		FileUpload command = new FileUpload();
@@ -1716,12 +1714,12 @@ String viewbase = null;
 	public void deleteSelections(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
-		//String name = inReq.getRequestParameter("hitssessionid");
+		//String name = inReq.getRequestParameter("hitsses/sionid");
 		//HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		String moduleid = searcher.getSearchType();
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 
-		Collection todelete = hits.getSelectedHitracker();
+		HitTracker todelete = hits.getSelectedHitracker();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
@@ -1731,79 +1729,6 @@ String viewbase = null;
 
 	}
 
-	public void saveView(WebPageRequest inReq) throws Exception
-	{
-		//XmlFile file = (XmlFile)loadView(inReq);
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String[] sorted = inReq.getRequestParameters("ids");
-		if (sorted == null) {
-			throw new OpenEditException("Missing sort list ids");
-		}
-		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		XmlFile file = (XmlFile) loadView(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = propertyarchive.findSavePath() + "/views/" + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-		List tosave = new ArrayList();
-		for (int i = 0; i < sorted.length; i++)
-		{
-			//Element sourceelement = file.getElementById();
-			String id = sorted[i];
-			Element sourceelement = loadViewElement(file, id);
-			if (sourceelement != null)
-			{
-				sourceelement.setParent(null);
-				tosave.add(sourceelement);
-			}
-		}
-		if (tosave.isEmpty())
-		{
-			throw new OpenEditException("Should not be removing all fields");
-		}
-		//TODO: Move to PropertyDetailsArchive.saveView
-		file.getElements().clear();
-		file.getElements().addAll(tosave);
-		getXmlArchive().saveXml(file, inReq.getUser());
-		propertyarchive.clearCache();
-
-		//log.info(catalogid + type + items);
-
-	}
-/**
- * @deprecated @see saveView
- * @param inReq
- * @throws Exception
- */
-	public void moveFieldInView(WebPageRequest inReq) throws Exception
-	{
-		XmlFile file = (XmlFile) loadView(inReq);
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-
-		String source = inReq.getRequestParameter("source");
-		Element sourceelement = loadViewElement(file, source);
-
-		String destination = inReq.getRequestParameter("destination");
-		Element destinationelement = loadViewElement(file, destination);
-
-		int sindex = file.getElements().indexOf(sourceelement);
-		int dindex = file.getElements().indexOf(destinationelement);
-		file.getElements().remove(sindex);
-		sourceelement.setParent(null);
-		if (dindex > sindex)
-		{
-			dindex--;
-		}
-		file.getElements().add(dindex, sourceelement);
-		getXmlArchive().saveXml(file, inReq.getUser());
-		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
-	}
 
 	public void sortList(WebPageRequest inReq) throws Exception
 	{
@@ -2135,12 +2060,16 @@ String viewbase = null;
 		{
 			dataid = currentdata.getId();
 		}
-
+		if(dataid == null) {
+			return;
+		}
+		
 		MediaArchive archive = getMediaArchive(inReq);
 		if (searcher == null)
 		{
 			return;
 		}
+		
 		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
 
 	}
@@ -2218,28 +2147,6 @@ String viewbase = null;
 	}
 */
 	
-	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
-	{
-		
-		String searchtype = resolveSearchType(inPageRequest);
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (searchtype == null) 
-		{
-			
-			return;
-		}
-		Searcher searcher = archive.getSearcher(searchtype);
-		String id = inPageRequest.getRequestParameter("id");
-		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
-		if (entity != null) {
-			String fieldexternalid = inPageRequest.getRequestParameter("fieldexternalid");
-			String fieldexternalvalue = inPageRequest.getRequestParameter("fieldexternalvalue");
-			entity.addValue(fieldexternalid, fieldexternalvalue);
-			searcher.saveData(entity);
-		}
-		
-	}
-	
 	
 
 	public void toggleBillingContact(WebPageRequest context) {
@@ -2253,6 +2160,285 @@ String viewbase = null;
 		teamUser.setValue("isbillingcontact", !oldValue);
 		instanceSearcher.saveData(teamUser);
 	}
+
+	
+	public void orderDataToTop(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		MultiValued firstone = (MultiValued)tracker.first();
+		inReq.setRequestParameter("targetid",firstone.getId());
+		orderInsertSelectedData(inReq);
+	}
+	
+	/*public void orderInsertData(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		tracker.enableBulkOperations();
+		String dataid = inReq.getRequestParameter("dataid");
+		if(dataid == null) {
+			
+		}
+		Data selected = archive.getData(searchtype, dataid);
+		String replacedassetid = inReq.getRequestParameter("targetid");
+		
+		long neworder = -1;
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
+			MultiValued data = (MultiValued) iterator.next();
+			if( data.getId().equals(replacedassetid))
+			{
+				Long currentorder = data.getLong("ordering");
+				if( currentorder ==null)
+				{
+					currentorder = 0L;
+				}
+				selected.setValue("ordering",currentorder);
+				tosave.add(selected);
+				neworder = currentorder + 1;
+				data.setValue("ordering",neworder++);
+				tosave.add(data);
+				
+			}
+			if( neworder > -1 && !selected.getId().equals(data.getId()))
+			{
+				Long otherorders = data.getLong("ordering");
+				if( otherorders == null)
+				{
+					otherorders = 0L;
+				}
+				if( otherorders > neworder)
+				{
+					break;
+				}
+				 data.setValue("ordering",neworder);
+				 tosave.add(data);
+				neworder++;
+			}
+		}
+		archive.saveData(searchtype,tosave);
+	
+	}*/
 	
 	
+	public void orderInsertSelectedData(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String searchtype = resolveSearchType(inReq);
+		
+		HitTracker tracker = archive.getSearcher(searchtype).loadHits(inReq);
+		tracker.enableBulkOperations();
+		
+		String replacedassetid = inReq.getRequestParameter("targetid");
+		MultiValued targetAsset = (MultiValued)tracker.findData("id",replacedassetid);
+		//long neworder = targetorder;
+		
+		HashSet tosave = new HashSet();
+		HashSet customvalues = new HashSet();
+		
+		
+
+		Collection selected = tracker.getSelections();
+		String dataid = inReq.getRequestParameter("dataid");
+		if(dataid != null) {
+			selected.add(dataid);
+		}
+		List<Map> sorted  = new ArrayList();
+		//Sort the selections by ordering first
+	
+		for (Iterator iterator = selected.iterator(); iterator.hasNext();) 
+		{
+			String id = (String) iterator.next();
+			int row = tracker.findRow("id",id);
+			Map tomove = new HashMap();
+			tomove.put("row",row);
+			tomove.put("id",id);
+			sorted.add(tomove);
+		}
+		if( sorted.size() > 1)
+		{
+			sorted.sort(new Comparator<Map>() {
+				@Override
+				public int compare(Map arg0, Map arg1) {
+					int l0 = (Integer)arg0.get("row");
+					int l1 = (Integer)arg1.get("row");
+					if( l0 == l1)
+					{
+						return 0;
+					}
+					if( l0 > l1)
+					{
+						return 1;
+					}
+					return -1;
+				}
+			});
+		}
+			//Resort everyone to have correct ordering
+			Long previouscount  = -1L;  //Moved ot top selection
+		
+			//assets = new ArrayList();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();) {
+				
+				MultiValued data = (MultiValued) iterator.next();
+				Long count = data.getLong("ordering");
+				if( previouscount.equals( -1L))
+				{
+					previouscount = count;
+					continue;
+				}
+				if( tracker.isAscending()) 
+				{
+					if(previouscount < count) 
+					{
+						previouscount = count;
+						continue;
+					}
+					count = previouscount + 1000;
+				}
+				else
+				{
+					if(previouscount > count) 
+					{
+						previouscount = count;
+						continue;
+					}
+					count = previouscount - 1000;
+				}
+				data.setValue("ordering",count);
+				tosave.add(data);
+				previouscount = count;
+			}
+			if( tracker.isAscending()) 
+			{
+				inReq.getUserProfile().setSortForSearchType("asset", "orderingUp"); 
+			}
+			else {
+				inReq.getUserProfile().setSortForSearchType("asset", "orderingDown");
+			}
+
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				log.info("Fixed" + data.getName() + " = " + data.get("ordering") );
+
+			}
+		//Move this group to the top
+			Long targetorder = targetAsset.getLong("ordering");		
+			
+			for (Iterator iterator = sorted.iterator(); iterator.hasNext();) 
+			{
+				Map tomoveid =  (Map)iterator.next();
+				MultiValued tomove = (MultiValued)tracker.findData("id",(String)tomoveid.get("id"));
+
+				long neworder = targetorder;
+				int checked =0;
+				do
+				{
+					if( tracker.isAscending())
+					{
+						neworder = neworder - 1;
+					}
+					else {
+						neworder = neworder + 1;
+					}
+					MultiValued existing = (MultiValued)tracker.findData("ordering",String.valueOf(neworder));
+					tomove.setValue("ordering",neworder); 
+					customvalues.add(tomove.getId());
+					tosave.add(tomove);
+					if( existing == null)
+					{
+						break;
+					}
+					else
+					{
+						tomove = existing;
+					}
+				}
+				while( checked++ < 999);
+			}
+/*
+Long count;  //Moved ot top selection
+		if( tracker.isAscending()) 
+		{
+			count = 0L;//Past the selections
+		}
+		{
+			count = (assets.size()+1) * 1000L;
+		}
+		Long targetorder = targetAsset.getLong("ordering");
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
+		{
+			MultiValued data = (MultiValued) iterator.next();
+			if( customvalues.contains(data.getId()))
+			{
+				continue;
+			}
+			
+			Long currentorder = data.getLong("ordering");
+			if( tracker.isAscending()) 
+			{
+				count = count + 1000;
+				if( count < targetorder)
+				{
+					continue; //Wait till the numbers get bigger
+				}
+				if(currentorder > count) {
+					break;
+				}	
+			}
+			else 
+			{
+				if(currentorder.equals(count)) {
+					break;
+				}
+				count = count - 1000;
+				if( count >= targetorder)
+				{
+					continue; //Wait till the numbers get smaller
+				}
+				if(currentorder < count) {
+					break;
+				}
+			}
+			data.setValue("ordering",count);
+			tosave.add(data);
+			
+		}
+	*/	
+		tracker.deselectAll();
+		archive.saveData(searchtype,tosave);
+	
+	}
+
+	public void loadEditHome(WebPageRequest inReq)
+	{
+		String edithome = inReq.getRequestParameter("edithome");
+		if( edithome == null)
+		{
+			edithome = inReq.findPathValue("edithome");
+		}
+		if( edithome != null)
+		{
+			inReq.putPageValue("edithome",edithome);
+			Page found = getPageManager().getPage(edithome + "/");
+			String edithomeid = found.get("edithomeid");
+			if( edithomeid != null)
+			{
+				inReq.putPageValue("edithomeid",edithomeid);
+			}
+		}
+	}
+	
+	public void loadSearchHome(WebPageRequest inReq)
+	{
+		String searchhome = inReq.findPathValue("searchhome");
+		if( searchhome != null)
+		{
+			inReq.putPageValue("searchhome",searchhome);
+		}
+	}
 }

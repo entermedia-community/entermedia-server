@@ -14,12 +14,17 @@
       <language id="fr"><![CDATA[Description]]></language> 
     </name> 
   </property>  
-  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
+  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New 
+    <name> 
+      <language id="de"><![CDATA[Id]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Id]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="testMultipleEditsLanguage" index="true" deleted="false" editable="true" stored="true">New
     <name>
-      <language id="de"><![CDATA[Id]]></language>
-      <language id="en"><![CDATA[Id]]></language>
-      <language id="es"><![CDATA[Id]]></language>
-      <language id="fr"><![CDATA[Id]]></language>
+      <language id="en"><![CDATA[testMultipleEditsLanguage]]></language>
     </name>
   </property>
 </properties>

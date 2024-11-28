@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.elasticsearch.categories.ElasticCategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.CatalogEnabled;
 import org.openedit.page.manage.PageManager;

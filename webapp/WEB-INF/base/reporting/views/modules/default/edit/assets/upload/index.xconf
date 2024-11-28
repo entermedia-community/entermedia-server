@@ -1,7 +1,0 @@
-<page>
-	<path-action name="AssetEditModule.clearRecentUploads"/>
-
-	<page-action name="PageValue.loadPageVariable" bean="searcherManager" />
-	<style id="uploadstyle" href="${themeprefix}/styles/pages/upload.css" />
-	<property name="uploadtab">single</property>
-</page>

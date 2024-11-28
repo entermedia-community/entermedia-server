@@ -1,19 +1,13 @@
 package org.entermediadb.model;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.savedqueries.SavedQueryManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
-import org.openedit.locks.LockManager;
-import org.openedit.util.DateStorageUtil;
 
 
 public class SavedQueryTest extends BaseEnterMediaTest

@@ -1,4 +1,0 @@
-<page>
-	<path-action name="BenchReportModule.createOrderReport"/>
-	<inner-layout>${searchhome}/reporting/layout/innerlayout.html</inner-layout>
-</page>

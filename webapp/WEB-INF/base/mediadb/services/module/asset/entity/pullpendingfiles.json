@@ -1,0 +1,37 @@
+#set( $filestodownload = $pendingpull.files )
+#set( $filestoupload = $pendingpush.files )
+#set( $entityid = $context.getRequestParameter("entityid") )
+  {
+  
+   "response":
+      {
+		  #if( $filestodownload)
+	        "status":"ok"
+	      #else 
+	      	"status": "error" 
+	      #end
+	      ,"filestodownload":"$filestodownload.size()"
+	      ,"filestoupload":"$filestoupload.size()" 
+      },
+  
+  "filestodownload" : [
+  #foreach( $file in $filestodownload) #if( ${foreach.count} != 1 ), #end
+  	{ 
+			"path": "$file.path",
+  		"url": "$file.url",
+  		"size":"$file.size",
+  		"id": "$file.id"
+		}
+	#end
+ 	],
+ 	 "filestoupload" : [
+  #foreach( $file in $filestoupload) #if( ${foreach.count} != 1 ), #end
+  	{ 
+			"path": "$file.path",
+  		"size":"$file.size",
+			"entityid":"$entityid",
+			"id": "$!file.id"
+		}
+	#end
+ 	]
+}

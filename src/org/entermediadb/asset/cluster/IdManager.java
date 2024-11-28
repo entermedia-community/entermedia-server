@@ -12,7 +12,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
 import org.openedit.node.NodeManager;
 
 public class IdManager 
@@ -100,7 +99,7 @@ public class IdManager
 			Iterator iter = tracker.iterator();
 			if (!iter.hasNext())
 			{
-				throw new OpenEditException("Searching by sourcepath not working" + inPath);
+				throw new OpenEditException("Searching by sourcepath not working for:" + inPath);
 			}
 			Data first = (Data) iter.next();
 			if (first.get("version") != lock.getVersion())
@@ -294,7 +293,7 @@ public class IdManager
 			{
 				current = 1000L;
 			}
-			current++;
+			current = current + 10;
 			counter.setValue("countvalue", current);
 		}
 		catch (Exception e)
@@ -326,8 +325,7 @@ public class IdManager
 			if(current == null){
 				current = 1L;
 			}
-			
-			current++;
+			current = current + 10;
 			counter.setValue("countvalue", current);
 		}
 		catch (Exception e)
@@ -339,6 +337,24 @@ public class IdManager
 		}
 		return current;
 		
+	}
+
+	public void setNumber(String inType, long inCurrentordering) {
+
+		UniqueId counter = lock(inType);
+		
+		Long current = null;
+		try
+		{
+			counter.setValue("countvalue", inCurrentordering);
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		finally{
+			release(counter);
+		}
 	}
 	
 	

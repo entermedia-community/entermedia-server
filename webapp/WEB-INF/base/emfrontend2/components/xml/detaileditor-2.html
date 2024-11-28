@@ -38,7 +38,7 @@
 	#set( $target = "${detail.id}.value" )
 	#set( $val = $context.getRequestParameter($target) )					
 	#if( $searcherManager )
-		#set( $val = $searcherManager.getValue($data,$detail) )	
+		#set( $val = $searcherManager.getValue($data,$detail,$context.getLocale()) )	
 	#else
 		#set( $val = $!{data.getProperty($detail.getId())} )
 	#end
@@ -69,6 +69,8 @@
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
+	
+	
 	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)

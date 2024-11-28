@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetails;
 import org.openedit.users.Group;
 import org.openedit.users.GroupSearcher;

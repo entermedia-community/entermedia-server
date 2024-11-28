@@ -38,7 +38,6 @@
 			<fileset dir="../WEB-INF/base/mediadb" />
 			<fileset dir="../WEB-INF/base/entermedia/" />
 			<fileset dir="../WEB-INF/base/system/" />
-			<fileset dir="../WEB-INF/base/reporting/" />
 
 			<fileset dir="../WEB-INF/base/emfrontend2/" />
 			<fileset dir="../WEB-INF/base/modulefrontend/" />
@@ -52,9 +51,6 @@
 		<copy todir="../WEB-INF/base/manager" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/manager" />
 		</copy>
-		<copy todir="../WEB-INF/base/reporting" preservelastmodified="true" overwrite="true">
-					<fileset dir="${workdir}/WEB-INF/base/reporting" />
-		</copy>
 
 		<copy todir="../WEB-INF/base/entermedia" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/entermedia" />
@@ -62,10 +58,6 @@
 
 		<copy todir="../WEB-INF/base/emfrontend2" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/emfrontend2" />
-		</copy>
-
-		<copy todir="../WEB-INF/base/modulefrontend" preservelastmodified="true" overwrite="true">
-			<fileset dir="${workdir}/WEB-INF/base/modulefrontend" />
 		</copy>
 
 		<copy todir="../WEB-INF/base/system" preservelastmodified="true" overwrite="true">

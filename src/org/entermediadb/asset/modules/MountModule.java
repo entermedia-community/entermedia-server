@@ -11,7 +11,6 @@ import org.openedit.WebServer;
 import org.openedit.modules.BaseModule;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
-import org.openedit.repository.filesystem.XmlVersionRepository;
 
 public class MountModule extends BaseModule {
 	protected WebServer fieldWebServer;
@@ -104,7 +103,7 @@ public class MountModule extends BaseModule {
 			{
 				repo = new FileRepository();
 			} else if ("versionRepository".equals(repotype)) {
-				repo = new XmlVersionRepository();
+				repo = new FileRepository();
 			} else if ("urlRepository".equals(repotype)) {
 				repo = new UrlRepository();
 			} else if ("sftpRepository".equals(repotype)) {

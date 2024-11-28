@@ -41,6 +41,7 @@
       <language id="fr"><![CDATA[clientsecret]]></language> 
     </name> 
   </property>  
+
   
    <property id="refreshtoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">OAUTH refresh token 
    

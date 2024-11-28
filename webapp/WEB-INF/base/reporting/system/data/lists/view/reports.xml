@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties> 
-  <property id="reportsgeneral" moduleid="reports" systemdefined="false" byassettype="false">General</property>  
-  <property id="reportsadvancedsearch" moduleid="reports" systemdefined="true" byassettype="false">Advanced Search</property>  
-  <property id="reportsresultstable" moduleid="reports" systemdefined="true" byassettype="false">Results</property>  
-  <property id="reportsheaderdetail" moduleid="reports" systemdefined="true" byassettype="false">Header Details</property> 
-</properties>

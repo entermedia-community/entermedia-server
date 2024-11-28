@@ -1,13 +1,9 @@
 package org.entermediadb.asset.scanner;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -125,7 +121,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			//--
 			long end = System.currentTimeMillis();
 			double total = (end - start) / 1000.0;
-			log.info("Exiftool Done in:"+total);
+			log.info("Exiftool Done in: "+total);
 			//--
 			
 			if (!result.isRunOk())
@@ -200,12 +196,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{
-		String[] supportedTypes = new String[] { "audio", "video", "image", "document" };
+		String[] supportedTypes = new String[] { "audio", "video", "image", "document", "default" };
 		String type = PathUtilities.extractPageType(inputFile.getName());
 
 		if (type != null)
 		{
-			String mediatype = inArchive.getMediaRenderType(type);
+			String mediatype = inArchive.getMediaRenderType(type); 
 			if (!Arrays.asList(supportedTypes).contains(mediatype))
 			{
 				return false;
@@ -253,7 +249,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		//--
 		long end = System.currentTimeMillis();
 		double total = (end - start) / 1000.0;
-		log.info("Exiftool Done in:"+total);
+		//log.info("Exiftool Done in: "+total);
 		//--
 		
 		if (!result.isRunOk())
@@ -353,7 +349,6 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						log.warn("Could not parse ImageSize string: " + value);
 					}
 				}
-				
 				else if ("ImageWidth".equals(key))
 				{
 					if (inAsset.get("width") == null)
@@ -370,8 +365,6 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("height", String.valueOf(Math.round(height)));
 					}
 				}
-				
-				
 				else if ("MaxPageSizeW".equals(key))
 				{
 					if (inAsset.get("width") == null)
@@ -390,8 +383,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("height", String.valueOf(Math.round(height)));
 					}
 				}
-				
-				
+				else if ("PageCount".equals(key))
+				{
+					inAsset.setProperty("pages", value); 
+				}
 				else if ("Duration".equals(key) || "SendDuration".equals(key))
 				{
 					try
@@ -415,7 +410,9 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				//				}
 				else if ("FileType".equals(key))
 				{
-					if (inAsset.get("fileformat") == null)
+					String mediatype = inArchive.getMediaRenderType(value.toLowerCase());
+					
+					if (!mediatype.equals("default"))
 					{
 						inAsset.setProperty("fileformat", value.toLowerCase());
 					}
@@ -440,20 +437,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						//not valid
 						continue;
 					}
-					
 					inAsset.setProperty("colorspace", value);
 				}
-				
 				else if ("ProfileDescription".equals(key))
 				{
-					
-					
 					inAsset.setProperty("colorprofiledescription", value);
 				}
-				
-				
-				
-				
 				else if ( "PhotometricInterpretation".equals(key) )
 				{
 					if( "5".equalsIgnoreCase(value) )

@@ -13,14 +13,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseCompositeData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.RecordStatusEnabled;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
@@ -811,67 +809,10 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 	}
 
 
-
-	public void setValue(String inKey, Object inValue)
-	{
-		if ("emrecordstatus".equals(inKey))
-		{
-			return;//ignore
-		}
-
-		if (inValue == null)
-		{
-			inValue = "";
-		}
-		super.setValue(inKey, inValue);
-	}
-
-	public String getId()
-	{
-		return fieldId;
-	}
-
-	public String getName()
-	{
-		return "Multiple Data";
-	}
-
-	public void setName(String inName)
-	{
-		//Nothing to do here
-	}
-
-	public void setId(String inNewid)
-	{
-		fieldId = inNewid;
-	}
-
-	public String getSourcePath()
-	{
-		if (size() > 0)
-		{
-			Data first = (Data) getSelectedResults().first();
-			return first.getSourcePath() + "multi" + size();
-		}
-		return null;
-	}
-
-	public void setSourcePath(String inSourcepath)
-	{
-
-	}
-
 	public Iterator iterator()
 	{
 		return new AssetIterator(getSelectedResults().iterator());
 	}
-
-	@Override
-	public void setValues(String inKey, Collection<String> inValues)
-	{
-		super.setValue(inKey, inValues);
-	}
-
 
 	public void saveChanges(WebPageRequest inReq)
 	{
@@ -880,79 +821,17 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 
 		Map safevalues = new HashMap();
 
-	
-
 		for (Iterator iterator = getEditFields().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
-			Object newval = getPropertiesSet().getObject(field); //set by the user since last save
-			//See if the values changed
-			Object oldval = getValueFromResults(field); 
-			//A bank string means no common value.
-			//A null means empty
-
-			if( newval == null && oldval == null)
-			{
-				continue;  //Empty on both sides
-			}
-			
-			if (newval != null)  //Clean up the newval
-			{
-				String snewval = newval.toString();
-				if( snewval.isEmpty())
-				{
-					newval = null;
-				}
-			}
-			
-//			if (oldval != null && oldval.toString().isEmpty())
-//			{
-//				oldval = null;
-//			}
-			
-			//See if there is a newval
-			if (newval != null && !newval.equals(oldval))
-			{
-				if (newval == null && oldval == ValuesMap.NULLVALUE)
-				{
-					//There was not agreement so we should not delete em
-					continue;
-				}
-
-				if (newval == null && oldval != null)
-				{
-					safevalues.put(field, ValuesMap.NULLVALUE);
-				}
-				else
-				{
-					if (oldval == null && newval != null)
-					{
-						Object obj = getPropertiesSet().getObject(field);
-						safevalues.put(field, obj);
-					}
-					else
-					{
-						if (field.equals("category-exact"))
-						{
-							safevalues.put(field, collectCats(newval));
-						}
-						else
-						{
-							safevalues.put(field, newval);
-						}
-					}
-				}
-			}
+			addSafeValue(field, safevalues);
 		}
 
 		
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			
 			getEventManager().fireDataEditEvent(inReq, getSearcher(), data);
-
-			
 			Asset inloopasset = null;
 
 			//			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
@@ -1095,6 +974,71 @@ public class CompositeAsset extends BaseCompositeData implements Data, Composite
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
 		commonCachedValues = new HashMap();
+	}
+
+	protected void addSafeValue(String field, Map safevalues) {
+		Object newval = getPropertiesSet().getObject(field); //set by the user since last save
+		//See if the values changed
+		Object oldval = getValueFromResults(field); 
+		//A blank string means no common value.
+		//A null means empty
+
+		if( newval == null && oldval == null)
+		{
+			return;
+		}
+		
+		if (newval != null && newval instanceof String)  //Clean up the newval
+		{
+			String snewval = newval.toString();
+			if( snewval.isEmpty())
+			{
+				newval = null;
+			}
+		}
+		 
+		if (oldval != null && oldval.toString().isEmpty())
+		{
+			oldval = null;
+		}
+
+		PropertyDetail detail = getPropertyDetails().getDetail(field);
+		//See if there is a newval
+		if (newval != null && !newval.equals(oldval))
+		{
+
+			/*if (newval == null && oldval != null)
+			{
+				safevalues.put(field, ValuesMap.NULLVALUE);
+			}
+			else
+			*/
+			if (field.equals("category-exact"))
+			{
+				safevalues.put(field, collectCats(newval));
+			}
+			
+			else if (detail.isMultiLanguage() && oldval != null)
+			{
+				
+				LanguageMap newvall = (LanguageMap)newval;
+				LanguageMap oldvall = (LanguageMap)oldval;
+				LanguageMap langs = (LanguageMap) oldvall;
+				for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
+				{
+					String code = (String) iterator3.next();
+					if(newvall.getText(code) == null)
+					{
+						newvall.setText(code, "");
+					}
+				}
+				safevalues.put(field, newvall);
+			}
+			else
+			{
+				safevalues.put(field, newval);
+			}
+		}
 	}
 
 	

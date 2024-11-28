@@ -84,8 +84,13 @@ public class VideoConversionManager extends BaseConversionManager
 			return result;
 		}
 		ConvertInstructions instructions2;
-		String defaultpresetoutput = "image1900x1080.jpg";
+		String defaultpresetoutput = "image1900x1080.webp";
 		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+		if (preset == null) 
+		{
+			defaultpresetoutput = "image1900x1080.jpg";
+			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+		}
 		if (preset == null) 
 		{
 			defaultpresetoutput = "image1024x768.jpg";
@@ -95,7 +100,7 @@ public class VideoConversionManager extends BaseConversionManager
 		{
 			//Now make the input image needed using the video as the input
 			instructions2 = createInstructions(inStructions.getAsset(),preset);
-			instructions2.setProperty("outputfile", "image1900x1080.jpg");
+			instructions2.setProperty("outputfile", defaultpresetoutput);
 			instructions2.setOutputFile(null);
 		}
 		else

@@ -1,72 +1,85 @@
 //EMfrontend2
 
-formatHitCountResult = function(inRow) {
+formatHitCountResult = function (inRow) {
 	return inRow[1];
-}
+};
 
 function getRandomColor() {
-	var letters = '0123456789ABCDEF'.split('');
-	var color = '#';
+	var letters = "0123456789ABCDEF".split("");
+	var color = "#";
 	for (var i = 0; i < 6; i++) {
 		color += letters[Math.floor(Math.random() * 16)];
 	}
 	return color;
 }
+lQuery(".reloadpage").livequery(function () {
+	window.location.reload();
+});
+lQuery(".redirecttopage").livequery(function () {
+	var url = $(this).data("redirectok");
+	window.location.href = url;
+});
+uiload = function () {
+	var app = jQuery("#application");
+	var siteroot = app.data("siteroot");
+	var apphome = app.data("apphome");
+	var themeprefix = app.data("themeprefix");
+	if (siteroot !== undefined) {
+		//legacy siteroot
+		apphome = siteroot + apphome;
+		themeprefix = siteroot + themeprefix;
+	}
+	var mediadb = $("#application").data("mediadbappid");
 
-uiload = function() {
-	
-	$.fn.cleandata = function(){
-		  var element = $(this);
-		  var params = element.data();
+	$.fn.cleandata = function () {
+		var element = $(this);
+		var params = element.data();
 
-		  var cleaned = [];
-		  Object.keys(params).forEach(function(key) 
-		  {
-		    var param = params[key];
-		    var thetype = typeof param;
-			if( thetype === "string" || thetype === "number" || thetype === "boolean")
-			{
+		var cleaned = [];
+		Object.keys(params).forEach(function (key) {
+			var param = params[key];
+			var thetype = typeof param;
+			if (
+				thetype === "string" ||
+				thetype === "number" ||
+				thetype === "boolean"
+			) {
 				cleaned[key] = param;
 			}
-		  });
-		  return cleaned;
+		});
+		return cleaned;
 	};
 
-	$.fn.setformdata = function(cleandata)
-	{
-		  var form = $(this);
-		  Object.keys(cleandata).forEach(function(key) 
-		  {
-		    var param = cleandata[key];
-		    //TODO make sure its not already on there
-		    //form.append(key,param);
-		    var found = $('input[name="' + key +'"]',form);
-		    if( found.length == 0)
-		    {
-		    	form.append('<input type="hidden" name="' + key + '" value="' + param + '" />');
-		    }
-		    else
-		    {
-		    	found.attr("value",param);
-		    }
-		  });
+	$.fn.setformdata = function (cleandata) {
+		var form = $(this);
+		Object.keys(cleandata).forEach(function (key) {
+			var param = cleandata[key];
+			//TODO make sure its not already on there
+			//form.append(key,param);
+			var found = $('input[name="' + key + '"]', form);
+			if (found.length == 0) {
+				form.append(
+					'<input type="hidden" name="' + key + '" value="' + param + '" />'
+				);
+			} else {
+				found.attr("value", param);
+			}
+		});
 	};
 
-	
 	// https://github.com/select2/select2/issues/600
 	//$.fn.select2.defaults.set("theme", "bootstrap4");
-	$.fn.modal.Constructor.prototype._enforceFocus = function() {
-	}; // Select2 on Modals
-	
-	resizecolumns()
-	
+	$.fn.modal.Constructor.prototype._enforceFocus = function () {}; // Select2 on Modals
+
+	resizecolumns();
+
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
 	}
 	if ($.fn.selectmenu) {
-		lQuery('.uidropdown select').livequery(function() {
+		lQuery(".uidropdown select").livequery(function () {
 			$(this).selectmenu({
-				style : 'dropdown'
+				style: "dropdown",
 			});
 		});
 	}
@@ -75,150 +88,150 @@ uiload = function() {
 	if (browserlanguage == undefined || browserlanguage == "") {
 		browserlanguage = "en";
 	}
-	
+
 	if ($.datepicker) {
-		lQuery("input.datepicker").livequery(function() {
-            var dpicker = $(this);
-			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
-			$.datepicker.setDefaults($.extend({
-				showOn : 'button',
-				buttonImage :  themeprefix + '/entermedia/images/cal.gif',
-				buttonImageOnly : true,
-				changeMonth : true,
-				changeYear : true,
-				yearRange : '1900:2050'
-			})); // Move this to the Layouts?
-			
-            var targetid = dpicker.data("targetid");
+		lQuery("input.datepicker").livequery(function () {
+			var dpicker = $(this);
+			$.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
+			$.datepicker.setDefaults(
+				$.extend({
+					showOn: "button",
+					buttonImage: themeprefix + "/entermedia/images/cal.gif",
+					buttonImageOnly: true,
+					changeMonth: true,
+					changeYear: true,
+					yearRange: "1900:2050",
+				})
+			); // Move this to the Layouts?
+
+			var targetid = dpicker.data("targetid");
 			dpicker.datepicker({
-				altField : "#" + targetid,
-				altFormat : "yy-mm-dd",
-                yearRange : '1900:2050',
-                beforeShow: function (input, inst) {
-                    setTimeout(function () {
-                        //Fix Position if in bootstrap modal
+				altField: "#" + targetid,
+				altFormat: "yy-mm-dd",
+				yearRange: "1900:2050",
+				beforeShow: function (input, inst) {
+					setTimeout(function () {
+						//Fix Position if in bootstrap modal
 						var modal = $("#modals");
-                        if (modal.length) {
+						if (modal.length) {
 							var modaltop = $("#modals").offset().top;
 							if (modaltop) {
-	                            var dpickertop = dpicker.offset().top;
-	                            dpickertop = dpickertop-modaltop;
-	                            var dpHeight = inst.dpDiv.outerHeight();
-	                            var inputHeight = inst.input ? inst.input.outerHeight() : 0;
-	                            var viewHeight = document.documentElement.clientHeight;
-	                            if ((dpickertop+dpHeight+inputHeight) > viewHeight)
-	                            {
-	                               dpickertop = dpickertop-dpHeight;
-	                            }
-	                            inst.dpDiv.css({
-	                                top: dpickertop+inputHeight
-	                            });
+								var dpickertop = dpicker.offset().top;
+								dpickertop = dpickertop - modaltop;
+								var dpHeight = inst.dpDiv.outerHeight();
+								var inputHeight = inst.input ? inst.input.outerHeight() : 0;
+								var viewHeight = document.documentElement.clientHeight;
+								if (dpickertop + dpHeight + inputHeight > viewHeight) {
+									dpickertop = dpickertop - dpHeight;
+								}
+								inst.dpDiv.css({
+									top: dpickertop + inputHeight,
+								});
 							}
-                        }
-                    }, 0);
-                }
+						}
+					}, 0);
+				},
 			});
-			
 
 			var current = $("#" + targetid).val();
 			if (current != undefined) {
 				// alert(current);
 				var date;
-				if (current.indexOf("-") > 0) // this is the standard
-				{
+				if (current.indexOf("-") > 0) {
+					// this is the standard
 					current = current.substring(0, 10);
 					// 2012-09-17 09:32:28 -0400
-					date = $.datepicker.parseDate('yy-mm-dd', current);
+					date = $.datepicker.parseDate("yy-mm-dd", current);
 				} else {
-					date = $.datepicker.parseDate('mm/dd/yy', current); // legacy
-																		
+					date = $.datepicker.parseDate("mm/dd/yy", current); // legacy
 				}
 				$(this).datepicker("setDate", date);
 			}
-			$(this).blur(function() {
+			$(this).blur(function () {
 				var val = $(this).val();
 				if (val == "") {
 					$("#" + targetid).val("");
 				}
 			});
 		});
-	}//datepicker
-	
+	} //datepicker
+
 	if ($.fn.minicolors) {
 		$(".color-picker").minicolors({
-			defaultValue : '',
-			letterCase : 'uppercase'
+			defaultValue: "",
+			letterCase: "uppercase",
 		});
 	}
-	
-	lQuery('.focusme').livequery(function(){
-		$(this).focus();
-	})
 
-	lQuery('#module-dropdown').livequery("click", function(e) {
+	lQuery(".focusme").livequery(function () {
+		$(this).focus();
+	});
+
+	lQuery("#module-dropdown").livequery("click", function (e) {
 		e.stopPropagation();
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active');
-			$('#module-list').hide();
+		if ($(this).hasClass("active")) {
+			$(this).removeClass("active");
+			$("#module-list").hide();
 		} else {
-			$(this).addClass('active');
-			$('#module-list').show();
+			$(this).addClass("active");
+			$("#module-list").show();
 		}
 	});
-	
-	lQuery("select.select2").livequery(function() {
+
+	lQuery("select.select2").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data('dropdownparent');
+		var dropdownParent = theinput.data("dropdownparent");
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
-		}
-		else {
+		} else {
 			dropdownParent = $(this).parent();
 		}
 		var parent = theinput.closest("#main-media-container");
 		if (parent.length) {
 			dropdownParent = parent;
-		} 
+		}
 		var parent = theinput.parents(".modal-content");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
-		var allowClear = $(this).data('allowclear');
-		if (allowClear == undefined)  {
+		var allowClear = $(this).data("allowclear");
+		if (allowClear == undefined) {
 			allowClear = true;
 		}
-		
-		var placeholder = $(this).data('placeholder');
-		if( placeholder  == undefined)
-		{
+
+		var placeholder = $(this).data("placeholder");
+		if (placeholder == undefined) {
 			placeholder = "";
 		}
 		theinput.select2({
-			allowClear : allowClear,
+			allowClear: allowClear,
 			placeholder: placeholder,
-			dropdownParent : dropdownParent
+			dropdownParent: dropdownParent,
 		});
-		theinput.on("select2:open", function(e) {
+		theinput.on("select2:open", function (e) {
 			var selectId = $(this).attr("id");
-			if(selectId) {
-				$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-				        value.focus()
-				})
-			}
-			else {
-				document.querySelector(".select2-container--open .select2-search__field").focus()
+			if (selectId) {
+				$(
+					".select2-search__field[aria-controls='select2-" +
+						selectId +
+						"-results']"
+				).each(function (key, value) {
+					value.focus();
+				});
+			} else {
+				document
+					.querySelector(".select2-container--open .select2-search__field")
+					.focus();
 			}
 		});
 	});
-	
 
-	lQuery("select.listdropdown").livequery(function() {
+	lQuery("select.listdropdown").livequery(function () {
 		var theinput = $(this);
-		var dropdownParent = theinput.data('dropdownparent');
+		var dropdownParent = theinput.data("dropdownparent");
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
-		}
-		else {
+		} else {
 			dropdownParent = $(this).parent();
 		}
 		var parent = theinput.closest("#main-media-container");
@@ -229,121 +242,126 @@ uiload = function() {
 		if (parent.length) {
 			dropdownParent = parent;
 		}
-	
-            //console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
-			var placeholder = theinput.data('placeholder');
-			if (!placeholder) {
-				placeholder = ' ';
+
+		//console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
+		var placeholder = theinput.data("placeholder");
+		if (!placeholder) {
+			placeholder = " ";
+		}
+		var allowClear = theinput.data("allowclear");
+
+		if (allowClear == undefined) {
+			allowClear = true;
+		}
+		theinput = theinput.select2({
+			placeholder: placeholder,
+			allowClear: allowClear,
+			minimumInputLength: 0,
+			dropdownParent: dropdownParent,
+		});
+		theinput.on("select2:open", function (e) {
+			var selectId = $(this).attr("id");
+			if (selectId) {
+				$(
+					".select2-search__field[aria-controls='select2-" +
+						selectId +
+						"-results']"
+				).each(function (key, value) {
+					value.focus();
+				});
+			} else {
+				document
+					.querySelector(".select2-container--open .select2-search__field")
+					.focus();
 			}
-            var allowClear = theinput.data('allowclear');
-
-            if (allowClear == undefined)  {
-                allowClear = true;
-            }
-			theinput = theinput.select2({
-				placeholder : placeholder,
-				allowClear : allowClear,
-				minimumInputLength : 0,
-				dropdownParent : dropdownParent
-			});
-			theinput.on("select2:open", function(e) {
-				var selectId = $(this).attr("id");
-				if(selectId) {
-					$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-					        value.focus()
-					})
-				}
-				else {
-					document.querySelector(".select2-container--open .select2-search__field").focus()
-				}
-			});;
-		
-		
-
+		});
 	});
 
-	lQuery(".select2editable").livequery(function() {
+	lQuery(".select2editable").livequery(function () {
 		var input = $(this);
 		var arr = new Array(); // [{id: 0, text: 'story'},{id: 1, text:
-								// 'bug'},{id: 2, text: 'task'}]
+		// 'bug'},{id: 2, text: 'task'}]
 
-		
-
-		var options = $(this).find('option');
+		var options = $(this).find("option");
 
 		if (!options.length) {
-//			return;
+			//			return;
 		}
 
-		options.each(function() {
-			var id = $(this).data('value');
+		options.each(function () {
+			var id = $(this).data("value");
 			var text = $(this).text();
-			 //console.log(id + " " + text);
+			//console.log(id + " " + text);
 			arr.push({
-				id : id,
-				text : text
+				id: id,
+				text: text,
 			});
 		});
 
 		// Be aware: calling select2 forces livequery to filter again
-		input.select2({
-			createSearchChoice : function(term, data) {
-				if ($(data).filter(function() {
-					return this.text.localeCompare(term) === 0;
-				}).length === 0) {
-					//console.log("picking" + term);
-					return {
-						id : term,
-						text : term
-					};
+		input
+			.select2({
+				createSearchChoice: function (term, data) {
+					if (
+						$(data).filter(function () {
+							return this.text.localeCompare(term) === 0;
+						}).length === 0
+					) {
+						//console.log("picking" + term);
+						return {
+							id: term,
+							text: term,
+						};
+					}
+				},
+				multiple: false,
+				tags: true,
+			})
+			.on("select2:select", function (e) {
+				var thevalue = $(this).val();
+				if (thevalue != "" && $(this).hasClass("autosubmited")) {
+					var theform = $(this).parent("form");
+					if (theform.hasClass("autosubmitform")) {
+						theform.trigger("submit");
+					}
 				}
-			},
-			multiple : false,
-			tags: true	
-			
-		})
-		.on('select2:select', function (e) {
-			var thevalue = $(this).val();
-			if (thevalue != '' && $(this).hasClass("autosubmited")) {
-				var theform =$(this).parent("form")
-				if (theform.hasClass("autosubmitform")) {
-					theform.trigger("submit");
-				}
-			}
-        	
-    	});
-		
-		input.on("select2:open", function(e) {
+			});
+
+		input.on("select2:open", function (e) {
 			var selectId = $(this).attr("id");
-			if(selectId) {
-				$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-				        value.focus()
-				})
-			}
-			else {
-				document.querySelector(".select2-container--open .select2-search__field").focus()
+			if (selectId) {
+				$(
+					".select2-search__field[aria-controls='select2-" +
+						selectId +
+						"-results']"
+				).each(function (key, value) {
+					value.focus();
+				});
+			} else {
+				document
+					.querySelector(".select2-container--open .select2-search__field")
+					.focus();
 			}
 		});
-		
 	});
 
-	lQuery("select.ajax").livequery('change', function(e) {
+	lQuery("select.ajax").livequery("change", function (e) {
 		var inlink = $(this);
-		var nextpage = inlink.data('href');
+		var nextpage = inlink.data("href");
 		nextpage = nextpage + inlink.val();
 		var targetDiv = inlink.data("targetdiv");
 		if (!targetDiv) {
 			targetDiv = inlink.attr("targetdiv");
 		}
 		targetDiv = targetDiv.replace(/\//g, "\\/");
-		$.get(nextpage, {}, function(data) {
+		$.get(nextpage, {}, function (data) {
 			var cell = $("#" + targetDiv);
 			cell.replaceWith(data);
 			$(window).trigger("resize");
 		});
 	});
 
-	lQuery("a.toggle-visible").livequery('click', function(e) {
+	lQuery("a.toggle-visible").livequery("click", function (e) {
 		e.preventDefault();
 		var div = $(this).data("targetdiv");
 		var target = $("#" + div);
@@ -352,7 +370,6 @@ uiload = function() {
 			$(this).find("span").text(hidelable);
 			target.show();
 		} else {
-
 			var showlabel = $(this).data("showlabel");
 			$(this).find("span").text(showlabel);
 			target.hide();
@@ -360,7 +377,7 @@ uiload = function() {
 	});
 
 	// deprecated, use data-confirm
-	lQuery(".confirm").livequery('click', function(e) {
+	lQuery(".confirm").livequery("click", function (e) {
 		var inText = $(this).attr("confirm");
 		if (!inText) {
 			inText = $(this).data("confirm");
@@ -372,297 +389,280 @@ uiload = function() {
 		}
 	});
 
-	lQuery(".uibutton").livequery(function() {
+	lQuery(".uibutton").livequery(function () {
 		$(this).button();
 	});
-	lQuery(".fader").livequery(function() {
+	lQuery(".fader").livequery(function () {
 		$(this).fadeOut(2000, "linear");
 	});
 
-	lQuery(".uipanel").livequery(
-			function() {
-				$(this).addClass("ui-widget");
-				var header = $(this).attr("header");
-				if (header != undefined) {
-					// http://dev.$.it/ticket/9134
-					$(this).wrapInner('<div class="ui-widget-content"/>');
-					$(this).prepend(
-							'<div class="ui-widget-header">' + header
-									+ '</div>');
-				}
-			});
+	lQuery(".uipanel").livequery(function () {
+		$(this).addClass("ui-widget");
+		var header = $(this).attr("header");
+		if (header != undefined) {
+			// http://dev.$.it/ticket/9134
+			$(this).wrapInner('<div class="ui-widget-content"/>');
+			$(this).prepend('<div class="ui-widget-header">' + header + "</div>");
+		}
+	});
 
-	lQuery(".ajaxchange select").livequery(function() {
+	lQuery(".ajaxchange select").livequery(function () {
 		var select = $(this);
-		var div = select.parent(".ajaxchange")
+		var div = select.parent(".ajaxchange");
 		var url = div.attr("targetpath");
 		var divid = div.attr("targetdiv");
 
-		select.change(function() {
+		select.change(function () {
 			var url2 = url + $(this).val();
 			$("#" + divid).load(url2);
 		});
 	});
 
-	lQuery("form").livequery('submit', function(e)
-	{
-		if( typeof CKEDITOR !== 'undefined')
-		{
-			for (instance in CKEDITOR.instances) 
-			{
-	         var editor = CKEDITOR.instances[instance];
-	         var div = $(editor.element.$);
-	         var id = div.data("saveto");
-	         var tosave = $("#" + id);
-	         //editor.updateElement() //does not work
-	         var data = editor.getData();
-	         tosave.val(data);
+	lQuery("form").livequery("submit", function (e) {
+		if (typeof CKEDITOR !== "undefined") {
+			for (instance in CKEDITOR.instances) {
+				var editor = CKEDITOR.instances[instance];
+				var div = $(editor.element.$);
+				var id = div.data("saveto");
+				var tosave = $("#" + id);
+				//editor.updateElement() //does not work
+				var data = editor.getData();
+				tosave.val(data);
 			}
 		}
-
 	});
-	
-	
+
 	lQuery("form.ajaxform").livequery(
-			'submit', // Make sure you use
-						// $(this).closest("form").trigger("submit")
-			function(e) {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-				
-				if( typeof CKEDITOR !== 'undefined')
-				{
-					for (instance in CKEDITOR.instances) 
-					{
-			         var editor = CKEDITOR.instances[instance];
-			         var div = $(editor.element.$);
-			         var id = div.data("saveto");
-			         var tosave = $("#" + id);
-			         //editor.updateElement() //does not work
-			         var data = editor.getData();
-			         tosave.val(data);
-					}
-				}
-				var form = $(this);
+		"submit", // Make sure you use
+		// $(this).closest("form").trigger("submit")
+		function (e) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
 
-				if (form.validate && !form.hasClass("novalidate")) {
-					form.validate({
-						ignore : ".ignore"
-					});
-					var isvalidate = form.valid();
-					if (!isvalidate) {
-						e.preventDefault();
-						// show message
-						return;
-					}
+			if (typeof CKEDITOR !== "undefined") {
+				for (instance in CKEDITOR.instances) {
+					var editor = CKEDITOR.instances[instance];
+					var div = $(editor.element.$);
+					var id = div.data("saveto");
+					var tosave = $("#" + id);
+					//editor.updateElement() //does not work
+					var data = editor.getData();
+					tosave.val(data);
 				}
-				var targetdiv = form.data("targetdiv");
-				if (!targetdiv) {
-					targetdiv = form.attr("targetdiv");
-				}
-				if (targetdiv) {
-					targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
-				}
+			}
+			var form = $(this);
 
-				if (form.hasClass("showwaiting")) {
-					var app = $("#application");
-					var apphome = app.data("home") + app.data("apphome");
-					$("#" + targetdiv).html(
-							'<img src="' + apphome
-									+ '/theme/images/ajax-loader.gif">');
-				}
-				var oemaxlevel = form.data("oemaxlevel");
-				if (!oemaxlevel) {
-					oemaxlevel = 1;
-				}
-
-				var data;
-				if(form.data("includesearchcontext") == true){
-					data = jQuery("#resultsdiv").data();
-					data.oemaxlevel = oemaxlevel;
-				}
-				
-				else{
-					data = {oemaxlevel:oemaxlevel};
-				} 
-				
-				var formmodal = form.closest(".modal");
-				form.setformdata(data);
-				form.ajaxSubmit({
-					error : function(data) {
-						alert("error");
-						if (targetdiv) {
-							$("#" + $.escapeSelector(targetdiv)).html(data);
-						}
-						form.append(data); 
-						// $("#" + targetdiv).replaceWith(data);
-					},
-					success : function(result, status, xhr, $form) 
-					{
-						var targetdivinner = form.data("targetdivinner");
-						if( targetdivinner )
-						{
-							$("#" + $.escapeSelector(targetdivinner)).html(result);
-						}
-						else
-						{		
-							if (targetdiv) {
-								$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
-							}
-					 	}
-		                if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-		                	closeemdialog(formmodal);
-		                }
-		        		$('#resultsdiv').data('reloadresults',true);
-
-		                //TODO: Move this to results.js
-		                if (form.hasClass("autohideOverlay")) {
-		                	hideOverlayDiv(getOverlay());
-		                }
-						
-		                if (form.hasClass("autoreloadsource")) 
-		                {
-		                    var link = form.data("openedfrom")
-		                    if( link)
-		                    {
-		                    	window.location.replace(link); 
-		                    }
-		                }
-		                
-		              //experimental
-		                if(form.data("onsuccess")) {
-		                	var onsuccess = form.data("onsuccess");
-		                	var fnc = window[onsuccess];
-		                	if( fnc && typeof fnc === "function" ) {  //make sure it exists and it is a function
-		                	    fnc(form);  //execute it
-		                	}
-		                }
-		                
-		              //experimental
-		                if(form.data("onsuccessreload")) {
-		                	document.location.reload(true)
-		                }
-		                
-		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-		        			//globaly disabled updateurl
-		        		}
-		        		else {
-		        			//Update Address Bar
-	        				var updateurl = form.data("updateurl");
-	        				if( updateurl)	{
-	        					//serialize and attach
-	        					var params = form.serialize();
-	        					var url = form.attr("action");
-	        					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
-	        					history.pushState({}, null, url);
-	        					window.scrollTo(0, 0);
-	        				}
-		        		}
-		                $(window).trigger( "resize" );
-					}
+			if (form.validate && !form.hasClass("novalidate")) {
+				form.validate({
+					ignore: ".ignore",
 				});
-
-
-				var reset = form.data("reset")
-				if (reset == true) {
-					form.get(0).reset();
+				var isvalidate = form.valid();
+				if (!isvalidate) {
+					e.preventDefault();
+					// show message
+					return;
 				}
-				return false;
+			}
+			var targetdiv = form.data("targetdiv");
+			if (!targetdiv) {
+				targetdiv = form.attr("targetdiv");
+			}
+			if (targetdiv) {
+				targetdiv = targetdiv.replace(/\//g, "\\/"); //TODO use $.escapeSelector ?
+			}
+
+			if (form.hasClass("showwaiting")) {
+				var app = $("#application");
+				var apphome = app.data("home") + app.data("apphome");
+				$("#" + targetdiv).html(
+					'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
+				);
+			}
+			var oemaxlevel = form.data("oemaxlevel");
+			if (!oemaxlevel) {
+				oemaxlevel = 1;
+			}
+
+			var data;
+			if (form.data("includesearchcontext") == true) {
+				data = jQuery("#resultsdiv").data();
+				data.oemaxlevel = oemaxlevel;
+			} else {
+				data = { oemaxlevel: oemaxlevel };
+			}
+
+			var formmodal = form.closest(".modal");
+			form.setformdata(data);
+			form.ajaxSubmit({
+				error: function (data) {
+					alert("error");
+					if (targetdiv) {
+						$("#" + $.escapeSelector(targetdiv)).html(data);
+					}
+					form.append(data);
+					// $("#" + targetdiv).replaceWith(data);
+				},
+				success: function (result, status, xhr, $form) {
+					var targetdivinner = form.data("targetdivinner");
+					if (targetdivinner) {
+						$("#" + $.escapeSelector(targetdivinner)).html(result);
+					} else {
+						if (targetdiv) {
+							$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+						}
+					}
+					if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+						closeemdialog(formmodal);
+					}
+					$("#resultsdiv").data("reloadresults", true);
+
+					//TODO: Move this to results.js
+					if (form.hasClass("autohideOverlay")) {
+						hideOverlayDiv(getOverlay());
+					}
+
+					if (form.hasClass("autoreloadsource")) {
+						var link = form.data("openedfrom");
+						if (link) {
+							window.location.replace(link);
+						}
+					}
+
+					//experimental
+					if (form.data("onsuccess")) {
+						var onsuccess = form.data("onsuccess");
+						var fnc = window[onsuccess];
+						if (fnc && typeof fnc === "function") {
+							//make sure it exists and it is a function
+							fnc(form); //execute it
+						}
+					}
+
+					//experimental
+					if (form.data("onsuccessreload")) {
+						document.location.reload(true);
+					}
+
+					if (
+						typeof global_updateurl !== "undefined" &&
+						global_updateurl == false
+					) {
+						//globaly disabled updateurl
+					} else {
+						//Update Address Bar
+						var updateurl = form.data("updateurl");
+						if (updateurl) {
+							//serialize and attach
+							var params = form.serialize();
+							var url = form.attr("action");
+							url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
+							history.pushState({}, null, url);
+							window.scrollTo(0, 0);
+						}
+					}
+					$(window).trigger("resize");
+				},
 			});
 
- lQuery("form.autosubmit").livequery(function () {
-    var form = $(this);
-    $("select", form).change(function () {
-      $(form).trigger("submit");
-    });
-    $("input", form).on("focusout", function (event) {
-      $(form).trigger("submit");
-    });
-    $("input", form).on("keyup", function (e) {
-      $(form).trigger("submit");
-    });
-    $('input[type="file"],input[name="date.after"],input[type="checkbox"]', form).on("change", function () {
-      $(form).trigger("submit");
-    });
-  });
+			var reset = form.data("reset");
+			if (reset == true) {
+				form.get(0).reset();
+			}
+			return false;
+		}
+	);
 
+	lQuery("form.autosubmit").livequery(function () {
+		var form = $(this);
+		$("select", form).change(function () {
+			$(form).trigger("submit");
+		});
+		$("input", form).on("focusout", function (event) {
+			$(form).trigger("submit");
+		});
+		$("input", form).on("keyup", function (e) {
+			$(form).trigger("submit");
+		});
+		$(
+			'input[type="file"],input[name="date.after"],input[type="checkbox"]',
+			form
+		).on("change", function () {
+			$(form).trigger("submit");
+		});
+	});
 
-	lQuery("form.ajaxautosubmit").livequery(function() {
+	lQuery("form.ajaxautosubmit").livequery(function () {
 		var theform = $(this);
-		theform.find("select").change(function() {
+		theform.find("select").change(function () {
 			theform.submit();
 		});
 	});
 
-	lQuery(".submitform").livequery("click", function(e) {
+	lQuery(".submitform").livequery("click", function (e) {
 		e.preventDefault();
-		var theform = $(this).closest('form');
+		var theform = $(this).closest("form");
 		//console.log("Submit Form " + theform);
 		theform.trigger("submit");
 	});
-	
-	lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery('click',
-			function(e) {
-				var theform = $(this).closest('form');
-				if (theform.length == 0) {
-					//dialog form?
-					var dialogform = $(this).attr("form");
-					theform = $("#"+dialogform);
-				}
-				if (theform.length) {
-					theform.data("readytosubmit","true"); 
-					theform.find(".oehtmlinput").trigger("blur");
-					theform.trigger("submit");
-				}
-				e.preventDefault();
-	});
-	
-	lQuery(".oehtmlinputblur").livequery('click',
-		function(e) {
-			e.preventDefault();
-			//console.log("Trigger ui");
-			var theform = $(this).closest('form');
+
+	lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery(
+		"click",
+		function (e) {
+			var theform = $(this).closest("form");
 			if (theform.length == 0) {
 				//dialog form?
 				var dialogform = $(this).attr("form");
-				theform = $("#"+dialogform);
+				theform = $("#" + dialogform);
 			}
 			if (theform.length) {
-				//theform.data("readytosubmit","true"); 
+				theform.data("readytosubmit", "true");
 				theform.find(".oehtmlinput").trigger("blur");
-				
-				/*
+				theform.trigger("submit");
+			}
+			e.preventDefault();
+		}
+	);
+
+	lQuery(".oehtmlinputblur").livequery("click", function (e) {
+		e.preventDefault();
+		//console.log("Trigger ui");
+		var theform = $(this).closest("form");
+		if (theform.length == 0) {
+			//dialog form?
+			var dialogform = $(this).attr("form");
+			theform = $("#" + dialogform);
+		}
+		if (theform.length) {
+			//theform.data("readytosubmit","true");
+			theform.find(".oehtmlinput").trigger("blur");
+
+			/*
 				var textarea_id = theform.find(".oehtmlinput").attr("id");
 				for(var instanceName in CKEDITOR.instances) {
 				    CKEDITOR.instances[instanceName].updateElement();
 				    CKEDITOR.instances[instanceName].trigger('blur');
 				}
 			    */
-				$("#startbutton").trigger("click");
-			}
-			
-			e.stopPropagation();
-	});
-	
-	lQuery(".form-currency").livequery("keyup", function() {
-	    var val = $(this).val().replace(/\,/g,'');
-	    val = val.replace(/\$/g,'');
-	    val = val.replace(/ /g,'');
-	    $(this).val( val ); 
-	});
-	
+			$("#startbutton").trigger("click");
+		}
 
-
-	lQuery(".quicksearch-toggler").livequery("click", function() {
-		var navbar = $(this).data('target');
-		$('#' + navbar).toggle();
-
+		e.stopPropagation();
 	});
-		
-	
-	emdialog = function(dialog, event) {
-		if( event )
-		{
+
+	lQuery(".form-currency").livequery("keyup", function () {
+		var val = $(this).val().replace(/\,/g, "");
+		val = val.replace(/\$/g, "");
+		val = val.replace(/ /g, "");
+		$(this).val(val);
+	});
+
+	lQuery(".quicksearch-toggler").livequery("click", function () {
+		var navbar = $(this).data("target");
+		$("#" + navbar).toggle();
+	});
+
+	emdialog = function (dialog, event) {
+		if (event) {
 			event.stopPropagation();
 		}
 		var dialog = dialog;
@@ -675,14 +675,16 @@ uiload = function() {
 		}*/
 		var id = dialog.data("dialogid");
 		if (!id) {
-			id = "modals";	
+			id = "modals";
 		}
-		
+
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
 			$("body").append(
-					'<div class="modal " tabindex="-1" id="' + id
-							+ '" style="display:none" ></div>');
+				'<div class="modal " tabindex="-1" id="' +
+					id +
+					'" style="display:none" ></div>'
+			);
 			modaldialog = $("#" + id);
 		}
 		var link = dialog.attr("href");
@@ -695,68 +697,63 @@ uiload = function() {
 			options[name] = element.val();
 		}
 		var openfrom = window.location.href;
-		
+
 		//openemdialog
 		var urlbar = dialog.data("urlbar");
-		if( urlbar )
-		{
+		if (urlbar) {
 			history.pushState({}, null, urlbar);
 		}
-		
-		modaldialog.load(link, options, function() {
+
+		modaldialog.load(link, options, function () {
 			if (width) {
-				
-				if( width >  $(window).width() )
-				{
-					width =  $(window).width();
+				if (width > $(window).width()) {
+					width = $(window).width();
 				}
-				
+
 				$(".modal-lg").css("min-width", width + "px");
 			}
 			if (maxwidth) {
 				$(".modal-lg").css("max-width", maxwidth + "px");
 			}
 			// $(".modal-lg").css("min-height",height + "px" );
-			
+
 			var modalkeyboard = true;
 			var noesc = dialog.data("noesc");
 			if (noesc != null && noesc == true) {
-				 modalkeyboard = false;
+				modalkeyboard = false;
 			}
 			//Verify if modal was open on top of Asset Media Viewer
-			if(modalkeyboard) {
+			if (modalkeyboard) {
 				var mainmedia = $("#hiddenoverlay");
-				if(mainmedia.length  && mainmedia.hasClass("show")) {
+				if (mainmedia.length && mainmedia.hasClass("show")) {
 					modalkeyboard = false;
 				}
 			}
-			
+
 			var modalinstance;
-			
+
 			var bootstrapversion = $.fn.modal.Constructor.VERSION;
-			if (parseFloat(bootstrapversion) >= 5.0){
+			if (parseFloat(bootstrapversion) >= 5.0) {
 				//Bootstrap 5
 				var newid = modaldialog.attr("id");
 				const modal = document.getElementById(newid);
-		          //  document.body.appendChild(modal);
-		            
-				modalinstance  = new bootstrap.Modal(modal, {
-					keyboard : modalkeyboard
-					});
+				//  document.body.appendChild(modal);
+
+				modalinstance = new bootstrap.Modal(modal, {
+					keyboard: modalkeyboard,
+				});
 				modalinstance.show();
-				
-			}
-			else {
+			} else {
 				modalinstance = modaldialog.modal({
-						keyboard : modalkeyboard,
-						backdrop : 'static',
-						closeExisting: false,
-						"show" : true
+					keyboard: modalkeyboard,
+					backdrop: "static",
+					closeExisting: false,
+					show: true,
 				});
 			}
 
-			var firstform = $('form', modaldialog);
-			
+			var firstform = $("form", modaldialog);
+
 			firstform.data("openedfrom", openfrom);
 			// fix submit button
 			var justok = dialog.data("cancelsubmit");
@@ -782,51 +779,44 @@ uiload = function() {
 				var elmnt = document.getElementById(focuselement);
 				elmnt.scrollIntoView();
 			} else {
-				$('form', modaldialog).find('*').filter(
-						':input:visible:first').focus();
+				$("form", modaldialog).find("*").filter(":input:visible:first").focus();
 			}
 		});
-		
+
 		//Close drodpown if exists
-		if (dialog.closest('.dropdown-menu').length !== 0) {
-			dialog.closest('.dropdown-menu').removeClass('show');
+		if (dialog.closest(".dropdown-menu").length !== 0) {
+			dialog.closest(".dropdown-menu").removeClass("show");
 		}
-		if( event )
-		{
+		if (event) {
 			event.preventDefault();
-		}	
+		}
 		return false;
-	}
-	
-	lQuery("a.openemdialog").livequery( function() {
+	};
+
+	lQuery("a.openemdialog").livequery(function () {
 		var link = $(this);
 		//link[0].click();
 		emdialog($(this), event);
 		//link.trigger("click");
 	});
-	
-	
-	lQuery("a.emdialog").livequery(
-			"click", function(event) {
-				emdialog($(this), event);
+
+	lQuery("a.emdialog").livequery("click", function (event) {
+		emdialog($(this), event);
 	});
-	
-	
-	lQuery(".closemodal").livequery("click", function(event) {
+
+	lQuery(".closemodal").livequery("click", function (event) {
 		closeemdialog($(this).closest(".modal"));
 	});
-	
-	closeemdialog = function(modaldialog) {
+
+	closeemdialog = function (modaldialog) {
 		if (modaldialog.modal) {
 			modaldialog.modal("hide");
 		}
-	}
-	
-	lQuery('.modal').livequery('hidden.bs.modal', function (event) {
-		  
-	})
+	};
 
-	lQuery('.emrowpicker table td').livequery("click", function(event) {
+	lQuery(".modal").livequery("hidden.bs.modal", function (event) {});
+
+	lQuery(".emrowpicker table td").livequery("click", function (event) {
 		event.preventDefault();
 
 		var clicked = $(this);
@@ -836,12 +826,12 @@ uiload = function() {
 		var id = row.data("id");
 
 		var form = $(clicked.closest("form"));
-		$('.emselectedrow', form).each(function() {
+		$(".emselectedrow", form).each(function () {
 			if (form.hasClass("emmultivalue")) {
 				var old = $(this).val();
 				if (old) {
-					if (existing) // removing the value
-					{
+					if (existing) {
+						// removing the value
 						old = old.replace(id, "");
 						old = old.replace("||", "|");
 					} else {
@@ -857,9 +847,9 @@ uiload = function() {
 		});
 
 		var targetdiv = form.data("targetdiv");
-		if ((typeof targetdiv) != "undefined") {
+		if (typeof targetdiv != "undefined") {
 			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
+				target: "#" + $.escapeSelector(targetdiv),
 			});
 		} else {
 			$(form).trigger("submit");
@@ -867,10 +857,9 @@ uiload = function() {
 		if (form.hasClass("autoclose")) {
 			closeemdialog(form.closest(".modal"));
 		}
-
 	});
 
-	lQuery('#emselectable table td').livequery("click", function(event) {
+	lQuery("#emselectable table td").livequery("click", function (event) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;
@@ -884,10 +873,10 @@ uiload = function() {
 			var href = row.data("href");
 			openFancybox(href);
 		} else {
-			emselectable.find('table tr').each(function(index) {
+			emselectable.find("table tr").each(function (index) {
 				clicked.removeClass("emhighlight");
 			});
-			row.addClass('emhighlight');
+			row.addClass("emhighlight");
 			row.removeClass("emborderhover");
 			var table = row.closest("table");
 			var id = row.attr("rowid");
@@ -896,23 +885,23 @@ uiload = function() {
 			var form = emselectable.find("form");
 			var data = row.data();
 			if (form.length > 0) {
-				emselectable.find('#emselectedrow').val(id);
-				emselectable.find('.emneedselection').each(function() {
-					clicked.removeAttr('disabled');
+				emselectable.find("#emselectedrow").val(id);
+				emselectable.find(".emneedselection").each(function () {
+					clicked.removeAttr("disabled");
 				});
 				//form.submit();
 				var targetdiv = form.data("targetdiv");
-				
-				if ((typeof targetdiv) != "undefined") {
+
+				if (typeof targetdiv != "undefined") {
 					//$(form).setformdata(data);
 					$(form).ajaxSubmit({
-						target : "#" + $.escapeSelector(targetdiv),
-						data: data
+						target: "#" + $.escapeSelector(targetdiv),
+						data: data,
 					});
 				} else {
 					$(form).trigger("submit");
 				}
-				
+
 				if (form.hasClass("autoclose")) {
 					closeemdialog(form.closest(".modal"));
 				}
@@ -938,24 +927,26 @@ uiload = function() {
 		}
 	});
 
-	showmodal = function(emselecttable, url) {
+	showmodal = function (emselecttable, url) {
 		var id = "modals";
 		var modaldialog = $("#" + id);
 		var width = emselecttable.data("dialogwidth");
 		if (modaldialog.length == 0) {
 			$("#emcontainer").append(
-					'<div class="modal " tabindex="-1" id="' + id
-							+ '" style="display:none" ></div>');
+				'<div class="modal " tabindex="-1" id="' +
+					id +
+					'" style="display:none" ></div>'
+			);
 			modaldialog = $("#" + id);
 		}
 
 		var options = emselecttable.data();
-		modaldialog.load(url, options, function() {
+		modaldialog.load(url, options, function () {
 			$(".modal-lg").css("min-width", width + "px");
 			modaldialog.modal({
-				keyboard : true,
-				backdrop : true,
-				"show" : true
+				keyboard: true,
+				backdrop: true,
+				show: true,
 			});
 
 			var title = emselecttable.data("dialogtitle");
@@ -963,34 +954,34 @@ uiload = function() {
 				$(".modal-title", modaldialog).text(title);
 			}
 
-			$('form', modaldialog).find('*').filter(':input:visible:first')
-					.focus();
-
+			$("form", modaldialog).find("*").filter(":input:visible:first").focus();
 		});
-	}
+	};
 
-	lQuery("img.framerotator").livequery(
-			function() {
-				$(this).hover(
-						function() {
-							$(this).data("frame", 0);
-							var path = this.sr$('select#speedC').selectmenu({
-								style : 'dropdown'
-							});
-							c.split("?")[0];
-							var intval = setInterval("nextFrame('" + this.id
-									+ "', '" + path + "')", 1000);
-							$(this).data("intval", intval);
-						}, function() {
-							var path = this.src.split("?")[0];
-							this.src = path + '?frame=0';
-							var intval = $(this).data("intval");
-							clearInterval(intval);
-						});
-			});
+	lQuery("img.framerotator").livequery(function () {
+		$(this).hover(
+			function () {
+				$(this).data("frame", 0);
+				var path = this.sr$("select#speedC").selectmenu({
+					style: "dropdown",
+				});
+				c.split("?")[0];
+				var intval = setInterval(
+					"nextFrame('" + this.id + "', '" + path + "')",
+					1000
+				);
+				$(this).data("intval", intval);
+			},
+			function () {
+				var path = this.src.split("?")[0];
+				this.src = path + "?frame=0";
+				var intval = $(this).data("intval");
+				clearInterval(intval);
+			}
+		);
+	});
 
-	lQuery(".jp-play").livequery("click", function() {
-
+	lQuery(".jp-play").livequery("click", function () {
 		// alert("Found a player, setting it up");
 		var player = $(this).closest(".jp-audio").find(".jp-jplayer");
 		var url = player.data("url");
@@ -998,45 +989,49 @@ uiload = function() {
 		var container = $("#" + containerid);
 
 		player.jPlayer({
-			ready : function(event) {
-				player.jPlayer("setMedia", {
-					mp3 : url
-				}).jPlayer("play");
+			ready: function (event) {
+				player
+					.jPlayer("setMedia", {
+						mp3: url,
+					})
+					.jPlayer("play");
 			},
-			play : function() { // To avoid both jPlayers playing together.
+			play: function () {
+				// To avoid both jPlayers playing together.
 				player.jPlayer("pauseOthers");
 			},
-			swfPath : apphome + '/components/javascript',
-			supplied : "mp3",
-			wmode : "window",
-			cssSelectorAncestor : "#" + containerid
+			swfPath: apphome + "/components/javascript",
+			supplied: "mp3",
+			wmode: "window",
+			cssSelectorAncestor: "#" + containerid,
 		});
 
 		// player.jPlayer("play");
-
 	});
 
-	lQuery('.select-dropdown-open').livequery("click", function() {
-		if ($(this).hasClass('down')) {
-			$(this).removeClass('down');
-			$(this).addClass('up');
-			$(this).siblings('.select-dropdown').show();
+	lQuery(".select-dropdown-open").livequery("click", function () {
+		if ($(this).hasClass("down")) {
+			$(this).removeClass("down");
+			$(this).addClass("up");
+			$(this).siblings(".select-dropdown").show();
 		} else {
-			$(this).removeClass('up');
-			$(this).addClass('down');
-			$(this).siblings('.select-dropdown').hide();
+			$(this).removeClass("up");
+			$(this).addClass("down");
+			$(this).siblings(".select-dropdown").hide();
 		}
 	});
-	lQuery('.select-dropdown li a').livequery(
-			"click",
-			function() {
-				$(this).closest('.select-dropdown').siblings(
-						'.select-dropdown-open').removeClass('up');
-				$(this).closest('.select-dropdown').siblings(
-						'.select-dropdown-open').addClass('down');
-				$(this).closest('.select-dropdown').hide();
-				//console.log("Clicked");
-			});
+	lQuery(".select-dropdown li a").livequery("click", function () {
+		$(this)
+			.closest(".select-dropdown")
+			.siblings(".select-dropdown-open")
+			.removeClass("up");
+		$(this)
+			.closest(".select-dropdown")
+			.siblings(".select-dropdown-open")
+			.addClass("down");
+		$(this).closest(".select-dropdown").hide();
+		//console.log("Clicked");
+	});
 
 	function select2formatResult(emdata) {
 		/*
@@ -1050,7 +1045,6 @@ uiload = function() {
 		return emdata.name;
 	}
 	function select2Selected(selectedoption) {
-
 		// "#list-" + foreignkeyid
 		// var id = container.closest(".select2-container").attr("id");
 		// id = "list-" + id.substring(5); //remove sid2_
@@ -1058,1058 +1052,1032 @@ uiload = function() {
 		return selectedoption.name || selectedoption.text;
 	}
 
-	lQuery(".suggestsearchinput")
-			.livequery(
-					function() {
-						var theinput = $(this);
-						if (theinput && theinput.autocomplete) {
-							theinput
-									.autocomplete({
-										source : apphome
-												+ '/components/autocomplete/assetsuggestions.txt',
-										select : function(event, ui) {
-											// set input that's just for display
-											// purposes
-											theinput.val(ui.item.value);
-											$("#search_form").submit();
-											return false;
-										}
-									});
-						}
-						//console.log(theinput);
-
-						if (theinput.data("quicksearched") == true) {
-							var strLength = theinput.val().length * 2;
-							theinput.focus();
-							theinput[0].setSelectionRange(strLength, strLength);
-						}
-					});
-
-	lQuery("input.defaulttext").livequery("click", function() {
+	lQuery(".suggestsearchinput").livequery(function () {
 		var theinput = $(this);
-		var startingtext = theinput.data('startingtext');
+		if (theinput && theinput.autocomplete) {
+			theinput.autocomplete({
+				source: apphome + "/components/autocomplete/assetsuggestions.txt",
+				select: function (event, ui) {
+					// set input that's just for display
+					// purposes
+					theinput.val(ui.item.value);
+					$("#search_form").submit();
+					return false;
+				},
+			});
+		}
+		//console.log(theinput);
+
+		if (theinput.data("quicksearched") == true) {
+			var strLength = theinput.val().length * 2;
+			theinput.focus();
+			theinput[0].setSelectionRange(strLength, strLength);
+		}
+	});
+
+	lQuery("input.defaulttext").livequery("click", function () {
+		var theinput = $(this);
+		var startingtext = theinput.data("startingtext");
 		if (theinput.val() == startingtext) {
 			theinput.val("");
 		}
 	});
 
-	lQuery("select.listtags")
-			.livequery(
-					function() {
-						var theinput = $(this);
-						var dropdownParent = theinput.data('dropdownparent');
-						if (dropdownParent && $("#" + dropdownParent).length) {
-							dropdownParent = $("#" + dropdownParent);
-						}
-						else {
-							dropdownParent = $(this).parent();
-						}
-						var parent = theinput.closest("#main-media-container");
-						if (parent.length) {
-							dropdownParent = parent;
-						} 
-						var parent = theinput.parents(".modal-content");
-						if (parent.length) {
-							dropdownParent = parent;
-						}
-						var searchtype = theinput.data('searchtype');
-						var searchfield = theinput.data('searchfield');
-						var catalogid = theinput.data('listcatalogid');
-						var sortby = theinput.data('sortby');
-						var defaulttext = theinput.data('showdefault');
-						if (!defaulttext) {
-							defaulttext = "Search";
-                        }
-                        var allowClear = $(this).data('allowclear');
-                        if (allowClear == undefined)  {
-                            allowClear = true;
-                        }
-						var url = apphome
-								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
-								+ catalogid + "&field=" + searchfield
-								+ "&operation=contains&searchtype="
-								+ searchtype;
+	lQuery("select.listtags").livequery(function () {
+		var theinput = $(this);
+		var dropdownParent = theinput.data("dropdownparent");
+		if (dropdownParent && $("#" + dropdownParent).length) {
+			dropdownParent = $("#" + dropdownParent);
+		} else {
+			dropdownParent = $(this).parent();
+		}
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
+		var parent = theinput.parents(".modal-content");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
+		var searchtype = theinput.data("searchtype");
+		var searchfield = theinput.data("searchfield");
+		var catalogid = theinput.data("listcatalogid");
+		var sortby = theinput.data("sortby");
+		var defaulttext = theinput.data("showdefault");
+		if (!defaulttext) {
+			defaulttext = "Search";
+		}
+		var allowClear = $(this).data("allowclear");
+		if (allowClear == undefined) {
+			allowClear = true;
+		}
+		var url =
+			apphome +
+			"/components/xml/types/autocomplete/tagsearch.txt?catalogid=" +
+			catalogid +
+			"&field=" +
+			searchfield +
+			"&operation=contains&searchtype=" +
+			searchtype;
 
-						theinput
-								.select2(
-										{
-											tags : true,
-											placeholder : defaulttext,
-											allowClear : allowClear,
-											dropdownParent : dropdownParent,
-											selectOnBlur : true,
-											delay : 150,
-											minimumInputLength : 1,
-											ajax : { // instead of writing
-														// the function to
-														// execute the request
-														// we use Select2's
-														// convenient helper
-												url : url,
-												dataType : 'json',
-												data : function(params) {
-													var search = {
-														page_limit : 15,
-														page : params.page
-													};
-													search[searchfield
-															+ ".value"] = params.term; // search
-																						// term
-													search["sortby"] = sortby; // search
-																				// term
-													return search;
-												},
-												processResults : function(data,
-														params) { // parse the
-																	// results
-																	// into the
-																	// format
-																	// expected
-																	// by
-																	// Select2.
-													params.page = params.page || 1;
-													return {
-														results : data.rows,
-														pagination : {
-															more : false
-														// (params.page * 30) <
-														// data.total_count
-														}
-													};
-												}
-											},
-											escapeMarkup : function(m) {
-												return m;
-											},
-											templateResult : select2formatResult,
-											templateSelection : select2Selected,
-											tokenSeparators : [ "|" ],
-											separator : '|'
-										});
-							theinput.on("select2:select" , function() {
-								if ($(this).parents(".ignore").length == 0) {
-									$(this).valid(); 
-								}
-						   });
-						   theinput.on("select2:unselect" , function() {
-								if ($(this).parents(".ignore").length == 0) {
-									$(this).valid(); 
-								}
-							});
-					});
+		theinput.select2({
+			tags: true,
+			placeholder: defaulttext,
+			allowClear: allowClear,
+			dropdownParent: dropdownParent,
+			selectOnBlur: true,
+			delay: 150,
+			minimumInputLength: 1,
+			ajax: {
+				// instead of writing
+				// the function to
+				// execute the request
+				// we use Select2's
+				// convenient helper
+				url: url,
+				dataType: "json",
+				data: function (params) {
+					var search = {
+						page_limit: 15,
+						page: params.page,
+					};
+					search[searchfield + ".value"] = params.term; // search
+					// term
+					search["sortby"] = sortby; // search
+					// term
+					return search;
+				},
+				processResults: function (data, params) {
+					// parse the
+					// results
+					// into the
+					// format
+					// expected
+					// by
+					// Select2.
+					params.page = params.page || 1;
+					return {
+						results: data.rows,
+						pagination: {
+							more: false,
+							// (params.page * 30) <
+							// data.total_count
+						},
+					};
+				},
+			},
+			escapeMarkup: function (m) {
+				return m;
+			},
+			templateResult: select2formatResult,
+			templateSelection: select2Selected,
+			tokenSeparators: ["|"],
+			separator: "|",
+		});
+		theinput.on("select2:select", function () {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid();
+			}
+		});
+		theinput.on("select2:unselect", function () {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid();
+			}
+		});
+	});
 
-	lQuery(".grabfocus").livequery(function() {
+	lQuery(".grabfocus").livequery(function () {
 		var theinput = $(this);
 		theinput.css("color", "#666");
 		if (theinput.val() == "") {
 			var newval = theinput.data("initialtext");
 			theinput.val(newval);
 		}
-		theinput.click(function() {
+		theinput.click(function () {
 			theinput.css("color", "#000");
 			var initial = theinput.data("initialtext");
 			//console.log(initial, theinput.val());
 			if (theinput.val() === initial) {
-				theinput.val('');
-				theinput.unbind('click');
+				theinput.val("");
+				theinput.unbind("click");
 			}
 		});
 
 		theinput.focus();
 	});
 
-	lQuery(".emtabs").livequery(
-			function() {
-				var tabs = $(this);
+	lQuery(".emtabs").livequery(function () {
+		var tabs = $(this);
 
-				var tabcontent = $("#" + tabs.data("targetdiv"));
+		var tabcontent = $("#" + tabs.data("targetdiv"));
 
-				// active the right tab
-				var hash = window.location.hash;
-				if (hash) {
-					var activelink = $(hash, tabs);
-					if (activelink.length == 0) {
-						hash = false;
+		// active the right tab
+		var hash = window.location.hash;
+		if (hash) {
+			var activelink = $(hash, tabs);
+			if (activelink.length == 0) {
+				hash = false;
+			}
+		}
+		if (!hash) {
+			hash = "#" + tabs.data("defaulttab");
+		}
+		var activelink = $(hash, tabs);
+		var loadedpanel = $(hash + "panel", tabcontent);
+		if (loadedpanel.length == 0) {
+			loadedpanel = $("#loadedpanel", tabcontent);
+			loadedpanel.attr("id", activelink.attr("id") + "panel");
+			activelink.data("tabloaded", true);
+		}
+		activelink.parent("li").addClass("emtabselected");
+		activelink.data("loadpageonce", false);
+
+		$("a:first-child", tabs).on("click", function (e) {
+			e.preventDefault();
+
+			var link = $(this); // activated tab
+			$("li", tabs).removeClass("emtabselected");
+			link.parent("li").addClass("emtabselected");
+
+			var id = link.attr("id");
+
+			var url = link.attr("href");
+			var panelid = id + "panel";
+			var tab = $("#" + panelid);
+			if (tab.length == 0) {
+				tab = tabcontent.append(
+					'<div class="tab-pane" id="' + panelid + '" ></div>'
+				);
+				tab = $("#" + panelid);
+			}
+
+			var reloadpage = link.data("loadpageonce");
+			var alwaysreloadpage = link.data("alwaysreloadpage");
+			if (reloadpage || alwaysreloadpage) {
+				if (window.location.href.endsWith(url)) {
+					window.location.reload();
+				} else {
+					window.location.href = url;
+				}
+			} else {
+				url = url + "#" + id;
+				var loaded = link.data("tabloaded");
+				if (link.data("allwaysloadpage")) {
+					loaded = false;
+				}
+				if (!loaded) {
+					var levels = link.data("layouts");
+					if (!levels) {
+						levels = "1";
 					}
+					$.get(
+						url,
+						{
+							oemaxlevel: levels,
+						},
+						function (data) {
+							tab.html(data);
+							link.data("tabloaded", true);
+							$(">.tab-pane", tabcontent).hide();
+							tab.show();
+							$(window).trigger("resize");
+						}
+					);
+				} else {
+					$(">.tab-pane", tabcontent).hide();
+					tab.show();
+					$(window).trigger("resize");
 				}
-				if (!hash) {
-					hash = "#" + tabs.data("defaulttab");
-				}
-				var activelink = $(hash, tabs);
-				var loadedpanel = $(hash + "panel", tabcontent);
-				if (loadedpanel.length == 0) {
-					loadedpanel = $("#loadedpanel", tabcontent);
-					loadedpanel.attr("id", activelink.attr("id") + "panel");
-					activelink.data("tabloaded", true);
-				}
-				activelink.parent("li").addClass("emtabselected");
-				activelink.data("loadpageonce", false);
+			}
+		});
+	});
 
-				$("a:first-child", tabs).on(
-						"click",
-						function(e) {
-							e.preventDefault();
-
-							var link = $(this); // activated tab
-							$("li", tabs).removeClass("emtabselected");
-							link.parent("li").addClass("emtabselected");
-
-							var id = link.attr("id");
-
-							var url = link.attr("href");
-							var panelid = id + "panel";
-							var tab = $("#" + panelid);
-							if (tab.length == 0) {
-								tab = tabcontent
-										.append('<div class="tab-pane" id="'
-												+ panelid + '" ></div>');
-								tab = $("#" + panelid);
-							}
-
-							var reloadpage = link.data("loadpageonce");
-							var alwaysreloadpage = link
-									.data("alwaysreloadpage");
-							if (reloadpage || alwaysreloadpage) {
-								if (window.location.href.endsWith(url)) {
-									window.location.reload();
-								} else {
-									window.location.href = url;
-								}
-							} else {
-								url = url + "#" + id;
-								var loaded = link.data("tabloaded");
-								if (link.data("allwaysloadpage")) {
-									loaded = false;
-								}
-								if (!loaded) {
-									var levels = link.data("layouts");
-									if (!levels) {
-										levels = "1";
-									}
-									$.get(url, {
-										oemaxlevel : levels
-									}, function(data) {
-										tab.html(data);
-										link.data("tabloaded", true);
-										$(">.tab-pane", tabcontent).hide();
-										tab.show();
-										$(window).trigger("resize");
-									});
-								} else {
-									$(">.tab-pane", tabcontent).hide();
-									tab.show();
-									$(window).trigger("resize");
-								}
-							}
-						});
-			});
-
-	lQuery(".closetab").livequery('click', function(e) {
+	lQuery(".closetab").livequery("click", function (e) {
 		e.preventDefault();
 		var tab = $(this);
 		var nextpage = tab.data("closetab");
-		$.get(nextpage, {
-			oemaxlayout : 1
-		}, function(data) {
-			var prevtab = tab.closest('li').prev();
-			prevtab.find('a').click();
+		$.get(
+			nextpage,
+			{
+				oemaxlayout: 1,
+			},
+			function (data) {
+				var prevtab = tab.closest("li").prev();
+				prevtab.find("a").click();
 
-			if (prevtab.hasClass('firstab')) {
-				tab.closest('li').remove();
+				if (prevtab.hasClass("firstab")) {
+					tab.closest("li").remove();
+				}
 			}
-
-		});
+		);
 		return false;
 	});
 
-	lQuery(".collectionclose").livequery('click', function(e) {
+	lQuery(".collectionclose").livequery("click", function (e) {
 		e.preventDefault();
 		var collection = $(this);
 		var nextpage = collection.data("closecollection");
-		$.get(nextpage, {
-			oemaxlayout : 1
-		}, function(data) {
-			collection.closest('li').remove();
-		});
+		$.get(
+			nextpage,
+			{
+				oemaxlayout: 1,
+			},
+			function (data) {
+				collection.closest("li").remove();
+			}
+		);
 		return false;
 	});
-	
-	lQuery(".createmedia-btn").livequery('click', function(e) {
+
+	lQuery(".createmedia-btn").livequery("click", function (e) {
 		$(".createmedia-tab").removeClass("createmedia-selected");
 		$(this).closest(".createmedia-tab").addClass("createmedia-selected");
 	});
-	
-	
 
-	lQuery("select.listautocomplete")
-			.livequery(
-					function() // select2
-					{
-						var theinput = $(this);
-						var searchtype = theinput.data('searchtype');
-						if (searchtype != undefined) // called twice due to
-														// the way it reinserts
-														// components
-						{
-							var searchfield = theinput.data('searchfield');
-							
+	lQuery("select.listautocomplete").livequery(function () // select2
+	{
+		var theinput = $(this);
+		var searchtype = theinput.data("searchtype");
+		if (searchtype != undefined) {
+			// called twice due to
+			// the way it reinserts
+			// components
+			var searchfield = theinput.data("searchfield");
 
-							var foreignkeyid = theinput.data('foreignkeyid');
-							var sortby = theinput.data('sortby');
+			var foreignkeyid = theinput.data("foreignkeyid");
+			var sortby = theinput.data("sortby");
 
-							var defaulttext = theinput.data('showdefault');
-							if (!defaulttext) {
-								defaulttext = "Search";
-							}
-							var defaultvalue = theinput.data('defaultvalue');
-							var defaultvalueid = theinput
-									.data('defaultvalueid');
+			var defaulttext = theinput.data("showdefault");
+			if (!defaulttext) {
+				defaulttext = "Search";
+			}
+			var defaultvalue = theinput.data("defaultvalue");
+			var defaultvalueid = theinput.data("defaultvalueid");
 
-							var url = apphome
-									+ "/components/xml/types/autocomplete/datasearch.txt?"
-									+ "field=" + searchfield
-									+ "&operation=contains&searchtype="
-									+ searchtype;
-							if (defaultvalue != undefined) {
-								url = url + "&defaultvalue=" + defaultvalue
-										+ "&defaultvalueid=" + defaultvalueid;
-							}
-							
-							
-							var dropdownParent = theinput.data('dropdownparent');
-							if (dropdownParent && $("#" + dropdownParent).length) {
-								dropdownParent = $("#" + dropdownParent);
-							}
-							else {
-								dropdownParent = $(this).parent();
-							}
-							var parent = theinput.closest("#main-media-container");
-							if (parent.length) {
-								dropdownParent = parent;
-							} 
-							var parent = theinput.parents(".modal-content");
-							if (parent.length) {
-								dropdownParent = parent;
-							}
-                           
-                            var allowClear = theinput.data('allowclear');
-                            if (allowClear == undefined)  {
-                                allowClear = true;
-                            }
-							theinput
-									.select2({
-										placeholder : defaulttext,
-										allowClear : allowClear,
-										minimumInputLength : 0,
-										dropdownParent : dropdownParent,
-										ajax : { // instead of writing the
-													// function to execute the
-													// request we use Select2's
-													// convenient helper
-											url : url,
-											dataType : 'json',
-											data : function(params) {
-												var fkv = theinput.closest(
-														"form").find(
-														"#list-" + foreignkeyid
-																+ "value")
-														.val();
-												if (fkv == undefined) {
-													fkv = theinput
-															.closest("form")
-															.find(
-																	"#list-"
-																			+ foreignkeyid)
-															.val();
-												}
-												var search = {
-													page_limit : 15,
-													page : params.page
-												};
-												search[searchfield + ".value"] = params.term; // search
-																								// term
-												if (fkv) {
-													search["field"] = foreignkeyid; // search
-																					// term
-													search["operation"] = "matches"; // search
-																						// term
-													search[foreignkeyid
-															+ ".value"] = fkv; // search
-																				// term
-												}
-												if (sortby) {
-													search["sortby"] = sortby; // search
-																				// term
-												}
-												return search;
-											},
-											processResults : function(data,
-													params) { // parse the
-																// results into
-																// the format
-																// expected by
-																// Select2.
-												var rows = data.rows;
-												if (theinput
-														.hasClass("selectaddnew")) {
-													if (params.page == 1
-															|| !params.page) {
-														var addnewlabel = theinput
-																.data('addnewlabel');
-														var addnewdata = {
-															name : addnewlabel,
-															id : "_addnew_"
-														};
-														rows
-															.unshift(addnewdata);
-													}
-												}
-												// addnew
-												params.page = params.page || 1;
-												return {
-													results : rows,
-													pagination : {
-														more : false
-													// (params.page * 30) <
-													// data.total_count
-													}
-												};
-											}
-										},
-										escapeMarkup : function(m) {
-											return m;
-										},
-										templateResult : select2formatResult,
-										templateSelection : select2Selected
-									});
+			var url =
+				apphome +
+				"/components/xml/types/autocomplete/datasearch.txt?" +
+				"field=" +
+				searchfield +
+				"&operation=contains&searchtype=" +
+				searchtype;
+			if (defaultvalue != undefined) {
+				url =
+					url +
+					"&defaultvalue=" +
+					defaultvalue +
+					"&defaultvalueid=" +
+					defaultvalueid;
+			}
 
-							// TODO: Remove this?
-							theinput.on("change", function(e) {
-								if (e.val == "") // Work around for a bug
-													// with the select2 code
-								{
-									var id = "#list-" + theinput.attr("id");
-									$(id).val("");
-								} else {
-									// Check for "_addnew_" show ajax form
-									var selectedid = theinput.val();
+			var dropdownParent = theinput.data("dropdownparent");
+			if (dropdownParent && $("#" + dropdownParent).length) {
+				dropdownParent = $("#" + dropdownParent);
+			} else {
+				dropdownParent = $(this).parent();
+			}
+			var parent = theinput.closest("#main-media-container");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
+			var parent = theinput.parents(".modal-content");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
 
-									if (selectedid == "_addnew_") {
-										var clicklink = $("#"
-												+ theinput.attr("id") + "add");
-										clicklink.trigger("click");
-
-										e.preventDefault();
-										theinput.select2("val", "");
-										return false;
-									}
-									// Check for "_addnew_" show ajax form
-									if (theinput.hasClass("selectautosubmit")) {
-										if (selectedid) {
-											//var theform = $(this).closest("form");
-											var theform =$(this).parent("form")
-											if (theform.hasClass("autosubmitform")) {
-												theform.trigger("submit");
-											}
-										}
-									}
-								}
-
-							});
-							
-							theinput.on("select2:open", function(e) {
-								//console.log("open");
-								var selectId = $(this).attr("id");
-								if(selectId) {
-									$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-									        value.focus()
-									})
-								}
-								else {
-									document.querySelector(".select2-container--open .select2-search__field").focus()
-								}
-							});
+			var allowClear = theinput.data("allowclear");
+			if (allowClear == undefined) {
+				allowClear = true;
+			}
+			theinput.select2({
+				placeholder: defaulttext,
+				allowClear: allowClear,
+				minimumInputLength: 0,
+				dropdownParent: dropdownParent,
+				ajax: {
+					// instead of writing the
+					// function to execute the
+					// request we use Select2's
+					// convenient helper
+					url: url,
+					dataType: "json",
+					data: function (params) {
+						var fkv = theinput
+							.closest("form")
+							.find("#list-" + foreignkeyid + "value")
+							.val();
+						if (fkv == undefined) {
+							fkv = theinput
+								.closest("form")
+								.find("#list-" + foreignkeyid)
+								.val();
 						}
-	});
-	
-	
-	lQuery("select.safelistautocomplete")
-			.livequery(
-					function() // select2
-					{
-						var theinput = $(this);
-						var searchtype = theinput.data('searchtype');
-						if (searchtype != undefined) // called twice due to
-														// the way it reinserts
-														// components
-						{
-							var searchfield = theinput.data('searchfield');
-							
-
-							var foreignkeyid = theinput.data('foreignkeyid');
-							var sortby = theinput.data('sortby');
-
-							var defaulttext = theinput.data('showdefault');
-							if (!defaulttext) {
-								defaulttext = "Search";
-							}
-							var defaultvalue = theinput.data('defaultvalue');
-							var defaultvalueid = theinput
-									.data('defaultvalueid');
-
-							var url = apphome
-									+ "/views/modules/"+searchtype+"/autocomplete/datasearch.txt?"
-									+ "field=" + searchfield
-									+ "&operation=contains";
-							if (defaultvalue != undefined) {
-								url = url + "&defaultvalue=" + defaultvalue
-										+ "&defaultvalueid=" + defaultvalueid;
-							}
-							
-							
-							var dropdownParent = theinput.data('dropdownparent');
-							if (dropdownParent && $("#" + dropdownParent).length) {
-								dropdownParent = $("#" + dropdownParent);
-							}
-							else {
-								dropdownParent = $(this).parent();
-							}
-							var parent = theinput.closest("#main-media-container");
-							if (parent.length) {
-								dropdownParent = parent;
-							} 
-							var parent = theinput.parents(".modal-content");
-							if (parent.length) {
-								dropdownParent = parent;
-							}
-                           
-                            var allowClear = theinput.data('allowclear');
-                            if (allowClear == undefined)  {
-                                allowClear = true;
-                            }
-							theinput
-									.select2({
-										placeholder : defaulttext,
-										allowClear : allowClear,
-										minimumInputLength : 0,
-										dropdownParent : dropdownParent,
-										ajax : { // instead of writing the
-													// function to execute the
-													// request we use Select2's
-													// convenient helper
-											url : url,
-											dataType : 'json',
-											data : function(params) {
-												var fkv = theinput.closest(
-														"form").find(
-														"#list-" + foreignkeyid
-																+ "value")
-														.val();
-												if (fkv == undefined) {
-													fkv = theinput
-															.closest("form")
-															.find(
-																	"#list-"
-																			+ foreignkeyid)
-															.val();
-												}
-												var search = {
-													page_limit : 15,
-													page : params.page
-												};
-												search[searchfield + ".value"] = params.term; // search
-																								// term
-												if (fkv) {
-													search["field"] = foreignkeyid; // search
-																					// term
-													search["operation"] = "matches"; // search
-																						// term
-													search[foreignkeyid
-															+ ".value"] = fkv; // search
-																				// term
-												}
-												if (sortby) {
-													search["sortby"] = sortby; // search
-																				// term
-												}
-												return search;
-											},
-											processResults : function(data,
-													params) { // parse the
-																// results into
-																// the format
-																// expected by
-																// Select2.
-												var rows = data.rows;
-												if (theinput
-														.hasClass("selectaddnew")) {
-													if (params.page == 1
-															|| !params.page) {
-														var addnewlabel = theinput
-																.data('addnewlabel');
-														var addnewdata = {
-															name : addnewlabel,
-															id : "_addnew_"
-														};
-														rows
-															.unshift(addnewdata);
-													}
-												}
-												// addnew
-												params.page = params.page || 1;
-												return {
-													results : rows,
-													pagination : {
-														more : false
-													// (params.page * 30) <
-													// data.total_count
-													}
-												};
-											}
-										},
-										escapeMarkup : function(m) {
-											return m;
-										},
-										templateResult : select2formatResult,
-										templateSelection : select2Selected
-									});
-
-							// TODO: Remove this?
-							theinput.on("change", function(e) {
-								if (e.val == "") // Work around for a bug
-													// with the select2 code
-								{
-									var id = "#list-" + theinput.attr("id");
-									$(id).val("");
-								} else {
-									// Check for "_addnew_" show ajax form
-									var selectedid = theinput.val();
-
-									if (selectedid == "_addnew_") {
-										var clicklink = $("#"
-												+ theinput.attr("id") + "add");
-										clicklink.trigger("click");
-
-										e.preventDefault();
-										theinput.select2("val", "");
-										return false;
-									}
-									// Check for "_addnew_" show ajax form
-									if (theinput.hasClass("selectautosubmit")) {
-										if (selectedid) {
-											//var theform = $(this).closest("form");
-											var theform =$(this).parent("form")
-											if (theform.hasClass("autosubmitform")) {
-												theform.trigger("submit");
-											}
-										}
-									}
-								}
-
-							});
-							
-							theinput.on("select2:open", function(e) {
-								//console.log("open");
-								var selectId = $(this).attr("id");
-								if(selectId) {
-									$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-									        value.focus()
-									})
-								}
-								else {
-									document.querySelector(".select2-container--open .select2-search__field").focus()
-								}
-							});
+						var search = {
+							page_limit: 15,
+							page: params.page,
+						};
+						search[searchfield + ".value"] = params.term; // search
+						// term
+						if (fkv) {
+							search["field"] = foreignkeyid; // search
+							// term
+							search["operation"] = "matches"; // search
+							// term
+							search[foreignkeyid + ".value"] = fkv; // search
+							// term
 						}
+						if (sortby) {
+							search["sortby"] = sortby; // search
+							// term
+						}
+						return search;
+					},
+					processResults: function (data, params) {
+						// parse the
+						// results into
+						// the format
+						// expected by
+						// Select2.
+						var rows = data.rows;
+						if (theinput.hasClass("selectaddnew")) {
+							if (params.page == 1 || !params.page) {
+								var addnewlabel = theinput.data("addnewlabel");
+								var addnewdata = {
+									name: addnewlabel,
+									id: "_addnew_",
+								};
+								rows.unshift(addnewdata);
+							}
+						}
+						// addnew
+						params.page = params.page || 1;
+						return {
+							results: rows,
+							pagination: {
+								more: false,
+								// (params.page * 30) <
+								// data.total_count
+							},
+						};
+					},
+				},
+				escapeMarkup: function (m) {
+					return m;
+				},
+				templateResult: select2formatResult,
+				templateSelection: select2Selected,
+			});
+
+			// TODO: Remove this?
+			theinput.on("change", function (e) {
+				if (e.val == "") {
+					// Work around for a bug
+					// with the select2 code
+					var id = "#list-" + theinput.attr("id");
+					$(id).val("");
+				} else {
+					// Check for "_addnew_" show ajax form
+					var selectedid = theinput.val();
+
+					if (selectedid == "_addnew_") {
+						var clicklink = $("#" + theinput.attr("id") + "add");
+						clicklink.trigger("click");
+
+						e.preventDefault();
+						theinput.select2("val", "");
+						return false;
+					}
+					// Check for "_addnew_" show ajax form
+					if (theinput.hasClass("selectautosubmit")) {
+						if (selectedid) {
+							//var theform = $(this).closest("form");
+							var theform = $(this).parent("form");
+							if (theform.hasClass("autosubmitform")) {
+								theform.trigger("submit");
+							}
+						}
+					}
+				}
+			});
+
+			theinput.on("select2:open", function (e) {
+				//console.log("open");
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
+		}
 	});
-	
+
+	lQuery("select.safelistautocomplete").livequery(function () // select2
+	{
+		var theinput = $(this);
+		var searchtype = theinput.data("searchtype");
+		if (searchtype != undefined) {
+			// called twice due to
+			// the way it reinserts
+			// components
+			var searchfield = theinput.data("searchfield");
+
+			var foreignkeyid = theinput.data("foreignkeyid");
+			var sortby = theinput.data("sortby");
+
+			var defaulttext = theinput.data("showdefault");
+			if (!defaulttext) {
+				defaulttext = "Search";
+			}
+			var defaultvalue = theinput.data("defaultvalue");
+			var defaultvalueid = theinput.data("defaultvalueid");
+
+			var url =
+				apphome +
+				"/views/modules/" +
+				searchtype +
+				"/autocomplete/datasearch.txt?" +
+				"field=" +
+				searchfield +
+				"&operation=contains";
+			if (defaultvalue != undefined) {
+				url =
+					url +
+					"&defaultvalue=" +
+					defaultvalue +
+					"&defaultvalueid=" +
+					defaultvalueid;
+			}
+
+			var dropdownParent = theinput.data("dropdownparent");
+			if (dropdownParent && $("#" + dropdownParent).length) {
+				dropdownParent = $("#" + dropdownParent);
+			} else {
+				dropdownParent = $(this).parent();
+			}
+			var parent = theinput.closest("#main-media-container");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
+			var parent = theinput.parents(".modal-content");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
+
+			var allowClear = theinput.data("allowclear");
+			if (allowClear == undefined) {
+				allowClear = true;
+			}
+			theinput.select2({
+				placeholder: defaulttext,
+				allowClear: allowClear,
+				minimumInputLength: 0,
+				dropdownParent: dropdownParent,
+				ajax: {
+					// instead of writing the
+					// function to execute the
+					// request we use Select2's
+					// convenient helper
+					url: url,
+					dataType: "json",
+					data: function (params) {
+						var fkv = theinput
+							.closest("form")
+							.find("#list-" + foreignkeyid + "value")
+							.val();
+						if (fkv == undefined) {
+							fkv = theinput
+								.closest("form")
+								.find("#list-" + foreignkeyid)
+								.val();
+						}
+						var search = {
+							page_limit: 15,
+							page: params.page,
+						};
+						search[searchfield + ".value"] = params.term; // search
+						// term
+						if (fkv) {
+							search["field"] = foreignkeyid; // search
+							// term
+							search["operation"] = "matches"; // search
+							// term
+							search[foreignkeyid + ".value"] = fkv; // search
+							// term
+						}
+						if (sortby) {
+							search["sortby"] = sortby; // search
+							// term
+						}
+						return search;
+					},
+					processResults: function (data, params) {
+						// parse the
+						// results into
+						// the format
+						// expected by
+						// Select2.
+						var rows = data.rows;
+						if (theinput.hasClass("selectaddnew")) {
+							if (params.page == 1 || !params.page) {
+								var addnewlabel = theinput.data("addnewlabel");
+								var addnewdata = {
+									name: addnewlabel,
+									id: "_addnew_",
+								};
+								rows.unshift(addnewdata);
+							}
+						}
+						// addnew
+						params.page = params.page || 1;
+						return {
+							results: rows,
+							pagination: {
+								more: false,
+								// (params.page * 30) <
+								// data.total_count
+							},
+						};
+					},
+				},
+				escapeMarkup: function (m) {
+					return m;
+				},
+				templateResult: select2formatResult,
+				templateSelection: select2Selected,
+			});
+
+			// TODO: Remove this?
+			theinput.on("change", function (e) {
+				if (e.val == "") {
+					// Work around for a bug
+					// with the select2 code
+					var id = "#list-" + theinput.attr("id");
+					$(id).val("");
+				} else {
+					// Check for "_addnew_" show ajax form
+					var selectedid = theinput.val();
+
+					if (selectedid == "_addnew_") {
+						var clicklink = $("#" + theinput.attr("id") + "add");
+						clicklink.trigger("click");
+
+						e.preventDefault();
+						theinput.select2("val", "");
+						return false;
+					}
+					// Check for "_addnew_" show ajax form
+					if (theinput.hasClass("selectautosubmit")) {
+						if (selectedid) {
+							//var theform = $(this).closest("form");
+							var theform = $(this).parent("form");
+							if (theform.hasClass("autosubmitform")) {
+								theform.trigger("submit");
+							}
+						}
+					}
+				}
+			});
+
+			theinput.on("select2:open", function (e) {
+				//console.log("open");
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
+		}
+	});
+
 	//-
 	//List autocomplete multiple and accepting new options
-	lQuery("select.listautocompletemulti")
-	.livequery(
-			function() // select2
-			{
-				var theinput = $(this);
-				var searchtype = theinput.data('searchtype');
-				if (searchtype != undefined) 
-				{
-					var searchfield = theinput.data('searchfield');
-					
+	lQuery("select.listautocompletemulti").livequery(function () // select2
+	{
+		var theinput = $(this);
+		var searchtype = theinput.data("searchtype");
+		if (searchtype != undefined) {
+			var searchfield = theinput.data("searchfield");
 
-					var foreignkeyid = theinput.data('foreignkeyid');
-					var sortby = theinput.data('sortby');
+			var foreignkeyid = theinput.data("foreignkeyid");
+			var sortby = theinput.data("sortby");
 
-					var defaulttext = theinput.data('showdefault');
-					if (!defaulttext) {
-						defaulttext = "Search";
-					}
-					var defaultvalue = theinput.data('defaultvalue');
-					var defaultvalueid = theinput
-							.data('defaultvalueid');
-
-					var url = apphome
-							+ "/components/xml/types/autocomplete/datasearch.txt?"
-							+ "field=" + searchfield
-							+ "&operation=contains&searchtype="
-							+ searchtype;
-					if (defaultvalue != undefined) {
-						url = url + "&defaultvalue=" + defaultvalue
-								+ "&defaultvalueid=" + defaultvalueid;
-					}
-					
-					
-					var dropdownParent = theinput.data('dropdownparent');
-					if (dropdownParent && $("#" + dropdownParent).length) {
-						dropdownParent = $("#" + dropdownParent);
-					}
-					else {
-						dropdownParent = $(this).parent();
-					}
-					var parent = theinput.closest("#main-media-container");
-					if (parent.length) {
-						dropdownParent = parent;
-					} 
-					var parent = theinput.parents(".modal-content");
-					if (parent.length) {
-						dropdownParent = parent;
-					}
-                   
-                    var allowClear = theinput.data('allowclear');
-                    if (allowClear == undefined)  {
-                        allowClear = true;
-                    }
-					theinput
-							.select2({
-								placeholder : defaulttext,
-								allowClear : allowClear,
-								minimumInputLength : 0,
-								tags:true,
-								dropdownParent : dropdownParent,
-								ajax : { // instead of writing the
-											// function to execute the
-											// request we use Select2's
-											// convenient helper
-									url : url,
-									dataType : 'json',
-									data : function(params) {
-										var fkv = theinput.closest(
-												"form").find(
-												"#list-" + foreignkeyid
-														+ "value")
-												.val();
-										if (fkv == undefined) {
-											fkv = theinput
-													.closest("form")
-													.find(
-															"#list-"
-																	+ foreignkeyid)
-													.val();
-										}
-										var search = {
-											page_limit : 15,
-											page : params.page
-										};
-										search[searchfield + ".value"] = params.term; // search
-																						// term
-										if (fkv) {
-											search["field"] = foreignkeyid; // search
-																			// term
-											search["operation"] = "matches"; // search
-																				// term
-											search[foreignkeyid
-													+ ".value"] = fkv; // search
-																		// term
-										}
-										if (sortby) {
-											search["sortby"] = sortby; // search
-																		// term
-										}
-										return search;
-									},
-									processResults : function(data,
-											params) { // parse the
-														// results into
-														// the format
-														// expected by
-														// Select2.
-										var rows = data.rows;
-										return {
-											results : rows,
-											pagination : {
-												more : false
-											// (params.page * 30) <
-											// data.total_count
-											}
-										};
-									}
-								},
-								escapeMarkup : function(m) {
-									return m;
-								},
-								templateResult : select2formatResult,
-								templateSelection : select2Selected
-							});
-
-					// TODO: Remove this?
-					theinput.on("change", function(e) {
-						if (e.val == "") // Work around for a bug
-											// with the select2 code
-						{
-							var id = "#list-" + theinput.attr("id");
-							$(id).val("");
-						} 
-					});
-					
-					theinput.on("select2:open", function(e) {
-						var selectId = $(this).attr("id");
-						if(selectId) {
-							$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
-							        value.focus()
-							})
-						}
-						else {
-							document.querySelector(".select2-container--open .select2-search__field").focus()
-						}
-					});
+			var defaulttext = theinput.data("showdefault");
+			if (!defaulttext) {
+				defaulttext = "Search";
 			}
-	});
-	
+			var defaultvalue = theinput.data("defaultvalue");
+			var defaultvalueid = theinput.data("defaultvalueid");
 
-	
-	lQuery(".sidebarsubmenu").livequery("click", function(e) {
+			var url =
+				apphome +
+				"/components/xml/types/autocomplete/datasearch.txt?" +
+				"field=" +
+				searchfield +
+				"&operation=contains&searchtype=" +
+				searchtype;
+			if (defaultvalue != undefined) {
+				url =
+					url +
+					"&defaultvalue=" +
+					defaultvalue +
+					"&defaultvalueid=" +
+					defaultvalueid;
+			}
+
+			var dropdownParent = theinput.data("dropdownparent");
+			if (dropdownParent && $("#" + dropdownParent).length) {
+				dropdownParent = $("#" + dropdownParent);
+			} else {
+				dropdownParent = $(this).parent();
+			}
+			var parent = theinput.closest("#main-media-container");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
+			var parent = theinput.parents(".modal-content");
+			if (parent.length) {
+				dropdownParent = parent;
+			}
+
+			var allowClear = theinput.data("allowclear");
+			if (allowClear == undefined) {
+				allowClear = true;
+			}
+			theinput.select2({
+				placeholder: defaulttext,
+				allowClear: allowClear,
+				minimumInputLength: 0,
+				tags: true,
+				dropdownParent: dropdownParent,
+				ajax: {
+					// instead of writing the
+					// function to execute the
+					// request we use Select2's
+					// convenient helper
+					url: url,
+					dataType: "json",
+					data: function (params) {
+						var fkv = theinput
+							.closest("form")
+							.find("#list-" + foreignkeyid + "value")
+							.val();
+						if (fkv == undefined) {
+							fkv = theinput
+								.closest("form")
+								.find("#list-" + foreignkeyid)
+								.val();
+						}
+						var search = {
+							page_limit: 15,
+							page: params.page,
+						};
+						search[searchfield + ".value"] = params.term; // search
+						// term
+						if (fkv) {
+							search["field"] = foreignkeyid; // search
+							// term
+							search["operation"] = "matches"; // search
+							// term
+							search[foreignkeyid + ".value"] = fkv; // search
+							// term
+						}
+						if (sortby) {
+							search["sortby"] = sortby; // search
+							// term
+						}
+						return search;
+					},
+					processResults: function (data, params) {
+						// parse the
+						// results into
+						// the format
+						// expected by
+						// Select2.
+						var rows = data.rows;
+						return {
+							results: rows,
+							pagination: {
+								more: false,
+								// (params.page * 30) <
+								// data.total_count
+							},
+						};
+					},
+				},
+				escapeMarkup: function (m) {
+					return m;
+				},
+				templateResult: select2formatResult,
+				templateSelection: select2Selected,
+			});
+
+			// TODO: Remove this?
+			theinput.on("change", function (e) {
+				if (e.val == "") {
+					// Work around for a bug
+					// with the select2 code
+					var id = "#list-" + theinput.attr("id");
+					$(id).val("");
+				}
+			});
+
+			theinput.on("select2:open", function (e) {
+				var selectId = $(this).attr("id");
+				if (selectId) {
+					$(
+						".select2-search__field[aria-controls='select2-" +
+							selectId +
+							"-results']"
+					).each(function (key, value) {
+						value.focus();
+					});
+				} else {
+					document
+						.querySelector(".select2-container--open .select2-search__field")
+						.focus();
+				}
+			});
+		}
+	});
+
+	lQuery(".sidebarsubmenu").livequery("click", function (e) {
 		e.stopPropagation();
 	});
-	
-	
-	
-	lQuery(".mvpageclick").livequery("click", function(e) {
+
+	lQuery(".mvpageclick").livequery("click", function (e) {
 		$(".mvpageslist li").removeClass("current");
 		$(this).closest("li").addClass("current");
 		var pageurl = $(this).data("pageurl");
 		$("#mainimage").attr("src", pageurl);
 		$(".assetpanel-sidebar").removeClass("assetpanel-sidebar-ontop");
 	});
-	
-	lQuery(".mvshowpages").livequery("click", function(e) {
+
+	lQuery(".mvshowpages").livequery("click", function (e) {
 		$(".assetpanel-sidebar").addClass("assetpanel-sidebar-ontop");
 	});
-	
-	lQuery(".mvshowpages-toggle").livequery("click", function(e) {
+
+	lQuery(".mvshowpages-toggle").livequery("click", function (e) {
 		$(".assetpanel-sidebar").removeClass("assetpanel-sidebar-ontop");
 		$(".assetpanel-sidebar").addClass("assetpanel-sidebar-hidden");
 		$(".assetpanel-content").addClass("assetpanel-content-full");
-		$(".mvshowpagestab").css("display","block");
+		$(".mvshowpagestab").css("display", "block");
 	});
-	
-	
-	
 
-	lQuery("#mainimageholder")
-			.livequery(
-					function(e) {
-						// Zooming code, only makes sense to run this when we
-						// actually have the DOM
-						if ($(this).position() == undefined) { // check if the
-																// element isn't
-																// there (best
-																// practice
-																// is...?)
-							return;
+	lQuery("#mainimageholder").livequery(function (e) {
+		// Zooming code, only makes sense to run this when we
+		// actually have the DOM
+		if ($(this).position() == undefined) {
+			// check if the
+			// element isn't
+			// there (best
+			// practice
+			// is...?)
+			return;
+		}
+		var clickspot;
+		var imageposition;
+		var zoom = 30;
+		var mainholder = $(this);
+		var mainimage = $("#mainimage", mainholder);
+		mainimage.width(mainholder.width());
+		$(window).bind("mousewheel DOMMouseScroll", function (event) {
+			var mainimage = $("#mainimage");
+			if ($("#hiddenoverlay").css("display") == "none") {
+				return true;
+			}
+
+			if (
+				event.originalEvent.wheelDelta > 0 ||
+				event.originalEvent.detail < 0
+			) {
+				// scroll up
+				var w = mainimage.width();
+				mainimage.width(w + zoom);
+				var left = mainimage.position().left - zoom / 2;
+				mainimage.css({
+					left: left + "px",
+				});
+				return false;
+			} else {
+				// scroll down
+				var w = mainimage.width();
+				if (w > 100) {
+					mainimage.width(w - zoom);
+					var left = mainimage.position().left + zoom / 2;
+					mainimage.css({
+						left: left + "px",
+					});
+				}
+				return false;
+			}
+		});
+
+		mainimage.on("mousedown", function (event) {
+			//console.log($(event.target));
+			if ($(event.target).is(".zoomable")) {
+				clickspot = event;
+				imageposition = mainimage.position();
+			}
+			return false;
+		});
+
+		mainimage.on("mouseup", function (event) {
+			clickspot = false;
+			var mainimage = $("#mainimage");
+			mainimage.removeClass("imagezooming");
+			return false;
+		});
+
+		$(document).on("contextmenu", function (event) {
+			clickspot = false;
+		});
+
+		mainimage.on("mousemove", function (event) {
+			// if( isMouseDown() )
+
+			if (clickspot) {
+				//console.log(clickspot.pageX);
+				var changetop = clickspot.pageY - event.pageY;
+				var changeleft = clickspot.pageX - event.pageX;
+
+				var left = imageposition.left - changeleft;
+				var top = imageposition.top - changetop;
+				var mainimage = $("#mainimage");
+				mainimage.css({
+					left: left + "px",
+					top: top + "px",
+				});
+				mainimage.addClass("imagezooming");
+			}
+		});
+
+		var dist1 = 0;
+
+		mainimage.on("touchstart", function (e) {
+			var touch = e.touches[0];
+			var div = $(e.target);
+
+			if (e.targetTouches.length == 2) {
+				//check if two fingers touched screen
+				dist1 = Math.hypot(
+					//get rough estimate of distance between two fingers
+					e.touches[0].pageX - e.touches[1].pageX,
+					e.touches[0].pageY - e.touches[1].pageY
+				);
+			} else {
+				div.data("touchstartx", touch.pageX);
+				div.data("touchstarty", touch.pageY);
+			}
+		});
+
+		mainimage.on("touchend", function (e) {
+			var touch = e.touches[0];
+			var div = $(e.target);
+			div.removeData("touchstartx");
+			div.removeData("touchstarty");
+		});
+
+		var touchzoom = 10;
+		var zoomed = false;
+		var ww = window.innerWidth;
+		var wh = window.innerHeight;
+
+		mainimage.on("touchmove", function (e) {
+			var div = $(e.target);
+			//Zoom!
+			if (e.targetTouches.length == 2 && e.changedTouches.length == 2) {
+				// Check if the two target touches are the same ones that started
+				var dist2 = Math.hypot(
+					//get rough estimate of new distance between fingers
+					e.touches[0].pageX - e.touches[1].pageX,
+					e.touches[0].pageY - e.touches[1].pageY
+				);
+				//alert(dist);
+				var w = mainimage.width();
+
+				if (dist1 > dist2) {
+					//if fingers are closer now than when they first touched screen, they are pinching
+					// Zoom out
+					var neww = w - zoom;
+					if (neww > 50) {
+						//not smaller than 50px
+						var newleft = mainimage.position().left + touchzoom / 2;
+						var newright = newleft + mainimage.width();
+						if (newleft < ww / 2 && newright > ww / 2) {
+							mainimage.width(w - touchzoom);
+							mainimage.css({
+								left: left + "px",
+							});
 						}
-						var clickspot;
-						var imageposition;
-						var zoom = 30;
-						var mainholder = $(this);
-						var mainimage = $("#mainimage", mainholder);
-						mainimage.width(mainholder.width());
-						$(window)
-								.bind(
-										'mousewheel DOMMouseScroll',
-										function(event) {
-											
-											var mainimage = $("#mainimage");
-											if ($("#hiddenoverlay").css(
-													"display") == "none") {
-												return true;
-											}
+						zoomed = true;
+					} else {
+						zoomed = false;
+					}
+				} else {
+					//if fingers are further apart than when they first touched the screen, they are making the zoomin gesture
+					// Zoom in
 
-											if (event.originalEvent.wheelDelta > 0
-													|| event.originalEvent.detail < 0) {
-												// scroll up
-												var w = mainimage.width();
-												mainimage.width(w + zoom);
-												var left = mainimage.position().left
-														- zoom / 2;
-												mainimage.css({
-													"left" : left + "px"
-												});
-												return false;
-											} else {
-												// scroll down
-												var w = mainimage.width();
-												if (w>100) {
-													mainimage.width(w - zoom);
-													var left = mainimage.position().left
-															+ zoom / 2;
-													mainimage.css({
-														"left" : left + "px"
-													});
-												}
-												return false;
-											}
-										});
-
-						mainimage.on("mousedown", function(event) {
-							//console.log($(event.target));
-							if ($(event.target).is(".zoomable")) {
-								clickspot = event;
-								imageposition = mainimage.position();
-							}
-							return false;
+					var newleft = mainimage.position().left - touchzoom / 2;
+					var newright = newleft + mainimage.width();
+					if (newleft < ww / 2 && newright > ww / 2) {
+						mainimage.width(w + touchzoom);
+						mainimage.css({
+							left: newleft + "px",
 						});
+					}
+					zoomed = true;
+				}
+			} else {
+				var touch = e.touches[0];
+				//Move around only when zooming
+				if (zoomed) {
+					var left = mainimage.position().left;
+					var top = mainimage.position().top;
+					var newtop = left;
 
-						mainimage.on("mouseup", function(event) {
-							clickspot = false;
-							var mainimage = $("#mainimage");
-							mainimage.removeClass('imagezooming');
-							return false;
-						});
-						
-						$(document).on("contextmenu", function(event){
-								clickspot = false;
-						});
+					var startingx = div.data("touchstartx");
+					var startingy = div.data("touchstarty");
+					var diffx = (touch.pageX - startingx) / 30; //?
+					var diffy = (touch.pageY - startingy) / 30; //?
 
-						mainimage.on("mousemove", function(event) {
-							// if( isMouseDown() )
-							
-							if (clickspot) {
-								//console.log(clickspot.pageX);
-								var changetop = clickspot.pageY - event.pageY;
-								var changeleft = clickspot.pageX - event.pageX;
-
-								var left = imageposition.left - changeleft;
-								var top = imageposition.top - changetop;
-								var mainimage = $("#mainimage");
-								mainimage.css({
-									"left" : left + "px",
-									"top" : top + "px"
-								});
-								mainimage.addClass('imagezooming');
-							}
+					if (Math.abs(diffx) > Math.abs(diffy)) {
+						var change = Math.abs(diffx) / div.width();
+						var newleft = left + diffx;
+						var newright = newleft + mainimage.width();
+						if (newleft < ww / 2 && newright > ww / 2) {
+							mainimage.css({
+								left: newleft + "px",
+							});
+						}
+					} else {
+						// up/down
+						var change = Math.abs(diffy) / div.height();
+						newtop = top + diffy;
+						mainimage.css({
+							top: newtop + "px",
 						});
-						
-						
-						var dist1=0;
-						
-						mainimage.on('touchstart', function(e) {
-							var touch = e.touches[0];
-							var div = $(e.target)
-							
-							
-						    if (e.targetTouches.length == 2) {//check if two fingers touched screen
-					            dist1 = Math.hypot( //get rough estimate of distance between two fingers
-					             e.touches[0].pageX - e.touches[1].pageX,
-					             e.touches[0].pageY - e.touches[1].pageY);                  
-					        }
-						    else {
-						    	div.data("touchstartx", touch.pageX);
-								div.data("touchstarty", touch.pageY);	
-						    }
-						});
-						
-						mainimage.on('touchend', function(e) {
-							var touch = e.touches[0];
-							var div = $(e.target)
-							div.removeData("touchstartx");
-							div.removeData("touchstarty");
-						});
-						
-						var touchzoom = 10;
-						var zoomed = false;
-						var ww = window.innerWidth;
-						var wh = window.innerHeight;
+					}
+				}
 
-						mainimage.on('touchmove', function(e) {
-							var div = $(e.target);
-							//Zoom!
-							 if (e.targetTouches.length == 2 && e.changedTouches.length == 2) {
-					             // Check if the two target touches are the same ones that started
-					           var dist2 = Math.hypot(//get rough estimate of new distance between fingers
-					            e.touches[0].pageX - e.touches[1].pageX,
-					            e.touches[0].pageY - e.touches[1].pageY);
-					            //alert(dist);
-					           var w = mainimage.width();
-					           
-					            if(dist1>dist2) {
-					            	//if fingers are closer now than when they first touched screen, they are pinching
-					            	// Zoom out
-					            	var neww = w - zoom;
-					            	if (neww>50) {
-					            		//not smaller than 50px
-										var newleft = mainimage.position().left
-												+ touchzoom / 2;
-										var newright = newleft+mainimage.width();									
-										if (newleft<(ww/2) && newright>(ww/2)) {
-											mainimage.width(w - touchzoom);
-											mainimage.css({
-												"left" : left + "px"
-											});
-										}
-										zoomed = true;
-					            	}
-					            	else {
-					            		zoomed = false;
-					            	}
-
-					            }
-					            else {//if fingers are further apart than when they first touched the screen, they are making the zoomin gesture
-					            	// Zoom in
-									
-									var newleft = mainimage.position().left
-											- touchzoom / 2;
-									var newright = newleft+mainimage.width();									
-									if (newleft<(ww/2) && newright>(ww/2)) {
-										mainimage.width(w + touchzoom);
-										mainimage.css({
-											"left" : newleft + "px"
-										});
-									}
-									zoomed = true;
-					            }
-							 }
-							 else {
-								 var touch = e.touches[0];
-								 //Move around only when zooming
-								 if (zoomed) {
-									var left = mainimage.position().left;
-									var top = mainimage.position().top;
-									var newtop = left;
-									
-									var startingx = div.data("touchstartx");
-									var startingy = div.data("touchstarty");
-									var diffx = (touch.pageX - startingx)/30; //?
-									var diffy = (touch.pageY - startingy)/30; //?
-									
-									if (Math.abs(diffx) > Math.abs(diffy)) {
-										var change = Math.abs(diffx) / div.width();
-										var newleft = left + diffx;
-										var newright = newleft+mainimage.width();									
-										if (newleft<(ww/2) && newright>(ww/2)) {
-											mainimage.css({
-												"left" : newleft + "px"
-											});
-										}
-									} else {
-										// up/down
-										var change = Math.abs(diffy) / div.height();
-										newtop = top + diffy;
-										mainimage.css({
-											"top" : newtop + "px"
-										});
-									}
-								 }
-								 
-								 /*
+				/*
 								 //Swipe?
 								 var touch = e.touches[0];
 									var startingx = div.data("touchstartx");
@@ -2151,73 +2119,67 @@ uiload = function() {
 										//$("#" + div.attr("id")).trigger(swipe);
 									}
 									*/
-								 }
-						});
-						
-						
+			}
+		});
+	});
 
-					});
-
-	
-
-	$("video").each(function() {
-		$(this).append('controlsList="nodownload"')
-		$(this).on('contextmenu', function(e) {
+	$("video").each(function () {
+		$(this).append('controlsList="nodownload"');
+		$(this).on("contextmenu", function (e) {
 			e.preventDefault();
 		});
 	});
 
-	lQuery('.dropdown-menu a.dropdown-toggle').livequery(
-			'click',
-			function(e) {
-				if (!$(this).next().hasClass('show')) {
-					$(this).parents('.dropdown-menu').first().find('.show')
-							.removeClass("show");
-				}
-				var $subMenu = $(this).next(".dropdown-menu");
-				$subMenu.toggleClass('show');
+	lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
+		if (!$(this).next().hasClass("show")) {
+			$(this)
+				.parents(".dropdown-menu")
+				.first()
+				.find(".show")
+				.removeClass("show");
+		}
+		var $subMenu = $(this).next(".dropdown-menu");
+		$subMenu.toggleClass("show");
 
-				$(this).parents('li.nav-item.dropdown.show').on(
-						'hidden.bs.dropdown', function(e) {
-							$('.dropdown-submenu .show').removeClass("show");
-						});
-
-				return false;
-			});
-	lQuery('.dropdown-submenu .dropdown-menu a.dropdown-item').livequery(
-			'click', function(e) {
-				$(this).parents('.dropdown-menu.show').removeClass("show")
-				return false;
+		$(this)
+			.parents("li.nav-item.dropdown.show")
+			.on("hidden.bs.dropdown", function (e) {
+				$(".dropdown-submenu .show").removeClass("show");
 			});
 
+		return false;
+	});
+	lQuery(".dropdown-submenu .dropdown-menu a.dropdown-item").livequery(
+		"click",
+		function (e) {
+			$(this).parents(".dropdown-menu.show").removeClass("show");
+			return false;
+		}
+	);
 
-	lQuery('.filterstoggle').livequery("click", function(e) {
+	lQuery(".filterstoggle").livequery("click", function (e) {
 		e.preventDefault();
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
 			$(".col-main").removeClass("filtersopen");
-				saveProfileProperty("filtersbarstatus",false,function(){
+			saveProfileProperty("filtersbarstatus", false, function () {});
+			$("#filterstoggle").show("fast", function () {
+				$(document).trigger("resize");
 			});
-			$("#filterstoggle").show( "fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			
-		}
-		else {
+		} else {
 			//open
-			$("#filterstoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
+			$("#filterstoggle").hide("fast", function () {
+				$(document).trigger("resize");
+			});
 			$("#col-filters").addClass("filtersopen");
 			$(".col-main").addClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",true,function(){
-			});
+			saveProfileProperty("filtersbarstatus", true, function () {});
 		}
 		return false;
 	});
-	
+
 	//Left Column Toggle
-	lQuery('.lefttoggle').livequery("click", function(e) {
+	lQuery(".lefttoggle").livequery("click", function (e) {
 		e.preventDefault();
 		var colleftwidth = $("#col-left").data("colleftwidth");
 		if (!$.isNumeric(colleftwidth)) {
@@ -2226,343 +2188,350 @@ uiload = function() {
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
 			$("#col-left").removeClass("leftopen");
-			$("#col-left").css("width",0);
-            $(".col-main").removeClass("leftopen");
-            $(".pushcontent").css("margin-left",0);
-            $("#lefttoggle").show("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",false,function(){
-				
+			$("#col-left").css("width", 0);
+			$(".col-main").removeClass("leftopen");
+			$(".pushcontent").css("margin-left", 0);
+			$("#lefttoggle").show("fast", function () {
+				$(document).trigger("resize");
 			});
-		}
-		else {
+			saveProfileProperty("leftbarstatus", false, function () {});
+		} else {
 			//open
-            $("#col-left").addClass("leftopen");
-            if (colleftwidth) {
-            	$("#col-left").css("width", colleftwidth);
-            }
-            $(".col-main").addClass("leftopen");
-            if (colleftwidth) {
-            	$(".pushcontent").css("margin-left", colleftwidth+"px");
-            }
-            $("#lefttoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",true,function(){
-				
+			$("#col-left").addClass("leftopen");
+			if (colleftwidth) {
+				$("#col-left").css("width", colleftwidth);
+			}
+			$(".col-main").addClass("leftopen");
+			if (colleftwidth) {
+				$(".pushcontent").css("margin-left", colleftwidth + "px");
+			}
+			$("#lefttoggle").hide("fast", function () {
+				$(document).trigger("resize");
 			});
+			saveProfileProperty("leftbarstatus", true, function () {});
 		}
-		
+
 		return false;
 	});
-	
-	
-	
-	lQuery('.sidebar-toggler').livequery("click", function(e) {
+
+	lQuery(".sidebar-toggler").livequery("click", function (e) {
 		e.preventDefault();
 		var toggler = $(this);
 		var data = toggler.data;
-		var targetdiv = toggler.data('targetdiv');
-		
-		if (toggler.data('action') == 'hide') {
+		var targetdiv = toggler.data("targetdiv");
+
+		if (toggler.data("action") == "hide") {
 			//hide sidebar
-			var url = apphome + '/components/sidebars/user/hide.html';
-			
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".emrightcontent").removeClass('empushcontent');
-				saveProfileProperty("usersidebarhidden","true");
-			}
+			var url = apphome + "/components/sidebars/user/hide.html";
+
+			$.ajax({
+				url: url,
+				async: false,
+				data: data,
+				success: function (data) {
+					$("#" + targetdiv).html(data);
+					$(".emrightcontent").removeClass("empushcontent");
+					saveProfileProperty("usersidebarhidden", "true");
+				},
 			});
-		}
-		else {
-			var url = apphome + '/components/sidebars/user/show.html';
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".emrightcontent").addClass('empushcontent');
-				saveProfileProperty("usersidebarhidden","false");
-			}
+		} else {
+			var url = apphome + "/components/sidebars/user/show.html";
+			$.ajax({
+				url: url,
+				async: false,
+				data: data,
+				success: function (data) {
+					$("#" + targetdiv).html(data);
+					$(".emrightcontent").addClass("empushcontent");
+					saveProfileProperty("usersidebarhidden", "false");
+				},
 			});
 		}
 		$(window).trigger("resize");
 	});
-	
 
-	lQuery(".assetpicker .removefieldassetvalue").livequery("click", function(e) 
-	{
-		e.preventDefault();
-		var picker = $(this).closest(".assetpicker");
-		var detailid = $(this).data("detailid");
-		
-		picker.find("#" + detailid + "-file-info").html("");
-		picker.find("#" + detailid + "-value").val("");
-		picker.find("#" + detailid + "-file").val("");		
-		
-		var theform = $(picker).closest("form");
-		theform = $(theform);
-		if( theform.hasClass("autosubmit"))
-		{
-			theform.trigger("submit");
+	lQuery(".assetpicker .removefieldassetvalue").livequery(
+		"click",
+		function (e) {
+			e.preventDefault();
+			var picker = $(this).closest(".assetpicker");
+			var detailid = $(this).data("detailid");
+
+			picker.find("#" + detailid + "-file-info").html("");
+			picker.find("#" + detailid + "-value").val("");
+			picker.find("#" + detailid + "-file").val("");
+
+			var theform = $(picker).closest("form");
+			theform = $(theform);
+			if (theform.hasClass("autosubmit")) {
+				theform.trigger("submit");
+			}
 		}
-	});
-	
+	);
+
 	$('[data-toggle="tooltipb"]').tooltip();
-	
-	
+
 	//Sidebar Custom Width
-	lQuery(".col-left-resize").livequery(function()	{
+	lQuery(".col-left-resize").livequery(function () {
 		var slider = $(this);
 		var column = $(this).closest(".col-left");
 		var content = $(".pushcontent");
-		
+
 		var clickspot;
 		var startwidth;
 		var width;
-		
-		
-		slider.on("mousedown", function(event) {
+
+		slider.on("mousedown", function (event) {
 			if (!clickspot) {
 				clickspot = event;
 				startwidth = column.width();
 				return false;
 			}
-			
 		});
-		$(window).on("mouseup", function(event)
-		{
-			if( clickspot )
-			{
+		$(window).on("mouseup", function (event) {
+			if (clickspot) {
 				clickspot = false;
 				if (width != "undefined") {
-					saveProfileProperty("colleftwidth",width,function(){
+					saveProfileProperty("colleftwidth", width, function () {
 						$(document).trigger("resize");
 					});
 				}
 				return false;
 			}
 		});
-		$(window).on("mousemove", function(event)
-		{
-			if( clickspot )
-			{
+		$(window).on("mousemove", function (event) {
+			if (clickspot) {
 				width = 0;
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
-				if( width < 220 )
-				{
+				if (width < 220) {
 					width = 220;
 				}
 				column.width(width);
-				column.data("colleftwidth",width);
-				$(".pushcontent").css("margin-left",width+"px");
+				column.data("colleftwidth", width);
+				$(".pushcontent").css("margin-left", width + "px");
 				event.preventDefault();
 				$(document).trigger("resize");
 				return false;
-			}	
-		});	
+			}
+		});
 	});
-
 
 	//Moved From settings.js
-	lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
-	  		var table = $("#main-results-table");
-	        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
-	        var column = $(this);
-	        var fieldid = column.data("fieldid");
-			var apphome = app.data("home") + app.data("apphome");
-	
-	        if ( column.hasClass('currentsort') ) 
-	        {
-	            if ( column.hasClass('up') ) {
-					args.sortby=fieldid + 'Down';
-	            } else {
-	            	args.sortby=fieldid + 'Up';
-	            }	         
-	        } else {
-	            $('#datamanager-workarea th.sortable').removeClass('currentsort');
-	           column.addClass('currentsort');
-	           column.addClass("up");
-	           args.sortby=fieldid + 'Up';
-	        }
-	        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
+	lQuery("#datamanager-workarea th.sortable").livequery("click", function () {
+		var table = $("#main-results-table");
+		var args = {
+			oemaxlevel: 1,
+			hitssessionid: table.data("hitssessionid"),
+			origURL: table.data("origURL"),
+			catalogid: table.data("catalogid"),
+			searchtype: table.data("searchtype"),
+		};
+		var column = $(this);
+		var fieldid = column.data("fieldid");
+		var apphome = app.data("home") + app.data("apphome");
+
+		if (column.hasClass("currentsort")) {
+			if (column.hasClass("up")) {
+				args.sortby = fieldid + "Down";
+			} else {
+				args.sortby = fieldid + "Up";
+			}
+		} else {
+			$("#datamanager-workarea th.sortable").removeClass("currentsort");
+			column.addClass("currentsort");
+			column.addClass("up");
+			args.sortby = fieldid + "Up";
+		}
+		$("#datamanager-workarea").load(
+			apphome + "/views/settings/lists/datamanager/list/columnsort.html",
+			args
+		);
 	});
-	
+
 	function replaceAll(str, find, replace) {
 		find = escapeRegExp(find);
-	    return str.replace(new RegExp(find, 'g'), replace);
+		return str.replace(new RegExp(find, "g"), replace);
 	}
-	
+
 	function escapeRegExp(str) {
-	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+		return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 	}
-		
-	lQuery('.sortviews').livequery(function()
-		{
+
+	lQuery(".sortviews").livequery(function () {
 		var sortable = $(this);
 		var path = sortable.data("path");
 		if (typeof sortable.sortable == "function") {
 			sortable.sortable({
-				axis: 'y',
+				axis: "y",
 				cancel: ".no-sort",
-			    update: function (event, ui) 
-			    {
+				update: function (event, ui) {
 					//debugger;
-			        var data = sortable.sortable('serialize');
-			        data = replaceAll(data,"viewid[]=","|");
-			        data = replaceAll(data,"&","");
-			        data = data.replace("|","");
-			        var args = {};
-			        args.items = data;
-			        args.viewpath = sortable.data("viewpath");
-			        args.searchtype = sortable.data("searchtype");
-			        args.assettype = sortable.data("assettype");
-			        args.viewid = sortable.data("viewid");
-			        $.ajax({
-			            data: args,
-			            type: 'POST',
-			            url: path 		            
-			        });
-			    },
-		        stop: function (event, ui) 
-		        {
-		            //db id of the item sorted
-		            //alert(ui.item.attr('plid'));
-		            //db id of the item next to which the dragged item was dropped
-		            //alert(ui.item.prev().attr('plid'));
-		        }
-		     });   
+					var data = sortable.sortable("serialize");
+					data = replaceAll(data, "viewid[]=", "|");
+					data = replaceAll(data, "&", "");
+					data = data.replace("|", "");
+					var args = {};
+					args.items = data;
+					args.viewpath = sortable.data("viewpath");
+					args.searchtype = sortable.data("searchtype");
+					args.assettype = sortable.data("assettype");
+					args.viewid = sortable.data("viewid");
+					$.ajax({
+						data: args,
+						type: "POST",
+						url: path,
+					});
+				},
+				stop: function (event, ui) {
+					//db id of the item sorted
+					//alert(ui.item.attr('plid'));
+					//db id of the item next to which the dragged item was dropped
+					//alert(ui.item.prev().attr('plid'));
+				},
+			});
 		}
 	});
-		
-	var listtosort = $('.listsort');
+
+	var listtosort = $(".listsort");
 	if (typeof listtosort.sortable == "function") {
 		listtosort.sortable({
-				axis: 'y',
-				cancel: ".no-sort",
-			    stop: function (event, ui) {
-			  
-					var path = $(this).data("path");
-			    	
-			        var data = "";
-	
-			       // var ids = new Array();
-			        $(this).find('li').each(function(index) 
-			        {
-			        	if( !$(this).hasClass("no-sort"))
-			        	{
-			        		var id = $(this).attr("id");
-			        		data = data + "ids=" + id + "&";
-			        	}
+			axis: "y",
+			cancel: ".no-sort",
+			stop: function (event, ui) {
+				var path = $(this).data("path");
+
+				var data = "";
+
+				// var ids = new Array();
+				$(this)
+					.find("li")
+					.each(function (index) {
+						if (!$(this).hasClass("no-sort")) {
+							var id = $(this).attr("id");
+							data = data + "ids=" + id + "&";
+						}
 					});
-			        // POST to server using $.post or $.ajax
-			        $.ajax({
-			        	data: data,
-			            type: 'POST',
-			            url: path 		            
-			        });
-			    }
+				// POST to server using $.post or $.ajax
+				$.ajax({
+					data: data,
+					type: "POST",
+					url: path,
+				});
+			},
 		});
 	}
-	
-    $('#setup-view').click(function(){
-        if ( $('#views-settings').hasClass('open') ) {
-            $('#views-header').height(16)
-            $('#views-settings').hide();
-            $('#views-settings').removeClass('open');
-        }
-        else {
-            $('#views-header').height('auto')
-            $('#views-settings').show();
-            $('#views-settings').addClass('open'); 
-        }
-    })
-    
-    $('#renderastable').click(function(){
-        if ( $('#renderastable').is(':checked') ) {
-            $('#rendertableoptions').show();
-        }
-        else {
-            $('#rendertableoptions').hide();
-        }
-    })
-		
-		
-	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
-		  e.preventDefault();
-		  e.stopPropagation();
-		  var btn = $(this);
-		  var copytextcontainer = btn.data("copytext");
-		  var copyText = $("#"+copytextcontainer);
-	      copyText.select();
-		  document.execCommand("copy");
-		  var alertdiv = btn.data("targetdiv");
-		  if (alertdiv) {
-			  //console.log(alertdiv);
-			  $("#"+alertdiv).show().fadeOut(2000);
-		  }
-		  
+
+	$("#setup-view").click(function () {
+		if ($("#views-settings").hasClass("open")) {
+			$("#views-header").height(16);
+			$("#views-settings").hide();
+			$("#views-settings").removeClass("open");
+		} else {
+			$("#views-header").height("auto");
+			$("#views-settings").show();
+			$("#views-settings").addClass("open");
+		}
 	});
-    
-	lQuery("#copyuserpicker .rowclick").livequery("click", function(e) {
+
+	$("#renderastable").click(function () {
+		if ($("#renderastable").is(":checked")) {
+			$("#rendertableoptions").show();
+		} else {
+			$("#rendertableoptions").hide();
+		}
+	});
+
+	lQuery(".copyToClipboard").livequery("click", function () {
+		console.log("object");
+		var copyText = $(this).data("copy");
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(copyText);
+		} else {
+			var textArea = document.createElement("textarea");
+			textArea.value = copyText;
+			document.body.appendChild(textArea);
+			textArea.select();
+			document.execCommand("copy");
+			document.body.removeChild(textArea);
+		}
+		var copyFeedback = $(this).find(".copy-feedback");
+		var prevText = copyFeedback.text();
+		copyFeedback.text("Copied!");
+		setTimeout(function () {
+			copyFeedback.text(prevText);
+		}, 3000);
+	});
+
+	lQuery(".copytoclipboard").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var btn = $(this);
+		var copytextcontainer = btn.data("copytext");
+		var copyText = $("#" + copytextcontainer);
+		copyText.select();
+		document.execCommand("copy");
+		var alertdiv = btn.data("targetdiv");
+		if (alertdiv) {
+			//console.log(alertdiv);
+			$("#" + alertdiv)
+				.show()
+				.fadeOut(2000);
+		}
+	});
+
+	lQuery("#copyuserpicker .rowclick").livequery("click", function (e) {
 		e.preventDefault();
 		//$(this).closest(".modal").modal("hide");
 		var picker = $("#copyuserpicker");
 		var row = $(this);
 		var rowid = row.attr("rowid");
-		
+
 		var targetdiv = picker.data("targetdiv");
 		var targetdiv = $("#" + targetdiv);
 		var nextpage = picker.data("nextpage");
 		var options = picker.data();
 		options.copyid = picker.data("userid");
 		options.copytoid = rowid;
-		$.get(nextpage, options, function(data) {
+		$.get(nextpage, options, function (data) {
 			targetdiv.replaceWith(data);
 		});
-	
 	});
-		
 
-	lQuery('.pickemoticon').livequery(function() 
-	{
+	lQuery(".pickemoticon").livequery(function () {
 		//Load div
 		var input = $(this);
-		input.click(function()
-		{
+		input.click(function () {
 			$(".emoticonmenu").hide(); //Hide old ones
 		});
-		
-		input.hover(function()
-		{
+
+		input.hover(function () {
 			var isattached = input.data("isattached");
-			if(isattached)
-			{
+			if (isattached) {
 				$(".emoticonmenu").hide(); //Hide old ones
-				input.parent().find(".emoticonmenu").show();			
-			}
-			else
-			{
+				input.parent().find(".emoticonmenu").show();
+			} else {
 				var options = input.data();
-				$.ajax({ url: options.showurl, async: true, data: options, 
-					success: function(data) 
-					{
+				$.ajax({
+					url: options.showurl,
+					async: true,
+					data: options,
+					success: function (data) {
 						$(".emoticonmenu").hide(); //Hide old ones
-						input.data("isattached",true);
+						input.data("isattached", true);
 						input.append(data);
-					}	
-				});			
+					},
+				});
 			}
 		});
-		
+
 		//On any click hide this:
 		//$(".emoticonmenu").hide();
 	});
-	
-	lQuery('.pickemoticon .emoticonmenu span').livequery("click",function() 
-	{
+
+	lQuery(".pickemoticon .emoticonmenu span").livequery("click", function () {
 		var menuitem = $(this);
-		
+
 		var aparent = $(menuitem.parents(".pickemoticon"));
 		//console.log(aparent.data());
 
@@ -2570,71 +2539,64 @@ uiload = function() {
 		//Save
 		var options = aparent.data();
 		options.reactioncharacter = menuitem.data("hex");
-		$.ajax({ url: saveurl, async: true, data: options, 
-			success: function(data) 
-			{
+		$.ajax({
+			url: saveurl,
+			async: true,
+			data: options,
+			success: function (data) {
 				$(".emoticonmenu").hide();
 				$("#chatter-message-" + aparent.data("messageid")).html(data);
 				//reload message
-			}	
-		});			
-
-		
+			},
+		});
 	});
+}; // uiload
 
-
-}// uiload
-
-
-
-
-var resizecolumns = function() {
+var resizecolumns = function () {
 	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
 	if (typeof sidebarsposition != "undefined") {
 		sidebarstop = sidebarsposition.top;
-		$('.col-filters').css('top',sidebarstop + 'px');
-		$('.col-left').css('top',sidebarstop + 'px');
+		$(".col-filters").css("top", sidebarstop + "px");
+		$(".col-left").css("top", sidebarstop + "px");
 	}
-	
-	var header_height = $("#header").outerHeight()
+
+	var header_height = $("#header").outerHeight();
 	var nav_height = $("#EMnav").outerHeight();
 	var footer_height = $("#footer").outerHeight();
 	var resultsheader_height = 0;
-	
-	
-	if($(".collection-header").outerHeight()) {
+
+	if ($(".collection-header").outerHeight()) {
 		resultsheader_height = $(".collection-header").outerHeight();
-	}
-	else if ($(".filtered").outerHeight()) {
+	} else if ($(".filtered").outerHeight()) {
 		resultsheader_height = $(".filtered").outerHeight();
 	}
-	
-	var allheights  =  header_height +  nav_height + footer_height + resultsheader_height;
+
+	var allheights =
+		header_height + nav_height + footer_height + resultsheader_height;
 	var columnsheight = $("body").outerHeight() - allheights;
-	
+
 	var sidebartop = 1;
-	$(".col-main").each(function(){
+	$(".col-main").each(function () {
 		var col = $(this);
-		if(col.hasClass("col-left") && col.hasClass("fixedheight")) {
-				return true;
+		if (col.hasClass("col-left") && col.hasClass("fixedheight")) {
+			return true;
 		}
 		var thisheight = col.outerHeight();
-		if (col.children(0)	&& col.children(0).hasClass("col-main-inner")) {
+		if (col.children(0) && col.children(0).hasClass("col-main-inner")) {
 			thisheight = col.children(0).outerHeight();
 		}
-		
+
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
 	});
 	$(".col-filters").css("height", columnsheight);
-	if(!$(".col-left").hasClass("fixedheight")) {
+	if (!$(".col-left").hasClass("fixedheight")) {
 		$(".col-left").css("height", columnsheight);
-	}
-	else {
-		allheights  = header_height + nav_height + resultsheader_height;
+	} else {
+		allheights = header_height + nav_height + resultsheader_height;
 		var windowh = $(window).height();
 		windowh = windowh - allheights;
 		$(".col-left").css("height", columnsheight);
@@ -2642,56 +2604,59 @@ var resizecolumns = function() {
 	}
 	$(".col-sidebar").css("min-height", columnsheight);
 	if ($(".col-content-main").parent().hasClass("settingslayout")) {
-		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+		$(".col-content-main").css(
+			"min-height",
+			columnsheight + sidebarstop + "px"
+		);
+	} else {
+		$(".col-content-main").css(
+			"min-height",
+			columnsheight + sidebarstop + "px"
+		);
 	}
-	else {
-		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
-	}
-	
-	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
-}
 
+	$(".pushcontent").css(
+		"height",
+		"calc(100% - " + resultsheader_height + "px)"
+	);
+};
 
-var resizegallery = function() {
+var resizegallery = function () {
 	var container = $("#emslidesheet");
 	if (container.length) {
 		var containerw = container.width();
-		var boxes = Math.floor(containerw/230);
-		var boxw = Math.floor(containerw/boxes)-12;
+		var boxes = Math.floor(containerw / 230);
+		var boxw = Math.floor(containerw / boxes) - 12;
 		$("#emslidesheet .emthumbbox").width(boxw);
-		
 	}
-}
-	
+};
 
-
-$(document).ready(function() {
+$(document).ready(function () {
 	uiload();
 	resizecolumns();
 	resizegallery();
 });
 
-$(window).on('resize',function(){
+$(window).on("resize", function () {
 	resizecolumns();
 	resizegallery();
 });
 
-jQuery(window).on('ajaxsocketautoreload',function(){
-	
-	 $(".ajaxsocketautoreload").each(function() 
-	 {
-		 var cell = $(this);
-		 var path = cell.data("ajaxpath");
+jQuery(window).on("ajaxsocketautoreload", function () {
+	$(".ajaxsocketautoreload").each(function () {
+		var cell = $(this);
+		var path = cell.data("ajaxpath");
 		jQuery.ajax({
-			url: path, async: false, data: {}, success: function (data) {
+			url: path,
+			async: false,
+			data: {},
+			success: function (data) {
 				cell.replaceWith(data);
 			},
 			xhrFields: {
-	            withCredentials: true
-	        },
-			crossDomain: true
+				withCredentials: true,
+			},
+			crossDomain: true,
 		});
-		
 	});
-
 });

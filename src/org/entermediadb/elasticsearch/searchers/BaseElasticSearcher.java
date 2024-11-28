@@ -124,6 +124,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	public static final Pattern TOKENS = Pattern.compile("[^a-zA-Z\\d\\s]");
 	
+	protected static final Pattern specialchars = Pattern.compile("([0-9a-zA-Z0-9_]+)");
+	protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
+
+	
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -413,6 +417,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
+	/**
+	 * This is the main way to enable agregations and added to the query
+	 * They are then run in the hit tracker
+	 * @param inQuery
+	 * @param inSearch
+	 * @return
+	 */
+	
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();
@@ -441,7 +453,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			if (detail.isDate())
 			{
-				//TODO: Is this slow? seems kinda like a waste of CPU
+				//TODO: Is this slow? seems kinda like a waste of CPU Use Groovy
 //				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 //				builder.field(detail.getId());
 //				builder.interval(DateHistogramInterval.DAY);
@@ -511,8 +523,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
-		// TODO Auto-generated method stub
-
+		//For custom overries
+		
 	}
 
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
@@ -643,7 +655,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			// https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			// https://github.com/jprante/elasticsearch-knapsack
-			log.info("Could not put mapping over existing mapping.", ex);
+			log.info("Could not put mapping over existing mapping on catalog: " + getCatalogId() + " Searchtype: " + getSearchType(), ex);
 			getElasticNodeManager().addMappingError(getSearchType(), ex.getMessage());
 			//throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
 			return false;
@@ -1184,14 +1196,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// Check for quick date object
 		QueryBuilder find = null;
 		String valueof = null;
-
+		Date valuedate = null;
 		if (inValue instanceof Date)
 		{
+			valuedate = (Date)inValue;
 			valueof = DateStorageUtil.getStorageUtil().formatForStorage((Date) inValue);
 		}
 		else
 		{
-			valueof = String.valueOf(inValue);
+			valueof = String.valueOf(inValue); //Value is never null
 		}
 
 		String fieldid = inDetail.getId();
@@ -1351,8 +1364,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
+			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
+	        
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
+				Pattern pattern = Pattern.compile("(?<=\\s)[^a-zA-Z\\\\d\\\\s](?=\\s)");
+		        Matcher matcher = pattern.matcher(valueof);
+		        String oldvalueof = valueof;
+		        valueof = matcher.replaceAll("");
+		        
 				valueof = valueof.replace("\"", "");
 				valueof = QueryParser.escape(valueof);
 				String query = "+(" + valueof + ")";
@@ -1362,17 +1382,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else
 			{
-				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ").replace(", ", " AND "); //Babson uses lots of commas
+				String uppercase = valueof.replace(" and ", " AND ").replace(" And ", " AND ").replace(" Or ", " OR ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");//.replace(", ", " AND "); //Babson uses lots of commas
 				//We no longer allow + or - notation
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
 
-				Matcher customlogic = operators.matcher(uppercase);
-				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
-				{
-					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
-				}
+//				Matcher customlogic = operators.matcher(uppercase);
+//				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
+//				{
+//					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
+//				}
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
@@ -1381,78 +1401,60 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// "Big Deal" => "Big Deal"
 				//valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 
-				Matcher m = operators.matcher(uppercase);
+				//String orregex = "((.*?)\\s+(AND|OR)\\s+)+";
+				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
+		        Matcher andors  = orpattern.matcher(uppercase);
 
-				int start = 0;
-				int ending = uppercase.length();
 				String operator = null;
-				boolean keepgoing = true;
 				String nextoperator = null;
 
+				Collection searchpairs = new ArrayList();
+				
+				//String regex = "(.*?)\\s+(AND|OR)\\s)+";
 				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
-				while (keepgoing)
+				int lastterm = 0;
+				while (andors.find()) 
 				{
-					if (m.find())
-					{
-						ending = m.start();
-						nextoperator = m.group().trim();
-					}
-					else
-					{
-						keepgoing = false;
-						ending = uppercase.length();
-					}
-
-					String word = uppercase.substring(start, ending);
-					if (keepgoing)
-					{
-						start = m.end();
-					}
-
+		            // Get the matched character
+		            Map pair = new HashMap();
+		            pair.put("word",andors.group(1));
+		            pair.put("opertator",andors.group(2));
+		            searchpairs.add(pair);
+		            lastterm = andors.end();
+				} 
+	            Map lastpair = new HashMap();
+	            lastpair.put("word",uppercase.substring(lastterm));
+	            searchpairs.add(lastpair);
+				
+				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();) {
+					Map<String,String> pair = (Map) iterator.next();
+					String word = pair.get("word");
+					nextoperator = pair.get("operator");
 					StringBuffer out = new StringBuffer();
 					out.append("+(");
-
-					
 					//If there are tokens then treat a one word with quotes
-					boolean hastoken =  TOKENS.matcher(word).find();
 					//Check for quotes..
-
-					if( hastoken)
+					//String regex = "(?<=[a-zA-Z\\d])(.*?)(?=[a-zA-Z\\d])";
+					//String regex = "(?<=\\W)(\\w+)(?=\\W)";
+			        
+			        // Create a Matcher object
+			        Matcher matcher = specialchars.matcher(word);
+					while (matcher.find()) 
 					{
-						//String quoted = "\"" + QueryParser.escape(word) + "\"";						
-						MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(word));
-						text.analyzer("lowersnowball");
-						booleans.must(text);
-					}
-					else
-					{
-						if(word.startsWith("\"") && word.endsWith("\""))
+			            // Get the matched character
+			            String match = matcher.group();
+			            boolean onlastone = word.endsWith(match);
+			            
+						MatchQueryBuilder oneword = null;
+						if( onlastone )
 						{
-							String sub = word.substring(1, word.length() - 1);
-							out.append("\"" + QueryParser.escape(sub) + "\"");
+							oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getId(), QueryParser.escape(match));
 						}
 						else
 						{
-							wildcard(out, word);
+							oneword = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(match));
 						}
-						out.append(")");
-						//Make a *xxx* OR xxx* search to deal with bugs
-						BoolQueryBuilder pair = QueryBuilders.boolQuery();
-						QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(out.toString());
-						text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-						text.analyzeWildcard(true); //This is important
-						text.allowLeadingWildcard(true);
-						text.analyzer("lowersnowball");
-						text.defaultField("description");
-						pair.should(text);
-	
-						String startswith = "+(" + QueryParser.escape(word) + "*)"; //THis is needed because HL_06_19_42_DRY.WAV cant be found when searching for just HL_06_19_42_DRY
-						QueryStringQueryBuilder startw = QueryBuilders.queryStringQuery(startswith);
-						startw.defaultOperator(QueryStringQueryBuilder.Operator.AND);
-						startw.analyzer("lowersnowball");
-						startw.defaultField("description");
-						pair.should(startw);
-
+						oneword.analyzer("lowersnowball");
 						if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
 						{
 							operator = "OR";
@@ -1461,20 +1463,21 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							operator = "AND";
 						}
+						
 						if (operator.equals("NOT"))
 						{
-							booleans.mustNot(pair);
+							booleans.mustNot(oneword);
 						}
 						else if (operator.equals("OR"))
 						{
-							booleans.should(pair);
+							booleans.should(oneword);
 						}
 						else
 						{
-							booleans.must(pair);
+							booleans.must(oneword);
 						}
-					}
 						operator = nextoperator;
+					}
 				}
 
 				find = booleans;
@@ -1698,7 +1701,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
-				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
+				if( inDetail.isList() || !inDetail.isAnalyzed() )
+				{
+					find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
+				}
+				else
+				{
+					String altid = fieldid+".exact";
+
+					find = QueryBuilders.termsQuery(altid, inTerm.getValues()); //This is an OR
+					//find = createMatchQuery(fieldid, inTerm.getValues()); //This is an OR
+				}
 				//				BoolQueryBuilder or  = QueryBuilders.boolQuery();
 				//				Object[] values = inTerm.getValues();
 				//				for (int i = 0; i < values.length; i++)
@@ -1969,6 +1982,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		final List<Data> toprocess = new ArrayList(inBuffer);
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
+		int currentordering = -1;
+
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
 		{
 			@Override
@@ -2020,15 +2035,41 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
+		PropertyDetail ordering  = details.getDetail("ordering");
+		boolean fixordering = false;
+		if( ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
+		{
+			fixordering = true;
+		}
+		
 		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 		{
 			try
 			{
 				Data data2 = (Data) iterator.next();
-//				if( data2.getId() == null || data2.getId().trim().isEmpty())
-//				{
-					//continue;
-//				}
+				if( fixordering)
+				{
+					Object order = data2.getValue("ordering");
+					if (order != null) {
+						if (Long.parseLong(order.toString()) == 0) {
+							order = null;
+						}
+					}
+					if( order == null)
+					{
+						if( currentordering == -1)
+						{
+							IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+							currentordering = manager.nextNumber(getSearchType() + "_ordering").intValue();
+						}
+						else
+						{
+							currentordering = currentordering + 10; 
+						}
+						data2.setValue("ordering",currentordering);
+					}
+				}
+				
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
@@ -2100,6 +2141,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
 		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
+		
+		if( currentordering != -1)
+		{
+			IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+			manager.setNumber(getSearchType() + "_ordering", currentordering );
+		}
+		
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
@@ -2388,10 +2436,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			throw new OpenEditException(ex);
 		}
-		if( fieldCacheManager != null)
-		{
-			getCacheManager().remove("data" + getSearchType(), data.getId());
-		}
+		
+		getCacheManager().remove("data" + getSearchType(), data.getId());
 	}
 
 	public void setIndexId(long inIndexId)
@@ -2537,15 +2583,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 //				{
 //					value = getReplacer().replace(mask, inData);
 //				}
-				if( value == null)
+				value = inData.getValue(key);
+				if (value != null)
 				{
-					value = inData.getValue(key);
-					if (value != null)
+					if (value instanceof String && ((String) value).isEmpty())  //Standarize
 					{
-						if (value instanceof String && ((String) value).isEmpty())  //Standarize
-						{
-							value = null;
-						}
+						value = null;
+					}
+				}
+				else
+				{
+					if(!isReIndexing() &&  detail.isAutoIncrement())
+					{
+						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+						value = manager.nextNumber(getSearchType() + "_" + detail.getId());
 					}
 				}
 				//				if( isReIndexing() ) //When reindexing dont mess with this data
@@ -2711,13 +2762,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 						}
 					}
-					if( value == null && detail.isViewType("autoincrement"))
-					{
-						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
-
-						val = manager.nextNumber(getSearchType() + "_" + detail.getId());
-					}
-					
 					inContent.field(key, val);
 				}
 				else if (detail.isMultiValue() || detail.isList())

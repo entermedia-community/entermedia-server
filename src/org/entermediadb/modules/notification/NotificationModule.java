@@ -11,8 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
-import org.entermediadb.asset.modules.DataEditModule;
-import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.email.WebEmail;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -20,8 +18,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.locks.Lock;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
-
-import com.fasterxml.jackson.databind.ser.std.UUIDSerializer;
 
 public class NotificationModule extends BaseMediaModule
 {

@@ -23,10 +23,19 @@
 	<path-action name="MediaArchiveModule.loadApplicationId" />
   	<path-action name="MediaArchiveModule.loadComponentHome" />
 	
-	<property name="catalogid">media/catalogs/public</property>
+	<property name="catalogid">mediadb_catalog_notset</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	<path-action name="MediaArchiveModule.loadApplicationId" />
+	
+	
+	 <script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
+ <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+ <script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
+ <script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
+ 
+ <script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
+	
 	
 	<permission name="view">
 		<user />

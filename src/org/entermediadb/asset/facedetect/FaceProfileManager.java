@@ -1,8 +1,11 @@
 package org.entermediadb.asset.facedetect;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +31,6 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.net.HttpSharedConnection;
-import org.entermediadb.scripts.ScriptLogger;
 import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.json.simple.JSONArray;
@@ -36,12 +41,12 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.MathUtils;
+import org.openedit.util.OutputFiller;
 
 
 public class FaceProfileManager implements CatalogEnabled
@@ -101,6 +106,12 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		try
 		{
+			String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
+			if( url == null)
+			{
+				log.error("No face server configured");
+				return false;
+			}
 			String type = getMediaArchive().getMediaRenderType(inAsset);
 			
 			inAsset.setValue("facescancomplete","true");
@@ -158,6 +169,10 @@ public class FaceProfileManager implements CatalogEnabled
 					input = getMediaArchive().getOriginalContent(inAsset);
 				}
 				else 
+				{
+					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.webp");
+				}
+				if( !input.exists() )
 				{
 					input = getMediaArchive().getContent("/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image3000x3000.jpg");
 				}
@@ -274,9 +289,25 @@ public class FaceProfileManager implements CatalogEnabled
 			similaritycheck = Double.parseDouble(value);
 		}
 
-        BufferedImage imageImput = ImageIO.read(new File( inInput.getAbsolutePath()) );
-        
-       
+		//
+		//extract
+		
+		int inputw = 0;
+		int inputh = 0;
+		
+		if(inInput.getName().endsWith("webp") )
+		{
+			Dimension size = getImageDimensionWebP(inInput.getInputStream());
+			inputw = (int)Math.round( size.getWidth() );
+			inputh = (int)Math.round( size.getHeight() );
+		}	
+		else
+		{
+			File inputfile = new File( inInput.getAbsolutePath() );
+			Dimension size = getImageDimensionImageIO(inputfile);
+			inputw = (int)Math.round( size.getWidth() );
+			inputh = (int)Math.round( size.getHeight() );
+		}       
         int minfacesize = 450;
 		
 		String minumfaceimagesize = getMediaArchive().getCatalogSettingValue("facedetect_minimum_face_size");
@@ -372,8 +403,8 @@ public class FaceProfileManager implements CatalogEnabled
 			int h = y2 - y;
 			
 			
-			h = Math.min(h,imageImput.getHeight() - y);
-			w = Math.min(w,imageImput.getWidth() - x);
+			h = Math.min(h,inputh - y);
+			w = Math.min(w,inputw - x);
 			
 			
 			
@@ -393,10 +424,10 @@ public class FaceProfileManager implements CatalogEnabled
 				
 				if( inAsset.containsValue("removedfaceprofilegroups",groupid))
 				{
-					log.info("Skipping group");
+					log.info("Skipping group for asset: " + inAsset.getId());
 					continue;
 				}
-				//TODO: Count how many times I have used this group.
+				//TODO: Count how many times I have used this group. 
 				MultiValued oldgroup = (MultiValued)getMediaArchive().getData("faceprofilegroup",groupid);
 				if( oldgroup == null)
 				{
@@ -443,13 +474,26 @@ public class FaceProfileManager implements CatalogEnabled
 			faceprofile.put("locationw",w);
 			faceprofile.put("locationh",h);
 				
-	        faceprofile.put("inputwidth",imageImput.getWidth());
-	        
-	        faceprofile.put("inputheight",imageImput.getHeight());
+	        faceprofile.put("inputwidth",inputw);
+	        faceprofile.put("inputheight",inputh);
 			
 			if( !morethan20)
 			{
-				uploadAProfile(faceprofile, timecodestart, imageImput, inAsset, groupid);
+				
+				//Image Magic convert
+				ConvertInstructions instructions =  getMediaArchive().createInstructions(inAsset, inInput);
+				instructions.setCrop(true);
+				instructions.setProperty("x1", Integer.toString(x) );
+				instructions.setProperty("y1", Integer.toString(y));
+				instructions.setProperty("cropwidth", Integer.toString(w));
+				instructions.setProperty("cropheight", Integer.toString(h));
+
+				ContentItem smallitem = getMediaArchive().getContent( "/WEB-INF/trash/" + getMediaArchive().getCatalogId()	+ "/small/" + inAsset.getSourcePath() + ".webp" );
+				
+				getMediaArchive().convertFile(instructions, smallitem);
+
+				
+				uploadAProfile(faceprofile, timecodestart, smallitem, inAsset, groupid);
 			}
 			else
 			{
@@ -461,18 +505,20 @@ public class FaceProfileManager implements CatalogEnabled
 		return faceprofiles;
 	}
 
-	private void uploadAProfile(Map faceprofile, long timecodestart,BufferedImage originalImgage, Asset inAsset, String groupId ) throws Exception
+	private void uploadAProfile(Map faceprofile, long timecodestart,ContentItem originalImgage, Asset inAsset, String groupId ) throws Exception
 	{
 			int x = (Integer) faceprofile.get("locationx");
 			int y = (Integer) faceprofile.get("locationy");
 			int w = (Integer) faceprofile.get("locationw");
 			int h = (Integer) faceprofile.get("locationh");
+//			
+//	        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
+//	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//	        ImageIO.write(subImgage, "jpg", baos);
+//	        byte[] bytes = baos.toByteArray();
+			byte[] bytes =	new OutputFiller().readAll(originalImgage.getInputStream());
+	        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".webp");
 			
-	        BufferedImage subImgage = originalImgage.getSubimage(x, y, w, h);
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        ImageIO.write(subImgage, "jpg", baos);
-	        byte[] bytes = baos.toByteArray();
-	        ByteArrayBody body = new ByteArrayBody(bytes,inAsset.getName() + "_" + timecodestart + "_" + "x"+ x + "y" + y + "w" + w + "h" + h + ".jpg");
 			Map tosendparams = new HashMap();
 	        tosendparams.put("file", body);
 			tosendparams.put("subject",groupId );
@@ -572,7 +618,9 @@ public class FaceProfileManager implements CatalogEnabled
 		String url = getMediaArchive().getCatalogSettingValue("faceprofileserver");
 		if( url == null)
 		{
-			url = "http://localhost:8000";
+			log.error("No faceprofileserver URL configured" );
+			return null;
+			//url = "http://localhost:8000";
 		}
 		long start = System.currentTimeMillis();
 		log.debug("Facial Profile Detection sending " + input.getPath() );
@@ -712,7 +760,7 @@ public class FaceProfileManager implements CatalogEnabled
 		return null;
 	}
 	
-	public Map getImageAndLocationForGroup(Asset asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
+	public Map getImageAndLocationForGroup(MultiValued asset, Collection<Data>  infaceprofilegroup, Double thumbheight) { 
 		//Todo
 		
 		for (Iterator iterator = infaceprofilegroup.iterator(); iterator.hasNext();)
@@ -731,7 +779,7 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 	
-	public Map getImageAndLocationForGroup(Asset asset,String infaceprofilegroupid, Double thumbheight)
+	public Map getImageAndLocationForGroup(MultiValued asset,String infaceprofilegroupid, Double thumbheight)
 	{
 		if(asset == null) {
 			return null;
@@ -991,5 +1039,50 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 
+	/**
+	 * Gets image dimensions for given file 
+	 * @param imgFile image file
+	 * @return dimensions of image
+	 * @throws IOException if the file is not a known image
+	 */
+	public  Dimension getImageDimensionImageIO(File imgFile) throws IOException {
+	  int pos = imgFile.getName().lastIndexOf(".");
+	  if (pos == -1)
+	    throw new IOException("No extension for file: " + imgFile.getAbsolutePath());
+	  String suffix = imgFile.getName().substring(pos + 1);
+	  Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+	  while(iter.hasNext()) {
+	    ImageReader reader = iter.next();
+	    try {
+	      ImageInputStream stream = new FileImageInputStream(imgFile);
+	      reader.setInput(stream);
+	      int width = reader.getWidth(reader.getMinIndex());
+	      int height = reader.getHeight(reader.getMinIndex());
+	      return new Dimension(width, height);
+	    } catch (IOException e) {
+	      log.warn("Error reading: " + imgFile.getAbsolutePath(), e);
+	    } finally {
+	      reader.dispose();
+	    }
+	  }
+
+	  throw new IOException("Not a known image file: " + imgFile.getAbsolutePath());
+	}
+	
+    public java.awt.Dimension getImageDimensionWebP(InputStream is) throws IOException {
+        byte[] data = is.readNBytes(30);
+        if (new String(Arrays.copyOfRange(data, 0, 4)).equals("RIFF") && data[15] == 'X') {
+            int width = 1 + get24bit(data, 24);
+            int height = 1 + get24bit(data, 27);
+
+            if ((long) width * height <= 4294967296L) return new Dimension(width, height);
+        }
+        return null;
+    }
+
+    private static int get24bit(byte[] data, int index) {
+        return data[index] & 0xFF | (data[index + 1] & 0xFF) << 8 | (data[index + 2] & 0xFF) << 16;
+    }
+	
 	
 }

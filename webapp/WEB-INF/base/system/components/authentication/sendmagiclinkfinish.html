@@ -5,8 +5,8 @@
 		##Uses and admin to create the user
 		$pages.include("./sendmagicklinkdisableduser.html")  ##to try again or register
 	#else
-	    #if( !$allowguestregistration )
-	    	[[No user found]]
+	    #if( $allowguestregistration == "false" )
+				$context.putPageValue("oe-exception", "[[User not found]]")
 	    	$pages.include("./loginform.html")  ##to try again or register
 	    #else
 		    ##asks for the first and last name then sends a code

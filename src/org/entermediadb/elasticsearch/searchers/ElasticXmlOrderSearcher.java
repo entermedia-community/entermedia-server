@@ -1,6 +1,5 @@
 package org.entermediadb.elasticsearch.searchers;
 
-import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;

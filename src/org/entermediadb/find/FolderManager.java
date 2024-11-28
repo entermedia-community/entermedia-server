@@ -345,8 +345,8 @@ public class FolderManager implements CatalogEnabled
 				alreadydownloaded.add(path  + "|" +size);
 			}
 		}
+
 		List assetservercopy = (List)response.get("files");
-		
 		List mixedcopy = new ArrayList();
 		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
 			Map	serverfile = (Map) iterator.next();
@@ -362,7 +362,162 @@ public class FolderManager implements CatalogEnabled
 		response.put("files",mixedcopy);
 		return response;
 	}
+	
+	
+	public Map findMissingAssetsToUpload(Map assetmap, Map inParams) 
+	{
+	
+		Map response = new HashMap(assetmap);
 
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		
+		response.put("filedownloadpath", inParams.get("filedownloadpath"));
+		
+		List assetservercopy = (List)response.get("files");
+		HashMap<String,Map> serverfiles = new HashMap();
+		if(assetservercopy != null) { 
+			for (Iterator iterator2 = assetservercopy.iterator(); iterator2.hasNext();) {
+				Map serverfile = (Map) iterator2.next();
+				String path = (String)serverfile.get("path");
+				serverfiles.put(path, serverfile);
+			}
+		}
+		
+		List remotecopy = (List)inParams.get("files");
+		List mixedcopy = new ArrayList();
+		if(remotecopy != null) 
+		{
+			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
+				Map	clientfile = (Map) iterator.next();
+				String path = (String)clientfile.get("path");
+				long size = (Long)clientfile.get("size");
+				Map existing = serverfiles.get(path);
+				if( existing == null)
+				{
+					mixedcopy.add(clientfile);
+				}
+				else
+				{
+					long existingsize = (Long)existing.get("size");
+					if(existingsize != size) {
+						mixedcopy.add(existing);
+					}
+				}
+			}
+		}
+		//Folders
+		response.put("files",mixedcopy);
+		return response;
+	}
+	
+	
+	
+	public Map removeDuplicateAssetsPush(Map assetmap, Map inParams) 
+	{
+	
+		Map response = new HashMap(assetmap);
+
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		
+		response.put("filedownloadpath", inParams.get("filedownloadpath"));
+		
+		List assetservercopy = (List)response.get("files");
+		Set serverfiles = new HashSet();
+		for (Iterator iterator = assetservercopy.iterator(); iterator.hasNext();) {
+			Map	serverfile = (Map) iterator.next();
+			String path = (String)serverfile.get("path");
+			long size = (Long)serverfile.get("size");
+			serverfiles.add(path  + "|" +size);
+		}
+		
+		
+		//Remove all duplicate assets
+		List remotecopy = (List)inParams.get("files");
+		List mixedcopy = new ArrayList();
+		if(remotecopy != null) { 
+			for (Iterator iterator2 = remotecopy.iterator(); iterator2.hasNext();) {
+				Map clientfile = (Map) iterator2.next();
+				String path = (String)clientfile.get("path");
+				long size = (Long)clientfile.get("size");
+				if( !serverfiles.contains(path  + "|" +size) )
+				{
+					mixedcopy.add(clientfile);
+				}
+			}
+		}
+	
+		//Folders
+		response.put("files",mixedcopy);
+		return response;
+	}
+	
+	
+
+	public Map findMissingAssetsFromPush(Map assetmap, Map inParams) 
+	{
+	
+		Map response = new HashMap(assetmap);
+
+		/*
+		"entityid": "1234",
+		"moduleid": "entityactivimoduleid,
+		"rootpath": "/home/user/eMedia/",		
+		"categorypath": "Activities/Paris",
+        "files": [{path: filepath, size: 43232}], 
+			"folders":  [{path: "/home/user/eMedia/Activities/Sub1/Sub2"}] 
+		*/
+		
+		response.put("filedownloadpath", inParams.get("filedownloadpath"));
+		
+		List remotecopy = (List)inParams.get("files");
+		Set remotefiles = new HashSet();
+		if (remotecopy != null && !remotecopy.isEmpty()) 
+		{
+			for (Iterator iterator = remotecopy.iterator(); iterator.hasNext();) {
+				Map	serverfile = (Map) iterator.next();
+				String path = (String)serverfile.get("path");
+				long size = (Long)serverfile.get("size");
+				remotefiles.add(path  + "|" +size);
+			}
+			
+			//Remove all duplicate assets
+			List assetservercopy = (List)response.get("files");
+			List mixedcopy = new ArrayList();
+			if(remotecopy != null) { 
+				for (Iterator iterator2 = assetservercopy.iterator(); iterator2.hasNext();) {
+					Map clientfile = (Map) iterator2.next();
+					String path = (String)clientfile.get("path");
+					long size = (Long)clientfile.get("size");
+					if( !remotefiles.contains(path  + "|" +size) )
+					{
+						mixedcopy.add(clientfile);
+					}
+				}
+			}
+		
+			//Folders
+			response.put("files",mixedcopy);
+		}
+		return response;
+	}
+	
+	
+	
+	
 	/*
 	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid)
 	{

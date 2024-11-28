@@ -127,7 +127,9 @@ public class MediaSearchModule extends BaseMediaModule
 		inPageRequest.putPageValue("category",category);
 		inPageRequest.putPageValue("selectedcategory",category);
 		
-		String exact = inPageRequest.findValue("exact-search");
+		String exact = inPageRequest.findValue("exactsearch");
+		inPageRequest.putPageValue("exactsearch",exact);
+		
 		HitTracker tracker = null;
 		
 		
@@ -142,6 +144,8 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		if(search == null) {
 			search = assetsearcher.createSearchQuery();
+			String	sort = inPageRequest.getRequestParameter(searchtype +"sortby");
+			search.addSortBy(sort);
 		}
 		
 		if( exact != null && Boolean.parseBoolean(exact))
@@ -376,9 +380,9 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			return;
 		}
-		String topmoduleid = (String)inPageRequest.findValue("topmoduleid");
+		String topmoduleid = (String)inPageRequest.findValue("parentmoduleid");
 		if(topmoduleid == null) {
-			topmoduleid = (String)inPageRequest.getPageValue("topmoduleid");
+			topmoduleid = (String)inPageRequest.getPageValue("parentmoduleid");
 		}
 		String personid = null;
 

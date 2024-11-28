@@ -10,10 +10,10 @@
 		#set($thumb = $entity.get("primaryimage"))
 	#end
 	#ifnotnull( $thumb )
-		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image200x200.jpg"))
+		#set( $link = $mediaarchive.asLinkToPreview($thumb,"image3000x3000.jpg"))
 		"thumbnail_url":"$!siteroot$link",
-		"thumbnail_width":200,
-		"thumbnail_height":200,
+		"thumbnail_width":3000,
+		"thumbnail_height":3000,
 	#end
 	#set($width = $context.getRequestParameter("maxwidth"))
 	#ifnull($width)

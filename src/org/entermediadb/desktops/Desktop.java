@@ -26,6 +26,26 @@ public class Desktop
 	private static final Log log = LogFactory.getLog(Desktop.class);
 	protected DesktopEventListener fieldListener;
 	protected boolean fieldBusy;
+	protected String fieldComputerName;
+	protected String fieldId;
+	
+	
+	public String getId() {
+		return fieldId;
+	}
+
+	public void setId(String inId) {
+		fieldId = inId;
+	}
+
+	public String getComputerName() {
+		return fieldComputerName;
+	}
+
+	public void setComputerName(String inComputerName) {
+		fieldComputerName = inComputerName;
+	}
+
 	CacheManager fieldLocalFileCache;
 	
 	public CacheManager getLocalFileCache()

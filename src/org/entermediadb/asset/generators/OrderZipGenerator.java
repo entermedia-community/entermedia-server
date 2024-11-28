@@ -17,7 +17,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.MediaArchiveModule;
 import org.entermediadb.asset.orders.Order;
-import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -48,20 +47,21 @@ public class OrderZipGenerator extends BaseGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
-		ZipOutputStream zos = null;
+		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
+		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 
+		ZipOutputStream zos = null;
+		Order order = null;
 		try {
 
-			MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
-			MediaArchive archive = archiveModule.getMediaArchive(inReq);
 			
 			String orderid = inReq.getRequestParameter("orderid");
 			
-			OrderManager manager = (OrderManager) archive.getModuleManager().getBean(archive.getCatalogId(), "orderManager"); 
+ 
 					
-			Order order = manager.loadOrder(archive.getCatalogId(), orderid);
+			order = archive.getOrderManager().loadOrder(archive.getCatalogId(), orderid);
 			
-			HitTracker orderitems = manager.findOrderItems(inReq, archive.getCatalogId(), orderid);
+			HitTracker orderitems = archive.getOrderManager().findOrderItems(inReq, archive.getCatalogId(), orderid);
 			String catalogid = archive.getCatalogId();
 			
 			ZipUtil util = new ZipUtil();
@@ -80,28 +80,24 @@ public class OrderZipGenerator extends BaseGenerator
 				if(preset == null && "original".equals(orderitem.get("presetid"))){
 					preset = archive.getSearcherManager().getData(catalogid, "convertpreset", "0");
 				}
+//				
+//				String queid = orderitem.get("publishqueueid");
+//				if( queid == null )
+//				{
+//					log.error("publishqueueid should never be null, 0 for browser");
+//					continue;
+//				}
 				
-				String queid = orderitem.get("publishqueueid");
-				if( queid == null )
-				{
-					log.error("publishqueueid should never be null, 0 for browser");
-					continue;
-				}
-				
-				Data publishtask = archive.getSearcherManager().getData(catalogid, "publishqueue", queid);
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
 				
 				ContentItem target = null;
-				String filename = null;
-				if(publishtask != null){
-					filename = publishtask.get("exportname");
-				}
+				String filename = orderitem.get("itemexportname");
 				
 				if(filename == null){
 					filename = asset.getPrimaryFile();
 				}
 				if(filename == null){
-					throw new OpenEditException("Filename was not set on publish task:  " + publishtask.getId());					
+					throw new OpenEditException("Filename was not set on publish task:  " + orderitem.getId());					
 				}
 				//handle duplicate filenames
 				if (fileset.contains(filename)){
@@ -130,12 +126,6 @@ public class OrderZipGenerator extends BaseGenerator
 					target = archive.getPageManager().getContent(pathToFile);
 					util.addTozip(target,filename , zos);
 				}
-
-				
-				
-				
-				
-				
 			 	// <a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
 				
 			}
@@ -155,8 +145,7 @@ public class OrderZipGenerator extends BaseGenerator
 				e.printStackTrace();
 			}
 		}
-		
-
+		archive.getOrderManager().changeStatus(order,"complete","complete");
 		
 		
 		

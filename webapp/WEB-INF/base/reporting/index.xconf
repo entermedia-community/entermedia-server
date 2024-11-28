@@ -1,7 +1,0 @@
-<page>
-<path-action name="ReportModule.selectCatalog"/>
-<page-action name="ReportModule.selectCatalog"/>
-
-<path-action name="Admin.redirectToOriginal"/>
-<property name="origURL">/${applicationid}/views/modules/reports/index.html</property>
-</page>

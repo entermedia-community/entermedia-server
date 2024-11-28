@@ -32,7 +32,6 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.MathUtils;
@@ -428,7 +427,15 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+		
 		QueryBuilder query = tasksearcher.query().exact("projectgoal", goal.getId());
+		
+		String selectedcollectiverole = (String)inReq.getPageValue("selectedcollectiverole");
+		if( selectedcollectiverole != null)
+		{
+			query.exact("taskroles.collectiverole",selectedcollectiverole);
+		}
+		
 		String onlyopen = inReq.getRequestParameter("onlyopen");
 		if( Boolean.parseBoolean(onlyopen))
 		{
@@ -444,7 +451,6 @@ public class TaskModule extends BaseMediaModule
 			}
 			query.exact("completedby", selected);
 		}
-		
 		
 		String keyword = inReq.getRequestParameter("keyword");
 		if( keyword != null)
@@ -1025,6 +1031,10 @@ public class TaskModule extends BaseMediaModule
 		}
 		else
 		{
+			if( inReq.getUser() == null)
+			{
+				return;
+			}
 			Collection projects = archive.getProjectManager().listCollectionsOnTeam(inReq.getUser());
 			qall.orgroup("collectionid",projects);
 		}

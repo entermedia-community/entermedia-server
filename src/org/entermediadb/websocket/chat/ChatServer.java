@@ -24,9 +24,7 @@ import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -160,12 +158,16 @@ public class ChatServer
 	}
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
-		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
+		
 		String collectionid = String.valueOf(inMap.get("collectionid"));
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
 
-		if( catalogid != null  )
+		if( catalogid != null && collection != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
+			
+			log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
 			
 			String channelid = (String)inMap.get("channel");
 			String userid = null;
@@ -182,30 +184,43 @@ public class ChatServer
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				
-				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
-				if( inMap.get("topic") == null)
+				
+				if(inMap.get("topic") == null)
 				{
 					inMap.put("topic",collection.getName());
 				}
 				if( inMap.get("name") == null)
 				{
-					User user = archive.getUser((String)inMap.get("user"));
+					User user = archive.getUser(userid);
 					if(user != null)
 					{
 						inMap.put("name",user.getScreenName());
 					}
 				}
 				
-				Set userids = projectmanager.listTeam(collection);
-				for (Iterator iterator = connections.iterator(); iterator.hasNext();)
-				{
-					ChatConnection chatConnection = (ChatConnection) iterator.next();
-					if( userids.contains(chatConnection.getUserId() ) )
+				Boolean broadcastAll = (Boolean)inMap.get("broadcastall");
+				
+				if (broadcastAll != null && broadcastAll) {
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
 						chatConnection.sendMessage(inMap);
-					}
-				}	
+					}	
+				}
+				else {
+					
+					Set userids = projectmanager.listTeam(collection);
+					userids.add(userid);
+					
+					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					{
+						ChatConnection chatConnection = (ChatConnection) iterator.next();
+						if( userids.contains(chatConnection.getUserId() ) )
+						{
+							chatConnection.sendMessage(inMap);
+						}
+					}	
+				}
 			} 
 			else 
 			{ 
@@ -238,6 +253,9 @@ public class ChatServer
 					}	
 				}
 			});
+		}
+		else {
+			log.info("Error broadcasting message, missing collection: " + collectionid + " or catalog: " + catalogid);
 		}
 	}
 

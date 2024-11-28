@@ -3,11 +3,11 @@
 
 <h2 class="text-center">[[Two Factor Authentication]]</h2>
 <div class="login-form" >
-###if($error)
+#if($error)
 <div class="alert alert-danger">[[You've already setup Two Factor Authentication. If you need to reset your key please contact your system administrator.]]</div>
-###elseif($invalid)
+#elseif($invalid)
 <div class="alert alert-danger">[[Login Failed - please try again]]</div>
-###else
+#else
 	<h3 class="text-center" style="margin-bottom:30px;">[[Key Generated]]</h3>
 	<div class="container">
 		<div class="row">
@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		</div>
-##end
+#end
 <p class="login-otherlinks">
 		<a href="login.html" title="[[Back to login page]]">[[Back to Login Page]]</a>
 		</p>

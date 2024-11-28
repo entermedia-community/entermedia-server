@@ -219,8 +219,13 @@ public class AdminModule extends BaseMediaModule
 		}
 		if(inReq.getPageValue("error") != null) {
 			log.info("Error sending Email. " + inReq.getPageValue("error"));
+			inReq.putPageValue("commandSucceeded", "error");
+			
 		}
-		inReq.putPageValue("commandSucceeded", "ok");
+		else
+		{
+			inReq.putPageValue("commandSucceeded", "ok");
+		}
 	}
 	
 	
@@ -267,7 +272,7 @@ public class AdminModule extends BaseMediaModule
 			username = foundUser.getId();
 		}
 		
-		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findValue("allowguestregistration"));
+		Boolean allowguestregistration =  Boolean.parseBoolean( inReq.findPathValue("allowguestregistration"));
 		if (foundUser == null && !allowguestregistration) {
 			
 			inReq.putPageValue("commandSucceeded", "nouser");
@@ -984,16 +989,15 @@ public class AdminModule extends BaseMediaModule
 		}
 	}
 
+	
 	public User createUserSession(WebPageRequest inReq)
 	{
-		
-		UserManager userManager = getUserManager(inReq);
-		
-		
-		String catalogid = userManager.getUserSearcher().getCatalogId();
-		User user = (User) inReq.getSessionValue(catalogid + "user");
-		if( user != null)
+
+		User user = (User)inReq.getPageValue("user");
+		if( user == null)
 		{
+			String catalogid = inReq.findPathValue("catalogid");
+			user = (User) inReq.getSessionValue(catalogid + "user");
 			inReq.putPageValue( "user", user);
 		}
 
@@ -1438,7 +1442,7 @@ public class AdminModule extends BaseMediaModule
 			user.setVirtual(true);
 			user.setProperty("catalogid", catalogid);
 			user.setEnabled(false);
-			getUserManager(inReq).saveUser(user);
+			//getUserManager(inReq).saveUser(user);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 
@@ -1618,9 +1622,13 @@ public class AdminModule extends BaseMediaModule
 	{
 		HttpServletResponse request = inReq.getResponse();
 		HttpServletRequest httpRequest = (HttpServletRequest) inReq.getRequest();
-		if( request != null)
+		if( httpRequest != null)
 		{
-			boolean isoptions = inReq.getRequest().getMethod().equals("OPTIONS");
+			String method = inReq.getRequest().getMethod();
+			if(method == null) {
+				return;
+			}
+			boolean isoptions = method.equals("OPTIONS");
 			//see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 			String origin = httpRequest.getHeader("Origin");
 			

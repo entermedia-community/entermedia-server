@@ -3,7 +3,6 @@ package org.entermediadb.tasks;
 import java.util.Date;
 
 import org.openedit.data.BaseData;
-import org.openedit.util.MathUtils;
 
 public class ProjectGoal extends BaseData implements Comparable
 {

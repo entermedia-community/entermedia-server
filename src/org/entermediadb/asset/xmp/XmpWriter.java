@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -286,8 +284,8 @@ public class XmpWriter {
 
 			if (detail.get("xmpmask") != null) {
 				inExtraDetails.putAll(inAsset.getProperties());
-				val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"),
-						inExtraDetails);
+				val = inArchive.replaceFromMask(detail.get("xmpmask"), inAsset, detail.getSearchType(), inExtraDetails, null); 
+				//val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"), inExtraDetails);
 				inExtraDetails.remove(detail.getId());
 			}
 

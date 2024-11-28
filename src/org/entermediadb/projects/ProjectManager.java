@@ -27,8 +27,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.desktops.Desktop;
-import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -979,7 +977,7 @@ public class ProjectManager implements CatalogEnabled
 				if (asset == null)
 				{
 
-					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
+					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, null, item.getName(), sourcepathmask, vals);
 
 					String destpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath;
 					if (!destpath.endsWith("/"))
@@ -1751,6 +1749,13 @@ public class ProjectManager implements CatalogEnabled
 			if( collectionquery == null )
 			{
 				collectionquery = getMediaArchive().getSearcher("librarycollection").createSearchQuery();
+				
+				String communitytagcategory = inReq.findPathValue("communitytagcategory");
+				if(communitytagcategory != null)
+				{
+					collectionquery.addExact("communitytagcategory",communitytagcategory);
+				}
+				
 			}
 		}
 		QueryBuilder builder = getMediaArchive().query("userupload");
@@ -1880,6 +1885,11 @@ public class ProjectManager implements CatalogEnabled
 	
 	public Collection<LibraryCollection> listCollectionsOnTeam(User inUser)
 	{
+		if( inUser == null)
+		{
+			return null;
+		}
+		
 		List<LibraryCollection> libraryCollections = (List<LibraryCollection>)getMediaArchive().getCacheManager().get("collections", inUser.getId());
 
 		if( libraryCollections == null)

@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -20,7 +20,7 @@ public interface AssetSource
 
 	boolean handles(Asset inAsset);
 
-	boolean removeOriginal(Asset inAsset);
+	boolean removeOriginal(User inUser, Asset inAsset);
 
 	void setConfig(MultiValued inConfig);
 

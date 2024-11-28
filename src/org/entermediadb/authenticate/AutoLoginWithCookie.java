@@ -2,19 +2,20 @@ package org.entermediadb.authenticate;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
-import org.openedit.util.PathUtilities;
-import org.openedit.util.StringEncryption;
 
 public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvider
 {
 	static final Log log = LogFactory.getLog(AutoLoginWithCookie.class);
+	
+	
+	
+
 	protected User readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
 	{
 		// see if we have a coookie for this person with their encrypted password
@@ -26,14 +27,14 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 
 			if (cookies != null)
 			{
-				String id = createMd5CookieName(inReq,true);
-				String idold = createMd5CookieName(inReq,false);
+				String id = getCookieEncryption().createMd5CookieName(inReq,ENTERMEDIAKEY,true);
+				String idold =  getCookieEncryption().createMd5CookieName(inReq,ENTERMEDIAKEY,false);
 				for (int i = 0; i < cookies.length; i++)
 				{
 					Cookie cook = cookies[i];
 					if (cook.getName() != null)
 					{
-						if( id.equals(cook.getName() ) || idold.equals(cook.getName() ) )
+						if( id.equals(cook.getName() ) || idold.equals(cook.getName() )  )
 						{
 							User user = autoLoginFromMd5Value(inReq, cook.getValue());
 							if( user != null)
@@ -108,22 +109,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 	}
 
 
-	String createMd5CookieName(WebPageRequest inReq, boolean withapp)
-	{
-		String home = (String) inReq.getPageValue("home");
-		
-		String name = ENTERMEDIAKEY + home;
-		if( withapp )
-		{
-			String root = PathUtilities.extractRootDirectory(inReq.getPath() );
-			if( root != null && root.length() > 1)
-			{
-				name = name + root.substring(1);
-			}
-		}
-		
-		return name;
-	}
+
 
 	
 }

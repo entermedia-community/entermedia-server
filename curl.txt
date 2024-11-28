@@ -67,7 +67,10 @@ curl -XGET 'http://localhost:9200/finder_catalog/entityevent/_search' -d '
 
 curl -XGET 'http://localhost:9200/finder_catalog/dam_program_sched_request/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XGET 'http://localhost:9200/finder_catalog/entityquestions/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
+curl -XGET 'http://localhost:9200/site_catalog/trackedtopics/_search' -d '{ "query" : {	"match_all" : {} } }' | python3 -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
@@ -542,8 +545,15 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
     }
 }'
 
+curl -XGET 'http://localhost:9200/finder_catalog/catalogsettings/siteroot'| python3 -mjson.tool
+
+curl -XPUT 'http://localhost:9200/media_catalogs_public/catalogsettings/siteroot' -d '{
+    "value" :  "http://localhost.mediacatalogpublic:8080"
+}'
+
+
 curl -XPUT 'http://localhost:9200/finder_catalog/catalogsettings/siteroot' -d '{
-    "value" :  "https://sddffdf"
+    "value" :  ""
 }'
 restart
 

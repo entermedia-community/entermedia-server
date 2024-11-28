@@ -1,0 +1,53 @@
+#set($targetdiv = $context.getRequestParameter("targetdiv") )
+#if(!$targetdiv)
+	#set($targetdiv = $context.findValue("targetdiv") )
+#end 
+
+<div id="ajaxloginformdiv" class="p-2 mt-3 ajaxloginbox">
+	#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
+	#ifnotnull($customloginmessage)
+		$customloginmessage
+	#end
+
+	#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+	#set( $allowguestregistration = $context.findValue("allowguestregistration") )
+ 
+	#set( $error = $context.getPageValue("oe-exception") )
+	#if ( $error ) 
+		<div class="alert alert-danger m-4" role="alert">
+			$error
+		</div>
+		$context.removeSessionValue("oe-exception")
+	#end 
+
+	#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
+	<div class="my-4">
+		#if( $content.allowguestregistration == "true")
+				#set($placeholder = "[[Login or Register with your Email Address]]")
+			#else
+				#set($placeholder = "[[Login with your Email Address]]")
+		#end
+		#if($allowloginbyemail == "true")
+			<div class="pb-4 text-center"><strong>$placeholder</strong></div>
+			<form class="ajaxform row justify-content-md-center g-3" 
+				data-targetdivinner="ajaxloginformdiv" 
+				data-oemaxlevel="1" 
+				action="$home$content.loginroot/ajaxsendmagiclinkfinish.html" 
+				id="password-reminder" name="passwordReminder"  method="post">
+				#ifnotnull( $userCategory)
+					<input type="hidden" name="categoryid" value="$userCategory.id" />
+				#end
+				
+				<div class="col-12 col-md-6">
+					<input id="loginemail" class="form-control required grabfocus" type="text" name="email" placeholder="[[Enter you email address]]" required />
+				</div>
+				<div class="col-12 col-md-auto">
+					<div class="d-flex justify-content-center">
+						<input class="btn themed-btn mx-auto mx-md-0" name="submit" type="submit" value="[[Next]]" />
+					</div>
+				</div>
+				<input type="hidden" name="subject" value="[[Your Login Info]]"/>
+			</form>
+		#end
+	</div>
+</div>

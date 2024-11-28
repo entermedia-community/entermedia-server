@@ -1,12 +1,10 @@
 package model.assets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.scripts.EnterMediaObject;
@@ -20,41 +18,22 @@ import org.openedit.util.PathUtilities;
 public class AssetTypeManager extends EnterMediaObject
 {
 
-	public void saveAssetTypes(Collection<Data> inAssets, boolean force)
+	public void setAssetTypes(Collection<Asset> inAssets, boolean force)
 	{
 		MediaArchive mediaarchive = (MediaArchive) context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
 
-		List tosave = new ArrayList();
-		for (Data hit : inAssets)
+		for (Asset hit : inAssets)
 		{
-			Asset real = checkForEdits(mediaarchive, hit, force);
-			if (real == null)
-			{
-				real = checkLibrary(mediaarchive, hit);
-			}
-			else
-			{
-				checkLibrary(mediaarchive, real);
-			}
-			real = checkCustomFields(mediaarchive, hit, real);
-			if (real != null)
-			{
-				tosave.add(real);
-			}
-			if (tosave.size() == 100)
-			{
-				saveAssets(searcher, tosave);
-				tosave.clear();
-			}
-
+			checkForEdits(mediaarchive, hit, force);
+			checkLibrary(mediaarchive, hit);
+			checkCustomFields(mediaarchive, hit);
 		}
-		saveAssets(searcher, tosave);
 		validateAssetTypes(mediaarchive,inAssets);
 	}
 
-	public void validateAssetTypes(MediaArchive mediaarchive, Collection<Data> inAssets)
+	public void validateAssetTypes(MediaArchive mediaarchive, Collection<Asset> inAssets)
 	{
 		//Read the fileformat and validate the extention to that type
 		//MediaArchive archive = getMediaArchive(inReq);
@@ -71,28 +50,25 @@ public class AssetTypeManager extends EnterMediaObject
 					String fileformat = data.get("fileformat");
 					if( !fileformat.equals("exe"))
 					{
-						Asset asset = (Asset)mediaarchive.getAssetSearcher().loadData(data);
-						asset.setValue("importstatus", "invalidformat");
-						asset.setValue("fileformat", "exe");
-						asset.setValue("assettype", "none");
-						asset.setProperty("previewstatus","mime");
-						mediaarchive.saveAsset(asset);
+						data.setValue("importstatus", "invalidformat");
+						data.setValue("fileformat", "exe");
+						data.setValue("assettype", "none");
+						data.setProperty("previewstatus","mime");
 					}
 				}
 			}
 		}
 	}	
 	
-	protected Asset checkCustomFields(MediaArchive inArchive, Data inHit, Asset loadedAsset)
+	protected void checkCustomFields(MediaArchive inArchive, Asset inHit)
 	{
-		return loadedAsset;
 	}
 
-	public Asset checkForEdits(MediaArchive inArchive,  Data hit, boolean always)
+	public void checkForEdits(MediaArchive inArchive,  Asset hit, boolean always)
 	{
 		if( hit.get("assettype") != null && !always)
 		{
-			return null;
+			return;
 		}
 		
 		String sourcepath = hit.get("sourcepath");
@@ -114,9 +90,7 @@ public class AssetTypeManager extends EnterMediaObject
 				{
 					if(PathUtilities.match(sourcepath, pathcheck))
 					{
-						Asset real = (Asset)inArchive.getAssetSearcher().loadData(hit);
-						real.setProperty("assettype", type);
-						return real;
+						hit.setProperty("assettype", type);
 					}
 				}
 			}
@@ -153,20 +127,12 @@ public class AssetTypeManager extends EnterMediaObject
 		
 		if(currentassettype == null || currentassettype.length()==0 || !assettype.equals(currentassettype))
 		{
-			Asset real = (Asset)inArchive.getAssetSearcher().loadData(hit);
-			real.setProperty("assettype", assettype);
-			return real;
+			hit.setProperty("assettype", assettype);
 		}
 		else 
 		{
-			return null;
+			return;
 		}
-	}
-
-	public Asset checkLibrary(MediaArchive mediaarchive, Data hit)
-	{
-		//Load up asset if needed to change the library?
-		return null;
 	}
 
 	public Asset checkLibrary(MediaArchive mediaarchive, Asset real)

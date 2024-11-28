@@ -19,7 +19,6 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.Replacer;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class RestTest extends BaseEnterMediaTest {

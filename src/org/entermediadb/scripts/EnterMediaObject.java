@@ -20,6 +20,8 @@ import groovy.util.GroovyScriptEngine;
 public class EnterMediaObject
 {
 	protected WebPageRequest context;
+	
+	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager moduleManager;
 	protected ScriptLogger log;
 	protected GroovyScriptEngine engine;
@@ -28,9 +30,16 @@ public class EnterMediaObject
 	protected File root;
 	public MediaArchive getMediaArchive()
 	{
-		return (MediaArchive)context.getPageValue("mediaarchive");
+		if( fieldMediaArchive == null)
+		{
+			return (MediaArchive)context.getPageValue("mediaarchive");
+		}
+		return fieldMediaArchive;
 	}
-
+	public void setMediaArchive(MediaArchive inMediaArchive) {
+		fieldMediaArchive = inMediaArchive;
+	}
+	
 	public WebPageRequest getContext()
 	{
 		return context;

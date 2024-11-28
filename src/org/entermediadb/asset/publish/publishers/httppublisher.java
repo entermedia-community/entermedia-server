@@ -8,7 +8,6 @@ import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
-import org.openedit.page.Page;
 
 /**
  * This is a poorly named browser download publisher. 

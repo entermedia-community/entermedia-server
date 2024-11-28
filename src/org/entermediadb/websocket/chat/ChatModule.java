@@ -17,6 +17,7 @@
 package org.entermediadb.websocket.chat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -60,16 +61,48 @@ public class ChatModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
-		Searcher chats = archive.getSearcher("chatterbox");
-
-		//HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
+		String collectionid = inReq.getRequestParameter("collectionid");
 		
-		//inReq.putPageValue("messages", recent);
+		if(collectionid == null) {
+			collectionid = inReq.findValue("collectionid");
+		}
+		
+		if(collectionid == null) {
+			collectionid = inReq.findValue("entityid");
+		}
+		
 
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		Data currenttopic = null;
+		if(channel != null) {
+			currenttopic = topicsearcher.query().match("parentcollectionid",  collectionid).exact("id", channel).searchOne();
+		}
+		if (currenttopic == null) {
+			currenttopic = topicsearcher.query().match("parentcollectionid",collectionid).sort("name").searchOne();
+		}
+		if (currenttopic == null) {
+			currenttopic = topicsearcher.createNewData();
+			currenttopic.setValue("parentcollectionid", collectionid);
+			currenttopic.setName("General");
+			topicsearcher.saveData(currenttopic);
+		}
+		inReq.putPageValue("currenttopic", currenttopic);
+		inReq.putPageValue("channel", currenttopic.getId());
+
+		String sortby = inReq.findActionValue("sortorder");
+		if(sortby == null) {
+			sortby = "dateDown";
+		}
+		
 		QueryBuilder builder = archive.query("chatterbox");
 		
-		builder.named("messagesthitracker").exact("channel", channel).sort("dateDown");
-		
+		if(collectionid != null) {
+			builder.named("messagesthitracker").exact("channel", currenttopic.getId()).sort(sortby);
+		} else {
+			if(channel != null) {
+				builder.named("messagesthitracker").exact("channel", channel).sort(sortby);
+			}
+		}
 		
 		UserProfile prof = inReq.getUserProfile();
 		if( prof != null)
@@ -83,10 +116,24 @@ public class ChatModule extends BaseMediaModule
 		
 
 		HitTracker results = builder.search(inReq);
-		
-		results.setHitsPerPage(20);
+		if(results != null) {
+			results.setHitsPerPage(20);
+			inReq.putPageValue(results.getHitsName(),results);
+		}
 		  
-		  Collection page = results.getPageOfHits(); 
+		
+		//loadPageOfChat(inReq);
+
+	}
+	public void loadPageOfChat(WebPageRequest inReq) {
+		
+		String name= inReq.findValue("hitsname");
+		HitTracker results = (HitTracker)inReq.getPageValue(name);
+		if (results == null) {
+			return;
+		}
+		Searcher chats = results.getSearcher();
+		Collection page = results.getPageOfHits(); 
 		  ArrayList loaded = new  ArrayList(); 
 		  String lastdateloaded = null;
 		  List messageids = new ArrayList(results.size());
@@ -122,11 +169,11 @@ public class ChatModule extends BaseMediaModule
 		if (userid != null)
 		{
 			ChatManager manager = getChatManager(inReq);
+			String channel = results.getSearchQuery().getInput("channel");
 			manager.updateChatTopicLastChecked(channel, userid);
 		}
 		
 		inReq.getSession().setAttribute("chatuser", inReq.getUser());
-
 	}
 
 
@@ -191,7 +238,15 @@ public class ChatModule extends BaseMediaModule
 		Collection messageids = (Collection)inReq.getPageValue("messageids");
 		if( messageids == null || messageids.isEmpty())
 		{
-			return;
+			//look into the request?
+			String[] requestmessageids = inReq.getRequestParameters("messageids");
+			if(requestmessageids != null) {
+				messageids = Arrays.asList(requestmessageids);
+				if( messageids == null || messageids.isEmpty())
+				{
+					return;
+				}
+			}
 		}
 		Collection reactionhits = getMediaArchive(inReq).query("chatterboxattachment").orgroup("messageid",messageids).sort("date").search();
 		Map reactionspermessage = new HashMap();
@@ -283,11 +338,23 @@ public class ChatModule extends BaseMediaModule
 	public void attachFiles(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
-		
 		String topicid = inReq.getRequestParameter("channel");
 		String collectionid = inReq.getRequestParameter("collectionid");
 		String messageid = inReq.getRequestParameter("messageid");
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		if(savedassets == null)
+		{
+			String attachedassetid = inReq.getRequestParameter("attachedassetid");
+			if (attachedassetid != null) {
+				Data attachedasset = archive.getCachedData("chatterboxattachment", attachedassetid);
+				if (attachedasset != null) {
+					archive.getSearcher("chatterboxattachment").delete(attachedasset, inReq.getUser());
+				}
+				
+			}
+			return;
+		}
+
 		
 		Data chat = null;
 		if( messageid != null)
@@ -314,7 +381,7 @@ public class ChatModule extends BaseMediaModule
 			chatattchment.setValue("user", inReq.getUserName());
 			chatattchment.setValue("assetid", asset.getId());
 			
-			archive.getSearcher("chatterboxattachment").saveData(chatattchment,inReq.getUser());
+			archive.getSearcher("chatterboxattachment").saveData(chatattchment, inReq.getUser());
 		}
 
 	}

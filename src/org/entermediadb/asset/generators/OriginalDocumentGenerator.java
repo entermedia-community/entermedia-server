@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.edit.Version;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -15,7 +16,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
-import org.openedit.page.PageStreamer;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -77,64 +77,78 @@ public class OriginalDocumentGenerator extends FileGenerator
 		}
 		// source path cut off the beginning
 		// source path cut off the parent folder name. Put a / back in there?
-		sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
-
+		String exactsourcepath  = inPage.get("exactsourcepath");
+		if(!Boolean.parseBoolean(exactsourcepath) )
+		{
+			sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
+		}
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
 
-		if (asset == null)
+		if (asset == null  )
 		{
-			asset = archive.getAssetBySourcePath(sourcePath);
-			if (asset == null)
+			if(Boolean.parseBoolean(exactsourcepath))
 			{
-				asset = archive.createAsset("tmp",sourcePath);
-				//throw new OpenEditException("No asset with source path " + sourcePath);
+				//use regular downloading?
+				Page realpage = archive.getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcePath);
+				super.generate(inReq, realpage, inOut);
+				return;
 			}
+			asset = archive.createAsset("tmp",sourcePath);
 		}
-		
-		
 	
 		//	String fileName = URLEncoder.encode(asset.getName(), "UTF-8");
-		String	 fileName = asset.getName();
-		
-			
-//		    
-//			//fileName=fileName.replaceAll(";", "/;");
-//			
-//			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
-//			fileName.replace("\"", "/\"");
-//		//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\""); //This seems to work on Chroime
-//			//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''"+ fileName );
+		String	fileName = asset.getName();
 
-
-	
-		
-		
-	  //  inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=" + asset.getName()); This didn't work properly.
-
-		String filename = asset.getSourcePath();
+		//String filename = asset.getSourcePath();
 		if (asset.isFolder() && asset.getPrimaryFile() != null)
 		{
-			filename = filename + "/" + asset.getPrimaryFile();
+			fileName =  asset.getPrimaryFile();
 		}
-
-		Page content = archive.getOriginalDocument(asset);
+		
+		Page content = null;
+		
+		String version = inReq.getRequestParameter("version");
+		if (version != null) {
+			Version revision = archive.getAssetEditor().getVersion(asset, version);
+			if( version != null || revision.getBackUpPath() != null)
+			{
+				content = archive.getPageManager().getPage(revision.getBackUpPath());
+			}
+		}
+		if( content == null)
+		{
+			content = archive.getOriginalDocument(asset);
+		}
 		if( content.exists() )
 		{
 			//its a regular file
 			boolean skipheader = Boolean.parseBoolean(inReq.findValue("skipheader"));
 		    if(inReq.getResponse() != null && !skipheader )
 			{
-				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ fileName +"\"");  //This seems to work on firefox
+		    	inReq.getResponse().setHeader("Content-Type", "application/octet-stream; charset=utf-8");
+		    	String tweak = fileName;
+		    	if( version != null)
+		    	{
+		    		tweak = "version " + version + "~" + fileName; 
+		    	}
+				inReq.getResponse().setHeader("Content-disposition", "attachment; filename=\""+ tweak +"\"");  //This seems to work on firefox
+		    	//inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\"");
+				
+				String md5 = asset.get("md5hex");
+				if( md5 != null)
+				{
+			    	inReq.getResponse().setHeader("ETag", md5);					
+				}
 			}
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 			super.generate(req, content, inOut);
-			archive.logDownload(filename, "success", inReq.getUser());
+			archive.logDownload(asset.getSourcePath(), "success", inReq.getUser());
 
 		}
 		else
 		{
-			stream(inReq, archive, inOut, asset, filename);
+			stream(inReq, archive, inOut, asset, fileName);
 		}
 	}
 

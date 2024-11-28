@@ -29,7 +29,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.InternalSum;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -230,7 +229,7 @@ public class ElasticHitTracker extends HitTracker
 					
 					if(fieldActiveFilterValues == null && response.getAggregations() != null ) 
 					{
-						fieldActiveFilterValues = loadValuesFromResults(response); //This will load the values
+						setActiveFilterValues( loadValuesFromResults(response) ); //This will load the values
 					    getSearcheRequestBuilder().setAggregations(new HashMap());  //this keeps is from loading the same values on page 2,3+ etc
 					}
 					else
@@ -474,14 +473,13 @@ public class ElasticHitTracker extends HitTracker
 	public List loadHistogram(String inField, boolean inReverse) //parse em
 	{
 		ArrayList topfacets = new ArrayList();
-		SearchResponse response = getSearchResponse(0);
+		Aggregations facets = getAggregations();
+		
+		//log.info(getSearchQuery().getFacets());
 		//TODO: Should save the response and only load it if someone needs the data
-		if (response.getAggregations() != null)
+		if (facets != null)
 		{
 			//log.info(response.toString());
-			Aggregations facets = response.getAggregations();
-			
-			
 				Object agg = facets.get(inField);
 				if (agg instanceof Histogram)
 				{

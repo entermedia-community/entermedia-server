@@ -25,7 +25,6 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
@@ -130,7 +129,7 @@ public class WorkspaceManager
 		finalZip.close();
 	}
 
-	public String createTable(String catalogid, String tablename, String inPrefix) throws Exception
+	public String createTable(String catalogid, String tablename, String inPrefix) 
 	{
 		String searchtype = PathUtilities.makeId(tablename);
 		searchtype = searchtype.toLowerCase();
@@ -176,8 +175,13 @@ public class WorkspaceManager
 		return searchtype;
 	}
 
-	public void saveModule(String catalogid, String appid, Data module) throws Exception
+	public void saveModule(String catalogid, String appid, Data module) 
 	{
+		if(module == null ||  module.getId() == null || module.getId().isEmpty())
+		{
+			throw new OpenEditException("Invalid module id");
+		}
+		
 		/** APP STUFF **/
 		if( !appid.endsWith("mediadb"))
 		{
@@ -190,72 +194,71 @@ public class WorkspaceManager
 				//is Entity?
 				if (Boolean.parseBoolean(module.get("isentity"))) {
 					String templateentities = "/" + catalogid + "/data/lists/view/entities.xml";
-					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
-					if( !pathentitiesbase.exists())
-					{
-						String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-						copyXml(catalogid, templateentities, pathentities, module);
-					}
-					viewstemplate = "/" + catalogid + "/data/views/" + module.getId() + "/";
-					Page viewstemplatedefaults = getPageManager().getPage(viewstemplate);
-					if (!viewstemplatedefaults.exists()) 
-					{
-						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
-					}
+//					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
+//					if( !pathentitiesbase.exists())
+//					{
+//						String pathentities = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+//						copyXml(catalogid, templateentities, pathentities, module);
+//					}
+//					viewstemplate = "/" + catalogid + "/data/views/" + module.getId() + "/";
+//					Page viewstemplatedefaults = getPageManager().getPage(viewstemplate);
+//					if (!viewstemplatedefaults.exists()) 
+//					{
+//						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+//					}
 					//Copies viewusers, viewgroups and security stuff for this entity.
 					Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
 					if( !destinationbase.exists() )
 					{
 						String templatepermissionfields = "/" + catalogid + "/configuration/baseentitytemplate.xml";
 						Page template= getPageManager().getPage(templatepermissionfields);
-						Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
-						getPageManager().copyPage(template, destination); //Always update these
+						if(template.exists()) {
+							Page destination = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");
+							getPageManager().copyPage(template, destination); //Always update these
+						}
 					}					
 					//Add corresponding fields to Asset
 					
-/*					
-					AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
+					
+					//AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
 					CategorySearcher cats = (CategorySearcher) getSearcherManager().getSearcher(catalogid, "category");
 
-					PropertyDetailsArchive propertyDetailsArchive = searcher.getPropertyDetailsArchive();
+					PropertyDetailsArchive propertyDetailsArchive = cats.getPropertyDetailsArchive();
 
-					PropertyDetail detail = searcher.getDetail(mid);
 					PropertyDetail catdetail = cats.getDetail(mid);
 
-					if(detail == null || catdetail == null) {
+					if(catdetail == null) {
 
-						detail = propertyDetailsArchive.createDetail(mid, mid );
-						detail.setDeleted(false);
+						catdetail = propertyDetailsArchive.createDetail(mid, mid );
+						catdetail.setDeleted(false);
 						Object name = module.getValue("name");
-						detail.setDataType("list");
+						catdetail.setDataType("list");
 						if(name instanceof String){
-							detail.setName((String) name);
+							catdetail.setName((String) name);
 						} 
 						else if(name instanceof LanguageMap) {
-							detail.setName((LanguageMap)name);
+							catdetail.setName((LanguageMap)name);
 						}
 						
-						propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
-						propertyDetailsArchive.savePropertyDetail(detail, "category", null);
-
+						//propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
+						propertyDetailsArchive.savePropertyDetail(catdetail, "category", null);
 												
 					}
-				*/
 					
-					
-				}else {
-					String template = "/" + catalogid + "/data/lists/view/default.xml";
-					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
-					if( !pathentitiesbase.exists())
-					{
-						copyXml(catalogid, template, path, module);		
-					}
-					viewstemplate = "/" + catalogid + "/data/views/defaults/";
+//				}else {
+//					String template = "/" + catalogid + "/data/lists/view/default.xml";
+//					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+//					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
+//					if( !pathentitiesbase.exists())
+//					{
+//						copyXml(catalogid, template, path, module);		
+//					}
+//					viewstemplate = "/" + catalogid + "/data/views/defaults/";
 				}
 				
+				//Searcher views = getSearcherManager().getSearcher(catalogid, "view");
 				
-				Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+				/*
 				Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
 				
 				boolean copied = false;
@@ -285,12 +288,12 @@ public class WorkspaceManager
 						getPageManager().copyPage(input, destpath);
 						copied = true;
 					}
-					
 				}
-				if( copied )
-				{
-					views.reIndexAll();
-				}
+				*/
+//				if( copied )
+//				{
+//					views.reIndexAll();
+//				}
 				String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 				String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 				if( !getPageManager().getPage(path2).exists())
@@ -315,7 +318,13 @@ public class WorkspaceManager
 		
 	}
 
+	
 	public String createModuleFallbacks(String appid, Data module)
+	{
+		return createModuleFallbacks(appid, module, false);
+	}
+	
+	public String createModuleFallbacks(String appid, Data module, boolean force)
 	{
 		String mid = module.getId();
 		String basepath = "default";
@@ -330,7 +339,7 @@ public class WorkspaceManager
 		Page parentfallback = getPageManager().getPage(modulehome.getPageSettings().getFallback().getPath());
 
 		
-		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId())) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
+		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId()) && !force) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
 		{
 			basepath = mid;
 			homesettings.removeProperty("fallbackdirectory");
@@ -340,12 +349,12 @@ public class WorkspaceManager
 		{
 			homesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/${applicationid}/views/modules/" + basepath);
+			prop.setValue("../" + basepath);
 			homesettings.putProperty(prop);
 	
 			modulesettings.setProperty("module", module.getId());
 			prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/${applicationid}/views/settings/modules/" + basepath);
+			prop.setValue("../" + basepath);
 			modulesettings.putProperty(prop);
 		}		
 		getPageManager().getPageSettingsManager().saveSetting(homesettings);

@@ -1,3 +1,4 @@
+/* emfrontent2 */
 /*Color*/
 body {
   background-color: #d5d5d5;
@@ -182,7 +183,7 @@ body {
   color: #fff;
   font-weight: bold;
 }
-
+.themed-btn,
 .btn-primary {
   color: #fff;
   background-color: #434343;
@@ -425,7 +426,7 @@ a {
   display: block;
 }
 select.form-control:not([size]):not([multiple]) {
-  height: calc(2rem);
+  /*height: calc(2rem);*/
 }
 select.form-control-sm:not([size]):not([multiple]) {
   height: calc(1.7rem);
@@ -1960,11 +1961,8 @@ th.firstheader input {
 
 .listdetailpicker .select2-container {
   position: relative;
-  /*float: left;*/
   width: 100%;
   margin-bottom: 0;
-  display: table;
-  table-layout: fixed;
 }
 
 /*Emtree*/
@@ -3145,7 +3143,7 @@ label.error {
 .chatterbox-body-inside {
   overflow-y: auto;
   height: 100%;
-
+  max-height: calc(100vh - 490px);
   padding: 10px 20px;
 }
 
@@ -5422,9 +5420,6 @@ a.collectionbox.favorite {
   width: 90px !important;
   margin-left: 10px;
 }
-#login-submit {
-  margin: 10px 0 0 0;
-}
 #registration-submit {
   margin-top: 10px;
 }
@@ -5775,6 +5770,10 @@ a.collectionbox.favorite {
 
 .activitydetailscontainer .settings-table {
   border-top: 1px solid #6663;
+}
+
+.emfield-user {
+	flex-direction: column;
 }
 
 .emfield-time {

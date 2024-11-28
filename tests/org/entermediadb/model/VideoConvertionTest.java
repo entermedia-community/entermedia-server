@@ -8,7 +8,6 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.events.PathEventManager;
-import org.joda.time.convert.ConverterManager;
 import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;

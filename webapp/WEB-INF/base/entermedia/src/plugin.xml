@@ -19,7 +19,7 @@
 		</property>
 		<property name="autoLoginProviders">
 			<list>
-				<ref 	bean="autoLoginWithCookie" />
+				<ref bean="autoLoginWithCookie" />
 				<ref bean="autoLoginByHeader" />
 				<ref bean="autoLoginLti" />
 				<ref bean="autoLoginByToken" />
@@ -271,6 +271,9 @@
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>
 	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	scope="prototype">
 		<property name="xmlArchive">
@@ -278,6 +281,9 @@
 		</property>
 		<property name="eventManager">
 			<ref bean="eventManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
@@ -491,6 +497,13 @@
 		</property>
 	</bean>	
 	
+	
+	<bean id="textExtractor" class="org.entermediadb.asset.scanner.TextMetadataExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
+	
 <bean id="scriptedExtractor" class="org.entermediadb.asset.scanner.ScriptMetadataExtractor" >
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -537,6 +550,13 @@
 
 	<bean id="originalDownloadGenerator"
 		class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+	<bean id="originalPreviewDownloadGenerator"
+		class="org.entermediadb.asset.generators.OriginalPreviewDocumentGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -739,7 +759,7 @@
 			</property>
 	</bean>
 
-	<!-- bean id="zohoAssetSource" class="org.entermediadb.asset.sources.ZohoAssetSource"
+	<bean id="zohoAssetSource" class="org.entermediadb.asset.sources.ZohoAssetSource"
 		scope="prototype">
 				<property name="webServer"><ref bean="WebServer" /></property>		
 		
@@ -749,7 +769,7 @@
 			<property name="pageManager">
 				<ref bean="pageManager" />
 			</property>
-	</bean -->
+	</bean>
 
 
 
@@ -1038,7 +1058,7 @@
     <bean id="rhinoScriptRunner" class="org.entermediadb.scripts.RhinoScriptRunner" />
     <bean id="bsfScriptRunner" class="org.entermediadb.scripts.BsfScriptRunner" />
 
-	<bean id="sizer" class="org.entermediadb.asset.util.Sizer" />
+	<bean id="sizer" class="org.openedit.util.Sizer" />
 <!--     
     <bean id="luceneUserProfileSearcher" class="org.openedit.profile.UserProfileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1226,7 +1246,6 @@
 	<bean id="EditModule" class="org.openedit.modules.edit.EditModule" />
 	
 	<bean id="Config" class="org.openedit.modules.settings.ConfigModule"/>
-	<bean id="RevisionEditor" class="org.openedit.modules.revisions.RevisionEditorModule"/>
 
  	<bean  id="ProjectModule" class="org.entermediadb.projects.ProjectModule" lazy-init="default" />
 	<bean  id="projectManager" class="org.entermediadb.projects.ProjectManager" lazy-init="default" scope="prototype"  >
@@ -1652,6 +1671,28 @@
 		
 	</bean>
 	
+	<bean id="elasticViewSearcher"
+		class="org.entermediadb.elasticsearch.searchers.ElasticViewSearcher"
+		scope="prototype">
+		
+		<property name="xmlSearcher">
+			<ref bean="xmlFolderSearcher" />
+		</property>
+		
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="newDataName"><value>viewData</value></property>		
+		
+		<property name="checkVersions"><value>false</value></property>
+	</bean>
+	
 	  <bean id="elasticXmlFileSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticXmlFileSearcher" scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1924,6 +1965,7 @@
 	
 	<bean id="oofficeTextExtractor" class="org.entermediadb.ooffice.OofficeTextExtractor" >
 		<property name="metadataPdfExtractor"><ref bean="pdfExtractor" /></property>
+		<property name="exiftoolMetadataExtractor"><ref bean="exiftoolMetadataExtractor" /></property>
 		<property name="mediaCreator"><ref bean="oofficeTranscoder" /></property>
 	</bean>
  	
@@ -1949,6 +1991,7 @@
 		<property name="metadataExtractors">
 			<list>
 				<ref bean="pdfExtractor" />
+				<ref bean="textExtractor" />				
 				<ref bean="oofficeTextExtractor" />
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
@@ -2031,7 +2074,13 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-	</bean>	
+	</bean>
+	
+	<bean id="zohoManager" class="org.entermediadb.zoho.ZohoManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>		
 	
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
 	
@@ -2245,6 +2294,16 @@
 	<bean id="FinderModule" class="org.entermediadb.find.FinderModule" >
 	</bean>
 
+	<bean id="finderPages" class="org.entermediadb.find.FinderPageLoader"  scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+
+
 	<bean id="publishedGenerator" class="org.entermediadb.asset.generators.PublishedGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2302,5 +2361,32 @@
 	<bean id="BaseExporter" class="org.entermediadb.asset.importer.BaseExporter" >
 	</bean>
 
+	
+	<bean id="ContentModule" class="org.entermediadb.modules.publishing.ContentModule" >
+	</bean>
+
 		
+
+	<bean id="contentManager" class="org.entermediadb.modules.publishing.ContentManager"  lazy-init="default" scope="prototype">
+		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+				<property name="exec">
+			<ref bean="exec" />
+		</property>
+		
+	</bean>		
+			
+	<bean id="gptManager" class="org.entermediadb.llm.GptManager">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>		
+			
+			
+			
 </beans>

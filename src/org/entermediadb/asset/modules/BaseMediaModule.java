@@ -6,10 +6,10 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.BaseModule;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
@@ -22,6 +22,21 @@ import org.openedit.util.PathUtilities;
 public class BaseMediaModule extends BaseModule
 {
 	private static final Log log = LogFactory.getLog(BaseMediaModule.class);
+
+	protected HitTracker loadHitTracker(WebPageRequest inReq, String moduleid)
+	{
+		String name = inReq.getRequestParameter(moduleid + "hitssessionid");
+		if (name == null)
+		{
+			name = inReq.getRequestParameter("hitssessionid");
+		}
+		if (name != null && name.startsWith("selected"))
+		{
+			name = name.substring("selected".length());
+		}
+		HitTracker hits = (HitTracker) inReq.getPageValue(name);
+		return hits;
+	}
 
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{
@@ -287,9 +302,34 @@ public class BaseMediaModule extends BaseModule
 		if(searchtype == null) {
 			if(inReq.getUser() != null && inReq.getUser().isInGroup("administrators")) {
 				 searchtype = inReq.findValue("searchtype");
-
 			}
 		}
+		
+		if(searchtype == null) 
+		{
+			String searchtypeFromRequest = inReq.getContentPage().get("searchtypeFromRequest");
+			if(Boolean.parseBoolean(searchtypeFromRequest)) 
+			{
+				searchtype = inReq.getRequestParameter("searchtype");
+			}
+			//Security
+			String catalogid = inReq.findPathValue("catalogid");
+			Searcher found = getSearcherManager().getExistingSearcher(catalogid, searchtype);
+			if( found != null)
+			{
+//				//Private data should have security applied anyways
+//				if( !"listSearcher".equals(found.getPropertyDetails().getBeanName()))
+//				{
+//					return null;
+//				}
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		
 		inReq.putPageValue("searchtype", searchtype);
 		return searchtype;
 	}

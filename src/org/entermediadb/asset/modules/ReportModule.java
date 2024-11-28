@@ -92,9 +92,26 @@ public class ReportModule extends DataEditModule
 		if(!page.exists()){
 			log.info("No script, running standard search");
 			inReq.setRequestParameter("searchtype", searchtype);
-			inReq.setRequestParameter(searchtype + "includefacets", "true");
+		//	inReq.setRequestParameter(searchtype + "includefacets", "true");
 
 		//	page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
+		
+			//inReq.setRequestParameter(searchtype + "includefacets", "true");
+			
+			String runfilterview = report.get("runfilterview");
+			if( runfilterview != null)
+			{
+				inReq.setRequestParameter("runfilterview", runfilterview);
+				
+			}
+			else
+			{
+				//throw new OpenEditException("runfilterview field required for each report");
+				
+			}
+			//inReq.setRequestParameter(searchtype + "includefacets", "true");
+			inReq.setRequestParameter(searchtype+ "cache", "false");
+			
 			search(inReq);
 			return;
 		}

@@ -410,9 +410,20 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	{
 		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext)))
 		{
-			com.add("-background");
+			String value = inStructions.get("background");
+			
+			if(value != null) {
+				setValue("background", null, inStructions, com);
+			}
+			String layersvalue = inStructions.get("layers");
+			if(layersvalue != null) {
+				com.add("-" + layersvalue);
+			}
+			/*
+			 com.add("-background");
 			com.add("white");
-			com.add("-flatten");
+			
+			*/
 		
 		}
 		else if ("svg".equals(ext)) //add svg support; include transparency

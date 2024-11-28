@@ -1,0 +1,23 @@
+
+{
+  "response":
+		{
+		#if( $existingfolders)
+				"status":"ok"
+		#else 
+				"status": "notfound" 
+		#end
+			#ifnotnull($existingfolders)
+			,"size":"$existingfolders.size()" 
+			#end
+		}
+  , "existingfolders": [
+	#foreach( $folder in $existingfolders) #if( ${foreach.count} != 1 ), #end
+		{
+			"id": #jesc($folder.getId()),
+			"name": #jesc($folder.getName()),
+			"path": #jesc($folder.uploadsourcepath)
+		}
+	#end
+    ]
+}

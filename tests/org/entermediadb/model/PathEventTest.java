@@ -4,7 +4,6 @@ import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.PathEventModule;
 import org.entermediadb.events.PathEventManager;
-import org.openedit.WebPageRequest;
 
 public class PathEventTest extends BaseEnterMediaTest
 {

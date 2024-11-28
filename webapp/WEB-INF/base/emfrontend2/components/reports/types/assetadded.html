@@ -1,28 +1,52 @@
-<canvas id="$report.id-report" ></canvas>
+
+ #set($dlhits = $hits)
+
+
+<canvas id="dlchart" ></canvas>
+
 
 <script>
-var ctx = document.getElementById("$report.id-report");
+var ctx = document.getElementById("dlchart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: [
 
-#foreach($node in $hits.loadHistogram("assetaddeddate_breakdown_week"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 	#foreach($child in $node.getChildren())
 		"$context.getDate($child.toString())",
 	#end
 #end
-        ]    
+        
+        ]
+        
+        
         ,
         datasets: [{
-            label: '[[Asset Creation over time]]',
+            label: '[[Assets Created]]',
             data: [
-#foreach($node in $hits.loadHistogram("assetaddeddate_breakdown_week"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
-#end           
-                   ]          
+#end
+                  
+                   
+                   ],
+            backgroundColor: [
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+
+#foreach($child in $node.getChildren())
+
+                '#435242',
+                #end
+                #end
+                
+            ],
+            borderColor: [
+                '#435242'
+            ],
+            borderWidth: 1
         }]
     },
     options: {
@@ -36,3 +60,5 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
+
+

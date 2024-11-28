@@ -9,8 +9,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.zoho.Results;
 import org.entermediadb.zoho.ZohoManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -52,10 +50,10 @@ public class ZohoAssetSource extends BaseAssetSource
 	
 	
 	
-	protected File download(Asset inAsset, File file)
+	protected void download(Asset inAsset, File file)
 	{
 		try {
-			return getZohoManager().saveFile(getAccessToken(), inAsset);
+			getZohoManager().saveFile(getAccessToken(), inAsset);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
@@ -63,7 +61,8 @@ public class ZohoAssetSource extends BaseAssetSource
 
 	protected void upload(Asset inAsset, File file)
 	{
-		getZohoManager().uploadToDrive(getAccessToken(), inAsset, file);
+		//Handles Uploading assets to Zoho
+		//getZohoManager().uploadToDrive(getAccessToken(), inAsset, file);
 	}
 
 	
@@ -75,9 +74,6 @@ public class ZohoAssetSource extends BaseAssetSource
 	}
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		
-		
-		
 		
 		File file = getFile(inAsset);
 		FileItem item = new FileItem(file);
@@ -97,7 +93,7 @@ public class ZohoAssetSource extends BaseAssetSource
 			long size = inAsset.getLong("filesize");
 			if( item.getLength() != size)
 			{
-				download(inAsset, file);
+				//download(inAsset, file);
 			}
 		}
 		
@@ -107,6 +103,10 @@ public class ZohoAssetSource extends BaseAssetSource
 	@Override
 	public boolean handles(Asset inAsset)
 	{
+		if(inAsset == null)
+		{
+			return false;
+		}
 		String name = getFolderPath();
 		if(name != null &&  inAsset.getSourcePath().startsWith(name))
 		{
@@ -116,7 +116,7 @@ public class ZohoAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 	
 
@@ -192,12 +192,13 @@ public class ZohoAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
-		String subfolder = getConfig().get("subfolder");
-		if(subfolder == null) {
-			subfolder = getName();
+		String portalid = getConfig().get("portalid");
+		if(portalid == null) {
+			log.info("Missing portalid in HotFolder Configuration");
+			return 0;
 		}
-		Results r= getZohoManager().syncAssets(getAccessToken(), subfolder, true);
-		return r.getFiles().size();
+		return getZohoManager().syncAssets(getAccessToken(), portalid, true);
+
 	}
 
 		
@@ -234,6 +235,11 @@ public class ZohoAssetSource extends BaseAssetSource
 		return dest;
 	}
 
+	
+	
+	public void getProjects() {
+		
+	}
 
-
+	
 }

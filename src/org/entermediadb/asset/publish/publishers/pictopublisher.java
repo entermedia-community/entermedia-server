@@ -7,10 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,25 +25,21 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.modules.ProfileModule;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
-import org.entermediadb.users.UserProfileManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
-import org.openedit.users.UserManager;
-import org.openedit.hittracker.HitTracker;
 
 public class pictopublisher extends BasePublisher implements Publisher
 {

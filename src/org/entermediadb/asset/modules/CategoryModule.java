@@ -2,8 +2,6 @@ package org.entermediadb.asset.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.zip.ZipOutputStream;
 
@@ -18,7 +16,6 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.links.Link;
 import org.entermediadb.links.LinkTree;
 import org.entermediadb.webui.tree.WebTree;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -251,8 +248,8 @@ public class CategoryModule extends BaseMediaModule
 
 	public void selectNodes(WebPageRequest inReq)
 	{
-		String toggle = inReq.getRequestParameter("toggle");
-		if (Boolean.parseBoolean(toggle))
+		String selecting = inReq.getRequestParameter("selecting");
+		if (!Boolean.parseBoolean(selecting))
 		{
 			return;
 		}
@@ -554,6 +551,22 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
+	
+	public void loadCategoryByPath(WebPageRequest inContext) throws OpenEditException
+	{
+		String categorypath = inContext.getRequestParameter("categorypath");
+
+		if (categorypath != null)
+		{
+			// load up catalog and assets
+			Category category = getMediaArchive(inContext).getCategorySearcher().loadCategoryByPath(categorypath);
+			if (category != null)
+			{
+				inContext.putPageValue("category", category);
+			}
+		}
+	}
+	
 	//	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
 	//	{
 	//		WebTree tree = getCatalogTree(inReq);
@@ -565,11 +578,14 @@ public class CategoryModule extends BaseMediaModule
 	public void copyCategoriesToCategory(WebPageRequest inReq) throws OpenEditException
 	{
 		String targetcategoryid = inReq.getRequestParameter("targetcategoryid");
-		
+		if (targetcategoryid == null) {
+			return;
+		}
+			
 		//Copy all the children and assets as well...
 		MediaArchive archive = getMediaArchive(inReq);
 		String[] catids = inReq.getRequestParameters("categoryid");
 
-		archive.getCategoryEditor().copyCategory(catids,targetcategoryid);
+		archive.getCategoryEditor().copyEverything(inReq.getUser(), catids,targetcategoryid);
 	}
 }

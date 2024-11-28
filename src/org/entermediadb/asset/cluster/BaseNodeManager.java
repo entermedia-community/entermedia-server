@@ -3,13 +3,10 @@ package org.entermediadb.asset.cluster;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dom4j.Element;
-import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.SearcherManager;
 import org.openedit.node.Node;
 import org.openedit.node.NodeManager;
-import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.XmlUtil;
 

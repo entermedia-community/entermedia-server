@@ -66,7 +66,7 @@ public void runit()
 	query.after("assetaddeddate",date);
 	
 	HitTracker hits = query.search();
-	if (hits.size() > 1) {
+	if (hits.size() >= 1) {
 		log.info(hits.size()+" assets to be tagged by Google. System wide:"  + query);
 		Integer assetcount = 0;
 		

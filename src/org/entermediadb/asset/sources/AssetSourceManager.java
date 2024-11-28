@@ -158,9 +158,9 @@ public class AssetSourceManager implements CatalogEnabled
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
-		boolean ok = findAssetSource(inAsset).removeOriginal(inAsset);
+		boolean ok = findAssetSource(inAsset).removeOriginal(inUser, inAsset);
 		return ok;
 	}
 
@@ -198,8 +198,13 @@ public class AssetSourceManager implements CatalogEnabled
 //				continue;
 //			}
 
-			Asset asset = (Asset)archive.getAssetSearcher().createNewData();
-			asset.setSourcePath(sourcepath);
+			Asset asset = (Asset)archive.getAssetSearcher().getAssetBySourcePath(sourcepath);
+			if( asset == null)
+			{
+				//NOTE: We dont replace files from other sourcepaths
+				asset = (Asset)archive.getAssetSearcher().createNewData();
+				asset.setSourcePath(sourcepath);
+			}
 			
 			AssetSource source = findAssetSource(asset);
 			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);
@@ -228,8 +233,8 @@ public class AssetSourceManager implements CatalogEnabled
 			log.info("Asset saved: " + asset.getId());
 		}
 		
-		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);
-		archive.firePathEvent("importing/assetsimported",inUser,tracker);
+		archive.fireSharedMediaEvent("importing/assetscreated"); //
+		//archive.firePathEvent("importing/assetsimported",inUser,tracker);
 		log.info("Saved uploaded assets " + tracker.size() );
 	}
 
@@ -419,8 +424,10 @@ public class AssetSourceManager implements CatalogEnabled
 				inLog.info("Hot folder: " + name + ", imported " + found + " assets within:" + timetook/1000D + " seconds");
 				//TODO: Clear empty hot folder if enabled
 				int remove = source.removeExtraCategories(); 
-				inLog.info("Hot folder: " + name + ", removed categories " + remove);
-				
+				if (remove > 0) 
+				{
+					inLog.info("Hot folder: " + name + ", removed categories " + remove);
+				}
 
 			}
 			catch( Exception ex)

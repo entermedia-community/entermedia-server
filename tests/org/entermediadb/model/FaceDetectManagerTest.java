@@ -5,7 +5,7 @@ package org.entermediadb.model;
 
 import java.util.Map;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.facedetect.FaceProfileManager;
 import org.openedit.util.FileUtils;

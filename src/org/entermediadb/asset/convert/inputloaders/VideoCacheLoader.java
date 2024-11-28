@@ -34,7 +34,11 @@ public class VideoCacheLoader implements InputLoader
 				{
 					if (inStructions.getTimeOffset() == null)
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080.jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080.webp");
+						if(! input.exists() )
+						{
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080.jpg");
+						}
 						if(! input.exists() )
 						{
 							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1500x1500.jpg"); //Remove this
@@ -46,10 +50,14 @@ public class VideoCacheLoader implements InputLoader
 					}
 					else
 					{
-						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080offset" + inStructions.getTimeOffset() + ".jpg");
+						input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080offset" + inStructions.getTimeOffset() + ".webp");
 						if(! input.exists() )
 						{
 							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1900x1080offset" + inStructions.getTimeOffset() + ".jpg");
+						}
+						if(! input.exists() )
+						{
+							input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768offset" + inStructions.getTimeOffset() + ".jpg");
 						}
 					}
 					if (!input.exists())

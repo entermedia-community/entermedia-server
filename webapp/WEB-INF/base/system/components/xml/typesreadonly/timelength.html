@@ -1,5 +1,5 @@
 #if(!$val && $detail.rendermask && $data)
-	#set($val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $data.properties))
+	#set($val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $data.properties, $context.getLocale()))
 #end
 
 $!mediaarchive.formatMinutesAndSeconds($val)

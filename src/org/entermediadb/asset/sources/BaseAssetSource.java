@@ -25,7 +25,6 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
-import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
@@ -176,17 +175,17 @@ public abstract class BaseAssetSource implements AssetSource
 		}
 		Asset asset = getMediaArchive().getAssetImporter().getAssetUtilities().populateAsset(inAsset, dest, getMediaArchive(), inCreateCategories, sourcepath, inUser);
 		
-		String importstatus = (String)asset.get("importstatus");
-		if( importstatus == null || !importstatus.equals("needsmetadata"))
-		{
-			//if it needsmetadata then dont do it now. The upload will run first
-			getMediaArchive().getAssetImporter().getAssetUtilities().readMetadata(asset, dest, getMediaArchive());
-			asset.setProperty("importstatus", "imported");
-		}
-		else
-		{
-			asset.setProperty("importstatus", "needsmetadata");
-		}
+//		String importstatus = (String)asset.get("importstatus");
+//		if( importstatus == null || !importstatus.equals("needsmetadata"))
+//		{
+//			//if it needsmetadata then dont do it now. The upload will run first
+//			getMediaArchive().getAssetImporter().getAssetUtilities().readMetadata(asset, dest, getMediaArchive());
+//			asset.setProperty("importstatus", "imported");
+//		}
+//		else
+//		{
+//			asset.setProperty("importstatus", "needsmetadata");
+//		}
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
@@ -308,7 +307,7 @@ public abstract class BaseAssetSource implements AssetSource
 
 	public void assetUploaded(Asset inAsset)
 	{
-		//Do nothing
+		//Do nothing because asset is already in place?
 	}
 
 	@Override
@@ -370,7 +369,10 @@ public abstract class BaseAssetSource implements AssetSource
 	{
 		String sp = inAsset.getPath();
 		sp = sp.substring(getFolderPath().length() + 1);
-		String abpath = getExternalPath() + "/" + sp;
+		String abpath = sp;
+		if (getExternalPath() != null) {
+			abpath = getExternalPath() + "/" + sp;
+		}
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )
 		{
@@ -468,16 +470,7 @@ public abstract class BaseAssetSource implements AssetSource
 
 	protected Repository createRepo(String inType)
 	{
-		Repository repo;
-		if("version".equals(inType) )
-		{
-			repo = new XmlVersionRepository();
-			repo.setRepositoryType("versionRepository");
-		}
-		else
-		{
-			repo = new FileRepository();
-		}
+		Repository 	repo = new FileRepository();
 		return repo;
 	}
 

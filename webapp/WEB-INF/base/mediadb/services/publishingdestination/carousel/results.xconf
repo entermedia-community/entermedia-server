@@ -1,0 +1,10 @@
+<page>  
+	<property name="module">asset</property>
+	
+	<path-action name="FinderModule.loadPublishAssets" />
+	
+	<property name="hitsname">publishingentityassethits</property>
+		
+	<inner-layout>/${applicationid}/views/modules/asset/innerlayout.html</inner-layout>
+</page>
+

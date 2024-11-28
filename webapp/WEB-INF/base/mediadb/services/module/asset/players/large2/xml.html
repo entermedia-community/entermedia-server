@@ -1,0 +1,16 @@
+#ifnull($hit)
+	#set ($hit = $asset)
+#end
+
+#set($xml = $mediaarchive.getOriginalDocument($hit))
+#if( $xml.exists() )
+	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+	<div class="xml-code overflow-y">
+		<textarea style="display: none;">$xml.getContent()</textarea>		
+		<code class="language-xml xml hljs"></code>
+	</div>
+#else
+
+404: Asset does not exist
+
+#end

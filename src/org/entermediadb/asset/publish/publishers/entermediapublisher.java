@@ -10,7 +10,6 @@ import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.entermediadb.asset.push.MediaUploader;
 import org.openedit.Data;
-import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 

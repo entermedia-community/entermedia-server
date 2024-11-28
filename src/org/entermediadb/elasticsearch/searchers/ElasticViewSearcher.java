@@ -1,0 +1,231 @@
+package org.entermediadb.elasticsearch.searchers;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.entermediadb.data.ViewData;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
+import org.openedit.users.User;
+
+public class ElasticViewSearcher extends ElasticListSearcher 
+{
+	@Override
+	public Object searchById(String inId)
+	{
+		//Make sure we call getCachedData for views
+		ViewData data = (ViewData)super.searchById(inId);
+
+		if( data != null)
+		{
+			if( data.getBoolean("deleted") )
+			{
+				return null;
+			}
+		}
+		
+		if( data == null)
+		{
+			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"viewtemplate");
+			for (Iterator iterator = searcher.getAllHits().iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				String id = hit.getId().replace("default", "");
+				if( inId.endsWith(id) )
+				{
+					String moduleid = inId.substring(0,inId.length() - id.length());
+					ViewData viewdata = loadViewData(moduleid,hit);
+					return viewdata;
+				}
+			}
+		}
+		return data;
+	}
+	
+	
+	@Override
+	public void delete(Data inData, User inUser)
+	{
+		//Mark as deleted to hide the parents from showing up?
+		inData.setValue("deleted",true);
+		saveData(inData);
+		//super.delete(inData, inUser);
+	}
+	
+	@Override
+	public HitTracker search(SearchQuery inSearch) throws OpenEditException
+	{
+		HitTracker actualviews = super.search(inSearch);
+
+		Term moduleid = inSearch.getTermByDetailId("moduleid");
+		Term systemdefined = inSearch.getTermByDetailId("systemdefined");
+		
+		HitTracker combinedviews = actualviews;
+		//Basic searches we can mege with template
+		if( inSearch.getTerms().size() == 2 && moduleid  != null && systemdefined != null)
+		{
+			//Now go deal with the standard list
+			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"viewtemplate");
+			
+			String	systemdefinedval = systemdefined.getValue();
+			if( systemdefinedval == null)
+			{
+				systemdefinedval = "false";
+			}
+			SearchQuery q = searcher.query().exact("systemdefined",systemdefinedval).getQuery();
+			Collection templateresults = searcher.search(q); 
+		
+			combinedviews = mergeResults( actualviews, moduleid.getValue(),templateresults);
+		}		
+		
+		//Remove deleted
+		List<ViewData> finallist = new ArrayList<ViewData>();
+		for (Iterator iterator = combinedviews.iterator(); iterator.hasNext();)
+		{
+			ViewData data = (ViewData) iterator.next();
+			if( !data.getBoolean("deleted"))
+			{
+				finallist.add(data);
+			}
+		}
+		
+		Collections.sort(finallist,new Comparator<ViewData>(){
+			@Override
+			public int compare(ViewData inO1, ViewData inO2)
+			{
+				long i1 = inO1.getLong("ordering");
+				long i2 = inO2.getLong("ordering");
+				if( i1 == i2 )
+				{
+					return 0;
+				}
+				if( i1 < i2)
+				{
+					return -1;
+				}
+				else
+				{
+					return 1;
+				}
+			}
+		});
+		
+		return new ListHitTracker(finallist);
+	}
+	
+	//TODO Save deleted with special flag
+
+	protected HitTracker mergeResults(HitTracker actualviews,String inModuleId, Collection baseresults)
+	{
+		ListHitTracker combinedviews = new ListHitTracker(); 
+		
+		for (Iterator iterator = actualviews.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ViewData existing = (ViewData)loadData(hit);
+			combinedviews.add(existing);
+		}
+		//Fix all the IDS and parents and module
+		for (Iterator iterator = baseresults.iterator(); iterator.hasNext();)
+		{
+			Data template = (Data) iterator.next();
+			ViewData extra = loadViewData(inModuleId,template);
+			ViewData goodone = (ViewData)combinedviews.findData("id", extra.getId());
+			if( goodone != null )
+			{
+				mergeDataInto(extra,goodone);
+			}
+			else
+			{
+				combinedviews.add(extra); //From the template area
+			}
+		}
+		
+		//Resort
+		return combinedviews;
+	}
+	
+	private void mergeDataInto(ViewData inExtra, ViewData inGoodone)
+	{
+		if( inGoodone.getValue("ordering") == null)
+		{
+			inGoodone.setValue("ordering",inExtra.getValue("ordering") );
+		}
+		if( inGoodone.getValue("rendertype") == null)
+		{
+			inGoodone.setValue("rendertype",inExtra.getValue("rendertype") );
+		}
+		if( inGoodone.getValue("parentview") == null)
+		{
+			inGoodone.setValue("parentview",inExtra.getValue("parentview") );
+		}
+		if( inGoodone.getValue("rendertable") == null)
+		{
+			inGoodone.setValue("rendertable",inExtra.getValue("rendertable") );
+		}
+	}
+
+
+	protected ViewData loadViewData(String inModuleId, Data inTemplateView)
+	{
+		//	<property id="defaultentityshare" moduleid="default" systemdefined="true"  rendertype="entityshare" parentview="defaultentityexports" >Share</property>
+		String id = inTemplateView.getId();
+		id = id.replace("default",toId(inModuleId));
+		inTemplateView.setId(id);
+
+		inTemplateView.setValue("moduleid",inModuleId);
+
+		String parentview = inTemplateView.get("parentview");
+		if( parentview != null)
+		{
+			parentview = parentview.replace("default",toId(inModuleId));
+			inTemplateView.setValue("parentview",parentview);
+		}
+		
+		ViewData viewdata = (ViewData)loadData(inTemplateView);
+		viewdata.setCatalogId(getCatalogId());
+		return viewdata;
+	}
+	
+	@Override
+	public Data createNewData()
+	{
+		ViewData view = new ViewData();
+		view.setSearchManager(getSearcherManager());
+		view.setCatalogId(getCatalogId());
+		return view;
+	}
+	
+	public Data loadData(Data inHit)
+	{
+		if (inHit == null)
+		{
+			return null;
+		}
+		if (inHit instanceof ViewData)
+		{
+			return inHit;
+		}
+		else
+		{
+			ViewData data = (ViewData) createNewData();
+			Map fields = inHit.getProperties();
+			fields = checkTypes(fields);
+			data.setProperties(fields);
+			data.setId(inHit.getId());
+			return data;
+		}
+	}
+
+	
+}

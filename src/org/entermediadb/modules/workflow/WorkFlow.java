@@ -16,7 +16,6 @@ import org.openedit.page.FileFinder;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.manage.PageManager;
-import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.XmlUtil;
@@ -54,16 +53,6 @@ public class WorkFlow
 		}
 		return "";
 	}
-	public ContentItem getLastVersion(Page inDraft ) throws OpenEditException
-	{
-		ContentItem revision = getPageManager().getLatestVersion(inDraft.getPath());
-		if( revision != null)
-		{
-			return revision;
-		}
-		return inDraft.getContentItem();
-		
-	}
 	public Page getOriginalPage(Page inDraft) throws OpenEditException
 	{
 		String dpath = inDraft.getPath();
@@ -99,51 +88,7 @@ public class WorkFlow
 	{
 		fieldUserManager = inUserManager;
 	}
-	public void approve(String inPath, User inUser) throws OpenEditException
-	{
-		Page draft = getPageManager().getPage(inPath);
-		if(!draft.exists())
-		{
-			log.error("No draft found to approve " + inPath);
-			return;
-		}
-		//read in level count file
-		loadLevelCount();
-		
-		//see if we have levels configured
-		if(getLevelCount() > 0)
-		{
-			int newLevel = findHighestApproval( inUser );
-			if( newLevel > 0)
-			{
-				int oldLevel = findExistingLevel(draft);
-				if( oldLevel < newLevel)
-				{
-					saveLevel(draft, newLevel);
-				}
-			}
-			if( newLevel < getLevelCount()) //then dont approve just yet
-			{
-				log.info("Requires more approval");
-				return;
-			}					
-		}
-		String orig = inPath.replaceAll("\\.draft", "");
-		Page dest = getPageManager().getPage(orig);
-		
-		dest.getContentItem().setAuthor(inUser.getUserName());
-		
-		ContentItem rev = getLastVersion(draft);
-		dest.getContentItem().setMessage("Approved: (" + rev.getAuthor() +" "+ rev.getMessage() +")");
-		dest.getContentItem().setType( ContentItem.TYPE_APPROVED);
 
-		getPageManager().movePage(draft, dest);
-		if( getLevelCount() > 0)
-		{
-			saveLevel(draft, 0);
-		}
-		firePageApproved(dest);
-	}
 	private void saveLevel(Page draft, int newLevel) throws OpenEditException
 	{
 		PageProperty property = new PageProperty("approve.level");
@@ -225,15 +170,7 @@ public class WorkFlow
 		}
 		return level;
 	}
-	public void approveAll(User inUser) throws Exception
-	{
-		List pages = listAllDrafts();
-		for (Iterator iter = pages.iterator(); iter.hasNext();)
-		{
-			Page editPath = (Page) iter.next();
-			approve(editPath.getPath(), inUser);
-		}
-	}
+	
 	public void deleteDraft(String inPath, User inUser) throws OpenEditException
 	{
 		Page page = getPageManager().getPage(inPath);

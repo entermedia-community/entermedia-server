@@ -2,9 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="tests"/>
-	<classpathentry kind="src" path="webapp/WEB-INF/base/system/events/scripts"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/src"/>
-	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -73,9 +71,11 @@
 	<classpathentry exported="true" kind="lib" path="lib/t-digest-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/googleauth-1.2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-2.10.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-generic-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-5.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/googleauth-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/jsoup-1.18.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

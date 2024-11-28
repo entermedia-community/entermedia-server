@@ -6,6 +6,7 @@
 	#set($loginokpage = $context.getSessionValue("fullOriginalEntryPage") )
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
+
 <div class="container" id="loginformdiv">
 	#if($user)
 		<div class="text-warning rounded border border-warning px-2 py-1 mb-3" role="alert">
@@ -13,21 +14,27 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			[[You are already logged in as]] <strong>$user</strong>
 		</div>
 	#else
-		<div class="row no-gutters justify-content-sm-center loginformcontainer">
+		<div class="row no-gutters justify-content-sm-center loginformcontainer mb-3">
 			#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
 			#ifnotnull($customloginmessage)
-				$customloginmessage
+				<div class="alert alert-info">
+					$customloginmessage
+				</div>
 			#end
-		
-			#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
-
-			<div class="loginform-col mb-4">
-				<h1 class="page-title text-center my-4">[[Sign-in]] / [[Sign-up]]</h1>
-				
 			
+			#set( $allowguestregistration = $context.findPathValue("allowguestregistration") )
+			<div class="loginform-col mb-2">
+				<h1 class="page-title text-center my-2">
+					[[Sign-in]]
+					 #if( $allowguestregistration == "true" )
+					 / [[Sign-up]]
+					 #end
+				</h1>
+				
 				#set( $error = $context.getPageValue("oe-exception") )
 				#if ( $error ) 
-					<div class="text-center text-error rounded border border-error px-2 py-1 my-6" role="alert">
+					<div class="alert alert-danger my-2" role="alert" style="min-width: 400px;">
+						<i class="bi bi-exclamation-triangle-fill mr-1 ns"></i>
 						$error
 					</div>
 					$context.removeSessionValue("oe-exception")
@@ -35,83 +42,93 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		
 
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
-			
+
 				#if($allowloginbyemail == "true")
-					###set( $to = $context.getRequestParameter("email") )	
-					###set( $username = $context.getRequestParameter("username") )
-					<form class="ajaxform d-flex flex-column" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
-						#ifnotnull( $userCategory)
-							<input type="hidden" name="categoryid" value="$userCategory.id" />
-						#end
-						#if( $content.allowguestregistration == "true")
-							#set($placeholder = "[[Login or Register with your Email Address]]")
-						#else
-							#set($placeholder = "[[Login with your Email Address]]")
-						#end
-						<label for="email">$placeholder</label>
-						<input class="form-control form-control-sm required grabfocus mb-3" type="text" name="email" placeholder="[[Enter you email address]]" required />
-						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
-						<input type="hidden" name="subject" value="[[Your Login Info]]"/>
-					</form>
+				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 400px;color: #3884fd;">
+					<li class="nav-item" style="flex:1">
+						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">[[Passwordless Login]]</div>
+					</li>
+					<li class="nav-item" style="flex:1">
+						<div class="nav-link" data-target="#passwordLogin" style="cursor: pointer;">[[Login with Password]]</div>
+					</li>
+				</ul>
 				#end
-
-				<div class="my-4">
-					<div class="d-flex flex-column" >
-					#if($content.bs == "4")
-					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-toggle="collapse" 
-					data-target="#loginForm" title="[[Login]]">
-						[[Log in with Username and Password]]
-					</button>
-					#else
-					<button class="btn btn-outline-transparent fw-bold up-login" type="button" data-bs-toggle="collapse"
-						data-bs-target="#loginForm" title="[[Login]]">
-						[[Log in with Username and Password]]
-					</button>
-					#end
-					</div>
-					<div class="collapse" id="loginForm">
-					<form class="d-flex flex-column mt-4"  name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
-						<div class="form-group">
-							<label for="accountname">[[Email or Username]]</label>
-							<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" required />
-							<label for="password">[[Password]]</label>
-							<input class="form-control" id="password" name="password" type="password" required />
+				<div class='border-left border-right border-bottom #if($allowloginbyemail != "true") border-top #end py-2 px-3' style="min-width: 400px;">
+					#if($allowloginbyemail == "true")
+						<div id="passwordLessLogin" class="login-method">
+							<form class="ajaxform d-flex flex-column my-4"  style="text-align: left;" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+								#ifnotnull( $userCategory)
+									<input type="hidden" name="categoryid" value="$userCategory.id" />
+								#end
+								#if( $content.allowguestregistration == "true")
+									#set($placeholder = "[[Login or Register with your Email Address]]")
+								#else
+									#set($placeholder = "[[Login with your Email Address]]")
+								#end
+								<label for="email">$placeholder</label>
+								<input class="form-control form-control-sm required grabfocus mb-3 w-100" type="text" name="email" placeholder="[[Enter you email address]]" required />
+								<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
+								<input type="hidden" name="subject" value="[[Your Login Info]]"/>
+							</form>
 						</div>
-						
-						#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
-							<input type="hidden" name="field" value="googlekeystring"/>
-							<div class="form-group">
-								<label for="Google Key">[[Two Factor Authenticator Key]]</label>
-								<input class="form-control" id="googleauth" name="googlekeystring.value" type="text" />
+					#end
+					<div id="passwordLogin" class="login-method" #if($allowloginbyemail == "true") style="display: none;" #end>
+						<form class="d-flex flex-column my-4"  name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+							<div class="form-group mb-0" style="text-align: left;">
+								<label for="accountname">[[Email or Username]]</label>
+								<input class="form-control w-100" type="text" id="accountname" name="accountname" autocapitalize="off" autocorrect="off" required />
+								<label for="password">[[Password]]</label>
+								<input class="form-control w-100" id="password" name="password" type="password"  />
 							</div>
-							<a href="$home$content.loginroot/getkey.html">[[If you haven't yet generated a two factor key, click here]]</a>
-						#end
-						
-						#if ( $context.getPageValue("oe-exception") )
-							<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
-							$context.removeSessionValue("oe-exception")
-						#end
-
-						<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Login]]" />
-					</form>   
-					</div>
+							
+							#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
+								<input type="hidden" name="field" value="googlekeystring"/>
+								<div class="form-group">
+									<label for="Google Key">[[Two Factor Authenticator Key]]</label>
+									<input class="form-control" id="googleauth" name="googlekeystring.value" type="text" />
+								</div>
+								<a href="$home$content.loginroot/getkey.html">[[If you haven't yet generated a two factor key, click here]]</a>
+							#end
+	
+							<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Login]]" />
+						</form>   
+					</div> 
 				</div>
-
+				#set($providers = $mediaarchive.query("oauthprovider").orgroup("id", "google facebook").exact("enabled","true").search($context))
 				#if( !$providers.isEmpty() )
 					<div class="text-center my-3">
-						<span class="divider divider-xs divider-text">OR</span>
+						<span class="divider divider-xs divider-text">[[OR]]</span>
 					</div>
 					<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
 						$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 					</div>
 				#end
-			
-
 			</div>
 		</div>
 	#end
 
-	<div class="text-center loginformquestions my-4">
-		[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a>.
+	<div class="text-center loginformquestions my-2 p-0">
+		[[Are you having trouble logging in or have a question?]] [[Please]] <a href="mailto:help@entermediadb.org" style="text-decoration: underline;">[[contact us]]</a>.
 	</div>
 </div>
+
+<script>
+	function confirmPassword(form) {
+		if(form.password.value=="") {
+			alert("[[Please enter your password]]");
+			form.password.focus();
+			return false;
+		} else {
+			return true;
+		}
+	}
+	$(document).ready(function() {
+    $('.nav-link').click(function() {
+			$("#loginMethod").find(".nav-link").removeClass("active");
+			$(this).addClass("active");
+			var target = $(this).data("target");
+			$(".login-method").hide();
+			$(target).show();
+		})
+  });
+</script> 

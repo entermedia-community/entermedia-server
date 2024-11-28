@@ -18,11 +18,16 @@ import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
 import org.openedit.node.NodeManager;
@@ -282,7 +287,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 	}
 
-	public void saveModule(WebPageRequest inReq) throws Exception
+	public void saveModule(WebPageRequest inReq) 
 	{
 		Data module = (Data) inReq.getPageValue("data");
 
@@ -292,7 +297,7 @@ public class MediaAdminModule extends BaseMediaModule
 		getMediaArchive(inReq).clearAll();
 	}
 
-	public void saveNewModule(WebPageRequest inReq) throws Exception
+	public void saveNewModule(WebPageRequest inReq)
 	{
 		String name = inReq.getRequestParameter("name.value");
 		String id = inReq.getRequestParameter("id");
@@ -536,29 +541,29 @@ public class MediaAdminModule extends BaseMediaModule
 		sites.saveData(site);
 		inReq.setRequestParameter("siteid", site.getId());
 
-		String frontendid = inReq.getRequestParameter("frontendid");
-		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
-		String url = frontend.get("initurl");
-		if( url != null)
-		{
-			inReq.setRequestParameter("url", url);
-			Data snapshot = downloadSnapshot(inReq);
-			Page root = getPageManager().getPage(rootpath);
-			if( root.exists() )
-			{
-				//dont mess with it
-				snapshot.setValue("snapshotstatus","downloaded");
-			}
-			else
-			{
-				snapshot.setValue("snapshotstatus","pendingrestore");
-			}
-			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
-			snaps.saveData(snapshot);
-			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
-			manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
-			inReq.putPageValue("snapshot", snapshot);
-		}
+//		String frontendid = inReq.getRequestParameter("frontendid");
+//		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
+//		String url = frontend.get("initurl");
+//		if( url != null)
+//		{
+//			inReq.setRequestParameter("url", url);
+//			Data snapshot = downloadSnapshot(inReq);
+//			Page root = getPageManager().getPage(rootpath);
+//			if( root.exists() )
+//			{
+//				//dont mess with it
+//				snapshot.setValue("snapshotstatus","downloaded");
+//			}
+//			else
+//			{
+//				snapshot.setValue("snapshotstatus","pendingrestore");
+//			}
+//			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+//			snaps.saveData(snapshot);
+//			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+//			manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
+//			inReq.putPageValue("snapshot", snapshot);
+//		}
 		
 
 		
@@ -595,6 +600,11 @@ public class MediaAdminModule extends BaseMediaModule
 
 		String snapid = inReq.getContentPage().getDirectoryName();
 		Data snap = getSearcherManager().getData("system", "sitesnapshot",snapid);
+		if (snap == null) {
+			inReq.redirect("/manager/");
+			log.error("Site snapshot missing: " + snapid);
+			return;
+		}
 		Data site = getSearcherManager().getData("system", "site", snap.get("site"));
 
 		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + snap.get("folder");
@@ -862,6 +872,8 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		
 	}
+	
+	//Not used. Delete this
 	public Data loadHomeModule(WebPageRequest inReq) {
 		String catalogid = inReq.findPathValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
@@ -914,6 +926,241 @@ public class MediaAdminModule extends BaseMediaModule
 
 		List files = properties.unzipFiles(true);
 		getWorkspaceManager().importCustomizations(mediaArchive,files);
+	}
+
+	public void copySmartOrganizer(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		Data copy = s.createNewData();
+		copy.setProperties(template.getProperties());
+		copy.setId(null);
+		copy.setName(template.getName() + " copy");
+		copy.setValue("updatedby",inReq.getUserName());
+		copy.setValue("updatedon",new Date());
+		copy.setValue("iscurrent",false);
+		s.saveData(copy);
+	}
+
+	public void smartOrganizerRestore(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("restoreid");
+
+		if( id == null)
+		{
+			return;
+		}
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		Collection existing = s.query().exact("iscurrent",true).search();
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();) {
+			Data data = (Data) iterator.next();
+			data.setValue("iscurrent",false);
+			s.saveData(data);
+		}
+		//s.saveAllData(existing,null);
+		
+		Data template = archive.getData("smartorganizer", id);
+		//template.setValue("updatedby",inReq.getUserName());
+		//template.setValue("updatedon",new Date());
+		template.setValue("iscurrent",true);
+		s.saveData(template);
+		
+	}
+
+	
+	public void smartOrganizerRename(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		
+		String newname = inReq.getRequestParameter("newname");
+		template.setName(newname);
+		s.saveData(template);
+	}
+
+	
+	public void deleteSmartOrganizer(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		if( template != null)
+		{
+			Searcher s = archive.getSearcher("smartorganizer");
+			s.delete(template,inReq.getUser());
+		}
+	}
+	
+	
+	public void deploySmartOrganizer(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("id");
+		Data template = archive.getData("smartorganizer", id);
+		
+		Searcher s = archive.getSearcher("smartorganizer");
+		String json = template.get("json");
+		if(json == null) {
+			return;
+		}
+		
+		List tosave = new ArrayList();
+		
+		JSONParser parser = new JSONParser();
+		JSONArray jsonarray = null;
+		jsonarray = (JSONArray) parser.parse(json);
+		if ( jsonarray != null)
+		{
+			Collection tosavemenu = new ArrayList();
+
+			Map<String,Data> parents = new HashMap<String,Data>();
+			
+			boolean replacemenu = false;
+			for (Iterator iterator = jsonarray.iterator(); iterator.hasNext();) {
+				ValuesMap map = new ValuesMap((Map) iterator.next());
+				if("folderLabel".equals(map.get("cssClass")))
+				{
+					Map userdatamap = (Map) parser.parse(map.getString("userData"));
+					ValuesMap  userdata  = new ValuesMap(userdatamap);
+					String moduleid = userdata.getString("moduleid"); //TODO: get initialmoduleid  to rename
+					if( moduleid == null || moduleid.trim().isEmpty())
+					{
+						continue;
+					}
+					String modulename = map.getString("text"); 
+					Data module = archive.getData("module",moduleid);
+					if(module == null)
+					{
+						module  = archive.getSearcher("module").createNewData();
+						module.setId(moduleid);
+					}
+					module.setName(modulename);
+					String icon = userdata.getString("moduleicon");
+					if( icon != null)
+					{
+						icon = PathUtilities.extractPageName(icon);
+						module.setValue("moduleicon", icon ); //Clean this up on server 
+					}
+					module.setValue("isentity", true); //Not used anymore?
+					module.setValue("enableuploading", true); 
+					module.setValue("showonsearch", true);
+
+					//Children
+					String parentmoduleid = userdata.getString("parent");
+					if( parentmoduleid != null)
+					{
+						parents.put(parentmoduleid,module);
+					}
+					tosave.add(module);
+					//Menu
+					String ordering = userdata.getString("ordering"); 
+
+					if( ordering != null && !ordering.equals("-1" ) )
+					{
+						Data existingmenu = archive.query("appsection").exact("toplevelentity",moduleid).searchOne();
+						if( existingmenu == null)
+						{
+							existingmenu = archive.getSearcher("appsection").createNewData();
+							existingmenu.setValue("toplevelentity",moduleid);
+						}
+						existingmenu.setValue("name",module.getValue("name"));
+						int i = Integer.parseInt(ordering);
+						existingmenu.setValue("ordering",i);
+						tosavemenu.add(existingmenu);
+
+						if( i > -1)
+						{
+							replacemenu = true;
+						}
+					}
+				}
+			}
+			
+			//Check parents
+			archive.saveData("module", tosave);  //Save children and parents
+
+			String appid = inReq.findValue("applicationid");
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();) 
+			{
+				Data module = (Data) iterator.next();
+				getWorkspaceManager().saveModule(archive.getCatalogId(), appid, module);	 //Save views	
+			}
+			checkParents(archive,parents);
+			archive.saveData("module", tosave);  //Save children and parents
+			
+			if(replacemenu)
+			{
+				archive.getSearcher("appsection").deleteAll(inReq.getUser());
+				archive.getSearcher("appsection").saveAllData(tosavemenu,inReq.getUser());
+				archive.clearAll();
+			}
+		}
+
+	}
+
+	private void checkParents(MediaArchive archive, Map<String, Data> parents) {
+		for (Iterator iterator = parents.keySet().iterator(); iterator.hasNext();) 
+		{
+			String parentid = (String) iterator.next();
+			Data childmodule = parents.get(parentid);
+			
+			//Make field and a one to many view? Add all the "Add New" columns to the view
+			Searcher childsearcher = archive.getSearcher(childmodule.getId());
+			PropertyDetails details = childsearcher.getPropertyDetails();
+			Data parentmodule = archive.getData("module",parentid);
+			if( details.getDetail(parentid) == null)
+			{
+				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(parentid, parentmodule.getName());
+				newprop.setValue("name",parentmodule.getValue("name"));  //Int?
+				newprop.setDataType("list");
+				newprop.setValue("viewtype","entity");
+				newprop.setEditable(true);
+				newprop.setIndex(true);
+				archive.getPropertyDetailsArchive().savePropertyDetail(newprop, childmodule.getId(), null);
+				archive.getPropertyDetailsArchive().clearCache();
+			}
+			//Make views
+			Searcher viewsearcher = archive.getSearcher("view");
+
+			String viewid = PathUtilities.makeId(parentmodule.getName());
+			viewid = viewid.toLowerCase();
+			
+//			String addpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "addnew.xml";
+//			Page from = getPageManager().getPage(addpath);
+//			
+//			//entityparent/entitychildparent
+//			String targetpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + parentmodule.getId() + "/" + childmodule.getId() + viewid + ".xml";
+//			Page to = getPageManager().getPage(targetpath );
+
+//			if( !to.exists())
+//			{
+//				getPageManager().copyPage(from, to);
+//			}
+			Data data =  (Data)viewsearcher.searchById(parentmodule.getId() + viewid);
+			if( data == null)
+			{
+				data = viewsearcher.createNewData();
+				//Copy the add new
+				data.setId(childmodule.getId() + viewid);
+				data.setName(childmodule.getName());
+
+				data.setProperty("moduleid", parentmodule.getId());
+				data.setProperty("rendertype", "entitysubmodules"); //POne to manuy
+				data.setProperty("rendertable", childmodule.getId());
+				data.setProperty("renderexternalid", parentmodule.getId());
+				data.setProperty("systemdefined", "false");
+				data.setProperty("ordering", System.currentTimeMillis() + "");
+				viewsearcher.saveData(data);
+			}
+		}
 	}
 
 	

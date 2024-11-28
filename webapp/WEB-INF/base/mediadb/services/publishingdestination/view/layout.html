@@ -1,0 +1,34 @@
+#ifnotnull($publishing)
+
+	#if($publishing.get("distributiontype") == "gallery") 
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brickvertical.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-simpleLightbox.js"></script>
+		
+		<div id="previewgallery" style="height: 100%;">
+		$pages.include("$apphome/services/publishingdestination/gallery/index.html", $context)
+		</div>
+				
+		<script type="text/javascript">
+		/**
+		 * Init
+		 */
+		(function ($) {
+			jQuery(document).ready(function () {
+			    var grid = $(".masonry-grid2");
+				grid.brickvertical();
+				
+				$('.lightbox').simpleLightbox();
+			});
+		}(jQuery));		
+		</script>
+
+	#else 
+	
+		$pages.include("$apphome/services/publishingdestination/carousel/index.html", $context)
+	#end
+  
+#end
+#ifnull($publishing)
+  <h2>Preview not available</h2>
+#end

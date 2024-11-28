@@ -13,9 +13,9 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpMessage;
+import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -33,7 +33,7 @@ import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
 import org.dom4j.tree.DefaultElement;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
@@ -82,12 +82,12 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		try
 		{
 			PublishResult result = checkOnConversion(inMediaArchive, inPublishRequest, inAsset, inPreset);
-			if (result != null)
+			if(!result.isReadyToPublish())
 			{
 				return result;
 			}
 
-			result = new PublishResult();
+			//result = new PublishResult();
 
 			Page inputpage = findInputPage(inMediaArchive, inAsset, inPreset);
 			String servername = inDestination.get("server");

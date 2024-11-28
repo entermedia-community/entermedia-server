@@ -13,10 +13,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.scanner.MetaDataReader;
-import org.entermediadb.find.EntityManager;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -25,7 +23,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.Replacer;
 
 public class AssetUtilities //TODO: Rename to AssetManager
 {
@@ -110,7 +107,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			if ("7".equals(editstatus)) //Not deleted anymore
 			{
 				//restore
-				asset.setProperty("importstatus", "needsmetadata");
+				asset.setProperty("importstatus", "created");
 				asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
@@ -138,6 +135,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				{
 					return null;
 				}
+				else {
+					asset.setProperty("importstatus", "modified");
+				}
 			}
 		}
 		else
@@ -153,7 +153,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 			if (!fieldFileUtils.isLegalFilename(sourcePath))
 			{
-				log.info("Path is not web friendly.  Will have archivepath set");
+				log.info("Path is not web friendly.  Will have archivepath set. " + sourcePath);
 				asset.setValue("archivesourcepath", sourcePath);
 				for (Iterator iterator = fieldFileUtils.getInvalidChars().iterator(); iterator.hasNext();)
 				{
@@ -192,8 +192,11 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 		//		if (importedasset)
 		//		{
-		String status = asset.get("importstatus");
-		asset.setProperty("importstatus", "needsmetadata");
+		
+		if (!"modified".equals(asset.getProperty("importstatus"))) {
+			asset.setProperty("importstatus", "created");
+		}
+		
 		asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 		String previewstatus = asset.get("previewstatus");
 		//			if( previewstatus == null || status.equals("2"))
@@ -513,29 +516,20 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			}
 		}
 		
-		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), savefilename, sourcepathmask, vals);
+		String sourcepath = createSourcePathFromMask(inArchive, null, inReq.getUser(), savefilename, sourcepathmask, vals);
 
 		return sourcepath;
 	}
 
+	
 	public String createSourcePathFromMask(MediaArchive inArchive, User inUser, String fileName, String sourcepathmask, Map vals)
 	{
-		String sp = createSourcePathFromMask( inArchive,  "asset", null,  inUser,  fileName,  sourcepathmask,  vals);
-		return sp;
+		return createSourcePathFromMask(inArchive, null, inUser, fileName, sourcepathmask, vals);
 	}
 	
-	public String createSourcePathFromMask(MediaArchive inArchive, String inModuleId, Data parentData, User inUser, String fileName, String sourcepathmask, Map vals)
+	public String createSourcePathFromMask(MediaArchive inArchive, Data parentData, User inUser, String fileName, String sourcepathmask, Map vals)
 	{
-		if( parentData != null && !inModuleId.equals("asset"))
-		{
-			MultiValued module = (MultiValued)inArchive.getCachedData("module", inModuleId);
-			if( module != null && module.getBoolean("isentity"))
-			{
-				EntityManager manager = inArchive.getEntityManager();
-				manager.loadUploadSourcepath(module, parentData, inUser);
-			}
-			vals.put(inModuleId,parentData);
-		}
+		
 		if (inUser != null)
 		{
 			vals.put("user", inUser);
@@ -574,12 +568,11 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "HH"); //TODO: Use DataStorage
 		vals.put("formattedhour", date);
 
-		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
-
-		replacer.setSearcherManager(inArchive.getSearcherManager());
-		replacer.setCatalogId(inArchive.getCatalogId());
-		replacer.setAlwaysReplace(true);
-		String sourcepath = replacer.replace(sourcepathmask, vals);
+		//Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
+		//String sourcepath = replacer.replace(sourcepathmask, vals);
+		String sourcepath = inArchive.replaceFromMask(sourcepathmask, parentData, "asset", vals, null); 
+		
+		
 		//sourcepath = sourcepath + "/" + item.getName();
 		if (sourcepath.endsWith("/"))
 		{

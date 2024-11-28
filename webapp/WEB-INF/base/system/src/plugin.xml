@@ -85,7 +85,7 @@
 		<property name="repository"><ref bean="repository"/></property>
 		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>
 		<property name="cacheManager"><ref bean="systemCacheManager"/></property>
-		
+		<property name="textLabelManager"><ref bean="textLabelManager" /></property>		
 	</bean>
 	
 	<bean id="moduleManager" class="org.openedit.ModuleManager">
@@ -104,7 +104,8 @@
 
 	
 	<!-- Repository config -->
-	<bean id="versionRepository" class="org.openedit.repository.filesystem.XmlVersionRepository" scope="prototype">
+	 <!-- We no longer support versions of files.   -->
+	<bean id="versionRepository" class="org.openedit.repository.filesystem.FileRepository" scope="prototype">
 	</bean>
 	
 	<bean id="fileRepository" class="org.openedit.repository.filesystem.FileRepository" scope="prototype">
@@ -112,6 +113,7 @@
 	
 	<bean id="repository" class="org.openedit.repository.CompoundRepository">
 		<property name="root"><ref bean="root"/></property>
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
 	
 	<bean id="pageSettingsManager" class="org.openedit.page.manage.PageSettingsManager">
@@ -267,7 +269,7 @@
 	</bean>
 
 	<bean id="executorManager" class="org.openedit.util.ExecutorManager" >
-	</bean>
+	</bean>Xml
 
 	<bean id="systemCacheManager" class="org.openedit.cache.CacheManager" >
 	</bean>

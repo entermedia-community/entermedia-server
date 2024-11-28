@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.openedit.OpenEditException;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.FileUtils;

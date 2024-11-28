@@ -22,6 +22,8 @@
 		#else
 			#set($imagesize = "image550x350.jpg")
 		#end
+	#elseif($thumbsize == "imagelarge")
+		#set($imagesize = "image1300x1300.jpg")
 	#elseif($thumbsize == "postsize")
 		#set($imagesize = "image730x480cropped.jpg")
 	#elseif($thumbsize == "crop")
@@ -50,7 +52,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize))
 		#end
 		<div class="thumbimagecontainer">
-			<img class="imagethumb img-fluid d-block w-100"
+			<img class="imagethumb img-fluid d-block"
 				 border="0" 
 				 sourcepath="$sourcepath" 
 				 catalogid="$catalogid" 

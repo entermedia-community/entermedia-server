@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.pull.PullManager;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
@@ -82,7 +82,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean removeOriginal(Asset inAsset)
+	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 		// TODO Auto-generated method stub
 		return false;

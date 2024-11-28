@@ -14,7 +14,6 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.RelatedAsset;
 import org.entermediadb.asset.edit.CategoryEditor;
-import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -383,10 +382,78 @@ public class AssetEditTest extends BaseEnterMediaTest
 		//They do match
 		assertNotNull(map);
 		
-		//save multi value and check one
-		
 	}
 
+	
+	public void testMultiSaveExistingValue() throws Exception
+	{
+		Asset product = getMediaArchive().getAsset("1multilang");
+		if( product == null)
+		{
+			product = getMediaArchive().createAsset("1multilang","multitest/1multilang");
+		}
+
+		LanguageMap headline = new LanguageMap();
+		headline.setText("en", "EnglishH1");
+		headline.setText("de", "GermanH1");
+		product.setValue("headline", headline);
+		
+		WebPageRequest req = getFixture().createPageRequest();
+		User user = req.getUser();
+		getMediaArchive().saveAsset(product, user);
+		
+		Asset product2 = getMediaArchive().getAsset("2multilang");
+		if( product2 == null)
+		{
+			product2 = getMediaArchive().createAsset("2multilang","multitest/2multilang");
+		}
+		LanguageMap headline2 = new LanguageMap();
+		headline2.setText("en", "EnglishH2");
+		headline2.setText("de", "GermanH2");
+		product2.setValue("headline", headline2);
+
+		getMediaArchive().saveAsset(product2, user);
+
+		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+		//HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
+		//q.addMatches("id","*");
+		q.addOrsGroup("id", "1multilang 2multilang" );
+		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
+		hits.toggleSelected("1multilang");
+		hits.toggleSelected("2multilang");
+		assertEquals( 2, hits.getSelections().size() );
+		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
+		ArrayList fields = new ArrayList();
+		fields.add("headline");
+	
+		composite.setEditFields(fields);
+		composite.setSearcher(getMediaArchive().getAssetSearcher());
+
+		req.setRequestParameter("save", "true");
+		req.setRequestParameter("field", "headline");
+		req.setRequestParameter("headline.language", "en");
+		req.setRequestParameter("headline.en.value", "EnglishH3");
+		
+		String[] array = (String[])fields.toArray(new String[fields.size()]);
+		getMediaArchive().getAssetSearcher().updateData(req, array, composite);
+		composite.saveChanges(req);
+		Asset productreloaded = getMediaArchive().getAsset("1multilang");
+		LanguageMap langnew = (LanguageMap)productreloaded.getValue("headline");
+		assertEquals("EnglishH3",langnew.getText("en"));
+		assertEquals("GermanH1",langnew.getText("de"));
+		
+		req.setRequestParameter("headline.en.value", "EnglishH4");
+		getMediaArchive().getAssetSearcher().updateData(req, array, composite);
+		composite.saveChanges(req);
+
+		productreloaded = getMediaArchive().getAsset("1multilang");
+		langnew = (LanguageMap)productreloaded.getValue("headline");
+		assertEquals("EnglishH4",langnew.getText("en"));
+		assertEquals("GermanH1",langnew.getText("de"));
+
+		
+
+	}
 	
 	public void XXXtestDeleteFromIndex() throws Exception
 	{

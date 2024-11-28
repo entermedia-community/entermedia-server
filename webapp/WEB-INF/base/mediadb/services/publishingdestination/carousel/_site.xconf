@@ -1,0 +1,13 @@
+<page>
+
+	
+	<page-action name="FinderModule.loadPublishAssets" />
+
+	<permission name="view">
+			<boolean value="true" />
+	</permission>
+	
+	
+	
+</page>
+

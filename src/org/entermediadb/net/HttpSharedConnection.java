@@ -2,6 +2,7 @@ package org.entermediadb.net;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
+import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
 
 
@@ -287,6 +289,38 @@ public class HttpSharedConnection
 			release(resp);
 		}
 	}
+	public File parseFile(CloseableHttpResponse inCreaterequest,String inAbsolutePath)
+	{
+		String errormessage = null;
+		try
+		{
+			StatusLine statusLine = inCreaterequest.getStatusLine();
+			if (statusLine.getStatusCode() != 200)
+			{
+				String returned = EntityUtils.toString(inCreaterequest.getEntity());
+				errormessage = "HTTP Error:" + statusLine.getStatusCode() + ":" + statusLine.getReasonPhrase() + " Body: \n" + returned;
+			}
+			else
+			{
+				InputStream input = inCreaterequest.getEntity().getContent();
+				OutputFiller filler = new OutputFiller();
+				File outfile = new File(inAbsolutePath);
+				filler.fill(input,outfile);
+
+				log.info("Saved to: " + outfile.getAbsolutePath());
+				return outfile;
+			}
+		}
+		catch (Throwable e) 
+		{
+			throw new OpenEditException(e);
+		}
+		finally
+		{
+			release(inCreaterequest);
+		}
+		throw new OpenEditException(errormessage);
+	}
 
 	public CloseableHttpResponse sharedPost(String path,HttpEntity inBuild)
 	{
@@ -308,12 +342,13 @@ public class HttpSharedConnection
 				Header header =  (Header)iterator.next();
 				method.addHeader(header);
 			}
-
+			log.info(method);
 			resp = (CloseableHttpResponse)getSharedClient().execute(method);
 			return resp;
 		} 
 		catch (Throwable e)
 		{
+			log.info(resp);
 			release(resp);
 			throw new OpenEditException(e);
 		}

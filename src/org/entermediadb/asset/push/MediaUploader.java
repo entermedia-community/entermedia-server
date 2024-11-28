@@ -1,6 +1,6 @@
 package org.entermediadb.asset.push;
 
-import org.entermediadb.asset.*;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.users.User;

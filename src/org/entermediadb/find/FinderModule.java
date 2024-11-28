@@ -33,7 +33,6 @@ import org.openedit.profile.ModuleData;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
-import org.openedit.util.Replacer;
 
 public class FinderModule extends BaseMediaModule
 {
@@ -167,12 +166,19 @@ public class FinderModule extends BaseMediaModule
 				
 
 				sortModules(foundmodules);
-				log.debug("Organized Modules: " + foundmodules);
-				
-				if (foundmodules.size() == 0) {
-					log.info("Found no modules.");
+				if( log.isDebugEnabled())
+				{
+					log.debug("Organized Modules: " + foundmodules);
 				}
 				
+				if (foundmodules.size() == 0) {
+					if( log.isDebugEnabled())
+					{
+						log.debug("Found no modules.");
+					}
+				}
+				
+				inReq.putSessionValue("organizedModules",foundmodules);
 				inReq.putPageValue("organizedModules",foundmodules);
 				
 			}
@@ -413,17 +419,26 @@ public class FinderModule extends BaseMediaModule
 			//Now do a big OR statement
 			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
 			aquery.setSortBy(inReq.findValue("sortby"));
-			SearchQuery orquery = archive.getAssetSearcher().createSearchQuery();
-			orquery.setAndTogether(false);
+			
+			SearchQuery orquery = archive.getAssetSearcher().addStandardSearchTerms(inReq);
+			if(orquery == null) {
+				orquery = archive.getAssetSearcher().createSearchQuery();
+			}
+			//orquery.setAndTogether(false);
+			assets.setHitsPerPage(999);
 			for (Iterator iterator = assets.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
 				String assetid = data.get("assetid");
 				if(assetid != null){
-					orquery.addExact("id", data.get("assetid"));
+					orquery.addOrsGroup("id", data.get("assetid"));
 				}
 			}
+			
 			aquery.addChildQuery(orquery);
+			aquery.setHitsName("favoriteassetsmatch");
+			
+			
 			
 			HitTracker assethits = archive.getAssetSearcher().cachedSearch(inReq, aquery);
 			
@@ -656,6 +671,7 @@ public class FinderModule extends BaseMediaModule
 		
 	}
 	
+	/*
 	public HitTracker searchDefaultModule(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -672,8 +688,9 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("module", module);
 			HitTracker hits = null;
 			
-			String custompathfinal = firstmenu.get("custompathfinal");
-			if( custompathfinal == null)
+			String custompath = firstmenu.get("custompath");
+			
+			if( custompath == null)
 			{
 				Searcher searcher = archive.getSearcher(module.getId());
 				
@@ -764,7 +781,7 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("moduleid", defaultmodule);
 		return hits;
 	}
-
+*/
 	
 	public void loadTopMenu(WebPageRequest inReq)
 	{
@@ -785,27 +802,6 @@ public class FinderModule extends BaseMediaModule
 				{
 					Data data = (Data) iterator.next();
 					if(data.getValue("custompath") != null) {
-						String custompath = (String)data.getValue("custompath");
-						
-						Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
-
-						replacer.setSearcherManager(archive.getSearcherManager());
-						replacer.setCatalogId(archive.getCatalogId());
-						replacer.setAlwaysReplace(true);
-						String custompathfinal = replacer.replace(custompath, vals);
-						data.setProperty("custompathfinal", custompathfinal);
-						
-						
-						String[] parts = custompathfinal.split("[?]");
-						if (parts.length > 1)
-						{
-							Map arguments = PathUtilities.extractArguments(parts[1]);
-							for (Iterator iterator2 = arguments.keySet().iterator(); iterator2.hasNext();)
-							{
-								String param = (String)iterator2.next();
-								inReq.setRequestParameter(param, (String[])arguments.get(param));
-							}
-						}
 
 						topmenufinal.add(data);
 						
@@ -1137,7 +1133,7 @@ public class FinderModule extends BaseMediaModule
 	
 	
 	
-	public void enablePublishing(WebPageRequest inReq) 
+	public void enablePublishingGallery(WebPageRequest inReq) 
 	{
 		String entityid =  inReq.getRequestParameter("entityid");
 		String moduleid = inReq.getRequestParameter("moduleid");
@@ -1150,7 +1146,26 @@ public class FinderModule extends BaseMediaModule
 			Data entity = (Data) searcher.searchByField("id", entityid);
 			if(entity != null)
 			{
-				entity.setProperty("enablepublishing", "true");
+				entity.setProperty("enablepublishinggallery", "true");
+				searcher.saveData(entity);
+			}
+		}
+	}
+	
+	public void enablePublishingCarousel(WebPageRequest inReq) 
+	{
+		String entityid =  inReq.getRequestParameter("entityid");
+		String moduleid = inReq.getRequestParameter("moduleid");
+		MediaArchive archive = getMediaArchive(inReq);
+		//Data module = archive.getCachedData("module", moduleid);
+		
+		Searcher searcher = archive.getSearcher(moduleid);
+		if(searcher != null) {
+		
+			Data entity = (Data) searcher.searchByField("id", entityid);
+			if(entity != null)
+			{
+				entity.setProperty("enablepublishingcarousel", "true");
 				searcher.saveData(entity);
 			}
 		}
@@ -1162,15 +1177,25 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		MultiValued entity = null;
-
+		String distributiontype = inReq.findValue("distributiontype");
+		if(distributiontype == null || distributiontype == "") {
+			distributiontype = "carousel"; //defaults to carousel
+		}
 		String publishingid =  inReq.getRequestParameter("publishingid");
 		if(publishingid == null)
 		{
+			
 			String entityid =  inReq.getRequestParameter("entityid");
 			if( entityid != null)
 			{
 				Searcher searcher = archive.getSearcher("distributiongallery");
-				Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
+				//Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
+				SearchQuery query = searcher.createSearchQuery();
+				query.addExact("entityid", entityid);
+				if (distributiontype != null) {
+					query.addExact("distributiontype", distributiontype);
+				}
+				Data publishing = searcher.searchByQuery(query);
 				if(publishing != null)
 				{
 					publishingid = publishing.getId();
@@ -1191,9 +1216,9 @@ public class FinderModule extends BaseMediaModule
 				if(Boolean.parseBoolean(publishing.get("enabled")))
 				{
 					entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-					if( !entity.getBoolean("enablepublishing"))
+					if(entity != null &&  !entity.getBoolean("enablepublishinggallery"))
 					{
-						entity.setValue("enablepublishing",true);
+						entity.setValue("enablepublishinggallery",true);
 						archive.saveData(publishing.get("moduleid"),entity);
 					}
 				}
@@ -1202,18 +1227,18 @@ public class FinderModule extends BaseMediaModule
 					if(!Boolean.parseBoolean(publishing.get("enabled")))
 					{
 						entity = (MultiValued) archive.getCachedData(publishing.get("moduleid"),publishing.get("entityid"));
-						if( entity.getBoolean("enablepublishing"))
+						if( entity.getBoolean("enablepublishinggallery"))
 						{
-							entity.setValue("enablepublishing",false);
+							entity.setValue("enablepublishinggallery",false);
 							archive.saveData(publishing.get("moduleid"),entity);
 						}
 					}
 
 				}
+				inReq.putPageValue("entity",entity);
 			}
 		}
 	}
-	
 	
 	public void loadPublishAssets(WebPageRequest inReq)  {
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1242,9 +1267,14 @@ public class FinderModule extends BaseMediaModule
 		}	
 		
 		inReq.putPageValue("publishing", publishing);
+		inReq.putPageValue("distributiontype", publishing.get("distributiontype"));
 		
-		Searcher assetsearcher = archive.getSearcher("asset");
-		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+		
+		String publishingSortby = publishing.get("sortby");
+		if(publishingSortby == null) {
+			publishingSortby = "ordering";
+		}
+		
 		Data entity = null;
 		entity = (Data) inReq.getPageValue("entity");
 		if (entity == null) {
@@ -1252,24 +1282,59 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("entity",entity);
 		}
 		
-		Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+		HitTracker tracker = null;
+		String hitsname = "publishingentityassethits";
 		
-		if(search == null) {
-			search = assetsearcher.createSearchQuery();
+		String lightboxid = publishing.get("lightboxid");
+		if(lightboxid != null) {
+			Data module = archive.getCachedData("module", publishing.get("moduleid"));
+			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
+			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox, publishingSortby, inReq.getUser());
+			tracker.setHitsPerPage(1000);
+		}
+		else {
+			Searcher assetsearcher = archive.getSearcher("asset");
+			SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+			Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
+			if(search == null) {
+				search = assetsearcher.createSearchQuery();
+			}
+			if (category != null) {
+				search.addExact("category", category.getId());
+			}
+			search.setHitsName(hitsname);
+			//search.addSortBy("assetaddeddateDown");	
+			search.addSortBy(publishingSortby);
+			tracker = assetsearcher.search(search);
+			tracker.enableBulkOperations();
+			tracker.setHitsPerPage(1000);
 		}
 		
-		search.addExact("category", category.getId());
-		//TODO: Add approved only to query
-		
-		String hitsname = "publishingentityassethits";
-		search.setHitsName(hitsname);
+		//Pagination
+		int totalPages = tracker.getTotalPages();
+		String page = inReq.getRequestParameter("pagenum");
+
+		if (page != null)
+		{
+			int jumpToPage = Integer.parseInt(page);
+			if (jumpToPage <= totalPages && jumpToPage > 0)
+			{
+				tracker.setPage(jumpToPage);
+			}
+			else
+			{
+				tracker.setPage(1);
+			}
 			
+		}
 		
-		HitTracker tracker = assetsearcher.search(search);
-		tracker.setHitsPerPage(25);
 		inReq.putPageValue(hitsname,tracker);
 	}
+	
+	
 
 	
 	
 }
+
+

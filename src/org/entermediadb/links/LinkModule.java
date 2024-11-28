@@ -586,14 +586,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 		inRequest.putPageValue(name, webTree);
 		return webTree;
 	}
-	public void approveDraft(WebPageRequest inReq) throws OpenEditException
-	{
-		LinkTree tree = loadLinks(inReq);
-		if( tree.isDraft() )
-		{
-			getWorkFlow().approve(tree.getPage().getPath(), inReq.getUser() );
-		}
-	}
+	
 	public WorkFlow getWorkFlow()
 	{
 		return fieldWorkFlow;

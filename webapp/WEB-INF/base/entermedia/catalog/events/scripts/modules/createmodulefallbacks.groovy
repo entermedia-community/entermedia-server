@@ -14,7 +14,7 @@ public void init(){
 	//role (settingsgroup), saved searches (savedquery), hot folders, conversion presets, users, orders, collections, libraries, divisions, permissionsapp, preset configuration
 	
 	modules.each{
-		manager.createModuleFallbacks( appid, it);
+		manager.createModuleFallbacks( appid, it,true);
 	}
 	archive.clearAll();
 	

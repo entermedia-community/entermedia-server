@@ -3,7 +3,6 @@ package org.entermediadb.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.bsf.debug.serverImpl.ObjectServer;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;

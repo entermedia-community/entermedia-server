@@ -275,11 +275,70 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 
 		String message = "Removed from category \"" + c.getName() + "\"";
+		/*
 		Asset asset = (Asset)archive.getAssetSearcher().loadData(inPageRequest,assetid);
 		asset.removeCategory(c);
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
-		inPageRequest.putPageValue("asset", asset);
+		inPageRequest.putPageValue("asset", asset);*/
+		
+		
+		Asset asset;
+		
+		String[] assetIds = inPageRequest.getRequestParameters("assetid");
+		for (int i = 0; i < assetIds.length; i++)
+		{
+		
+			if (assetIds[i].startsWith("multiedit:"))
+			{
+				try
+				{
+					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					List tosave = new ArrayList();
+					Integer count = 0;
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+					{
+						asset = (Asset) iterator.next();
+						if (asset == null) {
+							log.error("No asset id passed in");
+							return;
+						}
+						asset.removeCategory(c);
+						tosave.add(asset);
+						if( tosave.size() > 100)
+						{
+							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+							tosave.clear();
+						}
+						count = count +1;
+						//archive.saveAsset(asset, inPageRequest.getUser());
+					}
+					if( tosave.size() > 0)
+					{
+						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+						tosave.clear();
+					}
+					log.info("Removed category from assets: " + count);
+				}
+				catch (Exception e)
+				{
+					continue;
+				}
+			}
+			else 
+			{
+				asset = getAsset(inPageRequest);
+				if (asset == null) {
+					log.error("No asset id passed in");
+					return;
+				}
+				asset.removeCategory(c);
+				archive.saveAsset(asset);
+				inPageRequest.putPageValue("removed" , "1");
+				inPageRequest.putPageValue("asset", asset);
+			}
+		}
+		inPageRequest.setRequestParameter("assetid", assetid);
 	}
 
 	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
@@ -291,32 +350,30 @@ public class CategoryEditModule extends BaseMediaModule {
 		{
 			return;
 		}
-		
-		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		String moduleid = inPageRequest.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inPageRequest, moduleid);
 		boolean movecategory = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
 		String rootcategoryid = inPageRequest.getRequestParameter("rootcategoryid");
-		if( hitssessionid != null )
+		if( tracker != null )
 		{
-			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(hitssessionid);
-			if( tracker != null )
+			tracker = tracker.getSelectedHitracker();
+		}
+		if( tracker != null && tracker.size() > 0 )
+		{
+			int added = 0;
+			tracker.enableBulkOperations();
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				tracker = tracker.getSelectedHitracker();
+				Data data = (Data) iterator.next();
+				Asset asset = archive.getAsset(data.getId());
+				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				archive.saveAsset(asset, inPageRequest.getUser());
+				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+				added++;
 			}
-			if( tracker != null && tracker.size() > 0 )
-			{
-				int added = 0;
-				tracker.enableBulkOperations();
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					Asset asset = archive.getAsset(data.getId());
-					addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
-					added++;
-				}
-				
-				inPageRequest.putPageValue("added" , String.valueOf( added ) );
-				return;
-			}
+			
+			inPageRequest.putPageValue("added" , String.valueOf( added ) );
+			return;
 		}
 		
 		Asset asset;
@@ -330,15 +387,31 @@ public class CategoryEditModule extends BaseMediaModule {
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inPageRequest.getSessionValue(assetIds[i]);
+					log.info("Saving assets: " + assets.size());
+					List tosave = new ArrayList();
+					Integer count = 0;
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{
 						asset = (Asset) iterator.next();
 						if (asset == null) {
 							log.error("No asset id passed in");
-							return;
+							continue;
 						}
 						addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+						tosave.add(asset);
+						if( tosave.size() > 100)
+						{
+							archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+							tosave.clear();
+						}
+						count = count +1;
 					}
+					if( tosave.size() > 0)
+					{
+						archive.getAssetSearcher().saveAllData(tosave, inPageRequest.getUser());
+						tosave.clear();
+					}
+					log.info("Saved: " + count);
 				}
 				catch (Exception e)
 				{
@@ -353,6 +426,8 @@ public class CategoryEditModule extends BaseMediaModule {
 					return;
 				}
 				addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
+				archive.saveAsset(asset, inPageRequest.getUser());
+				archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 				inPageRequest.putPageValue("added" , "1");
 			}
 		}
@@ -380,8 +455,10 @@ public class CategoryEditModule extends BaseMediaModule {
 			}
 			asset.addCategory(c);
 		}
-		archive.saveAsset(asset, inPageRequest.getUser());
-		archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
+		
+		//Save externally
+		//archive.saveAsset(asset, inPageRequest.getUser());
+		//archive.fireMediaEvent("saved", inPageRequest.getUser(), asset);
 	}
 
 	public void setAssetCategories(WebPageRequest inPageRequest)
