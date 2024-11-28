@@ -1939,11 +1939,13 @@ public class AssetEditModule extends BaseMediaModule
 			hitssessionid = hitssessionid.substring("selected".length());
 		}
 
-		//Make a new search based on everyone being selected
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid); //this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		
+		//this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
 		if (hits == null)
 		{
-			log.error("Could not find " + hitssessionid);
+			log.error("Could not find hittracker" );
 			return null;
 		}
 
@@ -1957,7 +1959,7 @@ public class AssetEditModule extends BaseMediaModule
 		//		
 		if (!hits.hasSelections())
 		{
-			log.error("No assets selected " + hitssessionid);
+			log.error("No assets selected hittracker");
 			return null;
 		}
 
@@ -1984,6 +1986,7 @@ public class AssetEditModule extends BaseMediaModule
 		//		HitTracker freshhits = store.getAssetSearcher().cachedSearch(inReq,hits.getSearchQuery());
 		//freshhits.setSelections(hits.getSelections()); //TODO: What if the order changes?
 		//HitTracker selected = freshhits.getSelectedHitracker();
+		
 		String assetid = "multiedit:" + hitssessionid;
 		inReq.removeSessionValue(assetid);
 		Searcher searcher = archive.getSearcher("asset");
@@ -2028,28 +2031,26 @@ public class AssetEditModule extends BaseMediaModule
 			return (Asset) found;
 		}
 		Asset asset = null;
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
-		if (hitssessionid != null)
+
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		if (hits != null && hits.hasSelections())
 		{
-			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (hits != null && hits.hasSelections())
+			String assetid = inReq.getRequestParameter("assetid");
+			if (assetid != null && assetid.startsWith("multiedit:"))
 			{
-				String assetid = inReq.getRequestParameter("assetid");
-				if (assetid != null && assetid.startsWith("multiedit:"))
-				{
-					asset = (Asset) inReq.getSessionValue(assetid);
-				}
-				else if (assetid == null)
-				{
-					String id = hits.getFirstSelected();
-					asset = getMediaArchive(inReq).getAsset(id);
-				}
-				if (asset != null)
-				{
-					inReq.putPageValue("asset", asset);
-				}
+				asset = (Asset) inReq.getSessionValue(assetid);
 			}
-		}
+			else if (assetid == null)
+			{
+				String id = hits.getFirstSelected();
+				asset = getMediaArchive(inReq).getAsset(id);
+			}
+			if (asset != null)
+			{
+				inReq.putPageValue("asset", asset);
+			}
+		} 
 		//		if( asset == null )
 		//		{
 		//			return getAsset(inReq);

@@ -116,15 +116,10 @@ public class OrderModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findPathValue("catalogid");
 
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		String moduleid = inReq.findPathValue("module");
+		HitTracker assets = loadHitTracker(inReq, moduleid);
 		
-		
-		HitTracker assets = null;
-		if (hitssessionid != null)
-		{
-			assets = (HitTracker) inReq.getSessionValue(hitssessionid);
-		}
-		else
+		if (assets == null)
 		{
 			assets = new ListHitTracker();
 			String[] sourcepaths = inReq.getRequestParameters("sourcepath");
@@ -209,17 +204,14 @@ public class OrderModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findPathValue("catalogid");
 
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String mergefield = inReq.getRequestParameter("mergefield");
 		if (mergefield == null)
 		{
 			mergefield = "assetid";
 		}
-		HitTracker datalist = null;
-		if (hitssessionid != null)
-		{
-			datalist = (HitTracker) inReq.getSessionValue(hitssessionid);
-		}
+
+		String moduleid = inReq.findPathValue("module");
+		HitTracker datalist = loadHitTracker(inReq, moduleid);
 
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
@@ -549,16 +541,17 @@ public class OrderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker assets = (HitTracker) inReq.getSessionValue(hitssessionid);
+
+		String moduleid = inReq.findPathValue("module");
+		HitTracker assets = loadHitTracker(inReq, moduleid);
 		if(assets != null) {
 			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
 			{
-	
 				Data hit = (Data) iterator.next();
 				Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
 				getOrderManager(inReq).removeItemFromOrder(archive.getCatalogId(), basket, asset);
 			}
+			String hitssessionid = inReq.getRequestParameter("hitssessionid");
 			inReq.removeSessionValue(hitssessionid);
 			loadAssets(inReq);
 		}
@@ -606,8 +599,8 @@ public class OrderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker assets = (HitTracker) inReq.getSessionValue(hitssessionid);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker assets = loadHitTracker(inReq, moduleid);
 
 		String[] fields = inReq.getRequestParameters("field");
 		Map props = new HashMap();
@@ -784,8 +777,8 @@ public class OrderModule extends BaseMediaModule
 		order.setProperty("publishdestination", publishtemplate.get("publishdestination"));//assume 0 for most orders, 0 can be told to use Aspera
 		searcher.saveData(order, inReq.getUser());
 		
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			Data item = itemsearcher.createNewData();
@@ -894,20 +887,16 @@ public class OrderModule extends BaseMediaModule
 	{
 		List assetids = new ArrayList();
 		if(selectedids == null) {
-			String hitssessionid = inReq.getRequestParameter("hitssessionid");
-			HitTracker assets = null;
-			if (hitssessionid != null)
+			String moduleid = inReq.findPathValue("module");
+			HitTracker assets = loadHitTracker(inReq, moduleid);
+			if (assets != null && assets.hasSelections())
 			{
-				assets = (HitTracker) inReq.getSessionValue(hitssessionid);
-				if (assets != null && assets.hasSelections())
+				for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
 				{
-					for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
-					{
-						Data data = (Data) iterator.next();
-						assetids.add(data.getId());
-					}
+					Data data = (Data) iterator.next();
+					assetids.add(data.getId());
 				}
-			}
+			} 
 		}
 		else {
 			for (int i = 0; i < selectedids.length; i++)

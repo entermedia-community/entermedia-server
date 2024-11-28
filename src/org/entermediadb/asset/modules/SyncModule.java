@@ -228,9 +228,6 @@ public class SyncModule extends BaseMediaModule
 	public void loadAllDataChanges(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker hits = null;
-
-		String sessionid = inReq.getRequestParameter("hitssessionid");
 		String page = inReq.getRequestParameter("page");
 
 		String lastpullago = inReq.getRequestParameter("lastpullago"); //force them to pick a date
@@ -239,10 +236,8 @@ public class SyncModule extends BaseMediaModule
 		{
 			ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 		}
-		if (sessionid != null)
-		{
-			hits = (HitTracker) inReq.getSessionValue(sessionid);
-		}
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 		if (hits == null)
 		{
 			if( ago == null)
@@ -290,21 +285,18 @@ public class SyncModule extends BaseMediaModule
 	public void loadRecentUploads(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String sessionid = inReq.getRequestParameter("hitssessionid");
 		String page = inReq.getRequestParameter("page");
 		ElasticNodeManager manager = (ElasticNodeManager) archive.getNodeManager();
-		HitTracker hits = null;
 		String lastpullago = inReq.getRequiredParameter("lastpullago"); //force them to pick a date
 		Date ago = DateStorageUtil.getStorageUtil().subtractFromNow(Long.parseLong(lastpullago));
 		if( ago == null)
 		{
 			throw new OpenEditException("lastpull required");
 		}
-			
-		if (sessionid != null)
-		{
-			hits = (HitTracker) inReq.getSessionValue(sessionid);
-		}
+		
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+
 		if (hits == null)
 		{
 			String mastereditid = archive.getNodeManager().getLocalClusterId();

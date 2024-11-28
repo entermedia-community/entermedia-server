@@ -445,22 +445,20 @@ public class ProfileModule extends MediaArchiveModule
 			}
 		}
 
-		String sid = inReq.getRequestParameter("hitssessionid");
-		if (sid != null)
-		{
-			HitTracker hits = (HitTracker) inReq.getSessionValue(sid);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 
-			if (hits != null)
-			{
-				String currentview = hits.getResultType();
-				// TODO: maybe these should all be re-loaded in velocity?
-				hits.getSearchQuery().setSortBy(pref.getSortForSearchType(currentview));
-				hits.setHitsPerPage(pref.getHitsPerPageForSearchType(currentview));
-				hits.setIndexId(String.valueOf(System.currentTimeMillis()));
-				Searcher searcher = getSearcherManager().getSearcher(hits.getCatalogId(), "asset");
-				searcher.cachedSearch(inReq, hits.getSearchQuery());
-			}
+		if (hits != null)
+		{
+			String currentview = hits.getResultType();
+			// TODO: maybe these should all be re-loaded in velocity?
+			hits.getSearchQuery().setSortBy(pref.getSortForSearchType(currentview));
+			hits.setHitsPerPage(pref.getHitsPerPageForSearchType(currentview));
+			hits.setIndexId(String.valueOf(System.currentTimeMillis()));
+			Searcher searcher = getSearcherManager().getSearcher(hits.getCatalogId(), "asset");
+			searcher.cachedSearch(inReq, hits.getSearchQuery());
 		}
+		
 	}
 
 	public void checkUserAccount(WebPageRequest inReq)

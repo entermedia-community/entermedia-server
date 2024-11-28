@@ -200,11 +200,11 @@ public class ProjectModule extends BaseMediaModule
 	 * public void addAssetToLibrary(WebPageRequest inReq) { //TODO: Support
 	 * multiple selections MediaArchive archive = getMediaArchive(inReq); String
 	 * libraryid = inReq.getRequestParameter("libraryid"); String hitssessionid
-	 * = inReq.getRequestParameter("hitssessionid"); ProjectManager manager =
+	 * = inReq.getRequestParameter("hitsses/sionid"); ProjectManager manager =
 	 * getProjectManager(inReq);
 	 * 
 	 * if( hitssessionid != null ) { HitTracker tracker =
-	 * (HitTracker)inReq.getSessionValue(hitssessionid); if( tracker != null ) {
+	 * (HitTracker)inReq.getSessionValue(hitsses/sionid); if( tracker != null ) {
 	 * tracker = tracker.getSelectedHitracker(); if( tracker != null &&
 	 * tracker.size() > 0 ) { manager.addAssetToLibrary(archive, libraryid,
 	 * tracker); inReq.putPageValue("added" , String.valueOf( tracker.size() )
@@ -217,7 +217,7 @@ public class ProjectModule extends BaseMediaModule
 	 * } public void removeFromLibrary(WebPageRequest inReq) { //TODO: Support
 	 * multiple selections MediaArchive archive = getMediaArchive(inReq); String
 	 * libraryid = inReq.getRequestParameter("libraryid"); String hitssessionid
-	 * = inReq.getRequestParameter("hitssessionid"); ProjectManager manager =
+	 * = inReq.getRequestParameter("hitsses/sionid"); ProjectManager manager =
 	 * getProjectManager(inReq);
 	 * 
 	 * if( hitssessionid != null ) { HitTracker tracker =
@@ -248,18 +248,17 @@ public class ProjectModule extends BaseMediaModule
 		}
 		inReq.putPageValue("collectionid", librarycollection);
 		ProjectManager manager = getProjectManager(inReq);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		if (hitssessionid != null) {
-			HitTracker tracker = (HitTracker) inReq.getPageValue(hitssessionid);
-			if (tracker != null) {
-				tracker = tracker.getSelectedHitracker();
-			}
-			if (tracker != null && tracker.size() > 0) {
-				manager.addAssetToCollection(archive, librarycollection, tracker);
-				inReq.putPageValue("added", String.valueOf(tracker.size()));
-				return;
-			}
+		String moduleid = inReq.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inReq, moduleid);
+		if (tracker != null) {
+			tracker = tracker.getSelectedHitracker();
 		}
+		if (tracker != null && tracker.size() > 0) {
+			manager.addAssetToCollection(archive, librarycollection, tracker);
+			inReq.putPageValue("added", String.valueOf(tracker.size()));
+			return;
+		}
+		
 		String assetid = inReq.getRequestParameter("assetid");
 		if (assetid != null) {
 			manager.addAssetToCollection(archive, librarycollection, assetid);
@@ -283,44 +282,41 @@ public class ProjectModule extends BaseMediaModule
 			}
 
 		}
-
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		
 		ProjectManager manager = getProjectManager(inReq);
 
-		if (hitssessionid != null) {
-			HitTracker tracker = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (tracker != null) {
-				tracker = tracker.getSelectedHitracker();
-			}
-			if (tracker != null && tracker.size() > 0) {
-				log.info("tracker size was" + tracker.size());
-				manager.addAssetToCollection(archive, librarycollection, tracker);
-				inReq.putPageValue("count", String.valueOf(tracker.size()));
-				return;
-			}
-			inReq.putPageValue("collectionid", librarycollection);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inReq, moduleid);
+		if (tracker != null) {
+			tracker = tracker.getSelectedHitracker();
 		}
-
+		if (tracker != null && tracker.size() > 0) {
+			log.info("tracker size was" + tracker.size());
+			manager.addAssetToCollection(archive, librarycollection, tracker);
+			inReq.putPageValue("count", String.valueOf(tracker.size()));
+			return;
+		}
+		inReq.putPageValue("collectionid", librarycollection);
 	}
 
 	public void removeAssetFromCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+
 		String collectionid = loadCollectionId(inReq);
 
 		ProjectManager manager = getProjectManager(inReq);
-		if (hitssessionid != null) {
-			HitTracker tracker = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (tracker != null) {
-				tracker = tracker.getSelectedHitracker();
-			}
-			if (tracker != null && tracker.size() > 0) {
-				manager.removeAssetFromCollection(archive, collectionid, tracker);
-				inReq.putPageValue("count", String.valueOf(tracker.size()));
-				return;
-			}
+		
+		String moduleid = inReq.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inReq, moduleid);
+		if (tracker != null) {
+			tracker = tracker.getSelectedHitracker();
 		}
+		if (tracker != null && tracker.size() > 0) {
+			manager.removeAssetFromCollection(archive, collectionid, tracker);
+			inReq.putPageValue("count", String.valueOf(tracker.size()));
+			return;
+		}
+		
 		String assetid = inReq.findValue("assetid");
 		if(assetid != null){
 	
@@ -863,13 +859,8 @@ public class ProjectModule extends BaseMediaModule
 	}
 
 	public void createQuickGallery(WebPageRequest inReq) {
-
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker tracker = null;
-		if (hitssessionid != null) {
-			tracker = (HitTracker) inReq.getSessionValue(hitssessionid);
-
-		}
+		String moduleid = inReq.findPathValue("module");
+		HitTracker tracker = loadHitTracker(inReq, moduleid);
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher assetsearcher = archive.getAssetSearcher();

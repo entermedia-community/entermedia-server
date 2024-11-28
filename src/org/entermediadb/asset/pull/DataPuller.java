@@ -547,7 +547,7 @@ public class DataPuller extends BasePuller implements CatalogEnabled
 		{
 			response.put("status", "ok");
 		}
-		//String sessionid = inReq.getRequestParameter("hitssessionid");
+		//String sessionid = inReq.getRequestParameter("hitsses/sionid");
 
 		response.put("totalhits", hits.size());
 		response.put("hitsperpage", hits.getHitsPerPage());

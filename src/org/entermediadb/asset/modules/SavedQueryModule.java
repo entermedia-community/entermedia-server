@@ -143,19 +143,18 @@ public class SavedQueryModule extends BaseMediaModule
 	public SearchQuery loadCurrentQuery(WebPageRequest inReq) throws Exception
 	{
 		//String applicationid = inReq.findValue("applicationid");
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		SearchQuery query = null;
 
-		if (hitssessionid != null)
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		if(hits != null) 
 		{
-			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 			query = hits.getSearchQuery();
-
 		}
-
+		
 		if (query == null)
 		{
-			HitTracker hits = (HitTracker)inReq.getPageValue("hits");
+			hits = (HitTracker)inReq.getPageValue("hits");
 			if( hits != null)
 			{
 				query = hits.getSearchQuery();

@@ -30,6 +30,10 @@ public class BaseMediaModule extends BaseModule
 		{
 			name = inReq.getRequestParameter("hitssessionid");
 		}
+		if (name != null && name.startsWith("selected"))
+		{
+			name = name.substring("selected".length());
+		}
 		HitTracker hits = (HitTracker) inReq.getPageValue(name);
 		return hits;
 	}

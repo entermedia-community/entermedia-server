@@ -1714,10 +1714,10 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteSelections(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
-		//String name = inReq.getRequestParameter("hitssessionid");
+		//String name = inReq.getRequestParameter("hitsses/sionid");
 		//HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		String moduleid = searcher.getSearchType();
+		HitTracker hits = loadHitTracker(inReq, moduleid);
 
 		HitTracker todelete = hits.getSelectedHitracker();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)

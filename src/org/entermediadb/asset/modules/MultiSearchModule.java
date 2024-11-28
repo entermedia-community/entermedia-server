@@ -277,13 +277,12 @@ public class MultiSearchModule extends BaseMediaModule
 	public SearchQuery loadCurrentQuery(WebPageRequest inReq) throws Exception
 	{
 		String applicationid = inReq.findValue("applicationid");
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		SearchQuery query = null;
 		
-		if(hitssessionid != null){
-			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		String moduleid = inReq.findPathValue("module");
+		HitTracker hits = loadHitTracker(inReq, moduleid);
+		if(hits != null){
 			query = hits.getSearchQuery();
-			
 		}
 	
 		if(query == null){

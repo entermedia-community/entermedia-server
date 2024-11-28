@@ -34,6 +34,13 @@ public class BaseExporter
 				log.error("No such sessions: " + sessionid);
 				return;
 			}
+			// String moduleid = inReq.findPathValue("module");
+			// hits = loadHitTracker(inReq, moduleid);
+			// if(hits == null)
+			// {
+			// 	log.error("No hittracker found");
+			// 	return;
+			// }
 		}
 		hits.enableBulkOperations();
 		SearcherManager searcherManager = (SearcherManager)inReq.getPageValue("searcherManager");

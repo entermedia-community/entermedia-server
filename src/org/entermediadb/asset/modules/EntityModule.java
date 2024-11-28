@@ -52,8 +52,7 @@ public class EntityModule extends BaseMediaModule
 			return;
 		}
 		
-		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
-		boolean moveentity = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
+		// boolean moveentity = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
 			
 		Asset asset = getAsset(inPageRequest);
 		if (asset == null) {
@@ -61,10 +60,10 @@ public class EntityModule extends BaseMediaModule
 			return;
 		}
 
-		if( moveentity )
-		{
-			//remove from the other entity
-		}
+		// if( moveentity )
+		// {
+		// 	//remove from the other entity
+		// }
 		Boolean saved = false;
 		//Use standard in CategoryEditModule?
 		if (moduleid.equals("librarycollection")) {
@@ -953,8 +952,6 @@ public class EntityModule extends BaseMediaModule
 		
 		String assetid = inPageRequest.getRequestParameter("assetid");
 		
-		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
-		
 	
 		String lightboxtype = inPageRequest.getRequestParameter("lightboxtype");
 		String dataid = inPageRequest.getRequestParameter("lightboxid");
@@ -967,7 +964,7 @@ public class EntityModule extends BaseMediaModule
 		
 		Integer added = 0;
 		if(category != null) {
-			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+			HitTracker assethits = (HitTracker) loadHitTracker(inPageRequest, moduleid);
 			
 			if( assethits != null && assethits.hasSelections())
 			{
@@ -1013,12 +1010,12 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-	//	String moduleid = inPageRequest.getRequestParameter("moduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
-		String assethitssessionid = inPageRequest.getRequestParameter("hitssessionid");
 		String lightboxid = inPageRequest.getRequestParameter("lightboxid");
 		String categoryid = inPageRequest.getRequestParameter("categoryid");
-		HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
+		
+	  String moduleid = inPageRequest.findPathValue("module");
+		HitTracker assethits = (HitTracker) loadHitTracker(inPageRequest, moduleid);
 		
 		if( assethits != null && assethits.hasSelections())
 		{
