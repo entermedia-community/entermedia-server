@@ -178,6 +178,7 @@ public class FinderModule extends BaseMediaModule
 					}
 				}
 				
+				inReq.putSessionValue("organizedModules",foundmodules);
 				inReq.putPageValue("organizedModules",foundmodules);
 				
 			}
