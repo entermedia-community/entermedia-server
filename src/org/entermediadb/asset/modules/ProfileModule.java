@@ -152,10 +152,12 @@ public class ProfileModule extends MediaArchiveModule
 	public void changeResultView(WebPageRequest inReq)
 	{
 		UserProfile userProfile = inReq.getUserProfile();
-		String changerequest = inReq.getRequestParameter("resultview");
 		String moduleid = inReq.findPathValue("module");
+		String changerequest = inReq.getRequestParameter("changeresultview");
+
 		if (changerequest != null )
 		{
+			inReq.setRequestParameter("resultview" + moduleid,changerequest);
 			String type = moduleid + "resultview";
 			userProfile.setProperty(type, changerequest);
 			userProfile.save();
