@@ -1671,6 +1671,13 @@
 		
 	</bean>
 	
+	<bean id="viewData" class="org.entermediadb.data.ViewData" scope="prototype" >
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	
+	</bean>
+	
 	<bean id="elasticViewSearcher"
 		class="org.entermediadb.elasticsearch.searchers.ElasticViewSearcher"
 		scope="prototype">

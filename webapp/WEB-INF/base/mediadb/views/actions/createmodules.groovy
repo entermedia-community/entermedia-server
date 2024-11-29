@@ -15,6 +15,7 @@ public void init(){
 	
 	modules.each{
 		manager.saveModule(archive.getCatalogId(), appid, it);
+		manager.createMediaDbModule(archive.getCatalogId(),it);
 	}
 }
 

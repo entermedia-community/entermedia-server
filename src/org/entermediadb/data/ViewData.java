@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 
-public class ViewData extends BaseData
+public class ViewData extends BaseData implements CatalogEnabled
 {
 	protected SearcherManager fieldSearchManager;
 	protected Collection<ViewData> fieldChildren;

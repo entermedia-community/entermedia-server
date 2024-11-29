@@ -335,15 +335,17 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		if( moduleid != null)
 		{
-			//TODO: Speed uploading
-			
-			
+			//TODO: Speed up loading
 			String catalogid = inReq.findPathValue("catalogid");
 			Data module = getSearcherManager().getCachedData(catalogid, "module", moduleid);
 			if( module != null)
 			{
 				String appid = inReq.findValue("applicationid");
 				getWorkspaceManager().saveModule(catalogid, appid, module);
+//				if( appid.contains("mediadb"))
+//				{
+//					getWorkspaceManager().createMediaDbModule(catalogid,module);
+//				}
 			}
 		}
 	}

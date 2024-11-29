@@ -52,7 +52,17 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		return data;
 	}
 	
-	
+	public void saveData(Data inData, User inUser)
+	{
+		super.saveData(inData,inUser);
+	}
+
+	@Override
+	public void saveAllData(Collection<Data> inAll, User inUser)
+	{
+		super.saveAllData(inAll, inUser);
+	}
+
 	@Override
 	public void delete(Data inData, User inUser)
 	{
