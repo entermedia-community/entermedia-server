@@ -41,21 +41,20 @@ public class ContentModule extends BaseMediaModule {
 	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
 	{
 		//Add as child
-		String topmodule = inReq.findPathValue("module");
-		
-		String entityid = inReq.getRequestParameter("entityid");
-		String targetentity= inReq.getRequestParameter("moduleid");
-		
-		Data entity = getMediaArchive(inReq).getData(topmodule, entityid);
+		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");		
+		Data entity = (Data) inReq.getPageValue("entity");
+		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+
+		String submodsearchtype = entitypartentview.get("rendertable");		
 
 		String lastprompt= inReq.getRequestParameter("lastprompt.value");
 		entity.setValue("lastprompt",lastprompt);
 		
-		getMediaArchive(inReq).saveData(topmodule,entity);
+		getMediaArchive(inReq).saveData(entitymodule.getId(),entity);
 		
 		ContentManager manager = getContentManager(inReq);		
 		//manager.createDitaEntityFromAI(topmodule,entityid,targetentity);
-		manager.createFromLLM(inReq,topmodule,entityid,targetentity);
+		manager.createFromLLM(inReq,entitymodule.getId(),entity.getId(),submodsearchtype);
 		
 	}
 	public void loadDitaXml(WebPageRequest inReq)

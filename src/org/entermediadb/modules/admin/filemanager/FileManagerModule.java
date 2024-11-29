@@ -449,7 +449,7 @@ public class FileManagerModule extends BaseModule
 		
 		//https://stackoverflow.com/questions/48545648/opening-files-in-eclipse-via-code
 		String path = inReq.getRequestParameter("path");
-		if (path.endsWith("/") && !path.equals("/"))
+		if (path != null && path.endsWith("/") && !path.equals("/"))
 		{
 			path = path.substring(0, path.length() - 1);
 		}
@@ -481,5 +481,18 @@ public class FileManagerModule extends BaseModule
 	}
 	
 	
-
+	public void loadVue(WebPageRequest inReq) throws Exception{
+		//https://stackoverflow.com/questions/48545648/opening-files-in-eclipse-via-code
+		String file = inReq.getRequestParameter("file");
+		String root = inReq.findValue("folderroot");
+		String absolutepath = root + "/" + file;
+		String eclipsepath = inReq.findValue("eclipsepath");
+		Runtime.getRuntime().exec(new String[] {
+			    eclipsepath,
+			    "--launcher.openFile",
+			    absolutepath,
+			    // "path/to/file2.txt",
+			    // ...
+			});
+	}
 }
