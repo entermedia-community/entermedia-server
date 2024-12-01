@@ -493,14 +493,18 @@ public class EntityManager implements CatalogEnabled
 		
 		if(copyingcategory != null)
 		{
-			Searcher categorysearcher = getMediaArchive().getSearcher("category");
-			Category child = (Category) categorysearcher.createNewData();
-			child.setName(copyingcategory.getName());
-			rootcategory.addChild(child);
-			categorysearcher.saveData(child);
+			Category existing =	rootcategory.getChildByName(copyingcategory.getName());
+			if( existing == null)
+			{
+				Searcher categorysearcher = getMediaArchive().getSearcher("category");
+				existing = (Category) categorysearcher.createNewData();
+				existing.setName(copyingcategory.getName());
+				rootcategory.addChild(existing);
+				categorysearcher.saveData(existing);
+			}
 			
 			String[] catids = new String [] {categoryid};
-			getMediaArchive().getCategoryEditor().copyEverything(inUser,catids, child.getId());
+			getMediaArchive().getCategoryEditor().copyEverything(inUser,catids, existing.getId());
 		}
 		
 		return true;

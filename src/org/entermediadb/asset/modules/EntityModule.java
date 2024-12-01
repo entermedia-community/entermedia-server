@@ -235,8 +235,6 @@ public class EntityModule extends BaseMediaModule
 			if(entityManager.addCategoryToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, copyingcategoryid))
 			{
 				inPageRequest.putPageValue("categories", "1");
-				//add assets
-				
 			}
 		}
 	}
