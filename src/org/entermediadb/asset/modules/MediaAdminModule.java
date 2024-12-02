@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -289,12 +290,27 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void saveModule(WebPageRequest inReq) 
 	{
-		Data module = (Data) inReq.getPageValue("data");
-
+		
+		
+		Data module = (Data) inReq.getPageValue("module");
+		if(module != null) {
+			String newname = inReq.getRequestParameter("name.value");
+			if(newname != null) {
+				if(!newname.equals(module.getName())){
+					Category cat = getMediaArchive(inReq).getEntityManager().loadDefaultFolderForModule(module, inReq.getUser());
+					cat.setName(newname);
+					getMediaArchive(inReq).getCategorySearcher().saveCategoryTree(cat);
+					
+				}
+			}
+		}
+		
 		String appid = inReq.findValue("applicationid");
 		String catalogid = inReq.findPathValue("catalogid");
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 		getMediaArchive(inReq).clearAll();
+		
+		
 	}
 
 	public void saveNewModule(WebPageRequest inReq)

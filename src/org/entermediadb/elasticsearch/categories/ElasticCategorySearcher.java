@@ -259,7 +259,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return root;
 	}
 	
-    protected void saveCategoryTree(Category inRootCategory)
+    public void saveCategoryTree(Category inRootCategory)
 	{
 		saveData(inRootCategory, null);
 		for (Iterator iterator = inRootCategory.getChildren().iterator(); iterator.hasNext();)

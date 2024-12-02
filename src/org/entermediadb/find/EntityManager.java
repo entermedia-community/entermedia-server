@@ -167,6 +167,10 @@ public class EntityManager implements CatalogEnabled
 		return cat;
 		
 	}
+	
+	
+	
+	
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
 		if( entity == null || module == null)

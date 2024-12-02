@@ -29,6 +29,7 @@ public interface CategorySearcher extends Searcher
 	public Category loadCategoryByPath(String categorypath);
 
 	public List listAllCategories(Category inTopCategory);
+    public void saveCategoryTree(Category inRootCategory);
 
 	
 	

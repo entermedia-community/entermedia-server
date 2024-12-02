@@ -306,5 +306,11 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 			}
 		}
 	}
+
+	@Override
+	public void saveCategoryTree(Category inRootCategory) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

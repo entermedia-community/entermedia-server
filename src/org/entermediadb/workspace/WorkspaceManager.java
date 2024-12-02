@@ -24,6 +24,7 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
@@ -94,6 +95,12 @@ public class WorkspaceManager
 		fieldPageManager = inPageManager;
 	}
 
+	public MediaArchive getMediaArchive(String inCatalogId) {
+		MediaArchive archive  = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
+		return archive;
+	}
+	
+	
 	public void exportWorkspace(String apppath, OutputStream inOut) throws Exception
 	{
 		Page apppage = getPageManager().getPage(apppath);
@@ -308,9 +315,26 @@ public class WorkspaceManager
 		}
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
+		syncCategoryPermission(catalogid, module);
+		
+		
 	}
 
 	
+	protected void syncCategoryPermission(String inCatalogid, Data inModule) {
+		
+		MediaArchive archive = getMediaArchive(inCatalogid);
+		Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
+		rootcat.setValue("viewusers", inModule.getValue("viewusers"));
+		rootcat.setValue("viewgroups", inModule.getValue("viewgroups"));
+		rootcat.setValue("viewroles", inModule.getValue("viewroles"));
+		rootcat.setValue("securityenabled", inModule.getValue("securityenabled"));
+
+		archive.getCategorySearcher().saveCategory(rootcat);
+		
+		
+	}
+
 	public String createModuleFallbacks(String appid, Data module)
 	{
 		return createModuleFallbacks(appid, module, false);
@@ -634,6 +658,8 @@ public class WorkspaceManager
 		}
 
 	}
+	
+	
 
 	public void scanModuleCustomizations(MediaArchive inMediaArchive, Collection inModules)
 	{
