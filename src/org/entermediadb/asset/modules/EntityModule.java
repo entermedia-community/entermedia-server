@@ -211,13 +211,13 @@ public class EntityModule extends BaseMediaModule
 
 	public void addtoNewEntity(WebPageRequest inPageRequest) throws Exception 
 	{
-		String saveaction = inPageRequest.getRequestParameter("saveaction");
+		//String saveaction = inPageRequest.getRequestParameter("saveaction");
 		String copyingsearchtype = inPageRequest.getRequestParameter("copyingsearchtype");
-		if(saveaction != null && "assets".equals(copyingsearchtype)) 
+		if("assets".equals(copyingsearchtype)) 
 		{
 			addAssetsToEntity(inPageRequest);
 		}
-		else if(saveaction != null && "category".equals(copyingsearchtype)) 
+		else if("category".equals(copyingsearchtype)) 
 		{
 			addCategoryToEntity(inPageRequest);
 		}
@@ -230,6 +230,20 @@ public class EntityModule extends BaseMediaModule
 		
 		String pickedmoduleid = inPageRequest.findPathValue("module");
 		String pickedentityid = inPageRequest.getRequestParameter("id");
+		
+		if(pickedentityid == null)
+		{
+			Data data = (Data)inPageRequest.getPageValue("data");
+			if(data != null)
+			{
+				pickedentityid = data.getId();
+			}
+		}
+		
+		if(pickedentityid == null)
+		{
+			throw new OpenEditException("Missing entity id");
+		}
 		
 		String copyingcategoryid = inPageRequest.getRequestParameter("copyingcategoryid");
 		if(copyingcategoryid != null) {
