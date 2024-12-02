@@ -56,7 +56,9 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
+import org.openedit.data.BaseCompositeData;
 import org.openedit.data.BaseData;
+import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
@@ -1531,7 +1533,7 @@ public class MediaArchive implements CatalogEnabled
 			String level = inReq.findActionValue("idlevel");
 			if( level != null)
 			{
-				String[] levels = inReq.getPath().split("/");
+				String[] levels = inReq.getContentPage().getPath().split("/");
 				int pick = Integer.parseInt(level);
 				int fromend = levels.length - pick - 1;
 				categoryId = levels[fromend];
@@ -1986,7 +1988,39 @@ public class MediaArchive implements CatalogEnabled
 		return null;
 
 	}
-
+	public Data getCachedData(WebPageRequest inReq, String inSearchType, String inId)
+	{
+		Data result = null;
+		//TODO: Check the user permissions and check for multiedit
+		if (inId.startsWith("multiedit:"))
+		{
+			CompositeData compositedata = (CompositeData) inReq.getSessionValue(inId);
+			String hitssessionid = inId.substring("multiedit".length() + 1);
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if (compositedata!= null && !compositedata.getSelectedResults().hasChanged(hits)) 
+			{
+				result = compositedata;
+			}
+			if (result == null)
+			{
+				if (hits == null)
+				{
+					log.error("Could not find " + hitssessionid);
+					return null;
+				}
+				CompositeData composite = new BaseCompositeData(getSearcher(inSearchType), getEventManager(), hits);
+				composite.setId(inId);
+				result = composite;
+				inReq.putSessionValue(inId, result);
+			}
+		}
+		if (result == null)
+		{
+			result = (Data) getCachedData(inSearchType,inId);
+		}
+		return result;
+	}
+	
 	public Data getCachedData(String inSearchType, String inId)
 	{
 		if (inId == null || inSearchType == null)

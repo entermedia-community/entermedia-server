@@ -29,6 +29,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
+import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
@@ -248,9 +249,10 @@ public class EntityModule extends BaseMediaModule
 		//String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
 		String id = inPageRequest.getRequestParameter("id");
 		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
-		String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
+		String entitymoduleid = inPageRequest.getRequestParameter("entitymoduleid");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
-		Integer added = entityManager.addToSearchCategory(inPageRequest, sourcemoduleid, hits, id);
+		log.info("Saving:" + hits.getSearcher().getSearchType() + " " + hits.getSelectionSize()  + " hash " + hits.hashCode());
+		Integer added = entityManager.addToSearchCategory(inPageRequest, entitymoduleid, hits, id);
 		inPageRequest.putPageValue("saved", added);
 	}
 	
@@ -931,7 +933,8 @@ public class EntityModule extends BaseMediaModule
 				entitymoduleid = inPageRequest.findPathValue("module");
 			}
 		}
-		Data entity = getMediaArchive(inPageRequest).getCachedData(entitymoduleid, entityid);
+		
+		Data entity = getMediaArchive(inPageRequest).getCachedData(inPageRequest, entitymoduleid, entityid);
 		inPageRequest.putPageValue("entity",entity);
 		
 		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitymoduleid);
@@ -1132,28 +1135,25 @@ public class EntityModule extends BaseMediaModule
 	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
 	{
 		
-		String searchtype = resolveSearchType(inPageRequest);
+		String pickedmodule = inPageRequest.findPathValue("module");
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (searchtype == null) 
+		Searcher searcher = archive.getSearcher(pickedmodule);
+		String pickedid = inPageRequest.getRequestParameter("id");
+		
+		MultiValued picked = (MultiValued) archive.getData(pickedmodule, pickedid);
+		if (picked != null) 
 		{
-			
-			return;
-		}
-		Searcher searcher = archive.getSearcher(searchtype);
-		String id = inPageRequest.getRequestParameter("id");
-		MultiValued entity = (MultiValued) archive.getData(searchtype, id);
-		if (entity != null) {
 			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
 			String entityid = inPageRequest.getRequestParameter("entityid");
 			PropertyDetail detail =  searcher.getDetail(entitytype);
 			if(detail.isMultiValue()) 
 			{
-				entity.addValue(entitytype, entityid);
+				picked.addValue(entitytype, entityid);
 			}
 			else {
-				entity.setValue(entitytype, entityid);
+				picked.setValue(entitytype, entityid);
 			}
-			searcher.saveData(entity);
+			searcher.saveData(picked);
 		}
 		
 	}

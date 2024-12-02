@@ -603,16 +603,21 @@ public class EntityManager implements CatalogEnabled
 		return null;
 	}
 	
-	public Integer addToSearchCategory(WebPageRequest inContext, String sourcemoduleid, HitTracker hits, String id) 
+	public Integer addToSearchCategory(WebPageRequest inContext, String entitymoduleid, HitTracker hits, String searchcategoryid) 
 	{
 		List tosave = new ArrayList();
-		if(hits != null && hits.getSelectedHitracker() != null) {
+		if(hits != null && hits.hasSelections()) {
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
 				MultiValued hit = (MultiValued) iterator.next();
-				hit.addValue("searchcategory", id);
+				hit.addValue("searchcategory", searchcategoryid);
 				tosave.add(hit);
 			}
-			getMediaArchive().saveData(sourcemoduleid, tosave);
+			getMediaArchive().saveData(entitymoduleid, tosave);
+		}
+		else
+		{
+			//selections missing
+			log.error("Sections missing");
 		}
 				
 		return tosave.size();
