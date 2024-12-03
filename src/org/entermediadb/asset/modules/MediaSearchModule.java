@@ -122,6 +122,7 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
 		if (category == null) {
+			log.error("No category found");
 			return;
 		}
 		inPageRequest.putPageValue("category",category);
