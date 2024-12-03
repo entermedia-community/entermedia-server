@@ -1055,8 +1055,10 @@ public class MediaAdminModule extends BaseMediaModule
 					}
 					String modulename = map.getString("text"); 
 					Data module = archive.getData("module",moduleid);
+					boolean newrecord = false;
 					if(module == null)
 					{
+						newrecord = true;
 						module  = archive.getSearcher("module").createNewData();
 						module.setId(moduleid);
 					}
@@ -1068,9 +1070,15 @@ public class MediaAdminModule extends BaseMediaModule
 						module.setValue("moduleicon", icon ); //Clean this up on server 
 					}
 					module.setValue("isentity", true); //Not used anymore?
-					module.setValue("enableuploading", true); 
-					module.setValue("showonsearch", true);
 
+					if( !newrecord )
+					{
+						if( !moduleid.equals("searchcategory") )
+						{
+							module.setValue("enableuploading", true);
+						}
+						module.setValue("showonsearch", true); 
+					}
 					//Children
 					String parentmoduleid = userdata.getString("parent");
 					if( parentmoduleid != null)
