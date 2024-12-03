@@ -931,6 +931,11 @@ public class EntityModule extends BaseMediaModule
 		{
 			return;
 		}
+		if (entityid.startsWith("multiedit:"))
+		{
+			inPageRequest.putPageValue("ismulti",true);
+		}
+		
 		
 		if( entitymoduleid == null )
 		{
