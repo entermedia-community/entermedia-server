@@ -132,20 +132,27 @@ public class EntityModule extends BaseMediaModule
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
 		String pickedmoduleid = inPageRequest.findPathValue("module");
-		String pickedentityid = inPageRequest.getRequestParameter("id");
+		String pickedentityid = inPageRequest.getRequestParameter("dataid");
+		if (pickedentityid == null)
+		{
+			pickedentityid = inPageRequest.getRequestParameter("id");
+		}
 		Data entity = archive.getCachedData(pickedmoduleid ,pickedentityid );
 		
-		String pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
+		String pickedassetid = inPageRequest.getRequestParameter("assetid");
+		if( pickedassetid == null)
+		{
+			pickedassetid = inPageRequest.getRequestParameter("pickedassetid");
+		}
 		if( pickedassetid != null)
 		{
 			Asset asset = archive.getAsset(pickedassetid);
 			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
 			{
 				archive.getAssetSearcher().saveData(asset);
-				inPageRequest.putPageValue("asset", asset);
-				inPageRequest.putPageValue("assets", "1");
 				entityManager.fireAssetAddedToEntity(null, inPageRequest.getUser(),asset, entity);
 			}
+			inPageRequest.putPageValue("asset", asset);
 		}
 		else
 		{
@@ -209,20 +216,6 @@ public class EntityModule extends BaseMediaModule
 	}
 
 
-	public void addtoNewEntity(WebPageRequest inPageRequest) throws Exception 
-	{
-		//String saveaction = inPageRequest.getRequestParameter("saveaction");
-		String copyingsearchtype = inPageRequest.getRequestParameter("copyingsearchtype");
-		if("assets".equals(copyingsearchtype)) 
-		{
-			addAssetsToEntity(inPageRequest);
-		}
-		else if("category".equals(copyingsearchtype)) 
-		{
-			addCategoryToEntity(inPageRequest);
-		}
-	}
-	
 	public void addCategoryToEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -938,6 +931,11 @@ public class EntityModule extends BaseMediaModule
 		{
 			return;
 		}
+		if (entityid.startsWith("multiedit:"))
+		{
+			inPageRequest.putPageValue("ismulti",true);
+		}
+		
 		
 		if( entitymoduleid == null )
 		{
