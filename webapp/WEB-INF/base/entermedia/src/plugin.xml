@@ -1934,7 +1934,7 @@
 	<bean  id="categorySearchSecurity" class="org.entermediadb.asset.search.categorySearchSecurity" lazy-init="default" />
 	<bean  id="librarySearchSecurity" class="org.entermediadb.asset.search.librarySearchSecurity" lazy-init="default" />
 	<bean  id="librarycollectionSearchSecurity" class="org.entermediadb.asset.search.librarycollectionSearchSecurity" lazy-init="default" />
-	<bean  id="assetSearchSecurity" class="org.entermediadb.asset.search.assetSearchSecurity" lazy-init="default" >
+	<bean  id="assetSearchSecurity" class="org.entermediadb.asset.search.AssetSearchSecurity" lazy-init="default" >
 	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

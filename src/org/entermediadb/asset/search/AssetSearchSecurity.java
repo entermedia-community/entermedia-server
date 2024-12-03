@@ -21,9 +21,9 @@ import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class assetSearchSecurity implements SearchSecurity
+public class AssetSearchSecurity implements SearchSecurity
 {
-	private static final Log log = LogFactory.getLog(assetSearchSecurity.class);
+	private static final Log log = LogFactory.getLog(AssetSearchSecurity.class);
 
 	protected ModuleManager fieldModuleManager;
 

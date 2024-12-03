@@ -465,6 +465,7 @@ public class UserManagerModule extends BaseMediaModule
 	//TODO: Delete this method and use the Secured interface instead
 	protected void checkAdminPermission(WebPageRequest inReq) throws OpenEditException
 	{
+		
 		User user = inReq.getUser();
 		if ( user == null)
 		{

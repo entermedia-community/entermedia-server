@@ -455,7 +455,9 @@ public class ContentManager implements CatalogEnabled {
 			HitTracker children, MediaArchive mediaArchive) {
 		Category cat = mediaArchive.getEntityManager().createDefaultFolder(entity, null);
 		// Render DITAS for each question and a map
-		String searchhome = inReq.findPathValue("searchhome");
+		String searchhome = inReq.findPathValue("edithome");
+		//TODO: These files should be in the catalog in my opinion so they can be consistently accessed from mediadb etc
+		
 		Page ditatemplate = mediaArchive.getPageManager().getPage(	searchhome + "/renderdita/templatedita.dita");
 		PropertyDetail detail = mediaArchive.getSearcher(targetmodule).getDetail("name");
 
