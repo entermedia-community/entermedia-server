@@ -80,6 +80,11 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		Term moduleid = inSearch.getTermByDetailId("moduleid");
 		Term systemdefined = inSearch.getTermByDetailId("systemdefined");
 		
+		if (moduleid == null)
+		{
+			return actualviews;
+		}
+		
 		HitTracker combinedviews = actualviews;
 		//Basic searches we can mege with template
 		if( inSearch.getTerms().size() == 2 && moduleid  != null && systemdefined != null)
@@ -245,5 +250,11 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		}
 	}
 
+	
+	@Override
+	public void reindexInternal() throws OpenEditException {
+		// TODO Auto-generated method stub
+		super.reindexInternal();
+	}
 	
 }
