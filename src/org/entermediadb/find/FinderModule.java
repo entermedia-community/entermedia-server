@@ -19,6 +19,7 @@ import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
@@ -1190,12 +1191,11 @@ public class FinderModule extends BaseMediaModule
 			{
 				Searcher searcher = archive.getSearcher("distributiongallery");
 				//Data publishing = (Data) searcher.searchByField("entityid", entityid); //What is this?
-				SearchQuery query = searcher.createSearchQuery();
-				query.addExact("entityid", entityid);
+				QueryBuilder query = searcher.query().exact("entityid", entityid);
 				if (distributiontype != null) {
-					query.addExact("distributiontype", distributiontype);
+					query.exact("distributiontype", distributiontype);
 				}
-				Data publishing = searcher.searchByQuery(query);
+				Data publishing = query.searchOne();
 				if(publishing != null)
 				{
 					publishingid = publishing.getId();
@@ -1240,11 +1240,13 @@ public class FinderModule extends BaseMediaModule
 		}
 	}
 	
-	public void loadPublishAssets(WebPageRequest inReq)  {
+	public void loadPublishAssets(WebPageRequest inReq)  
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String publishingid =  inReq.getRequestParameter("publishingid");
-		if(publishingid == null) {
+		if(publishingid == null)
+		{
 			String publishingurl =  inReq.getRequestParameter("url");
 			
 			if( publishingurl == null)
@@ -1282,37 +1284,30 @@ public class FinderModule extends BaseMediaModule
 			inReq.putPageValue("entity",entity);
 		}
 		
-		HitTracker tracker = null;
 		String hitsname = "publishingentityassethits";
 		
-		String lightboxid = publishing.get("lightboxid");
-		if(lightboxid != null) {
+		String categoryid = publishing.get("categoryid");
+		
+		//Old way to load lightboxes
+		if(categoryid == null) 
+		{
+			String lightboxid = publishing.get("lightboxid");
 			Data module = archive.getCachedData("module", publishing.get("moduleid"));
 			Data lightbox = archive.getCachedData("emedialightbox", lightboxid);
-			tracker = archive.getEntityManager().searchForAssetsInCategory(module, entity, lightbox, publishingSortby, inReq.getUser());
-			tracker.setHitsPerPage(1000);
-		}
-		else {
-			Searcher assetsearcher = archive.getSearcher("asset");
-			SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
-			Category category = (Category) archive.getEntityManager().createDefaultFolder(entity, inReq.getUser());
-			if(search == null) {
-				search = assetsearcher.createSearchQuery();
-			}
-			if (category != null) {
-				search.addExact("category", category.getId());
-			}
-			search.setHitsName(hitsname);
-			//search.addSortBy("assetaddeddateDown");	
-			search.addSortBy(publishingSortby);
-			tracker = assetsearcher.search(search);
-			tracker.enableBulkOperations();
-			tracker.setHitsPerPage(1000);
+			Category cat = archive.getEntityManager().loadLightboxCategory(module, entity, "emedialightbox",lightbox, inReq.getUser());
+			categoryid = cat.getId();
 		}
 		
+		if( categoryid == null)
+		{
+			throw new OpenEditException("Set categoryid on gallery");
+		}
+		
+		HitTracker tracker = archive.query("asset").exact("category",categoryid).sort(publishingSortby).named(hitsname).search();
+		tracker.enableBulkOperations();
 		//Pagination
 		int totalPages = tracker.getTotalPages();
-		String page = inReq.getRequestParameter("pagenum");
+		String page = inReq.getRequestParameter("pagenum");  //why?
 
 		if (page != null)
 		{
@@ -1331,10 +1326,8 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue(hitsname,tracker);
 	}
 	
-	
-
-	
-	
 }
+	
 
-
+	
+	
