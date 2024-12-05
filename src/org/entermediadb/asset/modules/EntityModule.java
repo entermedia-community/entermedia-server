@@ -927,14 +927,6 @@ public class EntityModule extends BaseMediaModule
 			entityid = inPageRequest.getRequestParameter("dataid");
 		}
 		
-		if (entityid == null)
-		{
-			return;
-		}
-		if (entityid.startsWith("multiedit:"))
-		{
-			inPageRequest.putPageValue("ismulti",true);
-		}
 		
 		
 		if( entitymoduleid == null )
@@ -946,12 +938,20 @@ public class EntityModule extends BaseMediaModule
 			}
 		}
 		
-		Data entity = getMediaArchive(inPageRequest).getCachedData(inPageRequest, entitymoduleid, entityid);
-		inPageRequest.putPageValue("entity",entity);
-		
 		Data entitymodule = getMediaArchive(inPageRequest).getCachedData("module", entitymoduleid);
 		inPageRequest.putPageValue("entitymodule",entitymodule);
 
+		if (entityid == null)
+		{
+			return;
+		}
+		if (entityid.startsWith("multiedit:"))
+		{
+			inPageRequest.putPageValue("ismulti",true);
+		}
+		
+		Data entity = getMediaArchive(inPageRequest).getCachedData(inPageRequest, entitymoduleid, entityid);
+		inPageRequest.putPageValue("entity",entity);
 
 	}
 	public void addAssetsToLightbox(WebPageRequest inPageRequest) throws Exception 
