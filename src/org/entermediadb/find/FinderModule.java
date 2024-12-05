@@ -432,11 +432,11 @@ public class FinderModule extends BaseMediaModule
 				Data data = (Data) iterator.next();
 				String assetid = data.get("assetid");
 				if(assetid != null){
-					orquery.addOrsGroup("id", data.get("assetid"));
+					orquery.addExact("id", data.get("assetid"));
 				}
 			}
 			
-			aquery.addChildQuery(orquery);
+			aquery.addChildQuery(orquery); 
 			aquery.setHitsName("favoriteassetsmatch");
 			
 			
