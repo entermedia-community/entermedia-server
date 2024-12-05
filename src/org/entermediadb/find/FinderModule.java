@@ -59,8 +59,9 @@ public class FinderModule extends BaseMediaModule
 	
 	public void organizeHits(WebPageRequest inReq) 
 	{
-		Collection foundmodules = (Collection)inReq.getPageValue("organizedModules");
-		if( foundmodules != null)
+		Collection organizedHits = (Collection)inReq.getPageValue("organizedHits");
+		
+		if( organizedHits != null)
 		{
 			log.info("Modules aready loaded" + inReq.getPage().getPath());
 			return;
@@ -179,8 +180,8 @@ public class FinderModule extends BaseMediaModule
 					}
 				}
 				
-				inReq.putSessionValue("organizedModules",foundmodules);
 				inReq.putPageValue("organizedModules",foundmodules);
+				//inReq.putPageValue("organizedModules",foundmodules);
 				
 			}
 		}
@@ -318,11 +319,15 @@ public class FinderModule extends BaseMediaModule
 			{
 				ListHitTracker newvalues = new ListHitTracker();
 				newvalues.setHitsPerPage(maxsize);
+				newvalues.setSearcher(archive.getSearcher(type));
 				newvalues.setSearchQuery(allhits.getSearchQuery());
 				String v = newvalues.getInput("description");
 				//System.out.print(v);
 				values = newvalues;
 				bytypes.put(type,values);
+				newvalues.setHitsName("idhits");
+				newvalues.setSessionId(type + "idhits");
+				inReq.putSessionValue(newvalues.getSessionId(), newvalues);
 			}
 			int max = maxsize;
 			if( type.equals("asset"))
@@ -354,6 +359,8 @@ public class FinderModule extends BaseMediaModule
 		{
 			return;
 		}
+		
+		long totalhits = 0;
 		
 		ArrayList<Data> foundmodules = new ArrayList();
 		Map<String,Collection> bytypes = null;
@@ -396,6 +403,8 @@ public class FinderModule extends BaseMediaModule
 				//organizeHits(inReq, hits, hits.getPageOfHits());
 				log.info("Found " + hits.size() + " favorite on " + hits.getHitsName());
 			}
+			totalhits = totalhits + hits.size();
+			
 			String smaxsize = inReq.findValue("maxcols");
 			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
 			bytypes = organizeHits(inReq,hits, hits.iterator(),targetsize);
@@ -417,6 +426,7 @@ public class FinderModule extends BaseMediaModule
 		HitTracker assets = searcher.cachedSearch(inReq, query);
 		if( assets.size() > 0)
 		{
+			
 			//Now do a big OR statement
 			SearchQuery aquery = archive.getAssetSearcher().createSearchQuery();
 			aquery.setSortBy(inReq.findValue("sortby"));
@@ -453,6 +463,8 @@ public class FinderModule extends BaseMediaModule
 					bytypes = new HashMap();
 				}
 				bytypes.put("asset",assethits);
+				
+				totalhits = totalhits + assethits.size();
 			}
 		}
 		
@@ -465,6 +477,9 @@ public class FinderModule extends BaseMediaModule
 		
 		inReq.putPageValue("organizedModules",foundmodules);
 		inReq.putPageValue("organizedHits", bytypes);
+		inReq.putPageValue("organizedHitsSize", totalhits);
+		
+		 
 		
 
 	}
