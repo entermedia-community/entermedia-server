@@ -173,8 +173,9 @@ public class EntityManager implements CatalogEnabled
 	
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
-		if( entity == null || module == null)
+		if( entity == null || module == null || entity.getName() == null)
 		{
+			log.error("No entity found entity:" + entity + " in module:" + module );
 			return null;
 		}
 		Category cat = null;
@@ -199,23 +200,53 @@ public class EntityManager implements CatalogEnabled
 			else
 			{
 				cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
+				if( cat == null)
+				{
+					return null;
+				}
 			}
+			if( cat != null )
+			{
+				boolean saveit = false;
+				String existing = entity.get("rootcategory");
+				if( existing == null || !existing.equals(entity.get("rootcategory") ) )
+				{
+					saveit = true;
+				}
+				entity.setValue("rootcategory",cat.getId());
+				if( entity.getValue("uploadsourcepath") == null || !sourcepath.equals(entity.getValue("uploadsourcepath")) )
+				{
+					entity.setValue("uploadsourcepath",sourcepath);
+					saveit = true;
+				}
+				if( saveit )
+				{
+					getMediaArchive().saveData(module.getId(), entity);
+				}
+			}
+
 		}
 		if( cat == null)
 		{
-			//Cant find sourcepath
+			//Cant find sourcepathsaveData
 			return null;
 		}
 		else
 		{
-			entity.setValue("rootcategory",cat.getId());
-			if( entity.getValue("uploadsourcepath") == null )
+			if( !entity.getName().equals(cat.getName()) )
 			{
-				entity.setValue("uploadsourcepath",cat.getCategoryPath());
-				getMediaArchive().saveData(module.getId(), entity);
+				log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
+				cat.setName(entity.getName());
+				//save all the childrem
+				getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
+				if( entity.getValue("uploadsourcepath") == null || !cat.getCategoryPath().equals(entity.getValue("uploadsourcepath")) )
+				{
+					entity.setValue("uploadsourcepath",cat.getCategoryPath());
+					getMediaArchive().saveData(module.getId(), entity);
+				}
 			}
 		}
-
+		
 		if( cat.getValue(module.getId()) == null)
 		{
 			cat.setValue(module.getId(),entity.getId()); //Is this smart?
@@ -900,24 +931,24 @@ public class EntityManager implements CatalogEnabled
 	*/
 	
 	//Not used?
-	public Data loadLightBoxForEntity(String lightboxtypeid, Data inModule, Data inEntity)
+	
+	public Data findLightBox(Collection<LightBox> inBoxes, String boxid)
 	{
-		if( inModule == null || inEntity == null)
+		for (Iterator iterator = inBoxes.iterator(); iterator.hasNext();)
 		{
-			log.error("No module");
-			return null;
+			Data lightBox = (Data) iterator.next();
+			if( lightBox.getId().equals(boxid) )
+			{
+				return lightBox;
+			}
 		}
-		Data box = getMediaArchive().query("emediaentitylightbox").exact("lightboxtype", lightboxtypeid)
-				.exact("moduleid", inModule.getId())
-				.exact("entityid", inEntity.getId())
-				.searchOne();
-		return box;
+		return null;
 	}
 
 	//Not used?
-	public HitTracker loadBoxesForModule(String inBoxModuleType, Data inModule, Data inEntity,User inUser)
+	public Collection<LightBox> loadBoxesForModule(String inBoxModuleType, Data inEntityModule, Data inEntity,User inUser)
 	{
-		if( inModule == null)
+		if( inEntityModule == null)
 		{
 			log.error("No module");
 			return null;
@@ -927,112 +958,147 @@ public class EntityManager implements CatalogEnabled
 			log.error("No entity");
 			return null;
 		}
-		QueryBuilder query = null;
 		//Search for all the boxes that match.
 		if( inBoxModuleType == null)
 		{
 			return null;
 		}
-		
+
+		Collection<LightBox> lighboxes = null;
+
 		if( inBoxModuleType.equals("emedialightbox") )
 		{		
-			query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).
-			exact("parentmoduleid", inModule.getId()).sort("orderingUp");
+			QueryBuilder query = getMediaArchive().query("emedialightbox").or().exact("showonall", true).exact("parentmoduleid", inEntityModule.getId()).sort("orderingUp");
+			HitTracker boxes = getMediaArchive().getCachedSearch(query);
+			lighboxes = new ArrayList(boxes.size());
+			Category entityrootcategory = loadDefaultFolder(inEntityModule, inEntity, inUser) ;
+			if( entityrootcategory == null)
+			{
+				log.error("No  root cat" + inEntity);
+				return lighboxes;
+			}
+			for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+			{
+				Data box = (Data) iterator.next();
+				LightBox lightbox = new LightBox();
+				lightbox.setData(box);
+				Category rootcategory = entityrootcategory.getChildByName(box.getName()); //speed up but children could be out of date if they renamed it
+				if( rootcategory == null)
+				{
+					rootcategory = (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + box.getName());
+				}			
+				lightbox.setRootCategory(rootcategory);
+				lighboxes.add(lightbox);
+			}
 		}
 		else
 		{
-			query = getMediaArchive().query(inBoxModuleType).exact(inModule.getId(), inEntity.getId());
+			Data boxmodule = getMediaArchive().getCachedData("module", inBoxModuleType);
+			QueryBuilder query = getMediaArchive().query(inBoxModuleType).exact(inEntityModule.getId(), inEntity.getId());
+			HitTracker boxes = getMediaArchive().getCachedSearch(query);
+			
+			//TODO: Optimize this with a cache based on boxes.getSearcher().getIndexId()
+			lighboxes = new ArrayList(boxes.size());
+			for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
+			{
+				Data box = (Data) iterator.next();
+				LightBox lightbox = new LightBox();
+				lightbox.setData(box);
+				Category rootcategory = loadDefaultFolder(boxmodule,box,inUser,true); //Make em now or later?
+				if(rootcategory == null)
+				{
+					log.error("Could not create category for entity " + box);
+					continue;
+				}
+				lightbox.setRootCategory(rootcategory);
+				lighboxes.add(lightbox);
+			}
 		}
-		HitTracker boxes = getMediaArchive().getCachedSearch(query);
-		//Then each box has a child record with an assetid and comments/statuses
-		//TODO: Search for each box for total assets using facets?
-		return boxes;
-	}
-
-
-	
-	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
-	{
-		HitTracker boxes = loadBoxesForModule("emedialightbox",inModule, inEntity, inUser);
-		return boxes;
-	}
-	public HitTracker loadLightBoxesForEntity(Data inModule, Data inEntity,User inUser)
-	{
-		if( inModule == null)
-		{
-			log.error("No module");
-			return null;
-		}
-		//Search for all the boxes that match. 
-		HitTracker boxes = getMediaArchive().query("emediaentitylightbox")
-		.exact("moduleid", inModule.getId())
-		.exact("entityid", inEntity.getId())
-		.search();
-		return boxes;
-	}
-	
-	public Category loadLightboxCategory(Data inModule, Data inEntity, String inFolderName, User inUser) {
+		setLightBoxCounts(lighboxes);
 		
-		Category entityrootcategory = loadDefaultFolder(inModule, inEntity, inUser) ;
-		if( entityrootcategory == null)
+		return lighboxes;
+	}
+
+
+	
+//	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+//	{
+//		HitTracker boxes = loadBoxesForModule("emedialightbox",inModule, inEntity, inUser);
+//		return boxes;
+//	}
+//	public HitTracker loadLightBoxesForEntity(Data inModule, Data inEntity,User inUser)
+//	{
+//		if( inModule == null)
+//		{
+//			log.error("No module");
+//			return null;
+//		}
+//		//Search for all the boxes that match. 
+//		HitTracker boxes = getMediaArchive().query("emediaentitylightbox")
+//		.exact("moduleid", inModule.getId())
+//		.exact("entityid", inEntity.getId())
+//		.search();
+//		return boxes;
+//	}
+	
+	public Category loadLightboxCategory(Data inModule, Data inEntity, String inBoxTypeId, Data inSelectedBox, User inUser) {
+		
+		
+		Category selectedcat = null;
+		if( inBoxTypeId.equals("emedialightbox") )
 		{
-			log.error("No cat" + inEntity);
-			return null;
+			Category entityrootcategory = loadDefaultFolder(inModule, inEntity, inUser) ;
+			if( entityrootcategory == null)
+			{
+				log.error("No cat" + inEntity);
+				return null;
+			}
+			if (inSelectedBox == null) 
+			{
+				return entityrootcategory;
+			}
+			//selectedcat = entityrootcategory.getChildByName(inSelectedBox.getName());
+	//		if( selectedcat == null)
+	//		{
+			String catpath = entityrootcategory.getCategoryPath() + "/" + inSelectedBox.getName();
+			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(catpath);
 		}
-		if (inFolderName == null) 
+		else
 		{
-			return entityrootcategory;
+			selectedcat = loadDefaultFolder(inSelectedBox, inUser);
 		}
-		Category selectedcat = entityrootcategory.getChildByName(inFolderName);
-		if( selectedcat == null)
-		{
-			selectedcat= (Category)getMediaArchive().getCategorySearcher().createCategoryPath(entityrootcategory.getCategoryPath() + "/" + inFolderName);
-		}
+		
 		return selectedcat;
 		
 		
 	}
 	
-	public Map loadLightBoxCounts(Data inModule, Data inEntity)
+	protected void setLightBoxCounts(Collection<LightBox> boxes)
 	{
-		Category entityrootcategory = createDefaultFolder(inEntity, null);
-		if( entityrootcategory == null)
+		Collection categories = new ArrayList();
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();)
 		{
-			log.error("No folder");
-			return null;
+			LightBox box = (LightBox) iterator.next();
+			Category cat = box.getRootCategory();
+			categories.add(cat);
 		}
-		HitTracker found = getMediaArchive().query("asset").orgroup("category-exact", entityrootcategory.getChildren()).facet("category").search();
+		QueryBuilder query = getMediaArchive().query("asset").orgroup("category", categories).facet("category"); //Random collection of stuff
+		query.getQuery().setDefaultAggregationCount(2000); //Make sure we get enought of a sample size 2000 assets max
+		HitTracker found =	query.search();
 		
 		Map categorycounts = new HashMap();
 		
-		for (Iterator iterator = entityrootcategory.getChildren().iterator(); iterator.hasNext();) {
-			Category cat = (Category) iterator.next();
-			FilterNode node = found.findFilterChildValue("category",cat.getId());
+		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) 
+		{
+			LightBox box = (LightBox)iterator.next();
+			FilterNode node = found.findFilterChildValue("category",box.getRootCategory().getId());
 			if( node != null)
 			{
-				categorycounts.put(cat.getName(),node.getCount());
+				box.setAssetCount(node.getCount());
 			}
 		}
-		return categorycounts;
-		
 	}
-	/*
-	 * @Deprecated
-	 * 
-	 * */
 	
-	public HitTracker loadLightBoxeAssetsForModule(Collection inBoxes, Data inModule, Data inEntity,User inUser)
-	{
-	
-		//Search for all the boxes that match. 
-		HitTracker assets = getMediaArchive().query("emedialightboxasset").orgroup("lightboxid", inBoxes).
-				exact("parentmoduleid", inModule.getId()).
-				exact("parententityid",inEntity).facet("lightboxid").sort("orderingDown").search();
-		//Then each box has a child record with an assetid and comments/statuses
-		//TODO: Search for each box for total assets using facets?
-		return assets;
-	}
-
 	/**
 	 * This is good for finding related info on assets. To be used later
 	 * @param inUser
@@ -1076,15 +1142,11 @@ public class EntityManager implements CatalogEnabled
 	}
 	*/
 	
-	public Data findFirstSelectedLightBox( HitTracker boxes,Map inCounts)
+	public Data findFirstSelectedLightBox(Collection<LightBox> boxes)
 	{
-		if( inCounts == null || boxes == null)
-		{
-			return null;
-		}
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
-			Data lightbox = (Data) iterator.next();
-			Integer val = (Integer)inCounts.get( lightbox.getName() );
+			LightBox lightbox = (LightBox) iterator.next();
+			Integer val = lightbox.getAssetCount();
 			
 			if( val != null && val > 0)
 			{
@@ -1108,16 +1170,18 @@ public class EntityManager implements CatalogEnabled
 		}
 	}
 
-	
-	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity,Data inSelectedBox, String sortby, User inUser)
+	/*
+//	public HitTracker searchForAssetsInCategory(Data inModule, Data inEntity, Data inSelectedBox, String sortby, User inUser)
+	public HitTracker searchForAssetsInCategory(Category selectedCategory, String sortby, User inUser)
 	{
-		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox.getName() , null);
-		if( parent == null)
-		{
-			return null;
-		}
-		HitTracker hits = getMediaArchive().query("asset").exact("category",parent).sort(sortby).named("catsearch").search();
+//		Category parent = loadLightboxCategory(inModule, inEntity,inSelectedBox, null);
+//		if( parent == null)
+//		{
+//			return null;
+//		}
+		HitTracker hits = getMediaArchive().query("asset").exact("category",selectedCategory).sort(sortby).named("catsearch").search();
 		return hits;
 	}
+	*/
 	
 }

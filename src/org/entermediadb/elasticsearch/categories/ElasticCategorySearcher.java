@@ -261,23 +261,25 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
     public void saveCategoryTree(Category inRootCategory)
 	{
-		saveData(inRootCategory, null);
-		for (Iterator iterator = inRootCategory.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category child = (Category) iterator.next();
-			saveCategoryTree(child);
-		}
+    	List tosave = new ArrayList(1000);
+		saveCategoryTree(inRootCategory,tosave);
+		saveAllData(tosave, null);
 	}
-    protected void saveCategoryTree(Category inRootCategory, List toSave)
+    protected void saveCategoryTree(Category inCategory, List toSave)
    	{
    		//saveData(inRootCategory, null);
-    	toSave.add(inRootCategory);
+    	
+		String path = inCategory.loadCategoryPath();
+		inCategory.setValue("parents", inCategory.getParentCategories());
+		inCategory.setValue("categorypath", path);
+		getCacheManager().put("category", inCategory.getId(),inCategory); //Is this too many?
+    	toSave.add(inCategory);
     	if( toSave.size() > 1000 )
    		{
    			saveAllData(toSave, null);
    			toSave.clear();
    		}
-   		for (Iterator iterator = inRootCategory.getChildren().iterator(); iterator.hasNext();)
+   		for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
    		{
    			Category child = (Category) iterator.next();
    			saveCategoryTree(child, toSave);
@@ -388,15 +390,18 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public void saveCategory(Category inCategory)
 	{
+		String path = inCategory.loadCategoryPath();
+		inCategory.setValue("parents", inCategory.getParentCategories());
+		inCategory.setValue("categorypath", path);
 		saveData(inCategory, null);
-		getCacheManager().put("category", inCategory.getId(),inCategory);
+		getCacheManager().put("category", inCategory.getId(),inCategory); //Is this too many?
+		
 		//log.info("saved" + inCategory.hashCode() + " " + inCategory.getName());
 	}
 	
 	public void saveData(Data inData, User inUser)
 	{
 		//For the path to be saved we might need to force category?
-		
 		super.saveData(inData, inUser);
 		setIndexId(-1);
 //		cat = (ElasticCategory)cat.getParentCategory();

@@ -973,7 +973,7 @@ public class EntityModule extends BaseMediaModule
 		Data module = archive.getCachedData("module", moduleid);
 		Data entity = archive.getCachedData(moduleid, entityid);
 		
-		Category category = entityManager.loadLightboxCategory(module, entity, selectedbox.getName(), inPageRequest.getUser() );
+		Category category = entityManager.loadLightboxCategory(module, entity, lightboxtype, selectedbox, inPageRequest.getUser() );
 		
 		Integer added = 0;
 		if(category != null) {
