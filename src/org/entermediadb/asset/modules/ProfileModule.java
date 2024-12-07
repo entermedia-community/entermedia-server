@@ -85,22 +85,23 @@ public class ProfileModule extends MediaArchiveModule
 		// inReq.getUserProfile().getValues("view_assets_tableresults");
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.findPathValue("searchtype");
-		String view = inReq.getRequestParameter("viewid");
+		String viewid = inReq.getRequestParameter("viewid");
 		if( searchtype == null || "asset".equals(searchtype))
 		{
 			searchtype = "asset";
 		}
-		if( view == null && "asset".equals(searchtype))
+		if( viewid == null && "asset".equals(searchtype))
 		{
-			view = "resultstable";
+			viewid = "resultstable";
 		}
-		else if( view == null)
+		else if( viewid == null)
 		{
-			view = searchtype+"resultstable";
+			viewid = searchtype+"resultstable";
 		}
-		String viewpath = searchtype + "/" + view; 
-		
-		List details = archive.getAssetSearcher().getDetailsForView(viewpath, inReq.getUserProfile());
+		String viewpath = searchtype + "/" + viewid; 
+		Data viewdata = archive.getCachedData("view", viewid);
+
+		List details = archive.getAssetSearcher().getDetailsForView(viewdata, inReq.getUserProfile());
 		
 		if(details == null) {
 			return;
@@ -142,7 +143,7 @@ public class ProfileModule extends MediaArchiveModule
 			detail = (PropertyDetail) iterator.next();
 			ids.add(detail.getId());
 		}
-		inReq.getUserProfile().setValues("view_" + searchtype + "_" + view, ids);
+		inReq.getUserProfile().setValues("view_" + viewid, ids);
 		//System.out.println(ids);
 		getUserProfileManager().saveUserProfile(inReq.getUserProfile());
 	}
@@ -554,40 +555,41 @@ public class ProfileModule extends MediaArchiveModule
 		inReq.putPageValue("profile",prof);
 	}
 
-	/**
-	 * This is only called once 
-	 * @param inReq
-	 * @param view
-	 * @param userProfile
-	 * @param viewkey
-	 */
-	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
-	{
-		String value = userProfile.get(viewkey);
-		if (value == null)
-		{
-			String type = inReq.findPathValue("searchtype"); 
-			if (type == null)
-			{
-				type = "asset";
-			}
-			Searcher searcher = getSearcherManager().getSearcher(inReq.findPathValue("catalogid"), type);
-			List<PropertyDetail> details = searcher.getDetailsForView(view, userProfile);
-			userProfile.setValuesFromDetails(viewkey, details);
-		}
-	}	
+//	/**
+//	 * This is only called once 
+//	 * @param inReq
+//	 * @param view
+//	 * @param userProfile
+//	 * @param viewkey
+//	 */
+//	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
+//	{
+//		String value = userProfile.get(viewkey);
+//		if (value == null)
+//		{
+//			String type = inReq.findPathValue("searchtype"); 
+//			if (type == null)
+//			{
+//				type = "asset";
+//			}
+//			Searcher searcher = getSearcherManager().getSearcher(inReq.findPathValue("catalogid"), type);
+//			List<PropertyDetail> details = searcher.getDetailsForView(view, userProfile);
+//			userProfile.setValuesFromDetails(viewkey, details);
+//		}
+//	}	
 
 	public void saveView(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String searchtype = inReq.findPathValue("searchtype");
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String searchtype = inReq.findPathValue("module");
+		String viewid = inReq.getRequestParameter("viewid");
+		
 		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
 		Searcher searcher = archive.getSearcher(searchtype);
 		inReq.putPageValue("searcher",searcher);
 		String[] sorted = inReq.getRequestParameters("ids");
 
-		String propId = "view_" + viewpath.replace('/', '_');  //This is missing the settingsgroup values. Not needed anyways
+		String propId = "view_" + viewid;
 
 		if( Boolean.parseBoolean(saveforall) )
 		{
@@ -596,9 +598,10 @@ public class ProfileModule extends MediaArchiveModule
 			if (sorted == null) {
 				throw new OpenEditException("Missing sort list ids");
 			}
-			detailarchive.saveView(searcher, viewpath, sorted);
+			Data viewdata = archive.getCachedData("view", viewid);
+			detailarchive.saveView(searcher, viewdata, sorted);
 			
-			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewid);
 			inReq.getUserProfile().setValue(propId,null);
 			return;
 		}
@@ -608,25 +611,28 @@ public class ProfileModule extends MediaArchiveModule
 		userProfile.save(inReq.getUser());
 	}
 
+	
+	/**
+	 */
 	public void removeFieldsFromView(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		//See if we neeed to make it system side
 		String searchtype = inReq.findPathValue("searchtype");
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String viewid= inReq.getRequestParameter("viewid");
 		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
 		String detailid = inReq.getRequestParameter("detailid");
 		Searcher searcher = archive.getSearcher(searchtype);
 		inReq.putPageValue("searcher",searcher);
 
+		Data viewdata = archive.getCachedData("view", viewid);
+
 		if( Boolean.parseBoolean(saveforall) )
 		{
 			PropertyDetailsArchive detailarchive = archive.getPropertyDetailsArchive();
-			
-			detailarchive.removeFromView(searcher, viewpath, detailid);
-			
-			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
-			String propId = "view_" + viewpath.replace('/', '_');
+			detailarchive.removeFromView(searcher, viewdata, detailid);
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewid);
+			String propId = "view_" + viewid;
 			inReq.getUserProfile().setValue(propId,null);
 
 			return;
@@ -634,11 +640,11 @@ public class ProfileModule extends MediaArchiveModule
 
 		UserProfile userProfile = inReq.getUserProfile();
 
-		String viewkey = "view_" + viewpath.replace('/', '_');  //This is missing the settingsgroup values. Not needed anyways
+		String viewkey = "view_" + viewid;
 
 		//Check for null starting condition
 		//initList(inReq, viewpath, userProfile, viewkey);
-		List<PropertyDetail> details = searcher.getDetailsForView(viewpath, userProfile);
+		List<PropertyDetail> details = searcher.getDetailsForView(viewdata, userProfile);
 		List<PropertyDetail> tosave = new ArrayList();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
@@ -656,22 +662,23 @@ public class ProfileModule extends MediaArchiveModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//See if we neeed to make it system side
 		String searchtype = inReq.findPathValue("searchtype");
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String viewid = inReq.getRequestParameter("viewid");
 		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
 		String detailid = inReq.getRequestParameter("detailid");
 		Searcher searcher = archive.getSearcher(searchtype);
 		inReq.putPageValue("searcher",searcher);
 		
-		String propId = "view_" + viewpath.replace('/', '_');
+		String propId = "view_" + viewid;
+		Data viewdata = archive.getCachedData("view", viewid);
 
 		
 		if( Boolean.parseBoolean(saveforall) )
 		{
 			PropertyDetailsArchive detailarchive = archive.getPropertyDetailsArchive();
 			
-			detailarchive.addToView(searcher, viewpath, detailid); //System wide
+			detailarchive.addToView(searcher, viewdata, detailid); //System wide
 				
-			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewpath);
+			archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewid);
 			inReq.getUserProfile().setValue(propId,null);
 			return;
 		}
@@ -681,7 +688,7 @@ public class ProfileModule extends MediaArchiveModule
 		
 		Collection ids = new ArrayList();  //Maintains the order
 
-		List details = searcher.getDetailsForView(viewpath, userProfile);
+		List details = searcher.getDetailsForView(viewdata, userProfile);
 		boolean exists = false;
 		if( details != null)
 		{

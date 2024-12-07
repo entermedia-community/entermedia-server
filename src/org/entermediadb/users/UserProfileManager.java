@@ -607,14 +607,14 @@ public class UserProfileManager
 		
 	}
 	
-	public void clearUserProfileViewValues(String inCatalogId, String inViewPath)
+	public void clearUserProfileViewValues(String inCatalogId, String inViewId)
 	{
 		MediaArchive archive = getMediaArchive(inCatalogId);
 		
 		Collection userprofiles = archive.query("userprofile").all().search();
 		
 		Set tosave = new HashSet();
-		String propId = "view_" + inViewPath.replace('/', '_');
+		String propId = "view_" + inViewId;
 
 		//Loop over all the userprofiles
 		for (Iterator iterator2 = userprofiles.iterator(); iterator2.hasNext();)

@@ -40,7 +40,7 @@ public class WorkFlowModule extends BaseMediaModule
 		inReq.getUser().setValue("showdebug","false");
 		inReq.putSessionValue("oe_edit_mode", "editing");
 		getUserManager(inReq).saveUser(inReq.getUser());
-		getPageManager().enableEditMode(true);
+		//getPageManager().enableEditMode(true);
 		redirectBack(inReq);		
 	}
 	public void viewPostMode(WebPageRequest inReq) 
@@ -58,7 +58,7 @@ public class WorkFlowModule extends BaseMediaModule
 		inReq.getUser().setValue("showdebug","true");
 		inReq.putSessionValue("oe_edit_mode","debug");
 		getUserManager(inReq).saveUser(inReq.getUser());
-		getPageManager().enableEditMode(true);
+		//getPageManager().enableEditMode(true);
 		redirectBack(inReq);		
 	}
 	public void viewNoCacheMode(WebPageRequest inReq) 
@@ -78,7 +78,7 @@ public class WorkFlowModule extends BaseMediaModule
 		//inReq.getUser().put("openadmintoolbar","false");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		
-		getPageManager().enableEditMode(true);
+		//getPageManager().enableEditMode(true);
 		
 		redirectBack(inReq);		
 	}
@@ -91,7 +91,7 @@ public class WorkFlowModule extends BaseMediaModule
 		//inReq.getUser().put("openadmintoolbar","false");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		
-		getPageManager().enableEditMode(false);
+		//getPageManager().enableEditMode(false);
 
 		redirectBack(inReq);		
 	}

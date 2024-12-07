@@ -27,7 +27,7 @@ import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.data.View;
+import org.openedit.data.ViewFieldList;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
@@ -134,15 +134,15 @@ public class ContentManager implements CatalogEnabled {
 		Collection views = getMediaArchive().query("view").exact("moduleid", inModuleid).exact("systemdefined", false)
 				.search();
 		for (Iterator iterator = views.iterator(); iterator.hasNext();) {
-			Data data = (Data) iterator.next();
+			Data viewdata = (Data) iterator.next();
 			// See if its data or lookup
-			String render = data.get("rendertype");
+			String render = viewdata.get("rendertype");
 			if (render == null) {
 				JsonUtil util = new JsonUtil();
 				// get fields
-				String viewpath = inModuleid + "/" + data.getId();
-				View view = (View) getMediaArchive().getPropertyDetailsArchive().getView(inModuleid, viewpath, null);
-				for (Iterator iterator2 = view.iterator(); iterator2.hasNext();) {
+				ViewFieldList viewfields = (ViewFieldList) getMediaArchive().getSearcher(inModuleid).getDetailsForView(viewdata, null);
+				//Copy fields
+				for (Iterator iterator2 = viewfields.iterator(); iterator2.hasNext();) {
 					PropertyDetail detail = (PropertyDetail) iterator2.next();
 					Object value = entity.getValue(detail.getId());
 					if (value != null) {

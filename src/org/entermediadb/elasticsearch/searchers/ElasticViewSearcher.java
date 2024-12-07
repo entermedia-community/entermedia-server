@@ -11,6 +11,7 @@ import java.util.Map;
 import org.entermediadb.data.ViewData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
@@ -34,10 +35,10 @@ public class ElasticViewSearcher extends ElasticListSearcher
 			}
 		}
 		
-		if( data == null)
+		if( data == null)   //TODO: Cache lookup?
 		{
-			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"viewtemplate");
-			for (Iterator iterator = searcher.getAllHits().iterator(); iterator.hasNext();)
+			HitTracker hits = getSearcherManager().query(getCatalogId(),"viewtemplate").all().cachedSearch();
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
 				String id = hit.getId().replace("default", "");

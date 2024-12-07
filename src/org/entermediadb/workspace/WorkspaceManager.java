@@ -207,7 +207,7 @@ public class WorkspaceManager
 //					Page viewstemplatedefaults = getPageManager().getPage(viewstemplate);
 //					if (!viewstemplatedefaults.exists()) 
 //					{
-//						viewstemplate = "/" + catalogid + "/data/views/defaults/entities/";
+//						viewstemplate = "/" + catalogid + "/data/views/defaults/";
 //					}
 				//Copies viewusers, viewgroups and security stuff for this entity.
 				Page destinationbase = getPageManager().getPage("/" + catalogid + "/fields/" + module.getId() + "/baseentity.xml");

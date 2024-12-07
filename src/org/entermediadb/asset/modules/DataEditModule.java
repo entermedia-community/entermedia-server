@@ -215,34 +215,34 @@ public class DataEditModule extends BaseMediaModule
 
 	}
 
-	public void makeDefaultView(WebPageRequest inReq) throws Exception
-	{
-
-		XmlFile file = (XmlFile) loadView(inReq);
-
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/" + catalogid + "/data/views/" + viewpath + ".xml";
-		file.setPath(path);
-
-		getXmlArchive().saveXml(file, inReq.getUser());
-
-	}
-
-	public void makeDefaultList(WebPageRequest inReq) throws Exception
-	{
-
-		String fieldName = resolveSearchType(inReq);
-		Searcher searcher = loadSearcher(inReq);
-		if (searcher instanceof XmlSearcher)
-		{
-			HitTracker hits = searcher.getAllHits();
-			String catalogid = searcher.getCatalogId();
-			String file = "/" + catalogid + "/data/lists/" + fieldName + ".xml";
-			((XmlSearcher) searcher).saveAllData(hits, inReq.getUser(), file);
-		}
-	}
+//	public void makeDefaultView(WebPageRequest inReq) throws Exception
+//	{
+//
+//		XmlFile file = (XmlFile) loadView(inReq);
+//
+//		String catalogid = resolveCatalogId(inReq);
+//		String type = resolveSearchType(inReq);
+//		String viewpath = inReq.getRequestParameter("viewpath");
+//		String path = "/" + catalogid + "/data/views/" + viewpath + ".xml";
+//		file.setPath(path);
+//
+//		getXmlArchive().saveXml(file, inReq.getUser());
+//
+//	}
+//
+//	public void makeDefaultList(WebPageRequest inReq) throws Exception
+//	{
+//
+//		String fieldName = resolveSearchType(inReq);
+//		Searcher searcher = loadSearcher(inReq);
+//		if (searcher instanceof XmlSearcher)
+//		{
+//			HitTracker hits = searcher.getAllHits();
+//			String catalogid = searcher.getCatalogId();
+//			String file = "/" + catalogid + "/data/lists/" + fieldName + ".xml";
+//			((XmlSearcher) searcher).saveAllData(hits, inReq.getUser(), file);
+//		}
+//	}
 
 	public void saveProperty(WebPageRequest inReq) throws Exception
 	{
@@ -302,52 +302,28 @@ public class DataEditModule extends BaseMediaModule
 
 		searcher.reloadSettings();
 	}
-	
-	/**
-	 * @deprecated Not used?
-	 */
-	public void addViewById(WebPageRequest inReq) throws Exception
-	{
-		XmlFile file = (XmlFile) loadView(inReq);
-		String catalogid = resolveCatalogId(inReq);
-		String type = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
-		file.setPath(path);
-		file.setElementName("property");
-
-		String newone = inReq.getRequestParameter("newone");
-
-		Element element = file.addNewElement();
-		element.addAttribute("id", newone);
-		element.clearContent();
-
-		getXmlArchive().saveXml(file, inReq.getUser());
-		//reload the archive
-		Searcher searcher = loadSearcher(inReq);
-		searcher.getPropertyDetailsArchive().clearCache();
-	}
 
 	public void addToView(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
 		String searchtype = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String viewid = inReq.getRequestParameter("viewid");
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
 		String newdetailid = inReq.getRequestParameter("detailid");
-		detailarchive.addToView(searcher, viewpath, newdetailid);
-			
 		MediaArchive archive = getMediaArchive(inReq);
-		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
+		Data viewdata = archive.getCachedData("view", viewid);
+		detailarchive.addToView(searcher, viewdata, newdetailid);
+			
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 	}
 
 	public void saveView(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
 		String searchtype = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String viewid = inReq.getRequestParameter("viewid");
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
@@ -356,9 +332,11 @@ public class DataEditModule extends BaseMediaModule
 		if (sorted == null) {
 			throw new OpenEditException("Missing sort list ids");
 		}
-		detailarchive.saveView(searcher, viewpath, sorted);
 		MediaArchive archive = getMediaArchive(inReq);
-		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
+		Data viewdata = archive.getCachedData("view", viewid);
+
+		detailarchive.saveView(searcher, viewdata, sorted);
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 
 	}
 	//TODO: Allow disable of views
@@ -366,15 +344,17 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String catalogid = resolveCatalogId(inReq);
 		String searchtype = resolveSearchType(inReq);
-		String viewpath = inReq.getRequestParameter("viewpath");
+		String viewid = inReq.getRequestParameter("viewid");
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
-		String newdetailid = inReq.getRequestParameter("detailid"); //Does not seem right name
-		detailarchive.removeFromView(searcher, viewpath, newdetailid);
-			
 		MediaArchive archive = getMediaArchive(inReq);
-		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewpath);
+		Data viewdata = archive.getCachedData("view", viewid);
+
+		String newdetailid = inReq.getRequestParameter("detailid"); //Does not seem right name
+		detailarchive.removeFromView(searcher, viewdata, newdetailid);
+			
+		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 
 	}
 
@@ -979,43 +959,15 @@ public class DataEditModule extends BaseMediaModule
 
 	}
 
-	public List loadViews(WebPageRequest inReq)
-	{
-		String catid = resolveCatalogId(inReq);
-
-		String type = inReq.findPathValue("searchtype");
-		if (type == null)
-		{
-			return null;
-		}
-
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catid);
-		List paths = archive.listViews(type);
-
-		List found = new ArrayList();
-		Set fallback = new HashSet();
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-		{
-			String name = (String) iterator.next();
-			if ("CVS".equals(name))
-			{
-				continue;
-			}
-			Data view = archive.getView(type, name);
-			found.add(view);
-		}
-
-		inReq.putPageValue("views", found);
-		return found;
-	}
-
+/*
 	public Data loadView(WebPageRequest inReq) throws Exception
 	{
 		String catid = resolveCatalogId(inReq);
-		String viewid = inReq.getRequestParameter("viewpath");
+		String viewid = inReq.getRequestParameter("viewid");
 		String type = resolveSearchType(inReq);
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catid);
+		
 		Data view = archive.getView(type, viewid);
 		//String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + view + ".xml";
 		//XmlFile file = getXmlArchive().getXml(path);
@@ -1026,7 +978,7 @@ public class DataEditModule extends BaseMediaModule
 		loadProperties(inReq);
 		return view;
 	}
-
+*/
 	public void addNewView(WebPageRequest inReq) throws Exception
 	{
 		String catid = resolveCatalogId(inReq);
@@ -1253,69 +1205,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
-	public void loadPicker(WebPageRequest inReq)
-	{
-		String catalogid = inReq.getRequestParameter("catalogid");
-		Term term = (Term) inReq.getPageValue("term");
-		SearchQuery query = (SearchQuery) inReq.getPageValue("query");
-
-		PropertyDetail detail = (PropertyDetail) inReq.getPageValue("detail");
-		if (detail == null)
-		{
-			if (term == null && query != null)
-			{
-				String termid = inReq.getRequestParameter("termid");
-				term = query.getTermByTermId(termid);
-			}
-			if (term != null)
-			{
-				detail = term.getDetail();
-			}
-			else
-			{
-				return;
-			}
-		}
-		String type = detail.getSearchType();
-
-		// Dependencies
-		String view = detail.getView();
-		List depends = new ArrayList();
-		Map searchers = new HashMap();
-		Map values = new HashMap();
-		StringBuffer additionals = new StringBuffer();
-		for (String foreignkeyid = detail.get("foreignkeyid"); foreignkeyid != null;)
-		{
-			PropertyDetail next = getSearcherManager().getSearcher(detail.getListCatalogId(), type).getDetail(foreignkeyid);
-			depends.add(next);
-			searchers.put(foreignkeyid, getSearcherManager().getListSearcher(next));
-			String value = inReq.getRequestParameter(foreignkeyid);
-			if (value == null)
-			{
-				value = query.getInput(term.getId() + "." + foreignkeyid);
-			}
-			values.put(foreignkeyid, value);
-			additionals.append(foreignkeyid);
-			additionals.append(",");
-			foreignkeyid = next.get("foreignkeyid");
-		}
-		if (additionals.length() > 0)
-		{
-			additionals.deleteCharAt(additionals.length() - 1); // last comma
-		}
-		Collections.reverse(depends);
-
-		inReq.putPageValue("catalogid", catalogid);
-		inReq.putPageValue("termid", term.getId());
-		inReq.putPageValue("applicationid", inReq.findValue("applicationid"));
-		inReq.putPageValue("detail", detail);
-		inReq.putPageValue("depends", depends);
-		inReq.putPageValue("searchers", searchers);
-		inReq.putPageValue("values", values);
-		inReq.putPageValue("additionals", additionals.toString());
-		inReq.putPageValue("searcher", getSearcherManager().getListSearcher(detail));
-
-	}
 	public HitTracker loadHitsWrapped(WebPageRequest inReq) throws Exception
 	{
 		String moduleid = inReq.findPathValue("module");
@@ -1455,16 +1344,16 @@ public class DataEditModule extends BaseMediaModule
 		return hits;
 	}
 
-	public void saveTextForView(WebPageRequest inReq) throws Exception
-	{
-		XmlFile file = (XmlFile) loadView(inReq);
-
-		String label = inReq.getRequestParameter("usagelabel");
-		file.setProperty("usagelabel", label);
-		inReq.putPageValue("message", "saved");
-
-		getXmlArchive().saveXml(file, inReq.getUser());
-	}
+//	public void saveTextForView(WebPageRequest inReq) throws Exception
+//	{
+//		XmlFile file = (XmlFile) loadView(inReq);
+//
+//		String label = inReq.getRequestParameter("usagelabel");
+//		file.setProperty("usagelabel", label);
+//		inReq.putPageValue("message", "saved");
+//
+//		getXmlArchive().saveXml(file, inReq.getUser());
+//	}
 
 	public void saveSorts(WebPageRequest inReq) throws Exception
 	{
@@ -1830,7 +1719,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inData.setProperty(inKey, values.toString());
 	}
-
+/*
 	public void loadCorrectViewForUser(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
@@ -1896,7 +1785,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("views", views);
 	}
-
+*/
 	public void saveHtmlEditorContent(WebPageRequest inReq) throws Exception
 	{
 		String content = inReq.getRequestParameter("content");

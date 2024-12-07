@@ -16,7 +16,7 @@ import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
-import org.openedit.data.View;
+import org.openedit.data.ViewFieldList;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageStreamer;
@@ -396,12 +396,12 @@ public class DitaImporter extends BaseImporter{
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), null);
 			}
 			//Add to the view for this panel
-			String viewpath  = getModule().getId() + "/" + getModule().getId() + "general";
-			View onixview = getSearcher().getPropertyDetailsArchive().getView(getModule().getId(), viewpath, null);
+			String viewid  = getModule().getId() + "general";
+			Data viewdata = getMediaArchive().getCachedData("view", viewid);
+			ViewFieldList onixview = getSearcher().getDetailsForView(viewdata);
 			if( onixview == null)
 			{
-				onixview = new View();
-				onixview.setId(viewpath);
+				onixview = new ViewFieldList();
 			}
 			boolean findview = false;
 			for (Iterator iterator = onixview.iterator(); iterator.hasNext();) {
