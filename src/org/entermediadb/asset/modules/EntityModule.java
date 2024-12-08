@@ -916,7 +916,6 @@ public class EntityModule extends BaseMediaModule
 			if( entitymoduleviewdata != null)
 			{
 				inPageRequest.putPageValue("entitymoduleviewdata",entitymoduleviewdata);
-				entitymoduleid = entitymoduleviewdata.get("moduleid");
 			}
 		}
 
@@ -928,10 +927,17 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 		
-		
 		if( entitymoduleid == null )
 		{
 			entitymoduleid = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
+
+//			//Is this correct? Not sure what module this entity is part of
+//			entitymoduleid = entitymoduleviewdata.get("rendertable");
+//			if( entitymoduleid == null)
+//			{
+//				entitymoduleid = entitymoduleviewdata.get("moduleid");
+//			}
+
 			if( entitymoduleid == null )
 			{
 				entitymoduleid = inPageRequest.findPathValue("module");
