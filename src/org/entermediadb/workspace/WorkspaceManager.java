@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -24,6 +26,7 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
@@ -329,8 +332,33 @@ public class WorkspaceManager
 		rootcat.setValue("viewgroups", inModule.getValue("viewgroups"));
 		rootcat.setValue("viewroles", inModule.getValue("viewroles"));
 		rootcat.setValue("securityenabled", inModule.getValue("securityenabled"));
-
 		archive.getCategorySearcher().saveCategory(rootcat);
+		
+		
+		//also sync assets
+		HitTracker <Data>  assets = archive.query("asset").exact("category", rootcat).search();
+		//These have to be loaded to be saverd properly otherwise it won't run the correct code - it checks for real assets.
+		List<Data> assetsList = (List<Data>) assets.stream()
+			    .map(hit -> archive.getAsset(((Data) hit).getId())) 
+			    .collect(Collectors.toList());
+		
+		archive.getAssetSearcher().saveAllData(assetsList, null);
+		
+		
+//
+//		//TODO:  Verify
+//		HitTracker views = archive.query("view").exact("moduleid", inModule.getId()).exact("systemdefined","false").sort("orderingUp").named("view").search();
+//		for (Iterator iterator = views.iterator(); iterator.hasNext();)
+//		{
+//			Data hit = (Data) iterator.next();
+//			
+//		}
+//		
+		
+
+		
+		
+		
 		
 		
 	}

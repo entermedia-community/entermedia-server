@@ -21,7 +21,7 @@ import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class AssetSearchSecurity implements SearchSecurity
+public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSecurity
 {
 	private static final Log log = LogFactory.getLog(AssetSearchSecurity.class);
 
@@ -62,6 +62,8 @@ public class AssetSearchSecurity implements SearchSecurity
 		//check for category joins
 		if (!inQuery.isSecurityAttached() )
 		{
+
+			
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
 			String profilefilters = profile.get(inSearcher.getSearchType() + "showonly");
@@ -99,37 +101,17 @@ public class AssetSearchSecurity implements SearchSecurity
 			{
 				required = inSearcher.createSearchQuery();
 			}
-			
-//			Collection allowedassetstypes = profile.getValues("hideassettype");
-//			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
-//			{
-//				required.addNots("assettype", allowedassetstypes);
-//			}
-			
+			//attaches viewusers, viewgroups and viewroles
+			attachStandardSecurity(inPageRequest, inSearcher, inQuery);
+		
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
 			
-			Set ids = new HashSet();
+			
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
-			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-			
-			
-			Collection canview = profile.getViewCategories(); //This has entities folders in it
-			if( canview != null )
-			{
-				allowed.addAll(canview);
-			}
-			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
-			{
-				Category allowedcat = (Category) iterator.next();
-				ids.add(allowedcat.getId());
-			}
-			if (ids.isEmpty())
-			{
-				ids.add("none");
-			}
+
 			if (user != null)
 			{
 				orchild.addExact("owner", user.getId());
@@ -146,16 +128,10 @@ public class AssetSearchSecurity implements SearchSecurity
 					}
 				
 			}
-//			boolean onlyapproved = inPageRequest.hasPermission("showonlyapprovedassets"); //Legacy emshare
-//			if(editstatus == null && onlyapproved ) 
-//			{
-//				editstatus="6";
-//			}
 			
 			if(editstatus != null) {
 				//OWNERS can always see their assets (from orchild.addExact))
 				SearchQuery hidependingchild = inSearcher.createSearchQuery();
-				hidependingchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
 				hidependingchild.addExact("editstatus", editstatus);
 				
 				orchild.addChildQuery(hidependingchild);
@@ -163,23 +139,12 @@ public class AssetSearchSecurity implements SearchSecurity
 		
 			else
 			{
-				orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+
+				
+				
 			}
 			required.addChildQuery(orchild);
 
-			//Also add to this list public collections
-//			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
-//			Collection<String> notshown = new ArrayList<String>();
-//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
-//			{
-//				Category cat = (Category) iterator.next();
-//				notshown.add(cat.getId());
-//			}
-//			//child.addMatches("id", "*");
-//			if (!privatecats.isEmpty())
-//			{
-//				required.addNots("category", privatecats); //Hidden categories that Im not part of
-//			}
 			
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseAsset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
@@ -177,6 +180,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		return super.shoudSkipField(inKey);
 	}
+	
 	@Override
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
@@ -227,7 +231,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-			
+			assignCategoryPermissions(categories, asset);
 			super.updateIndex(inContent, inData, inDetails,inUser);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)
@@ -247,6 +251,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			//populatePermission(inContent, asset, "viewasset");
 			setFolderPath(asset, inContent);
 			
+			
+			
+			
+			
 
 		}
 		catch (Exception ex)
@@ -258,6 +266,27 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			throw new OpenEditException(ex);
 		}
 	}
+
+	protected void assignCategoryPermissions(Set inCategories, Asset inAsset) {
+	    HashSet viewusers = new HashSet();
+	    HashSet viewgroups = new HashSet();
+	    HashSet viewroles = new HashSet();
+
+	    for (Iterator iterator = inAsset.getCategories().iterator(); iterator.hasNext();) {
+	        Category cat = (Category) iterator.next();
+
+	        // Use the ternary operator to check for null and addAll only if not null
+	        viewusers.addAll(cat.findValues("viewusers") != null ? cat.findValues("viewusers") : Collections.emptySet());
+	        viewgroups.addAll(cat.findValues("viewgroups") != null ? cat.findValues("viewgroups") : Collections.emptySet());
+	        viewroles.addAll(cat.findValues("viewroles") != null ? cat.findValues("viewroles") : Collections.emptySet());
+	    }
+
+	    inAsset.setValue("viewusers", viewusers);
+	    inAsset.setValue("viewgroups", viewgroups);
+	    inAsset.setValue("viewroles", viewroles);
+	}
+
+	
 
 	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
 	{

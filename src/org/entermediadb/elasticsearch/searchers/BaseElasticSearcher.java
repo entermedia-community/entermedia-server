@@ -336,8 +336,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				throw new OpenEditException("Elastic search requires elastic query");
 			}
 			long start = System.currentTimeMillis();
+			boolean showSearchLogs = getSearcherManager().getShowSearchLogs(getCatalogId());
+
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+			if(showSearchLogs) {
+				search.setExplain(true);
+				search.setRequestCache(false);
+
+			}
+			
+			search.setExplain(true);
 
 			if (getPropertyDetails().getSearchTypes() != null)
 			{
@@ -374,12 +383,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				search.setFetchSource(null, "description");
 			}
+			search.setExplain(true);
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 			hits.setSearcherManager(getSearcherManager());
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
-			if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+			if (showSearchLogs)
 			{
 				long size = hits.size(); // order is important
 				json = search.toString();
@@ -1052,7 +1062,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-
+		
 		buildBoolTerm(inQuery, bool, inQuery.isAndTogether());
 
 		// if( inQuery.isEndUserSearch() )
