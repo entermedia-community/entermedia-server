@@ -1184,6 +1184,19 @@ public class MediaAdminModule extends BaseMediaModule
 				data.setProperty("renderexternalid", parentmodule.getId());
 				data.setProperty("systemdefined", "false");
 				data.setProperty("ordering", System.currentTimeMillis() + "");
+				
+//				//Put the XML file in the right place?
+//				String addpath = "/WEB-INF/base/finder" + archive.getCatalogId() + "/views/" + childmodule.getId() + "/" + childmodule.getId() + "submoduletable.xml";
+//				Page from = getPageManager().getPage(addpath);
+//				
+//				//entityparent/entitychildparent
+//				String targetpath = "/WEB-INF/data/" + archive.getCatalogId() + "/views/" + parentmodule.getId() + "/" + data.getId() + ".xml";
+//				Page to = getPageManager().getPage(targetpath );
+//				if( !to.exists())
+//				{
+//					getPageManager().copyPage(from, to);
+//				}
+				
 				viewsearcher.saveData(data);
 			}
 		}

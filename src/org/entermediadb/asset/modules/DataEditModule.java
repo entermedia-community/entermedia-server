@@ -305,28 +305,24 @@ public class DataEditModule extends BaseMediaModule
 
 	public void addToView(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = resolveCatalogId(inReq);
-		String searchtype = resolveSearchType(inReq);
-		String viewid = inReq.getRequestParameter("viewid");
-		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
+		MediaArchive archive = getMediaArchive(inReq);
+		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(archive.getCatalogId());
 		
 		String newdetailid = inReq.getRequestParameter("detailid");
-		MediaArchive archive = getMediaArchive(inReq);
+		
+		String viewid = inReq.getRequestParameter("viewid");
 		Data viewdata = archive.getCachedData("view", viewid);
-		detailarchive.addToView(searcher, viewdata, newdetailid);
+		
+		detailarchive.addToView(viewdata, newdetailid);
 			
-		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
+		archive.getUserProfileManager().clearUserProfileViewValues(archive.getCatalogId(),viewid);
 	}
 
 	public void saveView(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
-		String searchtype = resolveSearchType(inReq);
 		String viewid = inReq.getRequestParameter("viewid");
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
-		
 
 		String[] sorted = inReq.getRequestParameters("ids");
 		if (sorted == null) {
@@ -335,7 +331,7 @@ public class DataEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Data viewdata = archive.getCachedData("view", viewid);
 
-		detailarchive.saveView(searcher, viewdata, sorted);
+		detailarchive.saveView( viewdata, sorted);
 		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 
 	}
@@ -343,16 +339,14 @@ public class DataEditModule extends BaseMediaModule
 	public void removeFromView(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = resolveCatalogId(inReq);
-		String searchtype = resolveSearchType(inReq);
 		String viewid = inReq.getRequestParameter("viewid");
 		PropertyDetailsArchive detailarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchtype);
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		Data viewdata = archive.getCachedData("view", viewid);
 
 		String newdetailid = inReq.getRequestParameter("detailid"); //Does not seem right name
-		detailarchive.removeFromView(searcher, viewdata, newdetailid);
+		detailarchive.removeFromView( viewdata, newdetailid);
 			
 		archive.getUserProfileManager().clearUserProfileViewValues(catalogid,viewid);
 
@@ -888,14 +882,14 @@ public class DataEditModule extends BaseMediaModule
 		return sorted;
 	}
 
-	public List loadProperties(WebPageRequest inReq) throws Exception
+	public Collection loadProperties(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher == null)
 		{
 			return null;
 		}
-		List all = searcher.getProperties();
+		Collection all = searcher.getProperties();
 		
 		List notdeleted = new ArrayList();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -923,7 +917,7 @@ public class DataEditModule extends BaseMediaModule
 		String id = inReq.getRequestParameter("id");
 		if (id != null)
 		{
-			List all = loadProperties(inReq);
+			Collection all = loadProperties(inReq);
 			for (Iterator iterator = all.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
