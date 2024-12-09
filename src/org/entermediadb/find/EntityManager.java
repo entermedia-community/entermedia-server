@@ -175,7 +175,8 @@ public class EntityManager implements CatalogEnabled
 	{
 		if( entity == null || module == null || entity.getName() == null)
 		{
-			log.error("No entity found entity:" + entity + " in module:" + module );
+			//log.error("No entity found entity:" + entity + " in module:" + module );
+			//Invalid names?
 			return null;
 		}
 		Category cat = null;
@@ -1144,6 +1145,12 @@ public class EntityManager implements CatalogEnabled
 	
 	public Data findFirstSelectedLightBox(Collection<LightBox> boxes)
 	{
+		if( boxes == null)
+		{
+			log.error("No lightboxs loaded");
+			return null;
+		}
+		
 		for (Iterator iterator = boxes.iterator(); iterator.hasNext();) {
 			LightBox lightbox = (LightBox) iterator.next();
 			Integer val = lightbox.getAssetCount();
