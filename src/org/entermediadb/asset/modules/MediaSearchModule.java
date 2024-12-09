@@ -346,8 +346,8 @@ public class MediaSearchModule extends BaseMediaModule
 
 
 	}
-	
-	public void searchProfileAssetsX(WebPageRequest inPageRequest) throws Exception
+/*	
+	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		String faceprofileid = (String)inPageRequest.getPageValue("entityid");
 		if( faceprofileid == null)
@@ -368,7 +368,7 @@ public class MediaSearchModule extends BaseMediaModule
 
 	}
 	
-	
+	*/
 	public void searchProfileAssets(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -381,10 +381,9 @@ public class MediaSearchModule extends BaseMediaModule
 		{
 			return;
 		}
-		String topmoduleid = (String)inPageRequest.findValue("parentmoduleid");
-		if(topmoduleid == null) {
-			topmoduleid = (String)inPageRequest.getPageValue("parentmoduleid");
-		}
+		
+		String entitymoduleid = (String)inPageRequest.findValue("entitymoduleid");
+
 		String personid = null;
 
 		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
@@ -395,7 +394,7 @@ public class MediaSearchModule extends BaseMediaModule
 		
 		Collection faceprofilegroups = new ArrayList();
 		
-		if("entityperson".equals(topmoduleid)) {
+		if("entityperson".equals(entitymoduleid)) {
 			//Search by person id
 			Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
 			if (!profiles.isEmpty()) {
@@ -409,7 +408,7 @@ public class MediaSearchModule extends BaseMediaModule
 			//assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
 			aquery.addExact("faceprofiles.faceprofilegroup", entityid);
 			//faceprofilegroups
-			Data entity = archive.getCachedData(topmoduleid, entityid);
+			Data entity = archive.getCachedData(entitymoduleid, entityid);
 			faceprofilegroups.add(entity);
 		}
 		aquery.setValue("faceprofilegroups", faceprofilegroups);
