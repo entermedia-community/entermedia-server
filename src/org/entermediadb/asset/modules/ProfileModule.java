@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.data.ViewData;
 import org.entermediadb.users.UserProfileManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -619,7 +620,7 @@ public class ProfileModule extends MediaArchiveModule
 		String saveforall = inReq.getUserProfileValue("view_saveforallenabled");
 		String detailid = inReq.getRequestParameter("detailid");
 
-		Data viewdata = archive.getCachedData("view", viewid);
+		ViewData viewdata = (ViewData)archive.getCachedData("view", viewid);
 
 		if( Boolean.parseBoolean(saveforall) )
 		{
@@ -639,14 +640,8 @@ public class ProfileModule extends MediaArchiveModule
 		//Check for null starting condition
 		//initList(inReq, viewpath, userProfile, viewkey);
 		
-		String fieldsearcherid = viewdata.get("rendertable");
-		if( fieldsearcherid == null)
-		{
-			fieldsearcherid = viewdata.get("moduleid");
-		}
-		Searcher fieldsearcher = archive.getSearcher(fieldsearcherid);
-		
-		List<PropertyDetail> details = fieldsearcher.getDetailsForView(viewdata, userProfile);
+		Searcher searcher = viewdata.getSearcher();
+		List<PropertyDetail> details = searcher.getDetailsForView(viewdata, userProfile);
 		List<PropertyDetail> tosave = new ArrayList();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
