@@ -53,7 +53,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					</li>
 				</ul>
 				#end
-				<div class='border-left-subtle border-right-subtle border-bottom-subtle #if($allowloginbyemail != "true") border-top #end py-2 px-3 shadow-sm' style="min-width: 400px;">
+				<div class='border-left-subtle border-right-subtle border-bottom-subtle rounded-bottom #if($allowloginbyemail != "true") border-top #end py-2 px-3 shadow-sm' style="min-width: 400px;">
 					#if($allowloginbyemail == "true")
 						<div id="passwordLessLogin" class="login-method">
 							<form class="ajaxform d-flex flex-column my-4"  style="text-align: left;" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
