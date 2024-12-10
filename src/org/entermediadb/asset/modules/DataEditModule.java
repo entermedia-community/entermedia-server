@@ -362,7 +362,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			return null;
 		}
-		PropertyDetail detail = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searcher.getSearchType()).getDetail(id);
+		PropertyDetail detail = searcher.getDetail(id);
 
 		if (detail != null)
 		{
@@ -889,23 +889,23 @@ public class DataEditModule extends BaseMediaModule
 		{
 			return null;
 		}
-		Collection all = searcher.getProperties();
+//		Collection all = searcher.getProperties();
 		
-		List notdeleted = new ArrayList();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if( !detail.isDeleted())
-			{
-				notdeleted.add(detail);
-			}
-		}
-		Collections.sort(notdeleted);
-		inReq.putPageValue("properties", notdeleted);
+//		List notdeleted = new ArrayList();
+//		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+//		{
+//			PropertyDetail detail = (PropertyDetail) iterator.next();
+//			if( !detail.isDeleted())
+//			{
+//				notdeleted.add(detail);
+//			}
+//		}
+//		Collections.sort(notdeleted);
+//		inReq.putPageValue("properties", notdeleted);
 		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searcher.getSearchType());
 		inReq.putPageValue("details", details);
 
-		return all;
+		return details;
 	}
 
 	public List loadFieldDetails(WebPageRequest inReq) throws Exception
