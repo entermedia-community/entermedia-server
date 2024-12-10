@@ -56,6 +56,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 		setFireEvents(true);
 	}
 	
+	protected boolean fieldOptimizeReindex = true;
+		
+	
 	public Data createNewData()
 	{
 		return getDataConnector().createNewData();
@@ -163,6 +166,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 //		}
 
 	}
+	
+	
+	
 
 	protected BaseCompositeData createCompositeData(HitTracker hits)
 	{

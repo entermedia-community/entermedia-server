@@ -129,6 +129,7 @@ public class ElasticHitTracker extends HitTracker
 	public void setSearcheRequestBuilder(SearchRequestBuilder inSearcheRequestBuilder)
 	{
 		fieldSearcheRequestBuilder = inSearcheRequestBuilder;
+		inSearcheRequestBuilder.setExplain(true);
 	}
 
 	public void setShowOnlySelected(boolean inShowOnlySelected)
