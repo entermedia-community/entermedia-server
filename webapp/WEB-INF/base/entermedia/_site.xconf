@@ -7,7 +7,6 @@
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 
-	<path-action name="MultiSearchModule.loadApplicationId"  />
 	<path-action name="ProfileModule.loadUserProfile"/>
 	<path-action name="Admin.loadPermissions"/>
 	

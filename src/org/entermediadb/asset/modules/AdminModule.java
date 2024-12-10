@@ -806,9 +806,14 @@ public class AdminModule extends BaseMediaModule
 			String catalogid = userManager.getUserSearcher().getCatalogId();
 			inUser.setProperty("catalogid", catalogid);
 			inReq.putSessionValue(catalogid + "user", inUser);
+			
+			String realcatalog = inReq.findPathValue("catalogid");
+			inReq.putSessionValue(realcatalog + "user", inUser);
+			
 			createUserSession(inReq);
 			// user is now logged in
-			log.info("User logged in " + inUser.getId());
+			log.info("User logged in " + inReq.getUser());
+			
 			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
 			if (sendTo == null)
 			{
