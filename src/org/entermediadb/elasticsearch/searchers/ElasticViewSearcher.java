@@ -110,7 +110,7 @@ public class ElasticViewSearcher extends ElasticListSearcher
 		{
 			Data d = (Data)iterator.next();
 			//Make sure these aren't SearchHitData
-			ViewData data = (d instanceof ViewData existingData) ? existingData : (ViewData) loadData(d);
+			ViewData data = (ViewData) loadData(d);
 			if( !data.getBoolean("deleted"))
 			{
 //				if( "asset".equals(moduleid.getValue() ) )
