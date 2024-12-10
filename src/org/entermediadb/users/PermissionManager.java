@@ -475,5 +475,11 @@ public class PermissionManager implements CatalogEnabled
 		}
 		return permissions;
 	}
+
+	public void handleModulePermissionsUpdated()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 		
 }
