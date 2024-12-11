@@ -186,7 +186,7 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-earmark-pdf";
 			}
-			if (mime.startsWith("zip"))
+			if (mime.endsWith("zip"))
 			{
 				return "file-earmark-zip";
 			}
