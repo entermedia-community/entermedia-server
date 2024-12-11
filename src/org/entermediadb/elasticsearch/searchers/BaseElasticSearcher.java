@@ -2967,12 +2967,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					{
 						Object something = iterator.next();
 						Category cat = null;
-						
-						if (something instanceof String id)
+						if (something instanceof String)
 						{
-							 cat =  (Category) searcher.getCategory(id);							
-						} else if (something instanceof Category c) {
-							cat = c;
+						 cat =  (Category) searcher.getCategory((String)something);							
+						} else if (something instanceof Category) {
+							cat = (Category) something;
 						}
 						
 					
