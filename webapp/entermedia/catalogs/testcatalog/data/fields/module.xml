@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <!-- asset details -->  
+  <property id="id" index="true" keyword="true" stored="true" filter="false" editable="true" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" multilanguage="true" stored="true" keyword="true" editable="true" filter="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Nom]]></language> 
+    </name> 
+  </property>  
+  <property id="author" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Author 
+    <name> 
+      <language id="de"><![CDATA[Author]]></language>  
+      <language id="en"><![CDATA[Author]]></language>  
+      <language id="es"><![CDATA[Autor]]></language>  
+      <language id="fr"><![CDATA[Auteur]]></language> 
+    </name> 
+  </property>  
+ 
+  <!-- Extra stuff? -->  
+  <property id="upgradeURL" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Upgrade URL 
+    <name> 
+      <language id="de"><![CDATA[Upgrade-uRL]]></language>  
+      <language id="en"><![CDATA[Upgrade URL]]></language>  
+      <language id="es"><![CDATA[URL de actualización]]></language>  
+      <language id="fr"><![CDATA[URL de mise à niveau]]></language> 
+    </name> 
+  </property>  
+  <property id="licence" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Upgrade URL
+    <name>
+      <language id="de"><![CDATA[Upgrade-uRL]]></language>
+      <language id="en"><![CDATA[Upgrade URL]]></language>
+      <language id="es"><![CDATA[URL de actualización]]></language>
+      <language id="fr"><![CDATA[URL de mise à niveau]]></language>
+    </name>
+  </property> 
+  
+   <property id="ordering" editable="true" index="true" type="number" stored="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Bestellung]]></language>  
+      <language id="en"><![CDATA[Tab Ordering]]></language>  
+      <language id="es"><![CDATA[Ordenando]]></language>  
+      <language id="fr"><![CDATA[Commande]]></language> 
+    </name> 
+  </property>  
+  
+  
+  <!--  Dasta Merge -->
+  
+    <property id="href" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[href]]></language>
+    </name>
+  </property>
+  
+  
+  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user"     type="list">Users 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[Users]]></language>  
+      <language id="es"><![CDATA[usuarios]]></language>  
+      <language id="fr"><![CDATA[Utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group"    type="list">Groups 
+    <name> 
+      <language id="de"><![CDATA[Gruppen]]></language>  
+      <language id="en"><![CDATA[Groups]]></language>  
+      <language id="es"><![CDATA[grupos]]></language>  
+      <language id="fr"><![CDATA[Groupes]]></language> 
+    </name> 
+  </property>  
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
+    <name>
+      <language id="de"><![CDATA[Rollen]]></language>
+      <language id="en"><![CDATA[Roles]]></language>
+      <language id="es"><![CDATA[Roles]]></language>
+      <language id="fr"><![CDATA[Rôles]]></language>
+    </name>
+  </property> 
+  <property id="securityenabled" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Security Enabled]]></language>  
+    </name> 
+  </property> 
+  
+  <property id="modulerendertype" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Render Type]]></language>  
+    </name> 
+  </property> 
+  
+  <property id="moduleicon" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Module Icon]]></language>  
+    </name> 
+  </property> 
+  
+    <property id="uploadsourcepath" editable="true" index="true" stored="true" 
+    note="Module/${entitytableid.name} ${formatteddate} ${formattedyear} ${entityid.entityparentid.uploadsourcepath}"> 
+    <name> 
+      <language id="en"><![CDATA[Upload Sourcepath]]></language>  
+    </name> 
+  </property> 
+
+  <property id="enableuploading" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Enable Uploading]]></language>  
+    </name> 
+  </property>
+
+  <property id="autocreateentities" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Auto Create Entities]]></language>  
+    </name> 
+  </property>
+
+  <property id="autocreatestartingpath" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Root Folder Path]]></language>  
+    </name> 
+  </property> 
+
+   <property id="autocreatedeep" editable="true" index="true" type="number" stored="true"
+   	note="Scan deep A/B/C  B = 2"
+    keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Auto Create At Folder Level]]></language>  
+    </name> 
+  </property>  
+
+  <property id="childentities" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="module" type="list"> 
+    <name> 
+      <language id="en"><![CDATA[Child Entities]]></language>  
+    </name> 
+  </property>  
+
+  <property id="showonsearch" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Enable On Search]]></language>  
+    </name> 
+  </property> 
+  
+  
+
+	<property id="moduleresultsview" editable="true" index="true" stored="true" viewtype="list" datatype="list"  listid="resulttype" type="list"> 
+    <name> 
+      <language id="en"><![CDATA[Default Results View]]></language>  
+    </name> 
+  </property>
+  
+  <property id="defaultsort" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Default Sort Field]]></language>  
+    </name> 
+  </property> 
+  
+  <property id="customname" editable="true" index="true" stored="true" 
+  	note="${entitytable.name}">
+    <name>
+      <language id="en"><![CDATA[Default Record Label]]></language>
+    </name>
+  </property>
+
+  <property id="permissionsupdateddate" type="date" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Permissions Updated Date]]></language>  
+    </name> 
+  </property> 
+    
+</properties>

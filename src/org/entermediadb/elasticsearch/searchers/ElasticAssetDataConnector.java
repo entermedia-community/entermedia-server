@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseAsset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
@@ -177,6 +180,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		return super.shoudSkipField(inKey);
 	}
+	
 	@Override
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
 	{
@@ -227,7 +231,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-			
+		//	assignCategoryPermissions(categories, asset);
 			super.updateIndex(inContent, inData, inDetails,inUser);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)
@@ -247,6 +251,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			//populatePermission(inContent, asset, "viewasset");
 			setFolderPath(asset, inContent);
 			
+			
+			
+			
+			
 
 		}
 		catch (Exception ex)
@@ -258,6 +266,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			throw new OpenEditException(ex);
 		}
 	}
+
+	
 
 	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
 	{

@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -24,6 +26,7 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
@@ -246,7 +249,6 @@ public class WorkspaceManager
 					propertyDetailsArchive.savePropertyDetail(catdetail, "category", null);
 											
 				}
-				
 //				}else {
 //					String template = "/" + catalogid + "/data/lists/view/default.xml";
 //					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
@@ -311,29 +313,16 @@ public class WorkspaceManager
 				copyXml(catalogid, templte3, path3, module);
 				getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
 			}
+			
 		}
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
-		syncCategoryPermission(catalogid, module);
-		
-		
+		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
+		getMediaArchive(catalogid).getPermissionManager().queuePermissionCheck(module);
 	}
 
 	
-	protected void syncCategoryPermission(String inCatalogid, Data inModule) {
-		
-		MediaArchive archive = getMediaArchive(inCatalogid);
-		Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
-		rootcat.setValue("viewusers", inModule.getValue("viewusers"));
-		rootcat.setValue("viewgroups", inModule.getValue("viewgroups"));
-		rootcat.setValue("viewroles", inModule.getValue("viewroles"));
-		rootcat.setValue("securityenabled", inModule.getValue("securityenabled"));
-
-		archive.getCategorySearcher().saveCategory(rootcat);
-		
-		
-	}
-
+	
 	public String createModuleFallbacks(String appid, Data module)
 	{
 		return createModuleFallbacks(appid, module, false);

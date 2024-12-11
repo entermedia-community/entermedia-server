@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page> 
+  
+  
+   <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
+ 
+  </property>  
+  
+  <property id="renewalrecipient"  editable="true" index="true" stored="true" type="list" listid="user"  >Renewal Recipient 
+ 
+  </property>  
+</page>

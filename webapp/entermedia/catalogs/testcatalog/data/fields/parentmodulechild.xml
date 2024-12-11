@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  
+  <property id="parentmodule" editable="true" stored="true" index="true" type="list"/>
+   
+</properties>
