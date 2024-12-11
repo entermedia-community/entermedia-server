@@ -543,7 +543,14 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //			//String id = createCategoryId(categorypath);
 //			//hit = (Data)searchById(id);  //May result in false positive
 //		}
+		Category cached = (Category)getCacheManager().get(getSearchType() + "category", hit.getId());
+		if( cached != null)
+		{
+			return cached;
+		}
+		
 		Category found = (Category)loadData(hit);
+		getCacheManager().put(getSearchType() + "category", found.getId(),found);
 		return found;
 	}
 
