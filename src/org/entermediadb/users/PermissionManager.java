@@ -3,10 +3,12 @@ package org.entermediadb.users;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,15 +16,19 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.config.XMLConfiguration;
 import org.openedit.data.BaseData;
 import org.openedit.data.EntityPermissions;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -37,14 +43,14 @@ import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
 import org.openedit.util.strainer.SettingsGroupFilter;
 
-
 public class PermissionManager implements CatalogEnabled
 {
-	
+
 	private static final Log log = LogFactory.getLog(PermissionManager.class);
 
 	protected SearcherManager fieldSearcherManager;
 	protected PermissionSorter fieldPermissionSorter;
+
 	public CacheManager getCacheManager()
 	{
 		return fieldCacheManager;
@@ -59,6 +65,7 @@ public class PermissionManager implements CatalogEnabled
 	protected String fieldCatalogId;
 	protected FilterReader fieldFilterReader;
 	protected FilterWriter fieldFilterWriter;
+
 	public FilterReader getFilterReader()
 	{
 		return fieldFilterReader;
@@ -89,16 +96,15 @@ public class PermissionManager implements CatalogEnabled
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	
 	public PermissionSorter getPermissionSorter()
 	{
 		if (fieldPermissionSorter == null)
 		{
 			fieldPermissionSorter = new PermissionSorter();
-			
-			Collection items = getSearcherManager().getList(getCatalogId(),"permissionsapp");
+
+			Collection items = getSearcherManager().getList(getCatalogId(), "permissionsapp");
 			fieldPermissionSorter.loadPermissions(items);
-			
+
 		}
 		return fieldPermissionSorter;
 	}
@@ -107,12 +113,12 @@ public class PermissionManager implements CatalogEnabled
 	{
 		fieldPermissionSorter = inPermissionSorter;
 	}
-	
+
 	public void loadPermissions(WebPageRequest inReq, Page inPage, String limited)
 	{
 		HashMap userpermissions = new HashMap();
 		List permissions = null;
-		if( limited == null )
+		if (limited == null)
 		{
 			permissions = inPage.getPermissions();
 		}
@@ -122,8 +128,8 @@ public class PermissionManager implements CatalogEnabled
 			String[] array = limited.split("\\s+");
 			for (int i = 0; i < array.length; i++)
 			{
-				Permission permission = inPage.getPermission( array[i] );
-				if( permission != null )
+				Permission permission = inPage.getPermission(array[i]);
+				if (permission != null)
 				{
 					permissions.add(permission);
 				}
@@ -131,14 +137,14 @@ public class PermissionManager implements CatalogEnabled
 		}
 		if (permissions != null)
 		{
-			Collections.sort(permissions,getPermissionSorter() );
-			
+			Collections.sort(permissions, getPermissionSorter());
+
 			for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
 			{
 				Permission per = (Permission) iterator.next();
 				boolean value = per.passes(inReq);
 				inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value));
-				userpermissions.put("can" + per.getName(), Boolean.valueOf(value));				
+				userpermissions.put("can" + per.getName(), Boolean.valueOf(value));
 			}
 		}
 		inReq.putPageValue("permissionset", userpermissions);
@@ -148,28 +154,28 @@ public class PermissionManager implements CatalogEnabled
 	{
 		//Base module permissions. Module wide
 		//TODO: Cache
-		HitTracker <Data> modulepermissions = (HitTracker <Data>)getCacheManager().get("modulepermissions" + getCatalogId(),inModuleid);
-		if( modulepermissions == null)
+		HitTracker<Data> modulepermissions = (HitTracker<Data>) getCacheManager().get("modulepermissions" + getCatalogId(), inModuleid);
+		if (modulepermissions == null)
 		{
-			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
-				exact("permissiontype", inModuleid).search();
-			getCacheManager().put("modulepermissions" + getCatalogId(),inModuleid,modulepermissions);
+			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").exact("permissiontype", inModuleid).search();
+			getCacheManager().put("modulepermissions" + getCatalogId(), inModuleid, modulepermissions);
 		}
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Permission per = findPermission(inModuleid, inParentFolderId, inDataId, data.getId());
-			if( per != null)
+			if (per != null)
 			{
 				String permissionid = data.get("permission");
-				if(permissionid == null) {
-					permissionid=data.getId();
+				if (permissionid == null)
+				{
+					permissionid = data.getId();
 				}
-				Boolean systemwide = (Boolean)inReq.getPageValue("can" + permissionid);
-				if( systemwide == null || systemwide == false)  //Option
+				Boolean systemwide = (Boolean) inReq.getPageValue("can" + permissionid);
+				if (systemwide == null || systemwide == false) //Option
 				{
 					boolean value = per.passes(inReq);
-					if( value )
+					if (value)
 					{
 						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
 						//log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
@@ -177,63 +183,65 @@ public class PermissionManager implements CatalogEnabled
 				}
 			}
 		}
-		
-		Collection custompermissions = loadCustomPermissionRules(inModuleid,inParentFolderId,inDataId);
-	//	log.info("Checking : " + custompermissions );
+
+		Collection custompermissions = loadCustomPermissionRules(inModuleid, inParentFolderId, inDataId);
+		//	log.info("Checking : " + custompermissions );
 		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
 		{
 			Permission per = (Permission) iterator.next();
 			String permid = per.get("permissionid");
-			Boolean systemwide = (Boolean)inReq.getPageValue("can" + permid);
-			if( systemwide == null || !systemwide )
+			Boolean systemwide = (Boolean) inReq.getPageValue("can" + permid);
+			if (systemwide == null || !systemwide)
 			{
 				boolean value = per.passes(inReq);
-				if( value )
+				if (value)
 				{
 					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
 					//log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
 				}
-			}	
+			}
 		}
 	}
-	protected Collection loadCustomPermissionRules(String inDataType,String inParentFolderId, String inSpecificRow)
+
+	protected Collection loadCustomPermissionRules(String inDataType, String inParentFolderId, String inSpecificRow)
 	{
 		//Use a 5 min Cache
 		Collection<Permission> rules = new ArrayList();
-		HitTracker <Data> modulepermissions = (HitTracker <Data>)getCacheManager().get("moduleidpermissions" + getCatalogId(),inDataType);
-		if( modulepermissions == null)
+		HitTracker<Data> modulepermissions = (HitTracker<Data>) getCacheManager().get("moduleidpermissions" + getCatalogId(), inDataType);
+		if (modulepermissions == null)
 		{
-			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
-				exact("moduleid", inDataType).search();
-			getCacheManager().put("moduleidpermissions" + getCatalogId(),inDataType,modulepermissions);
+			modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").exact("moduleid", inDataType).search();
+			getCacheManager().put("moduleidpermissions" + getCatalogId(), inDataType, modulepermissions);
 		}
 
-//		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
-//				exact("moduleid", inDataType).search();
-	//	log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
+		//		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
+		//				exact("moduleid", inDataType).search();
+		//	log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
 		//log.info(modulepermissions.getFriendlyQuery());
 		//log.info(modulepermissions.getSearchQuery().toString());
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			
+
 			//Specific Asset specific
 			String id = data.get("permission");
-			if(id == null) {
+			if (id == null)
+			{
 				id = data.getId();
 			}
 			Permission per = findPermission(inDataType, null, inSpecificRow, id);
-			if( per == null)
+			if (per == null)
 			{
 				//CollectionID specific
-				 per = findPermission(inDataType, inParentFolderId, null, id);
-				 if(per != null) {
+				per = findPermission(inDataType, inParentFolderId, null, id);
+				if (per != null)
+				{
 					// log.info("WTF");
-				 }
+				}
 			}
-			if( per != null)
+			if (per != null)
 			{
-				per.setValue("permissionid",id); //Needed?
+				per.setValue("permissionid", id); //Needed?
 				rules.add(per);
 			}
 		}
@@ -269,7 +277,7 @@ public class PermissionManager implements CatalogEnabled
 
 	public Permission getPermission(String inPermission)
 	{
-		Data target = (Data)getSearcher("custompermissions").searchById(inPermission);
+		Data target = (Data) getSearcher("custompermissions").searchById(inPermission);
 		if (target == null)
 		{
 			return null;
@@ -283,29 +291,30 @@ public class PermissionManager implements CatalogEnabled
 		return getPermission(inPermission, xml);
 
 	}
-	
-	public Permission findPermission(String inModule, String inFolder, String inData, String inPermissionId ) {
-		
-		
+
+	public Permission findPermission(String inModule, String inFolder, String inData, String inPermissionId)
+	{
+
 		Searcher searcher = getSearcher("custompermissions");
-		if(inFolder == null && inData == null) {
+		if (inFolder == null && inData == null)
+		{
 			return null;
 		}
 
 		String id = inModule + " " + inFolder + " " + inData + " " + inPermissionId;
-		Data target = (Data)getCacheManager().get("custompermissions"+ getCatalogId(), id);
-		if( target == null)
+		Data target = (Data) getCacheManager().get("custompermissions" + getCatalogId(), id);
+		if (target == null)
 		{
 			//log.info("Loading custom permissions " + id);
 			target = (Data) searcher.query().ignoreEmpty().exact("moduleid", inModule).exact("parentfolderid", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
-			if( target == null)
+			if (target == null)
 			{
 				target = BaseData.NULL;
 			}
-			getCacheManager().put("custompermissions"+ getCatalogId(), id,target);
+			getCacheManager().put("custompermissions" + getCatalogId(), id, target);
 		}
-		
-		if(target != null && target != BaseData.NULL) 
+
+		if (target != null && target != BaseData.NULL)
 		{
 			String xml = target.get("value");
 			if (xml == null)
@@ -314,15 +323,12 @@ public class PermissionManager implements CatalogEnabled
 			}
 			return getPermission(target.getId(), xml);
 		}
-		
-		return null;		
-		
-		
-	}
-	
-	
 
-	public void savePermission( Permission inPermission)
+		return null;
+
+	}
+
+	public void savePermission(Permission inPermission)
 	{
 		getCacheManager().clear("custompermissions");
 		Searcher custompermissions = getSearcher("custompermissions");
@@ -335,10 +341,10 @@ public class PermissionManager implements CatalogEnabled
 
 		for (Iterator iterator = inPermission.getMap().keySet().iterator(); iterator.hasNext();)
 		{
-		String key = (String) iterator.next();
+			String key = (String) iterator.next();
 			Object val = (Object) inPermission.getValue(key);
 			target.setValue(key, val);
-			
+
 		}
 		Document doc = DocumentHelper.createDocument();
 		XMLConfiguration configuration = new XMLConfiguration("root");
@@ -352,6 +358,7 @@ public class PermissionManager implements CatalogEnabled
 		inPermission.setId(target.getId());
 
 	}
+
 	private Searcher getSearcher(String inSearchType)
 	{
 		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
@@ -375,20 +382,20 @@ public class PermissionManager implements CatalogEnabled
 	{
 		StringBuffer buffer = new StringBuffer();
 		Filter filter = inPermission.getRootFilter();
-		renderFilter(inArchive,filter,buffer);
+		renderFilter(inArchive, filter, buffer);
 		return buffer.toString();
 	}
 
 	private void renderFilter(MediaArchive inArchive, Filter inFilter, StringBuffer inBuffer)
 	{
-		if( inFilter instanceof OrFilter)
+		if (inFilter instanceof OrFilter)
 		{
-			OrFilter or = (OrFilter)inFilter;
+			OrFilter or = (OrFilter) inFilter;
 
 			Filter[] filters = or.getFilters();
-			if( filters == null || filters.length == 0)
+			if (filters == null || filters.length == 0)
 			{
-				inBuffer.append( "false" );
+				inBuffer.append("false");
 				return;
 			}
 			for (int i = 0; i < filters.length; i++)
@@ -398,26 +405,26 @@ public class PermissionManager implements CatalogEnabled
 					inBuffer.append(" Or ");
 				}
 				//inBuffer.append("(");
-				renderFilter(inArchive,filters[i],inBuffer);
+				renderFilter(inArchive, filters[i], inBuffer);
 				//inBuffer.append(")");
 			}
 		}
-		else if( inFilter instanceof GroupFilter)
-		{		
-			String gid = ((GroupFilter)inFilter).getGroupId();
+		else if (inFilter instanceof GroupFilter)
+		{
+			String gid = ((GroupFilter) inFilter).getGroupId();
 			Group group = inArchive.getGroup(gid);
-			if( group != null)
+			if (group != null)
 			{
-				inBuffer.append(" Group = " + group.getName() );
+				inBuffer.append(" Group = " + group.getName());
 			}
 		}
-		else if( inFilter instanceof SettingsGroupFilter)
+		else if (inFilter instanceof SettingsGroupFilter)
 		{
-			String gid = ((SettingsGroupFilter)inFilter).getGroupId();
+			String gid = ((SettingsGroupFilter) inFilter).getGroupId();
 			Data settings = inArchive.getData("settingsgroup", gid);
-			if( settings != null)
+			if (settings != null)
 			{
-				inBuffer.append(" Role = " + settings.getName() );
+				inBuffer.append(" Role = " + settings.getName());
 			}
 		}
 		else
@@ -428,46 +435,44 @@ public class PermissionManager implements CatalogEnabled
 
 	public EntityPermissions loadEntityPermissions(Data inSettingsGroup)
 	{
-		if(inSettingsGroup != null)
+		if (inSettingsGroup != null)
 		{
 			return loadEntityPermissions(inSettingsGroup.getId());
 		}
 		return null;
 	}
+
 	public EntityPermissions loadEntityPermissions(String inSettingsGroupId)
 	{
 		//Base module permissions. Module wide
 		EntityPermissions entitypermissions = null;//(EntityPermissions)getCacheManager().get("entitypermissions" + getCatalogId(),inSettingsGroupId);
-		entitypermissions =  new EntityPermissions();
+		entitypermissions = new EntityPermissions();
 		entitypermissions.setSettingsGroup(inSettingsGroupId);
 
 		Searcher searcher = getSearcher("permissionentityassigned");
-		HitTracker grouppermissions =  searcher.query().exact("settingsgroup", inSettingsGroupId).search();
-		
+		HitTracker grouppermissions = searcher.query().exact("settingsgroup", inSettingsGroupId).search();
+
 		for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			String entityid = data.get("moduleid");
 			String permissionname = data.get("permissionsentity");
 			Object val = data.getValue("enabled");
-			
-			
-			entitypermissions.putPermission(entityid, permissionname,val );
+
+			entitypermissions.putPermission(entityid, permissionname, val);
 		}
-		
+
 		return entitypermissions;
-			
+
 	}
-	
-	public Map loadEntitySettingsGroupPermissions(String inEntityId, String inSettingsGroupId) {
-		
-		Map permissions =  new HashMap();
+
+	public Map loadEntitySettingsGroupPermissions(String inEntityId, String inSettingsGroupId)
+	{
+
+		Map permissions = new HashMap();
 		Searcher searcher = getSearcher("permissionentityassigned");
-		HitTracker grouppermissions =  searcher.query()
-										.exact("settingsgroup", inSettingsGroupId)
-										.exact("moduleid", inEntityId)
-										.exact("enabled", true) .search();
-		
+		HitTracker grouppermissions = searcher.query().exact("settingsgroup", inSettingsGroupId).exact("moduleid", inEntityId).exact("enabled", true).search();
+
 		for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -478,8 +483,112 @@ public class PermissionManager implements CatalogEnabled
 
 	public void handleModulePermissionsUpdated()
 	{
-		// TODO Auto-generated method stub
+
+		MediaArchive archive = getMediaArchive();
+		
+		Searcher searcher = archive.getSearcher("permissionshistory");
+				
+		MultiValued lastruninfo = (BaseData) searcher.query().sort("dateDown").searchOne();
+		Date lastrundate = null;
+		if (lastruninfo == null)
+		{
+			lastrundate = new Date(0);
+		}
+		else
+		{
+			lastrundate = lastruninfo.getDate("date");
+		}
+		
+		//This was saved by EntityModule when it noticed there is a change between the rootcategory persmissions and the module permission values
+		HitTracker needupdate = archive.query("module").after("permissionsupdateddate", lastrundate).search();
+
+		StringBuffer buffer = new StringBuffer();
+		 
+		for (Iterator iterator = needupdate.iterator(); iterator.hasNext();)
+		{
+			MultiValued module = (MultiValued) iterator.next();
+			Date lastchangred =module.getDate("permissionsupdateddate");
+			if(lastchangred.before(lastrundate)) {
+				continue;//Dunno why this was happening.  Reindex maybe.  TODO:  REmove.
+			}
+			buffer.append("Module " + module.getId() + " Permissions being updated");			
+			Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(module, null);
+			rootcat.setValue("viewusers", module.getValue("viewusers"));
+			rootcat.setValue("viewgroups", module.getValue("viewgroups"));
+			rootcat.setValue("viewroles", module.getValue("viewroles"));
+			rootcat.setValue("securityenabled", module.getValue("securityenabled"));
+			archive.getCategorySearcher().saveCategory(rootcat);
+			getSearcher(module.getId()).reIndexAll();
+			buffer.append("Module " + module.getId() + " Permissions update completed");			
+
+			
+		}
+		
+		Data finishedinfo = searcher.createNewData();
+		finishedinfo.setValue("date", new Date());
+		finishedinfo.setValue("notes", buffer.toString());
+		searcher.saveData(finishedinfo);
+
+	}
+
+	
+
+	protected MediaArchive getMediaArchive()
+	{
+		return (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
+	}
+
+	public void queuePermissionCheck(Data inModule)
+	{
+	    MediaArchive archive = getMediaArchive();
+
+	    Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
+	    boolean needsupdate = false;
+	    String[] fieldsToCompare = {"viewusers", "viewgroups", "viewroles"};
+	    for (String field : fieldsToCompare) {
+	        // Get values from both the root category and the module
+	        Collection<String> rootValues = rootcat.getValues(field);
+	        Collection<String> moduleValues = inModule.getValues(field);
+
+	        // Normalize null values to empty collections
+	        if (rootValues == null) {
+	            rootValues = Collections.emptyList();
+	        }
+	        if (moduleValues == null) {
+	            moduleValues = Collections.emptyList();
+	        }
+
+	        // Compare values
+	        if (!rootValues.containsAll(moduleValues) || !moduleValues.containsAll(rootValues)) {
+	            log.info("Mismatch found for field '" + field + "' in module " + inModule.getId());
+	            log.info("Root Category Values: " + rootValues + ", Module Values: " + moduleValues);
+	            
+	            needsupdate = true;
+	     
+	        }
+	    }
+	    
+	    String rootSecurityEnabled = (String) rootcat.get("securityenabled");
+	    String moduleSecurityEnabled = (String) inModule.get("securityenabled");
+
+	    if ((rootSecurityEnabled == null && moduleSecurityEnabled != null) ||
+	        (rootSecurityEnabled != null && !rootSecurityEnabled.equals(moduleSecurityEnabled))) {
+	        log.info("Mismatch found for 'securityenabled' in module " + inModule.getId());
+	        log.info("Root Category Value: " + rootSecurityEnabled + ", Module Value: " + moduleSecurityEnabled);
+	        needsupdate = true;	        
+	    }
+	    
+	    
+	    if(needsupdate) {
+	    	inModule.setValue("permissionsupdateddate", new Date());
+	    	archive.saveData("module", inModule);
+	    	
+	    }
+		
+	    
+	    archive.fireSharedMediaEvent("entity/checkpermissionhistory");
+	    
 		
 	}
-		
+
 }

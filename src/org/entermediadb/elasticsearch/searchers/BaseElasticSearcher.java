@@ -1,5 +1,7 @@
 package org.entermediadb.elasticsearch.searchers;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,8 +82,10 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.IdManager;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.data.FullTextLoader;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
@@ -113,8 +119,6 @@ import org.openedit.xml.XmlSearcher;
 
 import groovy.json.JsonOutput;
 
-
-
 public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 {
 
@@ -123,11 +127,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
 	protected static final Pattern andoperators = Pattern.compile("(\\sAND\\s)");
 	public static final Pattern TOKENS = Pattern.compile("[^a-zA-Z\\d\\s]");
-	
+
 	protected static final Pattern specialchars = Pattern.compile("([0-9a-zA-Z0-9_]+)");
 	protected static final Pattern orpattern = Pattern.compile("(.*?)\\s+(OR?|AND?|NOT?)+");
 
-	
 	protected ElasticNodeManager fieldElasticNodeManager;
 	// protected IntCounter fieldIntCounter;
 	// protected PageManager fieldPageManager;
@@ -147,7 +150,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		if (fieldReplacer == null)
 		{
-			fieldReplacer = (Replacer)getModuleManager().getBean(getCatalogId(),"replacer");
+			fieldReplacer = (Replacer) getModuleManager().getBean(getCatalogId(), "replacer");
 		}
 
 		return fieldReplacer;
@@ -157,7 +160,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		fieldReplacer = inReplacer;
 	}
+
 	protected boolean fieldOptimizeReindex = true;
+
 	public boolean isOptimizeReindex()
 	{
 		return fieldOptimizeReindex;
@@ -167,11 +172,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		fieldOptimizeReindex = inOptimizeReindex;
 	}
+
 	public PageManager getPageManager()
 	{
 		if (fieldPageManager == null)
 		{
-			fieldPageManager = (PageManager)getModuleManager().getBean("pageManager");
+			fieldPageManager = (PageManager) getModuleManager().getBean("pageManager");
 		}
 		return fieldPageManager;
 	}
@@ -180,8 +186,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		fieldPageManager = pageManager;
 	}
-	
-	
+
 	protected OutputFiller getFiller()
 	{
 		if (fieldFiller == null)
@@ -190,8 +195,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		return fieldFiller;
 	}
+
 	protected int fieldFullTextCap = 25000;
-	
+
 	public int getFullTextCap()
 	{
 		return fieldFullTextCap;
@@ -211,7 +217,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 		fieldIncludeFullText = inIncludeFullText;
 	}
-
 
 	public ArrayList<String> getSearchTypes()
 	{
@@ -340,12 +345,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-			if(showSearchLogs) {
+			if (showSearchLogs)
+			{
 				search.setExplain(true);
 				search.setRequestCache(false);
 
 			}
-			
+
 			search.setExplain(true);
 
 			if (getPropertyDetails().getSearchTypes() != null)
@@ -361,15 +367,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				search.setVersion(true);
 			}
-			
+
 			BoolQueryBuilder terms = buildTerms(inQuery);
-			
-			if(!inQuery.isIncludeDeleted()) 
+
+			if (!inQuery.isIncludeDeleted())
 			{
 				TermQueryBuilder deleted = QueryBuilders.termQuery("emrecordstatus.recorddeleted", true);
 				terms.mustNot(deleted);
 			}
-			
+
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
@@ -421,24 +427,25 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			if (detail.isHighlight())
 			{
 				search.addHighlightedField(detail.getId(), 180);
-				
+
 			}
 		}
 
 	}
 
 	/**
-	 * This is the main way to enable agregations and added to the query
-	 * They are then run in the hit tracker
+	 * This is the main way to enable agregations and added to the query They
+	 * are then run in the hit tracker
+	 * 
 	 * @param inQuery
 	 * @param inSearch
 	 * @return
 	 */
-	
+
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();
-		if( facets == null || facets.isEmpty()) //We might want the real facets just in case
+		if (facets == null || facets.isEmpty()) //We might want the real facets just in case
 		{
 			boolean added = false;
 			if (inQuery.getAggregation() != null)
@@ -447,39 +454,41 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				added = true;
 			}
 			ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
-			if(q.getAggregationJson() != null) {
+			if (q.getAggregationJson() != null)
+			{
 				inSearch.setAggregations(q.getAggregationJson().getBytes());
 				added = true;
-			}			
+			}
 			return added;
 		}
 		List added = new ArrayList();
-		
+
 		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if(added.contains(detail.getId())) {
+			if (added.contains(detail.getId()))
+			{
 				continue;
 			}
 			if (detail.isDate())
 			{
 				//TODO: Is this slow? seems kinda like a waste of CPU Use Groovy
-//				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-//				builder.field(detail.getId());
-//				builder.interval(DateHistogramInterval.DAY);
-//				builder.order(Order.KEY_DESC);
-//				//	String timezone = TimeZone.getDefault().getID();
-//				//		builder.timeZone(timezone);
-//				inSearch.addAggregation(builder);
-//
-//				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-//				builder.field(detail.getId());
-//				//	builder.timeZone(timezone);
-//
-//				builder.interval(DateHistogramInterval.WEEK);
-//				builder.order(Order.COUNT_DESC);
-//
-//				inSearch.addAggregation(builder);
+				//				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
+				//				builder.field(detail.getId());
+				//				builder.interval(DateHistogramInterval.DAY);
+				//				builder.order(Order.KEY_DESC);
+				//				//	String timezone = TimeZone.getDefault().getID();
+				//				//		builder.timeZone(timezone);
+				//				inSearch.addAggregation(builder);
+				//
+				//				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+				//				builder.field(detail.getId());
+				//				//	builder.timeZone(timezone);
+				//
+				//				builder.interval(DateHistogramInterval.WEEK);
+				//				builder.order(Order.COUNT_DESC);
+				//
+				//				inSearch.addAggregation(builder);
 				continue;
 			}
 
@@ -496,16 +505,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
 			{
 				AggregationBuilder b = null;
-//				if (detail.isViewType("tageditor"))
-//				{
-//					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-//					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-//				}
-//				else
-//				{
-//
-					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
-//				}
+				//				if (detail.isViewType("tageditor"))
+				//				{
+				//					//b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+				//					b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				//				}
+				//				else
+				//				{
+				//
+				b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(50);
+				//				}
 				inSearch.addAggregation(b);
 			}
 			else
@@ -525,7 +534,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 		}
 		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
-		if(q.getAggregationJson() != null) {
+		if (q.getAggregationJson() != null)
+		{
 			inSearch.setAggregations(q.getAggregationJson().getBytes());
 		}
 		return true;
@@ -534,7 +544,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		//For custom overries
-		
+
 	}
 
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
@@ -749,19 +759,19 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			// props.add(detail);
 			// }
 
-//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
-//			jsonproperties = jsonproperties.field("type", "string");
-//			jsonproperties = jsonproperties.field("index", "not_analyzed");
-//			jsonproperties = jsonproperties.field("include_in_all", "false");
-//			jsonproperties = jsonproperties.field("store", "false");
-//
-//			jsonproperties = jsonproperties.endObject();
-//
-//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
-//			jsonproperties = jsonproperties.field("include_in_all", "false");
-//			jsonproperties = jsonproperties.field("type", "date");
-//			jsonproperties = jsonproperties.field("store", "true");
-//			jsonproperties = jsonproperties.endObject();
+			//			jsonproperties = jsonproperties.startObject("mastereditclusterid");
+			//			jsonproperties = jsonproperties.field("type", "string");
+			//			jsonproperties = jsonproperties.field("index", "not_analyzed");
+			//			jsonproperties = jsonproperties.field("include_in_all", "false");
+			//			jsonproperties = jsonproperties.field("store", "false");
+			//
+			//			jsonproperties = jsonproperties.endObject();
+			//
+			//			jsonproperties = jsonproperties.startObject("recordmodificationdate");
+			//			jsonproperties = jsonproperties.field("include_in_all", "false");
+			//			jsonproperties = jsonproperties.field("type", "date");
+			//			jsonproperties = jsonproperties.field("store", "true");
+			//			jsonproperties = jsonproperties.endObject();
 
 			jsonproperties = buildClusterSyncMappings(jsonproperties);
 
@@ -803,7 +813,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						jsonproperties.field("type", "string");
 						if (detail.isAnalyzed())
 						{
-							jsonproperties = createExactEnabledField(detail,jsonproperties);
+							jsonproperties = createExactEnabledField(detail, jsonproperties);
 
 						}
 
@@ -824,7 +834,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					jsonproperties = jsonproperties.startObject(detail.getId());
 					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties = createExactEnabledField(detail,jsonproperties);
+					jsonproperties = createExactEnabledField(detail, jsonproperties);
 					jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
 
@@ -845,7 +855,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
-		//	log.info(getSearchType() + " " + content);
+			//	log.info(getSearchType() + " " + content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -872,8 +882,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		jsonproperties.startObject("recordmodificationdate").field("include_in_all", "false").field("type", "date").field("store", "true").endObject();
 		jsonproperties.startObject("recorddeleted").field("include_in_all", "false").field("type", "boolean").field("store", "false").endObject();
 
-		
-		
 		jsonproperties.endObject();
 		jsonproperties.endObject();
 
@@ -898,7 +906,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			jsonproperties = jsonproperties.field("type", "object");
 			//"type": "nested",
-			
+
 			jsonproperties.startObject("properties");
 			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
 			{
@@ -1006,13 +1014,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else
 		{
-//			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId()))) 
-//			{
-//				jsonproperties.field("analyzer", "lowersnowball");
-//			}
+			//			if (detail.isAnalyzed()) //&& !("name".equals(detail.getId()))) 
+			//			{
+			//				jsonproperties.field("analyzer", "lowersnowball");
+			//			}
 		}
 	}
-
 
 	protected XContentBuilder createExactEnabledField(PropertyDetail detail, XContentBuilder jsonproperties) throws IOException
 	{
@@ -1062,7 +1069,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
-		
+
 		buildBoolTerm(inQuery, bool, inQuery.isAndTogether());
 
 		// if( inQuery.isEndUserSearch() )
@@ -1109,8 +1116,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			Term term = (Term) iterator.next();
 			PropertyDetail detail = term.getDetail();
 			//We handle joins with SearchQueryFilter.java
-			String ignoretypes  =  inQuery.get("ignoresearchttype");
-			if( ignoretypes == null || !Boolean.parseBoolean(ignoretypes))
+			String ignoretypes = inQuery.get("ignoresearchttype");
+			if (ignoretypes == null || !Boolean.parseBoolean(ignoretypes))
 			{
 				if (detail.getSearchType() != null && !getSearchType().equals(detail.getSearchType()))
 				{
@@ -1122,8 +1129,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				value = term.getValues();
 			}
-			
-			QueryBuilder find = buildTerm(inQuery,detail, term, value);
+
+			QueryBuilder find = buildTerm(inQuery, detail, term, value);
 			if (find != null)
 			{
 				if (inAnd)
@@ -1161,10 +1168,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	// return null;
 	// }
 
-	protected QueryBuilder buildTerm(SearchQuery inQuery,PropertyDetail inDetail, Term inTerm, Object inValue)
+	protected QueryBuilder buildTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
-		
-		QueryBuilder find = buildNewTerm(inQuery,inDetail, inTerm, inValue);
+
+		QueryBuilder find = buildNewTerm(inQuery, inDetail, inTerm, inValue);
 
 		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 		{
@@ -1172,36 +1179,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			or.mustNot(find);
 			return or;
 		}
-		else if( inDetail.getId().contains("."))
+		else if (inDetail.getId().contains("."))
 		{
 			String[] ids = inDetail.getId().split("\\.");
 			PropertyDetail parent = getDetail(ids[0]);
-			if( parent != null && "nested".equals(parent.getDataType()))
+			if (parent != null && "nested".equals(parent.getDataType()))
 			{
 				find = QueryBuilders.nestedQuery(ids[0], find);
 			}
 			/*
-			  "nested": {
-	            "path": "faceprofiles",
-	             "query": {
-                     "bool": {
-                        "must": [
-                           {
-                              "term": {
-                                 "faceprofiles.faceprofilegroup":"AXM5Gn6zvm9C1jY32Xy5"
-                              }
-                           }
-                        ]
-                     }
-                  }
-          		}
+			 * "nested": { "path": "faceprofiles", "query": { "bool": { "must":
+			 * [ { "term": {
+			 * "faceprofiles.faceprofilegroup":"AXM5Gn6zvm9C1jY32Xy5" } } ] } }
+			 * }
 			 */
 		}
 
 		return find;
 	}
 
-	protected QueryBuilder buildNewTerm(SearchQuery inQuery,PropertyDetail inDetail, Term inTerm, Object inValue)
+	protected QueryBuilder buildNewTerm(SearchQuery inQuery, PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
 		// Check for quick date object
 		QueryBuilder find = null;
@@ -1209,7 +1206,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		Date valuedate = null;
 		if (inValue instanceof Date)
 		{
-			valuedate = (Date)inValue;
+			valuedate = (Date) inValue;
 			valueof = DateStorageUtil.getStorageUtil().formatForStorage((Date) inValue);
 		}
 		else
@@ -1273,7 +1270,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// find = QueryBuilders.textQuery(fieldid, valueof);
 		// return find;
 		// }
-		if (fieldid!= null && fieldid.equals("id"))
+		if (fieldid != null && fieldid.equals("id"))
 		{
 			// valueof = valueof.toLowerCase();
 			if (valueof.equals("*"))
@@ -1303,8 +1300,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			// find = QueryBuilders.filteredQuery(all, filter);
 
 		}
-		
-		
+
 		else if ("contains".equals(inTerm.getOperation()))
 		{
 			// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
@@ -1326,15 +1322,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 												// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 												// valueof);
 			String altid = null;
-			if( inDetail.isAnalyzed() && !inDetail.getId().equals("description") )
+			if (inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
 			{
-				altid = fieldid+".sort";
+				altid = fieldid + ".sort";
 			}
 			else
 			{
 				altid = fieldid;
 			}
-			
+
 			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(altid, wildcard);
 
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
@@ -1346,13 +1342,15 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			or.should(phrase);
 			find = or;
 		}
-		else if("missing".equals(inTerm.getOperation())) {
+		else if ("missing".equals(inTerm.getOperation()))
+		{
 			find = QueryBuilders.missingQuery(inTerm.getId());
 		}
-		else if("exists".equals(inTerm.getOperation())) {
-			find= QueryBuilders.existsQuery(inTerm.getId());
+		else if ("exists".equals(inTerm.getOperation()))
+		{
+			find = QueryBuilders.existsQuery(inTerm.getId());
 		}
-		
+
 		else if ("startswith".equals(inTerm.getOperation()))
 		{
 			//TODO: Should startswith be exact or analysed phrases? 
@@ -1375,14 +1373,14 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
 			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
-	        
+
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
 				Pattern pattern = Pattern.compile("(?<=\\s)[^a-zA-Z\\\\d\\\\s](?=\\s)");
-		        Matcher matcher = pattern.matcher(valueof);
-		        String oldvalueof = valueof;
-		        valueof = matcher.replaceAll("");
-		        
+				Matcher matcher = pattern.matcher(valueof);
+				String oldvalueof = valueof;
+				valueof = matcher.replaceAll("");
+
 				valueof = valueof.replace("\"", "");
 				valueof = QueryParser.escape(valueof);
 				String query = "+(" + valueof + ")";
@@ -1398,11 +1396,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// Add wildcards
 				// Look for Quotes
 
-//				Matcher customlogic = operators.matcher(uppercase);
-//				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
-//				{
-//					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
-//				}
+				//				Matcher customlogic = operators.matcher(uppercase);
+				//				if (!customlogic.find()) //This somehow ignores things in " " .. ie. "Some things" Cool
+				//				{
+				//					uppercase = uppercase.replaceAll(" ", " AND "); //All spaces
+				//				}
 				// tom and nancy == *tom* AND *nancy*
 				// tom or nancy == *tom* OR *nancy*
 				// tom nancy => *tom* AND *nancy*
@@ -1413,31 +1411,32 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				//String orregex = "((.*?)\\s+(AND|OR)\\s+)+";
 				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
-		        Matcher andors  = orpattern.matcher(uppercase);
+				Matcher andors = orpattern.matcher(uppercase);
 
 				String operator = null;
 				String nextoperator = null;
 
 				Collection searchpairs = new ArrayList();
-				
+
 				//String regex = "(.*?)\\s+(AND|OR)\\s)+";
 				BoolQueryBuilder booleans = QueryBuilders.boolQuery();
 				int lastterm = 0;
-				while (andors.find()) 
+				while (andors.find())
 				{
-		            // Get the matched character
-		            Map pair = new HashMap();
-		            pair.put("word",andors.group(1));
-		            pair.put("opertator",andors.group(2));
-		            searchpairs.add(pair);
-		            lastterm = andors.end();
-				} 
-	            Map lastpair = new HashMap();
-	            lastpair.put("word",uppercase.substring(lastterm));
-	            searchpairs.add(lastpair);
-				
-				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();) {
-					Map<String,String> pair = (Map) iterator.next();
+					// Get the matched character
+					Map pair = new HashMap();
+					pair.put("word", andors.group(1));
+					pair.put("opertator", andors.group(2));
+					searchpairs.add(pair);
+					lastterm = andors.end();
+				}
+				Map lastpair = new HashMap();
+				lastpair.put("word", uppercase.substring(lastterm));
+				searchpairs.add(lastpair);
+
+				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();)
+				{
+					Map<String, String> pair = (Map) iterator.next();
 					String word = pair.get("word");
 					nextoperator = pair.get("operator");
 					StringBuffer out = new StringBuffer();
@@ -1446,17 +1445,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					//Check for quotes..
 					//String regex = "(?<=[a-zA-Z\\d])(.*?)(?=[a-zA-Z\\d])";
 					//String regex = "(?<=\\W)(\\w+)(?=\\W)";
-			        
-			        // Create a Matcher object
-			        Matcher matcher = specialchars.matcher(word);
-					while (matcher.find()) 
+
+					// Create a Matcher object
+					Matcher matcher = specialchars.matcher(word);
+					while (matcher.find())
 					{
-			            // Get the matched character
-			            String match = matcher.group();
-			            boolean onlastone = word.endsWith(match);
-			            
+						// Get the matched character
+						String match = matcher.group();
+						boolean onlastone = word.endsWith(match);
+
 						MatchQueryBuilder oneword = null;
-						if( onlastone )
+						if (onlastone)
 						{
 							oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getId(), QueryParser.escape(match));
 						}
@@ -1473,7 +1472,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							operator = "AND";
 						}
-						
+
 						if (operator.equals("NOT"))
 						{
 							booleans.mustNot(oneword);
@@ -1503,7 +1502,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else if (valueof.contains("*"))
 		{
-			if( inDetail.isAnalyzed())
+			if (inDetail.isAnalyzed())
 			{
 				find = QueryBuilders.wildcardQuery(fieldid + ".sort", valueof);
 			}
@@ -1516,7 +1515,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			find = QueryBuilders.termQuery(fieldid, Boolean.parseBoolean(valueof));
 		}
-		
+
 		else if (inDetail.isDate())
 		{
 			if ("beforedate".equals(inTerm.getOperation()))
@@ -1531,9 +1530,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
 				before = c.getTime();
-			
+
 				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
-			
+
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
 			{
@@ -1547,7 +1546,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				// Date(Long.MAX_VALUE));
 				Date before = (Date) inTerm.getValue("beforeDate");
 				Date after = (Date) inTerm.getValue("afterDate");
-				
+
 				// inTerm.getParameter("beforeDate");
 
 				// String before
@@ -1595,15 +1594,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				Date before = calendar.getTime();
 
 				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before);
-				
+
 				// find = QueryBuilders.termQuery(fieldid, valueof); //TODO make
 				// it a range query? from 0-24 hours
 			}
-			RangeQueryBuilder finalquery = (RangeQueryBuilder)find;
-			if(inQuery.getTimeZone() != null) {
+			RangeQueryBuilder finalquery = (RangeQueryBuilder) find;
+			if (inQuery.getTimeZone() != null)
+			{
 				finalquery.timeZone(inQuery.getTimeZone());
 			}
-			
+
 		}
 		else if (inDetail.isNumber())
 		{
@@ -1711,13 +1711,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
-				if( inDetail.isList() || !inDetail.isAnalyzed() )
+				if (inDetail.isList() || !inDetail.isAnalyzed())
 				{
 					find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
 				}
 				else
 				{
-					String altid = fieldid+".exact";
+					String altid = fieldid + ".exact";
 
 					find = QueryBuilders.termsQuery(altid, inTerm.getValues()); //This is an OR
 					//find = createMatchQuery(fieldid, inTerm.getValues()); //This is an OR
@@ -1785,7 +1785,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof)
 	{
 		QueryBuilder find;
-		if( inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
+		if (inDetail.isAnalyzed() && !inDetail.getId().equals("description"))
 		{
 			find = QueryBuilders.matchQuery(fieldid + ".sort", valueof);
 		}
@@ -1842,18 +1842,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 				}
 				/*
-				"_geo_distance": {
-			        "coords": {
-			          "lat": -27.87,
-			          "lon": -54.43
-			        },
-			        "order": "asc",
-			        "unit": "km",
-			        "mode": "min",
-			        "distance_type": "arc",
-			        "ignore_unmapped": true
-			      }*/
-				
+				 * "_geo_distance": { "coords": { "lat": -27.87, "lon": -54.43
+				 * }, "order": "asc", "unit": "km", "mode": "min",
+				 * "distance_type": "arc", "ignore_unmapped": true }
+				 */
+
 				else if (detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
 				{
 					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
@@ -2019,9 +2012,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					Data toupdate = toprocess.get(res.getItemId());
 					if (toupdate == null)
 					{
-						errors.add("Data ["+i+"] was null: "+res.getItemId());
+						errors.add("Data [" + i + "] was null: " + res.getItemId());
 					}
-					else {
+					else
+					{
 						if (isCheckVersions())
 						{
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
@@ -2045,41 +2039,43 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
-		PropertyDetail ordering  = details.getDetail("ordering");
+		PropertyDetail ordering = details.getDetail("ordering");
 		boolean fixordering = false;
-		if( ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
+		if (ordering != null && ordering.isAutoIncrement() && ordering.isIndex())
 		{
 			fixordering = true;
 		}
-		
+
 		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
 		{
 			try
 			{
 				Data data2 = (Data) iterator.next();
-				if( fixordering)
+				if (fixordering)
 				{
 					Object order = data2.getValue("ordering");
-					if (order != null) {
-						if (Long.parseLong(order.toString()) == 0) {
+					if (order != null)
+					{
+						if (Long.parseLong(order.toString()) == 0)
+						{
 							order = null;
 						}
 					}
-					if( order == null)
+					if (order == null)
 					{
-						if( currentordering == -1)
+						if (currentordering == -1)
 						{
-							IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+							IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
 							currentordering = manager.nextNumber(getSearchType() + "_ordering").intValue();
 						}
 						else
 						{
-							currentordering = currentordering + 10; 
+							currentordering = currentordering + 10;
 						}
-						data2.setValue("ordering",currentordering);
+						data2.setValue("ordering", currentordering);
 					}
 				}
-				
+
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
@@ -2119,9 +2115,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			catch (Throwable ex)
 			{
-				if( ex instanceof OpenEditException)
+				if (ex instanceof OpenEditException)
 				{
-					throw (OpenEditException)ex;
+					throw (OpenEditException) ex;
 				}
 				throw new OpenEditException(ex);
 
@@ -2151,13 +2147,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		long end = new Date().getTime();
 		double total = (end - start) / 1000.0;
 		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + " seconds (" + getSearchType() + ")");
-		
-		if( currentordering != -1)
+
+		if (currentordering != -1)
 		{
-			IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
-			manager.setNumber(getSearchType() + "_ordering", currentordering );
+			IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
+			manager.setNumber(getSearchType() + "_ordering", currentordering);
 		}
-		
+
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
@@ -2178,39 +2174,34 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				return;
 			}
-			
+
 			Map status = (Map) inData.getValue("emrecordstatus");
 			/*
-			if(status == null) {
-				status = new HashMap();
-			}
+			 * if(status == null) { status = new HashMap(); } if
+			 * (isReIndexing()) { content.field("emrecordstatus", status);
+			 * return; }
+			 */
 			if (isReIndexing())
 			{
-				content.field("emrecordstatus", status);
-				return;
-			}
-			*/
-			if (isReIndexing())
-			{
-				if( status != null ) 
+				if (status != null)
 				{
 					content.field("emrecordstatus", status);
 					return;
 				}
-				if( isOptimizeReindex() )
+				if (isOptimizeReindex())
 				{
 					return; //Dont worry if its not created already
 				}
 			}
 
-			if(status == null) 
+			if (status == null)
 			{
 				status = new HashMap();
 			}
 
 			String localClusterId = getElasticNodeManager().getLocalClusterId();
 			String currentid = null;
-			if(status != null) 
+			if (status != null)
 			{
 				currentid = (String) status.get("mastereditclusterid");
 			}
@@ -2218,7 +2209,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				currentid = localClusterId;
 			}
-			
+
 			status.put("recorddeleted", delete);
 			status.put("mastereditclusterid", currentid);
 			status.put("lastmodifiedclusterid", localClusterId);
@@ -2233,9 +2224,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			status.put("recordmodificationdate", currentmod);
 
-			Object currentmastermod= null;
-			if(status != null ) {
-					
+			Object currentmastermod = null;
+			if (status != null)
+			{
+
 				currentmastermod = status.get("masterrecordmodificationdate");
 			}
 			if (currentmastermod instanceof String)
@@ -2249,7 +2241,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			status.put("masterrecordmodificationdate", currentmastermod);
 
 			content.field("emrecordstatus", status);
-			
+
 		}
 		catch (Exception ex)
 		{
@@ -2283,9 +2275,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					delete(object, inUser);
 				}
-				catch( Exception ex)
+				catch (Exception ex)
 				{
-					log.error("Could not delete " + object,ex);
+					log.error("Could not delete " + object, ex);
 				}
 			}
 			return;
@@ -2446,7 +2438,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 			throw new OpenEditException(ex);
 		}
-		
+
 		getCacheManager().remove("data" + getSearchType(), data.getId());
 	}
 
@@ -2490,9 +2482,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!detail.isDeleted())  //TODO: Dont pass in deleted to begin with
+				if (!detail.isDeleted()) //TODO: Dont pass in deleted to begin with
 				{
-					allprops.add(detail.getId());  //We need to make a copy anyways
+					allprops.add(detail.getId()); //We need to make a copy anyways
 				}
 			}
 			if (!allprops.contains("description"))
@@ -2516,7 +2508,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					continue;
 				}
-				if (propid.equals("entitysourcetype") ) 
+				if (propid.equals("entitysourcetype"))
 				{
 					inContent.field(propid, getSearchType()); //Cheap workaround for emfinder
 					continue;
@@ -2535,7 +2527,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				{
 					detail = inDetails.getLegacyDetail(propid);
 				}
-				if( detail != null && detail.isDeleted() )
+				if (detail != null && detail.isDeleted())
 				{
 					continue;
 				}
@@ -2587,25 +2579,25 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					inContent.field(propid, value);
 					continue;
 				}
-				Object value  = null;
-//				String mask = detail.get("rendermask");
-//				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
-//				{
-//					value = getReplacer().replace(mask, inData);
-//				}
+				Object value = null;
+				//				String mask = detail.get("rendermask");
+				//				if( mask != null && Boolean.parseBoolean(detail.get("index")) )
+				//				{
+				//					value = getReplacer().replace(mask, inData);
+				//				}
 				value = inData.getValue(key);
 				if (value != null)
 				{
-					if (value instanceof String && ((String) value).isEmpty())  //Standarize
+					if (value instanceof String && ((String) value).isEmpty()) //Standarize
 					{
 						value = null;
 					}
 				}
 				else
 				{
-					if(!isReIndexing() &&  detail.isAutoIncrement())
+					if (!isReIndexing() && detail.isAutoIncrement())
 					{
-						IdManager manager = (IdManager)getModuleManager().getBean(getCatalogId(),"idManager");
+						IdManager manager = (IdManager) getModuleManager().getBean(getCatalogId(), "idManager");
 						value = manager.nextNumber(getSearchType() + "_" + detail.getId());
 					}
 				}
@@ -2628,7 +2620,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
 
-				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested") ))
+				if (value != null && (detail.isDataType("objectarray") || detail.isDataType("nested")))
 				{
 					if (!(value instanceof Collection))
 					{
@@ -2641,7 +2633,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							{
 								//{cliplabel=New Clip, timecodelength=114863, timecodestart=108276}
 								String text = values[i];
-								if( text.length() < 2)
+								if (text.length() < 2)
 								{
 									continue;
 								}
@@ -2669,6 +2661,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 					}
 					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
+				}
+				else if ("categorytree".equals(detail.getViewType()))
+				{
+
 				}
 				else if (detail.isDate())
 				{
@@ -2722,10 +2718,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						catch (NumberFormatException ef)
 						{
-							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value,ef);
+							log.error("Cant format " + getSearchType() + " " + detail.getId() + " " + value, ef);
 							continue;
 						}
-						
+
 					}
 					inContent.field(key, val);
 				}
@@ -2832,10 +2828,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value instanceof String)
 					{
-						/*GeoPoint point = new GeoPoint((String) value);
-						inContent.field(key, point);
-						Position position = new Position(point.getLat(), point.getLon());
-						*/
+						/*
+						 * GeoPoint point = new GeoPoint((String) value);
+						 * inContent.field(key, point); Position position = new
+						 * Position(point.getLat(), point.getLon());
+						 */
 						inData.setValue(key, value); //For next time?
 					}
 					else if (value instanceof GeoPoint)
@@ -2917,10 +2914,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				inContent.field("badge", badges);
 			}
-			
+
 			addSecurity(inContent, inData);
-			
-			
+
 			addCustomFields(inContent, inData);
 		}
 
@@ -2938,35 +2934,136 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
 	{
 		//Check for security
-		if( getDetail("securityenabled") != null)
-		{
-			boolean moresecure = false;
+		PropertyDetail detail = getDetail("securityenabled");
 
-			//We need to possibly enable this
-			if( inData.getValue("viewroles") != null || 
-					inData.getValue("viewgroups") != null || inData.getValue("viewusers") != null)
+		boolean securityenabled = false;
+		Collection users = null;
+		Collection groups = null;
+		Collection roles = null;
+
+		if (detail == null)
+		{
+			return;
+		}
+
+		String securityfield = (String) detail.getValue("securityfield");
+		if (securityfield != null)
+		{
+			PropertyDetail securefield = getDetail(securityfield);
+			String fieldid = securefield.getId();
+			String categorysearchertype = securefield.getListId();//category 
+			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
+
+			if ("category".equals(securefield.getViewType()))
 			{
-				moresecure = true;
-			}
-			else
-			{
-				Data module = getSearcherManager().getCachedData(getCatalogId(), "module", getSearchType());
-				if( module != null)
+				boolean aggregate = "asset".equals(getSearchType());
+				if (aggregate)
 				{
-					String recordvisibility = module.get("recordvisibility");
-					if( recordvisibility == null || recordvisibility.equals("showbydefault"))
+					HashSet localusers = new HashSet();
+					HashSet localgroups = new HashSet();
+					HashSet localroles = new HashSet();
+					Collection exact = inData.getValues("category-exact");
+					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
-						moresecure = false;
+						Object something = iterator.next();
+						Category cat = null;
+						
+						if (something instanceof String id)
+						{
+							 cat =  (Category) searcher.getCategory(id);							
+						} else if (something instanceof Category c) {
+							cat = c;
+						}
+						
+					
+						
+						Collection u = cat.findValues("viewusers");
+						Collection g = cat.findValues("viewgroups");
+						Collection r = cat.findValues("viewroles");
+						if (u != null)
+						{
+							localusers.addAll(u);
+						}
+						if (g != null)
+						{
+							localgroups.addAll(g);
+						}
+						if (r != null)
+						{
+							localroles.addAll(r);
+						}
 					}
-					else if(  recordvisibility.equals("hidebydefault"))
+					roles = localroles;
+					users = localusers;
+					groups = localgroups;
+				}
+
+				else
+				{
+
+					Collection exact = inData.getValues(securityfield);
+					if (exact != null)
 					{
-						moresecure = true;
+
+						for (Iterator iterator = exact.iterator(); iterator.hasNext();)
+						{
+							String id = (String) iterator.next();
+							Category c = (Category) searcher.getCategory(id);
+							while (c != null)
+							{
+
+								Collection localusers = c.getValues("viewusers");
+								Collection localgroups = c.getValues("viewgroups");
+								Collection localroles = c.getValues("viewroles");
+								if ((localusers != null && !localusers.isEmpty()) || (localgroups != null) && !localgroups.isEmpty() || (localroles != null && !localroles.isEmpty()))
+								{
+									users = localusers;
+									groups = localgroups;
+									roles = localroles;
+									inContent.field("permissioncategory", c.getId());
+									break;
+								}
+								c = c.getParentCategory();
+							}
+
+						}
+
 					}
 				}
 
 			}
-			inContent.field("securityenabled", moresecure);
+			//String pathfield = securityfield + "path"; //this equivalet to category on asset - the fieldid is like cateogory-exact
 		}
+
+		if (users == null && roles == null && groups == null)
+		{
+			users = (Collection) inData.getValues("viewusers");
+			groups = (Collection) inData.getValues("viewgroups");
+			roles = (Collection) inData.getValues("viewroles");
+
+		}
+
+		
+
+		if (users != null || roles != null && groups != null)
+		{
+			securityenabled = true;
+		}
+
+		if (users != null)
+		{
+			inContent.field("viewusers", users);
+		}
+		if (groups != null)
+		{
+			inContent.field("viewgroups", groups);
+		}
+		if (roles != null)
+		{
+			inContent.field("viewroles", roles);
+		}
+		inContent.field("securityenabled", securityenabled);
+
 	}
 
 	public void addCustomFields(XContentBuilder inContent, Data inData)
@@ -3022,7 +3119,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public boolean shoudSkipField(String inKey)
 	{
 		//skip description?
-		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains("."))
+		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains(".") || inKey.contains("viewusers") || inKey.contains("viewgroups") || inKey.contains("viewroles") || inKey.contains("securityenabled"))
 		{
 			return true;
 		}
@@ -3034,21 +3131,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
 
-		if(inUser != null) {
-		log.info("Deleted all records database " + getSearchType() + " by user:" + inUser.getId());
-	}
-//		 DeleteByQueryRequestBuilder delete =
-//		 getClient().prepareDeleteByQuery(toId(getCatalogId()));
-//		 delete.setTypes(getSearchType());
-//		 delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
-		
+		if (inUser != null)
+		{
+			log.info("Deleted all records database " + getSearchType() + " by user:" + inUser.getId());
+		}
+		//		 DeleteByQueryRequestBuilder delete =
+		//		 getClient().prepareDeleteByQuery(toId(getCatalogId()));
+		//		 delete.setTypes(getSearchType());
+		//		 delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
+
 		org.openedit.data.QueryBuilder q = query().all();
-		
+
 		q.getQuery().setIncludeDeleted(true);
-		
+
 		HitTracker all = q.search();
 		all.enableBulkOperations();
-		
+
 		deleteAll(all, null);
 
 	}
@@ -3059,9 +3157,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		Map recordstatus = (Map) inData.getValue("emrecordstatus");
 
-		if( recordstatus != null)
+		if (recordstatus != null)
 		{
-			if( inUser != null)
+			if (inUser != null)
 			{
 				saveToElasticSearch(details, inData, true, inUser);
 				clearIndex();
@@ -3078,7 +3176,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		delete.setRefresh(true).execute().actionGet();
 		clearIndex();
-		
+
 	}
 
 	// Base class only updated the index in bulk
@@ -3158,11 +3256,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				if (response.isExists())
 				{
 					Map source = response.getSource();
-					if( isDeleted(source))
+					if (isDeleted(source))
 					{
 						return null;
 					}
-					
+
 					Data data = null;
 					if (getNewDataName() != null)
 					{
@@ -3198,11 +3296,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	protected boolean isDeleted(Map source)
 	{
-		Map  status  = (Map)source.get("emrecordstatus");
-		if( status != null)
+		Map status = (Map) source.get("emrecordstatus");
+		if (status != null)
 		{
 			Object deleted = status.get("recorddeleted");
-			if( deleted != null && Boolean.parseBoolean(String.valueOf( deleted) ) )
+			if (deleted != null && Boolean.parseBoolean(String.valueOf(deleted)))
 			{
 				return true;
 			}
@@ -3257,7 +3355,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							inFullDesc.append('|');
 						}
 					}
-					else if(prop instanceof String)
+					else if (prop instanceof String)
 					{
 						Data data = (Data) getSearcherManager().getCachedData(det.getListCatalogId(), det.getListId(), (String) prop);
 						if (data != null && data.getName() != null)
@@ -3331,7 +3429,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 									Object val = map.get(detal.getId());
 									if (val != null)
 									{
-										if( detal.isMultiValue() )
+										if (detal.isMultiValue())
 										{
 											Collection colvalues = null;
 											if (val instanceof Collection)
@@ -3348,7 +3446,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 											{
 												String string = (String) String.valueOf(iterator2.next());
 
-												if( detal.isList() )
+												if (detal.isList())
 												{
 													Data data = (Data) getSearcherManager().getCachedData(detal.getListCatalogId(), detal.getListId(), (String) string);
 													if (data != null && data.getName() != null)
@@ -3376,10 +3474,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 					}
 				}
-				else if( det.isMultiValue() ) //But not a list
+				else if (det.isMultiValue()) //But not a list
 				{
-					Collection values  = inData.getValues(det.getId());
-					if( values != null && !values.isEmpty() )
+					Collection values = inData.getValues(det.getId());
+					if (values != null && !values.isEmpty())
 					{
 						for (Iterator iterator = values.iterator(); iterator.hasNext();)
 						{
@@ -3418,12 +3516,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
-				
+
 				HitTracker allhits = (ElasticHitTracker) getAllHits();
-				if( allhits.isEmpty())
+				if (allhits.isEmpty())
 				{
 					//get them from XML as a backup
-					XmlSearcher fieldXmlSearcher = (XmlSearcher)getModuleManager().getBean(getCatalogId(), "xmlSearcher");
+					XmlSearcher fieldXmlSearcher = (XmlSearcher) getModuleManager().getBean(getCatalogId(), "xmlSearcher");
 					fieldXmlSearcher.setCatalogId(getCatalogId());
 					fieldXmlSearcher.setSearchType(getSearchType());
 					fieldXmlSearcher.setPropertyDetailsArchive(getPropertyDetailsArchive());
@@ -3435,7 +3533,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 				{
 					Data hit = (Data) iterator2.next();
-					if( hit.getId() == null || hit.getId().trim().isEmpty())
+					if (hit.getId() == null || hit.getId().trim().isEmpty())
 					{
 						continue;
 					}
@@ -3449,11 +3547,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 				}
 				updateIndex(tosave, null);
-				if( allhits instanceof ElasticHitTracker)
+				if (allhits instanceof ElasticHitTracker)
 				{
 					//Save memory
 					ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
-					clearScrollRequest.addScrollId(((ElasticHitTracker)allhits).getLastScrollId());
+					clearScrollRequest.addScrollId(((ElasticHitTracker) allhits).getLastScrollId());
 					getClient().clearScroll(clearScrollRequest).actionGet();
 				}
 				//System.gc();
@@ -3499,9 +3597,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				String key = (String) iterator.next();
 				Object object = inSource.get(key);
-				if( key.equals("name_int") && object != null && object instanceof HashMap)
+				if (key.equals("name_int") && object != null && object instanceof HashMap)
 				{
-					object = new LanguageMap((Map)object);
+					object = new LanguageMap((Map) object);
 				}
 				inData.setValue(key, object);
 
@@ -3531,7 +3629,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
 			{
 				Data hit = (Data) iterator2.next();
-				if( hit.getId() == null || hit.getId().trim().isEmpty())
+				if (hit.getId() == null || hit.getId().trim().isEmpty())
 				{
 					continue;
 				}
@@ -3698,9 +3796,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		search.setTypes(getSearchType());
 		search.setRequestCache(true);
 		QueryBuilder findall = QueryBuilders.matchAllQuery();
-		
+
 		//TODO: Dont include deleted...
-		if( getDetail("emrecordstatus") == null)
+		if (getDetail("emrecordstatus") == null)
 		{
 			search.setQuery(findall);
 		}
@@ -3725,25 +3823,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	@Override
 	public String getFulltext(Data inSearchHitData)
 	{
-		return getFulltext(inSearchHitData,getSearchType());
+		return getFulltext(inSearchHitData, getSearchType());
 	}
+
 	public String getFulltext(Data inSearchHitData, String type)
 	{
 		StringBuffer out = new StringBuffer();
-		populateFullText(inSearchHitData,  type, out);
+		populateFullText(inSearchHitData, type, out);
 		return out.toString();
 	}
-	
+
 	protected void populateFullText(Data data, String datatype, StringBuffer fullDesc)
 	{
 		if (isIncludeFullText() && Boolean.parseBoolean(data.get("hasfulltext")))
 		{
 			//Legacy support 
-			if( datatype.equals("asset"))
+			if (datatype.equals("asset"))
 			{
 				datatype = "assets"; //TODO: Move everyone over
 			}
-			
+
 			String path = "/WEB-INF/data/" + getCatalogId() + "/" + datatype + "/" + data.getSourcePath() + "/fulltext.txt";
 			ContentItem item = getPageManager().getRepository().getStub(path);
 			if (item.exists())
@@ -3768,19 +3867,42 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 		}
 	}
-	
-	
-	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch) {
+
+	protected void addAggregations(WebPageRequest inPageRequest, SearchQuery inSearch)
+	{
 
 		String aggs = inPageRequest.findValue("aggs");
-		if(aggs == null) {
+		if (aggs == null)
+		{
 			aggs = (String) inPageRequest.getPageValue("aggs");
 		}
-		if(aggs != null) {
-			ElasticSearchQuery search = (ElasticSearchQuery)inSearch;
+		if (aggs != null)
+		{
+			ElasticSearchQuery search = (ElasticSearchQuery) inSearch;
 			search.setAggregationJson(aggs);
 		}
 	}
 
-	
+	//	protected void assignCategoryPermissions(Set inCategories, Data inAsset) {
+	//	   //Search 
+	//		
+	//		HashSet viewusers = new HashSet();
+	//	    HashSet viewgroups = new HashSet();
+	//	    HashSet viewroles = new HashSet();
+	//
+	//	    
+	//	    
+	//	    for (Iterator iterator = inAsset.getCategories().iterator(); iterator.hasNext();) {
+	//	        Category cat = (Category) iterator.next();
+	//
+	//	        viewusers.addAll(cat.findValues("viewusers") != null ? cat.findValues("viewusers") : Collections.emptySet());
+	//	        viewgroups.addAll(cat.findValues("viewgroups") != null ? cat.findValues("viewgroups") : Collections.emptySet());
+	//	        viewroles.addAll(cat.findValues("viewroles") != null ? cat.findValues("viewroles") : Collections.emptySet());
+	//	    }
+	//
+	//	    inAsset.setValue("viewusers", viewusers);
+	//	    inAsset.setValue("viewgroups", viewgroups);
+	//	    inAsset.setValue("viewroles", viewroles);
+	//	}
+
 }

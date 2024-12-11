@@ -249,7 +249,6 @@ public class WorkspaceManager
 					propertyDetailsArchive.savePropertyDetail(catdetail, "category", null);
 											
 				}
-				
 //				}else {
 //					String template = "/" + catalogid + "/data/lists/view/default.xml";
 //					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
@@ -314,54 +313,16 @@ public class WorkspaceManager
 				copyXml(catalogid, templte3, path3, module);
 				getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
 			}
+			
 		}
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
-		syncCategoryPermission(catalogid, module);
-		
-		
+		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
+		getMediaArchive(catalogid).getPermissionManager().queuePermissionCheck(module);
 	}
 
 	
-	protected void syncCategoryPermission(String inCatalogid, Data inModule) {
-		
-		MediaArchive archive = getMediaArchive(inCatalogid);
-		Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
-		rootcat.setValue("viewusers", inModule.getValue("viewusers"));
-		rootcat.setValue("viewgroups", inModule.getValue("viewgroups"));
-		rootcat.setValue("viewroles", inModule.getValue("viewroles"));
-		rootcat.setValue("securityenabled", inModule.getValue("securityenabled"));
-		archive.getCategorySearcher().saveCategory(rootcat);
-		
-		
-		//also sync assets
-		HitTracker <Data>  assets = archive.query("asset").exact("category", rootcat).search();
-		//These have to be loaded to be saverd properly otherwise it won't run the correct code - it checks for real assets.
-		List<Data> assetsList = (List<Data>) assets.stream()
-			    .map(hit -> archive.getAsset(((Data) hit).getId())) 
-			    .collect(Collectors.toList());
-		
-		archive.getAssetSearcher().saveAllData(assetsList, null);
-		
-		
-//
-//		//TODO:  Verify
-//		HitTracker views = archive.query("view").exact("moduleid", inModule.getId()).exact("systemdefined","false").sort("orderingUp").named("view").search();
-//		for (Iterator iterator = views.iterator(); iterator.hasNext();)
-//		{
-//			Data hit = (Data) iterator.next();
-//			
-//		}
-//		
-		
-
-		
-		
-		
-		
-		
-	}
-
+	
 	public String createModuleFallbacks(String appid, Data module)
 	{
 		return createModuleFallbacks(appid, module, false);

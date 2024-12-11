@@ -247,6 +247,11 @@ public class EntityModule extends BaseMediaModule
 		}
 	}
 	
+	
+	
+	
+	
+	
 	public void addToSearchCategory(WebPageRequest inPageRequest) throws Exception 
 	{
 	
@@ -1175,4 +1180,17 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 	}
+	
+	
+	public void updatePermissions(WebPageRequest inReq) {
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getPermissionManager().handleModulePermissionsUpdated();
+		
+		
+		
+		
+	}
+	
+	
 }

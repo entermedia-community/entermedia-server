@@ -104,10 +104,7 @@ public class BaseSearchSecurity implements SearchSecurity
 		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null && profile.isInGroup("showalldata"))
-		{
-			return inQuery;
-		}
+		
 
 		if (profile != null && profile.isInRole("administrator"))
 		{
@@ -139,13 +136,12 @@ public class BaseSearchSecurity implements SearchSecurity
 			roleid = "anonymous";
 		}
 
-		String userid = null;
-		if (inUserprofile != null)
+		String userid = inPageRequest.getUserName();
+		
+		
+		if (userid == null)
 		{
-			userid = inUserprofile.getUserId();
-		}
-		else
-		{
+		
 			userid = "null";
 		}
 		

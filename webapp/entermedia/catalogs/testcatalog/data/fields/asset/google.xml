@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page> 
+ 
+  <property id="googleid" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google ID</property>  
+  <!--  property id="google-fetch-url" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Fetch URL</property -->  
+  <!-- property id="google-thumb-url" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Fetch URL</property -->  
+  <property id="google-view-link" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Drive URL</property>  
+
+  <property id="googletagged" internalfield="false" index="true" stored="true"  editable="true" type="boolean">
+  	<name>
+      <language id="en"><![CDATA[Tagged by Google]]></language>
+    </name>
+  </property>  
+  
+  
+  <property id="googletranscoded" internalfield="false" index="true" stored="true"  editable="true" type="boolean">
+  <name>
+      <language id="en"><![CDATA[Auto transcoded Google]]></language>
+    </name>
+  </property>  
+     
+  
+   <property id="googlekeywords" keyword="true" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true"  filter="true"  sortable="true">
+    <name>
+      <language id="en"><![CDATA[AI Tags]]></language>
+    </name>
+   
+  </property>  
+  
+  <property id="locale" internalfield="false" index="true" stored="true"  editable="true" type="list" >Locale</property>  
+  
+  
+  
+</page>

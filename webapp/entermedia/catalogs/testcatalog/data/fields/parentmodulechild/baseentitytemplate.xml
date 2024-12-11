@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" index="true" editable="true"  keyword="true" filter="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Id]]></language>  
+    </name> 
+  </property>  
+	<property id="name" required="true" index="true" stored="true" multilanguage="false" editable="true" keyword="true">
+	  <name>
+	    <language id="en" > <![CDATA[Name]]> </language>
+	  </name>
+	</property>
+  
+   <property id="description"  internalfield="false" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
+    <name> 
+      <language id="en"><![CDATA[All Fields]]></language>  
+    </name> 
+  </property> 
+  
+   <property id="keywords" viewtype="tageditor" keyword="true" defaultoperation="andgroup" index="true" stored="true" 
+  		editable="true" filter="true"   sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Tags]]></language>  
+      <language id="en"><![CDATA[Tags]]></language>  
+      <language id="es"><![CDATA[Etiquetas]]></language>  
+      <language id="fr"><![CDATA[Tags]]></language> 
+    </name> 
+  </property>  
+  
+    <property id="longcaption" keyword="true" index="true" editable="true" stored="true" viewtype="textarea"> 
+    <name> 
+      <language id="en"><![CDATA[Description]]></language>  
+    </name> 
+  </property>
+
+  <property id="primaryimage" index="true" stored="true" editable="false" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="${data.uploadsourcepath}/${filename}">
+   	<name>
+   		<language id="en"><![CDATA[Auto Assigned Media]]></language>
+   	</name>
+   </property>
+   
+   <property id="primarymedia" index="true" stored="true" editable="true" type="list" viewtype="primarymedia" listid="asset" internalfield="false" datatype="list" sourcepath="${data.uploadsourcepath}/${filename}">
+   	<name>
+   		<language id="en"><![CDATA[Selected File]]></language>
+   	</name>
+   </property>
+  
+    <property id="entity_date" index="true" stored="true" editable="true" keyword="true" datatype="date" viewtype="date" filter="false">  <!-- not really a filter -->
+	  <name>
+	    <language id="en" > <![CDATA[Date]]> </language>
+	  </name>
+	</property>
+	
+	<property id="entitysourcetype"  internalfield="true" index="true" stored="true" type="list" listid="module"  editable="true" keyword="true" filter="true">
+	  <name>
+	    <language id="en" > <![CDATA[Entity Source Type]]> </language>
+	  </name>
+	</property>
+	
+  
+ <property id="uploadsourcepath" index="true" stored="true" editable="true" note="Auto populated" >
+	 <name>
+	 <language id="en" > <![CDATA[Upload Source Path]]> </language>
+	 </name>
+	</property>
+
+
+  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user"  internalfield="true" type="list"> 
+    <name> 
+        
+      <language id="en"><![CDATA[Inherited  Users]]></language>  
+       
+    </name> 
+  </property>  
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group"  internalfield="true"    type="list">
+    <name> 
+      <language id="en"><![CDATA[Inherited Groups]]></language>  
+    </name> 
+  </property>  
+  
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"  internalfield="true"  type="list">
+    <name>
+   
+      <language id="en"><![CDATA[Inherited Roles]]></language>
+     
+    </name>
+  </property> 
+  
+  
+  <property id="customroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"      type="list">
+    <name>
+      <language id="en"><![CDATA[Roles]]></language>
+    </name>
+  </property> 
+  
+   <property id="customusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user"     type="list"> 
+    <name> 
+ 
+      <language id="en"><![CDATA[Users]]></language>  
+     
+    </name> 
+  </property>  
+  <property id="customgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group"    type="list"> 
+    <name>     
+      <language id="en"><![CDATA[Groups]]></language>   
+    </name> 
+  </property>  
+  
+  
+  
+  <property id="securityenabled" editable="true" internalfield="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Security Enabled]]></language>  
+    </name> 
+  </property> 
+ 
+<property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" filter="true"  keyword="true" stored="true" editable="true" >Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
+    </name> 
+  </property>
+  
+  <property id="emrecordstatus" index="true" keyword="false" internalfield="true" stored="true" editable="true" datatype="object"> 
+    <name> 
+      <language id="en"><![CDATA[EM Record Status]]></language>  
+    </name> 
+  </property>
+  
+  <property id="rootcategory"  index="true" type="list" viewtype="categorytree" listid="category" stored="true" note="Auto populated"  editable="false" >Exact Category ID
+    <name>
+      <language id="de"><![CDATA[Kategorie ID]]></language>
+      <language id="en"><![CDATA[Category ID]]></language>
+      <language id="es"><![CDATA[categoria ID]]></language>
+      <language id="fr"><![CDATA[ID Catégorie]]></language>
+    </name>
+  </property>
+   
+  <property id="rootcategorypath"  index="true" type="list" viewtype="categorypath"   listid="category" stored="true" note="Auto populated"  editable="false" >Category ID
+    <name>
+      <language id="de"><![CDATA[Kategorie ID]]></language>
+      <language id="en"><![CDATA[Category ID]]></language>
+      <language id="es"><![CDATA[categoria ID]]></language>
+      <language id="fr"><![CDATA[ID Catégorie]]></language>
+    </name>
+  </property>
+  
+  
+  
+ <property id="enablepublishinggallery" editable="true" internalfield="false" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Enable Publishing]]></language>  
+    </name> 
+  </property> 
+  
+   <property id="enablepublishingcarousel" editable="true" internalfield="false" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Enable Carousel]]></language>  
+    </name> 
+  </property>  
+  
+  <property id="searchcategory" editable="true" index="true" stored="true" viewtype="entity" datatype="list" listid="searchcategory" > 
+    <name> 
+      <language id="en"><![CDATA[Categories]]></language>  
+    </name> 
+  </property>
+  
+    <property id="permissionsupdateddate" type="date" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Permissions Updated Date]]></language>  
+    </name> 
+  </property> 
+  
+   
+</properties>

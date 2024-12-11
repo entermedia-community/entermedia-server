@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page> 
+  <property id="bandwidth" index="true" stored="true" type="list" editable="true" sortable="true" keyword="false" filter="false">Bandwidth 
+    <name>
+      <language id="de"><![CDATA[Bandbreite]]></language>
+      <language id="en"><![CDATA[Bandwidth]]></language>
+      <language id="es"><![CDATA[Ancho de banda]]></language>
+      <language id="fr"><![CDATA[Bande passante]]></language>
+    </name>
+  </property> 
+  
+  <property id="closecaptionstatus" index="true" stored="true" editable="true" datatype="list" isbadge="true"  type="list"> 
+    Close Caption Status
+  </property>  
+  
+  <property id="aspect_ratio" index="true"  editable="true" stored="true">
+    <name>
+      <language id="en"><![CDATA[aspect_ratio]]></language>
+    </name>
+  </property>
+  
+  <property id="audiostreamids" index="true" indextype="not_analyzed"  viewtype="multiselect" editable="true" stored="true">
+    <name>
+      <language id="en"><![CDATA[Audio Streams]]></language>
+    </name>
+  </property>
+  <property id="videostreamids" index="true" indextype="not_analyzed"  viewtype="multiselect" editable="true" stored="true">
+    <name>
+      <language id="en"><![CDATA[Video Streams]]></language>
+    </name>
+  </property>
+
+  <property id="videotimecodeid" index="true"  editable="true" stored="true">
+    <name>
+      <language id="en"><![CDATA[Time Code Channel ID]]></language>
+    </name>
+  </property>
+
+</page>
