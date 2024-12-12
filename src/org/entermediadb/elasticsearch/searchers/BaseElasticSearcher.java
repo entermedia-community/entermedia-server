@@ -2963,6 +2963,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					HashSet localgroups = new HashSet();
 					HashSet localroles = new HashSet();
 					Collection exact = inData.getValues("category-exact");
+					if(exact == null) 
+					{
+						return;
+					}
 					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
 						Object something = iterator.next();
@@ -2975,6 +2979,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						
 					
+						if(cat == null) {
+							continue;
+						}
 						
 						Collection u = cat.findValues("viewusers");
 						Collection g = cat.findValues("viewgroups");
