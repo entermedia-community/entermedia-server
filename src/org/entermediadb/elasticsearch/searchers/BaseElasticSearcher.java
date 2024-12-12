@@ -2972,10 +2972,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						 cat =  (Category) searcher.getCategory((String)something);							
 						} else if (something instanceof Category) {
 							cat = (Category) something;
-						}
-						
-					
-						
+						}			
 						Collection u = cat.findValues("viewusers");
 						Collection g = cat.findValues("viewgroups");
 						Collection r = cat.findValues("viewroles");
