@@ -122,18 +122,15 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 
 			if (editstatus != null)
 			{
-				//OWNERS can always see their assets (from orchild.addExact))
+
 				SearchQuery hidependingchild = inSearcher.createSearchQuery();
 				hidependingchild.addExact("editstatus", editstatus);
-
 				orchild.addChildQuery(hidependingchild);
-			}
-
-			else
-			{
+				required.addChildQuery(orchild);
 
 			}
-			required.addChildQuery(orchild);
+
+			
 
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())
