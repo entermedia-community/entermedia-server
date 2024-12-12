@@ -511,9 +511,6 @@ public class PermissionManager implements CatalogEnabled
 		{
 			MultiValued module = (MultiValued) iterator.next();
 			Date lastchangred =module.getDate("permissionsupdateddate");
-			if(lastchangred.before(lastrundate)) {
-				continue;//Dunno why this was happening.  Reindex maybe.  TODO:  REmove.
-			}
 			buffer.append("Module " + module.getId() + " Permissions being updated");			
 			Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(module, null);
 			rootcat.setValue("viewusers", module.getValue("defaultusers"));
@@ -521,9 +518,7 @@ public class PermissionManager implements CatalogEnabled
 			rootcat.setValue("viewroles", module.getValue("defaultroles"));
 			archive.getCategorySearcher().saveCategory(rootcat);
 			getSearcher(module.getId()).reIndexAll();
-			buffer.append("Module " + module.getId() + " Permissions update completed");			
-
-			
+			buffer.append("Module " + module.getId() + " Permissions update completed");					
 		}
 		
 		Data finishedinfo = searcher.createNewData();
