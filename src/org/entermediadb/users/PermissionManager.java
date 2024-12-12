@@ -481,6 +481,9 @@ public class PermissionManager implements CatalogEnabled
 		return permissions;
 	}
 
+	
+	
+	
 	public void handleModulePermissionsUpdated()
 	{
 
@@ -513,10 +516,9 @@ public class PermissionManager implements CatalogEnabled
 			}
 			buffer.append("Module " + module.getId() + " Permissions being updated");			
 			Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(module, null);
-			rootcat.setValue("viewusers", module.getValue("viewusers"));
-			rootcat.setValue("viewgroups", module.getValue("viewgroups"));
-			rootcat.setValue("viewroles", module.getValue("viewroles"));
-			rootcat.setValue("securityenabled", module.getValue("securityenabled"));
+			rootcat.setValue("viewusers", module.getValue("defaultusers"));
+			rootcat.setValue("viewgroups", module.getValue("defaultgroups"));
+			rootcat.setValue("viewroles", module.getValue("defaultroles"));
 			archive.getCategorySearcher().saveCategory(rootcat);
 			getSearcher(module.getId()).reIndexAll();
 			buffer.append("Module " + module.getId() + " Permissions update completed");			
@@ -537,18 +539,58 @@ public class PermissionManager implements CatalogEnabled
 	{
 		return (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
+	
+	public void checkEntityCategoryPermission(Data inModule, Data inEntity)
+	{
+	    MediaArchive archive = getMediaArchive();
+	    Category rootcat = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+	    
+	    boolean needsupdate = false;
+	    String[] fieldsToCompare = {"users", "groups", "roles"};
+	    for (String field : fieldsToCompare) {
+	        // Get values from both the root category and the module
+	        Collection<String> rootValues = rootcat.getValues( "view" + field);
+	        Collection<String> moduleValues = inEntity.getValues("custom" + field);
+	        // Normalize null values to empty collections
+	        if (rootValues == null) {
+	            rootValues = Collections.emptyList();
+	        }
+	        if (moduleValues == null) {
+	            moduleValues = Collections.emptyList();
+	        }
+	        // Compare values
+	        if (!rootValues.containsAll(moduleValues) || !moduleValues.containsAll(rootValues)) {
+	            log.info("Mismatch found for field '" + field + "' in module " + inModule.getId());
+	            log.info("Root Category Values: " + rootValues + ", Module Values: " + moduleValues);
+	            
+	            needsupdate = true;
+	     
+	        }
+	    }
+	    if(needsupdate) {
+	    	rootcat.setValue("viewusers", inEntity.getValue("customusers"));
+			rootcat.setValue("viewgroups", inEntity.getValue("customgroups"));
+			rootcat.setValue("viewroles", inEntity.getValue("customroles"));
+			archive.getCategorySearcher().saveCategory(rootcat);
+			archive.saveData(inModule.getId(), inEntity);			
+	    }    
+	    
+		
+	}
+	
+	
 
 	public void queuePermissionCheck(Data inModule)
 	{
 	    MediaArchive archive = getMediaArchive();
-
+	    log.info("Checkiog permissions on " + inModule);
 	    Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
 	    boolean needsupdate = false;
-	    String[] fieldsToCompare = {"viewusers", "viewgroups", "viewroles"};
+	    String[] fieldsToCompare = {"users", "groups", "roles"};
 	    for (String field : fieldsToCompare) {
 	        // Get values from both the root category and the module
-	        Collection<String> rootValues = rootcat.getValues(field);
-	        Collection<String> moduleValues = inModule.getValues(field);
+	        Collection<String> rootValues = rootcat.getValues( "view" + field);
+	        Collection<String> moduleValues = inModule.getValues("default" + field);
 
 	        // Normalize null values to empty collections
 	        if (rootValues == null) {
@@ -568,15 +610,15 @@ public class PermissionManager implements CatalogEnabled
 	        }
 	    }
 	    
-	    String rootSecurityEnabled = (String) rootcat.get("securityenabled");
-	    String moduleSecurityEnabled = (String) inModule.get("securityenabled");
-
-	    if ((rootSecurityEnabled == null && moduleSecurityEnabled != null) ||
-	        (rootSecurityEnabled != null && !rootSecurityEnabled.equals(moduleSecurityEnabled))) {
-	        log.info("Mismatch found for 'securityenabled' in module " + inModule.getId());
-	        log.info("Root Category Value: " + rootSecurityEnabled + ", Module Value: " + moduleSecurityEnabled);
-	        needsupdate = true;	        
-	    }
+//	    String rootSecurityEnabled = (String) rootcat.get("securityenabled");
+//	    String moduleSecurityEnabled = (String) inModule.get("securityenabled");
+//
+//	    if ((rootSecurityEnabled == null && moduleSecurityEnabled != null) ||
+//	        (rootSecurityEnabled != null && !rootSecurityEnabled.equals(moduleSecurityEnabled))) {
+//	        log.info("Mismatch found for 'securityenabled' in module " + inModule.getId());
+//	        log.info("Root Category Value: " + rootSecurityEnabled + ", Module Value: " + moduleSecurityEnabled);
+//	        needsupdate = true;	        
+//	    }
 	    
 	    
 	    if(needsupdate) {
@@ -586,7 +628,7 @@ public class PermissionManager implements CatalogEnabled
 	    }
 		
 	    
-	    archive.fireSharedMediaEvent("entity/checkpermissionhistory");
+	    archive.fireSharedMediaEvent("entities/checkpermissionhistory");
 	    
 		
 	}

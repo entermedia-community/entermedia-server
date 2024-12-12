@@ -2077,7 +2077,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
-				updateMasterClusterId(details, data2, content, false);
+				presave(details, data2, content, false);
 				updateIndex(content, data2, details, inUser);
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
@@ -2166,7 +2166,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 	}
 
-	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
+	protected void presave(PropertyDetails details, Data inData, XContentBuilder content, boolean delete)
 	{
 		try
 		{
@@ -2390,7 +2390,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
-			updateMasterClusterId(details, data, content, delete);
+			presave(details, data, content, delete);
 			updateIndex(content, data, details, inUser);
 			content.endObject();
 			if (log.isDebugEnabled())
@@ -2946,6 +2946,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 		}
 
+		
+		
 		String securityfield = (String) detail.getValue("securityfield");
 		if (securityfield != null)
 		{
@@ -2963,6 +2965,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					HashSet localgroups = new HashSet();
 					HashSet localroles = new HashSet();
 					Collection exact = inData.getValues("category-exact");
+					if(exact == null) 
+					{
+						return;
+					}
 					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
 						Object something = iterator.next();
@@ -2975,6 +2981,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						}
 						
 					
+						if(cat == null) {
+							continue;
+						}
 						
 						Collection u = cat.findValues("viewusers");
 						Collection g = cat.findValues("viewgroups");
