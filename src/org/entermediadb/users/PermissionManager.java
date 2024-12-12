@@ -539,7 +539,10 @@ public class PermissionManager implements CatalogEnabled
 	{
 	    MediaArchive archive = getMediaArchive();
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
-	    
+	    if( rootcat == null)
+	    {
+	    	return;
+	    }
 	    boolean needsupdate = false;
 	    String[] fieldsToCompare = {"users", "groups", "roles"};
 	    for (String field : fieldsToCompare) {
