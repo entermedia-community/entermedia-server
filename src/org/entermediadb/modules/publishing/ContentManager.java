@@ -486,7 +486,7 @@ public class ContentManager implements CatalogEnabled {
 		long currenchapter = -1;
 		Collection tosave = new ArrayList();
 		Collection onechapter = new ArrayList();
-		Long thischapter = 0:
+		Long thischapter = 0L;
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			Data subentity = (Data) iterator.next();
 
