@@ -1,5 +1,7 @@
 package org.entermediadb.find;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -421,13 +423,13 @@ public class EntityManager implements CatalogEnabled
 	public Integer addAssetsToEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
-		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
+		Data entity = getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
 		if(entity == null) {
 			return 0;
 		}
 		Category category = loadDefaultFolder(module, entity, inUser, true);
 		
-		List<Data> tosave = new ArrayList();
+		List<Asset> tosave = new ArrayList();
 		if(hits != null && hits.getSelectedHitracker() != null && module != null && entity != null && category != null) {
 			
 			for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
@@ -441,6 +443,8 @@ public class EntityManager implements CatalogEnabled
 		//deSelect assets after copy
 		hits.getSelectedHitracker().deselectAll();
 		
+		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
+
 		//Use Category events?
 		//fireAssetsAddedToEntity(null, inUser, tosave , entity);
 
@@ -457,7 +461,11 @@ public class EntityManager implements CatalogEnabled
 		{
 			asset.addCategory(category);
 		}
-		//getMediaArchive().saveAsset(asset);
+		getMediaArchive().saveAsset(asset); 
+		Collection tosave = new ArrayList();
+		tosave.add(asset);
+		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
+
 		return true;
 	}
 	public Integer removeAssetsFromEntity(User inUser,String pickedmoduleid, String pickedentityid, HitTracker hits) 

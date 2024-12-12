@@ -149,7 +149,6 @@ public class EntityModule extends BaseMediaModule
 			Asset asset = archive.getAsset(pickedassetid);
 			if(entityManager.addAssetToEntity(inPageRequest.getUser(), pickedmoduleid, pickedentityid, asset))
 			{
-				archive.getAssetSearcher().saveData(asset);
 				entityManager.fireAssetAddedToEntity(null, inPageRequest.getUser(),asset, entity);
 			}
 			inPageRequest.putPageValue("asset", asset);

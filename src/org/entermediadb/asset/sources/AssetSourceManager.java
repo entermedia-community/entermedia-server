@@ -494,9 +494,20 @@ public class AssetSourceManager implements CatalogEnabled
 			AssetSource source = (AssetSource) iterator.next();
 			source.saveConfig();
 		}
-		
-		
-		
+	}
+
+	public void createLinksTo(Collection<Asset> inTosave, String inCategoryPath)
+	{
+		//Disable this by default?
+		boolean create = getMediaArchive().isCatalogSettingTrue("assetcreatesymboliclinks");
+		if( create )
+		{
+			for (Iterator iterator = inTosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				findAssetSource(asset).createSymbolicLink(asset,inCategoryPath);
+			}
+		}
 	}
 
 }

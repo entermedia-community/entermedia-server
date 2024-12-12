@@ -1,5 +1,8 @@
 package org.entermediadb.asset.scanner;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -172,6 +175,12 @@ public class AssetPathProcessor extends PathProcessor
 				log.debug("Path is not web friendly.  Will have archivepath set." + inItem.getPath());
 			//return true;
 		}
+		Path thepath = Paths.get(path);
+		
+		if( Files.isSymbolicLink(thepath) )
+		{
+			return false;
+		}	
 
 		return super.acceptFile(inItem);
 	}

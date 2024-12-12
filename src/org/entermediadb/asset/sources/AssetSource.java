@@ -56,5 +56,7 @@ public interface AssetSource
 
 	int removeExtraCategories();
 
+	void createSymbolicLink(Asset inAsset, String inCategoryPath);
+
 
 }

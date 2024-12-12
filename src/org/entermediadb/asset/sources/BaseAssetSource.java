@@ -479,5 +479,11 @@ public abstract class BaseAssetSource implements AssetSource
 	{
 		return -1;
 	}
-	
+
+	@Override
+	public void createSymbolicLink(Asset inAsset, String inCategoryPath)
+	{
+		//do noting by default
+		
+	}	
 }

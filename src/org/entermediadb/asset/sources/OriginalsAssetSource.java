@@ -1,6 +1,9 @@
 package org.entermediadb.asset.sources;
 
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -574,4 +577,23 @@ public class OriginalsAssetSource extends BaseAssetSource
 			return deleted;
 		}
 
+		@Override
+		public void createSymbolicLink(Asset inAsset, String inCategoryPath)
+		{
+			ContentItem item = getOriginalContent(inAsset);
+			if( !item.exists() )
+			{
+				Path from = Paths.get(item.getAbsolutePath());
+				String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
+
+				
+				Path to = Paths.get(item.getAbsolutePath());
+				
+				
+				//Files.createLink(from, "");
+				
+			}
+			
+			
+		}
 }
