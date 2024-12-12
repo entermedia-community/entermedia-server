@@ -540,7 +540,7 @@ public class PermissionManager implements CatalogEnabled
 	public void queuePermissionCheck(Data inModule)
 	{
 	    MediaArchive archive = getMediaArchive();
-
+	    log.info("Checkiog permissions on " + inModule);
 	    Category rootcat = archive.getEntityManager().loadDefaultFolderForModule(inModule, null);
 	    boolean needsupdate = false;
 	    String[] fieldsToCompare = {"users", "groups", "roles"};
@@ -585,7 +585,7 @@ public class PermissionManager implements CatalogEnabled
 	    }
 		
 	    
-	    archive.fireSharedMediaEvent("entity/checkpermissionhistory");
+	    archive.fireSharedMediaEvent("entities/checkpermissionhistory");
 	    
 		
 	}
