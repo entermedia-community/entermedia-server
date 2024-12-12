@@ -31,7 +31,7 @@ public class UpdatePermissionsTest  extends BaseEnterMediaTest
 		
 		
 		parentmodule.setValue("permissionsupdateddate",new Date() );
-		parentmodule.setValue("viewusers",null);
+		parentmodule.setValue("defaultusers",null);
 		
 		getMediaArchive().saveData("module",parentmodule);
 		
@@ -44,14 +44,14 @@ public class UpdatePermissionsTest  extends BaseEnterMediaTest
 		//Make sure child is clear
 		MultiValued  childrecord = (MultiValued)getMediaArchive().getSearcher("parentmodulechild").createNewData();
 		childrecord.setValue("parentmodule",parentmodule.getId());
-		parentmodule.setValue("viewusers",null);
+		parentmodule.setValue("defaultusers",null);
 		getMediaArchive().saveData("parentmodulechild",childrecord);
 		manager.handleModulePermissionsUpdated();
-		assertEquals(null, childrecord.getValue("viewusers"));
+		assertEquals(null, childrecord.getValue("defaultusers"));
 		
 		
 		//Now set the parent to something
-		parentmodule.addValue("viewusers","admin");
+		parentmodule.addValue("defaultusers","admin");
 		parentmodule.setValue("permissionsupdateddate",new Date() );
 		getMediaArchive().saveData("module",parentmodule);
 		manager.handleModulePermissionsUpdated();
@@ -80,7 +80,7 @@ public class UpdatePermissionsTest  extends BaseEnterMediaTest
 
 		MultiValued parentmodule = (MultiValued)getMediaArchive().getCachedData("module","parentmodule");
 		parentmodule.setValue("autocreatestartingpath", "parentmodule");		
-		parentmodule.setValue("viewusers","testuser");
+		parentmodule.setValue("defaultusers","testuser");
 		parentmodule.setValue("permissionsupdateddate",new Date() );
 		getMediaArchive().saveData("module",parentmodule);
 		
@@ -113,7 +113,7 @@ public class UpdatePermissionsTest  extends BaseEnterMediaTest
 		assertNull("Should not have been shown to TestUser",testchildrecord);
 		
 		
-		parentmodule.addValue("viewusers","externaluser");
+		parentmodule.addValue("defaultusers","externaluser");
 		parentmodule.setValue("permissionsupdateddate",new Date() );
 		getMediaArchive().saveData("module",parentmodule);
 		

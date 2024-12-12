@@ -291,8 +291,7 @@ public class MediaAdminModule extends BaseMediaModule
 	public void saveModule(WebPageRequest inReq) 
 	{
 		
-		
-		Data module = (Data) inReq.getPageValue("module");
+		Data module = (Data) inReq.getPageValue("data");
 		if(module != null) {
 			String newname = inReq.getRequestParameter("name.value");
 			if(newname != null) {
@@ -1110,8 +1109,8 @@ public class MediaAdminModule extends BaseMediaModule
 				}
 			}
 			
-			//Check parents
-			archive.saveData("module", tosave);  //Save children and parents
+//			//Check parents
+//			archive.saveData("module", tosave);  //Save children and parents
 
 			String appid = inReq.findValue("applicationid");
 			for (Iterator iterator = tosave.iterator(); iterator.hasNext();) 
