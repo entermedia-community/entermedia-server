@@ -985,32 +985,25 @@ public class EntityModule extends BaseMediaModule
 		
 		Category category = entityManager.loadLightboxCategory(module, entity, lightboxtype, selectedbox, inPageRequest.getUser() );
 		
-		Integer added = 0;
 		if(category != null) {
 			HitTracker assethits = (HitTracker) loadHitTracker(inPageRequest, moduleid);
-			
+			Collection finallist = null;
 			if( assethits != null && assethits.hasSelections())
 			{
-				HitTracker assethitscopy = assethits.getSelectedHitracker(); 
-				assethits = assethitscopy;
-				List<Data> tosave = new ArrayList();
-				for (Iterator iterator = assethits.iterator(); iterator.hasNext();) 
-				{
-					Data data = (Data) iterator.next();
-					Asset asset = archive.getAsset(data.getId());
-					asset.addCategory(category);
-					tosave.add(asset);
-				}
-				archive.saveAssets(tosave);
-				added = assethits.size();
-				assethits.deselectAll();
+				finallist = assethits.getSelectedHitracker();
 			}
-			else
+			else if( assetid != null)
 			{
+				finallist  = new ArrayList(1);
 				Asset asset = archive.getAsset(assetid);
 				asset.addCategory(category);
 				archive.saveAsset(asset);
-				added = 1;
+				finallist.add(asset);
+			}
+			int added = entityManager.addAssetsToCategory(archive, category, finallist);
+			if( assethits != null )
+			{
+				assethits.deselectAll();
 			}
 			
 			inPageRequest.putPageValue("assetsadded", added);
@@ -1026,7 +1019,8 @@ public class EntityModule extends BaseMediaModule
 		inPageRequest.putPageValue("assetsadded", added);
 		assethits.deselectAll();*/
 	}
-	
+
+
 	public void lightBoxRemoveAssets(WebPageRequest inPageRequest) throws Exception 
 	{
 	

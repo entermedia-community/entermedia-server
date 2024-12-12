@@ -457,11 +457,28 @@ public class ContentManager implements CatalogEnabled {
 		// Render DITAS for each question and a map
 		String searchhome = inReq.findPathValue("edithome");
 		//TODO: These files should be in the catalog in my opinion so they can be consistently accessed from mediadb etc
-		
-		Page ditatemplate = mediaArchive.getPageManager().getPage(	searchhome + "/renderdita/templatedita.dita");
+		Data module = mediaArchive.getCachedData("module", parentmodule);
+		String ditatemplate = entity.get("ditatemplateid");
+		if( ditatemplate == null)
+		{
+			ditatemplate = module.get("ditatemplateid"); 
+		}
+		if( ditatemplate != null)
+		{
+			Data found = mediaArchive.getCachedData("ditatemplate",ditatemplate);
+			if( found != null)
+			{
+				ditatemplate = found.get("filename");
+			}
+		}
+		if( ditatemplate == null)
+		{
+			ditatemplate = "chapterquestions.dita";
+		}
+		Page ditatemplatepage = mediaArchive.getPageManager().getPage(	searchhome + "/renderdita/" + ditatemplate);
 		PropertyDetail detail = mediaArchive.getSearcher(targetmodule).getDetail("name");
 
-		WebPageRequest newcontext = inReq.copy(ditatemplate);
+		WebPageRequest newcontext = inReq.copy(ditatemplatepage);
 		newcontext.putPageValue("contentmanager", this);
 
 		Collection savedtopics = new ArrayList();
@@ -506,11 +523,12 @@ public class ContentManager implements CatalogEnabled {
 					onechapter.add(subentity);
 				}
 				// proccess chapter
+				newcontext.putPageValue("entity", subentity);
 				newcontext.putPageValue("chapter", currenchapter);
 				newcontext.putPageValue("onechapter", onechapter);
 
 				StringWriter output = new StringWriter();
-				ditatemplate.generate(newcontext, output);
+				ditatemplatepage.generate(newcontext, output);
 
 				// subentity.setValue("ditatopic",output.toString());
 				// tosave.add(subentity);
@@ -538,11 +556,11 @@ public class ContentManager implements CatalogEnabled {
 
 		mediaArchive.saveData("targetmodule", tosave);
 
-		Page ditatemplatemap = mediaArchive.getPageManager().getPage( searchhome  +"/renderdita/templateditamap.ditamap");
+		Page ditatemplatemap = mediaArchive.getPageManager().getPage( searchhome  +"/renderdita/templatecreatebook.ditamap");
 
 		StringWriter output = new StringWriter();
 		newcontext = inReq.copy(ditatemplatemap);
-		newcontext.putPageValue("exportname", entity.getName());
+		newcontext.putPageValue("entity", entity);
 		newcontext.putPageValue("savedtopics", savedtopics);
 		ditatemplatemap.generate(newcontext, output);
 		// Get Names

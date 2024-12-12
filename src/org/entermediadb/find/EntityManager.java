@@ -1199,4 +1199,20 @@ public class EntityManager implements CatalogEnabled
 	}
 	*/
 	
+
+	public Integer addAssetsToCategory(MediaArchive archive, Category category, Collection assethits)
+	{
+		Integer added  = 0;
+		List<Asset> tosave = new ArrayList();
+		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) 
+		{
+			Data data = (Data) iterator.next();
+			Asset asset = (Asset)archive.getAssetSearcher().loadData(data); //Why reload?
+			asset.addCategory(category);
+			tosave.add(asset);
+		}
+		archive.saveAssets(tosave);
+		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
+		return added;
+	}
 }

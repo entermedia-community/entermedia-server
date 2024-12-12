@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties beanname="dataSearcher">  
-  <property id="id" datatype="number" index="true" stored="true" editable="false"  type="number">Id 
+  <property id="id" index="true" stored="true" editable="false" > 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[Id]]></language>  

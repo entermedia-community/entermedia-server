@@ -1,7 +1,9 @@
 package org.entermediadb.asset.sources;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -584,13 +586,20 @@ public class OriginalsAssetSource extends BaseAssetSource
 			if( !item.exists() )
 			{
 				Path from = Paths.get(item.getAbsolutePath());
-				String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
-
+				String target = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inCategoryPath + "/" + inAsset.getName();
+				Path to = Paths.get(target);
+				try
+				{
+					if( Files.notExists(to) )
+					{
+						Files.createLink(from, to);
+					}
+				}
+				catch (IOException e)
+				{
+					log.error("Could not make link " + to,e);
+				}
 				
-				Path to = Paths.get(item.getAbsolutePath());
-				
-				
-				//Files.createLink(from, "");
 				
 			}
 			

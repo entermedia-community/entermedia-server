@@ -2533,6 +2533,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
+					if( isReIndexing() )
+					{
+						continue;
+					}
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					detail.setDeleted(false);
 					//setType(detail);
@@ -2754,6 +2758,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					if (value instanceof Number)
 					{
 						val = (Number) value;
+					}
+					else if (value instanceof Integer)
+					{
+						val = (Integer) value;
 					}
 					else if (value != null)
 					{
