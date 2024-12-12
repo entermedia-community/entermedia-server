@@ -188,7 +188,7 @@ public class WorkspaceManager
 
 	public void saveModule(String catalogid, String appid, Data module) 
 	{
-		if(module == null ||  module.getId() == null || module.getId().isEmpty())
+		if(module == null )
 		{
 			throw new OpenEditException("Invalid module id");
 		}
@@ -222,82 +222,7 @@ public class WorkspaceManager
 						getPageManager().copyPage(template, destination); //Always update these
 					}
 				//}					
-				//Add corresponding fields to Asset
-				
-				
-				//AssetSearcher searcher = (AssetSearcher) getSearcherManager().getSearcher(catalogid, "asset");
-				CategorySearcher cats = (CategorySearcher) getSearcherManager().getSearcher(catalogid, "category");
-
-				PropertyDetailsArchive propertyDetailsArchive = cats.getPropertyDetailsArchive();
-
-				PropertyDetail catdetail = cats.getDetail(mid);
-
-				if(catdetail == null) {
-
-					catdetail = propertyDetailsArchive.createDetail(mid, mid );
-					catdetail.setDeleted(false);
-					Object name = module.getValue("name");
-					catdetail.setDataType("list");
-					if(name instanceof String){
-						catdetail.setName((String) name);
-					} 
-					else if(name instanceof LanguageMap) {
-						catdetail.setName((LanguageMap)name);
-					}
-					
-					//propertyDetailsArchive.savePropertyDetail(detail, "asset", null);
-					propertyDetailsArchive.savePropertyDetail(catdetail, "category", null);
-											
-				}
-//				}else {
-//					String template = "/" + catalogid + "/data/lists/view/default.xml";
-//					String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-//					Page pathentitiesbase = getPageManager().getPage("/" + catalogid + "/data/lists/view/" + module.getId() + ".xml");
-//					if( !pathentitiesbase.exists())
-//					{
-//						copyXml(catalogid, template, path, module);		
-//					}
-//					viewstemplate = "/" + catalogid + "/data/views/defaults/";
 			}
-			
-			//Searcher views = getSearcherManager().getSearcher(catalogid, "view");
-			
-			/*
-			Collection valuesdir = getPageManager().getChildrenPaths(viewstemplate, true );
-			
-			boolean copied = false;
-			for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
-			{
-				
-				String copypath = (String) iterator.next();
-				Page input = getPageManager().getPage(copypath);
-				Page destpath = null;
-				
-				String pathfinal = "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/";
-				String pathfinalbase = "/" + catalogid + "/data/views/" + module.getId() + "/";
-				
-				if (input.getName().indexOf(module.getId()) != -1) {
-					pathfinal = pathfinal + input.getName();
-					pathfinalbase = pathfinalbase + input.getName();
-				}
-				else {
-					pathfinal = pathfinal + module.getId()+ input.getName();
-					pathfinalbase = pathfinalbase + module.getId()+ input.getName();
-				}
-				
-				destpath = getPageManager().getPage( pathfinal );
-				Page destpathbase = getPageManager().getPage( pathfinalbase );
-				
-				if (!destpath.exists() && !destpathbase.exists()) {
-					getPageManager().copyPage(input, destpath);
-					copied = true;
-				}
-			}
-			*/
-//				if( copied )
-//				{
-//					views.reIndexAll();
-//				}
 			String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 			String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 			if( !getPageManager().getPage(path2).exists())
@@ -319,6 +244,7 @@ public class WorkspaceManager
 		createTable(catalogid, module.getId(), module.getId());
 		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 		getMediaArchive(catalogid).getPermissionManager().queuePermissionCheck(module);
+		getMediaArchive(catalogid).saveData("module", module);
 	}
 
 	
