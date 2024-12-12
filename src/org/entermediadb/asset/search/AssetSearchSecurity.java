@@ -108,13 +108,6 @@ public class AssetSearchSecurity extends BaseSearchSecurity implements SearchSec
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
 
-			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
-
-			if (user != null)
-			{
-				orchild.addExact("owner", user.getId());
-			}
-
 			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
 			String editstatus = null;
 			if (caneditdata == null || !caneditdata)
