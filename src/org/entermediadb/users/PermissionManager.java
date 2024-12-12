@@ -481,6 +481,9 @@ public class PermissionManager implements CatalogEnabled
 		return permissions;
 	}
 
+	
+	
+	
 	public void handleModulePermissionsUpdated()
 	{
 
@@ -536,6 +539,46 @@ public class PermissionManager implements CatalogEnabled
 	{
 		return (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
+	
+	public void checkEntityCategoryPermission(Data inModule, Data inEntity)
+	{
+	    MediaArchive archive = getMediaArchive();
+	    Category rootcat = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+	    
+	    boolean needsupdate = false;
+	    String[] fieldsToCompare = {"users", "groups", "roles"};
+	    for (String field : fieldsToCompare) {
+	        // Get values from both the root category and the module
+	        Collection<String> rootValues = rootcat.getValues( "view" + field);
+	        Collection<String> moduleValues = inEntity.getValues("custom" + field);
+	        // Normalize null values to empty collections
+	        if (rootValues == null) {
+	            rootValues = Collections.emptyList();
+	        }
+	        if (moduleValues == null) {
+	            moduleValues = Collections.emptyList();
+	        }
+	        // Compare values
+	        if (!rootValues.containsAll(moduleValues) || !moduleValues.containsAll(rootValues)) {
+	            log.info("Mismatch found for field '" + field + "' in module " + inModule.getId());
+	            log.info("Root Category Values: " + rootValues + ", Module Values: " + moduleValues);
+	            
+	            needsupdate = true;
+	     
+	        }
+	    }
+	    if(needsupdate) {
+	    	rootcat.setValue("viewusers", inEntity.getValue("customusers"));
+			rootcat.setValue("viewgroups", inEntity.getValue("customgroups"));
+			rootcat.setValue("viewroles", inEntity.getValue("customroles"));
+			archive.getCategorySearcher().saveCategory(rootcat);
+			archive.saveData(inModule.getId(), inEntity);			
+	    }    
+	    
+		
+	}
+	
+	
 
 	public void queuePermissionCheck(Data inModule)
 	{

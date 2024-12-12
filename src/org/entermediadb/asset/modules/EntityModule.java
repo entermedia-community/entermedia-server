@@ -1192,5 +1192,15 @@ public class EntityModule extends BaseMediaModule
 		
 	}
 	
+	public void saveEntityCategoryPermissions(WebPageRequest inReq) {
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String moduleid  = inReq.findPathValue("module");
+		Data module = archive.getData("module", moduleid);
+		archive.getPermissionManager().checkEntityCategoryPermission(module, entity);		
+	}
+	
+	
 	
 }
