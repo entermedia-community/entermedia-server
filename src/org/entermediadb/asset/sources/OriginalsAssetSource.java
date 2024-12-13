@@ -583,26 +583,47 @@ public class OriginalsAssetSource extends BaseAssetSource
 		public void createSymbolicLink(Asset inAsset, String inCategoryPath)
 		{
 			ContentItem item = getOriginalContent(inAsset);
-			if( !item.exists() )
+			if( item.exists() )
 			{
-				Path from = Paths.get(item.getAbsolutePath());
-				String target = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inCategoryPath + "/" + inAsset.getName();
-				Path to = Paths.get(target);
+				String link = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/" + inCategoryPath + "/" + inAsset.getName();
+				
 				try
 				{
-					if( Files.notExists(to) )
+					String linkabs = getPageManager().getContent(link).getAbsolutePath();
+					Path linkAbsPath = Paths.get(linkabs);
+					if( Files.notExists(linkAbsPath) )
 					{
-						Files.createLink(from, to);
+						Path realfilePath = Paths.get(item.getPath());
+						Path linkPath = Paths.get(link).getParent();
+						Path realFileRelative = linkPath.relativize(realfilePath); //getRelativePath(realfileS, link);
+
+						//Make em relative to one another
+						Files.createSymbolicLink(linkAbsPath, realFileRelative);
 					}
 				}
 				catch (IOException e)
 				{
-					log.error("Could not make link " + to,e);
+					log.error("Could not make link ",e);
 				}
-				
-				
 			}
-			
-			
 		}
+//        public Path getRelativePath(String realfile,String linkfile)
+//        {
+//        	Path from = Paths.get(realfile);
+//        	Path to = Paths.get(linkfile);
+//
+////            Path commonAncestor = from;
+////            while (!to.startsWith(commonAncestor) && commonAncestor.getParent() != null) {
+////                commonAncestor = commonAncestor.getParent();
+////            }
+////
+////            Path path1Relative = commonAncestor.relativize(from);
+////            Path path2Relative = commonAncestor.relativize(to);
+////
+////            return path1Relative.resolve(path2Relative).toString();
+//        	Path newpath = from.relativize(to);
+//        	return newpath;
+//        }
+
+
 }
