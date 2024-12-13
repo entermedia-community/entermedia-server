@@ -183,12 +183,14 @@ public class EntityManager implements CatalogEnabled
 		}
 		Category cat = null;
 		
-		String categoryid = entity.get("rootcategory");
-		if( categoryid != null)
+		if( entity.getValue("uploadsourcepath") != null ) //Dont use rootcategory if source is blank
 		{
-			cat = getMediaArchive().getCategory(categoryid);
-		}
-
+			String categoryid = entity.get("rootcategory");
+			if( categoryid != null)
+			{
+				cat = getMediaArchive().getCategory(categoryid);
+			}
+		}	
 		if( cat == null)
 		{
 			String sourcepath = loadUploadSourcepath(module,entity,inUser,create);
