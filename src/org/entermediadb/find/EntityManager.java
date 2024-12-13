@@ -272,6 +272,9 @@ public class EntityManager implements CatalogEnabled
 		{
 			return entity.get("uploadsourcepath");
 		}
+		
+		//Why would this be set? cyclical
+		/*
 		String categoryid = entity.get("rootcategory");
 		if( categoryid != null)
 		{
@@ -284,7 +287,7 @@ public class EntityManager implements CatalogEnabled
 				return sourcepath;
 			}
 		}
-
+		*/
 		if(!inCreate)
 		{
 			return null;
