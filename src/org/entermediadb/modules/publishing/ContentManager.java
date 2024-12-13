@@ -492,7 +492,6 @@ public class ContentManager implements CatalogEnabled {
 		Set submodules = new HashSet();
 		Map<String,String> submoduletotemplate = new HashMap();
 		
-		Collection<String> savedtopics = new ArrayList();
 		
 		Collection<Data> children = getMediaArchive().query("ditatemplate").named("ditatemplates").all().search(inReq);
 		for (Iterator iterator = children.iterator(); iterator.hasNext();)
@@ -503,6 +502,8 @@ public class ContentManager implements CatalogEnabled {
 			submoduletotemplate.put(submodid,data.get("filename"));
 		}
 		
+		Map<String,Collection> groupsoftopics = new HashMap();
+		Collection chapterfilenames = new ArrayList();
 		for (Iterator iterator = chapters.iterator(); iterator.hasNext();) 
 		{
 			MultiValued onechapter = (MultiValued) iterator.next();
@@ -512,7 +513,9 @@ public class ContentManager implements CatalogEnabled {
 			{
 				chapternumber = 1;
 			}
-			
+
+			Collection<String> savedtopics = new ArrayList();
+
 			HitTracker allcontents = getMediaArchive().query("modulesearch").put("searchtypes",submodules).exact(chaptermoduleid,onechapter.getId()).sort("useritem_number").search();
 			for (Iterator iterator2 = allcontents.iterator(); iterator2.hasNext();)
 			{
@@ -544,15 +547,44 @@ public class ContentManager implements CatalogEnabled {
 				savedtopics.add(ending);
 
 			}
-		}
-		//getMediaArchive().saveData("targetmodule", tosave);
+			//Save an intro to each chapter
+			String id = PathUtilities.extractId(onechapter.getName(), true);
+			String ending = String.format("chapters/%03d-%s.dita", chapternumber, id);
+			groupsoftopics.put(ending,savedtopics);
+			chapterfilenames.add(ending);
+			
+			String template = "chapterintro.dita";
+			Page ditatemplatepage = getMediaArchive().getPageManager().getPage(	edithome + "/templates/" + template);
+			WebPageRequest newcontext = inReq.copy(ditatemplatepage);
+			newcontext.putPageValue("contentmanager", this);
+			newcontext.putPageValue("inputdirectory", inputdirectory);
 
-		Page ditatemplatemap = getMediaArchive().getPageManager().getPage( edithome  +"/renderdita/templatecreatebook.ditamap");
+			// proccess chapter
+			newcontext.putPageValue("entity", onechapter);
+			newcontext.putPageValue("chapter", onechapter);
+
+			StringWriter output = new StringWriter();
+			ditatemplatepage.generate(newcontext, output);
+
+			String ditabasesourcepath = cat.getCategoryPath() + INPUTDIR + mapoutputpage.getDirectoryName() + "/"
+					+ ending;
+			Page outputfile = getMediaArchive().getPageManager().getPage(root + ditabasesourcepath);
+			getMediaArchive().getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(),
+					"Generated DITA");
+			log.info("Saved DITA: " + outputfile);
+			
+
+			
+		}
+
+		Page ditatemplatemap = getMediaArchive().getPageManager().getPage( edithome  +"/templates/templatecreatebook.ditamap");
 
 		StringWriter output = new StringWriter();
 		WebPageRequest newcontext = inReq.copy(ditatemplatemap);
 		newcontext.putPageValue("entity", entity);
-		newcontext.putPageValue("savedtopics", savedtopics);
+		newcontext.putPageValue("chapters", chapterfilenames);
+		newcontext.putPageValue("groupsoftopics", groupsoftopics);
+		
 		ditatemplatemap.generate(newcontext, output);
 		// Get Names
 		// Save content
