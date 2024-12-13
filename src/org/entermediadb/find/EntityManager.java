@@ -293,7 +293,7 @@ public class EntityManager implements CatalogEnabled
 			
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
 
-			sourcepath = sourcepath.replaceAll("////", "/");
+			sourcepath = sourcepath.replace("//", "/");
 			if( inCreate)
 			{
 				for (int i = 0; i < 20; i++) {
