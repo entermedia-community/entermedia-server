@@ -107,7 +107,7 @@ public class ContentModule extends BaseMediaModule {
 			mediaArchive.saveAsset(asset);
 		}
 		
-		String path = manager.loadVisual(moduleid,entity,renderformat, asset);
+		String path = manager.loadVisual(entity,renderformat, asset);
 		inReq.putPageValue("renderedpath",path);
 		String catpath = PathUtilities.extractDirectoryPath(path);
 		Category cat= mediaArchive.getCategorySearcher().createCategoryPath(catpath);
@@ -144,10 +144,8 @@ public class ContentModule extends BaseMediaModule {
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 
 		Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
-		HitTracker children = mediaArchive.query(targetmodule).exact(entitymoduleid,entityid).sort("userchapter_number").sort("useritem_number").search();
-
 		ContentManager manager = getContentManager(inReq);		
-		manager.renderDita(inReq, entitymoduleid, entity, targetmodule, children, mediaArchive);
+		manager.renderDita(inReq, entitymoduleid, entity, targetmodule);
 
 	}
 
@@ -166,7 +164,7 @@ public class ContentModule extends BaseMediaModule {
 		{
 			asset = (Data)menu.iterator().next();
 			inReq.putPageValue("asset",asset);
-			String path = manager.loadVisual(entity.get("entitysourcetype"),entity,"html", asset);
+			String path = manager.loadVisual(entity,"html", asset);
 			inReq.putPageValue("renderedpath",path);
 
 		}

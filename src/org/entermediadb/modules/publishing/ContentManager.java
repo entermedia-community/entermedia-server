@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +26,7 @@ import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -328,7 +331,7 @@ public class ContentManager implements CatalogEnabled {
 		return text;
 	}
 
-	public String loadVisual(String inModuleId, Data inEntity, String inFormat, Data inDitaAsset) {
+	public String loadVisual(Data inBookEntity, String inFormat, Data inDitaAsset) {
 		ContentItem item = getMediaArchive().getOriginalContent(inDitaAsset);
 		if (!item.exists()) {
 			log.info("No such assset");
@@ -342,7 +345,7 @@ public class ContentManager implements CatalogEnabled {
 		args.add("-i");
 		args.add(item.getAbsolutePath());
 
-		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inEntity, null);
+		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(inBookEntity, null);
 
 		String root = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
 		String outputbasefolder = cat.getCategoryPath() + RENDERED
@@ -451,38 +454,25 @@ public class ContentManager implements CatalogEnabled {
 
 	}
 
-	protected void renderDita(WebPageRequest inReq, String parentmodule, Data entity, String targetmodule,
-			HitTracker children, MediaArchive mediaArchive) {
-		Category cat = mediaArchive.getEntityManager().createDefaultFolder(entity, null);
+
+	
+	//1. Loop over all child chapter and search for their children data in order
+	
+	//2. Each chapter picks a dita template. So learning or topics. Not both. The template goes and load its data and loops it as needed
+	
+	//3. The book mapping file always looks for chapters renders them as dita and combines the chapters mapping files and stores
+
+	protected void renderDita(WebPageRequest inReq, String entitymoduleid, Data entity, String chaptermoduleid)
+	{
+		HitTracker chapters = getMediaArchive().query(chaptermoduleid).exact(entitymoduleid,entity.getId()).sort("userchapter_number").sort("useritem_number").search();
+		
+		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
 		// Render DITAS for each question and a map
-		String searchhome = inReq.findPathValue("edithome");
+		String edithome = inReq.findPathValue("edithome");
 		//TODO: These files should be in the catalog in my opinion so they can be consistently accessed from mediadb etc
-		Data module = mediaArchive.getCachedData("module", parentmodule);
-		String ditatemplate = entity.get("ditatemplateid");
-		if( ditatemplate == null)
-		{
-			ditatemplate = module.get("ditatemplateid"); 
-		}
-		if( ditatemplate != null)
-		{
-			Data found = mediaArchive.getCachedData("ditatemplate",ditatemplate);
-			if( found != null)
-			{
-				ditatemplate = found.get("filename");
-			}
-		}
-		if( ditatemplate == null)
-		{
-			ditatemplate = "chapterquestions.dita";
-		}
-		Page ditatemplatepage = mediaArchive.getPageManager().getPage(	searchhome + "/renderdita/" + ditatemplate);
-		PropertyDetail detail = mediaArchive.getSearcher(targetmodule).getDetail("name");
-
-		WebPageRequest newcontext = inReq.copy(ditatemplatepage);
-		newcontext.putPageValue("contentmanager", this);
-
-		Collection savedtopics = new ArrayList();
-		String root = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/";
+		Data module = getMediaArchive().getCachedData("module", entitymoduleid);
+		
+		String root = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
 
 		String basemapsourcepath = cat.getCategoryPath() + INPUTDIR;
 
@@ -492,94 +482,95 @@ public class ContentManager implements CatalogEnabled {
 			exportname = exportname.replace('/', '-');
 		}
 		String finalmapsourcepath = basemapsourcepath + PathUtilities.extractPageName(exportname) + "/" + exportname;
-		Page inputdirectory = mediaArchive.getPageManager()
+		Page inputdirectory = getMediaArchive().getPageManager()
 				.getPage(root + basemapsourcepath + PathUtilities.extractPageName(exportname) + "/");
-		newcontext.putPageValue("inputdirectory", inputdirectory);
-		Page mapoutputpage = mediaArchive.getPageManager().getPage(root + finalmapsourcepath);
+		Page mapoutputpage = getMediaArchive().getPageManager().getPage(root + finalmapsourcepath);
 
 		log.info("Creating DITAMAP" + finalmapsourcepath);
 		int it = 0;
 
-		long currenchapter = -1;
-		Collection tosave = new ArrayList();
-		Collection onechapter = new ArrayList();
-		Long thischapter = 0L;
-		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-			Data subentity = (Data) iterator.next();
-
-			String number = subentity.get("userchapter_number");
+		Set submodules = new HashSet();
+		Map<String,String> submoduletotemplate = new HashMap();
+		
+		Collection<String> savedtopics = new ArrayList();
+		
+		Collection<Data> children = getMediaArchive().query("ditatemplate").named("ditatemplates").all().search(inReq);
+		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String submodid = data.get("targetsubmoduleid");
+			submodules.add(submodid);
+			submoduletotemplate.put(submodid,data.get("filename"));
+		}
+		
+		for (Iterator iterator = chapters.iterator(); iterator.hasNext();) 
+		{
+			MultiValued onechapter = (MultiValued) iterator.next();
 			
-			if( number != null )
+			Integer chapternumber = onechapter.getInt("userchapter_number");
+			if( chapternumber == null)
 			{
-				thischapter = (Long) Long.valueOf(number);
+				chapternumber = 1;
 			}
+			
+			HitTracker allcontents = getMediaArchive().query("modulesearch").put("searchtypes",submodules).exact(chaptermoduleid,onechapter.getId()).sort("useritem_number").search();
+			for (Iterator iterator2 = allcontents.iterator(); iterator2.hasNext();)
+			{
+				Data somecontent = (Data) iterator2.next();
+				String template = submoduletotemplate.get(somecontent.get("entitysourcetype"));
 
-			if (currenchapter == -1) {
-				currenchapter = thischapter;
-			}
+				//Combine lots of little renderings
+				Page ditatemplatepage = getMediaArchive().getPageManager().getPage(	edithome + "/templates/" + template);
+				WebPageRequest newcontext = inReq.copy(ditatemplatepage);
+				newcontext.putPageValue("contentmanager", this);
+				newcontext.putPageValue("inputdirectory", inputdirectory);
 
-			if (currenchapter != thischapter || !iterator.hasNext()) {
-				if (!iterator.hasNext()) {
-					onechapter.add(subentity);
-				}
 				// proccess chapter
-				newcontext.putPageValue("entity", subentity);
-				newcontext.putPageValue("chapter", currenchapter);
-				newcontext.putPageValue("onechapter", onechapter);
+				newcontext.putPageValue("entity", somecontent);
+				newcontext.putPageValue("chapter", onechapter);
 
 				StringWriter output = new StringWriter();
 				ditatemplatepage.generate(newcontext, output);
 
-				// subentity.setValue("ditatopic",output.toString());
-				// tosave.add(subentity);
-				// Save content
-				// String.format("%03d", a);
-				String ending = String.format("chapters/%03d.dita", currenchapter);
+				String id = PathUtilities.extractId(somecontent.getName(), true);
+				String ending = String.format("chapters/%03d-%s.dita", chapternumber, id);
+				
 				String ditabasesourcepath = cat.getCategoryPath() + INPUTDIR + mapoutputpage.getDirectoryName() + "/"
 						+ ending;
-				Page outputfile = mediaArchive.getPageManager().getPage(root + ditabasesourcepath);
-				mediaArchive.getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(),
+				Page outputfile = getMediaArchive().getPageManager().getPage(root + ditabasesourcepath);
+				getMediaArchive().getPageManager().saveContent(outputfile, inReq.getUser(), output.toString(),
 						"Generated DITA");
 				log.info("Saved DITA: " + outputfile);
-
-				// TODO: Put the image files inside .images
-
 				savedtopics.add(ending);
-				// clear
-				currenchapter = thischapter;
-				onechapter.clear();
 
 			}
-			onechapter.add(subentity);
-
 		}
+		//getMediaArchive().saveData("targetmodule", tosave);
 
-		mediaArchive.saveData("targetmodule", tosave);
-
-		Page ditatemplatemap = mediaArchive.getPageManager().getPage( searchhome  +"/renderdita/templatecreatebook.ditamap");
+		Page ditatemplatemap = getMediaArchive().getPageManager().getPage( edithome  +"/renderdita/templatecreatebook.ditamap");
 
 		StringWriter output = new StringWriter();
-		newcontext = inReq.copy(ditatemplatemap);
+		WebPageRequest newcontext = inReq.copy(ditatemplatemap);
 		newcontext.putPageValue("entity", entity);
 		newcontext.putPageValue("savedtopics", savedtopics);
 		ditatemplatemap.generate(newcontext, output);
 		// Get Names
 		// Save content
-		mediaArchive.getPageManager().saveContent(mapoutputpage, inReq.getUser(), output.toString(),
+		getMediaArchive().getPageManager().saveContent(mapoutputpage, inReq.getUser(), output.toString(),
 				"Generated DITAMMAP");
-		log.info("Saved DITA MAP: " + mapoutputpage);
+		log.info("Saved DMAP: " + mapoutputpage);
 
 //		Page outdirectory = mediaArchive.getPageManager().getPage(root + cat.getCategoryPath() +RENDERED + mapoutputpage.getDirectoryName() +"/");
 //		mediaArchive.getPageManager().removePage(outdirectory); //Assets will still be linked?
 
-		Collection assetids = mediaArchive.getAssetImporter().processOn(inputdirectory.getPath(),
-				inputdirectory.getPath(), true, mediaArchive, null);
+		Collection assetids = getMediaArchive().getAssetImporter().processOn(inputdirectory.getPath(),
+				inputdirectory.getPath(), true, getMediaArchive(), null);
 
 		// Save to Question Area? Or parent or both
-		Asset asset = mediaArchive.getAssetBySourcePath(finalmapsourcepath);
+		Asset asset = getMediaArchive().getAssetBySourcePath(finalmapsourcepath);
 		if (asset != null) {
-			loadVisual(parentmodule, entity, "xhtml", asset);
-			loadVisual(parentmodule, entity, "pdf", asset);
+			loadVisual(entity, "xhtml", asset);
+			loadVisual(entity, "pdf", asset);
 		}
 	}
 
