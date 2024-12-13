@@ -1155,21 +1155,25 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Searcher searcher = archive.getSearcher(pickedmodule);
 		String pickedid = inPageRequest.getRequestParameter("id");
-		
-		MultiValued picked = (MultiValued) archive.getData(pickedmodule, pickedid);
-		if (picked != null) 
+		MultiValued data = (MultiValued)inPageRequest.getPageValue("data");
+		//TODO: Use data?
+		if( data == null)
+		{
+			data = (MultiValued) archive.getData(pickedmodule, pickedid);
+		}
+		if (data != null) 
 		{
 			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
 			String entityid = inPageRequest.getRequestParameter("entityid");
 			PropertyDetail detail =  searcher.getDetail(entitytype);
 			if(detail.isMultiValue()) 
 			{
-				picked.addValue(entitytype, entityid);
+				data.addValue(entitytype, entityid);
 			}
 			else {
-				picked.setValue(entitytype, entityid);
+				data.setValue(entitytype, entityid);
 			}
-			searcher.saveData(picked);
+			searcher.saveData(data);
 		}
 		
 	}

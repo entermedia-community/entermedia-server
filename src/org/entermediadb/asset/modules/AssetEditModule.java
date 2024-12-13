@@ -2068,11 +2068,14 @@ public class AssetEditModule extends BaseMediaModule
 		//		final Map pages = savePages(inReq,archive,inPages);
 		//		final User user = inReq.getUser();
 		//		
-
-		FileUpload command = new FileUpload();
-		command.setPageManager(getPageManager());
-		UploadRequest properties = command.parseArguments(inReq);
-
+		UploadRequest properties = (UploadRequest)inReq.getPageValue("uploadrequest");
+		if( properties == null)
+		{
+			FileUpload command = new FileUpload();
+			command.setPageManager(getPageManager());
+			properties = command.parseArguments(inReq);
+			inReq.putPageValue("uploadrequest",properties);
+		}
 		if (properties == null)
 		{
 			properties = (UploadRequest) inReq.getPageValue("properties");
@@ -2084,7 +2087,8 @@ public class AssetEditModule extends BaseMediaModule
 		if(properties.getUploadItems().size() == 0) {
 			return;
 		}
-		String searchtype = inReq.findPathValue("searchtype");
+		String moduleid = inReq.findPathValue("module");
+		
 		String id = inReq.getRequestParameter("id");
 		if(id == null) {
 			id = inReq.getRequestParameter("id.value");
@@ -2092,17 +2096,30 @@ public class AssetEditModule extends BaseMediaModule
 		
 		final String currentcollection = inReq.getRequestParameter("collectionid");
 
-		Data target = null;
+		Data target = (Data)inReq.getPageValue("data");
+		if( target == null)
+		{
+			target = (Data)inReq.getPageValue("entity");
+		}
 
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		MediaArchive archive = mediaArchive;
-		if (searchtype != null && id != null)
+		if (target == null && moduleid != null && id != null)
 		{
-			target = archive.getData(searchtype, id);
+			target = archive.getData(moduleid, id);
 		}
-		if (id == null && target == null)
+
+		Searcher searcher = archive.getSearcher(moduleid);
+		
+		if (target == null  && id == null) //new record
 		{
-			Searcher searcher = archive.getSearcher(searchtype);
+			/* TODO: Remove this. We should be calling: 	<path-action name="DataEditModule.parseMultPart" />
+			<path-action name="DataEditModule.saveData">
+			<property name="pageval">entity</property>
+		</path-action>
+		<path-action name="AssetEditModule.handleUploads"/>
+			 */
+			
 			target = searcher.createNewData();
 			String[] fields = inReq.getRequestParameters("field");
 			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
@@ -2123,41 +2140,43 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
-			//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
 			String sourcepath = null;
-			Map variables = inReq.getParameterMap();
-			variables.put("userid", inReq.getUser().getId());
-			variables.put("id", id);
-			variables.put("filename", item.getName());
-			if (target != null)
+			if (moduleid != null)
 			{
-				variables.put("data", target);
-			}
-
-			if (searchtype != null)
-			{
-				Searcher searcher = archive.getSearcher(searchtype);
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null)
 				{
 					String sourcemask = detail.get("sourcepath");
+					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target != null && target.get("uploadsourcepath") == null) 
+					{
+						log.error("Remove ${data.uploadsourcepath}/${filename} from entities");
+						sourcemask = null; 
+					}
 					if( sourcemask == null)
 					{
-						String entityid = inReq.getRequestParameter("entityid");
-						String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
-						if( entityid != null &&entitymoduleid != null)
+						if( target != null && searcher.getDetail("uploadsourcepath") != null )
 						{
-							Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
-							Data entitmodule = mediaArchive.getCachedData("module",entitymoduleid);
-							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,entity, inReq.getUser());
+							Data entitmodule = mediaArchive.getCachedData("module",moduleid);
+							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 							if( cat != null)
 							{
-								sourcemask = cat.getCategoryPath() + "/" + item.getName();
+								sourcepath = cat.getCategoryPath() + "/" + item.getName();
 							}
 						}
 					}
-					if( sourcemask != null)
+					if( sourcepath != null && sourcemask != null)
 					{
+						//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
+						
+						Map variables = inReq.getParameterMap();
+						variables.put("userid", inReq.getUser().getId());
+						variables.put("id", id);
+						variables.put("filename", item.getName());
+						if (target != null)
+						{
+							variables.put("data", target);
+						}
+
 						sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), sourcemask, variables);
 						if( sourcepath.endsWith("/"))
 						{
@@ -2206,7 +2225,7 @@ public class AssetEditModule extends BaseMediaModule
 			//This will create a new one if current was null.
 			current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
-			log.info("Asset saved: " + current.getId());
+			log.info("Asset saved: " + current.getSourcePath());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
 
@@ -2228,6 +2247,13 @@ public class AssetEditModule extends BaseMediaModule
 			
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
+			if( target != null)
+			{
+				target.setValue(detailid,current.getId());
+				//Save it
+				searcher.saveData(target, inReq.getUser());
+			}
+			
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
 			
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);

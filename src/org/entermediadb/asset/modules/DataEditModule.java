@@ -192,12 +192,14 @@ public class DataEditModule extends BaseMediaModule
 	{
 		Searcher searcher = loadSearcherForEdit(inReq);
 		Data data = searcher.createNewData();
+		String[] fields = inReq.getRequestParameters("field");
+		searcher.updateData(inReq, fields, data);
 		inReq.putPageValue("data", data);
 		inReq.putSessionValue("tmpdata", data);
 		String var = inReq.findValue("datavariable");
 		if (var != null)
 		{
-			inReq.putSessionValue(var, data);
+			inReq.putSessionValue(var, data);  //Not needed?
 		}
 		return data;
 	}
@@ -1382,6 +1384,7 @@ public class DataEditModule extends BaseMediaModule
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
+		inReq.putPageValue("uploadrequest",properties);
 	}
 	public void uploadFiles(WebPageRequest inReq) throws Exception
 	{
