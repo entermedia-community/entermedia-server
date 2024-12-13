@@ -250,11 +250,11 @@ public class EntityManager implements CatalogEnabled
 			}
 		}
 		
-		if( cat.getValue(module.getId()) == null)
-		{
-			cat.setValue(module.getId(),entity.getId()); //Is this smart?
-			getMediaArchive().getCategorySearcher().saveData(cat);
-		}
+//		if( cat.getValue(module.getId()) == null)
+//		{
+//			cat.setValue(module.getId(),entity.getId()); //Is this smart?
+//			getMediaArchive().getCategorySearcher().saveData(cat);
+//		}
 		return cat;
 	}	
 	public String loadUploadSourcepath(Data module, Data entity, User inUser)
