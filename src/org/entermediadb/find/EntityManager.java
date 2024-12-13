@@ -240,11 +240,14 @@ public class EntityManager implements CatalogEnabled
 		{
 			if( !entity.getName().equals(cat.getName()) )
 			{
+				String enpath = entity.get("uploadsourcepath");
 				log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
 				cat.setName(entity.getName());
+				cat.setValue("categorypath",null); //clear it
+				//TODO: How can I move all the old content over?
 				//save all the childrem
 				getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-				if( entity.getValue("uploadsourcepath") == null || !cat.getCategoryPath().equals(entity.getValue("uploadsourcepath")) )
+				if(enpath == null || !cat.getCategoryPath().equals(enpath) )
 				{
 					entity.setValue("uploadsourcepath",cat.getCategoryPath());
 					getMediaArchive().saveData(module.getId(), entity);
