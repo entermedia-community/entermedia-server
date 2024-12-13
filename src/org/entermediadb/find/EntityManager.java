@@ -276,26 +276,6 @@ public class EntityManager implements CatalogEnabled
 			return entity.get("uploadsourcepath");
 		}
 		
-		//Why would this be set? cyclical
-		/*
-		String categoryid = entity.get("rootcategory");
-		if( categoryid != null)
-		{
-			Category cat = getMediaArchive().getCategory(categoryid);
-			if( cat != null)
-			{
-				String sourcepath = cat.getCategoryPath();
-				entity.setValue("uploadsourcepath",sourcepath );
-				getMediaArchive().saveData(module.getId(), entity);
-				return sourcepath;
-			}
-		}
-		*/
-		if(!inCreate)
-		{
-			return null;
-		}
-		
 		String mask = (String) module.getValue("uploadsourcepath");
 		String sourcepath = "";
 		if(mask != null)
@@ -374,6 +354,19 @@ public class EntityManager implements CatalogEnabled
 		}
 		if( inCreate)
 		{
+//			String categoryid = entity.get("rootcategory");
+//			if( categoryid != null)
+//			{
+//				Category cat = getMediaArchive().getCategory(categoryid);
+//				if( cat != null)
+//				{
+//					String sourcepath = cat.getCategoryPath();
+//					entity.setValue("uploadsourcepath",sourcepath );
+//					getMediaArchive().saveData(module.getId(), entity);
+//					return sourcepath;
+//				}
+//			}
+//
 			getMediaArchive().saveData(module.getId(), entity);
 		}
 		return sourcepath;
