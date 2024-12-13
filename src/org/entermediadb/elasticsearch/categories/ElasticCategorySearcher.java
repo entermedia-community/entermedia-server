@@ -54,7 +54,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 	public List findChildren(Category inParent) 
 	{
-		
 		if(inParent== null || inParent.getId() == null) {
 			return new ArrayList();
 		}
@@ -67,12 +66,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			ElasticCategory category = (ElasticCategory)getCacheManager().get("category", data.getId());
 			if( category == null)
 			{
-				category  = (ElasticCategory)createNewData();
+				category  = (ElasticCategory)loadData(data);
 				getCacheManager().put("category", data.getId(),category);
+				children.add(category);
+				continue;
 			}
-			category.setId(data.getId());
-			category.setProperties(data.getProperties());
-			category.setParentCategory(inParent);
+			category.setProperties(  data.getProperties() );
+			category.refresh();
 			children.add(category);
 		}
 		//Collections.sort(children);
