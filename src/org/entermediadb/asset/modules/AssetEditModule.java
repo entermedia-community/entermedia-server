@@ -2150,7 +2150,10 @@ public class AssetEditModule extends BaseMediaModule
 							Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
 							Data entitmodule = mediaArchive.getCachedData("module",entitymoduleid);
 							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,entity, inReq.getUser());
-							sourcemask = cat.getCategoryPath() + "/" + item.getName();
+							if( cat != null)
+							{
+								sourcemask = cat.getCategoryPath() + "/" + item.getName();
+							}
 						}
 					}
 					if( sourcemask != null)

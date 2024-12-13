@@ -175,6 +175,8 @@ public class EntityManager implements CatalogEnabled
 	
 	public Category loadDefaultFolder(Data module, Data entity, User inUser, boolean create)
 	{
+		//Ignore create
+		
 		if( entity == null || module == null || entity.getName() == null)
 		{
 			//log.error("No entity found entity:" + entity + " in module:" + module );
@@ -193,23 +195,12 @@ public class EntityManager implements CatalogEnabled
 		}	
 		if( cat == null)
 		{
-			String sourcepath = loadUploadSourcepath(module,entity,inUser,create);
+			String sourcepath = loadUploadSourcepath(module,entity,inUser,true);
 			if( sourcepath == null)
 			{
 				return null;
 			}
-			if( create )
-			{
-				cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
-			}
-			else
-			{
-				cat = getMediaArchive().getCategorySearcher().loadCategoryByPath(sourcepath);
-				if( cat == null)
-				{
-					return null;
-				}
-			}
+			cat = getMediaArchive().getCategorySearcher().createCategoryPath(sourcepath);
 			if( cat != null )
 			{
 				boolean saveit = false;
@@ -294,25 +285,25 @@ public class EntityManager implements CatalogEnabled
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
 
 			sourcepath = sourcepath.replace("//", "/");
-			if( inCreate)
-			{
-				for (int i = 0; i < 20; i++) {
-					//Already exists
-					Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
-					if( cat != null)
-					{
-						sourcepath = sourcepath + "_" + (i+2);
-					}
-					else if(i == 19)
-					{
-						throw new OpenEditException("Too many duplicate source paths");
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
+//			if( inCreate)  Enforce unique names instead
+//			{
+//				for (int i = 0; i < 20; i++) {
+//					//Already exists
+//					Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
+//					if( cat != null)
+//					{
+//						sourcepath = sourcepath + "_" + (i+2);
+//					}
+//					else if(i == 19)
+//					{
+//						throw new OpenEditException("Too many duplicate source paths");
+//					}
+//					else
+//					{
+//						break;
+//					}
+//				}
+//			}
 		}
 		if( sourcepath.isEmpty() && entity != null)
 		{

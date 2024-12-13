@@ -308,7 +308,17 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		cat = (Category)getCacheManager().get(getSearchType() + "category", inCategoryId);
 		if( cat == null || cat.isDirty() )
 		{
-			cat = searchCategory(inCategoryId);
+			Category newcopy = searchCategory(inCategoryId);
+			if( cat == null)
+			{
+				cat = newcopy;
+			}
+			else
+			{
+				cat.setProperties(  newcopy.getProperties() );
+				cat.refresh();
+				//cat.setParentCategory(null); cant call this
+			}
 //			if( cat != null)
 //			{
 //				log.info("loading category:"  + cat.getName() );
@@ -442,6 +452,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Category found = loadCategoryByPath(inPath);
 		if( found == null)
 		{
+			//Was not in cache so create it
 			String cleanpath = null;
 			if (inPath.endsWith("/"))
 			{
@@ -469,7 +480,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				//This could be slow to load on a big catalog
 				//parentcategory.addChild(found);
 				found.setParentCategory(parentcategory);
-				parentcategory.setIndexId("-1");
+				parentcategory.setIndexId("-1"); //reload sometime
 				//log.info(parentcategory.isDirty());
 			}
 			saveData(found);

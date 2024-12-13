@@ -181,10 +181,13 @@ public class BaseCategory extends BaseData implements Category
 	public void setChildren(List inChildren)
 	{
 		fieldChildren = inChildren;
-		for (Iterator iter = inChildren.iterator(); iter.hasNext();)
+		if( inChildren != null)
 		{
-			Category cat = (Category) iter.next();
-			cat.setParentCategory(this);
+			for (Iterator iter = inChildren.iterator(); iter.hasNext();)
+			{
+				Category cat = (Category) iter.next();
+				cat.setParentCategory(this);
+			}
 		}
 	}
 
@@ -365,6 +368,11 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public Category getParentCategory()
 	{
+		if( fieldParentCategory == null)
+		{
+			//This is bad?
+			fieldParentCategory = getCategorySearcher().getCategory(getParentId());
+		}
 		return fieldParentCategory;
 	}
 
@@ -743,8 +751,10 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public boolean refresh()
 	{
-		if( isDirty() && getCategorySearcher() != null)
+		if( getCategorySearcher() != null)
 		{
+			setValue("categorypath",null); //reload it
+			fieldParentCategory = null;
 			fieldChildren = null;
 			setIndexId(getCategorySearcher().getIndexId());
 			return true;
