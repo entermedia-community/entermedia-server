@@ -2094,7 +2094,8 @@ public class AssetEditModule extends BaseMediaModule
 
 		Data target = null;
 
-		MediaArchive archive = getMediaArchive(inReq);
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		MediaArchive archive = mediaArchive;
 		if (searchtype != null && id != null)
 		{
 			target = archive.getData(searchtype, id);
@@ -2137,13 +2138,28 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				Searcher searcher = archive.getSearcher(searchtype);
 				PropertyDetail detail = searcher.getDetail(detailid);
-				if (detail != null && detail.get("sourcepath") != null)
+				if (detail != null)
 				{
-					sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), detail.get("sourcepath"), variables);
-					//OLD style sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
-					if( sourcepath.endsWith("/"))
+					String sourcemask = detail.get("sourcepath");
+					if( sourcemask == null)
 					{
-						sourcepath = sourcepath + item.getName();
+						String entityid = inReq.getRequestParameter("entityid");
+						String entitymoduleid = inReq.getRequestParameter("entitymoduleid");
+						if( entityid != null &&entitymoduleid != null)
+						{
+							Data entity = mediaArchive.getCachedData(entitymoduleid, entityid);
+							Data entitmodule = mediaArchive.getCachedData("module",entitymoduleid);
+							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,entity, inReq.getUser());
+							sourcemask = cat.getCategoryPath() + "/" + item.getName();
+						}
+					}
+					if( sourcemask != null)
+					{
+						sourcepath = getAssetImporter().getAssetUtilities().createSourcePathFromMask(archive, null, inReq.getUser(), item.getName(), sourcemask, variables);
+						if( sourcepath.endsWith("/"))
+						{
+							sourcepath = sourcepath + item.getName();
+						}
 					}
 				}
 			}
