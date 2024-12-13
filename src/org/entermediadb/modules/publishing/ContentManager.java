@@ -464,7 +464,7 @@ public class ContentManager implements CatalogEnabled {
 
 	protected void renderDita(WebPageRequest inReq, String entitymoduleid, Data entity, String chaptermoduleid)
 	{
-		HitTracker chapters = getMediaArchive().query(chaptermoduleid).exact(entitymoduleid,entity.getId()).sort("userchapter_number").sort("useritem_number").search();
+		HitTracker chapters = getMediaArchive().query(chaptermoduleid).exact(entitymoduleid,entity.getId()).sort("userchapter_number").sort("ordering").search();
 		
 		Category cat = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
 		// Render DITAS for each question and a map
@@ -516,7 +516,7 @@ public class ContentManager implements CatalogEnabled {
 
 			Collection<String> savedtopics = new ArrayList();
 
-			HitTracker allcontents = getMediaArchive().query("modulesearch").put("searchtypes",submodules).exact(chaptermoduleid,onechapter.getId()).sort("useritem_number").search();
+			HitTracker allcontents = getMediaArchive().query("modulesearch").put("searchtypes",submodules).exact(chaptermoduleid,onechapter.getId()).sort("useritem_number").sort("ordering").search();
 			for (Iterator iterator2 = allcontents.iterator(); iterator2.hasNext();)
 			{
 				Data somecontent = (Data) iterator2.next();
