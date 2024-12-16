@@ -7,37 +7,31 @@
 
 
 #set( $viewid = $context.getRequestParameter("viewid"))
-#set( $viewpath = $context.getRequestParameter("viewpath"))
-#if( !$viewpath )
-	#set( $viewpath = $context.getRequestParameter("view"))
-#end
-#if( !$viewpath )
-	#set( $viewpath = $view)
-#end
+
 #set( $editpath = $context.getRequestParameter("editpath"))
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-#set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $moduleid = $context.findValue("module") )
 
 #set ($catalogId = $context.getRequestParameter("catalogid") )
 			
 #set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
 #if(!$existingrecords)
-
 	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
-	
-	#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
-	#set ( $sortby = $context.findValue("sortby"))
+	#set($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
+	#set($sortby = $context.findValue("sortby"))
 	$!query.addSortBy($sortby)
-	#set( $existingrecords = $joinsearcher.search($query) )
-     
+	#set($existingrecords = $joinsearcher.search($query) )
 	
 #end
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $details = $joinsearcher.getDataProperties($viewpath,$user) )
+#set( $details = $joinsearcher.getDetailsForView($viewid,$context.getUserProfile()) )
+#ifnull($details)
+	Error: No details for $viewid, $context.getUserProfile()
+#end
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
@@ -51,6 +45,7 @@
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
 #if( $existingrecords && $existingrecords.size() > 0 )
+
 <table id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
 	<tr id="tableheader" class="tableheader">
