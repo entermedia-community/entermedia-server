@@ -490,11 +490,12 @@ public class EntityManager implements CatalogEnabled
 				
 				tosave.add(asset);
 			}
+			
 			getMediaArchive().saveAssets(tosave);
 		}
 		
 		fireAssetsRemovedFromEntity(null, inUser, tosave , entity);
-		
+		hits.deselectAll();
 		return tosave.size();
 		
 
@@ -1194,7 +1195,6 @@ public class EntityManager implements CatalogEnabled
 
 	public Integer addAssetsToCategory(MediaArchive archive, Category category, Collection assethits)
 	{
-		Integer added  = 0;
 		List<Asset> tosave = new ArrayList();
 		for (Iterator iterator = assethits.iterator(); iterator.hasNext();) 
 		{
@@ -1205,6 +1205,6 @@ public class EntityManager implements CatalogEnabled
 		}
 		archive.saveAssets(tosave);
 		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
-		return added;
+		return tosave.size();
 	}
 }

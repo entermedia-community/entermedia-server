@@ -301,35 +301,32 @@ public class EntityModule extends BaseMediaModule
 		
 	}
 	
-	public void removeFromEntity(WebPageRequest inPageRequest) throws Exception 
+	public void removeAssetsFromEntity(WebPageRequest inPageRequest) throws Exception 
 	{
 	
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		EntityManager entityManager = getEntityManager(inPageRequest);
 		
-		String moduleid = inPageRequest.getRequestParameter("moduleid");
+		String entitymoduleid = inPageRequest.getRequestParameter("entitymoduleid");
 		String entityid = inPageRequest.getRequestParameter("entityid");
-		
 		String assetid = inPageRequest.getRequestParameter("assetid");
-		String appid = inPageRequest.getRequestParameter("applicationid");
-		Data entity = archive.getCachedData(moduleid,entityid);
+		
 		if(assetid != null) {
-			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), moduleid, entityid, assetid))
+			if(entityManager.removeAssetToEntity(inPageRequest.getUser(), entitymoduleid, entityid, assetid))
 			{
 				inPageRequest.putPageValue("assets", "1");
 			}
 		}
 		else 
 		{
-			String assethitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
+			String assethitssessionid = inPageRequest.getRequestParameter("removinghitssessionid");
 			HitTracker assethits = (HitTracker) inPageRequest.getSessionValue(assethitssessionid);
 			//Collection<String> ids = assethits.getSelectedHitracker().collectValues("id");
-			Integer removed = entityManager.removeAssetsFromEntity(inPageRequest.getUser(), moduleid, entityid, assethits);
+			Integer removed = entityManager.removeAssetsFromEntity(inPageRequest.getUser(), entitymoduleid, entityid, assethits);
 			inPageRequest.putPageValue("assets", removed);
+			
 		}
-		inPageRequest.putPageValue("moduleid", moduleid);
 		inPageRequest.putPageValue("entityid", entityid);
-		
 		inPageRequest.putPageValue("assetclearselection", true);
 	}
 	
