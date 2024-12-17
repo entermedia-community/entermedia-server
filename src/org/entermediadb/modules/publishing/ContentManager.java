@@ -22,6 +22,7 @@ import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.llm.GptManager;
+import org.entermediadb.llm.LLMManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -672,7 +673,8 @@ public class ContentManager implements CatalogEnabled {
 		Map inputdata = new HashMap();
 		Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
 		
-		String uploadsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule, entity, inReq.getUser(), true);
+		//String uploadsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule, entity, inReq.getUser(), true);
+		
 		
 		String extra = entity.get("lastprompt");
 
@@ -686,8 +688,14 @@ public class ContentManager implements CatalogEnabled {
 		inReq.putPageValue("parent", entity);
 		
 		String type = inReq.findValue("llmtype.value");
+		if(type == null) {
+			type = "gptManager";			
+		} else {
+			type = type + "Manager";
+		}
+		LLMManager manager = (LLMManager) archive.getBean(type);
 		
-		GptManager manager = (GptManager) archive.getBean("gptManager");
+		
 		String model = inReq.findValue("llmmodel.value");
 		if(model == null) {
 			model = archive.getCatalogSettingValue("gpt-model");
@@ -696,7 +704,7 @@ public class ContentManager implements CatalogEnabled {
 			model = "gpt-4o";
 		}
 		String prompt = inReq.findValue("llmprompt.value");
-
+		
 		inReq.putPageValue("inputdata", inputdata);
 		inReq.putPageValue("prompt", prompt);
 
@@ -704,7 +712,6 @@ public class ContentManager implements CatalogEnabled {
 
 		String template = manager.loadInputFromTemplate(inReq,edithome+ "/aitools/llminstructions.html");
 
-		ArrayList createdassets = new ArrayList();
 		String imagestyle = inReq.findValue("llmimagestyle.value");
 		if(imagestyle == null) {
 			imagestyle = "vivid";
@@ -712,24 +719,23 @@ public class ContentManager implements CatalogEnabled {
 		JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, template);
 		JSONArray data = (JSONArray) results.get("data");
 		String[] fields = inReq.getRequestParameters("field");
+		Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity, inReq.getUser());
+		ArrayList assets = new ArrayList();
 		for (Iterator iterator = data.iterator(); iterator.hasNext();)
 		{
 			JSONObject row = (JSONObject) iterator.next();
 			String url = (String) row.get("url");
 			String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
 			filename = filename + ".png";
-			
+			String uploadsourcepath = rootcat.getCategoryPath() + "/"+ filename;
 			AssetImporter importer = getMediaArchive().getAssetImporter();
 			Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename, null);
-			//TODO:  should the importer not be doing this automatically?
-			ContentItem dest = getMediaArchive().getOriginalContent(asset);
-			importer.getAssetUtilities().readMetadata(asset, dest, archive);
-			importer.reImportAsset(archive, asset);
 			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
-			createdassets.add(asset);
-						
+			asset.addCategory(rootcat);
+			assets.add(asset);
 		}
-		getMediaArchive().saveAssets(createdassets);
+		getMediaArchive().saveAssets(assets);
+		archive.fireSharedMediaEvent("importing/assetscreated");
 		
 		
 		

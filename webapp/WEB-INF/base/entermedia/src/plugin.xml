@@ -2393,7 +2393,22 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>		
-			
-			
+	
+	<bean id="openaiManager" class="org.entermediadb.llm.GptManager">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>				
+	<bean id="geminiManager" class="org.entermediadb.llm.GeminiManager">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>					
 			
 </beans>

@@ -48,5 +48,4 @@ public interface CategoryArchive extends CatalogEnabled
 
 	public Category createNewCategory(String inLabel);
 	
-	public Category createCategoryTree(String inPath) throws OpenEditException;
 }

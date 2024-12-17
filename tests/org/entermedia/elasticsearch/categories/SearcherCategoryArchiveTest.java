@@ -27,22 +27,5 @@ public class SearcherCategoryArchiveTest  extends BaseEnterMediaTest
 		//assertTrue("Empty list", children.size() > 0);
 	}
 
-	public void testEditTree()
-	{
-		CategoryArchive archive = getMediaArchive().getCategoryArchive();
-//		List children  = parent.getChildren();
-		//assertTrue("Empty list", children.size() > 0);
-		
-		Category child = archive.createCategoryTree("users/tester"); //this calls saveAll if needed
-		Category users = archive.getCategory("users");
-		assertNotNull("users is null",users);
-
-		Category found = archive.getCategory(child.getId());
-		assertNotNull("tester is null",found);
-		
-		archive.reloadCategories();
-		Category found2 = archive.getCategory(child.getId());
-		assertNotNull("tester is null",found2);
-		
-	}
+	
 }
