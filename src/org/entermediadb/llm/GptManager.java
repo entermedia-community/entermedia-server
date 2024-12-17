@@ -95,7 +95,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	
 	
 	
-	public JsonObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate) {
+	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate) {
 		JsonParser parser = new JsonParser();
 
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
@@ -114,12 +114,42 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
 
-		return (JsonObject) parser.parse(json.toJSONString());
+		return json;
 		
 		
 	}
 	
 
+	public JSONObject createImage(WebPageRequest inReq,String inModel, int imagecount,String inSize, String style, String inPrompt) {
+		JsonParser parser = new JsonParser();
+
+		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+		inReq.putPageValue("prompt", inPrompt);
+		
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("model", inModel);
+		obj.addProperty("prompt", inPrompt);
+		obj.addProperty("n", imagecount);
+		obj.addProperty("size", inSize);
+		if(style != null) {
+			obj.addProperty("style", style);
+		}
+		String endpoint = "https://api.openai.com/v1/images/generations";
+
+		HttpPost method = new HttpPost(endpoint);
+		method.addHeader("authorization", "Bearer " + apikey);
+		method.setHeader("Content-Type", "application/json");
+		
+		method.setEntity(new StringEntity(obj.toString(), "UTF-8"));
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
+		
+		return json;
+		
+	}
+	
+	
 	
 	
 
