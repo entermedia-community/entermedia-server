@@ -27,6 +27,7 @@ import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
@@ -34,6 +35,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.CompositeData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
@@ -100,67 +102,67 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			setOptimizeReindex(true);
 		}
 	}
-//	public void reIndexAll() throws OpenEditException
-//	{
-//		if (isReIndexing())
-//		{
-//			return; //TODO: Make a lock so that two servers startin up dont conflict?
-//		}
-//		setReIndexing(true);
-//		try
-//		{
-//			getMediaArchive().getAssetArchive().clearAssets();
-//			//For now just add things to the index. It never deletes
-//
-//			//Someone is forcing a reindex
-//			//deleteOldMapping();
-//			putMappings();
-//
-//			//this is for legacy support
-//			final List tosave = new ArrayList(500);
-//
-//			PathProcessor processor = new PathProcessor()
-//			{
-//				public void processFile(ContentItem inContent, User inUser)
-//				{
-//					if (!inContent.getName().equals(getDataFileName()))
-//					{
-//						return;
-//					}
-//					String sourcepath = inContent.getPath();
-//					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
-//					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
-//					tosave.add(asset);
-//					if (tosave.size() == 500)
-//					{
-//						updateIndex(tosave, null);
-//						log.info("reindexed " + getExecCount());
-//						tosave.clear();
-//					}
-//					incrementCount();
-//				}
-//			};
-//			processor.setRecursive(true);
-//			processor.setRootPath(getPathToData());
-//			processor.setPageManager(getPageManager());
-//			processor.setIncludeMatches("*.xml");
-//			processor.process();
-//			updateIndex(tosave, null);
-//			log.info("reindexed " + processor.getExecCount());
-//			flushChanges();
-//			
-//			//super.reIndexAll();//Old elastic data
-//			
-//		}
-//		catch (Exception e)
-//		{
-//			throw new OpenEditException(e);
-//		}
-//		finally
-//		{
-//			setReIndexing(false);
-//		}
-//	}
+	//	public void reIndexAll() throws OpenEditException
+	//	{
+	//		if (isReIndexing())
+	//		{
+	//			return; //TODO: Make a lock so that two servers startin up dont conflict?
+	//		}
+	//		setReIndexing(true);
+	//		try
+	//		{
+	//			getMediaArchive().getAssetArchive().clearAssets();
+	//			//For now just add things to the index. It never deletes
+	//
+	//			//Someone is forcing a reindex
+	//			//deleteOldMapping();
+	//			putMappings();
+	//
+	//			//this is for legacy support
+	//			final List tosave = new ArrayList(500);
+	//
+	//			PathProcessor processor = new PathProcessor()
+	//			{
+	//				public void processFile(ContentItem inContent, User inUser)
+	//				{
+	//					if (!inContent.getName().equals(getDataFileName()))
+	//					{
+	//						return;
+	//					}
+	//					String sourcepath = inContent.getPath();
+	//					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
+	//					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
+	//					tosave.add(asset);
+	//					if (tosave.size() == 500)
+	//					{
+	//						updateIndex(tosave, null);
+	//						log.info("reindexed " + getExecCount());
+	//						tosave.clear();
+	//					}
+	//					incrementCount();
+	//				}
+	//			};
+	//			processor.setRecursive(true);
+	//			processor.setRootPath(getPathToData());
+	//			processor.setPageManager(getPageManager());
+	//			processor.setIncludeMatches("*.xml");
+	//			processor.process();
+	//			updateIndex(tosave, null);
+	//			log.info("reindexed " + processor.getExecCount());
+	//			flushChanges();
+	//			
+	//			//super.reIndexAll();//Old elastic data
+	//			
+	//		}
+	//		catch (Exception e)
+	//		{
+	//			throw new OpenEditException(e);
+	//		}
+	//		finally
+	//		{
+	//			setReIndexing(false);
+	//		}
+	//	}
 
 	/**
 	 * @deprecated Need to simplify
@@ -171,49 +173,50 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		all.add(one);
 		updateIndex(all, null);
 	}
-	
+
 	public boolean shoudSkipField(String inKey)
 	{
-		if(inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
+		if (inKey.equals("category-exact") || inKey.equals("category") || inKey.equals("description") || inKey.equals("foldersourcepath"))
 		{
 			return true;
 		}
 		return super.shoudSkipField(inKey);
 	}
-	
+
 	@Override
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails,User inUser)
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails, User inUser)
 	{
 		try
 		{
-			if( isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
+			if (isOptimizeReindex() && !(inData instanceof Asset)) //Low level performance fix
 			{
-				MultiValued values = (MultiValued)inData;
-				saveArray(inContent, "category",values.getValues("category"));
-				saveArray(inContent, "category-exact",values.getValues("category-exact"));
+				MultiValued values = (MultiValued) inData;
+				saveArray(inContent, "category", values.getValues("category"));
+				saveArray(inContent, "category-exact", values.getValues("category-exact"));
 				String desc = values.get("description");
 				inContent.field("description", desc);
 				setFolderPath(inData, inContent);
-				super.updateIndex(inContent, inData, inDetails,inUser);
-			
+				super.updateIndex(inContent, inData, inDetails, inUser);
+
 				return;
 			}
 			Asset asset = (Asset) loadData(inData);
-		
+
 			String fileformat = asset.getFileFormat();
 			if (fileformat != null)
 			{
 				inContent.field("fileformat", fileformat);
 			}
 			Object folderval = asset.getValue("isfolder");
-			if(folderval == null){
+			if (folderval == null)
+			{
 				ContentItem item = getMediaArchive().getAssetManager().getOriginalContent(asset);
-				asset.setFolder(item.isFolder());				
+				asset.setFolder(item.isFolder());
 			}
-//			if (asset.getCatalogId() == null)
-//			{
-//				asset.setCatalogId(getCatalogId());
-//			}
+			//			if (asset.getCatalogId() == null)
+			//			{
+			//				asset.setCatalogId(getCatalogId());
+			//			}
 			//inContent.field("catalogid", asset.getCatalogId());
 
 			Set categories = asset.buildCategorySet();
@@ -221,7 +224,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			categories.add(getMediaArchive().getCategorySearcher().getRootCategory());
 			inContent.field("description", desc);
 
-			saveArray(inContent, "category",categories);
+			saveArray(inContent, "category", categories);
 
 			// Searcher searcher =
 			// getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
@@ -231,8 +234,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-		//	assignCategoryPermissions(categories, asset);
-			super.updateIndex(inContent, inData, inDetails,inUser);
+			//	assignCategoryPermissions(categories, asset);
+			super.updateIndex(inContent, inData, inDetails, inUser);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)
 			// {
@@ -247,42 +250,35 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// }
 
 			//This is for saving and loading.
-			saveArray(inContent, "category-exact",asset.getCategories());
+			saveArray(inContent, "category-exact", asset.getCategories());
 			//populatePermission(inContent, asset, "viewasset");
 			setFolderPath(asset, inContent);
-			
-			
-			
-			
-			
 
 		}
 		catch (Exception ex)
 		{
-			if( ex instanceof OpenEditException)
+			if (ex instanceof OpenEditException)
 			{
-				throw (OpenEditException)ex;
+				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
 		}
 	}
 
-	
-
 	protected void setFolderPath(Data asset, XContentBuilder inContent) throws IOException
 	{
-		String archivesourcepath = asset.get("archivesourcepath"); 
-		if( archivesourcepath == null)
+		String archivesourcepath = asset.get("archivesourcepath");
+		if (archivesourcepath == null)
 		{
 			archivesourcepath = asset.getSourcePath();
 		}
 		String foldersourcepath = PathUtilities.extractDirectoryPath(archivesourcepath);
-		inContent.field("foldersourcepath", foldersourcepath);				
+		inContent.field("foldersourcepath", foldersourcepath);
 	}
 
 	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException
 	{
-		if( inData == null)
+		if (inData == null)
 		{
 			return;
 		}
@@ -291,17 +287,17 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		{
 			Object object = iterator.next();
 			String id = null;
-			if( object instanceof Data)
+			if (object instanceof Data)
 			{
-				id = ((Data)object).getId();
+				id = ((Data) object).getId();
 			}
 			else
 			{
-				id = String.valueOf( object );
+				id = String.valueOf(object);
 			}
 			ids.add(id);
 		}
-		if( ids.size() > 0)
+		if (ids.size() > 0)
 		{
 			String[] array = new String[ids.size()];
 			Object oa = ids.toArray(array);
@@ -326,6 +322,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		inContent.array(inPermission, add.toArray());
 
 	}
+
 	//TODO: Migrate this into populateKeywords
 	protected String populateDescription(Asset asset, PropertyDetails inDetails, Set inCategories)
 	{
@@ -346,12 +343,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 		populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
-//		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
-//		{
-//			Category cat = (Category) iter.next();
-//			fullDesc.append(cat.getName());
-//			fullDesc.append(' ');
-//		}
+		//		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
+		//		{
+		//			Category cat = (Category) iter.next();
+		//			fullDesc.append(cat.getName());
+		//			fullDesc.append(' ');
+		//		}
 		if (asset.getSourcePath() != null)
 		{
 			String[] dirs = asset.getSourcePath().split("/");
@@ -361,12 +358,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
-			populateFullText(asset,getSearchType(),fullDesc);
+			populateFullText(asset, getSearchType(), fullDesc);
 		}
-//		if (fullDesc.length() > getFullTextCap())
-//		{
-//			return fullDesc.substring(0, getFullTextCap());
-//		}
+		//		if (fullDesc.length() > getFullTextCap())
+		//		{
+		//			return fullDesc.substring(0, getFullTextCap());
+		//		}
 
 		String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
 		return result;
@@ -386,7 +383,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		return buffer.toString();
 	}
-
 
 	//	/**
 	//	 * @deprecated Need to simplify
@@ -457,7 +453,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				return null;
 			}
 			Map source = response.getSource();
-			if( isDeleted(source))
+			if (isDeleted(source))
 			{
 				return null;
 			}
@@ -493,15 +489,14 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected Asset createAssetFromResponse(String inId, Map inSource)
 	{
 		BaseAsset asset = (BaseAsset) createNewData();
-		
+
 		if (inSource == null)
 		{
 			return null;
 		}
 		asset.setSearchData(inSource);
 		asset.setId(inId);
-		
-		
+
 		return asset;
 	}
 
@@ -509,7 +504,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	@Override
 	public Data loadData(Data inHit)
 	{
-		if(inHit == null){
+		if (inHit == null)
+		{
 			return null;
 		}
 		if (inHit instanceof Asset)
@@ -521,16 +517,16 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return createAssetFromResponse(inHit.getId(), db.getSearchData());
 	}
 
-	public Data loadData(WebPageRequest inReq,String dataid)
+	public Data loadData(WebPageRequest inReq, String dataid)
 	{
 		Data data = null;
-		
+
 		if (dataid.startsWith("multiedit"))
 		{
 			CompositeData compositeasset = (CompositeData) inReq.getSessionValue(dataid);
 			String hitssessionid = dataid.substring("multiedit".length() + 1);
 			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-			if (compositeasset!= null && !compositeasset.getSelectedResults().hasChanged(hits)) 
+			if (compositeasset != null && !compositeasset.getSelectedResults().hasChanged(hits))
 			{
 				data = compositeasset;
 			}
@@ -542,7 +538,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 					log.error("Could not find " + hitssessionid);
 					return null;
 				}
-				CompositeData composite = new CompositeAsset(this,getEventManager(), hits);
+				CompositeData composite = new CompositeAsset(this, getEventManager(), hits);
 				composite.setId(dataid);
 				data = composite;
 				inReq.putSessionValue(dataid, data);
@@ -555,19 +551,20 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return data;
 
 	}
-	
+
 	public Data getDataBySourcePath(String inSourcePath)
 	{
 		if (inSourcePath.endsWith("/"))
 		{
 			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
-		return (Data) query().or().exact("sourcepath",  inSourcePath).exact("archivesourcepath",  inSourcePath).searchOne();
+		return (Data) query().or().exact("sourcepath", inSourcePath).exact("archivesourcepath", inSourcePath).searchOne();
 	}
 
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)
 	{
-		if(inSourcePath.startsWith("/")){
+		if (inSourcePath.startsWith("/"))
+		{
 			inSourcePath = inSourcePath.substring(1, inSourcePath.length());
 		}
 		return (Data) searchByField("sourcepath", inSourcePath);
@@ -584,6 +581,100 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	{
 		log.info("Asset Reindex started optimized:" + isOptimizeReindex());
 		super.reindexInternal();
+	}
+
+	@Override
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
+	{
+
+		//Check for security
+		PropertyDetail detail = getDetail("securityenabled");
+
+		boolean securityenabled = false;
+		Collection users = null;
+		Collection groups = null;
+		Collection roles = null;
+
+		if (detail == null)
+		{
+			return;
+		}
+
+		String securityfield = (String) detail.getValue("securityfield");
+		if (securityfield != null)
+		{
+
+			PropertyDetail securefield = getDetail(securityfield);
+			String fieldid = securefield.getId();
+			String categorysearchertype = securefield.getListId();//category 
+			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
+
+			HashSet localusers = new HashSet();
+			HashSet localgroups = new HashSet();
+			HashSet localroles = new HashSet();
+			Collection exact = inData.getValues("category-exact");
+			if (exact == null)
+			{
+				return;
+			}
+			for (Iterator iterator = exact.iterator(); iterator.hasNext();)
+			{
+				Object something = iterator.next();
+				Category cat = null;
+				if (something instanceof String)
+				{
+					cat = (Category) searcher.getCategory((String) something);
+				}
+				else if (something instanceof Category)
+				{
+					cat = (Category) something;
+				}
+
+				if (cat == null)
+				{
+					continue;
+				}
+
+				Collection u = cat.findValues("viewusers");
+				Collection g = cat.findValues("viewgroups");
+				Collection r = cat.findValues("viewroles");
+				if (u != null)
+				{
+					localusers.addAll(u);
+				}
+				if (g != null)
+				{
+					localgroups.addAll(g);
+				}
+				if (r != null)
+				{
+					localroles.addAll(r);
+				}
+			}
+			roles = localroles;
+			users = localusers;
+			groups = localgroups;
+		}
+
+		if (users != null || roles != null || groups != null)
+		{
+			securityenabled = true;
+		}
+
+		if (users != null)
+		{
+			inContent.field("viewusers", users);
+		}
+		if (groups != null)
+		{
+			inContent.field("viewgroups", groups);
+		}
+		if (roles != null)
+		{
+			inContent.field("viewroles", roles);
+		}
+		inContent.field("securityenabled", securityenabled);
+
 	}
 
 }

@@ -584,4 +584,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, Fu
 		return getDataConnector().getFulltext(inSearchHitData, inType);
 	}	
 	
+	
+	
+	
 }

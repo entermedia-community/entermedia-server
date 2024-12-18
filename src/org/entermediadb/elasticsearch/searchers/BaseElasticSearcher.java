@@ -2533,7 +2533,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				}
 				if (detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("emrecordstatus") && !propid.equals("recordmodificationdate") && !propid.equals("mastereditclusterid"))
 				{
-					if( isReIndexing() )
+					if (isReIndexing())
 					{
 						continue;
 					}
@@ -2944,21 +2944,39 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		//Check for security
 		PropertyDetail detail = getDetail("securityenabled");
 
-		boolean securityenabled = false;
-		Collection users = null;
-		Collection groups = null;
-		Collection roles = null;
-
 		if (detail == null)
 		{
 			return;
 		}
-
 		
+		boolean securityenabled = false;
+		Collection users = inData.getValues("customusers");
+		Collection groups = inData.getValues("customgroups");
+		Collection roles = inData.getValues("customroles");
 		
+		if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
+		{
+			if (users != null)
+			{
+				inContent.field("viewusers", users);
+			}
+			if (groups != null)
+			{
+				inContent.field("viewgroups", groups);
+			}
+			if (roles != null)
+			{
+				inContent.field("viewroles", roles);
+			}
+			inContent.field("securityenabled", true);
+			return;
+		}
+		
+				
 		String securityfield = (String) detail.getValue("securityfield");
 		if (securityfield != null)
 		{
+
 			PropertyDetail securefield = getDetail(securityfield);
 			String fieldid = securefield.getId();
 			String categorysearchertype = securefield.getListId();//category 
@@ -2966,106 +2984,34 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			if ("category".equals(securefield.getViewType()))
 			{
-				boolean aggregate = "asset".equals(getSearchType());
-				if (aggregate)
+
+				Collection exact = inData.getValues(securityfield);
+				if (exact != null)
 				{
-					HashSet localusers = new HashSet();
-					HashSet localgroups = new HashSet();
-					HashSet localroles = new HashSet();
-					Collection exact = inData.getValues("category-exact");
-					if(exact == null) 
-					{
-						return;
-					}
+
 					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
-						Object something = iterator.next();
-						Category cat = null;
-						if (something instanceof String)
+						String id = (String) iterator.next();
+						Category c = (Category) searcher.getCategory(id);
+						while (c != null)
 						{
-						 cat =  (Category) searcher.getCategory((String)something);							
-						} else if (something instanceof Category) {
-							cat = (Category) something;
-						}
-						
-					
-						if(cat == null) {
-							continue;
-						}
-						
-						Collection u = cat.findValues("viewusers");
-						Collection g = cat.findValues("viewgroups");
-						Collection r = cat.findValues("viewroles");
-						if (u != null)
-						{
-							localusers.addAll(u);
-						}
-						if (g != null)
-						{
-							localgroups.addAll(g);
-						}
-						if (r != null)
-						{
-							localroles.addAll(r);
-						}
-					}
-					roles = localroles;
-					users = localusers;
-					groups = localgroups;
-				}
 
-				else
-				{
-
-					Collection exact = inData.getValues(securityfield);
-					if (exact != null)
-					{
-
-						for (Iterator iterator = exact.iterator(); iterator.hasNext();)
-						{
-							String id = (String) iterator.next();
-							Category c = (Category) searcher.getCategory(id);
-							while (c != null)
+							users = c.getValues("viewusers");
+							groups = c.getValues("viewgroups");
+							roles = c.getValues("viewroles");
+							if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
 							{
-
-								Collection localusers = c.getValues("viewusers");
-								Collection localgroups = c.getValues("viewgroups");
-								Collection localroles = c.getValues("viewroles");
-								if ((localusers != null && !localusers.isEmpty()) || (localgroups != null) && !localgroups.isEmpty() || (localroles != null && !localroles.isEmpty()))
-								{
-									users = localusers;
-									groups = localgroups;
-									roles = localroles;
-									inContent.field("permissioncategory", c.getId());
-									break;
-								}
-								c = c.getParentCategory();
+								securityenabled = true;
+								break;
 							}
-
+							c = c.getParentCategory();
 						}
 
 					}
 				}
 
 			}
-			//String pathfield = securityfield + "path"; //this equivalet to category on asset - the fieldid is like cateogory-exact
 		}
-
-		if (users == null && roles == null && groups == null)
-		{
-			users = (Collection) inData.getValues("viewusers");
-			groups = (Collection) inData.getValues("viewgroups");
-			roles = (Collection) inData.getValues("viewroles");
-
-		}
-
-		
-
-		if (users != null || roles != null && groups != null)
-		{
-			securityenabled = true;
-		}
-
 		if (users != null)
 		{
 			inContent.field("viewusers", users);
