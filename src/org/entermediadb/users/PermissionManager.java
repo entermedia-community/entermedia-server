@@ -462,6 +462,18 @@ public class PermissionManager implements CatalogEnabled
 			entitypermissions.putPermission(entityid, permissionname, val);
 		}
 
+		//Add owner ones
+		HitTracker adminpermissions = searcher.query().exact("settingsgroup", "owners").search();
+
+		for (Iterator iterator = adminpermissions.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String moduleid = data.get("moduleid");
+			String permissionname = data.get("permissionsentity");
+			Object val = data.getValue("enabled");
+			entitypermissions.putPermission("owner" + moduleid, permissionname, val);
+		}
+		
 		return entitypermissions;
 
 	}
