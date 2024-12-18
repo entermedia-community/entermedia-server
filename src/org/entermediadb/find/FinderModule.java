@@ -393,6 +393,7 @@ public class FinderModule extends BaseMediaModule
 			
 			Collection searchmodules = loadUserSearchTypes(inReq);
 			query.setValue("searchtypes", searchmodules);
+			query.addAggregation("entitysourcetype");
 			
 			query.setName("modulehits");
 			query.addOrsGroup("id",uids);  //TODO: Filter out duplicates based on type
@@ -403,7 +404,7 @@ public class FinderModule extends BaseMediaModule
 				//organizeHits(inReq, hits, hits.getPageOfHits());
 				log.info("Found " + hits.size() + " favorite on " + hits.getHitsName());
 			}
-			totalhits = totalhits + hits.size();
+			totalhits = totalhits + hits.size(); 
 			
 			String smaxsize = inReq.findValue("maxcols");
 			int targetsize = smaxsize == null? 7:Integer.parseInt(smaxsize);
