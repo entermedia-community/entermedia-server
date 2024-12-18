@@ -39,6 +39,9 @@ public class FetchModule extends BaseMediaModule
 		}
 		Asset asset = archive.getAssetBySourcePath(sourcepath);
 		archive.getAssetImporter().fetchMediaForAsset(archive, asset, inReq.getUser());
+		
+		
+		
 	}
 
 }

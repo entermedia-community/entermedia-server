@@ -27,9 +27,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 
-public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMManager
+public class GeminiManager extends BaseLLMManager implements CatalogEnabled, LLMManager
 {
-	private static Log log = LogFactory.getLog(GptManager.class);
+	private static Log log = LogFactory.getLog(GeminiManager.class);
 
 	
 	protected String fieldCatalogId;

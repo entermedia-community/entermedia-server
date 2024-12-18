@@ -38,13 +38,13 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 		if(inFileName != null){
 			asset.setProperty("downloadurl-filename", inFileName);
 		}
-		asset.setFolder(true);
-		Category pcat = inArchive.getCategoryArchive().createCategoryTree(sourcepath);
-		
-		asset.addCategory(pcat);
-		inArchive.saveAsset(asset, inUser);
+		//asset.setFolder(true);
+//		Category pcat = inArchive.getCategorySearcher().createCategoryPath(sourcepath);
+//		asset.addCategory(pcat);
+
 		// This will download the asset in a catalog event handler
-		inArchive.fireMediaEvent("importing" , "fetchassetadded", inUser, asset);
+		fetchMediaForAsset(inArchive, asset, inUser);
+		inArchive.saveAsset(asset, inUser);
 		return asset;
 	}
 
@@ -80,13 +80,13 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 			}
 			asset.setName(filename);
 			asset.setPrimaryFile(filename);
-			asset.setFolder(true);
-			asset.setProperty("importstatus", "needsmetadata");
+			//asset.setFolder(true);
+			asset.setProperty("importstatus", "created");
 			asset.setProperty("downloadourl", url);
 			asset.removeProperty("downloadurl-file");
 			asset.removeProperty("downloadurl-filename");
-			inArchive.saveAsset(asset, inUser);
-			inArchive.fireSharedMediaEvent("importing/assetscreated");
+			//inArchive.saveAsset(asset, inUser);
+			//inArchive.fireSharedMediaEvent("importing/assetscreated");
 		}
 	}
 }

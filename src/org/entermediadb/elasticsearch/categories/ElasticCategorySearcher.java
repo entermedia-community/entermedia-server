@@ -309,6 +309,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if( cat == null || cat.isDirty() )
 		{
 			Category newcopy = searchCategory(inCategoryId);
+			if(newcopy == null) {
+				return null;
+			}
 			if( cat == null)
 			{
 				cat = newcopy;

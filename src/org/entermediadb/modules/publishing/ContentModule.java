@@ -57,6 +57,24 @@ public class ContentModule extends BaseMediaModule {
 		manager.createFromLLM(inReq,entitymodule.getId(),entity.getId(),submodsearchtype);
 		
 	}
+	
+	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
+	{
+		//Add as child
+		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");		
+		Data entity = (Data) inReq.getPageValue("entity");
+		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+	
+//		String lastprompt= inReq.getRequestParameter("llmprompt.value");
+//		entity.setValue("createassetprompt",lastprompt);
+		getMediaArchive(inReq).saveData(entitymodule.getId(),entity);
+		ContentManager manager = getContentManager(inReq);		
+
+		manager.createAssetFromLLM(inReq,entitymodule.getId(),entity.getId());
+		
+	}
+	
+	
 	public void loadDitaXml(WebPageRequest inReq)
 	{
 		String moduleid = inReq.findPathValue("module");

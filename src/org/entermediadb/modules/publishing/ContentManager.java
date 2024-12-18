@@ -19,9 +19,12 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.DitaImporter;
+import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.llm.GptManager;
+import org.entermediadb.llm.LLMManager;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -36,6 +39,7 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
 
 import com.google.gson.JsonObject;
@@ -658,6 +662,85 @@ public class ContentManager implements CatalogEnabled {
 		//Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
 
 
+	}
+
+	public void createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid) 
+	{
+		Data entity = getMediaArchive().getData(inModuleid, inEntityid);
+
+		// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
+		MediaArchive archive = getMediaArchive();
+		Map inputdata = new HashMap();
+		Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
+		
+		//String uploadsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule, entity, inReq.getUser(), true);
+		
+		
+		String extra = entity.get("lastprompt");
+
+		if (extra == null) {
+			extra = "Create a new asset in " + parentmodule.getName();
+		}
+		inputdata.put("directions", extra);
+		// Loop over all the tabs on the UI
+		inputdata.put("metadata", inputdata);
+		inReq.putPageValue("parentmodule", parentmodule);
+		inReq.putPageValue("parent", entity);
+		
+		String type = inReq.findValue("llmtype.value");
+		if(type == null) {
+			type = "gptManager";			
+		} else {
+			type = type + "Manager";
+		}
+		LLMManager manager = (LLMManager) archive.getBean(type);
+		
+		
+		String model = inReq.findValue("llmmodel.value");
+		if(model == null) {
+			model = archive.getCatalogSettingValue("gpt-model");
+		}
+		if(model == null) {
+			model = "gpt-4o";
+		}
+		String prompt = inReq.findValue("llmprompt.value");
+		
+		inReq.putPageValue("inputdata", inputdata);
+		inReq.putPageValue("prompt", prompt);
+
+		String edithome = inReq.findPathValue("edithome");
+
+		String template = manager.loadInputFromTemplate(inReq,edithome+ "/aitools/llminstructions.html");
+
+		String imagestyle = inReq.findValue("llmimagestyle.value");
+		if(imagestyle == null) {
+			imagestyle = "vivid";
+		}
+		JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, template);
+		JSONArray data = (JSONArray) results.get("data");
+		String[] fields = inReq.getRequestParameters("field");
+		Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity, inReq.getUser());
+		ArrayList assets = new ArrayList();
+		for (Iterator iterator = data.iterator(); iterator.hasNext();)
+		{
+			JSONObject row = (JSONObject) iterator.next();
+			String url = (String) row.get("url");
+			String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
+			filename = filename + ".png";
+			String uploadsourcepath = rootcat.getCategoryPath() + "/"+ filename;
+			AssetImporter importer = getMediaArchive().getAssetImporter();
+			Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename, null);
+			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
+			asset.addCategory(rootcat);
+			assets.add(asset);
+		}
+		getMediaArchive().saveAssets(assets);
+		archive.fireSharedMediaEvent("importing/assetscreated");
+		
+		
+		
+	
+		
 	}
 
 }

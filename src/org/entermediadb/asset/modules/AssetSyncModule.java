@@ -84,7 +84,7 @@ public class AssetSyncModule extends BaseMediaModule
 			MediaArchive archive = getMediaArchive(inReq);
 			
 			String assethome = "users/" + inReq.getUserName();
-			Category cat =	archive.getCategoryArchive().createCategoryTree(assethome);
+			Category cat =	archive.getCategorySearcher().createCategoryPath(assethome);
 			cat.setName(inReq.getUser().getScreenName());	
 			//call the add new asset for this user based on the path they gave us
 			//redirect to the catalog userpage to track status on these assets
