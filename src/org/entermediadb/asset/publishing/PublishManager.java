@@ -97,7 +97,7 @@ public class PublishManager implements CatalogEnabled {
 		
 		if( publishtasks.size() > 0)
 		{
-			log.info("publishing " + publishtasks.size() + " assets" + queuesearcher.getCatalogId());
+			log.info("Publishing " + publishtasks.size() + " assets  - " + queuesearcher.getCatalogId());
 			for (Iterator iterator = publishtasks.iterator(); iterator.hasNext();)
 			{
 				Data result = (Data) iterator.next();

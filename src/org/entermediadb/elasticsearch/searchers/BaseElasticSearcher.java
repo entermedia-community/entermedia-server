@@ -2495,6 +2495,13 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			{
 				allprops.add("id");
 			}
+			if (!allprops.contains("entitysourcetype"))
+			{
+				if (getDetail("entitysourcetype") != null)
+				{
+					allprops.add("entitysourcetype");
+				}
+			}
 			List badges = new ArrayList();
 
 			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
