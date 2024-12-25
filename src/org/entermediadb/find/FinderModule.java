@@ -364,7 +364,7 @@ public class FinderModule extends BaseMediaModule
 		
 		ArrayList<Data> foundmodules = new ArrayList();
 		Map<String,Collection> bytypes = null;
-		Collection<Data> modulestocheck = listSearchModules(archive);
+		HitTracker<Data> modulestocheck = 	getSearcherManager().getList(archive.getCatalogId(), "module");//listSearchModules(archive);
 
 		Collection uids = new ArrayList();
 		for (Iterator iterator = modulestocheck.iterator(); iterator.hasNext();)
@@ -391,7 +391,7 @@ public class FinderModule extends BaseMediaModule
 				query = searcher.createSearchQuery();
 			}
 			
-			Collection searchmodules = loadUserSearchTypes(inReq);
+			Collection searchmodules = modulestocheck.collectValues("id");
 			query.setValue("searchtypes", searchmodules);
 			query.addAggregation("entitysourcetype");
 			
