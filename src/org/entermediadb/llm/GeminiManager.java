@@ -13,6 +13,7 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -254,11 +255,11 @@ public class GeminiManager extends BaseLLMManager implements CatalogEnabled, LLM
 	}
 
 	
-	public JsonObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
 		return callFunction(inReq, inModel, inFunction, inQuery, temp, maxtokens, null);
 	}
 	
-	public JsonObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
 	{
 		MediaArchive bench = getMediaArchive();
 		JsonParser parser = new JsonParser();
@@ -361,8 +362,9 @@ public class GeminiManager extends BaseLLMManager implements CatalogEnabled, LLM
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			JSONObject result = (JSONObject) new JSONParser().parse(more.getAsString());
 
-			return more;
+			return result;
 		}
 		return null;
 

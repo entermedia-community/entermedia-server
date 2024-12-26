@@ -13,15 +13,14 @@ import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
-import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -102,7 +101,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		assert apikey != null;
 		String input = loadInputFromTemplate(inReq, inTemplate);
 		log.info(input);
-		String endpoint = "https://api.openai.com/v1/chat/completions";
+		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("authorization", "Bearer " + apikey);
@@ -254,11 +253,9 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	}
 
 	
-	public JsonObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
-		return callFunction(inReq, inModel, inFunction, inQuery, temp, maxtokens, null);
-	}
 	
-	public JsonObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
+	
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
 	{
 		MediaArchive bench = getMediaArchive();
 		JsonParser parser = new JsonParser();
@@ -361,43 +358,18 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			return more;
+			JSONObject result = (JSONObject) new JSONParser().parse(more.toString());
+			return result;
 		}
 		return null;
 
 	}
 
-	public Data updateData(JsonObject inObject, Data inData) {
-	    for (String key : inObject.keySet()) {
-	        JsonElement element = inObject.get(key);
-	        Object value = null;
+	
 
-	        // Handle JSON array
-	        if (element.isJsonArray()) {
-	            JsonArray array = element.getAsJsonArray();
-	            if (array.size() > 0) {
-	                value = array.get(0).getAsString(); // Get the first element as a string
-	            }
-	        }
-	        // Handle JSON object
-	        else if (element.isJsonObject()) {
-	            JsonObject obj = element.getAsJsonObject();
-	            value = obj.toString(); // Serialize the object to a string or process it differently
-	        }
-	        // Handle JSON primitives
-	        else if (element.isJsonPrimitive()) {
-	            value = element.getAsString(); // Get the primitive value as a string
-	        }
-	        // Handle null or unexpected types
-	        else if (element.isJsonNull()) {
-	            value = null;
-	        }
-
-	        // Set the value in the Data object
-	        inData.setValue(key, value);
-	    }
-	    return inData;
+	public String getApiEndpoint()
+	{
+		return "https://api.openai.com/v1/chat/completions";
 	}
 
 	

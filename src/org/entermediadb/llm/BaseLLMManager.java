@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.events.PathEventManager;
+import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -19,6 +21,10 @@ import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public abstract class BaseLLMManager implements LLMManager {
 	private static Log log = LogFactory.getLog(LLMManager.class);
@@ -107,5 +113,12 @@ public abstract class BaseLLMManager implements LLMManager {
 			throw e;
 		} 
 	}
-
+	
+	
+	
+	
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
+		return callFunction(inReq, inModel, inFunction, inQuery, temp, maxtokens, null);
+	}
+	
 }

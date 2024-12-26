@@ -11,7 +11,8 @@ public interface LLMManager
 	public JSONObject createImage(WebPageRequest inReq, String inModel, int inI, String inString, String inImagestyle, String inTemplate);
 
 	public String loadInputFromTemplate(WebPageRequest inReq, String inString);
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception ;
+	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception;
+	
 
-	
-	
 }

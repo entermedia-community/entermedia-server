@@ -2,6 +2,7 @@ package org.entermediadb.modules.publishing;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,9 +11,12 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.llm.LLMManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.hittracker.HitTracker;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
+import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
@@ -50,12 +54,53 @@ public class ContentModule extends BaseMediaModule {
 		String lastprompt= inReq.getRequestParameter("lastprompt.value");
 		entity.setValue("lastprompt",lastprompt);
 		
-		getMediaArchive(inReq).saveData(entitymodule.getId(),entity);
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.saveData(entitymodule.getId(),entity);
 		
-		ContentManager manager = getContentManager(inReq);		
-		//manager.createDitaEntityFromAI(topmodule,entityid,targetentity);
-		manager.createFromLLM(inReq,entitymodule.getId(),entity.getId(),submodsearchtype);
+		ContentManager manager = getContentManager(inReq);	
+		String model = inReq.findValue("llmmodel.value");
+		Data modelinfo = archive.getData("llmmodel", model);
+				
+		String type = modelinfo != null ?  modelinfo.get("llmtype") : null;
 		
+		if(type == null) {
+			type = "gptManager";			
+		} else {
+			type = type + "Manager";
+		}
+		LLMManager llm = (LLMManager) archive.getBean(type);
+
+		Data newdata = manager.createFromLLM(inReq,llm, model,entitymodule.getId(),entity.getId(),submodsearchtype);
+		boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
+		Searcher targetsearcher = archive.getSearcher(submodsearchtype);
+
+		if(createassets) {
+			
+
+			PropertyDetails details = targetsearcher.getPropertyDetails();
+			
+			for (PropertyDetail detail : details) {
+			    if (detail.isList() && "asset".equals(detail.getListId())) {
+			        inReq.putPageValue("detail", detail);
+			        inReq.putPageValue("newdata", newdata);
+
+			        String template = llm.loadInputFromTemplate(inReq, archive.getCatalogHome() + "/gpt/templates/createentityassets.html");
+			        Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
+			        String sourcepathroot = rootcat.getCategoryPath();
+			        Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);
+			        asset.addCategory(rootcat);
+			        archive.saveAsset(asset);
+			        log.info("Saving asset as " + detail.getName() + ": " + detail.getId());
+			        newdata.setValue(detail.getId(), asset.getId());
+
+			        // Break out of the loop for now...
+			    }
+			}
+			
+			
+			targetsearcher.saveData(newdata);
+
+		}
 	}
 	
 	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
@@ -69,8 +114,16 @@ public class ContentModule extends BaseMediaModule {
 //		entity.setValue("createassetprompt",lastprompt);
 		getMediaArchive(inReq).saveData(entitymodule.getId(),entity);
 		ContentManager manager = getContentManager(inReq);		
-
-		manager.createAssetFromLLM(inReq,entitymodule.getId(),entity.getId());
+		String type = inReq.findValue("llmtype.value");
+		if(type == null) {
+			type = "gptManager";			
+		} else {
+			type = type + "Manager";
+		}
+		LLMManager llm = (LLMManager) getMediaArchive(inReq).getBean(type);
+		String edithome = inReq.findPathValue("edithome");
+		String template = llm.loadInputFromTemplate(inReq,edithome+ "/aitools/createentityassets.html");
+		manager.createAssetFromLLM(inReq,entitymodule.getId(),entity.getId(),template);
 		
 	}
 	

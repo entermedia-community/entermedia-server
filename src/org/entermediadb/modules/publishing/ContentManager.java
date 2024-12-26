@@ -26,6 +26,7 @@ import org.entermediadb.llm.LLMManager;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -610,7 +611,7 @@ public class ContentManager implements CatalogEnabled {
 		}
 	}
 
-	public void createFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inTargetentity) throws Exception {
+	public Data createFromLLM(WebPageRequest inReq, LLMManager inManager,String inModel, String inModuleid, String inEntityid, String inTargetentity) throws Exception {
 
 		Data entity = getMediaArchive().getData(inModuleid, inEntityid);
 
@@ -634,25 +635,17 @@ public class ContentManager implements CatalogEnabled {
 		inReq.putPageValue("parent", entity);
 
 		
-		GptManager manager = (GptManager) archive.getBean("gptManager");
-		String model = inReq.findValue("model.value");
-		if(model == null) {
-			model = archive.getCatalogSettingValue("gpt-model");
-		}
-		if(model == null) {
-			model = "gpt-4o";
-		}
+		
 		//This is the "Message" to the LLM - it can be verbose and uses velocity, can access anything.
 		inReq.putPageValue("inputdata", inputdata);
-		String template = manager.loadInputFromTemplate(inReq,archive.getCatalogId() + "/gpt/templates/create_entity.html");
+		String template = inManager.loadInputFromTemplate(inReq,archive.getCatalogId() + "/gpt/templates/create_entity.html");
 
-		JsonObject results = manager.callFunction(inReq, model, "create_entity", template, 0, 5000	);
+		JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000	);
 		
 		Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
-		JsonObject returned = (JsonObject) results.get("metadata");
-		
-		
-		manager.updateData(returned, child);
+		JSONObject fields = (JSONObject) results.get("metadata");
+
+		targetsearcher.updateData(child, fields);
 		
 
 		child.setValue("entity_date", new Date());
@@ -660,11 +653,59 @@ public class ContentManager implements CatalogEnabled {
 		//No assets being created in this one.
 		archive.saveData(inTargetentity, child);
 		//Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
-
+		return child;
 
 	}
+	
+	public Asset createAssetFromLLM(WebPageRequest inReq, String inSourcepath,  String inStructions)
+	{
+		
+		//TODO:  This is all hardcoded to use OpenAI - need to change this to lookup once we have StableDiffusion or some other open soruce thing
+		MediaArchive archive = getMediaArchive();
+		Map inputdata = new HashMap();
 
-	public void createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid) 
+		String type = "gptManager";
+		LLMManager manager = (LLMManager) archive.getBean(type);
+		String model = "dall-e-3";
+		String prompt = inReq.findValue("llmprompt.value");
+		
+		inReq.putPageValue("inputdata", inputdata);
+		inReq.putPageValue("prompt", prompt);
+
+
+
+		String imagestyle = inReq.findValue("llmimagestyle.value");
+		if(imagestyle == null) {
+			imagestyle = "vivid";
+		}
+		JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
+		JSONArray data = (JSONArray) results.get("data");
+		String[] fields = inReq.getRequestParameters("field");
+		ArrayList assets = new ArrayList();
+		for (Iterator iterator = data.iterator(); iterator.hasNext();)
+		{
+			JSONObject row = (JSONObject) iterator.next();
+			String url = (String) row.get("url");
+			String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
+			filename = filename + ".png";
+			String uploadsourcepath = inSourcepath + "/"+ filename;
+			AssetImporter importer = getMediaArchive().getAssetImporter();
+			Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename, null);
+			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
+			
+			assets.add(asset);
+		}
+		getMediaArchive().saveAssets(assets);
+		archive.fireSharedMediaEvent("importing/assetscreated");
+		
+		return (Asset) assets.get(0);
+		
+		
+	}
+	
+	
+
+	public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) 
 	{
 		Data entity = getMediaArchive().getData(inModuleid, inEntityid);
 
@@ -701,7 +742,7 @@ public class ContentManager implements CatalogEnabled {
 			model = archive.getCatalogSettingValue("gpt-model");
 		}
 		if(model == null) {
-			model = "gpt-4o";
+			model = "dall-e-3";
 		}
 		String prompt = inReq.findValue("llmprompt.value");
 		
@@ -710,13 +751,12 @@ public class ContentManager implements CatalogEnabled {
 
 		String edithome = inReq.findPathValue("edithome");
 
-		String template = manager.loadInputFromTemplate(inReq,edithome+ "/aitools/llminstructions.html");
 
 		String imagestyle = inReq.findValue("llmimagestyle.value");
 		if(imagestyle == null) {
 			imagestyle = "vivid";
 		}
-		JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, template);
+		JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
 		JSONArray data = (JSONArray) results.get("data");
 		String[] fields = inReq.getRequestParameters("field");
 		Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity, inReq.getUser());
@@ -737,6 +777,7 @@ public class ContentManager implements CatalogEnabled {
 		getMediaArchive().saveAssets(assets);
 		archive.fireSharedMediaEvent("importing/assetscreated");
 		
+		return (Asset) assets.get(0);
 		
 		
 	
