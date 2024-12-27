@@ -765,6 +765,9 @@ public class ContentManager implements CatalogEnabled {
 			getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
 			asset.addCategory(rootcat);
 			assets.add(asset);
+			asset.setValue("owner", inReq.getUserName());
+			asset.setValue("assetaddeddate",new Date());
+			
 		}
 		getMediaArchive().saveAssets(assets);
 		archive.fireSharedMediaEvent("importing/assetscreated");
