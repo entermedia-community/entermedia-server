@@ -86,7 +86,7 @@ public class ContentModule extends BaseMediaModule {
 			        inReq.putPageValue("detail", detail);
 			        inReq.putPageValue("newdata", newdata);
 
-			        String template = llm.loadInputFromTemplate(inReq, archive.getCatalogHome() + "/gpt/templates/createentityassets.html");
+			        String template = llm.loadInputFromTemplate(inReq, "/"+ archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
 			        Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 			        String sourcepathroot = rootcat.getCategoryPath();
 			        Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);

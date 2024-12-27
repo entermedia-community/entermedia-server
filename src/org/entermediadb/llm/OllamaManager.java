@@ -167,7 +167,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		obj.add("messages", messages);
 
 		// Load the function definition and format from the template
-		String definition = loadInputFromTemplate(inReq, archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json");
+		String definition = loadInputFromTemplate(inReq,"/"+  archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
 		JsonObject functionDef = parser.parse(definition).getAsJsonObject();
 		
 		JsonObject parameters = functionDef.getAsJsonObject("parameters");

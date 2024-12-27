@@ -261,7 +261,7 @@ public class GeminiManager extends BaseLLMManager implements CatalogEnabled, LLM
 	
 	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
 	{
-		MediaArchive bench = getMediaArchive();
+		MediaArchive archive = getMediaArchive();
 		JsonParser parser = new JsonParser();
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
@@ -312,7 +312,7 @@ public class GeminiManager extends BaseLLMManager implements CatalogEnabled, LLM
 		if (inFunction != null)
 		{
 
-			String definition = loadInputFromTemplate(inReq, bench.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json");
+			String definition = loadInputFromTemplate(inReq, "/"+ archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
 			JsonArray functions = new JsonArray();
 			JsonObject function = (JsonObject) parser.parse(definition);
 			functions.add(function);

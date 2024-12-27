@@ -638,7 +638,7 @@ public class ContentManager implements CatalogEnabled {
 		
 		//This is the "Message" to the LLM - it can be verbose and uses velocity, can access anything.
 		inReq.putPageValue("inputdata", inputdata);
-		String template = inManager.loadInputFromTemplate(inReq,archive.getCatalogId() + "/gpt/templates/create_entity.html");
+		String template = inManager.loadInputFromTemplate(inReq,"/"+ archive.getMediaDbId() + "/gpt/templates/create_entity.html");
 
 		JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000	);
 		
