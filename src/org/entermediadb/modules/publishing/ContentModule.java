@@ -82,7 +82,7 @@ public class ContentModule extends BaseMediaModule {
 			for (Iterator iterator = details.iterator(); iterator.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-			    if (detail.isList() && "asset".equals(detail.getListId())) {
+			    if (detail.isList() && ( "asset".equals(detail.getListId()) || "asset".equals(detail.get("rendertype")))) {
 			        inReq.putPageValue("detail", detail);
 			        inReq.putPageValue("newdata", newdata);
 
