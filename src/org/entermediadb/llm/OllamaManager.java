@@ -76,8 +76,6 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
 	{
-		JsonParser parser = new JsonParser();
-
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
 		String input = loadInputFromTemplate(inReq, inTemplate);
@@ -139,7 +137,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
 	{
-		MediaArchive bench = getMediaArchive();
+		MediaArchive archive = getMediaArchive();
 		JsonParser parser = new JsonParser();
 
 		log.info("inQuery: " + inQuery);
@@ -169,7 +167,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		obj.add("messages", messages);
 
 		// Load the function definition and format from the template
-		String definition = loadInputFromTemplate(inReq, bench.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json");
+		String definition = loadInputFromTemplate(inReq, archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json");
 		JsonObject functionDef = parser.parse(definition).getAsJsonObject();
 		
 		JsonObject parameters = functionDef.getAsJsonObject("parameters");
@@ -180,6 +178,10 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		String endpoint = getApiEndpoint() + "/api/chat";
 		HttpPost method = new HttpPost(endpoint);
 		method.setHeader("Content-Type", "application/json");
+		String apikey = archive.getCatalogSettingValue("ollama-key");
+		
+		method.addHeader("authorization", "Bearer " + apikey);
+
 		String string = obj.toString();
 		method.setEntity(new StringEntity(string, StandardCharsets.UTF_8));
 
