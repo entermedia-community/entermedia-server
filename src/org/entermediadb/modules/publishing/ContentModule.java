@@ -15,8 +15,8 @@ import org.entermediadb.llm.LLMManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.ViewItem;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
@@ -77,9 +77,11 @@ public class ContentModule extends BaseMediaModule {
 		if(createassets) {
 			
 
-			PropertyDetails details = targetsearcher.getPropertyDetails();
+			Collection <PropertyDetail> details = targetsearcher.getDetailsForView(targetsearcher.getSearchType() + "addnew");
 			
-			for (PropertyDetail detail : details) {
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
 			    if (detail.isList() && "asset".equals(detail.getListId())) {
 			        inReq.putPageValue("detail", detail);
 			        inReq.putPageValue("newdata", newdata);
@@ -110,8 +112,8 @@ public class ContentModule extends BaseMediaModule {
 		Data entity = (Data) inReq.getPageValue("entity");
 		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
 	
-//		String lastprompt= inReq.getRequestParameter("llmprompt.value");
-//		entity.setValue("createassetprompt",lastprompt);
+		String lastprompt= inReq.getRequestParameter("createassetprompt.value");
+		entity.setValue("createassetprompt",lastprompt);
 		getMediaArchive(inReq).saveData(entitymodule.getId(),entity);
 		ContentManager manager = getContentManager(inReq);		
 		String type = inReq.findValue("llmtype.value");
@@ -122,7 +124,7 @@ public class ContentModule extends BaseMediaModule {
 		}
 		LLMManager llm = (LLMManager) getMediaArchive(inReq).getBean(type);
 		String edithome = inReq.findPathValue("edithome");
-		String template = llm.loadInputFromTemplate(inReq,edithome+ "/aitools/createentityassets.html");
+		String template = llm.loadInputFromTemplate(inReq,edithome+ "/aitools/createnewasset.html");
 		manager.createAssetFromLLM(inReq,entitymodule.getId(),entity.getId(),template);
 		
 	}

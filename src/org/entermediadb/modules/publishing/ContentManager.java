@@ -711,22 +711,15 @@ public class ContentManager implements CatalogEnabled {
 
 		// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
 		MediaArchive archive = getMediaArchive();
-		Map inputdata = new HashMap();
+		
 		Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
 		
 		//String uploadsourcepath = getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule, entity, inReq.getUser(), true);
 		
 		
-		String extra = entity.get("lastprompt");
-
-		if (extra == null) {
-			extra = "Create a new asset in " + parentmodule.getName();
-		}
-		inputdata.put("directions", extra);
-		// Loop over all the tabs on the UI
-		inputdata.put("metadata", inputdata);
-		inReq.putPageValue("parentmodule", parentmodule);
-		inReq.putPageValue("parent", entity);
+		
+	
+	
 		
 		String type = inReq.findValue("llmtype.value");
 		if(type == null) {
@@ -746,8 +739,7 @@ public class ContentManager implements CatalogEnabled {
 		}
 		String prompt = inReq.findValue("llmprompt.value");
 		
-		inReq.putPageValue("inputdata", inputdata);
-		inReq.putPageValue("prompt", prompt);
+	
 
 		String edithome = inReq.findPathValue("edithome");
 
