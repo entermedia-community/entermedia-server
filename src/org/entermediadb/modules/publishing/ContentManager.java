@@ -643,13 +643,13 @@ public class ContentManager implements CatalogEnabled {
 		JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000	);
 		
 		Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
-		JSONObject fields = (JSONObject) results.get("metadata");
 
-		targetsearcher.updateData(child, fields);
+		targetsearcher.updateData(child, results);
 		
 
 		child.setValue("entity_date", new Date());
 		child.setValue(inModuleid, inEntityid); // Lookup
+		child.setValue("ai-functioncall" , results.toJSONString());
 		//No assets being created in this one.
 		archive.saveData(inTargetentity, child);
 		//Category folder = getMediaArchive().getEntityManager().createDefaultFolder(entity, null);

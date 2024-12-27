@@ -76,7 +76,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
 	{
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+		String apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
 		assert apikey != null;
 		String input = loadInputFromTemplate(inReq, inTemplate);
 		log.info(input);
