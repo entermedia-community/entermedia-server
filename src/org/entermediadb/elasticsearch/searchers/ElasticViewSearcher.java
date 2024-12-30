@@ -24,6 +24,9 @@ public class ElasticViewSearcher extends ElasticListSearcher
 	@Override
 	public Object searchById(String inId)
 	{
+		if(inId  == null) {
+			return null;
+		}
 		//Make sure we call getCachedData for views
 		ViewData data = (ViewData)super.searchById(inId);
 
