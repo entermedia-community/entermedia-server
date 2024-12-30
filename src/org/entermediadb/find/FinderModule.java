@@ -814,7 +814,7 @@ public class FinderModule extends BaseMediaModule
 			UserProfile userprofile = inReq.getUserProfile();
 			if (userprofile != null)
 			{
-				Collection<String> usermodules = inReq.getUserProfile().getEntitiesIds();
+				Collection<String> usermodules = inReq.getUserProfile().getModuleIds();
 				for (Iterator iterator = topmenu.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
