@@ -308,25 +308,6 @@ public class EntityManager implements CatalogEnabled
 		if( sourcepath.isEmpty() && entity != null)
 		{
 			
-			if(module.getId().equals("librarycollection")) {
-				LibraryCollection coll = (LibraryCollection) getMediaArchive().getData("librarycollection", entity.getId());
-				if (coll != null)
-				{
-					Category uploadto  = null;
-					uploadto = coll.getCategory();
-					if(uploadto != null) 
-					{
-						sourcepath = uploadto.getCategoryPath(); 
-						String year = getMediaArchive().getCatalogSettingValue("collectionuploadwithyear");
-						if( year == null || Boolean.parseBoolean(year)) //Not reindexed yet
-						{
-							String thisyear = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy"); 
-							sourcepath = sourcepath + "/" + thisyear;
-						}
-						sourcepath = sourcepath + "/";
-					}
-					}
-			}
 			if( sourcepath.isEmpty() && entity.getName("en") != null)
 			{
 				//long year = Calendar.getInstance().get(Calendar.YEAR);
