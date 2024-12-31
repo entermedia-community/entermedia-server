@@ -33,7 +33,7 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				
 				#set( $error = $context.getPageValue("oe-exception") )
 				#if ( $error ) 
-					<div class="alert alert-danger my-2" role="alert" style="min-width: 400px;">
+					<div class="alert alert-danger my-2" role="alert" style="min-width: 450px;">
 						<i class="bi bi-exclamation-triangle-fill mr-1 ns"></i>
 						$error
 					</div>
@@ -44,16 +44,16 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 
 				#if($allowloginbyemail == "true")
-				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 400px;color: #3884fd;">
+				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 450px;color: #3884fd;">
 					<li class="nav-item" style="flex:1">
-						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">[[Passwordless Login]]</div>
+						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">[[Login Without Password]]</div>
 					</li>
 					<li class="nav-item" style="flex:1">
 						<div class="nav-link" data-target="#passwordLogin" style="cursor: pointer;">[[Login with Password]]</div>
 					</li>
 				</ul>
 				#end
-				<div class='border-left-subtle border-right-subtle border-bottom-subtle rounded-bottom #if($allowloginbyemail != "true") border-top #end py-2 px-3 shadow-sm' style="min-width: 400px;">
+				<div class='border-left-subtle border-right-subtle border-bottom-subtle rounded-bottom #if($allowloginbyemail != "true") border-top #end py-2 px-3 shadow-sm' style="min-width: 450px;">
 					#if($allowloginbyemail == "true")
 						<div id="passwordLessLogin" class="login-method">
 							<form class="ajaxform d-flex flex-column my-4"  style="text-align: left;" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">

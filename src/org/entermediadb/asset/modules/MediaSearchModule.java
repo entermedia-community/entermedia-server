@@ -382,9 +382,7 @@ public class MediaSearchModule extends BaseMediaModule
 			return;
 		}
 		
-		String entitymoduleid = (String)inPageRequest.findValue("entitymoduleid");
-
-		String personid = null;
+		String moduleid = (String)inPageRequest.findPathValue("module");
 
 		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
 		
@@ -393,24 +391,56 @@ public class MediaSearchModule extends BaseMediaModule
 		}
 		
 		Collection faceprofilegroups = new ArrayList();
+
+		aquery.addExact("faceprofiles.faceprofilegroup", entityid);
+		//faceprofilegroups
+		Data entity = archive.getCachedData(moduleid, entityid);
+		faceprofilegroups.add(entity);
+		aquery.setValue("faceprofilegroups", faceprofilegroups);
+		aquery.setValue("showfacebox", true);
 		
-		if("entityperson".equals(entitymoduleid)) {
-			//Search by person id
-			Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
-			if (!profiles.isEmpty()) {
-			
-				//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
-				aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles);
-				faceprofilegroups = profiles;
-			}
+		String hitsname = inPageRequest.getRequestParameter("hitsname");
+		if(hitsname == null)
+		{
+			hitsname = inPageRequest.findValue("hitsname");
 		}
-		else {
-			//assets = archive.query("asset").exact("faceprofiles.faceprofilegroup", entityid).search();
-			aquery.addExact("faceprofiles.faceprofilegroup", entityid);
-			//faceprofilegroups
-			Data entity = archive.getCachedData(entitymoduleid, entityid);
-			faceprofilegroups.add(entity);
+		if(hitsname == null)
+		{
+			hitsname = "faceassets";
 		}
+		archive.getAssetSearcher().cachedSearch(inPageRequest, aquery);
+	}
+	
+	
+	public void searchPersonAssets(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		String entityid = (String)inPageRequest.getPageValue("entityid");
+		if( entityid == null)
+		{
+			entityid = (String)inPageRequest.findValue("entityid");
+		}
+		if( entityid == null)
+		{
+			return;
+		}
+		
+		SearchQuery aquery = archive.getAssetSearcher().addStandardSearchTerms(inPageRequest);
+		
+		if(aquery == null) {
+			aquery = archive.getAssetSearcher().createSearchQuery();
+		}
+		
+		Collection faceprofilegroups = new ArrayList();
+		
+
+		Collection<Data> profiles = archive.query("faceprofilegroup").exact("entityperson", entityid).search();
+		if (!profiles.isEmpty()) {
+			//assets = archive.query("asset").orgroup("faceprofiles.faceprofilegroup", profiles).search();
+			aquery.addOrsGroup("faceprofiles.faceprofilegroup", profiles);
+			faceprofilegroups = profiles;
+		}
+
 		aquery.setValue("faceprofilegroups", faceprofilegroups);
 		aquery.setValue("showfacebox", true);
 		
