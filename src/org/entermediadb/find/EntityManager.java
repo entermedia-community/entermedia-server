@@ -253,93 +253,49 @@ public class EntityManager implements CatalogEnabled
 //		}
 		return cat;
 	}	
-	public String loadUploadSourcepath(Data module, Data entity, User inUser)
+	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
 	{
 		return loadUploadSourcepath(module, entity, inUser,true);
 	}
-	public String loadUploadSourcepath(Data module, Data entity, User inUser, boolean inCreate)
+	public String loadUploadSourcepath(Data module, Data entity, User inUser)
 	{
 		if (entity == null ) {
 			return null;
 		}
-		if( entity.getValue("uploadsourcepath") != null)
+		String sourcepath = entity.get("uploadsourcepath");
+		if( sourcepath != null)
 		{
-			return entity.get("uploadsourcepath");
+			return sourcepath;
 		}
 		
 		String mask = (String) module.getValue("uploadsourcepath");
-		String sourcepath = "";
+		
 		if(mask != null)
 		{
 			Map values = new HashedMap();
 			
 			values.put("module", module);
 			
-			//sourcepath = getMediaArchive().getAssetImporter().getAssetUtilities().createSourcePathFromMask( getMediaArchive(), inUser, "", mask, values, null);
-			
 			DataWithSearcher smartdata = new DataWithSearcher(getMediaArchive().getSearcherManager(), getCatalogId(), module.getId(), entity);
 			values.put(module.getId(), smartdata);
 			values.put("data", smartdata);
-
 			
 			sourcepath = getMediaArchive().replaceFromMask( mask, entity, module.getId(), values, null);  //Static locale?
-
 			sourcepath = sourcepath.replace("//", "/");
-//			if( inCreate)  Enforce unique names instead
-//			{
-//				for (int i = 0; i < 20; i++) {
-//					//Already exists
-//					Data cat = getMediaArchive().query(module.getId()).exact("uploadsourcepath",sourcepath).searchOne();
-//					if( cat != null)
-//					{
-//						sourcepath = sourcepath + "_" + (i+2);
-//					}
-//					else if(i == 19)
-//					{
-//						throw new OpenEditException("Too many duplicate source paths");
-//					}
-//					else
-//					{
-//						break;
-//					}
-//				}
-//			}
 		}
-		if( sourcepath.isEmpty() && entity != null)
+		if( sourcepath == null && entity.getName("en") != null)
 		{
-			
-			if( sourcepath.isEmpty() && entity.getName("en") != null)
-			{
-				//long year = Calendar.getInstance().get(Calendar.YEAR);
-				sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
-			}
+			sourcepath = module.getName("en") + "/" + entity.getName("en") + "/";
 		}
 		if( sourcepath != null && !sourcepath.isEmpty() && !sourcepath.equals( entity.get("uploadsourcepath")) )
 		{
 			entity.setValue("uploadsourcepath",sourcepath );
-			inCreate = true; 
+			getMediaArchive().saveData(module.getId(), entity);
 		}
 		
 		if( sourcepath != null && sourcepath.isEmpty())
 		{
 			return null;
-		}
-		if( inCreate)
-		{
-//			String categoryid = entity.get("rootcategory");
-//			if( categoryid != null)
-//			{
-//				Category cat = getMediaArchive().getCategory(categoryid);
-//				if( cat != null)
-//				{
-//					String sourcepath = cat.getCategoryPath();
-//					entity.setValue("uploadsourcepath",sourcepath );
-//					getMediaArchive().saveData(module.getId(), entity);
-//					return sourcepath;
-//				}
-//			}
-//
-			getMediaArchive().saveData(module.getId(), entity);
 		}
 		return sourcepath;
 	}	
