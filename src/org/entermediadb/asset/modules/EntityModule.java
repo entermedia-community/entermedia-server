@@ -274,17 +274,17 @@ public class EntityModule extends BaseMediaModule
 		
 		String sourcemoduleid = inPageRequest.getRequestParameter("copyingsearchtype");
 		String sourceentityid = inPageRequest.getRequestParameter("copyingentityid");
-		String pickedmoduleid = inPageRequest.getRequestParameter("pickedmoduleid");
+		String entitymoduleid = inPageRequest.getRequestParameter("entitymoduleid");
 		String hitssessionid = inPageRequest.getRequestParameter("copyinghitssessionid");
 		HitTracker hits = (HitTracker) inPageRequest.getSessionValue(hitssessionid);
 		Data newentity = null;
 		if(hits == null) {
-			newentity = entityManager.copyEntity(inPageRequest, sourcemoduleid, pickedmoduleid, sourceentityid);
+			newentity = entityManager.copyEntity(inPageRequest, sourcemoduleid, entitymoduleid, sourceentityid);
 			inPageRequest.putPageValue("saveddata", newentity);
 			inPageRequest.putPageValue("saved", "1");
 		}
 		else {
-			Collection saved = entityManager.copyEntities(inPageRequest, sourcemoduleid, pickedmoduleid, hits);
+			Collection saved = entityManager.copyEntities(inPageRequest, sourcemoduleid, entitymoduleid, hits);
 			inPageRequest.putPageValue("saved", saved.size());
 		}
 
@@ -294,8 +294,11 @@ public class EntityModule extends BaseMediaModule
 		String action = inPageRequest.getRequestParameter("action");
 		
 		if("moveentity".equals(action)) {
+			Data entitymodule = archive.getCachedData("module", entitymoduleid);
+			
 			Boolean deleted = entityManager.deleteEntity(inPageRequest, sourcemoduleid, sourceentityid);
-			inPageRequest.putPageValue("moduleid", pickedmoduleid);
+			inPageRequest.putPageValue("entitymodule", entitymodule);
+			inPageRequest.putPageValue("entity", newentity);
 			inPageRequest.putPageValue("deleted", deleted);
 		}
 		
