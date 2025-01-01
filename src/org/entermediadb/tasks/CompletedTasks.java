@@ -1,11 +1,10 @@
 package org.entermediadb.tasks;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,16 +26,18 @@ public class CompletedTasks
 	
 	public List weeksInMonth(Date month)
 	{
-		GregorianCalendar completedweek = new GregorianCalendar();
-		completedweek.setTime(month);
-		int max = completedweek.getActualMaximum(Calendar.WEEK_OF_MONTH);
-		int week = completedweek.get(Calendar.WEEK_OF_YEAR);
-		List weeks = new ArrayList();
-		for (int i = 0; i < max; i++)
-		{
-			weeks.add(week + i);
-		}
-		return weeks;
+//		Calendar completedweek = DateStorageUtil.getStorageUtil().createUTCCalendar();
+//		completedweek.setTime(month);
+//		int max = completedweek.getActualMaximum(Calendar.WEEK_OF_MONTH);
+//		int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+//		List weeks = new ArrayList();
+//		for (int i = 0; i < max; i++)
+//		{
+//			weeks.add(week + i);
+//		}
+//		return weeks;
+		int[] count = {1,2,3,4,5};
+		return Arrays.stream(count).boxed().toList();
 	}
 
 	

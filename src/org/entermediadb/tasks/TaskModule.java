@@ -198,7 +198,7 @@ public class TaskModule extends BaseMediaModule
 		return priorities;
 	}	
 	
-	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, GregorianCalendar thismonday, int dayofweek)
+	protected List sortIntoDates(WebPageRequest inReq, MediaArchive archive, Collection all, Calendar thismonday, int dayofweek)
 	{
 		List week = new ArrayList();
 		Date today = new Date();
@@ -224,7 +224,7 @@ public class TaskModule extends BaseMediaModule
 				}
 				else
 				{
-					GregorianCalendar rg = new GregorianCalendar();
+					Calendar rg = DateStorageUtil.getStorageUtil().createCalendar();
 					rg.setTime(rd);
 					int dow = rg.get(Calendar.DAY_OF_WEEK) - 2;
 					if( dow == i)
@@ -940,7 +940,7 @@ public class TaskModule extends BaseMediaModule
 			collectionid = "*";
 		}
 		//Search for all tasks with updated dates?
-		GregorianCalendar cal = new GregorianCalendar();
+		Calendar cal = DateStorageUtil.getStorageUtil().createCalendar();
 		String monthsback = inReq.getRequestParameter("monthsback");
 		if( monthsback == null)
 		{
@@ -987,7 +987,7 @@ public class TaskModule extends BaseMediaModule
 			collectionid = "*";
 		}
 		//Search for all tasks with updated dates?
-		GregorianCalendar cal = new GregorianCalendar();
+		Calendar cal = DateStorageUtil.getStorageUtil().createCalendar();
 		String monthsback = inReq.getRequestParameter("weeksback");
 		if( monthsback == null)
 		{
@@ -1339,10 +1339,8 @@ public class TaskModule extends BaseMediaModule
 		HitTracker likesopen = builder.search();
 		
 		//sort users by date?
-		GregorianCalendar thismonday = new GregorianCalendar();
+		Calendar thismonday = DateStorageUtil.getStorageUtil().createCalendar();
 		thismonday.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		thismonday.set(Calendar.MINUTE, 0);
-		thismonday.set(Calendar.HOUR, 0);
 		builder = searcher.query();
 		if(userprojects != null) 
 		{
@@ -1369,7 +1367,7 @@ public class TaskModule extends BaseMediaModule
 			all.add( searcher.loadData(data) );
 		}
 		//log.info(builder.getQuery().toQuery() + " " + likes.size());
-		GregorianCalendar todayc = new GregorianCalendar();
+		Calendar todayc = DateStorageUtil.getStorageUtil().createCalendar();
 		int selectedday1 = todayc.get(Calendar.DAY_OF_WEEK);
 		int selectedday0 = selectedday1 - 2; //zero based  
 		if( selectedday0 < 0 || selectedday0 > 5)

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.util.DateStorageUtil;
 
 public class UserReport
 {
@@ -66,9 +66,9 @@ public class UserReport
 		{
 			MultiValued ticket = (MultiValued) iterator.next();
 			Date completedon = ticket.getDate("resolveddate");
-			GregorianCalendar completedweek = new GregorianCalendar();
+			Calendar completedweek = DateStorageUtil.getStorageUtil().createCalendar();
 			completedweek.setTime(completedon);
-			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+			int week = completedweek.get(Calendar.WEEK_OF_MONTH);
 			if( week == inweek)
 			{
 				tickets.add(ticket);
@@ -98,9 +98,9 @@ public class UserReport
 			{
 				MultiValued action = (MultiValued)iterator2.next();
 				Date completedon = action.getDate("date");
-				GregorianCalendar completedweek = new GregorianCalendar();
+				Calendar completedweek = DateStorageUtil.getStorageUtil().createCalendar();
 				completedweek.setTime(completedon);
-				int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+				int week = completedweek.get(Calendar.WEEK_OF_MONTH);
 				if( week == inweek)
 				{
 					UserRoleWithAction oneaction = new UserRoleWithAction();
@@ -130,7 +130,7 @@ public class UserReport
 		{
 			MultiValued task = (MultiValued) iterator.next();
 			Date completedon = task.getDate("completedon");
-			GregorianCalendar completedweek = new GregorianCalendar();
+			Calendar completedweek = DateStorageUtil.getStorageUtil().createCalendar();
 			completedweek.setTime(completedon);
 			
 			int weekmonth = completedweek.get(Calendar.WEEK_OF_MONTH);
@@ -141,7 +141,7 @@ public class UserReport
 				completedweek.setMinimalDaysInFirstWeek(7);
 			}
 			
-			int week = completedweek.get(Calendar.WEEK_OF_YEAR);
+			int week = completedweek.get(Calendar.WEEK_OF_MONTH);
 			if( week == inWeek)
 			{
 				weeksworth.add(task);
