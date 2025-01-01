@@ -2129,8 +2129,6 @@ public class DataEditModule extends BaseMediaModule
 		
 		HashSet tosave = new HashSet();
 		HashSet customvalues = new HashSet();
-		
-		
 
 		Collection selected = tracker.getSelections();
 		String dataid = inReq.getRequestParameter("dataid");
@@ -2203,14 +2201,15 @@ public class DataEditModule extends BaseMediaModule
 				tosave.add(data);
 				previouscount = count;
 			}
+			
+			String finalsort ="orderingDown";
 			if( tracker.isAscending()) 
 			{
-				inReq.getUserProfile().setSortForSearchType("asset", "orderingUp"); 
+				finalsort = "orderingUp";
 			}
-			else {
-				inReq.getUserProfile().setSortForSearchType("asset", "orderingDown");
-			}
-
+			inReq.getUserProfile().setSortForSearchType("asset", finalsort);
+			tracker.getSearchQuery().setSortBy(finalsort);
+			
 			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
