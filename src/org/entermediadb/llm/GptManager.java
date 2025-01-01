@@ -260,6 +260,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		MediaArchive archive = getMediaArchive();
 		JsonParser parser = new JsonParser();
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+		
 		assert apikey != null;
 		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
 		// 0, "max_tokens": 7}

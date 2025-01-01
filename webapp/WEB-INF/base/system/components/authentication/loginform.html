@@ -24,13 +24,6 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			
 			#set( $allowguestregistration = $context.findPathValue("allowguestregistration") )
 			<div class="loginform-col mb-2">
-				<h1 class="page-title text-center my-2">
-					[[Sign-in]]
-					 #if( $allowguestregistration == "true" )
-					 / [[Sign-up]]
-					 #end
-				</h1>
-				
 				#set( $error = $context.getPageValue("oe-exception") )
 				#if ( $error ) 
 					<div class="alert alert-danger my-2" role="alert" style="min-width: 450px;">
@@ -43,36 +36,35 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
 				#set($allowloginbyemail = $mediaarchive.getCatalogSettingValue("allowloginbyemail") )
 
-				#if($allowloginbyemail == "true")
-				<ul class="nav nav-tabs bg-light" id="loginMethod"  style="min-width: 450px;color: #3884fd;">
-					<li class="nav-item" style="flex:1">
-						<div class="nav-link active" data-target="#passwordLessLogin" style="cursor: pointer;">[[Login Without Password]]</div>
-					</li>
-					<li class="nav-item" style="flex:1">
-						<div class="nav-link" data-target="#passwordLogin" style="cursor: pointer;">[[Login with Password]]</div>
-					</li>
-				</ul>
-				#end
-				<div class='border-left-subtle border-right-subtle border-bottom-subtle rounded-bottom #if($allowloginbyemail != "true") border-top #end py-2 px-3 shadow-sm' style="min-width: 450px;">
+				<div class='border rounded-bottom #if($allowloginbyemail != "true") border-top #end pt-5 pb-4 px-3 shadow-sm' style="min-width: 550px;">
 					#if($allowloginbyemail == "true")
 						<div id="passwordLessLogin" class="login-method">
+							<h1 class="page-title text-center mb-5">
+								[[Email Sign-in]]
+								 #if( $allowguestregistration == "true" )
+								 / [[Sign-up]]
+								 #end
+							</h1>
 							<form class="ajaxform d-flex flex-column my-4"  style="text-align: left;" data-targetdiv="loginformdiv" data-oemaxlevel="1" action="$home$content.loginroot/sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
 								#ifnotnull( $userCategory)
 									<input type="hidden" name="categoryid" value="$userCategory.id" />
 								#end
-								#if( $content.allowguestregistration == "true")
-									#set($placeholder = "[[Login or Register with your Email Address]]")
-								#else
-									#set($placeholder = "[[Login with your Email Address]]")
-								#end
-								<label for="email">$placeholder</label>
-								<input class="form-control form-control-sm required grabfocus mb-3 w-100" type="text" name="email" placeholder="[[Enter you email address]]" required />
+								<input class="form-control py-3 required grabfocus mb-3 w-100" type="text" name="email" placeholder="[[Enter you email address]]" required />
 								<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Next]]" />
 								<input type="hidden" name="subject" value="[[Your Login Info]]"/>
 							</form>
+							<div class="nav-link text-right" data-target="#passwordLogin" style="cursor: pointer;">
+								<i class="fas fa-key mr-1 me-1 text-muted"></i>[[Legacy Login]]
+							</div>
 						</div>
 					#end
 					<div id="passwordLogin" class="login-method" #if($allowloginbyemail == "true") style="display: none;" #end>
+						<h1 class="page-title text-center my-2">
+							[[Legacy Sign-in]]
+							 #if( $allowguestregistration == "true" )
+							 / [[Sign-up]]
+							 #end
+						</h1>
 						<form class="d-flex flex-column my-4"  name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 							<div class="form-group mb-0" style="text-align: left;">
 								<label for="accountname">[[Email or Username]]</label>
@@ -92,6 +84,11 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 	
 							<input class="btn btn-primary align-self-center" name="submit" type="submit" value="[[Login]]" />
 						</form>   
+						#if($allowloginbyemail == "true")
+						<div class="nav-link text-left" data-target="#passwordLessLogin" style="cursor: pointer;">
+							<i class="fas fa-arrow-left me-1 mr-1"></i> [[Login by Email]] 
+						</div>
+						#end
 					</div> 
 				</div>
 				#set($providers = $mediaarchive.query("oauthprovider").orgroup("id", "google facebook").exact("enabled","true").search($context))
@@ -103,12 +100,18 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 						$pages.include("$home$content.loginroot/oauth/providers.html", $context)
 					</div>
 				#end
+
 			</div>
 		</div>
 	#end
 
 	<div class="text-center loginformquestions my-2 p-0">
-		[[Are you having trouble logging in or have a question?]] [[Please]] <a href="mailto:help@entermediadb.org" style="text-decoration: underline;">[[contact us]]</a>.
+		#set( $adminmail = $mediaarchive.getCatalogSettingsValue("userapproveremail"))
+		#if( $content.allowguestregistration == "true")
+			[[Are you having trouble logging in or have a question?]] [[Please]] <a href="mailto:${adminmail}" style="text-decoration: underline;">[[contact us]]</a>.
+		#else
+			[[To create a new account, please contact]] <a href="mailto:${adminmail}" style="text-decoration: underline;">[[the administrator]]</a>.
+		#end
 	</div>
 </div>
 
