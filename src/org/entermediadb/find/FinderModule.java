@@ -325,8 +325,9 @@ public class FinderModule extends BaseMediaModule
 				//System.out.print(v);
 				values = newvalues;
 				bytypes.put(type,values);
-				newvalues.setHitsName("idhits");
-				newvalues.setSessionId(type + "idhits");
+				//newvalues.setHitsName("idhits");
+				newvalues.setHitsName(type +"idhits");
+				newvalues.setSessionId(type + "idhits"+ archive.getCatalogId());
 				inReq.putSessionValue(newvalues.getSessionId(), newvalues);
 			}
 			int max = maxsize;
