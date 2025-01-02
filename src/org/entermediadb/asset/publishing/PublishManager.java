@@ -176,19 +176,21 @@ public class PublishManager implements CatalogEnabled {
 					
 					if(Boolean.parseBoolean(destination.get("includemetadata")))
 					{
-
-						Page inputpage = findInputPage(mediaArchive, asset, preset);
-						if( !inputpage.exists() )
+						String transcodeid = preset.get("transcoderid");
+						if( !"original".equals( transcodeid ) ) //Never mess with orignal media
 						{
-							//Make sure we have a preset conversion task
+							Page inputpage = findInputPage(mediaArchive, asset, preset);
+							if( !inputpage.exists() )
+							{
+								//Make sure we have a preset conversion task
+							}
+	
+							XmpWriter writer = (XmpWriter) mediaArchive.getModuleManager().getBean("xmpWriter");
+							if(inputpage.exists()){
+								writer.saveMetadata(mediaArchive, inputpage.getContentItem(), asset, new HashMap());
+								
+							}
 						}
-
-						XmpWriter writer = (XmpWriter) mediaArchive.getModuleManager().getBean("xmpWriter");
-						if(inputpage.exists()){
-							writer.saveMetadata(mediaArchive, inputpage.getContentItem(), asset, new HashMap());
-							
-						}
-							
 					}
 						
 					//MAIN PUBLISH EVENT
