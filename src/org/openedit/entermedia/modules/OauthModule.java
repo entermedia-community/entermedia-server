@@ -397,10 +397,16 @@ public class OauthModule extends BaseMediaModule
 		    // Retrieve the access token from the response
 		    String accessToken = oAuthResponse.getAccessToken();
 
-		  
+		    String accountid = (String) oAuthResponse.getData().get("account_id");
+		    
+		
+
+		 
 
 		    // Save the access token if necessary for future API calls
 		    authinfo.setValue("accesstoken", accessToken);
+		    authinfo.setValue("accountid", accountid);
+
 		    archive.getSearcher("oauthprovider").saveData(authinfo);
 		}
 

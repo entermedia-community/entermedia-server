@@ -93,9 +93,13 @@ public class DropboxManager implements CatalogEnabled {
         requestPayload.put("path", path);
 
         String namespaceId = getNamespace();
+        String accountid = getAccountID();
+
         HttpPost method = new HttpPost(url);
         method.addHeader("Authorization", "Bearer " + getAccessToken());
-        method.addHeader("Dropbox-API-Path-Root", "{\"namespace_id\": \"" + namespaceId + "\", \".tag\": \"namespace_id\"}");
+        method.addHeader("Dropbox-Api-Path-Root", "{\"namespace_id\": \"" + namespaceId + "\", \".tag\": \"namespace_id\"}");
+        method.addHeader("Dropbox-API-Select-User", accountid);
+
         method.setHeader("Content-Type", "application/json");
 
         String payload = requestPayload.toJSONString();
@@ -116,6 +120,12 @@ public class DropboxManager implements CatalogEnabled {
         }
 
         return entries;
+    }
+
+    private String getAccountID() {
+	Data authinfo = getMediaArchive().getData("oauthprovider", "dropbox");
+	String accountid = authinfo.get("accountid");
+	return accountid;	
     }
 
     /**
@@ -163,6 +173,80 @@ public class DropboxManager implements CatalogEnabled {
 
         return output;
     }
+    public Collection<JSONObject> listTeamMembers() throws Exception {
+	    Collection<JSONObject> teamMembers = new ArrayList<>();
+	    String url = "https://api.dropboxapi.com/2/team/members/list";
+
+	    HttpPost method = new HttpPost(url);
+	    method.addHeader("Authorization", "Bearer " + getAccessToken());
+	    method.setHeader("Content-Type", "application/json");
+
+	    // Add payload for pagination (if needed)
+	    JSONObject requestPayload = new JSONObject();
+	    requestPayload.put("limit", 100); // Fetch up to 100 members in one call
+	    String payload = requestPayload.toJSONString();
+	    method.setEntity(new StringEntity(payload, "UTF-8"));
+
+	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+	    JSONObject json = getConnection().parseJson(resp);
+
+	    if (json != null) {
+	        JSONArray members = (JSONArray) json.get("members");
+	        for (Object memberObj : members) {
+	            JSONObject member = (JSONObject) memberObj;
+	            teamMembers.add(member);
+	        }
+
+	        // Handle pagination
+	        while (json.containsKey("has_more") && (boolean) json.get("has_more")) {
+	            String cursor = (String) json.get("cursor");
+	            requestPayload = new JSONObject();
+	            requestPayload.put("cursor", cursor);
+	            payload = requestPayload.toJSONString();
+	            method.setEntity(new StringEntity(payload, "UTF-8"));
+
+	            resp = getConnection().sharedExecute(method);
+	            json = getConnection().parseJson(resp);
+
+	            members = (JSONArray) json.get("members");
+	            for (Object memberObj : members) {
+	                JSONObject member = (JSONObject) memberObj;
+	                teamMembers.add(member);
+	            }
+	        }
+	    }
+
+	    return teamMembers;
+	}
+
+    
+    
+    public Collection<JSONObject> listNamespaces() throws Exception {
+	    Collection<JSONObject> namespaces = new ArrayList<>();
+	    String url = "https://api.dropboxapi.com/2/team/namespaces/list";
+
+	    HttpPost method = new HttpPost(url);
+	    method.addHeader("Authorization", "Bearer " + getAccessToken());
+	    method.setHeader("Content-Type", "application/json");
+
+	    // No payload needed for the initial request
+	    JSONObject requestPayload = new JSONObject();
+	    String payload = requestPayload.toJSONString();
+	    method.setEntity(new StringEntity(payload, "UTF-8"));
+
+	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+	    JSONObject json = getConnection().parseJson(resp);
+
+	    if (json != null) {
+	        JSONArray jsonNamespaces = (JSONArray) json.get("namespaces");
+	        for (Iterator iterator = jsonNamespaces.iterator(); iterator.hasNext();) {
+	            JSONObject namespace = (JSONObject) iterator.next();
+	            namespaces.add(namespace);
+	        }
+	    }
+
+	    return namespaces;
+	}
 
     
 
