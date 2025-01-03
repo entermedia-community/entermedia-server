@@ -2514,4 +2514,13 @@
 	</bean>
 
 
+	<bean id="dropboxManager" class="org.entermediadb.dropbox.DropboxManager" scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
+
+
+
 </beans>

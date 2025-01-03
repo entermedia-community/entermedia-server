@@ -54,6 +54,9 @@ public class OauthModule extends BaseMediaModule
 		fieldCookieEncryption = inCookieEncryption;
 	}
 
+	
+	
+	
 	public void redirectToHost(WebPageRequest inReq)
 	{
 		//http://yfrankfeng.blogspot.ca/2015/07/working-example-on-oauth2-spring.html
@@ -156,6 +159,24 @@ public class OauthModule extends BaseMediaModule
 
 			}
 			
+			
+			if ("dropbox".equals(provider)) {
+			    // Use Dropbox's OAuth 2.0 authorization endpoint
+			    String requestedpermissions = authinfo.get("scopes");
+			    OAuthClientRequest request = OAuthClientRequest
+			            .authorizationLocation("https://www.dropbox.com/oauth2/authorize")
+			            .setClientId("zmvi8dlsu09itae") // Client ID from configuration
+			            .setRedirectURI(redirect)
+			            .setResponseType("code") // Response type for authorization code grant
+			            .setScope(requestedpermissions) // Dropbox scopes
+			            .setState("login") // State parameter for CSRF protection or custom state
+			            .buildQueryMessage();
+
+			    // Redirect the user to Dropbox's authorization page
+			    String locationUri = request.getLocationUri();
+			    log.info("Redirecting to Dropbox OAuth: " + locationUri);
+			    inReq.redirect(locationUri);
+			}			
 			
 			
 			if ("facebook".equals(provider))
@@ -341,7 +362,48 @@ public class OauthModule extends BaseMediaModule
 				throw new OpenEditException(e);
 			}
 		}
-		
+		if ("dropbox".equals(provider)) {
+		    Data authinfo = archive.getData("oauthprovider", provider);
+
+		    // Extract the authorization code from the request
+		    OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
+		    String code = oar.getCode();
+
+		    // Determine redirect URI
+		    String siteroot = inReq.findValue("siteRoot");
+		    URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+		    if (siteroot == null && utils != null) {
+		        siteroot = utils.siteRoot();
+		    }
+		    String redirect = inReq.findValue("redirecturi");
+		    if (redirect == null) {
+		        redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+		    } else {
+		        redirect = siteroot + "/" + redirect;
+		    }
+
+		    // Build the request to exchange the authorization code for an access token
+		    OAuthClientRequest request = OAuthClientRequest.tokenLocation("https://api.dropbox.com/oauth2/token")
+		            .setGrantType(GrantType.AUTHORIZATION_CODE)
+		            .setClientId(authinfo.get("clientid"))
+		            .setClientSecret(authinfo.get("clientsecret"))
+		            .setRedirectURI(redirect)
+		            .setCode(code)
+		            .buildBodyMessage();
+
+		    OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+		    EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+
+		    // Retrieve the access token from the response
+		    String accessToken = oAuthResponse.getAccessToken();
+
+		  
+
+		    // Save the access token if necessary for future API calls
+		    authinfo.setValue("accesstoken", accessToken);
+		    archive.getSearcher("oauthprovider").saveData(authinfo);
+		}
+
 		
 		if ("facebook".equals(provider))
 		{
