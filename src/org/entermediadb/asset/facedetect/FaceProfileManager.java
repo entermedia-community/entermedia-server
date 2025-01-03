@@ -934,6 +934,24 @@ public class FaceProfileManager implements CatalogEnabled
 	}
 	
 	
+	public Map getImageBox(Collection<Data> faceprofilegroups, Data asset, String imagew, String imageh)
+	{
+		if(faceprofilegroups == null || faceprofilegroups.size() < 1)
+		{
+			return null;
+		}
+		for(Data group : faceprofilegroups)
+		{
+			Map found = getImageAndLocationForGroup(asset, group, Double.valueOf(imagew), Double.valueOf(imageh));
+			if (found != null)
+			{
+				return found;
+			}
+		}
+		return null;
+	}
+	
+	
 	public Collection<FaceAsset> findAssetsForProfile(String inFaceProfileId, int maxnumber)
 	{
 		Collection<Data> profiles = getMediaArchive().query("faceprofilegroup").exact("id", inFaceProfileId).search();
