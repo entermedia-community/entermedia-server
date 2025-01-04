@@ -6,6 +6,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -19,11 +20,11 @@ public class ftppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(ftppublisher.class);
 	
-	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		try
 		{
-			PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset);
+			PublishResult result = checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset);
 			if( result != null)
 			{
 				return result;
@@ -31,10 +32,10 @@ public class ftppublisher extends BasePublisher implements Publisher
 			
 			result = new PublishResult();
 
-			Page inputpage = findInputPage(mediaArchive,asset,preset);
-			String servername = destination.get("server");
-			String username = destination.get("username");
-			String url = destination.get("url");
+			Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+			String servername = inDestination.get("server");
+			String username = inDestination.get("username");
+			String url = inDestination.get("url");
 			
 			log.info("Publishing ${asset} to ftp server ${servername}, with username ${username}.");
 			
@@ -51,7 +52,7 @@ public class ftppublisher extends BasePublisher implements Publisher
 				ftp.disconnect();
 				return result;
 			}
-			String password = destination.get("password");
+			String password = inDestination.get("password");
 			//get password and login
 			if(password == null)
 			{
@@ -84,7 +85,7 @@ public class ftppublisher extends BasePublisher implements Publisher
 				}
 			}
 			
-			String exportname = inPublishRequest.get("exportname");
+			String exportname = inOrderItem.get("itemexportname");
 
 			ftp.storeFile(exportname, inputpage.getInputStream());
 			reply = ftp.getReplyCode();

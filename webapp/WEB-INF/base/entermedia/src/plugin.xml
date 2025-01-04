@@ -1949,6 +1949,7 @@
 	<!-- <groovy id="amazonpublisher" script-source="org.entermediadb.asset.publish.publishersamazonpublisher.groovy" /> <groovy id="asperapublisher" script-source="org.entermediadb.asset.publish.publishersasperapublisher.groovy" /> -->
 	<!-- Not used <groovy id="entermediapublisher" script-source="org.entermediadb.asset.publish.publishersentermediapublisher.groovy" /> <groovy id="attachmentpublisher" script-source="org.entermediadb.asset.publish.publishersattachmentpublisher.groovy" /> <groovy id="pushpublisher" script-source="org.entermediadb.asset.publish.publisherspushpublisher.groovy" /> -->
 	<bean id="httppublisher" class="org.entermediadb.asset.publish.publishers.httppublisher" lazy-init="default" />
+	<bean id="emailpublisher" class="org.entermediadb.asset.publish.publishers.emailpublisher" lazy-init="default" 	/>
 	<bean id="pushhttppublisher" class="org.entermediadb.asset.publish.publishers.pushhttppublisher" lazy-init="default" />
 	<bean id="externalpublisher" class="org.entermediadb.asset.publish.publishers.externalpublisher" lazy-init="default" />
 	<bean id="filecopypublisher" class="org.entermediadb.asset.publish.publishers.filecopypublisher" lazy-init="default" />

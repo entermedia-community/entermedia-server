@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.io.SAXReader;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -18,12 +19,12 @@ public class entermediapublisher extends BasePublisher implements Publisher
 	private static final Log log = LogFactory.getLog(entermediapublisher.class);
 	private SAXReader reader = new SAXReader();
 	
-	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		PublishResult result = new PublishResult();
 
-		String servername = destination.get("server");
-		String username = destination.get("username");
+		String servername = inDestination.get("server");
+		String username = inDestination.get("username");
 		//String url = destination.get("url");
 		
 		log.info("Publishing ${asset} to EnterMedia server ${servername}, with username ${username}.");
@@ -52,7 +53,7 @@ public class entermediapublisher extends BasePublisher implements Publisher
 		try
 		{
 			//MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser )
-			uploader.uploadOriginal(mediaArchive,asset, destination, user);
+			uploader.uploadOriginal(mediaArchive,inAsset, inDestination, user);
 			result.setComplete(true);
 			log.info("publishished  ${asset} to EnterMedia server ${servername}");
 		}

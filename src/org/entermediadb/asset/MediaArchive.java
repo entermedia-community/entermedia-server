@@ -39,6 +39,7 @@ import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.sources.AssetSourceManager;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
@@ -47,8 +48,8 @@ import org.entermediadb.find.FolderManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
-import org.entermediadb.video.Block;
 import org.entermediadb.websocket.usernotify.UserNotifyManager;
+import org.openedit.BaseWebPageRequest;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -86,6 +87,7 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
+import org.openedit.util.RequestUtils;
 import org.openedit.util.URLUtilities;
 
 public class MediaArchive implements CatalogEnabled
@@ -2534,7 +2536,27 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return webmail;
 	}
-	
+	public void sendEmail(String inFrom, Map inParams, String inEmailto, String inTemplate)
+	{
+		User user = getUser(inFrom);
+		sendEmail(user, inParams, inEmailto, inTemplate);		
+	}
+
+	public void sendEmail(User inFromUser, Map pageValues, String toemail, String templatePage)
+	{
+		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+		UserProfile profile = (UserProfile) getSearcherManager().getData(getCatalogHome(),"userprofile",inFromUser.getId());
+		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(templatePage,inFromUser,profile); 
+		newcontext.putPageValues(pageValues);
+		PostMail postmail = (PostMail)getModuleManager().getBean( "postMail");
+		TemplateWebEmail mailer = postmail.getTemplateWebEmail();
+		mailer.loadSettings(newcontext);
+		mailer.setMailTemplatePath(templatePage);
+		mailer.setRecipientsFromCommas(toemail);
+		//mailer.setMessage(inOrder.get("sharenote"));
+		mailer.send();
+		log.info("email sent to :" + toemail);
+	}
 	
 
 	public int getRealImageWidth(Data inHit)
@@ -3061,5 +3083,5 @@ public class MediaArchive implements CatalogEnabled
 		
 		return result.getOutput();
 	}
-	
+
 }

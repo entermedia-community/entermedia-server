@@ -152,9 +152,6 @@ public class OrderModule extends BaseMediaModule
 		if (assets.hasSelections())
 		{
 			Map props = new HashMap();
-			
-
-
 			String applicationid = inReq.findValue("applicationid");
 			Order order = (Order) getOrderManager(inReq).createNewOrder(applicationid, catalogid, inReq.getUserName());
 			inReq.putPageValue("order", order);
@@ -735,8 +732,8 @@ public class OrderModule extends BaseMediaModule
 			if(publishdestination != null){
 				order.setProperty("publishdestination", publishdestination);//assume 0 for most orders, 0 can be told to use Aspera
 			} else{
-			//do something? default it to browser?
-			order.setProperty("publishdestination", "0");//assume 0 for most orders, 0 can be told to use Aspera
+				//do something? default it to browser?
+				throw new OpenEditException("publishdestination is required");
 			}
 		}
 		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, params, inReq.getUser());
@@ -927,8 +924,6 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findPathValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] selectedids = inReq.getRequestParameters("assetid");
-		
-
 		
 		Order order = getOrderManager(inReq).createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
 

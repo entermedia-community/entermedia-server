@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -15,13 +16,13 @@ public class asperapublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(asperapublisher.class);
 
-	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inPublishRequest,  Data inDestination, Data inPreset, Asset inAsset)
 	{
 		//log.info("Publish asset to aspera ${asset} for preset: ${presetid} on server: ${publishdestination}" );
 		PublishResult result = new PublishResult();
 		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
-		String exportname = inPublishRequest.get("exportname");
+		String exportname = inPublishRequest.get("itemexportname");
 		
 		if( !exportname.startsWith("/"))
 		{

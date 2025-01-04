@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -29,24 +30,24 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 	private static final Log log = LogFactory.getLog(wordpresspublisher.class);
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	
-	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		try
 		{
-			PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset); 
-			if( result != null)
+			PublishResult result = checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset); 
+			if( !result.isReadyToPublish())
 			{
 				return result;
 			}
 
 			result = new PublishResult();
 
-			String url = destination.get("url");
+			String url = inDestination.get("url");
 			
-			String password = destination.get("accesskey");
-			String exportname = inPublishRequest.get("exportname");
+			String password = inDestination.get("accesskey");
+			String exportname = inOrderItem.get("itemexportname");
 
-			log.info("Publishing " + asset + " to EnterMedia server " + url + "With export name: " + exportname);
+			log.info("Publishing " + inAsset + " to EnterMedia server " + url + "With export name: " + exportname);
 			
 			//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
 			HttpPost method = new HttpPost(url);
@@ -57,10 +58,10 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			//TODO: Use HttpRequestBuilder.addPart()
 			
 			builder.addPart("accesskey", password) ;
-			builder.addPart("sourcepath", asset.getSourcePath());
-			builder.addPart("assetid", asset.getId());
+			builder.addPart("sourcepath", inAsset.getSourcePath());
+			builder.addPart("assetid", inAsset.getId());
 			builder.addPart("exportname", exportname);
-			builder.addPart("title", asset.toString());
+			builder.addPart("title", inAsset.toString());
 //			builder.addPart("caption", asset.get("headline"));
 //			builder.addPart("description", asset.get("longcaption")); 
 			builder.addPart("uploadby", "entermedia");
@@ -72,7 +73,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				String wordpressfield = detail.get("wordpressfield");
 				if(wordpressfield != null){
 //				
-					String assetvalue = asset.get(detail.getId());
+					String assetvalue = inAsset.get(detail.getId());
 					if(assetvalue != null){					
 						if(detail.isList()){
 							Data remote = mediaArchive.getData(detail.getListId(), assetvalue);
@@ -88,12 +89,10 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				}
 			}
 			
-			
-			
-			if( asset.getKeywords().size() > 0 )
+			if( inAsset.getKeywords().size() > 0 )
 			{
 				StringBuffer buffer = new StringBuffer();
-				for (Iterator iterator = asset.getKeywords().iterator(); iterator.hasNext();)
+				for (Iterator iterator = inAsset.getKeywords().iterator(); iterator.hasNext();)
 				{
 					String keyword = (String) iterator.next();
 					buffer.append( keyword );
@@ -107,7 +106,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 					builder.addPart("keywords",  buffer.toString());
 				}
 			}
-			Collection collections =  asset.getCollections();
+			Collection collections =  inAsset.getCollections();
 			if(  collections != null && collections.size() > 0 )
 			{
 				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
@@ -121,7 +120,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 					builder.addPart("collection", librarycollection.getName());
 				}
 			}
-			Page inputpage = findInputPage(mediaArchive,asset,preset);
+			Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 			File file = new File(inputpage.getContentItem().getAbsolutePath());
 			if( !file.exists() )
 			{

@@ -554,7 +554,6 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		//Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		//Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
-		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 		log.info("Processing " + hits.size() + " order items ");
@@ -1006,14 +1005,20 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 				else if ("error".equals( orderitemhit.get("publishstatus") ) )
 				{
 					itemerrorcount++;
+					inOrder.setOrderStatus("error", orderitemhit.get("errordetails") );
 				}
 			}
 			//If changed then save history and update order
 			inOrder.setValue("itemerrorcount",itemerrorcount);
 			inOrder.setValue("itemcount",itemhits.size());
 			inOrder.setValue("itemsuccesscount",itemsuccesscount);
-			
-			if((itemerrorcount + itemsuccesscount) == itemhits.size() )
+			if( itemerrorcount > 0 )
+			{
+				inOrder.setOrderStatus("error");
+				//TODO: Find the error and update the message?
+				saveOrder(archive.getCatalogId(), null, inOrder);
+			}
+			else if(itemsuccesscount == itemhits.size() )
 			{
 				inOrder.setOrderStatus("complete");
 				saveOrder(archive.getCatalogId(), null, inOrder);
@@ -1027,9 +1032,9 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 					inOrder.setOrderStatus("complete",": could not send notification " + ex );
 				}
 			}
-			else
+			else if( inOrder.getInt("itemcount") == 0)
 			{
-				saveOrder(archive.getCatalogId(), null, inOrder);
+				saveOrder(archive.getCatalogId(), null, inOrder); //Udpdate count
 			}
 		}
 		finally
@@ -1263,39 +1268,17 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
 			if(dest != null){
 			String email = dest.get("administrativeemail");
-			if(email != null){
-				sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/theme/emails/admintemplate.html");
+			if(email != null)
+			{
+				//String systememail = inArchive.getCatalogSettingValue("system_from_email");
+				//system_from_email_name
+				
+				inArchive.sendEmail("admin",context, email, "/" + appid + "/theme/emails/admintemplate.html");
 				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 			}
 		}
-		String emailto = inOrder.get("sharewithemail");
-		//String notes = inOrder.get("sharenote");
-		if(emailto != null) 
-		{
-			if( inOrder.getInt("itemerrorcount") == 0)
-			{
-				String expireson=inOrder.get("expireson");
-				if ((expireson!=null) && (expireson.trim().length()>0))
-				{
-					Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
-					context.put("expiresondate", date);
-					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
-				}
-				String template = null;
-						
-				if( "checkout".equals( inOrder.get("ordertype")) )
-				{
-					template = "/" + appid + "/theme/emails/checkouttemplate.html";
-				}
-				else
-				{
-					template = "/" + appid + "/theme/emails/sharetemplate.html";
-				}
-				
-				sendEmail(inArchive.getCatalogId(),context, emailto, template);
-			}
-		}	
+		
 		
 //		if( !"download".equals( inOrder.get("ordertype") ) )
 //		{
@@ -1317,25 +1300,6 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		inOrder.setValue("emailsent", true);
 	}
 
-
-	protected void sendEmail(String inCatalogId, Map pageValues, String email, String templatePage){
-		//send e-mail
-		//Page template = getPageManager().getPage(templatePage);
-		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-		User user = (User) getSearcherManager().getData(inCatalogId,"user","admin");
-		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile","admin");
-		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(templatePage,user,profile); 
-		newcontext.putPageValues(pageValues);
-
-		TemplateWebEmail mailer = getMail();
-		mailer.loadSettings(newcontext);
-		mailer.setMailTemplatePath(templatePage);
-		mailer.setRecipientsFromCommas(email);
-		//mailer.setMessage(inOrder.get("sharenote"));
-		//mailer.setWebPageContext(context);
-		mailer.send();
-		log.info("email sent to :" + email);
-	}
 
 	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder)
 	{

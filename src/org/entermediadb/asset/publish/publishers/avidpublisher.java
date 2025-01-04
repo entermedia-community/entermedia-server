@@ -24,6 +24,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.ProfileModule;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -120,15 +121,15 @@ public class avidpublisher extends BasePublisher implements Publisher
 	}
 	private static final Log log = LogFactory.getLog(avidpublisher.class);
 	
-	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem,  Data inDestination, Data inPreset, Asset inAsset)
 	{
-		log.info("inPublishRequest inPublishRequest: " + inPublishRequest.getProperties());
+		log.info("inPublishRequest inPublishRequest: " + inOrderItem.getProperties());
 		log.info("inPublishRequest inAsset: " + inAsset.getProperties());
 		log.info("inPublishRequest inDestination: " + inDestination.getProperties());
 		log.info("inPublishRequest inPreset: " + inPreset.getProperties());
 		
-		String catalogId = inMediaArchive.getCatalogId();
-		ProfileModule module = (ProfileModule)inMediaArchive.getModuleManager().getBean("ProfileModule");
+		String catalogId = mediaArchive.getCatalogId();
+		ProfileModule module = (ProfileModule)mediaArchive.getModuleManager().getBean("ProfileModule");
 		//inMediaArchive
 		//ProfileModule module = (ProfileModule)getFixture().getModuleManager().getBean("ProfileModule");
 		
@@ -138,7 +139,7 @@ public class avidpublisher extends BasePublisher implements Publisher
 		
 		try
 		{
-			PublishResult result = checkOnConversion(inMediaArchive, inPublishRequest, inAsset, inPreset);
+			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
 			if(!result.isReadyToPublish())
 			{
 				return result;
@@ -146,7 +147,7 @@ public class avidpublisher extends BasePublisher implements Publisher
 
 			//result = new PublishResult();
 
-			Page inputpage = findInputPage(inMediaArchive, inAsset, inPreset);
+			Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 			
 			File source = new File(inputpage.getContentItem().getAbsolutePath());
 			String fullName = source.getName();

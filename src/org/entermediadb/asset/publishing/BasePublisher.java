@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
@@ -43,12 +44,12 @@ public abstract class BasePublisher implements Publisher
 		return findInputPage(mediaArchive,asset,(Data)preset);
 	}
 	 */
-
-	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inOrderItem,  Data inDestination, List inPresets) {
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, List inPresets, Asset inAsset)
+	{
 		PublishResult result = new PublishResult();
 		for (Iterator iterator = inPresets.iterator(); iterator.hasNext();) {
 			Data preset = (Data) iterator.next();
-			result = publish(mediaArchive, inAsset, inOrderItem, inDestination, preset);
+			result = publish(mediaArchive, inOrder, inOrderItem, inDestination, preset, inAsset);
 		}
 		return result;//should check all of these?
 	}

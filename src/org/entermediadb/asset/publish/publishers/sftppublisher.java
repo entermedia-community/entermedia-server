@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -18,12 +19,12 @@ public class sftppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(sftppublisher.class);
 	
-	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		
 		try
 		{
-			PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset);
+			PublishResult result = checkOnConversion(mediaArchive,inOrderItem,inAsset,inPreset);
 			if( result != null)
 			{
 				return result;
@@ -31,11 +32,11 @@ public class sftppublisher extends BasePublisher implements Publisher
 
 			result = new PublishResult();
 
-			Page inputpage = findInputPage(mediaArchive,asset,preset);
-			String servername = destination.get("server");
-			String username = destination.get("username");
-			String password = destination.get("password");
-			String path = destination.get("url");
+			Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
+			String servername = inDestination.get("server");
+			String username = inDestination.get("username");
+			String password = inDestination.get("password");
+			String path = inDestination.get("url");
 
 			SftpUtil sftp = new SftpUtil();
 			sftp.setHost(servername);
@@ -61,7 +62,7 @@ public class sftppublisher extends BasePublisher implements Publisher
 			{
 				path = "";
 			}
-			String exportname = inPublishRequest.get("exportname");
+			String exportname = inOrderItem.get("itemexportname");
 			//export name should have a leading /
 			if( !exportname.startsWith("/") )
 			{

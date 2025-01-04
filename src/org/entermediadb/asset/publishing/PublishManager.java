@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -194,7 +195,8 @@ public class PublishManager implements CatalogEnabled {
 					}
 						
 					//MAIN PUBLISH EVENT
-					presult = publisher.publish(mediaArchive,asset,orderitem, destination,preset);
+					Order order = (Order)mediaArchive.getCachedData("order", orderitem.get("orderid"));
+					presult = publisher.publish(mediaArchive,order,orderitem, destination,preset, asset);
 					
 					
 					if (presult == null)

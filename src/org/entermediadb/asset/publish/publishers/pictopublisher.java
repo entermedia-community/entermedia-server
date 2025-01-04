@@ -30,6 +30,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -60,7 +61,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 	
 	//private static String RESTRICTIONS = "[{\"author\":\"{username}\",\"RestrictionType\":\"{restrictionType}\", \"description\":\"{restrinctionOtherSpecs}\", \"active\":true}]";
 	private static String RESTRICTIONS = "{\"author\":\"{username}\",\"RestrictionType\":\"{restrictionType}\", \"description\":\"{restrinctionOtherSpecs}\", \"active\":true}";
-	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
 		//inMediaArchive.getRe
 		//ProfileModule module = (ProfileModule)inMediaArchive.getModuleManager().getBean("ProfileModule");
@@ -72,7 +73,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 		
 		try
 		{
-			PublishResult result = checkOnConversion(inMediaArchive, inPublishRequest, inAsset, inPreset);
+			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
 			if (result != null)
 			{
 				return result;
@@ -89,7 +90,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 				throw new OpenEditException(e);
 			}
 			
-			Page inputpage = findInputPage(inMediaArchive, inAsset, inPreset);
+			Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 			
 			
 			String pictoUrl = inDestination.get("url");
@@ -97,7 +98,7 @@ public class pictopublisher extends BasePublisher implements Publisher
 			File f = new File(inputpage.getContentItem().getAbsolutePath());
 			
 			try {
-				publish(inMediaArchive, inDestination, inAsset, f, accessToken);
+				publish(mediaArchive, inDestination, inAsset, f, accessToken);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new OpenEditException(e);

@@ -35,6 +35,7 @@ import org.dom4j.QName;
 import org.dom4j.tree.DefaultElement;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
@@ -75,13 +76,11 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		RightCodes.put("2", "Y");
 	}
 
-	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Order inOrder, Data inOrderItem, Data inDestination, Data inPreset, Asset inAsset)
 	{
-		
-
 		try
 		{
-			PublishResult result = checkOnConversion(inMediaArchive, inPublishRequest, inAsset, inPreset);
+			PublishResult result = checkOnConversion(mediaArchive, inOrderItem, inAsset, inPreset);
 			if(!result.isReadyToPublish())
 			{
 				return result;
@@ -89,7 +88,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 			//result = new PublishResult();
 
-			Page inputpage = findInputPage(inMediaArchive, inAsset, inPreset);
+			Page inputpage = findInputPage(mediaArchive, inAsset, inPreset);
 			String servername = inDestination.get("server");
 			String username = inDestination.get("username");
 			String url = inDestination.get("url");
@@ -100,7 +99,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			//get password and login
 			if (password == null)
 			{
-				UserManager userManager = inMediaArchive.getUserManager();
+				UserManager userManager = mediaArchive.getUserManager();
 				User user = userManager.getUser(username);
 				password = userManager.decryptPassword(user);
 			}
@@ -112,7 +111,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 			if (true) //vizid == null (Marie-Eve asked to re-push the asset as if it was a new image 
 			{
-				Element results = createAsset(inMediaArchive, inDestination, inAsset, authString);
+				Element results = createAsset(mediaArchive, inDestination, inAsset, authString);
 				String id = results.element("id").getText();
 				String[] splits = id.split(":");
 
@@ -121,14 +120,14 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				String identifier = results.element("identifier").getText();
 				inAsset.setValue("vizidentifier", identifier);
 
-				inMediaArchive.saveAsset(inAsset, null);
+				mediaArchive.saveAsset(inAsset, null);
 			}
 
-			uploadAsset(inMediaArchive, result, inAsset, inDestination, inPreset, authString);
+			uploadAsset(mediaArchive, result, inAsset, inDestination, inPreset, authString);
 			Thread.sleep(5000);
 			//http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604250011569821/metadata
-			setMetadata(inMediaArchive, inDestination.get("url"), inAsset, authString);
-			setAcl(inMediaArchive, inDestination.get("url"), inAsset, authString);
+			setMetadata(mediaArchive, inDestination.get("url"), inAsset, authString);
+			setAcl(mediaArchive, inDestination.get("url"), inAsset, authString);
 			result.setComplete(true);
 			log.info("publishished  ${asset} to FTP server ${servername}");
 			return result;
