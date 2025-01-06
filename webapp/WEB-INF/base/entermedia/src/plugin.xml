@@ -2519,8 +2519,26 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+			<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+		
 	</bean>
 
+	<bean id="dropboxAssetSource" class="org.entermediadb.dropbox.DropboxAssetSource" scope="prototype">
+	<property name="webServer">
+			<ref bean="WebServer" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
 
 
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -11,14 +12,24 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.oltu.oauth2.client.OAuthClient;
+import org.apache.oltu.oauth2.client.URLConnectionClient;
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.google.Results;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
+import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 
@@ -94,11 +105,12 @@ public class DropboxManager implements CatalogEnabled {
 
         String namespaceId = getNamespace();
         String accountid = getAccountID();
+        accountid = "dbmid:AACzCsCVSnBXY3eBaOi9qPOtDD50YBLpB_E";
 
         HttpPost method = new HttpPost(url);
         method.addHeader("Authorization", "Bearer " + getAccessToken());
         method.addHeader("Dropbox-Api-Path-Root", "{\"namespace_id\": \"" + namespaceId + "\", \".tag\": \"namespace_id\"}");
-        method.addHeader("Dropbox-API-Select-User", accountid);
+        method.addHeader("Dropbox-API-Select-Admin", accountid);
 
         method.setHeader("Content-Type", "application/json");
 
@@ -142,13 +154,67 @@ public class DropboxManager implements CatalogEnabled {
         return listEntries(path, "file");
     }
 
-    protected String getAccessToken() {
-    	Data authinfo = getMediaArchive().getData("oauthprovider", "dropbox");
-		String accesstoken = authinfo.get("accesstoken");
-		return accesstoken;		
+  
+    
+    public String getAccessToken() throws OpenEditException {
+	    try {
+		Data authinfo = getMediaArchive().getData("oauthprovider", "dropbox");
+	        String accesstoken = authinfo.get("accesstoken"); // Current access token
+	        Object accesstokendate = authinfo.getValue("accesstokentime");
+	        boolean forceRefresh = false;
+
+	        // Check token expiration
+	        if (accesstokendate instanceof Date) {
+	            Date tokenIssuedDate = (Date) accesstokendate;
+
+	            if (tokenIssuedDate != null) {
+	                Date now = new Date();
+	                long tokenAgeInSeconds = (now.getTime() - tokenIssuedDate.getTime()) / 1000;
+
+	                Object expiresIn = authinfo.getValue("expiresin");
+	                if (expiresIn != null && tokenAgeInSeconds > (Long.parseLong(expiresIn.toString()) - 100)) {
+	                    forceRefresh = true;
+	                    log.info("Token is expiring, refreshing...");
+	                }
+	            }
+	        } else {
+	            // No token issue date, force refresh
+	            forceRefresh = true;
+	        }
+
+	        // Refresh token if needed
+	        if (accesstoken == null || forceRefresh) {
+	            OAuthClientRequest request = OAuthClientRequest
+	        	    .tokenLocation("https://api.dropbox.com/oauth2/token")
+	                    .setGrantType(GrantType.REFRESH_TOKEN)
+	                    .setRefreshToken(authinfo.get("refreshtoken"))
+	                    .setClientId(authinfo.get("clientid"))
+	                    .setClientSecret(authinfo.get("clientsecret"))
+	                    .buildBodyMessage();
+
+	            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+	            EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+
+	            // Update the access token and related metadata
+	            accesstoken = oAuthResponse.getAccessToken();
+	            authinfo.setValue("accesstoken", accesstoken);
+	            authinfo.setValue("accesstokentime", new Date());
+	            Long expiresIn = oAuthResponse.getExpiresIn();
+	            authinfo.setValue("expiresin", expiresIn);
+
+	            // Save updated authinfo
+	            getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
+	        }
+
+	        return accesstoken;
+
+	    } catch (OAuthSystemException | OAuthProblemException e) {
+	        throw new OpenEditException("Failed to retrieve or refresh access token", e);
+	    }
 	}
     
-    public File saveFile(String inAccessToken, Asset inAsset) throws Exception {
+    
+    public File saveFile( Asset inAsset) throws Exception {
         // Get the Dropbox file ID from the asset
         String fileId = (String) inAsset.get("dropboxid");
 
@@ -174,78 +240,90 @@ public class DropboxManager implements CatalogEnabled {
         return output;
     }
     public Collection<JSONObject> listTeamMembers() throws Exception {
-	    Collection<JSONObject> teamMembers = new ArrayList<>();
-	    String url = "https://api.dropboxapi.com/2/team/members/list";
+	    try {
+		Collection<JSONObject> teamMembers = new ArrayList<>();
+		String url = "https://api.dropboxapi.com/2/team/members/list";
 
-	    HttpPost method = new HttpPost(url);
-	    method.addHeader("Authorization", "Bearer " + getAccessToken());
-	    method.setHeader("Content-Type", "application/json");
+		HttpPost method = new HttpPost(url);
+		method.addHeader("Authorization", "Bearer " + getAccessToken());
+		method.setHeader("Content-Type", "application/json");
 
-	    // Add payload for pagination (if needed)
-	    JSONObject requestPayload = new JSONObject();
-	    requestPayload.put("limit", 100); // Fetch up to 100 members in one call
-	    String payload = requestPayload.toJSONString();
-	    method.setEntity(new StringEntity(payload, "UTF-8"));
+		// Add payload for pagination (if needed)
+		JSONObject requestPayload = new JSONObject();
+		requestPayload.put("limit", 100); // Fetch up to 100 members in one call
+		String payload = requestPayload.toJSONString();
+		method.setEntity(new StringEntity(payload, "UTF-8"));
 
-	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
-	    JSONObject json = getConnection().parseJson(resp);
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		JSONObject json = getConnection().parseJson(resp);
 
-	    if (json != null) {
-	        JSONArray members = (JSONArray) json.get("members");
-	        for (Object memberObj : members) {
-	            JSONObject member = (JSONObject) memberObj;
-	            teamMembers.add(member);
-	        }
+		if (json != null) {
+		    JSONArray members = (JSONArray) json.get("members");
+		    for (Object memberObj : members) {
+		        JSONObject member = (JSONObject) memberObj;
+		        teamMembers.add(member);
+		    }
 
-	        // Handle pagination
-	        while (json.containsKey("has_more") && (boolean) json.get("has_more")) {
-	            String cursor = (String) json.get("cursor");
-	            requestPayload = new JSONObject();
-	            requestPayload.put("cursor", cursor);
-	            payload = requestPayload.toJSONString();
-	            method.setEntity(new StringEntity(payload, "UTF-8"));
+		    // Handle pagination
+		    while (json.containsKey("has_more") && (boolean) json.get("has_more")) {
+		        String cursor = (String) json.get("cursor");
+		        requestPayload = new JSONObject();
+		        requestPayload.put("cursor", cursor);
+		        payload = requestPayload.toJSONString();
+		        method.setEntity(new StringEntity(payload, "UTF-8"));
 
-	            resp = getConnection().sharedExecute(method);
-	            json = getConnection().parseJson(resp);
+		        resp = getConnection().sharedExecute(method);
+		        json = getConnection().parseJson(resp);
 
-	            members = (JSONArray) json.get("members");
-	            for (Object memberObj : members) {
-	                JSONObject member = (JSONObject) memberObj;
-	                teamMembers.add(member);
-	            }
-	        }
+		        members = (JSONArray) json.get("members");
+		        for (Object memberObj : members) {
+		            JSONObject member = (JSONObject) memberObj;
+		            teamMembers.add(member);
+		        }
+		    }
+		}
+		log.info(teamMembers);
+		return teamMembers;
+	    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
-
-	    return teamMembers;
+	    return null;
 	}
 
     
     
     public Collection<JSONObject> listNamespaces() throws Exception {
-	    Collection<JSONObject> namespaces = new ArrayList<>();
-	    String url = "https://api.dropboxapi.com/2/team/namespaces/list";
+	    try {
+		Collection<JSONObject> namespaces = new ArrayList<>();
+		String url = "https://api.dropboxapi.com/2/team/namespaces/list";
 
-	    HttpPost method = new HttpPost(url);
-	    method.addHeader("Authorization", "Bearer " + getAccessToken());
-	    method.setHeader("Content-Type", "application/json");
+		HttpPost method = new HttpPost(url);
+		method.addHeader("Authorization", "Bearer " + getAccessToken());
+		method.setHeader("Content-Type", "application/json");
 
-	    // No payload needed for the initial request
-	    JSONObject requestPayload = new JSONObject();
-	    String payload = requestPayload.toJSONString();
-	    method.setEntity(new StringEntity(payload, "UTF-8"));
+		// No payload needed for the initial request
+		JSONObject requestPayload = new JSONObject();
+		String payload = requestPayload.toJSONString();
+		method.setEntity(new StringEntity(payload, "UTF-8"));
 
-	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
-	    JSONObject json = getConnection().parseJson(resp);
+		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		JSONObject json = getConnection().parseJson(resp);
 
-	    if (json != null) {
-	        JSONArray jsonNamespaces = (JSONArray) json.get("namespaces");
-	        for (Iterator iterator = jsonNamespaces.iterator(); iterator.hasNext();) {
-	            JSONObject namespace = (JSONObject) iterator.next();
-	            namespaces.add(namespace);
-	        }
+		if (json != null) {
+		    JSONArray jsonNamespaces = (JSONArray) json.get("namespaces");
+		    for (Iterator iterator = jsonNamespaces.iterator(); iterator.hasNext();) {
+		        JSONObject namespace = (JSONObject) iterator.next();
+		        namespaces.add(namespace);
+		    }
+		}
+		log.info(namespaces);
+		return namespaces;
+	    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
-
-	    return namespaces;
+	    return null;
 	}
 
     
@@ -281,6 +359,11 @@ public class DropboxManager implements CatalogEnabled {
             resp.close();
         }
     }
+
+	public Results syncAssets(String inSubfolder, boolean inB) {
+	    // TODO Auto-generated method stub
+	    return null;
+	}
 
     /**
      * Download a file from Dropbox.
