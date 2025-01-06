@@ -1,5 +1,7 @@
 package org.openedit.entermedia.modules;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.client.OAuthClient;
@@ -162,13 +164,15 @@ public class OauthModule extends BaseMediaModule
 			
 			if ("dropbox".equals(provider)) {
 			    // Use Dropbox's OAuth 2.0 authorization endpoint
-			    String requestedpermissions = authinfo.get("scopes");
+			    String requestedpermissions = inReq.findValue("scopes");
 			    OAuthClientRequest request = OAuthClientRequest
 			            .authorizationLocation("https://www.dropbox.com/oauth2/authorize")
 			            .setClientId("zmvi8dlsu09itae") // Client ID from configuration
 			            .setRedirectURI(redirect)
 			            .setResponseType("code") // Response type for authorization code grant
 			            .setScope(requestedpermissions) // Dropbox scopes
+			            .setParameter("token_access_type", "offline") // Ensure refresh_token is included in the response
+
 			            .setState("login") // State parameter for CSRF protection or custom state
 			            .buildQueryMessage();
 
@@ -396,17 +400,28 @@ public class OauthModule extends BaseMediaModule
 
 		    // Retrieve the access token from the response
 		    String accessToken = oAuthResponse.getAccessToken();
+		    String refreshToken = oAuthResponse.getRefreshToken(); // Added: Get the refresh token
+		    long expiresIn = oAuthResponse.getExpiresIn(); // Added: Get token expiration time
 
-		    String accountid = (String) oAuthResponse.getData().get("account_id");
+		    if (refreshToken != null) {
+		        authinfo.setValue("refreshtoken", refreshToken); // Added: Save refresh token
+		    }
+		    if (expiresIn > 0) {
+		        long date = System.currentTimeMillis() + (expiresIn * 1000);
+			authinfo.setValue("accesstokentime", new Date(date)); // Added: Save expiration timestamp
+		    }
 		    
-		
-
-		 
-
+		    String accountid = (String) oAuthResponse.getData().get("account_id");
+		    String teamid = (String) oAuthResponse.getData().get("team_id");
 		    // Save the access token if necessary for future API calls
 		    authinfo.setValue("accesstoken", accessToken);
-		    authinfo.setValue("accountid", accountid);
-
+		    if(accountid != null) {
+			authinfo.setValue("accountid", accountid);
+		    }
+		    if(teamid != null) {
+		 	authinfo.setValue("teamid",teamid);
+		    }
+		    
 		    archive.getSearcher("oauthprovider").saveData(authinfo);
 		}
 
