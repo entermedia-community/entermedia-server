@@ -70,10 +70,10 @@
 	<property name="systemfromemail">noreply@entermediasoftware.com</property>
 	<property name="systemfromemailname">EnterMedia</property>
 	-->
-	<script src="/system/components/javascript/jquery-1.4.2.js" id="jquery" />
-	<script src="/system/components/javascript/jquery-ui-1.8.4.custom.min.js" id="jquery-ui"/>
-	<script src="/system/components/javascript/jquery.form.js" id="jquery-form"/>
-	<script src="/system/components/javascript/jquery.livequery.js" id="jquery-livequery"/>
-	<script src="/system/components/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js" id="jquery-fancybox"/>
-	<style href="/system/components/javascript/jquery.fancybox/jquery.fancybox.css" id="jquery-fancybox-css"/>
+	<script src="/commonbase/components/javascript/jquery-1.4.2.js" id="jquery" />
+	<script src="/commonbase/components/javascript/jquery-ui-1.8.4.custom.min.js" id="jquery-ui"/>
+	<script src="/commonbase/components/javascript/jquery.form.js" id="jquery-form"/>
+	<script src="/commonbase/components/javascript/jquery.livequery.js" id="jquery-livequery"/>
+	<script src="/commonbase/components/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js" id="jquery-fancybox"/>
+	<style href="/commonbase/components/javascript/jquery.fancybox/jquery.fancybox.css" id="jquery-fancybox-css"/>
 </page>
