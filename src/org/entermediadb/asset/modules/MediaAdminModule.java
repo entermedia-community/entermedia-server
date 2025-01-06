@@ -1151,6 +1151,7 @@ public class MediaAdminModule extends BaseMediaModule
 				newprop.setIndex(true);
 				archive.getPropertyDetailsArchive().savePropertyDetail(newprop, childmodule.getId(), null);
 				archive.getPropertyDetailsArchive().clearCache();
+				childsearcher.putMappings();
 			}
 			//Make views
 			Searcher viewsearcher = archive.getSearcher("view");
