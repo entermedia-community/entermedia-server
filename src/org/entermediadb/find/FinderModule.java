@@ -320,7 +320,9 @@ public class FinderModule extends BaseMediaModule
 				ListHitTracker newvalues = new ListHitTracker();
 				newvalues.setHitsPerPage(maxsize);
 				newvalues.setSearcher(archive.getSearcher(type));
-				newvalues.setSearchQuery(allhits.getSearchQuery());
+				SearchQuery query = allhits.getSearchQuery().copy();
+				query.setResultType(type);
+				newvalues.setSearchQuery(query);
 				String v = newvalues.getInput("description");
 				//System.out.print(v);
 				values = newvalues;
