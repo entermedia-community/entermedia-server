@@ -125,6 +125,7 @@
 					backdrop: modalbackdrop,
 					keyboard: false,
 				});
+				$(document.body).addClass("modal-open");
 				/*  Use editdivid
 				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
 				if (autosetformtargetdiv !== undefined) {
@@ -236,7 +237,6 @@
 		// 		backUrl.trigger("click");
 		// 	}
 		// });
-
 		$(modaldialog).on("hide.bs.modal", function (e) {
 			trackKeydown = false;
 			if (!$(this).hasClass("onfront")) {
@@ -275,7 +275,11 @@ closeemdialog = function (modaldialog) {
 		adjustZIndex(othermodal);
 	}
 
-	disposevideos();
+	modaldialog.find(".video-js, .video-player").each(function () {
+		if (this.id) {
+			videojs(this.id).dispose();
+		}
+	});
 
 	$(window).trigger("setPageTitle", [othermodal]);
 
@@ -286,6 +290,9 @@ closeemdialog = function (modaldialog) {
 		}
 
 		history.pushState($("#application").html(), null, oldurlbar);
+	}
+	if ($(".modal:visible").length === 0) {
+		$(document.body).removeClass("modal-open");
 	}
 };
 
@@ -299,6 +306,7 @@ closeallemdialogs = function () {
 	if (overlay.length) {
 		hideOverlayDiv(overlay);
 	}
+	$(document.body).removeClass("modal-open");
 };
 
 function RemoveParameterFromUrl(url, parameter) {
