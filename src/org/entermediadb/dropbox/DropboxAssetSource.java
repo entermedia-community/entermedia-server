@@ -21,9 +21,20 @@ import org.openedit.users.User;
 public class DropboxAssetSource extends BaseAssetSource
 {
 	private static final Log log = LogFactory.getLog(DropboxAssetSource.class);
+	protected DropboxManager fieldDropboxManager;
+	
+	
+	
 	public DropboxManager getDropboxManager()
 	{
-		return (DropboxManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"dropboxManager");
+	    //DropboxManager is not a singleton - one per source
+	    if (fieldDropboxManager == null) {
+		fieldDropboxManager = (DropboxManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"dropboxManager");
+		fieldDropboxManager.setAssetSource(this);
+		
+	    }
+	    return fieldDropboxManager;    	
+		
 	}
 	
 	
@@ -45,11 +56,7 @@ public class DropboxAssetSource extends BaseAssetSource
 	
 	protected File download(Asset inAsset, File file)
 	{
-		try {
-			return getDropboxManager().saveFile(inAsset);
-		} catch (Exception e) {
-			throw new OpenEditException(e);
-		}
+		throw new OpenEditException("On demand not implemented yet");
 	}
 
 	protected void upload(Asset inAsset, File file)
@@ -163,12 +170,9 @@ public class DropboxAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
-		String subfolder = getConfig().get("subfolder");
-		if(subfolder == null) {
-			subfolder = getName();
-		}
-		Results r= getDropboxManager().syncAssets(subfolder, true);
-		return r.getFiles().size();
+		
+		int count = getDropboxManager().syncAssets("");
+		return count;
 	}
 
 		
