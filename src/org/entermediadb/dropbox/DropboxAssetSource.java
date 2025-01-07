@@ -54,7 +54,10 @@ public class DropboxAssetSource extends BaseAssetSource
 	
 	
 	
-	
+	protected File download(Asset inAsset, File file)
+	{
+		throw new OpenEditException("On demand not implemented yet");
+	}
 
 	protected void upload(Asset inAsset, File file)
 	{
@@ -70,11 +73,33 @@ public class DropboxAssetSource extends BaseAssetSource
 	}
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		return null;
 		
 		
 		
 		
+		File file = getFile(inAsset);
+		FileItem item = new FileItem(file);
+		
+		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
+		path = path + inAsset.getSourcePath(); //Check archived?
+		
+		String primaryname = inAsset.getPrimaryFile();
+		if(primaryname != null && inAsset.isFolder() )
+		{
+			path = path + "/" + primaryname;
+		}
+		item.setPath(path);
+		if(downloadifNeeded)
+		{
+			//Check it exists and it matches
+			long size = inAsset.getLong("filesize");
+			if( item.getLength() != size)
+			{
+				download(inAsset, file);
+			}
+		}
+		
+		return item;
 	}
 
 	@Override

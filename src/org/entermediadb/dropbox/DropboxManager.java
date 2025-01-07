@@ -122,12 +122,13 @@ public class DropboxManager implements CatalogEnabled {
 		    Asset existingAsset = archive.getAssetBySourcePath(sourcepath);
 
 		    if (existingAsset == null) {
-			String downloadpath = "/WEB-INF/" + getMediaArchive() + "/originals/" + categorypath + "/"
+			String downloadpath = "/WEB-INF/data/" + getMediaArchive() + "/originals/" + categorypath + "/"
 				+ name;
 			;
 			Page download = downloadFile(id, downloadpath);
 			if (download != null) {
-			    Asset newAsset = getMediaArchive().getAssetImporter().createAssetFromPage(archive, false,null, download, id);
+			    Asset newAsset = getMediaArchive().getAssetImporter().createAssetFromPage(archive, false,null, download,null);
+			    newAsset.setValue("dropboxid", id);
 			    newAsset.addCategory(cat);
 			    assets.add(newAsset);
 			    //Downloading is WAY slower than saving, just save so they appear as we go.
