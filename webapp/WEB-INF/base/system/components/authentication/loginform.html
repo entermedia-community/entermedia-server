@@ -104,15 +104,17 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 			</div>
 		</div>
 	#end
-
+	#set( $adminmail = $mediaarchive.getCatalogSettingValue("userapproveremail"))
+	#ifnotnull($adminmail)
 	<div class="text-center loginformquestions my-2 p-0">
-		#set( $adminmail = $mediaarchive.getCatalogSettingsValue("userapproveremail"))
+		
 		#if( $content.allowguestregistration == "true")
 			[[Are you having trouble logging in or have a question?]] [[Please]] <a href="mailto:${adminmail}" style="text-decoration: underline;">[[contact us]]</a>.
 		#else
 			[[To create a new account, please contact]] <a href="mailto:${adminmail}" style="text-decoration: underline;">[[the administrator]]</a>.
 		#end
 	</div>
+	#end
 </div>
 
 <script>
