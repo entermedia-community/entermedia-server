@@ -66,40 +66,22 @@ public class DropboxAssetSource extends BaseAssetSource
 
 	
 
-	@Override
+	
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
-		return getOriginalContent(inAsset,true);
-	}
-	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
-	{
-		
-		
-		
-		
-		File file = getFile(inAsset);
-		FileItem item = new FileItem(file);
-		
-		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
-		path = path + inAsset.getSourcePath(); //Check archived?
-		
+	    	//TODO:  Implement download on demand
+	    	String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
+		String alternative = inAsset.getPath();
+		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )
 		{
-			path = path + "/" + primaryname;
-		}
-		item.setPath(path);
-		if(downloadifNeeded)
-		{
-			//Check it exists and it matches
-			long size = inAsset.getLong("filesize");
-			if( item.getLength() != size)
-			{
-				download(inAsset, file);
-			}
+			originalpath = originalpath + "/" + primaryname;
 		}
 		
-		return item;
+		ContentItem page = getPageManager().getRepository().getStub(originalpath);
+		return page;
+
 	}
 
 	@Override
@@ -186,13 +168,7 @@ public class DropboxAssetSource extends BaseAssetSource
 
 
 	
-	public void assetUploaded(Asset inAsset)
-	{
-		//Upload
-		File file = getFile(inAsset);
-		upload(inAsset, file);
-	}
-
+	
 
 
 	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser)
