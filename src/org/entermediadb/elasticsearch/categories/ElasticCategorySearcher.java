@@ -11,12 +11,14 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.asset.xmldb.XmlCategoryArchive;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
@@ -589,4 +591,43 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			}
 		}
 	}
+	
+	protected void addSecurity(XContentBuilder inContent, Data inData) throws Exception
+	{
+		//Check for security
+		PropertyDetail detail = getDetail("securityenabled");
+
+		if (detail == null)
+		{
+			return;
+		}
+		
+		Collection users = inData.getValues("viewusers");
+		Collection groups = inData.getValues("viewgroups");
+		Collection roles = inData.getValues("viewroles");
+		
+		if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
+		{
+			if (users != null)
+			{
+				inContent.field("viewusers", users);
+			}
+			if (groups != null)
+			{
+				inContent.field("viewgroups", groups);
+			}
+			if (roles != null)
+			{
+				inContent.field("viewroles", roles);
+			}
+			inContent.field("securityenabled", true);
+			return;
+		}
+		
+				
+		
+
+	}
+	
+	
 }
