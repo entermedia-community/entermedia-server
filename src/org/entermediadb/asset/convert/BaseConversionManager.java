@@ -10,6 +10,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
@@ -233,6 +234,10 @@ public abstract class BaseConversionManager implements ConversionManager
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
+		if( preset == null)
+		{
+			throw new OpenEditException("Preset not defined " +  getRenderType() + " "  + inExportName);
+		}
 		instructions.loadPreset(preset);
 		if( inAsset != null)
 		{

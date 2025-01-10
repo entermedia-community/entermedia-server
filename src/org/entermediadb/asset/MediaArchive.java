@@ -2754,7 +2754,7 @@ public class MediaArchive implements CatalogEnabled
 				}
 				else
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
 				}
 //			}
 //		}
@@ -2789,7 +2789,7 @@ public class MediaArchive implements CatalogEnabled
 		String sourcepath = inAsset.getSourcePath();
 
 		String downloadroot = "/services/module/asset/downloads/";
-		String	finalroot =  "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + "preset/" + sourcepath + "/" + usefile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}

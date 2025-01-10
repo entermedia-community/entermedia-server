@@ -2,6 +2,8 @@
 
 <page>
 
+	<property name="fallbackdirectory">/WEB-INF/base/system/commonbase</property>
+
 	<path-action name="ProfileModule.loadUserProfile" />
 
 	<path-action name="Admin.loadPermissions"/>
