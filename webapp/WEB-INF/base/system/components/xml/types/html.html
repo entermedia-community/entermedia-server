@@ -1,2 +1,11 @@
+
+#if($editortype != "datamanager")
+	#set($htmleditor = "oehtmlinput")
+#end
+
 <textarea name="${detail.getId()}.value" id="${detail.getId()}" cols="40" rows="5" 
-	class="#if($detail.isRequired() && !$multiedit) required #end htmleditor">$!val</textarea>
+  data-editonly="true"
+	class="#if($detail.isRequired() && !$multiedit) required #end $!htmleditor form-control">$!value</textarea>
+
+##<textarea data-editonly="true" name="${detail.getId()}.value" id="${detail.getId()}" cols="40" rows="5" 
+##	class="oehtmlinput #if($detail.isRequired() && !$multiedit) required #end htmleditor">$!value</textarea>

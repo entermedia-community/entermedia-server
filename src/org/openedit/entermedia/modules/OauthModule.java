@@ -165,9 +165,13 @@ public class OauthModule extends BaseMediaModule
 			if ("dropbox".equals(provider)) {
 			    // Use Dropbox's OAuth 2.0 authorization endpoint
 			    String requestedpermissions = inReq.findValue("scopes");
+			    String clientid = authinfo.get("clientid");
+			    log.info("using clientid" + clientid);
+			    log.info("using redirect uri" + redirect);
 			    OAuthClientRequest request = OAuthClientRequest
 			            .authorizationLocation("https://www.dropbox.com/oauth2/authorize")
-			            .setClientId("zmvi8dlsu09itae") // Client ID from configuration
+			            
+			            .setClientId(clientid) // Client ID from configuration
 			            .setRedirectURI(redirect)
 			            .setResponseType("code") // Response type for authorization code grant
 			            .setScope(requestedpermissions) // Dropbox scopes
