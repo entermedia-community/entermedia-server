@@ -80,7 +80,7 @@ $context.putPageValue("longform",false)
 		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td  class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText( $context ) 
