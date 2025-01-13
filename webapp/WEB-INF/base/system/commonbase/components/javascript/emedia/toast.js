@@ -2,7 +2,7 @@ var toastTO;
 
 $(window).on("showToast", function (_, anchor) {
 	if (!anchor || anchor.length == 0 || typeof anchor.data != "function") return;
-	if (anchor.data("noToast") === true) {
+	if (anchor.data("noToast") === true || anchor.hasClass("noToast")) {
 		return;
 	}
 	var uid = Date.now();
@@ -33,6 +33,7 @@ $(window).on("showToast", function (_, anchor) {
 	);
 
 	toastTO = setTimeout(function () {
+		console.log($(anchor), anchor.data("noToast"));
 		$(".toastList").append(toast);
 	}, delay);
 });
