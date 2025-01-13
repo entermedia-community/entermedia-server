@@ -163,7 +163,9 @@ $(document).ready(function()
 				//$("#" + targetselect).val(data.id);
 				
 			});
-			$(this).closest(".modal").modal('hide');
+			var modal = $(this).closest(".modal");
+			modal.modal('hide');
+			modal.remove();
 			
 		});
 	
