@@ -636,7 +636,7 @@ public class ContentManager implements CatalogEnabled {
 		inReq.putPageValue("parentmodule", parentmodule);
 		inReq.putPageValue("targetmodule", targetmodule);
 		inReq.putPageValue("parent", entity);
-z
+
 		
 		
 		//This is the "Message" to the LLM - it can be verbose and uses velocity, can access anything.
