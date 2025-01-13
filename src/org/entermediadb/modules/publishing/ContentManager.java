@@ -611,6 +611,9 @@ public class ContentManager implements CatalogEnabled {
 		}
 	}
 
+	
+	
+	
 	public Data createFromLLM(WebPageRequest inReq, LLMManager inManager,String inModel, String inModuleid, String inEntityid, String inTargetentity) throws Exception {
 
 		Data entity = getMediaArchive().getData(inModuleid, inEntityid);
@@ -633,7 +636,7 @@ public class ContentManager implements CatalogEnabled {
 		inReq.putPageValue("parentmodule", parentmodule);
 		inReq.putPageValue("targetmodule", targetmodule);
 		inReq.putPageValue("parent", entity);
-
+z
 		
 		
 		//This is the "Message" to the LLM - it can be verbose and uses velocity, can access anything.
@@ -777,6 +780,19 @@ public class ContentManager implements CatalogEnabled {
 		
 	
 		
+	}
+
+	public Data createFromLLM(WebPageRequest inReq, LLMManager inLlm, String inModel, Data inContentrequest) throws Exception {
+	  String entityid = inContentrequest.get("entityid");
+	  String moduleid = inContentrequest.get("moduleid");
+	  String target = inContentrequest.get("targetentity");
+	  String userprompt = inContentrequest.get("userprompt");
+	 
+	  return createFromLLM(inReq, inLlm, inModel, entityid, moduleid, target);
+	  
+	  
+	  
+
 	}
 
 }
