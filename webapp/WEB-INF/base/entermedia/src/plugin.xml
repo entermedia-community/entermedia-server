@@ -1979,6 +1979,14 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	<bean id="orderSearchSecurity" class="org.entermediadb.asset.search.OrderSearchSecurity" lazy-init="default">
+		<property name="cacheManager">
+				<ref bean="systemCacheManager" />
+			</property>
+			<property name="searcherManager">
+				<ref bean="searcherManager" />
+			</property>
+	</bean>
 
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
 

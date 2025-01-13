@@ -1,0 +1,8 @@
+<properties>
+	<property id="id" />
+<property id="firstName" />
+<property id="lastName" />
+<property id="email" />
+<property id="creationdate" />
+<property id="lastlogin" />
+</properties>
