@@ -72,8 +72,9 @@ public class ContentModule extends BaseMediaModule
 
 			String entityid = contentrequest.get("entityid");
 			String moduleid = contentrequest.get("moduleid");
-			String target = contentrequest.get("targetentity");
-
+			Data entitymodule = archive.getCachedData("module", moduleid);
+			Data entity = archive.getCachedData( moduleid, entityid);
+			
 			boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
 			Searcher targetsearcher = archive.getSearcher("contentcreator");
 
