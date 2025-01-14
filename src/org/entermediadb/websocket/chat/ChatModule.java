@@ -68,6 +68,13 @@ public class ChatModule extends BaseMediaModule
 		}
 		
 		if(collectionid == null) {
+			Data librarycol  = (Data) inReq.getPageValue("librarycol");
+			if(librarycol != null) {
+				collectionid = librarycol.getId();
+			}
+		}
+		
+		if(collectionid == null) {
 			collectionid = inReq.findValue("entityid");
 		}
 		
@@ -80,6 +87,7 @@ public class ChatModule extends BaseMediaModule
 		if (currenttopic == null) {
 			currenttopic = topicsearcher.query().match("parentcollectionid",collectionid).sort("name").searchOne();
 		}
+
 		if (currenttopic == null) {
 			currenttopic = topicsearcher.createNewData();
 			currenttopic.setValue("parentcollectionid", collectionid);

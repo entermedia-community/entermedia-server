@@ -410,6 +410,8 @@ public class ProjectModule extends BaseMediaModule
 		return col;
 
 	}
+	
+
 
 	public LibraryCollection loadCollection(WebPageRequest inReq) 
 	{
@@ -476,6 +478,8 @@ public class ProjectModule extends BaseMediaModule
 					}
 				}
 			}
+			
+			collectionid = inReq.findValue("collectionid");
 		}
 		if (collectionid == null) 
 		{
