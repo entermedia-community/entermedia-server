@@ -13,6 +13,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.llm.LLMManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -48,40 +49,47 @@ public class ContentModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		ContentManager manager = getContentManager(inReq);
-		String model = inReq.findValue("llmmodel.value");
-		Data modelinfo = archive.getData("llmmodel", model);
-
-		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-
-		if (type == null)
-		{
-			type = "gptManager";
-		}
-		else
-		{
-			type = type + "Manager";
-		}
-		LLMManager llm = (LLMManager) archive.getBean(type);
 
 		HitTracker hits = archive.query("contentcreator").exact("status", "new").search();
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
-			Data contentrequest = (Data) iterator.next();
+			MultiValued contentrequest = (MultiValued) iterator.next();
+
+			String model = contentrequest.get("llmmodel");
+			Data modelinfo = archive.getData("llmmodel", model);
+
+			String type = modelinfo != null ? modelinfo.get("llmtype") : null;
+
+			if (type == null)
+			{
+				type = "gptManager";
+			}
+			else
+			{
+				type = type + "Manager";
+			}
+			LLMManager llm = (LLMManager) archive.getBean(type);
+
+			
 			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
 
-			String entityid = contentrequest.get("entityid");
-			String moduleid = contentrequest.get("moduleid");
-			Data entitymodule = archive.getCachedData("module", moduleid);
-			Data entity = archive.getCachedData( moduleid, entityid);
+		
 			
-			boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
+			boolean createassets = contentrequest.getBoolean("createassets");
+			
 			Searcher targetsearcher = archive.getSearcher("contentcreator");
 
 			if (createassets)
 			{
-				//TODO:  Should we just create new content creator objects?  Let this do it later?
-				Collection<PropertyDetail> details = targetsearcher.getDetailsForView("contentcreatoraddnewimages");
+
+				String entityid = contentrequest.get("entityid");
+				String moduleid = contentrequest.get("moduleid");
+				Data entitymodule = archive.getCachedData("module", moduleid);
+				Data entity = archive.getCachedData( moduleid, entityid);
+				String view = "contentcreatoraddnewimages";
+				
+				Collection<PropertyDetail> details = targetsearcher.getDetailsForView("");
 
 				for (Iterator iterator2 = details.iterator(); iterator2.hasNext();)
 				{
@@ -90,11 +98,12 @@ public class ContentModule extends BaseMediaModule
 					{
 						inReq.putPageValue("detail", detail);
 						inReq.putPageValue("newdata", newdata);
+						
+						String prompt = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
 
-						String template = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
 						Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 						String sourcepathroot = rootcat.getCategoryPath();
-						Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);
+						Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, prompt);
 						asset.addCategory(rootcat);
 						archive.saveAsset(asset);
 						log.info("Saving asset as " + detail.getName() + ": " + detail.getId());
@@ -115,10 +124,9 @@ public class ContentModule extends BaseMediaModule
 	{
 		// Add as child
 
-		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
 		Data entity = (Data) inReq.getPageValue("entity");
 		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
-
+		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
 		String submodsearchtype = entitypartentview.get("rendertable");
 
 		String lastprompt = inReq.getRequestParameter("lastprompt.value");
