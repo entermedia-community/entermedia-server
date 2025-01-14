@@ -157,6 +157,7 @@ public class ContentModule extends BaseMediaModule
 			asset.addCategory(rootcat);
 			asset.setSourcePath(sourcePath);
 			asset.setValue("importstatus", "uploading");
+			asset.setValue("fileformat", "png");
 			asset.setValue("previewstatus", "converting");
 			asset.setValue("assetaddeddate", new Date());
 			asset.setValue("contentcreator", info.getId());
@@ -164,6 +165,7 @@ public class ContentModule extends BaseMediaModule
 	    }
 	    info.setValue("primarymedia", asset.getId());
 	    requests.saveData(info);
+	    inReq.putPageValue("data", info);
 	    archive.fireSharedMediaEvent("llm/createassets");
 	    
 	    
