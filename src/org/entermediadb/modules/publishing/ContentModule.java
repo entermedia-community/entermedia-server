@@ -164,6 +164,7 @@ public class ContentModule extends BaseMediaModule
 	    }
 	    info.setValue("primarymedia", asset.getId());
 	    requests.saveData(info);
+	    inReq.putPageValue("data", info);
 	    archive.fireSharedMediaEvent("llm/createassets");
 	    
 	    
