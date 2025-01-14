@@ -61,7 +61,7 @@ public class OrderZipGenerator extends BaseGenerator
 					
 			order = archive.getOrderManager().loadOrder(archive.getCatalogId(), orderid);
 			
-			HitTracker orderitems = archive.getOrderManager().findOrderItems(inReq, archive.getCatalogId(), orderid);
+			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(), orderid, "approved");
 			String catalogid = archive.getCatalogId();
 			
 			ZipUtil util = new ZipUtil();
@@ -76,6 +76,7 @@ public class OrderZipGenerator extends BaseGenerator
 			
 			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
 				Data orderitem = (Data) iterator.next();
+				
 				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset", orderitem.get("presetid"));
 				if(preset == null && "original".equals(orderitem.get("presetid"))){
 					preset = archive.getSearcherManager().getData(catalogid, "convertpreset", "0");
