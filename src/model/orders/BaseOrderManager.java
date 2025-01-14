@@ -208,16 +208,28 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 	 */
 
 	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid,  Order inOrder) {
-		return findOrderItems(inReq, inCatalogid,inOrder.getId() );
+		return findOrderItems(inReq, inCatalogid,inOrder.getId(), null );
 	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#findOrderItems(org.openedit.WebPageRequest, java.lang.String, java.lang.String)
 	 */
-
+	
 	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId) {
+		return findOrderItems(inReq, inCatalogid,inOrderId, null );
+	}
+	
+	public HitTracker findApprovedOrderItems(WebPageRequest inReq, String inCatalogid,  String inOrderId, String inStatus) {
+		return findOrderItems(inReq, inCatalogid,inOrderId, inStatus );
+	}
+
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId, String inStatus) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
+		if (inStatus != null)
+		{
+			query.addExact("status", inStatus);
+		}
 		query.setHitsName("orderitems");
 		query.setCatalogId(inCatalogid);
 		
@@ -1427,6 +1439,7 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		inArchive.saveData("orde", inOrder);
 		
 	}
+
 
 
 }

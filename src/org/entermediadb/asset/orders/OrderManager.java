@@ -38,6 +38,8 @@ public interface OrderManager
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, Order inOrder);
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId);
+	
+	HitTracker findApprovedOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId, String inStatus);
 
 	//public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination);
 
