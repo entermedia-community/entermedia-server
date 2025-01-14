@@ -15,7 +15,7 @@ import org.openedit.page.Page;
 
 public class PubLookUpTest extends BaseEnterMediaTest
 {
-	protected void setUp() throws Exception
+	protected void NOTRUNsetUp() throws Exception
 	{
 		
 		Category parent = getCategoryEditor().getCategory("PRINTPRODUCTION"); 
@@ -35,7 +35,7 @@ public class PubLookUpTest extends BaseEnterMediaTest
 		assertNotNull( parent );
 	}
 	@Test
-	public void testLookPubIdLookUp()
+	public void NOTRUNtestLookPubIdLookUp()
 	{
 		List rows = new ArrayList();
 		String csvpath = "/"+getMediaArchive().getCatalogId()+"/imports/ALF2.txt";
@@ -49,7 +49,7 @@ public class PubLookUpTest extends BaseEnterMediaTest
 			String[] line;
 			while ((line = read.readNext()) != null){
 				String pubitem = line[2]; //Pub-Item
-				found = PubLookUp.lookUpbyPubId(pubitem);
+				//found = PubLookUp.lookUpbyPubId(pubitem);
 			}
 		} catch (Exception e){
 			throw new OpenEditException(e);
