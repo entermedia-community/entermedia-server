@@ -2,6 +2,7 @@ package org.entermediadb.modules.publishing;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -151,18 +152,21 @@ public class ContentModule extends BaseMediaModule
 	    Asset asset = archive.getAssetBySourcePath(sourcePath);
 	    
 	    if(asset == null) {
-		asset = (Asset) archive.getAssetSearcher().createNewData();
-		asset.setName(filename);
-		asset.setSourcePath(sourcePath);
-		asset.setValue("importstatus", "uploading");
-		asset.setValue("previewstatus", "converting");
-		asset.setValue("contentcreator", info.getId());
-		archive.saveAsset(asset);
+			asset = (Asset) archive.getAssetSearcher().createNewData();
+			asset.setName(filename);
+			asset.addCategory(rootcat);
+			asset.setSourcePath(sourcePath);
+			asset.setValue("importstatus", "uploading");
+			asset.setValue("previewstatus", "converting");
+			asset.setValue("assetaddeddate", new Date());
+			asset.setValue("contentcreator", info.getId());
+			archive.saveAsset(asset);
 	    }
 	    info.setValue("primarymedia", asset.getId());
 	    requests.saveData(info);
 	    archive.fireSharedMediaEvent("llm/createassets");
-	
+	    
+	    
 	}
 	
 	
