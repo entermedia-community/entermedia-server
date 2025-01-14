@@ -933,7 +933,7 @@ public class EntityModule extends BaseMediaModule
 		
 		if( entitymoduleid == null )
 		{
-			entitymoduleid = inPageRequest.findValue("entitymoduleid");  //TODO: remove, not secure
+			entitymoduleid = inPageRequest.getRequestParameter("entitymoduleid");  //TODO: remove, not secure
 
 //			//Is this correct? Not sure what module this entity is part of
 //			entitymoduleid = entitymoduleviewdata.get("rendertable");
