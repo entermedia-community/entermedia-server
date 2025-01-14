@@ -18,6 +18,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.fetch.UrlDownloadImporter;
 import org.entermediadb.asset.importer.DitaImporter;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
@@ -700,6 +701,63 @@ public class ContentManager implements CatalogEnabled {
 
     }
 
+    
+    public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest) {
+	
+
+	MediaArchive archive = getMediaArchive();
+
+	
+	String model = contentrequest.get("llmmodel");
+	Data modelinfo = archive.getData("llmmodel", model);
+
+	String type = modelinfo != null ? modelinfo.get("llmtype") : null;
+
+	if (type == null)
+	{
+		type = "gptManager";
+	}
+	else
+	{
+		type = type + "Manager";
+	}
+	LLMManager llm = (LLMManager) archive.getBean(type);
+
+
+	String prompt = inReq.findValue("llmprompt.value");
+
+	String edithome = inReq.findPathValue("edithome");
+
+	String imagestyle = contentrequest.get("llmimagestyle");
+	if (imagestyle == null) {
+	    imagestyle = "vivid";
+	}
+	Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
+	
+	
+	JSONObject results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
+	JSONArray data = (JSONArray) results.get("data");
+	
+	
+	ArrayList assets = new ArrayList();
+	for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+	    JSONObject row = (JSONObject) iterator.next();
+	    String url = (String) row.get("url");
+	    asset.setValue("downloadurl-file", url);
+	    asset.setValue("downloadurl-filename", asset.getName());
+
+	    UrlDownloadImporter importer = new UrlDownloadImporter();
+	    importer.fetchMediaForAsset(archive, asset, null);
+	  
+
+	}
+	getMediaArchive().saveAssets(assets);
+	archive.fireSharedMediaEvent("importing/assetscreated");
+
+	return (Asset) assets.get(0);
+    }
+    
+    
     public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
 	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
 

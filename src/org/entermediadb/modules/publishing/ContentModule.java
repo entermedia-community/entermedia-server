@@ -70,13 +70,43 @@ public class ContentModule extends BaseMediaModule
 				type = type + "Manager";
 			}
 			LLMManager llm = (LLMManager) archive.getBean(type);
-
-			
 			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
-			
-		
+		}
 
+	}
+	
+	
+	public void processAssetRequests(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+		MediaArchive archive = getMediaArchive(inReq);
+
+		ContentManager manager = getContentManager(inReq);
+
+		HitTracker hits = archive.query("contentcreator").exact("status", "newimage").search();
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			MultiValued contentrequest = (MultiValued) iterator.next();
+
+			String model = contentrequest.get("llmmodel");
+			if(model == null) {
+			    model = "dall-e-3";
+			}
+			Data modelinfo = archive.getData("llmmodel", model);
 			
+			String type = modelinfo != null ? modelinfo.get("llmtype") : null;
+
+			if (type == null)
+			{
+				type = "gptManager";
+			}
+			else
+			{
+				type = type + "Manager";
+			}
+			LLMManager llm = (LLMManager) archive.getBean(type);
+			Data newdata = manager.createAssetFromLLM(inReq,  contentrequest);
 		}
 
 	}
@@ -96,6 +126,46 @@ public class ContentModule extends BaseMediaModule
 	
 	}
 
+	public void createNewImageRequest(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+	    MediaArchive archive = getMediaArchive(inReq);
+	    Searcher requests = archive.getSearcher("contentcreator");
+	    Data info = requests.createNewData();
+	    info.setValue("status", "newimage");
+	    String [] fields = inReq.getRequestParameters("field");
+	    requests.updateData(inReq, fields, info);
+	    requests.saveData(info);
+	    
+	    String style = info.get("aistyle");
+	    
+	    Data entity = (Data) inReq.getPageValue("entity");
+            Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+
+	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
+		String sourcepathroot = rootcat.getCategoryPath();
+	    
+	    String filename = info.get("aitarget") + info.get("aiexamples") + ".png";
+	    String sourcePath = sourcepathroot + "/" +filename;
+	    
+	    Asset asset = archive.getAssetBySourcePath(sourcePath);
+	    
+	    if(asset == null) {
+		asset = (Asset) archive.getAssetSearcher().createNewData();
+		asset.setName(filename);
+		asset.setSourcePath(sourcePath);
+		asset.setValue("importstatus", "uploading");
+		asset.setValue("previewstatus", "converting");
+		asset.setValue("contentcreator", info.getId());
+		archive.saveAsset(asset);
+	    }
+	    info.setValue("primarymedia", asset.getId());
+	    requests.saveData(info);
+	    archive.fireSharedMediaEvent("llm/createassets");
+	
+	}
+	
+	
 	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
 	{
 		// Add as child
