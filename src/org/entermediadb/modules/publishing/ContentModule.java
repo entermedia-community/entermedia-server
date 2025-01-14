@@ -73,51 +73,27 @@ public class ContentModule extends BaseMediaModule
 
 			
 			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
-
+			
 		
+
 			
-			boolean createassets = contentrequest.getBoolean("createassets");
-			
-			Searcher targetsearcher = archive.getSearcher("contentcreator");
-
-			if (createassets)
-			{
-
-				String entityid = contentrequest.get("entityid");
-				String moduleid = contentrequest.get("moduleid");
-				Data entitymodule = archive.getCachedData("module", moduleid);
-				Data entity = archive.getCachedData( moduleid, entityid);
-				String view = "contentcreatoraddnewimages";
-				
-				Collection<PropertyDetail> details = targetsearcher.getDetailsForView("");
-
-				for (Iterator iterator2 = details.iterator(); iterator2.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator2.next();
-					if (detail.isList() && ("asset".equals(detail.getListId()) || "asset".equals(detail.get("rendertype"))))
-					{
-						inReq.putPageValue("detail", detail);
-						inReq.putPageValue("newdata", newdata);
-						
-						String prompt = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
-
-						Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
-						String sourcepathroot = rootcat.getCategoryPath();
-						Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, prompt);
-						asset.addCategory(rootcat);
-						archive.saveAsset(asset);
-						log.info("Saving asset as " + detail.getName() + ": " + detail.getId());
-						newdata.setValue(detail.getId(), asset.getId());
-
-						// Break out of the loop for now...
-					}
-				}
-
-				targetsearcher.saveData(newdata);
-
-			}
 		}
 
+	}
+	
+	
+	public void createNewRequest(WebPageRequest inReq) throws Exception
+	{
+		// Add as child
+	    MediaArchive archive = getMediaArchive(inReq);
+	    Searcher requests = archive.getSearcher("contentcreator");
+	    Data info = requests.createNewData();
+	    info.setValue("status", "new");
+	    String [] fields = inReq.getRequestParameters("field");
+	    requests.updateData(inReq, fields, info);
+	    requests.saveData(info);
+	    archive.fireSharedMediaEvent("llm/createentities");
+	
 	}
 
 	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
