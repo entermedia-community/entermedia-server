@@ -157,6 +157,7 @@ public class ContentModule extends BaseMediaModule
 			asset.addCategory(rootcat);
 			asset.setSourcePath(sourcePath);
 			asset.setValue("importstatus", "uploading");
+			asset.setValue("fileformat", "png");
 			asset.setValue("previewstatus", "converting");
 			asset.setValue("assetaddeddate", new Date());
 			asset.setValue("contentcreator", info.getId());
