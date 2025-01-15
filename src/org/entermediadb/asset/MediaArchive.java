@@ -2695,6 +2695,9 @@ public class MediaArchive implements CatalogEnabled
 		return asLinkToPreview(inAsset,inCollectionId,inGeneratedName,false);
 	}
 	
+	/**
+	 * This is create the path if needed
+	 */
 	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName, boolean isExternalLink)
 	{
 		if (inAsset == null)
