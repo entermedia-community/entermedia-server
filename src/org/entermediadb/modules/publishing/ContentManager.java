@@ -24,6 +24,7 @@ import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.llm.GptManager;
 import org.entermediadb.llm.LLMManager;
+import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -701,28 +702,21 @@ public class ContentManager implements CatalogEnabled {
 
     }
 
-    
     public Asset createAssetFromLLM(WebPageRequest inReq, Data contentrequest) {
-	
 
 	MediaArchive archive = getMediaArchive();
 
-	
 	String model = contentrequest.get("llmmodel");
 	Data modelinfo = archive.getData("llmmodel", model);
 
 	String type = modelinfo != null ? modelinfo.get("llmtype") : null;
 
-	if (type == null)
-	{
-		type = "gptManager";
-	}
-	else
-	{
-		type = type + "Manager";
+	if (type == null) {
+	    type = "gptManager";
+	} else {
+	    type = type + "Manager";
 	}
 	LLMManager llm = (LLMManager) archive.getBean(type);
-
 
 	String prompt = inReq.findValue("llmprompt.value");
 
@@ -730,34 +724,49 @@ public class ContentManager implements CatalogEnabled {
 
 	String imagestyle = contentrequest.get("llmimagestyle");
 	if (imagestyle == null) {
-	    imagestyle = "vivid";
+	    imagestyle = "natural";
 	}
 	Asset asset = archive.getAsset(contentrequest.get("primarymedia"));
-	
-	
-	JSONObject results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle, contentrequest.get("createassetprompt"));
+
+	JSONObject results = llm.createImage(inReq, model, 1, "1024x1024", imagestyle,
+		contentrequest.get("createassetprompt"));
 	JSONArray data = (JSONArray) results.get("data");
-	
-	
-	ArrayList assets = new ArrayList();
+	Downloader downloader = new Downloader();
+
 	for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 	    JSONObject row = (JSONObject) iterator.next();
 	    String url = (String) row.get("url");
-	    asset.setValue("downloadurl-file", url);
-	    asset.setValue("downloadurl-filename", asset.getName());
 
-	    UrlDownloadImporter importer = new UrlDownloadImporter();
-	    importer.fetchMediaForAsset(archive, asset, null);
-	  
+	    asset.setValue("importstatus", "created");
 
+	    String filename = asset.getName();
+
+	    String path = "/WEB-INF/data/" + asset.getCatalogId() + "/originals/" + asset.getSourcePath();
+	    File attachments = new File(archive.getPageManager().getPage(path).getContentItem().getAbsolutePath());
+	    filename = filename.replaceAll("\\?.*", "");
+	    log.info("Downloading " + url + " ->" + path + "/" + filename);
+	    File target = new File(attachments, filename);
+	    if (target.exists() || target.length() == 0) {
+		try {
+		    downloader.download(url, target);
+		} catch (Exception ex) {
+		    asset.setProperty("importstatus", "error");
+		    log.error(ex);
+		    archive.saveAsset(asset);
+		    
+		}
+	    }
+	    asset.setFolder(true);
+	    asset.setName(filename);
+	    asset.setPrimaryFile(filename);
+	    // asset.setFolder(true);
+	    asset.setProperty("importstatus", "created");
+	    archive.saveAsset(asset);
 	}
-	getMediaArchive().saveAssets(assets);
 	archive.fireSharedMediaEvent("importing/assetscreated");
-
-	return (Asset) assets.get(0);
+	return asset;
     }
-    
-    
+
     public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
 	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
 
@@ -829,22 +838,22 @@ public class ContentManager implements CatalogEnabled {
 	String entityid = inContentrequest.get("entityid");
 
 	String view = inContentrequest.get("entitymoduleviewid");
-	if(view == null) {
+	if (view == null) {
 	    return null;
 	}
-	if(inModel == null) {
+	if (inModel == null) {
 	    inModel = "gpt-4o";
 	}
-	
+
 	Data entitypartentview = archive.getCachedData("view", view);
-	
+
 	String moduleid = entitypartentview.get("moduleid");
 	Searcher targetsearcher = null;
 	Data child = null;
 	// If there is a view we're creating a child based on the view
 	if (entitypartentview.get("rendertable") == null) {
 
-	     targetsearcher = getMediaArchive().getSearcher(moduleid);
+	    targetsearcher = getMediaArchive().getSearcher(moduleid);
 	    Data targetmodule = getMediaArchive().getCachedData("module", moduleid);// Chapter
 
 	    inReq.putPageValue("targetmodule", targetmodule);
@@ -854,21 +863,19 @@ public class ContentManager implements CatalogEnabled {
 		    "/" + archive.getMediaDbId() + "/gpt/templates/createtoplevel.html");
 	    JSONObject results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
-	     child = targetsearcher.createNewData();
+	    child = targetsearcher.createNewData();
 	    targetsearcher.updateData(child, results);
 	    child.setValue("entity_date", new Date());
 	    child.setValue("ai-functioncall", results.toJSONString());
 	    targetsearcher.saveData(child);
 
-	  
-
 	} else {
 	    String submodsearchtype = entitypartentview.get("rendertable");
 	    Data targetmodule = getMediaArchive().getCachedData("module", submodsearchtype);// Chapter
-	     targetsearcher = getMediaArchive().getSearcher(submodsearchtype);
+	    targetsearcher = getMediaArchive().getSearcher(submodsearchtype);
 
 	    inReq.putPageValue("parentmodule", moduleid);
-	    
+
 	    inReq.putPageValue("targetmodule", targetmodule);
 	    inReq.putPageValue("contentrequest", inContentrequest);
 
@@ -876,7 +883,7 @@ public class ContentManager implements CatalogEnabled {
 		    "/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
 	    JSONObject results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
-	     child = targetsearcher.createNewData();
+	    child = targetsearcher.createNewData();
 	    targetsearcher.updateData(child, results);
 	    child.setValue("entity_date", new Date());
 	    child.setValue(moduleid, entityid); // Lookup
@@ -885,15 +892,10 @@ public class ContentManager implements CatalogEnabled {
 	    archive.saveData(submodsearchtype, child);
 	    // Category folder =
 	    // getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
-	  
 
 	}
-	//TODO:  Create some assets?
+	// TODO: Create some assets?
 	return child;
-	
-	
-	
-	
 
     }
 

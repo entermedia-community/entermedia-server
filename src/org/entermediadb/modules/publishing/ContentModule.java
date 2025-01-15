@@ -152,7 +152,7 @@ public class ContentModule extends BaseMediaModule
 	    Asset asset = archive.getAssetBySourcePath(sourcePath);
 	    
 	    if(asset == null) {
-			asset = (Asset) archive.getAssetSearcher().createNewData();
+			asset = (Asset) archive.createAsset(sourcePath);
 			asset.setName(filename);
 			asset.addCategory(rootcat);
 			asset.setSourcePath(sourcePath);

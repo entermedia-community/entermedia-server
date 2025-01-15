@@ -126,7 +126,12 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		inReq.putPageValue("prompt", inPrompt);
 		
 		JsonObject obj = new JsonObject();
-
+		if(inModel == null) {
+		    inModel = "dall-e-3";
+		}
+		if(inPrompt == null) {
+		    inPrompt = "Suprise ME";
+		}
 		obj.addProperty("model", inModel);
 		obj.addProperty("prompt", inPrompt);
 		obj.addProperty("n", imagecount);
