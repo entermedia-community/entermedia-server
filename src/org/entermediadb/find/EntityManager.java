@@ -958,13 +958,13 @@ public class EntityManager implements CatalogEnabled
 		return lighboxes;
 	}
 
-
+ 
 	
-//	public HitTracker loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
-//	{
-//		HitTracker boxes = loadBoxesForModule("emedialightbox",inModule, inEntity, inUser);
-//		return boxes;
-//	}
+	public Collection<LightBox> loadLightBoxesForModule(Data inModule, Data inEntity,User inUser)
+	{
+		Collection<LightBox> boxes = loadBoxesForModule("emedialightbox",inModule, inEntity, inUser);
+		return boxes;
+	}
 //	public HitTracker loadLightBoxesForEntity(Data inModule, Data inEntity,User inUser)
 //	{
 //		if( inModule == null)
