@@ -846,6 +846,8 @@ public class ContentManager implements CatalogEnabled {
 	if (inModel == null) {
 	    inModel = "gpt-4o";
 	}
+	//Only gpt-4o
+	inModel = "gpt-4o";
 
 	Data entitypartentview = archive.getCachedData("view", view);
 
