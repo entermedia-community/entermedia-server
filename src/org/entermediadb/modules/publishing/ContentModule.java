@@ -73,6 +73,7 @@ public class ContentModule extends BaseMediaModule
 			LLMManager llm = (LLMManager) archive.getBean(type);
 			Data newdata = manager.createFromLLM(inReq, llm, model, contentrequest);
 			contentrequest.setValue("status", "complete");
+			archive.saveData("contentrequest", contentrequest);
 		}
 		
 
