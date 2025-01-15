@@ -612,52 +612,52 @@ public class ContentManager implements CatalogEnabled {
 	}
     }
 
-    public Data createFromLLM(WebPageRequest inReq, LLMManager inManager, String inModel, String inModuleid,
-	    String inEntityid, String inTargetentity) throws Exception {
-
-	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
-
-	// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
-	MediaArchive archive = getMediaArchive();
-	Map inputdata = new HashMap();
-	Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
-	Data targetmodule = getMediaArchive().getCachedData("module", inTargetentity);
-	Searcher targetsearcher = getMediaArchive().getSearcher(inTargetentity);
-
-	String extra = entity.get("lastprompt");
-
-	if (extra == null) {
-	    extra = "Create a new " + targetmodule.getName();
-	}
-	inputdata.put("directions", extra);
-	// Loop over all the tabs on the UI
-	inputdata.put("metadata", inputdata);
-	inReq.putPageValue("parentmodule", parentmodule);
-	inReq.putPageValue("targetmodule", targetmodule);
-	inReq.putPageValue("parent", entity);
-
-	// This is the "Message" to the LLM - it can be verbose and uses velocity, can
-	// access anything.
-	inReq.putPageValue("inputdata", inputdata);
-	String template = inManager.loadInputFromTemplate(inReq,
-		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
-
-	JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
-
-	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
-
-	targetsearcher.updateData(child, results);
-
-	child.setValue("entity_date", new Date());
-	child.setValue(inModuleid, inEntityid); // Lookup
-	child.setValue("ai-functioncall", results.toJSONString());
-	// No assets being created in this one.
-	archive.saveData(inTargetentity, child);
-	// Category folder =
-	// getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
-	return child;
-
-    }
+//    public Data createFromLLM(WebPageRequest inReq, LLMManager inManager, String inModel, String inModuleid,
+//	    String inEntityid, String inTargetentity) throws Exception {
+//
+//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
+//
+//	// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
+//	MediaArchive archive = getMediaArchive();
+//	Map inputdata = new HashMap();
+//	Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
+//	Data targetmodule = getMediaArchive().getCachedData("module", inTargetentity);
+//	Searcher targetsearcher = getMediaArchive().getSearcher(inTargetentity);
+//
+//	String extra = entity.get("lastprompt");
+//
+//	if (extra == null) {
+//	    extra = "Create a new " + targetmodule.getName();
+//	}
+//	inputdata.put("directions", extra);
+//	// Loop over all the tabs on the UI
+//	inputdata.put("metadata", inputdata);
+//	inReq.putPageValue("parentmodule", parentmodule);
+//	inReq.putPageValue("targetmodule", targetmodule);
+//	inReq.putPageValue("parent", entity);
+//
+//	// This is the "Message" to the LLM - it can be verbose and uses velocity, can
+//	// access anything.
+//	inReq.putPageValue("inputdata", inputdata);
+//	String template = inManager.loadInputFromTemplate(inReq,
+//		"/" + archive.getMediaDbId() + "/gpt/templates/create_entity.html");
+//
+//	JSONObject results = inManager.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
+//
+//	Data child = getMediaArchive().getSearcher(inTargetentity).createNewData();
+//
+//	targetsearcher.updateData(child, results);
+//
+//	child.setValue("entity_date", new Date());
+//	child.setValue(inModuleid, inEntityid); // Lookup
+//	child.setValue("ai-functioncall", results.toJSONString());
+//	// No assets being created in this one.
+//	archive.saveData(inTargetentity, child);
+//	// Category folder =
+//	// getMediaArchive().getEntityManager().createDefaultFolder(entity, null);
+//	return child;
+//
+//    }
 
     public Asset createAssetFromLLM(WebPageRequest inReq, String inSourcepath, String inStructions) {
 
@@ -769,69 +769,69 @@ public class ContentManager implements CatalogEnabled {
 	return asset;
     }
 
-    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
-	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
-
-	// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
-	MediaArchive archive = getMediaArchive();
-
-	Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
-
-	// String uploadsourcepath =
-	// getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule,
-	// entity, inReq.getUser(), true);
-
-	String type = inReq.findValue("llmtype.value");
-	if (type == null) {
-	    type = "gptManager";
-	} else {
-	    type = type + "Manager";
-	}
-	LLMManager manager = (LLMManager) archive.getBean(type);
-
-	String model = inReq.findValue("llmmodel.value");
-	if (model == null) {
-	    model = archive.getCatalogSettingValue("gpt-model");
-	}
-	if (model == null) {
-	    model = "dall-e-3";
-	}
-	String prompt = inReq.findValue("llmprompt.value");
-
-	String edithome = inReq.findPathValue("edithome");
-
-	String imagestyle = inReq.findValue("llmimagestyle.value");
-	if (imagestyle == null) {
-	    imagestyle = "vivid";
-	}
-	JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
-	JSONArray data = (JSONArray) results.get("data");
-	String[] fields = inReq.getRequestParameters("field");
-	Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity,
-		inReq.getUser());
-	ArrayList assets = new ArrayList();
-	for (Iterator iterator = data.iterator(); iterator.hasNext();) {
-	    JSONObject row = (JSONObject) iterator.next();
-	    String url = (String) row.get("url");
-	    String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
-	    filename = filename + ".png";
-	    String uploadsourcepath = rootcat.getCategoryPath() + "/" + filename;
-	    AssetImporter importer = getMediaArchive().getAssetImporter();
-	    Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename,
-		    null);
-	    getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
-	    asset.addCategory(rootcat);
-	    assets.add(asset);
-	    asset.setValue("owner", inReq.getUserName());
-	    asset.setValue("assetaddeddate", new Date());
-
-	}
-	getMediaArchive().saveAssets(assets);
-	archive.fireSharedMediaEvent("importing/assetscreated");
-
-	return (Asset) assets.get(0);
-
-    }
+//    public Asset createAssetFromLLM(WebPageRequest inReq, String inModuleid, String inEntityid, String inStructions) {
+//	Data entity = getMediaArchive().getData(inModuleid, inEntityid);
+//
+//	// https://oneliveweb.com/oneliveweb/ditachat/llm/api/ditapayload.json?inputdata=Fish%20Recipie&entermedia.key=adminmd5420b06b0ea0d5066b0bb413837460f409108a0be38tstampeMxOa62cNXmuVomBh0oFNw==
+//	MediaArchive archive = getMediaArchive();
+//
+//	Data parentmodule = getMediaArchive().getCachedData("module", inModuleid);
+//
+//	// String uploadsourcepath =
+//	// getMediaArchive().getEntityManager().loadUploadSourcepath(parentmodule,
+//	// entity, inReq.getUser(), true);
+//
+//	String type = inReq.findValue("llmtype.value");
+//	if (type == null) {
+//	    type = "gptManager";
+//	} else {
+//	    type = type + "Manager";
+//	}
+//	LLMManager manager = (LLMManager) archive.getBean(type);
+//
+//	String model = inReq.findValue("llmmodel.value");
+//	if (model == null) {
+//	    model = archive.getCatalogSettingValue("gpt-model");
+//	}
+//	if (model == null) {
+//	    model = "dall-e-3";
+//	}
+//	String prompt = inReq.findValue("llmprompt.value");
+//
+//	String edithome = inReq.findPathValue("edithome");
+//
+//	String imagestyle = inReq.findValue("llmimagestyle.value");
+//	if (imagestyle == null) {
+//	    imagestyle = "vivid";
+//	}
+//	JSONObject results = manager.createImage(inReq, model, 1, "1024x1024", imagestyle, inStructions);
+//	JSONArray data = (JSONArray) results.get("data");
+//	String[] fields = inReq.getRequestParameters("field");
+//	Category rootcat = getMediaArchive().getEntityManager().loadDefaultFolder(parentmodule, entity,
+//		inReq.getUser());
+//	ArrayList assets = new ArrayList();
+//	for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+//	    JSONObject row = (JSONObject) iterator.next();
+//	    String url = (String) row.get("url");
+//	    String filename = getMediaArchive().getUserManager().getStringEncryption().generateHashFromString(url, 15);
+//	    filename = filename + ".png";
+//	    String uploadsourcepath = rootcat.getCategoryPath() + "/" + filename;
+//	    AssetImporter importer = getMediaArchive().getAssetImporter();
+//	    Asset asset = importer.createAssetFromFetchUrl(archive, url, inReq.getUser(), uploadsourcepath, filename,
+//		    null);
+//	    getMediaArchive().getAssetSearcher().updateData(inReq, fields, asset);
+//	    asset.addCategory(rootcat);
+//	    assets.add(asset);
+//	    asset.setValue("owner", inReq.getUserName());
+//	    asset.setValue("assetaddeddate", new Date());
+//
+//	}
+//	getMediaArchive().saveAssets(assets);
+//	archive.fireSharedMediaEvent("importing/assetscreated");
+//
+//	return (Asset) assets.get(0);
+//
+//    }
 
     public Data createFromLLM(WebPageRequest inReq, LLMManager inLlm, String inModel, Data inContentrequest)
 	    throws Exception {
@@ -872,6 +872,7 @@ public class ContentManager implements CatalogEnabled {
 	    targetsearcher.updateData(child, results);
 	    child.setValue("entity_date", new Date());
 	    child.setValue("ai-functioncall", results.toJSONString());
+	    child.setValue("owner", inContentrequest.get("owner"));
 	    targetsearcher.saveData(child);
 
 	} else {
@@ -894,6 +895,8 @@ public class ContentManager implements CatalogEnabled {
 	    child.setValue(moduleid, entityid); // Lookup
 	    child.setValue("ai-functioncall", results.toJSONString());
 	    // No assets being created in this one.
+	    child.setValue("owner", inContentrequest.get("owner"));
+
 	    archive.saveData(submodsearchtype, child);
 	    // Category folder =
 	    // getMediaArchive().getEntityManager().createDefaultFolder(entity, null);

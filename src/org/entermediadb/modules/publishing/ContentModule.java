@@ -122,10 +122,13 @@ public class ContentModule extends BaseMediaModule
 	    MediaArchive archive = getMediaArchive(inReq);
 	    Searcher requests = archive.getSearcher("contentcreator");
 	    Data info = requests.createNewData();
+	    info.setValue("owner", inReq.getUserName());
+
 	    info.setValue("status", "new");
 	    String [] fields = inReq.getRequestParameters("field");
 	    requests.updateData(inReq, fields, info);
 	    requests.saveData(info);
+	    
 	    archive.fireSharedMediaEvent("llm/createentities");
 	
 	}
@@ -137,6 +140,8 @@ public class ContentModule extends BaseMediaModule
 	    Searcher requests = archive.getSearcher("contentcreator");
 	    Data info = requests.createNewData();
 	    info.setValue("status", "newimage");
+	    info.setValue("owner", inReq.getUserName());
+
 	    String [] fields = inReq.getRequestParameters("field");
 	    requests.updateData(inReq, fields, info);
 	    requests.saveData(info);
@@ -182,98 +187,98 @@ public class ContentModule extends BaseMediaModule
 	}
 	
 	
-	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
-	{
-		// Add as child
+//	public void createNewEntityFromAI(WebPageRequest inReq) throws Exception
+//	{
+//		// Add as child
+//
+//		Data entity = (Data) inReq.getPageValue("entity");
+//		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+//		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
+//		String submodsearchtype = entitypartentview.get("rendertable");
+//
+//		String lastprompt = inReq.getRequestParameter("lastprompt.value");
+//		entity.setValue("lastprompt", lastprompt);
+//
+//		MediaArchive archive = getMediaArchive(inReq);
+//		archive.saveData(entitymodule.getId(), entity);
+//
+//		ContentManager manager = getContentManager(inReq);
+//		String model = inReq.findValue("llmmodel.value");
+//		Data modelinfo = archive.getData("llmmodel", model);
+//
+//		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
+//
+//		if (type == null)
+//		{
+//			type = "gptManager";
+//		}
+//		else
+//		{
+//			type = type + "Manager";
+//		}
+//		LLMManager llm = (LLMManager) archive.getBean(type);
+//
+//		Data newdata = manager.createFromLLM(inReq, llm, model, entitymodule.getId(), entity.getId(), submodsearchtype);
+//		boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
+//		Searcher targetsearcher = archive.getSearcher("contentcreator");
+//
+//		if (createassets)
+//		{
+//
+//			Collection<PropertyDetail> details = targetsearcher.getDetailsForView("contentcreatoraddnewimages");
+//
+//			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+//			{
+//				PropertyDetail detail = (PropertyDetail) iterator.next();
+//				if (detail.isList() && ("asset".equals(detail.getListId()) || "asset".equals(detail.get("rendertype"))))
+//				{
+//					inReq.putPageValue("detail", detail);
+//					inReq.putPageValue("newdata", newdata);
+//
+//					String template = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
+//					Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
+//					String sourcepathroot = rootcat.getCategoryPath();
+//					Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);
+//					asset.addCategory(rootcat);
+//					archive.saveAsset(asset);
+//					log.info("Saving asset as " + detail.getName() + ": " + detail.getId());
+//					newdata.setValue(detail.getId(), asset.getId());
+//
+//					// Break out of the loop for now...
+//				}
+//			}
+//
+//			targetsearcher.saveData(newdata);
+//
+//		}
+//	}
 
-		Data entity = (Data) inReq.getPageValue("entity");
-		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
-		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
-		String submodsearchtype = entitypartentview.get("rendertable");
-
-		String lastprompt = inReq.getRequestParameter("lastprompt.value");
-		entity.setValue("lastprompt", lastprompt);
-
-		MediaArchive archive = getMediaArchive(inReq);
-		archive.saveData(entitymodule.getId(), entity);
-
-		ContentManager manager = getContentManager(inReq);
-		String model = inReq.findValue("llmmodel.value");
-		Data modelinfo = archive.getData("llmmodel", model);
-
-		String type = modelinfo != null ? modelinfo.get("llmtype") : null;
-
-		if (type == null)
-		{
-			type = "gptManager";
-		}
-		else
-		{
-			type = type + "Manager";
-		}
-		LLMManager llm = (LLMManager) archive.getBean(type);
-
-		Data newdata = manager.createFromLLM(inReq, llm, model, entitymodule.getId(), entity.getId(), submodsearchtype);
-		boolean createassets = Boolean.parseBoolean(inReq.findValue("createassets"));
-		Searcher targetsearcher = archive.getSearcher("contentcreator");
-
-		if (createassets)
-		{
-
-			Collection<PropertyDetail> details = targetsearcher.getDetailsForView("contentcreatoraddnewimages");
-
-			for (Iterator iterator = details.iterator(); iterator.hasNext();)
-			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (detail.isList() && ("asset".equals(detail.getListId()) || "asset".equals(detail.get("rendertype"))))
-				{
-					inReq.putPageValue("detail", detail);
-					inReq.putPageValue("newdata", newdata);
-
-					String template = llm.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/templates/createentityassets.html");
-					Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
-					String sourcepathroot = rootcat.getCategoryPath();
-					Asset asset = manager.createAssetFromLLM(inReq, sourcepathroot, template);
-					asset.addCategory(rootcat);
-					archive.saveAsset(asset);
-					log.info("Saving asset as " + detail.getName() + ": " + detail.getId());
-					newdata.setValue(detail.getId(), asset.getId());
-
-					// Break out of the loop for now...
-				}
-			}
-
-			targetsearcher.saveData(newdata);
-
-		}
-	}
-
-	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
-	{
-		// Add as child
-		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
-		Data entity = (Data) inReq.getPageValue("entity");
-		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
-
-		String lastprompt = inReq.getRequestParameter("createassetprompt.value");
-		entity.setValue("createassetprompt", lastprompt);
-		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
-		ContentManager manager = getContentManager(inReq);
-		String type = inReq.findValue("llmtype.value");
-		if (type == null)
-		{
-			type = "gptManager";
-		}
-		else
-		{
-			type = type + "Manager";
-		}
-		LLMManager llm = (LLMManager) getMediaArchive(inReq).getBean(type);
-		String edithome = inReq.findPathValue("edithome");
-		String template = llm.loadInputFromTemplate(inReq, edithome + "/aitools/createnewasset.html");
-		manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);
-
-	}
+//	public void createNewAssetsWithAi(WebPageRequest inReq) throws Exception
+//	{
+//		// Add as child
+//		Data entitypartentview = (Data) inReq.getPageValue("entitymoduleviewdata");
+//		Data entity = (Data) inReq.getPageValue("entity");
+//		Data entitymodule = (Data) inReq.getPageValue("entitymodule");
+//
+//		String lastprompt = inReq.getRequestParameter("createassetprompt.value");
+//		entity.setValue("createassetprompt", lastprompt);
+//		getMediaArchive(inReq).saveData(entitymodule.getId(), entity);
+//		ContentManager manager = getContentManager(inReq);
+//		String type = inReq.findValue("llmtype.value");
+//		if (type == null)
+//		{
+//			type = "gptManager";
+//		}
+//		else
+//		{
+//			type = type + "Manager";
+//		}
+//		LLMManager llm = (LLMManager) getMediaArchive(inReq).getBean(type);
+//		String edithome = inReq.findPathValue("edithome");
+//		String template = llm.loadInputFromTemplate(inReq, edithome + "/aitools/createnewasset.html");
+//		manager.createAssetFromLLM(inReq, entitymodule.getId(), entity.getId(), template);
+//
+//	}
 
 	public void loadDitaXml(WebPageRequest inReq)
 	{
