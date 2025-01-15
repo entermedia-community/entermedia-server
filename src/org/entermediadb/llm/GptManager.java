@@ -132,6 +132,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		if(inPrompt == null) {
 		    inPrompt = "Suprise ME";
 		}
+		log.info("prompt was" + inPrompt);
 		obj.addProperty("model", inModel);
 		obj.addProperty("prompt", inPrompt);
 		obj.addProperty("n", imagecount);
