@@ -140,22 +140,29 @@ public class ContentModule extends BaseMediaModule
 	    requests.updateData(inReq, fields, info);
 	    requests.saveData(info);
 	    
-	    String style = info.get("aistyle");
-	    
 	    Data entity = (Data) inReq.getPageValue("entity");
             Data entitymodule = (Data) inReq.getPageValue("entitymodule");
 
 	    Category rootcat = archive.getEntityManager().loadDefaultFolder(entitymodule, entity, inReq.getUser());
 		String sourcepathroot = rootcat.getCategoryPath();
 	    
-	    String filename = info.get("aitarget") + info.get("aiexamples") + ".png";
+	    StringBuffer filename = new StringBuffer( info.get("aitarget") );
+	    String similarto = info.get("aiexamples");
+	    if( similarto != null)
+	    {
+	    	filename.append("-");
+	    	filename.append(similarto);
+	    }
+	    filename.append(".png");
+	    //Collection styles = info.getValues("aistyle");
+	    
 	    String sourcePath = sourcepathroot + "/" +filename;
 	    
 	    Asset asset = archive.getAssetBySourcePath(sourcePath);
 	    
 	    if(asset == null) {
 			asset = (Asset) archive.createAsset(sourcePath);
-			asset.setName(filename);
+			asset.setName(filename.toString());
 			asset.addCategory(rootcat);
 			asset.setSourcePath(sourcePath);
 			asset.setValue("importstatus", "uploading");
