@@ -764,6 +764,8 @@ public class ContentManager implements CatalogEnabled {
 	    archive.saveAsset(asset);
 	}
 	archive.fireSharedMediaEvent("importing/assetscreated");
+	contentrequest.setValue("status", "complete");
+	archive.saveData("contentcreator", contentrequest);
 	return asset;
     }
 
