@@ -28,7 +28,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		
 		if (fieldPathToProfile == null)
 		{
-			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
+			Page profile = getPageManager().getPage("/system/commonbase/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;

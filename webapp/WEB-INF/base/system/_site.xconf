@@ -21,7 +21,7 @@
 		<!-- This is the path to which to redirect if the user does not have the
 	         appropriate view permission.  Defaults to /openedit/authentication/logon.html.			
 		-->
-		<login-path>/system/components/authentication/logon.html</login-path>
+		<login-path>/system/commonbase/components/authentication/logon.html</login-path>
 	</path-action>
 	
 	<property name="oe_edit_directedits">true</property>	

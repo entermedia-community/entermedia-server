@@ -48,7 +48,7 @@ import org.openedit.util.strainer.Filter;
  */
 public class AllowViewing
 {
-	protected static final String DEFAULT_LOGIN_PATH = "/system/components/authentication/logon.html";
+	protected static final String DEFAULT_LOGIN_PATH = "/system/commonbase/components/authentication/logon.html";
 	protected static final String DEFAULT_ADMIN_PERMISSION = "oe.administration";
 
 	private static final Log log = LogFactory.getLog(AllowViewing.class);
