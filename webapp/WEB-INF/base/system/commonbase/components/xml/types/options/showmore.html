@@ -1,0 +1,40 @@
+#set($values = $filternode.children)
+
+#set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q) ) 
+{
+	"searcher": "$searcher.getSearchType()",
+  "total_count": $unique.size(),
+  "incomplete_results": false,
+  "rows": [ 
+	#foreach ($tag in $unique)
+	#if( ${foreach.count} > 1 ),#end
+	{ "id" : #jesc($tag) , "name": #jesc($tag)}
+	#end
+
+
+#if( $viewpermission )
+	#set( $fieldname = $detail.getId() )
+	#foreach($entry in $values)
+		#if($foreach.count>=5)
+			<div class="d-flex align-items-start">
+				##<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+				##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
+				<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+				<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) ($entry.count)</label>
+				##</a>
+			</div>
+		#end
+	#end
+
+	#if ($values.size() > 5)
+	<select id="${fieldname}select2" 
+			name="${fieldname}.value" 
+			class="listautocomplete choose-select detail-select form-control" 
+			listid="${fieldname}filter" 
+			data-listid="${fieldname}filter" 
+			data-searchtype= '$detail.getListId()'
+			data-searchfield="name"
+			data-allowclear="false">
+		<option value=""></option>
+	</select>
+	#end

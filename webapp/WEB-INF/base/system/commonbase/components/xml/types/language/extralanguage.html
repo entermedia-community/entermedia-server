@@ -7,9 +7,10 @@
 #set($languages = $mediaarchive.getList("locale"))
 
 #set($usedlanguages = $context.getRequestParameters("usedlanguages") )
+
 <div class="languagesaddform">
 	<div class="languageselector">
-		<select class="select2 lenguagepicker" id="languages_${detailid}_${count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
+		<select class="select2 lenguagepicker form-control" id="languages_${detailid}_${count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
 			#foreach($locale in $languages)
 			#if( !$usedlanguages.contains($locale.id))
 				#if( !$languagecode) #set( $languagecode = $locale.id) #end
@@ -18,13 +19,28 @@
 			#end
 		</select>
 	</div>
+
 	<div class="languageinput">
 		#if($languagecode!='') 
 			#set($language_textbox = ${detailid} + "." + $languagecode) 
 		#else 
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
-		<input type="text" class="langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" value="$!map.getText($languagecode)" >
+		#set($textarearows = 3)
+		#set($value = $map.getText($languagecode))
+		
+		#if($value && $value.length() < 30)
+			#set($textarearows = 1)
+		#end
+		#if($value && $value.length() > 200)
+			#set($textarearows = 5)
+		#end
+		 #if(!$value && $searchform )
+			#set($textarearows = 1)
+		#end
+		
+		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($value)</textarea>
+		
 	</div>
 	<div class='clearfix'></div>	
 </div>

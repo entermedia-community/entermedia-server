@@ -1,0 +1,14 @@
+#if( $data )
+
+#else
+
+#ifnull( $value )
+	#ifnull( $insearch )
+	#set( $value = $user.id )
+	$context.putPageValue("value",$value)
+	#end
+#end
+
+#end
+
+$pages.include("${apphome}/components/xml/types/autocomplete.html",$context)

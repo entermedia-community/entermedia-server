@@ -1,23 +1,24 @@
 ##API -
 ## $detail
 ## $searcher
-## $val
+## $value
 ## $searcherManager
 
-
-#if(!$val && $detail.rendermask && $data)
-	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $data.properties, $context.getLocale()))
-	#esc( $label )
-#elseif($detail.isMultiLanguage())
+<div class="emdatafieldreadonly emdatafieldreadonly-default">
+#if($detail.isMultiLanguage()) 
 		#set($map = $data.getValue($detail.getId()))
 		
 		#if( $showalllanguagevalues )
 			#set($languages = $mediaarchive.getList("locale"))
 			#foreach($locale in $languages)
-				#set( $lval = false ) #set( $lval = $map.getText($locale.id) )
-				#if($lval) $locale:$lval <br> #end 
+				#set( $lval = false ) 
+				#set( $lval = $map.getText($locale.id) )
+				
+				#if($lval) 
+					<div class="emdatafieldvaluelanguages"><span class="emdatafieldvaluelocale">$locale:</span> $lval</div> 
+				#end 
 			#end
-		#else
+        #else
 			$!map.getText($context.language)
 		#end
 #elseif( $detail.isKeywordMap() )
@@ -27,5 +28,18 @@
 		#if($lval) $keyid:$lval <br>#end 
 	#end		
 #else
-	#esc($!val)	
-#end
+
+	#ifnotnull($value)
+		#set($dmax = 150)
+		#if($detail.id == "name")
+			#set($dmax = 80)
+		#end
+		#if( $value.length() > 80)
+			<span class="trim-text" data-max="$dmax">#escarea($value)</span>
+			<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
+		#else
+			#escarea($!value)	
+		#end
+	#end
+#end	
+</div>

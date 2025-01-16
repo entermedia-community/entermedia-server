@@ -1,0 +1,121 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+$context.putPageValue("xmledithome",$xmledithome)
+
+#set( $readonly = "false" )
+#set( $readonly = $context.getRequestParameter("detailsreadonly"))
+
+#ifnull($viewid)
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+ 
+#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+
+#ifnull($details)
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
+#end	
+
+#ifnull($details)
+	No viewdata found  viewid: $viewid $content.path
+#end
+
+
+<div class="oeinputform entitiesinfputform validate-inputs">
+	<div id="allerrors"></div>
+
+	#set( $detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
+	#if(!$detailviewercolumns)
+		#set($detailviewercolumns = 2)
+	#end
+	#set($detailviewercolumnclass = "col-6")
+	#if($detailviewercolumns == 1)
+		#set($detailviewercolumnclass = "col-12")
+	#end
+
+
+ <div class="row no-gutters">
+ #foreach( $detail in $details )
+ 	#set($detailid = $detail.getId())
+	#set($values = false)
+	#set($value = "")
+	
+	
+	#set( $editrow = $detail.isEditable() && $readonly != "true")
+	
+	#if($editrow)
+		#set( $target = "${detailid}.value" )
+		#set( $contextval = $context.getRequestParameter($target) )	
+		#ifnull( $contextval )
+			#set( $contextval = $context.getPageValue($target) )
+		#end
+		#ifnotnull($contextval)
+			#set($value = $contextval)
+		#end
+	#end
+	
+	#if(!$value)
+		
+		#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) )
+		
+		#if($detail.isMultiValue())
+			#set($values = $value )
+		#end
+	#end 
+
+	#if(!$value && $detailid=="primarymedia")
+		#set( $value = $!data.getValue("primaryimage") )
+	#end
+	
+		
+	#if( $editrow || $value || $values)
+	 	<div class="$detailviewercolumnclass detail-${detail.id}">
+			 
+		$!context.putPageValue("value",$value)
+		$!context.putPageValue("values",$values)
+		$!context.putPageValue("detail",$detail)
+		
+		#if ($detail.header)
+			#if ($detail.header != "blank")
+				<div class="header"><h4>$detail.header</h4></div>
+			#end
+		#end
+		
+		#if( $editrow || $val || $value || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+			
+			#if( $detail.hidelabel == true )
+			#else
+				<label class="emdatafield emdatafield-$!{detail.viewType} #ifnull($value) emdatafield-empty #end" >
+						$!detail.getText($context)
+				</label>
+			#end
+			
+			<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
+				#if( $editrow )	
+					$pages.include("$xmledithome/detailedit.html", $context)
+					
+					#if ( $detail.note )
+						<span class="detail-note">$context.getText($detail.note.toString())<span>
+					#elseif($detail.viewType == "tageditor")
+						<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">[[Hit]] <kbd>[[enter]]</kbd> [[or]] <kbd>[[return]]</kbd> [[key after typing each tag]]<span>
+					#end
+				#else 
+				
+					##NOT EDITABLE
+					<div class="emdatafieldvalue-readonly">
+					$pages.include("$xmledithome/detailreadonly.html", $context)
+					</div> 
+				#end
+
+			</div>
+		#end
+		#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
+			#if($usedhtml)
+				#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
+			#else
+				#set( $usedhtml = "htmltextarea=${detail.getId()}")
+			#end
+		#end
+		</div>
+	#end
+#end
+</div>
+</div>

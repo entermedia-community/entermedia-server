@@ -3,4 +3,4 @@
 	#set($idcount = "")
 #end
 
-<input name="${detail.getId()}.value"  id="${detail.id}${idcount}.value" #if ($detail.picker != "false") class="datepicker" #end value="#esc($!val)" size="20" type="text" onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()${idcount}');">
+<input name="${detail.getId()}.value"  id="${detail.id}${idcount}.value" #if ($detail.picker != "false") class="datepicker form-control" #end value="#esc($!val)" size="20" type="text" onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()${idcount}');">

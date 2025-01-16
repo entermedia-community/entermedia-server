@@ -1,0 +1,56 @@
+##this does not save real detail values. It only sets collectionid
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+
+	<table class="inlinesearch" >
+			<tr>
+				<td>
+	#set( $ldetail = $searcher.getDetail("library") )
+	$childcontext.putPageValue("detail", $ldetail)
+	$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+				</td>
+				<td>
+	#set( $namedetail = $searcher.getDetail("name") )
+	$childcontext.putPageValue("detail", $namedetail)
+	$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+				</td>
+			</tr>
+		</table>		
+
+
+
+#if( $term)
+	#set( $library = $searcherManager.getData($catalogid,"library",$term.getValue() ) )
+#end
+	#if($library)
+		$childcontext.putPageValue("val", $library.project)
+		$childcontext.putPageValue("value", $library.project)
+	#end
+	$childcontext.putPageValue("detail", $ldetail)
+	$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+
+
+##now put the autocomplete field in
+#set( $ldetail = $mediaarchive.getSearcher("librarycollection").getDetail("library") )
+	$childcontext.putPageValue("detail", $ldetail)
+	$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+
+<div id="collectionpicker">
+	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+	$context.putPageValue("searcher",$searcher)
+	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+	##<form  class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
+	
+	##	<input type="hidden" name="searchtype" value="librarycollection" />
+		<table class="inlinesearch" >
+			<tr>
+			#foreach( $detail in $details)
+				<td>
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+				</td>	
+			#end
+			</tr>
+		</table>	
+</div>	
+	

@@ -1,0 +1,45 @@
+
+#set($collection = $data.getValues($detail.getId()))
+#ifnotnull($collection)
+#if(!$collection.isEmpty())
+<div class="emfield-scroll">
+<ul class="entity-value-list">
+	#foreach( $profile in $collection )
+		#set( $row = false )
+		#set( $name = "")
+		
+		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
+	    #if( $row )
+	    
+			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+			
+			#ifnotnull($person)
+				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+		    	#set($name= "$name ($!row.get('samplecount'))")
+		    	#set($link = "$!siteroot$applink/views/modules/entityperson/editors/default/tabs/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
+		    	#set($title = "[[Person]]: ")
+			#end
+	    	#if( $name == "")
+	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
+	    		#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+	    		#set($title = "[[Face Profile]] ") 
+	    	#end
+	    	#if($profile.timecodestart)
+	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+	    		#set($name = "$name &nbsp;($secs)")
+	    	#end
+		    
+		    
+		    <li><a href="$link" 
+		    	class="emdialog"
+				data-dialogid="faceprofiledialog"
+
+		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
+		    	>$!name</a></li>
+	    #end 
+	#end	
+</ul>
+</div>
+#end
+#end

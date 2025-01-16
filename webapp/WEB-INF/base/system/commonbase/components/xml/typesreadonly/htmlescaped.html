@@ -1,0 +1,7 @@
+#if($value)
+#if($value.length()>100)
+#esc($value.substring(0,100))...
+#else
+#esc($value)
+#end
+#end

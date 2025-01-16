@@ -1,0 +1,23 @@
+#set($id = $context.getRequestParameter('id'))
+#set($products = $mediaarchive.getBean("invoiceManager").getInvoiceProductList($id))
+<div>
+	<table>
+		<colgroup>
+	       <col span="1" style="width: 60%;">
+	       <col span="1" style="width: 20%;">
+	       <col span="1" style="width: 20%;">
+	    </colgroup>
+		<tr>
+			<th>Product</th>
+			<th>Quantity</th>
+			<th>Price</th>
+		</tr>
+		#foreach($product in $products)
+		<tr >
+			<td style="text-align: left!important">#text($product)</td>
+			<td>$product.productquantity</td>
+			<td>$product.productprice</td>
+		</tr>
+		#end
+	</table>
+</div>

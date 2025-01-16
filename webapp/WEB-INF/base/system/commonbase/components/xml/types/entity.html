@@ -1,0 +1,57 @@
+
+$context.putPageValue("detail",$detail)
+
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+#set($entity_module = $detail.getListId())
+#set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
+#set($ismulti = $detail.isMultiValue())
+<div id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
+	<ul class="entity-value-list">
+		#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
+			
+		    #if( $row )
+	   		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
+			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
+			    #set($entityid = $row.id)
+			    #set($link = "${edithome}/tabs/index.html?entityid=$entityid")
+			    <li>
+			    <a href="$link" 
+			    	class="emdialog" 
+			    	data-noesc="true" 
+			    	data-entityid="$!row.getId()"
+			    	title="$name">$name</a>  
+			    	<a class="removeentity"  href="#" title="[[Remove]] $!name" onclick='$(this).closest("li").remove(); return false;'><i class="bi bi-x"></i></a>
+			    	<input type="hidden" name="${detail.id}.value" value="$!row.getId()" />
+			    </li>
+		    #end 
+		#end
+	</ul>
+	<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />	
+</div>		
+
+	
+	#set($pickmoduleid = $detail.getListId())
+	
+	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/editors/pickerforfield/index.html")
+	#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
+	#set($label = "[[Choose]]")
+	#if($ismulti)
+		#set($label = "[[Add]] #text($pickmodule)")
+	#end 
+	<a href="$pickerurl" 
+		class="emdialog btn btn-secondary"
+		data-dialogid="dialogpicker$!{entity_module}"
+		data-width="1200"
+		data-pickertargetfield="${detail.id}"
+		data-entityid="$!{id}"
+		data-entitymoduleid="${module.id}"
+		data-hidefooter="true"
+		title="[[Add]] #text($pickmodule)"><i class="bi bi-plus-lg mr-1"></i> $label</a>
+
+	
+	
+	

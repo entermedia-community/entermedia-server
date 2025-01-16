@@ -1,10 +1,113 @@
-#set( $args = "catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&view=$!view&fieldname=$detail.id&value=$val")
-#if( $detail.foreignkeyid )
-	#set( $fval = "$!data.get($detail.get('foreignkeyid'))")
-	#set( $args = "$args&foreignkeyvalue=$fval")
+##required: catalogid, detail, view, fieldname
+##optional: value, foreignkeyid and foreignkeyvalue
+
+#set ($catalogidother = $context.getRequestParameter('catalogid'))
+#if($catalogidother)
+	#set ($catalogid = $catalogidother)
 #end
-$context.putPageValue("detail",$detail)
 
-$pages.include("/system/components/xml/list.html?$args", $context)
-##debug($detail.listId)
+#ifnull ($fieldname)
+	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#end
+#ifnull($view)
+#set ($viewid = $context.getRequestParameter('viewid'))
+#end 
+##we need to load up the existing detail object
 
+#ifnull($detail) ##this is new. To reduce complexity we want to just load up the detail all the time
+	#if(!$searchtype)
+		#set ( $searchtype = $context.getRequestParameter("searchtype") )
+	#end
+	#if( !$searchtype)
+		searchtype not found!
+	#end
+##	#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
+	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+	#set( $detail = $originalsearcher.getDetailForView($viewid, $fieldname, $user) )
+#end
+
+
+#set ($fieldname = $detail.id)
+#set( $listid = $detail.getListId())
+#set( $csslistid = "listdetail_$fieldname")
+
+##set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
+
+<div id="$csslistid" class="listdetailpicker">
+#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
+##require both 
+#set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
+#if( $listfilterid)
+	#set( $listfilterdetail = $originalsearcher.getDetailForView($viewid, $listfilterid, $user) )
+	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
+	#if(!$remotevalue)
+		#set( $remotevalue  = $data.get($listfilterid) )
+	#end		
+	#if(!$remotevalue)
+		#set ($remotevalue = $context.replaceProperty($detail.defaultvalue) )  ##not used much
+	#end
+	#if( $remotevalue)
+		#set($foreignkeyid = $detail.get("foreignkeyid") )   ##remove column that we search on. Use the value here
+		#if( !$foreignkeyid)
+			#set($foreignkeyid = $listfilterid)
+		#end
+		#set($query = $lsearcher.query().exact($foreignkeyid,$remotevalue).getQuery() )
+	#end
+#else
+	#set($query = $lsearcher.query().all().getQuery() )
+#end
+#if($query)
+	$query.setSortBy($detail.getDefaultSort())
+#end
+####$lsearcher.addShowOnly($context, $query)
+ 
+#set ($types = $lsearcher.search($context, $query))
+#ifnull ($value)
+	#set ($value = $context.getRequestParameter('val'))
+#end
+#ifnull ($value)
+	#set ($value = $val)
+#end
+#ifnull ($value)
+	#ifnull( $insearch )
+	#set ($value = $context.replaceProperty($detail.defaultvalue) )
+	#end
+#end
+
+#set($searchfield = $detail.getId() )
+
+#set( $valueid = "$fieldname" )
+#if($types)
+<select name="${fieldname}.value"
+	class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+	listid="$listid"
+	id="${valueid}value"
+	data-listid="$listid"
+	data-searchtype= '$listid'
+	data-searchfield="$searchfield"
+	#if($removeclear) data-allowclear="false" #end
+	>
+	#if ($detail.blankoption != "false")
+	<option value="">$!detail.blankoption</option>
+	#end
+	$types.setHitsPerPage(500)
+	#foreach( $type in $types.getPageOfHits() )
+		#set( $key = $type.id)
+   		#set($label = $type.getName($context.getLanguage()))
+		<option value="$key" #if( $value && $key.equals($value) ) selected #end>#esc($label)</option>
+	#end
+	#if($hits && $hits.size() > 500 )
+		<option value="-1">500 [[limit reached]]</option>
+	#end
+   </select>
+#else
+	[[No values found]] 
+#end
+ #if( $caneditlists)
+ <span>
+		<a class="emdialog addnewitem btn btn-xs btn-light" data-dialogid="inlineedit" 
+			href="$!siteroot$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+</span>
+  #end
+  <div class="clearfix"></div>
+</div>

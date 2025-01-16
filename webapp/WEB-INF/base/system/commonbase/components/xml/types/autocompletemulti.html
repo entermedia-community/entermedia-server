@@ -1,0 +1,81 @@
+#set($searchfield = $context.getRequestParameter("autocompletesearchfield"))
+
+#if( !$searchfield)
+	#set($searchfield = "name")
+#end
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#set( $foundrow = false )
+#if($value && $value != "")
+	#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )  
+#end
+
+#set($label = $searcherManager.getValue($foundrow,$detail,$context.getLocale()) )
+
+#if( $searcherManager.getSearcher( $detail.getListCatalogId(),$detail.getListId() ).getPropertyDetails().getRender() )
+	#set($searchfield = "description")
+#end
+
+#set( $detailid = $detail.getId().replace('.','-') )
+#set( $valueueid = "list-${detailid}${idcount}value")
+<select name="${detail.getId()}.value"  
+		id="$valueueid"  
+		class="listautocompletemulti form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
+		data-searchfield="$searchfield" 
+		data-searchtype="$detail.listId" 
+		data-listcatalogid="$detail.listCatalogId" 
+		data-foreignkeyid="$!detail.foreignkeyid" 
+		data-placeholder="$detail.getText($context)" 
+		data-sortby="$!detail.sort"
+		multiple="multiple">
+#if( $foundrow )
+  <option value="$!val" selected="selected">#esc($label)</option>
+#end
+</select>
+
+ #if( $caneditlists)
+	<a class="emdialog addnewitem btn btn-xs btn-light" 
+	data-dialogid="inlineedit" 
+	href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()&update=${valueid}" 
+	title="[[Add New]] $detail" data-hidefooter="true" >+ [[New]] $detail</a>
+#end
+
+
+
+#if( $idprefix != "search"  && $foundrow )
+	#set($module = $searcherManager.getCachedData($catalogid, "module", $detail.listId ) )
+	#if($module)
+	
+		#if($module.id == "asset")
+		    #set($link = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$value" )
+		#else
+			#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
+			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$value&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$!{hits.sessionId}&searchtype=$module.id")
+			
+		#end
+	
+	#elseif( $detail.listid == "user")
+		#set($link = "$home$apphome/views/settings/users/usermanager/user/index.html?username=$value")
+		
+	#else
+		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$value&searchtype=$detail.listId")
+		
+	#end
+ 	
+ 	
+#end
+
+
+#if($link)
+#if($pages.canView($link))
+ 	<a class="btn btn-xs btn-light addnewitem" href="$link">[[View]]</a>
+
+#end
+#end
+
+
+

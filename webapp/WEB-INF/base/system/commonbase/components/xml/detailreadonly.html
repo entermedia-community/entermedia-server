@@ -1,8 +1,6 @@
 #set($xmledithome = $context.getPageProperty("xmledithome"))
 $context.putPageValue("xmledithome",$xmledithome)
-#if($detail.dataType == "searchjoin" )
-	#set($viewtype = "searchjoin" )
-#else
+#if (!$viewtype)
 	#set($viewtype = $detail.viewType)
 #end
 #if (!$viewtype)
@@ -12,4 +10,14 @@ $context.putPageValue("xmledithome",$xmledithome)
 	#set ($viewtype = "default")
 #end
 
+#if($viewtype =="primarymediafolder")
+	$context.putPageValue("thumbsize","crop")
+	$context.putPageValue("noassetlink",true)
+	$context.putPageValue("hit", $data)
+	<div class="emgridcell emgridcellresuls emgridcell-$rendertype activelistcontainer 	" 
+		style="visibility: visible; width: 160px; position: relative;">  
+		$pages.include("${searchhome}/types/qsresult.html", $context)
+	</div>
+#else
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
+#end

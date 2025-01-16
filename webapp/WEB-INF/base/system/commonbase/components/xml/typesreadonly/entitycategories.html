@@ -1,0 +1,15 @@
+#set( $collection =  $mediaarchive.getBean("entityManager").loadCategories($searcher.getSearchType(), $data, $user))
+#set($componenthome = "$apphome/views/modules/$searcher.getSearchType()/components")
+
+<div class="entity-value-list">
+	#foreach( $category in $collection )
+	    #set($link = "$!siteroot$applink/views/modules/asset/viewfiles/${category.id}/#dash($category).html")
+	    <div>
+
+	    	
+	    	$context.putPageValue("categoryid", $category.getId())
+	    	$context.putPageValue("entityid", $data.getId())
+			$pages.include("$componenthome/categories/entities/actions.html",$context)
+	    </div>
+	#end	
+</div>

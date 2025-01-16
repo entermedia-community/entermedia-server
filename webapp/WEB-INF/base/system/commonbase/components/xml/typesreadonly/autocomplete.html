@@ -1,1 +1,8 @@
-$!val
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#set( $foundrow = $searcherManager.getCachedData($detail.getListCatalogId(),$detail.getListId(),$value) )  
+#set($label = $foundrow.getName($context.getLanguage()))
+#esc($!label)
+#debug("ListID: $detail.listId")

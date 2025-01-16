@@ -1,0 +1,44 @@
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#set($searchfield = $detail.getId() )
+#set( $detailid = $detail.getId().replace('.','-') )
+
+#if( $values && !$values.isEmpty() )
+	#if($values.class == "class java.lang.String")
+		#set($values = $values.replace("[", "").replace("]", ""))
+		#set( $vals = $values.split("\s*\,\s*") )
+	#else
+		#set($vals = $values)
+	#end
+#end
+#ifnull($vals)
+	#set($vals = $value)
+#end
+#ifnull($vals)
+	#set( $vals = $val.split("\s*\,\s*") )
+#end
+<select name="${detail.getId()}.value" 
+		##id="list-${detailid}${idcount}" 
+		multiple="multiple" 
+		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
+		data-searchfield="$searchfield"
+		data-searchtype="$searcher.getSearchType()" 
+		data-listcatalogid="$detail.listCatalogId" 
+		data-foreignkeyid="$!detail.foreignkeyid" 
+		data-sortby="$!detail.sort" 
+		data-placeholder="$!detail.getText($context)"
+		data-width="100%"
+		>
+	#foreach($vtag in $vals)
+	
+		#if($vtag && $vtag != "")
+			<option value="$!vtag" selected="selected">#esc($vtag)</option>
+		#end
+	#end
+	#if( $foundrow )
+	  <option value="$!val" selected="selected">#esc($label)</option>
+	#end
+</select>

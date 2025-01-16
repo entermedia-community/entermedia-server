@@ -1,0 +1,33 @@
+
+#set($parentmodule = $mediaarchive.getCachedData("module", $searcher.getSearchType()))
+#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($parentmodule, $data, $context.getUser()))
+			    		
+$context.putPageValue("categoryid", $defaultfolder.getId())
+$context.putPageValue("entityid", $data.getId())
+$context.putPageValue("module", $parentmodule)
+#set( $collection =  $mediaarchive.getBean("entityManager").loadChildren($searcher.getSearchType(), $data.getId(), $detail.getListId()))
+
+<div class="float-right"> 		
+$pages.include("$componenthome/categories/entities/actions.html",$context)
+</div>
+
+<ul class="entity-value-list">
+	
+	#foreach( $entity in $collection )
+	    #set($link = "$applink/views/modules/${detail.getListId()}/components/gridsample/index.html")
+	     <li>
+	     <div style="float:left; padding-right:10px;">
+	     <a href="$link" class="emdialog entity-dialog" 
+	     		data-noesc="true" 
+	     		data-entityid="$entity.getId()" 
+	     		data-targetrendertype="entity"
+	    		data-targetcomponenthome="/$applicationid/views/modules/$detail.getListId()/components"
+	    		data-id="$entity.getId()"
+	    		data-updateurl="true"
+	    		title='[[View]] #text($entity)'>#text($entity)</a>
+	     </div>
+	    
+	    		
+	    </li>
+	#end	
+</ul>

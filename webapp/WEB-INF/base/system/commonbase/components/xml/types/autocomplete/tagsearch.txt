@@ -1,0 +1,17 @@
+#set( $column = $context.getRequestParameter("field") )
+#set( $q = $context.getRequestParameter( "${column}.value") )
+#set($unique = [])
+#if($q && $q.length() > 0)
+	#set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q) ) 
+#end
+{
+	"searcher": "$searcher.getSearchType()",
+  "total_count": $unique.size(),
+  "incomplete_results": false,
+  "rows": [ 
+	#foreach ($tag in $unique)
+	#if( ${foreach.count} > 1 ),#end
+	{ "id" : #jesc($tag) , "name": #jesc($tag)}
+	#end
+	]
+}

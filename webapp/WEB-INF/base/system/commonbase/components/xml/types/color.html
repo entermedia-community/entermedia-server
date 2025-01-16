@@ -1,0 +1,8 @@
+#if($context.getRequestParameter("viewonly") == true)
+	
+	$value
+	
+#else
+	<input class="${detail.id} color-picker" #ifnotnull($value) style="outline-color: $value !important;" #end name="${detail.getId()}.value" id="${detail.id}.value" value="$!value" size="10" type="text" autocomplete="off" /> 
+#end
+

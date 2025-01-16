@@ -1,0 +1,70 @@
+
+#if(!$detailviewercolumns)
+	#set($detailviewercolumns = 2)
+#end
+#set($detailviewercolumnclass = "col-md-6")
+#if($detailviewercolumns == 1)
+	#set($detailviewercolumnclass = "col-md-12")
+#end
+
+
+
+#foreach( $detail in $details )
+
+	#ifnotnull($detail.title)
+		</div>
+		<h4>$detail.title</h4>
+		<div class="row no-gutters">
+			
+			$!context.putPageValue("details", $detail)
+			$pages.include("$apphome/components/xml/detailviewersection.html", $context)
+	#end
+	
+	
+	$!context.putPageValue("detail",$detail)
+	
+	#if($detail.dataType == "searchjoin" )
+		#set($viewtype = "searchjoin" )
+	#else
+		#set($viewtype = $detail.viewType)
+	#end
+	#if (!$viewtype)
+		#set($viewtype = $detail.dataType)
+	#end
+	#if (!$viewtype || $viewtype== "text")
+		#set ($viewtype = "default")
+	#end
+	
+	#set($values = false)
+	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
+	#if($detail.isMultiValue())
+		#set($values = $value )
+	#end
+
+	#if( $value || $values)
+		<div class="$!detailviewercolumnclass asset-data-detail emdatafield-$!viewtype ">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-3 col-emdatafield">
+					<label class="emdatafield" data-field="$detail.getId()">
+						$detail.getText($context)
+					</label>
+					</div>
+					<div class="col-9">
+					<div class="emdatafieldvalue">		
+						$!context.putPageValue("value",$value)
+						$!context.putPageValue("values",$values)
+						$context.putPageValue("showalllanguagevalues",true)
+						$!context.putPageValue("detail",$detail)
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
+					</div>
+					</div>
+				</div>
+			</div>
+			
+		</div> 
+		
+	#end
+#end
+
+

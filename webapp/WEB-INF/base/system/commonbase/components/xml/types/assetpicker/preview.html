@@ -1,0 +1,59 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#set($value = $context.getRequestParameter('assetid'))
+
+#if($value && $value != "")
+	#set( $foundrow = $mediaarchive.getAsset($value)  )
+#end
+
+#if( $foundrow )
+	#set( $rootid = $hits.sessionId )
+	#set( $hit = $foundrow)
+	$context.putPageValue("hit", $hit)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	#if(!$rendertype || $rendertype =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype == "video")
+		#set( $rendertype = "videothumbnail" )
+	#end
+	$context.putPageValue("type", $rendertype)
+	#if(!$thumbsize)
+		$context.putPageValue("thumbsize", "small" )
+	#end
+		
+	#if($rendertype == "audio")
+		#if($hit.getValue("length"))
+			#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+		#end
+		$context.putPageValue("length", $length )
+     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
+			$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+		</div>       
+		<div class="previewassetname">
+		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
+			<i class="bi bi-box-arrow-up-right ns mr-1"></i> $!foundrow.name
+		</a>
+		</div>
+	#else
+		#if($noassetlink)
+			 <div class="emthumbimage emcrop" data-assetid="${foundrow.id}" >
+				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			</div>
+			 
+		#else
+		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			</div>       
+		</a>
+		#end
+	#end
+
+#end			

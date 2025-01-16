@@ -1,0 +1,47 @@
+#set($collection = $asset.getValues("faceprofiles"))
+
+#ifnotnull($collection)
+#if(!$collection.isEmpty())
+<div class="asset-faceprofiles d-flex justify-content-center">
+	#foreach( $profile in $collection )
+		#set( $row = false )
+		#set( $name = "")
+		
+		#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
+	    #if( $row )
+	    
+			#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+			
+			#ifnotnull($person)
+				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+		    	#set($name= "$name ($!row.get('samplecount'))")
+		    	#set($link = "$!siteroot$applink/views/modules/entityperson/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
+		    	#set($title = "[[Person]]: ")
+			#end
+	    	#if( $name == "")
+	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
+	    		#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+	    		#set($title = "[[Face Profile]] ") 
+	    	#end
+	    	#if($profile.timecodestart)
+	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+	    		#set($name = "$name &nbsp;($secs)")
+	    	#end
+			
+			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
+		    
+		    <a href="#" 
+		    	class="showimagebox"
+				data-target="mediaplayer"
+				data-showbox="$imagebox.locationxy"
+				data-imagewidth="${thumbimaassetwidth}"
+				data-inputheight="${assetheight}"
+		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
+		    	>$!name</a>
+	    #end 
+	#end	
+</div>
+#end
+#end

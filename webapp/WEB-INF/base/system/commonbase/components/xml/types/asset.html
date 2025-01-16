@@ -1,53 +1,64 @@
-#set($current = $data.get($detail.getId()))
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#ifnull($value)
+	#set($value = $val)
+#end
+<div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
+	<div class="render-type-thumbnail p-1 position-relative mb-1" id="${detail.id}-preview">
+		#if($value && $value != "")
+			#set( $foundrow = $mediaarchive.getAsset($value)  )
+			#if($foundrow)
+				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
+				<a href="#" 
+					class="removefieldassetvalue"
+					title="[[Remove This Asset]]" 
+					data-targetdivinner="${detail.id}-preview"
+					data-detailid="${detail.id}"
+					><i class="bi bi-x"></i></a>
+			#end
+		#end
+	</div>
 
-#if($current)
-#set($assetsearcher = $searcherManager.getSearcher($detail.catalogId, "asset") )
-	#set($asset = $assetsearcher.searchById($current))
-	
-#end
-<div id="${detail.getId()}-previewimage">
-#if($asset)
-<img src="$home/$detail.catalogId/downloads/preview/thumb/$asset.sourcepath/image.jpg"/>
-#end
+	<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" data-detailid="${detail.id}" value="$!foundrow.id"/>
+
+	<div class="d-flex align-items-center">
+		<span class="btn btn-secondary btn-file">
+			<i class="bi bi-upload mr-1"></i>
+			[[Upload]] 
+			<input type="file" name="file.${detail.getId()}" id="${detail.id}-file" class="assetInput">
+		</span>
+		
+		##?targetdiv=${detail.id}-value&detailid=${detail.id}&categoryid=$!{defaultfolder.getId()}
+		
+		<a href="$siteroot$apphome/views/modules/asset/editors/pickerpickasset/index.html" 
+			class="emdialog btn btn-secondary mx-2"
+			data-dialogid="dialogpickerassetpicker"
+			data-assetclearresults="true"
+			data-assetclearselections="true"
+			data-width="1200"
+			data-detailid="${detail.id}" 
+			data-pickertargetfield="entitypicker${detail.id}"
+			data-hidefooter="true"
+			data-includeeditcontext="true"
+			data-edithome=""
+		>
+			<i class="bi bi-card-list mr-1"></i> [[Browse]]
+		</a>
+		<a href="$siteroot$apphome/views/modules/asset/editors/contentcreatorpickasset/index.html"
+			class="emdialog btn btn-accent"
+			data-dialogid="dialogpickerassetpicker"
+			data-assetclearresults="true"
+			data-assetclearselections="true"
+			data-width="1200"
+			data-detailid="${detail.id}" 
+			data-pickertargetfield="entitypicker${detail.id}"
+			data-hidefooter="true"
+			data-includeeditcontext="true"
+			data-edithome=""
+		>
+			<i class="bi bi-magic mr-1"></i> [[Use AI]]
+		</a>
+	</div>
 </div>
-
-<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.value" value="$val" />
-
-<a class="dialogpopup" id="${detail.getId()}_popup" href="$home/$detail.catalogId/components/browser/index.html?id=$!asset.id&detailid=$detail.getId()&searchtype=$detail.searchtype&catalogid=$detail.catalogId" >
-
-<img src="$home/system/images/toolbar/history_view.gif" border="0" width="16" height="16" title="[[Pick a File]]" /></a>
-
-<script type="text/javascript">
-	jQuery(document).ready(function () {
-		jQuery("#${detail.getId()}_popup").fancybox(
-						
-						function() 
-						{
-							var height  = jQuery(document).height();
-							var width  = jQuery(document).width();
-							height = height * 0.9;
-							width = width * 0.9;
-							if(width < 900){
-								width = 1050;
-							}
-							
-							var newfancy = jQuery(this).fancybox(
-							{ 
-								'zoomSpeedIn': 300, 'zoomSpeedOut': 300, 'overlayShow': true,
-								enableEscapeButton: true, type: 'iframe', 
-								frameHeight: height, frameWidth: width
-							});
-						}
-					);
-								
-						
-	
-			
-
-	jQuery(".${detail.getId()}-field").bind("change", function () {
-			var sp = jQuery(this).data("sourcepath");
-			jQuery("#${detail.getId()}-previewimage").html('<img src="$home/${detail.catalogId}/downloads/preview/thumb/' + sp + '/image.jpg"/>');
-	});
-	}
-);
-</script>
