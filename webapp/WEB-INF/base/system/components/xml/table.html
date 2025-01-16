@@ -5,7 +5,6 @@
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
 #set( $candelete = $context.getRequestParameter("candelete")) 
 
-
 #set( $viewid = $context.getRequestParameter("viewid"))
 
 #set( $editpath = $context.getRequestParameter("editpath"))
@@ -28,7 +27,14 @@
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $details = $joinsearcher.getDetailsForView($viewid,$context.getUserProfile()) )
+#ifnull($details)
+	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
+#end	
+#ifnull($details)
+	#set ($details = $joinsearcher.getDetailsForView($viewid, $context.getUserProfile()))
+#end	
+
 #ifnull($details)
 	Error: No details for $viewid, $context.getUserProfile()
 #end
