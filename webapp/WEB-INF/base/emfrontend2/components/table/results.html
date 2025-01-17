@@ -12,6 +12,19 @@
 	#end
 #end
 
+#set($searcher = $hits.getSearcher())
+
+#ifnull($details)
+	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
+#end	
+#ifnull($details)
+	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
+#end	
+
+#ifnull($details)
+	No details found for $viewid - Searchtype: $searcher.getSearchType() in $content.path
+#end
 <div id="resultsdiv" 
 	data-hitssessionid="$hits.getSessionId()" 
 	data-searchtype="$!searchtype"
@@ -20,9 +33,7 @@
 	data-pagenum="$hits.getPage()"  
 	data-collectionid="$!librarycol.getId()"
 	data-totalpages="$hits.getTotalPages()">
-#if(!$details)
-	#set($details = $hits.getSearcher().getDetailsForView("${hits.getSearchType()}/${viewid}", $userprofile))
-#end
+
 
 #set($searchhome = "$home$apphome/components/table")
 #set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
@@ -121,7 +132,7 @@
 						#end
 						
 						$context.putPageValue("detail",$detail)
-						$context.putPageValue("val",$val)
+						$context.putPageValue("value",$value)
 						$pages.include("$xmledithome/detailreadonly.html", $context)
 					</td>
 				#end	

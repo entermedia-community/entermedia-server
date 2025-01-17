@@ -2,7 +2,7 @@
 #set( $q = $context.getRequestParameter( "${column}.value") )
 #set($unique = [])
 #if($q && $q.length() > 0)
-	#set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q) ) 
+	#set( $unique = $searcherManager.getUniqueValues($searcher,$autocomplete,$column,$q, $context ) )
 #end
 {
 	"searcher": "$searcher.getSearchType()",
