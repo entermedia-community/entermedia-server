@@ -1,7 +1,6 @@
 <page>
 
-  <property name="loginroot">/system/components/authentication</property>
-  
+  <property name="loginroot">/system/commonbase/authentication</property>
 	
 	<permission name="view">
 		<boolean value="true" />

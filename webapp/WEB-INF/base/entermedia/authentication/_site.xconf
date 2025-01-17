@@ -6,5 +6,5 @@
     <value locale="es">Autenticación</value>
   </property>
   <property name="loginroot">/${applicationid}/authentication</property>
-  <property name="fallbackdirectory">/system/commonbase/components/authentication</property>
+  <property name="fallbackdirectory">/system/commonbase/authentication</property>
 </page>
