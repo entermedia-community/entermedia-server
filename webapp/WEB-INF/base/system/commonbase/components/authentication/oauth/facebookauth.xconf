@@ -1,6 +1,0 @@
-<page>
-<path-action name="OauthModule.login"/>
-<property name="provider">facebook</property>
-
-
-</page>

@@ -1,7 +1,0 @@
-<page>
-<path-action name="OauthModule.login"/>
-<property name="provider">google</property>
-
-
-
-</page>
