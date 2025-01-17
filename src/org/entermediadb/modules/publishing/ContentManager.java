@@ -877,16 +877,25 @@ public class ContentManager implements CatalogEnabled {
 
 	} else {
 	    String submodsearchtype = entitypartentview.get("rendertable");
-	    Data targetmodule = getMediaArchive().getCachedData("module", submodsearchtype);// Chapter
+	    Data targetmodule = getMediaArchive().getCachedData("module", submodsearchtype);// Adding a new chapter
+	    
 	    targetsearcher = getMediaArchive().getSearcher(submodsearchtype);
+	    Searcher parentsearcher = getMediaArchive().getSearcher(moduleid);//
 
-	    inReq.putPageValue("parentmodule", moduleid);
+	    Data directparent = getMediaArchive().getCachedData(moduleid,entityid);
+	    
+	    inReq.putPageValue("parentmodule", moduleid); //Book
+	    inReq.putPageValue("parententity", directparent); //Which book
+	    inReq.putPageValue("parentsearcher", parentsearcher);
+	    inReq.putPageValue("parentdetails", parentsearcher.getPropertyDetails());
 
-	    inReq.putPageValue("targetmodule", targetmodule);
+
+	    inReq.putPageValue("targetmodule", targetmodule); //Chapter
+	    inReq.putPageValue("targetsearcher", targetmodule);
+
 	    inReq.putPageValue("contentrequest", inContentrequest);
 
-	    String template = inLlm.loadInputFromTemplate(inReq,
-		    "/" + archive.getMediaDbId() + "/gpt/templates/create_child.html");
+	    String template = inLlm.loadInputFromTemplate(inReq,  "/" + archive.getMediaDbId() + "/gpt/templates/create_child.html");
 	    JSONObject results = inLlm.callFunction(inReq, inModel, "create_entity", template, 0, 5000);
 
 	    child = targetsearcher.createNewData();
