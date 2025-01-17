@@ -125,9 +125,9 @@ class ImagePicker extends Plugin {
 
 			button.on("execute", () => {
 				//TODO: Open image picker dialog
-				var apphome = $("#application").data("apphome");
+				var findroot = $("#application").data("findroot");
 				var anchor = document.createElement("a");
-				anchor.href = apphome + "/components/blockfind.html";
+				anchor.href = findroot + "/blockiframe.html";
 				anchor.classList.add("emdialog");
 				document.body.appendChild(anchor);
 				$(anchor).emDialog();
