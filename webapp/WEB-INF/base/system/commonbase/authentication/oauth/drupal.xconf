@@ -1,0 +1,15 @@
+<page>
+<path-action name="OauthModule.login"/> 
+<property name="provider">drupal</property>
+
+
+<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/users/setuplibraries.groovy</script>
+	</path-action>
+<path-action name="Admin.redirect">
+
+
+</path-action>
+	  <property name="redirectpath">/${applicationid}/index.html</property>
+
+</page>
