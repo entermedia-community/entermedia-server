@@ -57,6 +57,58 @@ public class FinderModule extends BaseMediaModule
 
 	}
 	
+	
+	public void searchModuleByQuery(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker tracker = null;
+		
+		String query = inReq.getRequestParameter("search");
+		if (query == null) {
+			return;
+		}
+	
+		String searchtype = resolveSearchType(inReq);
+		if( searchtype == null)
+		{
+			searchtype = "asset";
+		}
+		
+		Searcher assetsearcher = archive.getSearcher(searchtype);
+		SearchQuery search = assetsearcher.addStandardSearchTerms(inReq);
+		
+		if(search == null) {
+			search = assetsearcher.createSearchQuery();
+			String	sort = inReq.getRequestParameter(searchtype +"sortby");
+			search.addSortBy(sort);
+		}
+		
+		//Search
+		String searchby = inReq.getRequestParameter("search");
+		if(searchby != null)
+		{
+			search.addFreeFormQuery("description", searchby);
+		}
+		
+		if( search.getHitsName() == null)
+		{
+			String hitsname = inReq.getRequestParameter("hitsname");
+			if(hitsname == null)
+			{
+				hitsname = inReq.findValue("hitsname");
+			}
+			if (hitsname != null )
+			{
+				search.setHitsName(hitsname);
+			}
+		}
+			
+		inReq.setRequestParameter("clearfilters","true");
+		
+		tracker = assetsearcher.cachedSearch(inReq, search);
+
+	}
+	
 	public void organizeHits(WebPageRequest inReq) 
 	{
 		Collection organizedHits = (Collection)inReq.getPageValue("organizedHits");
