@@ -341,3 +341,8 @@ function adjustZIndex(element) {
 		//$(window).trigger("resize");
 	});
 }
+
+lQuery(".modal .closemodal").livequery("click", function (e) {
+	if (e.target != this) return;
+	closeemdialog($(this).closest(".modal"));
+});
