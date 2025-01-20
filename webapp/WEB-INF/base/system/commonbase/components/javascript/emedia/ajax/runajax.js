@@ -14,6 +14,15 @@
 			$(".activelistener").removeClass("selected");
 			anchor.addClass("selected");
 		}
+
+		var removeOnSuccess = anchor.data("removeonsuccess");
+		var removeTarget = anchor.data("removetarget");
+		if (removeTarget) {
+			if (!removeTarget.startsWith("#") && !removeTarget.startsWith(".")) {
+				removeTarget = "#" + removeTarget;
+			}
+		}
+
 		//for listeners in a container
 		if (anchor.hasClass("activelistenerparent")) {
 			var listenerParent = anchor.closest(".activelistcontainer");
@@ -191,6 +200,14 @@
 					//actions after autoreload?
 					var message = anchorData["alertmessage"];
 					if (message) customToast(message);
+
+					if (removeOnSuccess !== undefined && removeOnSuccess == "true") {
+						if (removeTarget) {
+							$(removeTarget).remove();
+						} else {
+							anchor.remove();
+						}
+					}
 				},
 				error: function () {
 					$(window).trigger("errorToast", toastUid);
