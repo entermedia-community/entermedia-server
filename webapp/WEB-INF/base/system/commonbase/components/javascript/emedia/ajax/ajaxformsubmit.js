@@ -13,6 +13,10 @@
 		if (warning && !confirm(warning)) {
 			return this;
 		}
+		
+		if (CK5Editor) {
+			CK5Editor.updateSourceElement();
+		}
 
 		if (!form.hasClass("novalidate")) {
 			if (form.validate) {
