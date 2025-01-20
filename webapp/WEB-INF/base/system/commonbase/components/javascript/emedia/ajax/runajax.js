@@ -374,3 +374,44 @@ lQuery(".ajaxstatus").livequery(function () {
 		ajaxRunning = true;
 	}
 });
+
+autoreload = function (div, callback, classname = null) {
+		var url = div.data("autoreloadurl");
+		if (url !== undefined) {
+			div.data("url", url);
+		}
+		url = div.data("url");
+		if (url != undefined) {
+			var targetdiv = div.data("targetdiv");
+			if (targetdiv == undefined) {
+				div.data("targetdiv", classname); //Save to ourself
+				div.data("oemaxlevel", 1);
+			}
+			div.data("noToast", true);
+			div.runAjax(function () {
+				if (callback !== undefined && callback != null) {
+					callback();
+				}
+				jQuery(window).trigger("resize");
+			});
+		}
+	};
+
+	// Call this way	$(window).trigger("autoreload", [indiv,callback,targetdiv]);
+	$(window).on("autoreload", function (event, indiv, callback, targetdiv) {
+		autoreload($(indiv), callback, targetdiv);
+	});
+	
+// Call this way	$(window).trigger("checkautoreload", [form]);
+	$(window).on("checkautoreload", function (event, indiv) {
+		var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
+		if (classes) {
+			var splitnames = classes.split(",");
+			$.each(splitnames, function (index, classname) {
+				$("." + classname).each(function (index, div) {
+					autoreload($(div), null, classname);
+				});
+			});
+		} else {
+		}
+	});
