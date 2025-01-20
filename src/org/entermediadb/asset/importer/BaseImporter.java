@@ -510,7 +510,10 @@ public class BaseImporter extends EnterMediaObject
 						{
 							map = new LanguageMap();
 						}
-						map.put(splits[1], val);
+						if( val != null && !val.isEmpty() )
+						{
+							map.put(splits[1], val);
+						}
 						inData.setValue(detail.getId(), map);
 						continue;
 					}
