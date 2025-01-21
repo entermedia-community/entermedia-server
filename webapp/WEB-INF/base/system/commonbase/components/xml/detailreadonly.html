@@ -14,10 +14,11 @@ $context.putPageValue("xmledithome",$xmledithome)
 	$context.putPageValue("thumbsize","crop")
 	$context.putPageValue("noassetlink",true)
 	$context.putPageValue("hit", $data)
-	<div class="emgridcell emgridcellresuls emgridcell-$rendertype activelistcontainer 	" 
+	<div class="emgridcell emgridcellresuls detailreadonly-$viewtype activelistcontainer" 
 		style="visibility: visible; width: 160px; position: relative;">  
 		$pages.include("${searchhome}/types/qsresult.html", $context)
 	</div>
 #else
-$pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
+	$pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
 #end
+

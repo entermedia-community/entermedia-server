@@ -44,58 +44,61 @@ $context.putPageValue("xmledithome",$xmledithome)
 		#set($values = $value )
 	#end
 	
-	$!context.putPageValue("detail",$detail)
-	$!context.putPageValue("value", $value)
-	$!context.putPageValue("values",$values)
-
- 	
- 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype">
-
-	#set( $editrow = $detail.isEditable() && $readonly != "true") 
+	#set( $editrow = $detail.isEditable() && $readonly != "true")
 	
-	#if( $editrow   || !$detail.isEditable() || $detail.dataType == "searchjoin" )
-		#if( !$val) 
-			#set( $val = "") 
-		#end	
-			
-		<div class="container-fluid">
-				<div class="row">
-					#if( !$detail.hidelabel)
-						<div class="col-md-3 col-lg-2 col-emdatafield">
-							<label class="emdatafield" data-field="$detail.getId()">
-									$!detail.getText($context)
-							</label>				
-						</div>
-					#end
-					<div class="col-md-9 col-lg-9">
-						<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) requiredfield #end">
-						#if( $editrow )	
-							$pages.include("$xmledithome/detailedit.html", $context)
-						#else  
-							##NOT EDITABLE
-							<div class="emdatafieldvalue-readonly">
-							$pages.include("$xmledithome/detailreadonly.html", $context)
-							</div> 
+	#if($editrow ||  $value || $values)
+		
+		$!context.putPageValue("detail",$detail)
+		$!context.putPageValue("value", $value)
+		$!context.putPageValue("values",$values)
+	
+		
+	 	<div class="$detailviewercolumnclass editor-data-detail emdatafield-$!viewtype">
+	
+		 
+		
+		###if( $editrow   || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+				
+			<div class="container-fluid">
+					<div class="row">
+						#if( !$detail.hidelabel)
+							<div class="col-md-3 col-lg-2 col-emdatafield">
+								<label class="emdatafield" data-field="$detail.getId()">
+										$!detail.getText($context)
+								</label>				
+							</div>
 						#end
-						#if ( $detail.note )
-							<span class="detail-note">$context.getText($detail.note.toString())<span>
-						#end
+						<div class="col-md-9 col-lg-9">
+							<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) requiredfield #end">
+							#if( $editrow )	
+								$pages.include("$xmledithome/detailedit.html", $context)
+							#else  
+								##NOT EDITABLE
+								<div class="emdatafieldvalue-readonly">
+								$pages.include("$xmledithome/detailreadonly.html", $context)
+								</div> 
+							#end
+							#if ( $detail.note )
+								<span class="detail-note">$context.getText($detail.note.toString())<span>
+							#end
+							</div>
 						</div>
 					</div>
-				</div>
-		</div>
-
+			</div>
+	
+			
+			
+		###end
 		
-		
-	#end
-	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
-		#if($usedhtml)
-			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
-		#else
-			#set( $usedhtml = "htmltextarea=${detail.getId()}")
+		#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
+			#if($usedhtml)
+				#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
+			#else
+				#set( $usedhtml = "htmltextarea=${detail.getId()}")
+			#end
 		#end
+		</div>
 	#end
-	</div>
 #end
 
 
