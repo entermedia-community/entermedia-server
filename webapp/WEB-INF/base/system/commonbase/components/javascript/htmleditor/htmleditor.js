@@ -307,11 +307,12 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 	};
 };
 
-$(window).on("edithtmlstart", function (_, targetdiv) {
-	const editonly = targetdiv.data("editonly");
-	const hideImagePicker = targetdiv.data("imagepickerhidden");
-	ClassicEditor.create(targetdiv[0], editorConfig(editonly, hideImagePicker))
+window.CK5Editor = null;
+
+function createCK5Adv(target, editOnly, hideImagePicker) {
+	ClassicEditor.create(target, editorConfig(editOnly, hideImagePicker))
 		.then((editor) => {
+			window.CK5Editor = editor;
 			$(window).on("assetpicked", function (_, imageUrl) {
 				setTimeout(() => {
 					editor.execute("imageInsert", { source: imageUrl });
@@ -321,6 +322,20 @@ $(window).on("edithtmlstart", function (_, targetdiv) {
 		.catch((error) => {
 			console.error(error);
 		});
+}
+
+$(window).on("edithtmlstart", function (_, targetdiv) {
+	const editonly = targetdiv.data("editonly");
+	const hideImagePicker = targetdiv.data("imagepickerhidden");
+	if (window.CK5Editor) {
+		window.CK5Editor.destroy()
+			.then(() => createCK5Adv(targetdiv[0], editonly, hideImagePicker))
+			.catch((error) => {
+				console.error(error);
+			});
+	} else {
+		createCK5Adv(targetdiv[0], editonly, hideImagePicker);
+	}
 });
 
 window.addEventListener("message", function (event) {
