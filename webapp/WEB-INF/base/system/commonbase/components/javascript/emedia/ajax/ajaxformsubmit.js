@@ -13,9 +13,9 @@
 		if (warning && !confirm(warning)) {
 			return this;
 		}
-		
-		if (CK5Editor) {
-			CK5Editor.updateSourceElement();
+
+		if (window.CK5Editor) {
+			window.CK5Editor.updateSourceElement();
 		}
 
 		if (!form.hasClass("novalidate")) {
@@ -243,7 +243,7 @@
 		}
 		return this;
 	};
-	
+
 	lQuery("form.ajaxform").livequery("submit", function (e) {
 		// Make sure you use $(this).closest("form").trigger("submit")
 		e.preventDefault();
@@ -251,9 +251,4 @@
 		e.stopPropagation();
 		$(this).ajaxFormSubmit();
 	});
-	
-	
 })(jQuery);
-
-
-

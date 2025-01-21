@@ -184,8 +184,8 @@ function createCK5(target) {
 
 lQuery("textarea.htmleditor").livequery(function () {
 	var $this = $(this).get(0);
-	if (CK5Editor) {
-		CK5Editor.destroy()
+	if (window.CK5Editor) {
+		window.CK5Editor.destroy()
 			.then(() => createCK5($this))
 			.catch((error) => {
 				console.error(error);
