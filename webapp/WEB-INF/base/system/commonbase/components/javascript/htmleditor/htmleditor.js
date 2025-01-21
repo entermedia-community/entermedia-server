@@ -18,6 +18,7 @@ import {
 	ImageStyle,
 	ImageToolbar,
 	// ImageUpload,
+	// MediaEmbed,
 	Indent,
 	IndentBlock,
 	Italic,
@@ -177,8 +178,10 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 	}
 	if (hideImagePicker) {
 		var idx = items.indexOf("imagePicker");
-		items.splice(idx, 1);
+		items.splice(idx, 2);
 	}
+
+	// const currentUrlRegex = new RegExp("^" + window.location.origin + "/.*", "g");
 	return {
 		updateSourceElementOnDestroy: true,
 		toolbar: {
@@ -207,6 +210,7 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 			ImageToolbar,
 			// ImageUpload,
 			ImagePicker,
+			// MediaEmbed,
 			Indent,
 			IndentBlock,
 			Italic,
@@ -299,6 +303,19 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 				},
 			},
 		},
+		// mediaEmbed: {
+		// 	extraProviders: [
+		// 		{
+		// 			name: "ownVideo",
+		// 			url: [
+		// 				currentUrlRegex,
+		// 				/^https:\/\/interactive-examples.mdn.mozilla.net\/media\/.*/,
+		// 			],
+		// 			html: (url) =>
+		// 				`<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
+		// 		},
+		// 	],
+		// },
 		placeholder: "Type or paste your content here!",
 		// initialData: "",
 		extraConfig: {
