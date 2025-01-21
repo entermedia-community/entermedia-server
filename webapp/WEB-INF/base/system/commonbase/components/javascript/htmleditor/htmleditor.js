@@ -141,7 +141,7 @@ class ImagePicker extends Plugin {
 
 const LICENSE_KEY = "GPL";
 
-const editorConfig = (editOnly = false) => {
+const editorConfig = (editOnly = false, hideImagePicker = false) => {
 	var items = [
 		"closeButton",
 		"saveButton",
@@ -174,6 +174,10 @@ const editorConfig = (editOnly = false) => {
 	];
 	if (editOnly) {
 		items = items.slice(3);
+	}
+	if (hideImagePicker) {
+		var idx = items.indexOf("imagePicker");
+		items.splice(idx, 1);
 	}
 	return {
 		updateSourceElementOnDestroy: true,
@@ -305,7 +309,8 @@ const editorConfig = (editOnly = false) => {
 
 $(window).on("edithtmlstart", function (_, targetdiv) {
 	const editonly = targetdiv.data("editonly");
-	ClassicEditor.create(targetdiv[0], editorConfig(editonly))
+	const hideImagePicker = targetdiv.data("imagepickerhidden");
+	ClassicEditor.create(targetdiv[0], editorConfig(editonly, hideImagePicker))
 		.then((editor) => {
 			$(window).on("assetpicked", function (_, imageUrl) {
 				setTimeout(() => {
@@ -325,4 +330,10 @@ window.addEventListener("message", function (event) {
 		$(window).trigger("assetpicked", [url]);
 		closeallemdialogs();
 	}
+});
+
+$(document).ready(function () {
+	lQuery("textarea.htmleditor-advanced").livequery(function () {
+		$(window).trigger("edithtmlstart", [$(this)]);
+	});
 });
