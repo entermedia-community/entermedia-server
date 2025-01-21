@@ -335,9 +335,29 @@ public class OrderModule extends BaseMediaModule
 
 		Collection tosave = new ArrayList(Arrays.asList(fields));
 		tosave.remove("status");
+		
+		if(order.get("ordertype").equals("checkout"))
+		{
+			order.setValue("checkoutstatus", "reviewed");
+		}
+		
 		fields = (String[])tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
 		searcher.saveData(order, inReq.getUser());
+		return order;
+	}
+	
+	
+	public Order updateOrderLastNotified(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		if (order != null) {
+			String catalogid = inReq.findPathValue("catalogid");
+			Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+			order.setValue("lastnotified", new Date());
+			searcher.saveData(order, inReq.getUser());
+			
+		}
 		return order;
 	}
 	
