@@ -1369,10 +1369,20 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 	public HitTracker findPendingCheckoutOrders(WebPageRequest inReq, String inCatlogId) 
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		SearchQuery query = ordersearcher.createSearchQuery();
+		SearchQuery query = ordersearcher.addStandardSearchTerms(inReq);
+		if(query  == null)
+		{
+			query = ordersearcher.createSearchQuery();
+		}
+		
 		query.setName("pendingorders");
 		//query.addOrsGroup("orderstatus","ordered finalizing complete"); //Open ones
-		query.addExact("checkoutstatus", "pending");
+		query.addExact("ordertype", "checkout");
+		String checkoutstatus = inReq.getRequestParameter("checkoutstatus");
+		if (checkoutstatus != null)
+		{
+			query.addExact("checkoutstatus", checkoutstatus);
+		}
 		query.addSortBy("dateDown");
 		return ordersearcher.cachedSearch(inReq,query);
 	}
