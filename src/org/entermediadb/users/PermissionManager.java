@@ -433,50 +433,6 @@ public class PermissionManager implements CatalogEnabled
 		}
 	}
 
-	public EntityPermissions loadEntityPermissions(Data inSettingsGroup)
-	{
-		if (inSettingsGroup != null)
-		{
-			return loadEntityPermissions(inSettingsGroup.getId());
-		}
-		return null;
-	}
-
-	public EntityPermissions loadEntityPermissions(String inSettingsGroupId)
-	{
-		//Base module permissions. Module wide
-		EntityPermissions entitypermissions = null;//(EntityPermissions)getCacheManager().get("entitypermissions" + getCatalogId(),inSettingsGroupId);
-		entitypermissions = new EntityPermissions();
-		entitypermissions.setSettingsGroup(inSettingsGroupId);
-
-		Searcher searcher = getSearcher("permissionentityassigned");
-		HitTracker grouppermissions = searcher.query().exact("settingsgroup", inSettingsGroupId).search();
-
-		for (Iterator iterator = grouppermissions.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			String entityid = data.get("moduleid");
-			String permissionname = data.get("permissionsentity");
-			Object val = data.getValue("enabled");
-
-			entitypermissions.putPermission(entityid, permissionname, val);
-		}
-
-		//Add owner ones
-		HitTracker adminpermissions = searcher.query().exact("settingsgroup", "owners").search();
-
-		for (Iterator iterator = adminpermissions.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			String moduleid = data.get("moduleid");
-			String permissionname = data.get("permissionsentity");
-			Object val = data.getValue("enabled");
-			entitypermissions.putPermission("owner" + moduleid, permissionname, val);
-		}
-		
-		return entitypermissions;
-
-	}
 
 	public Map loadEntitySettingsGroupPermissions(String inEntityId, String inSettingsGroupId)
 	{
