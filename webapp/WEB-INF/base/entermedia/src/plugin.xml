@@ -187,6 +187,12 @@
 		</property>
 	</bean>
 
+	<bean id="permissions" class="org.openedit.users.Permissions"  scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+
 	<bean id="PermissionModule" class="org.entermediadb.asset.modules.PermissionModule">
 	</bean>
 

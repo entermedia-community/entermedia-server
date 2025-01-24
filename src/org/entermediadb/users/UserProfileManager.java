@@ -26,11 +26,13 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
+import org.openedit.users.Permissions;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 
 public class UserProfileManager
 {
+	private static final Log log = LogFactory.getLog(UserProfileManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager	 fieldModuleManager;
 	
@@ -53,8 +55,6 @@ public class UserProfileManager
 	{
 		return (MediaArchive)getModuleManager().getBean(inCatalogId,"mediaArchive");
 	}
-
-	private static final Log log = LogFactory.getLog(UserProfileManager.class);
 
 	public SearcherManager getSearcherManager()
 	{
@@ -138,8 +138,8 @@ public class UserProfileManager
 			}
 			userprofile = loadUserProfile(mediaArchive, appid,inUserName);
 			PermissionManager manager = (PermissionManager)mediaArchive.getBean("permissionManager");
-			EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
-			userprofile.setEntityPermissions(permissions);
+//			EntityPermissions permissions = manager.loadEntityPermissions(userprofile.getSettingsGroup());
+//			userprofile.setEntityPermissions(permissions);
 			
 			if (inReq != null)
 			{
@@ -155,8 +155,9 @@ public class UserProfileManager
 				{
 					inReq.putPageValue("userprofile", userprofile); //Better to grab something than nothing\
 				}
-				log.error("Could not lock user profile table " + inUserName);
+				//log.error("Could not lock user profile table " + inUserName);
 			}
+			log.error("Could load profile " + inUserName, ex);
 		}
 		finally
 		{
@@ -214,9 +215,8 @@ public class UserProfileManager
 	public UserProfile loadUserProfile(MediaArchive mediaArchive, String appid,String inUserName)
 	{
 		String inCatalogId = mediaArchive.getCatalogId();
-		UserProfile userprofile;
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
-		userprofile = (UserProfile) searcher.searchById(inUserName);
+		UserProfile userprofile = (UserProfile) searcher.searchById(inUserName);
 		if(userprofile == null)
 		{
 			userprofile = (UserProfile) searcher.searchByField("userid", inUserName);
@@ -302,6 +302,19 @@ public class UserProfileManager
 		userprofile.setValue("userid",inUserName);
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
+		
+		Permissions permissions = (Permissions)mediaArchive.getBean("permissions");
+		permissions.setUserProfile(userprofile);
+		Collection canpermissions = fieldSettingsGroup.getValues("permissions");
+		if( canpermissions != null)
+		{
+			permissions.setSystemRolePermissions( new HashSet(canpermissions) );
+		}
+		else
+		{
+			permissions.setSystemRolePermissions( new HashSet() );
+		}
+		userprofile.setPermissions(permissions);
 		
 		if( user != null)
 		{
