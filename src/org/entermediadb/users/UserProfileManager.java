@@ -303,7 +303,7 @@ public class UserProfileManager
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 		
-		Permissions permissions = (Permissions)mediaArchive.getBean("permissions");
+		Permissions permissions = (Permissions)mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(),"permissions",false);
 		permissions.setUserProfile(userprofile);
 		Collection canpermissions = fieldSettingsGroup.getValues("permissions");
 		if( canpermissions != null)
