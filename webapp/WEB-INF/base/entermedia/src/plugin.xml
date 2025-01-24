@@ -2431,6 +2431,11 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+	<bean id="cssGenerator" class="org.entermediadb.asset.generators.CssGenerator">
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
 
 	<bean id="timelineManager" class="org.entermediadb.video.TimelineManager">
 	</bean>
