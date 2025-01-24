@@ -37,7 +37,8 @@
 			$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
 		</div>       
 		<div class="previewassetname">
-		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
+		<a class="stackedplayer " 
+			data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
 			<i class="bi bi-box-arrow-up-right ns mr-1"></i> $!foundrow.name
 		</a>
 		</div>
@@ -48,7 +49,7 @@
 			</div>
 			 
 		#else
-		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
 	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
 				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
 			</div>       

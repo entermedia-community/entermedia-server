@@ -2164,7 +2164,7 @@ public class AssetEditModule extends BaseMediaModule
 							}
 						}
 					}
-					if( sourcepath != null && sourcemask != null)
+					if( sourcepath == null && sourcemask != null)
 					{
 						//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
 						
