@@ -5,10 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.data.AddedPermission;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -26,9 +28,6 @@ import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
 import org.openedit.config.XMLConfiguration;
 import org.openedit.data.BaseData;
-import org.openedit.data.EntityPermissions;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -36,6 +35,7 @@ import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.page.PermissionSorter;
 import org.openedit.users.Group;
+import org.openedit.users.User;
 import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
@@ -592,11 +592,171 @@ public class PermissionManager implements CatalogEnabled
 	    	archive.saveData("module", inModule);
 	    	
 	    }
-		
-	    
 	    archive.fireSharedMediaEvent("entities/checkpermissionhistory");
-	    
-		
 	}
 
+	
+	public Collection<AddedPermission> loadEntityPermissions(Data inModule, Data inEntity)
+	{
+	    MediaArchive archive = getMediaArchive();
+	    
+	    //Load all the view and edit record into a big list
+	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
+	    
+	    Collection<String> editorsfound = collectUsers(inModule,inEntity,true);
+	    Collection<String> viewersfound = collectUsers(inModule,inEntity,false);
+	    viewersfound.removeAll(editorsfound);
+	    addUsers(alladded,editorsfound,viewersfound);
+
+	    
+	    editorsfound = collectGroups(inModule,inEntity,true);
+	    viewersfound = collectGroups(inModule,inEntity,false);
+	    viewersfound.removeAll(editorsfound);
+	    addGroups(alladded,editorsfound,viewersfound);
+
+	    editorsfound = collectRoles(inModule,inEntity,true);
+	    viewersfound = collectRoles(inModule,inEntity,false);
+	    viewersfound.removeAll(editorsfound);
+	    addRoles(alladded,editorsfound,viewersfound);
+
+	    return alladded;
+	    
+	}
+
+	private void addUsers(Collection<AddedPermission> inAlladded, Collection<String> inEditorsfound, Collection<String> inViewersfound)
+	{
+		for (Iterator iterator = inEditorsfound.iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			User user = getMediaArchive().getUser(userid);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(true);
+			added.setData(user);
+			added.setPermissionType("user");
+			inAlladded.add(added);
+		}
+		for (Iterator iterator = inViewersfound.iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			User user = getMediaArchive().getUser(userid);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(false);
+			added.setData(user);
+			added.setPermissionType("user");
+			inAlladded.add(added);
+		}
+	}
+
+	private void addRoles(Collection<AddedPermission> inAlladded, Collection<String> inEditorsfound, Collection<String> inViewersfound)
+	{
+		for (Iterator iterator = inEditorsfound.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Data data = getMediaArchive().getCachedData("settiingsgroup",id);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(true);
+			added.setData(data);
+			added.setPermissionType("settingsgroup");
+			inAlladded.add(added);
+		}
+		for (Iterator iterator = inViewersfound.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Data data = getMediaArchive().getCachedData("settiingsgroup",id);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(false);
+			added.setData(data);
+			added.setPermissionType("settingsgroup");
+			inAlladded.add(added);
+		}
+	}
+
+	private void addGroups(Collection<AddedPermission> inAlladded, Collection<String> inEditorsfound, Collection<String> inViewersfound)
+	{
+		for (Iterator iterator = inEditorsfound.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Group data = getMediaArchive().getGroup(id);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(true);
+			added.setData(data);
+			added.setPermissionType("group");
+			inAlladded.add(added);
+		}
+		for (Iterator iterator = inViewersfound.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Group data = getMediaArchive().getGroup(id);
+			AddedPermission added = new AddedPermission();
+			added.setEditor(false);
+			added.setData(data);
+			added.setPermissionType("group");
+			inAlladded.add(added);
+		}	
+	}
+
+	protected Collection<String> collectUsers(Data inModule, Data inEntity, boolean inEditors)
+	{
+		Set<String> users = new HashSet();
+		String fieldname = "viewusers";
+		if( inEditors )
+		{
+			fieldname = "editorusers";
+		}
+		Collection<String> moreusers = inModule.getValues(fieldname);
+		if (users != null && !users.isEmpty() )
+		{
+			users.addAll(moreusers);
+		}
+		moreusers = inEntity.getValues(fieldname);
+		if (users != null && !users.isEmpty() )
+		{
+			users.addAll(moreusers);
+		}
+		return users;
+	}
+
+	protected Collection<String> collectGroups(Data inModule, Data inEntity, boolean inEditors)
+	{
+		Set<String> groups = new HashSet();
+		String fieldname = "viewgroups";
+		if( inEditors )
+		{
+			fieldname = "editorgroups";
+		}
+		Collection<String> moregroups = inModule.getValues(fieldname);
+		if (moregroups != null && !moregroups.isEmpty() )
+		{
+			groups.addAll(moregroups);
+		}
+		moregroups = inEntity.getValues(fieldname);
+		if (moregroups != null && !moregroups.isEmpty() )
+		{
+			groups.addAll(moregroups);
+		}
+		return groups;
+
+	}
+
+	protected Collection<String> collectRoles(Data inModule, Data inEntity, boolean inEditors)
+	{
+		Set<String> roles = new HashSet();
+		String fieldname = "viewroles";
+		if( inEditors )
+		{
+			fieldname = "editorroles";
+		}
+		Collection<String> more = inModule.getValues(fieldname);
+		if (more != null && !more.isEmpty() )
+		{
+			roles.addAll(more);
+		}
+		more = inEntity.getValues(fieldname);
+		if (more != null && !more.isEmpty() )
+		{
+			roles.addAll(more);
+		}
+		return roles;
+		
+	}
 }

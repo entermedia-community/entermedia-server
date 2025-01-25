@@ -22,6 +22,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.Row;
+import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
@@ -1183,10 +1184,6 @@ public class EntityModule extends BaseMediaModule
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		archive.getPermissionManager().handleModulePermissionsUpdated();
-		
-		
-		
-		
 	}
 	
 	public void saveEntityCategoryPermissions(WebPageRequest inReq) {
@@ -1198,6 +1195,28 @@ public class EntityModule extends BaseMediaModule
 		archive.getPermissionManager().checkEntityCategoryPermission(module, entity);		
 	}
 	
+	
+	public Collection<AddedPermission> loadEntityPermissions(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String moduleid  = inReq.findPathValue("module");
+		Data module = archive.getData("module", moduleid);
+		Collection<AddedPermission> all = archive.getPermissionManager().loadEntityPermissions(module, entity);
+		inReq.putPageValue("entitypermissions", all);
+		return all;
+	}
+	
+	//TODO: Adding we are just saving an entity
+	
+	public void removeEntityPermission(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection<AddedPermission> all = loadEntityPermissions(inReq);
+		
+		//TODO: Loop over and remove the one
+		inReq.putPageValue("entitypermissions", all);
+	}
 	
 	
 }
