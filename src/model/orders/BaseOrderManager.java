@@ -1329,7 +1329,10 @@ public class BaseOrderManager implements OrderManager, CatalogEnabled {
 		
 		
 		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile","admin");
+		
+		
+		UserProfile profile = (UserProfile) inArchive.getProfileManager().loadUserProfile(inArchive,inAppId,"admin");
+		
 		String template = "/" + inAppId + "/theme/emails/checkoutrequesttemplate.html";
 		WebEmail templatemail = inArchive.createSystemEmail(followerUser, template);
 

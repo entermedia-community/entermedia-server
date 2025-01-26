@@ -2545,7 +2545,13 @@ public class MediaArchive implements CatalogEnabled
 	public void sendEmail(User inFromUser, Map pageValues, String toemail, String templatePage)
 	{
 		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-		UserProfile profile = (UserProfile) getSearcherManager().getData(getCatalogHome(),"userprofile",inFromUser.getId());
+		//UserProfile profile = (UserProfile) getSearcherManager().getData(getCatalogHome(),"userprofile",inFromUser.getId());
+		Page template = getPageManager().getPage(templatePage);
+		
+		String appid = template.get("applicationid");
+		
+		UserProfile profile = (UserProfile) getProfileManager().loadUserProfile(this,appid,inFromUser.getId());
+
 		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(templatePage,inFromUser,profile); 
 		newcontext.putPageValues(pageValues);
 		PostMail postmail = (PostMail)getModuleManager().getBean( "postMail");
@@ -3087,4 +3093,9 @@ public class MediaArchive implements CatalogEnabled
 		return result.getOutput();
 	}
 
+	public UserProfileManager getProfileManager()
+	{
+		UserProfileManager manager = (UserProfileManager)getBean("userProfileManager");
+		return manager;
+	}
 }

@@ -183,7 +183,11 @@ public class ElementalManager implements CatalogEnabled
 		RequestUtils rutil = (RequestUtils) getMediaArchive().getBean("requestUtils");
 		
 		User user = (User) getMediaArchive().getData("user","admin");
-		UserProfile profile = (UserProfile) getMediaArchive().getData("userprofile","admin");
+		//String appid = "finder/find";//inStructions.get.get("applicationid"); //Not used for anything
+		
+		UserProfile profile = (UserProfile)getMediaArchive().getProfileManager().loadUserProfile(getMediaArchive(),null,"admin");
+
+		
 		BaseWebPageRequest context = (BaseWebPageRequest) rutil.createVirtualPageRequest(getMediaArchive().getCatalogHome() + "/configuration/elementaljob.xml",user,profile); 
 
 		String generatedroot = getMediaArchive().getCatalogSettingValue("elementalgeneratedroot");
