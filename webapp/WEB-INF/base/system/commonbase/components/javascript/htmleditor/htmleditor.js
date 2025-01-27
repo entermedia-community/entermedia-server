@@ -335,6 +335,10 @@ function createCK5Adv(target, editOnly, hideImagePicker) {
 					editor.execute("imageInsert", { source: imageUrl });
 				});
 			});
+			var modal = $(target).closest(".modal");
+			if (modal.length > 0) {
+				modal.attr("tabindex", "");
+			}
 		})
 		.catch((error) => {
 			console.error(error);

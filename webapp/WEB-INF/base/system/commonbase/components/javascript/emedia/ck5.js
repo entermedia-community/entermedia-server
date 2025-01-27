@@ -176,6 +176,10 @@ function createCK5(target) {
 	ClassicEditor.create(target, editorConfig)
 		.then((editor) => {
 			window.CK5Editor = editor;
+			var modal = $(target).closest(".modal");
+			if (modal.length > 0) {
+				modal.attr("tabindex", "");
+			}
 		})
 		.catch((error) => {
 			console.error(error);
