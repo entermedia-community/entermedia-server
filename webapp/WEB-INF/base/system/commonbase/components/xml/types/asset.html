@@ -10,6 +10,10 @@
 		#if($value && $value != "")
 			#set( $foundrow = $mediaarchive.getAsset($value)  )
 			#if($foundrow)
+				#ifnull($searchhome)
+				$context.putPageValue("searchhome", "$apphome/components/results")
+				#end
+				$context.putPageValue("componenthome", "$apphome/components") ##Legacy
 				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
 				<a href="#" 
 					class="removefieldassetvalue"

@@ -2096,11 +2096,12 @@ public class AssetEditModule extends BaseMediaModule
 		
 		final String currentcollection = inReq.getRequestParameter("collectionid");
 
-		Data target = (Data)inReq.getPageValue("data");
-		if( target == null)
+		String pageval = inReq.findActionValue("pageval");
+		if (pageval == null) 
 		{
-			target = (Data)inReq.getPageValue("entity");
+			pageval = "data";
 		}
+		Data target = (Data)inReq.getPageValue(pageval);
 
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		MediaArchive archive = mediaArchive;
@@ -2224,8 +2225,8 @@ public class AssetEditModule extends BaseMediaModule
 			//log.info(current.getId());
 			//This will create a new one if current was null.
 			current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
-			archive.saveAsset(current, inReq.getUser());
-			log.info("Asset saved: " + current.getSourcePath());
+			
+			
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
 
@@ -2240,8 +2241,10 @@ public class AssetEditModule extends BaseMediaModule
 			//		Collection tracker = saveFilesAndImport(archive, currentcollection, metadata, pages, user);
 
 			//			current.setProperty("owner", inReq.getUser().getId());
+			
 			archive.removeGeneratedImages(current, true);
-			archive.saveAsset(current, null);
+			archive.saveAsset(current, inReq.getUser());
+			log.info("Asset saved: " + current.getSourcePath());
 			
 			archive.getAssetEditor().createNewVersionData(current, originalfile.getContentItem(), inReq.getUserName(), Version.UPLOADED, null);
 			
@@ -2252,6 +2255,7 @@ public class AssetEditModule extends BaseMediaModule
 				target.setValue(detailid,current.getId());
 				//Save it
 				searcher.saveData(target, inReq.getUser());
+				
 			}
 			
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
