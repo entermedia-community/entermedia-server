@@ -89,7 +89,7 @@ public class HttpSharedConnection
 				SSLContext sslContext;
 				sslContext = SSLContextBuilder.create().useProtocol("TLSv1.2").build();
 				RequestConfig globalConfig = RequestConfig.custom()
-			            .setCookieSpec(CookieSpecs.DEFAULT)
+			            .setCookieSpec(CookieSpecs.STANDARD)
 			            .setConnectTimeout(15 * 1000)
 			            .setSocketTimeout(600 * 1000)
 			            .build();

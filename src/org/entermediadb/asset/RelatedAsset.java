@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.data.ValuesMap;
 /**
  * What is this class used for?
@@ -12,6 +13,9 @@ import org.openedit.data.ValuesMap;
  */
 public class RelatedAsset implements Data
 {
+	
+	
+	
 	protected ValuesMap fieldProperties;
 	public String getName(String inLocale) {
 		return getName();
@@ -172,5 +176,12 @@ public class RelatedAsset implements Data
 		return getProperties().keySet();
 	}
 
+	public String toJsonString()
+	{		
+		throw new OpenEditException();
+	}
+	
+	
+	
 }
 

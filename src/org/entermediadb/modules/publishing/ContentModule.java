@@ -1,13 +1,17 @@
 package org.entermediadb.modules.publishing;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.enteremdiadb.postiz.PostizManager;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -16,10 +20,10 @@ import org.entermediadb.llm.LLMManager;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class ContentModule extends BaseMediaModule
@@ -396,5 +400,25 @@ public class ContentModule extends BaseMediaModule
 		}
 		inReq.putPageValue("found", menu);
 	}
+	
+	public void postToPostiz(WebPageRequest inReq) throws Exception
+	{
+		PostizManager manager = (PostizManager) getMediaArchive(inReq).getBean("postizManager");
+		String inContent = inReq.findValue("postcontent");
+		String[] integrations = inReq.getRequestParameters("integrations");
+		String date = inReq.getRequestParameter("date.value");
+		
+		Date postdate = date != null ? DateStorageUtil.getStorageUtil().parseFromStorage(date) : new Date();
+		List sites = integrations != null ? Arrays.asList(integrations) : new ArrayList();
+		
+		manager.createPost(inContent, postdate, PostizManager.POST_TYPE_DRAFT,null, sites);
+		
+		
+		
+	}
+
+	
+	
+	
 
 }

@@ -648,4 +648,9 @@ public class TemplateWebEmail extends WebEmail implements Data
 	{
 		return getProperties().keySet();
 	}
+	
+	public String toJsonString()
+	{		
+		throw new OpenEditException();
+	}
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.util.ReaderInputStream;
@@ -112,6 +113,13 @@ class ElasticContentItem extends StringItem implements Data{
 	public Set keySet()
 	{
 		return getElasticData().keySet();
+	}
+	
+	
+	
+	public String toJsonString()
+	{		
+		throw new OpenEditException();
 	}
 
 }

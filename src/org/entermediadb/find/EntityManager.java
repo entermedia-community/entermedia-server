@@ -21,6 +21,7 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -1143,5 +1144,31 @@ public class EntityManager implements CatalogEnabled
 		archive.saveAssets(tosave);
 		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
 		return tosave.size();
+	}
+
+	public void createEntitySnapshot(User inUser, Data inEntity)
+	{
+	
+		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
+		
+		
+		
+		
+		Data event = searcher.createNewData();
+		if( inUser != null)
+		{
+			event.setProperty("user", inUser.getId());
+		}
+		event.setProperty("operation", "entitysaved");
+		event.setProperty("moduleid", inEntity.get("entitysourcetype"));
+		event.setProperty("entityid", inEntity.getId()); //data.getId() ??
+		event.setValue("date", new Date()); 
+		event.setValue("entitysource", inEntity.toJsonString());
+		
+		
+		searcher.saveData(event, null);
+		
+		
+		
 	}
 }

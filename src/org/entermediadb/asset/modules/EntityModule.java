@@ -25,12 +25,13 @@ import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.scripts.ScriptLogger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
-import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
@@ -1221,6 +1222,57 @@ public class EntityModule extends BaseMediaModule
 		//TODO: Loop over and remove the one
 		inReq.putPageValue("entitypermissions", all);
 	}
+	
+	public void snapshotData(WebPageRequest inReq) {
+
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String id = inReq.getRequestParameter("id");
+		String moduleid = inReq.findPathValue("module");
+		Data entity = archive.query(moduleid).id(id).searchOne();
+			
+		
+		
+		archive.getEntityManager().createEntitySnapshot( inReq.getUser(), entity );
+
+		
+	}
+	
+
+	public void restoreSnapshot(WebPageRequest inReq) throws Exception{
+
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String historyid = inReq.getRequestParameter("id");
+		
+		
+		Data entityhistory = archive.query("entityactivityhistory").id(historyid).searchOne();
+		
+		String moduleid = entityhistory.get("moduleid");
+		String source = entityhistory.get("entitysource");
+		String entityid = entityhistory.get("entityid");
+		
+		Data existing = archive.getData(moduleid, entityid);
+		
+		archive.getEntityManager().createEntitySnapshot( inReq.getUser(), existing);
+
+		
+		JSONParser parser = new JSONParser();
+		JSONObject sourceObject = (JSONObject) parser.parse(source);
+		Searcher searcher = archive.getSearcher(moduleid);
+		searcher.saveJson(entityid, sourceObject);		
+		
+			
+		
+		
+
+		
+	}
+
+	
+	
+	
+	
 	
 	
 }

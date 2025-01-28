@@ -111,7 +111,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
+		JSONObject json = getConnection().parseJson(resp); 
 
 		return json;
 		

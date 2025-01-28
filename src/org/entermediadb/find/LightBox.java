@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.entermediadb.asset.Category;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 
 public class LightBox implements Data
 {
@@ -134,4 +135,10 @@ public class LightBox implements Data
 		
 		return null;
 	}
+	
+	public String toJsonString()
+	{		
+		throw new OpenEditException();
+	}
+	
 }
