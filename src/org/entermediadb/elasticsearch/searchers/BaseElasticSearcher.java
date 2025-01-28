@@ -3750,11 +3750,27 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	{
 
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor();
-		IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
-		req.source(json.toJSONString());
-		req.id(inID);
+		
+		try
+		{
+			IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
+			req.source(json.toJSONString());
+			req.id(inID);
 
-		processor.add(req);
+			processor.add(req);
+			//processor.awaitClose(5, TimeUnit.MINUTES);  do in flushBulk
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException("Errors saving bulk data ", e);
+		}
+		finally
+		{
+			getElasticNodeManager().flushBulk();
+			
+		}
+		
+		getCacheManager().remove("data" + getSearchType(), inID);
 
 	}
 

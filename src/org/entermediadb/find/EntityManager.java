@@ -1,7 +1,5 @@
 package org.entermediadb.find;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,8 +19,8 @@ import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.elasticsearch.SearchHitData;
-import org.entermediadb.projects.LibraryCollection;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -40,7 +38,6 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 
 public class EntityManager implements CatalogEnabled
 {
@@ -1146,13 +1143,10 @@ public class EntityManager implements CatalogEnabled
 		return tosave.size();
 	}
 
-	public void createEntitySnapshot(User inUser, Data inEntity)
+	public void createEntitySnapshot(User inUser, Data inEntity, String changes)
 	{
 	
 		Searcher searcher = getMediaArchive().getSearcher("entityactivityhistory");
-		
-		
-		
 		
 		Data event = searcher.createNewData();
 		if( inUser != null)
@@ -1162,13 +1156,42 @@ public class EntityManager implements CatalogEnabled
 		event.setProperty("operation", "entitysaved");
 		event.setProperty("moduleid", inEntity.get("entitysourcetype"));
 		event.setProperty("entityid", inEntity.getId()); //data.getId() ??
-		event.setValue("date", new Date()); 
-		event.setValue("entitysource", inEntity.toJsonString());
+		event.setValue("date", new Date());
+		event.setProperty("historydetails", changes);
+		
+		
+		String jsonsource = inEntity.toJsonString();
+		event.setValue("entitysource", jsonsource);
 		
 		
 		searcher.saveData(event, null);
 		
-		
-		
 	}
+	
+	public void restoreSnapshot(User inUser, String inHistoryid)
+	{
+	
+		Data entityhistory = (Data) getMediaArchive().query("entityactivityhistory").id(inHistoryid).search().first();
+		
+		String moduleid = entityhistory.get("moduleid");
+		String source = entityhistory.get("entitysource");
+		String entityid = entityhistory.get("entityid");
+		
+		Data existing = getMediaArchive().getData(moduleid, entityid);
+		
+		//archive.getEntityManager().createEntitySnapshot( inReq.getUser(), existing, "");
+	
+		JSONParser parser = new JSONParser();
+		JSONObject sourceObject = null;
+		try {
+			sourceObject = (JSONObject) parser.parse(source);
+		} catch (Throwable e) {
+			throw new OpenEditException("Noting to save");
+		
+		}
+		JSONObject sourceObj = (JSONObject) sourceObject.get("_source");
+		Searcher searcher = getMediaArchive().getSearcher(moduleid);
+		searcher.saveJson(entityid, sourceObj);	
+	}
+	
 }
