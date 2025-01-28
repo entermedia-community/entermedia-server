@@ -1,4 +1,4 @@
-var toastTO;
+var toastTO = {};
 
 $(window).on("showToast", function (_, anchor) {
 	if (!anchor || anchor.length == 0 || typeof anchor.data != "function") return;
@@ -32,8 +32,7 @@ $(window).on("showToast", function (_, anchor) {
 		</div>`
 	);
 
-	toastTO = setTimeout(function () {
-		console.log($(anchor), anchor.data("noToast"));
+	toastTO[uid] = setTimeout(function () {
 		$(".toastList").append(toast);
 	}, delay);
 });
@@ -88,7 +87,6 @@ customToast = function (message, options = {}) {
 };
 
 function destroyToast(toast, success = true) {
-	clearTimeout(toastTO);
 	if (!toast) return;
 	var msg = toast.find(".toastMessage").data(success ? "success" : "error");
 	toast
@@ -109,12 +107,14 @@ function destroyToast(toast, success = true) {
 
 $(window).on("successToast", function (_, uid) {
 	if (!uid) return;
+	if (toastTO[uid]) clearTimeout(toastTO[uid]);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 
 $(window).on("errorToast", function (_, uid) {
 	if (!uid) return;
+	if (toastTO[uid]) clearTimeout(toastTO[uid]);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
 });
