@@ -119,12 +119,26 @@
 					modalbackdrop = false;
 				}
 
-				var modalinstance = modaldialog.modal({
+				var modalinstance;
+				var modalOptions = {
 					closeExisting: false,
 					show: true,
 					backdrop: modalbackdrop,
 					keyboard: false,
-				});
+				};
+
+				if (!window.bsVersion) {
+					window.bsVersion = parseInt(bootstrap.Modal.VERSION);
+				}
+
+				if (window.bsVersion == 5) {
+					var modIns = new bootstrap.Modal(modaldialog[0], modalOptions);
+					modIns.show();
+					modalinstance = $(modIns);
+				} else {
+					modalinstance = modaldialog.modal(modalOptions);
+				}
+
 				$(document.body).addClass("modal-open");
 				/*  Use editdivid
 				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
@@ -265,10 +279,14 @@
 closeemdialog = function (modaldialog) {
 	var oldurlbar = modaldialog.data("oldurlbar");
 	var dialogid = modaldialog.attr("id");
-	if (modaldialog.modal) {
+
+	if (window.bsVersion == 5) {
+		var modIns = bootstrap.Modal.getInstance(modaldialog[0]);
+		modIns.hide();
+	} else {
 		modaldialog.modal("hide");
-		modaldialog.remove();
 	}
+	modaldialog.remove();
 	//other modals?
 	var othermodal = $(".modal");
 	if (othermodal.length && !othermodal.is(":hidden")) {
@@ -299,7 +317,12 @@ closeemdialog = function (modaldialog) {
 closeallemdialogs = function () {
 	$(".modal").each(function () {
 		var modaldialog = $(this);
-		modaldialog.modal("hide");
+		if (window.bsVersion == 5) {
+			var modIns = bootstrap.Modal.getInstance(this);
+			modIns.hide();
+		} else {
+			modaldialog.modal("hide");
+		}
 		modaldialog.remove();
 	});
 	var overlay = $("#hiddenoverlay");
@@ -329,7 +352,7 @@ function adjustZIndex(element) {
 			$(".modal:visible").css("z-index", zIndex - 1); //reset others?
 			$(".modal-backdrop")
 				.not(".modal-stack")
-				.css("z-index", zIndex - 1)
+				.css("z-index", zIndex - 2)
 				.addClass("modal-stack");
 		}
 		adjust = 1 + 1 * $(".modal:visible").length;
