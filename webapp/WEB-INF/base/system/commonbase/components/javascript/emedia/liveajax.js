@@ -3,6 +3,12 @@ $.ajaxSetup({
 		withCredentials: true,
 	},
 	crossDomain: true,
+	beforeSend: function (xhr) {
+		xhr.setRequestHeader(
+			"X-TimeZone",
+			Intl.DateTimeFormat().resolvedOptions().timeZone
+		);
+	},
 });
 
 (function ($) {
