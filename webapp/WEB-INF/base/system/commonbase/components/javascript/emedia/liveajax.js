@@ -3,6 +3,9 @@ $.ajaxSetup({
 		withCredentials: true,
 	},
 	crossDomain: true,
+	beforeSend: function (xhr) {
+		xhr.setRequestHeader("X-TimeZone", new Date().getTimezoneOffset());
+	},
 });
 
 (function ($) {
