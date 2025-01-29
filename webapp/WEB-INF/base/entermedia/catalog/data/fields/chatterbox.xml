@@ -53,6 +53,16 @@
       <language id="en"><![CDATA[Attachments]]></language>
     </name>
    </property>  
-  
+   
+    <property id="entityid" index="true" editable="true" stored="true"> 
+    <name> 
+      <language id="en"><![CDATA[Entity Id]]></language> 
+    </name> 
+  </property> 
+ <property id="moduleid" index="true" editable="true" isbadge="false" required="false" multilanguage="false" filter="false" deleted="false" datatype="list" stored="true" listid="module" keyword="false">
+    <name> 
+      <language id="en"><![CDATA[Module]]></language> 
+    </name> 
+  </property>
   
 </properties>

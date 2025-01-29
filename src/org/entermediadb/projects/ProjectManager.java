@@ -1856,7 +1856,7 @@ public class ProjectManager implements CatalogEnabled
 		return subscription != null;
 	}
 	
-	public Set<String> listTeam(LibraryCollection inCollection)
+	public Set<String> listTeam(Data inCollection)
 	{
 		Collection users = getMediaArchive().query("librarycollectionusers").exact("collectionid", inCollection.getId()).exact("ontheteam", "true").search();
 		Set userids = new HashSet();

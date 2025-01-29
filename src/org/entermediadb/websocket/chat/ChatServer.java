@@ -159,11 +159,23 @@ public class ChatServer
 	public void broadcastMessage(String catalogid, JSONObject inMap)
 	{
 		
-		String collectionid = String.valueOf(inMap.get("collectionid"));
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-		LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
+		String entityid = String.valueOf(inMap.get("entityid"));
+		if (entityid == null)
+		{
+			entityid = String.valueOf(inMap.get("collectionid"));
+		}
+		String moduleid = String.valueOf(inMap.get("moduleid"));
+		if (moduleid == null)
+		{
+			moduleid = "librarycollection";
+		}
+		
+		Data entity = archive.getCachedData(moduleid, entityid);
+		
+		//LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
 
-		if( catalogid != null && collection != null )
+		if( catalogid != null && entity != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
 			
@@ -180,14 +192,14 @@ public class ChatServer
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}
-			if( collectionid != null && !"null".equals(collectionid))
+			if( entityid != null && !"null".equals(entityid))
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				
 				
 				if(inMap.get("topic") == null)
 				{
-					inMap.put("topic",collection.getName());
+					inMap.put("topic", entity.getName());
 				}
 				if( inMap.get("name") == null)
 				{
@@ -209,7 +221,7 @@ public class ChatServer
 				}
 				else {
 					
-					Set userids = projectmanager.listTeam(collection);
+					Set userids = projectmanager.listTeam(entity);
 					userids.add(userid);
 					
 					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
@@ -255,7 +267,7 @@ public class ChatServer
 			});
 		}
 		else {
-			log.info("Error broadcasting message, missing collection: " + collectionid + " or catalog: " + catalogid);
+			log.info("Error broadcasting message, missing collection: " + entityid + " or module: "+ moduleid +" or catalog: " + catalogid);
 		}
 	}
 
@@ -288,10 +300,21 @@ public class ChatServer
 				lastOne.setValue("message",combined);
 			}
 		}
-		String collectionid = null;
-		if(inMap.get("collectionid")!= null) {
+		String entityid = null;
+		if(inMap.get("entityid")!= null) {
 			//CAST FROM LONG!
-			collectionid = String.valueOf(inMap.get("collectionid"));
+			entityid = String.valueOf(inMap.get("entityid"));
+		}
+		String collectionid = null;
+		collectionid = String.valueOf(inMap.get("collectionid"));
+		
+		String moduleid = null;
+		if(inMap.get("moduleid")!= null) {
+			moduleid = String.valueOf(inMap.get("moduleid"));
+		}
+		if(moduleid == null)
+		{
+			moduleid = "librarycollection";
 		}
 
 		if( chat == null)
@@ -300,7 +323,15 @@ public class ChatServer
 			chat.setValue("date", new Date());
 			chat.setValue("user", userid);
 			chat.setValue("channel", channel);
-			chat.setValue("collectionid",collectionid);
+			if(entityid != null)
+			{
+				chat.setValue("entityid", entityid);
+				chat.setValue("moduleid",moduleid);
+			}
+			else {
+				chat.setValue("collectionid", collectionid);	
+			}
+		
 			chat.setValue("channeltype", inMap.get("channeltype"));
 			chat.setValue("message", newmessage);
 		}
@@ -377,10 +408,19 @@ public class ChatServer
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Asset asset = archive.getAsset((String) inMap.get("assetid"));
 		User user = archive.getUser((String) inMap.get("user"));
-		String collectionid = (String) inMap.get("collectionid");
+		String entityid = (String) inMap.get("entityid");
+		if(entityid == null)
+		{
+			entityid = (String) inMap.get("collectionid");
+		}
+		String moduleid = String.valueOf(inMap.get("moduleid"));
+		if (moduleid == null)
+		{
+			moduleid = "librarycollection";
+		}
 		String message = (String) inMap.get("content");
 
-		archive.getProjectManager().approveAsset(asset, user, message, collectionid, false);
+		archive.getProjectManager().approveAsset(asset, user, message, entityid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data chat = chats.createNewData();
@@ -390,6 +430,9 @@ public class ChatServer
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("messagetype", "approved");
 		chat.setValue("channeltype","asset"); 
+		chat.setValue("collectionid", entityid);
+		chat.setValue("entityid", entityid);
+		chat.setValue("moduleid", moduleid);
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 
@@ -401,10 +444,19 @@ public class ChatServer
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Asset asset = archive.getAsset((String) inMap.get("assetid"));
 		User user = archive.getUser((String) inMap.get("user"));
-		String collectionid = (String) inMap.get("collectionid");
+		String entityid = (String) inMap.get("entityid");
+		if(entityid == null)
+		{
+			entityid = (String) inMap.get("collectionid");
+		}
+		String moduleid = String.valueOf(inMap.get("moduleid"));
+		if (moduleid == null)
+		{
+			moduleid = "librarycollection";
+		}
 		String message = (String) inMap.get("content");
 
-		archive.getProjectManager().rejectAsset(asset, user, message, collectionid, false);
+		archive.getProjectManager().rejectAsset(asset, user, message, entityid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data chat = chats.createNewData();
@@ -414,7 +466,9 @@ public class ChatServer
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("channeltype","asset"); 
 		chat.setValue("messagetype", "rejected");
-		chat.setValue("collectionid", collectionid);
+		chat.setValue("collectionid", entityid);
+		chat.setValue("entityid", entityid);
+		chat.setValue("moduleid", moduleid);
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 

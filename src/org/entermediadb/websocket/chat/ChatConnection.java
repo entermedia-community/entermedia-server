@@ -243,10 +243,25 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				/* add user info to JSON message object- mando 6/11/2020*/
 				String catalogid = (String) map.get("catalogid");
 				MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-				String collectionid = null;
-				if(map.get("collectionid")!=null) {
-				 collectionid = (String) map.get("collectionid").toString();
+				
+				String entityid = null;
+				if(map.get("entityid")!=null) {
+					entityid = (String) map.get("entityid").toString();
 				}
+				if (entityid == null) {
+					entityid = (String) map.get("collectionid").toString();
+				}
+				
+				String moduleid = null;
+				if(map.get("moduleid")!=null) {
+					moduleid = (String) map.get("moduleid").toString();
+				}
+				if (moduleid == null)
+				{
+					moduleid = "librarycollection"; //Legacy
+				}
+				
+				
 				/* Get first name */
 				Object userval = map.get("user");
 				String userid = null;
@@ -259,13 +274,18 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				{
 					name = "";
 				}
+				
+				
 				/* Get project name and save as topic for notification */
-				Object library = archive.getData("librarycollection", collectionid);
-				if (library != null)
+				if(moduleid != null)
 				{
-					String topic = (String) library.toString();
-					map.put("topic", topic);
-
+					Data entity = archive.getCachedData(moduleid, entityid);
+					if (entity != null)
+					{
+						String topic = entity.getName();
+						map.put("topic", topic);
+	
+					}
 				}
 				/*
 				 * Add retrieved information to JSON object that is broadcasted.
