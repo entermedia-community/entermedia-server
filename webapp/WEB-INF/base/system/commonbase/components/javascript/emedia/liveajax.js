@@ -5,7 +5,7 @@ $.ajaxSetup({
 	crossDomain: true,
 	beforeSend: function (xhr) {
 		xhr.setRequestHeader(
-			"X-TimeZoneOffset",
+			"X-TimeZone",
 			Intl.DateTimeFormat().resolvedOptions().timeZone
 		);
 	},
