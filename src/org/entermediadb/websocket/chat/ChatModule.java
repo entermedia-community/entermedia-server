@@ -146,7 +146,10 @@ public class ChatModule extends BaseMediaModule
 			entityid = inReq.findValue("entityid");
 		}
 
-		String moduleid = inReq.getRequestParameter("entitymoduleid");
+		String moduleid = inReq.findValue("module");
+		if(moduleid == null) {
+			moduleid = inReq.getRequestParameter("entitymoduleid");
+		}
 		if(moduleid == null) {
 			moduleid = "librarycollection";
 		}
