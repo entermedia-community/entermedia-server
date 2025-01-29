@@ -324,12 +324,17 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 	};
 };
 
-window.CK5Editor = null;
+window.CK5Editor = {};
 
 function createCK5Adv(target, editOnly, hideImagePicker) {
+	let uid = target.id;
+	if (!uid) {
+		uid = "ck5editor" + window.CK5Editor.length;
+		target.id = uid;
+	}
 	ClassicEditor.create(target, editorConfig(editOnly, hideImagePicker))
 		.then((editor) => {
-			window.CK5Editor = editor;
+			window.CK5Editor[uid] = editor;
 			$(window).on("assetpicked", function (_, imageUrl) {
 				setTimeout(() => {
 					editor.execute("imageInsert", { source: imageUrl });
@@ -348,8 +353,10 @@ function createCK5Adv(target, editOnly, hideImagePicker) {
 $(window).on("edithtmlstart", function (_, targetdiv) {
 	const editonly = targetdiv.data("editonly");
 	const hideImagePicker = targetdiv.data("imagepickerhidden");
-	if (window.CK5Editor) {
-		window.CK5Editor.destroy()
+	var uid = targetdiv[0].id;
+	if (uid && window.CK5Editor[uid]) {
+		window.CK5Editor[uid]
+			.destroy()
 			.then(() => createCK5Adv(targetdiv[0], editonly, hideImagePicker))
 			.catch((error) => {
 				console.error(error);
@@ -373,3 +380,11 @@ $(document).ready(function () {
 		$(window).trigger("edithtmlstart", [$(this)]);
 	});
 });
+
+window.updateAllCK5 = function () {
+	var keys = Object.keys(window.CK5Editor);
+	if (keys.length == 0) return;
+	keys.forEach((key) => {
+		window.CK5Editor[key].updateSourceElement();
+	});
+};

@@ -63,9 +63,7 @@ $(document).ready(function () {
 
 	lQuery("#startbutton").livequery("click", function (e) {
 		e.preventDefault();
-		if (window.CK5Editor) {
-			window.CK5Editor.updateSourceElement();
-		}
+		if ("updateAllCK5" in window) updateAllCK5();
 		if ($(this).prop("disabled")) {
 			return;
 		}

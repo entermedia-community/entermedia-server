@@ -14,9 +14,7 @@
 			return this;
 		}
 
-		if (window.CK5Editor) {
-			window.CK5Editor.updateSourceElement();
-		}
+		if ("updateAllCK5" in window) updateAllCK5();
 
 		if (!form.hasClass("novalidate")) {
 			if (form.validate) {

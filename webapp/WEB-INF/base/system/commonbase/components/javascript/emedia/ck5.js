@@ -32,7 +32,7 @@ import {
 
 const LICENSE_KEY = "GPL"; // or <YOUR_LICENSE_KEY>.
 
-const editorConfig = {
+const editorConfig = () => ({
 	toolbar: {
 		items: [
 			"heading",
@@ -168,14 +168,19 @@ const editorConfig = {
 	},
 	placeholder: "Type or paste your content here!",
 	// initialData: "",
-};
+});
 
-window.CK5Editor = null;
+window.CK5Editor = {};
 
 function createCK5(target) {
-	ClassicEditor.create(target, editorConfig)
+	let uid = target.id;
+	if (!uid) {
+		uid = "ck5editor" + window.CK5Editor.length;
+		target.id = uid;
+	}
+	ClassicEditor.create(target, editorConfig())
 		.then((editor) => {
-			window.CK5Editor = editor;
+			window.CK5Editor[uid] = editor;
 			var modal = $(target).closest(".modal");
 			if (modal.length > 0) {
 				modal.attr("tabindex", "");
@@ -188,8 +193,10 @@ function createCK5(target) {
 
 lQuery("textarea.htmleditor").livequery(function () {
 	var $this = $(this).get(0);
-	if (window.CK5Editor) {
-		window.CK5Editor.destroy()
+	var uid = $this.id;
+	if (uid && window.CK5Editor[uid]) {
+		window.CK5Editor[uid]
+			.destroy()
 			.then(() => createCK5($this))
 			.catch((error) => {
 				console.error(error);
@@ -198,3 +205,11 @@ lQuery("textarea.htmleditor").livequery(function () {
 		createCK5($this);
 	}
 });
+
+window.updateAllCK5 = function () {
+	var keys = Object.keys(window.CK5Editor);
+	if (keys.length == 0) return;
+	keys.forEach((key) => {
+		window.CK5Editor[key].updateSourceElement();
+	});
+};
