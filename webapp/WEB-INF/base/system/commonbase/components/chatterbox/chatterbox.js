@@ -105,12 +105,13 @@ function chatterbox() {
   lQuery("a.ajax-edit-msg").livequery("click", function (e) {
     e.stopPropagation();
     e.preventDefault();
-
-    var targetDiv = $(this).data("targetdiv");
-    var options = $(this).data();
-    var nextpage = $(this).attr("href");
+	var editbtn = $(this);
+    var targetDiv = editbtn.data("targetdiv");
+    var options = editbtn.data();
+    var nextpage = editbtn.attr("href");
     $.get(nextpage, options, function (data) {
-      var cell = findclosest($(this), "#" + targetDiv);
+      //var cell = findclosest($(this), "#" + targetDiv);
+	  var cell = editbtn.closest("#" + targetDiv);
       cell.replaceWith(data);
       scrollToEdit(targetDiv);
     });
