@@ -1,15 +1,15 @@
 import {
-	ClassicEditor,
 	Alignment,
 	AutoImage,
 	AutoLink,
 	Autosave,
 	BalloonToolbar,
 	Bold,
+	ButtonView,
+	ClassicEditor,
 	CloudServices,
 	Essentials,
 	Heading,
-	SourceEditing,
 	ImageBlock,
 	ImageInline,
 	ImageInsert,
@@ -17,21 +17,17 @@ import {
 	ImageResize,
 	ImageStyle,
 	ImageToolbar,
-	// ImageUpload,
-	// MediaEmbed,
 	Indent,
 	IndentBlock,
 	Italic,
 	Link,
 	List,
 	Paragraph,
+	Plugin,
 	RemoveFormat,
-	// SimpleUploadAdapter,
-	// SpecialCharacters,
+	SourceEditing,
 	Strikethrough,
 	Underline,
-	ButtonView,
-	Plugin,
 } from "ckeditor5";
 
 import prettifyHTML from "prettyhtml";
@@ -142,7 +138,7 @@ class ImagePicker extends Plugin {
 
 const LICENSE_KEY = "GPL";
 
-const editorConfig = (editOnly = false, hideImagePicker = false) => {
+const editorConfig = (options) => {
 	var items = [
 		"closeButton",
 		"saveButton",
@@ -157,9 +153,7 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 		"|",
 		"imagePicker",
 		"|",
-		// "specialCharacters",
 		"link",
-		// "insertImage",
 		"|",
 		"alignment",
 		"|",
@@ -173,34 +167,42 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 		"|",
 		"sourceEditing",
 	];
-	if (editOnly) {
+
+	var plugins = [
+		Alignment,
+		AutoImage,
+		AutoLink,
+		Autosave,
+		BalloonToolbar,
+		Bold,
+		CloudServices,
+		Essentials,
+		Heading,
+		Indent,
+		IndentBlock,
+		Italic,
+		Link,
+		List,
+		Paragraph,
+		RemoveFormat,
+		Strikethrough,
+		Underline,
+	];
+
+	var image = undefined;
+
+	if (options.hideSaving) {
 		items = items.slice(3);
-	}
-	if (hideImagePicker) {
-		var idx = items.indexOf("imagePicker");
-		items.splice(idx, 2);
+	} else {
+		plugins.push([CloseButtonPlugin, SaveButtonPlugin]);
 	}
 
-	// const currentUrlRegex = new RegExp("^" + window.location.origin + "/.*", "g");
-	return {
-		updateSourceElementOnDestroy: true,
-		toolbar: {
-			items,
-			shouldNotGroupWhenFull: false,
-		},
-		plugins: [
-			CloseButtonPlugin,
-			SaveButtonPlugin,
-			Alignment,
-			AutoImage,
-			AutoLink,
-			Autosave,
-			BalloonToolbar,
-			Bold,
-			CloudServices,
-			Essentials,
-			Heading,
-			SourceEditing,
+	if (options.hideImagePicker) {
+		var idx = items.indexOf("imagePicker");
+		items.splice(idx, 2);
+	} else {
+		plugins.push([
+			ImagePicker,
 			ImageBlock,
 			ImageInline,
 			ImageInsert,
@@ -208,27 +210,41 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 			ImageResize,
 			ImageStyle,
 			ImageToolbar,
-			// ImageUpload,
-			ImagePicker,
-			// MediaEmbed,
-			Indent,
-			IndentBlock,
-			Italic,
-			Link,
-			List,
-			Paragraph,
-			RemoveFormat,
-			// SimpleUploadAdapter,
-			// SpecialCharacters,
-			Strikethrough,
-			Underline,
-		],
+		]);
+
+		image = {
+			toolbar: [
+				"imageTextAlternative",
+				"|",
+				"imageStyle:inline",
+				"imageStyle:wrapText",
+				"imageStyle:breakText",
+				"|",
+				"resizeImage",
+			],
+		};
+	}
+
+	if (options.hideSourceEditing) {
+		items.splice(-2);
+	} else {
+		plugins.push(SourceEditing);
+	}
+
+	return {
+		updateSourceElementOnDestroy: true,
+		toolbar: {
+			items,
+			shouldNotGroupWhenFull: false,
+		},
+		plugins,
+		image,
 		balloonToolbar: [
 			"bold",
 			"italic",
+			"underline",
 			"|",
 			"link",
-			// "insertImage",
 			"|",
 			"bulletedList",
 			"numberedList",
@@ -278,17 +294,6 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 				},
 			],
 		},
-		image: {
-			toolbar: [
-				"imageTextAlternative",
-				"|",
-				"imageStyle:inline",
-				"imageStyle:wrapText",
-				"imageStyle:breakText",
-				"|",
-				"resizeImage",
-			],
-		},
 		licenseKey: LICENSE_KEY,
 		link: {
 			addTargetToExternalLinks: true,
@@ -303,43 +308,30 @@ const editorConfig = (editOnly = false, hideImagePicker = false) => {
 				},
 			},
 		},
-		// mediaEmbed: {
-		// 	extraProviders: [
-		// 		{
-		// 			name: "ownVideo",
-		// 			url: [
-		// 				currentUrlRegex,
-		// 				/^https:\/\/interactive-examples.mdn.mozilla.net\/media\/.*/,
-		// 			],
-		// 			html: (url) =>
-		// 				`<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
-		// 		},
-		// 	],
-		// },
 		placeholder: "Type or paste your content here!",
-		// initialData: "",
-		extraConfig: {
-			oldcontent: "",
-		},
 	};
 };
 
 window.CK5Editor = {};
 
-function createCK5Adv(target, editOnly, hideImagePicker) {
+function createCK5(target, options = {}) {
 	let uid = target.id;
 	if (!uid) {
 		uid = "ck5editor" + window.CK5Editor.length;
 		target.id = uid;
 	}
-	ClassicEditor.create(target, editorConfig(editOnly, hideImagePicker))
+	ClassicEditor.create(target, editorConfig(options))
 		.then((editor) => {
 			window.CK5Editor[uid] = editor;
-			$(window).on("assetpicked", function (_, imageUrl) {
-				setTimeout(() => {
-					editor.execute("imageInsert", { source: imageUrl });
+			if (!options.hideImagePicker) {
+				$(window).on("assetpicked", function (_, imageUrl) {
+					setTimeout(() => {
+						editor.execute("imageInsert", { source: imageUrl });
+					});
 				});
-			});
+			}
+
+			//If CKEditor is inside a modal, we need to remove the tabindex attribute from the modal to make the link popup focusable
 			var modal = $(target).closest(".modal");
 			if (modal.length > 0) {
 				modal.attr("tabindex", "");
@@ -350,19 +342,43 @@ function createCK5Adv(target, editOnly, hideImagePicker) {
 		});
 }
 
-$(window).on("edithtmlstart", function (_, targetdiv) {
-	const editonly = targetdiv.data("editonly");
-	const hideImagePicker = targetdiv.data("imagepickerhidden");
-	var uid = targetdiv[0].id;
+lQuery("textarea.htmleditor").livequery(function () {
+	var $this = $(this).get(0);
+	var uid = $this.id;
+	var options = {
+		hideImagePicker: true,
+		hideSaving: true,
+		hideSourceEditing: true,
+	};
 	if (uid && window.CK5Editor[uid]) {
 		window.CK5Editor[uid]
 			.destroy()
-			.then(() => createCK5Adv(targetdiv[0], editonly, hideImagePicker))
+			.then(() => createCK5($this, options))
 			.catch((error) => {
 				console.error(error);
 			});
 	} else {
-		createCK5Adv(targetdiv[0], editonly, hideImagePicker);
+		createCK5($this, options);
+	}
+});
+
+$(window).on("edithtmlstart", function (_, targetdiv) {
+	const hideSaving = targetdiv.data("editonly");
+	const hideImagePicker = targetdiv.data("imagepickerhidden");
+	var options = {
+		hideImagePicker,
+		hideSaving,
+	};
+	var uid = targetdiv[0].id;
+	if (uid && window.CK5Editor[uid]) {
+		window.CK5Editor[uid]
+			.destroy()
+			.then(() => createCK5(targetdiv[0], options))
+			.catch((error) => {
+				console.error(error);
+			});
+	} else {
+		createCK5(targetdiv[0], options);
 	}
 });
 
@@ -375,10 +391,8 @@ window.addEventListener("message", function (event) {
 	}
 });
 
-$(document).ready(function () {
-	lQuery("textarea.htmleditor-advanced").livequery(function () {
-		$(window).trigger("edithtmlstart", [$(this)]);
-	});
+lQuery("textarea.htmleditor-advanced").livequery(function () {
+	$(window).trigger("edithtmlstart", [$(this)]);
 });
 
 window.updateAllCK5 = function () {
