@@ -194,14 +194,14 @@ const editorConfig = (options) => {
 	if (options.hideSaving) {
 		items = items.slice(3);
 	} else {
-		plugins.push([CloseButtonPlugin, SaveButtonPlugin]);
+		plugins.push(CloseButtonPlugin, SaveButtonPlugin);
 	}
 
 	if (options.hideImagePicker) {
 		var idx = items.indexOf("imagePicker");
 		items.splice(idx, 2);
 	} else {
-		plugins.push([
+		plugins.push(
 			ImagePicker,
 			ImageBlock,
 			ImageInline,
@@ -209,8 +209,8 @@ const editorConfig = (options) => {
 			ImageInsertViaUrl,
 			ImageResize,
 			ImageStyle,
-			ImageToolbar,
-		]);
+			ImageToolbar
+		);
 
 		image = {
 			toolbar: [
