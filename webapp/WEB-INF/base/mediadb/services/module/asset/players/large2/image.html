@@ -6,12 +6,13 @@
 	#set ( $urlenc = $urlenc.replace("%2F", "/") ) 
 #end
 
-#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
-	#set( $imagesize = "image1024x768.jpg")
-#else
-	#set($imagesize = "image3000x3000.jpg")
-#end			
-
+#ifnull($imagesize)
+	#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
+		#set( $imagesize = "image1024x768.jpg")
+	#else
+		#set($imagesize = "image3000x3000.jpg")
+	#end			
+#end
 
 #if($useoriginal)
 	#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($asset))
