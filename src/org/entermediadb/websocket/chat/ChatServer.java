@@ -160,12 +160,12 @@ public class ChatServer
 	{
 		
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-		String entityid = String.valueOf(inMap.get("entityid"));
+		String entityid = (String) inMap.get("entityid");
 		if (entityid == null)
 		{
-			entityid = String.valueOf(inMap.get("collectionid"));
+			entityid = (String) inMap.get("collectionid");
 		}
-		String moduleid = String.valueOf(inMap.get("moduleid"));
+		String moduleid = (String) inMap.get("moduleid");
 		if (moduleid == null)
 		{
 			moduleid = "librarycollection";

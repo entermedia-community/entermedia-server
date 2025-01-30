@@ -105,12 +105,13 @@ function chatterbox() {
   lQuery("a.ajax-edit-msg").livequery("click", function (e) {
     e.stopPropagation();
     e.preventDefault();
-
-    var targetDiv = $(this).data("targetdiv");
-    var options = $(this).data();
-    var nextpage = $(this).attr("href");
+	var editbtn = $(this);
+    var targetDiv = editbtn.data("targetdiv");
+    var options = editbtn.data();
+    var nextpage = editbtn.attr("href");
     $.get(nextpage, options, function (data) {
-      var cell = findclosest($(this), "#" + targetDiv);
+      //var cell = findclosest($(this), "#" + targetDiv);
+	  var cell = editbtn.closest("#" + targetDiv);
       cell.replaceWith(data);
       scrollToEdit(targetDiv);
     });
@@ -183,7 +184,7 @@ function connect() {
     var apphome = app.data("home") + app.data("apphome");
     jQuery(window).trigger("ajaxsocketautoreload");
     var message = JSON.parse(event.data);
-    console.log(message);
+    //console.log(message);
 
     var channel = message.channel;
     var id = message.messageid;
@@ -341,7 +342,11 @@ function cancelKeepAlive() {
 
 function play() {
   var app = jQuery("#application");
-  var apphome = app.data("home") + app.data("apphome");
+  var apphome =  app.data("apphome");
+  var home = app.data("home");
+  if (home !== undefined) {
+	apphome = home + apphome;
+  }
   var urls = apphome + "/components/chatterbox/stairs.wav";
 
   var snd = new Audio(urls); // buffers automatically when created
