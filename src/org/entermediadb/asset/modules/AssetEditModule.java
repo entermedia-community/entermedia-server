@@ -2143,7 +2143,9 @@ public class AssetEditModule extends BaseMediaModule
 			String detailid = splits[1];
 			String sourcepath = null;
 			if (moduleid != null)
-			{
+			{							
+				Data entitmodule = mediaArchive.getCachedData("module",moduleid);
+
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null)
 				{
@@ -2157,7 +2159,6 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						if( target != null && searcher.getDetail("uploadsourcepath") != null )
 						{
-							Data entitmodule = mediaArchive.getCachedData("module",moduleid);
 							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 							if( cat != null)
 							{
@@ -2184,7 +2185,17 @@ public class AssetEditModule extends BaseMediaModule
 							sourcepath = sourcepath + item.getName();
 						}
 					}
+				} else {
+					Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
+					if( cat != null)
+					{
+						sourcepath = cat.getCategoryPath() + "/chat/attachments/" + item.getName();
+					}
 				}
+				
+				
+				
+				
 			}
 			String path = "";
 			if (sourcepath != null)
