@@ -2271,6 +2271,10 @@ public class AssetEditModule extends BaseMediaModule
 				ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
 				manager.addAssetToCollection(archive, currentcollection, current);
 			}
+			
+			
+			
+			
 			savedassets.add(current);
 		}
 		inReq.putPageValue("savedassets", savedassets);

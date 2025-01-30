@@ -1699,7 +1699,7 @@ Server ProjectModule.uploadFile
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data asset = (Data) iterator.next();
-			Collection messageids = asset.getValues("attachedtomessageid");
+			Collection messageids = asset.getValues("chatparentid");
 			for (Iterator iterator2 = messageids.iterator(); iterator2.hasNext();)
 			{
 				String messageid = (String) iterator2.next();
@@ -1716,6 +1716,45 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("messageidwithassets",messageidwithassets);
 		return messageidwithassets;
 	}
+	
+	public void attachAssetsToMessage(WebPageRequest inReq) {
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String messageid = inReq.getRequestParameter("messageid");
+		Data message = archive.getData("chatterbox", messageid);
+		if(message == null) {
+			return;
+		}
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		ArrayList tosave = new ArrayList();
+		
+		String assetid = inReq.getRequestParameter("assetid");
+		if(assetid != null) {
+			Asset asset = archive.getAsset(assetid);
+			asset.addValue("chatparentid", message.getId());
+			
+			tosave.add(asset);			
+		}
+		
+		
+		
+		for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data)iterator.next();
+			Asset asset = archive.getAsset(hit.getId());
+
+			asset.addValue("chatparentid", message.getId());
+			tosave.add(asset);			
+		}
+		
+		
+		archive.saveAssets(tosave);
+		
+		
+		
+	}
+	
 	
 	
 }
