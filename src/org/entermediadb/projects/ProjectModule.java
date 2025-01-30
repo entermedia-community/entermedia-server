@@ -35,151 +35,162 @@ import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
-public class ProjectModule extends BaseMediaModule 
+public class ProjectModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 
-	public void loadCollections(WebPageRequest inReq) throws Exception {
+	public void loadCollections(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
 	/*
-	public void redirectToCollection(WebPageRequest inReq) throws Exception {
-		String catalogid = inReq.findPathValue("catalogid");
-		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
-		String collectionid = inReq.getRequestParameter("newcollectionid");
-		if(collectionid == null) {
-			collectionid = loadCollectionId(inReq);
-		}
-		String appid = inReq.findValue("applicationid");
-		String finalpath = "/" + appid + "/views/modules/librarycollection/media/" + collectionid + ".html";
-		//Selected Sub folder?
-		String nodeID = inReq.getRequestParameter("nodeID");
-		if (nodeID != null) {
-			finalpath = finalpath + "?nodeID="+nodeID;
-		}
-		inReq.redirect(finalpath);
-	}
-	*/
-	
-	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception 
+	 * public void redirectToCollection(WebPageRequest inReq) throws Exception {
+	 * String catalogid = inReq.findPathValue("catalogid"); ProjectManager
+	 * manager = (ProjectManager) getModuleManager().getBean(catalogid,
+	 * "projectManager"); String collectionid =
+	 * inReq.getRequestParameter("newcollectionid"); if(collectionid == null) {
+	 * collectionid = loadCollectionId(inReq); } String appid =
+	 * inReq.findValue("applicationid"); String finalpath = "/" + appid +
+	 * "/views/modules/librarycollection/media/" + collectionid + ".html";
+	 * //Selected Sub folder? String nodeID =
+	 * inReq.getRequestParameter("nodeID"); if (nodeID != null) { finalpath =
+	 * finalpath + "?nodeID="+nodeID; } inReq.redirect(finalpath); }
+	 */
+
+	public void redirectToCollectionRoot(WebPageRequest inReq) throws Exception
 	{
 		LibraryCollection collection = loadCollection(inReq);
-		if(collection == null) {
+		if (collection == null)
+		{
 			return;
 		}
-		String collectionid = collection.getId(); 
-		if (collectionid != null && collectionid.startsWith("multiedit:")) {
+		String collectionid = collection.getId();
+		if (collectionid != null && collectionid.startsWith("multiedit:"))
+		{
 			return;
 		}
-		
+
 		String collectionroot = inReq.getRequestParameter("collectionroot");
-		if( collectionroot == null)
+		if (collectionroot == null)
 		{
 			collectionroot = inReq.findValue("collectionroot");
 		}
-		if( collectionroot == null)
+		if (collectionroot == null)
 		{
 			throw new OpenEditException("collectionroot not set");
 		}
 		String finalpath = "";
-		
-		
-		if (collectionroot.endsWith(".html")) 
+
+		if (collectionroot.endsWith(".html"))
 		{
 			finalpath = collectionroot + "?collectionid=" + collection.getId();
 		}
-		else 
+		else
 		{
-			
+
 			finalpath = collectionroot + "/" + collection.getId() + "/index.html";
 		}
-		
+
 		//Selected Sub folder?
 		String nodeID = inReq.getRequestParameter("nodeID");
-		if (nodeID != null) {
-			if (finalpath.contains("?")) {
+		if (nodeID != null)
+		{
+			if (finalpath.contains("?"))
+			{
 				finalpath = finalpath + "&";
 			}
-			else {
-				finalpath = finalpath + "?";	
+			else
+			{
+				finalpath = finalpath + "?";
 			}
-			finalpath = finalpath + "nodeID="+nodeID;
-			
+			finalpath = finalpath + "nodeID=" + nodeID;
+
 		}
 		String args = inReq.getRequestParameter("args");
-		if (args != null) {
-			if (finalpath.contains("?")) {
+		if (args != null)
+		{
+			if (finalpath.contains("?"))
+			{
 				finalpath = finalpath + "&";
 			}
-			else {
-				finalpath = finalpath + "?";	
+			else
+			{
+				finalpath = finalpath + "?";
 			}
 			finalpath = finalpath + args;
-			
+
 		}
 		inReq.redirect(finalpath);
 
 	}
-	
-	public void redirectToCategory(WebPageRequest inReq) throws Exception {
+
+	public void redirectToCategory(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		String categoryid = inReq.getRequestParameter("categoryid");
 		String nodeID = inReq.getRequestParameter("nodeID");
-		if (categoryid == null) {
-			if (nodeID != null) {
+		if (categoryid == null)
+		{
+			if (nodeID != null)
+			{
 				categoryid = nodeID;
 			}
 		}
-		if(categoryid != null) {
+		if (categoryid != null)
+		{
 			String appid = inReq.findValue("applicationid");
 			String finalpath = "/" + appid + "/views/modules/asset/showcategory.html?categoryid=" + categoryid + "";
-			if (nodeID != null) {
-				finalpath = finalpath + "&nodeID="+nodeID;
+			if (nodeID != null)
+			{
+				finalpath = finalpath + "&nodeID=" + nodeID;
 			}
 			inReq.redirect(finalpath);
 		}
-		
 
 	}
-	
-	
-	
 
-	public void loadOpenCollections(WebPageRequest inReq) throws Exception {
+	public void loadOpenCollections(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		manager.loadOpenCollections(inReq, getMediaArchive(inReq), 10);
 	}
 
-	public void loadMostRecentCollection(WebPageRequest inReq) throws Exception {
+	public void loadMostRecentCollection(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		Collection<LibraryCollection> list = manager.loadOpenCollections(inReq, getMediaArchive(inReq), 1);
-		if (!list.isEmpty()) {
+		if (!list.isEmpty())
+		{
 			inReq.putPageValue("librarycol", list.iterator().next());
 		}
 	}
 
-	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception {
+	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 		Data selected = manager.getCurrentLibrary(inReq.getUserProfile());
 		inReq.putPageValue("selectedlibrary", selected);
 
 	}
-	
-	public void listConnectedDesktop(WebPageRequest inReq) throws Exception {
+
+	public void listConnectedDesktop(WebPageRequest inReq) throws Exception
+	{
 		//NOOP
 	}
 
-	public void setCurrentLibrary(WebPageRequest inReq) {
+	public void setCurrentLibrary(WebPageRequest inReq)
+	{
 		String catalogid = inReq.findPathValue("catalogid");
 		String libraryid = inReq.findValue("selectedlibrary");
-		if (libraryid != null) {
+		if (libraryid != null)
+		{
 			ProjectManager manager = (ProjectManager) getModuleManager().getBean(catalogid, "projectManager");
 			Data library = manager.setCurrentLibrary(inReq.getUserProfile(), libraryid);
 			inReq.putPageValue("selectedlibrary", library);
@@ -204,8 +215,8 @@ public class ProjectModule extends BaseMediaModule
 	 * getProjectManager(inReq);
 	 * 
 	 * if( hitssessionid != null ) { HitTracker tracker =
-	 * (HitTracker)inReq.getSessionValue(hitsses/sionid); if( tracker != null ) {
-	 * tracker = tracker.getSelectedHitracker(); if( tracker != null &&
+	 * (HitTracker)inReq.getSessionValue(hitsses/sionid); if( tracker != null )
+	 * { tracker = tracker.getSelectedHitracker(); if( tracker != null &&
 	 * tracker.size() > 0 ) { manager.addAssetToLibrary(archive, libraryid,
 	 * tracker); inReq.putPageValue("added" , String.valueOf( tracker.size() )
 	 * ); return; } } }
@@ -227,22 +238,27 @@ public class ProjectModule extends BaseMediaModule
 	 * tracker); inReq.putPageValue("count" , String.valueOf( tracker.size() )
 	 * ); return; } } } }
 	 */
-	public void addAssetToCollection(WebPageRequest inReq) {
+	public void addAssetToCollection(WebPageRequest inReq)
+	{
 		// TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
 
 		// String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("collectionid");
-		if (librarycollection == null) {
+		if (librarycollection == null)
+		{
 			librarycollection = inReq.getRequestParameter("id");
 		}
-		if (librarycollection == null) {
+		if (librarycollection == null)
+		{
 			Data data = (Data) inReq.getPageValue("data");
-			if (data != null) {
+			if (data != null)
+			{
 				librarycollection = data.getId();
 			}
 		}
-		if (librarycollection == null) {
+		if (librarycollection == null)
+		{
 			log.error("librarycollection not found");
 			return;
 		}
@@ -250,47 +266,55 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		String moduleid = inReq.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inReq, moduleid);
-		if (tracker != null) {
+		if (tracker != null)
+		{
 			tracker = tracker.getSelectedHitracker();
 		}
-		if (tracker != null && tracker.size() > 0) {
+		if (tracker != null && tracker.size() > 0)
+		{
 			manager.addAssetToCollection(archive, librarycollection, tracker);
 			inReq.putPageValue("added", String.valueOf(tracker.size()));
 			return;
 		}
-		
+
 		String assetid = inReq.getRequestParameter("assetid");
-		if (assetid != null) {
+		if (assetid != null)
+		{
 			manager.addAssetToCollection(archive, librarycollection, assetid);
 			inReq.putPageValue("added", "1");
-			
+
 		}
 	}
 
-	public void addAssetsToCollection(WebPageRequest inReq) {
+	public void addAssetsToCollection(WebPageRequest inReq)
+	{
 		String[] assetids = inReq.getRequestParameters("assetid");
 		MediaArchive archive = getMediaArchive(inReq);
 		String librarycollection = inReq.getRequestParameter("collectionid");
 
-		if (assetids != null) {
+		if (assetids != null)
+		{
 
 			ProjectManager manager = getProjectManager(inReq);
-			for (int i = 0; i < assetids.length; i++) {
+			for (int i = 0; i < assetids.length; i++)
+			{
 				String assetid = assetids[i];
 				manager.addAssetToCollection(archive, librarycollection, assetid);
 
 			}
 
 		}
-		
+
 		ProjectManager manager = getProjectManager(inReq);
 
 		String moduleid = inReq.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inReq, moduleid);
-		if (tracker != null) {
+		if (tracker != null)
+		{
 			tracker = tracker.getSelectedHitracker();
 		}
-		if (tracker != null && tracker.size() > 0) {
+		if (tracker != null && tracker.size() > 0)
+		{
 			log.info("tracker size was" + tracker.size());
 			manager.addAssetToCollection(archive, librarycollection, tracker);
 			inReq.putPageValue("count", String.valueOf(tracker.size()));
@@ -299,30 +323,34 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("collectionid", librarycollection);
 	}
 
-	public void removeAssetFromCollection(WebPageRequest inReq) {
+	public void removeAssetFromCollection(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String collectionid = loadCollectionId(inReq);
 
 		ProjectManager manager = getProjectManager(inReq);
-		
+
 		String moduleid = inReq.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inReq, moduleid);
-		if (tracker != null) {
+		if (tracker != null)
+		{
 			tracker = tracker.getSelectedHitracker();
 		}
-		if (tracker != null && tracker.size() > 0) {
+		if (tracker != null && tracker.size() > 0)
+		{
 			manager.removeAssetFromCollection(archive, collectionid, tracker);
 			inReq.putPageValue("count", String.valueOf(tracker.size()));
 			return;
 		}
-		
+
 		String assetid = inReq.findValue("assetid");
-		if(assetid != null){
-	
+		if (assetid != null)
+		{
+
 			manager.removeAssetFromCollection(archive, collectionid, assetid);
 		}
-		
+
 	}
 
 	// public void searchForAssetsInLibrary(WebPageRequest inReq)
@@ -336,15 +364,18 @@ public class ProjectModule extends BaseMediaModule
 	// inReq.putPageValue("hits", hits);
 	// }
 	// }
-	public void searchForPendingAssetsOnCollection(WebPageRequest inReq) {
+	public void searchForPendingAssetsOnCollection(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			return;
 		}
 		ProjectManager manager = getProjectManager(inReq);
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
-		if (all == null) {
+		if (all == null)
+		{
 			return;
 		}
 
@@ -357,20 +388,23 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putSessionValue(sessionId, all);
 	}
 
-	public void searchForAssetsOnCollection(WebPageRequest inReq) {
+	public void searchForAssetsOnCollection(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			return;
 		}
 		ProjectManager manager = getProjectManager(inReq);
 
-		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
-		if (all == null) {
+		if (all == null)
+		{
 			return;
 		}
-		if (Boolean.parseBoolean(inReq.findValue("alwaysresetpage"))) {
+		if (Boolean.parseBoolean(inReq.findValue("alwaysresetpage")))
+		{
 			all.setPage(1);
 		}
 		//all.getSearchQuery().setValue("caneditcollection", caneditdata);
@@ -380,25 +414,28 @@ public class ProjectModule extends BaseMediaModule
 		String sessionId = all.getSessionId();
 		inReq.putSessionValue(sessionId, all);
 	}
-	
+
 	public void getFirstUserCollection(WebPageRequest inReq)
 	{
 		String collectionid = loadCollectionId(inReq);
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			Asset asset = getAsset(inReq);
-			if (asset != null && asset.getCategories() != null) {
+			if (asset != null && asset.getCategories() != null)
+			{
 				for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();)
 				{
 					Category child = (Category) iterator2.next();
-					String foundcollectionid  = getCategoryCollectionCache(inReq).findCollectionId(child);
-					if (foundcollectionid != null) {
+					String foundcollectionid = getCategoryCollectionCache(inReq).findCollectionId(child);
+					if (foundcollectionid != null)
+					{
 						inReq.setRequestParameter("collectionid", foundcollectionid);
 						return;
 					}
 				}
 			}
 		}
-		
+
 	}
 
 	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
@@ -410,10 +447,8 @@ public class ProjectModule extends BaseMediaModule
 		return col;
 
 	}
-	
 
-
-	public LibraryCollection loadCollection(WebPageRequest inReq) 
+	public LibraryCollection loadCollection(WebPageRequest inReq)
 	{
 		String collectionid = loadCollectionId(inReq);
 		LibraryCollection collection = null;
@@ -425,13 +460,13 @@ public class ProjectModule extends BaseMediaModule
 		{
 			collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
 		}
-		if( collection == null)
+		if (collection == null)
 		{
 			//log.error("No collection id found on " + inReq.getPath());
 			//collection = loadCollectionFromCommunityTagFolder(inReq);
 
 		}
-		if(collection != null)
+		if (collection != null)
 		{
 			inReq.putPageValue("librarycol", collection);
 			inReq.putPageValue("library", collection.getLibrary());
@@ -439,72 +474,78 @@ public class ProjectModule extends BaseMediaModule
 		}
 		return collection;
 	}
-	
-	public String loadCollectionId(WebPageRequest inReq) 
+
+	public String loadCollectionId(WebPageRequest inReq)
 	{
 		String collectionid = inReq.getRequestParameter("collectionid");
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			collectionid = inReq.getRequestParameter("librarycollection");
-			if (collectionid == null) 
+			if (collectionid == null)
 			{
 				String collectionidinpath = inReq.getContentProperty("collectionidinpath");
-				if( Boolean.parseBoolean(collectionidinpath))
+				if (Boolean.parseBoolean(collectionidinpath))
 				{
 					String assetrootfolder = inReq.getContentProperty("assetrootfolder");
 					String ending = inReq.getPath().substring(assetrootfolder.length() + 1);
 					int endslash = ending.indexOf("/");
-					if( endslash > -1)
+					if (endslash > -1)
 					{
 						collectionid = ending.substring(0, endslash);
 					}
-				}	
-				if( collectionid == null)
+				}
+				if (collectionid == null)
 				{
 					String collectionidonpagename = inReq.findActionValue("collectionidonpagename");
-					if( Boolean.parseBoolean(collectionidonpagename))
+					if (Boolean.parseBoolean(collectionidonpagename))
 					{
 						collectionid = PathUtilities.extractPageName(inReq.getPath());
-					}	
-				}	
+					}
+				}
 			}
-			if( collectionid == null)
+			if (collectionid == null)
 			{
 				collectionid = (String) inReq.getPageValue("collectionid");
 				//collectionid = inReq.getRequestParameter("id"); //Causing issues
-				if (collectionid == null) {
+				if (collectionid == null)
+				{
 					Data coll = (Data) inReq.getPageValue("librarycol");
-					if (coll != null) {
+					if (coll != null)
+					{
 						collectionid = coll.getId();
 					}
 				}
 			}
-			
+
 			collectionid = inReq.findValue("collectionid");
 		}
-		if (collectionid == null) 
+		if (collectionid == null)
 		{
 			String collectionidinpath = inReq.getContentProperty("collectionidinfilename");
-			if( Boolean.parseBoolean(collectionidinpath))
+			if (Boolean.parseBoolean(collectionidinpath))
 			{
 				collectionid = PathUtilities.extractPageName(inReq.getContentPage().getName());
-			}			
+			}
 		}
-//			LibraryCollection coll = loadCollectionFromFolder(inReq);
-//			if (coll != null) {
-//				collectionid = coll.getId();
-//			}
-//		}
-		if(collectionid != null) {
-			
-			inReq.setRequestParameter("collectionid", collectionid);  // This was breaking redirects. Not sure it's needed?
+		//			LibraryCollection coll = loadCollectionFromFolder(inReq);
+		//			if (coll != null) {
+		//				collectionid = coll.getId();
+		//			}
+		//		}
+		if (collectionid != null)
+		{
+
+			inReq.setRequestParameter("collectionid", collectionid); // This was breaking redirects. Not sure it's needed?
 
 		}
 		return collectionid;
 	}
 
-	public void savedLibrary(WebPageRequest inReq) {
+	public void savedLibrary(WebPageRequest inReq)
+	{
 		Data saved = (Data) inReq.getPageValue("data");
-		if (saved != null) {
+		if (saved != null)
+		{
 			inReq.setRequestParameter("profilepreference", "last_selected_library");
 			inReq.setRequestParameter("profilepreference.value", saved.getId());
 		}
@@ -523,71 +564,77 @@ public class ProjectModule extends BaseMediaModule
 		// }
 	}
 
-	public void createCollection(WebPageRequest inReq) 
+	public void createCollection(WebPageRequest inReq)
 	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		Searcher librarysearcher = mediaArchive.getSearcher("librarycollection");
-		LibraryCollection saved = (LibraryCollection)librarysearcher.createNewData();
+		LibraryCollection saved = (LibraryCollection) librarysearcher.createNewData();
 		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
 		//saved.setValue("library", inReq.getRequestParameter("library.value"));  //optional
 		//Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
-		
-		
+
 		librarysearcher.saveData(saved, null); //this fires event ProjectManager.configureCollection
 
 		/*
-		Category cat = manager.getRootCategory(mediaArchive, (LibraryCollection) saved); //This creates the library
-		((MultiValued) cat).addValue("viewusers", inReq.getUserName());
-		mediaArchive.getCategorySearcher().saveData(cat);
+		 * Category cat = manager.getRootCategory(mediaArchive,
+		 * (LibraryCollection) saved); //This creates the library ((MultiValued)
+		 * cat).addValue("viewusers", inReq.getUserName());
+		 * mediaArchive.getCategorySearcher().saveData(cat);
 		 */
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
 		inReq.setRequestParameter("newcollectionid", saved.getId());
-		
+
 		inReq.setRequestParameter("nodeID", (String) saved.getValue("rootcategory"));
 
-		manager.configureCollection(saved,inReq.getUserName());
+		manager.configureCollection(saved, inReq.getUserName());
 		inReq.putPageValue("librarycol", saved);
 		inReq.putPageValue("librarycollection", saved.getId());
-		
+
 		getCategoryCollectionCache(inReq).addCollection(saved);
-		
+
 	}
-/*
-	public Data createUserLibrary(WebPageRequest inReq) {
-		MediaArchive archive = getMediaArchive(inReq);
-		UserProfile profile = inReq.getUserProfile();
-		ProjectManager manager = getProjectManager(inReq);
-		Data userlibrary = manager.loadUserLibrary(archive, profile);
-		inReq.setRequestParameter("profilepreference", "last_selected_library");
-		inReq.setRequestParameter("profilepreference.value", userlibrary.getId());
-		return userlibrary;
-	}
-*/
-	public void addOpenCollection(WebPageRequest inReq) {
+
+	/*
+	 * public Data createUserLibrary(WebPageRequest inReq) { MediaArchive
+	 * archive = getMediaArchive(inReq); UserProfile profile =
+	 * inReq.getUserProfile(); ProjectManager manager =
+	 * getProjectManager(inReq); Data userlibrary =
+	 * manager.loadUserLibrary(archive, profile);
+	 * inReq.setRequestParameter("profilepreference", "last_selected_library");
+	 * inReq.setRequestParameter("profilepreference.value",
+	 * userlibrary.getId()); return userlibrary; }
+	 */
+	public void addOpenCollection(WebPageRequest inReq)
+	{
 		UserProfile profile = inReq.getUserProfile();
 		Collection cols = profile.getValues("opencollections");
 		String collectionid = null;
 		Data collection = (Data) inReq.getPageValue("librarycol");
-		if (collection == null) {
+		if (collection == null)
+		{
 			collectionid = (String) inReq.getRequestParameter("collectionid");
 		}
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			collection = (Data) inReq.getPageValue("data");
 		}
-		if (collection != null) {
+		if (collection != null)
+		{
 			collectionid = collection.getId();
 		}
 
-		if (collectionid != null) {
-			if (cols == null || !cols.contains(collectionid)) 
+		if (collectionid != null)
+		{
+			if (cols == null || !cols.contains(collectionid))
 			{
 				profile.addValue("opencollections", collectionid);
 				cols = profile.getValues("opencollections");
-				if (cols.size() > 30) {
+				if (cols.size() > 30)
+				{
 					List cut = new ArrayList(cols);
 					cut = cut.subList(cols.size() - 30, cols.size());
 					profile.setValues("opencollections", cut);
@@ -599,27 +646,35 @@ public class ProjectModule extends BaseMediaModule
 	}
 
 	// Not used anymore
-	public void addCollectionTab(WebPageRequest inReq) {
+	public void addCollectionTab(WebPageRequest inReq)
+	{
 		UserProfile profile = inReq.getUserProfile();
 		String collectionid = null;
 		Data collection = (Data) inReq.getPageValue("librarycol");
-		if (collection != null) {
+		if (collection != null)
+		{
 			collectionid = collection.getId();
-		} else {
+		}
+		else
+		{
 			collectionid = inReq.getRequestParameter("collectionid");
 		}
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			String newcollection = inReq.getRequestParameter("collectionname.value");
-			if (newcollection != null) {
+			if (newcollection != null)
+			{
 				MediaArchive archive = getMediaArchive(inReq);
 				Searcher searcher = archive.getSearcher("librarycollection");
 				Data newcol = searcher.createNewData();
 				String libraryid = inReq.getRequestParameter("library.value");
-				if (libraryid == null) {
+				if (libraryid == null)
+				{
 					Searcher lsearcher = archive.getSearcher("library");
 
 					Data lib = (Data) searcher.searchById(inReq.getUserName());
-					if (lib == null) {
+					if (lib == null)
+					{
 						lib = lsearcher.createNewData();
 						lib.setId(inReq.getUserName());
 						lib.setName(inReq.getUser().getShortDescription());
@@ -638,32 +693,37 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 		Collection cols = profile.getValues("opencollections");
-		if (cols == null || !cols.contains(collectionid)) {
+		if (cols == null || !cols.contains(collectionid))
+		{
 			profile.addValue("opencollections", collectionid);
 			profile.save(inReq.getUser());
 		}
 		profile.setProperty("selectedcollection", collectionid);
 	}
 
-	public void closeCollectionTab(WebPageRequest inReq) {
+	public void closeCollectionTab(WebPageRequest inReq)
+	{
 		UserProfile profile = inReq.getUserProfile();
 		String collectionid = inReq.getRequestParameter("collectionid");
 		profile.removeValue("opencollections", collectionid);
 		String selcol = profile.get("selectedcollection");
-		if (collectionid.equals(selcol)) {
+		if (collectionid.equals(selcol))
+		{
 			profile.setProperty("selectedcollection", null);
 		}
 		profile.save(inReq.getUser());
 	}
 
-	public ProjectManager getProjectManager(WebPageRequest inReq) {
+	public ProjectManager getProjectManager(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
 		inReq.putPageValue("projectmanager", manager);
 		return manager;
 	}
 
-	public void addCategoryToCollection(WebPageRequest inReq) {
+	public void addCategoryToCollection(WebPageRequest inReq)
+	{
 		String[] categoryid = inReq.getRequestParameters("categoryid");
 		// if( categoryid == null)
 		// {
@@ -673,12 +733,14 @@ public class ProjectModule extends BaseMediaModule
 		// categoryid = vals.replace(" ","").trim().split(" +");
 		// }
 		// }
-		if (categoryid != null) {
+		if (categoryid != null)
+		{
 			MediaArchive archive = getMediaArchive(inReq);
 			ProjectManager manager = getProjectManager(inReq);
 			String collectionid = inReq.getRequestParameter("collectionid");
 			Data collection = null;
-			for (int i = 0; i < categoryid.length; i++) {
+			for (int i = 0; i < categoryid.length; i++)
+			{
 				collection = manager.addCategoryToCollection(inReq.getUser(), archive, collectionid, categoryid[i]);
 			}
 			inReq.putPageValue("librarycol", collection);
@@ -700,35 +762,36 @@ public class ProjectModule extends BaseMediaModule
 	// inReq.putPageValue("collectioncategories", categories);
 	// //inReq.putSessionValue(all.getSessionId(),all);
 	// }
-//	public void importCollection(WebPageRequest inReq) {
-//		MediaArchive archive = getMediaArchive(inReq);
-//		ProjectManager manager = getProjectManager(inReq);
-//		String collectionid = loadCollectionId(inReq);
-//		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
-//
-//		User user = inReq.getUser();
-//		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
-//				+ collection.getName() + "/";
-//
-//		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
-//		if (paths.isEmpty()) {
-//			log.info("No import folders found ");
-//			return;
-//		}
-//		Collections.reverse(paths);
-//		String latest = (String) paths.iterator().next();
-//		latest = latest + "/";
-//		// Need to check if this is unique - increment a counter?
-//		String note = inReq.getRequestParameter("note.value");
-//		if (note == null) {
-//			note = "Auto Created Revision on Import";
-//		}
-//		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
-//		inReq.putPageValue("importstatus", "completed");
-//
-//	}
+	//	public void importCollection(WebPageRequest inReq) {
+	//		MediaArchive archive = getMediaArchive(inReq);
+	//		ProjectManager manager = getProjectManager(inReq);
+	//		String collectionid = loadCollectionId(inReq);
+	//		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
+	//
+	//		User user = inReq.getUser();
+	//		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
+	//				+ collection.getName() + "/";
+	//
+	//		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
+	//		if (paths.isEmpty()) {
+	//			log.info("No import folders found ");
+	//			return;
+	//		}
+	//		Collections.reverse(paths);
+	//		String latest = (String) paths.iterator().next();
+	//		latest = latest + "/";
+	//		// Need to check if this is unique - increment a counter?
+	//		String note = inReq.getRequestParameter("note.value");
+	//		if (note == null) {
+	//			note = "Auto Created Revision on Import";
+	//		}
+	//		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
+	//		inReq.putPageValue("importstatus", "completed");
+	//
+	//	}
 
-	public void copyCollection(WebPageRequest inReq) {
+	public void copyCollection(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = loadCollection(inReq);
@@ -751,7 +814,8 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 
-	public void createSnapshot(WebPageRequest inReq) {
+	public void createSnapshot(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
@@ -759,14 +823,16 @@ public class ProjectModule extends BaseMediaModule
 		User user = inReq.getUser();
 
 		String note = inReq.getRequestParameter("note.value");
-		if (note == null) {
+		if (note == null)
+		{
 			note = "Snapshot Created";
 		}
 		manager.snapshotCollection(inReq, user, archive, collectionid, note);
 
 	}
 
-	public void restoreSnapshot(WebPageRequest inReq) {
+	public void restoreSnapshot(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
@@ -775,51 +841,52 @@ public class ProjectModule extends BaseMediaModule
 		User user = inReq.getUser();
 
 		String note = inReq.getRequestParameter("note.value");
-		if (note == null) {
+		if (note == null)
+		{
 			note = "Auto Snapshot on Restore from " + revision;
 		}
 		manager.restoreSnapshot(inReq, user, archive, collectionid, revision, note);
 
 	}
 
-	
-	
-	public void changeLock(WebPageRequest inReq) {
+	public void changeLock(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String collectionid = loadCollectionId(inReq);
 		boolean lock = Boolean.parseBoolean(inReq.getRequestParameter("lockcollection"));
-		if(lock) {
+		if (lock)
+		{
 			archive.updateAndSave("librarycollection", collectionid, "lockedby", inReq.getUserName());
-		} else {
+		}
+		else
+		{
 			archive.updateAndSave("librarycollection", collectionid, "lockedby", null);
 		}
-		
+
 	}
-	
 
-
-	
-
-	public boolean checkViewCollection(WebPageRequest inReq) {
+	public boolean checkViewCollection(WebPageRequest inReq)
+	{
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = loadCollection(inReq);
-		
+
 		boolean canview = manager.canViewCollection(inReq, collection);
-		if( canview )
+		if (canview)
 		{
-			inReq.putPageValue("librarycol",collection);
+			inReq.putPageValue("librarycol", collection);
 		}
 		return canview;
 	}
 
-	public Boolean canEditCollection(WebPageRequest inReq) {
+	public Boolean canEditCollection(WebPageRequest inReq)
+	{
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = loadCollection(inReq);
-		boolean caneditcollection =  manager.canEditCollection(inReq, collection);
-		
-		if( caneditcollection )
+		boolean caneditcollection = manager.canEditCollection(inReq, collection);
+
+		if (caneditcollection)
 		{
-			inReq.putPageValue("librarycol",collection);
+			inReq.putPageValue("librarycol", collection);
 		}
 		inReq.putPageValue("caneditcollection", caneditcollection);
 		return caneditcollection;
@@ -836,8 +903,8 @@ public class ProjectModule extends BaseMediaModule
 	//
 	// }
 
-
-	public void approveSelection(WebPageRequest inReq) {
+	public void approveSelection(WebPageRequest inReq)
+	{
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
@@ -845,11 +912,12 @@ public class ProjectModule extends BaseMediaModule
 		int count = manager.approveSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("approved", count);
 		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
-		inReq.setRequestParameter(searcher.getSearchType()+"clearselection", "true");
+		inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
 		searcher.loadHits(inReq);
 	}
 
-	public void rejectSelection(WebPageRequest inReq) {
+	public void rejectSelection(WebPageRequest inReq)
+	{
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
@@ -857,12 +925,13 @@ public class ProjectModule extends BaseMediaModule
 		int count = manager.rejectSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("rejected", count);
 		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
-		inReq.setRequestParameter(searcher.getSearchType()+"clearselection", "true");
+		inReq.setRequestParameter(searcher.getSearchType() + "clearselection", "true");
 		searcher.loadHits(inReq);
 
 	}
 
-	public void createQuickGallery(WebPageRequest inReq) {
+	public void createQuickGallery(WebPageRequest inReq)
+	{
 		String moduleid = inReq.findPathValue("module");
 		HitTracker tracker = loadHitTracker(inReq, moduleid);
 
@@ -878,12 +947,12 @@ public class ProjectModule extends BaseMediaModule
 		Searcher categories = archive.getSearcher("category");
 
 		String collectionroot = archive.getCatalogSettingValue("gallery_root");
-		if (collectionroot == null) {
+		if (collectionroot == null)
+		{
 			collectionroot = "Collections";
 		}
 
-		Category newcat = archive
-				.createCategoryPath(collectionroot + "/Galleries/" + inReq.getUserName() + "/" + collection.getName());
+		Category newcat = archive.createCategoryPath(collectionroot + "/Galleries/" + inReq.getUserName() + "/" + collection.getName());
 
 		// newcat.setValue("visibility", "hidden");
 		newcat.setName(collection.getName());
@@ -896,12 +965,14 @@ public class ProjectModule extends BaseMediaModule
 		collection.setValue("visibility", "3");
 		ArrayList assets = new ArrayList();
 
-		for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();)
+		{
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset) assetsearcher.loadData(hit);
 			asset.addCategory(newcat);
 			assets.add(asset);
-			if (assets.size() > 1000) {
+			if (assets.size() > 1000)
+			{
 				assetsearcher.saveAllData(assets, null);
 				assets.clear();
 			}
@@ -913,7 +984,8 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("librarycol", collection);
 	}
 
-	public void loadUserUpload(WebPageRequest inReq) throws Exception {
+	public void loadUserUpload(WebPageRequest inReq) throws Exception
+	{
 		String page = inReq.getPage().getName();
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher userupload = archive.getSearcher("userupload");
@@ -921,38 +993,35 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("userupload", upload);
 	}
 
-
 	/*
 	 *
-Server ProjectManager.retrieveFilesFromClient
-Server Desktop.importCollection
-Client AppController.checkinFiles
-Client EnterMediaModel.pushFolder
-Server ProjectModule.syncRemoteFolder
-Client EnterMediaModule.uploadFilesIntoCollection
-Server ProjectModule.uploadFile
-
+	 * Server ProjectManager.retrieveFilesFromClient Server
+	 * Desktop.importCollection Client AppController.checkinFiles Client
+	 * EnterMediaModel.pushFolder Server ProjectModule.syncRemoteFolder Client
+	 * EnterMediaModule.uploadFilesIntoCollection Server
+	 * ProjectModule.uploadFile
+	 * 
 	 */
-//	public void uploadMedia(WebPageRequest inReq) throws Exception
-//	{
-//		FileUpload command = new FileUpload();
-//		command.setPageManager(getPageManager());
-//		UploadRequest properties = command.parseArguments(inReq);
-//		if (properties == null)
-//		{
-//			return;
-//		}
-//
-//		//MediaArchive archive = getMediaArchive(inReq);
-//
-//		String savepath = inReq.getRequestParameter("savepath");
-//		FileUploadItem item = properties.getFirstItem();
-//		
-//		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
-//		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
-//		
-//	}
-	
+	//	public void uploadMedia(WebPageRequest inReq) throws Exception
+	//	{
+	//		FileUpload command = new FileUpload();
+	//		command.setPageManager(getPageManager());
+	//		UploadRequest properties = command.parseArguments(inReq);
+	//		if (properties == null)
+	//		{
+	//			return;
+	//		}
+	//
+	//		//MediaArchive archive = getMediaArchive(inReq);
+	//
+	//		String savepath = inReq.getRequestParameter("savepath");
+	//		FileUploadItem item = properties.getFirstItem();
+	//		
+	//		//String savepath = "/WEB-INF/data/" + catalogid +"/origin//als/" + sourcepath;
+	//		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+	//		
+	//	}
+
 	public void uploadFile(WebPageRequest inReq) throws Exception
 	{
 		//MediaArchive archive = getMediaArchive(inReq);
@@ -965,8 +1034,8 @@ Server ProjectModule.uploadFile
 		}
 		//String folderdetailsstr = inReq.getRequestParameter("folderdetails");
 		//Map folderdetails = (Map)new JSONParser().parse(folderdetailsstr);
-		String subfolder = (String)inReq.getRequestParameter("subfolder");
-		String collectionid = (String)inReq.getRequestParameter("collectionid");
+		String subfolder = (String) inReq.getRequestParameter("subfolder");
+		String collectionid = (String) inReq.getRequestParameter("collectionid");
 		String assetid = inReq.getRequestParameter("assetid");
 		String catalogid = inReq.getRequestParameter("catalogid");
 		String assetmodificationdate = inReq.getRequestParameter("assetmodificationdate");
@@ -977,7 +1046,7 @@ Server ProjectModule.uploadFile
 		MediaArchive archive = getMediaArchive(catalogid);
 		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
 		String sourcepath = collection.getCategory().getCategoryPath();
-		if( subfolder != null)
+		if (subfolder != null)
 		{
 			sourcepath = sourcepath + subfolder + "/" + item.getFileItem().getName();
 		}
@@ -985,32 +1054,32 @@ Server ProjectModule.uploadFile
 		{
 			sourcepath = sourcepath + "/" + item.getFileItem().getName();
 		}
-		String savepath = "/WEB-INF/data/" + catalogid +"/originals/" + sourcepath;
+		String savepath = "/WEB-INF/data/" + catalogid + "/originals/" + sourcepath;
 		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
 		//set mod date assetmodificationdate
 		Asset asset = null;
-		if( assetid != null)
+		if (assetid != null)
 		{
 			asset = archive.getAsset(assetid);
 		}
-		if( asset == null)
+		if (asset == null)
 		{
-			asset = (Asset)archive.getAssetSearcher().createNewData();
+			asset = (Asset) archive.getAssetSearcher().createNewData();
 			asset.setSourcePath(sourcepath);
 		}
 		asset.setProperty("importstatus", "needsmetadata");
-		asset.setValue("assetmodificationdate",contentitem.lastModified()); //This needs to be set or it will keep thinking it's changed
+		asset.setValue("assetmodificationdate", contentitem.lastModified()); //This needs to be set or it will keep thinking it's changed
 		asset.setProperty("editstatus", "1"); //pending
 
 		//Category use ID?
 		Category cat = null;
-		if( subfolder == null )
+		if (subfolder == null)
 		{
 			cat = collection.getCategory();
 		}
 		else
 		{
-			cat = archive.createCategoryPath( collection.getCategory().getCategoryPath() + subfolder );
+			cat = archive.createCategoryPath(collection.getCategory().getCategoryPath() + subfolder);
 		}
 		asset.addCategory(cat);
 		archive.saveAsset(asset);
@@ -1019,18 +1088,11 @@ Server ProjectModule.uploadFile
 
 	}
 
-	
-	
-	
-	
-	
-	
-	
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		//ProjectManager manager = getProjectManager(inPageRequest);
-		
+
 		Category category = null;
 		String categoryId = inPageRequest.getRequestParameter("selectedcategory");
 		String CATEGORYID = "categoryid";
@@ -1044,115 +1106,117 @@ Server ProjectModule.uploadFile
 		}
 		//get it from collectionid
 		LibraryCollection librarycol = loadCollection(inPageRequest);
-		if(categoryId == null && librarycol != null) {
+		if (categoryId == null && librarycol != null)
+		{
 			categoryId = librarycol.getRootCategoryId();
 		}
 		if (categoryId != null)
 		{
-			inPageRequest.putPageValue("categoryid",categoryId);
+			inPageRequest.putPageValue("categoryid", categoryId);
 			category = archive.getCategory(categoryId);
 		}
-		
-		
-		if (category != null) {
-			inPageRequest.putPageValue("category",category);
-			inPageRequest.putPageValue("selectedcategory",category);
+
+		if (category != null)
+		{
+			inPageRequest.putPageValue("category", category);
+			inPageRequest.putPageValue("selectedcategory", category);
 			//LibraryCollection librarycol = loadCollection(inPageRequest);
-			
-			QueryBuilder  q = archive.getAssetSearcher().query().enduser(true);
+
+			QueryBuilder q = archive.getAssetSearcher().query().enduser(true);
 			//if( Boolean.parseBoolean( inPageRequest.getRequestParameter("showchildassets") ) )
-//			{
-				q.exact("category",category.getId());
-//			}
-//			else
-//			{
-//				q.exact("category-exact",category.getId());
-//			}
-//			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
-//			
-//			if (!caneditdata) 
-//			{
-//				Searcharchive.getAssetSearcher().createSearchQuery();
-//				q.orgroup("editstatus", "6");
-//			}
-			
-			HitTracker tracker =  q.search(inPageRequest);
-			if( tracker != null)
+			//			{
+			q.exact("category", category.getId());
+			//			}
+			//			else
+			//			{
+			//				q.exact("category-exact",category.getId());
+			//			}
+			//			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+			//			
+			//			if (!caneditdata) 
+			//			{
+			//				Searcharchive.getAssetSearcher().createSearchQuery();
+			//				q.orgroup("editstatus", "6");
+			//			}
+
+			HitTracker tracker = q.search(inPageRequest);
+			if (tracker != null)
 			{
-					tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
-					if(librarycol != null){
-						tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
-					}
-					tracker.getSearchQuery().setProperty("categoryid", category.getId());
-					tracker.setPage(1);
-	
+				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
+				if (librarycol != null)
+				{
+					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
+				}
+				tracker.getSearchQuery().setProperty("categoryid", category.getId());
+				tracker.setPage(1);
+
 			}
 		}
 	}
-	
+
 	public CategoryCollectionCache getCategoryCollectionCache(WebPageRequest inPageRequest)
 	{
 		String catalogid = inPageRequest.findPathValue("catalogid");
-		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
+		CategoryCollectionCache cache = (CategoryCollectionCache) getModuleManager().getBean(catalogid, "categoryCollectionCache", true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
 		return cache;
 	}
-	
 
-	
 	public void loadUploads(WebPageRequest inReq)
 	{
-			ProjectManager manager = getProjectManager(inReq);
-			manager.loadUploads(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		manager.loadUploads(inReq);
 	}
 
 	public Boolean isOnTeam(WebPageRequest inReq)
 	{
-		if(inReq.getUser() == null)
+		if (inReq.getUser() == null)
 		{
 			return false;
 		}
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = loadCollection(inReq);
-		if( collection == null)
+		if (collection == null)
 		{
 			return false;
 		}
 		String userid = inReq.getUserName();
-		Boolean isOnEditTeam = manager.isOnTeam(collection,userid);
-		inReq.putPageValue("ison_" + collection.getId(),isOnEditTeam);
-		inReq.putPageValue("isonteam",isOnEditTeam);
+		Boolean isOnEditTeam = manager.isOnTeam(collection, userid);
+		inReq.putPageValue("ison_" + collection.getId(), isOnEditTeam);
+		inReq.putPageValue("isonteam", isOnEditTeam);
 		return isOnEditTeam;
 	}
-	
-	public void listCollectionsOnTeam(WebPageRequest inReq){
-		if(inReq.getUser() == null)
+
+	public void listCollectionsOnTeam(WebPageRequest inReq)
+	{
+		if (inReq.getUser() == null)
 		{
 			return;
 		}
 		ProjectManager manager = getProjectManager(inReq);
 		Collection workspaces = manager.listCollectionsOnTeam(inReq.getUser());
-		inReq.putPageValue("workspaces", workspaces);				
+		inReq.putPageValue("workspaces", workspaces);
 	}
-	
+
 	public void toggleLike(WebPageRequest inReq)
 	{
-			ProjectManager manager = getProjectManager(inReq);
-			LibraryCollection collection = loadCollection(inReq);
-			manager.toggleLike(collection.getId(),inReq.getUserName());
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection collection = loadCollection(inReq);
+		manager.toggleLike(collection.getId(), inReq.getUserName());
 	}
+
 	public void listLikedCollections(WebPageRequest inReq)
 	{
-			ProjectManager manager = getProjectManager(inReq);
-			manager.listLikedCollections(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		manager.listLikedCollections(inReq);
 	}
-	
+
 	public void loadMessagesCollection(WebPageRequest inReq)
 	{
 		ProjectManager manager = getProjectManager(inReq);
 		LibraryCollection collection = manager.getMessagesCollection(inReq.getUser());
 		inReq.putPageValue("librarycol", collection);
-		
+
 		TopicLabelPicker labels = new TopicLabelPicker();
 		labels.setArchive(getMediaArchive(inReq));
 		labels.setLibraryCollection(collection);
@@ -1162,92 +1226,92 @@ Server ProjectModule.uploadFile
 	public void loadLibraryByDomain(WebPageRequest inReq)
 	{
 
-		URLUtilities utils = (URLUtilities)inReq.getPageValue("url_util");
-		if( utils != null)
+		URLUtilities utils = (URLUtilities) inReq.getPageValue("url_util");
+		if (utils != null)
 		{
 			String domain = utils.getDomain();
 			MediaArchive archive = getMediaArchive(inReq);
-			String libraryid = (String)archive.getCacheManager().get("domaincache",domain);
-			if( libraryid == CacheManager.NULLVALUE)
+			String libraryid = (String) archive.getCacheManager().get("domaincache", domain);
+			if (libraryid == CacheManager.NULLVALUE)
 			{
 				return;
 			}
-			if(libraryid != null)
+			if (libraryid != null)
 			{
 				Data library = archive.getCachedData("library", libraryid);
-				if( library != null)
+				if (library != null)
 				{
-					inReq.putPageValue("library",library);
-					return;				
+					inReq.putPageValue("library", library);
+					return;
 				}
 			}
 			//Cache
-			Data found  = archive.query("library").startsWith("communitysubdomain", domain).searchOne();
-			if( found == null)
+			Data found = archive.query("library").startsWith("communitysubdomain", domain).searchOne();
+			if (found == null)
 			{
 				libraryid = CacheManager.NULLVALUE;
 			}
 			else
 			{
-				inReq.putPageValue("library",found);
+				inReq.putPageValue("library", found);
 				libraryid = found.getId();
 			}
-			archive.getCacheManager().put("domaincache",domain,libraryid);
+			archive.getCacheManager().put("domaincache", domain, libraryid);
 		}
 	}
 	/*
-	public void uploadRemoteFolderCache(WebPageRequest inReq) 
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		
-		Map params = inReq.getJsonRequest();
-		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
-		String rootfolder = (String)params.get("rootfolder");
-		Map folderdetails = (Map)params.get("folderdetails");
-		desktop.addLocalFileCache(archive, inReq.getUserName(), rootfolder, folderdetails);
-		
-		//TODO: See error
-	}
-	*/
-	
+	 * public void uploadRemoteFolderCache(WebPageRequest inReq) { MediaArchive
+	 * archive = getMediaArchive(inReq); ProjectManager manager =
+	 * getProjectManager(inReq);
+	 * 
+	 * Map params = inReq.getJsonRequest(); Desktop desktop =
+	 * manager.getDesktopManager().getDesktop(inReq.getUserName()); String
+	 * rootfolder = (String)params.get("rootfolder"); Map folderdetails =
+	 * (Map)params.get("folderdetails"); desktop.addLocalFileCache(archive,
+	 * inReq.getUserName(), rootfolder, folderdetails);
+	 * 
+	 * //TODO: See error }
+	 */
+
 	public void loadActivity(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 
 		Collection collections = manager.listCollectionsForFollower(inReq.getUser());
-		if( collections.isEmpty())
+		if (collections.isEmpty())
 		{
 			collections.add("NONE");
 		}
-		
+
 		Collection topics = archive.query("collectiveproject").orgroup("parentcollectionid", collections).hitsPerPage(100).search();
-		
+
 		Searcher chats = archive.getSearcher("chatterbox");
-	
+
 		HitTracker recent = chats.query().orgroup("channel", topics).sort("dateDown").search();
 		inReq.putPageValue("messages", recent);
 	}
-	
+
 	public void updateCatalogSetting(WebPageRequest inReq)
-	{			
+	{
 		String id = inReq.getRequestParameter("id");
-		String label= inReq.getRequestParameter("label");
-		String value= inReq.getRequestParameter("value");
-		if (id == null || id.equals("")) {
+		String label = inReq.getRequestParameter("label");
+		String value = inReq.getRequestParameter("value");
+		if (id == null || id.equals(""))
+		{
 			inReq.putPageValue("status", false);
 			inReq.putPageValue("reason", "id cannot be empty");
 			return;
 		}
-		if (value == null) {
+		if (value == null)
+		{
 			inReq.putPageValue("status", false);
 			inReq.putPageValue("reason", "value is null");
 			return;
 		}
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		Searcher instanceSearcher = mediaArchive.getSearcher("catalogsettings");
-		
+
 		Data catalogSetting = instanceSearcher.query().exact("id", id).searchOne();
 		inReq.putPageValue("id", id);
 		inReq.putPageValue("oldValue", catalogSetting.getValue("value"));
@@ -1257,166 +1321,180 @@ Server ProjectModule.uploadFile
 		inReq.putPageValue("newValue", value);
 		inReq.putPageValue("status", true);
 	}
-	
-	public void clearDataCache(WebPageRequest inReq) {
+
+	public void clearDataCache(WebPageRequest inReq)
+	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		mediaArchive.clearAll();
 		inReq.putPageValue("status", "ok");
 	}
-	
-	public void addMemberToTeam(WebPageRequest inReq) {		
+
+	public void addMemberToTeam(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String collectionid= inReq.getRequestParameter("collectionid");
+		String collectionid = inReq.getRequestParameter("collectionid");
 		String email = inReq.getRequestParameter("email");
-		
-		if (email == null) {
+
+		if (email == null)
+		{
 			inReq.putPageValue("reason", "You must provide email");
 			return;
 		}
 		email = email.trim().toLowerCase();
 		inReq.putPageValue("status", false);
 		User user = inReq.getUser();
-		if (user == null) {
+		if (user == null)
+		{
 			inReq.putPageValue("reason", "Invalid user");
 			return;
 		}
-		
+
 		ProjectManager projectManager = getProjectManager(inReq);
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			inReq.putPageValue("reason", "You must provide a collectionid");
 			return;
 		}
 		LibraryCollection collection = projectManager.getLibraryCollection(archive, collectionid);
 		// checking requesting user belongs to team
-		if (collection == null || !projectManager.isOnTeam(collection, user.getId())) {
+		if (collection == null || !projectManager.isOnTeam(collection, user.getId()))
+		{
 			inReq.putPageValue("reason", "Invalid Collectionid");
 			return;
 		}
 		// check if user is already on team
-		User newUser = archive.getUserManager().getUserByEmail(email);		
-		if (newUser == null || !projectManager.isOnTeam(collection, newUser.getId())) {
+		User newUser = archive.getUserManager().getUserByEmail(email);
+		if (newUser == null || !projectManager.isOnTeam(collection, newUser.getId()))
+		{
 			projectManager.addMemberToTeam(inReq);
 		}
 		inReq.putPageValue("status", true);
 	}
-	
-	public void getTeamUsers(WebPageRequest inReq) {
+
+	public void getTeamUsers(WebPageRequest inReq)
+	{
 		String collectionid = inReq.getRequestParameter("collectionid");
 		inReq.putPageValue("status", false);
-		if (collectionid == null) {
+		if (collectionid == null)
+		{
 			inReq.putPageValue("reason", "Invalid Collectionid");
 			return;
 		}
 		ProjectManager projectManager = getProjectManager(inReq);
 		Collection users = projectManager.getTeamUsers(collectionid);
-		if (users == null) {
+		if (users == null)
+		{
 			inReq.putPageValue("reason", "Invalid Collectionid");
 			return;
 		}
 		inReq.putPageValue("users", users);
 		inReq.putPageValue("status", true);
-		
+
 	}
-	
-	public void getDockerId(WebPageRequest inReq) {
+
+	public void getDockerId(WebPageRequest inReq)
+	{
 		inReq.putPageValue("instancemonitorid", inReq.getRequestParameter("instancemonitorid"));
 	}
-	
-	public void loadCommunityTag(WebPageRequest inReq) 
+
+	public void loadCommunityTag(WebPageRequest inReq)
 	{
-		if( inReq.getPageValue("communitytag") != null)
+		if (inReq.getPageValue("communitytag") != null)
 		{
 			return;
 		}
 		URLUtilities util = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 		String subdomain = util.buildRoot();
-		if (subdomain != null) 
+		if (subdomain != null)
 		{
 			String[] parts = subdomain.split("\\.");
-			if( parts.length > 2)
+			if (parts.length > 2)
 			{
 				String tag = parts[0].toLowerCase();
-				tag = tag.substring(tag.lastIndexOf("/")+1);
+				tag = tag.substring(tag.lastIndexOf("/") + 1);
 				MediaArchive archive = getMediaArchive(inReq);
-				Data data = (Data)archive.getCacheManager().get("communitytag", tag);
-				if( data == null)
+				Data data = (Data) archive.getCacheManager().get("communitytag", tag);
+				if (data == null)
 				{
 					data = archive.query("communitytag").exact("subdomain", tag).searchOne();
-					if( data == null )
+					if (data == null)
 					{
 						data = CacheManager.NULLDATA;
 					}
 					else
 					{
-						HitTracker 	collections = archive.query("librarycollection").exact("communitytag", data.getId()).search(inReq);
-						inReq.putPageValue("communityprojects",collections);
-						archive.getCacheManager().put("communityprojects", tag,collections);
+						HitTracker collections = archive.query("librarycollection").exact("communitytag", data.getId()).search(inReq);
+						inReq.putPageValue("communityprojects", collections);
+						archive.getCacheManager().put("communityprojects", tag, collections);
 					}
-					archive.getCacheManager().put("communitytag", tag,data);
+					archive.getCacheManager().put("communitytag", tag, data);
 				}
-				if( data != CacheManager.NULLDATA)
+				if (data != CacheManager.NULLDATA)
 				{
 					inReq.putPageValue("communitytag", data);
-					Collection communityprojects = (Collection)archive.getCacheManager().get("communityprojects", tag);
-					inReq.putPageValue("communityprojects",communityprojects);
+					Collection communityprojects = (Collection) archive.getCacheManager().get("communityprojects", tag);
+					inReq.putPageValue("communityprojects", communityprojects);
 				}
-			}	
+			}
 		}
 	}
 
 	public Map loadGoalsInMessages(WebPageRequest inReq)
 	{
-		Map goalspermessage = new HashMap<String,Data>();
-		
-		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
+		Map goalspermessage = new HashMap<String, Data>();
+
+		HitTracker messages = (HitTracker) inReq.getPageValue("messages");
 		String messageid = inReq.getRequestParameter("chatid");
 		List ids = new ArrayList();
-		if(messages != null) {
+		if (messages != null)
+		{
 			for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data message = (Data) iterator.next();
 				ids.add(message.getId());
 			}
-			if( ids.isEmpty() )
+			if (ids.isEmpty())
 			{
 				ids.add("NONE");
 			}
-			
+
 		}
-		else if (messageid != null) {
-				ids.add(messageid);
+		else if (messageid != null)
+		{
+			ids.add(messageid);
 		}
-		
-		if( ids.size() < 1)	
+
+		if (ids.size() < 1)
 		{
 			log.error("No messages found");
 			return null;
 		}
-		
-		Collection goals = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",ids ).search();
-		inReq.putPageValue("goalhits",goals);
+
+		Collection goals = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid", ids).search();
+		inReq.putPageValue("goalhits", goals);
 		for (Iterator iterator = goals.iterator(); iterator.hasNext();)
 		{
 			Data goal = (Data) iterator.next();
-			goalspermessage.put(goal.get("chatparentid"),goal );
+			goalspermessage.put(goal.get("chatparentid"), goal);
 		}
-		
-		inReq.putPageValue("goalsinmessages",goalspermessage);
+
+		inReq.putPageValue("goalsinmessages", goalspermessage);
 		return goalspermessage;
 	}
-	
+
 	public void loadGoalInMessage(WebPageRequest inReq)
 	{
-		Map goalspermessage = new HashMap<String,Data>();
-		Data chat = (Data)inReq.getPageValue("chat");
-		Data goal = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid",chat.getId()).searchOne();
-		if( goal != null)
+		Map goalspermessage = new HashMap<String, Data>();
+		Data chat = (Data) inReq.getPageValue("chat");
+		Data goal = getMediaArchive(inReq).query("projectgoal").orgroup("chatparentid", chat.getId()).searchOne();
+		if (goal != null)
 		{
-			goalspermessage.put(goal.get("chatparentid"),goal );
+			goalspermessage.put(goal.get("chatparentid"), goal);
 		}
-		inReq.putPageValue("goalsinmessages",goalspermessage);
-		
+		inReq.putPageValue("goalsinmessages", goalspermessage);
+
 	}
+
 	public HitTracker loadMessages(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1424,7 +1502,7 @@ Server ProjectModule.uploadFile
 
 		LibraryCollection collection = loadCollection(inReq);
 
-		if( collection == null)
+		if (collection == null)
 		{
 			ListHitTracker empty = new ListHitTracker();
 			inReq.putPageValue("messages", empty);
@@ -1433,215 +1511,213 @@ Server ProjectModule.uploadFile
 		//Check permissions
 		QueryBuilder q = archive.query("collectiveproject").exact("parentcollectionid", collection).named("topics").hitsPerPage(10);
 
-		boolean only = Boolean.parseBoolean( inReq.findValue("onlyshowpublictopics"));
-		if( only)
+		boolean only = Boolean.parseBoolean(inReq.findValue("onlyshowpublictopics"));
+		if (only)
 		{
-			q.exact("teamproject",false);
+			q.exact("teamproject", false);
 		}
-		Collection topics = q.search(inReq);		
-		if( topics.isEmpty() )
+		Collection topics = q.search(inReq);
+		if (topics.isEmpty())
 		{
 			return new ListHitTracker();
 		}
 		inReq.putPageValue("topics", topics);
-		
+
 		Searcher chats = archive.getSearcher("chatterbox");
-	
+
 		HitTracker recent = chats.query().orgroup("channel", topics).named("hits").sort("dateDown").hitsPerPage(200).search(inReq);
 		inReq.putPageValue("messages", recent);
-		
+
 		List messageids = new ArrayList(recent.size());
-		for (Iterator iterator = recent.getPageOfHits().iterator(); iterator.hasNext();) 
+		for (Iterator iterator = recent.getPageOfHits().iterator(); iterator.hasNext();)
 		{
-			  Data data = (Data) iterator.next(); 
-			  messageids.add(data.getId());
+			Data data = (Data) iterator.next();
+			messageids.add(data.getId());
 		}
 		inReq.putPageValue("messageids", messageids);
-		
-		if(recent != null) {
+
+		if (recent != null)
+		{
 			Set users = new HashSet();
 			for (Iterator iterator = recent.iterator(); iterator.hasNext();)
 			{
 				Data chat = (Data) iterator.next();
-				User person = archive.getUser( chat.get("user"));
-				if( person != null)
+				User person = archive.getUser(chat.get("user"));
+				if (person != null)
 				{
 					users.add(person);
-				}	
+				}
 			}
-			inReq.putPageValue("persons",users);
+			inReq.putPageValue("persons", users);
 		}
 		return recent;
 	}
-	
+
 	public void loadTopMessages(WebPageRequest inReq)
 	{
-		if( inReq.getUser() == null )
+		if (inReq.getUser() == null)
 		{
 			return;
 		}
-		
+
 		String userid = inReq.getRequestParameter("userid");
-		if( userid == null)
+		if (userid == null)
 		{
 			userid = inReq.getUserName();
 		}
 		else
 		{
-			if( !inReq.getUserProfile().isInRole("administrator"))
+			if (!inReq.getUserProfile().isInRole("administrator"))
 			{
 				inReq.putPageValue("error", "Non Admin is trying to get other users messages");
 				//return;
 				userid = inReq.getUserName();
 			}
 		}
-		
+
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
-		
+
 		Collection librarycollections = null;
-		
-		boolean loadAll = Boolean.parseBoolean( inReq.findValue("loadAllMessages"));
-		if(loadAll && inReq.getUserProfile().isInRole("administrator")) {
+
+		boolean loadAll = Boolean.parseBoolean(inReq.findValue("loadAllMessages"));
+		if (loadAll && inReq.getUserProfile().isInRole("administrator"))
+		{
 			HitTracker workspaces = mediaArchive.query("librarycollection").exact("library", "userscollections").hitsPerPage(100).search(inReq);
 			librarycollections = workspaces.collectValues("id");
 		}
-		else {
+		else
+		{
 			HitTracker workspaces = mediaArchive.query("librarycollectionusers").exact("ontheteam", "true").hitsPerPage(1000).exact("followeruser", userid).search(inReq);
 			librarycollections = workspaces.collectValues("collectionid");
 		}
-		
-		
-		
-		if( librarycollections.isEmpty())
+
+		if (librarycollections.isEmpty())
 		{
 			inReq.putPageValue("error", "No such user in any collection");
 			return;
 		}
 
 		HitTracker moddifiedcol = mediaArchive.query("chattopiclastmodified").orgroup("collectionid", librarycollections).hitsPerPage(1000).search(inReq);
-		if( moddifiedcol.isEmpty())
+		if (moddifiedcol.isEmpty())
 		{
 			inReq.putPageValue("error", "No messages modifield");
 			return;
 		}
 		Collection messages = moddifiedcol.collectValues("messageid");
-		
+
 		Searcher chats = mediaArchive.getSearcher("chatterbox");
 		HitTracker recent = chats.query().orgroup("id", messages).named("hits").sort("dateDown").hitsPerPage(100).search(inReq);
 		inReq.putPageValue("messages", recent);
-		
+
 		List messageids = new ArrayList(recent.size());
-		for (Iterator iterator = recent.iterator(); iterator.hasNext();) 
+		for (Iterator iterator = recent.iterator(); iterator.hasNext();)
 		{
-			  Data data = (Data) iterator.next(); 
-			  messageids.add(data.getId());
+			Data data = (Data) iterator.next();
+			messageids.add(data.getId());
 		}
 		inReq.putPageValue("messageids", messageids);
-		
 
 	}
 
 	public void loadUploadsInMessages(WebPageRequest inReq)
 	{
-			ProjectManager manager = getProjectManager(inReq);
-			HitTracker uploads = manager.loadUploads(inReq); 
-			
-			inReq.setRequestParameter("onlyshowpublictopics", "true");
-			Collection messages = (Collection)loadMessages(inReq);
-			ListHitTracker combinedEvents = manager.mergeEvents(uploads, messages);
-			inReq.putPageValue("combinedevents",combinedEvents);
+		ProjectManager manager = getProjectManager(inReq);
+		HitTracker uploads = manager.loadUploads(inReq);
+
+		inReq.setRequestParameter("onlyshowpublictopics", "true");
+		Collection messages = (Collection) loadMessages(inReq);
+		ListHitTracker combinedEvents = manager.mergeEvents(uploads, messages);
+		inReq.putPageValue("combinedevents", combinedEvents);
 	}
 
 	public void viewProjects(WebPageRequest inReq)
 	{
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker hits = manager.viewUserProjects(inReq); 
-		inReq.putPageValue("hits",hits);
+		HitTracker hits = manager.viewUserProjects(inReq);
+		inReq.putPageValue("hits", hits);
 
 	}
 
 	public void checkUrlName(WebPageRequest inReq)
 	{
-		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
-		if( collection != null)
+		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
+		if (collection != null)
 		{
 			Searcher searcher = loadSearcher(inReq); //Product?
 			String name = inReq.getContentPage().getName();
 			Data found = searcher.query().exact("urlname", name).searchOne();
-			
+
 			inReq.putPageValue(searcher.getSearchType(), found);
 		}
- 
+
 	}
 
 	public void loadCollectionChild(WebPageRequest inReq)
 	{
-		if( inReq.getContentPage().exists())
+		if (inReq.getContentPage().exists())
 		{
 			return;
 		}
-		
-		Data collection = (Data)inReq.getPageValue("librarycol");
-		if( collection != null)
+
+		Data collection = (Data) inReq.getPageValue("librarycol");
+		if (collection != null)
 		{
 			Searcher searcher = loadSearcher(inReq); //Product?
 			String name = inReq.getContentPage().getDirectoryName();
 			Data found = searcher.query().exact("urlname", name).searchOne();
-			if( found != null)
+			if (found != null)
 			{
 				inReq.putPageValue(searcher.getSearchType(), found);
 			}
 		}
- 
+
 	}
-	
-	
+
 	public void trackReferralCode(WebPageRequest inReq)
 	{
 		String referralcode = inReq.getRequestParameter("fbclid");
-		
-		if( referralcode != null)
+
+		if (referralcode != null)
 		{
 			MediaArchive mediaArchive = getMediaArchive(inReq);
 			Data exists = (Data) mediaArchive.getCachedData("collectivelinkreferralcode", referralcode);
-			if(exists == null) 
+			if (exists == null)
 			{
 				exists = (Data) mediaArchive.getSearcher("collectivelinkreferralcode").createNewData();
 				exists.setId(referralcode);
 				exists.setName("Auto Created");
 				exists.setValue("collectionid", referralcode); //Assume this is a project could be OI from community area tho
-				mediaArchive.saveData("collectivelinkreferralcode",exists);
-				
-				Data collection = (Data)mediaArchive.getCachedData("librarycollection",referralcode);
-				if( collection == null)
+				mediaArchive.saveData("collectivelinkreferralcode", exists);
+
+				Data collection = (Data) mediaArchive.getCachedData("librarycollection", referralcode);
+				if (collection == null)
 				{
 					Searcher searcher = mediaArchive.getSearcher("librarycollection");
 					Data librarycol = searcher.createNewData();
-					librarycol.setId( referralcode);
+					librarycol.setId(referralcode);
 					librarycol.setName(referralcode);
-					librarycol.setValue("collectiontype","4");
+					librarycol.setValue("collectiontype", "4");
 					searcher.saveData(librarycol);
 				}
-				
+
 			}
 			Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
 			newcode.setValue("collectionid", exists.getValue("collectionid"));
 			newcode.setValue("referralcode", exists.getId());
-			
+
 			populateTracker(inReq, newcode);
-			
+
 			mediaArchive.saveData("collectivelinktracker", newcode);
-			inReq.putSessionValue("trackingsession",newcode);
-			
-			
+			inReq.putSessionValue("trackingsession", newcode);
+
 		}
 		else
 		{
 			MediaArchive mediaArchive = getMediaArchive(inReq);
 
-			Data trackingsession = (Data)inReq.getSessionValue("trackingsession");
-			if( trackingsession != null)
+			Data trackingsession = (Data) inReq.getSessionValue("trackingsession");
+			if (trackingsession != null)
 			{
 				Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
 				newcode.setValue("collectionid", trackingsession.getValue("collectionid"));
@@ -1651,12 +1727,11 @@ Server ProjectModule.uploadFile
 				mediaArchive.saveData("collectivelinktracker", newcode);
 			}
 		}
-		
-		
- 
+
 	}
 
-	private void populateTracker(WebPageRequest inReq, Data newcode) {
+	private void populateTracker(WebPageRequest inReq, Data newcode)
+	{
 		newcode.setValue("date", new Date());
 		newcode.setValue("user", inReq.getUserName());
 		String ipaddress = inReq.getRequest().getHeader("X-Real-IP");
@@ -1668,34 +1743,33 @@ Server ProjectModule.uploadFile
 
 	public Map loadAttachmentsInMessages(WebPageRequest inReq)
 	{
-		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
+		HitTracker messages = (HitTracker) inReq.getPageValue("messages");
 		//String messageid = inReq.getRequestParameter("chatid");
 		List ids = new ArrayList();
-		if(messages != null) {
+		if (messages != null)
+		{
 			for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data message = (Data) iterator.next();
 				ids.add(message.getId());
 			}
-			if( ids.isEmpty() )
+			if (ids.isEmpty())
 			{
 				ids.add("NONE");
 			}
-			
+
 		}
-//		else if (messageid != null) {
-//				ids.add(messageid);
-//		}
-		
-		if( ids.size() < 1)	
+	
+
+		if (ids.size() < 1)
 		{
 			log.error("No messages found");
 			return null;
 		}
-		Map<String,Collection> messageidwithassets = new HashMap<String,Collection>();
+		Map<String, Collection> messageidwithassets = new HashMap<String, Collection>();
 
-		Collection assets = getMediaArchive(inReq).query("asset").orgroup("chatparentid",ids ).search();
-		inReq.putPageValue("assethits",assets);
+		Collection assets = getMediaArchive(inReq).query("asset").orgroup("attachedtomessageid", ids).search();
+		inReq.putPageValue("assethits", assets);
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data asset = (Data) iterator.next();
@@ -1704,18 +1778,58 @@ Server ProjectModule.uploadFile
 			{
 				String messageid = (String) iterator2.next();
 				Collection assetsfound = messageidwithassets.get(messageid);
-				if( assetsfound == null )
+				if (assetsfound == null)
 				{
 					assetsfound = new ArrayList();
-					messageidwithassets.put(messageid,assetsfound );
+					messageidwithassets.put(messageid, assetsfound);
 				}
 				assetsfound.add(asset);
 			}
 		}
-		
-		inReq.putPageValue("messageidwithassets",messageidwithassets);
+
+		inReq.putPageValue("messageidwithassets", messageidwithassets);
 		return messageidwithassets;
 	}
-	
-	
+
+	public void attachAssetsToMessage(WebPageRequest inReq)
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String messageid = inReq.getRequestParameter("messageid");
+		Data message = archive.getData("chatterbox", messageid);
+		if (message == null)
+		{
+			return;
+		}
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		ArrayList tosave = new ArrayList();
+
+		String[] assetids = inReq.getRequestParameters("assetid");
+		if (assetids != null)
+		{
+
+			for (int i = 0; i < assetids.length; i++)
+			{
+				String assetid = assetids[i];
+				Asset asset = archive.getAsset(assetid);
+				asset.addValue("attachedtomessageid", message.getId());
+				tosave.add(asset);
+			}
+
+		}
+
+		for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = archive.getAsset(hit.getId());
+
+			asset.addValue("attachedtomessageid", message.getId());
+			tosave.add(asset);
+		}
+
+		archive.saveAssets(tosave);
+
+	}
+
 }
