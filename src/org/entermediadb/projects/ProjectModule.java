@@ -1665,5 +1665,57 @@ Server ProjectModule.uploadFile
 		newcode.setValue("referralurl", referral);
 		newcode.setValue("path", inReq.getPath());
 	}
+
+	public Map loadAttachmentsInMessages(WebPageRequest inReq)
+	{
+		HitTracker messages = (HitTracker)inReq.getPageValue("messages");
+		//String messageid = inReq.getRequestParameter("chatid");
+		List ids = new ArrayList();
+		if(messages != null) {
+			for (Iterator iterator = messages.getPageOfHits().iterator(); iterator.hasNext();)
+			{
+				Data message = (Data) iterator.next();
+				ids.add(message.getId());
+			}
+			if( ids.isEmpty() )
+			{
+				ids.add("NONE");
+			}
+			
+		}
+//		else if (messageid != null) {
+//				ids.add(messageid);
+//		}
+		
+		if( ids.size() < 1)	
+		{
+			log.error("No messages found");
+			return null;
+		}
+		Map<String,Collection> messageidwithassets = new HashMap<String,Collection>();
+
+		Collection assets = getMediaArchive(inReq).query("asset").orgroup("chatparentid",ids ).search();
+		inReq.putPageValue("assethits",assets);
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			Collection messageids = asset.getValues("attachedtomessageid");
+			for (Iterator iterator2 = messageids.iterator(); iterator2.hasNext();)
+			{
+				String messageid = (String) iterator2.next();
+				Collection assetsfound = messageidwithassets.get(messageid);
+				if( assetsfound == null )
+				{
+					assetsfound = new ArrayList();
+					messageidwithassets.put(messageid,assetsfound );
+				}
+				assetsfound.add(asset);
+			}
+		}
+		
+		inReq.putPageValue("messageidwithassets",messageidwithassets);
+		return messageidwithassets;
+	}
+	
 	
 }
