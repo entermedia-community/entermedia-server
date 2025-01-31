@@ -1802,7 +1802,7 @@ public class ProjectModule extends BaseMediaModule
 		{
 			return;
 		}
-		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		
 		ArrayList tosave = new ArrayList();
 
 		String[] assetids = inReq.getRequestParameters("assetid");
@@ -1812,24 +1812,28 @@ public class ProjectModule extends BaseMediaModule
 			for (int i = 0; i < assetids.length; i++)
 			{
 				String assetid = assetids[i];
-				Asset asset = archive.getAsset(assetid);
+				Asset asset = archive.getCachedAsset(assetid);
 				asset.addValue("attachedtomessageid", message.getId());
 				tosave.add(asset);
 			}
 
 		}
-
-		for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		if(savedassets != null)
 		{
-			Data hit = (Data) iterator.next();
-			Asset asset = archive.getAsset(hit.getId());
-
-			asset.addValue("attachedtomessageid", message.getId());
-			tosave.add(asset);
+			for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				Asset asset = archive.getCachedAsset(hit.getId());
+	
+				asset.addValue("attachedtomessageid", message.getId());
+				tosave.add(asset);
+			}
 		}
-
+		
 		archive.saveAssets(tosave);
-
+		
+		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
 	}
 
 }
