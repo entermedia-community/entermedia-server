@@ -2193,9 +2193,6 @@ public class AssetEditModule extends BaseMediaModule
 					}
 				}
 				
-				
-				
-				
 			}
 			String path = "";
 			if (sourcepath != null)
@@ -2269,10 +2266,17 @@ public class AssetEditModule extends BaseMediaModule
 				
 			}
 			
+			savedassets.add(current);
+			
 			archive.fireMediaEvent("importing", "assetuploaded", inReq.getUser(), current); 
 			
 			archive.fireMediaEvent("assetcreated", inReq.getUser(), current);
-			archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
+			
+			Boolean delayimport = Boolean.parseBoolean(inReq.findActionValue("delayimport"));
+			if(!delayimport) 
+			{
+				archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
+			}
 			
 			//archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
 			
@@ -2283,10 +2287,6 @@ public class AssetEditModule extends BaseMediaModule
 				manager.addAssetToCollection(archive, currentcollection, current);
 			}
 			
-			
-			
-			
-			savedassets.add(current);
 		}
 		inReq.putPageValue("savedassets", savedassets);
 		inReq.putPageValue("hits", savedassets);  //Some evets requires hits variable
