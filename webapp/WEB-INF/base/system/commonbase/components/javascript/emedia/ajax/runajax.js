@@ -409,6 +409,30 @@ lQuery(".ajaxstatus").livequery(function () {
 	}
 });
 
+lQuery("a.ajax").livequery("click", function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	$(this).runAjax();
+});
+
+lQuery("a.toggleAjax").livequery("click", function (e) {
+	/**
+	 * Runs an ajax call and removes the element from the DOM on ajax success
+	 * Optionally checks for a focus parent
+	 **/
+	e.stopPropagation();
+	e.preventDefault();
+	var $this = $(this);
+	$this.data("noToast", true);
+	$this.runAjax(function () {
+		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
+		if (focusParent.length) {
+			focusParent.find("input:visible:first").focus();
+		}
+		$this.remove();
+	});
+});
+
 autoreload = function (div, callback, classname = null) {
 	var url = div.data("autoreloadurl");
 	if (url !== undefined) {
