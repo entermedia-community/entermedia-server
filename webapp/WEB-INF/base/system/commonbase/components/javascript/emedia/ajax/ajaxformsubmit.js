@@ -241,12 +241,11 @@
 		}
 		return this;
 	};
-
-	lQuery("form.ajaxform").livequery("submit", function (e) {
-		// Make sure you use $(this).closest("form").trigger("submit")
-		e.preventDefault();
-		e.stopImmediatePropagation();
-		e.stopPropagation();
-		$(this).ajaxFormSubmit();
-	});
 })(jQuery);
+
+lQuery("form.ajaxform").livequery("submit", function (e) {
+	e.preventDefault();
+	e.stopImmediatePropagation();
+	e.stopPropagation();
+	$(this).ajaxFormSubmit();
+});

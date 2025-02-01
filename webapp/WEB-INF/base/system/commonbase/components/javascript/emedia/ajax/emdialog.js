@@ -365,7 +365,23 @@ function adjustZIndex(element) {
 	});
 }
 
-lQuery(".modal .closemodal").livequery("click", function (e) {
+lQuery("a.openemdialog").livequery(function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	$(this).emDialog();
+});
+
+lQuery("a.emdialog").livequery("click", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	$(this).emDialog();
+});
+
+lQuery(".closemodal").livequery("click", function (e) {
 	if (e.target != this) return;
+	closeemdialog($(this).closest(".modal"));
+});
+
+lQuery("#closebutton").livequery("click", function () {
 	closeemdialog($(this).closest(".modal"));
 });
