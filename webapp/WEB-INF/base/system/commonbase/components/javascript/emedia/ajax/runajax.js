@@ -100,7 +100,13 @@ findClosest = function (link, inid) {
 
 			jQuery(".auto-active-row", container).removeClass("current");
 			var row = activemenu.closest(".auto-active-row");
-			row.addClass("current");
+			if (row.length == 0) {
+				container.find(".auto-active-link").removeClass("current");
+				activemenu.addClass("current");
+			} else {
+				container.find(".auto-active-row").removeClass("current");
+				row.addClass("current");
+			}
 
 			jQuery("li", container).removeClass("current");
 			var row = activemenu.closest("li");
