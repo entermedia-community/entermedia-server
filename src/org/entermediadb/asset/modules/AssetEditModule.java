@@ -2257,14 +2257,14 @@ public class AssetEditModule extends BaseMediaModule
 			archive.getAssetEditor().createNewVersionData(current, originalfile.getContentItem(), inReq.getUserName(), Version.UPLOADED, null);
 			
 			inReq.putPageValue("newasset", current);
-			inReq.setRequestParameter(detailid + ".value", current.getId());
-			if( target != null)
-			{
-				target.setValue(detailid,current.getId());
-				//Save it
-				searcher.saveData(target, inReq.getUser());
-				
-			}
+//			inReq.setRequestParameter(detailid + ".value", current.getId());
+//			if( target != null)
+//			{
+//				target.setValue(detailid,current.getId());
+//				//Save it
+//				searcher.saveData(target, inReq.getUser());
+//				
+//			}
 			
 			savedassets.add(current);
 			
