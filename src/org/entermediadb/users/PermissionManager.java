@@ -1,6 +1,7 @@
 package org.entermediadb.users;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -698,7 +699,7 @@ public class PermissionManager implements CatalogEnabled
 	protected Collection<String> collectUsers(Data inModule, Data inEntity, boolean inEditors)
 	{
 		Set<String> users = new HashSet();
-		String fieldname = "viewusers";
+		String fieldname = "customusers";
 		if( inEditors )
 		{
 			fieldname = "editorusers";
@@ -709,7 +710,7 @@ public class PermissionManager implements CatalogEnabled
 			users.addAll(moreusers);
 		}
 		moreusers = inEntity.getValues(fieldname);
-		if (users != null && !users.isEmpty() )
+		if (moreusers != null && !moreusers.isEmpty() )
 		{
 			users.addAll(moreusers);
 		}
@@ -719,7 +720,7 @@ public class PermissionManager implements CatalogEnabled
 	protected Collection<String> collectGroups(Data inModule, Data inEntity, boolean inEditors)
 	{
 		Set<String> groups = new HashSet();
-		String fieldname = "viewgroups";
+		String fieldname = "customgroups";
 		if( inEditors )
 		{
 			fieldname = "editorgroups";
@@ -741,7 +742,7 @@ public class PermissionManager implements CatalogEnabled
 	protected Collection<String> collectRoles(Data inModule, Data inEntity, boolean inEditors)
 	{
 		Set<String> roles = new HashSet();
-		String fieldname = "viewroles";
+		String fieldname = "customroles";
 		if( inEditors )
 		{
 			fieldname = "editorroles";
@@ -757,6 +758,18 @@ public class PermissionManager implements CatalogEnabled
 			roles.addAll(more);
 		}
 		return roles;
+		
+	}
+
+	public void addEntityPermissions(Data inModule, MultiValued inEntity, Map<String,String[]> inTosave)
+	{
+		for (Iterator iterator = inTosave.keySet().iterator(); iterator.hasNext();)
+		{
+			String  field = (String ) iterator.next();
+			String[] values = inTosave.get(field);
+			Collection all = Arrays.asList(values);
+			inEntity.addValue(field,all);
+		}
 		
 	}
 }

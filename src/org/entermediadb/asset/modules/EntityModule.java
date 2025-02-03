@@ -25,8 +25,6 @@ import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.scripts.ScriptLogger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -1212,8 +1210,45 @@ public class EntityModule extends BaseMediaModule
 		return all;
 	}
 	
-	//TODO: Adding we are just saving an entity
-	
+	public void addEntityPermissions(WebPageRequest inReq) 
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String moduleid  = inReq.findPathValue("module");
+		Data module = archive.getData("module", moduleid);
+		
+		String[] fields = inReq.getRequestParameters("field");
+		Map<String,String[]> tosave = new HashMap();
+		for (int i = 0; i < fields.length; i++)
+		{
+			String[] values = inReq.getRequestParameters(fields[i] + ".values");
+			if( values != null && values.length > 0 )
+			{
+				tosave.put(fields[i],values);
+			}
+		}
+		
+		archive.getPermissionManager().addEntityPermissions(module, (MultiValued)entity, tosave);
+		archive.saveData(module.getId(),entity);
+		inReq.putPageValue("saved", tosave);
+	}
+	public void makePermissionEditor(WebPageRequest inReq) 
+	{
+		//Copy to the editor fields but leave inthe view fields
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String moduleid  = inReq.findPathValue("module");
+		Data module = archive.getData("module", moduleid);
+	}	
+	public void removePermission(WebPageRequest inReq) 
+	{
+		//Copy to the editor fields but leave inthe view fields
+		MediaArchive archive = getMediaArchive(inReq);
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String moduleid  = inReq.findPathValue("module");
+		Data module = archive.getData("module", moduleid);
+	}	
+
 	public void removeEntityPermission(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
