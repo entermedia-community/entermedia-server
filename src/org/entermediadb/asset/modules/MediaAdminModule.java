@@ -537,10 +537,11 @@ public class MediaAdminModule extends BaseMediaModule
 		String rootpath = inReq.getRequestParameter("rootpath");
 		site.setValue("rootpath", rootpath);
 		
+		String siteid = rootpath.substring(1);
 		String catalogid = inReq.getRequestParameter("sitecatalogid");
 		if( catalogid == null)
 		{
-			catalogid = rootpath.substring(1) + "/catalog";
+			catalogid =  siteid + "/catalog";
 		}
 		Searcher catsearcher = getSearcherManager().getSearcher("system", "catalog");
 		
@@ -552,12 +553,23 @@ public class MediaAdminModule extends BaseMediaModule
 			catalog.setName(sitename);
 			catsearcher.saveData(catalog);
 		}
-		
+		site.setId(siteid);
 		site.setValue("catalogid", catalogid);
 		site.setName(sitename);
 		sites.saveData(site);
 		inReq.setRequestParameter("siteid", site.getId());
-
+		
+		Page cat = getPageManager().getPage("/" + siteid + "/_site.xconf" );
+		if( !cat.exists())
+		{
+			PageSettings settings = cat.getPageSettings();
+			settings.setProperty("catalogid", catalogid);
+			String fallbackdirectory = "/WEB-INF/base/eminstitite/";
+			settings.setProperty("fallbackdirectory", fallbackdirectory);
+			settings.setProperty("siteid", siteid);
+			getPageManager().getPageSettingsManager().saveSetting(settings);
+			getPageManager().clearCache();
+		}
 //		String frontendid = inReq.getRequestParameter("frontendid");
 //		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
 //		String url = frontend.get("initurl");
