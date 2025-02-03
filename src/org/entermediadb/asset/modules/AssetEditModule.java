@@ -2189,7 +2189,7 @@ public class AssetEditModule extends BaseMediaModule
 					Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 					if( cat != null)
 					{
-						sourcepath = cat.getCategoryPath() + "/chat/attachments/" + item.getName();
+						sourcepath = cat.getCategoryPath() + "/chat/" +  inReq.getUserName() + "/" + item.getName();
 					}
 				}
 				
@@ -2258,13 +2258,13 @@ public class AssetEditModule extends BaseMediaModule
 			
 			inReq.putPageValue("newasset", current);
 //			inReq.setRequestParameter(detailid + ".value", current.getId());
-//			if( target != null)
-//			{
-//				target.setValue(detailid,current.getId());
-//				//Save it
-//				searcher.saveData(target, inReq.getUser());
-//				
-//			}
+			if( target != null)
+			{
+				target.setValue(detailid,current.getId());
+				//Save it
+				searcher.saveData(target, inReq.getUser());
+				
+			}
 			
 			savedassets.add(current);
 			
