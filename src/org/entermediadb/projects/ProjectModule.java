@@ -1759,6 +1759,14 @@ public class ProjectModule extends BaseMediaModule
 			}
 
 		}
+		else {
+			//single message reload
+			String messageid = inReq.getRequestParameter("messageid");
+			if (messageid != null)
+			{
+				ids.add(messageid);
+			}
+		}
 	
 
 		if (ids.size() < 1)

@@ -24,9 +24,6 @@
 		#set( $rendertype = "videothumbnail" )
 	#end
 	$context.putPageValue("type", $rendertype)
-	#if(!$thumbsize)
-		$context.putPageValue("thumbsize", "small" )
-	#end
 		
 	#if($rendertype == "audio")
 		#if($hit.getValue("length"))
