@@ -324,7 +324,9 @@ function createCK5(target, options = {}) {
 		.then((editor) => {
 			window.CK5Editor[uid] = editor;
 			if (!options.hideImagePicker) {
-				$(window).on("assetpicked", function (_, imageUrl) {
+				$(window).on("assetpicked", function (_, input) {
+					var params = JSON.parse(input);
+					var imageUrl = params.assetpicked;
 					setTimeout(() => {
 						editor.execute("imageInsert", { source: imageUrl });
 					});
