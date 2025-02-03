@@ -564,7 +564,7 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			PageSettings settings = cat.getPageSettings();
 			settings.setProperty("catalogid", catalogid);
-			String fallbackdirectory = "/WEB-INF/base/eminstitite/";
+			String fallbackdirectory = "/WEB-INF/base/eminstitute";
 			settings.setProperty("fallbackdirectory", fallbackdirectory);
 			settings.setProperty("siteid", siteid);
 			getPageManager().getPageSettingsManager().saveSetting(settings);
