@@ -306,6 +306,10 @@ closeemdialog = function (modaldialog) {
 			//history.replaceState(null, null, " ");
 			oldurlbar = RemoveParameterFromUrl(oldurlbar, "assetid");
 		}
+		if (dialogid == "entitydialog") {
+			//history.replaceState(null, null, " ");
+			oldurlbar = RemoveParameterFromUrl(oldurlbar, "entityid");
+		}
 
 		history.pushState($("#application").html(), null, oldurlbar);
 	}
@@ -369,6 +373,22 @@ lQuery("a.openemdialog").livequery(function (e) {
 	e.preventDefault();
 	e.stopPropagation();
 	$(this).emDialog();
+});
+
+
+lQuery("a.entityupdateurl").livequery("click", function (e) {
+	e.preventDefault();
+	var dialogid = $(this).data("dialogid");
+	if (dialogid == null) {
+		$(this).data("dialogid", "entitydialog");
+	}
+	var entityid = $(this).data("entityid");
+	var entitymoduleid = $(this).data("moduleid");
+	
+	var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${entityid}`;
+	$(this).data("urlbar", urlbar);
+	$(this).data("updateurl", true); 
+	
 });
 
 lQuery("a.emdialog").livequery("click", function (e) {

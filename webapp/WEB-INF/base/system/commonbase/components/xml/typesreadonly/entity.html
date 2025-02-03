@@ -15,31 +15,33 @@
 		#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
 		
 	    #if( $row ) 
-				#set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
-				#set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
+			#set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
+			#set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 		    #set($entityid = $row.id)
-				#set($edithome = "$applink/views/modules/$!{entity_module}/editors/default")
-				#set($link = "${edithome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
-
-				#if($entity_module == "searchcategory")
-					#set($edithome = "$apphome/views/modules/$!{entity_module}/editors/listsearchcategories")
-					#set($link = "${edithome}/index.html?searchcategoryid=$entityid")
-				#end
+			#set($edithome = "$applink/views/modules/$!{entity_module}/editors/default")
+			#set($link = "${edithome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
+			
+			#if($entity_module == "searchcategory")
+				#set($edithome = "$apphome/views/modules/$!{entity_module}/editors/listsearchcategories")
+				#set($link = "${edithome}/index.html?searchcategoryid=$entityid")
+			#end
 
 		    <li>
 					<a href="$link"
-						#if($detail.id != "searchcategory")
-							class="emdialog"
-						#else
+						#if($detail.id == "searchcategory")
 							class="ajax"
 							data-targetdiv="applicationcontent"
 							data-oemaxlevel="4"
 							data-edithome="${edithome}"
 							data-updateurl="true"
 							data-closedialog="true"
+						#else
+							class="emdialog entityupdateurl"
+							data-hitssessionid="$!hits.sessionId"
+							data-moduleid="$!{entity_module}"
 						#end
-						data-noesc="true" 
-						data-entityid="$entityid"
+						data-entityid="$!{entityid}"
+						##data-noesc="true" 
 						title="$!name">$name</a>
 		    </li>
 	    #end 
