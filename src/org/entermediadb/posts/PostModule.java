@@ -98,7 +98,21 @@ public class PostModule extends BaseMediaModule
 	{
 		String path = inReq.getPath();
 
-		String apphome = (String)inReq.getPageValue("apphome");
+		String home = (String)inReq.getPageValue("communityhome");
+		String found = cutroot(home, path);
+		if(found == null )
+		{
+			home = (String)inReq.getPageValue("apphome");
+			found = cutroot(home, path);
+		}
+		if( found == null)
+		{
+			found = path;
+		}
+		return found;
+	}
+	protected String cutroot(String apphome, String path)
+	{
 		if( apphome == null)
 		{
 			log.info("no apphome set for " + path);
@@ -109,12 +123,12 @@ public class PostModule extends BaseMediaModule
 		
 		if( path.startsWith(apphome) && apphome.contains("/"))
 		{
-			int loc = path.indexOf("/",1);
-			sourcepath = path.substring(loc,path.length());
+			//int loc = path.indexOf("/",1);
+			sourcepath = path.substring(apphome.length() + 1,path.length());
 		}
 		else
 		{
-			sourcepath = path;
+			return null;
 		}
 		if( sourcepath.startsWith("/"))
 		{

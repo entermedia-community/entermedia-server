@@ -246,11 +246,6 @@ public class EntityModule extends BaseMediaModule
 		}
 	}
 	
-	
-	
-	
-	
-	
 	public void addToSearchCategory(WebPageRequest inPageRequest) throws Exception 
 	{
 	
@@ -1210,7 +1205,7 @@ public class EntityModule extends BaseMediaModule
 		return all;
 	}
 	
-	public void addEntityPermissions(WebPageRequest inReq) 
+	public void entityPermissionAdd(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Data entity  = (Data) inReq.getPageValue("entity");
@@ -1232,22 +1227,49 @@ public class EntityModule extends BaseMediaModule
 		archive.saveData(module.getId(),entity);
 		inReq.putPageValue("saved", tosave);
 	}
-	public void makePermissionEditor(WebPageRequest inReq) 
+	public void entityPermissionsSave(WebPageRequest inReq) 
 	{
 		//Copy to the editor fields but leave inthe view fields
 		MediaArchive archive = getMediaArchive(inReq);
-		Data entity  = (Data) inReq.getPageValue("entity");
+		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
 		String moduleid  = inReq.findPathValue("module");
 		Data module = archive.getData("module", moduleid);
+		
+		String dataid = inReq.getRequestParameter("dataid");
+		entity.removeValue("customuser", dataid);
+		entity.removeValue("customrole", dataid);			
+		entity.removeValue("customgroup", dataid);			
+		entity.removeValue("editoruser", dataid);
+		entity.removeValue("editorrole", dataid);			
+		entity.removeValue("editorgroup", dataid);
+		
+		String saveto = inReq.getRequestParameter("permissionfield");
+		entity.addValue(saveto, dataid);
+		archive.saveData(module.getId(),entity);
 	}	
-	public void removePermission(WebPageRequest inReq) 
+	public void entityPermissionRemove(WebPageRequest inReq) 
 	{
 		//Copy to the editor fields but leave inthe view fields
 		MediaArchive archive = getMediaArchive(inReq);
-		Data entity  = (Data) inReq.getPageValue("entity");
 		String moduleid  = inReq.findPathValue("module");
 		Data module = archive.getData("module", moduleid);
-	}	
+		MultiValued entity  = (MultiValued) inReq.getPageValue("entity");
+		//String permissiontype = inReq.getRequestParameter("permissiontype");
+		String dataid = inReq.getRequestParameter("dataid");
+		
+		//Add to the type we want
+		
+		//Check the type
+		entity.removeValue("customuser", dataid);
+		entity.removeValue("customrole", dataid);			
+		entity.removeValue("customgroup", dataid);			
+
+		entity.removeValue("editoruser", dataid);
+		entity.removeValue("editorrole", dataid);			
+		entity.removeValue("editorgroup", dataid);			
+
+		archive.saveData(module.getId(),entity);
+	}
 
 	public void removeEntityPermission(WebPageRequest inReq) 
 	{
@@ -1270,10 +1292,7 @@ public class EntityModule extends BaseMediaModule
 		String changes = (String)inReq.getPageValue("datachanges");
 		
 		//changes = archive.getEventManager().readChanges(inReq, archive.getSearcher(moduleid), entity);
-		
-		
 		archive.getEntityManager().createEntitySnapshot( inReq.getUser(), entity, changes );
-
 		
 	}
 	
