@@ -81,6 +81,8 @@ curl -XGET 'http://localhost:9200/app_catalog/userupload/_search' -d '{ "query" 
 curl -XGET 'http://localhost:9200/site_catalog/librarycollection/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 
+curl -XGET 'http://localhost:9200/app_catalog/userupload/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
 
 insight_project_mip
 
@@ -464,7 +466,7 @@ curl -XGET localhost:9200/_cat/shards
 
 
 
-curl -XGET  'http://localhost:9200/assets_catalog/_aliases' | python -mjson.tool
+curl -XGET  'http://localhost:9200/finder_catalog/_aliases' | python3 -mjson.tool
 
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
@@ -484,7 +486,7 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
    "actions" : [
-       { "add" : { "index" : "assets_catalog-0", "alias" : "assets_catalog" } }
+       { "add" : { "index" : "finder_catalog1614100195536", "alias" : "finder_catalog" } }
    ]
 }'
 
@@ -500,7 +502,7 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
 curl -XGET 'http://localhost:9200/assets_catalog/country/_search' -d '{
   "from" : 0,
   "size" : 15,
-  "query" : {
+    "query" : {
     "bool" : {
       "must" : {
         "match_all" : { }
@@ -681,3 +683,18 @@ curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search' -d '{
 	
 	curl -XGET 'http://localhost:9200/finder_catalog/dam_project/_search?q=dam_is_internet_ok:true' | python3 -mjson.tool
 	
+	
+curl -XGET http://localhost:9200/finder_catalog/entitycapture/_search -d '{
+  "from" : 0,
+  "size" : 50,
+  "query" : {
+  	bool" : {
+  		"must": [{ 
+   			 "wildcard" : {
+		      "name" : "*Milestone*"
+    	} , {
+		    "term":    {
+    			"emrecordstatus.recorddeleted" : true
+    	}]
+  }
+}'| python3 -mjson.tool	

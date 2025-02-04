@@ -499,8 +499,16 @@ public class OriginalsAssetSource extends BaseAssetSource
 				archive.fireSharedMediaEvent("conversions/runconversions");
 			}
 	
+			//TODO: Clear empty hot folder if enabled
+			int remove = removeExtraCategories(); 
+			if (remove > 0) 
+			{
+				log.info("Hot folder: " + name + ", removed categories " + remove);
+			}
+			
 		}
 
+		//Entity Deleting
 		@Override
 		public int removeExtraCategories()
 		{
@@ -518,7 +526,11 @@ public class OriginalsAssetSource extends BaseAssetSource
 			ContentItem item = getPageManager().getContent(path);
 			Category category = archive.getCategorySearcher().loadCategoryByPath(name);
 			
-			HitTracker entities = getMediaArchive().query("module").exact("isentity", true).search();
+			HitTracker entities = getMediaArchive().query("module").exact("isentity", true).exact("autodeleteentities",true).search();
+			if( entities.isEmpty())
+			{
+				return 0;
+			}
 			Collection ids = entities.collectValues("id");
 			
 
