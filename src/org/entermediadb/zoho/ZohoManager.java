@@ -89,53 +89,50 @@ public class ZohoManager implements CatalogEnabled
 		}
 		return fieldMediaArchive;
 	}
-
 	
 	
-	public Results listTeamFolders(String inAccessToken, String teamId) throws Exception
+	
+	public int syncAssets(String inAccessToken, String inRoot, boolean savenow)
 	{
-		//Zoho scope WorkDrive.teamfolders.ALL
-//		https://www.zohoapis.com/workdrive/api/v1/teams/pwyo7952f7a1662bf4960825ea0a72a771c3e/teamfolders?page%5Blimit%5D=50&page%5Boffset%5D=0
-		
-		
-		String url = "https://www.zohoapis.com/workdrive/api/v1/teams/"+ teamId + "/teamfolders";
-		String search = "page%5Blimit%5D=50&page%5Boffset%5D=0";
-		url = url + "?" + search;
-		// TODO: Add date query from the last time we imported
-		log.info("Zoho Team Folders: "+url);
-
-		HttpSharedConnection connection = getConnection(); 
-		connection.putSharedHeader("Authorization", "Bearer " + inAccessToken);
-		JSONObject json = getConnection().getJson(url);
-		if( json != null)
+		Integer assetcount = 0;
+		try
 		{
-			JSONArray data = (JSONArray)json.get("data");
-			for (Iterator iterator = data.iterator(); iterator.hasNext();)
-			{
-				JSONObject object = (JSONObject) iterator.next();
-				String id = (String)object.get("id");
 
-				JSONObject attributes = (JSONObject) object.get("attributes");
-				String name = (String)attributes.get("name");
+			Collection<JSONObject> projects = listProjects(inAccessToken, inRoot);
+
+			for (Iterator iterator = projects.iterator(); iterator.hasNext();) {
+				JSONObject project = (JSONObject) iterator.next();
+				
+				JSONObject projectsettings = getProjectSettings(inAccessToken, inRoot, project);
+				
+				Collection<JSONObject> projectFolders = listProjectFolders(inAccessToken, projectsettings);
+			
+				for (Iterator iterator2 = projectFolders.iterator(); iterator2.hasNext();) {
+					JSONObject projectFolder = (JSONObject) iterator2.next();
+					String categoyPath = "Zoho/" + project.get("name") +"/" + projectFolder.get("name");
+					assetcount = assetcount + processProjectFilesAndFolders(inAccessToken, categoyPath, projectFolder, savenow);
+				}
 				
 			}
-		
+			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
 		}
-		
-		Results results = new Results();
-		return results;
-		
-		
+		catch (Exception ex)
+		{
+			log.info("Access Token: " + inAccessToken);
+			throw new OpenEditException(ex);
+		}
+		return assetcount;
+
 	}
 	
 	
-	
+
 	public Collection listProjects(String inAccessToken, String portalID) throws Exception
 	{
 		Collection results = new ArrayList();
 		//https://projectsapi.zoho.com/restapi/portal/orrenpickellbuildinggroup/projects/
 
-		String url = "https://projectsapi.zoho.com/restapi/portal/"+portalID+"/projects/"; //escaped later
+		String url = "https://projectsapi.zoho.com/restapi/portal/"+portalID+"/projects/"; 
 		getConnection().putSharedHeader("Authorization", "Bearer " + inAccessToken);
 		JSONObject json = getConnection().getJson(url);
 		if( json != null)
@@ -154,13 +151,20 @@ public class ZohoManager implements CatalogEnabled
 		}
 		return results;
 	}
+
 	
 	public JSONObject getProjectSettings(String inAccessToken, String portalId, JSONObject project) throws Exception
 	{
 		JSONObject projectsettings = new JSONObject();
-		//https://projectsapi.zoho.com/restapi/portal/orrenpickellbuildinggroup/projects/
+
+		//Doc: https://www.zoho.com/projects/help/rest-api/documents-api.html
+		
+		//TODO: alternative options to read folders? 
+		//https://help.zoho.com/portal/en-gb/community/topic/how-to-get-a-list-of-team-folders-associated-to-a-project-from-the-api
+		
+		//https://projectsapi.zoho.com/restapi/portal/orrenpickellbuildinggroup/projects/PROJECTID/documents/settings
 		String projectId = (String)project.get("id");
-		String url = "https://projects.zoho.com/api/v3/portal/"+portalId+"/projects/"+ projectId +"/documents/settings"; //escaped later
+		String url = "https://projectsapi.zoho.com/restapi/portal/"+portalId+"/projects/"+ projectId +"/documents/settings/"; //tested with and without trailing slash
 		getConnection().putSharedHeader("Authorization", "Bearer " + inAccessToken);
 		JSONObject json = getConnection().getJson(url);
 		if( json != null)
@@ -169,7 +173,7 @@ public class ZohoManager implements CatalogEnabled
 			JSONObject settings = (JSONObject)data.get("thirdparty_settings");
 			JSONArray team_folders = (JSONArray)settings.get("team_folders");
 			if(team_folders != null) {
-				for (Iterator iterator = team_folders.iterator(); iterator.hasNext();)
+				for (Iterator iterator = team_folders.iterator(); iterator.hasNext();) //Loop Team Folders 
 				{
 					JSONObject teamfolder = (JSONObject) iterator.next();
 					String id = (String)teamfolder.get("thirdparty_folder_id");
@@ -181,6 +185,7 @@ public class ZohoManager implements CatalogEnabled
 		}
 		return projectsettings;
 	}
+	
 	
 	
 
@@ -260,7 +265,47 @@ public class ZohoManager implements CatalogEnabled
 	}
 	
 	
+	
+	//TODO: We need the Project first
+	public Results listTeamFolders(String inAccessToken, String teamId) throws Exception
+	{
+		//Zoho scope WorkDrive.teamfolders.ALL
+//		https://www.zohoapis.com/workdrive/api/v1/teams/pwyo7952f7a1662bf4960825ea0a72a771c3e/teamfolders?page%5Blimit%5D=50&page%5Boffset%5D=0
+		
+		
+		String url = "https://www.zohoapis.com/workdrive/api/v1/teams/"+ teamId + "/teamfolders";
+		String search = "page%5Blimit%5D=50&page%5Boffset%5D=0";
+		url = url + "?" + search;
+		// TODO: Add date query from the last time we imported
+		log.info("Zoho Team Folders: "+url);
 
+		HttpSharedConnection connection = getConnection(); 
+		connection.putSharedHeader("Authorization", "Bearer " + inAccessToken);
+		JSONObject json = getConnection().getJson(url);
+		if( json != null)
+		{
+			JSONArray data = (JSONArray)json.get("data");
+			for (Iterator iterator = data.iterator(); iterator.hasNext();)
+			{
+				JSONObject object = (JSONObject) iterator.next();
+				String id = (String)object.get("id");
+
+				JSONObject attributes = (JSONObject) object.get("attributes");
+				String name = (String)attributes.get("name");
+				
+			}
+		
+		}
+		
+		Results results = new Results();
+		return results;
+		
+		
+	}
+	
+	
+	
+	
 	
 	//TODO: Validate this token before running any API. Cache results
 	//Create user if not exists
@@ -271,47 +316,6 @@ public class ZohoManager implements CatalogEnabled
 		Data authinfo = getMediaArchive().getData("oauthprovider", "zohoselfclient");
 		String accesstoken = authinfo.get("httprequesttoken");
 		return accesstoken;
-//		String clientid = null;
-//		String clientsecret = null;
-//		String token = authinfo.get("refreshtoken");
-//		
-//		clientid = authinfo.get("clientid");
-//		clientsecret = authinfo.get("clientsecret");				
-//		
-//		String accountsUrl = "https://accounts.zoho.com/oauth/v2/token";
-//		
-//		Map params = new HashMap();
-//		params.put("client_id", clientid);
-//		params.put("client_secret", clientsecret);
-//		params.put("refresh_token", token);
-//		params.put("grant_type", "refresh_token");
-//		
-//		//String accesstoken = getAccessToken(authinfo);
-//		//httpmethod.addHeader("authorization", "Bearer " + accesstoken);
-//
-//		CloseableHttpResponse resp = getConnection().sharedPost(accountsUrl, params);
-//
-//		if (resp.getStatusLine().getStatusCode() != 200)
-//		{
-//			log.info("Zoho Server error returned " + resp.getStatusLine().getStatusCode());
-//		}
-//		
-//
-//		JSONObject json = getConnection().parseJson(resp);
-//		if(json.get("access_token") != null) {
-//			accesstoken = (String)json.get("access_token"); 
-//			authinfo.setValue("httprequesttoken", json.get("access_token"));
-//			authinfo.setValue("accesstokentime", new Date());
-//			authinfo.setValue("expiresin", json.get("expires_in"));
-//			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
-//		}
-//		else {
-//			log.info(json);
-//			throw new OpenEditException("Token Expired, manually provide new oauthproviders granttoken: https://api-console.zoho.com - Required SCOPES: ZohoProjects.projects.ALL,ZohoProjects.documents.ALL,ZohoPC.files.ALL,WorkDrive.teamfolders.ALL,WorkDrive.team.ALL,WorkDrive.files.ALL,ZohoFiles.files.READ");
-//		}
-//			
-
-		
 	}
 	
 	
@@ -390,35 +394,7 @@ public class ZohoManager implements CatalogEnabled
 	}
 	
 
-	public int syncAssets(String inAccessToken, String inRoot, boolean savenow)
-	{
-		Integer assetcount = 0;
-		try
-		{
-			//Results results = listTeamFolders(inAccessToken, inRoot);
-			Collection<JSONObject> projects = listProjects(inAccessToken, inRoot);
-			for (Iterator iterator = projects.iterator(); iterator.hasNext();) {
-				JSONObject project = (JSONObject) iterator.next();
-				JSONObject projectsettings = getProjectSettings(inAccessToken, inRoot, project);
-				
-				Collection<JSONObject> projectFolders = listProjectFolders(inAccessToken, projectsettings);
-				for (Iterator iterator2 = projectFolders.iterator(); iterator2.hasNext();) {
-					JSONObject projectFolder = (JSONObject) iterator2.next();
-					String categoyPath = "Zoho/" + project.get("name") +"/" + projectFolder.get("name");
-					assetcount = assetcount + processProjectFilesAndFolders(inAccessToken, categoyPath, projectFolder, savenow);
-				}
-				
-			}
-			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
-		}
-		catch (Exception ex)
-		{
-			log.info("Access Token: " + inAccessToken);
-			throw new OpenEditException(ex);
-		}
-		return assetcount;
-
-	}
+	
 
 	protected int processProjectFilesAndFolders(String inAccessToken, String inCategoryPath, JSONObject projectFolder, boolean savenow) throws Exception
 	{
@@ -650,101 +626,6 @@ public class ZohoManager implements CatalogEnabled
 	public void setXmlUtil(XmlUtil inXmlUtil)
 	{
 		fieldXmlUtil = inXmlUtil;
-	}
-
-	public JSONObject processImage(HttpSharedConnection connection, Asset inAsset)
-	{
-		MediaArchive archive = getMediaArchive();
-
-		String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1500x1500.jpg";
-
-		Page inputpage = archive.getPageManager().getPage(input);
-		if (!inputpage.exists())
-		{
-			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
-			inputpage = archive.getPageManager().getPage(input);
-
-		}
-		if (!inputpage.exists())
-		{
-			input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
-			inputpage = archive.getPageManager().getPage(input);
-
-		}
-		if (!inputpage.exists())
-		{
-			log.info("Couldn't process asset as input didn't exist:" + input);
-			
-			return null;
-		}
-		
-		return processImage(connection,  inputpage.getContentItem());
-	}
-	
-	
-	public JSONObject processImage(	HttpSharedConnection connection,ContentItem inItem)
-	{
-		//https://cloud.google.com/vision/docs/
-
-		try
-		{
-			MediaArchive archive = getMediaArchive();
-
-			String googleapikey = archive.getCatalogSettingValue("googleapikey");
-			if(googleapikey == null || googleapikey.isEmpty()) {
-				log.info("Must specify google api key");
-				return null;
-			}
-			
-			String url = "https://vision.googleapis.com/v1/images:annotate?key=" + googleapikey;
-
-			File file = new File(inItem.getAbsolutePath());
-			byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
-
-			JSONObject request = new JSONObject();
-			JSONArray requestlist = new JSONArray();
-			
-			JSONObject data = new JSONObject();
-			requestlist.add(data);
-
-			JSONObject image = new JSONObject();
-			image.put("content", new String(new String(encoded, StandardCharsets.US_ASCII)));
-			data.put("image", image);
-
-			JSONArray features = new JSONArray();
-			data.put("features", features);
-
-			JSONObject type = new JSONObject();
-			type.put("type", "LABEL_DETECTION");
-			features.add(type);
-
-			type = new JSONObject();
-			type.put("type", "OBJECT_LOCALIZATION");
-			features.add(type);
-
-			//type = new JSONObject();
-			//type.addProperty("type", "LANDMARK_DETECTION");
-			//features.add(type);
-			
-			request.put("requests", requestlist);
-						
-			//System.setProperty("https.protocols", "TLSv1.2");
-			
-			//CloseableHttpClient httpclient = HttpClients.createSystem();
-			CloseableHttpResponse resp = null;
-	 		resp = getConnection().sharedPostWithJson(url,request);
-			JSONObject json = getConnection().parseJson(resp);
-			return json;
-		}
-		catch (SSLException e) {
-        	throw new OpenEditException(e);
-        } 
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			throw new OpenEditException(e);
-		}
-
 	}
 
 
