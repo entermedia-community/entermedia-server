@@ -2,7 +2,10 @@ package org.entermediadb.elasticsearch.searchers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,9 +17,11 @@ import org.elasticsearch.index.query.TermQueryBuilder;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.profile.UserProfile;
 
 public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 {
@@ -131,6 +136,29 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	public void reindexInternal() throws OpenEditException
 	{
 		//super.reindexInternal();
+	}
+	
+	
+
+	public Collection<PropertyDetail> findSummaryFieds(SearchQuery inQuery, UserProfile userprofile)
+	{
+//		Collection searchmodules = inQuery.getValues("searchtypes");
+//		Map details = new HashMap();
+//		
+//		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
+//		{
+//			String moduleid = (String) iterator.next();
+//			Searcher childview = getSearcherManager().getSearcher(getCatalogId(), moduleid);
+//			
+//			Collection<PropertyDetail> moredetails =  childview.findSummaryFieds(inQuery, userprofile);
+//			
+//		}
+		List<PropertyDetail> details = getDetailsForView(getSearchType() + "advancedsearch", userprofile); 
+		if( details != null && !details.isEmpty())
+		{
+			return details;
+		}
+		return null;
 	}
 	
 	protected String[] listSearchModules()

@@ -1193,7 +1193,7 @@ public class EntityModule extends BaseMediaModule
 		archive.getPermissionManager().checkEntityCategoryPermission(module, entity);		
 	}
 	
-	
+	//Use in entity dialog
 	public Collection<AddedPermission> loadEntityPermissions(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1205,6 +1205,7 @@ public class EntityModule extends BaseMediaModule
 		return all;
 	}
 	
+	//Adds ok
 	public void entityPermissionAdd(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1227,6 +1228,8 @@ public class EntityModule extends BaseMediaModule
 		archive.saveData(module.getId(),entity);
 		inReq.putPageValue("saved", tosave);
 	}
+	
+	//Change the status
 	public void entityPermissionsSave(WebPageRequest inReq) 
 	{
 		//Copy to the editor fields but leave inthe view fields
