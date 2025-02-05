@@ -1190,7 +1190,10 @@ public class EntityModule extends BaseMediaModule
 		}
 		String moduleid  = inReq.findPathValue("module");
 		Data module = archive.getCachedData("module", moduleid);
-		archive.getPermissionManager().checkEntityCategoryPermission(module, entity);		
+		if (module != null && entity != null)
+		{
+			archive.getPermissionManager().checkEntityCategoryPermission(module, entity);
+		}
 	}
 	
 	
