@@ -1241,16 +1241,28 @@ public class EntityModule extends BaseMediaModule
 		String moduleid  = inReq.findPathValue("module");
 		Data module = archive.getData("module", moduleid);
 		
-		String dataid = inReq.getRequestParameter("dataid");
-		entity.removeValue("customuser", dataid);
-		entity.removeValue("customrole", dataid);			
-		entity.removeValue("customgroup", dataid);			
-		entity.removeValue("editoruser", dataid);
-		entity.removeValue("editorrole", dataid);			
-		entity.removeValue("editorgroup", dataid);
-		
-		String saveto = inReq.getRequestParameter("permissionfield");
-		entity.addValue(saveto, dataid);
+		String[] dataid = inReq.getRequestParameters("dataid");
+		String[] iseditor = inReq.getRequestParameters("iseditor");
+		String[] permissiontype = inReq.getRequestParameters("permissiontype");
+		for (int i = 0; i < dataid.length; i++)
+		{
+			entity.removeValue("customuser", dataid);
+			entity.removeValue("customrole", dataid);			
+			entity.removeValue("customgroup", dataid);			
+			entity.removeValue("editoruser", dataid);
+			entity.removeValue("editorrole", dataid);			
+			entity.removeValue("editorgroup", dataid);
+
+			String fieldname = permissiontype[i];
+			if( iseditor[i].equals("true") )
+			{
+				entity.addValue("editor" + fieldname, dataid[i]);
+			}
+			else
+			{
+				entity.addValue("custom" + fieldname, dataid[i]);
+			}
+		}
 		archive.saveData(module.getId(),entity);
 	}	
 	public void entityPermissionRemove(WebPageRequest inReq) 
