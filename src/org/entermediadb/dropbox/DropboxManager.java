@@ -233,21 +233,25 @@ public class DropboxManager implements CatalogEnabled {
 
 	    // Check token expiration
 	    if (accesstokendate instanceof Date) {
-		Date tokenIssuedDate = (Date) accesstokendate;
-
-		if (tokenIssuedDate != null) {
-		    Date now = new Date();
-		    long tokenAgeInSeconds = (now.getTime() - tokenIssuedDate.getTime()) / 1000;
-
-		    Object expiresIn = authinfo.getValue("expiresin");
-		    if (expiresIn != null && tokenAgeInSeconds > (Long.parseLong(expiresIn.toString()) - 100)) {
+			Date tokenIssuedDate = (Date) accesstokendate;
+	
+			if (tokenIssuedDate != null) 
+			{
+			    Date now = new Date();
+			    long tokenAgeInSeconds = (now.getTime() - tokenIssuedDate.getTime()) / 1000;
+	
+			    Object expiresIn = authinfo.getValue("expiresin");
+			    if (expiresIn == null || (tokenAgeInSeconds > (Long.parseLong(expiresIn.toString()) - 100))) 
+			    {
+			    	forceRefresh = true;
+			    	log.info("Token is expiring, refreshing...");
+			    }
+			}
+	    } 
+	    else 
+	    {
+			// No token issue date, force refresh
 			forceRefresh = true;
-			log.info("Token is expiring, refreshing...");
-		    }
-		}
-	    } else {
-		// No token issue date, force refresh
-		forceRefresh = true;
 	    }
 
 	    // Refresh token if needed
@@ -350,11 +354,11 @@ public class DropboxManager implements CatalogEnabled {
 	    JSONObject json = getConnection().parseJson(resp);
 
 	    if (json != null) {
-		JSONArray jsonNamespaces = (JSONArray) json.get("namespaces");
-		for (Iterator iterator = jsonNamespaces.iterator(); iterator.hasNext();) {
-		    JSONObject namespace = (JSONObject) iterator.next();
-		    namespaces.add(namespace);
-		}
+			JSONArray jsonNamespaces = (JSONArray) json.get("namespaces");
+			for (Iterator iterator = jsonNamespaces.iterator(); iterator.hasNext();) {
+			    JSONObject namespace = (JSONObject) iterator.next();
+			    namespaces.add(namespace);
+			}
 	    }
 	    log.info(namespaces);
 	    return namespaces;

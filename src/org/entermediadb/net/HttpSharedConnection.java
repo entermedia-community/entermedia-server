@@ -282,7 +282,14 @@ public class HttpSharedConnection
 		}
 		catch (Throwable e) 
 		{
-			throw new OpenEditException(e);
+			if (e instanceof OpenEditException)
+			{
+				throw (OpenEditException) e;
+			}
+			else 
+			{
+				throw new OpenEditException("Could not parse", e);
+			}
 		}
 		finally
 		{
