@@ -698,7 +698,7 @@ public class FaceProfileManager implements CatalogEnabled
 		
 		for(Data group : faceprofilegroups)
 		{
-			Map found = getImageAndLocationForGroup(asset,group, thumbwidth, thumbheight);
+			Map found = getImageAndLocationForGroup(asset, group, thumbwidth, thumbheight);
 			if( found != null)
 			{
 				return found;
@@ -706,6 +706,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		return null;
 	}
+
 	public Map getImageAndLocationForGroup(Data asset,Data infaceprofilegroup, Double thumbwidth, Double thumbheight)
 	{
 		return getImageAndLocationForGroup(asset,infaceprofilegroup.getId(),thumbwidth,thumbheight);
@@ -747,6 +748,7 @@ public class FaceProfileManager implements CatalogEnabled
 				//Calculate the dimentions scaled to this image
 				String json = JSONArray.toJSONString( Arrays.asList(scaledxy));
 				Map result = new HashMap();
+				result.put("groupid", groupid);
 				result.put("locationxy",json);
 				if( profile.get("timecodestart") != null )
 				{
@@ -947,6 +949,16 @@ public class FaceProfileManager implements CatalogEnabled
 			{
 				return found;
 			}
+		}
+		return null;
+	}
+	
+	public Map getImageBoxById(String faceprofilegroupid, Data asset, String imagew, String imageh)
+	{
+		Map found = getImageAndLocationForGroup(asset, faceprofilegroupid, Double.valueOf(imagew), Double.valueOf(imageh));
+		if (found != null)
+		{
+			return found;
 		}
 		return null;
 	}

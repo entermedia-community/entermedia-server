@@ -174,7 +174,7 @@ public class OauthModule extends BaseMediaModule
 			            .setClientId(clientid) // Client ID from configuration
 			            .setRedirectURI(redirect)
 			            .setResponseType("code") // Response type for authorization code grant
-			            .setScope(requestedpermissions) // Dropbox scopes
+			            .setScope(requestedpermissions) // Dropbox scopes configured at views/settings/modules/asset/hotfolders/types/dropbox/connect.xconf
 			            .setParameter("token_access_type", "offline") // Ensure refresh_token is included in the response
 
 			            .setState("login") // State parameter for CSRF protection or custom state
