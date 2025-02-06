@@ -604,19 +604,19 @@ public class PermissionManager implements CatalogEnabled
 	    //Load all the view and edit record into a big list
 	    Collection<AddedPermission> alladded = new ArrayList<AddedPermission>();
 	    
-	    Collection<String> editorsfound = collectUsers(inModule,inEntity,true);
-	    Collection<String> viewersfound = collectUsers(inModule,inEntity,false);
+	    Collection<String> editorsfound = collectUsers(inEntity,true);
+	    Collection<String> viewersfound = collectUsers(inEntity,false);
 	    viewersfound.removeAll(editorsfound);
 	    addUsers(alladded,editorsfound,viewersfound);
 
 	    
-	    editorsfound = collectGroups(inModule,inEntity,true);
-	    viewersfound = collectGroups(inModule,inEntity,false);
+	    editorsfound = collectGroups(inEntity,true);
+	    viewersfound = collectGroups(inEntity,false);
 	    viewersfound.removeAll(editorsfound);
 	    addGroups(alladded,editorsfound,viewersfound);
 
-	    editorsfound = collectRoles(inModule,inEntity,true);
-	    viewersfound = collectRoles(inModule,inEntity,false);
+	    editorsfound = collectRoles(inEntity,true);
+	    viewersfound = collectRoles(inEntity,false);
 	    viewersfound.removeAll(editorsfound);
 	    addRoles(alladded,editorsfound,viewersfound);
 
@@ -633,7 +633,7 @@ public class PermissionManager implements CatalogEnabled
 			AddedPermission added = new AddedPermission();
 			added.setEditor(true);
 			added.setData(user);
-			added.setPermissionType("user");
+			added.setPermissionType("users");
 			inAlladded.add(added);
 		}
 		for (Iterator iterator = inViewersfound.iterator(); iterator.hasNext();)
@@ -643,7 +643,7 @@ public class PermissionManager implements CatalogEnabled
 			AddedPermission added = new AddedPermission();
 			added.setEditor(false);
 			added.setData(user);
-			added.setPermissionType("user");
+			added.setPermissionType("users");
 			inAlladded.add(added);
 		}
 	}
@@ -653,21 +653,21 @@ public class PermissionManager implements CatalogEnabled
 		for (Iterator iterator = inEditorsfound.iterator(); iterator.hasNext();)
 		{
 			String id = (String) iterator.next();
-			Data data = getMediaArchive().getCachedData("settiingsgroup",id);
+			Data data = getMediaArchive().getCachedData("settingsgroup",id);
 			AddedPermission added = new AddedPermission();
 			added.setEditor(true);
 			added.setData(data);
-			added.setPermissionType("settingsgroup");
+			added.setPermissionType("groups");
 			inAlladded.add(added);
 		}
 		for (Iterator iterator = inViewersfound.iterator(); iterator.hasNext();)
 		{
 			String id = (String) iterator.next();
-			Data data = getMediaArchive().getCachedData("settiingsgroup",id);
+			Data data = getMediaArchive().getCachedData("settingsgroup",id);
 			AddedPermission added = new AddedPermission();
 			added.setEditor(false);
 			added.setData(data);
-			added.setPermissionType("settingsgroup");
+			added.setPermissionType("roles");
 			inAlladded.add(added);
 		}
 	}
@@ -696,69 +696,51 @@ public class PermissionManager implements CatalogEnabled
 		}	
 	}
 
-	protected Collection<String> collectUsers(Data inModule, Data inEntity, boolean inEditors)
+	protected Collection<String> collectUsers(Data inSource, boolean inEditors)
 	{
-		Set<String> users = new HashSet();
 		String fieldname = "customusers";
 		if( inEditors )
 		{
 			fieldname = "editorusers";
 		}
-		Collection<String> moreusers = inModule.getValues(fieldname);
-		if (users != null && !users.isEmpty() )
+		Collection<String>  moreusers = inSource.getValues(fieldname);
+		if( moreusers == null)
 		{
-			users.addAll(moreusers);
+			moreusers = new ArrayList(0);
 		}
-		moreusers = inEntity.getValues(fieldname);
-		if (moreusers != null && !moreusers.isEmpty() )
-		{
-			users.addAll(moreusers);
-		}
-		return users;
+		return moreusers;
 	}
 
-	protected Collection<String> collectGroups(Data inModule, Data inEntity, boolean inEditors)
+	protected Collection<String> collectGroups(Data inSource, boolean inEditors)
 	{
-		Set<String> groups = new HashSet();
 		String fieldname = "customgroups";
 		if( inEditors )
 		{
 			fieldname = "editorgroups";
 		}
-		Collection<String> moregroups = inModule.getValues(fieldname);
-		if (moregroups != null && !moregroups.isEmpty() )
+		Collection<String> 	moregroups = inSource.getValues(fieldname);
+		if( moregroups == null)
 		{
-			groups.addAll(moregroups);
+			moregroups = new ArrayList(0);
 		}
-		moregroups = inEntity.getValues(fieldname);
-		if (moregroups != null && !moregroups.isEmpty() )
-		{
-			groups.addAll(moregroups);
-		}
-		return groups;
+
+		return moregroups;
 
 	}
 
-	protected Collection<String> collectRoles(Data inModule, Data inEntity, boolean inEditors)
+	protected Collection<String> collectRoles(Data inSource, boolean inEditors)
 	{
-		Set<String> roles = new HashSet();
 		String fieldname = "customroles";
 		if( inEditors )
 		{
 			fieldname = "editorroles";
 		}
-		Collection<String> more = inModule.getValues(fieldname);
-		if (more != null && !more.isEmpty() )
+		Collection<String> more = inSource.getValues(fieldname);
+		if( more == null)
 		{
-			roles.addAll(more);
+			more = new ArrayList(0);
 		}
-		more = inEntity.getValues(fieldname);
-		if (more != null && !more.isEmpty() )
-		{
-			roles.addAll(more);
-		}
-		return roles;
-		
+		return more;
 	}
 
 	public void addEntityPermissions(Data inModule, MultiValued inEntity, Map<String,String[]> inTosave)

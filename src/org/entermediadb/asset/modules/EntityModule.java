@@ -1241,17 +1241,20 @@ public class EntityModule extends BaseMediaModule
 		String moduleid  = inReq.findPathValue("module");
 		Data module = archive.getData("module", moduleid);
 		
+		String securityalwaysvisible = inReq.getRequestParameter("securityalwaysvisible");
+		entity.setValue("securityalwaysvisible",Boolean.parseBoolean(securityalwaysvisible));
+		
 		String[] dataid = inReq.getRequestParameters("dataid");
 		String[] iseditor = inReq.getRequestParameters("iseditor");
 		String[] permissiontype = inReq.getRequestParameters("permissiontype");
 		for (int i = 0; i < dataid.length; i++)
 		{
-			entity.removeValue("customuser", dataid);
-			entity.removeValue("customrole", dataid);			
-			entity.removeValue("customgroup", dataid);			
-			entity.removeValue("editoruser", dataid);
-			entity.removeValue("editorrole", dataid);			
-			entity.removeValue("editorgroup", dataid);
+			entity.removeValue("customusers", dataid[i]);
+			entity.removeValue("customroles", dataid[i]);			
+			entity.removeValue("customgroups", dataid[i]);			
+			entity.removeValue("editorusers", dataid[i]);
+			entity.removeValue("editorroles", dataid[i]);			
+			entity.removeValue("editorgroups", dataid[i]);
 
 			String fieldname = permissiontype[i];
 			if( iseditor[i].equals("true") )
@@ -1278,13 +1281,13 @@ public class EntityModule extends BaseMediaModule
 		//Add to the type we want
 		
 		//Check the type
-		entity.removeValue("customuser", dataid);
-		entity.removeValue("customrole", dataid);			
-		entity.removeValue("customgroup", dataid);			
+		entity.removeValue("customusers", dataid);
+		entity.removeValue("customroles", dataid);			
+		entity.removeValue("customgroups", dataid);			
 
-		entity.removeValue("editoruser", dataid);
-		entity.removeValue("editorrole", dataid);			
-		entity.removeValue("editorgroup", dataid);			
+		entity.removeValue("editorusers", dataid);
+		entity.removeValue("editorroles", dataid);			
+		entity.removeValue("editorgroups", dataid);			
 
 		archive.saveData(module.getId(),entity);
 	}

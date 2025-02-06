@@ -2951,6 +2951,17 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return;
 		}
 		
+		PropertyDetail alwaysvisible = getDetail("securityalwaysvisible");
+
+		if (alwaysvisible == null)
+		{
+			if(  Boolean.parseBoolean( inData.get("securityalwaysvisible") ) )
+			{
+				inContent.field("securityenabled", false); //Everyone
+				return;
+			}
+		}
+		
 		boolean securityenabled = false;
 		Collection users = inData.getValues("customusers");
 		Collection groups = inData.getValues("customgroups");

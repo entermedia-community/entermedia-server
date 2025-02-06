@@ -143,6 +143,37 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		return one;
 	}
 
+	@Override
+	public void removeValue(String inKey, Object inOldValue)
+	{
+		Collection values = getValues(inKey);
+		
+		if( values == null )
+		{
+			values = new ArrayList();
+		}
+		values.remove(inOldValue);
+		getMap().put(inKey,values);
+	}
+	
+	@Override
+	public void removeValue(String inKey)
+	{
+		getMap().put(inKey,  ValuesMap.NULLVALUE);
+	}
+	
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		if( inValue == null)
+		{
+			getMap().put(inKey,  ValuesMap.NULLVALUE);
+		}
+		else
+		{
+			super.setValue(inKey, inValue);
+		}
+	}
 	
 	@Override
 	public Object getValue(String inId) {
