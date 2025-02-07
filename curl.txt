@@ -1,3 +1,5 @@
+env GTK_IM_MODULE=ibus /home/shanti/eclipse/java-2024-09/eclipse/eclipse --launcher.openFile "$@"
+
 
 curl -H "Content-Type: application/json" -XPOST https://emediafinder.com/entermediadb/mediadb/services/authentication/validateuser.json -d '{
  	"accountname":"900020",

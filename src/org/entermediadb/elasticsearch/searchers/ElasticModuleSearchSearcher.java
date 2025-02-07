@@ -139,26 +139,30 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 	}
 	
 	
-
-	public Collection<PropertyDetail> findSummaryFieds(SearchQuery inQuery, UserProfile userprofile)
+/**
+ * 
+ * @override 
+ * */
+	public Collection<PropertyDetail> findSummaryFields(SearchQuery inQuery, UserProfile userprofile)
 	{
-//		Collection searchmodules = inQuery.getValues("searchtypes");
-//		Map details = new HashMap();
-//		
-//		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
-//		{
-//			String moduleid = (String) iterator.next();
-//			Searcher childview = getSearcherManager().getSearcher(getCatalogId(), moduleid);
-//			
-//			Collection<PropertyDetail> moredetails =  childview.findSummaryFieds(inQuery, userprofile);
-//			
-//		}
-		List<PropertyDetail> details = getDetailsForView(getSearchType() + "advancedsearch", userprofile); 
-		if( details != null && !details.isEmpty())
+		Collection searchmodules = inQuery.getValues("searchtypes");
+		Map<String,PropertyDetail> details = new HashMap();
+		
+		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
 		{
-			return details;
+			String moduleid = (String) iterator.next();
+			Searcher childsearcher = getSearcherManager().getSearcher(getCatalogId(), moduleid);
+			Collection<PropertyDetail> moredetails =  childsearcher.findSummaryFields(inQuery, userprofile);
+			if( moredetails != null)
+			{
+				for (Iterator iterator2 = moredetails.iterator(); iterator2.hasNext();)
+				{
+					PropertyDetail propertyDetail = (PropertyDetail) iterator2.next();
+					details.put(propertyDetail.getId(),propertyDetail);
+				}
+			}
 		}
-		return null;
+		return details.values();
 	}
 	
 	protected String[] listSearchModules()

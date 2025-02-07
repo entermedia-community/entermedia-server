@@ -370,6 +370,7 @@ public class FinderModule extends BaseMediaModule
 			if( values == null)
 			{
 				ListHitTracker newvalues = new ListHitTracker();
+				newvalues.setActiveFilterValues(  allhits.getActiveFilterValues() );
 				newvalues.setHitsPerPage(maxsize);
 				newvalues.setSearcher(archive.getSearcher(type));
 				SearchQuery query = allhits.getSearchQuery().copy();

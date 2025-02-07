@@ -1148,10 +1148,8 @@ public class EntityModule extends BaseMediaModule
 		
 		String pickedmodule = inPageRequest.findPathValue("module");
 		MediaArchive archive = getMediaArchive(inPageRequest);
-		Searcher searcher = archive.getSearcher(pickedmodule);
 		String pickedid = inPageRequest.getRequestParameter("id");
 		MultiValued data = (MultiValued)inPageRequest.getPageValue("data");
-		//TODO: Use data?
 		if( data == null)
 		{
 			data = (MultiValued) archive.getData(pickedmodule, pickedid);
@@ -1160,6 +1158,8 @@ public class EntityModule extends BaseMediaModule
 		{
 			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
 			String entityid = inPageRequest.getRequestParameter("entityid");
+			Data entity =  archive.getData(entitytype, entityid);
+			Searcher searcher = archive.getSearcher(pickedmodule);
 			PropertyDetail detail =  searcher.getDetail(entitytype);
 			if(detail.isMultiValue()) 
 			{
@@ -1168,6 +1168,14 @@ public class EntityModule extends BaseMediaModule
 			else {
 				data.setValue(entitytype, entityid);
 			}
+			//Copy the custom permissions
+			String[] types = {"customusers","customgroups","customroles","editorusers","editorroles","editorgroups"};
+			for (int i = 0; i < types.length; i++)
+			{
+				data.setValue(types[i], entity.getValue(types[i]) );
+			}
+			data.setValue("securityalwaysvisible", entity.getValue("securityalwaysvisible") );
+			
 			searcher.saveData(data);
 		}
 		

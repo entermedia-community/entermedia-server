@@ -456,25 +456,27 @@ public class FileManagerModule extends BaseModule
 		String root = inReq.findValue("folderroot");
 		String absolutepath = getPageManager().getPage(path).getContentItem().getAbsolutePath();
 		String editorpath = inReq.findPathValue("localopencommand");
+//		if( editorpath == null)
+//		{
+//			editorpath = inReq.findPathValue("eclipsepath");
+//		}
 		if( editorpath == null)
 		{
-			editorpath = inReq.findPathValue("eclipsepath");
-		}
-		if( editorpath == null)
-		{
-			return;
+			//home/shanti/eclipse/java-2024-09/eclipse/eclipse --launcher.openFile "$@"
+			
+			editorpath = System.getProperty("user.home") + "/bin/localopencommand";  // link up /home/ian/eclipse/jee-2024-06/eclipse/eclipse
 		}
 		Collection params = new ArrayList(); 
 		params.add(editorpath);
-		String editorparams = inReq.findValue("editorparams");
-		if( editorparams == null)
-		{
-			//editorparams = "--launcher.openFile";
-		}
-		if( editorparams != null && !editorparams.isEmpty())
-		{
-			params.add(editorparams);
-		}
+//		String editorparams = inReq.findValue("editorparams");
+//		if( editorparams == null)
+//		{
+//			//editorparams = "--launcher.openFile";
+//		}
+//		if( editorparams != null && !editorparams.isEmpty())
+//		{
+//			params.add(editorparams);
+//		}
 		params.add(absolutepath);
 		
 		Runtime.getRuntime().exec((String[])params.toArray(new String[params.size()]));
