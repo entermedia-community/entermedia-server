@@ -1253,28 +1253,31 @@ public class EntityModule extends BaseMediaModule
 		entity.setValue("securityalwaysvisible",Boolean.parseBoolean(securityalwaysvisible));
 		
 		String[] dataid = inReq.getRequestParameters("dataid");
-		String[] iseditor = inReq.getRequestParameters("iseditor");
-		String[] permissiontype = inReq.getRequestParameters("permissiontype");
-		for (int i = 0; i < dataid.length; i++)
+		if( dataid != null )
 		{
-			entity.removeValue("customusers", dataid[i]);
-			entity.removeValue("customroles", dataid[i]);			
-			entity.removeValue("customgroups", dataid[i]);			
-			entity.removeValue("editorusers", dataid[i]);
-			entity.removeValue("editorroles", dataid[i]);			
-			entity.removeValue("editorgroups", dataid[i]);
-
-			String fieldname = permissiontype[i];
-			if( iseditor[i].equals("true") )
+			String[] iseditor = inReq.getRequestParameters("iseditor");
+			String[] permissiontype = inReq.getRequestParameters("permissiontype");
+			for (int i = 0; i < dataid.length; i++)
 			{
-				entity.addValue("editor" + fieldname, dataid[i]);
+				entity.removeValue("customusers", dataid[i]);
+				entity.removeValue("customroles", dataid[i]);			
+				entity.removeValue("customgroups", dataid[i]);			
+				entity.removeValue("editorusers", dataid[i]);
+				entity.removeValue("editorroles", dataid[i]);			
+				entity.removeValue("editorgroups", dataid[i]);
+	
+				String fieldname = permissiontype[i];
+				if( iseditor[i].equals("true") )
+				{
+					entity.addValue("editor" + fieldname, dataid[i]);
+				}
+				else
+				{
+					entity.addValue("custom" + fieldname, dataid[i]);
+				}
 			}
-			else
-			{
-				entity.addValue("custom" + fieldname, dataid[i]);
-			}
+			archive.saveData(module.getId(),entity);
 		}
-		archive.saveData(module.getId(),entity);
 	}	
 	public void entityPermissionRemove(WebPageRequest inReq) 
 	{
