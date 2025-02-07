@@ -1,0 +1,23 @@
+#if(!$groupid)
+	#set($groupid = $context.getRequestParameter("groupid"))
+#end
+$context.putPageValue("groupid", $groupid)
+
+
+<div id="workarea"  class="eml-tab-content">
+<h2>[[Groups]]</h2>
+
+
+<div class="d-flex bd-highlight" style="width: 700px">
+  <div class="p-2" style="min-width: 350px;">
+	$pages.include("$usermanagerhome/groups/results.html?oeview=groupname", $context)
+  </div>
+  <div class="p-2 flex-grow-8" id="metadataeditarea">
+
+		$pages.include("$usermanagerhome/groups/modifygroup.html?gropuid=$groupid", $context)
+  </div>
+</div>
+
+
+</div>
+

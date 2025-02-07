@@ -1,0 +1,48 @@
+#set( $searcher = $mediaarchive.getSearcher("user") )
+#set($collectionid = $context.getRequestParameter("collectionid"))
+$context.putPageValue("searcher",$searcher)
+
+<div  id="copyuserdatadialog" >
+	<div id="searcharea" >
+		#set($viewid = "usersearch")
+		#set($viewpath = "user/${viewid}")
+		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+		
+	<form  id="dialogsearchform" style="margin-bottom:10px;" 
+		class="autosubmit" 
+		data-targetdiv="copyuserpicker" 
+		action="./usersearchresults.html">
+		<input type="hidden" name="collectionid" value="$collectionid" />
+		<input type="hidden" name="searchtype" value="user" />
+		<input type="hidden" name="sortby" value="firstName" />
+		<table style="width:100%;">
+		<tr>
+		<td>
+
+		<div  class="row inlinesearch" >
+		<div class="col">
+			<input name="operation" value="contains" type="hidden">
+			<input name="field" value="description" type="hidden">
+			<input type="text" class="form-control detail_name textinput autosubmited " 
+					autocomplete="off" 
+					value="" 
+					id="name.value" 
+					name="description.value">
+		</div>	
+		</div>
+		</td>
+
+		</tr>
+		</table>
+	</form>
+	#set($selecteduserid = $context.getRequestParameter("selecteduserid"))
+	<div id="copyuserpicker" 
+		data-targetdiv="copyuserdatadialog" 
+		data-nextpage="$!siteroot$usermanagerhome/user/copyuserdataconfirm.html"
+		data-oemaxlevel="1" 
+		data-userid="$selecteduserid"
+		data-hitssessionid="$!hits.sessionId">
+		<div class="clearfix"></div>
+	</div>
+	</div>
+</div>	

@@ -1,0 +1,20 @@
+#set( $searcher = $mediaarchive.getSearcher("user") )
+
+#set($copyid =  $context.getRequestParameter("copyid"))
+#set($copytoid =  $context.getRequestParameter("copytoid"))
+
+
+[[Confirm you want to move all Data from]] user id: <strong>$copyid</strong> [[to]] user id:<strong>$copytoid</strong>
+<form  id="copyuser" 
+		method="post" 
+		style="margin-bottom:10px;" 
+		class="ajaxform autocloseform" 
+		data-targetdiv="userindex" 
+		data-oemaxlevel="1"
+		action="./copyuserdatasave.html">
+<input type="hidden" name="copyid" value="$!copyid">
+<input type="hidden" name="copytoid" value="$!copytoid">
+##To Reload user page
+<input type="hidden" name="username" value="$!copyid">
+<input type="submit" class="btn btn-sm btn-warning" value="[[Move Data]]" style="margin-top:20px;">
+</form>

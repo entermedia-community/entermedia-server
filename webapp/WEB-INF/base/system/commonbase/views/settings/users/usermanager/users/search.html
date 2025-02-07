@@ -1,0 +1,47 @@
+<div class="tab-actions ">
+	<div id="user-search"> 
+	#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
+	$context.putPageValue("searcher", $userSearcher)     
+	#set($viewid = "usernormalsearch")
+	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
+	#ifnull($details)
+		No details for view: $viewid
+	#end
+	$context.putPageValue("details",$details)	
+	
+		<form class="ajaxform" id="usersearchform" name="search" 
+			data-targetdiv="usersearchresultspanel" 
+			action="$siteroot$usermanagerhome/users/fieldsearch.html">
+			<input type="hidden" name="hitsperpage" value="12"/>
+			<input type="hidden" name="sortby" value="enabledDown,lastNameUp"/>
+			<input type="hidden" name="search" value="true"/>
+			<div class="d-flex align-items-center justify-content-between mb-3">
+				<div class="mr-auto">
+					<a class="btn btn-primary ajax" 
+						href='$siteroot$usermanagerhome/users/reindex.html'
+						data-targetdivinner="settingssubtab"
+						data-oemaxlevel="1">[[Reindex]]</a>
+					<a class="btn btn-primary ajax"
+						data-targetdivinner="settingssubtab"
+						data-oemaxlevel="1"
+						data-updateurl="true"
+						href='$siteroot$usermanagerhome/users/adduser.html'>[[Create User]]</a>
+					<a class="btn btn-primary ajax"
+						data-targetdivinner="applicationmaincontent"
+						data-oemaxlevel="5"
+						data-updateurl="true"
+						data-autoactivecontainer="datamanager-system-menu"
+						href='$applink/views/settings/lists/datamanager/list/index.html?searchtype=user'>[[Import/ Export]]</a>	 
+				</div>
+				$pages.include("${apphome}/components/xml/searchfields.html",$context)
+				#set($searching = $context.getRequestParameter("search"))
+				#if($searching)
+				<div class="ml-1"><a href="$siteroot$usermanagerhome/users/index.html" class="btn btn-primary btn-sm">[[Clear]]</a></div>
+				#end
+				
+			</div>
+		</form>
+	</div>
+</div>
+<div class="clearfix"></div>

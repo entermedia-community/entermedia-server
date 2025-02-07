@@ -1,0 +1,4 @@
+<page>
+	<path-action name="User.deleteUser"/>
+	<path-action name="User.findAllUsers" />
+</page>

@@ -1,0 +1,44 @@
+<div id="groupeditor">
+
+<div class="ui-widget commentbox three-up">
+<h3>[[Groups]]</h3>
+<div class="ui-widget-content" > 
+
+#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
+    <div class="list-adder">
+        <form class="ajaxform" name="addform" id="groupAddForm" data-targetdiv="groupeditor" action="$siteroot$usermanagerhome/user/editgroups.html" method="post">
+        	<input name="username" type="hidden" value="$selectedUser.id" />
+        	<input name="addUsernames" type="hidden" value="$selectedUser.id" />
+            <select name="groupid" id="groupselect" onchange="$('#groupAddForm').submit()" class="form-control">
+            	<option value=""></option>
+            	#foreach ( $group in $UserManager.getGroups() )
+            		#if( !$selectedUser.isInGroup($group) )  
+            	    	<option value="$group.getId()">$group.getName()</option>
+            		#end
+            	#end     
+            </select>  
+        </form>
+    </div>
+#end
+
+<div class="emtable" >
+	#foreach ( $group in $selectedUser.getGroups() )
+		<div class="listbox">
+		<a class="listrow group" href="$siteroot$usermanagerhome/groups/modifygroup.html?groupid=$group.id">
+			$group</a>
+		<a class="ajax delete-row" data-targetdiv="groupeditor" href="$siteroot$usermanagerhome/user/editgroups.html?groupid=$group.id&removeUsernames=$selectedUser.getUserName()&username=$selectedUser.id">
+		<i class="fas fa-times"></i>
+		</a>
+		</div>
+	#end
+</div>
+
+
+
+
+</div>
+</div>
+
+ 
+</div>
+ 
