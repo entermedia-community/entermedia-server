@@ -1158,7 +1158,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
 			String entityid = inPageRequest.getRequestParameter("entityid");
-			Data entity =  archive.getData(entitytype, entityid);
+			Data entity =  archive.getCachedData(entitytype, entityid);
 			Searcher searcher = archive.getSearcher(pickedmodule);
 			PropertyDetail detail =  searcher.getDetail(entitytype);
 			if(detail.isMultiValue()) 
@@ -1276,8 +1276,8 @@ public class EntityModule extends BaseMediaModule
 					entity.addValue("custom" + fieldname, dataid[i]);
 				}
 			}
-			archive.saveData(module.getId(),entity);
 		}
+		archive.saveData(module.getId(),entity);
 	}	
 	public void entityPermissionRemove(WebPageRequest inReq) 
 	{
