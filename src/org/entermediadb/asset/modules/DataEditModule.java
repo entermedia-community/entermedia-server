@@ -1179,12 +1179,12 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
-	public void changeFilters(WebPageRequest inReq) throws Exception
+	public void clearFilter(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
-			searcher.updateFilters(inReq);
+			searcher.clearFilter(inReq);
 		}
 	}
 

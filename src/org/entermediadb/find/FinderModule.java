@@ -369,10 +369,11 @@ public class FinderModule extends BaseMediaModule
 			Collection values = (Collection) bytypes.get(type);
 			if( values == null)
 			{
+				Searcher searcher = archive.getSearcher(type);
 				ListHitTracker newvalues = new ListHitTracker();
 				newvalues.setActiveFilterValues(  allhits.getActiveFilterValues() );
 				newvalues.setHitsPerPage(maxsize);
-				newvalues.setSearcher(archive.getSearcher(type));
+				newvalues.setSearcher(searcher);
 				SearchQuery query = allhits.getSearchQuery().copy();
 				query.setResultType(type);
 				newvalues.setSearchQuery(query);
