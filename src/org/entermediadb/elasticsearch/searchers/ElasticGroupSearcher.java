@@ -121,10 +121,10 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 
 	public void saveData(Data inData, User inUser)
 	{
+		getCacheManager().put(getCatalogId() + "groupSearcher", inData.getId(),inData);
 		getXmlUserArchive().saveGroup((Group) inData);
 	
 		super.saveData(inData, inUser); //update the index
-
 	}
 	public void delete(Data inData, User inUser)
 	{
