@@ -1176,8 +1176,8 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		
-		Data entity = inReq.findValue("entity");
-		
+		Data entity  = (Data) inReq.getPageValue("entity");
+		/*
 		if( cat != null)
 		{
 			if( !cat.containsValue("viewusers", inReq.getUserName()) )
@@ -1205,7 +1205,7 @@ public class FinderModule extends BaseMediaModule
 					archive.saveData(entity.getModuleId(), entity.getData());
 				}					
 			}
-		}
+		}*/
 	}
 	
 	
