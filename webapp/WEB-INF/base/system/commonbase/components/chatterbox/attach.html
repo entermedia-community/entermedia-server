@@ -1,3 +1,10 @@
+#ifnull($chatterboxhome)
+#set($chatterboxhome = $page.chatterboxhome)
+#end
+#set($moduleid = $module.getId())
+#ifnull($moduleid)
+#set($moduleid = $page.module) 
+#end
 #if(!$chat)
 	#set($chatid = $context.getRequestParameter("messageid"))
 	#set($chat = $mediaarchive.getData("chatterbox",$chatid))
@@ -20,13 +27,18 @@
 <div class="message-attach-box">
 <div class="mb-2"><strong>[[Attachments]]</strong></div>
 #if($caneditgoal)
-	<form name="attach${chat.id}" method="post" enctype="multipart/form-data" 
-		action="${edithome}/uploadattachment.html" 
+	<form name="attach${chat.id}" 
+		method="post" 
+		enctype="multipart/form-data" 
+		action="${chatterboxhome}/uploadattachment.html" 
 		class="ajaxform autosubmit chatattachasset" 
-		data-targetdiv="chatter-message-$!{chat.id}" >
+		data-targetdiv="chatter-message-$!{chat.id}"
+		data-includeeditcontext="true" >
 	<input type="hidden" name="searchtype" value="chatterbox" />
 	<input type="hidden" name="id" value="$!chat.id" />
 	<input type="hidden" name="entityid" value="$!entity.id" />
+	<input type="hidden" name="moduleid" value="$!moduleid" />
+	
 	<input type="hidden" name="messageid" value="$!chat.id" />
 	<input type="hidden" name="messageids" value="$!chat.id" />
 	<input type="hidden" name="assetid" class="pickedassetid" value="" />

@@ -2114,13 +2114,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		if (target == null  && id == null) //new record
 		{
-			/* TODO: Remove this. We should be calling: 	<path-action name="DataEditModule.parseMultPart" />
-			<path-action name="DataEditModule.saveData">
-			<property name="pageval">entity</property>
-		</path-action>
-		<path-action name="AssetEditModule.handleUploads"/>
-			 */
-			
+		
 			target = searcher.createNewData();
 			String[] fields = inReq.getRequestParameters("field");
 			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false

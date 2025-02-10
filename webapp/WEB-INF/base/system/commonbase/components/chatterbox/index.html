@@ -1,30 +1,25 @@
-
-#set($tabid = "tabworkflowchat")
-<div id="${tabid}" 
-	class=" entity-tab-content entity-tab-chatterbox h-100" 
-	data-tabid="$!{tabid}"
-	data-entityid="$!entityid"
-	data-moduleid="$!module.getId()"
-	data-currenttab="$!viewid"
-	data-url=""
->
-	<div class="chatterbox"
-	data-entityid="$!entityid"  
-	data-moduleid="$!module.getId()"
-	data-renderurl="${edithome}/index.html" 
-	data-rendermessageurl="${edithome}/message.html"
+#set($chatterboxhome = $page.chatterboxhome)
+$context.putPageValue("chatterboxhome", $chatterboxhome)
+#set($moduleid = $module.getId())
+#ifnull($moduleid)
+#set($moduleid = $page.module) 
+#end
+<div class="chatterbox"
+	##data-entityid="$!entity.id"  
+	data-moduleid="$!moduleid"
+	data-renderurl="${chatterboxhome}/index.html" 
+	data-rendermessageurl="${chatterboxhome}/message.html"
 	data-channel="$!{currentchannel.getId()}" 
-	data-channeltype="community" 
+	data-channeltype="$!{channeltype}" 
 	data-user="$!{user.id}" 
 	data-catalogid="$!{catalogid}"
 	data-broadcastall="true">
+	
+		$pages.include("${chatterboxhome}/messages.html", $context)				
 		
-		$pages.include("${edithome}/messages.html", $context)				
-					
-		#if( $permissions.canModule($module, "chat_send_messages"))
-				$pages.include("${edithome}/editarea.html", $context)				
-		#end
+		###if($module && $permissions.canModule($module, "chat_send_messages"))
+				$pages.include("${chatterboxhome}/editarea.html", $context)				
+		###end
 	
 	
 	</div>
-</div>

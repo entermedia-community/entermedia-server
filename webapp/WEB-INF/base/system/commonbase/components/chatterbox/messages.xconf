@@ -15,6 +15,6 @@
 	<path-action name="ProjectModule.loadGoalsInMessages"/>
 	<path-action name="ChatModule.loadAttachments"/>
 	
-	<inner-layout>${edithome}/index.html</inner-layout>
+	<inner-layout>${chatterboxhome}/index.html</inner-layout>
 
 </page>

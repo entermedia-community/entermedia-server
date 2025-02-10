@@ -1,3 +1,6 @@
+#set($chatterboxhome = $page.chatterboxhome)
+$context.putPageValue("chatterboxhome", $chatterboxhome)
+
 #if(!$chat)
 	#set($chatid = $context.getRequestParameter("messageid"))
 	#set($chat = $mediaarchive.getData("chatterbox",$chatid))
@@ -5,7 +8,7 @@
 <div id="chatter-message-$chat.id" class="message-edit-box">
 
 <form class="chatter-edit-form ajaxform"  method="post"	 
-	action="${edithome}/editsave.html"
+	action="${chatterboxhome}/editsave.html"
 	data-targetdiv="chatter-message-$chat.id" data-oemaxlevel="1">
 	<input type="hidden" name="searchtype" value="chatterbox" />
 	<input type="hidden" name="chatid" value="$chat.id" />
@@ -18,7 +21,7 @@
 	<a href="#" class="btn btn-sm btn-primary chatter-save me-1">
 		<i class="fas fa-save me-1"></i> [[Save Edit]]
 	</a>
-	<a href="${edithome}/editsave.html?chatid=$chat.id&channel=$!currentchannel.id" class="btn btn-sm btn-light ajax" data-targetdiv="chatter-message-$chat.id">[[Cancel]]</a>
+	<a href="${chatterboxhome}/editsave.html?chatid=$chat.id&channel=$!currentchannel.id" class="btn btn-sm btn-light ajax" data-targetdiv="chatter-message-$chat.id">[[Cancel]]</a>
 
 </form>
 </div>

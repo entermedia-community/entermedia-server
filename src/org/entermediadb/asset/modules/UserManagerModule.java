@@ -1559,6 +1559,30 @@ public class UserManagerModule extends BaseMediaModule
 		inReq.putPageValue("hits",all);
 		
 	}
+	
+	
+	public void loadChatChannel(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String channel = inReq.findValue("channel");
+		Data currentchannel = archive.getCachedData("collectiveproject", channel);
+		
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		
+		String module = inReq.findValue("module");
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.query().exact("entityid",inReq.getUserName()).exact("moduleid", module).sort("name").searchOne();
+		}
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.createNewData();
+			currentchannel.setValue("moduleid", module);
+			currentchannel.setValue("entityid", inReq.getUserName() );
+			currentchannel.setName("General");
+			topicsearcher.saveData(currentchannel);
+		}
+		
+		inReq.putPageValue("currentchannel", currentchannel);
+	}
 
 	
 }

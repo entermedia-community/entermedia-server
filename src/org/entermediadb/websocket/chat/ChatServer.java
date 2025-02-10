@@ -173,15 +173,17 @@ public class ChatServer
 		
 		Data entity = archive.getCachedData(moduleid, entityid);
 		
+		String channelid = (String)inMap.get("channel");
+		
 		//LibraryCollection collection = (LibraryCollection) archive.getCachedData("librarycollection", collectionid);
 
-		if( catalogid != null && entity != null )
+		if( catalogid != null && channelid != null )
 		{
 			final ChatManager manager = getChatManager(catalogid);
 			
 			log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
 			
-			String channelid = (String)inMap.get("channel");
+			
 			String userid = null;
 			if( inMap.get("user") != null )
 			{
@@ -192,10 +194,9 @@ public class ChatServer
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}
-			if( entityid != null && !"null".equals(entityid))
+			if( entityid != null && !"null".equals(entityid) && !"".equals(entityid) )
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
-				
 				
 				if(inMap.get("topic") == null)
 				{
@@ -267,7 +268,7 @@ public class ChatServer
 			});
 		}
 		else {
-			log.info("Error broadcasting message, missing collection: " + entityid + " or module: "+ moduleid +" or catalog: " + catalogid);
+			log.info("Error broadcasting message to channel: "+ channelid + ", missing collection: " + entityid + " or module: "+ moduleid +" or catalog: " + catalogid);
 		}
 	}
 

@@ -1353,8 +1353,8 @@ public class EntityModule extends BaseMediaModule
 		}
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.createNewData();
-			currentchannel.setValue("moduleid", entity.get("entitymoduleid"));
-			currentchannel.setValue("entityid", module );
+			currentchannel.setValue("moduleid", module);
+			currentchannel.setValue("entityid", entity.getId() );
 			currentchannel.setName("General");
 			topicsearcher.saveData(currentchannel);
 		}
