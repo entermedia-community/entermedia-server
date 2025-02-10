@@ -65,7 +65,7 @@
   	<!-- Logs in a user with a cookie -->
 	<path-action name="Admin.autoLogin"/>  
 	<!-- Enables editing and checks for missing pages -->
-	<page-action name="Admin.allowEditing"/>
+	<page-action name="Admin.allowEditing" allowduplicates="true"/>
 	<!--
 	<property name="systemfromemail">noreply@entermediasoftware.com</property>
 	<property name="systemfromemailname">EnterMedia</property>
