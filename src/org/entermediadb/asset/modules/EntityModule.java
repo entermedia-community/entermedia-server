@@ -1343,6 +1343,10 @@ public class EntityModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
+		if (channel == null)
+		{
+			channel = inReq.getRequestParameter("channel");
+		}
 		Data currentchannel = archive.getCachedData("collectiveproject", channel);
 		
 		Searcher topicsearcher = archive.getSearcher("collectiveproject");

@@ -1,13 +1,9 @@
 <page>
 	<path-action name="DataEditModule.parseMultPart" />
 	
-	<path-action name="EntityModule.getEntity" />
-
 	<path-action name="AssetEditModule.handleUploads" >
 		<property name="assigncategory">false</property>
-		<property name="pageval">entity</property>
 		<property name="delayimport">true</property>	
-		<property name="attachmentspath">/attachments</property>
 	</path-action>
 	
 	<path-action name="ProjectModule.attachAssetsToMessage"/>
