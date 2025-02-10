@@ -4,11 +4,11 @@
 	<property name="sectiontitle">
     	<value>Group Manager</value>
   	</property>
-  <inner-layout>${usermanagerhome}/groups/innerlayout.html</inner-layout>
+  <inner-layout>/${applicationid}/theme/layouts/settingssubtablayoutnomargin.html</inner-layout>
   <path-action name="User.loadGroupHits" />
   <property name="hitsname">grouphits</property>
   <property name="oeuseradmintabid">groupstab</property>
-<property name="subtab">groups</property>
+  <property name="subtab">groups</property>
   <property name="tab">groups</property>
   
 </page>
