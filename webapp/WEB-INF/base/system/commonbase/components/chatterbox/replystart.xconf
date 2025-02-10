@@ -1,0 +1,4 @@
+<page>
+<path-action name="ProjectModule.loadCollection"/>
+<inner-layout />
+</page>

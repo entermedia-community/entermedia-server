@@ -136,45 +136,10 @@ public class ChatModule extends BaseMediaModule
 	{
 		
 		//OI Chats using -> loadRecentChatsLibraryCollection()
-		
-		
 		MediaArchive archive = getMediaArchive(inReq);
-		String channel = inReq.findValue("channel");
-		
-		String entityid = inReq.getRequestParameter("entityid");
-		if(entityid == null) {
-			entityid = inReq.findValue("entityid");
-		}
 
-		String moduleid = inReq.findValue("module");
-		if(moduleid == null) {
-			moduleid = inReq.getRequestParameter("entitymoduleid");
-		}
-		if(moduleid == null) {
-			moduleid = "librarycollection";
-		}
-
-		Searcher topicsearcher = archive.getSearcher("collectiveproject");
-		Data currenttopic = null;
-		if(channel != null) {
-			currenttopic = topicsearcher.query().exact("id", channel).searchOne();
-		}
-		if (currenttopic == null) {
-				currenttopic = topicsearcher.query().match("entityid",entityid).match("moduleid", moduleid).sort("name").searchOne();
-		}
-		if (currenttopic == null) {
-			currenttopic = topicsearcher.createNewData();
-			currenttopic.setValue("moduleid", moduleid);
-			currenttopic.setValue("entityid", entityid);
-			currenttopic.setName("General");
-			topicsearcher.saveData(currenttopic);
-		}
+		Data channel = loadCurrentChannel(inReq);
 		
-		inReq.putPageValue("currenttopic", currenttopic);
-		inReq.putPageValue("channel", currenttopic.getId());
-		
-		channel = currenttopic.getId();
-
 		String sortby = inReq.findActionValue("sortorder");
 		if(sortby == null) {
 			sortby = "dateDown";
@@ -182,7 +147,7 @@ public class ChatModule extends BaseMediaModule
 		
 		QueryBuilder builder = archive.query("chatterbox");
 		
-		builder.named("messagesthitracker").exact("channel", channel).sort(sortby);
+		builder.named("messagesthitracker").exact("channel", channel.getId()).sort(sortby);
 		
 		UserProfile prof = inReq.getUserProfile();
 		if( prof != null)
@@ -199,6 +164,55 @@ public class ChatModule extends BaseMediaModule
 			results.setHitsPerPage(20);
 			inReq.putPageValue(results.getHitsName(),results);
 		}
+	}
+	
+	
+	/*
+	 * 
+	 * 		String entityid = inReq.getRequestParameter("entityid");
+		if(entityid == null) {
+			entityid = inReq.findValue("entityid");
+		}
+
+		String moduleid = inReq.findValue("module");
+		if(moduleid == null) {
+			moduleid = inReq.getRequestParameter("entitymoduleid");
+		}
+		if(moduleid == null) {
+			moduleid = "librarycollection";
+		}
+	 * if (currenttopic == null) {
+				currenttopic = topicsearcher.query().match("entityid",entityid).match("moduleid", moduleid).sort("name").searchOne();
+		}
+		if (currenttopic == null) {
+			currenttopic = topicsearcher.createNewData();
+			currenttopic.setValue("moduleid", moduleid);
+			currenttopic.setValue("entityid", entityid);
+			currenttopic.setName("General");
+			topicsearcher.saveData(currenttopic);
+		}
+	 * */
+	
+	
+	public Data loadCurrentChannel(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String channel = inReq.findValue("channel");
+		Data currentchannel = (Data)inReq.getPageValue("currentchannel");
+		if (currentchannel != null)
+		{
+			return currentchannel;
+		}
+		
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+
+		if(channel != null) {
+			currentchannel = archive.getCachedData("collectiveproject", channel);
+		}
+		
+		inReq.putPageValue("currentchannel", channel);
+		return currentchannel;
 	}
 	
 	

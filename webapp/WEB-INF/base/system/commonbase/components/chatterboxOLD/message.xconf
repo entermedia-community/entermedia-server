@@ -1,0 +1,7 @@
+<page>
+
+	<path-action name="DataEditModule.loadData">
+		<property name="searchtype">chatterbox</property>
+	</path-action>
+
+</page>

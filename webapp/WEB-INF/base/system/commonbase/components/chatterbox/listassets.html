@@ -1,0 +1,20 @@
+<div class="chat-msg-listattachments">
+$context.putPageValue("thumbsize", "small")
+#if($otherassets.size() > 1)
+	$context.putPageValue("thumbsize", "crop")
+#end
+#foreach($entry in $otherassets)
+	$context.putPageValue("value", $entry.id)
+	<div class="chat-msg-attachments-asset position-relative">
+		#if($chat.user == $user.id )
+		<a href="#" 
+			class="removefieldassetvalue"
+			title="[[Remove This Asset]]" 
+			data-targetdivinner="${entry.id}-preview"
+			><i class="bi bi-x"></i></a>
+		#end
+		$pages.include("$apphome/views/modules/${module.id}/components/xml/types/assetpicker/preview.html?assetid=${entry.id}", $context)
+	</div>
+#end
+</div>
+

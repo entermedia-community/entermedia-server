@@ -1,0 +1,50 @@
+#if(!$chat)
+	#set($chatid = $context.getRequestParameter("messageid"))
+	#set($chat = $mediaarchive.getData("chatterbox",$chatid))
+#end
+#set($caneditgoal = false)
+#if($user && ( $canviewsettings || $caneditcollection))
+	#set($caneditgoal = true)
+#end
+
+#if(!$detail)
+	#set( $detail = $mediaarchive.getSearcher("chatterbox").getDetail("attachedassets") )
+	$context.putPageValue("detail",$detail)
+#end
+#if( $attachedassets)
+	#set($attachedasset = $attachedassets[0])
+	#set($attechedchatassetid = $attachedasset.assetid)
+	$context.putPageValue("val", $attechedchatassetid)
+#end
+
+<div class="message-attach-box">
+<div class="mb-2"><strong>[[Attachments]]</strong></div>
+#if($caneditgoal)
+	<form name="attach${chat.id}" method="post" enctype="multipart/form-data" 
+		action="${edithome}/uploadattachment.html" 
+		class="ajaxform autosubmit chatattachasset" 
+		data-targetdiv="chatter-message-$!{chat.id}" >
+	<input type="hidden" name="searchtype" value="chatterbox" />
+	<input type="hidden" name="id" value="$!chat.id" />
+	<input type="hidden" name="entityid" value="$!entity.id" />
+	<input type="hidden" name="messageid" value="$!chat.id" />
+	<input type="hidden" name="messageids" value="$!chat.id" />
+	<input type="hidden" name="assetid" class="pickedassetid" value="" />
+	<!-- <input type="hidden" name="collectionid" value="$collectionid" /> -->
+	#if($librarycol)
+	<input type="hidden" name="collectionid" value="$librarycol.id" />
+	#end
+
+	#ifnotnull($attachedasset)
+		<input type="hidden" name="attachedassetid" value="$!{attachedasset.id}" />
+	#end
+	
+	$pages.include("$apphome/views/modules/${module.id}/editors/assetattacher/index.html", $context)
+
+	</form>
+#else
+	
+#end
+</div>
+
+
