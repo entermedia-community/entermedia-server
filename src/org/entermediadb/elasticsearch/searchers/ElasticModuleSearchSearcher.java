@@ -151,14 +151,17 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 		for (Iterator iterator = searchmodules.iterator(); iterator.hasNext();)
 		{
 			String moduleid = (String) iterator.next();
-			Searcher childsearcher = getSearcherManager().getSearcher(getCatalogId(), moduleid);
-			Collection<PropertyDetail> moredetails =  childsearcher.findSummaryFields(inQuery, userprofile);
-			if( moredetails != null)
+			if( !moduleid.equals("modulesearch") )
 			{
-				for (Iterator iterator2 = moredetails.iterator(); iterator2.hasNext();)
+				Searcher childsearcher = getSearcherManager().getSearcher(getCatalogId(), moduleid);
+				Collection<PropertyDetail> moredetails =  childsearcher.findSummaryFields(inQuery, userprofile);
+				if( moredetails != null)
 				{
-					PropertyDetail propertyDetail = (PropertyDetail) iterator2.next();
-					details.put(propertyDetail.getId(),propertyDetail);
+					for (Iterator iterator2 = moredetails.iterator(); iterator2.hasNext();)
+					{
+						PropertyDetail propertyDetail = (PropertyDetail) iterator2.next();
+						details.put(propertyDetail.getId(),propertyDetail);
+					}
 				}
 			}
 		}

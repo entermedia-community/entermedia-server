@@ -1,0 +1,13 @@
+<page>
+<path-action name="ProjectModule.loadCollection"/>
+	
+
+<path-action name="ChatModule.editMessage"/>
+
+
+<path-action name="ChatModule.loadRecentChats"/>
+<path-action name="ProjectModule.loadGoalsInMessages"/>
+
+<inner-layout />
+
+</page>

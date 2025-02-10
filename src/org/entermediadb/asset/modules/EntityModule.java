@@ -1339,7 +1339,28 @@ public class EntityModule extends BaseMediaModule
 
 	
 	
-	
+	public void loadChatChannel( WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String channel = inReq.findValue("channel");
+		Data currentchannel = archive.getCachedData("collectiveproject", channel);
+		
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		Data entity  = (Data) inReq.getPageValue("entity");
+		String module = inReq.findValue("module");
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.query().match("entityid",entity.getId()).match("moduleid", module).sort("name").searchOne();
+		}
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.createNewData();
+			currentchannel.setValue("moduleid", entity.get("entitymoduleid"));
+			currentchannel.setValue("entityid", module );
+			currentchannel.setName("General");
+			topicsearcher.saveData(currentchannel);
+		}
+		
+		inReq.putPageValue("currentchannel", currentchannel);
+	}
 	
 	
 	

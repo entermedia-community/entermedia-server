@@ -1,5 +1,17 @@
 <page>
-<path-action name="ChatModule.loadLastPageOfChats"/>
-<path-action name="ChatModule.getAsset"/>
+	<property name="alwaysresetpage">true</property>
+	
+	<page-action name="ChatModule.loadRecentChats" />
+
+	<page-action name="ChatModule.loadPageOfChat">
+		<property name="hitsname">messagesthitracker</property>
+		<property name="searchtype">chatterbox</property>
+	</page-action>
+	
+	<page-action name="ProjectModule.loadGoalsInMessages"/>
+	
+	<page-action name="ProjectModule.loadAttachmentsInMessages"/>
+	
+	<page-action name="ChatModule.getAsset"/>
 
 </page>

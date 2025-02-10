@@ -1,0 +1,65 @@
+##needs 	$hits $resultsPage  $targetdiv
+
+#set($reloadsearchtype = "chatterbox")
+#set($updateurl = "true")
+#set($oemaxlevel = "1")
+#set($targetdiv = "chatterboxmessages")
+
+#set($resultsPage = "/${librarycol.urlname}/chat/chatterbox/messages.html")
+#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
+#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
+#set($oemaxlevel = "1")
+
+#set($totalPages = $hits.getTotalPages() )
+#set($currentpage = $context.getRequestParameter("currentpagenum"))
+
+#set( $prhits = $hits.getPositionRender() )
+#ifnotnull($currentpage)
+	$prhits.setPageOneBased($currentpage)
+#end
+
+#set($links = $prhits.links())
+#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+#if($totalPages> 1)
+<div class="resultspositions" 
+	data-url="${projectlink}chat/chatterbox/chatpositions.html" 
+	data-categoryid="$!categoryid"
+	data-hitssessionid="$!hits.getSessionId()" 
+	data-searchtype="$!hits.getSearchType()" 
+	data-currentpagenum="$prhits.getPage()">
+
+	<span>
+		[[Page]]
+		$selectedpos
+		[[of]]
+		<a class="ajax pl-1 pr-2" 
+			data-targetdiv="$targetdiv" 
+			data-updateurl="$!updateurl"  
+			data-oemaxlevel="$oemaxlevel" 
+			data-position="$selectedpos"  
+			href="$resultsPage=$totalPages">$totalPages</a>
+	</span>
+	#set($prev = $selectedpos - 1)
+	
+	<a class="ajax #if($prev <= 0) disabled #end px-2" 
+		data-targetdiv="$targetdiv" 
+		data-updateurl="$!updateurl"  
+		data-oemaxlevel="$oemaxlevel" 
+		data-position="$prev"  
+		title="[[Previous]]"
+		href="$resultsPage=$prev">
+		<i class="fas fa-chevron-left"></i>
+	</a>
+
+	#set($next = $selectedpos + 1)
+	<a class="ajax #if($next > $totalPages) disabled #end px-2" 
+		data-targetdiv="$targetdiv" 
+		data-updateurl="$!updateurl"  
+		data-oemaxlevel="$oemaxlevel" 
+		data-position="$next"  
+		title="[[Next]]"
+		href="$resultsPage=$next">
+		<i class="fas fa-chevron-right"></i>
+	</a>
+</div>
+#end

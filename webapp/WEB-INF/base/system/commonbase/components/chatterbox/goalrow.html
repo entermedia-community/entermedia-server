@@ -1,0 +1,28 @@
+#set( $target = "goalrow#eid(${goal.id})")
+<div id="$target" class="goalstatus goalstatus$!{goal.projectstatus} goallevel$!{goal.ticketlevel}" style="position:relative"> 
+	#set( $goallink = "${communityhome}/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
+	<div class="mb-1">
+		#if($caneditcollection)
+		<a data-cancelsubmit="true" 
+			data-hidefooter="true" 
+			href="$goallink"
+			title="[[Ticket]] #$!goal.ticketnumber" 
+			class="emdialog goalticket-level float-left" 
+			data-urlbar="${communityhome}/project/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
+			data-width="900" >
+				<i class="fas fa-flag"></i> 
+			##	#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
+			##	#text($level) : #$!goal.ticketnumber  
+				#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
+		</a>
+		#end
+		<div class="goalslike float-right">
+			$pages.include("${communityhome}/project/goals/like.html",$context)
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="goaltasksout">
+	$pages.include("${communityhome}/project/goals/search/goaltasks.html?indialog=true&onlyopen=false",$context)
+	</div>
+
+</div>

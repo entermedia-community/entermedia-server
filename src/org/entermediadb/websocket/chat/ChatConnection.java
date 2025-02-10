@@ -248,7 +248,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				if(map.get("entityid")!=null) {
 					entityid = (String) map.get("entityid").toString();
 				}
-				if (entityid == null) {
+				if (entityid == null && map.get("collectionid") != null) {
 					entityid = (String) map.get("collectionid").toString();
 				}
 				

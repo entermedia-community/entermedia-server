@@ -1,0 +1,29 @@
+<div id="chatterbox-write" class="chatterbox-write">
+	#set( $replytoid = $context.getRequestParameter("replytoid"))
+	#ifnotnull($replytoid)
+		#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$replytoid))
+		#set( $otherchatuser = $mediaarchive.getUser($otherchat.user) ) 
+		<div class="chatterboxreplyto">
+			<div class="d-flex align-items-center justify-content-between">
+				<p class="m-0">
+					<span><i class="fas fa-quote-left"></i> [[Replying to]]</span> 
+					<a href="#esc($userlink)" title="$context.getDateTime($otherchat.date)">
+						<strong>$otherchatuser.getAnonNickName()</strong>
+					</a>
+				</p>
+				<button class="btn" title="Cancel reply" id="chatterboxreplycancel">
+					<i class="fas fa-times text-muted"></i>
+				</button>
+			</div>
+			<div class="msg-body">
+				$url_util.escapeMessage($otherchat.message)
+			</div>
+		</div>
+	#end
+	<div class="d-flex align-items-end position-relative w-100">
+		<textarea class="chatterbox-text chatter-text flex-1" id="chatter-msg" data-replytoid="$!replytoid"  placeholder="[[Message]]" autofocus></textarea>
+		<button class="btn chatter-send" data-command="messagereceived" type="button">
+			[[Send]] <i class="fas fa-paper-plane"></i>
+		</button>
+	</div>
+</div>
