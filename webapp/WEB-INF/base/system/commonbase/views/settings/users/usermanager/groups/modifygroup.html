@@ -1,0 +1,42 @@
+#if($group)
+	#set( $groupName = $group.name )
+
+	<div id="metadataeditarea">
+		<ul class="emsettingslist" >
+		<li class="header no-sort" id="views-header" >
+	    	<span id="name">[[Properties]]</span>
+	    </li>
+	    <li id="editlayout" class="singlecontainer nohover" style="height: auto; padding-bottom:10px;">
+	        <div id="groupeditarea" class="p-3" >
+	            <div id="groupeditareasaved"></div>
+	                #set( $groupsearcher = $searcherManager.getSearcher($catalogid,"group") )
+	                <form class="ajaxform" 
+	                	id="groupeditform" 
+	                	data-targetdiv="table-container" 
+	                	action="$home$usermanagerhome/groups/savegroup.html">
+	                    <input type="hidden" name="id" value="$group.id"/>
+	                    <input type="hidden" name="groupid" value="$group.id"/>
+	                    <input type="hidden" name="save" value="true"/>
+	                    <input type="hidden" name="searchtype" value="group"/>
+	                    
+	                    $context.putPageValue("searcher", $groupsearcher)	
+	                    $context.putPageValue("viewid", "groupgeneral")	
+	                    $context.putPageValue("data", $group)	
+	                    
+	                    $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+	                    
+	                    <p>
+	                    	<a class="btn btn-sm btn-primary submitform" style="margin: 10px;" href="#">[[Save Changes]]</a>
+	                    	<a class="btn btn-sm btn-danger red ajax"
+	                    		data-targetdiv="metadataeditarea" 
+	                    		data-oemaxlevel="1"
+	                    		style="margin:10px;"  
+	                    		href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
+	                    </p>
+	                </form>
+	    	</div>
+		</li>
+		</ul>
+	</div>
+#end
+

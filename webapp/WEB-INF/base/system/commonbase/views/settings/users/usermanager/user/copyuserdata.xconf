@@ -1,0 +1,6 @@
+<page>
+
+<property name="usemap">true</property>
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+	<path-action name="Date.now" />
+</page>

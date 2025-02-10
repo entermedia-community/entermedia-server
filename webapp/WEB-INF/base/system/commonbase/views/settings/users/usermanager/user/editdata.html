@@ -1,0 +1,89 @@
+<div id="usereditproperties" >
+	#set($selectedUser = $userManager.getUser($userName))
+
+	#if ($saved)
+	<div class="alert-primary alert-save alert-save-top fader">
+		[[User Saved]] 
+	</div>
+	#end
+
+<div class="" style="margin: 0 20px 0 0;">
+	<h3>[[Profile]]</h3>
+<div  class="ui-widget-content" > 
+	#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
+		<form class="ajaxform validate" id="usereditform" 
+			data-targetdiv="usereditproperties" 
+			name="usereditform" 
+			action="$siteroot$usermanagerhome/user/editdata.html">
+			<input type="hidden" name="userid" value="$selectedUser.id"/>
+			<input type="hidden" name="save" value="true"/>
+			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
+			<input type="hidden" name="method" value="edituser"/>
+			#if($selectedUser.id)
+			<div class="inputformrow">
+			<label class="emdatafield">
+				[[Id]]
+			</label>
+			<div>
+				<input type="text" class="form-control form-control-sm" disabled value="$selectedUser.id" />
+			</div>	
+			</div>
+			#end
+			
+			$context.putPageValue("searcher", $userSearcher)	 
+			$context.putPageValue("viewid", "useredit")
+			
+			
+			##$context.putPageValue("details", $details)
+			$context.putPageValue("data", $selectedUser)	
+			<div class="clearfix">
+			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+			</div>
+
+	#if( $message || $errors)
+				
+#if ($errors)
+
+	#if($regexerror)
+
+
+<div class="alert alert-danger" role="alert">$regexerror</div>
+
+
+	
+	#else
+
+	<div class="alert alert-danger">
+	<p>[[Sorry - unable to change password at this time.  If this persists, please talk to your system administrator.]]</p>
+	</div>
+	
+#end
+#end
+
+
+
+			#end
+
+			<div class="ui-widget-actions">
+			<a href="#" class="btn btn-sm btn-primary submitform">[[Save Changes]]</a>
+			#if($canactasotherusers)
+			<a class="btn btn-sm btn-danger ajax" 
+				data-confirm="[[Are you sure?]]" 
+				href="$siteroot$usermanagerhome/user/removeuser.html?usertodelete=$selectedUser.id"
+				data-targetdivinner="settingslayout"
+				data-updateurl="true"
+				data-urlbar="$siteroot$usermanagerhome/users/index.html"
+				data-oemaxlevel="3">[[Delete User]]</a>
+			#end
+			<a href="$siteroot$usermanagerhome/users/index.html" 
+				class="btn btn-secondary btn-sm ajax" 
+				data-targetdivinner="applicationmaincontent"
+				data-updateurl="true"
+				data-urlbar="$siteroot$usermanagerhome/users/index.html"
+				data-oemaxlevel="4" style="margin-left:10px;">[[Cancel]]</a>
+		    </div>
+		</form>
+</div>	
+</div>
+
+</div>

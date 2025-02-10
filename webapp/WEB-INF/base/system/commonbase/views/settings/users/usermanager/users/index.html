@@ -1,0 +1,8 @@
+<h2 class="mt-3 mb-0">[[Users Management]]</h2>
+#set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
+	
+<div id="usersearchresultspanel">
+	$pages.include("$apphome/views/settings/users/usermanager/users/results.html", $context)
+</div>
+
+

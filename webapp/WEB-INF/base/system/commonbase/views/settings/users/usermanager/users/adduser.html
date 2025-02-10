@@ -1,0 +1,108 @@
+#set( $memberSearcher = $searcherManager.getSearcher($catalogid,"member"))
+
+
+
+<div style="padding: 20px;">
+<h3>[[Create New User]]</h3>
+<div style="max-width:600px;"> 
+
+<form action="$siteroot$usermanagerhome/users/adduser-finish.html"
+ 	name="adduser"
+ 	method="post" 
+	id="adduser"
+	class="ajaxform"
+	data-targetdivinner="settingssubtab"
+	data-oemaxlevel="1">
+	<input type="hidden" name="method" value="adduser"/>
+
+	#set( $userSearcher = $searcherManager.getSearcher($catalogid,"user"))
+	$context.putPageValue("searcher", $userSearcher)
+	$context.putPageValue("viewid", "simpleuseradd")
+	$pages.include("${apphome}/components/xml/detaileditorcss.html", $context)
+
+	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+	$context.putPageValue("searcher", $userProfileSearcher)	 
+	$context.putPageValue("viewid", "userprofileedit")	
+	##$context.putPageValue("data", $userprofile)
+	$pages.include("${apphome}/components/xml/detaileditorcss.html", $context)
+
+<div class="hr" style="margin: 20px 0; padding: 0;"></div>
+<input class="btn btn-primary btn-sm" type="submit" value="[[Create]]" >
+<a href="$siteroot$usermanagerhome/users/index.html" 
+	class="btn btn-secondary btn-sm ajax"
+	data-targetdivinner="settingssubtab"
+	data-oemaxlevel="1"
+	data-updateurl="true" 
+	style="margin-left:10px;">[[Cancel]]</a>
+</form>
+<div class="clearfix"></div>
+</div>
+</div>
+
+
+
+<script language="JavaScript" type="text/javascript">
+//email.value
+		
+		jQuery(document).ready(function() 
+		{ 
+		
+			$("#adduser").validate({
+				ignore: ".ignore",
+			  rules: {
+				  'email.value': {
+				  required: true,
+				  email: true,
+				  duplicatedemail: false,
+				  remote: "verifyemail.html"
+				}
+			  },
+			  messages: {
+				  'email.value': {
+				  remote: "Email already Exists."
+				}
+			  },
+			  submitHandler: function(form){
+		        $('form input[type=submit]').attr('disabled', 'disabled');
+		        form.trigger("submit");
+				}
+			});
+		});
+</script>
+
+
+<script language="JavaScript" type="text/javascript">
+//email.value
+		jQuery.validator.addMethod("validId", function(value, element) {
+  		return this.optional( element ) || /^[a-zA-Z0-9]+$/.test( value );
+		}, 'Please enter a unique string/numeric Id.');
+
+		jQuery(document).ready(function() 
+		{ 
+		
+			$("#adduser").validate({
+				ignore: ".ignore",
+			  rules: {
+				  'email.value': {
+				  required: true,
+				  email: true,
+				  duplicatedemail: false,
+				  remote: "verifyemail.html"
+				},
+				'id.value':{
+					validId:true
+				}
+			  },
+			  messages: {
+				  'email.value': {
+				  remote: "Email already Exists."
+				}
+			  },
+			  submitHandler: function(form){
+		        $('form input[type=submit]').attr('disabled', 'disabled');
+		        form.submit();
+				}
+			});
+		});
+</script>
+
