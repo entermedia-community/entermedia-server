@@ -1843,5 +1843,39 @@ public class ProjectModule extends BaseMediaModule
 		
 		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
 	}
+	
+	
+	
+
+	public void loadChatChannel( WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String channel = inReq.findValue("channel");
+		if (channel == null)
+		{
+			channel = inReq.getRequestParameter("channel");
+		}
+		Data currentchannel = archive.getCachedData("collectiveproject", channel);
+		
+		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		
+		Data librarycol  = (Data) inReq.getPageValue("librarycol");
+		String module = inReq.findValue("module");
+		
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.query().match("parentcollectionid",librarycol.getId()).sort("name").searchOne();
+		}
+		if (currentchannel == null) {
+			currentchannel = topicsearcher.createNewData();
+			currentchannel.setValue("moduleid", module);
+			currentchannel.setValue("parentcollectionid", librarycol.getId() );
+			currentchannel.setName("General");
+			topicsearcher.saveData(currentchannel);
+		}
+		
+		inReq.putPageValue("currentchannel", currentchannel);
+	}
+	
+
 
 }
