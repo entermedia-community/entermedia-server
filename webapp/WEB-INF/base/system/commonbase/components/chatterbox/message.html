@@ -24,7 +24,7 @@
 		<div class="chatterbox-chat" role="alert" >
 			<div class="chat-icon">
 				#set( $userimageurl = $mediaarchive.asLinkToUserProfile($chatuser))
-				#ifnull($userimageurl) #set( $userimageurl = "$apphome/theme/images/user.svg" ) #end
+				#ifnull($userimageurl) #set( $userimageurl = "${chatterboxhome}/images/user.svg" ) #end
 				<a href="#esc($userlink)" title="$chatuser.getAnonNickName()" class="msg-avt">
 					<img src="${userimageurl}" class="img-fluid">
 				</a>
