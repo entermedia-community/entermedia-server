@@ -19,7 +19,12 @@ $context.putPageValue("oemaxlevel","2")
 				<div class="chatterbox-message-list">
 						#foreach($chat in $messages)
 							$context.putPageValue("chat",$chat) 
-							$pages.include("${chatterboxhome}/message.html", $context)				
+							#if($chat.messagetype)
+								$pages.include("${chatterboxhome}/${chat.messagetype}.html", $context)
+							#else
+								$pages.include("${chatterboxhome}/message.html", $context)
+							#end
+											
 						#end
 				</div>
 				<div id="newmessagearea"></div>
