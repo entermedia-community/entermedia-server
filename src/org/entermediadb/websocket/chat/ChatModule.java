@@ -767,5 +767,25 @@ public class ChatModule extends BaseMediaModule
 	
 
 	}
+	
+	public void damSearch(WebPageRequest inReq) throws Exception
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Data data = (Data) inReq.getPageValue("data");
+		
+		String function = data.get("function");
+		String arguments = data.get("arguments");
+		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
+		String keywords = (String) d.get("keywords");
+		HitTracker hits = archive.query("asset").contains("description", keywords).search(inReq);			
+		inReq.putPageValue("hits", hits);
+		
+		
+		
+	}
+	
+	
 
 }
