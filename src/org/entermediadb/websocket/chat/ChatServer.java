@@ -25,6 +25,7 @@ import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -32,7 +33,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.projects.LibraryCollection;
 import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -278,11 +278,13 @@ public class ChatServer
 		log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
-		Object channel = inMap.get("channel");
+		Data channel = loadChannel(archive,inMap);
+		
+		
 		String userid = (String)inMap.get("user").toString();
 		
 		long now = System.currentTimeMillis() - 9*1000;
-		Data lastOne = chats.query().exact("channel",channel.toString()).after("date",new Date(now)).sort("dateDown").searchOne();
+		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
 		Data chat = null;
 		String newmessage = String.valueOf( inMap.get("content") );
 		/*
@@ -323,7 +325,7 @@ public class ChatServer
 			chat = chats.createNewData();
 			chat.setValue("date", new Date());
 			chat.setValue("user", userid);
-			chat.setValue("channel", channel);
+			chat.setValue("channel", channel.getId());
 			if(entityid != null)
 			{
 				chat.setValue("entityid", entityid);
@@ -359,6 +361,21 @@ public class ChatServer
 			}
 		}
 		return chat;//chat.get("message");
+	}
+
+	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
+	{
+			Searcher chats = inArchive.getSearcher("channel");
+			String channelid = (String)inChannelInfo.get("channel");
+			Data channel = inArchive.getData("channel", channelid);
+			if (channel == null || channel.get("channeltype") == null) {
+				channel = chats.createNewData();
+				channel.setId(channelid);
+				String channeltype = (String) inChannelInfo.get("channeltype");				
+				channel.setValue("channeltype", channeltype);
+				chats.saveData(channel);
+			}
+			return channel;
 	}
 
 	/* Desktop notificationsss */

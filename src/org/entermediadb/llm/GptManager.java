@@ -95,7 +95,6 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	
 	
 	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate) {
-		JsonParser parser = new JsonParser();
 
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
