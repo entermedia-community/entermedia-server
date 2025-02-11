@@ -47,24 +47,24 @@ class SaveButtonPlugin extends Plugin {
 			});
 
 			button.on("execute", () => {
-				const savepath = $(editor.sourceElement).data("savepath");
-				const editpath = $(editor.sourceElement).data("editpath");
 				const data = $(editor.sourceElement).data();
-				const keepeditor = $(editor.sourceElement).data("keepeditor");
+				const savePath = $(editor.sourceElement).data("savepath");
+				const editPath = $(editor.sourceElement).data("editpath");
+				const keepEditor = $(editor.sourceElement).data("keepeditor");
 
-				var editorData = editor.getData();
-				if (editorData) editorData = prettifyHTML(editor.getData());
-				$(editor.sourceElement).val(editorData);
+				const content = editor.getData();
+				if (content) content = prettifyHTML(editor.getData());
+				$(editor.sourceElement).val(content);
 				$.ajax({
-					url: savepath,
+					url: savePath,
 					type: "POST",
 					data: {
-						content: editorData,
-						editPath: editpath,
-						...data
+						content,
+						editPath,
+						...data,
 					},
 					success: function () {
-						if (!keepeditor) {
+						if (!keepEditor) {
 							editor.updateSourceElement();
 							editor
 								.destroy()
@@ -124,9 +124,9 @@ class ImagePicker extends Plugin {
 
 			button.on("execute", () => {
 				//TODO: Open image picker dialog
-				var findroot = $("#application").data("findroot");
-				var anchor = document.createElement("a");
-				anchor.href = findroot + "/blockiframe.html";
+				const findRoot = $("#application").data("findroot");
+				const anchor = document.createElement("a");
+				anchor.href = findRoot + "/blockiframe.html";
 				anchor.classList.add("emdialog");
 				document.body.appendChild(anchor);
 				$(anchor).emDialog();
@@ -141,7 +141,7 @@ class ImagePicker extends Plugin {
 const LICENSE_KEY = "GPL";
 
 const editorConfig = (options) => {
-	var items = [
+	let items = [
 		"closeButton",
 		"saveButton",
 		"|",
@@ -170,7 +170,7 @@ const editorConfig = (options) => {
 		"sourceEditing",
 	];
 
-	var plugins = [
+	const plugins = [
 		Alignment,
 		AutoImage,
 		AutoLink,
@@ -191,7 +191,7 @@ const editorConfig = (options) => {
 		Underline,
 	];
 
-	var image = undefined;
+	let image = undefined;
 
 	if (options.hideSaving) {
 		items = items.slice(3);
@@ -200,7 +200,7 @@ const editorConfig = (options) => {
 	}
 
 	if (options.hideImagePicker) {
-		var idx = items.indexOf("imagePicker");
+		const idx = items.indexOf("imagePicker");
 		items.splice(idx, 2);
 	} else {
 		plugins.push(
@@ -315,7 +315,7 @@ const editorConfig = (options) => {
 };
 
 window.CK5Editor = {};
-window.InlineCK5Editor = {};
+window.CK5EditorInline = {};
 
 function createCK5(target, options = {}) {
 	let uid = target.id;
@@ -328,8 +328,8 @@ function createCK5(target, options = {}) {
 			window.CK5Editor[uid] = editor;
 			if (!options.hideImagePicker) {
 				$(window).on("assetpicked", function (_, input) {
-					var params = JSON.parse(input);
-					var imageUrl = params.assetpicked;
+					const params = JSON.parse(input);
+					const imageUrl = params.assetpicked;
 					setTimeout(() => {
 						editor.execute("imageInsert", { source: imageUrl });
 					});
@@ -337,7 +337,7 @@ function createCK5(target, options = {}) {
 			}
 
 			//If CKEditor is inside a modal, we need to remove the tabindex attribute from the modal to make the link popup focusable
-			var modal = $(target).closest(".modal");
+			const modal = $(target).closest(".modal");
 			if (modal.length > 0) {
 				modal.attr("tabindex", "");
 			}
@@ -347,12 +347,10 @@ function createCK5(target, options = {}) {
 		});
 }
 
-
-
 lQuery("textarea.htmleditor").livequery(function () {
-	var $this = $(this).get(0);
-	var uid = $this.id;
-	var options = {
+	const $this = $(this).get(0);
+	const uid = $this.id;
+	const options = {
 		hideImagePicker: true,
 		hideSaving: true,
 		hideSourceEditing: true,
@@ -369,46 +367,30 @@ lQuery("textarea.htmleditor").livequery(function () {
 	}
 });
 
-$(window).on("edithtmlstart", function (_, targetdiv) {
-	const hideSaving = targetdiv.data("editonly");
-	const hideImagePicker = targetdiv.data("imagepickerhidden");
-	var options = {
+$(window).on("edithtmlstart", function (_, targetDiv) {
+	const hideSaving = targetDiv.data("editonly");
+	const hideImagePicker = targetDiv.data("imagepickerhidden");
+	const options = {
 		hideImagePicker,
 		hideSaving,
 	};
-	var uid = targetdiv[0].id;
+	const uid = targetDiv[0].id;
 	if (uid && window.CK5Editor[uid]) {
 		window.CK5Editor[uid]
 			.destroy()
-			.then(() => createCK5(targetdiv[0], options))
+			.then(() => createCK5(targetDiv[0], options))
 			.catch((error) => {
 				console.error(error);
 			});
 	} else {
-		createCK5(targetdiv[0], options);
+		createCK5(targetDiv[0], options);
 	}
 });
-
-$(window).on("inlinehtmlstart", function (_, targetdiv) {
-	
-	const hideSaving = targetdiv.data("editonly");
-	const hideImagePicker = targetdiv.data("imagepickerhidden");
-	var options = {
-		hideImagePicker,
-		hideSaving,
-		
-	};
-		createInlineCK5(targetdiv[0], options);
-
-});
-
-
-
 
 window.addEventListener("message", function (event) {
 	if (event.origin !== window.location.origin) return;
 	if (typeof event.data === "string" && event.data.startsWith("assetpicked:")) {
-		var url = event.data.substring(12);
+		const url = event.data.substring(12);
 		$(window).trigger("assetpicked", [url]);
 		closeallemdialogs();
 	}
@@ -419,7 +401,7 @@ lQuery("textarea.htmleditor-advanced").livequery(function () {
 });
 
 window.updateAllCK5 = function () {
-	var keys = Object.keys(window.CK5Editor);
+	const keys = Object.keys(window.CK5Editor);
 	if (keys.length == 0) return;
 	keys.forEach((key) => {
 		window.CK5Editor[key].updateSourceElement();
@@ -427,29 +409,27 @@ window.updateAllCK5 = function () {
 };
 
 function createInlineCK5(target, options = {}) {
-	
 	let uid = target.id;
 	if (!uid) {
-		uid = "ck5editor" + window.InlineCK5Editor.length;
+		uid = "ck5inline" + window.CK5EditorInline.length;
 		target.id = uid;
-	}	
-	
-		
+	}
+
 	InlineEditor.create(target, editorConfig(options))
 		.then((editor) => {
-			var targetcontainer = $(target).data('targetcontainer');
-			if(targetcontainer){				
-				editor.model.document.on("change", function ()  {
-								var editorData = editor.getData();
-								$(targetcontainer).val(editorData);		
+			const targetContainer = $(target).data("targetcontainer");
+			if (targetContainer) {
+				editor.model.document.on("change", function () {
+					const editorData = editor.getData();
+					$(targetContainer).val(editorData);
 				});
 			}
-			
-			window.InlineCK5Editor[uid] = editor;
+
+			window.CK5EditorInline[uid] = editor;
 			if (!options.hideImagePicker) {
 				$(window).on("assetpicked", function (_, input) {
-					var params = JSON.parse(input);
-					var imageUrl = params.assetpicked;
+					const params = JSON.parse(input);
+					const imageUrl = params.assetpicked;
 					setTimeout(() => {
 						editor.execute("imageInsert", { source: imageUrl });
 					});
@@ -457,7 +437,7 @@ function createInlineCK5(target, options = {}) {
 			}
 
 			//If CKEditor is inside a modal, we need to remove the tabindex attribute from the modal to make the link popup focusable
-			var modal = $(target).closest(".modal");
+			const modal = $(target).closest(".modal");
 			if (modal.length > 0) {
 				modal.attr("tabindex", "");
 			}
@@ -465,6 +445,14 @@ function createInlineCK5(target, options = {}) {
 		.catch((error) => {
 			console.error(error);
 		});
-		
 }
 
+$(window).on("inlinehtmlstart", function (_, targetDiv) {
+	const hideSaving = targetDiv.data("editonly");
+	const hideImagePicker = targetDiv.data("imagepickerhidden");
+	const options = {
+		hideImagePicker,
+		hideSaving,
+	};
+	createInlineCK5(targetDiv[0], options);
+});
