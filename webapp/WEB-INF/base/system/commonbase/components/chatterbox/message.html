@@ -1,14 +1,23 @@
-#set($chatterboxhome = $page.chatterboxhome)
-$context.putPageValue("chatterboxhome", $chatterboxhome)
+	#set($chatterboxhome = $page.chatterboxhome)
+		$context.putPageValue("chatterboxhome", $chatterboxhome)
 
 #set( $goalfolder = $context.getRequestParameter("goalfolder"))
-#if(!$goalfolder)
-	#set( $goalfolder = $context.getPageValue("goalfolder") )
-#end
+		#if(!$goalfolder)
+			#set( $goalfolder = $context.getPageValue("goalfolder") )
+		#end
+		
+		#if(!$goalfolder)
+			#set( $goalfolder = "search" )
+		#end
+		
+		#set($goal = $goalsinmessages.get($chat.id))
+		#set($chatuser = $mediaarchive.getUser($chat.user) ) 
+		#set($attachedassets = $attachmentspermessage.get($chat.id))
+		#set($otherassets = $messageidwithassets.get($chat.id))
 
-#if(!$goalfolder)
-	#set( $goalfolder = "search" )
-#end
+#if($chat.messagetype)
+	$pages.include("${chatterboxhome}/${chat.messagetype}.html", $context))
+#else
 
 #set($goal = $goalsinmessages.get($chat.id))
 #set($chatuser = $mediaarchive.getUser($chat.user) ) 
@@ -27,7 +36,11 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				<a href="#esc($userlink)" title="$chatuser.getAnonNickName()" class="msg-avt">
 					<img src="${userimageurl}" class="img-fluid">
 				</a>
-			</div>
+				#end
+			#end
+			##if($candeletecomments)
+			##<!-- <a class="confirm" data-confirm="Are you sure?" title="Delete message" data-id="${chat.id}" data-target="#chatter-message-$chat.id" data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a> -->
+			##end
 			
 			<div class="message-menu">
 				<div class="d-flex align-items-center">
@@ -65,26 +78,20 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 					</a>
 					#end
 		
-					#if($chat.user == $user.id )
-						#if($permissions.canModule($module, "chat_edit_messages"))
-						<a class="message-menu-link ajax-edit-msg"   
-							data-targetdiv="chatter-message-$chat.id"
-							data-oemaxlevel="1"
-							href="${chatterboxhome}/editmessage.html"
-							data-channel="$!currentchannel.getId()"  
-							data-messageid="$!chat.id"
-							title="[[Edit Message]]">
-							<i class="fas fa-pencil-alt"></i>
-						</a>
-						#end
-					#end
-					##if($candeletecomments)
-					##<!-- <a class="confirm" data-confirm="Are you sure?" title="Delete message" data-id="${chat.id}" data-target="#chatter-message-$chat.id" data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a> -->
-					##end
-					
-				</div>
-				<div id="attach-${chat.id}"></div>
-			</div>
+		<div class="msg-body #if($chat.user == $user.id) me #end" style=" #if($attachedassets) min-height: 110px; #end">
+		
+		##<!-- Legacy -->			
+		#if($attachedassets)
+		##	$context.putPageValue("attachedassets", $attachedassets)
+		##	$pages.include("${chatterboxhome}/attach.html",$context)
+		#end
+
+
+		#if($otherassets)
+			$context.putPageValue("otherassets", $otherassets)
+			$pages.include("${chatterboxhome}/listassets.html",$context)
+		#end
+
 			
 			<div class="chat-msg">
 				<div class="chat-author">
