@@ -52,7 +52,7 @@ class SaveButtonPlugin extends Plugin {
 				const editPath = $(editor.sourceElement).data("editpath");
 				const keepEditor = $(editor.sourceElement).data("keepeditor");
 
-				const content = editor.getData();
+				let content = editor.getData();
 				if (content) content = prettifyHTML(editor.getData());
 				$(editor.sourceElement).val(content);
 				$.ajax({
