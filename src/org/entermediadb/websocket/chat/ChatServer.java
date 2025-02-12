@@ -160,18 +160,22 @@ public class ChatServer
 	{
 		
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-		String entityid = (String) inMap.get("entityid");
-		if (entityid == null)
-		{
-			entityid = (String) inMap.get("collectionid");
-		}
+		
 		String moduleid = (String) inMap.get("moduleid");
 		if (moduleid == null)
 		{
 			moduleid = "librarycollection";
 		}
-		
-		Data entity = archive.getCachedData(moduleid, entityid);
+		Data entity = null;
+		String entityid = (String) inMap.get("entityid");
+		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
+		{
+			entityid = (String) inMap.get("collectionid");  //For OI chats attached to a collectionid
+		}
+		if (entityid != null && !entityid.equals("") && !entityid.equals("null"))
+		{
+			entity = archive.getCachedData(moduleid, entityid); 
+		}
 		
 		String channelid = (String)inMap.get("channel");
 		
@@ -194,7 +198,7 @@ public class ChatServer
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}
-			if( entityid != null && !"null".equals(entityid) && !"".equals(entityid) )
+			if( entity != null)
 			{
 				ProjectManager projectmanager = getProjectManager(catalogid);
 				
@@ -221,18 +225,20 @@ public class ChatServer
 					}	
 				}
 				else {
-					
-					Set userids = projectmanager.listTeam(entity);
-					userids.add(userid);
-					
-					for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+					if( moduleid.equals("librarycollection"))
 					{
-						ChatConnection chatConnection = (ChatConnection) iterator.next();
-						if( userids.contains(chatConnection.getUserId() ) )
+						Set userids = projectmanager.listTeam(entity);
+						userids.add(userid);
+						
+						for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 						{
-							chatConnection.sendMessage(inMap);
+							ChatConnection chatConnection = (ChatConnection) iterator.next();
+							if( userids.contains(chatConnection.getUserId() ) )
+							{
+								chatConnection.sendMessage(inMap);
+							}
 						}
-					}	
+					}
 				}
 			} 
 			else 
@@ -341,6 +347,7 @@ public class ChatServer
 		String replytoid = (String)inMap.get("replytoid");
 		chat.setValue("replytoid",replytoid);
 		chats.saveData(chat);  //<----  SAVE chat
+		
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
 		

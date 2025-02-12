@@ -1533,15 +1533,9 @@ public class MediaArchive implements CatalogEnabled
 
 		if (category == null && categoryId == null)
 		{
-			String level = inReq.findActionValue("idlevel");
-			if( level != null)
-			{
-				String[] levels = inReq.getContentPage().getPath().split("/");
-				int pick = Integer.parseInt(level);
-				int fromend = levels.length - pick - 1;
-				categoryId = levels[fromend];
-			}
-			else
+			categoryId = getIdFromPath(inReq);
+
+			if (categoryId == null)
 			{
 				String path = inReq.getPath();
 				categoryId = PathUtilities.extractPageName(path);
@@ -1578,6 +1572,20 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return category;
 	}
+	
+	public String getIdFromPath(WebPageRequest inReq)
+	{
+		String level = inReq.findActionValue("idlevel");
+		if( level != null)
+		{
+			String[] levels = inReq.getContentPage().getPath().split("/");
+			int pick = Integer.parseInt(level);
+			int fromend = levels.length - pick - 1;
+			return levels[fromend];
+		}
+		return null;
+	}
+	
 
 	public AssetImporter getAssetImporter()
 	{

@@ -1175,37 +1175,22 @@ public class FinderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
+		MultiValued entity = (MultiValued) inReq.getPageValue("entity"); 
 		
-		Data entity  = (Data) inReq.getPageValue("entity");
-		/*
-		if( cat != null)
+		String moduleid = inReq.findPathValue("module");
+	
+		if( entity != null)
 		{
-			if( !cat.containsValue("viewusers", inReq.getUserName()) )
+	
+			if( !entity.containsValue("customusers", inReq.getUserName()) )
 			{
-				cat.addValue("viewusers", inReq.getUserName());
-				cat.setValue("securityenabled",true);
-				//reload profile
-				//search again for results
-				archive.saveData("category", cat);
-				inReq.getUserProfile().addToViewCategories(cat);
-			}
-			//get all entities and add user
-			if( inReq.getUserProfile() == null)
-			{
-				return;
-			}
-			Collection entities = inReq.getUserProfile().getEntitiesInParent(cat);
-			for (Iterator iterator = entities.iterator(); iterator.hasNext();)
-			{
-				ModuleData entity = (ModuleData) iterator.next();
-				if( !entity.getData().containsValue("viewusers", inReq.getUserName()) )
-				{
-					entity.getData().addValue("viewusers", inReq.getUserName());
-					entity.getData().setValue("securityenabled",true);
-					archive.saveData(entity.getModuleId(), entity.getData());
-				}					
-			}
-		}*/
+				entity.addValue("customusers", inReq.getUserName());
+				archive.saveData(moduleid, entity);
+			}	
+			inReq.putPageValue("openentityid", entity.getId());
+		}
+		
+		
 	}
 	
 	

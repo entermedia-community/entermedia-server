@@ -88,7 +88,7 @@ public class DropboxAssetSource extends BaseAssetSource
 	public boolean handles(Asset inAsset)
 	{
 		String name = getFolderPath();
-		if( inAsset.getSourcePath().startsWith(name))
+		if( name != null && inAsset.getSourcePath().startsWith(name))
 		{
 			return true;
 		}
