@@ -13,6 +13,8 @@ public interface LLMManager
 	public String loadInputFromTemplate(WebPageRequest inReq, String inString);
 	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception ;
 	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception;
+
+	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inChattemplate);
 	
 
 }
