@@ -96,6 +96,14 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("apphome", apphome);
 		inReq.putPageValue("applink", applink);  //For external links within an app
 		inReq.putPageValue("sitelink", sitelink);  //For external link across the site
+		
+		String finderhome = inReq.findPathValue("finderhome");
+		if (finderhome == null)
+		{
+			String siteid = inReq.findPathValue("siteid");
+			finderhome = "/" + siteid + "/find";
+		}
+		inReq.putPageValue("finderhome", finderhome);  //For external link across the site
 		//inReq.putPageValue("domainlink", domainlink);
 		
 		

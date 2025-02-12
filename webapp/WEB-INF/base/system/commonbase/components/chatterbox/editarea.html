@@ -20,10 +20,16 @@
 			</div>
 		</div>
 	#end
-	<div class="d-flex align-items-end position-relative w-100">
+	<div class="d-flex align-items-start position-relative w-100 chatterbox-editorarea">
 		<textarea class="chatterbox-text chatter-text flex-1" id="chatter-msg" data-replytoid="$!replytoid"  placeholder="[[Message]]" autofocus></textarea>
+		
+		<div class="chatterbox-editactions">
 		<button class="btn chatter-send" data-command="messagereceived" type="button">
 			[[Send]] <i class="fas fa-paper-plane"></i>
 		</button>
+		#if(!$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
+		<button class="btn chatter-attachfile" type="button"><i class="fas fa-paperclip"></i></button>
+		#end
+		</div>
 	</div>
 </div>

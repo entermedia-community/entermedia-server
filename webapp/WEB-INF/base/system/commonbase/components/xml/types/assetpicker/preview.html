@@ -46,7 +46,10 @@
 			</div>
 			 
 		#else
-		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
+		<a href="#"
+			class="stackedplayer" 
+			data-assetid="$foundrow.id" 
+			title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
 	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
 				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
 			</div>       
