@@ -1,12 +1,16 @@
 #set($provider = $mediaarchive.getCachedData("oauthprovider", "google"))
 #if($provider.getBoolean("enabled"))
-<div class="oauthproviderbtn" style="text-align:center; ">
-    <a href="$apphome/authentication/oauth/oauth.html?provider=google"><img src="$apphome/authentication/oauth/google.png" /> </a>
+<div class="mx-2">
+    <a href="$apphome/authentication/oauth/oauth.html?provider=google" class="shine" style="display:block;width:42px;height:42px;">
+        <img src="$apphome/authentication/oauth/google.png" class="img-fluid" />
+    </a>
 </div>
 #end
 #set($provider = $mediaarchive.getCachedData("oauthprovider", "facebook"))
 #if($provider.getBoolean("enabled"))
-<div class="oauthproviderbtn" style="text-align:center; ">
-    <a href="$applink/authentication/oauth/oauth.html?provider=facebook"><img src="$apphome/authentication/oauth/facebook.png" /> </a>
+<div class="mx-2">
+    <a href="$applink/authentication/oauth/oauth.html?provider=facebook" style="display:block;width:42px;height:42px;">
+        <img src="$apphome/authentication/oauth/facebook.png" class="img-fluid" />
+    </a>
 </div>
 #end
