@@ -94,7 +94,13 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 				#set($providers = $mediaarchive.query("oauthprovider").orgroup("id", "google facebook").exact("enabled","true").search($context))
 				#if( !$providers.isEmpty() )
 					<div class="text-center my-3">
-						<span class="divider divider-xs divider-text">[[OR]]</span>
+						<span class="d-flex align-items-center text-muted" style="min-width: 250px;">
+							<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
+							<span class="px-2">
+								[[Or continue with]]
+							</span>
+							<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
+						</span>
 					</div>
 					<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
 						$pages.include("$home$content.loginroot/oauth/providers.html", $context)

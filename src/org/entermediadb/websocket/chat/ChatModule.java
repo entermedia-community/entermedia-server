@@ -34,6 +34,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.llm.BaseLLMManager;
 import org.entermediadb.llm.GptManager;
+import org.entermediadb.llm.LLMManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -645,7 +646,7 @@ public class ChatModule extends BaseMediaModule
 
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 		Searcher chats = archive.getSearcher("chatterbox");
-		GptManager manager = (GptManager) archive.getBean("gptManager");
+		LLMManager manager = (LLMManager) archive.getLLM(model);
 
 		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
 		inReq.putPageValue("recent", recent);
@@ -742,7 +743,8 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data data = (Data) inReq.getPageValue("data");
-		GptManager manager = (GptManager) archive.getBean("gptManager");
+		LLMManager manager = (LLMManager) archive.getLLM("gpt");//load this 
+		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		String function = data.get("function");
 		String arguments = data.get("arguments");
@@ -755,6 +757,23 @@ public class ChatModule extends BaseMediaModule
 			log.info("function" + function + "returned : " + response);
 			data.setValue("functionresponse", response);
 			data.setValue("functioncomplete", true);
+			
+			JSONObject functionMessageUpdate = new JSONObject();
+            functionMessageUpdate.put("messagetype", "function_call");
+            functionMessageUpdate.put("catalogid", archive.getCatalogId());
+            functionMessageUpdate.put("function", function);
+            functionMessageUpdate.put("arguments", arguments);
+            functionMessageUpdate.put("userid", "function");
+            functionMessageUpdate.put("user", "function");
+            functionMessageUpdate.put("author", "function");
+            functionMessageUpdate.put("channel", data.get("channel"));
+            functionMessageUpdate.put("messageid", data.getId());
+            functionMessageUpdate.put("content", response);
+            functionMessageUpdate.put("messageid", response);
+
+            server.broadcastMessage(functionMessageUpdate);
+			
+			
 		}
 		catch (Exception e)
 		{
