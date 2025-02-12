@@ -45,6 +45,7 @@ import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.find.EntityManager;
 import org.entermediadb.find.FolderManager;
+import org.entermediadb.llm.LLMManager;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.users.PermissionManager;
 import org.entermediadb.users.UserProfileManager;
@@ -3097,5 +3098,12 @@ public class MediaArchive implements CatalogEnabled
 	{
 		UserProfileManager manager = (UserProfileManager)getBean("userProfileManager");
 		return manager;
+	}
+
+	public LLMManager getLLM(String inModel)
+	{
+		Data model = getData("llmmodel", inModel);
+		String llm = model.get("llmtype");
+		return (LLMManager) getBean(llm + "Manager");
 	}
 }
