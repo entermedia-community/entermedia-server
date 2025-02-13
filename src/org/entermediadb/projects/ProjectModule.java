@@ -1470,7 +1470,7 @@ public class ProjectModule extends BaseMediaModule
 
 		if (ids.size() < 1)
 		{
-			log.error("No messages found");
+			//log.error("No messages found");
 			return null;
 		}
 
@@ -1785,7 +1785,7 @@ public class ProjectModule extends BaseMediaModule
 
 		if (ids.size() < 1)
 		{
-			log.error("No messages found");
+			//log.error("No messages found");
 			return null;
 		}
 		Map<String, Collection> messageidwithassets = new HashMap<String, Collection>();
@@ -1810,7 +1810,6 @@ public class ProjectModule extends BaseMediaModule
 		}
 
 		inReq.putPageValue("messageidwithassets", messageidwithassets);
-		log.info(messageidwithassets);
 		return messageidwithassets;
 	}
 
