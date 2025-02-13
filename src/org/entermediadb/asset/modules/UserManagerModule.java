@@ -1578,6 +1578,10 @@ public class UserManagerModule extends BaseMediaModule
 			currentchannel.setValue("moduleid", module);
 			currentchannel.setValue("entityid", inReq.getUserName() );
 			currentchannel.setName("General");
+			///AI Enabled
+			currentchannel.setValue("aienabled", "true" );
+			
+			
 			topicsearcher.saveData(currentchannel);
 		}
 		
