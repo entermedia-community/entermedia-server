@@ -649,6 +649,7 @@ public class ChatModule extends BaseMediaModule
 	    HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
 	    inReq.putPageValue("recent", recent);
 
+	    /*
 	    JSONObject responseMap = new JSONObject();
 	    responseMap.put("userid", "agent");
 	    responseMap.put("user", "agent");
@@ -661,6 +662,7 @@ public class ChatModule extends BaseMediaModule
 	    responseMap.put("catalogid", archive.getCatalogId());
 	    responseMap.put("command", command);
 	    responseMap.put("messagetype", "airesponse");
+	    */
 
 	    String channeltype = channel.get("channeltype");
 	    if (channeltype == null) {
@@ -707,15 +709,13 @@ public class ChatModule extends BaseMediaModule
 	        String output = response.getMessage();
 
 	        if (output != null) {
-	        	responseMap.put("user", "agent");
-	            responseMap.put("response", output);
-	            responseMap.put("message", output);
-	            responseMap.put("content", output);
-
-	            // Save and broadcast the message
-	            Data resp = server.saveMessage(responseMap);
-	            responseMap.put("messageid", resp.getId());
-	            server.broadcastMessage(responseMap);
+	        	Data message = chats.createNewData();
+	        	message.setValue("user", "agent");
+	        	message.setValue("message", output);
+	        	message.setValue("response", output);
+	        	message.setValue("content", output);
+	        	chats.saveData(message);
+	            server.broadcastMessage(archive.getCatalogId(), message);
 	        }
 	    }
 	}
