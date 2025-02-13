@@ -27,7 +27,8 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				
 				<div class="msg-body">
 						<div class="msg-body-content">
-							Running: $chat.function ($chat.arguments)
+							<div>Running: $chat.function ($chat.arguments)</div>
+							#ifnotnull($chat.message) $chat.message #end
 						</div>
 				</div>
 				
