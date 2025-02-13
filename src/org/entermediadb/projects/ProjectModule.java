@@ -1765,11 +1765,21 @@ public class ProjectModule extends BaseMediaModule
 		}
 		else {
 			//single message reload
-			String messageid = inReq.getRequestParameter("messageid");
+			String messageid = null;
+			Data chat = (Data) inReq.getPageValue("chat");
+			if (chat != null)
+			{
+				messageid = chat.getId();
+			}
+			if (messageid == null)
+			{
+				messageid = inReq.getRequestParameter("messageid");
+			}
 			if (messageid != null)
 			{
 				ids.add(messageid);
 			}
+			
 		}
 	
 
@@ -1800,6 +1810,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 
 		inReq.putPageValue("messageidwithassets", messageidwithassets);
+		log.info(messageidwithassets);
 		return messageidwithassets;
 	}
 
@@ -1814,6 +1825,7 @@ public class ProjectModule extends BaseMediaModule
 		String messageid = inReq.getRequestParameter("messageid");
 		
 		Data message = archive.getData("chatterbox", messageid);
+		Boolean broadcast = false;
 		if (message == null)
 		{
 			//Attachment only
@@ -1822,25 +1834,19 @@ public class ProjectModule extends BaseMediaModule
 				//Create message as the user
 				String channel = inReq.getRequestParameter("channel");
 				
-				String messagetext = savedassets.size() + " assets.";
-				
 				Date now = new Date();
-				DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
-				ChatServer server = (ChatServer) archive.getBean("chatServer");
-				JSONObject messageMap = new JSONObject();
+				Searcher chatterboxsearcher = archive.getSearcher("chatterbox");
+				message = chatterboxsearcher.createNewData();
 				
-				messageMap.put("user", inReq.getUserName());
-				messageMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-				messageMap.put("timestamp", fm.format(now));
-				messageMap.put("timestampunix", now.getTime());
-				messageMap.put("channel", channel);
-				messageMap.put("catalogid", archive.getCatalogId());
-				messageMap.put("command", "messagereceived");
-				messageMap.put("content", messagetext);
+				message.setValue("user", inReq.getUserName());
+				message.setValue("date", now);
+				message.setValue("channel", channel);
 				
-				message = server.saveMessage(messageMap);
-	            messageMap.put("messageid", message.getId());
-	    		server.broadcastMessage(messageMap);
+				
+				chatterboxsearcher.saveData(message);
+	    		broadcast= true;
+	    		//inReq.putPageValue("messageid", message.getId());
+	    		inReq.putPageValue("chat", message);
 			}
 		}
 		if (message == null)
@@ -1882,7 +1888,11 @@ public class ProjectModule extends BaseMediaModule
 		
 		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
 		
-		
+		if (broadcast)
+		{
+			ChatServer server = (ChatServer) archive.getBean("chatServer");
+			server.broadcastMessage(archive.getCatalogId(), message);
+		}
 }
 	
 	
