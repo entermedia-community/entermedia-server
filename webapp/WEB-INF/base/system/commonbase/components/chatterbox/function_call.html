@@ -1,9 +1,0 @@
-#set($chatterboxhome = $page.chatterboxhome)
-$context.putPageValue("chatterboxhome", $chatterboxhome)
-
-
-#set($chatuser = $mediaarchive.getUser($chat.user) ) 
-#set($attachedassets = $attachmentspermessage.get($chat.id))
-#set($otherassets = $messageidwithassets.get($chat.id))
-
-Running: $chat.function ($chat.arguments)

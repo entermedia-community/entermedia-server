@@ -1,0 +1,39 @@
+#set($chatterboxhome = $page.chatterboxhome)
+$context.putPageValue("chatterboxhome", $chatterboxhome)
+
+
+#set($chatuser = $mediaarchive.getUser($chat.user) ) 
+#set($attachedassets = $attachmentspermessage.get($chat.id))
+#set($otherassets = $messageidwithassets.get($chat.id))
+
+
+<div id="chatter-message-$!chat.id" class="msg-bubble">
+		<div class="chatterbox-chat" role="alert" >
+			<div class="chat-icon">
+				###set( $userimageurl = $mediaarchive.asLinkToUserProfile($chatuser))
+				#ifnull($userimageurl) #set( $userimageurl = "${chatterboxhome}/images/aiagent.svg" ) #end
+				<a href="#" title="$chat.user" class="msg-avt">
+					<img src="${userimageurl}" class="img-fluid">
+				</a>
+			</div>
+			
+			
+			
+			<div class="chat-msg">
+				<div class="chat-author">
+					<strong>$chat.user</strong>
+					<span class="chat-timestamp">$context.getDateTime($chat.date)</span>
+				</div>
+				
+				<div class="msg-body">
+						<div class="msg-body-content">
+							Running: $chat.function ($chat.arguments)
+						</div>
+				</div>
+				
+			</div> 
+		</div>
+</div>
+
+
+

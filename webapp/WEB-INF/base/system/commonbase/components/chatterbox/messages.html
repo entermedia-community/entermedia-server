@@ -20,7 +20,7 @@ $context.putPageValue("oemaxlevel","2")
 						#foreach($chat in $messages)
 							$context.putPageValue("chat",$chat) 
 							#if($chat.messagetype)
-								$pages.include("${chatterboxhome}/${chat.messagetype}.html", $context)
+								$pages.include("${chatterboxhome}/message_${chat.messagetype}.html", $context)
 							#else
 								$pages.include("${chatterboxhome}/message.html", $context)
 							#end

@@ -6,9 +6,7 @@
 	</path-action>
 	
 	<path-action name="ProjectModule.loadGoalsInMessages"/>
-	
-	<path-action name="ChatModule.getAsset"/>
-	
+		
 	<inner-layout />
 
 </page>
