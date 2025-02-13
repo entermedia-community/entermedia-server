@@ -354,6 +354,9 @@ public class ChatServer
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
 		
+		/*
+		//handled in ProjectModule.attachAssetsToMessage
+		
 		if (inMap.get("assetid")!= null) {
 			String assetid = String.valueOf(inMap.get("assetid"));
 			if( assetid != null)
@@ -367,6 +370,8 @@ public class ChatServer
 				archive.fireMediaEvent("assetchat", user,asset );
 			}
 		}
+		*/
+		
 		return chat;//chat.get("message");
 	}
 

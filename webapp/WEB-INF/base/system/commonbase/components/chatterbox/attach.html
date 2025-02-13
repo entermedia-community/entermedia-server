@@ -25,7 +25,16 @@
 #end
 
 <div class="message-attach-box">
-<div class="mb-2"><strong>[[Attachments]]</strong></div>
+	<div class="d-flex align-items-center justify-content-between mb-2">
+		<div><strong>[[Attachments]]</strong></div>
+		#set($allowclose = $context.getRequestParameter("allowclose"))
+		#if($allowclose)
+			<button class="btn " title="[[Cancel Attachment]]" id="closeattachfileonchat">
+				<i class="fas fa-times text-muted"></i>
+			</button>
+		#end
+	</div>
+
 #if($caneditgoal)
 	<form name="attach${chat.id}" 
 		method="post" 

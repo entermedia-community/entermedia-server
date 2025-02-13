@@ -18,7 +18,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	
 		$pages.include("${chatterboxhome}/messages.html", $context)				
 		
-		#if($permissions && $permissions.canModule($module, "chat_send_messages"))
+		#if($user && $permissions && $permissions.canModule($module, "chat_send_messages"))
 			$pages.include("${chatterboxhome}/editarea.html", $context)				
 		#end
 	

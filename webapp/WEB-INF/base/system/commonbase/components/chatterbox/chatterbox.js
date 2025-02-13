@@ -61,7 +61,11 @@ function chatterbox() {
     }
   });
   
-  
+  lQuery("#closeattachfileonchat").livequery("click", function () {
+      var button = jQuery(this);
+      button.closest(".attachfileonchat").html("");
+   });
+
   lQuery("#chatterboxreplycancel").livequery("click", function () {
     var button = jQuery(this);
     button.closest(".chatterboxreplyto").hide();

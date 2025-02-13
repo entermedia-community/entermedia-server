@@ -1,5 +1,6 @@
 package org.entermediadb.projects;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -19,7 +20,9 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.websocket.chat.ChatServer;
 import org.entermediadb.webui.tree.CategoryCollectionCache;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -32,6 +35,7 @@ import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -1803,16 +1807,63 @@ public class ProjectModule extends BaseMediaModule
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
-
+		
+		
+		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
+		
 		String messageid = inReq.getRequestParameter("messageid");
+		
 		Data message = archive.getData("chatterbox", messageid);
+		if (message == null)
+		{
+			//Attachment only
+			if (savedassets != null && !savedassets.isEmpty())
+			{
+				//Create message as the user
+				String channel = inReq.getRequestParameter("channel");
+				
+				String messagetext = savedassets.size() + " assets.";
+				
+				Date now = new Date();
+				DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
+				ChatServer server = (ChatServer) archive.getBean("chatServer");
+				JSONObject messageMap = new JSONObject();
+				
+				messageMap.put("user", inReq.getUserName());
+				messageMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
+				messageMap.put("timestamp", fm.format(now));
+				messageMap.put("timestampunix", now.getTime());
+				messageMap.put("channel", channel);
+				messageMap.put("catalogid", archive.getCatalogId());
+				messageMap.put("command", "messagereceived");
+				messageMap.put("content", messagetext);
+				
+				message = server.saveMessage(messageMap);
+	            messageMap.put("messageid", message.getId());
+	    		server.broadcastMessage(messageMap);
+			}
+		}
 		if (message == null)
 		{
 			return;
 		}
 		
 		ArrayList tosave = new ArrayList();
+		
+		if(savedassets != null)
+		{
+			for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				Asset asset = archive.getCachedAsset(hit.getId());
+	
+				asset.addValue("attachedtomessageid", message.getId());
+				tosave.add(asset);
+			}
+		}
+		
 
+		//When is getting here?
 		String[] assetids = inReq.getRequestParameters("assetid");
 		if (assetids != null)
 		{
@@ -1826,24 +1877,13 @@ public class ProjectModule extends BaseMediaModule
 			}
 
 		}
-		Collection savedassets = (Collection) inReq.getPageValue("savedassets");
-		if(savedassets != null)
-		{
-			for (Iterator iterator = savedassets.iterator(); iterator.hasNext();)
-			{
-				Data hit = (Data) iterator.next();
-				Asset asset = archive.getCachedAsset(hit.getId());
-	
-				asset.addValue("attachedtomessageid", message.getId());
-				tosave.add(asset);
-			}
-		}
 		
 		archive.saveAssets(tosave);
 		
 		archive.fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
-	}
-	
+		
+		
+}
 	
 	
 
