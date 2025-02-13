@@ -583,7 +583,7 @@ public class ChatModule extends BaseMediaModule
 			model = "gpt-4o";
 		}
 		Searcher channels = archive.getSearcher("channel");
-		HitTracker allchannels = channels.query().match("id", "*").sort("dateUp").search(inReq);
+		HitTracker allchannels = channels.query().match("id", "*").exact("aienabled", true).sort("dateUp").search(inReq);
 		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
 		Searcher chats = archive.getSearcher("chatterbox");
