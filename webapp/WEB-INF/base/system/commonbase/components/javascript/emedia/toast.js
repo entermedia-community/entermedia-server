@@ -79,8 +79,10 @@ customToast = function (message, options = {}) {
 	$(".toastList").append(toast);
 	if (autohide) {
 		setTimeout(function () {
+			if (!toast) return;
 			toast.addClass("hide");
 			setTimeout(function () {
+				if (!toast) return;
 				toast.remove();
 			}, 500);
 		}, autohideDelay);
@@ -99,8 +101,10 @@ function destroyToast(toast, success = true) {
 		);
 	toast.find(".toastMessage").text(msg);
 	setTimeout(function () {
+		if (!toast) return;
 		toast.addClass("hide");
 		setTimeout(function () {
+			if (!toast) return;
 			toast.remove();
 		}, 500);
 	}, 2000);
