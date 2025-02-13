@@ -6,16 +6,19 @@
 		<property name="delayimport">true</property>	
 	</path-action>
 	
-	<path-action name="ProjectModule.attachAssetsToMessage"/>
-	
+		
 	<path-action name="DataEditModule.loadData">
 		<property name="searchtype">chatterbox</property>
 		<property name="pageval">chat</property>
 	</path-action>
 	
+	
+	
+	<path-action name="ProjectModule.attachAssetsToMessage"/>
+
 	<path-action name="ProjectModule.loadGoalsInMessages"/>
 	
-	<page-action name="ProjectModule.loadAttachmentsInMessages"/>
+	<path-action name="ProjectModule.loadAttachmentsInMessages"/>
 
    <permission name="editcollection">
 		<or>
@@ -27,7 +30,7 @@
 	<path-action name="Admin.loadPermissions"/>
   	<path-action name="Admin.allowViewing"/>
   	
-  	<inner-layout />
+  	
 
 </page>
 

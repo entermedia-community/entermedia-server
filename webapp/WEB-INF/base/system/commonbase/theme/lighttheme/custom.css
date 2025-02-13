@@ -1,0 +1,81 @@
+/*Color*/
+
+:root {
+	--themed-logo-width: 180px;
+	--themed-logo-height: 80px;
+
+	--themed-sidebar: #ffffff;
+	--themed-sidebar-text: #444444;
+	--themed-navbar-primary: #ffffff;
+	--themed-navbar-primary-text: #444444;
+	--themed-navbar-secondary: #888888;
+	--themed-navbar-secondary-text: #ffffff;
+	--themed-nav-btn: #aaaaaa;
+	--themed-nav-btn-hover: #c4c4c4;
+	--themed-nav-btn-text: #ffffff;
+	--themed-nav-btn-active: #eeeeee;
+	--themed-nav-btn-active-hover: #d4d4d4;
+	--themed-nav-btn-active-text: #444444;
+	--themed-tab-bar: #666666;
+	--themed-tab-bar-hover: #5e5e5e;
+	--themed-tab-btn: #ffffff;
+	--themed-tab-btn-text: #444444;
+	--themed-tab-btn-hover: #e6e6e6;
+	--themed-tab-btn-active: #77dd77;
+	--themed-tab-btn-active-text: #165816;
+	--themed-tab-btn-active-hover: #a1e8a1;
+	--themed-btn-cta: #77dd77;
+	--themed-btn-cta-hover: #a1e8a1;
+	--themed-btn-cta-text: #165816;
+	--themed-btn: #3884fd;
+	--themed-btn-hover: #6da4fe;
+	--themed-btn-text: #ffffff;
+	--themed-btn-sec: #dfdfdf;
+	--themed-btn-sec-hover: #f7f7f7;
+	--themed-btn-sec-text: #444444;
+	--themed-btn-acc-active: #378637;
+	--themed-btn-acc: #cadeff;
+	--themed-btn-acc-hover: #ffffff;
+	--themed-btn-acc-text: #003689;
+	--themed-th: #ffffff;
+	--themed-th-hover: #e6e6e6;
+	--themed-th-text: #444444;
+	--themed-td: #ffffff;
+	--themed-td-stripe: #f2f2f2;
+	--themed-td-text: #444444;
+	--themed-footer: #ffffff;
+	--themed-footer-text: #888888;
+}
+
+#embody {
+}
+
+#header {
+}
+
+#header .header-text {
+	position: relative;
+}
+
+.entityNavBarContainer {
+}
+
+@media (max-width: 768px) {
+	.navbar-quicksearch {
+	}
+}
+
+/*EMNav Tabs*/
+.emnav .navtabs .navtabitem,
+#header .navbar-toggler {
+	box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+}
+
+/*emnav Tabs Hover*/
+.emnav .navtabitem:hover {
+}
+
+.search-list li.current a.search-href,
+.sidebar-list li.current a {
+}

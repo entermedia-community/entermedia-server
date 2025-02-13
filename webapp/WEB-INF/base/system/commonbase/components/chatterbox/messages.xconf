@@ -13,7 +13,8 @@
 	</path-action>
 	
 	<path-action name="ProjectModule.loadGoalsInMessages"/>
-	<path-action name="ChatModule.loadAttachments"/>
+	
+	<!-- path-action name="ChatModule.loadAttachments"/ -->
 	
 	<inner-layout>${chatterboxhome}/index.html</inner-layout>
 
