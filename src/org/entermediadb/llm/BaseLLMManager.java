@@ -117,7 +117,7 @@ public abstract class BaseLLMManager implements LLMManager {
 	
 	
 	
-	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
+	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
 		return callFunction(inReq, inModel, inFunction, inQuery, temp, maxtokens, null);
 	}
 	

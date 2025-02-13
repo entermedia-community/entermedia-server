@@ -1,6 +1,5 @@
 package org.entermediadb.llm;
 
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
@@ -11,20 +10,22 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.llm.openai.GptResponse;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
-import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
+
+
 
 public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMManager
 {
@@ -73,28 +74,11 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		fieldCatalogId = inCatalogId;
 	}
 
-	public String runTemplate(WebPageRequest inReq, String inModel, String inTemplate) throws Exception
-	{
-		User user = inReq.getUser();
 
-		String gptinput = loadInputFromTemplate(inReq, inTemplate);
-
-		JsonObject response = runQuery(inModel, gptinput, 0, 2000);
-		// inReq.putPageValue("responsetext", response.toString());
-		JsonArray choices = response.getAsJsonArray("choices");
-		JsonObject first = (JsonObject) choices.get(0);
-		String output = first.get("message").getAsJsonObject().get("content").getAsString();
-
-//		String output = first.get("text").getAsString();
-		output = output.replace("\n", "<br>");
-		String param = inReq.findActionValue("param");
-		inReq.putPageValue(param, output);
-		return output;
-	}
 	
 	
 	
-	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate) {
+	public LLMResponse runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate) {
 
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
@@ -112,45 +96,53 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 		JSONObject json = getConnection().parseJson(resp); 
 
-		return json;
+		GptResponse response = new GptResponse();
+		response.setRawResponse(json);	
+		
+		return response;
 		
 		
 	}
 	
 
-	public JSONObject createImage(WebPageRequest inReq,String inModel, int imagecount,String inSize, String style, String inPrompt) {
-		JsonParser parser = new JsonParser();
+	public LLMResponse createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt) {
+	    String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
+	    inReq.putPageValue("prompt", inPrompt);
 
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		inReq.putPageValue("prompt", inPrompt);
-		
-		JsonObject obj = new JsonObject();
-		if(inModel == null) {
-		    inModel = "dall-e-3";
-		}
-		if(inPrompt == null) {
-		    inPrompt = "Suprise ME";
-		}
-		log.info("prompt was" + inPrompt);
-		obj.addProperty("model", inModel);
-		obj.addProperty("prompt", inPrompt);
-		obj.addProperty("n", imagecount);
-		obj.addProperty("size", inSize);
-		if(style != null) {
-			obj.addProperty("style", style);
-		}
-		String endpoint = "https://api.openai.com/v1/images/generations";
+	    // Use JSON Simple's JSONObject
+	    JSONObject obj = new JSONObject();
+	    
+	    if (inModel == null) {
+	        inModel = "dall-e-3";
+	    }
+	    if (inPrompt == null) {
+	        inPrompt = "Surprise ME";
+	    }
+	    
+	    log.info("prompt was " + inPrompt);
+	    
+	    obj.put("model", inModel);
+	    obj.put("prompt", inPrompt);
+	    obj.put("n", imagecount);
+	    obj.put("size", inSize);
+	    
+	    if (style != null) {
+	        obj.put("style", style);
+	    }
 
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
-		method.setHeader("Content-Type", "application/json");
-		
-		method.setEntity(new StringEntity(obj.toString(), "UTF-8"));
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
-		
-		return json;
-		
+	    String endpoint = "https://api.openai.com/v1/images/generations";
+	    HttpPost method = new HttpPost(endpoint);
+	    method.addHeader("authorization", "Bearer " + apikey);
+	    method.setHeader("Content-Type", "application/json");
+	    method.setEntity(new StringEntity(obj.toJSONString(), "UTF-8"));
+
+	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+	    JSONObject json = getConnection().parseJson(resp);
+
+	    // Return a GptResponse object instead of raw JSON
+	    GptResponse response = new GptResponse();
+	    response.setRawResponse(json);
+	    return response;
 	}
 	
 	
@@ -172,57 +164,12 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		filler = inFiller;
 	}
 
-	public String retrieveResponse(String inModel, String inQuery, int temp, int maxtokens)
-	{
-		JsonObject response = runQuery(inModel, inQuery, temp, maxtokens);
-		JsonArray choices = response.getAsJsonArray("choices");
-		JsonObject first = (JsonObject) choices.get(0);
-		String output = first.get("message").getAsJsonObject().get("content").getAsString();
-		return output;
-	}
+
 	
 	
 	
 
-	public JsonObject runQuery(String inModel, String inQuery, int temp, int maxtokens)
-	{
-
-		MediaArchive bench = getMediaArchive();
-		JsonParser parser = new JsonParser();
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		assert apikey != null;
-		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
-		// 0, "max_tokens": 7}
-		JsonObject obj = new JsonObject();
-
-		obj.addProperty("model", inModel);
-		// obj.addProperty("prompt", inQuery);
-		// [{"role": "user", "content": 'Translate the following English text to French:
-		// "{text}"'}]
-		JsonArray messages = new JsonArray();
-		JsonObject message = new JsonObject();
-		messages.add(message);
-		message.addProperty("role", "user");
-		message.addProperty("content", inQuery);
-		obj.add("messages", messages);
-
-		// obj.addProperty("temperature", temp);//
-		// obj.addProperty("max_tokens", maxtokens);
-		String endpoint = "https://api.openai.com/v1/chat/completions";
-		// String endpoint = "http://localhost:4891/v1/completions";
-
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
-		method.setHeader("Content-Type", "application/json");
-		String string = obj.toString();
-		method.setEntity(new StringEntity(string, "UTF-8"));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-
-		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
-
-		return (JsonObject) parser.parse(json.toJSONString());
-	}
+	
 
 	public String getEmbedding(String inModel, String inQuery) throws Exception
 	{
@@ -230,15 +177,14 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		//text-embedding-ada-002 is best
 
 		MediaArchive bench = getMediaArchive();
-		JsonParser parser = new JsonParser();
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
 		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
 		// 0, "max_tokens": 7}
-		JsonObject obj = new JsonObject();
+		JSONObject obj = new JSONObject();
 
-		obj.addProperty("model", inModel);
-		obj.addProperty("input", inQuery);
+		obj.put("model", inModel);
+		obj.put("input", inQuery);
 
 		// obj.addProperty("temperature", temp);//
 		// obj.addProperty("max_tokens", maxtokens);
@@ -252,123 +198,96 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		method.setEntity(new StringEntity(string, "UTF-8"));
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-		JsonObject object = (JsonObject) parser.parse(new InputStreamReader(resp.getEntity().getContent(), "UTF-8"));
-		String data = object.get("data").getAsJsonArray().get(0).getAsJsonObject().get("embedding").toString();
-		return data;
+	    JSONObject json = getConnection().parseJson(resp);
+	    JSONArray dataArray = (JSONArray) json.get("data");
+	    JSONObject firstDataObject = (JSONObject) dataArray.get(0);
+	    JSONArray embeddingArray = (JSONArray) firstDataObject.get("embedding");
+
+	    return embeddingArray.toJSONString(); // Convert to string for returning
 	}
 
 	
 	
 	
-	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
-	{
-		MediaArchive archive = getMediaArchive();
-		JsonParser parser = new JsonParser();
-		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
-		
-		assert apikey != null;
-		// {"model": "text-davinci-003", "prompt": "Say this is a test", "temperature":
-		// 0, "max_tokens": 7}
-	
-		log.info("inQuery: "+ inQuery);
+	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
+	    MediaArchive archive = getMediaArchive();
+	    String apikey = archive.getCatalogSettingValue("gpt-key");
 
-		JsonObject obj = new JsonObject();
+	    assert apikey != null;
 
-		obj.addProperty("model", inModel);
-		// obj.addProperty("prompt", inQuery);
-		// [{"role": "user", "content": 'Translate the following English text to French:
-		// "{text}"'}]
-		JsonArray messages = new JsonArray();
-		JsonObject message = new JsonObject();
-		messages.add(message);
-		message.addProperty("role", "user");
-		
-		
-		
-		if (inBase64Image != null && !inBase64Image.isEmpty()) {
+	    log.info("inQuery: " + inQuery);
+
+	    // Use JSON Simple to create request payload
+	    JSONObject obj = new JSONObject();
+	    obj.put("model", inModel);
+	    obj.put("max_tokens", maxtokens);
+
+	    // Prepare messages array
+	    JSONArray messages = new JSONArray();
+	    JSONObject message = new JSONObject();
+	    message.put("role", "user");
+
+	    if (inBase64Image != null && !inBase64Image.isEmpty()) {
 	        // Use an array for content if an image is provided
-	        JsonArray contentArray = new JsonArray();
+	        JSONArray contentArray = new JSONArray();
 
-	        // Add text content to the content array
-	        JsonObject textContent = new JsonObject();
-	        textContent.addProperty("type", "text");
-	        textContent.addProperty("text", inQuery);
+	        // Add text content
+	        JSONObject textContent = new JSONObject();
+	        textContent.put("type", "text");
+	        textContent.put("text", inQuery);
 	        contentArray.add(textContent);
 
-	        // Add image content to the content array
-	        JsonObject imageContent = new JsonObject();
-	        imageContent.addProperty("type", "image_url");
-	        JsonObject imageUrl = new JsonObject();
-	        imageUrl.addProperty("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
-	        imageContent.add("image_url", imageUrl);
+	        // Add image content
+	        JSONObject imageContent = new JSONObject();
+	        imageContent.put("type", "image_url");
+	        JSONObject imageUrl = new JSONObject();
+	        imageUrl.put("url", "data:image/png;base64," + inBase64Image); // Base64 as a data URL
+	        imageContent.put("image_url", imageUrl);
 	        contentArray.add(imageContent);
 
-	        message.add("content", contentArray); // Array format for mixed content
+	        message.put("content", contentArray);
 	    } else {
-	        // Use a string for content if no image is provided
-	        message.addProperty("content", inQuery);
+	        // Just text content
+	        message.put("content", inQuery);
 	    }
-		
-		
-		obj.add("messages", messages);
-		if (inFunction != null)
-		{
 
-			String definition = loadInputFromTemplate(inReq, "/"+ archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
-			JsonArray functions = new JsonArray();
-			JsonObject function = (JsonObject) parser.parse(definition);
-			functions.add(function);
-			obj.add("functions", functions);
-			JsonObject func = new JsonObject();
-			func.addProperty("name", inFunction);
-			obj.add("function_call", func);
-		}
+	    messages.add(message);
+	    obj.put("messages", messages);
 
-		// obj.addProperty("temperature", temp);//
-		obj.addProperty("max_tokens", maxtokens);
-		String endpoint = "https://api.openai.com/v1/chat/completions";
-		// String endpoint = "http://localhost:4891/v1/completions";
+	    // Handle function call definition
+	    if (inFunction != null) {
+	        String definition = loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
+	        JSONParser parser = new JSONParser();
+	        JSONObject functionDef = (JSONObject) parser.parse(definition);
 
-		HttpPost method = new HttpPost(endpoint);
-		method.addHeader("authorization", "Bearer " + apikey);
-		method.setHeader("Content-Type", "application/json");
-		String string = obj.toString();
-		method.setEntity(new StringEntity(string, StandardCharsets.UTF_8));
+	        JSONArray functions = new JSONArray();
+	        functions.add(functionDef);
+	        obj.put("functions", functions);
 
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+	        JSONObject func = new JSONObject();
+	        func.put("name", inFunction);
+	        obj.put("function_call", func);
+	    }
 
-		String returned = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-		log.info("returned: "+ returned);
-		
-		JsonReader reader = new JsonReader(new StringReader(returned));
-		reader.setLenient(true);
-		
-		
-		JsonObject answer = (JsonObject) JsonParser.parseReader(reader);
-		JsonArray choices = answer.getAsJsonArray("choices");
-		JsonObject first = (JsonObject) choices.get(0);
-		JsonObject function_call = first.get("message").getAsJsonObject().get("function_call").getAsJsonObject();
-		if (function_call != null)
-		{
-			String params = function_call.get("arguments").getAsString();
+	    // API request setup
+	    String endpoint = "https://api.openai.com/v1/chat/completions";
+	    HttpPost method = new HttpPost(endpoint);
+	    method.addHeader("authorization", "Bearer " + apikey);
+	    method.setHeader("Content-Type", "application/json");
+	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
 
-			JsonObject more = null;
-			try
-			{
-				   JsonReader paramReader = new JsonReader(new StringReader(params));
-		            paramReader.setLenient(true);
-		            more = (JsonObject) JsonParser.parseReader(paramReader);
-			}
-			catch (JsonSyntaxException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			JSONObject result = (JSONObject) new JSONParser().parse(more.toString());
-			return result;
-		}
-		return null;
+	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
 
+	    // Parse JSON response using JSON Simple
+	    JSONParser parser = new JSONParser();
+	    JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+
+	    log.info("returned: " + json.toJSONString());
+
+	    // Wrap and return `GptResponse`
+	    GptResponse response = new GptResponse();
+	    response.setRawResponse(json);
+	    return response;
 	}
 
 	
@@ -379,7 +298,12 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 	}
 
 	
-
+	@Override
+	public String getType()
+	{
+		// TODO Auto-generated method stub
+		return "openai";
+	}
 	
 
 }

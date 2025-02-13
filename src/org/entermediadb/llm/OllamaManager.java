@@ -1,6 +1,5 @@
 package org.entermediadb.llm;
 
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
@@ -11,23 +10,18 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.llm.ollama.OllamaResponse;
 import org.entermediadb.net.HttpSharedConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
-import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
+
 
 public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLMManager
 {
@@ -74,14 +68,14 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		fieldCatalogId = inCatalogId;
 	}
 
-	public JSONObject runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
+	public BaseLLMResponse runPageAsInput(WebPageRequest inReq, String inModel, String inTemplate)
 	{
 		String apikey = getMediaArchive().getCatalogSettingValue("ollama-key");
 		assert apikey != null;
 		String input = loadInputFromTemplate(inReq, inTemplate);
 		log.info(input);
-		String endpoint = getApiEndpoint();
-		;
+		String endpoint = getApiEndpoint() + "/api/chat";
+		
 
 		HttpPost method = new HttpPost(endpoint);
 		method.addHeader("authorization", "Bearer " + apikey);
@@ -93,7 +87,9 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
 
-		return json;
+		OllamaResponse response = new OllamaResponse();
+		response.setRawResponse(json);
+		return response;
 
 	}
 
@@ -108,7 +104,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		return endpoint;
 	}
 
-	public JSONObject createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt)
+	public BaseLLMResponse createImage(WebPageRequest inReq, String inModel, int imagecount, String inSize, String style, String inPrompt)
 	{
 		throw new OpenEditException("Model doesn't support images");
 
@@ -135,82 +131,72 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		return "Not Implemented";
 	}
 
-	public JSONObject callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception
+	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens, String inBase64Image) throws Exception {
+	    MediaArchive archive = getMediaArchive();
+	    String apikey = archive.getCatalogSettingValue("ollama-key");
+
+	    log.info("inQuery: " + inQuery);
+
+	    // Use JSON Simple to create request payload
+	    JSONObject obj = new JSONObject();
+	    obj.put("model", inModel);
+	    obj.put("stream", false);
+
+	    // Prepare messages array
+	    JSONArray messages = new JSONArray();
+	    JSONObject message = new JSONObject();
+	    message.put("role", "user");
+
+	    if (inBase64Image != null && !inBase64Image.isEmpty()) {
+	        message.put("content", inQuery);
+
+	        // Add image content separately
+	        JSONArray images = new JSONArray();
+	        images.add(inBase64Image);
+	        message.put("images", images);
+	    } else {
+	        message.put("content", inQuery);
+	    }
+
+	    messages.add(message);
+	    obj.put("messages", messages);
+
+	    // Handle function call definition
+	    if (inFunction != null) {
+	        String definition = loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
+	        JSONParser parser = new JSONParser();
+	        JSONObject functionDef = (JSONObject) parser.parse(definition);
+
+	        JSONObject parameters = (JSONObject) functionDef.get("parameters");
+	        obj.put("format", parameters);
+	    }
+
+	    // API request setup
+	    String endpoint = getApiEndpoint() + "/api/chat";
+	    HttpPost method = new HttpPost(endpoint);
+	    method.addHeader("authorization", "Bearer " + apikey);
+	    method.setHeader("Content-Type", "application/json");
+	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
+
+	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+
+	    // Parse JSON response using JSON Simple
+	    JSONParser parser = new JSONParser();
+	    JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+
+	    log.info("returned: " + json.toJSONString());
+
+	    // Wrap and return `OllamaResponse`
+	    OllamaResponse response = new OllamaResponse();
+	    response.setRawResponse(json);
+	    return response;
+	}
+
+	@Override
+	public String getType()
 	{
-		MediaArchive archive = getMediaArchive();
-		JsonParser parser = new JsonParser();
-
-		log.info("inQuery: " + inQuery);
-
-		JsonObject obj = new JsonObject();
-
-		obj.addProperty("model", inModel); // Setting the model (e.g., llama3.1)
-		obj.addProperty("stream", false);
-		// Prepare the messages array
-		JsonArray messages = new JsonArray();
-		JsonObject message = new JsonObject();
-		messages.add(message);
-		message.addProperty("role", "user");
-
-		 if (inBase64Image != null && !inBase64Image.isEmpty()) {
-        
-		        message.addProperty("content", inQuery); // Mixed content array
-		        JsonArray images = new JsonArray();
-		        images.add(inBase64Image);
-		        message.add("images",images);
-		        
-		    } else {
-		        // Add only text content if no image is provided
-		        message.addProperty("content", inQuery);
-		    }
-
-		obj.add("messages", messages);
-
-		// Load the function definition and format from the template
-		String definition = loadInputFromTemplate(inReq,"/"+  archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
-		JsonObject functionDef = parser.parse(definition).getAsJsonObject();
-		
-		JsonObject parameters = functionDef.getAsJsonObject("parameters");
-		obj.add("format", parameters); // Adding format definition
-
-		
-		// API endpoint setup
-		String endpoint = getApiEndpoint() + "/api/chat";
-		HttpPost method = new HttpPost(endpoint);
-		method.setHeader("Content-Type", "application/json");
-		String apikey = archive.getCatalogSettingValue("ollama-key");
-		
-		method.addHeader("authorization", "Bearer " + apikey);
-
-		String string = obj.toString();
-		method.setEntity(new StringEntity(string, StandardCharsets.UTF_8));
-
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
-
-		String returned = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
-		log.info("returned: " + returned);
-
-		JsonReader reader = new JsonReader(new StringReader(returned));
-		reader.setLenient(true);
-
-		JsonObject answer = (JsonObject) JsonParser.parseReader(reader);
-		
-		String function_call = answer.get("message").getAsJsonObject().get("content").getAsString();
-		
-
-		if (function_call != null)
-		{
-			JsonObject more = null;
-
-			JsonReader paramReader = new JsonReader(new StringReader(function_call));
-			paramReader.setLenient(true);
-            more = (JsonObject) JsonParser.parseReader(paramReader);
-			JSONObject result = (JSONObject) new JSONParser().parse(more.toString());
-
-			return result;
-		}
-		return null;
-
+		// TODO Auto-generated method stub
+		return "ollama";
 	}
 
 }

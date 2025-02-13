@@ -35,7 +35,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.llm.BaseLLMManager;
 import org.entermediadb.llm.GptManager;
 import org.entermediadb.llm.LLMManager;
-import org.json.simple.JSONArray;
+import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -554,13 +554,14 @@ public class ChatModule extends BaseMediaModule
 		}
 
 	}
-	
-	public BaseLLMManager loadManager(WebPageRequest inReq) {
+
+	public BaseLLMManager loadManager(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		BaseLLMManager manager = (BaseLLMManager) archive.getBean("gptManager");
 		inReq.putPageValue("gpt", manager);
 		return manager;
-		
+
 	}
 
 	public void monitorChannels(WebPageRequest inReq) throws Exception
@@ -605,137 +606,119 @@ public class ChatModule extends BaseMediaModule
 				if (!Boolean.parseBoolean(mostrecent.get("functioncomplete")))
 				{
 					archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", mostrecent);
-					archive.fireSharedMediaEvent("chatterbox/aiflow");
+					archive.fireSharedMediaEvent("chatterbox/monitorchats");
 					return;
 				}
 				else
 				{
 					respondToChannel(inReq, channel, "messagereceived", new HashMap());
 				}
-			} else {
-				
-				if("agent".equals(mostrecent.get("user")) || interimmessage)  {
+			}
+			else
+			{
+
+				if ("agent".equals(mostrecent.get("user")) || interimmessage)
+				{
 					return;
 				}
-
-				
 				respondToChannel(inReq, channel, "messagereceived", new HashMap());
-
 			}
 		}
 	}
 
-	public void respondToChannel(WebPageRequest inReq, Data channel, String command, Map inMap) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String model = inReq.findPathValue("model");
-		if (model == null)
-		{
-			model = getMediaArchive(inReq).getCatalogSettingValue("gpt-model");
-		}
-		if (model == null)
-		{
-			// model = "gpt-3.5-turbo-16k-0613";
-			model = "gpt-4o-mini";
-		}
-		inReq.putPageValue("model", model);
+	public void respondToChannel(WebPageRequest inReq, Data channel, String command, Map inMap) throws Exception {
+	    MediaArchive archive = getMediaArchive(inReq);
+	    String model = inReq.findPathValue("model");
 
-		Date now = new Date();
+	    if (model == null) {
+	        model = archive.getCatalogSettingValue("gpt-model");
+	    }
+	    if (model == null) {
+	        model = "gpt-4o"; // Default fallback
+	    }
 
-		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
+	    inReq.putPageValue("model", model);
 
-		ChatServer server = (ChatServer) archive.getBean("chatServer");
-		Searcher chats = archive.getSearcher("chatterbox");
-		LLMManager manager = (LLMManager) archive.getLLM(model);
+	    Date now = new Date();
+	    DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
-		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
-		inReq.putPageValue("recent", recent);
+	    ChatServer server = (ChatServer) archive.getBean("chatServer");
+	    Searcher chats = archive.getSearcher("chatterbox");
+	    LLMManager manager = archive.getLLM(model);
 
-		
-		JSONObject responseMap = new JSONObject();
-		responseMap.put("userid", "agent");
-		responseMap.put("user", "agent");
-		responseMap.put("author", "agent");
-		responseMap.put("message", "");
-		responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-		responseMap.put("timestamp", fm.format(now));
-		responseMap.put("timestampunix", now.getTime());
-		responseMap.put("channel", channel.getId());
-		responseMap.put("catalogid", archive.getCatalogId());
-		responseMap.put("command", command);
-		responseMap.put("messagetype", "airesponse");
-		
-		String channeltype =channel.get("channeltype");
-		if (channeltype == null) {
-			channeltype = "chatstreamer";
-		}
-		String chattemplate = "/" +  archive.getMediaDbId()+ "/gpt/inputs/" + channeltype + ".html";	
+	    HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
+	    inReq.putPageValue("recent", recent);
 
-		//String input = manager.loadInputFromTemplate(inReq, chattemplate);
-		JSONObject response = manager.runPageAsInput(inReq, model, chattemplate);
-		JSONArray choices = (JSONArray) response.get("choices");
-		String output = "";
-		if (choices != null && choices.size() > 0) {
-		    JSONObject first = (JSONObject) choices.get(0);
-		    if (first.containsKey("message")) {
-		        JSONObject messageObj = (JSONObject) first.get("message");
-		       
-		        if (messageObj.containsKey("function_call")) {
-		            JSONObject functionCall = (JSONObject) messageObj.get("function_call");
-		            String functionName = (String) functionCall.get("name");
-		          
-		            
-		            
-		            String argumentsString = (String) functionCall.get("arguments");
+	    JSONObject responseMap = new JSONObject();
+	    responseMap.put("userid", "agent");
+	    responseMap.put("user", "agent");
+	    responseMap.put("author", "agent");
+	    responseMap.put("message", "");
+	    responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
+	    responseMap.put("timestamp", fm.format(now));
+	    responseMap.put("timestampunix", now.getTime());
+	    responseMap.put("channel", channel.getId());
+	    responseMap.put("catalogid", archive.getCatalogId());
+	    responseMap.put("command", command);
+	    responseMap.put("messagetype", "airesponse");
 
-		            // Parse the arguments string into a JSON object
-		            JSONObject arguments =  (JSONObject) new JSONParser().parse(argumentsString);
-		            
-		            // Create and save a function call message
-		            Data functionMessage = chats.createNewData();
-		            functionMessage.setValue("messagetype", "function_call");
-		            functionMessage.setValue("function", functionName);
-		            functionMessage.setValue("arguments", arguments.toJSONString());
-		            functionMessage.setValue("userid", "function");
-		            functionMessage.setValue("user", "function");
-		            functionMessage.setValue("author", "function");
-		            functionMessage.setValue("channel", channel.getId());
-		            functionMessage.setValue("date", new Date());
-		            chats.saveData(functionMessage);
+	    String channeltype = channel.get("channeltype");
+	    if (channeltype == null) {
+	        channeltype = "chatstreamer";
+	    }
 
-		            // Create and broadcast the function call message update
-		            JSONObject functionMessageUpdate = new JSONObject();
-		            functionMessageUpdate.put("messagetype", "function_call");
-		            functionMessageUpdate.put("catalogid", archive.getCatalogId());
-		            functionMessageUpdate.put("function", functionName);
-		            functionMessageUpdate.put("arguments", arguments);
-		            functionMessageUpdate.put("userid", "function");
-		            functionMessageUpdate.put("user", "function");
-		            functionMessageUpdate.put("author", "function");
-		            functionMessageUpdate.put("channel", channel.getId());
-		            functionMessageUpdate.put("messageid", functionMessage.getId());
-		            server.broadcastMessage(functionMessageUpdate);
+	    String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
 
-		        } else if (messageObj.containsKey("content")) {
-		            // Regular text response
-		            output = (String) messageObj.get("content");
-		            responseMap.put("response", output);
-		            responseMap.put("message", output);
-		            responseMap.put("content", output);
+	    // **Refactored: Using LLMResponse Instead of Direct JSON Parsing**
+	    LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
-		            // Save and broadcast the message
-		            Data message = server.saveMessage(responseMap);
-		            responseMap.put("messageid", message.getId());
-		            server.broadcastMessage(responseMap);
-		        }
-		        
-		        
-		    }
-		}
-		
+	    if (response.isToolCall()) {
+	        // Function call detected
+	        String functionName = response.getFunctionName();
+	        JSONObject arguments = response.getArguments();
 
+	        // Create and save function call message
+	        Data functionMessage = chats.createNewData();
+	        functionMessage.setValue("messagetype", "function_call");
+	        functionMessage.setValue("function", functionName);
+	        functionMessage.setValue("arguments", arguments.toJSONString());
+	        functionMessage.setValue("userid", "function");
+	        functionMessage.setValue("user", "function");
+	        functionMessage.setValue("author", "function");
+	        functionMessage.setValue("channel", channel.getId());
+	        functionMessage.setValue("date", new Date());
+	        chats.saveData(functionMessage);
 
+	        // Create and broadcast function call message update
+	        JSONObject functionMessageUpdate = new JSONObject();
+	        functionMessageUpdate.put("messagetype", "function_call");
+	        functionMessageUpdate.put("catalogid", archive.getCatalogId());
+	        functionMessageUpdate.put("function", functionName);
+	        functionMessageUpdate.put("arguments", arguments);
+	        functionMessageUpdate.put("userid", "function");
+	        functionMessageUpdate.put("user", "function");
+	        functionMessageUpdate.put("author", "function");
+	        functionMessageUpdate.put("channel", channel.getId());
+	        functionMessageUpdate.put("messageid", functionMessage.getId());
+	        server.broadcastMessage(functionMessageUpdate);
+	    } 
+	    else {
+	        // **Regular Text Response**
+	        String output = response.getMessage();
+
+	        if (output != null) {
+	            responseMap.put("response", output);
+	            responseMap.put("message", output);
+	            responseMap.put("content", output);
+
+	            // Save and broadcast the message
+	            Data resp = server.saveMessage(responseMap);
+	            responseMap.put("messageid", resp.getId());
+	            server.broadcastMessage(responseMap);
+	        }
+	    }
 	}
+
 
 	public void callFunction(WebPageRequest inReq) throws Exception
 	{
@@ -743,7 +726,9 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data data = (Data) inReq.getPageValue("data");
-		LLMManager manager = (LLMManager) archive.getLLM("gpt");//load this 
+		//TODO:  Move loadInputFromTemplate
+		LLMManager manager = (LLMManager) archive.getBean("ollamaManager");//Doesn't matter which one right here.
+		
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		String function = data.get("function");
@@ -753,27 +738,26 @@ public class ChatModule extends BaseMediaModule
 		String response;
 		try
 		{
-			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId()+ "/gpt/functions/" + function + ".html");
+			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + function + ".html");
 			log.info("function" + function + "returned : " + response);
 			data.setValue("functionresponse", response);
 			data.setValue("functioncomplete", true);
-			
-			JSONObject functionMessageUpdate = new JSONObject();
-            functionMessageUpdate.put("messagetype", "function_call");
-            functionMessageUpdate.put("catalogid", archive.getCatalogId());
-            functionMessageUpdate.put("function", function);
-            functionMessageUpdate.put("arguments", arguments);
-            functionMessageUpdate.put("userid", "function");
-            functionMessageUpdate.put("user", "function");
-            functionMessageUpdate.put("author", "function");
-            functionMessageUpdate.put("channel", data.get("channel"));
-            functionMessageUpdate.put("messageid", data.getId());
-            functionMessageUpdate.put("content", response);
-            functionMessageUpdate.put("messageid", response);
 
-            server.broadcastMessage(functionMessageUpdate);
-			
-			
+			JSONObject functionMessageUpdate = new JSONObject();
+			functionMessageUpdate.put("messagetype", "function_call");
+			functionMessageUpdate.put("catalogid", archive.getCatalogId());
+			functionMessageUpdate.put("function", function);
+			functionMessageUpdate.put("arguments", arguments);
+			functionMessageUpdate.put("userid", "function");
+			functionMessageUpdate.put("user", "function");
+			functionMessageUpdate.put("author", "function");
+			functionMessageUpdate.put("channel", data.get("channel"));
+			functionMessageUpdate.put("messageid", data.getId());
+			functionMessageUpdate.put("content", response);
+			functionMessageUpdate.put("messageid", response);
+
+			server.broadcastMessage(functionMessageUpdate);
+
 		}
 		catch (Exception e)
 		{
@@ -783,28 +767,23 @@ public class ChatModule extends BaseMediaModule
 		}
 		archive.saveData("chatterbox", data);
 		archive.fireSharedMediaEvent("chatterbox/monitorchats");
-	
 
 	}
-	
+
 	public void damSearch(WebPageRequest inReq) throws Exception
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data data = (Data) inReq.getPageValue("data");
-		
+
 		String function = data.get("function");
 		String arguments = data.get("arguments");
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		String keywords = (String) d.get("keywords");
-		HitTracker hits = archive.query("asset").contains("description", keywords).search(inReq);			
+		HitTracker hits = archive.query("asset").contains("description", keywords).search(inReq);
 		inReq.putPageValue("hits", hits);
-		
-		
-		
+
 	}
-	
-	
 
 }
