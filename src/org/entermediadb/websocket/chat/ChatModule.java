@@ -582,7 +582,7 @@ public class ChatModule extends BaseMediaModule
 			// model = "gpt-3.5-turbo-16k-0613";
 			model = "gpt-4o";
 		}
-		Searcher channels = archive.getSearcher("channel");
+		Searcher channels = archive.getSearcher("collectiveproject");
 		HitTracker allchannels = channels.query().match("id", "*").exact("aienabled", true).sort("dateUp").search(inReq);
 		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
