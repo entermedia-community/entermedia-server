@@ -1,20 +1,20 @@
-	#set($chatterboxhome = $page.chatterboxhome)
-		$context.putPageValue("chatterboxhome", $chatterboxhome)
+#set($chatterboxhome = $page.chatterboxhome)
+$context.putPageValue("chatterboxhome", $chatterboxhome)
 
 #set( $goalfolder = $context.getRequestParameter("goalfolder"))
-		#if(!$goalfolder)
-			#set( $goalfolder = $context.getPageValue("goalfolder") )
-		#end
-		
-		#if(!$goalfolder)
-			#set( $goalfolder = "search" )
-		#end
-		
-		#set($goal = $goalsinmessages.get($chat.id))
-		#set($chatuser = $mediaarchive.getUser($chat.user) ) 
-		#set($attachedassets = $attachmentspermessage.get($chat.id))
-		#set($otherassets = $messageidwithassets.get($chat.id))
+#if(!$goalfolder)
+	#set( $goalfolder = $context.getPageValue("goalfolder") )
+#end
 
+#if(!$goalfolder)
+	#set( $goalfolder = "search" )
+#end
+
+#set($goal = $goalsinmessages.get($chat.id))
+#set($chatuser = $mediaarchive.getUser($chat.user) ) 
+#set($attachedassets = $attachmentspermessage.get($chat.id))
+#set($otherassets = $messageidwithassets.get($chat.id))
+	
 #if($chat.messagetype)
 	$pages.include("${chatterboxhome}/${chat.messagetype}.html", $context))
 #else
