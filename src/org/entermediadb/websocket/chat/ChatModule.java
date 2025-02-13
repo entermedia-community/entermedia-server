@@ -683,7 +683,7 @@ public class ChatModule extends BaseMediaModule
 	        functionMessage.setValue("function", functionName);
 	        functionMessage.setValue("arguments", arguments.toJSONString());
 	        functionMessage.setValue("userid", "function");
-	        functionMessage.setValue("user", "function");
+	        functionMessage.setValue("user", "agent");
 	        functionMessage.setValue("author", "function");
 	        functionMessage.setValue("channel", channel.getId());
 	        functionMessage.setValue("date", new Date());
@@ -696,7 +696,7 @@ public class ChatModule extends BaseMediaModule
 	        functionMessageUpdate.put("function", functionName);
 	        functionMessageUpdate.put("arguments", arguments);
 	        functionMessageUpdate.put("userid", "function");
-	        functionMessageUpdate.put("user", "function");
+	        functionMessageUpdate.put("user", "agent");
 	        functionMessageUpdate.put("author", "function");
 	        functionMessageUpdate.put("channel", channel.getId());
 	        functionMessageUpdate.put("messageid", functionMessage.getId());
@@ -707,6 +707,7 @@ public class ChatModule extends BaseMediaModule
 	        String output = response.getMessage();
 
 	        if (output != null) {
+	        	responseMap.put("user", "agent");
 	            responseMap.put("response", output);
 	            responseMap.put("message", output);
 	            responseMap.put("content", output);
@@ -733,8 +734,8 @@ public class ChatModule extends BaseMediaModule
 
 		String function = data.get("function");
 		String arguments = data.get("arguments");
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
-		inReq.putPageValue("args", d);
+		JSONObject args = (JSONObject) new JSONParser().parse(arguments);
+		inReq.putPageValue("args", args);
 		String response;
 		try
 		{
@@ -742,6 +743,8 @@ public class ChatModule extends BaseMediaModule
 			log.info("function" + function + "returned : " + response);
 			data.setValue("functionresponse", response);
 			data.setValue("functioncomplete", true);
+			
+			data.setValue("message", response);
 
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "function_call");
@@ -749,12 +752,12 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("function", function);
 			functionMessageUpdate.put("arguments", arguments);
 			functionMessageUpdate.put("userid", "function");
-			functionMessageUpdate.put("user", "function");
+			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("author", "function");
 			functionMessageUpdate.put("channel", data.get("channel"));
 			functionMessageUpdate.put("messageid", data.getId());
 			functionMessageUpdate.put("content", response);
-			functionMessageUpdate.put("messageid", response);
+			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
 

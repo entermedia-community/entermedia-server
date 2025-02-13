@@ -380,7 +380,7 @@ public class ChatServer
 	{
 			Searcher chats = inArchive.getSearcher("channel");
 			String channelid = (String)inChannelInfo.get("channel");
-			Data channel = inArchive.getData("channel", channelid);
+			Data channel = inArchive.getData("collectiveproject", channelid);
 			if (channel == null || channel.get("channeltype") == null) {
 				channel = chats.createNewData();
 				channel.setId(channelid);
