@@ -1,0 +1,81 @@
+/*Color*/
+
+:root {
+	--themed-logo-width: 188px;
+	--themed-logo-height: 80px;
+
+	--themed-sidebar: #252525;
+	--themed-sidebar-text: #ffffff;
+	--themed-navbar-primary: #252525;
+	--themed-navbar-primary-text: #ffffff;
+	--themed-navbar-secondary: #444444;
+	--themed-navbar-secondary-text: #ffffff;
+	--themed-nav-btn: #444444;
+	--themed-nav-btn-hover: #5e5e5e;
+	--themed-nav-btn-text: #ffffff;
+	--themed-nav-btn-active: #ffffff;
+	--themed-nav-btn-active-hover: #e6e6e6;
+	--themed-nav-btn-active-text: #444444;
+	--themed-tab-bar: #444444;
+	--themed-tab-bar-hover: #5e5e5e;
+	--themed-tab-btn: #444444;
+	--themed-tab-btn-text: #ffffff;
+	--themed-tab-btn-hover: #5e5e5e;
+	--themed-tab-btn-active: #efefef;
+	--themed-tab-btn-active-text: #444444;
+	--themed-tab-btn-active-hover: #d6d6d6;
+	--themed-btn-cta: #94e594;
+	--themed-btn-cta-hover: #bdefbd;
+	--themed-btn-cta-text: #0f3e0f;
+	--themed-btn: #444444;
+	--themed-btn-hover: #5e5e5e;
+	--themed-btn-text: #ffffff;
+	--themed-btn-sec: #dfdfdf;
+	--themed-btn-sec-hover: #f7f7f7;
+	--themed-btn-sec-text: #444444;
+	--themed-btn-acc-active: #378637;
+	--themed-btn-acc: #3884fd;
+	--themed-btn-acc-hover: #6da4fe;
+	--themed-btn-acc-text: #ffffff;
+	--themed-th: #ffffff;
+	--themed-th-hover: #e6e6e6;
+	--themed-th-text: #444444;
+	--themed-td: #ffffff;
+	--themed-td-stripe: #f2f2f2;
+	--themed-td-text: #444444;
+	--themed-footer: #151515;
+	--themed-footer-text: #888888;
+}
+
+#embody {
+}
+
+#header {
+}
+
+#header .header-text {
+	position: relative;
+}
+
+.entityNavBarContainer {
+}
+
+@media (max-width: 768px) {
+	.navbar-quicksearch {
+	}
+}
+
+/*EMNav Tabs*/
+.emnav .navtabs .navtabitem,
+#header .navbar-toggler {
+	box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 10px 10px -10px rgba(0, 0, 0, 0.5);
+}
+
+/*emnav Tabs Hover*/
+.emnav .navtabitem:hover {
+}
+
+.search-list li.current a.search-href,
+.sidebar-list li.current a {
+}
