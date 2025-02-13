@@ -50,11 +50,12 @@ customToast = function (message, options = {}) {
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
 
+	if (options.log) {
+		console.log(options.log);
+	}
+
 	if (!positive) {
-		if ($(".toastList").find(".toastError").length > 0) {
-			console.error("Additional error toast:", message);
-			return;
-		}
+		$(".toastList").find(".toastError").remove();
 	}
 
 	var btnText = options.btnText;
