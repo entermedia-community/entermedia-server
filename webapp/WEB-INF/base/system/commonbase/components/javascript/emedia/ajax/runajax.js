@@ -297,20 +297,23 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 	if (exception == "abort") {
 		return;
 	}
-	var err = "Error processing the request!";
+	var err = "An error occurred while processing the request!";
 	if (jqXhr.readyState == 0) {
 		err = "Network error!";
 	} else if (exception == "timeout") {
 		err = "Request timed out!";
 	}
-
-	var errors =
-		"Error: " +
-		exception +
-		"\n" +
-		jqXhr.responseText +
-		"\n URL: " +
-		settings.url;
+	customToast(err, { positive: false });
+	var errors = "Error details: ";
+	if (exception) {
+		errors += "\n\tException: " + exception;
+	}
+	if (jqXhr.responseText) {
+		errors += "\n\tResponse: " + jqXhr.responseText;
+	}
+	if (settings.url) {
+		errors += "\n\tURL: " + settings.url;
+	}
 	console.error(errors);
 	return;
 });

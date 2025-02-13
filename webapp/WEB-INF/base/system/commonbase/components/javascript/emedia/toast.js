@@ -50,11 +50,12 @@ customToast = function (message, options = {}) {
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
 
+	if (options.log) {
+		console.log(options.log);
+	}
+
 	if (!positive) {
-		if ($(".toastList").find(".toastError").length > 0) {
-			console.error("Additional error toast:", message);
-			return;
-		}
+		$(".toastList").find(".toastError").remove();
 	}
 
 	var btnText = options.btnText;
@@ -78,8 +79,10 @@ customToast = function (message, options = {}) {
 	$(".toastList").append(toast);
 	if (autohide) {
 		setTimeout(function () {
+			if (!toast) return;
 			toast.addClass("hide");
 			setTimeout(function () {
+				if (!toast) return;
 				toast.remove();
 			}, 500);
 		}, autohideDelay);
@@ -98,8 +101,10 @@ function destroyToast(toast, success = true) {
 		);
 	toast.find(".toastMessage").text(msg);
 	setTimeout(function () {
+		if (!toast) return;
 		toast.addClass("hide");
 		setTimeout(function () {
+			if (!toast) return;
 			toast.remove();
 		}, 500);
 	}, 2000);
