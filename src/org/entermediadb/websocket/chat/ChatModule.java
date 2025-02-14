@@ -768,12 +768,10 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
 			functionMessageUpdate.put("function", function);
 			functionMessageUpdate.put("arguments", arguments);
-			functionMessageUpdate.put("userid", "function");
 			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("author", "function");
 			functionMessageUpdate.put("channel", data.get("channel"));
 			functionMessageUpdate.put("messageid", data.getId());
-			functionMessageUpdate.put("content", response);
+			functionMessageUpdate.put("content", "AI Agent found some results...");
 			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
