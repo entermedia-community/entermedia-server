@@ -8,9 +8,9 @@
     <property name="lastName" value="AI Helper"/>
     <property name="enabled" value="false"/>
     <property name="searchtype" value="categories"/>
-    <property name="screenname" value="EMediaFinder AI Helper"/>
+    <property name="screenname" value="eMediaFinder AI Helper"/>
     <property name="email" value=""/>
-    <property name="firstName" value="EMediaFinder"/>
+    <property name="firstName" value="eMediaFinder"/>
   </properties>
   <group id="guest"/>
 </user>

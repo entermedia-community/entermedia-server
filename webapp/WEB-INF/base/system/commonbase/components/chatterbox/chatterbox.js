@@ -233,12 +233,20 @@ function connect() {
     var user = app.data("user");
 
     if (message.user != user) {
-      play();
 
-      /*Desktop notifications - mando*/
+	  /*Desktop notifications - mando*/
       function showNotification() {
+		const header = "New Message";
+		if (message.name !== undefined)
+			{
+				header = message.name;
+			}
+		if (message.topic != undefined)
+			{
+				header += " in " + message.topic;
+			}
         const notification = new Notification(
-          message.name + " in " + message.topic,
+          header,
           {
             //TODO: URL?
             body: message.content,
@@ -250,6 +258,7 @@ function connect() {
         notification.addEventListener("click", function (event) {
           //window.open('http://www.mozilla.org', '_blank');
         });
+		play();
       }
 
       /*Check para permissions and ask.*/
@@ -261,6 +270,7 @@ function connect() {
         Notification.requestPermission().then((permission) => {
           if (permission === "granted") {
             showNotification();
+			
           }
         });
       }
@@ -293,6 +303,7 @@ function showSpinner() {
  //TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
  console.log("AI about to respond"); 
  jQuery(".chatterspinner").show();
+ scrollToChat();
 }
 
 function hideSpinner() {

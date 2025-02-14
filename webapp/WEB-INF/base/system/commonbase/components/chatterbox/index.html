@@ -17,7 +17,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 	data-broadcastall="true">
 	
 		$pages.include("${chatterboxhome}/messages.html", $context)				
-		<div class="chatterspinner" style="display: none;">Agent is thinking!!</div>
+		
 		
 		#if($user && $permissions && $permissions.canModule($module, "chat_send_messages"))
 			$pages.include("${chatterboxhome}/editarea.html", $context)				

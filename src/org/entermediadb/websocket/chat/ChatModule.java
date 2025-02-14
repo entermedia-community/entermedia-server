@@ -572,10 +572,11 @@ public class ChatModule extends BaseMediaModule
 		//TODO:  REmove after a while, we checked in one for new installs
 		if(agent == null) {
 			agent = archive.getUserManager().createUser("agent", null);
-			agent.setFirstName("EMediaFinder");
-			agent.setLastName("Agent");
+			agent.setFirstName("eMediaFinder");
+			agent.setLastName("AI Helper");
+			agent.setValue("screenname", "eMediaFinder AI Helper");
 			archive.getUserManager().saveUser(agent);		
-			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "anonymous");
+			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
 		}
 		
 		
@@ -674,7 +675,7 @@ public class ChatModule extends BaseMediaModule
 
 
 	    JSONObject responseMap = new JSONObject();
-	    responseMap.put("userid", "agent");
+	    responseMap.put("user", "agent");
 	    responseMap.put("message", "");
 	    responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
 	    responseMap.put("timestamp", fm.format(now));
@@ -699,11 +700,10 @@ public class ChatModule extends BaseMediaModule
 	        functionMessage.setValue("messagetype", "function_call");
 	        functionMessage.setValue("function", functionName);
 	        functionMessage.setValue("arguments", arguments.toJSONString());
-	        functionMessage.setValue("userid", "function");
 	        functionMessage.setValue("user", "agent");
-	        functionMessage.setValue("author", "function");
 	        functionMessage.setValue("channel", channel.getId());
 	        functionMessage.setValue("date", new Date());
+	        functionMessage.setValue("content", "AI Agent working...");
 	        chats.saveData(functionMessage);
 
 	        // Create and broadcast function call message update
@@ -712,11 +712,10 @@ public class ChatModule extends BaseMediaModule
 	        functionMessageUpdate.put("catalogid", archive.getCatalogId());
 	        functionMessageUpdate.put("function", functionName);
 	        functionMessageUpdate.put("arguments", arguments);
-	        functionMessageUpdate.put("userid", "function");
 	        functionMessageUpdate.put("user", "agent");
-	        functionMessageUpdate.put("author", "function");
 	        functionMessageUpdate.put("channel", channel.getId());
 	        functionMessageUpdate.put("messageid", functionMessage.getId());
+	        functionMessageUpdate.put("content", "AI Agent performing a function");
 	        server.broadcastMessage(functionMessageUpdate);
 	    } 
 	    else {
@@ -727,7 +726,6 @@ public class ChatModule extends BaseMediaModule
 	        	Data message = chats.createNewData();
 	        	message.setValue("user", "agent");
 	        	message.setValue("message", output);
-	        	message.setValue("response", output);
 	        	message.setValue("content", output);
 	        	message.setValue("date", new Date());
 	        	message.setValue("channel", channel.getId());
