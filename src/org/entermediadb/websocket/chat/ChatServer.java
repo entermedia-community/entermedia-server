@@ -145,6 +145,10 @@ public class ChatServer
 		JSONObject inMap = new JSONObject(inData.getProperties());
 		//Command
 		Date date = (Date)inData.getValue("date");
+		if(date != null) {
+			date = new Date();
+		}
+		
 		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
 		inMap.put("messageid",inData.getId());
 		inMap.put("command","messagereceived");

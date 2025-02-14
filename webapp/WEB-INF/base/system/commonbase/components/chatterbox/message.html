@@ -15,8 +15,9 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 #set($attachedassets = $attachmentspermessage.get($chat.id))
 #set($otherassets = $messageidwithassets.get($chat.id))
 	
-#if($chat.messagetype)
-	$pages.include("${chatterboxhome}/message_${chat.messagetype}.html", $context)
+#if($chat.messagetype && $pages.doesExist('${chatterboxhome}/types/${chat.messagetype}.html'))
+	
+	$pages.include("${chatterboxhome}/types/${chat.messagetype}.html", $context)
 #else
 
 

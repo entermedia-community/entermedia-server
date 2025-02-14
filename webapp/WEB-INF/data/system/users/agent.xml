@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<user enabled="true">
+  <user-name>agent</user-name>
+  <password>DES:rDpdaQNtmOQ47RMMVoR5Tg==</password>
+  <creation-date>1237057734887</creation-date>
+  <properties>
+    <property name="lastName" value="AI Helper"/>
+    <property name="enabled" value="false"/>
+    <property name="searchtype" value="categories"/>
+    <property name="screenname" value="EMediaFinder AI Helper"/>
+    <property name="email" value=""/>
+    <property name="firstName" value="EMediaFinder"/>
+  </properties>
+  <group id="guest"/>
+</user>

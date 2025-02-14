@@ -45,6 +45,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 
@@ -567,7 +568,18 @@ public class ChatModule extends BaseMediaModule
 	public void monitorChannels(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-
+		User agent = archive.getUser("agent");
+		//TODO:  REmove after a while, we checked in one for new installs
+		if(agent == null) {
+			agent = archive.getUserManager().createUser("agent", null);
+			agent.setFirstName("EMediaFinder");
+			agent.setLastName("Agent");
+			archive.getUserManager().saveUser(agent);		
+			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "anonymous");
+		}
+		
+		
+		
 		GptManager manager = (GptManager) archive.getBean("gptManager");
 
 		ExecutorManager queue = (ExecutorManager) archive.getBean("executorManager");
@@ -649,20 +661,8 @@ public class ChatModule extends BaseMediaModule
 	    HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
 	    inReq.putPageValue("recent", recent);
 
-	    /*
-	    JSONObject responseMap = new JSONObject();
-	    responseMap.put("userid", "agent");
-	    responseMap.put("user", "agent");
-	    responseMap.put("author", "agent");
-	    responseMap.put("message", "");
-	    responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-	    responseMap.put("timestamp", fm.format(now));
-	    responseMap.put("timestampunix", now.getTime());
-	    responseMap.put("channel", channel.getId());
-	    responseMap.put("catalogid", archive.getCatalogId());
-	    responseMap.put("command", command);
-	    responseMap.put("messagetype", "airesponse");
-	    */
+	   
+	
 
 	    String channeltype = channel.get("channeltype");
 	    if (channeltype == null) {
@@ -671,7 +671,22 @@ public class ChatModule extends BaseMediaModule
 
 	    String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
 
-	    // **Refactored: Using LLMResponse Instead of Direct JSON Parsing**
+
+
+	    JSONObject responseMap = new JSONObject();
+	    responseMap.put("userid", "agent");
+	    responseMap.put("message", "");
+	    responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
+	    responseMap.put("timestamp", fm.format(now));
+	    responseMap.put("timestampunix", now.getTime());
+	    responseMap.put("channel", channel.getId());
+	    responseMap.put("catalogid", archive.getCatalogId());
+	    responseMap.put("command", "aithinking");
+	    responseMap.put("messagetype", "aithinking");
+        server.broadcastMessage(archive.getCatalogId(), responseMap);
+
+	    
+	    
 	    LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
 	    if (response.isToolCall()) {
@@ -714,6 +729,10 @@ public class ChatModule extends BaseMediaModule
 	        	message.setValue("message", output);
 	        	message.setValue("response", output);
 	        	message.setValue("content", output);
+	        	message.setValue("date", new Date());
+	        	message.setValue("channel", channel.getId());
+	        	message.setValue("messagetype", "airesponse");
+
 	        	chats.saveData(message);
 	            server.broadcastMessage(archive.getCatalogId(), message);
 	        }

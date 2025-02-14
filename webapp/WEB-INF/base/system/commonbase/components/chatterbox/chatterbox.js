@@ -211,6 +211,14 @@ function connect() {
       url = apphome + "/components/chatterbox/message.html";
     }
 
+	if(message.command === "aithinking"){
+		showSpinner();
+		return;
+	} else{
+		hideSpinner();
+	}
+		
+	
     scrollToChat();
 
     jQuery.get(url, message, function (data) {
@@ -281,6 +289,21 @@ function reloadAll() {
   });
 }
 
+function showSpinner() {
+ //TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
+ console.log("AI about to respond"); 
+ jQuery(".chatterspinner").show();
+}
+
+function hideSpinner() {
+ //TODO:  Shakil Add a spinner somewhere to let us know the chat bot is about to say something
+ console.log("AI done");
+ jQuery(".chatterspinner").hide(); 
+}
+
+
+
+
 function loadMoreChats() {
   //already loading
   if (loadingmore) {
@@ -343,6 +366,10 @@ function cancelKeepAlive() {
     clearTimeout(timerId);
   }
 }
+
+
+
+
 
 function play() {
   var app = jQuery("#application");
