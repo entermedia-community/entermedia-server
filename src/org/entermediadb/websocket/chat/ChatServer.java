@@ -382,13 +382,15 @@ public class ChatServer
 
 	public Data loadChannel(MediaArchive inArchive, Map inChannelInfo)
 	{
-			Searcher chats = inArchive.getSearcher("channel");
+			Searcher chats = inArchive.getSearcher("collectiveproject");
 			String channelid = (String)inChannelInfo.get("channel");
 			Data channel = inArchive.getData("collectiveproject", channelid);
-			if (channel == null || channel.get("channeltype") == null) {
+			if (channel == null) {
 				channel = chats.createNewData();
 				channel.setId(channelid);
 				String channeltype = (String) inChannelInfo.get("channeltype");				
+				String aienabled = (String) inChannelInfo.get("aienabled");				
+				channel.setValue("aienabled", aienabled);
 				channel.setValue("channeltype", channeltype);
 				chats.saveData(channel);
 			}
