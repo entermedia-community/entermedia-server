@@ -152,7 +152,7 @@ public class ChatServer
 		inMap.put("date",DateStorageUtil.getStorageUtil().getJsonFormat().format(date));
 		inMap.put("messageid",inData.getId());
 		inMap.put("command","messagereceived");
-		inMap.put("content",inData.get("message"));
+		inMap.put("message",inData.get("message"));
 		broadcastMessage(inCatalogId,inMap);
 	}
 	public void broadcastMessage(JSONObject inMap)
@@ -296,7 +296,7 @@ public class ChatServer
 		long now = System.currentTimeMillis() - 9*1000;
 		Data lastOne = chats.query().exact("channel",channel.getId()).after("date",new Date(now)).sort("dateDown").searchOne();
 		Data chat = null;
-		String newmessage = String.valueOf( inMap.get("content") );
+		String newmessage = String.valueOf( inMap.get("message") );
 		/*
 		 * Check for previous user, if previous user is the same combine last message
 		 * content with new message.
@@ -455,14 +455,14 @@ public class ChatServer
 		{
 			moduleid = "librarycollection";
 		}
-		String message = (String) inMap.get("content");
+		String message = (String) inMap.get("message");
 
 		archive.getProjectManager().approveAsset(asset, user, message, entityid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data chat = chats.createNewData();
 		chat.setValue("date", new Date());
-		chat.setValue("message", inMap.get("content"));
+		chat.setValue("message", message);
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("messagetype", "approved");
@@ -491,14 +491,14 @@ public class ChatServer
 		{
 			moduleid = "librarycollection";
 		}
-		String message = (String) inMap.get("content");
+		String message = (String) inMap.get("message");
 
 		archive.getProjectManager().rejectAsset(asset, user, message, entityid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data chat = chats.createNewData();
 		chat.setValue("date", new Date());
-		chat.setValue("message", inMap.get("content"));
+		chat.setValue("message", message);
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("channeltype","asset"); 

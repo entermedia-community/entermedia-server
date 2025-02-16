@@ -296,7 +296,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 				map.put("name", name);
 				
 				
-				map.put("content", content);
+				map.put("message", content);
 				
 				getChatServer().broadcastMessage(catalogid,map);
 				archive.fireDataEvent(auser, "chatterbox", "messagereceived", chat);

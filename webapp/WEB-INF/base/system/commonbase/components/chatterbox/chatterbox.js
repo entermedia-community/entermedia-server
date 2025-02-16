@@ -32,12 +32,11 @@ function chatterbox() {
     if (replytoid) {
       data.replytoid = replytoid;
     }
-    var content = input.val();
-    data.content = content;
+    var message = input.val();
+    data.message = message;
 
     var json = JSON.stringify(data);
-    content.value = "";
-
+ 
     if (chatconnection.readyState === chatconnection.CLOSED) {
       connect();
       //IF we do a reconnect render the whole page
@@ -198,9 +197,9 @@ function connect() {
       var chatMsg = $(existing).find(".chat-msg");
       var msgBody = $(chatMsg).find(".msg-body-content");
       if (msgBody.length) {
-        msgBody.html(message.content);
+        msgBody.html(message.message);
       } else {
-        chatMsg.html(message.content);
+        chatMsg.html(message.message);
       }
       return;
     }
@@ -249,9 +248,9 @@ function connect() {
           header,
           {
             //TODO: URL?
-            body: message.content,
+            body: message.message,
             renotify: false,
-            tag: message.content,
+            tag: message.message,
             icon: apphome + "/theme/images/logo.png",
           }
         );

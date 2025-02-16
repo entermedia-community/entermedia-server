@@ -636,7 +636,8 @@ public class ChatModule extends BaseMediaModule
 			}
 			else
 			{
-				if ("agent".equals(mostrecent.get("user")) || interimmessage)
+				String userid = mostrecent.get("user");
+				if ("agent".equals(userid) || interimmessage)
 				{
 					return;
 				}
@@ -690,20 +691,20 @@ public class ChatModule extends BaseMediaModule
 
 		}
 
+
+//		JSONObject responseMap = new JSONObject();
+//		responseMap.put("user", "agent");
+//		responseMap.put("message", "");
+//		responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
+//		responseMap.put("timestamp", fm.format(now));
+//		responseMap.put("timestampunix", now.getTime());
+//		responseMap.put("channel", channel.getId());
+//		responseMap.put("catalogid", archive.getCatalogId());
+//		responseMap.put("command", "aithinking");
+//		responseMap.put("messagetype", "aithinking");
+//		server.broadcastMessage(archive.getCatalogId(), responseMap);
+
 		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
-
-		JSONObject responseMap = new JSONObject();
-		responseMap.put("user", "agent");
-		responseMap.put("message", "");
-		responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-		responseMap.put("timestamp", fm.format(now));
-		responseMap.put("timestampunix", now.getTime());
-		responseMap.put("channel", channel.getId());
-		responseMap.put("catalogid", archive.getCatalogId());
-		responseMap.put("command", "aithinking");
-		responseMap.put("messagetype", "aithinking");
-		server.broadcastMessage(archive.getCatalogId(), responseMap);
-
 		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
 		if (response.isToolCall())
@@ -712,15 +713,17 @@ public class ChatModule extends BaseMediaModule
 			String functionName = response.getFunctionName();
 			JSONObject arguments = response.getArguments();
 
+			 String json = arguments.toJSONString();
 			// Create and save function call message
 			Data functionMessage = chats.createNewData();
 			functionMessage.setValue("messagetype", "function_call");
 			functionMessage.setValue("function", functionName);
-			functionMessage.setValue("arguments", arguments.toJSONString());
+			functionMessage.setValue("arguments", json);
 			functionMessage.setValue("user", "agent");
 			functionMessage.setValue("channel", channel.getId());
 			functionMessage.setValue("date", new Date());
-			functionMessage.setValue("content", "AI Agent working...");
+			functionMessage.setValue("message", json);
+			
 			chats.saveData(functionMessage);
 
 			// Create and broadcast function call message update
@@ -732,7 +735,7 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("channel", channel.getId());
 			functionMessageUpdate.put("messageid", functionMessage.getId());
-			functionMessageUpdate.put("content", "AI Agent performing a function");
+			functionMessageUpdate.put("message", json);
 					
 			server.broadcastMessage(functionMessageUpdate);
 		}
@@ -746,7 +749,6 @@ public class ChatModule extends BaseMediaModule
 				Data responsemessage = chats.createNewData();
 				responsemessage.setValue("user", "agent");
 				responsemessage.setValue("message", output);
-				responsemessage.setValue("content", output);
 				responsemessage.setValue("date", new Date());
 				responsemessage.setValue("channel", channel.getId());
 				responsemessage.setValue("messagetype", "airesponse");
@@ -781,7 +783,9 @@ public class ChatModule extends BaseMediaModule
 			data.setValue("functioncomplete", true);
 
 			data.setValue("message", response);
-
+			Searcher chats = archive.getSearcher("chatterbox");
+			chats.saveData(data);
+			
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "function_call");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
@@ -790,7 +794,6 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("channel", data.get("channel"));
 			functionMessageUpdate.put("messageid", data.getId());
-			functionMessageUpdate.put("content", response);
 			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
@@ -814,13 +817,22 @@ public class ChatModule extends BaseMediaModule
 
 		Data data = (Data) inReq.getPageValue("data");
 
-		String function = data.get("function");
+		//String function = data.get("function");
 		String arguments = data.get("arguments");
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		String keywords = (String) d.get("keywords");
 		String entity = (String) d.get("entity");
-		HitTracker hits = archive.query(entity).contains("description", keywords).search(inReq);
-		inReq.putPageValue("hits", hits);
+		if( entity == null )
+		{
+			//Should not have run damSearch
+			log.info("Should not have run damSearch without entity");
+			return;
+		}
+		else
+		{
+			HitTracker hits = archive.query(entity).contains("description", keywords).search(inReq);
+			inReq.putPageValue("hits", hits);
+		}
 
 	}
 

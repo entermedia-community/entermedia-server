@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -292,4 +295,18 @@ public class JsonUtil
 		return obj.toJSONString();
 	}
 	
+	public JSONObject parseString(String inText)
+	{
+		JSONParser parser = new JSONParser();
+		JSONObject obj = null;
+		try
+		{
+			obj = (JSONObject)parser.parse(inText);
+		}
+		catch (ParseException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return obj;
+	}
 }
