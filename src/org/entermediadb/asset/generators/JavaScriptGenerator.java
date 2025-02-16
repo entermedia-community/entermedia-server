@@ -192,7 +192,7 @@ public class JavaScriptGenerator extends TempFileGenerator
 	{
 		synchronized( inPage )
 		{
-			Page tmpfile = getPageManager().getPage( inPage.getContentItem().getAbsolutePath() + ".tmp.js" );
+			Page tmpfile = getPageManager().getPage( inPage.getPath() + ".tmp.js" );
 			
 			Writer out = new OutputStreamWriter( tmpfile.getContentItem().getOutputStream(), inPage.getCharacterEncoding() );
 			Sizer sizer = new Sizer();						

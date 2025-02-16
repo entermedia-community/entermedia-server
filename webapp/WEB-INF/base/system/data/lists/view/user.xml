@@ -1,0 +1,6 @@
+<properties>
+	
+	<property id="userpickerresults" moduleid="user" systemdefined="true" byassettype="false">Picker Results</property>
+	<property id="usermyaccount" moduleid="user" systemdefined="true" byassettype="false">My Account</property>
+	
+</properties>
