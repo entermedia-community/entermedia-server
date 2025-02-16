@@ -791,7 +791,7 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("channel", data.get("channel"));
 			functionMessageUpdate.put("messageid", data.getId());
 			functionMessageUpdate.put("content", response);
-
+			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
 
