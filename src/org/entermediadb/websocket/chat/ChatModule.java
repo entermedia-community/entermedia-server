@@ -570,17 +570,16 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		User agent = archive.getUser("agent");
 		//TODO:  REmove after a while, we checked in one for new installs
-		if(agent == null) {
+		if (agent == null)
+		{
 			agent = archive.getUserManager().createUser("agent", null);
 			agent.setFirstName("eMediaFinder");
 			agent.setLastName("AI Helper");
 			agent.setValue("screenname", "eMediaFinder AI Helper");
-			archive.getUserManager().saveUser(agent);		
+			archive.getUserManager().saveUser(agent);
 			archive.getUserProfileManager().setRoleOnUser(archive.getCatalogId(), agent, "guest");
 		}
-		
-		
-		
+
 		GptManager manager = (GptManager) archive.getBean("gptManager");
 
 		ExecutorManager queue = (ExecutorManager) archive.getBean("executorManager");
@@ -623,120 +622,140 @@ public class ChatModule extends BaseMediaModule
 					return;
 				}
 				else
-				{
-					respondToChannel(inReq, channel, "messagereceived", new HashMap());
+				{					
+					//NOTE:  This allows the LLM to analyze the function response and basically keep talking to the user about it.  Otherwise it will just stop after
+					//a function call - however, it will still be in the chat history so it could keep mentionig it.
+					//TODO: make this behaviour configurable
+					if("structureresponse".equals(function)){
+					//	log.info("Ending chat flow with structured response");
+					} else {
+						respondToChannel(inReq, channel, "messagereceived", new HashMap());		
+					}
+				
 				}
 			}
 			else
 			{
-
 				if ("agent".equals(mostrecent.get("user")) || interimmessage)
 				{
 					return;
 				}
+				inReq.putPageValue("message", mostrecent);
 				respondToChannel(inReq, channel, "messagereceived", new HashMap());
 			}
 		}
 	}
 
-	public void respondToChannel(WebPageRequest inReq, Data channel, String command, Map inMap) throws Exception {
-	    MediaArchive archive = getMediaArchive(inReq);
-	    String model = inReq.findPathValue("model");
+	public void respondToChannel(WebPageRequest inReq, Data channel, String command, Map inMap) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String model = inReq.findPathValue("model");
 
-	    if (model == null) {
-	        model = archive.getCatalogSettingValue("gpt-model");
-	    }
-	    if (model == null) {
-	        model = "gpt-4o"; // Default fallback
-	    }
+		if (model == null)
+		{
+			model = archive.getCatalogSettingValue("gpt-model");
+		}
+		if (model == null)
+		{
+			model = "gpt-4o"; // Default fallback
+		}
 
-	    inReq.putPageValue("model", model);
+		inReq.putPageValue("model", model);
 
-	    Date now = new Date();
-	    DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
+		Date now = new Date();
+		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
-	    ChatServer server = (ChatServer) archive.getBean("chatServer");
-	    Searcher chats = archive.getSearcher("chatterbox");
-	    LLMManager manager = archive.getLLM(model);
+		ChatServer server = (ChatServer) archive.getBean("chatServer");
+		Searcher chats = archive.getSearcher("chatterbox");
+		LLMManager manager = archive.getLLM(model);
 
-	    HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
-	    inReq.putPageValue("recent", recent);
+		HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
+		inReq.putPageValue("recent", recent);
 
-	   
-	
+		String channeltype = channel.get("channeltype");
+		if (channeltype == null)
+		{
+			channeltype = "chatstreamer";
+		}
 
-	    String channeltype = channel.get("channeltype");
-	    if (channeltype == null) {
-	        channeltype = "chatstreamer";
-	    }
+		Data message = (Data) inReq.getPageValue("message");
+		if (message != null)
+		{
+			String id = message.get("user");
+			if (!id.equals("agent"))
+			{
+				UserProfile profile = archive.getUserProfile(id);
+				inReq.putPageValue("chatprofile", profile);
+			}
 
-	    String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
+		}
 
+		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
 
+		JSONObject responseMap = new JSONObject();
+		responseMap.put("user", "agent");
+		responseMap.put("message", "");
+		responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
+		responseMap.put("timestamp", fm.format(now));
+		responseMap.put("timestampunix", now.getTime());
+		responseMap.put("channel", channel.getId());
+		responseMap.put("catalogid", archive.getCatalogId());
+		responseMap.put("command", "aithinking");
+		responseMap.put("messagetype", "aithinking");
+		server.broadcastMessage(archive.getCatalogId(), responseMap);
 
-	    JSONObject responseMap = new JSONObject();
-	    responseMap.put("user", "agent");
-	    responseMap.put("message", "");
-	    responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-	    responseMap.put("timestamp", fm.format(now));
-	    responseMap.put("timestampunix", now.getTime());
-	    responseMap.put("channel", channel.getId());
-	    responseMap.put("catalogid", archive.getCatalogId());
-	    responseMap.put("command", "aithinking");
-	    responseMap.put("messagetype", "aithinking");
-        server.broadcastMessage(archive.getCatalogId(), responseMap);
+		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
-	    
-	    
-	    LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
+		if (response.isToolCall())
+		{
+			// Function call detected
+			String functionName = response.getFunctionName();
+			JSONObject arguments = response.getArguments();
 
-	    if (response.isToolCall()) {
-	        // Function call detected
-	        String functionName = response.getFunctionName();
-	        JSONObject arguments = response.getArguments();
+			// Create and save function call message
+			Data functionMessage = chats.createNewData();
+			functionMessage.setValue("messagetype", "function_call");
+			functionMessage.setValue("function", functionName);
+			functionMessage.setValue("arguments", arguments.toJSONString());
+			functionMessage.setValue("user", "agent");
+			functionMessage.setValue("channel", channel.getId());
+			functionMessage.setValue("date", new Date());
+			functionMessage.setValue("content", "AI Agent working...");
+			chats.saveData(functionMessage);
 
-	        // Create and save function call message
-	        Data functionMessage = chats.createNewData();
-	        functionMessage.setValue("messagetype", "function_call");
-	        functionMessage.setValue("function", functionName);
-	        functionMessage.setValue("arguments", arguments.toJSONString());
-	        functionMessage.setValue("user", "agent");
-	        functionMessage.setValue("channel", channel.getId());
-	        functionMessage.setValue("date", new Date());
-	        functionMessage.setValue("content", "AI Agent working...");
-	        chats.saveData(functionMessage);
+			// Create and broadcast function call message update
+			JSONObject functionMessageUpdate = new JSONObject();
+			functionMessageUpdate.put("messagetype", "function_call");
+			functionMessageUpdate.put("catalogid", archive.getCatalogId());
+			functionMessageUpdate.put("function", functionName);
+			functionMessageUpdate.put("arguments", arguments);
+			functionMessageUpdate.put("user", "agent");
+			functionMessageUpdate.put("channel", channel.getId());
+			functionMessageUpdate.put("messageid", functionMessage.getId());
+			functionMessageUpdate.put("content", "AI Agent performing a function");
+					
+			server.broadcastMessage(functionMessageUpdate);
+		}
+		else
+		{
+			// **Regular Text Response**
+			String output = response.getMessage();
 
-	        // Create and broadcast function call message update
-	        JSONObject functionMessageUpdate = new JSONObject();
-	        functionMessageUpdate.put("messagetype", "function_call");
-	        functionMessageUpdate.put("catalogid", archive.getCatalogId());
-	        functionMessageUpdate.put("function", functionName);
-	        functionMessageUpdate.put("arguments", arguments);
-	        functionMessageUpdate.put("user", "agent");
-	        functionMessageUpdate.put("channel", channel.getId());
-	        functionMessageUpdate.put("messageid", functionMessage.getId());
-	        functionMessageUpdate.put("content", "AI Agent performing a function");
-	        server.broadcastMessage(functionMessageUpdate);
-	    } 
-	    else {
-	        // **Regular Text Response**
-	        String output = response.getMessage();
+			if (output != null)
+			{
+				Data responsemessage = chats.createNewData();
+				responsemessage.setValue("user", "agent");
+				responsemessage.setValue("message", output);
+				responsemessage.setValue("content", output);
+				responsemessage.setValue("date", new Date());
+				responsemessage.setValue("channel", channel.getId());
+				responsemessage.setValue("messagetype", "airesponse");
 
-	        if (output != null) {
-	        	Data message = chats.createNewData();
-	        	message.setValue("user", "agent");
-	        	message.setValue("message", output);
-	        	message.setValue("content", output);
-	        	message.setValue("date", new Date());
-	        	message.setValue("channel", channel.getId());
-	        	message.setValue("messagetype", "airesponse");
-
-	        	chats.saveData(message);
-	            server.broadcastMessage(archive.getCatalogId(), message);
-	        }
-	    }
+				chats.saveData(responsemessage);
+				server.broadcastMessage(archive.getCatalogId(), responsemessage);
+			}
+		}
 	}
-
 
 	public void callFunction(WebPageRequest inReq) throws Exception
 	{
@@ -746,7 +765,7 @@ public class ChatModule extends BaseMediaModule
 		Data data = (Data) inReq.getPageValue("data");
 		//TODO:  Move loadInputFromTemplate
 		LLMManager manager = (LLMManager) archive.getBean("ollamaManager");//Doesn't matter which one right here.
-		
+
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		String function = data.get("function");
@@ -760,7 +779,7 @@ public class ChatModule extends BaseMediaModule
 			log.info("function" + function + "returned : " + response);
 			data.setValue("functionresponse", response);
 			data.setValue("functioncomplete", true);
-			
+
 			data.setValue("message", response);
 
 			JSONObject functionMessageUpdate = new JSONObject();
@@ -771,8 +790,8 @@ public class ChatModule extends BaseMediaModule
 			functionMessageUpdate.put("user", "agent");
 			functionMessageUpdate.put("channel", data.get("channel"));
 			functionMessageUpdate.put("messageid", data.getId());
-			functionMessageUpdate.put("content", "AI Agent found some results...");
-			functionMessageUpdate.put("message", response);
+			functionMessageUpdate.put("content", response);
+
 
 			server.broadcastMessage(functionMessageUpdate);
 
@@ -799,7 +818,8 @@ public class ChatModule extends BaseMediaModule
 		String arguments = data.get("arguments");
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		String keywords = (String) d.get("keywords");
-		HitTracker hits = archive.query("asset").contains("description", keywords).search(inReq);
+		String entity = (String) d.get("entity");
+		HitTracker hits = archive.query(entity).contains("description", keywords).search(inReq);
 		inReq.putPageValue("hits", hits);
 
 	}
