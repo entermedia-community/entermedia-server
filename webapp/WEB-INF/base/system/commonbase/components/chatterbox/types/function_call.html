@@ -27,7 +27,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				
 				<div class="msg-body">
 						<div class="msg-body-content">
-							#if($chat.function != "searchdam")
+							#if($chat.function == "searchdam")
 							
 							#else
 							<div>Running: $chat.function ($chat.arguments)</div>
