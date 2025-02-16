@@ -53,12 +53,26 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 	{
 		String appid = inPage.getProperty("applicationid");
 
+		boolean loadmodule = false;
 		String homepage = String.format("/%s/index.html", appid); 
-		if( !homepage.equals(inPage.getPath()))
+		if( homepage.equals(inPage.getPath()))
 		{
-			return null;
+			loadmodule = true;
+		}
+		else
+		{
+			homepage = String.format("/%s/", appid); 
+			if( homepage.equals(inPage.getPath()))
+			{
+				loadmodule = true;
+			}
 		}
 
+		if( !loadmodule )
+		{
+			//No need to preload a module
+			return null;
+		}
 		//TODO: Pass in user and check permissions
 		QueryBuilder query = getMediaArchive().query("appsection").named("topmenuhits").all().sort("ordering");
 		Data topmenu = (Data)getMediaArchive().getCachedSearch(query).first();
