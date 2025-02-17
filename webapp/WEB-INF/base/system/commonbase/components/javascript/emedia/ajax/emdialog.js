@@ -1,5 +1,5 @@
 (function ($) {
-	$.fn.emDialog = function (onsuccess) {
+	$.fn.emDialog = function (onsuccess = null) {
 		var initiator = $(this);
 
 		var width = initiator.data("width");
@@ -85,7 +85,7 @@
 		$(window).trigger("showToast", [initiator]);
 		var toastUid = initiator.data("uid");
 		var initiatorData = initiator.data();
-		var onsuccessVar = onsuccess;
+		var onsuccessFunc = onsuccess;
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -94,9 +94,6 @@
 			url: link,
 			data: options,
 			success: function (data) {
-				if (onsuccessVar !== undefined) {
-					onsuccessVar();
-				}
 				$(window).trigger("successToast", toastUid);
 				var targetdiv = modaldialog.find(".enablebackbtn");
 				if (targetdiv.length == 0) {
@@ -104,6 +101,10 @@
 				} else {
 					//--Entities
 					targetdiv.html(data);
+				}
+
+				if (onsuccessFunc) {
+					onsuccessFunc();
 				}
 
 				if (width) {
@@ -375,7 +376,6 @@ lQuery("a.openemdialog").livequery(function (e) {
 	$(this).emDialog();
 });
 
-
 lQuery("a.entityupdateurl").livequery("click", function (e) {
 	e.preventDefault();
 	var dialogid = $(this).data("dialogid");
@@ -384,11 +384,10 @@ lQuery("a.entityupdateurl").livequery("click", function (e) {
 	}
 	var entityid = $(this).data("entityid");
 	var entitymoduleid = $(this).data("moduleid");
-	
+
 	var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${entityid}`;
 	$(this).data("urlbar", urlbar);
-	$(this).data("updateurl", true); 
-	
+	$(this).data("updateurl", true);
 });
 
 lQuery("a.emdialog").livequery("click", function (e) {
