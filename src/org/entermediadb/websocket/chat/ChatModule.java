@@ -632,7 +632,7 @@ public class ChatModule extends BaseMediaModule
 					//NOTE:  This allows the LLM to analyze the function response and basically keep talking to the user about it.  Otherwise it will just stop after
 					//a function call - however, it will still be in the chat history so it could keep mentionig it.
 					//TODO: make this behaviour configurable
-					if("structureresponse".equals(function)){
+					if("emediasearchformat".equals(function)){
 						//	log.info("Ending chat flow with structured response");
 					} else {
 						respondToChannel(inReq, channel, "messagereceived", new HashMap());		
