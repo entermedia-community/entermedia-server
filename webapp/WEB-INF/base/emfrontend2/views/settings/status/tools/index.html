@@ -4,21 +4,23 @@
 	<br>
 	<strong>[[Cluster ID]]</strong>: $mediaarchive.getNodeManager().getLocalClusterId()
 	<br>
-	<strong>[[Catalog ID]]</strong>: $mediaarchive.getCatalogId() 
+	<strong>[[Catalog ID]]</strong>: $mediaarchive.getCatalogId()  
 </p>
 
-<p><a class="ajax btn btn-secondary" href="clearcaches.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="Clearing cached data...">[[Clear Cached Data]]</a></p>
+<div id="showresults"> </div>
+
+<p><a class="ajax btn btn-secondary" href="clearcaches.html" data-targetdiv="showresults" data-oemaxlevel="4" data-toastmessage="Clearing cached data...">[[Clear Cached Data]]</a></p>
 <p><a class="btn btn-secondary emdialog" data-width="500" data-hidefooter="true" href="makemasterconfirm.html">Change Asset Master</a></p>
 
 <hr/>
 
 <h3>[[Data Management]]</h3>
 
-<p><a class="ajax btn btn-secondary" href="reindexall.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="Reindexing..." data-toastsuccess="Reindexed!">[[Reindex]]</a></p>
-<p><a class="ajax btn btn-secondary" href="mappingerrors.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4">[[View Mapping Conflicts]]</a></p>
-<p><a class="ajax btn btn-secondary emdialog" data-hidefooter="true" data-width="500" href="viewmappings.html?searchtype=$key" data-targetdiv="applicationmaincontent" data-oemaxlevel="4">View Elastic Mappings</a></p>
+<p><a class="ajax btn btn-secondary" href="reindexall.html" data-targetdiv="showresults" data-toastmessage="Reindexing..." data-toastsuccess="Reindexed!">[[Reindex]]</a></p>
+<p><a class="btn btn-secondary" href="mappingerrors.html" data-oemaxlevel="4">[[View Mapping Conflicts]]</a></p>
+<p><a class="ajax btn btn-secondary emdialog" data-hidefooter="true" data-width="500" href="viewmappings.html?searchtype=$key" data-targetdiv="showresults" data-oemaxlevel="4">View Elastic Mappings</a></p>
 <p>
-	<a class="ajax btn btn-secondary" href="reloadlists.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="Reloading lists...">[[Reload lists]]</a>
+	<a class="ajax btn btn-secondary" href="reloadlists.html" data-targetdiv="showresults" data-oemaxlevel="4" data-toastmessage="Reloading lists...">[[Reload lists]]</a>
 	<br>
 	<small class="text-muted">
 		[[This allows lists loaded from the installation to be integrated with your own lists]].
@@ -30,7 +32,7 @@
 <h3>[[Database Snapshots]]</h3>
 
 <p>
-	<a class="ajax btn btn-secondary" href="./snapshots.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4">[[View Snapshots]]</a>
+	<a class="ajax btn btn-secondary" href="./snapshots.html" data-targetdiv="showresults" data-oemaxlevel="4">[[View Snapshots]]</a>
 	<br>
 	<small class="text-muted">
 		[[Snapshots are used by ElasticSearch to store and restore database state]].
@@ -48,7 +50,7 @@
 <h3>[[Search Logs]]</h3>
 
 #set($isenabled = $mediaarchive.getSearcherManager().getShowSearchLogs($catalogid))
-<a class="ajax btn btn-secondary" href="togglesearchlogs.html" data-targetdiv="applicationmaincontent" data-oemaxlevel="4" data-toastmessage="#if($isenabled) [[Disabling]] #else [[Enabling]] #end search logs...">
+<a class="ajax btn btn-secondary" href="togglesearchlogs.html" data-targetdiv="showresults" data-oemaxlevel="4" data-toastmessage="#if($isenabled) [[Disabling]] #else [[Enabling]] #end search logs...">
 	#if($isenabled)
 		[[Enabled]]
 	#else
