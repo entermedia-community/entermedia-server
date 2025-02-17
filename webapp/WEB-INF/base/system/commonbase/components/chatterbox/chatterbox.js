@@ -1,5 +1,3 @@
-var chatterbox_duplication_error = "This const should only be loaded once";
-
 var chatconnection;
 var chatopen = false;
 var loadingmore = false;
@@ -324,7 +322,6 @@ function loadMoreChats() {
 	var apphome = app.data("home") + app.data("apphome");
 
 	jQuery(".chatterbox").each(function () {
-		var chatter = $(this);
 		var url = apphome + "/components/chatterbox/loadmessages.html";
 
 		var chatterdiv = $(this);
