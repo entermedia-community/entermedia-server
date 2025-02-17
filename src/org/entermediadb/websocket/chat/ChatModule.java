@@ -796,6 +796,7 @@ public class ChatModule extends BaseMediaModule
 				Data module = archive.getCachedData("module",moduleid);
 				inReq.putPageValue("module",module);
 				filename = "search-module";
+				//Tell it to use emediasearchformat
 			}
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
 			log.info("function" + function + "returned : " + response);
@@ -851,7 +852,15 @@ public class ChatModule extends BaseMediaModule
 		}
 		else
 		{
-			HitTracker hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
+			HitTracker hits = null;
+			if(keywords.equalsIgnoreCase("all"))
+			{
+				hits = archive.query(module.getId()).all().search(inReq);
+			}
+			else
+			{
+				hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
+			}
 			inReq.putPageValue("hits", hits);
 		}
 
