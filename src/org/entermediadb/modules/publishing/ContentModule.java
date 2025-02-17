@@ -1,12 +1,14 @@
 package org.entermediadb.modules.publishing;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,13 +19,14 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.llm.LLMManager;
+import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class ContentModule extends BaseMediaModule
@@ -401,21 +404,47 @@ public class ContentModule extends BaseMediaModule
 		inReq.putPageValue("found", menu);
 	}
 	
-	public void postToPostiz(WebPageRequest inReq) throws Exception
-	{
-		PostizManager manager = (PostizManager) getMediaArchive(inReq).getBean("postizManager");
-		String inContent = inReq.findValue("postcontent");
-		String[] integrations = inReq.getRequestParameters("integrations");
-		String date = inReq.getRequestParameter("date.value");
-		
-		Date postdate = date != null ? DateStorageUtil.getStorageUtil().parseFromStorage(date) : new Date();
-		List sites = integrations != null ? Arrays.asList(integrations) : new ArrayList();
-		
-		manager.createPost(inContent, postdate, PostizManager.POST_TYPE_DRAFT,null, sites);
-		
-		
-		
+	public void postToPostiz(WebPageRequest inReq) {
+	    try {
+	        PostizManager manager = (PostizManager) getMediaArchive(inReq).getBean("postizManager");
+
+	        // Get and validate the post content
+	        String postContent = inReq.findValue("postcontent");
+	        if (postContent == null || postContent.trim().isEmpty()) {
+	            throw new OpenEditException("Post content is required.");
+	        }
+
+	        // Parse the date from the form input directly
+	        String dateStr = inReq.getRequestParameter("date.value");
+	        Date postDate = null;
+	        if (dateStr != null && !dateStr.isEmpty()) {
+	            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+	            postDate = inputFormat.parse(dateStr);
+	        } else {
+	            postDate = new Date();
+	        }
+
+	        // Collect integration IDs
+	        String[] integrations = inReq.getRequestParameters("integrations");
+	        List<String> siteList = (integrations != null) ? Arrays.asList(integrations) : new ArrayList<>();
+
+	        String[] assetids = inReq.getRequestParameters("assetid");	        
+	        List<String> assets = (assetids != null) ? Arrays.asList(assetids) : new ArrayList<>();
+
+	        
+	        
+	        // Call Postiz API
+	        JSONObject result = manager.createPost(postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
+	       
+	        log.info("Post created successfully: " + result.toJSONString());
+	        
+	    } catch (Exception e) {
+	        log.error("Failed to create post with Postiz", e);
+	        throw new OpenEditException("Error while posting to Postiz: " + e.getMessage(), e);
+	    }
 	}
+
+
 
 	
 	
