@@ -624,7 +624,7 @@ public class ChatModule extends BaseMediaModule
 				if (!Boolean.parseBoolean(mostrecent.get("functioncomplete")))
 				{
 					archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", mostrecent);
-					archive.fireSharedMediaEvent("chatterbox/monitorchats");
+					archive.fireSharedMediaEvent("llm/monitorchats");
 					return;
 				}
 				else
@@ -633,7 +633,7 @@ public class ChatModule extends BaseMediaModule
 					//a function call - however, it will still be in the chat history so it could keep mentionig it.
 					//TODO: make this behaviour configurable
 					if("structureresponse".equals(function)){
-					//	log.info("Ending chat flow with structured response");
+						//	log.info("Ending chat flow with structured response");
 					} else {
 						respondToChannel(inReq, channel, "messagereceived", new HashMap());		
 					}
