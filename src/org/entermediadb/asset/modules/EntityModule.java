@@ -1347,18 +1347,19 @@ public class EntityModule extends BaseMediaModule
 		{
 			channel = inReq.getRequestParameter("channel");
 		}
-		Data currentchannel = archive.getCachedData("collectiveproject", channel);
+		Data currentchannel = archive.getCachedData("channel", channel);
 		
-		Searcher topicsearcher = archive.getSearcher("collectiveproject");
+		Searcher topicsearcher = archive.getSearcher("channel");
 		Data entity  = (Data) inReq.getPageValue("entity");
 		String module = inReq.findValue("module");
 		if (currentchannel == null) {
-			currentchannel = topicsearcher.query().match("entityid",entity.getId()).match("moduleid", module).sort("name").searchOne();
+			currentchannel = topicsearcher.query().match("dataid",entity.getId()).match("searchtype", module).sort("name").searchOne();
 		}
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.createNewData();
-			currentchannel.setValue("moduleid", module);
-			currentchannel.setValue("entityid", entity.getId() );
+			currentchannel.setValue("searchtype", module);
+			currentchannel.setValue("dataid", entity.getId() );
+			currentchannel.setValue("channeltype", "entity");
 			currentchannel.setName("General");
 			topicsearcher.saveData(currentchannel);
 		}

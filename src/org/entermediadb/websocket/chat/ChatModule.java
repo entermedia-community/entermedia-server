@@ -66,6 +66,12 @@ public class ChatModule extends BaseMediaModule
 		Data chat = archive.getCachedData("chatterbox", messageid);
 		inReq.putPageValue("chat", chat);
 	}
+	
+	
+	/*
+	 * For OI Collective Projects, uses collectiveproject table
+	 * 
+	 * */
 
 	public void loadRecentChatsLibraryCollection(WebPageRequest inReq)
 	{
@@ -208,11 +214,9 @@ public class ChatModule extends BaseMediaModule
 			return currentchannel;
 		}
 
-		Searcher topicsearcher = archive.getSearcher("collectiveproject");
-
 		if (channel != null)
 		{
-			currentchannel = archive.getCachedData("collectiveproject", channel);
+			currentchannel = archive.getCachedData("channel", channel);
 		}
 
 		inReq.putPageValue("currentchannel", channel);
@@ -594,7 +598,9 @@ public class ChatModule extends BaseMediaModule
 			// model = "gpt-3.5-turbo-16k-0613";
 			model = "gpt-4o";
 		}
-		Searcher channels = archive.getSearcher("collectiveproject");
+		
+		Searcher channels = archive.getSearcher("channel");
+		
 		HitTracker allchannels = channels.query().match("id", "*").exact("aienabled", true).sort("dateUp").search(inReq);
 		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
@@ -690,6 +696,8 @@ public class ChatModule extends BaseMediaModule
 			}
 
 		}
+		
+		inReq.putPageValue("channel", channel);
 
 
 //		JSONObject responseMap = new JSONObject();
@@ -764,10 +772,13 @@ public class ChatModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Data data = (Data) inReq.getPageValue("data");
+		Data data = (Data) inReq.getPageValue("data");  //message
+		//get the channel
+		Data channel = archive.getCachedData("channel", data.get("channel"));
+		inReq.putPageValue("channel", channel);
+		
 		//TODO:  Move loadInputFromTemplate
 		LLMManager manager = (LLMManager) archive.getBean("ollamaManager");//Doesn't matter which one right here.
-
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
 		String function = data.get("function");
@@ -775,6 +786,7 @@ public class ChatModule extends BaseMediaModule
 		JSONObject args = (JSONObject) new JSONParser().parse(arguments);
 		inReq.putPageValue("args", args);
 		String response;
+		
 		try
 		{
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + function + ".html");
