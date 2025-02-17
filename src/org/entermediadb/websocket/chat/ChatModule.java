@@ -834,6 +834,10 @@ public class ChatModule extends BaseMediaModule
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		String keywords = (String) d.get("keywords");
 		String entity = (String) d.get("entity");
+		
+		Data module = archive.query("module").match("name",entity).searchOne();
+		
+		
 		if( entity == null )
 		{
 			//Should not have run damSearch

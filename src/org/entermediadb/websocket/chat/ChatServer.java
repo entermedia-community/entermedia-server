@@ -285,7 +285,7 @@ public class ChatServer
 	public Data saveMessage(final JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
-		log.info("Saving Message: " + inMap.toJSONString());
+		//log.info("Saving Message: " + inMap.toJSONString());
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		Searcher chats = archive.getSearcher("chatterbox");
 		Data channel = loadChannel(archive,inMap);
