@@ -240,6 +240,7 @@ function connect() {
 		if (message.user != user) {
 			/*Desktop notifications - mando*/
 			function showNotification() {
+				if ($("#aichatsearch").length) return;
 				const header = "New Message";
 				if (message.name !== undefined) {
 					header = message.name;
