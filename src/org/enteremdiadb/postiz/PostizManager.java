@@ -4,12 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,14 +14,15 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.repository.ContentItem;
 
 public class PostizManager implements CatalogEnabled {
 
@@ -78,66 +75,102 @@ public class PostizManager implements CatalogEnabled {
         fieldCatalogId = inCatalogId;
     }
 
-    public JSONObject createPost(String inPostContent, Date inPostDate, String postType, List<String> inFilePaths, List<String> integrationIds) {
+    public JSONObject createPost(String inPostContent, Date inPostDate, String postType, List<String> inAssetIds, List<String> integrationIds) {
         String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
         String endpoint = getApiEndpoint() + "/posts";
         HttpPost postMethod = new HttpPost(endpoint);
-        postMethod.addHeader("Authorization", "Bearer " + apiKey);
+        postMethod.addHeader("Authorization", apiKey); // per your requirements
         postMethod.setHeader("Content-Type", "application/json");
 
         try {
-            // Construct the post payload
+            // Construct the main payload
             JSONObject payload = new JSONObject();
             payload.put("type", postType);
 
-            if (inPostDate != null) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                payload.put("date", dateFormat.format(inPostDate));
-            }
+            // Set ISO 8601 date
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            isoFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            String formattedDate = isoFormat.format(inPostDate != null ? inPostDate : new Date());
+            payload.put("date", formattedDate);
 
-            payload.put("content", inPostContent);
+            // Construct posts array
+            JSONArray postsArray = new JSONArray();
 
-            // Add integrations
             if (integrationIds != null && !integrationIds.isEmpty()) {
-                JSONArray integrationsArray = new JSONArray();
                 for (String integrationId : integrationIds) {
-                    JSONObject integrationObject = new JSONObject();
-                    integrationObject.put("id", integrationId);
-                    integrationsArray.add(integrationObject);
-                }
-                payload.put("integrations", integrationsArray);
-            }
+                    JSONObject postObject = new JSONObject();
 
-            // Add files
-            if (inFilePaths != null && !inFilePaths.isEmpty()) {
-                JSONArray filesArray = new JSONArray();
-                for (String filePath : inFilePaths) {
-                    String fileId = uploadFile(filePath);
-                    if (fileId != null) {
-                        filesArray.add(fileId);
+                    // Add integration
+                    JSONObject integration = new JSONObject();
+                    integration.put("id", integrationId);
+                    postObject.put("integration", integration);
+
+                    // Add values array
+                    JSONArray valuesArray = new JSONArray();
+                    JSONObject valueObject = new JSONObject();
+                    valueObject.put("content", inPostContent);
+
+                    // Handle file uploads if provided
+                    JSONArray imagesArray = new JSONArray();
+                    if (inAssetIds != null && !inAssetIds.isEmpty()) {
+                        for (String assetid : inAssetIds) {
+                        	Asset asset = getMediaArchive().getAsset(assetid);
+                        	ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
+                        	if(item.exists()) {
+                            String fileId = uploadFile(item.getAbsolutePath());
+		                        if (fileId != null) {
+		                            JSONObject imageObject = new JSONObject();
+		                            imageObject.put("id", fileId);
+		                            imagesArray.add(imageObject);
+		                        }
+                        	}
+                        }
                     }
+                    valueObject.put("image", imagesArray);
+                    valuesArray.add(valueObject);
+                    postObject.put("value", valuesArray);
+
+                    // Add a random group ID to group these posts if needed
+                    postObject.put("group", java.util.UUID.randomUUID().toString());
+
+                    // Add default settings as an empty object
+                    JSONObject settings = new JSONObject();
+                    postObject.put("settings", settings);
+
+                    postsArray.add(postObject);
                 }
-                payload.put("files", filesArray);
+            } else {
+                throw new OpenEditException("At least one integration ID is required.");
             }
 
+            payload.put("posts", postsArray);
+
+            // **Hardcode the required fields**
+            payload.put("shortLink", false);
+            payload.put("tags", new JSONArray());
+
+            // Set the payload as the request body
             postMethod.setEntity(new StringEntity(payload.toJSONString(), "UTF-8"));
 
+            // Execute the request
             CloseableHttpResponse response = getSharedClient().execute(postMethod);
             String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
 
             // Parse the response as JSON
-            JSONObject result = (JSONObject) new org.json.simple.parser.JSONParser().parse(jsonResponse);
+            JSONArray result = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
 
             response.close();
-            return result;
+            return (JSONObject) result.get(0);
 
         } catch (Exception e) {
             log.error("Error creating post in Postiz", e);
-            throw new RuntimeException("Failed to create post", e);
+            throw new OpenEditException("Failed to create post", e);
         }
     }
+
+
 
     public JSONArray listIntegrations() {
         String apiKey = getApiKey();
@@ -145,21 +178,27 @@ public class PostizManager implements CatalogEnabled {
 
         String endpoint = getApiEndpoint() + "/integrations";
         HttpGet getMethod = new HttpGet(endpoint);
-        getMethod.addHeader("Authorization",  "{" + apiKey  + "}");
+        getMethod.addHeader("Authorization", apiKey);
 
         try {
-            CloseableHttpResponse response = getSharedClient().execute(getMethod);
             
-            String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
+            JSONArray integrations = (JSONArray) getMediaArchive().getCacheManager().get("postiz", "integrations");
+            if(integrations == null) {
+                CloseableHttpResponse response = getSharedClient().execute(getMethod);
+
+                String jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
+            	integrations = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
+                response.close();         
+                getMediaArchive().getCacheManager().put("postiz", "integrations", integrations);
+            }
             
             // Parse the response as JSON
-            JSONArray integrations = (JSONArray) new org.json.simple.parser.JSONParser().parse(jsonResponse);
-            response.close();
+            
             return integrations;
 
         } catch (Exception e) {
             log.error("Error listing integrations in Postiz", e);
-            throw new RuntimeException("Failed to list integrations", e);
+            throw new OpenEditException("Failed to list integrations", e);
         }
     }
 
@@ -169,7 +208,7 @@ public class PostizManager implements CatalogEnabled {
 
         String endpoint = getApiEndpoint() + "/upload";
         HttpPost postMethod = new HttpPost(endpoint);
-        postMethod.addHeader("Authorization", "Bearer " + apiKey);
+        postMethod.addHeader("Authorization",  apiKey);
 
         try {
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -191,12 +230,12 @@ public class PostizManager implements CatalogEnabled {
 
         } catch (Exception e) {
             log.error("Error uploading file to Postiz", e);
-            throw new RuntimeException("Failed to upload file", e);
+            throw new OpenEditException("Failed to upload file", e);
         }
     }
 
     public String getApiEndpoint() {
-        return getMediaArchive().getCatalogSettingValue("postiz-url");
+        return getMediaArchive().getCatalogSettingValue("postiz-url") + "/public/v1"        		;
     }
 
     public String getApiKey() {

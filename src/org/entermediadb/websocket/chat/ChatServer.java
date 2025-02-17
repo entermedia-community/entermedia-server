@@ -354,7 +354,7 @@ public class ChatServer
 		
 		User user = archive.getUser(userid);
 		archive.fireDataEvent(user,"chatterbox","saved", chat);
-		archive.fireSharedMediaEvent("chatterbox/monitorchats");
+		archive.fireSharedMediaEvent("llm/monitorchats");
 
 		String messageid = chat.getId();
 		inMap.put("messageid", messageid);
