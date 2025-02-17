@@ -789,7 +789,15 @@ public class ChatModule extends BaseMediaModule
 		
 		try
 		{
-			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + function + ".html");
+			String filename = function;
+			if( function.startsWith("search") )
+			{
+				String moduleid= function.substring("search".length());
+				Data module = archive.getCachedData("module",moduleid);
+				inReq.putPageValue("module",module);
+				filename = "search-module";
+			}
+			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
 			log.info("function" + function + "returned : " + response);
 			data.setValue("functionresponse", response);
 			data.setValue("functioncomplete", true);
@@ -833,12 +841,9 @@ public class ChatModule extends BaseMediaModule
 		String arguments = data.get("arguments");
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
 		String keywords = (String) d.get("keywords");
-		String entity = (String) d.get("entity");
-		
-		Data module = archive.query("module").match("name",entity).searchOne();
-		
-		
-		if( entity == null )
+
+		Data module = (Data)inReq.getPageValue("module");
+		if( module == null )
 		{
 			//Should not have run damSearch
 			log.info("Should not have run damSearch without entity");
@@ -846,7 +851,7 @@ public class ChatModule extends BaseMediaModule
 		}
 		else
 		{
-			HitTracker hits = archive.query(entity).contains("description", keywords).search(inReq);
+			HitTracker hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
 			inReq.putPageValue("hits", hits);
 		}
 
