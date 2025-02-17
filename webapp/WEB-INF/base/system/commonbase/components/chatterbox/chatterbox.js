@@ -428,4 +428,30 @@ jQuery(document).ready(function () {
 		chatterbox();
 		scrollToChat();
 	});
+
+	lQuery(".expandaisearchtable").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).toggleClass("expanded");
+		$(this)
+			.closest(".aisearchtable-container")
+			.find(".aisearchtable")
+			.collapse("toggle");
+	});
+
+	// lQuery(".typeout").livequery(function () {
+	// var check = $(this).data("typed");
+	// if (check) {
+	// 	return;
+	// }
+	// $(this).data("typed", true);
+	// var strings = $(this).text().split("\n");
+	// var typed = new Typed($(this), {
+	// 	strings,
+	// 	typeSpeed: 40,
+	// 	backSpeed: 0,
+	//  loop: true,
+	// });
+	// typed.start();
+	// });
 });
