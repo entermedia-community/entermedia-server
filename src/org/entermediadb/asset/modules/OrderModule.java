@@ -336,7 +336,7 @@ public class OrderModule extends BaseMediaModule
 		Collection tosave = new ArrayList(Arrays.asList(fields));
 		tosave.remove("status");
 		
-		if(order.get("ordertype").equals("checkout"))
+		if(order.get("ordertype") != null && order.get("ordertype").equals("checkout"))
 		{
 			order.setValue("checkoutstatus", "reviewed");
 		}
