@@ -425,6 +425,13 @@ function createNotificationSubscription() {
 }
 
 jQuery(document).ready(function () {
+	lQuery("#chatter-msg").livequery(function () {
+		var $this = $(this);
+		setTimeout(function () {
+			$this.focus();
+		});
+	});
+
 	lQuery(".chatterbox").livequery(function () {
 		chatterbox();
 		scrollToChat();
