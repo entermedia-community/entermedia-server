@@ -8,7 +8,7 @@
 	
 	<property name="collectionidinfilename">true</property>
 
-	<property name="sortby">assetcreationdatedown</property>
+	<property name="sortby">assetcreationdateDown</property>
 	
 	<property name="alwaysresetpage">true</property>
 	
