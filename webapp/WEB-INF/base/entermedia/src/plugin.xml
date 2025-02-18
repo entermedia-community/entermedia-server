@@ -840,16 +840,7 @@
 	</bean>
 
 
-	<bean id="ValidationModule" class="org.entermediadb.modules.validation.ValidationModule">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="validator">
-			<ref bean="validator" />
-		</property>
-	</bean>
 
-	<bean id="validator" class="org.entermediadb.modules.validation.Validator" />
 
 	<bean id="LinkTree" class="org.entermediadb.links.LinkModule" init-method="init">
 		<property name="workFlow">
