@@ -157,7 +157,11 @@ public class ChatModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data channel = loadCurrentChannel(inReq);
-
+		if(channel == null) {
+			return;
+		}
+		
+		
 		String sortby = inReq.findActionValue("sortorder");
 		if (sortby == null)
 		{
