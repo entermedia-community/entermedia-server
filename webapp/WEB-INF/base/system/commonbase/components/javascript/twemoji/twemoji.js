@@ -35,6 +35,9 @@ function emojiUnicode(input) {
 				pairs.push(input.charCodeAt(i));
 			}
 		}
+		if (pairs[pairs.length - 1] === 65039) {
+			pairs.pop();
+		}
 		return pairs.map((val) => parseInt(val).toString(16)).join("-");
 	}
 	return "";

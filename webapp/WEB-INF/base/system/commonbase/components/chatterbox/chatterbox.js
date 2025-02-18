@@ -447,32 +447,38 @@ jQuery(document).ready(function () {
 			.collapse("toggle");
 	});
 
-	lQuery(".typeout").livequery(function () {
-		// 	var check = $(this).data("typed");
-		// 	if (check) {
-		// 		return;
-		// 	}
-		// 	$(this).data("typed", true);
-		var strings = $(this).text().split("\n");
-		console.log(strings);
-		// 	var typed = new Typed($(this), {
-		// 		strings,
-		// 		typeSpeed: 40,
-		// 		backSpeed: 0,
-		// 		loop: true,
-		// 	});
-		// 	typed.start();
-	});
+	// lQuery(".typeout").livequery(function () {
+	// 	var check = $(this).data("typed");
+	// 	if (check) {
+	// 		return;
+	// 	}
+	// 	$(this).data("typed", true);
+	// var strings = $(this).text().split("\n");
+	// console.log(strings);
+	// 	var typed = new Typed($(this), {
+	// 		strings,
+	// 		typeSpeed: 40,
+	// 		backSpeed: 0,
+	// 		loop: true,
+	// 	});
+	// 	typed.start();
+	// });
 
-	lQuery(".msg-body-content").livequery(function () {
+	lQuery(".chat-msg").livequery(function () {
 		var emojiparsed = $(this).data("emojiparsed");
 		if (emojiparsed) {
 			return;
 		}
 		$(this).data("emojiparsed", true);
-
+		var msgContent = $(this).find(".msg-body-content");
+		var reacts = $(this).find("span.emote");
 		if (window.parseEmojis != undefined) {
-			window.parseEmojis($(this)[0]);
+			if (msgContent.length > 0) {
+				window.parseEmojis(msgContent[0]);
+			}
+			if (reacts.length > 0) {
+				window.parseEmojis(reacts[0]);
+			}
 		}
 	});
 
