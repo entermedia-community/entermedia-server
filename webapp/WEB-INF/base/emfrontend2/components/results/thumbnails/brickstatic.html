@@ -7,10 +7,15 @@ $context.putPageValue("isselected", "isselected" )
 #elseif( $rendertype =="video")
 	#set( $rendertype = "image" )
 #end
+
+#set($lightboxlink = "image3000x3000.jpg")
+#if($rendertype=="document")
+#set($lightboxlink = "image3000x3000.png")
+#end
+
 <div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
-	#set($imagelink = $mediaarchive.asLinkToPreview($hit, $librarycol.id, "image3000x3000.jpg", true))
-	#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
-	#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+	#set($imagelink = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $lightboxlink, true))
+	
 	<a href="$imagelink" class="lightbox" data-downloadlink="$!downloadlink">
 	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	</a>

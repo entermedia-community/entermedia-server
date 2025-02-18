@@ -16,7 +16,7 @@
 	$context.putPageValue("hits",$hits)
 #end
 
-<div id="resultsdiv" class="scroll-resultsdiv"
+<div id="resultsdiv" class="resultsdiv scroll-resultsdiv"
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	data-hitsname="$!hits.getHitsName()"
 	data-componenthome="$!componenthome"
@@ -40,7 +40,7 @@
 		$pages.include("$componenthome/results/header.html",$context) 
 	#end
 	<div class="scrollview">
-		<div class="masonry-grid2" 
+		<div class="masonry-grid2 masonry-grid-cells" 
 			data-maxheight="180" 
 			data-maxwidth="180"
 			data-targeth="180"

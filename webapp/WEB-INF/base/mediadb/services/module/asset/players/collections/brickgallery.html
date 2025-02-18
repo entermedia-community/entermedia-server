@@ -1,49 +1,58 @@
 <style type="text/css">
 	:root {
+		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
+		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
+		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
 		--filler-color: transparent;
-		--container-width: 100%;
-		--container-height: 100%;
-		
 	}
-	html,
-	body {
-		width: 100vw;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-	}
-	
+
 	.__main-container {
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		background-color: var(--bg-color);
 		width: var(--container-width);
-		height: var(--container-height);
-		
 	}
 	
 	._gridgallery-container {
 		flex: 1;
-		height: 100%;
 	}
 	
 	
+.masonry-grid2 {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  position: relative;
+}
 .scrollview {
-	height: 100%;
 	padding: 0 8px 8px;
-	overflow-y: auto;
 	
 }
 .scroll-resultsdiv {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
 }	
+.masonry-grid2 .masonry-grid-cell {
+  position: absolute;
+}
 
+.masonry-grid-cell .grid-thumbimage {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  color: #111;
+}
+
+div.masonry-grid-cell .grid-thumbimage img.imagethumb {
+  padding: 0;
+  margin: 0 auto;
+  vertical-align: middle;
+  width: 100%;
+  object-position: center;
+  object-fit: cover;
+  transition: all 0.1s ease;
+}
 div.masonry-grid-cell:hover .grid-cell-footer  {
 	display: block;
 	}
@@ -98,7 +107,6 @@ div.masonry-grid-cell .grid-cell-footer  {
 .audio-thumb-container {
 	padding-top: 2.5rem;
 }
-
 
 .slbOverlay, .slbWrapOuter, .slbWrap {
   position: fixed;
@@ -493,9 +501,7 @@ div.masonry-grid-cell .grid-cell-footer  {
     transform: translate3d(0, 0, 0);
   }
 }
-.navbar-nav .nav-link {
-	color:#eee;
-}
+
 
 </style>
 
@@ -508,9 +514,7 @@ div.masonry-grid-cell .grid-cell-footer  {
 	data-componenthome="$!componenthome"
 	style="background-color: #fff; height: 100%;">
 	##Job Number passed in - search on with links to each collection
-	#if( $collectionhits.size() == 0)
-		<p>[[No collections found]]</p>
-	#else
+
 		#set($first = $librarycol)	
 		#if( !$first )
 	 		#set($first = $collectionhits.get(0))
@@ -538,5 +542,5 @@ div.masonry-grid-cell .grid-cell-footer  {
 		</div>
 		</div>
 	</div>
-	 #end 
+	 
 </div>
