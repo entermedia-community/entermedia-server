@@ -129,6 +129,8 @@
 	display: inline-block;
 	transform: rotate(-45deg);
 }
+.chatterbox-write .chatter-emoji.active,
+.chatterbox-write .chatter-attachfile.active,
 .chatterbox-write .chatter-emoji:hover,
 .chatterbox-write .chatter-attachfile:hover {
 	color: #277371;
