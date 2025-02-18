@@ -65,11 +65,6 @@ function chatterbox() {
 		}
 	});
 
-	lQuery("#closeattachfileonchat").livequery("click", function () {
-		var button = jQuery(this);
-		button.closest(".attachfileonchat").html("");
-	});
-
 	lQuery("#chatterboxreplycancel").livequery("click", function () {
 		var button = jQuery(this);
 		button.closest(".chatterboxreplyto").hide();
@@ -447,23 +442,6 @@ jQuery(document).ready(function () {
 			.collapse("toggle");
 	});
 
-	// lQuery(".typeout").livequery(function () {
-	// 	var check = $(this).data("typed");
-	// 	if (check) {
-	// 		return;
-	// 	}
-	// 	$(this).data("typed", true);
-	// var strings = $(this).text().split("\n");
-	// console.log(strings);
-	// 	var typed = new Typed($(this), {
-	// 		strings,
-	// 		typeSpeed: 40,
-	// 		backSpeed: 0,
-	// 		loop: true,
-	// 	});
-	// 	typed.start();
-	// });
-
 	lQuery(".chat-msg").livequery(function () {
 		var emojiparsed = $(this).data("emojiparsed");
 		if (emojiparsed) {
@@ -482,17 +460,39 @@ jQuery(document).ready(function () {
 		}
 	});
 
+	function hideAttachFile() {
+		if ($(".message-attach-box").is(":visible")) {
+			$(".message-attach-box").fadeOut(function () {
+				$(this).remove();
+				$(".chatter-attachfile").removeClass("active");
+			});
+		}
+	}
+	function hideEmojiPicker() {
+		if ($(".emoji-picker").is(":visible")) {
+			$(".emoji-picker").fadeOut(function () {
+				$(this).remove();
+				$(".chatter-emoji").removeClass("active");
+			});
+		}
+	}
+
 	lQuery(".chatter-emoji").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var href = $(this).attr("href");
-		var target = $(this).parent();
-		if (target.find("#emojipicker").length > 0) {
-			return;
-		}
-		jQuery.get(href, { oemaxlevel: 1 }, function (data) {
-			target.prepend(data);
-		});
+		hideAttachFile();
+		$(this).addClass("active");
+		$(this).runAjax();
+	});
+	lQuery(".chatter-attachfile").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		hideEmojiPicker();
+		$(this).addClass("active");
+		$(this).runAjax();
+	});
+	lQuery("#closeattachfileonchat").livequery("click", function () {
+		hideAttachFile();
 	});
 
 	$("body").on("click", "#emojinav a", function (e) {
@@ -512,20 +512,29 @@ jQuery(document).ready(function () {
 		$(".emoji-wrapper").animate({ scrollTop: dest - 70 }, 500);
 	});
 
+	lQuery("#closeattachfileonchat").livequery("click", function () {
+		var button = jQuery(this);
+		button.closest(".message-attach-box").fadeOut(function () {
+			$(this).remove();
+		});
+	});
+
 	$("body").on("click", ".emjbtn", function () {
 		var emoji = $(this).text();
 		var prev = $("#chatter-msg").val() || "";
+		$("#chatter-msg").focus();
 		$("#chatter-msg").val(prev + emoji);
-		$("#emojipicker").fadeOut(function () {
+		$(".emoji-picker").fadeOut(function () {
 			$(this).remove();
 		});
 	});
 
 	$(document).on("click", function (e) {
 		if ($(e.target).closest("#emojipicker").length === 0) {
-			$("#emojipicker").fadeOut(function () {
-				$(this).remove();
-			});
+			hideEmojiPicker();
+		}
+		if ($(e.target).closest("#attachfileonchat").length === 0) {
+			hideAttachFile();
 		}
 	});
 });
