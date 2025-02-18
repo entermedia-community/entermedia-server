@@ -117,7 +117,7 @@
 		}
     }
 */
-		checkScroll(grid);
+		brickverticalcheckScroll(grid);
 	}
 
 	function shortestColumn(colheight, defaultcolumn) {
@@ -182,7 +182,7 @@
 		}
 	}
 
-	function checkScroll(grid) {
+	function brickverticalcheckScroll(grid) {
 		var appdiv = $("#application");
 		var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
 		var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
@@ -208,7 +208,7 @@
 			});
 
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length == 0) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -251,9 +251,9 @@
 
 		var stackedviewpath = resultsdiv.data("stackedviewpath");
 		if (!stackedviewpath) {
-			stackedviewpath = "brickvertical.html";
+			return;
 		}
-		var link = componenthome + "/results/" + stackedviewpath;
+		var link = stackedviewpath;
 		var collectionid = $(resultsdiv).data("collectionid");
 		var params = {
 			hitssessionid: session,
@@ -275,12 +275,15 @@
 			data: params,
 			success: function (data) {
 				var jdata = $(data);
-				var code = $(".brickvertical", jdata).html();
+				var code = $(".masonry-grid-cells", jdata).html();
 				$(grid).append(code);
 				$(window).trigger("resize");
 				stopautoscroll = false;
+				if  (typeof $.fn.simpleLightbox === "function" ) {
+					$('.lightbox').simpleLightbox();
+				}
 				//if (getOverlay().is(":hidden")) {
-				//checkScroll(grid);
+				//brickverticalcheckScroll(grid);
 				//}
 			},
 		});
@@ -295,7 +298,7 @@
 			});
 			
 			jQuery(window).on("scroll", function () {
-			    checkScroll(grid);
+			    brickverticalcheckScroll(grid);
 			});	
 			
 			grid.parents().filter(function () {
@@ -305,7 +308,7 @@
 					element.css("overflow") == "auto"
 				) {
 					element.on("scroll", function () {
-						checkScroll(grid);
+						brickverticalcheckScroll(grid);
 					});
 				}
 			});

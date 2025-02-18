@@ -1,31 +1,35 @@
 <page>
-
+ 
 	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/brickviewassets.html</inner-layout>
 	
-	<property name="hitsname">collectionhits</property>
+	<property name="hitsnameX">collectionhits</property>
+	
 	<property name="virtual">true</property>
 	
 	<property name="collectionidinfilename">true</property>
 
 	<property name="sortby">assetcreationdatedown</property>
 	
-    <path-action name="DataEditModule.loadData" >
-			<pageval>librarycol</pageval>
-			<idname>collectionid</idname>
-			<searchtype>librarycollection</searchtype>
-    </path-action>
-
-	<path-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-		<property name="assethitsperpage">1000</property>
-	</path-action>
+	<property name="alwaysresetpage">true</property>
+	
+	<path-action name="ProjectModule.loadCollection" />
+	
+	<path-action name="ProjectModule.searchForAssetsOnCollection" />
+	
+	<page-action name="DataEditModule.loadPageOfSearch"/>
+	
+	
 	
 	<!-- permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission -->
 	 
-		
-	<property name="alwaysresetpage">true</property>
+	<permission name="view">
+		<or>
+		<boolean value="true" />
+		<user />
+		</or>
+	</permission>
 	
 
 	<permission name="showbadge">
