@@ -7,7 +7,9 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,7 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.users.UserManagerException;
 import org.openedit.users.authenticate.PasswordGenerator;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
@@ -1560,36 +1563,81 @@ public class UserManagerModule extends BaseMediaModule
 		
 	}
 	
-	
 	public void loadChatChannel(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String channel = inReq.findValue("channel");
-		Data currentchannel = archive.getCachedData("channel", channel);
-		
-		Searcher topicsearcher = archive.getSearcher("channel");
-		
+		MultiValued currentchannel = null;
 		String module = inReq.findValue("module");
-		if (currentchannel == null) {
-			currentchannel = topicsearcher.query().exact("dataid",inReq.getUserName()).exact("searchtype", module).sort("name").searchOne();
+		
+		String restorechannel = inReq.getRequestParameter("restorechannel");
+		
+		if( Boolean.parseBoolean(restorechannel) )
+		{
+			//disableChannels(module,inReq.getUser(),channel);
+			currentchannel = (MultiValued)archive.getCachedData("channel", channel);
+			if( !currentchannel.getBoolean("aienabled") )
+			{
+				currentchannel.setValue("aienabled", "true" );
+				archive.saveData("channel",currentchannel);
+			}
+			inReq.putPageValue("currentchannel", currentchannel);
+			return;
+		}		
+		
+		String createnew = inReq.getRequestParameter("createnew");
+		Searcher topicsearcher = archive.getSearcher("channel");
+
+		if( !Boolean.parseBoolean(createnew) )
+		{
+			currentchannel =  (MultiValued)archive.getCachedData("channel", channel);
+			if (currentchannel == null) 
+			{
+				Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
+				now.add(Calendar.HOUR_OF_DAY,-1);
+				currentchannel =  (MultiValued)topicsearcher.query().exact("dataid",inReq.getUserName()).exact("searchtype", module).after("refreshdate",now.getTime()).sort("refreshdateDown").searchOne();
+			}
+			else if( !currentchannel.getBoolean("aienabled") )
+			{
+				currentchannel.setValue("aienabled", "true" );
+				archive.saveData("channel",currentchannel);
+			}
 		}
 		if (currentchannel == null) {
-			currentchannel = topicsearcher.createNewData();
+			currentchannel =  (MultiValued)topicsearcher.createNewData();
 			currentchannel.setValue("searchtype", module);
+			currentchannel.setValue("refreshdate", new Date() );
 			currentchannel.setValue("dataid", inReq.getUserName() );
 			currentchannel.setValue("moduleid", module);
 			String applicationid = inReq.findValue("applicationid");
 			currentchannel.setValue("chatapplicationid", applicationid);
 			currentchannel.setValue("channeltype", "chatstreamer");
-			currentchannel.setName("General");
+			//currentchannel.setName("General");
 			///AI Enabled
 			currentchannel.setValue("aienabled", "true" );
-			
-			topicsearcher.saveData(currentchannel);
 		}
+		else
+		{
+			currentchannel.setValue("refreshdate", new Date() );
+			
+		}
+		topicsearcher.saveData(currentchannel);
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
+//	private void disableChannels(String inModule, User inUser, String inChannel)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		Collection hits =  archieve.query("channel").exact("dataid",inUser.getId()).exact("searchtype", inModule).exact("aienabled", "true" ).not("id",inChannel).search();
+//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+//		{
+//			Data data = (Data) iterator.next();
+//			currentchannel.setValue("aienabled", "false" );
+//			
+//		}
+//		
+//
+//	}
 
 	
 }

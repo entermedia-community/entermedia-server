@@ -19,6 +19,7 @@ package org.entermediadb.websocket.chat;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +40,7 @@ import org.entermediadb.llm.LLMResponse;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
@@ -601,19 +603,23 @@ public class ChatModule extends BaseMediaModule
 		
 		Searcher channels = archive.getSearcher("channel");
 		
-		HitTracker allchannels = channels.query().match("id", "*").exact("aienabled", true).sort("dateUp").search(inReq);
-		DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
+		//TODO: How Do I know if this is still active?
+		
+		Calendar now = DateStorageUtil.getStorageUtil().createCalendar();
+		now.add(Calendar.HOUR_OF_DAY,-1);
+		
+		HitTracker allchannels = channels.query().exact("aienabled", true).after("refreshdate",now.getTime()).sort("refreshdateDown").search(inReq);
+		//DateFormat fm = DateStorageUtil.getStorageUtil().getDateFormat("dd/MM/yyyy hh:mm");
 
 		Searcher chats = archive.getSearcher("chatterbox");
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
-			HitTracker recent = chats.query().exact("channel", channel.getId()).sort("dateUp").search(inReq);
-			if (recent.size() == 0)
+			Data mostrecent = chats.query().exact("channel", channel.getId()).sort("dateDown").searchOne();
+			if (mostrecent  == null)
 			{
 				continue;
 			}
-			Data mostrecent = recent.get(recent.size() - 1);
 			boolean interimmessage = false;
 
 			if ("function_call".equals(mostrecent.get("messagetype")))
@@ -765,6 +771,11 @@ public class ChatModule extends BaseMediaModule
 				server.broadcastMessage(archive.getCatalogId(), responsemessage);
 			}
 		}
+		
+		//Dont listen again for a bit?
+//		channel.setValue("aienabled", "false" );
+//		archive.saveData("channel",channel);
+		
 	}
 
 	public void callFunction(WebPageRequest inReq) throws Exception
