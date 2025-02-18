@@ -61,7 +61,14 @@ public class OrderZipGenerator extends BaseGenerator
 					
 			order = archive.getOrderManager().loadOrder(archive.getCatalogId(), orderid);
 			
-			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(), orderid, "approved");
+			String itemsstatus = null;
+			
+			if (order.getValue("ordertype").equals("checkout") )
+			{
+				itemsstatus = "approved";
+			}
+			
+			HitTracker orderitems = archive.getOrderManager().findApprovedOrderItems(inReq, archive.getCatalogId(), orderid, itemsstatus);
 			String catalogid = archive.getCatalogId();
 			
 			ZipUtil util = new ZipUtil();
@@ -94,6 +101,9 @@ public class OrderZipGenerator extends BaseGenerator
 				ContentItem target = null;
 				String filename = orderitem.get("itemexportname");
 				
+				if(filename == null){
+					filename = orderitem.get("itemfilepath");
+				}
 				if(filename == null){
 					filename = asset.getPrimaryFile();
 				}
