@@ -91,6 +91,11 @@ window.parseEmojis = function (node) {
 					img.setAttribute("loading", "lazy");
 					img.className = "emoji";
 					img.src = emojiBaseUrl + src;
+					img.onerror = function () {
+						this.onerror = null;
+						this.src = emojiBaseUrl + "2754.svg";
+						console.log("Error loading emoji: " + src);
+					};
 					modified = true;
 					fragment.appendChild(img);
 				}
