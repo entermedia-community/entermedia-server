@@ -21,7 +21,13 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 			
 			<div class="chat-msg">
 				<div class="chat-author">
-					<strong>$chat.user</strong>
+					#if ($chat.user == "agent")
+						<strong>$chatuser.getAnonNickName()</strong>
+					#else
+						<a href="#esc($userlink)" title="$context.getDateTime($chat.date)">
+							<strong>$chatuser.getAnonNickName()</strong>
+						</a>
+					#end
 					<span class="chat-timestamp">$context.getDateTime($chat.date)</span>
 				</div>
 				
