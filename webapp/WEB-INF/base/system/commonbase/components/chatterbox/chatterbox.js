@@ -456,4 +456,63 @@ jQuery(document).ready(function () {
 		// 	});
 		// 	typed.start();
 	});
+
+	lQuery(".msg-body-content").livequery(function () {
+		var emojiparsed = $(this).data("emojiparsed");
+		if (emojiparsed) {
+			return;
+		}
+		$(this).data("emojiparsed", true);
+
+		if (window.parseEmojis != undefined) {
+			window.parseEmojis($(this)[0]);
+		}
+	});
+
+	lQuery(".chatter-emoji").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var href = $(this).attr("href");
+		var target = $(this).parent();
+		if (target.find("#emojipicker").length > 0) {
+			return;
+		}
+		jQuery.get(href, { oemaxlevel: 1 }, function (data) {
+			target.prepend(data);
+		});
+	});
+
+	$("body").on("click", "#emojinav a", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var goTo = $(this).data("id");
+		if (goTo == "smileys") {
+			$(".emoji-wrapper").animate({ scrollTop: 0 }, 500);
+			return;
+		}
+		$(".emoji-wrapper").scrollTop(0);
+		var dest =
+			$("#" + goTo).offset().top -
+			$("#" + goTo)
+				.offsetParent()
+				.offset().top;
+		$(".emoji-wrapper").animate({ scrollTop: dest - 70 }, 500);
+	});
+
+	$("body").on("click", ".emjbtn", function () {
+		var emoji = $(this).text();
+		var prev = $("#chatter-msg").val() || "";
+		$("#chatter-msg").val(prev + emoji);
+		$("#emojipicker").fadeOut(function () {
+			$(this).remove();
+		});
+	});
+
+	$(document).on("click", function (e) {
+		if ($(e.target).closest("#emojipicker").length === 0) {
+			$("#emojipicker").fadeOut(function () {
+				$(this).remove();
+			});
+		}
+	});
 });

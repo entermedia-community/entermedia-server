@@ -25,14 +25,13 @@
 		
 		<div class="chatterbox-editactions">
 			<div class="d-flex align-items-center">
-				<a class="btn chatter-emoji ajax"
-					href="#"
-					data-oemaxlevel="1"    
-					data-targetdivinner="attachfileonchat"
-					data-channel="$!currentchannel.getId()"
-					title="[[Emoji]]">
-					<i class="far fa-smile"></i>
-				</a>
+				<div class="position-relative">
+					<a class="btn chatter-emoji"
+						href="${chatterboxhome}/emojipicker.html"
+						title="[[Emoji]]">
+						<i class="far fa-smile"></i>
+					</a>
+				</div>
 				#if(!$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
 					<a class="btn chatter-attachfile ajax"
 						href="${chatterboxhome}/attach.html"
