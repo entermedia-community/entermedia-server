@@ -377,6 +377,9 @@
 .sessionhistory-item:hover {
 	background-color: #f3f3f3;
 }
+.sessionhistory-item.active {
+	background-color: #e5eeef;
+}
 .sessionhistory-item a.item {
 	flex: 1;
 }
