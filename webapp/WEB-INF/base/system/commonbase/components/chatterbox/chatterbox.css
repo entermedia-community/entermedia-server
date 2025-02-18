@@ -7,6 +7,7 @@
 .chatterbox-messages {
 	height: calc(100% - 150px);
 	min-height: 250px;
+	position: relative;
 }
 .chatterbox-container {
 	height: calc(100% - 32px);
@@ -18,7 +19,13 @@
 }
 .chatterbox-messages .resultspositions {
 	padding: 6px 15px;
-	background-color: #efefef;
+	background-color: #ffffff;
+	border-bottom: 1px solid #e5e5e5;
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 9999;
 }
 .msg-bubble {
 	color: #000;
@@ -123,6 +130,8 @@
 	display: inline-block;
 	transform: rotate(-45deg);
 }
+.chatterbox-write .chatter-emoji.active,
+.chatterbox-write .chatter-attachfile.active,
 .chatterbox-write .chatter-emoji:hover,
 .chatterbox-write .chatter-attachfile:hover {
 	color: #277371;
@@ -141,8 +150,8 @@
 }
 .attachfileonchat {
 	position: absolute;
-	top: -85px;
-	right: 2px;
+	left: 0;
+	bottom: 100%;
 }
 .chatterbox-chat .goalstatus {
 	padding: 10px 12px;
@@ -182,12 +191,13 @@
 }
 .message-attach-box {
 	width: 315px;
-	background-color: #fff;
 	float: right;
 	padding: 10px;
-	word-break: break-all;
-	margin-bottom: 6px;
+	/* word-break: break-all;  */
+	background-color: #ffffff;
 	border-radius: 8px;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2), 1px 1px 6px rgba(0, 0, 0, 0.16);
+	z-index: 9999;
 }
 .message-attach-box .render-type-thumbnail {
 	font-size: 90%;
@@ -195,6 +205,11 @@
 }
 .message-attach-box .attachment-clearselection {
 	display: block;
+}
+.message-edit-box {
+	padding: 8px;
+	background-color: #e7e7e7;
+	border-radius: 8px;
 }
 .message-edit-box {
 	padding: 8px;
@@ -351,6 +366,21 @@
 #aichatsearch .modal-body {
 	padding: 0;
 }
+#aichatsearch .modal-title::before {
+	content: "\f6b1";
+	display: inline-block;
+	padding-right: 8px;
+	font-family: bootstrap-icons !important;
+	font-style: normal;
+	font-weight: 400 !important;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	vertical-align: -0.125em;
+	transform: scale(1.2);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
 .aichatsearch {
 	display: flex;
 	height: calc(100vh - 132px);
@@ -381,7 +411,7 @@
 	background-color: #f3f3f3;
 }
 .sessionhistory-item.active {
-	background-color: #e5eeef;
+	background-color: #27727120;
 }
 .sessionhistory-item a.item {
 	flex: 1;
@@ -442,16 +472,19 @@
 	font-size: small;
 }
 #emojipicker {
-	width: 320px;
-	padding: 8px 2px;
-	background-color: #ffffff;
 	position: absolute;
 	bottom: 100%;
+	left: 0;
 	z-index: 9999;
-	border-radius: 8px;
-	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2), 1px 1px 6px rgba(0, 0, 0, 0.16);
+}
+.emoji-picker {
+	width: 320px;
+	padding: 8px 2px;
 	display: flex;
 	flex-direction: column;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2), 1px 1px 6px rgba(0, 0, 0, 0.16);
 }
 .emoji-wrapper {
 	height: 400px;

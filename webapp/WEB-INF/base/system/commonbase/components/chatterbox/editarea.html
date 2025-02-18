@@ -26,24 +26,29 @@
 		<div class="chatterbox-editactions">
 			<div class="d-flex align-items-center">
 				<div class="position-relative">
+					<div id="emojipicker"></div>
 					<a class="btn chatter-emoji"
 						href="${chatterboxhome}/emojipicker.html"
+						data-oemaxlevel="1"
+						data-targetdivinner="emojipicker"
 						title="[[Emoji]]">
 						<i class="far fa-smile"></i>
 					</a>
 				</div>
 				#if(!$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
-					<a class="btn chatter-attachfile ajax"
-						href="${chatterboxhome}/attach.html"
-						data-oemaxlevel="1"    
-						data-targetdivinner="attachfileonchat"
-						data-channel="$!currentchannel.getId()"  
-						data-messageid="X"
-						data-allowclose="true"
-						title="[[Attachments]]">
-						<i class="fas fa-paperclip"></i>
-					</a>
-					<div id="attachfileonchat" class="attachfileonchat"></div>
+					<div class="position-relative">
+						<div id="attachfileonchat" class="attachfileonchat"></div>
+						<a class="btn chatter-attachfile"
+							href="${chatterboxhome}/attach.html"
+							data-oemaxlevel="1"
+							data-targetdivinner="attachfileonchat"
+							data-channel="$!currentchannel.getId()"  
+							data-messageid="X"
+							data-allowclose="true"
+							title="[[Attachments]]">
+							<i class="fas fa-paperclip"></i>
+						</a>
+					</div>
 				#end
 			</div>
 			<button class="btn chatter-btn chatter-send" data-command="messagereceived" type="button">
