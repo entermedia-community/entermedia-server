@@ -348,6 +348,9 @@
 	height: 32px;
 	border-radius: 100%;
 }
+#aichatsearch .modal-body {
+	padding: 0;
+}
 .aichatsearch {
 	display: flex;
 	height: calc(100vh - 132px);
