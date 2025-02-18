@@ -624,6 +624,20 @@ public class ChatModule extends BaseMediaModule
 			{
 				continue;
 			}
+			
+			if( channel.getName() == null )
+			{
+				String message = mostrecent.get("message");
+				if( message !=  null )
+				{
+					if( message.length() > 25)
+					{
+						message = message.substring(0,25);
+					}
+					channel.setName(message);
+					archive.saveData("channel",channel);
+				}
+			}
 			boolean interimmessage = false;
 
 			if ("function_call".equals(mostrecent.get("messagetype")))
