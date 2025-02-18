@@ -192,8 +192,9 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 										#set($title = "$title, ")
 									#end
 								#end
-							<span class="badge text-bg-light me-1" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="$title">
-								<span class="badge text-dark px-1">$emote.size() &#x$emote.get(0)</span> 
+							<span class="badge d-flex align-items-center bg-light me-1 mr-1 rounded-pill" role="button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="$title">
+								$emote.size()
+								<span class="badge text-dark px-1 emote" role="img">&#x$emote.get(0)</span> 
 							</span>
 							#end
 						#end
