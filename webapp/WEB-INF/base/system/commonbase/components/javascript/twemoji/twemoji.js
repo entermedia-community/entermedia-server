@@ -69,7 +69,6 @@ window.parseEmojis = function (node) {
 		text = text.trim();
 		text = text.replace(/"/g, '\\"');
 		text = text.replace(/\s/g, " ");
-		text = text.replace(/\n|\r/g, " ");
 		text = JSON.parse(`"${text}"`);
 		i = 0;
 		while ((match = emojiReg.exec(text))) {
