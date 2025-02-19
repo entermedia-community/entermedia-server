@@ -1153,6 +1153,11 @@ public class MediaAdminModule extends BaseMediaModule
 			Searcher childsearcher = archive.getSearcher(childmodule.getId());
 			PropertyDetails details = childsearcher.getPropertyDetails();
 			Data parentmodule = archive.getData("module",parentid);
+			if( parentmodule == null )
+			{
+				log.error("missing patent module");
+				continue;
+			}
 			if( details.getDetail(parentid) == null)
 			{
 				PropertyDetail newprop = archive.getPropertyDetailsArchive().createDetail(parentid, parentmodule.getName());
