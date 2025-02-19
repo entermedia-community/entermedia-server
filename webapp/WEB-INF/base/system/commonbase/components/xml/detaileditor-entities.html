@@ -79,7 +79,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 			#end
 		#end
 		
-		#if( $editrow || $val || $value || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+		#if( $editrow || $val || $value || $values || !$detail.isEditable() || $detail.dataType == "searchjoin" )
 			
 			#if( $detail.hidelabel == true )
 			#else
