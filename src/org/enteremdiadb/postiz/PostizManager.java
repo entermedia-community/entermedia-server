@@ -75,8 +75,8 @@ public class PostizManager implements CatalogEnabled {
         fieldCatalogId = inCatalogId;
     }
 
-    public JSONObject createPost(String inPostContent, Date inPostDate, String postType, List<String> inAssetIds, List<String> integrationIds) {
-        String apiKey = getApiKey();
+    public JSONObject createPost(String apiKey, String inPostContent, Date inPostDate, String postType, List<String> inAssetIds, List<String> integrationIds) {
+        //String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
         String endpoint = getApiEndpoint() + "/posts";
@@ -117,14 +117,17 @@ public class PostizManager implements CatalogEnabled {
                     if (inAssetIds != null && !inAssetIds.isEmpty()) {
                         for (String assetid : inAssetIds) {
                         	Asset asset = getMediaArchive().getAsset(assetid);
-                        	ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
-                        	if(item.exists()) {
-                            String fileId = uploadFile(item.getAbsolutePath());
-		                        if (fileId != null) {
-		                            JSONObject imageObject = new JSONObject();
-		                            imageObject.put("id", fileId);
-		                            imagesArray.add(imageObject);
-		                        }
+                        	if (asset != null)
+                        	{
+	                        	ContentItem item = getMediaArchive().getGeneratedContent(asset, "image3000x3000.jpg");
+	                        	if(item.exists()) {
+	                            String fileId = uploadFile(item.getAbsolutePath());
+			                        if (fileId != null) {
+			                            JSONObject imageObject = new JSONObject();
+			                            imageObject.put("id", fileId);
+			                            imagesArray.add(imageObject);
+			                        }
+	                        	}
                         	}
                         }
                     }

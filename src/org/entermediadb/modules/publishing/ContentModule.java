@@ -431,10 +431,10 @@ public class ContentModule extends BaseMediaModule
 	        String[] assetids = inReq.getRequestParameters("assetid");	        
 	        List<String> assets = (assetids != null) ? Arrays.asList(assetids) : new ArrayList<>();
 
-	        
+	        String apiKey = getPostizKey(inReq);
 	        
 	        // Call Postiz API
-	        JSONObject result = manager.createPost(postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
+	        JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
 	       
 	        log.info("Post created successfully: " + result.toJSONString());
 	        
@@ -459,6 +459,18 @@ public class ContentModule extends BaseMediaModule
 	public void  loadPostizIntegrations(WebPageRequest inReq)
 	{
 		PostizManager postiz = getPostizManager(inReq);
+		
+		String apikey = getPostizKey(inReq);
+		if (apikey != null)
+		{
+			Collection postoptions = postiz.listIntegrations(apikey);
+			inReq.putPageValue("postoptions", postoptions);
+		}
+
+	}
+	
+	protected String getPostizKey(WebPageRequest inReq)
+	{
 		String smprofileid = inReq.getUserProfile().get("socialmediaprofile");
 		
 		if (smprofileid != null)
@@ -470,12 +482,11 @@ public class ContentModule extends BaseMediaModule
 				String apikey = profile.get("apikey");
 				if (apikey != null)
 				{
-					Collection postoptions = postiz.listIntegrations(apikey);
-					inReq.putPageValue("postoptions", postoptions);
+					return apikey;
 				}
 			}
 		}
-		
+		return null;
 	}
 	
 	
