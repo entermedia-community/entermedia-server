@@ -24,6 +24,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
+import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -295,6 +296,36 @@ public class EntityModule extends BaseMediaModule
 			inPageRequest.putPageValue("entitymodule", entitymodule);
 			inPageRequest.putPageValue("entity", newentity);
 			inPageRequest.putPageValue("deleted", deleted);
+		}
+		
+	}
+	
+	
+	public void copyCategoriesAndFilesToEntity(WebPageRequest inReq) throws Exception 
+	{
+		MediaArchive archive = getMediaArchive(inReq);	
+		EntityManager entityManager = getEntityManager(inReq);
+		
+		String moduleid = inReq.getRequestParameter("moduleid");
+		String entityid = inReq.getRequestParameter("entityid");
+		
+		String[] categoryid = inReq.getRequestParameters("categoryid");
+		if (categoryid != null)
+		{
+			for (int i = 0; i < categoryid.length; i++)
+			{
+				entityManager.addCategoryToEntity(inReq.getUser(), moduleid, entityid, categoryid[i]);
+			}
+		}
+		
+		String[] assetids = inReq.getRequestParameters("assetid");
+		if (assetids != null)
+		{
+			for (int i = 0; i < assetids.length; i++)
+			{
+				Asset asset = archive.getAsset(assetids[i]);
+				entityManager.addAssetToEntity(inReq.getUser(), moduleid, entityid, asset);
+			}
 		}
 		
 	}
@@ -1366,6 +1397,11 @@ public class EntityModule extends BaseMediaModule
 		
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
+	
+	
+	
+	
+	
 	
 	
 	
