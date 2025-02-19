@@ -463,6 +463,17 @@ $(window).on("autoreload", function (event, indiv, callback, targetdiv) {
 	autoreload($(indiv), callback, targetdiv);
 });
 
+lQuery(".refreshautoreload").livequery("click", function (e) {
+	e.preventDefault();
+	e.stopPropagation();
+	var target = $(this).closest(".dataeditedreload");
+	if (target.length > 0) {
+		target.data("targetdiv", "resultsdiv");
+		target.data("oemaxlevel", 1);
+		autoreload(target);
+	}
+});
+
 // Call this way	$(window).trigger("checkautoreload", [form]);
 $(window).on("checkautoreload", function (event, indiv) {
 	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
