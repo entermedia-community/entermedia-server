@@ -446,8 +446,46 @@ public class ContentModule extends BaseMediaModule
 
 
 
+	public void setSocialMediaProfile(WebPageRequest inReq)
+	{
+		String socialmediaprofile = inReq.getRequestParameter("socialmediaprofile");
+		
+		inReq.getUserProfile().setProperty("socialmediaprofile", socialmediaprofile);
+		
+		inReq.putPageValue("socialmediaprofile", socialmediaprofile);
+	}
 	
 	
+	public void  loadPostizIntegrations(WebPageRequest inReq)
+	{
+		PostizManager postiz = getPostizManager(inReq);
+		String smprofileid = inReq.getUserProfile().get("socialmediaprofile");
+		
+		if (smprofileid != null)
+		{
+			MediaArchive archive = getMediaArchive(inReq);
+			Data profile = archive.getCachedData("socialmediaprofile", smprofileid);
+			if (profile != null)
+			{
+				String apikey = profile.get("apikey");
+				if (apikey != null)
+				{
+					Collection postoptions = postiz.listIntegrations(apikey);
+					inReq.putPageValue("postoptions", postoptions);
+				}
+			}
+		}
+		
+	}
+	
+	
+	protected PostizManager getPostizManager(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		PostizManager manager = (PostizManager) archive.getBean("postizManager");
+		return manager;
+	}
+
 	
 
 }

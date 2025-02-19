@@ -172,8 +172,8 @@ public class PostizManager implements CatalogEnabled {
 
 
 
-    public JSONArray listIntegrations() {
-        String apiKey = getApiKey();
+    public JSONArray listIntegrations(String apiKey) {
+        //String apiKey = getApiKey();
         assert apiKey != null : "API Key is required";
 
         String endpoint = getApiEndpoint() + "/integrations";
@@ -239,6 +239,17 @@ public class PostizManager implements CatalogEnabled {
     }
 
     public String getApiKey() {
+    	
+    	//get it from socialmediaprofile userprofile.
+    	String apikey = "";
+    	
         return getMediaArchive().getCatalogSettingValue("postiz-key");
     }
+    
+    
+
+    
+    
 }
+
+
