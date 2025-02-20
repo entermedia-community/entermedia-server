@@ -71,6 +71,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		if( !loadmodule )
 		{
 			//No need to preload a module
+			log.info("Could not load home page " + appid + " " + requestedPath);
 			return null;
 		}
 		//TODO: Pass in user and check permissions
