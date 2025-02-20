@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,13 +24,11 @@ import org.dom4j.Element;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -588,11 +584,11 @@ public class WorkspaceManager
 			{
 				continue;
 			}
-			Data customization = inMediaArchive.query("customization").exact("targetid",module.getId()).searchOne();
+			MultiValued customization = (MultiValued)inMediaArchive.query("customization").exact("targetid",module.getId()).searchOne();
 			if( customization == null)
 			{
 				//Make em
-				customization = inMediaArchive.getSearcher("customization").createNewData();
+				customization = (MultiValued)inMediaArchive.getSearcher("customization").createNewData();
 				customization.setValue("targetid",module.getId());
 				customization.setName(module.getName("en"));
 				customization.setValue("customizationtype","module");
@@ -610,12 +606,14 @@ public class WorkspaceManager
 					if( !tables.contains(detail.getListId()) && !skip.contains(detail.getListId()) )
 					{
 						tables.add(detail.getListId());
-						customization = inMediaArchive.query("customization").exact("targetid",detail.getListId()).searchOne();
+						customization = (MultiValued)inMediaArchive.query("customization").exact("targetid",detail.getListId()).searchOne();
 						if( customization == null)
 						{
 							//Make em
-							customization = inMediaArchive.getSearcher("customization").createNewData();
+							customization = (MultiValued)inMediaArchive.getSearcher("customization").createNewData();
 							customization.setValue("targetid",detail.getListId());
+							customization.addValue("moduleids",module.getId());
+							
 							customization.setName(detail.getName("en"));
 							customization.setValue("customizationtype","table");
 							customization.setValue("dateupdated",new Date() );
