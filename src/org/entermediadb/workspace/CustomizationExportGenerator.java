@@ -42,7 +42,7 @@ public class CustomizationExportGenerator extends BaseGenerator
 				MediaArchive archive  = (MediaArchive)getWorkspaceManager().getSearcherManager().getModuleManager().getBean(catalogid,"mediaArchive");
 
 				HitTracker hits = archive.query("customization").or().orgroup("targetid",moduleids).orgroup("moduleids",moduleids).search();
-				configids = (String[])hits.collectValues("id").toArray();
+				configids = (String[]) hits.collectValues("id").toArray(new String[hits.size()]);
 			}
 			getWorkspaceManager().exportCustomizations(catalogid, configids, inOut.getStream());
 		}
