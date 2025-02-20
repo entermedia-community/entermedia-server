@@ -934,6 +934,14 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
 		//getWorkspaceManager().scanHtmlCustomizations(mediaArchive);
 	}
+	public void customizationsExportEntities(WebPageRequest inReq)
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		String[] moduleids = inReq.getRequestParameters("moduleid"); 
+		Collection modules = mediaArchive.query("module").orgroup("id",moduleids).sort("name").search();
+		getWorkspaceManager().scanModuleCustomizations(mediaArchive,modules);
+		
+	}
 	public void importCustomization(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive mediaArchive = getMediaArchive(inReq);

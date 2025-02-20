@@ -739,7 +739,12 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
-			String[] id = inReq.getRequestParameters("id");
+			String fieldname = inReq.findValue("idname");
+			if( fieldname == null)
+			{
+				fieldname = "id";
+			}
+			String[] id = inReq.getRequestParameters(fieldname);
 			String field = inReq.getRequestParameter("field");
 			String value = inReq.getRequestParameter("value");
 
