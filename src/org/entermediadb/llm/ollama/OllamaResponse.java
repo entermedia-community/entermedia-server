@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import org.entermediadb.llm.BaseLLMResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
+
+import com.fasterxml.jackson.core.JsonParser;
 
 public class OllamaResponse extends BaseLLMResponse
 {
@@ -19,9 +22,9 @@ public class OllamaResponse extends BaseLLMResponse
 		}
 
 		JSONObject message = (JSONObject) rawResponse.get("message");
-		if (!message.containsKey("tool_calls"))
+		if (message.containsKey("tool_calls"))
 		{
-			return false; // No tool calls in the message
+			return true; // No tool calls in the message
 		}
 
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
@@ -31,23 +34,31 @@ public class OllamaResponse extends BaseLLMResponse
 	@Override
 	public JSONObject getArguments()
 	{
-		if (!isToolCall())
-		{
-			return null;
-		}
-
+		
+		
 		JSONObject message = (JSONObject) rawResponse.get("message");
 		JSONArray toolCalls = (JSONArray) message.get("tool_calls");
 
 		if (toolCalls == null || toolCalls.isEmpty())
 		{
-			return null;
+			String content = (String)message.get("content");
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject contentargs = (JSONObject) parser.parse(content);
+				return contentargs;
+			}
+			catch (Exception e){
+				return null;
+			}
 		}
+		else 
+		{
+			JSONObject firstToolCall = (JSONObject) toolCalls.get(0); // Assuming one function call at a time
+			JSONObject function = (JSONObject) firstToolCall.get("function");
 
-		JSONObject firstToolCall = (JSONObject) toolCalls.get(0); // Assuming one function call at a time
-		JSONObject function = (JSONObject) firstToolCall.get("function");
-
-		return function.containsKey("arguments") ? (JSONObject) function.get("arguments") : null;
+			return function.containsKey("arguments") ? (JSONObject) function.get("arguments") : null;
+	
+		}
 	}
 
 	@Override
