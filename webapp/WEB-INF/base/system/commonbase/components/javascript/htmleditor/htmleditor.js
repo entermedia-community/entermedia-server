@@ -29,6 +29,7 @@ import {
 	Strikethrough,
 	Underline,
 	InlineEditor,
+	GeneralHtmlSupport,
 } from "ckeditor5";
 
 import prettifyHTML from "prettyhtml";
@@ -140,7 +141,7 @@ class ImagePicker extends Plugin {
 
 const LICENSE_KEY = "GPL";
 
-const editorConfig = (options) => {
+const editorConfig = (options, isInline = false) => {
 	let items = [
 		"closeButton",
 		"saveButton",
@@ -233,6 +234,21 @@ const editorConfig = (options) => {
 		plugins.push(SourceEditing);
 	}
 
+	const htmlSupportConfig = {};
+	if (isInline) {
+		plugins.push(GeneralHtmlSupport);
+		htmlSupportConfig.htmlSupport = {
+			allow: [
+				{
+					name: /.*/,
+					attributes: true,
+					classes: true,
+					styles: true,
+				},
+			],
+		};
+	}
+
 	return {
 		updateSourceElementOnDestroy: true,
 		toolbar: {
@@ -311,6 +327,7 @@ const editorConfig = (options) => {
 			},
 		},
 		placeholder: "Type or paste your content here!",
+		...htmlSupportConfig,
 	};
 };
 
@@ -320,7 +337,7 @@ window.CK5EditorInline = {};
 function createCK5(target, options = {}) {
 	let uid = target.id;
 	if (!uid) {
-		uid = "ck5editor" + window.CK5Editor.length;
+		uid = "ck5editor" + Object.keys(window.CK5Editor).length;
 		target.id = uid;
 	}
 	ClassicEditor.create(target, editorConfig(options))
@@ -411,11 +428,11 @@ window.updateAllCK5 = function () {
 function createInlineCK5(target, options = {}) {
 	let uid = target.id;
 	if (!uid) {
-		uid = "ck5inline" + window.CK5EditorInline.length;
+		uid = "ck5inline" + Object.keys(window.CK5EditorInline).length;
 		target.id = uid;
 	}
 
-	InlineEditor.create(target, editorConfig(options))
+	InlineEditor.create(target, editorConfig(options, true))
 		.then((editor) => {
 			const targetContainer = $(target).data("targetcontainer");
 			if (targetContainer) {
