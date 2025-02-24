@@ -2,11 +2,11 @@
 #set( $readonly = "true" )
 
 ##We need 3 things passed in: $searcher, $view, $data
-#if ($view)
+#if ($viewid)
 	#if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+		#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
 	#else
-		#set ($details = $searcher.getDetailsForView($view))
+		#set ($details = $searcher.getDetailsForView($viewid))
 	#end
 #end	
 
