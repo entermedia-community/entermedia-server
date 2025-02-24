@@ -681,6 +681,7 @@ public class WorkspaceManager
 							pageZipUtil.zip(path, finalZip);
 						}
 					}
+					
 					//Views
 					path = "/WEB-INF/data/" + inCatalogId + "/lists/view/" + searchtype + ".xml";
 					if( getPageManager().getRepository().doesExist(path))
@@ -709,6 +710,11 @@ public class WorkspaceManager
 						}
 					}
 					exportData(archive,searchtype,finalZip);
+					String xml = "/WEB-INF/data/" + inCatalogId + "/lists/" + searchtype+ ".xml";
+					if( getPageManager().getRepository().doesExist(xml))
+					{
+						pageZipUtil.zip(xml, finalZip);
+					}
 				}
 				
 				pageZipUtil.addTozip(root.asXML(), "/customizations/" + searchtype + ".xml", finalZip);
@@ -869,36 +875,54 @@ public class WorkspaceManager
 					}
 					mediaArchive.saveData("module", module);
 				}
+				continue;
 			}
 			if( file.getPath().contains("/customizations/") && file.getName().endsWith("json"))
 			{
 				String searchtype = file.getPageName();
 				importData(mediaArchive,searchtype,file);
+				continue;
 			}
-			if(file.getPath().contains("/fields/"))
+			int fieldindex = file.getPath().indexOf("/fields/"); 
+			if(fieldindex > -1)
 			{
 				//Copy all the views etc files
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/fields/";
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId();
+				path = path + file.getPath().substring(fieldindex);
 				Page target = getPageManager().getPage(path);
 				getPageManager().copyPage(file, target);
+				continue;
 			}
-			if(file.getPath().contains("/view/"))
+			int listindex = file.getPath().indexOf("/lists/"); 
+			if(listindex > -1)
 			{
-				//Views
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
+				//Copy all the xml files
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId();
+				path = path + file.getPath().substring(listindex);
 				Page target = getPageManager().getPage(path);
 				getPageManager().copyPage(file, target);
+				continue;
 			}
+//			if(file.getPath().contains("/view/"))
+//			{
+//				//Views
+//				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/lists/view/";
+//				Page target = getPageManager().getPage(path);
+//				getPageManager().copyPage(file, target);
+//			}
 			if(file.getPath().contains("/views/"))
 			{
-				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/";
+				String path = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/views/" + file.getDirectoryName() + "/" + file.getName();
 				Page target = getPageManager().getPage(path);
 				getPageManager().copyPage(file, target);
 			}
 			
 		}
 		//Reindex
-
+		//mediaArchive.reindexAll();
+		Collection tables = getSearcherManager().reloadLoadedSettings(mediaArchive.getCatalogId());
+		//Scan changes?
+		mediaArchive.clearAll();
 	}
 
 	private Element saveDataToXml(Data inModule)

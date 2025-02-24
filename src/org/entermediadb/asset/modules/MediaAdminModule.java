@@ -963,6 +963,18 @@ public class MediaAdminModule extends BaseMediaModule
 
 		List files = properties.unzipFiles(true);
 		getWorkspaceManager().importCustomizations(mediaArchive,files);
+		String appid = inReq.findValue("applicationid");
+		
+		//group order librarycollections etc.
+		//role (settingsgroup), saved searches (savedquery), hot folders, conversion presets, users, orders, collections, libraries, divisions, permissionsapp, preset configuration
+		Collection all = mediaArchive.query("module").all().search();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data module = (Data) iterator.next();
+			getWorkspaceManager().saveModule(mediaArchive.getCatalogId(), appid, module);
+		}
+		getPageManager().clearCache();
+		scanForCustomizations(inReq);
 	}
 
 	public void copySmartOrganizer(WebPageRequest inReq)
