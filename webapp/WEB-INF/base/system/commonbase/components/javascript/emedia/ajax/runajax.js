@@ -466,12 +466,7 @@ $(window).on("autoreload", function (event, indiv, callback, targetdiv) {
 lQuery(".refreshautoreload").livequery("click", function (e) {
 	e.preventDefault();
 	e.stopPropagation();
-	var target = $(this).closest(".dataeditedreload");
-	if (target.length > 0) {
-		target.data("targetdiv", "resultsdiv");
-		target.data("oemaxlevel", 1);
-		autoreload(target);
-	}
+	$(window).trigger("checkautoreload", [$(this)]);
 });
 
 // Call this way	$(window).trigger("checkautoreload", [form]);
