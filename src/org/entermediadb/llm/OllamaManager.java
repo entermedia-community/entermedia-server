@@ -33,8 +33,11 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	protected HttpSharedConnection getConnection()
 	{
-
-		connection = new HttpSharedConnection();
+		
+		if (connection == null)
+		{
+			connection = new HttpSharedConnection();
+		}
 
 		return connection;
 	}
@@ -82,10 +85,12 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		method.setHeader("Content-Type", "application/json");
 
 		method.setEntity(new StringEntity(input, "UTF-8"));
+		
+		HttpSharedConnection connection = getConnection();
 
-		CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		CloseableHttpResponse resp = connection.sharedExecute(method);
 
-		JSONObject json = getConnection().parseJson(resp); // pretty dumb but I want to standardize on GSON
+		JSONObject json = connection.parseJson(resp); // pretty dumb but I want to standardize on GSON
 
 		OllamaResponse response = new OllamaResponse();
 		response.setRawResponse(json);
@@ -178,11 +183,15 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	    method.setHeader("Content-Type", "application/json");
 	    method.setEntity(new StringEntity(obj.toJSONString(), StandardCharsets.UTF_8));
 
-	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+	    HttpSharedConnection connection = getConnection();
+	    
+	    CloseableHttpResponse resp = connection.sharedExecute(method);
 
 	    // Parse JSON response using JSON Simple
-	    JSONParser parser = new JSONParser();
-	    JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+	    //JSONParser parser = new JSONParser();
+	    //JSONObject json = (JSONObject) parser.parse(new StringReader(EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8)));
+	    
+	    JSONObject json = connection.parseJson(resp);
 
 	    log.info("returned: " + json.toJSONString());
 

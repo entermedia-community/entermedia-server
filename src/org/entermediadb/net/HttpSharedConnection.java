@@ -91,7 +91,7 @@ public class HttpSharedConnection
 				RequestConfig globalConfig = RequestConfig.custom()
 			            .setCookieSpec(CookieSpecs.STANDARD)
 			            .setConnectTimeout(15 * 1000)
-			            .setSocketTimeout(600 * 1000)
+			            .setSocketTimeout(1200 * 1000)
 			            .build();
 				fieldHttpClient = HttpClients.custom().useSystemProperties()
 			            .setDefaultRequestConfig(globalConfig)
