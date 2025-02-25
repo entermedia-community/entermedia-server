@@ -6,7 +6,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.servlet.SiteData;
+import org.openedit.servlet.Site;
 
 public class PostModule extends BaseMediaModule
 {
@@ -15,7 +15,7 @@ public class PostModule extends BaseMediaModule
 	public void loadPostFromSiteData(WebPageRequest inReq)
 	{
 		//Add the domain before the page name
-		SiteData sitedata = (SiteData)inReq.getPageValue("sitedata");
+		Site sitedata = (Site)inReq.getPageValue("site");
 		if( sitedata != null)
 		{
 			String domain = sitedata.getFirstDomain();

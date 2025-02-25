@@ -238,6 +238,7 @@ const editorConfig = (options, isInline = false) => {
 	if (isInline) {
 		plugins.push(GeneralHtmlSupport);
 		htmlSupportConfig.htmlSupport = {
+			allowEmpty: ["i"],
 			allow: [
 				{
 					name: /.*/,

@@ -13,7 +13,6 @@ import org.openedit.page.Page;
 import org.openedit.page.PageLoader;
 import org.openedit.page.manage.PageManager;
 import org.openedit.servlet.RightPage;
-import org.openedit.servlet.SiteData;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
 
@@ -49,7 +48,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
 	
-	public RightPage getRightPage( URLUtilities util, SiteData sitedata, Page inPage, String requestedPath)
+	public RightPage getRightPage( URLUtilities util, org.openedit.servlet.Site site, Page inPage, String requestedPath)
 	{
 		String appid = inPage.getProperty("applicationid");
 
