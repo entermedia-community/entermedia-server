@@ -152,15 +152,13 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	    JSONObject message = new JSONObject();
 	    message.put("role", "user");
 
-	    if (inBase64Image != null && !inBase64Image.isEmpty()) {
-	        message.put("content", inQuery);
-
+        message.put("content", inQuery);
+	    if (inBase64Image != null && !inBase64Image.isEmpty()) 
+	    {
 	        // Add image content separately
 	        JSONArray images = new JSONArray();
 	        images.add(inBase64Image);
 	        message.put("images", images);
-	    } else {
-	        message.put("content", inQuery);
 	    }
 
 	    messages.add(message);
