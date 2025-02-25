@@ -89,18 +89,22 @@ public class BaseMediaModule extends BaseModule
 			siteroot = archive.getCatalogSettingValue("siteroot");
 			if( siteroot == null)
 			{
-				String siterootdynamic = archive.getCatalogSettingValue("siterootdynamic");
-				String host = site.getSiteRootDynamic(); 
-				if( host != null )
+				if( siteroot == null )
 				{
-					if( siterootdynamic == null || !host.equals(siterootdynamic) )
+					siteroot = site.getSiteRootDynamic(); 
+				}
+				String communitytagcategory = inReq.findPathValue("communitytagcategory");
+				if(communitytagcategory != null )
+				{
+					Data community = archive.getCachedData("communitytagcategory",communitytagcategory);
+					if( community != null )
 					{
-						//get temporary and save it to the temporary catalog setttings
-						log.info("Updated siterootdynamic " + siterootdynamic + " to " + host);
-						siterootdynamic = host;
-						archive.setCatalogSettingValue("siterootdynamic", siterootdynamic);  //For backend processes
-						siteroot = siterootdynamic;
+						siteroot = community.get("externaldomain");
 					}
+				}
+				if( siteroot == null)
+				{
+					siteroot = archive.getCatalogSettingValue("siterootdefault");
 				}
 			}
 			if( siteroot == null)
