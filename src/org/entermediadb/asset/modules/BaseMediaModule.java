@@ -13,7 +13,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.BaseModule;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.profile.UserProfile;
-import org.openedit.servlet.SiteData;
+import org.openedit.servlet.Site;
 import org.openedit.users.GroupSearcher;
 import org.openedit.users.UserManager;
 import org.openedit.users.UserSearcher;
@@ -67,23 +67,54 @@ public class BaseMediaModule extends BaseModule
 
 	public String loadApplicationId(WebPageRequest inReq) throws Exception
 	{
-		SiteData sitedata = (SiteData)inReq.getPageValue("sitedata");
-		
 		String applicationid = inReq.findValue("applicationid");
 		inReq.putPageValue("applicationid", applicationid);
 
 		String apphome = "/" + applicationid; //The standard apphome -> assets/emshare
-		String applink = null; //The external link -> emshare
-		String sitelink = ""; //The root location -> nothing unless its set /entermediadb
 		//String domainlink = ""; //The root location -> nothing unless its set /entermediadb
 		
-		if( sitedata != null)
+		Site site = (Site)inReq.getPageValue(PageRequestKeys.SITE);
+		if( site == null )
 		{
-			applink = sitedata.getSiteLink(applicationid);
-			sitelink = "";
-			//domainlink = sitedata.getDomainLink();
+			site = new Site();
+			inReq.putProtectedPageValue(PageRequestKeys.SITE,site);
 		}
-		else if( applicationid != null)
+			
+		String applink = site.getSiteLink(applicationid);
+		String sitelink = "";
+		String siteroot = null;
+		MediaArchive archive = getMediaArchive(inReq);
+		if( archive != null)
+		{
+			siteroot = archive.getCatalogSettingValue("siteroot");
+			if( siteroot == null)
+			{
+				if( siteroot == null )
+				{
+					siteroot = site.getSiteRootDynamic(); 
+				}
+				String communitytagcategory = inReq.findPathValue("communitytagcategory");
+				if(communitytagcategory != null )
+				{
+					Data community = archive.getCachedData("communitytagcategory",communitytagcategory);
+					if( community != null )
+					{
+						siteroot = community.get("externaldomain");
+					}
+				}
+				if( siteroot == null)
+				{
+					siteroot = archive.getCatalogSettingValue("siterootdefault");
+				}
+			}
+			if( siteroot == null)
+			{
+				siteroot = "";
+			}
+			inReq.putProtectedPageValue(PageRequestKeys.SITEROOT, siteroot);
+		}
+			
+		if( applicationid != null)
 		{
 			applink = apphome;
 			int slash = applicationid.indexOf("/");
@@ -115,29 +146,6 @@ public class BaseMediaModule extends BaseModule
 		}
 		inReq.putPageValue("themeprefix", prefix);
 		
-		
-		String site = (String)inReq.getPageValue(PageRequestKeys.SITEROOT);
-		if( site == null)
-		{
-			MediaArchive archive = getMediaArchive(inReq);
-			if( archive != null)
-			{
-				site = archive.getCatalogSettingValue("siteroot");
-				if( site != null && !site.isEmpty() )
-				{
-					log.debug("Found site root in database " + site + archive.getCatalogId());
-				}
-			}
-			if( site == null)
-			{
-				site = "";
-			}
-			if( !site.isEmpty())
-			{
-				//throw new OpenEditException("Dont set this");
-			}
-			inReq.putProtectedPageValue(PageRequestKeys.SITEROOT, site);
-		}
 		return applicationid;
 	}
 
