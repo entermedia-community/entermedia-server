@@ -529,6 +529,7 @@
 	border-radius: 4px;
 	font-size: 1rem;
 	justify-self: flex-start;
+	user-select: none;
 }
 .emjbtn:hover {
 	background-color: #f1f1f1;

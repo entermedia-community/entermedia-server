@@ -477,9 +477,18 @@ jQuery(document).ready(function () {
 		}
 	}
 
+	var chatSelectionStart = null;
+
 	lQuery(".chatter-emoji").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
+		var textarea = $("#emojipicker").data("textarea");
+		if (textarea) {
+			textarea = $("#" + textarea);
+		} else {
+			textarea = $("#chatter-msg");
+		}
+		chatSelectionStart = textarea.prop("selectionStart");
 		hideAttachFile();
 		$(this).addClass("active");
 		$(this).runAjax();
@@ -495,7 +504,7 @@ jQuery(document).ready(function () {
 		hideAttachFile();
 	});
 
-	$("body").on("click", "#emojinav a", function (e) {
+	lQuery("#emojinav a").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var goTo = $(this).data("id");
@@ -519,22 +528,41 @@ jQuery(document).ready(function () {
 		});
 	});
 
-	$("body").on("click", ".emjbtn", function () {
+	lQuery(".emjbtn").livequery("click", function () {
+		var textarea = $("#emojipicker").data("textarea");
+		if (textarea) {
+			textarea = $("#" + textarea);
+		} else {
+			textarea = $("#chatter-msg");
+		}
+
 		var emoji = $(this).text();
-		var prev = $("#chatter-msg").val() || "";
-		$("#chatter-msg").focus();
-		$("#chatter-msg").val(prev + emoji);
+		var prev = textarea.val() || "";
+		if (chatSelectionStart != null) {
+			prev =
+				prev.slice(0, chatSelectionStart) +
+				emoji +
+				prev.slice(chatSelectionStart);
+		} else {
+			prev += emoji;
+		}
+
+		textarea.val(prev);
+
 		$(".emoji-picker").fadeOut(function () {
+			textarea.focus();
 			$(this).remove();
 		});
 	});
-
-	$(document).on("click", function (e) {
+	function hideChatPickers(e) {
 		if ($(e.target).closest("#emojipicker").length === 0) {
 			hideEmojiPicker();
 		}
 		if ($(e.target).closest("#attachfileonchat").length === 0) {
 			hideAttachFile();
 		}
-	});
+	}
+
+	lQuery(window).livequery("click", hideChatPickers);
+	lQuery(".modal").livequery("click", hideChatPickers);
 });
