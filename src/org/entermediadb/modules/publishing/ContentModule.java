@@ -441,7 +441,9 @@ public class ContentModule extends BaseMediaModule
 	        Calendar cal = DateStorageUtil.getStorageUtil().getCalendar(postDate); 
 	        int week = cal.getWeekYear();
 	        int year =  cal.get(Calendar.YEAR);
+	        int dayofweek =  cal.get(Calendar.DAY_OF_WEEK) - 1;
 	        
+	        inReq.putPageValue("postdayofweek",dayofweek);
 	        inReq.putPageValue("postweek",week);
 	        inReq.putPageValue("postyear",year);
 	        inReq.putPageValue("postdate",dateStr);
