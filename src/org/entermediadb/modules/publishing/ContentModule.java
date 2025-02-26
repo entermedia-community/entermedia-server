@@ -436,7 +436,7 @@ public class ContentModule extends BaseMediaModule
 	        String apiKey = getPostizKey(inReq);
 	        
 	        // Call Postiz API
-	        JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
+	        JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_SCHEDULE, assets, siteList);
 	       
 	        Calendar cal = DateStorageUtil.getStorageUtil().getCalendar(postDate); 
 	        int dayofweek =  cal.get(Calendar.DAY_OF_WEEK) - 2;
