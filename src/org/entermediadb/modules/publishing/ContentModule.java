@@ -439,7 +439,7 @@ public class ContentModule extends BaseMediaModule
 	        JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
 	       
 	        Calendar cal = DateStorageUtil.getStorageUtil().getCalendar(postDate); 
-	        int dayofweek =  cal.get(Calendar.DAY_OF_WEEK) - 1;
+	        int dayofweek =  cal.get(Calendar.DAY_OF_WEEK) - 2;
 	        inReq.putPageValue("postdayofweek",dayofweek);
 	        
 	        int week = cal.get(Calendar.WEEK_OF_YEAR);
