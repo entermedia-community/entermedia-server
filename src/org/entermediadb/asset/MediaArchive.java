@@ -3110,8 +3110,12 @@ public class MediaArchive implements CatalogEnabled
 
 	public LLMManager getLLM(String inModel)
 	{
-		Data model = getData("llmmodel", inModel);
-		String llm = model.get("llmtype");
+		
+		Data modelinfo = query("llmmodel").exact("modelid",inModel).searchOne();
+
+		String llm = modelinfo.get("llmtype");
 		return (LLMManager) getBean(llm + "Manager");
 	}
 }
+
+
