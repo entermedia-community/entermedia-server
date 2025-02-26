@@ -454,6 +454,9 @@
 	object-fit: contain;
 	box-shadow: none;
 }
+.chat-assets .emfolder-wrapper {
+	margin: 8px;
+}
 .expandaisearchtable {
 	display: inline-block;
 	color: #4169e1;
