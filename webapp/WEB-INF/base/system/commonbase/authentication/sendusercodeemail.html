@@ -9,8 +9,9 @@
 #if($categorylogo)
 <a href="$context.siteRoot"><img src="$context.siteRoot/$mediadbappid/services/module/asset/downloads/originals/${categorylogo}" style="max-height: 90px;"></a>
 #else
-<a href="$context.siteRoot"><img src="https://entermediadb.org/theme/img/entermedia_database.png"></a>
+<a href="$context.siteRoot"><img src="$context.siteRoot${apphome}/theme/defaulttheme/logo.png"></a>
 #end
+
 </div>
 <p>[[Hello]],</p>
 <p>[[A login code was requested for]]: $mail</p>
