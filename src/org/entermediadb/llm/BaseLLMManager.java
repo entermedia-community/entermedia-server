@@ -2,6 +2,7 @@ package org.entermediadb.llm;
 
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -115,10 +116,27 @@ public abstract class BaseLLMManager implements LLMManager {
 	}
 	
 	
-	
-	
 	public LLMResponse callFunction(WebPageRequest inReq, String inModel, String inFunction, String inQuery, int temp, int maxtokens) throws Exception {
 		return callFunction(inReq, inModel, inFunction, inQuery, temp, maxtokens, null);
 	}
+	
+	
+	public int copyData(JSONObject source, Data data)
+	{
+		int i = 0; 
+		Map metadata =  (Map) source.get("metadata");
+		for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			Object value = metadata.get(key);
+			
+			if (key.equals("googlekeywords") ||  data.getValue(key) == null )
+			{
+				data.setValue(key, value);
+				i ++;
+			}
+		}
+		return i;
+	}
+	
 	
 }
