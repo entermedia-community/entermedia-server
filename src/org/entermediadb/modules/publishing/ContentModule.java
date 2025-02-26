@@ -1,14 +1,13 @@
 package org.entermediadb.modules.publishing;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +26,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class ContentModule extends BaseMediaModule
@@ -417,10 +417,12 @@ public class ContentModule extends BaseMediaModule
 	        // Parse the date from the form input directly
 	        String dateStr = inReq.getRequestParameter("date.value");
 	        Date postDate = null;
-	        if (dateStr != null && !dateStr.isEmpty()) {
-	            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-	            postDate = inputFormat.parse(dateStr);
-	        } else {
+	        if (dateStr != null && !dateStr.isEmpty()) 
+	        {
+	        	postDate = DateStorageUtil.getStorageUtil().parse(dateStr,"yyyy-MM-dd'T'HH:mm", inReq.getTimeZone());
+	        }
+	        else 
+	        {
 	            postDate = new Date();
 	        }
 
@@ -436,7 +438,16 @@ public class ContentModule extends BaseMediaModule
 	        // Call Postiz API
 	        JSONObject result = manager.createPost(apiKey, postContent, postDate, PostizManager.POST_TYPE_DRAFT, assets, siteList);
 	       
+	        Calendar cal = DateStorageUtil.getStorageUtil().getCalendar(postDate); 
+	        int week = cal.getWeekYear();
+	        int year =  cal.get(Calendar.YEAR);
+	        
+	        inReq.putPageValue("postweek",week);
+	        inReq.putPageValue("postyear",year);
+	        inReq.putPageValue("postdate",dateStr);
+	        
 	        log.info("Post created successfully: " + result.toJSONString());
+	        
 	        
 	    } catch (Exception e) {
 	        log.error("Failed to create post with Postiz", e);
