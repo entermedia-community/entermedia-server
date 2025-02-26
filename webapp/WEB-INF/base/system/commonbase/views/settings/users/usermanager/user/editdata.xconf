@@ -7,5 +7,7 @@
 	<property name='text.passwordchanged'>
         <value>Password Changed for User</value>
     </property>
+    
+    <property name="allowadmimability">true</property>
 	
 </page>

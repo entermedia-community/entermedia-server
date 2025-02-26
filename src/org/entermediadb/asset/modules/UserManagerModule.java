@@ -475,10 +475,10 @@ public class UserManagerModule extends BaseMediaModule
 			throw new OpenEditException("Must be logged in");
 		}
 		
-		Object canUpload = inReq.getPageValue("caneditusersgroups");
+		Object canEditUserGroups = inReq.getPageValue("caneditusersgroups");
 		
 		if ( ! (user.hasPermission("oe.usermanager") || user.hasPermission("oe.administration")  //The second permission is deprecated 
-				|| Boolean.parseBoolean(String.valueOf(canUpload)) ) )
+				|| Boolean.parseBoolean(String.valueOf(canEditUserGroups)) ) )
 		{
 			String allowsave = inReq.getContentProperty("allowadmimability");
 			if( Boolean.parseBoolean(allowsave))
