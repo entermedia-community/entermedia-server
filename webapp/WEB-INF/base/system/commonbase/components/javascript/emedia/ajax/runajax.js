@@ -1,9 +1,12 @@
 findClosest = function (link, inid) {
 	var result = link.closest(inid);
 	if (result.length == 0) {
-		result = link.children(inid);
+		result = link.find(inid);
 		if (result.length == 0) {
-			result = $(inid);
+			result = link.children(inid);
+			if (result.length == 0) {
+				result = $(inid);
+			}
 		}
 	}
 	return result.first();
@@ -190,7 +193,7 @@ findClosest = function (link, inid) {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
 						targetdiv.replaceWith(data); //Cant get a valid dom element
-						newcell = findClosest(onpage, targetdiv);
+						newcell = findClosest(onpage, "#"+targetdiv.attr("id"));
 					} else {
 						onpage = targetdiv;
 						targetdiv.html(data);
@@ -482,3 +485,31 @@ $(window).on("checkautoreload", function (event, indiv) {
 	} else {
 	}
 });
+
+
+//Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
+$(window).on("setPageTitle", function (event, inElement) {
+		var element = inElement;
+		if (element === undefined || $(element).data("setpagetitle") == null) {
+			element = $("#applicationcontent");
+		}
+		if (element === undefined || $(element).data("setpagetitle") == null) {
+			element = $("#application");
+		}
+		var setpagetitle = $(element).data("setpagetitle");
+		
+		if(setpagetitle != null && inElement.data("addtopagetitle") != null)
+		{
+			setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
+		}
+		
+		var titlepostfix = $("#application").data("titlepostfix");
+		var title = "";
+		if (setpagetitle) {
+			title = setpagetitle;
+		}
+		if (titlepostfix) {
+			title = title ? title + " - " + titlepostfix : titlepostfix;
+		}
+		document.title = title;
+	});
