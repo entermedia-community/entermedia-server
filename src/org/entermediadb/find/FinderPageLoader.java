@@ -70,7 +70,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		if( !loadmodule )
 		{
 			//No need to preload a module. Not on a home page
-			//log.info("Could not load home page " + appid + " " + requestedPath);
+			log.info("Could not load home page " + appid + " " + requestedPath);
 			return null;
 		}
 		//TODO: Pass in user and check permissions
@@ -113,7 +113,7 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			return right;
 		}
 			
-	//log.info("Do the default");
+	    log.info("Page:" + inPage.getPath()  + " for url: " + requestedPath);
 		return null;
 		//We only care about the home page
 	}
