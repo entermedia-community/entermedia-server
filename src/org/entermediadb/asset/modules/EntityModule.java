@@ -497,7 +497,7 @@ public class EntityModule extends BaseMediaModule
 			
 			Asset asset = archive.getAsset(data.getId());
 			
-			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(inPageRequest, asset.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
 				//Asset asset2 = (Asset) iterator2.next();
 				Data entity = (Data) iterator2.next();
@@ -539,7 +539,7 @@ public class EntityModule extends BaseMediaModule
 		Collection assets = new ArrayList();
 		assets.add(asset);
 		
-		Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+		Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(inPageRequest, asset.getCategories());
 		String applicationid = inPageRequest.findPathValue("applicationid");	
 		
 		
@@ -581,7 +581,7 @@ public class EntityModule extends BaseMediaModule
 
 		Map<String,Collection> foundentitesassets = new HashMap();
 
-		Map<String, Data> foundentites = findEntityAssets(archive, assets, foundentitesassets);
+		Map<String, Data> foundentites = findEntityAssets(inPageRequest, archive, assets, foundentitesassets);
 		for (Iterator iterator = foundentites.keySet().iterator(); iterator.hasNext();)
 		{
 			String entityid = (String) iterator.next();
@@ -593,7 +593,7 @@ public class EntityModule extends BaseMediaModule
 	}
 
 
-	protected Map<String, Data> findEntityAssets(MediaArchive archive, Collection<Asset> assets,
+	protected Map<String, Data> findEntityAssets(WebPageRequest inPageRequest,  MediaArchive archive, Collection<Asset> assets,
 			Map<String, Collection> foundentitesassets) {
 		Map<String,Data> foundentites = new HashMap();
 
@@ -601,7 +601,7 @@ public class EntityModule extends BaseMediaModule
 		{
 			Asset asset = (Asset) iterator.next();
 			
-			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(asset.getCategories());
+			Collection<Data> entities = archive.getEntityManager().getEntitiesForCategories(inPageRequest, asset.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
 				//Asset asset2 = (Asset) iterator2.next();
 				Data entity = (Data) iterator2.next();
@@ -758,7 +758,7 @@ public class EntityModule extends BaseMediaModule
 		String id = inReq.getRequestParameter("dataid"); //From the event
 		Asset deleted = archive.getAsset(id);
 		String appid = inReq.findPathValue("applicationid");
-		Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
+		Collection entities = archive.getEntityManager().getEntitiesForCategories(inReq, deleted.getCategories());
 		for (Iterator iterator = entities.iterator(); iterator.hasNext();) {
 			Data entity = (Data) iterator.next();
 			archive.getEntityManager().fireAssetRemovedFromEntity(appid, inReq.getUser(), deleted, entity);
@@ -781,7 +781,7 @@ public class EntityModule extends BaseMediaModule
 		for (int i = 0; i < assetids.length; i++) {
 			String assetid = assetids[i];
 			Asset deleted = archive.getAsset(assetid);
-			Collection entities = archive.getEntityManager().getEntitiesForCategories(deleted.getCategories());
+			Collection entities = archive.getEntityManager().getEntitiesForCategories(inReq, deleted.getCategories());
 			for (Iterator iterator2 = entities.iterator(); iterator2.hasNext();) {
 				Data entity = (Data) iterator2.next();
 				Collection<Data> assetstoentity = foundentitesassets.get(entity.getId());
