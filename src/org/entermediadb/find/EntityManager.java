@@ -606,10 +606,25 @@ public class EntityManager implements CatalogEnabled
 		return false;
 	}
 	
-	public Collection<Data> getEntitiesForCategories(Collection<Category> inParentCategories, UserProfile inProfile)
+	public Collection<Data> getEntitiesForCategories( WebPageRequest inReq, Collection<Category> inParentCategories)
 	{
-		Collection<Data> found = getEntitiesForCategories(inParentCategories);
-		Collection allowed = inProfile.getEntitiesIds();
+		if (inParentCategories == null) {
+			return null;
+		}
+		
+		Collection<Data> categories = new HashSet();
+		
+		
+		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();) 
+		{
+			Category cat = (Category) iterator1.next();
+			categories.addAll(cat.listAncestorsAndSelf(1));
+		}
+		
+		HitTracker found =  getMediaArchive().query("modulesearch").orgroup("rootcategory", categories).put("searchtypes", inReq.getUserProfile().getEntitiesIds()).search(inReq);
+		
+		
+		Collection allowed = inReq.getUserProfile().getEntitiesIds();
 		
 		List<Data> finallist = new ArrayList();
 		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
@@ -622,64 +637,6 @@ public class EntityManager implements CatalogEnabled
 		}
 		return finallist;
 	}	
-	public Collection<Data> getEntitiesForCategories(Collection<Category> inParentCategories)
-	{
-		if (inParentCategories == null) {
-			return null;
-		}
-		
-		Collection<Data> items = new ArrayList();
-		
-		Set entityids = new HashSet();
-		for (Iterator iterator1 = inParentCategories.iterator(); iterator1.hasNext();) 
-		{
-			Category cat = (Category) iterator1.next();
-			for (Iterator iterator = getMediaArchive().getList("module").iterator(); iterator.hasNext();)
-			{
-				Data module = (Data) iterator.next();
-				Object value = cat.findValue(module.getId());
-				if( value != null)
-				{
-					if( value instanceof Collection)
-					{
-						Collection all = (Collection) value;
-						for (Iterator iterator2 = all.iterator(); iterator2.hasNext();)
-						{
-							String item = (String) iterator2.next();
-							if( entityids.contains(item) )
-							{
-								continue;
-							}
-							Data entity = getMediaArchive().getCachedData(module.getId(), item);
-							if (entity != null)
-							{
-								//entity.setValue("moduleid", module.getId());
-								entityids.add(entity.getId());
-								items.add( entity);
-							}
-						}
-					}
-					else 
-					{
-						if( entityids.contains((String)value) )
-						{
-							continue;
-						}
-						Data entity = getMediaArchive().getCachedData(module.getId(), (String) value);
-						if (entity != null)
-						{
-							//entity.setValue("moduleid", module.getId());
-							entityids.add(entity.getId());
-							items.add(entity);
-						}	
-					}
-					
-				}
-			}
-		}
-		return items;
-	}
-	
 	
 	
 	public Collection loadHistoryForEntity(String applicationid, User inUser, Data inModule, Data inEntity) {
