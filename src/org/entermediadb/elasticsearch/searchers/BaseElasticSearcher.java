@@ -526,7 +526,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if (inQuery.getAggregation() != null)
 		{
-			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
+			
+			AbstractAggregationBuilder builder = (AbstractAggregationBuilder) inQuery.getAggregation();
+			
+			log.info("Adding Aggregation for " + inQuery.toQuery() + " with "  + builder);
+			inSearch.addAggregation(builder);
 		}
 		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
 		if (q.getAggregationJson() != null)
