@@ -192,14 +192,22 @@ findClosest = function (link, inid) {
 					if (replaceHtml) {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
+						var targetdivid = "";
+						if (targetdiv.attr("id") !== undefined)
+							{
+								targetfivid = "#"+targetdiv.attr("id");
+							}
 						targetdiv.replaceWith(data); //Cant get a valid dom element
-						newcell = findClosest(onpage, "#"+targetdiv.attr("id"));
+						newcell = findClosest(onpage, targetdivid);
 					} else {
 						onpage = targetdiv;
 						targetdiv.html(data);
 						newcell = onpage.children(":first");
 					}
-					$(window).trigger("setPageTitle", [newcell]);
+					if(newcell.length > 0)
+					{
+						$(window).trigger("setPageTitle", [newcell]);
+					}
 
 					//on success execute extra JS
 					if (anchorData["onsuccess"]) {
@@ -490,6 +498,15 @@ $(window).on("checkautoreload", function (event, indiv) {
 //Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
 $(window).on("setPageTitle", function (event, inElement) {
 		var element = inElement;
+		//entitytabs:
+		//search parent #entitypreviewdialog-body then search .entitydialog
+		var isentitydialog = $(element).closest("#entitypreviewdialog-body");
+		if (isentitydialog.length > 0)
+			{
+				element  = isentitydialog.find(".entitydialog");
+				
+			}
+		
 		if (element === undefined || $(element).data("setpagetitle") == null) {
 			element = $("#applicationcontent");
 		}
