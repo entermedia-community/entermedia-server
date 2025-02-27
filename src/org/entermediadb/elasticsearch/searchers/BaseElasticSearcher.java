@@ -440,6 +440,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();
+		if( getSearchType().equals("modulesearch") )
+		{
+			log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + " with "  + facets);
+		}
 		if (facets == null || facets.isEmpty()) //We might want the real facets just in case
 		{
 			boolean added = false;
@@ -457,6 +461,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			return added;
 		}
 		List added = new ArrayList();
+
 
 		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 		{
@@ -526,7 +531,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 		if (inQuery.getAggregation() != null)
 		{
-			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
+			
+			AbstractAggregationBuilder builder = (AbstractAggregationBuilder) inQuery.getAggregation();
+			inSearch.addAggregation(builder);
 		}
 		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
 		if (q.getAggregationJson() != null)
