@@ -10,6 +10,8 @@
 	#end
 #end	
 
+
+
 #if(!$detailviewercolumns)
 	#set($detailviewercolumns = 2)
 #end
@@ -22,16 +24,16 @@
 	<div class="plaintext-details">
 	#foreach( $detail in $details )
 		$!context.putPageValue("detail",$detail)
-		#set($val = false)
-		#set( $val = $data.get($detail.getId()) )
-		#if(  $val && $val.length() > 0 )
+		#set($value = false)
+		#set( $value = $data.get($detail.getId()) )
+		#if(  $value && $value.length() > 0 )
 			<div class="plaintext-detail">
 				#set($viewtype = $detail.viewType)
 				#if($viewtype == "entity")
 					<label class="plaintextviewer-field">$detail.getText($context):</label>
 				#end
 				<div class="plaintextviewer-value">					
-					$!context.putPageValue("val",$val)
+					$!context.putPageValue("value",$value)
 					$context.putPageValue("showalllanguagevalues",true)
 					$!context.putPageValue("detail", $detail)
 					$pages.include("$apphome/components/xml/detailplaintext.html", $context) 

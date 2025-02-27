@@ -50,6 +50,7 @@
 		>
 			<i class="bi bi-card-list mr-1"></i> [[Browse]]
 		</a>
+		#if($permissions.canEntity($module, $entity, "createassetswithai"))
 		<a href="$siteroot$apphome/views/modules/asset/editors/contentcreatorpickasset/index.html"
 			class="emdialog btn btn-accent"
 			data-dialogid="dialogpickerassetpicker"
@@ -64,5 +65,6 @@
 		>
 			<i class="bi bi-magic mr-1"></i> [[Use AI]]
 		</a>
+		#end
 	</div>
 </div>
