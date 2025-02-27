@@ -289,7 +289,12 @@ public class ElasticHitTracker extends HitTracker
 					FilterNode parent = new FilterNode();
 					parent.setId(f.getName());
 					parent.setName(f.getName());
-					PropertyDetail detail = getSearcher().getDetail(f.getName());
+					
+					PropertyDetail detail = getSearchQuery().findFacet(f.getName());
+					if( detail == null)
+					{
+						detail = getSearcher().getDetail(f.getName());
+					}
 					if (detail != null)
 					{
 						options.put(detail.getId(), parent);
