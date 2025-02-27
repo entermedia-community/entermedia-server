@@ -1177,27 +1177,45 @@ public class EntityModule extends BaseMediaModule
 	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
 	{
 		
-		String pickedmodule = inPageRequest.findPathValue("module");
+		String parentmoduleid = inPageRequest.findPathValue("module");
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		String pickedid = inPageRequest.getRequestParameter("id");
 		MultiValued data = (MultiValued)inPageRequest.getPageValue("data");
 		if( data == null)
 		{
-			data = (MultiValued) archive.getData(pickedmodule, pickedid);
+			data = (MultiValued) archive.getData(parentmoduleid, pickedid);
 		}
 		if (data != null) 
 		{
 			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
 			String entityid = inPageRequest.getRequestParameter("entityid");
 			Data entity =  archive.getCachedData(entitytype, entityid);
-			Searcher searcher = archive.getSearcher(pickedmodule);
-			PropertyDetail detail =  searcher.getDetail(entitytype);
-			if(detail.isMultiValue()) 
+			
+			String renderexternalid = entitytype;
+			
+			String entitymoduleviewid = inPageRequest.findValue("entitymoduleviewid");
+			if(entitymoduleviewid != null)
 			{
-				data.addValue(entitytype, entityid);
+				Data entitymoduleviewdata = getMediaArchive(inPageRequest).getCachedData("view", entitymoduleviewid);
+				if( entitymoduleviewdata != null)
+				{
+					renderexternalid = entitymoduleviewdata.get("renderexternalid");
+				}
 			}
-			else {
-				data.setValue(entitytype, entityid);
+			
+			
+			Searcher searcher = archive.getSearcher(parentmoduleid);
+			PropertyDetail detail =  searcher.getDetail(renderexternalid);
+			
+			if(detail != null)
+			{
+				if(detail.isMultiValue()) 
+				{
+					data.addValue(renderexternalid, entityid);
+				}
+				else {
+					data.setValue(renderexternalid, entityid);
+				}
 			}
 			//Copy the custom permissions
 			String[] types = {"customusers","customgroups","customroles","editorusers","editorroles","editorgroups"};
