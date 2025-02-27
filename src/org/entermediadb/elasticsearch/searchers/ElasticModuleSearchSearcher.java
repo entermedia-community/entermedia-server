@@ -166,7 +166,7 @@ public class ElasticModuleSearchSearcher extends BaseElasticSearcher
 			}
 		}
 		Collection values = details.values();
-		log.info("Loading filter for " + searchmodules + " found "  + values);
+		//log.info("Loading filter for " + searchmodules + " found "  + values);
 		return values;
 	}
 	

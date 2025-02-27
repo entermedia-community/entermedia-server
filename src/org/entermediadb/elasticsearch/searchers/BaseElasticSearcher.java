@@ -440,10 +440,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 		Collection facets = inQuery.getFacets();
-		if( getSearchType().equals("modulesearch") )
-		{
-			log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + " with "  + facets);
-		}
+//		if( getSearchType().equals("modulesearch") )
+//		{
+//			log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + " with "  + facets);
+//		}
 		if (facets == null || facets.isEmpty()) //We might want the real facets just in case
 		{
 			boolean added = false;
