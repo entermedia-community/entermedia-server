@@ -239,15 +239,16 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 	}
 	
 	@Override
-	public void addCategory(Category inCatid)
+	public void addCategory(Category inCat)
 	{
-		if (inCatid == null)
+		if (inCat == null)
 		{
 			throw new IllegalArgumentException("Categories cannot be null");
 		}
-		if (!isInCategory(inCatid))
+		removeCategoryByPath(inCat.getCategoryPath());
+		if (!isInCategory(inCat))
 		{
-			addValue("category-exact",inCatid);
+			addValue("category-exact",inCat);
 		}
 	}
 
@@ -334,6 +335,33 @@ public class BaseAsset extends SearchHitData implements MultiValued, SaveableDat
 			Category element = (Category) iter.next();
 			if (element.getId().equals(inCategoryId))
 			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isInCategoryPath(String inCategoryPath)
+	{
+		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+		{
+			Category element = (Category) iter.next();
+			if (element.getCategoryPath().equals(inCategoryPath))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean removeCategoryByPath(String inCategoryPath)
+	{
+		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+		{
+			Category element = (Category) iter.next();
+			if (element.getCategoryPath().equals(inCategoryPath))
+			{
+				removeCategory(element);
 				return true;
 			}
 		}

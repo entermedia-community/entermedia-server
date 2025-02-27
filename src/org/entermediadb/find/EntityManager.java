@@ -621,10 +621,12 @@ public class EntityManager implements CatalogEnabled
 			categories.addAll(cat.listAncestorsAndSelf(1));
 		}
 		
-		HitTracker found =  getMediaArchive().query("modulesearch").orgroup("rootcategory", categories).put("searchtypes", inReq.getUserProfile().getEntitiesIds()).search(inReq);
-		
-		
 		Collection allowed = inReq.getUserProfile().getEntitiesIds();
+		allowed.remove("asset");
+		HitTracker found =  getMediaArchive().query("modulesearch").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
+		
+		
+		
 		
 		List<Data> finallist = new ArrayList();
 		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
