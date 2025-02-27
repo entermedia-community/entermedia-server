@@ -458,6 +458,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		List added = new ArrayList();
 
+		log.info( getSearchType() + " Adding Facets for " + inQuery.toQuery() + " with "  + facets);
+
 		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -528,8 +530,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			
 			AbstractAggregationBuilder builder = (AbstractAggregationBuilder) inQuery.getAggregation();
-			
-			log.info("Adding Aggregation for " + inQuery.toQuery() + " with "  + builder);
 			inSearch.addAggregation(builder);
 		}
 		ElasticSearchQuery q = (ElasticSearchQuery) inQuery;
