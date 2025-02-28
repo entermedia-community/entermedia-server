@@ -1177,17 +1177,17 @@ public class EntityModule extends BaseMediaModule
 	public void saveSubModule(WebPageRequest inPageRequest) throws Exception 
 	{
 		
-		String parentmoduleid = inPageRequest.findPathValue("module");
+		String moduleid = inPageRequest.findPathValue("module"); //Submodule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		String pickedid = inPageRequest.getRequestParameter("id");
 		MultiValued data = (MultiValued)inPageRequest.getPageValue("data");
 		if( data == null)
 		{
-			data = (MultiValued) archive.getData(parentmoduleid, pickedid);
+			data = (MultiValued) archive.getData(moduleid, pickedid);
 		}
 		if (data != null) 
 		{
-			String entitytype = inPageRequest.getRequestParameter("entitymoduleid");
+			String entitytype = inPageRequest.getRequestParameter("entitymoduleid"); //Parent Module
 			String entityid = inPageRequest.getRequestParameter("entityid");
 			Data entity =  archive.getCachedData(entitytype, entityid);
 			
@@ -1204,7 +1204,7 @@ public class EntityModule extends BaseMediaModule
 			}
 			
 			
-			Searcher searcher = archive.getSearcher(parentmoduleid);
+			Searcher searcher = archive.getSearcher(moduleid);
 			PropertyDetail detail =  searcher.getDetail(renderexternalid);
 			
 			if(detail != null)
