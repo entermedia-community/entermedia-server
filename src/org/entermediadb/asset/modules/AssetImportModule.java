@@ -57,8 +57,10 @@ public class AssetImportModule  extends BaseMediaModule
 			
 			massets.add(asset);
 		}
-		inReq.putPageValue("hits", massets);
-		archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
+		if(massets != null && !massets.isEmpty()) {
+			inReq.putPageValue("hits", massets);
+			archive.firePathEvent("importing/importassets",inReq.getUser(),massets);
+		}
 
 		
 		

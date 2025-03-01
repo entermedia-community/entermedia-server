@@ -623,18 +623,20 @@ public class EntityManager implements CatalogEnabled
 		
 		Collection allowed = inReq.getUserProfile().getEntitiesIds();
 		allowed.remove("asset");
+		
+//always returns emtpy
 		HitTracker found =  getMediaArchive().query("modulesearch").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
 		
-		
-		
-		
 		List<Data> finallist = new ArrayList();
-		for (Iterator iterator = found.iterator(); iterator.hasNext();) {
-			Data entity = (Data)iterator.next();
-			String moduleid = entity.get("entitysourcetype");
-			if( moduleid == null || allowed.contains(moduleid))
-			{
-				finallist.add(entity);
+		if (found != null)
+		{
+			for (Iterator iterator = found.iterator(); iterator.hasNext();) {
+				Data entity = (Data)iterator.next();
+				String moduleid = entity.get("entitysourcetype");
+				if( moduleid == null || allowed.contains(moduleid))
+				{
+					finallist.add(entity);
+				}
 			}
 		}
 		return finallist;
