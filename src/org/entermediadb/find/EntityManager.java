@@ -621,11 +621,18 @@ public class EntityManager implements CatalogEnabled
 			categories.addAll(cat.listAncestorsAndSelf(1));
 		}
 		
-		Collection allowed = inReq.getUserProfile().getEntitiesIds();
+		User user = inReq.getUser();
+		UserProfile userprofile = inReq.getUserProfile(); //empty userprofile?
+		if(userprofile == null)
+		{
+			userprofile = getMediaArchive().getProfileManager().getUserProfile(getMediaArchive().getCatalogId(), user.getUserName());
+		}
+		
+		Collection allowed = userprofile.getEntitiesIds();
 		allowed.remove("asset");
 		
 //always returns emtpy
-		HitTracker found =  getMediaArchive().query("modulesearch").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
+		HitTracker found =  getMediaArchive().query("modulesearch").named("modulsearchcathits").orgroup("rootcategory", categories).put("searchtypes", allowed).search(inReq);
 		
 		List<Data> finallist = new ArrayList();
 		if (found != null)
