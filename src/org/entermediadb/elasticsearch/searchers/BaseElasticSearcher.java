@@ -3011,8 +3011,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
-						String id = (String) iterator.next();
-						Category c = (Category) searcher.getCategory(id);
+						Object obj = iterator.next();
+						Category c = null;
+						if( obj instanceof Category )
+						{
+							c = (Category)obj;
+						}
+						else
+						{
+							c= (Category) searcher.getCategory((String)obj);
+						}
 						while (c != null)
 						{
 
