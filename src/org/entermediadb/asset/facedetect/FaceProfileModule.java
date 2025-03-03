@@ -2,6 +2,7 @@ package org.entermediadb.asset.facedetect;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +30,6 @@ public class FaceProfileModule extends BaseMediaModule
 	public void removeAsset(WebPageRequest inReq) {
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		
-		
 		String assetid = inReq.getRequiredParameter("assetid");
 		String removeprofileid = inReq.getRequiredParameter("profileid");
 		
@@ -53,26 +52,60 @@ public class FaceProfileModule extends BaseMediaModule
 					{
 						//add to removed faceprofiles
 						asset.addValue("removedfaceprofilegroups", removeprofileid);
+						//add new faceprofile to preserve the detected face
+						MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
+						newgroup.setValue("creationdate", new Date());
+						newgroup.setValue("samplecount",1);
+						newgroup.setValue("entity_date", new Date());
+						newgroup.setValue("primaryimage", asset.getId());
+						archive.getSearcher("faceprofilegroup").saveData(newgroup);
+						facedata.put("faceprofilegroup", newgroup.getId() );
+						newfaceprofiles.add(facedata);
 						
-						//remove as primary image if is
+						
+						//remove count from old profile and main image if is this asset.
 						MultiValued group = (MultiValued)archive.getData("faceprofilegroup",faceprofilegroupid);
 						if (group != null) {
+							Integer count = group.getInt("samplecount");
+							count = count -1;
+							group.setValue("samplecount", count.toString());
+							//remove as primary image if is
 							String primaryimage = (String)group.getValue("primaryimage");
 							if (primaryimage!= null && primaryimage.equals(assetid)) {
 								group.setValue("primaryimage", "");
-								Integer count = group.getInt("samplecount");
-								count = count -1;
-								group.setValue("samplecount", count.toString());
-								archive.getSearcher("faceprofilegroup").saveData(group);
 							}
+							archive.getSearcher("faceprofilegroup").saveData(group);
 						}
 					}
 				}
 				asset.setValue("faceprofiles",newfaceprofiles);
 				archive.saveAsset(asset);
+				inReq.putPageValue("asset", asset);
 			}
 		}
 		
+	}
+	
+	
+	
+	public void addPersonToProfileGroup(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		String personid = inReq.getRequestParameter("dataid");
+		String faceprofilegroupid =inReq.getRequestParameter("faceprofilegroupid");
+		
+		if (faceprofilegroupid != null && personid != null)
+		{
+			MultiValued group = (MultiValued)archive.getData("faceprofilegroup",faceprofilegroupid);
+			if (group != null)
+			{
+				group.setValue("entityperson", personid);
+				archive.getSearcher("faceprofilegroup").saveData(group);
+			}
+		}
+		Asset asset = archive.getAsset(assetid);
+		inReq.putPageValue("asset", asset);
 	}
 	
 }

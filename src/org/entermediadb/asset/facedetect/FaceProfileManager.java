@@ -298,8 +298,13 @@ public class FaceProfileManager implements CatalogEnabled
 		if(inInput.getName().endsWith("webp") )
 		{
 			Dimension size = getImageDimensionWebP(inInput.getInputStream());
-			inputw = (int)Math.round( size.getWidth() );
-			inputh = (int)Math.round( size.getHeight() );
+			if(size == null) 
+			{
+				log.info("Can't get image size from Webp: " + inInput.getPath());
+				return faceprofiles;
+			}
+				inputw = (int)Math.round( size.getWidth() );
+				inputh = (int)Math.round( size.getHeight() );
 		}	
 		else
 		{
