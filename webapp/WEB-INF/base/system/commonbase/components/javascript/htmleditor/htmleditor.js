@@ -8,7 +8,9 @@ import {
 	ButtonView,
 	ClassicEditor,
 	CloudServices,
+	CodeBlock,
 	Essentials,
+	GeneralHtmlSupport,
 	Heading,
 	ImageBlock,
 	ImageInline,
@@ -19,6 +21,7 @@ import {
 	ImageToolbar,
 	Indent,
 	IndentBlock,
+	InlineEditor,
 	Italic,
 	Link,
 	List,
@@ -28,8 +31,6 @@ import {
 	SourceEditing,
 	Strikethrough,
 	Underline,
-	InlineEditor,
-	GeneralHtmlSupport,
 } from "ckeditor5";
 
 import prettifyHTML from "prettyhtml";
@@ -165,6 +166,8 @@ const editorConfig = (options, isInline = false) => {
 		"outdent",
 		"indent",
 		"|",
+		"codeBlock",
+		"|",
 		"undo",
 		"redo",
 		"|",
@@ -190,6 +193,7 @@ const editorConfig = (options, isInline = false) => {
 		RemoveFormat,
 		Strikethrough,
 		Underline,
+		CodeBlock,
 	];
 
 	let image = undefined;
@@ -311,6 +315,18 @@ const editorConfig = (options, isInline = false) => {
 					title: "Heading 6",
 					class: "ck-heading_heading6",
 				},
+			],
+		},
+		codeBlock: {
+			languages: [
+				{ language: "plaintext", label: "Plain text" },
+				{ language: "html", label: "HTML" },
+				{ language: "css", label: "CSS" },
+				{ language: "javascript", label: "JavaScript" },
+				{ language: "java", label: "Java" },
+				{ language: "xml", label: "XML" },
+				{ language: "json", label: "JSON" },
+				{ language: "bash", label: "Bash" },
 			],
 		},
 		licenseKey: LICENSE_KEY,
