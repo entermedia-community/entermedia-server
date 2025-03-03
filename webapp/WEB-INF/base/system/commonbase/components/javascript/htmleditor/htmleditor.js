@@ -402,6 +402,7 @@ lQuery("textarea.htmleditor").livequery(function () {
 });
 
 $(window).on("edithtmlstart", function (_, targetDiv) {
+	if (targetDiv.length === 0) return;
 	const hideSaving = targetDiv.data("editonly");
 	const hideImagePicker = targetDiv.data("imagepickerhidden");
 	const options = {
@@ -482,6 +483,7 @@ function createInlineCK5(target, options = {}) {
 }
 
 $(window).on("inlinehtmlstart", function (_, targetDiv) {
+	if (targetDiv.length === 0) return;
 	const hideSaving = targetDiv.data("editonly");
 	const hideImagePicker = targetDiv.data("imagepickerhidden");
 	const options = {
