@@ -574,6 +574,8 @@ public class DataEditModule extends BaseMediaModule
 				//getMediaArchive(inReq).clearCachedData(searcher.getSearchType(), data.getId());
 				// should we redirect to a save ok page?
 				//redirectToSaveOk(inReq);
+				
+				return;
 			}
 			else
 			{

@@ -24,13 +24,13 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.data.AddedPermission;
 import org.entermediadb.find.EntityManager;
-import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
+import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
@@ -1367,13 +1367,31 @@ public class EntityModule extends BaseMediaModule
 		
 		String id = inReq.getRequestParameter("id");
 		String moduleid = inReq.findPathValue("module");
-		Data entity = archive.query(moduleid).id(id).searchOne();
 		
-		
-		String changes = (String)inReq.getPageValue("datachanges");
-		
+		List<Data> tosave = new ArrayList();
+		if (id.startsWith("multiedit:"))
+		{
+			CompositeData entities = (CompositeData) inReq.getSessionValue(id);
+			for (Iterator iterator = entities.iterator(); iterator.hasNext();)
+			{
+				Data entityd = (Data) iterator.next();
+				Data entity = archive.query(moduleid).id(entityd.getId()).searchOne();
+				tosave.add(entity);
+			}
+		}
+		else 
+		{
+			Data entity = archive.query(moduleid).id(id).searchOne();
+			tosave.add(entity);
+		}
+			
 		//changes = archive.getEventManager().readChanges(inReq, archive.getSearcher(moduleid), entity);
-		archive.getEntityManager().createEntitySnapshot( inReq.getUser(), entity, changes );
+		String changes = (String)inReq.getPageValue("datachanges");
+		for (Iterator iterator = tosave.iterator(); iterator.hasNext();) {
+			Data entity = (Data) iterator.next();
+			archive.getEntityManager().createEntitySnapshot( inReq.getUser(), entity, changes );
+		}
+		
 		
 	}
 	
