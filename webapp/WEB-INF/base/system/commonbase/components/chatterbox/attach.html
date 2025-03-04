@@ -40,9 +40,10 @@
 		method="post" 
 		enctype="multipart/form-data" 
 		action="${chatterboxhome}/uploadattachment.html" 
-		class="ajaxform autosubmit chatattachasset" 
+		class="ajaxform autosubmit chatattachasset closeattachbox" 
 		data-targetdiv="chatter-message-$!{chat.id}"
-		data-includeeditcontext="true" >
+		data-includeeditcontext="true" 
+		data-onsuccess="hideAttachFile">
 	<input type="hidden" name="searchtype" value="chatterbox" />
 	<input type="hidden" name="id" value="$!chat.id" />
 	<input type="hidden" name="entityid" value="$!entity.id" />

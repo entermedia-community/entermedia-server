@@ -64,7 +64,9 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 					</a>
 					#end		
 					
-					#if(!$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
+					
+					##new attach icon on chat footer
+					#if(false && !$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
 					<a class="message-menu-link ajax" 
 						data-oemaxlevel="1"    
 						data-targetdiv="attach-${chat.id}"
