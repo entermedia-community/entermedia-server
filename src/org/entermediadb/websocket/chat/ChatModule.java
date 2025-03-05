@@ -244,6 +244,8 @@ public class ChatModule extends BaseMediaModule
 		{
 			return;
 		}
+		inReq.putPageValue(name, results);
+		
 		Searcher chats = results.getSearcher();
 		Collection page = results.getPageOfHits();
 		ArrayList loaded = new ArrayList();

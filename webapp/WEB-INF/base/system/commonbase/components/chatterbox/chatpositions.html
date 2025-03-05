@@ -13,15 +13,8 @@
 	$prhits.setPageOneBased($currentpage)
 #end
 
-##set($links = $prhits.links())
-##set( $selectedpos2 = $prhits.toPosition($prhits.getPage()))
-
-#set($selectedpos_ = $context.getRequestParameter("position"))
-#ifnull($selectedpos_)
-	#set($selectedpos_ = $totalPages)
-#end
-#set( $selectedpos = $prhits.toPosition($selectedpos_))
-
+#set($links = $prhits.links())
+#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
 
 #if($totalPages> 1)
 <div class="resultspositions" 
@@ -29,8 +22,6 @@
 	data-hitssessionid="$!hits.getSessionId()" 
 	data-searchtype="$!hits.getSearchType()" 
 	data-currentpagenum="$prhits.getPage()">
-
-	
 	<span>
 		[[Page]]
 		$selectedpos
@@ -43,7 +34,7 @@
 			href="$resultsPage=$totalPages">$totalPages</a>
 	</span>
 	#set($prev = $selectedpos - 1)
-	$prev
+	
 	<a class="ajax #if($prev <= 0) disabled #end px-2" 
 		data-targetdiv="$targetdiv" 
 		data-updateurl="$!updateurl"  
@@ -51,7 +42,7 @@
 		data-position="$prev"  
 		title="[[Previous]]"
 		href="$resultsPage=$prev">
-		<i class="fas fa-chevron-left"></i>
+		<i class="fas fa-chevron-left"></i> 
 	</a>
 
 	#set($next = $selectedpos + 1)
