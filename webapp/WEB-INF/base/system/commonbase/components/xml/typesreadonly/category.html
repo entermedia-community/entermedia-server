@@ -7,13 +7,13 @@
 			#set( $row = false )
 			#set( $row = $mediaarchive.getCategory($type) )
 			#if( $row )
-				<a href="$home$apphome/views/modules/asset/editors/viewfiles/$!{row.getId()}/#dash($row).html"><i class="bi bi-folder-fill ns"></i> #esc($row.getName())</a> 
+				<a href="$home$apphome/views/modules/asset/editors/viewfilescategory/$!{row.getId()}/#dash($row).html"><i class="bi bi-folder-fill ns"></i> #esc($row.getName())</a> 
 			#end
 		#end
 	</div>
 #elseif( $value)
 	#set( $row = $mediaarchive.getCategory($value) )
 	#if( $row )
-		<a href="$home$apphome/views/modules/asset/editors/viewfiles/$!{row.getId()}/#dash($row).html"><i class="bi bi-folder-fill ns"></i> #esc($row.getName())</a>
+		<a href="$home$apphome/views/modules/asset/editors/viewfilescategory/$!{row.getId()}/#dash($row).html"><i class="bi bi-folder-fill ns"></i> #esc($row.getName())</a>
 	#end
 #end
