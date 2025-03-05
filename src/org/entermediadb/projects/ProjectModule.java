@@ -1911,7 +1911,7 @@ public class ProjectModule extends BaseMediaModule
 		Data librarycol  = (Data) inReq.getPageValue("librarycol");
 		String module = inReq.findValue("module");
 		
-		if (currentchannel == null) {
+		if (librarycol != null && currentchannel == null) {
 			currentchannel = topicsearcher.query().match("parentcollectionid",librarycol.getId()).sort("name").searchOne();
 		}
 		if (currentchannel == null) {
