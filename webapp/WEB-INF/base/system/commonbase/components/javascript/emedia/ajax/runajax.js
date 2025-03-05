@@ -193,10 +193,9 @@ findClosest = function (link, inid) {
 						//Call replacer to pull $scope variables
 						onpage = targetdiv.parent();
 						var targetdivid = "";
-						if (targetdiv.attr("id") !== undefined)
-							{
-								targetfivid = "#"+targetdiv.attr("id");
-							}
+						if (targetdiv.attr("id") !== undefined) {
+							targetfivid = "#" + targetdiv.attr("id");
+						}
 						targetdiv.replaceWith(data); //Cant get a valid dom element
 						newcell = findClosest(onpage, targetdivid);
 					} else {
@@ -204,8 +203,7 @@ findClosest = function (link, inid) {
 						targetdiv.html(data);
 						newcell = onpage.children(":first");
 					}
-					if(newcell.length > 0)
-					{
+					if (newcell.length > 0) {
 						$(window).trigger("setPageTitle", [newcell]);
 					}
 
@@ -227,7 +225,9 @@ findClosest = function (link, inid) {
 
 					//actions after autoreload?
 					var message = anchorData["alertmessage"];
-					if (message) customToast(message);
+					if (message && window.customToast) {
+						window.customToast(message);
+					}
 
 					if (removeOnSuccess !== undefined && removeOnSuccess == "true") {
 						if (removeTarget) {
@@ -314,7 +314,7 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 	} else if (exception == "timeout") {
 		err = "Request timed out!";
 	}
-	customToast(err, { positive: false });
+	if (window.customToast) window.customToast(err, { positive: false });
 	var errors = "Error details: ";
 	if (exception) {
 		errors += "\n\tException: " + exception;
@@ -494,39 +494,35 @@ $(window).on("checkautoreload", function (event, indiv) {
 	}
 });
 
-
 //Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
 $(window).on("setPageTitle", function (event, inElement) {
-		var element = inElement;
-		//entitytabs:
-		//search parent #entitypreviewdialog-body then search .entitydialog
-		var isentitydialog = $(element).closest("#entitypreviewdialog-body");
-		if (isentitydialog.length > 0)
-			{
-				element  = isentitydialog.find(".entitydialog");
-				
-			}
-		
-		if (element === undefined || $(element).data("setpagetitle") == null) {
-			element = $("#applicationcontent");
-		}
-		if (element === undefined || $(element).data("setpagetitle") == null) {
-			element = $("#application");
-		}
-		var setpagetitle = $(element).data("setpagetitle");
-		
-		if(setpagetitle != null && inElement.data("addtopagetitle") != null)
-		{
-			setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
-		}
-		
-		var titlepostfix = $("#application").data("titlepostfix");
-		var title = "";
-		if (setpagetitle) {
-			title = setpagetitle;
-		}
-		if (titlepostfix) {
-			title = title ? title + " - " + titlepostfix : titlepostfix;
-		}
-		document.title = title;
-	});
+	var element = inElement;
+	//entitytabs:
+	//search parent #entitypreviewdialog-body then search .entitydialog
+	var isentitydialog = $(element).closest("#entitypreviewdialog-body");
+	if (isentitydialog.length > 0) {
+		element = isentitydialog.find(".entitydialog");
+	}
+
+	if (element === undefined || $(element).data("setpagetitle") == null) {
+		element = $("#applicationcontent");
+	}
+	if (element === undefined || $(element).data("setpagetitle") == null) {
+		element = $("#application");
+	}
+	var setpagetitle = $(element).data("setpagetitle");
+
+	if (setpagetitle != null && inElement.data("addtopagetitle") != null) {
+		setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
+	}
+
+	var titlepostfix = $("#application").data("titlepostfix");
+	var title = "";
+	if (setpagetitle) {
+		title = setpagetitle;
+	}
+	if (titlepostfix) {
+		title = title ? title + " - " + titlepostfix : titlepostfix;
+	}
+	document.title = title;
+});
