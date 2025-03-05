@@ -4,7 +4,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 #set($channel = $context.getRequestParameter("channel"))
 #set($collectionid = $context.getRequestParameter("collectionid"))
 
-#set($resultsPage = "${chatterboxhome}/messages.html?hitssessionid=${messagesthitracker.sessionId}&channel=$!currentchannel.id&channel=$channel&pageposition")
+#set($resultsPage = "${chatterboxhome}/showpage.html?chatterboxhitssessionid=${messagesthitracker.sessionId}&channel=$!currentchannel.id&pageposition")
 
 $context.putPageValue("hits",$messagesthitracker)
 $context.putPageValue("resultsPage",$resultsPage)

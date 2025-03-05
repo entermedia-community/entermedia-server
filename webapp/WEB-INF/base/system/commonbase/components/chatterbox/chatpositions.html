@@ -1,14 +1,9 @@
 ##needs 	$hits $resultsPage  $targetdiv
 
 #set($reloadsearchtype = "chatterbox")
-#set($updateurl = "true")
+#set($updateurl = "false")
 #set($oemaxlevel = "1")
 #set($targetdiv = "chatterboxmessages")
-
-#set($resultsPage = "/${librarycol.urlname}/chat/chatterbox/messages.html")
-#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
-#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-#set($oemaxlevel = "1")
 
 #set($totalPages = $hits.getTotalPages() )
 #set($currentpage = $context.getRequestParameter("currentpagenum"))
@@ -18,16 +13,24 @@
 	$prhits.setPageOneBased($currentpage)
 #end
 
-#set($links = $prhits.links())
-#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+##set($links = $prhits.links())
+##set( $selectedpos2 = $prhits.toPosition($prhits.getPage()))
+
+#set($selectedpos_ = $context.getRequestParameter("position"))
+#ifnull($selectedpos_)
+	#set($selectedpos_ = $totalPages)
+#end
+#set( $selectedpos = $prhits.toPosition($selectedpos_))
+
+
 #if($totalPages> 1)
 <div class="resultspositions" 
-	data-url="${projectlink}chat/chatterbox/chatpositions.html" 
 	data-categoryid="$!categoryid"
 	data-hitssessionid="$!hits.getSessionId()" 
 	data-searchtype="$!hits.getSearchType()" 
 	data-currentpagenum="$prhits.getPage()">
 
+	
 	<span>
 		[[Page]]
 		$selectedpos
@@ -40,7 +43,7 @@
 			href="$resultsPage=$totalPages">$totalPages</a>
 	</span>
 	#set($prev = $selectedpos - 1)
-	
+	$prev
 	<a class="ajax #if($prev <= 0) disabled #end px-2" 
 		data-targetdiv="$targetdiv" 
 		data-updateurl="$!updateurl"  

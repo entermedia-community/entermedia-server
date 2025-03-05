@@ -1,21 +1,18 @@
 <page>
 	
-	<path-action name="ChatModule.loadRecentChats"/>
-	
 	<Xpage-action name="DataEditModule.loadPageOfSearch">
 		<property name="hitsname">messagesthitracker</property>
 		<property name="searchtype">chatterbox</property>
 	</Xpage-action>
 	
-	<path-action name="ChatModule.loadPageOfChat">
+	<page-action name="ChatModule.loadPageOfChat">
 		<property name="hitsname">messagesthitracker</property>
 		<property name="searchtype">chatterbox</property>
-	</path-action>
+	</page-action>
 	
-	<path-action name="ProjectModule.loadGoalsInMessages"/>
+	<page-action name="ProjectModule.loadGoalsInMessages"/>
 	
 	<!-- path-action name="ChatModule.loadAttachments"/ -->
 	
-	<inner-layout>${chatterboxhome}/index.html</inner-layout>
 
 </page>

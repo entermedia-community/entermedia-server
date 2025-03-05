@@ -233,7 +233,13 @@ public class ChatModule extends BaseMediaModule
 	{
 
 		String name = inReq.findValue("hitsname");
-		HitTracker results = (HitTracker) inReq.getPageValue(name);
+		Searcher searcher = loadSearcher(inReq);
+		HitTracker results = searcher.loadPageOfSearch(inReq);
+		if (results == null)
+		{
+			results = (HitTracker) inReq.getPageValue(name);
+			
+		}
 		if (results == null)
 		{
 			return;
@@ -263,7 +269,7 @@ public class ChatModule extends BaseMediaModule
 		newtracker.setHitsPerPage(results.getHitsPerPage());
 
 		inReq.putPageValue("messages", newtracker);
-		inReq.putPageValue("messagesthitracker", results);
+		
 		inReq.putPageValue("lastloaded", lastdateloaded);
 
 		String userid = null;
