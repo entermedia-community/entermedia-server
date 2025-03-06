@@ -1917,7 +1917,10 @@ public class ProjectModule extends BaseMediaModule
 		if (currentchannel == null) {
 			currentchannel = topicsearcher.createNewData();
 			currentchannel.setValue("moduleid", module);
-			currentchannel.setValue("parentcollectionid", librarycol.getId() );
+			if(librarycol != null) 
+			{				
+				currentchannel.setValue("parentcollectionid", librarycol.getId() );
+			}
 			currentchannel.setName("General");
 			topicsearcher.saveData(currentchannel);
 		}
