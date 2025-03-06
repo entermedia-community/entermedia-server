@@ -3090,16 +3090,20 @@ public class MediaArchive implements CatalogEnabled
 	public ContentItem convertFile(ConvertInstructions instructions, ContentItem outputPage)
 	{
 		Asset inAsset = instructions.getAsset();
-		String rendertype = getMediaRenderType(inAsset);
+		String rendertype = instructions.getProperty("forcerendertype");
+		if (rendertype == null)
+		{
+			rendertype = getMediaRenderType(inAsset);
+		}
+
 		ConversionManager manager = getTranscodeTools().getManagerByRenderType(rendertype);
-		
 
 		instructions.setOutputExtension(PathUtilities.extractPageType(outputPage.getName()));
 		instructions.setOutputFile(outputPage);
 		
 		ConvertResult result = manager.createOutput(instructions); //skips if it already there
 		
-		return result.getOutput();
+		return result.getOutput(); 
 	}
 
 	public UserProfileManager getProfileManager()

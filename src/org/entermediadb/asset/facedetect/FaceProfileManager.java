@@ -47,6 +47,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.MathUtils;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.PathUtilities;
 
 
 public class FaceProfileManager implements CatalogEnabled
@@ -492,6 +493,10 @@ public class FaceProfileManager implements CatalogEnabled
 				instructions.setProperty("y1", Integer.toString(y));
 				instructions.setProperty("cropwidth", Integer.toString(w));
 				instructions.setProperty("cropheight", Integer.toString(h));
+				instructions.setProperty("forcerendertype", "image");
+				instructions.setProperty("inputextension", PathUtilities.extractPageType(inInput.getName()));
+				
+				
 
 				ContentItem smallitem = getMediaArchive().getContent( "/WEB-INF/trash/" + getMediaArchive().getCatalogId()	+ "/small/" + inAsset.getSourcePath() + ".webp" );
 				

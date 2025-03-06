@@ -60,11 +60,12 @@ public class VideoConversionManager extends BaseConversionManager
 	{
 		//if output == jpg and no time offset - standard
 		String outputRenderType = inStructions.getOutputRenderType();
-		if(outputRenderType.equals("video") || outputRenderType.equals("audio"))
+		String inputRenderType = inStructions.getInputPath();
+		if(outputRenderType.equals("video") || outputRenderType.equals("audio")  )
 		{
 			return findTranscoder(inStructions).convertIfNeeded(inStructions);
-		}
-		
+		} 
+		 
 		//Do the video conversion first. Then do the standard image conversion
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.m3u8");
