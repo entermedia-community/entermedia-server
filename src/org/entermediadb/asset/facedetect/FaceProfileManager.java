@@ -283,7 +283,7 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		
 		double similaritycheck = .99D;
-		double boxprobability = .999D; 
+		double boxprobability = .99D; 
 		String value = getMediaArchive().getCatalogSettingValue("facedetect_profile_confidence");
 		if( value != null)
 		{
