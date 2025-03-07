@@ -115,13 +115,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 				</div>
 				
 				<div class="msg-body #if($chat.user == $user.id) me #end" style=" #if($attachedassets) min-height: 110px; #end">
-				
-				##<!-- Legacy -->			
-				#if($attachedassets)
-				##	$context.putPageValue("attachedassets", $attachedassets)
-				##	$pages.include("${chatterboxhome}/attach.html",$context)
-				#end
-		
+					
 		
 				#if($otherassets)
 					$context.putPageValue("otherassets", $otherassets)

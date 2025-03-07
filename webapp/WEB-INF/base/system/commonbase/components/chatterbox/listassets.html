@@ -18,7 +18,7 @@ $context.putPageValue("thumbsize", "small")
 			#set($searchhome = "${finderhome}/views/modules/default/results/default")
 			$context.putPageValue("searchhome", $searchhome) 
 		#end
-		$pages.include("${finderhome}/views/modules/${module.id}/components/xml/types/assetpicker/preview.html?assetid=${entry.id}", $context)
+		$pages.include("${finderhome}/views/modules/asset/components/xml/types/assetpicker/preview.html?assetid=${entry.id}", $context)
 	</div>
 #end
 </div>
