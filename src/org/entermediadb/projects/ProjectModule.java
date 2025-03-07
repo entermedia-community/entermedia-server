@@ -1738,7 +1738,15 @@ public class ProjectModule extends BaseMediaModule
 	{
 		newcode.setValue("date", new Date());
 		newcode.setValue("user", inReq.getUserName());
-		String ipaddress = inReq.getRequest().getHeader("X-Real-IP");
+		String ipaddress = inReq.getRequest().getHeader("X-Forwarded-For");
+		if(ipaddress == null)
+		{
+			ipaddress = inReq.getRequest().getHeader("X-Real-IP");
+		}
+		if(ipaddress == null)
+		{
+			ipaddress = inReq.getRequest().getRemoteAddr();
+		}
 		newcode.setValue("ipaddress", ipaddress);
 		String referral = inReq.getRequest().getHeader("Referer");
 		newcode.setValue("referralurl", referral);
