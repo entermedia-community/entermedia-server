@@ -130,9 +130,12 @@ public class FaceProfileModule extends BaseMediaModule
 		
 		MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
 		newgroup.setValue("creationdate", new Date());
-		newgroup.setValue("samplecount",1);
 		newgroup.setValue("entity_date", new Date());
+		newgroup.setValue("automatictagging", false);
+		newgroup.setValue("taggedby",inReq.getUser());
+		newgroup.setValue("samplecount",1);
 		newgroup.setValue("primaryimage", asset.getId());
+		
 		archive.getSearcher("faceprofilegroup").saveData(newgroup);
 		Map newfacedata = new HashMap();
 		newfacedata.put("faceprofilegroup", newgroup.getId() );
