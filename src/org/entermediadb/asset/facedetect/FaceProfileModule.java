@@ -3,6 +3,7 @@ package org.entermediadb.asset.facedetect;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +12,12 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
+import org.openedit.util.MathUtils;
 
 public class FaceProfileModule extends BaseMediaModule
 {
@@ -52,6 +57,7 @@ public class FaceProfileModule extends BaseMediaModule
 					{
 						//add to removed faceprofiles
 						asset.addValue("removedfaceprofilegroups", removeprofileid);
+						
 						//add new faceprofile to preserve the detected face
 						MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
 						newgroup.setValue("creationdate", new Date());
@@ -106,6 +112,71 @@ public class FaceProfileModule extends BaseMediaModule
 		}
 		Asset asset = archive.getAsset(assetid);
 		inReq.putPageValue("asset", asset);
+	}
+	
+	
+	public void addManualFaceProfile (WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		String boxlocation = inReq.getRequestParameter("boxlocation");
+		
+		Asset asset = archive.getAsset(assetid);
+		
+		if (boxlocation == null || asset  == null)
+		{
+			return;
+		}
+		
+		MultiValued newgroup = (MultiValued) archive.getSearcher("faceprofilegroup").createNewData();
+		newgroup.setValue("creationdate", new Date());
+		newgroup.setValue("samplecount",1);
+		newgroup.setValue("entity_date", new Date());
+		newgroup.setValue("primaryimage", asset.getId());
+		archive.getSearcher("faceprofilegroup").saveData(newgroup);
+		Map newfacedata = new HashMap();
+		newfacedata.put("faceprofilegroup", newgroup.getId() );
+		
+		
+		String inputw = inReq.getRequestParameter("assetwidth");
+		String inputh = inReq.getRequestParameter("assethight");
+		String thumbwidth = inReq.getRequestParameter("thumbwidth");
+		
+		
+		
+		try
+		{
+			JSONObject locationarray = new JSONObject();
+			JSONParser parser = new JSONParser();
+			locationarray = (JSONObject) parser.parse(boxlocation);
+			
+			double scale = MathUtils.divide(inputw, thumbwidth);
+			
+			Double x = (Double)locationarray.get("left") * scale;
+			Double y = (Double)locationarray.get("top") * scale;
+			Double w = (Double)locationarray.get("width") * scale;
+			Double h = (Double)locationarray.get("height") * scale;
+			
+			newfacedata.put("locationx",x);
+			newfacedata.put("locationy",y);
+			newfacedata.put("locationw",w);
+			newfacedata.put("locationh",h);
+				
+			newfacedata.put("inputwidth",inputw);
+			newfacedata.put("inputheight",inputh);
+			
+			Collection<Map> faceprofiles = (Collection)asset.getValue("faceprofiles");
+			faceprofiles.add(newfacedata);
+			
+			asset.setValue("faceprofiles",faceprofiles);
+			archive.saveAsset(asset);
+			inReq.putPageValue("asset", asset);
+		}
+		catch ( Throwable ex)
+		{
+			log.error("Could not read profile location", ex );
+		}
+		
 	}
 	
 }
