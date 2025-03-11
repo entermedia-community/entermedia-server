@@ -740,11 +740,16 @@ public class FaceProfileManager implements CatalogEnabled
 			if( profile != null && infaceprofilegroupid.equals(groupid))
 			{
 				
-				double x = values.getInteger("locationx");
-				double y = values.getInteger("locationy");
-				double w = values.getInteger("locationw");
-				double h = values.getInteger("locationh");
-				double inputwidth = values.getInteger("inputwidth");
+				Double x = values.getDouble("locationx");
+				Double y = values.getDouble("locationy");
+				Double w = values.getDouble("locationw");
+				Double h = values.getDouble("locationh");
+				Double inputwidth = values.getDouble("inputwidth");
+				
+				if (x == null || y == null || w == null || h == null)
+				{
+					continue;
+				}
 				
 				double scale = MathUtils.divide(thumbwidth , inputwidth);
 				
