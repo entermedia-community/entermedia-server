@@ -4,7 +4,9 @@
 package org.entermediadb.modules.dates;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.openedit.WebPageRequest;
 import org.openedit.modules.BaseModule;
@@ -21,9 +23,11 @@ public class DateModule extends BaseModule
 
 	public void now(WebPageRequest inReq) throws Exception
 	{
-		PageAction inAction = inReq.getCurrentAction();
+		TimeZone zone = inReq.getTimeZone();
+
+		Calendar now = DateStorageUtil.getStorageUtil().createCalendar(zone);
 		
-		Date date = new Date();
+		Date date = now.getTime();
 		inReq.putPageValue("now",date);
 
 		inReq.putPageValue("storeddate",DateStorageUtil.getStorageUtil().formatForStorage(date));
