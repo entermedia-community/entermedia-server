@@ -303,226 +303,233 @@ findClosest = function (link, inid) {
 	};
 })(jQuery);
 
-$(document).ajaxError(function (e, jqXhr, settings, exception) {
-	console.log(e, jqXhr, exception);
-	if (exception == "abort") {
+
+$(document).ready(function () {
+
+	$(document).ajaxError(function (e, jqXhr, settings, exception) {
+		console.log(e, jqXhr, exception);
+		if (exception == "abort") {
+			return;
+		}
+		var err = "An error occurred while processing the request!";
+		if (jqXhr.readyState == 0) {
+			err = "Network error!";
+		} else if (exception == "timeout") {
+			err = "Request timed out!";
+		}
+		if (window.customToast) window.customToast(err, { positive: false });
+		var errors = "Error details: ";
+		if (exception) {
+			errors += "\n\tException: " + exception;
+		}
+		if (jqXhr.responseText) {
+			errors += "\n\tResponse: " + jqXhr.responseText;
+		}
+		if (settings.url) {
+			errors += "\n\tURL: " + settings.url;
+		}
+		console.error(errors);
 		return;
-	}
-	var err = "An error occurred while processing the request!";
-	if (jqXhr.readyState == 0) {
-		err = "Network error!";
-	} else if (exception == "timeout") {
-		err = "Request timed out!";
-	}
-	if (window.customToast) window.customToast(err, { positive: false });
-	var errors = "Error details: ";
-	if (exception) {
-		errors += "\n\tException: " + exception;
-	}
-	if (jqXhr.responseText) {
-		errors += "\n\tResponse: " + jqXhr.responseText;
-	}
-	if (settings.url) {
-		errors += "\n\tURL: " + settings.url;
-	}
-	console.error(errors);
-	return;
-});
-
-var runAjaxOn = {};
-var ajaxRunning = false;
-
-var statusCallCount = {};
-runAjaxStatus = function () {
-	//for each asset on the page reload it's status
-	//console.log(uid);
-
-	for (const [uid, enabled] of Object.entries(runAjaxOn)) {
-		if (uid) {
-			if (statusCallCount[uid] === undefined) {
-				statusCallCount[uid] = 0;
-			} else {
-				statusCallCount[uid]++;
-			}
-		}
-		if (!enabled || enabled === undefined) {
-			if (statusCallCount[uid]) {
-				delete statusCallCount[uid];
-			}
-			continue;
-		}
-		var cell = $("#" + uid);
-
-		if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
-			delete statusCallCount[uid];
-			continue;
-		}
-
-		if (!isInViewport(cell[0])) {
-			delete statusCallCount[uid];
-			continue;
-		}
-
-		// Warn if ajax status is called more than 10 times
-		var WARN_CAP = 20;
-		if (
-			statusCallCount[uid] >= WARN_CAP &&
-			statusCallCount[uid] % WARN_CAP == 0
-		) {
-			console.warn(
-				"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
-			);
-		}
-
-		var path = cell.attr("ajaxpath");
-		if (!path || path == "") {
-			path = cell.data("ajaxpath");
-		}
-		//console.log("Loading " + path );
-		if (path && path.length > 1) {
-			var entermediakey = "";
-			if (app && app.data("entermediakey") != null) {
-				entermediakey = app.data("entermediakey");
-			}
-			var data = cell.cleandata();
-			jQuery.ajax({
-				url: path,
-				async: false,
-				data: data,
-				success: function (data) {
-					cell.replaceWith(data);
-					//$(window).trigger("checkautoreload", [cell]);
-					$(window).trigger("resize");
-				},
-				xhrFields: {
-					withCredentials: true,
-				},
-				crossDomain: true,
-			});
-		}
-	}
-	setTimeout("runAjaxStatus();", 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
-};
-
-lQuery(".ajaxstatus").livequery(function () {
-	var uid = $(this).attr("id");
-
-	var iscomplete = $(this).data("ajaxstatuscomplete");
-
-	if (iscomplete) {
-		runAjaxOn[uid] = false;
-	} else {
-		var inqueue = runAjaxOn[uid];
-		if (inqueue == undefined) {
-			runAjaxOn[uid] = true; //Only load once per id
-		}
-	}
-	if (!ajaxRunning) {
-		setTimeout("runAjaxStatus();", 500); //Start checking then runs every second on all status
-		ajaxRunning = true;
-	}
-});
-
-lQuery("a.ajax").livequery("click", function (e) {
-	e.stopPropagation();
-	e.preventDefault();
-	$(this).runAjax();
-});
-
-lQuery("a.toggleAjax").livequery("click", function (e) {
-	/**
-	 * Runs an ajax call and removes the element from the DOM on ajax success
-	 * Optionally checks for a focus parent
-	 **/
-	e.stopPropagation();
-	e.preventDefault();
-	var $this = $(this);
-	$this.data("noToast", true);
-	$this.runAjax(function () {
-		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
-		if (focusParent.length) {
-			focusParent.find("input:visible:first").focus();
-		}
-		$this.remove();
 	});
-});
-
-autoreload = function (div, callback, classname = null) {
-	var url = div.data("autoreloadurl");
-	if (url !== undefined) {
-		div.data("url", url);
-	}
-	url = div.data("url");
-	if (url != undefined) {
-		var targetdiv = div.data("targetdiv");
-		if (targetdiv == undefined) {
-			div.data("targetdiv", classname); //Save to ourself
-			div.data("oemaxlevel", 1);
-		}
-		div.data("noToast", true);
-		div.runAjax(function () {
-			if (callback !== undefined && callback != null) {
-				callback();
+	
+	var runAjaxOn = {};
+	var ajaxRunning = false;
+	
+	var statusCallCount = {};
+	runAjaxStatus = function () {
+		//for each asset on the page reload it's status
+		//console.log(uid);
+	
+		for (const [uid, enabled] of Object.entries(runAjaxOn)) {
+			if (uid) {
+				if (statusCallCount[uid] === undefined) {
+					statusCallCount[uid] = 0;
+				} else {
+					statusCallCount[uid]++;
+				}
 			}
-			jQuery(window).trigger("resize");
+			if (!enabled || enabled === undefined) {
+				if (statusCallCount[uid]) {
+					delete statusCallCount[uid];
+				}
+				continue;
+			}
+			var cell = $("#" + uid);
+	
+			if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
+				delete statusCallCount[uid];
+				continue;
+			}
+	
+			if (!isInViewport(cell[0])) {
+				delete statusCallCount[uid];
+				continue;
+			}
+	
+			// Warn if ajax status is called more than 10 times
+			var WARN_CAP = 20;
+			if (
+				statusCallCount[uid] >= WARN_CAP &&
+				statusCallCount[uid] % WARN_CAP == 0
+			) {
+				console.warn(
+					"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
+				);
+			}
+	
+			var path = cell.attr("ajaxpath");
+			if (!path || path == "") {
+				path = cell.data("ajaxpath");
+			}
+			//console.log("Loading " + path );
+			if (path && path.length > 1) {
+				var entermediakey = "";
+				if (app && app.data("entermediakey") != null) {
+					entermediakey = app.data("entermediakey");
+				}
+				var data = cell.cleandata();
+				jQuery.ajax({
+					url: path,
+					async: false,
+					data: data,
+					success: function (data) {
+						cell.replaceWith(data);
+						//$(window).trigger("checkautoreload", [cell]);
+						$(window).trigger("resize");
+					},
+					xhrFields: {
+						withCredentials: true,
+					},
+					crossDomain: true,
+				});
+			}
+		}
+		setTimeout("runAjaxStatus();", 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
+	};
+	
+	lQuery(".ajaxstatus").livequery(function () {
+		var uid = $(this).attr("id");
+	
+		var iscomplete = $(this).data("ajaxstatuscomplete");
+	
+		if (iscomplete) {
+			runAjaxOn[uid] = false;
+		} else {
+			var inqueue = runAjaxOn[uid];
+			if (inqueue == undefined) {
+				runAjaxOn[uid] = true; //Only load once per id
+			}
+		}
+		if (!ajaxRunning) {
+			setTimeout("runAjaxStatus();", 500); //Start checking then runs every second on all status
+			ajaxRunning = true;
+		}
+	});
+	
+	lQuery("a.ajax").livequery("click", function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		$(this).runAjax();
+	});
+	
+	lQuery("a.toggleAjax").livequery("click", function (e) {
+		/**
+		 * Runs an ajax call and removes the element from the DOM on ajax success
+		 * Optionally checks for a focus parent
+		 **/
+		e.stopPropagation();
+		e.preventDefault();
+		var $this = $(this);
+		$this.data("noToast", true);
+		$this.runAjax(function () {
+			var focusParent = $this.closest(`.${$this.data("focusparent")}`);
+			if (focusParent.length) {
+				focusParent.find("input:visible:first").focus();
+			}
+			$this.remove();
 		});
-	}
-};
-
-// Call this way	$(window).trigger("autoreload", [indiv,callback,targetdiv]);
-$(window).on("autoreload", function (event, indiv, callback, targetdiv) {
-	autoreload($(indiv), callback, targetdiv);
-});
-
-lQuery(".refreshautoreload").livequery("click", function (e) {
-	e.preventDefault();
-	e.stopPropagation();
-	$(window).trigger("checkautoreload", [$(this)]);
-});
-
-// Call this way	$(window).trigger("checkautoreload", [form]);
-$(window).on("checkautoreload", function (event, indiv) {
-	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-	if (classes) {
-		var splitnames = classes.split(",");
-		$.each(splitnames, function (index, classname) {
-			$("." + classname).each(function (index, div) {
-				autoreload($(div), null, classname);
+	});
+	
+	autoreload = function (div, callback, classname = null) {
+		var url = div.data("autoreloadurl");
+		if (url !== undefined) {
+			div.data("url", url);
+		}
+		url = div.data("url");
+		if (url != undefined) {
+			var targetdiv = div.data("targetdiv");
+			if (targetdiv == undefined) {
+				div.data("targetdiv", classname); //Save to ourself
+				div.data("oemaxlevel", 1);
+			}
+			div.data("noToast", true);
+			div.runAjax(function () {
+				if (callback !== undefined && callback != null) {
+					callback();
+				}
+				jQuery(window).trigger("resize");
 			});
-		});
-	} else {
-	}
-});
+		}
+	};
+	
+	// Call this way	$(window).trigger("autoreload", [indiv,callback,targetdiv]);
+	$(window).on("autoreload", function (event, indiv, callback, targetdiv) {
+		autoreload($(indiv), callback, targetdiv);
+	});
+	
+	lQuery(".refreshautoreload").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(window).trigger("checkautoreload", [$(this)]);
+	});
+	
+	// Call this way	$(window).trigger("checkautoreload", [form]);
+	$(window).on("checkautoreload", function (event, indiv) {
+		var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
+		if (classes) {
+			var splitnames = classes.split(",");
+			$.each(splitnames, function (index, classname) {
+				$("." + classname).each(function (index, div) {
+					autoreload($(div), null, classname);
+				});
+			});
+		} else {
+		}
+	});
+	
+	//Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
+	$(window).on("setPageTitle", function (event, inElement) {
+		var element = inElement;
+		//entitytabs:
+		//search parent #entitypreviewdialog-body then search .entitydialog
+		var isentitydialog = $(element).closest("#entitypreviewdialog-body");
+		if (isentitydialog.length > 0) {
+			element = isentitydialog.find(".entitydialog");
+		}
+	
+		if (element === undefined || $(element).data("setpagetitle") == null) {
+			element = $("#applicationcontent");
+		}
+		if (element === undefined || $(element).data("setpagetitle") == null) {
+			element = $("#application");
+		}
+		var setpagetitle = $(element).data("setpagetitle");
+	
+		if (setpagetitle != null && inElement.data("addtopagetitle") != null) {
+			setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
+		}
+	
+		var titlepostfix = $("#application").data("titlepostfix");
+		var title = "";
+		if (setpagetitle) {
+			title = setpagetitle;
+		}
+		if (titlepostfix) {
+			title = title ? title + " - " + titlepostfix : titlepostfix;
+		}
+		document.title = title;
+	});
 
-//Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
-$(window).on("setPageTitle", function (event, inElement) {
-	var element = inElement;
-	//entitytabs:
-	//search parent #entitypreviewdialog-body then search .entitydialog
-	var isentitydialog = $(element).closest("#entitypreviewdialog-body");
-	if (isentitydialog.length > 0) {
-		element = isentitydialog.find(".entitydialog");
-	}
-
-	if (element === undefined || $(element).data("setpagetitle") == null) {
-		element = $("#applicationcontent");
-	}
-	if (element === undefined || $(element).data("setpagetitle") == null) {
-		element = $("#application");
-	}
-	var setpagetitle = $(element).data("setpagetitle");
-
-	if (setpagetitle != null && inElement.data("addtopagetitle") != null) {
-		setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
-	}
-
-	var titlepostfix = $("#application").data("titlepostfix");
-	var title = "";
-	if (setpagetitle) {
-		title = setpagetitle;
-	}
-	if (titlepostfix) {
-		title = title ? title + " - " + titlepostfix : titlepostfix;
-	}
-	document.title = title;
-});
+}); //document ready
+	
+	
