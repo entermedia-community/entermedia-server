@@ -451,6 +451,22 @@ public class ProjectModule extends BaseMediaModule
 		return col;
 
 	}
+	
+	public void loadPathParams(WebPageRequest inReq)
+	{
+		String template = (String) inReq.getPage().get("route-template");
+		String path = PathUtilities.extractNonIndexPagePath(inReq.getPath());
+		
+		if(template == null || path == null) 
+		{
+			return;
+		}
+	
+		Map<String, String> params = PathUtilities.extractPathParams(template, path);
+		
+		inReq.putPageValue("params", params);
+		
+	}
 
 	public LibraryCollection loadCollection(WebPageRequest inReq)
 	{
