@@ -2134,7 +2134,7 @@ public class AssetEditModule extends BaseMediaModule
 				continue;
 			}
 			String[] splits = name.split("\\.");
-			String detailid = splits[1];
+			String detailid = splits[0];
 			String sourcepath = null;
 			if (moduleid != null)
 			{							
