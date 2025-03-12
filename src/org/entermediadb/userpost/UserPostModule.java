@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -70,4 +71,50 @@ public class UserPostModule extends BaseMediaModule
 			searcher.saveData(comment);
 		}
 	}
+	
+	public void getPostLikes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String postid = inReq.getRequestParameter("userpostid");
+		String userid = inReq.getRequestParameter("userid");
+		
+		HitTracker exists = archive.query("userpostlikes").exact("userpost", postid).sort("dateDown").search(inReq);
+		inReq.putPageValue("userpostlikes", exists);
+		for (Iterator iterator = exists.iterator(); iterator.hasNext();) {
+			Data postlike = (Data) iterator.next();
+			if (postlike.get("user").equals(inReq.getUserName())) {
+				inReq.putPageValue("likedbyme", true);
+				return;
+			}
+		}
+	}
+	
+	public void togglePostLike(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String postid = inReq.getRequestParameter("userpostid");
+		String userid = inReq.getRequestParameter("userid");
+		if (postid != null && userid != null)
+		{
+			Data exists = archive.query("userpostlikes").exact("user", userid).exact("userpost", postid).searchOne();
+			if (exists != null) {
+				archive.getSearcher("userpostlikes").delete(exists, inReq.getUser());
+			}
+			else
+			{
+				exists = archive.getSearcher("userpostlikes").createNewData();
+				exists.setValue("user", userid);
+				exists.setValue("userpost", postid);
+				exists.setValue("date", new Date());
+				archive.getSearcher("userpostlikes").saveData(exists);
+				
+			}
+			
+			inReq.putPageValue("userpostid", postid);
+		}
+	}
+	
+	
 }
