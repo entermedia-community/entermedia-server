@@ -9,6 +9,7 @@
 	<div class="render-type-thumbnail position-relative mb-1" id="${detail.id}-preview">
 		#if($value && $value != "")
 			#set( $foundrow = $mediaarchive.getAsset($value)  )
+			
 			#if($foundrow)
 				#ifnull($searchhome)
 				$context.putPageValue("searchhome", "$apphome/components/results")
