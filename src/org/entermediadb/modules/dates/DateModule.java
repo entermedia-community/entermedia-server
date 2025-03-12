@@ -25,8 +25,16 @@ public class DateModule extends BaseModule
 	{
 		TimeZone zone = inReq.getTimeZone();
 
-		Calendar now = DateStorageUtil.getStorageUtil().createCalendar(zone);
+		Calendar now = null;
 		
+		if( zone == null)
+		{
+			now = Calendar.getInstance(); 
+		}
+		else
+		{
+			now = Calendar.getInstance(zone); 
+		}
 		Date date = now.getTime();
 		inReq.putPageValue("now",date);
 
