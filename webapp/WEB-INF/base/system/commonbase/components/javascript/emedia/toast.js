@@ -67,8 +67,11 @@ customToast = function (message, options = {}) {
 			!positive ? "error" : ""
 		}"><i class="bi bi-${icon}"></i></div>`;
 	}
+	if (options.loading) {
+		iconHtml = '<div class="toastLoader"></div>';
+	}
 	var toast = $(
-		`<div class="toastContainer" role="alert">
+		`<div class="toastContainer ${options.id || ""}" role="alert">
 			${iconHtml}
 			<div class="toastMessage">${message}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
@@ -86,12 +89,20 @@ customToast = function (message, options = {}) {
 				toast.remove();
 			}, 500);
 		}, autohideDelay);
+	} else {
+		setTimeout(function () {
+			if (!toast) return;
+			toast.addClass("hide");
+			setTimeout(function () {
+				if (!toast) return;
+				toast.remove();
+			}, 500);
+		}, 5000); //always hide after 5 seconds
 	}
 };
 
-function destroyToast(toast, success = true) {
+destroyToast = function (toast, success = true) {
 	if (!toast) return;
-	var msg = toast.find(".toastMessage").data(success ? "success" : "error");
 	toast
 		.find(".toastLoader")
 		.replaceWith(
@@ -99,7 +110,10 @@ function destroyToast(toast, success = true) {
 				? '<div class="toastSuccess"></div>'
 				: '<div class="toastError"></div>'
 		);
-	toast.find(".toastMessage").text(msg);
+	var msg = toast.find(".toastMessage").data(success ? "success" : "error");
+	if (msg) {
+		toast.find(".toastMessage").text(msg);
+	}
 	setTimeout(function () {
 		if (!toast) return;
 		toast.addClass("hide");
@@ -108,7 +122,7 @@ function destroyToast(toast, success = true) {
 			toast.remove();
 		}, 500);
 	}, 2000);
-}
+};
 
 $(window).on("successToast", function (_, uid) {
 	if (!uid) return;
