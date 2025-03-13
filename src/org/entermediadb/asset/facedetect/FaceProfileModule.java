@@ -153,12 +153,19 @@ public class FaceProfileModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 			locationarray = (JSONObject) parser.parse(boxlocation);
 			
-			double scale = MathUtils.divide(inputw, thumbwidth);
+			Double scale = MathUtils.divide(inputw, thumbwidth);
 			
-			Double x = (Double)locationarray.get("left") * scale;
-			Double y = (Double)locationarray.get("top") * scale;
-			Double w = (Double)locationarray.get("width") * scale;
-			Double h = (Double)locationarray.get("height") * scale;
+			Number left = (Number)locationarray.get("left");
+			Double x = left.doubleValue() * scale;
+			
+			Number top = (Number)locationarray.get("top");
+			Double y = top.doubleValue() * scale;
+			
+			Number width = (Number)locationarray.get("width");
+			Double w = width.doubleValue() * scale;
+			
+			Number height = (Number)locationarray.get("height");
+			Double h = height.doubleValue() * scale;
 			
 			newfacedata.put("locationx",x);
 			newfacedata.put("locationy",y);
