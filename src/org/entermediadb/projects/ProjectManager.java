@@ -1758,7 +1758,9 @@ public class ProjectManager implements CatalogEnabled
 				
 			}
 		}
-		QueryBuilder builder = getMediaArchive().query("userupload");
+		QueryBuilder builder = getMediaArchive().query("userpost");
+		
+		builder.exact("poststatus", "published");
 		
 		HitTracker topuploads = null;
 
@@ -1796,7 +1798,7 @@ public class ProjectManager implements CatalogEnabled
 			{
 				collectionquery.setHitsPerPage(200);
 				collectionquery.addSortBy("name");
-				log.info("Searching all uploads " + inReq.getPage().getPath() + " " + collectionquery);
+				log.info("Searching all user posts " + inReq.getPage().getPath() + " " + collectionquery);
 				HitTracker ids = getMediaArchive().getSearcher("librarycollection").search( collectionquery);
 				
 				SearchQuery orchild = builder.getSearcher().createSearchQuery();
@@ -1845,7 +1847,9 @@ public class ProjectManager implements CatalogEnabled
 		{
 			topuploads.setPage(Integer.parseInt(page));
 		}
-		inReq.putPageValue("topuploads", topuploads);
+		
+		inReq.putPageValue("userpost", topuploads);
+		
 		return topuploads;
 
 	}
