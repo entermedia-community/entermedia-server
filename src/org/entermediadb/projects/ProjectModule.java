@@ -452,7 +452,7 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 	
-	public void loadPathParams(WebPageRequest inReq)
+	public void loadUserPostFromPathParams(WebPageRequest inReq)
 	{
 		String template = (String) inReq.getPage().get("route-template");
 		String path = PathUtilities.extractNonIndexPagePath(inReq.getPath());
@@ -464,7 +464,9 @@ public class ProjectModule extends BaseMediaModule
 	
 		Map<String, String> params = PathUtilities.extractPathParams(template, path);
 		
-		inReq.putPageValue("params", params);
+		Data userpost = getMediaArchive(inReq).query("userpost").exact("urlname", params.get("slug")).searchOne();
+		
+		inReq.putPageValue("userpost", userpost);
 		
 	}
 
