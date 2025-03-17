@@ -73,6 +73,17 @@ public class BaseImporter extends EnterMediaObject
 	protected String fieldPrefix;
 	protected boolean fieldStripPrefix;
 	protected int importTotal = 0;
+	protected boolean fieldUpdateData = true;
+
+	public boolean isUpdateData()
+	{
+		return fieldUpdateData;
+	}
+
+	public void setUpdateData(boolean inUpdateData)
+	{
+		fieldUpdateData = inUpdateData;
+	}
 	protected boolean fieldLookUpLists = true;
 	
 	protected boolean isLookUpLists()
@@ -178,6 +189,11 @@ public class BaseImporter extends EnterMediaObject
 					continue;
 				}
 				Data target = findExistingRecord(trow);
+				if( target != null && !isUpdateData() )
+				{
+					continue;
+				}
+						
 				if( target == null)
 				{
 					String idCell = trow.get("id");
