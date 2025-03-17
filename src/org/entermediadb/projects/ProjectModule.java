@@ -1954,6 +1954,16 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("currentchannel", currentchannel);
 	}
 	
+	
+	public void loadProjectLikes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("collectionid");
+		
+		HitTracker collectionlikes = archive.query("librarycollectionlikes").exact("collectionid", collectionid).exact("enabled", true).search(inReq);
+		inReq.putPageValue("collikes", collectionlikes);
+		
+	}
 
 
 }
