@@ -1,0 +1,21 @@
+#set( $listid = $detail.getListId())
+#set( $parentcollectionid = $context.getRequestParameter("collectionid"))
+#ifnull($parentcollectionid ) #set( $$parentcollectionid = $librarycol.getId()) #end
+#set( $banks = $mediaarchive.getSearcher($listid).query().match("collectionid",$parentcollectionid).sort("name").search($context) )
+#set( $fieldid = "${detail.id}.value")
+#set( $projectid = $context.getRequestParameter($fieldid))
+#ifnull($projectid)
+	#set( $projectid = $val)
+#end
+
+#ifnull($projectid)
+	#if( !$banks.isEmpty() && $banks.size() == 1)
+		#set( $projectid = $banks.get(0).getId() )  ##TODO: remeber last one picked
+	#end	
+#end
+<select name="${detail.getId()}.value" class="select2 form-control" style="width:200px;">
+<option value=""></option> 
+#foreach( $bank in $banks )
+	<option value="$bank.getId()" #if($projectid == $bank.getId()) selected #end>#datatext($bank,"name")</option>
+#end
+</select>
