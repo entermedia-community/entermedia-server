@@ -387,7 +387,7 @@ lQuery("textarea.htmleditor").livequery(function () {
 	const options = {
 		hideImagePicker: true,
 		hideSaving: true,
-		hideSourceEditing: true,
+		// hideSourceEditing: true,
 	};
 	if (uid && window.CK5Editor[uid]) {
 		window.CK5Editor[uid]
