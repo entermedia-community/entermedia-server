@@ -1,6 +1,6 @@
 
 #if($errors.get($detail.id) == "error-matched")
-	#set($val = "")
+	#set($value = "")
 	<span style="color: red;">
 	[[Sorry - those did not match]]
 	</span><br>
@@ -8,9 +8,9 @@
 
 <div id="${detail.id}-matched">
 
-<input class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="#esc($!val)" size="30" type="text">
+<input class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="#esc($!value)" size="30" type="text">
 <br/>
 <span class="field-label">[[Retype:]]</span>
 
-<input class="${detail.id}" name="${detail.getId()}match.value" value="#esc($!val)" id="${detail.id}match.value"  size="30" type="text" >
+<input class="${detail.id}" name="${detail.getId()}match.value" value="#esc($!value)" id="${detail.id}match.value"  size="30" type="text" >
 </div> 

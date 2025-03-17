@@ -13,6 +13,6 @@
 <select name="${fieldname}.value">
 <option value=""></option>
 #foreach( $hit in $hits)
-	<option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit</option>
+	<option #if ($value && $value == $hit.id) selected #end value="$hit.id">$hit</option>
 #end
 </select>
