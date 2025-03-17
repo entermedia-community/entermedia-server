@@ -443,27 +443,30 @@ public class PresetCreator
 		queueConversions(inArchive, tasksearcher, inAsset);
 	}
 	
+	
+	/**
+	 * @deprecated just use inGeneraedName
+	 * 
+	 */
 	public String exportOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
 	{ 
 		String usefile = inGeneratedName;
-		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
-		String basename = PathUtilities.extractPageName(inGeneratedName);
-		String baseextension = PathUtilities.extractPageType(inGeneratedName);
-		Data preset = getCachedPresetByExternalName(inArchive,rendertype,basename + ".webp");
-		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
-		{
-			usefile = basename + ".webp";
-		}
-		else
-		{
-			if(baseextension != null)
-			{
-				usefile = basename + "." + baseextension;
-			}
-			else {
-				usefile = basename + ".jpg";
-			}
-		}
+//		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
+//		Data preset = getCachedPresetByExternalName(inArchive,rendertype,inGeneratedName);
+//		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
+//		{
+//			usefile = basename + ".webp";
+//		}
+//		else
+//		{
+//			if(baseextension != null)
+//			{
+//				usefile = basename + "." + baseextension;
+//			}
+//			else {
+//				usefile = basename + ".jpg";
+//			}
+//		}
 		return usefile;
 	}
 
