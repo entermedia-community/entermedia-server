@@ -1,7 +1,7 @@
 #if($context.getRequestParameter("viewonly") == true)
-	#esc($val)
+	#esc($value)
 #else
-<input size="6" maxlength="6" class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="#esc($!val)" size="10" type="text" onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');"> (no spaces)
+<input size="6" maxlength="6" class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="#esc($!value)" size="10" type="text" onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');"> (no spaces)
 #end
 <!-- 
 

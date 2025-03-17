@@ -2,6 +2,6 @@
 
 <select name="${fieldname}.value" class="form-control form-control-sm">
 #foreach ($number in [1..31])
-	<option #if ($val && $val == $number) selected #end value="$number">$number</option>
+	<option #if ($value && $value == $number) selected #end value="$number">$number</option>
 #end
 </select>

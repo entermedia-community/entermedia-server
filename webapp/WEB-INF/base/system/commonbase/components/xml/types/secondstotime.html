@@ -30,7 +30,7 @@
 <div class="${detail.id}-kwmap kwmap-field">
 			#set($map = $data.getValue($detail.getId()))
 			#set($dlocale = $context.getLanguage() )
-			<input type="hidden" value="#esc($val)" name="$!{detailprefix}${detail.getId()}.value" /> ##if this really needed?
+			<input type="hidden" value="#esc($value)" name="$!{detailprefix}${detail.getId()}.value" /> ##if this really needed?
 			
 			#set($map_count = 0)
 			<div class="languageselector pull-left">
@@ -56,10 +56,10 @@
 	</div>
 	<div class="clearfix" ></div>
 #else
-	#if( !$val || $val.length() < 30)
-		<input type="text" class="form-control detail_$detail.id textinput autosubmited #if($detail.isRequired() && !$multiedit) required #end" #if( $autocomplete ) autocomplete="$autocomplete" #end value="#esc($val)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"  onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" />
+	#if( !$value || $value.length() < 30)
+		<input type="text" class="form-control detail_$detail.id textinput autosubmited #if($detail.isRequired() && !$multiedit) required #end" #if( $autocomplete ) autocomplete="$autocomplete" #end value="#esc($value)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"  onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" />
 	#else
-		<textarea name="$!{detailprefix}${detail.getId()}.value" class="form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" onChange="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" id="${detail.getId()}.value" cols="40" rows="5" >#esc($val)</textarea>
+		<textarea name="$!{detailprefix}${detail.getId()}.value" class="form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" onChange="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" id="${detail.getId()}.value" cols="40" rows="5" >#esc($value)</textarea>
 	#end
 #end
 

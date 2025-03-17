@@ -29,16 +29,24 @@
 	#end		
 #else
 
+ 
+
 	#ifnotnull($value)
 		#set($dmax = 150)
 		#if($detail.id == "name")
 			#set($dmax = 80)
 		#end
-		#if( $value.length() > 80)
-			<span class="trim-text" data-max="$dmax">#escarea($value)</span>
-			<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
+		
+		#if ($detail.dataType == "list")
+			#escarea($!value)
 		#else
-			#escarea($!value)	
+		
+			#if(  $value.length() > 80)
+				<span class="trim-text" data-max="$dmax">#escarea($value)</span>
+				<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
+			#else
+				#escarea($!value)	
+			#end
 		#end
 	#end
 #end	

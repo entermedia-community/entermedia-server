@@ -53,8 +53,8 @@
 	
 	##Verify filters Value
 	#if(!$after || !$before)
-		#if($val)
-			#set($dates = $val.split("\-"))
+		#if($value)
+			#set($dates = $value.split("\-"))
 			#set($after = $dates[0].trim())
 			#set($before = $dates[1].trim())
 		#end
@@ -65,7 +65,7 @@
 		updateDateInput${inputid} = function(value)
 		{
 			var form = $("#dateinput${inputid}").closest('form');
-			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
+			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!value" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
 			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
 						<input type="text" class="datepicker form-control" data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
 						 \

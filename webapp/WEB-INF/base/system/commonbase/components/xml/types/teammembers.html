@@ -5,7 +5,7 @@
 #set ($fieldname = $detail.getId()) ##lastmodified
 #set( $valueid = "$fieldname" )
 #ifnull($memberid)
-	#set( $memberid = $val)
+	#set( $memberid = $value)
 #end
 #if( !$values )
 	#set($values = $data.getValues($detail.id))
