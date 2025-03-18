@@ -1712,20 +1712,20 @@ public class ProjectModule extends BaseMediaModule
 				exists.setValue("collectionid", referralcode); //Assume this is a project could be OI from community area tho
 				mediaArchive.saveData("collectivelinkreferralcode", exists);
 
-				Data collection = (Data) mediaArchive.getCachedData("librarycollection", referralcode);
-				if (collection == null)
-				{
-					Searcher searcher = mediaArchive.getSearcher("librarycollection");
-					Data librarycol = searcher.createNewData();
-					librarycol.setId(referralcode);
-					librarycol.setName(referralcode);
-					librarycol.setValue("collectiontype", "4");
-					searcher.saveData(librarycol);
-				}
+//				Data collection = (Data) mediaArchive.getCachedData("librarycollection", referralcode);
+//				if (collection == null)
+//				{
+//					Searcher searcher = mediaArchive.getSearcher("librarycollection");
+//					Data librarycol = searcher.createNewData();
+//					librarycol.setId(referralcode);
+//					librarycol.setName(referralcode);
+//					librarycol.setValue("collectiontype", "4");
+//					searcher.saveData(librarycol);
+//				}
 
 			}
 			Data newcode = mediaArchive.getSearcher("collectivelinktracker").createNewData();
-			newcode.setValue("collectionid", exists.getValue("collectionid"));
+			//newcode.setValue("collectionid", exists.getValue("collectionid"));
 			newcode.setValue("referralcode", exists.getId());
 
 			populateTracker(inReq, newcode);
