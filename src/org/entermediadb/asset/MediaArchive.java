@@ -2467,6 +2467,28 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return webmail;
 	}
+	
+	
+	public TemplateWebEmail createEmailFrom(String fromemail, String fromemailname, User inSendTo, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = null;
+		try
+		{
+			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription());
+			if (to != null) {
+				webmail =  (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");
+				webmail.setRecipient(to);
+				webmail.setFrom(fromemail);
+				webmail.setFromName(fromemailname);
+				webmail.setMailTemplatePath(inTemplatePath);
+			}
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
 
 
 	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
