@@ -220,8 +220,12 @@ function connect() {
 		}
 
 		scrollToChat();
+		
+		var params = {};
+		params.id = message.id;
+		params.channel = message.channel;
 
-		jQuery.get(url, message, function (data) {
+		jQuery.get(url, params, function (data) {
 			listarea.append(data);
 			$(document).trigger("domchanged");
 			scrollToChat();

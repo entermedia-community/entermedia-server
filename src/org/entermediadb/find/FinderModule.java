@@ -17,6 +17,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -682,7 +684,101 @@ public class FinderModule extends BaseMediaModule
 		
 
 	}
+	
+	
+	public void aiSearchModule(WebPageRequest inReq) throws Exception
+	{
 
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Data data = (Data) inReq.getPageValue("data");
+
+		//String function = data.get("function");
+		String arguments = data.get("arguments");
+		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
+		String keywords = (String) d.get("keywords");
+
+		Data module = (Data)inReq.getPageValue("module");
+		if( module == null )
+		{
+			//Should not have run damSearch
+			log.info("Should not have run damSearch without entity");
+			return;
+		}
+		else
+		{
+			HitTracker hits = null;
+			if(keywords.equalsIgnoreCase("all"))
+			{
+				hits = archive.query(module.getId()).all().search(inReq);
+			}
+			else
+			{
+				hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
+			}
+			inReq.putPageValue("hits", hits);
+		}
+
+	}
+	
+	
+	public void aiSearchAll(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Data data = (Data) inReq.getPageValue("data");
+
+		//String function = data.get("function");
+		String arguments = data.get("arguments");
+		JSONObject d = (JSONObject) new JSONParser().parse(arguments); 
+		String keywords = (String) d.get("keywords");
+		
+		if( keywords == null)
+		{
+			return;
+		}		
+
+		keywords = keywords.replace(" ", " OR ");
+		
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",keywords).hitsPerPage(30);
+		dq.getQuery().setIncludeDescription(true);
+		
+		Collection searchmodules = new ArrayList();
+		String mainsearchmodule = inReq.getRequestParameter("mainsearchmodule");
+		if(mainsearchmodule != null) {
+			searchmodules.add(mainsearchmodule);
+			dq.getQuery().setValue("searchtypes", searchmodules);
+		}
+		else 
+		{
+			searchmodules = loadUserSearchTypes(inReq);
+			Collection searchmodulescopy = new ArrayList(searchmodules);
+			searchmodulescopy.remove("asset");
+			dq.getQuery().setValue("searchtypes", searchmodulescopy);
+		}
+		
+		
+		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
+		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
+		
+		HitTracker unsorted = dq.search(); //With permissions?
+		ListHitTracker hits = new ListHitTracker(unsorted.getPageOfHits());
+		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",keywords).hitsPerPage(15);
+			assetdq.getQuery().setIncludeDescription(true);
+			HitTracker assetunsorted = assetdq.search(inReq);
+			hits.addAll(assetunsorted.getPageOfHits());
+		
+		}		
+
+		inReq.putPageValue("hits", hits);
+
+	}
+
+	
+	
 	protected void collectMatches(Map<String, String> keywordsLower, String query, HitTracker unsorted)
 	{
 		String lowerquery = query.toLowerCase();

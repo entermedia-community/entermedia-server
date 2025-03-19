@@ -745,6 +745,8 @@ public class ChatModule extends BaseMediaModule
 //		server.broadcastMessage(archive.getCatalogId(), responseMap);
 
 		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
+		
+		
 		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
 		if (response.isToolCall())
@@ -827,7 +829,10 @@ public class ChatModule extends BaseMediaModule
 		try
 		{
 			String filename = function;
-			if( function.startsWith("search") )
+			if( function.equals("searchall") ) {
+				filename = "search-all";
+			}
+			else if( function.startsWith("search") )
 			{
 				String moduleid= function.substring("search".length());
 				Data module = archive.getCachedData("module",moduleid);
@@ -868,39 +873,6 @@ public class ChatModule extends BaseMediaModule
 
 	}
 
-	public void damSearch(WebPageRequest inReq) throws Exception
-	{
-
-		MediaArchive archive = getMediaArchive(inReq);
-
-		Data data = (Data) inReq.getPageValue("data");
-
-		//String function = data.get("function");
-		String arguments = data.get("arguments");
-		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
-		String keywords = (String) d.get("keywords");
-
-		Data module = (Data)inReq.getPageValue("module");
-		if( module == null )
-		{
-			//Should not have run damSearch
-			log.info("Should not have run damSearch without entity");
-			return;
-		}
-		else
-		{
-			HitTracker hits = null;
-			if(keywords.equalsIgnoreCase("all"))
-			{
-				hits = archive.query(module.getId()).all().search(inReq);
-			}
-			else
-			{
-				hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
-			}
-			inReq.putPageValue("hits", hits);
-		}
-
-	}
+	
 
 }

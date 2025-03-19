@@ -89,14 +89,10 @@ public abstract class BaseLLMManager implements LLMManager {
 			log.info("Loading input: " + inTemplate);
 			WebPageRequest	request = inReq.copy(template);
 			PathEventManager manager = (PathEventManager) getModuleManager().getBean( "pathEventManager");
-
-
 			
 			StringWriter output = new StringWriter();
 			request.setWriter(output);
 			PageStreamer streamer = getEngine().createPageStreamer(template, request);
-			
-			
 				getEngine().executePathActions(request);
 				if( !request.hasRedirected())
 				{
@@ -109,6 +105,7 @@ public abstract class BaseLLMManager implements LLMManager {
 			
 			streamer.include(template, request);
 			String string = output.toString();
+			//log.info(inTemplate +" Output: " + string);
 			return string;
 		} catch (OpenEditException e) {
 			throw e;
