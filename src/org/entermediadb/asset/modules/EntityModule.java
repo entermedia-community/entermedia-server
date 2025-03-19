@@ -678,7 +678,7 @@ public class EntityModule extends BaseMediaModule
 
 		String categorypath = inReq.getRequestParameter("categorypath");
 		
-		String status = inReq.getRequestParameter("desktopimportstatus");
+		String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
 		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 		Data folder = (Data) searcher.query().exact("categorypath", categorypath).searchOne();
@@ -689,32 +689,36 @@ public class EntityModule extends BaseMediaModule
 			String moduleid = inReq.getRequestParameter("moduleid");
 			String desktopid = inReq.getRequestParameter("desktop");
 			
+			
 			Data entity = archive.getData(moduleid, entityid);
 			
 			folder = archive.getSearcher("desktopsyncfolder").createNewData();
 			
+			String isdownload = inReq.getRequestParameter("isdownload");
+			if(isdownload == "true") {
+				folder.setValue("isdownload", true);
+			}
+			
+			folder.setValue("categorypath", categorypath);
+			String categorybreadcrumb = categorypath.replace("/", " &gt; ");
+			folder.setValue("categorybreadcrumb", categorybreadcrumb);
 			folder.setValue("desktop",desktopid);
 			folder.setValue("module",moduleid);
 			folder.setName(entity.getName());
-
-			//Optional
-			String localpath = inReq.getRequestParameter("localpath");
-			folder.setValue("localpath", localpath);
-			folder.setValue("lastscandate", new Date());
-			folder.setValue("categorypath", categorypath);
 			folder.setValue("entityid", entity.getId());
 			archive.saveData("desktopsyncfolder", folder);
 		}
 		
-		String desktopimportstatus = (String) folder.getValue("desktopimportstatus");
-		
 		if(desktopimportstatus != null) 
 		{
 			folder.setValue("desktopimportstatus", desktopimportstatus);
+			if(desktopimportstatus.equals("scan-started"))
+			{
+				folder.setValue("lastscandate", new Date());
+			}
 			searcher.saveData(folder, null);
 		}
-
-		inReq.putPageValue("desktopimportstatus", desktopimportstatus);
+		
 		
 		Collection syncfolders = searcher.query().sort("name").search();
 		
