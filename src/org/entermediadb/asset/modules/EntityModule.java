@@ -682,7 +682,30 @@ public class EntityModule extends BaseMediaModule
 		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 		Data folder = (Data) searcher.query().exact("categorypath", categorypath).searchOne();
+		
+		if(folder == null)
+		{
+			String entityid = inReq.getRequestParameter("entityid");
+			String moduleid = inReq.getRequestParameter("moduleid");
+			String desktopid = inReq.getRequestParameter("desktop");
+			
+			Data entity = archive.getData(moduleid, entityid);
+			
+			folder = archive.getSearcher("desktopsyncfolder").createNewData();
+			
+			folder.setValue("desktop",desktopid);
+			folder.setValue("module",moduleid);
+			folder.setName(entity.getName());
 
+			//Optional
+			String localpath = inReq.getRequestParameter("localpath");
+			folder.setValue("localpath", localpath);
+			folder.setValue("lastscandate", new Date());
+			folder.setValue("categorypath", categorypath);
+			folder.setValue("entityid", entity.getId());
+			archive.saveData("desktopsyncfolder", folder);
+		}
+		
 		String desktopimportstatus = (String) folder.getValue("desktopimportstatus");
 		
 		if(desktopimportstatus != null) 
@@ -694,6 +717,7 @@ public class EntityModule extends BaseMediaModule
 		inReq.putPageValue("desktopimportstatus", desktopimportstatus);
 		
 		Collection syncfolders = searcher.query().sort("name").search();
+		
 		inReq.putPageValue("syncfolders", syncfolders);
 	}
 	
