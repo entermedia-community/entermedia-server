@@ -382,7 +382,7 @@ function play() {
 }
 
 /*-------Start Push and Notification --------*/
-const pushServerPublicKey =
+var pushServerPublicKey =
 	"BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
 
 function registerServiceWorker() {
@@ -435,8 +435,6 @@ function hideEmojiPicker() {
 		});
 	}
 }
-
-
 
 jQuery(document).ready(function () {
 	lQuery("#chatter-msg").livequery(function () {
@@ -503,7 +501,6 @@ jQuery(document).ready(function () {
 		$(this).runAjax();
 	});
 
-
 	lQuery("#emojinav a").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -552,12 +549,11 @@ jQuery(document).ready(function () {
 			hideEmojiPicker();
 		}
 	}
-	
-	
+
 	lQuery("#closeattachfileonchat").livequery("click", function () {
 		hideAttachFile();
 	});
-	
+
 	lQuery(window).livequery("click", hideChatPickers);
 	lQuery(".modal").livequery("click", hideChatPickers);
 });
