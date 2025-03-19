@@ -39,7 +39,7 @@ public class BaseEnterMediaTest extends BaseTestCase
 	
 	public MediaArchive getMediaArchive()
 	{
-		return getMediaArchive("entermedia/catalogs/testcatalog");
+		return getMediaArchive(getFixture().getCategoryId());
 	}
 	
 	protected CategoryEditor getCategoryEditor()
@@ -83,7 +83,7 @@ public class BaseEnterMediaTest extends BaseTestCase
 	    //executed only once, before the first test
 		log.info("Reindex start");
 		
-			MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+			MediaArchive archive = getMediaArchive(getFixture().getCategoryId());
 			archive.getAssetSearcher().reIndexAll();
 			Thread.sleep(1000);
 

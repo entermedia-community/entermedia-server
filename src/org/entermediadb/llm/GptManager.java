@@ -82,6 +82,10 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 
 		String apikey = getMediaArchive().getCatalogSettingValue("gpt-key");
 		assert apikey != null;
+		inReq.putPageValue("model",inModel);
+		inReq.putPageValue("gpt",this);
+		inReq.putPageValue("mediaarchive",getMediaArchive());
+		
 		String input = loadInputFromTemplate(inReq, inTemplate);
 		log.info(input);
 		String endpoint = getApiEndpoint();

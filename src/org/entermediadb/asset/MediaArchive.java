@@ -3138,7 +3138,10 @@ public class MediaArchive implements CatalogEnabled
 	{
 		
 		Data modelinfo = query("llmmodel").exact("modelid",inModel).searchOne();
-
+		if( modelinfo == null)
+		{
+			throw new OpenEditException("Could not find model " + inModel);
+		}
 		String llm = modelinfo.get("llmtype");
 		return (LLMManager) getBean(llm + "Manager");
 	}
