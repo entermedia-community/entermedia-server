@@ -676,34 +676,25 @@ public class EntityModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		String[] ids = inReq.getRequestParameters("id");
+		String categorypath = inReq.getRequestParameter("categorypath");
 		
 		String status = inReq.getRequestParameter("desktopimportstatus");
 		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
-		Collection folders = searcher.query().ids(ids).sort("name").search();
-		
-		List tosave = new ArrayList();
-		
-		for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
-			Data folder = (Data) iterator.next();	
+		Data folder = (Data) searcher.query().exact("categorypath", categorypath).searchOne();
 
-			String desktopimportstatus = (String) folder.getValue("desktopimportstatus");
-			Boolean isSame = false;
-			if(desktopimportstatus != null) {
-				isSame = desktopimportstatus.equals(status);
-			}
-			if(!isSame) {
-				folder.setValue("desktopimportstatus", status);
-			} else {
-				status = desktopimportstatus;
-			}
- 
-			tosave.add(folder);
+		String desktopimportstatus = (String) folder.getValue("desktopimportstatus");
+		
+		if(desktopimportstatus != null) 
+		{
+			folder.setValue("desktopimportstatus", desktopimportstatus);
+			searcher.saveData(folder, null);
 		}
-		searcher.saveAllData(tosave, null);
-		inReq.putPageValue("scanstatus", status);
-		inReq.putPageValue("syncfolders", tosave);
+
+		inReq.putPageValue("desktopimportstatus", desktopimportstatus);
+		
+		Collection syncfolders = searcher.query().sort("name").search();
+		inReq.putPageValue("syncfolders", syncfolders);
 	}
 	
 	public void createEntitiesForFolders(WebPageRequest inReq) throws Exception
@@ -906,13 +897,14 @@ public class EntityModule extends BaseMediaModule
 		String entityid = inReq.getRequestParameter("entityid");
 		String moduleid = inReq.getRequestParameter("moduleid");
 		String desktopid = inReq.getRequestParameter("desktop");
+		String categorypath = inReq.getRequestParameter("categorypath");
 		
+		Data entity = archive.getData(moduleid, entityid);
 		
-		Data entity = archive.getData(moduleid,entityid);
-		Data folder = archive.query("desktopsyncfolder").exact("entityid",entityid).exact("desktop",desktopid).searchOne();
+		Data folder = archive.query("desktopsyncfolder").exact("categorypath", categorypath).exact("desktop", desktopid).searchOne();
 		if( folder == null)
 		{
-			folder = archive.getSearcher("desktopsyncfolder").createNewData(); //tmp
+			folder = archive.getSearcher("desktopsyncfolder").createNewData();
 		}
 		
 		folder.setValue("desktop",desktopid);
@@ -920,17 +912,12 @@ public class EntityModule extends BaseMediaModule
 		folder.setName(entity.getName());
 
 		//Optional
-		String abspath = inReq.getRequestParameter("abspath");
-		folder.setValue("localpath",abspath);
+		String localpath = inReq.getRequestParameter("localpath");
+		folder.setValue("localpath", localpath);
 		folder.setValue("lastscandate", new Date());
-		folder.setValue("categorypath",entity.getValue("uploadsourcepath"));
-		folder.setValue("entityid",entity.getId());
-		archive.saveData("desktopsyncfolder",folder);
-		
-		Data module = archive.getCachedData("module", moduleid);
-		inReq.putPageValue("module", module);
-		inReq.putPageValue("verifynow", true);
-
+		folder.setValue("categorypath", categorypath);
+		folder.setValue("entityid", entity.getId());
+		archive.saveData("desktopsyncfolder", folder);
 	}
 
 	
