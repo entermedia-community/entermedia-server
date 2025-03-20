@@ -140,7 +140,8 @@ $!jsonUtil.toJsonArray($list)
 #macro(elidemiddle $text $maxLength) 
 #if($text.length() <= $maxLength)
 $text
-#end
+#else
 #set($charsPerSide = ($maxLength - 3) / 2)
 $text.substring(0, $charsPerSide)...$text.substring($text.length() - $charsPerSide)
+#end
 #end
