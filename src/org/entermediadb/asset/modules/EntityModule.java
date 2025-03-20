@@ -677,6 +677,8 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String categorypath = inReq.getRequestParameter("categorypath");
+		categorypath = categorypath.replaceAll("\\", "/");
+		categorypath = categorypath.replaceAll("/+", "/");
 		
 		String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
 		
