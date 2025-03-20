@@ -696,7 +696,7 @@ public class EntityModule extends BaseMediaModule
 			folder = archive.getSearcher("desktopsyncfolder").createNewData();
 			
 			folder.setValue("categorypath", categorypath);
-			String categorybreadcrumb = categorypath.replace("/", " &gt; ");
+			String categorybreadcrumb = categorypath.replace("/", " &rsaquo; ");
 			folder.setName(categorybreadcrumb);
 			folder.setValue("desktop",desktopid);
 			folder.setValue("module",moduleid);
