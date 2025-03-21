@@ -236,10 +236,13 @@ function connect() {
 		/*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
 		var user = app.data("user");
 
-		if (message.user != user) {
-			/*Desktop notifications - mando*/
+		if (message.user != user && message.user != "agent") {
 			function showNotification() {
-				if ($("#aichatsearch").length) return;
+				/*
+				if ($("#aichatsearch").length > 0) {
+					return;
+				}
+				*/
 				const header = "New Message";
 				if (message.name !== undefined) {
 					header = message.name;
@@ -390,8 +393,14 @@ var pushServerPublicKey =
 	"BIN2Jc5Vmkmy-S3AUrcMlpKxJpLeVRAfu9WBqUbJ70SJOCWGCGXKY-Xzyh7HDr6KbRDGYHjqZ06OcS3BjD7uAm8";
 
 function registerServiceWorker() {
+	var app = jQuery("#application");
+	var apphome = app.data("apphome");
+	var home = app.data("home");
+	if (home !== undefined) {
+		apphome = home + apphome;
+	}
 	if (navigator.serviceWorker !== undefined) {
-		navigator.serviceWorker.register("sw.js");
+		navigator.serviceWorker.register(apphome + "/components/chatterbox/sw.js");
 	}
 }
 

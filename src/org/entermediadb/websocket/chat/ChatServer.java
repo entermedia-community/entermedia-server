@@ -189,7 +189,7 @@ public class ChatServer
 		{
 			final ChatManager manager = getChatManager(catalogid);
 			
-			log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
+			//log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + " Clients");
 			
 			
 			String userid = null;

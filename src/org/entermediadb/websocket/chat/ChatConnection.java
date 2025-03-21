@@ -222,8 +222,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			String command = (String) map.get("command");
 			if( command != null && !command.equals("keepalive"))
 			{
-				log.info("Command was: " + command);
-				log.info(map);
+				//log.info("Command was: " + command);
+				//log.info(map);
 			}
 			if ("keepalive".equals(command)) //Return all the annotation on this asset
 			{
@@ -294,8 +294,6 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 					name = "";
 				}
 				map.put("name", name);
-				
-				
 				map.put("message", content);
 				
 				getChatServer().broadcastMessage(catalogid,map);
