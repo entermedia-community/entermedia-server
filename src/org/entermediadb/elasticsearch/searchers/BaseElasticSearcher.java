@@ -2960,7 +2960,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		
 		PropertyDetail alwaysvisible = getDetail("securityalwaysvisible");
 
-		if (alwaysvisible == null)
+		if (alwaysvisible != null)
 		{
 			if(  Boolean.parseBoolean( inData.get("securityalwaysvisible") ) )
 			{
@@ -2968,6 +2968,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				return;
 			}
 		}
+		
+		Collection combinedusers = new HashSet();
+		Collection combinedgroups = new HashSet();
+		Collection combinedroles = new HashSet();
 		
 		boolean securityenabled = false;
 		Collection users = inData.getValues("customusers");
@@ -2978,18 +2982,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			if (users != null)
 			{
-				inContent.field("viewusers", users);
+				combinedusers.addAll(users);
 			}
 			if (groups != null)
 			{
-				inContent.field("viewgroups", groups);
+				combinedgroups.addAll(groups);
 			}
 			if (roles != null)
 			{
-				inContent.field("viewroles", roles);
+				combinedroles.addAll(roles);
 			}
-			inContent.field("securityenabled", true);
-			return;
 		}
 		
 				
@@ -3021,18 +3023,26 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 						{
 							c= (Category) searcher.getCategory((String)obj);
 						}
-						while (c != null)
+						if (c == null)
 						{
-
-							users = c.getValues("viewusers");
-							groups = c.getValues("viewgroups");
-							roles = c.getValues("viewroles");
-							if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
-							{
-								securityenabled = true;
-								break;
-							}
-							c = c.getParentCategory();
+							continue;
+						}
+						
+						users = c.findValues("viewusers");
+						groups = c.findValues("viewgroups");
+						roles = c.findValues("viewroles");
+							
+						if (users != null)
+						{
+							combinedusers.addAll(users);
+						}
+						if (groups != null)
+						{
+							combinedgroups.addAll(groups);
+						}
+						if (roles != null)
+						{
+							combinedroles.addAll(roles);
 						}
 
 					}
@@ -3040,17 +3050,20 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			}
 		}
-		if (users != null)
+		if (!combinedusers.isEmpty())
 		{
-			inContent.field("viewusers", users);
+			inContent.field("viewusers", combinedusers);
+			securityenabled = true;
 		}
-		if (groups != null)
+		if (!combinedgroups.isEmpty())
 		{
-			inContent.field("viewgroups", groups);
+			inContent.field("viewgroups", combinedgroups);
+			securityenabled = true;
 		}
-		if (roles != null)
+		if (!combinedroles.isEmpty())
 		{
-			inContent.field("viewroles", roles);
+			inContent.field("viewroles", combinedroles);
+			securityenabled = true;
 		}
 		inContent.field("securityenabled", securityenabled);
 
