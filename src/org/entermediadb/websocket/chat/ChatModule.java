@@ -725,7 +725,7 @@ public class ChatModule extends BaseMediaModule
 			String functionName = response.getFunctionName();
 			JSONObject arguments = response.getArguments();
 
-			 String json = arguments.toJSONString();
+			String json = arguments.toJSONString();
 			// Create and save function call message
 			Data functionMessage = chats.createNewData();
 			functionMessage.setValue("user", "agent");
@@ -788,9 +788,10 @@ public class ChatModule extends BaseMediaModule
 
 		//String function = messageToUpdate.get("function");
 		String arguments = messageToUpdate.get("arguments");
-		JSONObject args = (JSONObject) new JSONParser().parse(arguments);
-		inReq.putPageValue("args", args);
+			//JSONObject args = (JSONObject) new JSONParser().parse(arguments);
+			//inReq.putPageValue("args", args);
 		String response;
+		Data module = null;
 		
 		try
 		{
@@ -801,35 +802,35 @@ public class ChatModule extends BaseMediaModule
 			else if( functionName.startsWith("search") )
 			{
 				String moduleid= functionName.substring("search".length());
-				Data module = archive.getCachedData("module",moduleid);
-				inReq.putPageValue("module",module);
+				module = archive.getCachedData("module",moduleid);
 				filename = "search-module";
 				//Tell it to use emediasearchformat
 			}
 			
+			inReq.putPageValue("module",module);
 			inReq.putPageValue("data", messageToUpdate);
 			
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
-			log.info("function" + functionName + "returned : " + response);
+			//log.info("Function " + functionName + " returned : " + response);
 
 			messageToUpdate.setValue("functionresponse", response);
 			messageToUpdate.setValue("message", response);
+			
 			Searcher chats = archive.getSearcher("chatterbox");
 			chats.saveData(messageToUpdate);
 			
 			JSONObject functionMessageUpdate = new JSONObject();
 			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("function", functionName);
-			functionMessageUpdate.put("arguments", arguments);
+			//functionMessageUpdate.put("function", functionName);
+			//functionMessageUpdate.put("arguments", arguments);
 			functionMessageUpdate.put("user", "agent");
-			
 			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
 			functionMessageUpdate.put("messageid", messageToUpdate.getId());
 			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
-
+			
 		}
 		catch (Exception e)
 		{
