@@ -32,6 +32,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
@@ -680,10 +681,19 @@ public class EntityModule extends BaseMediaModule
 		categorypath = categorypath.replace("\\", "/");
 		categorypath = categorypath.replaceAll("/+", "/");
 		
+		String isdownload = inReq.getRequestParameter("isdownload");
+		
 		String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
 		
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
-		Data folder = (Data) searcher.query().exact("categorypath", categorypath).searchOne();
+		
+		QueryBuilder query = searcher.query().exact("categorypath", categorypath);
+		if(isdownload != null && isdownload.equals("true"))
+		{
+			query = query.exact("isdownload", true);
+		}
+		
+		Data folder = (Data) query.searchOne();
 		
 		if(folder == null)
 		{
@@ -696,17 +706,17 @@ public class EntityModule extends BaseMediaModule
 			folder = archive.getSearcher("desktopsyncfolder").createNewData();
 			
 			folder.setValue("categorypath", categorypath);
-			String categorybreadcrumb = categorypath.replace("/", " &rsaquo; ");
-			folder.setName(categorybreadcrumb);
+			
+			if(isdownload != null && isdownload.equals("true")) {
+				folder.setValue("isdownload", true);
+			}
+			
+			String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
+			folder.setName(namebreadcrumb);
 			folder.setValue("desktop",desktopid);
 			folder.setValue("module",moduleid);
 			folder.setValue("entityid", entity.getId());
 			archive.saveData("desktopsyncfolder", folder);
-		}
-		
-		String isdownload = inReq.getRequestParameter("isdownload");
-		if(isdownload == "true") {
-			folder.setValue("isdownload", true);
 		}
 		
 		String completedfiles = inReq.getRequestParameter("completedfiles");
