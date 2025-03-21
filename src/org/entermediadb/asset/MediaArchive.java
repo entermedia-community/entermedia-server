@@ -61,6 +61,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseCompositeData;
 import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
+import org.openedit.data.DataWithSearcher;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
@@ -254,6 +255,10 @@ public class MediaArchive implements CatalogEnabled
 		fieldReplacer = inReplacer;
 	}
 	
+	public String replaceFromMask(String inMask, Map extraVals, String locale) 
+	{
+		return replaceFromMask(inMask, null, null, extraVals, locale);
+	}
 	
 	public String replaceFromMask(String inMask, Data inData, String inSearchType,  Map extraVals, String locale) 
 	{
@@ -261,6 +266,13 @@ public class MediaArchive implements CatalogEnabled
 		Replacer replacer = getReplacer();
 		
 		Map newvals = new HashMap();
+		
+		if (inData != null) 
+		{
+			DataWithSearcher data = new DataWithSearcher(getSearcherManager(), getCatalogId(), inSearchType, inData);
+			newvals.put("data", data);
+		}
+		
 		newvals.put("formatteddate", DateStorageUtil.getStorageUtil().getTodayForDisplay());
 		Date now = new Date();
 
