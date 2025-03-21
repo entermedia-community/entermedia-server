@@ -137,3 +137,11 @@ $!jsonUtil.toJsonArray($list)
 #macro(date $inData $inField)$!context.getDate($inData.getDate($inField))#end
 #macro(dash $intext)$!url_util.getPathUtilities().dash($intext)#end
 
+#macro(elidemiddle $text $maxLength) 
+#if($text.length() <= $maxLength)
+$text
+#else
+#set($charsPerSide = ($maxLength - 3) / 2)
+$text.substring(0, $charsPerSide)...$text.substring($text.length() - $charsPerSide)
+#end
+#end

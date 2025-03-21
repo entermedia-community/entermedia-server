@@ -677,6 +677,8 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String categorypath = inReq.getRequestParameter("categorypath");
+		categorypath = categorypath.replace("\\", "/");
+		categorypath = categorypath.replaceAll("/+", "/");
 		
 		String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
 		
@@ -689,24 +691,34 @@ public class EntityModule extends BaseMediaModule
 			String moduleid = inReq.getRequestParameter("moduleid");
 			String desktopid = inReq.getRequestParameter("desktop");
 			
-			
 			Data entity = archive.getData(moduleid, entityid);
 			
 			folder = archive.getSearcher("desktopsyncfolder").createNewData();
 			
-			String isdownload = inReq.getRequestParameter("isdownload");
-			if(isdownload == "true") {
-				folder.setValue("isdownload", true);
-			}
-			
 			folder.setValue("categorypath", categorypath);
-			String categorybreadcrumb = categorypath.replace("/", " &gt; ");
-			folder.setValue("categorybreadcrumb", categorybreadcrumb);
+			String categorybreadcrumb = categorypath.replace("/", " &rsaquo; ");
+			folder.setName(categorybreadcrumb);
 			folder.setValue("desktop",desktopid);
 			folder.setValue("module",moduleid);
-			folder.setName(entity.getName());
 			folder.setValue("entityid", entity.getId());
 			archive.saveData("desktopsyncfolder", folder);
+		}
+		
+		String isdownload = inReq.getRequestParameter("isdownload");
+		if(isdownload == "true") {
+			folder.setValue("isdownload", true);
+		}
+		
+		String completedfiles = inReq.getRequestParameter("completedfiles");
+		if(completedfiles != null)
+		{			
+			folder.setValue("completedfiles", completedfiles);
+		}
+		
+		String failedfiles = inReq.getRequestParameter("failedfiles");
+		if(failedfiles != null)
+		{
+			folder.setValue("failedfiles", failedfiles);
 		}
 		
 		if(desktopimportstatus != null) 
