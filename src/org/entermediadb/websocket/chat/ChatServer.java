@@ -347,6 +347,7 @@ public class ChatServer
 		
 			chat.setValue("channeltype", inMap.get("channeltype"));
 			chat.setValue("message", newmessage);
+			chat.setValue("messagetype", "message");
 		}
 		String replytoid = (String)inMap.get("replytoid");
 		chat.setValue("replytoid",replytoid);

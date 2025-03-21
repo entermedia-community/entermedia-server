@@ -692,6 +692,11 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Data data = (Data) inReq.getPageValue("data");
+		
+		if (data == null) {
+			log.error("Should not have run aiSearchModule without data");
+			return;
+		}
 
 		//String function = data.get("function");
 		String arguments = data.get("arguments");
@@ -702,7 +707,7 @@ public class FinderModule extends BaseMediaModule
 		if( module == null )
 		{
 			//Should not have run damSearch
-			log.info("Should not have run damSearch without entity");
+			log.info("Should not have run aiSearchModule without module entity");
 			return;
 		}
 		else

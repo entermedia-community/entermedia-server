@@ -627,7 +627,13 @@ public class ChatModule extends BaseMediaModule
 		for (Iterator iterator = allchannels.iterator(); iterator.hasNext();)
 		{
 			Data channel = (Data) iterator.next();
-			Data mostrecent = chats.query().exact("channel", channel.getId()).sort("dateDown").searchOne();
+			
+			Data mostrecent = chats.query()
+								   .exact("channel", channel.getId())
+								   .exact("processingcomplete","false")
+								   .sort("dateDown")
+								   .searchOne();
+			
 			if (mostrecent  == null)
 			{
 				continue;
@@ -646,42 +652,16 @@ public class ChatModule extends BaseMediaModule
 					archive.saveData("channel",channel);
 				}
 			}
-			boolean interimmessage = false;
+			//boolean interimmessage = false;
 
-			if ("function_call".equals(mostrecent.get("messagetype")))
+			String userid = mostrecent.get("user");
+			if ("agent".equals(userid))
 			{
-				interimmessage = true;// so we don't respond to ourselves
-				String function = mostrecent.get("function");
-				String arguments = mostrecent.get("arguments");
-				if (!Boolean.parseBoolean(mostrecent.get("functioncomplete")))
-				{
-					archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", mostrecent);
-					archive.fireSharedMediaEvent("llm/monitorchats");
-					return;
-				}
-				else
-				{					
-					//NOTE:  This allows the LLM to analyze the function response and basically keep talking to the user about it.  Otherwise it will just stop after
-					//a function call - however, it will still be in the chat history so it could keep mentionig it.
-					//TODO: make this behaviour configurable
-					if("emediasearchformat".equals(function)){
-						//	log.info("Ending chat flow with structured response");
-					} else {
-						respondToChannel(inReq, channel, "messagereceived", new HashMap());		
-					}
-				
-				}
+				return;
 			}
-			else
-			{
-				String userid = mostrecent.get("user");
-				if ("agent".equals(userid) || interimmessage)
-				{
-					return;
-				}
-				inReq.putPageValue("message", mostrecent);
-				respondToChannel(inReq, channel, "messagereceived", new HashMap());
-			}
+			inReq.putPageValue("message", mostrecent);
+			
+			respondToChannel(inReq, channel, "messagereceived", new HashMap());
 		}
 	}
 
@@ -731,22 +711,12 @@ public class ChatModule extends BaseMediaModule
 		
 		inReq.putPageValue("channel", channel);
 
+		//Update original message processing status
+		message.setValue("processingcomplete", true);
+		chats.saveData(message);
 
-//		JSONObject responseMap = new JSONObject();
-//		responseMap.put("user", "agent");
-//		responseMap.put("message", "");
-//		responseMap.put("date", DateStorageUtil.getStorageUtil().getJsonFormat().format(now));
-//		responseMap.put("timestamp", fm.format(now));
-//		responseMap.put("timestampunix", now.getTime());
-//		responseMap.put("channel", channel.getId());
-//		responseMap.put("catalogid", archive.getCatalogId());
-//		responseMap.put("command", "aithinking");
-//		responseMap.put("messagetype", "aithinking");
-//		server.broadcastMessage(archive.getCatalogId(), responseMap);
 
 		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
-		
-		
 		LLMResponse response = manager.runPageAsInput(inReq, model, chattemplate);
 
 		if (response.isToolCall())
@@ -758,28 +728,24 @@ public class ChatModule extends BaseMediaModule
 			 String json = arguments.toJSONString();
 			// Create and save function call message
 			Data functionMessage = chats.createNewData();
-			functionMessage.setValue("messagetype", "function_call");
-			functionMessage.setValue("function", functionName);
-			functionMessage.setValue("arguments", json);
 			functionMessage.setValue("user", "agent");
 			functionMessage.setValue("channel", channel.getId());
+			//functionMessage.setValue("messagetype", "function_call");
+			//functionMessage.setValue("function", functionName);
+			//functionMessage.setValue("message", json);
+			functionMessage.setValue("arguments", json);
 			functionMessage.setValue("date", new Date());
-			functionMessage.setValue("message", json);
+			functionMessage.setValue("message", "Processing function " + functionName);
+			functionMessage.setValue("processingcomplete", true);
 			
 			chats.saveData(functionMessage);
+		
+			callFunction(functionMessage, functionName, inReq);
+			
+			//archive.fireDataEvent(inReq.getUser(), "llm", "callfunction", functionMessage);
+			archive.fireSharedMediaEvent("llm/monitorchats");
 
-			// Create and broadcast function call message update
-			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "function_call");
-			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("function", functionName);
-			functionMessageUpdate.put("arguments", arguments);
-			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", channel.getId());
-			functionMessageUpdate.put("messageid", functionMessage.getId());
-			functionMessageUpdate.put("message", json);
-					
-			server.broadcastMessage(functionMessageUpdate);
+			
 		}
 		else
 		{
@@ -794,6 +760,7 @@ public class ChatModule extends BaseMediaModule
 				responsemessage.setValue("date", new Date());
 				responsemessage.setValue("channel", channel.getId());
 				responsemessage.setValue("messagetype", "airesponse");
+				responsemessage.setValue("processingcomplete", true);
 
 				chats.saveData(responsemessage);
 				server.broadcastMessage(archive.getCatalogId(), responsemessage);
@@ -806,57 +773,59 @@ public class ChatModule extends BaseMediaModule
 		
 	}
 
-	public void callFunction(WebPageRequest inReq) throws Exception
+	public void callFunction(Data messageToUpdate, String functionName, WebPageRequest inReq) throws Exception
 	{
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Data data = (Data) inReq.getPageValue("data");  //message
 		//get the channel
-		Data channel = archive.getCachedData("channel", data.get("channel"));
+		Data channel = archive.getCachedData("channel", messageToUpdate.get("channel"));
 		inReq.putPageValue("channel", channel);
 		
 		//TODO:  Move loadInputFromTemplate
 		LLMManager manager = (LLMManager) archive.getBean("ollamaManager");//Doesn't matter which one right here.
 		ChatServer server = (ChatServer) archive.getBean("chatServer");
 
-		String function = data.get("function");
-		String arguments = data.get("arguments");
+		//String function = messageToUpdate.get("function");
+		String arguments = messageToUpdate.get("arguments");
 		JSONObject args = (JSONObject) new JSONParser().parse(arguments);
 		inReq.putPageValue("args", args);
 		String response;
 		
 		try
 		{
-			String filename = function;
-			if( function.equals("searchall") ) {
+			String filename = functionName;
+			if( functionName.equals("searchall") ) {
 				filename = "search-all";
 			}
-			else if( function.startsWith("search") )
+			else if( functionName.startsWith("search") )
 			{
-				String moduleid= function.substring("search".length());
+				String moduleid= functionName.substring("search".length());
 				Data module = archive.getCachedData("module",moduleid);
 				inReq.putPageValue("module",module);
 				filename = "search-module";
 				//Tell it to use emediasearchformat
 			}
+			
+			inReq.putPageValue("data", messageToUpdate);
+			
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
-			log.info("function" + function + "returned : " + response);
-			data.setValue("functionresponse", response);
-			data.setValue("functioncomplete", true);
+			log.info("function" + functionName + "returned : " + response);
 
-			data.setValue("message", response);
+			messageToUpdate.setValue("functionresponse", response);
+			messageToUpdate.setValue("message", response);
 			Searcher chats = archive.getSearcher("chatterbox");
-			chats.saveData(data);
+			chats.saveData(messageToUpdate);
 			
 			JSONObject functionMessageUpdate = new JSONObject();
-			functionMessageUpdate.put("messagetype", "function_call");
+			functionMessageUpdate.put("messagetype", "airesponse");
 			functionMessageUpdate.put("catalogid", archive.getCatalogId());
-			functionMessageUpdate.put("function", function);
+			functionMessageUpdate.put("function", functionName);
 			functionMessageUpdate.put("arguments", arguments);
 			functionMessageUpdate.put("user", "agent");
-			functionMessageUpdate.put("channel", data.get("channel"));
-			functionMessageUpdate.put("messageid", data.getId());
+			
+			functionMessageUpdate.put("channel", messageToUpdate.get("channel"));
+			functionMessageUpdate.put("messageid", messageToUpdate.getId());
 			functionMessageUpdate.put("message", response);
 
 			server.broadcastMessage(functionMessageUpdate);
@@ -864,11 +833,12 @@ public class ChatModule extends BaseMediaModule
 		}
 		catch (Exception e)
 		{
-			data.setValue("functionresponse", e.toString());
-			data.setValue("functioncomplete", true);
+			log.error("Error: " + e.toString());
+			messageToUpdate.setValue("functionresponse", e.toString());
+			messageToUpdate.setValue("processingcomplete", true);
 
 		}
-		archive.saveData("chatterbox", data);
+		archive.saveData("chatterbox", messageToUpdate);
 		archive.fireSharedMediaEvent("chatterbox/monitorchats");
 
 	}
