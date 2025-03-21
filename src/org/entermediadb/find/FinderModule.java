@@ -721,7 +721,9 @@ public class FinderModule extends BaseMediaModule
 			{
 				hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
 			}
-			inReq.putPageValue("hits", hits);
+			
+			inReq.putPageValue("airesultshits", hits);
+			inReq.putSessionValue("airesultshits", hits);
 		}
 
 	}
@@ -778,7 +780,7 @@ public class FinderModule extends BaseMediaModule
 		
 		}		
 
-		inReq.putPageValue("hits", hits);
+		inReq.putPageValue("airesultshits", hits);
 
 	}
 
