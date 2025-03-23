@@ -673,7 +673,7 @@ public class EntityModule extends BaseMediaModule
 //		inReq.putPageValue("syncfolders",tosave);
 //	}
 	
-	public void updateScanStatus(WebPageRequest inReq) throws Exception
+	public synchronized void updateScanStatus(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
