@@ -678,8 +678,9 @@ public class EntityModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher searcher = archive.getSearcher("desktopsyncfolder");
 
+		String desktop = inReq.getRequestParameter("desktop");
 		String categorypath = inReq.getRequestParameter("categorypath");
-		if(categorypath != null)
+		if(desktop != null && categorypath != null)
 		{
 			categorypath = categorypath.replace("\\", "/");
 			categorypath = categorypath.replaceAll("/+", "/");
@@ -688,7 +689,7 @@ public class EntityModule extends BaseMediaModule
 
 			if(desktopimportstatus != null) 
 			{				
-				QueryBuilder query = searcher.query().exact("categorypath", categorypath);
+				QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath);
 				
 				Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
 				if(isdownload)
@@ -702,7 +703,6 @@ public class EntityModule extends BaseMediaModule
 				{
 					String entityid = inReq.getRequestParameter("entityid");
 					String moduleid = inReq.getRequestParameter("moduleid");
-					String desktopid = inReq.getRequestParameter("desktop");
 					
 					Data entity = archive.getData(moduleid, entityid);
 					
@@ -717,9 +717,10 @@ public class EntityModule extends BaseMediaModule
 					
 					String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
 					folder.setName(namebreadcrumb);
-					folder.setValue("desktop",desktopid);
+					folder.setValue("desktop",desktop);
 					folder.setValue("module",moduleid);
 					folder.setValue("entityid", entity.getId());
+					folder.setValue("createddate", new Date());
 					archive.saveData("desktopsyncfolder", folder);
 				}
 				
@@ -745,7 +746,7 @@ public class EntityModule extends BaseMediaModule
 				searcher.saveData(folder, null);
 			}
 		}
-		Collection syncfolders = searcher.query().sort("name").search();
+		Collection syncfolders = searcher.query().sort("createddate").search();
 		inReq.putPageValue("syncfolders", syncfolders);
 	}
 	
