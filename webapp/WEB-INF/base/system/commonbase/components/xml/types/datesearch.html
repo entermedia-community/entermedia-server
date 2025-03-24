@@ -10,12 +10,12 @@
 	<input name="operation" type="hidden" value="after" />
 	<input name="${inputname}.value"  id="datevalue${inputid}before" 
 		size="8" type="text">
-	<input type="text" class="datepicker " data-targetid="datebox${inputid}before" value="$!val" size="8" /> 	<br/>
+	<input type="text" class="datepicker " data-targetid="datebox${inputid}before" value="$!value" size="8" /> 	<br/>
 	[[to]]
 	<input name="field" value="${inputname}end" type="hidden">
 	<input name="operation" type="hidden" value="before" />
 	<input name="${inputname}end.value" class="" id="datevalue${inputid}after"  size="8" type="text">
-	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
+	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!value" size="8" /> 
 #else
 	#set( $op = 	$term.getOperation() )
 

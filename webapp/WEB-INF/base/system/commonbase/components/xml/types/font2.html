@@ -14,7 +14,7 @@
 	
 	<style>
 		.${detail.id}-style {
-			#if($val) font-family: $val; #end
+			#if($value) font-family: $value; #end
 			font-size: ${size}px;
 			color: ${color};
 			opacity: $opacity;
@@ -50,7 +50,7 @@
 		</tr>
 	</table>
 	
-	<input name="${detail.getId()}.value" id="${detail.id}" value="$!val" type="hidden" />
+	<input name="${detail.getId()}.value" id="${detail.id}" value="$!value" type="hidden" />
 	<input type="hidden" name="field" value="${detail.id}size" /> 
 	<input name="${detail.getId()}size.value" id="${detail.id}size" value="$!size" type="hidden" />
 	<input type="hidden" name="field" value="${detail.id}color" /> 
