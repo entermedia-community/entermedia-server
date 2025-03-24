@@ -2089,6 +2089,11 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		String moduleid = inReq.findPathValue("module");
 		
+		if(moduleid == null)
+		{
+			moduleid = inReq.findValue("searchtype");
+		}
+		
 		String id = inReq.getRequestParameter("id");
 		if(id == null) {
 			id = inReq.getRequestParameter("id.value");
@@ -2138,7 +2143,7 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = null;
 			if (moduleid != null)
 			{							
-				Data entitmodule = mediaArchive.getCachedData("module",moduleid);
+				
 
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null)
@@ -2153,6 +2158,7 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						if( target != null && searcher.getDetail("uploadsourcepath") != null )
 						{
+							Data entitmodule = mediaArchive.getCachedData("module",moduleid);
 							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 							if( cat != null)
 							{
@@ -2180,6 +2186,7 @@ public class AssetEditModule extends BaseMediaModule
 						}
 					}
 				} else {
+					Data entitmodule = mediaArchive.getCachedData("module",moduleid);
 					Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 					if( cat != null)
 					{
@@ -2195,7 +2202,8 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else 
 			{
-				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName());
+				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq, archive, item.getName()); 
+				//Todo: Remove the iten.getName
 				path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/" + item.getName();
 			}
 			

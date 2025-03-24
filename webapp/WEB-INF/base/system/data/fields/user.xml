@@ -25,7 +25,7 @@
 	<property id="creationdate" type="date" stored="true" index="true" editable="true">Creation Date</property>
 	<property id="logincategoryid" stored="true" index="true" editable="true">Login Category</property>
 	
-	<property id="assetportrait" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="userprofiles/${id}">
+	<property id="assetportrait" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="userprofiles/${data.id}/">
         <name> 
       	<language id="en"><![CDATA[Profile]]></language> 
     	</name> 
