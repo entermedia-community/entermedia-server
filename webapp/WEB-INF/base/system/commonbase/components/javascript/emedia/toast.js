@@ -46,6 +46,9 @@ lQuery(".toastClose").livequery("click", function () {
 });
 
 customToast = function (message, options = {}) {
+	if (options.id) {
+		$(".toastList").find(`.toastContainer[data-id="${options.id}"]`).remove();
+	}
 	var autohide = options.autohide === undefined ? true : options.autohide;
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
@@ -71,7 +74,7 @@ customToast = function (message, options = {}) {
 		iconHtml = '<div class="toastLoader"></div>';
 	}
 	var toast = $(
-		`<div class="toastContainer ${options.id || ""}" role="alert">
+		`<div class="toastContainer" data-id="${options.id}" role="alert">
 			${iconHtml}
 			<div class="toastMessage">${message}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
