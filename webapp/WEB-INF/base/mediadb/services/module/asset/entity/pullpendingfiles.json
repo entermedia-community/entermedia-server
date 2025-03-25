@@ -27,10 +27,14 @@
  	 "filestoupload" : [
   #foreach( $file in $filestoupload) #if( ${foreach.count} != 1 ), #end
   	{ 
-			"path": "$file.path",
-  		"size":"$file.size",
+			#ifnotnull( $entityid)
 			"entityid":"$entityid",
-			"id": "$!file.id"
+			#end
+			#ifnotnull( $file.id)
+			"id": "$!file.id",
+			#end
+			"path": "$file.path",
+  		"size":"$file.size"
 		}
 	#end
  	]
