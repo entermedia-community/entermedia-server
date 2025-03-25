@@ -27,6 +27,9 @@
 	width: 100%;
 	z-index: 9999;
 }
+.chatterbox-readonly .chatterbox-messages {
+	height: calc(100% - 48px) !important;
+}
 .msg-bubble {
 	color: #000;
 }

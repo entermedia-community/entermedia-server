@@ -4,7 +4,13 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 #ifnull($moduleid)
 #set($moduleid = $page.module) 
 #end
-<div class="chatterbox"
+
+#set($cansendchat = false)
+#if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
+#set($cansendchat = true)
+#end
+
+<div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'
 	#ifnotnull($entity)data-entityid="$!entity.id"#end
 	#ifnotnull($collectionid)data-collectionid="$!collectionid"#end  
 	data-moduleid="$!moduleid"
@@ -19,7 +25,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 		$pages.include("${chatterboxhome}/messages.html", $context)				
 		
 		
-		#if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
+		#if($cansendchat)
 			$pages.include("${chatterboxhome}/editarea.html", $context)				
 		#end
 
