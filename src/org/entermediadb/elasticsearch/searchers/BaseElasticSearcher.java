@@ -3000,6 +3000,10 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 
 			PropertyDetail securefield = getDetail(securityfield);
+			if(securefield == null)
+			{
+				return;
+			}
 			String fieldid = securefield.getId();
 			String categorysearchertype = securefield.getListId();//category 
 			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
