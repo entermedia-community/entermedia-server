@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -31,8 +34,6 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.page.Page;
-import org.openedit.repository.ContentItem;
-import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -338,7 +339,7 @@ public class DropboxManager implements CatalogEnabled {
 
     public Collection<JSONObject> listNamespaces() throws Exception {
 	try {
-	    Collection<JSONObject> namespaces = new ArrayList<>();
+		List<JSONObject> namespaces = new ArrayList();
 	    String url = "https://api.dropboxapi.com/2/team/namespaces/list";
 
 	    HttpPost method = new HttpPost(url);
@@ -360,6 +361,19 @@ public class DropboxManager implements CatalogEnabled {
 			    namespaces.add(namespace);
 			}
 	    }
+	    
+	    Collections.sort(namespaces, new Comparator() {
+			@Override
+			public int compare(Object arg0, Object arg1) {
+				JSONObject namespace0 = (JSONObject) arg0;
+				JSONObject namespace1 = (JSONObject) arg1;
+				String name0 = (String)namespace0.get("name");
+				String name1 = (String)namespace1.get("name");
+				name0 = name0.toLowerCase();
+				name1 = name1.toLowerCase();
+				return name0.compareTo(name1);
+			}
+		});
 	    log.info(namespaces);
 	    return namespaces;
 	} catch (Exception e) {
