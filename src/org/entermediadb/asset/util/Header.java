@@ -52,5 +52,11 @@ public class Header
 	{
 		return getHeaderNames().size();
 	}
+	
+	public void replaceLabel(String inHeaderName, String inNewHeaderName)
+	{
+		int  headerIndex = getIndex(inHeaderName);
+		getHeaderNames().set(headerIndex, inNewHeaderName);
+	}
 
 }
