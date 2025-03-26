@@ -92,15 +92,6 @@ customToast = function (message, options = {}) {
 				toast.remove();
 			}, 500);
 		}, autohideDelay);
-	} else {
-		setTimeout(function () {
-			if (!toast) return;
-			toast.addClass("hide");
-			setTimeout(function () {
-				if (!toast) return;
-				toast.remove();
-			}, 500);
-		}, 5000); //always hide after 5 seconds
 	}
 };
 
