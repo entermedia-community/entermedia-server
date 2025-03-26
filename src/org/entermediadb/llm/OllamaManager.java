@@ -19,6 +19,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.page.Page;
 import org.openedit.util.OutputFiller;
 
 
@@ -166,7 +167,22 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 
 	    // Handle function call definition
 	    if (inFunction != null) {
-	        String definition = loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json");
+	    	
+	        String templatepath = "/" + archive.getMediaDbId() + "/gpt/functiondefs/" + inFunction + ".json";
+	        Page defpage = archive.getPageManager().getPage(templatepath);
+	        if(!defpage.exists()) {
+		        templatepath  ="/" + archive.getCatalogId() + "/gpt/functiondefs/" + inFunction + ".json";
+		        defpage = archive.getPageManager().getPage(templatepath);
+	        }
+	        if(!defpage.exists()) {
+			       throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+		    }
+	        String definition = loadInputFromTemplate(inReq, templatepath);
+	      
+	        
+	        
+	        
+	        
 	        JSONParser parser = new JSONParser();
 	        JSONObject functionDef = (JSONObject) parser.parse(definition);
 
