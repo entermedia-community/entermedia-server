@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -109,7 +110,7 @@ public class ThemeModule extends BaseMediaModule {
 		}
 	}
 	
-	public void saveLogo(WebPageRequest inReq) {
+	public void saveLogo(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String applicationid = inReq.findValue("applicationid");
 		Data theme = loadTheme(inReq);
@@ -126,13 +127,19 @@ public class ThemeModule extends BaseMediaModule {
 					if( !destpage.getPath().equals(logopage.getPath()) )
 					{
 						getPageManager().copyPage(logopage, destpage);
-						if( theme.getValue("logowith") == null)
+						Dimension assetdimension = archive.getAssetImporter().getAssetUtilities().getImageDimensionImageIO(logopage.getContentItem());
+						if( assetdimension.width > 0)
 						{
-							theme.setValue("logowith",logoasset.get("width"));
-							theme.setValue("logoheight",logoasset.get("height"));
-							archive.saveData("theme",theme);
+							theme.setValue("logowith", assetdimension.width);
 						}
+						if (assetdimension.height > 0)
+						{
+							theme.setValue("logoheight", assetdimension.height);
+							
+						}
+						archive.saveData("theme",theme);
 					}
+					
 				}
 			}
 		}

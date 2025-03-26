@@ -38,7 +38,7 @@
 					</tr>
 					<tr>
 						<td style="vertical-align:middle;">
-							<input id="${detail.id}-fontcolor" type="text" class="fontcolor" data-control="hue" data-defaultValue="#000000" value="$!val" rel="${detail.id}-target">
+							<input id="${detail.id}-fontcolor" type="text" class="fontcolor" data-control="hue" data-defaultValue="#000000" value="$!value" rel="${detail.id}-target">
 						</td>
 						<td style="vertical-align:middle;">
 							<input id="${detail.id}-fontcolor-gradienthi" type="text" class="fontcolor" data-control="hue" data-defaultValue="$!gradienthi" value="$!gradienthi" rel="${detail.id}-target">
@@ -61,7 +61,7 @@
 		</tr>
 	</table>
 	
-	<input name="${detail.getId()}.value" id="${detail.id}" value="$!val" type="hidden" />
+	<input name="${detail.getId()}.value" id="${detail.id}" value="$!value" type="hidden" />
 	
 	<input type="hidden" name="field" value="${detail.id}gradienthi" /> 
 	<input name="${detail.getId()}gradienthi.value" id="${detail.id}gradienthi" value="$!gradienthi" type="hidden" />

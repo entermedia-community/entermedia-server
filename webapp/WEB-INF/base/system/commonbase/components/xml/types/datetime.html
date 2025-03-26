@@ -1,6 +1,6 @@
 <span class="datetimepicker-date pl-2">
 #if($errors.get($detail.id) == "error-format")
-	#set($val = "")
+	#set($value = "")
 	<span style="color: red;">
 	[[Wrong format]]
 	</span><br>
@@ -9,7 +9,7 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="$!val"  type="hidden" >
+<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="$!value"  type="hidden" >
 <input type="text" class="form-control datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
 #if ($detail.picker == "false" && $detail.format)
 	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>

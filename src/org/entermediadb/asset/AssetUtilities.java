@@ -1,6 +1,8 @@
 package org.entermediadb.asset;
 
+import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +11,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -669,6 +676,31 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 	}
 
+	
+	
+	public  Dimension getImageDimensionImageIO(ContentItem imgFile) throws IOException {
+		  int pos = imgFile.getName().lastIndexOf(".");
+		  if (pos == -1)
+		    throw new IOException("No extension for file: " + imgFile.getAbsolutePath());
+		  String suffix = imgFile.getName().substring(pos + 1);
+		  Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+		  while(iter.hasNext()) {
+		    ImageReader reader = iter.next();
+		    try {
+		      ImageInputStream stream = new FileImageInputStream(new File(imgFile.getAbsolutePath()));
+		      reader.setInput(stream);
+		      int width = reader.getWidth(reader.getMinIndex());
+		      int height = reader.getHeight(reader.getMinIndex());
+		      return new Dimension(width, height);
+		    } catch (IOException e) {
+		      log.warn("Error reading: " + imgFile.getAbsolutePath(), e);
+		    } finally {
+		      reader.dispose();
+		    }
+		  }
+
+		  throw new IOException("Not a known image file: " + imgFile.getAbsolutePath());
+		}
 
 
 }

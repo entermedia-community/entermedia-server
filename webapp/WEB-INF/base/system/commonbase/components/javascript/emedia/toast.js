@@ -46,6 +46,9 @@ lQuery(".toastClose").livequery("click", function () {
 });
 
 customToast = function (message, options = {}) {
+	if (options.id) {
+		$(".toastList").find(`.toastContainer[data-id="${options.id}"]`).remove();
+	}
 	var autohide = options.autohide === undefined ? true : options.autohide;
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
@@ -69,9 +72,10 @@ customToast = function (message, options = {}) {
 	}
 	if (options.loading) {
 		iconHtml = '<div class="toastLoader"></div>';
+		autohideDelay = options.autohideDelay || 5000;
 	}
 	var toast = $(
-		`<div class="toastContainer ${options.id || ""}" role="alert">
+		`<div class="toastContainer" data-id="${options.id}" role="alert">
 			${iconHtml}
 			<div class="toastMessage">${message}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
@@ -89,15 +93,6 @@ customToast = function (message, options = {}) {
 				toast.remove();
 			}, 500);
 		}, autohideDelay);
-	} else {
-		setTimeout(function () {
-			if (!toast) return;
-			toast.addClass("hide");
-			setTimeout(function () {
-				if (!toast) return;
-				toast.remove();
-			}, 500);
-		}, 5000); //always hide after 5 seconds
 	}
 };
 
