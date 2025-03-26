@@ -488,9 +488,9 @@ public class FileManagerModule extends BaseModule
 		String file = inReq.getRequestParameter("file");
 		String root = inReq.findValue("folderroot");
 		String absolutepath = root + "/" + file;
-		String eclipsepath = inReq.findValue("eclipsepath");
+		String editorpath = inReq.findPathValue("localopencommand");
 		Runtime.getRuntime().exec(new String[] {
-			    eclipsepath,
+				editorpath,
 			    "--launcher.openFile",
 			    absolutepath,
 			    // "path/to/file2.txt",
