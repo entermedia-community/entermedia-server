@@ -72,6 +72,7 @@ customToast = function (message, options = {}) {
 	}
 	if (options.loading) {
 		iconHtml = '<div class="toastLoader"></div>';
+		autohideDelay = options.autohideDelay || 5000;
 	}
 	var toast = $(
 		`<div class="toastContainer" data-id="${options.id}" role="alert">
