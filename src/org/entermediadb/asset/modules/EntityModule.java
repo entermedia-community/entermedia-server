@@ -689,13 +689,8 @@ public class EntityModule extends BaseMediaModule
 
 			if(desktopimportstatus != null) 
 			{				
-				QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath);
-				
 				Boolean isdownload = Boolean.parseBoolean(inReq.getRequestParameter("isdownload"));
-				if(isdownload)
-				{
-					query = query.exact("isdownload", true);
-				}
+				QueryBuilder query = searcher.query().exact("desktop", desktop).exact("categorypath", categorypath).exact("isdownload", isdownload);
 				
 				Data folder = (Data) query.searchOne();
 				
@@ -710,10 +705,7 @@ public class EntityModule extends BaseMediaModule
 					
 					folder.setValue("categorypath", categorypath);
 					
-					if(isdownload) 
-					{
-						folder.setValue("isdownload", true);
-					}
+					folder.setValue("isdownload", isdownload);
 					
 					String namebreadcrumb = categorypath.replace("/", " &rsaquo; ");
 					folder.setName(namebreadcrumb);
