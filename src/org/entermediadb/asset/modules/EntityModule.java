@@ -746,7 +746,7 @@ public class EntityModule extends BaseMediaModule
 				searcher.saveData(folder, null);
 			}
 		}
-		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("createddate").search();
+		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("createddateDown").search();
 		inReq.putPageValue("syncfolders", syncfolders);
 	}
 	
