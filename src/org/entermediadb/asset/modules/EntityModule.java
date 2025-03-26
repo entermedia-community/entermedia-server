@@ -684,7 +684,8 @@ public class EntityModule extends BaseMediaModule
 		{
 			categorypath = categorypath.replace("\\", "/");
 			categorypath = categorypath.replaceAll("/+", "/");
-			
+			categorypath = categorypath.replaceAll("/$", "");
+
 			String desktopimportstatus = inReq.getRequestParameter("desktopimportstatus");
 
 			if(desktopimportstatus != null) 
