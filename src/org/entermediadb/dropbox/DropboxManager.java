@@ -46,6 +46,7 @@ public class DropboxManager implements CatalogEnabled
 	protected OutputFiller filler = new OutputFiller();
 	protected HttpSharedConnection connection;
 	protected DropboxAssetSource fieldAssetSource;
+	protected String fieldNameSpace;
 
 	public DropboxAssetSource getAssetSource()
 	{
@@ -187,25 +188,25 @@ public class DropboxManager implements CatalogEnabled
 	}
 	
 	public String getRootNamespace() {
-		  String url = "https://api.dropboxapi.com/2/users/get_current_account";
+		if (fieldNameSpace == null) {
+			 String url = "https://api.dropboxapi.com/2/users/get_current_account";
 		    HttpPost method = new HttpPost(url);
 		    method.addHeader("Authorization", "Bearer " + getAccessToken());
 		    //method.setHeader("Content-Type", "application/json");
-		   
-
 		    CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		    JSONObject json = getConnection().parseJson(resp);
 
 		    if (json != null && json.containsKey("root_info")) {
 		        JSONObject rootInfo = (JSONObject) json.get("root_info");
-
 		        String tag = (String) rootInfo.get(".tag");
 		        String rootNamespace = (String) rootInfo.get("root_namespace_id");
-		        return rootNamespace;
-		      
+		        fieldNameSpace = rootNamespace;
 		    }
+			
+		}
 
-		    return null;
+		return fieldNameSpace;
+  	   
 	}
 	
 	public Collection<JSONObject> listRootFolders() throws Exception {
@@ -466,6 +467,10 @@ public class DropboxManager implements CatalogEnabled
 		apiArg.put("path", fileId);
 
 		String namespaceId = getNamespace();
+		if (namespaceId == null)
+		{
+			namespaceId = getRootNamespace(); 
+		}
 		HttpPost method = new HttpPost(url);
 		method.addHeader("Authorization", "Bearer " + getAccessToken());
 		method.addHeader("Dropbox-API-Path-Root", "{\"namespace_id\": \"" + namespaceId + "\", \".tag\": \"namespace_id\"}");
@@ -477,7 +482,7 @@ public class DropboxManager implements CatalogEnabled
 		{
 			// Ensure directories exist
 			Page outputpage = getMediaArchive().getPageManager().getPage(outputPath);
-
+			//ToDo: save the date on the file after download
 			File output = new File(outputpage.getContentItem().getAbsolutePath());
 			output.getParentFile().mkdirs();
 

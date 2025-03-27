@@ -407,25 +407,22 @@ public class OauthModule extends BaseMediaModule
 		    String refreshToken = oAuthResponse.getRefreshToken(); // Added: Get the refresh token
 		    long expiresIn = oAuthResponse.getExpiresIn(); // Added: Get token expiration time
 
-		    if (refreshToken != null) {
-		        authinfo.setValue("refreshtoken", refreshToken); // Added: Save refresh token
-		    }
+		    authinfo.setValue("refreshtoken", refreshToken); // Added: Save refresh token
+		    
 		    if (expiresIn > 0) {
 		        long date = System.currentTimeMillis() + (expiresIn * 1000);
-			authinfo.setValue("accesstokentime", new Date(date)); // Added: Save expiration timestamp
+		        authinfo.setValue("accesstokentime", new Date(date)); // Added: Save expiration timestamp
+		    }
+		    else {
+		    	authinfo.setValue("accesstokentime", null); 
 		    }
 		    
 		    String accountid = (String) oAuthResponse.getData().get("account_id");
 		    String teamid = (String) oAuthResponse.getData().get("team_id");
 		    // Save the access token if necessary for future API calls
 		    authinfo.setValue("accesstoken", accessToken);
-		    if(accountid != null) {
-			authinfo.setValue("accountid", accountid);
-		    }
-		    if(teamid != null) {
+	    	authinfo.setValue("accountid", accountid);
 		 	authinfo.setValue("teamid",teamid);
-		    }
-		    
 		    archive.getSearcher("oauthprovider").saveData(authinfo);
 		}
 
