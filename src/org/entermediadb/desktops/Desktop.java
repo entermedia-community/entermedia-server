@@ -28,6 +28,7 @@ public class Desktop
 	protected boolean fieldBusy;
 	protected String fieldComputerName;
 	protected String fieldId;
+	protected String serverApiVersion;
 	
 	
 	public String getId() {
@@ -36,6 +37,14 @@ public class Desktop
 
 	public void setId(String inId) {
 		fieldId = inId;
+	}
+
+	public String getServerApiVersion() {
+		return serverApiVersion;
+	}
+
+	public void setServerApiVersion(String version) {
+		serverApiVersion = version;
 	}
 
 	public String getComputerName() {
