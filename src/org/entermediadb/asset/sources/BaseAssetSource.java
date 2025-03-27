@@ -169,6 +169,10 @@ public abstract class BaseAssetSource implements AssetSource
 
 	public boolean handlesPath(String inPath)
 	{
+		if( inPath == null)
+		{
+			return false;
+		}
 		String name = getFolderPath();
 		if( name != null && inPath.startsWith(name))
 		{

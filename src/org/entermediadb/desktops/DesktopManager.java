@@ -4,15 +4,32 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
-public class DesktopManager
+public class DesktopManager implements CatalogEnabled
 {
 	protected Map<String, Desktop> fieldConnectedClients;
 	
 	protected ModuleManager fieldModuleManager;
+
+	protected String fieldCatalogId;
+	
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+
 
 	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
@@ -34,6 +51,10 @@ public class DesktopManager
 		return fieldConnectedClients;
 	}
 
+	public MediaArchive getMediaArchive()
+	{
+		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+	}
 	
 	public void setDesktop(Desktop inDesktop)
 	{
@@ -60,18 +81,24 @@ public class DesktopManager
 		return getConnectedClients().keySet();
 	}
 
-	public Desktop loadDesktop(User inUser, String computername) 
+	public Desktop loadDesktop(User inUser, String userAgent) 
 	{
-		String id = inUser.getId() + computername;
+		String id = inUser.getId() + userAgent;
 		id = PathUtilities.extractId(id);
 		Desktop desktop = (Desktop)getConnectedClients().get(id);
 
 		if( desktop == null)
 		{
-			desktop = (Desktop) getModuleManager().getBean("desktop");
+			desktop = (Desktop) getModuleManager().getBean(getCatalogId(),"desktop");
 			desktop.setId(id);
-			desktop.setComputerName(computername);
 			desktop.setUser(inUser);
+			
+			String version = getMediaArchive().getCatalogSettingValue("desktop_required_api_version");
+			if( version != null)
+			{
+				desktop.setRequiredApiVersion(Integer.parseInt(version));
+			}
+			
 			getConnectedClients().put(id,desktop);
 		}
 		return desktop;

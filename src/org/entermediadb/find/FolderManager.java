@@ -38,7 +38,7 @@ public class FolderManager implements CatalogEnabled
 	{
 		if (fieldDesktopManager == null)
 		{
-			fieldDesktopManager = (DesktopManager) getModuleManager().getBean("desktopManager");
+			fieldDesktopManager = (DesktopManager) getModuleManager().getBean(getCatalogId(),"desktopManager");
 		}
 
 		return fieldDesktopManager;
