@@ -22,6 +22,7 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.sources.AssetSource;
 import org.entermediadb.net.HttpSharedConnection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -31,8 +32,6 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.page.Page;
-import org.openedit.repository.ContentItem;
-import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -291,7 +290,12 @@ public class DropboxManager implements CatalogEnabled
 
 	private String getAccountID()
 	{
-		return getAssetSource().getConfig().get("dropboxuser");
+		AssetSource assetSoruce = getAssetSource();
+		if (assetSoruce == null)
+		{
+			return null;
+		}
+		return assetSoruce.getConfig().get("dropboxuser");
 	}
 
 	public String getAccessToken() throws OpenEditException
