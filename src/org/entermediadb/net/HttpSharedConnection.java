@@ -349,7 +349,7 @@ public class HttpSharedConnection
 				Header header =  (Header)iterator.next();
 				method.addHeader(header);
 			}
-			log.info(method);
+			//log.info(method);
 			resp = (CloseableHttpResponse)getSharedClient().execute(method);
 			return resp;
 		} 
