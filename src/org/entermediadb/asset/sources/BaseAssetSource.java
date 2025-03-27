@@ -150,6 +150,32 @@ public abstract class BaseAssetSource implements AssetSource
 		return getConfig().get("subfolder");
 	}
 
+	@Override
+	public boolean handles(Asset inAsset)
+	{
+		if(inAsset == null) {
+			return false;
+		}
+		String name = getFolderPath();
+		if(inAsset.getSourcePath() == null) {
+			return false;
+		}
+		if( inAsset.getSourcePath().startsWith(name))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public boolean handlesPath(String inPath)
+	{
+		String name = getFolderPath();
+		if( name != null && inPath.startsWith(name))
+		{
+			return true;
+		}
+		return false;
+	}
 
 
 	public FolderMonitor getFolderMonitor()

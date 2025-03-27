@@ -100,20 +100,6 @@ public class ZohoAssetSource extends BaseAssetSource
 		return item;
 	}
 
-	@Override
-	public boolean handles(Asset inAsset)
-	{
-		if(inAsset == null)
-		{
-			return false;
-		}
-		String name = getFolderPath();
-		if(name != null &&  inAsset.getSourcePath().startsWith(name))
-		{
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public boolean removeOriginal(User inUser, Asset inAsset)
