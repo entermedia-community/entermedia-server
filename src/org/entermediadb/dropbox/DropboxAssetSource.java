@@ -10,12 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.sources.BaseAssetSource;
-import org.entermediadb.google.GoogleManager;
-import org.entermediadb.google.Results;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
 
 public class DropboxAssetSource extends BaseAssetSource
@@ -84,16 +81,6 @@ public class DropboxAssetSource extends BaseAssetSource
 
 	}
 
-	@Override
-	public boolean handles(Asset inAsset)
-	{
-		String name = getFolderPath();
-		if( name != null && inAsset.getSourcePath().startsWith(name))
-		{
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public boolean removeOriginal(User inUser, Asset inAsset)

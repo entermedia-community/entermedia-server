@@ -127,7 +127,21 @@ public class AssetSourceManager implements CatalogEnabled
 
 	}
 	
-	protected AssetSource findAssetSource(Asset inAsset)
+	public AssetSource findAssetSource(String inPath)
+	{
+		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+			if( source.handlesPath(inPath))
+			{
+				return source;
+			}
+		}
+		return getDefaultAssetSource();
+	}
+
+	
+	public AssetSource findAssetSource(Asset inAsset)
 	{
 		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
 		{
