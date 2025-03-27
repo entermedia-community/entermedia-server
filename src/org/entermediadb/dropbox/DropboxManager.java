@@ -122,6 +122,8 @@ public class DropboxManager implements CatalogEnabled
 	public int syncAssets(String inRemoteRoot)
 	{
 		String folderroot = getAssetSource().getConfig().get("subfolder");
+		String syncroot = getAssetSource().getConfig().get("syncroot");
+		
 		ArrayList assets = new ArrayList();
 		int total = 0;
 		try
@@ -137,6 +139,12 @@ public class DropboxManager implements CatalogEnabled
 				{
 					// Extract necessary information
 					String path = (String) entry.get("path_display");
+					
+					if (syncroot != null)
+					{
+						path = path.substring(syncroot.length());
+					}
+					
 					String name = (String) entry.get("name");
 					String id = (String) entry.get("id");
 					String categorypath = folderroot + path;
