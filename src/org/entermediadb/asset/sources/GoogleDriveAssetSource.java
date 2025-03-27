@@ -103,17 +103,6 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	}
 
 	@Override
-	public boolean handles(Asset inAsset)
-	{
-		String name = getFolderPath();
-		if( inAsset.getSourcePath().startsWith(name))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 	

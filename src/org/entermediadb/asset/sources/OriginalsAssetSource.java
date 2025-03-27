@@ -94,22 +94,6 @@ public class OriginalsAssetSource extends BaseAssetSource
 	 * @see org.entermediadb.asset.Bob#setPageManager(org.openedit.page.manage.PageManager)
 	 */
 	
-	@Override
-	public boolean handles(Asset inAsset)
-	{
-		String name = getConfig().get("subfolder");
-		if(inAsset == null) {
-			return false;
-		}
-		if(inAsset.getSourcePath() == null) {
-			return false;
-		}
-		if( inAsset.getSourcePath().startsWith(name))
-		{
-			return true;
-		}
-		return false;
-	}
 
 	@Override
 	public boolean removeOriginal(User inUser, Asset inAsset)

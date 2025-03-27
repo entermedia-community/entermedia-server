@@ -20,6 +20,8 @@ public interface AssetSource
 
 	boolean handles(Asset inAsset);
 
+	boolean handlesPath(String inPath);
+
 	boolean removeOriginal(User inUser, Asset inAsset);
 
 	void setConfig(MultiValued inConfig);
