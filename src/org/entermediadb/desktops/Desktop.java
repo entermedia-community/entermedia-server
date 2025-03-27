@@ -28,23 +28,35 @@ public class Desktop
 	protected boolean fieldBusy;
 	protected String fieldComputerName;
 	protected String fieldId;
-	protected String serverApiVersion;
+	protected int fieldRequiredApiVersion = 1;
+	protected int fieldDesktopApiVersion = 1;
 	
-	
+	public int getDesktopApiVersion()
+	{
+		return fieldDesktopApiVersion;
+	}
+
+	public void setDesktopApiVersion(int inDesktopApiVersion)
+	{
+		fieldDesktopApiVersion = inDesktopApiVersion;
+	}
+
+	public int getRequiredApiVersion()
+	{
+		return fieldRequiredApiVersion;
+	}
+
+	public void setRequiredApiVersion(int inEMediaAPIVersion)
+	{
+		fieldRequiredApiVersion = inEMediaAPIVersion;
+	}
+
 	public String getId() {
 		return fieldId;
 	}
 
 	public void setId(String inId) {
 		fieldId = inId;
-	}
-
-	public String getServerApiVersion() {
-		return serverApiVersion;
-	}
-
-	public void setServerApiVersion(String version) {
-		serverApiVersion = version;
 	}
 
 	public String getComputerName() {
