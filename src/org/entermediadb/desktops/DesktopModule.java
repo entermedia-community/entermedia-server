@@ -133,7 +133,7 @@ public class DesktopModule extends BaseMediaModule
 		
 		
 		String useragent = inReq.getRequest().getHeader("User-Agent");
-		if(useragent.contains("eMediaLibrary")) 
+		if(useragent.contains("eMediaDesktop")) 
 		{
 			if(desktop == null) 
 			{
@@ -143,7 +143,7 @@ public class DesktopModule extends BaseMediaModule
 				inReq.putSessionValue("desktop", desktop);
 			}
 
-			String values = useragent.substring(useragent.indexOf("eMediaLibrary") + 13, useragent.length());
+			String values = useragent.substring(useragent.indexOf("eMediaDesktop"), useragent.length());
 			Map<String, String> map = Splitter.on( " " ).withKeyValueSeparator( '/' ).split( values );
 			String computername = map.get("ComputerName");
 			if( computername != null) 
