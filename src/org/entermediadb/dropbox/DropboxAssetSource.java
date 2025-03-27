@@ -152,10 +152,11 @@ public class DropboxAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
-		if(inBasepath == null) {
-			inBasepath = "";
+		String syncroot = getConfig().get("syncroot");
+		if(syncroot == null) {
+			syncroot = "";
 		}
-		int count = getDropboxManager().syncAssets(inBasepath);
+		int count = getDropboxManager().syncAssets(syncroot);
 		return count;
 	}
 

@@ -109,7 +109,12 @@ public class DropboxManager implements CatalogEnabled
 
 	public String getNamespace()
 	{
+		if(getAssetSource() != null) {
 		return getAssetSource().getConfig().get("dropboxnamespace");
+		}
+		else {
+			return null;
+		}
 
 	}
 
@@ -182,42 +187,30 @@ public class DropboxManager implements CatalogEnabled
 		return total;
 	}
 	
+	public String getRootNamespace() {
+		  String url = "https://api.dropboxapi.com/2/users/get_current_account";
+		    HttpPost method = new HttpPost(url);
+		    method.addHeader("Authorization", "Bearer " + getAccessToken());
+		    //method.setHeader("Content-Type", "application/json");
+		   
+
+		    CloseableHttpResponse resp = getConnection().sharedExecute(method);
+		    JSONObject json = getConnection().parseJson(resp);
+
+		    if (json != null && json.containsKey("root_info")) {
+		        JSONObject rootInfo = (JSONObject) json.get("root_info");
+
+		        String tag = (String) rootInfo.get(".tag");
+		        String rootNamespace = (String) rootInfo.get("root_namespace_id");
+		        return rootNamespace;
+		      
+		    }
+
+		    return null;
+	}
 	
-	
-	public Collection<JSONObject> listFolders() throws Exception {
-	    Collection<JSONObject> entries = new ArrayList<>();
-
-	    String url = "https://api.dropboxapi.com/2/users/get_current_account";
-
-	    HttpPost method = new HttpPost(url);
-	    method.addHeader("Authorization", "Bearer " + getAccessToken());
-	    //method.setHeader("Content-Type", "application/json");
-	   
-
-	    CloseableHttpResponse resp = getConnection().sharedExecute(method);
-	    JSONObject json = getConnection().parseJson(resp);
-
-	    if (json != null && json.containsKey("root_info")) {
-	        JSONObject rootInfo = (JSONObject) json.get("root_info");
-
-	        String tag = (String) rootInfo.get(".tag");
-	        String rootNamespace = (String) rootInfo.get("root_namespace_id");
-	        String homeNamespace = (String) rootInfo.get("home_namespace_id");
-	        
-	        JSONObject rootEntry = new JSONObject();
-	        rootEntry.put("type", "root");
-	        rootEntry.put("namespace_id", rootNamespace);
-	        rootEntry.put("tag", tag);
-	        entries.add(rootEntry);
-
-	        JSONObject homeEntry = new JSONObject();
-	        homeEntry.put("type", "home");
-	        homeEntry.put("namespace_id", homeNamespace);
-	        homeEntry.put("tag", tag);
-	        entries.add(homeEntry);
-	    }
-
-	    return entries;
+	public Collection<JSONObject> listRootFolders() throws Exception {
+		return listEntries("");   
 	}
 
 	
@@ -235,6 +228,10 @@ public class DropboxManager implements CatalogEnabled
 		requestPayload.put("include_mounted_folders", true); // Helpful for debugging shared folders
 
 		String namespaceId = getNamespace();
+		if(namespaceId == null) {
+			//Normal user case, not team
+			namespaceId = getRootNamespace();
+		}
 		String accountid = getAccountID();
 
 		HttpPost method = new HttpPost(url);
