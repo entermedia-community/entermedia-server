@@ -303,9 +303,7 @@ findClosest = function (link, inid) {
 	};
 })(jQuery);
 
-
 $(document).ready(function () {
-
 	$(document).ajaxError(function (e, jqXhr, settings, exception) {
 		console.log(e, jqXhr, exception);
 		if (exception == "abort") {
@@ -313,7 +311,7 @@ $(document).ready(function () {
 		}
 		var err = "An error occurred while processing the request!";
 		if (jqXhr.readyState == 0) {
-			err = "Network error!";
+			err = "Network error! Please check your network connection.";
 		} else if (exception == "timeout") {
 			err = "Request timed out!";
 		}
@@ -331,15 +329,15 @@ $(document).ready(function () {
 		console.error(errors);
 		return;
 	});
-	
+
 	var runAjaxOn = {};
 	var ajaxRunning = false;
-	
+
 	var statusCallCount = {};
 	runAjaxStatus = function () {
 		//for each asset on the page reload it's status
 		//console.log(uid);
-	
+
 		for (const [uid, enabled] of Object.entries(runAjaxOn)) {
 			if (uid) {
 				if (statusCallCount[uid] === undefined) {
@@ -355,17 +353,17 @@ $(document).ready(function () {
 				continue;
 			}
 			var cell = $("#" + uid);
-	
+
 			if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
 				delete statusCallCount[uid];
 				continue;
 			}
-	
+
 			if (!isInViewport(cell[0])) {
 				delete statusCallCount[uid];
 				continue;
 			}
-	
+
 			// Warn if ajax status is called more than 10 times
 			var WARN_CAP = 20;
 			if (
@@ -376,7 +374,7 @@ $(document).ready(function () {
 					"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
 				);
 			}
-	
+
 			var path = cell.attr("ajaxpath");
 			if (!path || path == "") {
 				path = cell.data("ajaxpath");
@@ -406,12 +404,12 @@ $(document).ready(function () {
 		}
 		setTimeout("runAjaxStatus();", 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
 	};
-	
+
 	lQuery(".ajaxstatus").livequery(function () {
 		var uid = $(this).attr("id");
-	
+
 		var iscomplete = $(this).data("ajaxstatuscomplete");
-	
+
 		if (iscomplete) {
 			runAjaxOn[uid] = false;
 		} else {
@@ -425,13 +423,13 @@ $(document).ready(function () {
 			ajaxRunning = true;
 		}
 	});
-	
+
 	lQuery("a.ajax").livequery("click", function (e) {
 		e.stopPropagation();
 		e.preventDefault();
 		$(this).runAjax();
 	});
-	
+
 	lQuery("a.toggleAjax").livequery("click", function (e) {
 		/**
 		 * Runs an ajax call and removes the element from the DOM on ajax success
@@ -449,7 +447,7 @@ $(document).ready(function () {
 			$this.remove();
 		});
 	});
-	
+
 	autoreload = function (div, callback, classname = null) {
 		var url = div.data("autoreloadurl");
 		if (url !== undefined) {
@@ -471,18 +469,18 @@ $(document).ready(function () {
 			});
 		}
 	};
-	
+
 	// Call this way	$(window).trigger("autoreload", [indiv,callback,targetdiv]);
 	$(window).on("autoreload", function (event, indiv, callback, targetdiv) {
 		autoreload($(indiv), callback, targetdiv);
 	});
-	
+
 	lQuery(".refreshautoreload").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		$(window).trigger("checkautoreload", [$(this)]);
 	});
-	
+
 	// Call this way	$(window).trigger("checkautoreload", [form]);
 	$(window).on("checkautoreload", function (event, indiv) {
 		var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
@@ -496,7 +494,7 @@ $(document).ready(function () {
 		} else {
 		}
 	});
-	
+
 	//Sets Page title on ajax calls, needs a setpagetitle data set in the targetdiv
 	$(window).on("setPageTitle", function (event, inElement) {
 		var element = inElement;
@@ -506,7 +504,7 @@ $(document).ready(function () {
 		if (isentitydialog.length > 0) {
 			element = isentitydialog.find(".entitydialog");
 		}
-	
+
 		if (element === undefined || $(element).data("setpagetitle") == null) {
 			element = $("#applicationcontent");
 		}
@@ -514,11 +512,11 @@ $(document).ready(function () {
 			element = $("#application");
 		}
 		var setpagetitle = $(element).data("setpagetitle");
-	
+
 		if (setpagetitle != null && inElement.data("addtopagetitle") != null) {
 			setpagetitle = setpagetitle + " - " + inElement.data("addtopagetitle");
 		}
-	
+
 		var titlepostfix = $("#application").data("titlepostfix");
 		var title = "";
 		if (setpagetitle) {
@@ -529,7 +527,4 @@ $(document).ready(function () {
 		}
 		document.title = title;
 	});
-
 }); //document ready
-	
-	
