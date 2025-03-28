@@ -197,7 +197,11 @@ public class DropboxManager implements CatalogEnabled
 		}
 		catch (Exception e)
 		{
-			throw new OpenEditException(e);
+			if (e instanceof OpenEditException) 
+			{
+				throw (OpenEditException) e;
+			}
+			throw new OpenEditException("Major Error syncing assets", e);
 		}
 
 		return total;
