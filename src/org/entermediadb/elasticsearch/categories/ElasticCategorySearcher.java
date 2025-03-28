@@ -31,6 +31,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	//protected Category fieldRootCategory;
 	protected String fieldSort = "name";
 	
+	
+	
+	
 	public String getSort() {
 		return fieldSort;
 	}
@@ -41,6 +44,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 
 
+	
+	protected String getCacheKey() {
+		return getSearchType() + "category";
+	}
+	
 	
 	public Data createNewData()
 	{
@@ -65,11 +73,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
 			
-			ElasticCategory category = (ElasticCategory)getCacheManager().get("category", data.getId());
+			ElasticCategory category = (ElasticCategory)getCacheManager().get(getCacheKey(), data.getId());
 			if( category == null)
 			{
 				category  = (ElasticCategory)loadData(data);
-				getCacheManager().put("category", data.getId(),category);
+				getCacheManager().put(getCacheKey(), data.getId(),category);
 				children.add(category);
 				continue;
 			}
@@ -87,7 +95,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		try
 		{
 			//getXmlCategoryArchive().clearCategories();
-			getCacheManager().clear("category");
+			getCacheManager().clear(getCacheKey());
 			
 			HitTracker tracker = query().all().sort("categorypath").search();
 			tracker.enableBulkOperations();
@@ -103,7 +111,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				{
 					updateIndex(tosave,null);
 					tosave.clear();
-					getCacheManager().clear("category");  //TODO: Why do we do this?
+					getCacheManager().clear(getCacheKey());  //TODO: Why do we do this?
 				}
 			}
 			updateIndex(tosave,null);
@@ -135,7 +143,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			
 			
 			//getXmlCategoryArchive().clearCategories();
-			getCacheManager().clear("category");
+			getCacheManager().clear(getCacheKey());
 			
 			HitTracker tracker = query().all().sort("categorypath").search();
 			tracker.enableBulkOperations();
@@ -155,13 +163,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				{
 					updateIndex(tosave,null);
 					tosave.clear();
-					getCacheManager().clear("category");
+					getCacheManager().clear(getCacheKey());
 				}
 			}
 			updateIndex(tosave,null);
 			
 			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
-			getCacheManager().clear("category");
+			getCacheManager().clear(getCacheKey());
 			
 			
 			
@@ -274,7 +282,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		String path = inCategory.loadCategoryPath();
 		inCategory.setValue("parents", inCategory.getParentCategories());
 		inCategory.setValue("categorypath", path);
-		getCacheManager().put("category", inCategory.getId(),inCategory); //Is this too many?
+		getCacheManager().put(getCacheKey(), inCategory.getId(),inCategory); //Is this too many?
     	toSave.add(inCategory);
     	if( toSave.size() > 1000 )
    		{
@@ -307,7 +315,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			return null;
 		}
 		Category cat = null;		
-		cat = (Category)getCacheManager().get(getSearchType() + "category", inCategoryId);
+		cat = (Category)getCacheManager().get(getCacheKey(), inCategoryId);
 		if( cat == null || cat.isDirty() )
 		{
 			Category newcopy = searchCategory(inCategoryId);
@@ -348,7 +356,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}
 		if( cat != null )
 		{
-			getCacheManager().put(getSearchType() + "category", inCategoryId,cat);
+			getCacheManager().put(getCacheKey(), inCategoryId,cat);
 		}
 
 		return cat;
@@ -489,7 +497,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				//log.info(parentcategory.isDirty());
 			}
 			saveData(found);
-			getCacheManager().put(getSearchType() + "category", found.getId(),found);
+			getCacheManager().put(getCacheKey(), found.getId(),found);
 		}
 		return found;
 	}
@@ -509,7 +517,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void clearCategories()
 	{
 		clearIndex();
-		getCacheManager().clear("category");
+		getCacheManager().clear(getCacheKey());
 		
 	}
 	public Set buildCategorySet(Category inCategory) {
@@ -559,14 +567,14 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		{
 			return null;
 		}
-		Category cached = (Category)getCacheManager().get(getSearchType() + "category", hit.getId());
+		Category cached = (Category)getCacheManager().get(getCacheKey(), hit.getId());
 		if( cached != null)
 		{
 			return cached;
 		}
 		
 		Category found = (Category)loadData(hit);
-		getCacheManager().put(getSearchType() + "category", found.getId(),found);
+		getCacheManager().put(getCacheKey(), found.getId(),found);
 		return found;
 	}
 
