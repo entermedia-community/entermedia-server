@@ -712,7 +712,10 @@ public class EntityModule extends BaseMediaModule
 					folder.setName(namebreadcrumb);
 					folder.setValue("desktop",desktop);
 					folder.setValue("module",moduleid);
-					folder.setValue("entityid", entity.getId());
+					if(entity != null)
+					{						
+						folder.setValue("entityid", entity.getId());
+					}
 					folder.setValue("createddate", new Date());
 					archive.saveData("desktopsyncfolder", folder);
 				}
