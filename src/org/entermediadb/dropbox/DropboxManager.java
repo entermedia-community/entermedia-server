@@ -20,7 +20,6 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.sources.AssetSource;
 import org.entermediadb.net.HttpSharedConnection;
@@ -32,6 +31,8 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
 
@@ -46,6 +47,7 @@ public class DropboxManager implements CatalogEnabled
 	protected OutputFiller filler = new OutputFiller();
 	protected HttpSharedConnection connection;
 	protected DropboxAssetSource fieldAssetSource;
+	protected String fieldNameSpace;
 
 	public DropboxAssetSource getAssetSource()
 	{
@@ -120,6 +122,8 @@ public class DropboxManager implements CatalogEnabled
 	public int syncAssets(String inRemoteRoot)
 	{
 		String folderroot = getAssetSource().getConfig().get("subfolder");
+		String syncroot = getAssetSource().getConfig().get("syncroot");
+		
 		ArrayList assets = new ArrayList();
 		int total = 0;
 		try
@@ -135,29 +139,37 @@ public class DropboxManager implements CatalogEnabled
 				{
 					// Extract necessary information
 					String path = (String) entry.get("path_display");
+					
+					if (syncroot != null)
+					{
+						path = path.substring(syncroot.length());
+					}
+					
 					String name = (String) entry.get("name");
 					String id = (String) entry.get("id");
 					String categorypath = folderroot + path;
 					categorypath = PathUtilities.extractDirectoryPath(categorypath);
 					String sourcepath = categorypath + "/" + name;
-					Category cat = getMediaArchive().createCategoryPath(categorypath);
-					Asset existingAsset = archive.getAssetBySourcePath(sourcepath);
-
-					if (existingAsset == null)
+					
+					String downloadpath = "/WEB-INF/data/" + getMediaArchive() + "/originals/" + categorypath + "/" + name;
+					Page savedfile = getMediaArchive().getPageManager().getPage(downloadpath,false);
+					Number size = (Number)entry.get("size");
+					if (size != null && size.longValue() != savedfile.length())
 					{
-						String downloadpath = "/WEB-INF/data/" + getMediaArchive() + "/originals/" + categorypath + "/" + name;
-						;
-						Page download = downloadFile(id, downloadpath);
+						String datestr = (String)entry.get("client_modified");
+						Date date = DateStorageUtil.getStorageUtil().parseFromStorage(datestr);
+
+						ContentItem download = downloadFile(id, size.longValue(),date, savedfile);
+						
 						if (download != null)
 						{
 							Asset newAsset = getMediaArchive().getAssetImporter().createAssetFromPage(archive, false, null, download, null);
 							newAsset.setValue("dropboxid", id);
-							newAsset.addCategory(cat);
+							if( newAsset.getValue("ordering") == null)
+							{
+								newAsset.setValue("ordering",total); 
+							}
 							assets.add(newAsset);
-							//Downloading is WAY slower than saving, just save so they appear as we go.
-							getMediaArchive().saveAsset(newAsset);
-							archive.fireSharedMediaEvent("importing/assetscreated");
-
 						}
 					}
 
@@ -165,7 +177,12 @@ public class DropboxManager implements CatalogEnabled
 					total++;
 				}
 			}
-			getMediaArchive().saveAssets(assets);
+			if( !assets.isEmpty()) 
+			{
+				getMediaArchive().saveAssets(assets);
+				archive.fireSharedMediaEvent("importing/assetscreated");
+			}
+
 			for (JSONObject entry : entries)
 			{
 				String tag = (String) entry.get(".tag");
@@ -187,25 +204,25 @@ public class DropboxManager implements CatalogEnabled
 	}
 	
 	public String getRootNamespace() {
-		  String url = "https://api.dropboxapi.com/2/users/get_current_account";
+		if (fieldNameSpace == null) {
+			 String url = "https://api.dropboxapi.com/2/users/get_current_account";
 		    HttpPost method = new HttpPost(url);
 		    method.addHeader("Authorization", "Bearer " + getAccessToken());
 		    //method.setHeader("Content-Type", "application/json");
-		   
-
 		    CloseableHttpResponse resp = getConnection().sharedExecute(method);
 		    JSONObject json = getConnection().parseJson(resp);
 
 		    if (json != null && json.containsKey("root_info")) {
 		        JSONObject rootInfo = (JSONObject) json.get("root_info");
-
 		        String tag = (String) rootInfo.get(".tag");
 		        String rootNamespace = (String) rootInfo.get("root_namespace_id");
-		        return rootNamespace;
-		      
+		        fieldNameSpace = rootNamespace;
 		    }
+			
+		}
 
-		    return null;
+		return fieldNameSpace;
+  	   
 	}
 	
 	public Collection<JSONObject> listRootFolders() throws Exception {
@@ -254,6 +271,8 @@ public class DropboxManager implements CatalogEnabled
 			do
 			{
 				filesAndFolders = (JSONArray) json.get("entries");
+				log.info("Listing  found " + filesAndFolders.size() + " in "+ path );
+
 				if (filesAndFolders != null)
 				{
 					for (Object obj : filesAndFolders)
@@ -458,7 +477,7 @@ public class DropboxManager implements CatalogEnabled
 		return null;
 	}
 
-	public Page downloadFile(String fileId, String outputPath) throws Exception
+	public ContentItem downloadFile(String fileId, long size, Date moddate, Page outputPath) throws Exception
 	{
 		String url = "https://content.dropboxapi.com/2/files/download";
 
@@ -466,6 +485,10 @@ public class DropboxManager implements CatalogEnabled
 		apiArg.put("path", fileId);
 
 		String namespaceId = getNamespace();
+		if (namespaceId == null)
+		{
+			namespaceId = getRootNamespace(); 
+		}
 		HttpPost method = new HttpPost(url);
 		method.addHeader("Authorization", "Bearer " + getAccessToken());
 		method.addHeader("Dropbox-API-Path-Root", "{\"namespace_id\": \"" + namespaceId + "\", \".tag\": \"namespace_id\"}");
@@ -476,16 +499,18 @@ public class DropboxManager implements CatalogEnabled
 		if (resp.getStatusLine().getStatusCode() == 200)
 		{
 			// Ensure directories exist
-			Page outputpage = getMediaArchive().getPageManager().getPage(outputPath);
-
-			File output = new File(outputpage.getContentItem().getAbsolutePath());
+			//ToDo: save the date on the file after download
+			File output = new File(outputPath.getContentItem().getAbsolutePath());
 			output.getParentFile().mkdirs();
 
-			log.info("Dropbox Manager Downloading to " + outputPath);
+			log.info("Dropbox Downloading to sie: " + size + " to " + outputPath);
 
 			// Use OutputFiller to save content to the file
 			filler.fill(resp.getEntity().getContent(), new FileOutputStream(output), true);
-			return outputpage;
+			output.setLastModified(moddate.getTime());
+			//getPageManager().putPage(xxxx,stream)
+			ContentItem finalpage = getMediaArchive().getPageManager().getContent(outputPath.getPath());
+			return finalpage;
 		}
 		else
 		{

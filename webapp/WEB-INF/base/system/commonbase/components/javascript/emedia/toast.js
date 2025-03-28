@@ -58,7 +58,12 @@ customToast = function (message, options = {}) {
 	}
 
 	if (!positive) {
-		$(".toastList").find(".toastError").remove();
+		$(".toastList")
+			.find(".toastError")
+			.each(function () {
+				if ($(this).next().text() !== message) return;
+				$(this).parent().remove();
+			});
 	}
 
 	var btnText = options.btnText;
@@ -77,7 +82,7 @@ customToast = function (message, options = {}) {
 	var toast = $(
 		`<div class="toastContainer" data-id="${options.id}" role="alert">
 			${iconHtml}
-			<div class="toastMessage">${message}</div>
+			<div class="toastMessage">${message.trim()}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
 			<div class="toastClose">&times;</div>
 		</div>`

@@ -169,13 +169,18 @@ public class AssetImporter
 	}
 	public Asset createAssetFromPage(MediaArchive inArchive, boolean infolderbased, User inUser, Page inAssetPage, String inAssetId)
 	{
-		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),infolderbased, inArchive, inUser);
+		Asset asset = createAssetFromPage(inArchive,infolderbased,inUser,inAssetPage.getContentItem(),inAssetId);
+		return asset;
+	}
+	public Asset createAssetFromPage(MediaArchive inArchive, boolean infolderbased, User inUser, ContentItem inContent, String inAssetId)
+	{
+		Asset asset = getAssetUtilities().createAssetIfNeeded(inContent,infolderbased, inArchive, inUser);
 
 		if( asset == null)
 		{
 			//Should never call this
 			String originals = "/WEB-INF/data" +  inArchive.getCatalogHome() + "/originals/";
-			String sourcepath = inAssetPage.getPath().substring(originals.length());
+			String sourcepath = inContent.getPath().substring(originals.length());
 			asset = inArchive.getAssetBySourcePath(sourcepath);
 			return asset;
 		}

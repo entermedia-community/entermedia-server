@@ -1,6 +1,7 @@
 package org.entermediadb.desktops;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +13,8 @@ import org.entermediadb.find.FolderManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+
+import com.google.common.base.Splitter;
 
 public class DesktopModule extends BaseMediaModule
 {
@@ -128,30 +131,32 @@ public class DesktopModule extends BaseMediaModule
 			}
 		}
 		
-		String computername = null;
 		
 		String useragent = inReq.getRequest().getHeader("User-Agent");
-		if(useragent.contains("eMediaLibrary")) 
+		if(useragent.contains("eMediaDesktop")) 
 		{
-			int found = useragent.indexOf("ComputerName/");
-			if( found > -1)
+			if(desktop == null) 
 			{
-				computername = useragent.substring(found + "ComputerName/".length(), useragent.length());
-				if(desktop != null) 
-				{					
-					desktop.setComputerName(computername);
-				}
+				FolderManager manager = getFolderManager(inReq);
+				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(), useragent);
+				inReq.putPageValue("desktop", desktop);
+				inReq.putSessionValue("desktop", desktop);
+			}
+
+			String values = useragent.substring(useragent.indexOf("eMediaDesktop"), useragent.length());
+			Map<String, String> map = Splitter.on( " " ).withKeyValueSeparator( '/' ).split( values );
+			String computername = map.get("ComputerName");
+			if( computername != null) 
+			{					
+				desktop.setComputerName(computername);
+			}
+			String desktopversion = map.get("APIVersion");
+			if( desktopversion != null)
+			{
+				desktop.setDesktopApiVersion((Integer.parseInt(desktopversion))); 
 			}
 		}
 		
-		if(desktop == null && computername != null) 
-		{
-			FolderManager manager = getFolderManager(inReq);
-			desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(), computername);
-			inReq.putPageValue("desktop", desktop);
-			inReq.putSessionValue("desktop", desktop);
-		}
-
 		return desktop;
 	}
 	
