@@ -243,9 +243,11 @@
 	};
 })(jQuery);
 
-lQuery("form.ajaxform").livequery("submit", function (e) {
-	e.preventDefault();
-	e.stopImmediatePropagation();
-	e.stopPropagation();
-	$(this).ajaxFormSubmit();
+$(document).ready(function () {
+	lQuery("form.ajaxform").livequery("submit", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		e.stopPropagation();
+		$(this).ajaxFormSubmit();
+	});
 });

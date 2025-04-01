@@ -37,14 +37,6 @@ $(window).on("showToast", function (_, anchor) {
 	}, delay);
 });
 
-lQuery(".toastClose").livequery("click", function () {
-	var toast = $(this).closest(".toastContainer");
-	toast.addClass("hide");
-	setTimeout(function () {
-		toast.remove();
-	}, 500);
-});
-
 customToast = function (message, options = {}) {
 	if (options.id) {
 		$(".toastList").find(`.toastContainer[data-id="${options.id}"]`).remove();
@@ -136,4 +128,14 @@ $(window).on("errorToast", function (_, uid) {
 	if (toastTO[uid]) clearTimeout(toastTO[uid]);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
+});
+
+$(document).ready(function () {
+	lQuery(".toastClose").livequery("click", function () {
+		var toast = $(this).closest(".toastContainer");
+		toast.addClass("hide");
+		setTimeout(function () {
+			toast.remove();
+		}, 500);
+	});
 });
