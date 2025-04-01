@@ -1372,15 +1372,24 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				find = text;
 			}
 		}
-		else if ("freeform".equals(inTerm.getOperation()))
+//		else if ("freeform".equals(inTerm.getOperation()))
+//		{
+//			List fields = getKeywordProperties();
+//			for (Iterator iterator = fields.iterator(); iterator.hasNext();)
+//			{
+//				PropertyDetail detail = (PropertyDetail) iterator.next();
+//				
+//			}
+//		}
+		if ("freeform".equals(inTerm.getOperation()))
 		{
 			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
 
-			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
+			if ((valueof.startsWith("\"") && valueof.endsWith("\""))) //This seems wrong
 			{
 				Pattern pattern = Pattern.compile("(?<=\\s)[^a-zA-Z\\\\d\\\\s](?=\\s)");
 				Matcher matcher = pattern.matcher(valueof);
-				String oldvalueof = valueof;
+				//String oldvalueof = valueof;
 				valueof = matcher.replaceAll("");
 
 				valueof = valueof.replace("\"", "");
@@ -1415,9 +1424,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				//String orregex = "((.*?)\\s+(OR|AND|NOT)?\\s+)+";
 				Matcher andors = orpattern.matcher(uppercase);
 
-				String operator = null;
-				String nextoperator = null;
-
 				Collection searchpairs = new ArrayList();
 
 				//String regex = "(.*?)\\s+(AND|OR)\\s)+";
@@ -1436,11 +1442,12 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				lastpair.put("word", uppercase.substring(lastterm));
 				searchpairs.add(lastpair);
 
+				String currentoperator = null;
+
 				for (Iterator iterator = searchpairs.iterator(); iterator.hasNext();)
 				{
 					Map<String, String> pair = (Map) iterator.next();
 					String word = pair.get("word");
-					nextoperator = pair.get("operator");
 					StringBuffer out = new StringBuffer();
 					out.append("+(");
 					//If there are tokens then treat a one word with quotes
@@ -1450,44 +1457,16 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 					// Create a Matcher object
 					Matcher matcher = specialchars.matcher(word);
+					currentoperator = pair.get("operator");
+					String previousoperator = null;
+
 					while (matcher.find())
 					{
 						// Get the matched character
 						String match = matcher.group();
-						boolean onlastone = word.endsWith(match);
-
-						MatchQueryBuilder oneword = null;
-						if (onlastone)
-						{
-							oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getId(), QueryParser.escape(match));
-						}
-						else
-						{
-							oneword = QueryBuilders.matchPhraseQuery(inTerm.getId(), QueryParser.escape(match));
-						}
-						oneword.analyzer("lowersnowball");
-						if (operator == null && (nextoperator != null && nextoperator.equals("OR")))
-						{
-							operator = "OR";
-						}
-						else if (operator == null)
-						{
-							operator = "AND";
-						}
-
-						if (operator.equals("NOT"))
-						{
-							booleans.mustNot(oneword);
-						}
-						else if (operator.equals("OR"))
-						{
-							booleans.should(oneword);
-						}
-						else
-						{
-							booleans.must(oneword);
-						}
-						operator = nextoperator;
+						previousoperator = currentoperator;
+						String nextoperator = addSearchTerms(inTerm, word, match, previousoperator, currentoperator, booleans);
+						currentoperator = nextoperator;
 					}
 				}
 
@@ -1782,6 +1761,81 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 		}
 		return find;
+	}
+
+	protected String addSearchTerms(Term inTerm, String word, String match, String previousoperator, String currentoperator, BoolQueryBuilder booleans)
+	{
+		boolean onlastone = word.endsWith(match);
+
+		String escaped = QueryParser.escape(match);	
+		//For freeform we want to have pairs of words. lowersnoball does not work well with prefix phrase queries
+
+		BoolQueryBuilder either  = QueryBuilders.boolQuery();
+		
+		MatchQueryBuilder oneword = null; //Desription always included
+		if (onlastone)
+		{
+			oneword = QueryBuilders.matchPhrasePrefixQuery(inTerm.getDetail().getId(), escaped);
+		}
+		else
+		{
+			oneword = QueryBuilders.matchPhraseQuery(inTerm.getDetail().getId(), escaped);
+		}
+		oneword.analyzer("lowersnowball");
+		either.should(oneword);
+
+//		MatchQueryBuilder simple = QueryBuilders.matchPhrasePrefixQuery("name.sort", escaped);
+//		either.should(simple);
+//		booleans.must(either);
+
+		//The other text fields can be searched directly
+		for (Iterator iterator = getKeywordProperties().iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if( detail.isList() || detail.isDate() || detail.isMultiLanguage() || detail.isDataType("objectarray") || detail.isDataType("nested") || detail.getId().equals("description") )   //				else if (det.isDataType("objectarray") || det.isDataType("nested"))
+			{
+				continue;
+			}
+			String altid = detail.getId();
+			if (detail.isAnalyzed())
+			{
+				altid = altid + ".sort";
+			}
+			
+			if (onlastone)
+			{
+				oneword = QueryBuilders.matchPhrasePrefixQuery(altid, escaped);
+			}
+			else
+			{
+				oneword = QueryBuilders.matchPhraseQuery(altid, escaped);
+			}
+			either.should(oneword);
+		}
+
+		
+		if (currentoperator == null && (previousoperator != null && previousoperator.equals("OR")))  //Start using OR operator
+		{
+			currentoperator = "OR";
+		}
+		else if (currentoperator == null)
+		{
+			currentoperator = "AND";
+		}
+
+		if (currentoperator.equals("NOT"))
+		{
+			booleans.mustNot(either);
+		}
+		else if (currentoperator.equals("OR"))
+		{
+			booleans.should(either);
+		}
+		else
+		{
+			booleans.must(either);
+		}
+		return currentoperator;
 	}
 
 	protected QueryBuilder createMatchQuery(PropertyDetail inDetail, String fieldid, String valueof)
@@ -3331,6 +3385,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		// }
 	}
 
+	
 	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
 	{
 		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();)
@@ -3506,7 +3561,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			}
 		}
 	}
-
 	public void reIndexAll() throws OpenEditException
 	{
 		// there is not reindex step since it is only in memory
