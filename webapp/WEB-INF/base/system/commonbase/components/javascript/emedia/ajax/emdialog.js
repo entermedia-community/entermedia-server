@@ -1,5 +1,5 @@
 (function ($) {
-	$.fn.emDialog = function (onsuccess = null) {
+	$.fn.emDialog = function (onsuccess = null, always = null) {
 		var initiator = $(this);
 
 		var width = initiator.data("width");
@@ -86,6 +86,7 @@
 		var toastUid = initiator.data("uid");
 		var initiatorData = initiator.data();
 		var onsuccessFunc = onsuccess;
+		var alwaysFunc = always;
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -149,7 +150,7 @@
 						firstform.data("targetdiv", tdiv.attr("id"));
 					}
 				}
-*/
+				*/
 				// fix submit button
 				var justok = initiatorData["cancelsubmit"];
 				if (justok != null) {
@@ -231,6 +232,11 @@
 			},
 			error: function () {
 				$(window).trigger("errorToast", toastUid);
+			},
+			complete: function () {
+				if (alwaysFunc) {
+					alwaysFunc();
+				}
 			},
 		});
 
