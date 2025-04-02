@@ -1381,7 +1381,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 //				
 //			}
 //		}
-		if ("freeform".equals(inTerm.getOperation()))
+		else if ("freeform".equals(inTerm.getOperation()))
 		{
 			//Pattern pattern = Pattern.compile("(?<=\\s)\\w(?=\\s)");
 
