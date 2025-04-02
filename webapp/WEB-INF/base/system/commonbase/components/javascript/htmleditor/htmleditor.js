@@ -381,26 +381,6 @@ function createCK5(target, options = {}) {
 		});
 }
 
-lQuery("textarea.htmleditor").livequery(function () {
-	const $this = $(this).get(0);
-	const uid = $this.id;
-	const options = {
-		hideImagePicker: true,
-		hideSaving: true,
-		// hideSourceEditing: true,
-	};
-	if (uid && window.CK5Editor[uid]) {
-		window.CK5Editor[uid]
-			.destroy()
-			.then(() => createCK5($this, options))
-			.catch((error) => {
-				console.error(error);
-			});
-	} else {
-		createCK5($this, options);
-	}
-});
-
 $(window).on("edithtmlstart", function (_, targetDiv) {
 	if (targetDiv.length === 0) return;
 	const hideSaving = targetDiv.data("editonly");
@@ -429,10 +409,6 @@ window.addEventListener("message", function (event) {
 		$(window).trigger("assetpicked", [url]);
 		closeallemdialogs();
 	}
-});
-
-lQuery("textarea.htmleditor-advanced").livequery(function () {
-	$(window).trigger("edithtmlstart", [$(this)]);
 });
 
 window.updateAllCK5 = function () {
@@ -491,4 +467,29 @@ $(window).on("inlinehtmlstart", function (_, targetDiv) {
 		hideSaving,
 	};
 	createInlineCK5(targetDiv[0], options);
+});
+
+$(document).ready(function () {
+	lQuery("textarea.htmleditor-advanced").livequery(function () {
+		$(window).trigger("edithtmlstart", [$(this)]);
+	});
+	lQuery("textarea.htmleditor").livequery(function () {
+		const $this = $(this).get(0);
+		const uid = $this.id;
+		const options = {
+			hideImagePicker: true,
+			hideSaving: true,
+			// hideSourceEditing: true,
+		};
+		if (uid && window.CK5Editor[uid]) {
+			window.CK5Editor[uid]
+				.destroy()
+				.then(() => createCK5($this, options))
+				.catch((error) => {
+					console.error(error);
+				});
+		} else {
+			createCK5($this, options);
+		}
+	});
 });
