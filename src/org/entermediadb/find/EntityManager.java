@@ -227,19 +227,33 @@ public class EntityManager implements CatalogEnabled
 		}
 		else
 		{
-			if( !entity.getName().equals(cat.getName()) )
+			boolean updatename = false;
+			if( !entity.getName().equals(cat.getName()))
 			{
-				String enpath = entity.get("uploadsourcepath");
-				log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
-				cat.setName(entity.getName());
-				cat.setValue("categorypath",null); //clear it
-				//TODO: How can I move all the old content over?
-				//save all the childrem
-				getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
-				if(enpath == null || !cat.getCategoryPath().equals(enpath) )
+				if (module.get("uploadsourcepath") == null)
 				{
-					entity.setValue("uploadsourcepath",cat.getCategoryPath());
-					getMediaArchive().saveData(module.getId(), entity);
+					updatename = true;
+				}
+				else if(module.get("uploadsourcepath").contains("${data.name}"))
+				{
+					updatename = true;
+				}
+				
+				
+				if (updatename)
+				{
+					String enpath = entity.get("uploadsourcepath");
+					log.info("Category was renamed " + cat.getName() + " -> " + entity.getName());
+					cat.setName(entity.getName());
+					cat.setValue("categorypath",null); //clear it
+					//TODO: How can I move all the old content over?
+					//save all the childrem
+					getMediaArchive().getCategorySearcher().saveCategoryTree(cat);
+					if(enpath == null || !cat.getCategoryPath().equals(enpath) )
+					{
+						entity.setValue("uploadsourcepath",cat.getCategoryPath());
+						getMediaArchive().saveData(module.getId(), entity);
+					}
 				}
 			}
 		}
