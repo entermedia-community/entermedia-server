@@ -526,5 +526,9 @@ $(document).ready(function () {
 			title = title ? title + " - " + titlepostfix : titlepostfix;
 		}
 		document.title = title;
+		var desktopTitle = $("#desktopTitle .desktop-title");
+		if (desktopTitle.length > 0) {
+			desktopTitle.text(title);
+		}
 	});
 }); //document ready
