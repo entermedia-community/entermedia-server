@@ -69,9 +69,9 @@
 					window.location.host +
 					"/" +
 					mediadb,
+				hasDesktopHeader: desktopTitle.length > 0,
 			})
 			.then(({ computerName, rootPath, downloadPath, platform }) => {
-				console.log(desktopTitle);
 				if (desktopTitle.length === 0) {
 					$("body").prepend(
 						'<div id="desktopTitle"><div class="desktop-icon"></div><button class="desktop-close"><i class="fa fa-times"></i></button></div>'
