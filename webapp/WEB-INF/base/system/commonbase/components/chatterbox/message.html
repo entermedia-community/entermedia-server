@@ -95,13 +95,13 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 						#if(!$goal)		
 							<a class="message-menu-link ajax"   
 								data-targetdiv="chatter-message-$chat.id"
-								href="$!{projectlink}/chat/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id&taskstatus=0" 
+								href="$!{projectlink}/chat/chatterbox/makegoal.html?collectionid=$!{librarycol.getId()}&messageid=$chat.id&taskstatus=0" 
 								title="[[Flag as Goal]]">
 								<i class="fas fa-flag"></i>
 							</a>
 							<a class="message-menu-link ajax"   
 								data-targetdiv="chatter-message-$chat.id"
-								href="$!{projectlink}/chat/chatterbox/makeagenda.html?collectionid=$librarycol.getId()&messageid=$chat.id&taskstatus=6" 
+								href="$!{projectlink}/chat/chatterbox/makeagenda.html?collectionid=$!{librarycol.getId()}&messageid=$chat.id&taskstatus=6" 
 								title="[[Make Agenda]]">
 								<i class="fas fa-check-double"></i>
 							</a>

@@ -4,6 +4,9 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 #ifnull($moduleid)
 #set($moduleid = $page.module) 
 #end
+#ifnull($collectionid)
+#set($collectionid = $librarycol.getId()) 
+#end
 
 #set($cansendchat = false)
 #if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
