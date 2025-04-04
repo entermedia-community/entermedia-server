@@ -105,7 +105,7 @@ public class DesktopModule extends BaseMediaModule
 	
 	public Desktop loadDesktop(WebPageRequest inReq)
 	{
-		if(inReq.getRequest() == null || inReq.getUser() == null) {
+		if(inReq.getRequest() == null) {
 			return null;
 		}
 		
