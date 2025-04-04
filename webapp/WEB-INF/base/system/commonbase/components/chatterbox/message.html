@@ -1,27 +1,33 @@
 #set($chatterboxhome = $page.chatterboxhome)
 $context.putPageValue("chatterboxhome", $chatterboxhome)
 
-#set( $goalfolder = $context.getRequestParameter("goalfolder"))
-#if(!$goalfolder)
-	#set( $goalfolder = $context.getPageValue("goalfolder") )
+
+#set($goalsenabled = $content.isPropertyTrue("chatterboxgoalsenabled",false))
+
+#if($goalsenabled)
+	#set( $goalfolder = $context.getRequestParameter("goalfolder"))
+	#if(!$goalfolder)
+		#set( $goalfolder = $context.getPageValue("goalfolder") )
+	#end
+	
+	#if(!$goalfolder)
+		#set( $goalfolder = "search" )
+	#end
+	
+	#set($goal = $goalsinmessages.get($chat.id))
 #end
 
-#if(!$goalfolder)
-	#set( $goalfolder = "search" )
-#end
-
-#set($goal = $goalsinmessages.get($chat.id))
 #set($chatuser = $mediaarchive.getUser($chat.user) ) 
 #set($attachedassets = $attachmentspermessage.get($chat.id))
 #set($otherassets = $messageidwithassets.get($chat.id))
-	
+
 #set($messagetype = "${chatterboxhome}/types/${chat.messagetype}.html")
+
 #if($chat.messagetype && $pages.doesExist($messagetype))
 	$pages.include($messagetype, $context)
 #else
 
-
-		<div id="chatter-message-$!chat.id" class="msg-bubble">
+	<div id="chatter-message-$!chat.id" class="msg-bubble">
 		<div class="chatterbox-chat" role="alert" >
 			<div class="chat-icon">
 				#if ($chat.user == "agent")
@@ -52,7 +58,8 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 							<i class="fas fa-grin"></i>
 						</div>
 					#end
-					#if($permissions.canModule($module, "chat_send_messages"))
+					
+					#if(!$goal && $permissions.canModule($module, "chat_send_messages"))
 					<a class="message-menu-link ajax jumptofocus" 
 						data-oemaxlevel="1"    
 						data-channel="$!currentchannel.getId()" 
@@ -64,21 +71,8 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 					</a>
 					#end		
 					
-					
-					##new attach icon on chat footer
-					#if(false && !$page.chatattachmentsdisabled && $permissions.canModule($module, "chat_add_attachments"))
-					<a class="message-menu-link ajax" 
-						data-oemaxlevel="1"    
-						data-targetdiv="attach-${chat.id}"
-						href="${chatterboxhome}/attach.html"
-						data-channel="$!currentchannel.getId()"  
-						data-messageid="$!chat.id"
-						title="[[Attachments]]">
-						<i class="fas fa-paperclip"></i>
-					</a>
-					#end
-		
-					#if($chat.user == $user.id )
+							
+					#if(!$goal && $chat.user == $user.id )
 						#if($permissions.canModule($module, "chat_edit_messages"))
 						<a class="message-menu-link ajax-edit-msg"   
 							data-targetdiv="chatter-message-$chat.id"
@@ -91,9 +85,28 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 						</a>
 						#end
 					#end
+									
 					##if($candeletecomments)
 					##<!-- <a class="confirm" data-confirm="Are you sure?" title="Delete message" data-id="${chat.id}" data-target="#chatter-message-$chat.id" data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a> -->
 					##end
+					
+					
+					#if($goalsenabled)
+						#if(!$goal)		
+							<a class="message-menu-link ajax"   
+								data-targetdiv="chatter-message-$chat.id"
+								href="$!{projectlink}/chat/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id&taskstatus=0" 
+								title="[[Flag as Goal]]">
+								<i class="fas fa-flag"></i>
+							</a>
+							<a class="message-menu-link ajax"   
+								data-targetdiv="chatter-message-$chat.id"
+								href="$!{projectlink}/chat/chatterbox/makeagenda.html?collectionid=$librarycol.getId()&messageid=$chat.id&taskstatus=6" 
+								title="[[Make Agenda]]">
+								<i class="fas fa-check-double"></i>
+							</a>
+						#end
+					#end
 																					
 				</div>
 				<div id="attach-${chat.id}"></div>
@@ -135,6 +148,7 @@ $context.putPageValue("chatterboxhome", $chatterboxhome)
 						</div>
 					</div>
 				#end
+				
 					#if($caneditcollection && $goal)
 						$context.putPageValue("chat",$chat)
 						$context.putPageValue("goal",$goal)

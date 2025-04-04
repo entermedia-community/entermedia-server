@@ -157,9 +157,11 @@
 	bottom: 100%;
 }
 .chatterbox-chat .goalstatus {
-	padding: 10px 12px;
+	padding: 1px;
 	margin: 6px 0;
 	border-radius: 8px;
+	background-color:transparent;
+	box-shadow:none;
 }
 .chatterbox-chat .card-task {
 	width: 296px;
