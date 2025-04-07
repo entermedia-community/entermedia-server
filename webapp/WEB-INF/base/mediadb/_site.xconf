@@ -16,8 +16,10 @@
 	<property name="showdebug">true</property>
 
 	<property name="themeprefix">/${applicationid}/theme</property>
-	<property name="applicationid">mediadb</property>
+	
+	<property name="applicationid">${siteid}/mediadb</property>
 	<property name="mediadbappid">${applicationid}</property>
+	
 	<property name="title">MediaDB</property>
 	
 	<path-action name="MediaArchiveModule.loadApplicationId" />
