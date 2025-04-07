@@ -1,5 +1,4 @@
 /*jshint esversion: 6 */
-const { ipcRenderer } = require("electron");
 
 (function () {
 	"use strict";
@@ -46,6 +45,8 @@ const { ipcRenderer } = require("electron");
 	}
 
 	jQuery(document).ready(function () {
+		const { ipcRenderer } = require("electron");
+
 		const app = $("#application");
 		const siteroot = app.data("siteroot");
 		const mediadb = app.data("mediadbappid");
