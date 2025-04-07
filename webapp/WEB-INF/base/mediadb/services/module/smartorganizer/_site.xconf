@@ -3,5 +3,5 @@
 <page>
   <property name="module">smartorganizer</property>
   <property name="searchtype">smartorganizer</property>
-  <property name="fallbackdirectory">/WEB-INF/base/finder/mediadb/services/module/default</property>
+<property name="fallbackdirectory">../default</property>
 </page>

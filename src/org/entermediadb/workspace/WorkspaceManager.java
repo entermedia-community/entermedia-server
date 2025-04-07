@@ -253,7 +253,6 @@ public class WorkspaceManager
 	public String createModuleFallbacks(String appid, Data module, boolean force)
 	{
 		String mid = module.getId();
-		String basepath = "default";
 		Page modulehome = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
 		
 		//TODO: Can we remove this one day?
@@ -267,7 +266,6 @@ public class WorkspaceManager
 		
 		if(parentfallback.exists() && parentfallback.getDirectoryName().equals(module.getId()) && !force) //mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
 		{
-			basepath = mid;
 			homesettings.removeProperty("fallbackdirectory");
 			modulesettings.removeProperty("fallbackdirectory");
 		}
@@ -275,12 +273,12 @@ public class WorkspaceManager
 		{
 			homesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("../" + basepath);
+			prop.setValue("../default");
 			homesettings.putProperty(prop);
 	
 			modulesettings.setProperty("module", module.getId());
 			prop = new PageProperty("fallbackdirectory");
-			prop.setValue("../" + basepath);
+			prop.setValue("../default");
 			modulesettings.putProperty(prop);
 		}		
 		getPageManager().getPageSettingsManager().saveSetting(homesettings);

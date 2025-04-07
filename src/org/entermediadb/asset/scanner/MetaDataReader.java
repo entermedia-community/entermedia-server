@@ -84,12 +84,16 @@ public class MetaDataReader
 			//Run Exiftool
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
+			Collection disabled = inMediaArchive.getCatalogSettingValues("metadata_readers_disabled");
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
 			{
 				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
-				if( extrac.extractAll(inMediaArchive, contentitems, inAssets) )
+				if( disabled == null || !disabled.contains(extrac.getClass().getName()) )
 				{
-					foundone = true;
+					if( extrac.extractAll(inMediaArchive, contentitems, inAssets) )
+					{
+						foundone = true;
+					}
 				}
 			}
 			if( foundone )
@@ -143,12 +147,17 @@ public class MetaDataReader
 
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
+			
+			Collection disabled = inArchive.getCatalogSettingValues("metadata_readers_disabled");
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
 			{
 				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
-				if( extrac.extractData(inArchive, inputFile, inAsset) )
+				if( disabled == null || !disabled.contains(extrac.getClass().getName()) )
 				{
-					foundone = true;
+					if( extrac.extractData(inArchive, inputFile, inAsset) )
+					{
+						foundone = true;
+					}
 				}
 			}
 			if( foundone )

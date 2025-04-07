@@ -1,6 +1,6 @@
 <page>
 	<property name="module">asset</property>
-	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+	<property name="fallbackdirectory">../default</property>
 
 	<!--TODO: add assetid's, preprocess, path-action name="MediaArchiveXXXX.loadAsset" alltypes="true"/ -->
 	
