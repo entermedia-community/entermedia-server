@@ -642,7 +642,6 @@ const { ipcRenderer } = require("electron");
 						const totalEl = idEl.find(".fileProgressTotal");
 						totalEl.text(humanFileSize(data.total));
 					});
-
 					// </all sync events>
 
 					// <single file download events>
@@ -667,8 +666,7 @@ const { ipcRenderer } = require("electron");
 						categorypath = categorypath.replace(/\/$/g, "");
 
 						const isDownload = $(this).hasClass("download");
-						const entityid = $(this).data("entityid");
-						const moduleid = $(this).data("moduleid");
+
 						ipcRenderer
 							.invoke("continueSync", {
 								categoryPath: uploadsourcepath,
