@@ -1,4 +1,5 @@
 /*jshint esversion: 6 */
+const { ipcRenderer } = require("electron");
 
 (function () {
 	"use strict";
@@ -45,8 +46,6 @@
 	}
 
 	jQuery(document).ready(function () {
-		const { ipcRenderer } = require("electron");
-
 		const app = $("#application");
 		const siteroot = app.data("siteroot");
 		const mediadb = app.data("mediadbappid");
@@ -664,12 +663,12 @@
 											elideCat(categorypath)
 									);
 								else {
-									customToast(
-										"Failed to continue " +
-											(isDownload ? "download" : "upload") +
-											" task for " +
-											elideCat(categorypath)
-									);
+									// customToast(
+									// 	"Failed to continue " +
+									// 		(isDownload ? "download" : "upload") +
+									// 		" task for " +
+									// 		elideCat(categorypath)
+									// );
 									const formData = new FormData();
 									formData.set("categorypath", categorypath);
 									formData.set("entityid", entityid);
