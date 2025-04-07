@@ -23,14 +23,6 @@
 		return bytes.toFixed(1) + units[u];
 	}
 
-	function parseVersionFromInteger(version) {
-		if (isNaN(version)) return "";
-		const major = Math.floor(version / 100);
-		const minor = Math.floor((version % 100) / 10);
-		const patch = version % 10;
-		return `${major}.${minor}.${patch}`;
-	}
-
 	function elideCat(text, maxLength = 80) {
 		text = text.replace(/\//g, " › ");
 		if (text.length <= maxLength) {
@@ -69,7 +61,6 @@
 		function getMediadb() {
 			return siteroot + "/" + mediadb;
 		}
-		let desktopTitle = $("#desktopTitle");
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
@@ -80,7 +71,6 @@
 					window.location.host +
 					"/" +
 					mediadb,
-				hasDesktopHeader: desktopTitle.length > 0,
 			})
 			.then(
 				({
@@ -95,31 +85,14 @@
 						!isNaN(currentDesktopVersion) &&
 						currentDesktopVersion !== requiredDesktopVersion
 					) {
-						const cv = parseVersionFromInteger(currentDesktopVersion);
-						const rv = parseVersionFromInteger(requiredDesktopVersion);
 						customToast(
-							`Incompatible desktop version v${cv}, required version is <a href='https://emedialibrary.com/downloads.html?v=${rv}' target='_blank'>v${rv}</a>`,
+							`Incompatible desktop API version v${currentDesktopVersion}, required API version is <a href='https://emedialibrary.com/downloads.html?v=${requiredDesktopVersion}' target='_blank'>v${requiredDesktopVersion}</a>`,
 							{
 								positive: false,
 								autohide: false,
 							}
 						);
-						desktopTitle.addClass("error");
-						desktopTitle
-							.find(".desktop-error")
-							.text(
-								"Please install version " +
-									parseVersionFromInteger(requiredDesktopVersion) +
-									" of the Desktop App"
-							);
 					}
-					if (desktopTitle.length === 0) {
-						$("body").prepend(
-							'<div id="desktopTitle"><div class="desktop-icon"></div><button class="desktop-close"><i class="fa fa-times"></i></button></div>'
-						);
-						desktopTitle = $("#desktopTitle");
-					}
-					desktopTitle.addClass(platform);
 					$("#desktopLoading").remove();
 					console.log($("#desktopLoading"));
 					app.data("local-root", rootPath);
@@ -301,8 +274,25 @@
 
 						ipcRenderer
 							.invoke("lightboxDownload", uploadsourcepath)
-							.then((scanStarted) => {
-								if (scanStarted) desktopImportStatusUpdater(formData);
+							.then((scanStatus) => {
+								if (scanStatus === "OK") desktopImportStatusUpdater(formData);
+								else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+									customToast(
+										"Already running a download task in this folder, wait until it finishes",
+										{
+											positive: false,
+											autohideDelay: 5000,
+										}
+									);
+								} else if (scanStatus === "TOO_MANY_DOWNLOADS") {
+									customToast(
+										"Wait for at least one other download task to finish",
+										{
+											positive: false,
+											autohideDelay: 5000,
+										}
+									);
+								}
 							})
 							.catch((error) => {
 								console.log("quick-download", error);
@@ -346,8 +336,25 @@
 
 							ipcRenderer
 								.invoke("lightboxDownload", uploadsourcepath)
-								.then((scanStarted) => {
-									if (scanStarted) desktopImportStatusUpdater(formData);
+								.then((scanStatus) => {
+									if (scanStatus === "OK") desktopImportStatusUpdater(formData);
+									else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+										customToast(
+											"Already running a download task in this folder, wait until it finishes",
+											{
+												positive: false,
+												autohideDelay: 5000,
+											}
+										);
+									} else if (scanStatus === "TOO_MANY_DOWNLOADS") {
+										customToast(
+											"Wait for at least one other download task to finish",
+											{
+												positive: false,
+												autohideDelay: 5000,
+											}
+										);
+									}
 								})
 								.catch((error) => {
 									console.log("lightboxDownload", error);
@@ -368,8 +375,25 @@
 
 							ipcRenderer
 								.invoke("lightboxUpload", uploadsourcepath)
-								.then((scanStarted) => {
-									if (scanStarted) desktopImportStatusUpdater(formData);
+								.then((scanStatus) => {
+									if (scanStatus === "OK") desktopImportStatusUpdater(formData);
+									else if (scanStatus === "DUPLICATE_UPLOAD") {
+										customToast(
+											"Already running an upload task in this folder, wait until it finishes",
+											{
+												positive: false,
+												autohideDelay: 5000,
+											}
+										);
+									} else if (scanStatus === "TOO_MANY_UPLOADS") {
+										customToast(
+											"Wait for at least one other upload task to finish",
+											{
+												positive: false,
+												autohideDelay: 5000,
+											}
+										);
+									}
 								})
 								.catch((error) => {
 									console.log("lightboxUpload", error);
@@ -619,38 +643,6 @@
 						const totalEl = idEl.find(".fileProgressTotal");
 						totalEl.text(humanFileSize(data.total));
 					});
-
-					ipcRenderer.on("duplicate-upload", () => {
-						customToast(
-							"Already uploading in this entity, wait until it finishes",
-							{
-								positive: false,
-								autohideDelay: 5000,
-							}
-						);
-					});
-					ipcRenderer.on("too-many-uploads", () => {
-						customToast("Wait for other uploads to finish", {
-							positive: false,
-							autohideDelay: 5000,
-						});
-					});
-
-					ipcRenderer.on("duplicate-download", () => {
-						customToast(
-							"Already downloading in this entity, wait until it finishes",
-							{
-								positive: false,
-								autohideDelay: 5000,
-							}
-						);
-					});
-					ipcRenderer.on("too-many-downloads", () => {
-						customToast("Wait for other downloads to finish", {
-							positive: false,
-							autohideDelay: 5000,
-						});
-					});
 					// </all sync events>
 
 					// <single file download events>
@@ -675,36 +667,20 @@
 						categorypath = categorypath.replace(/\/$/g, "");
 
 						const isDownload = $(this).hasClass("download");
-						const entityid = $(this).data("entityid");
-						const moduleid = $(this).data("moduleid");
+
 						ipcRenderer
 							.invoke("continueSync", {
 								categoryPath: uploadsourcepath,
 								isDownload,
 							})
-							.then((scanStarted) => {
-								if (scanStarted)
+							.then((scanStatus) => {
+								if (scanStatus === "OK")
 									customToast(
 										"Continuing " +
 											(isDownload ? "download" : "upload") +
 											" task for " +
 											elideCat(categorypath)
 									);
-								else {
-									customToast(
-										"Failed to continue " +
-											(isDownload ? "download" : "upload") +
-											" task for " +
-											elideCat(categorypath)
-									);
-									const formData = new FormData();
-									formData.set("categorypath", categorypath);
-									formData.set("entityid", entityid);
-									formData.set("moduleid", moduleid);
-									formData.set("desktopimportstatus", "sync-cancelled");
-									if (isDownload) formData.set("isdownload", "true");
-									desktopImportStatusUpdater(formData);
-								}
 							})
 							.catch((err) => {
 								console.error("continueSync", err);
@@ -716,32 +692,20 @@
 						ipcRenderer.send("directDownload", $(this).attr("href"));
 					});
 
-					// var favicon = document.querySelector("link[rel='icon']");
-					// if (!favicon) {
-					// 	favicon = document.querySelector("link[rel='shortcut icon']");
-					// }
-					// if (favicon) {
-					// 	$("#desktopTitle .desktop-icon").css(
-					// 		"background-image",
-					// 		"url('" + favicon.href + "')"
-					// 	);
-					// }
-
 					window.addEventListener("offline", () => {
-						desktopTitle.addClass("error");
-						desktopTitle.find(".desktop-error").text("Network connection lost");
+						customToast("Network connection lost", {
+							positive: false,
+							id: "network-connection",
+							autohideDelay: 5000,
+						});
 						console.log("The network connection has been lost.");
 					});
 
 					window.addEventListener("online", () => {
-						desktopTitle.removeClass("error");
+						customToast("Network connection restored", {
+							id: "network-connection",
+						});
 						console.log("The network connection has been restored.");
-					});
-
-					lQuery("#desktopTitle button").livequery("click", function (e) {
-						e.preventDefault();
-						var type = $(this).attr("class");
-						ipcRenderer.send("menu-action", type);
 					});
 				}
 			)
