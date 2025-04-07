@@ -224,6 +224,7 @@ function connect() {
 		var params = {};
 		params.id = message.id;
 		params.channel = message.channel;
+		params.collectionid = message.collectionid;
 
 		jQuery.get(url, params, function (data) {
 			listarea.append(data);

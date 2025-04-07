@@ -1,0 +1,119 @@
+#*
+<style>
+#desktopTitle {
+	width: 100vw;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	justify-content: flex-start;
+	background-color: #444;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 99998;
+	overflow: hidden;
+	background: #151515;
+}
+#desktopTitle .menubar {
+	display: flex;
+	align-items: center;
+	width: 244px;
+	height: 32px;
+}
+#desktopTitle.darwin .menubar {
+	display: none;
+}
+#desktopTitle .menubar button {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: #ffff;
+	font-size: 0.8rem;
+	padding: 0 8px;
+	height: 32px;
+	line-height: 1;
+}
+#desktopTitle .menubar button:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+#desktopTitle .menubar button.eMediaMenu {
+	font-weight: bold;
+	padding-left: 6px;
+}
+#desktopTitle .menubar button.eMediaMenu img {
+	margin-right: 8px;
+	width: 20px;
+	height: 20px;
+}
+#desktopTitle .titlebar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: calc(100% - 488px);
+  app-region: drag;
+}
+#desktopTitle.darwin .titlebar {
+	width: 100%;
+}
+#desktopTitle .desktop-icon {
+	width: 20px;
+	height: 20px;
+	margin: 0 8px;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	display: none;
+}
+#desktopTitle .desktop-title,
+#desktopTitle .desktop-error {
+	max-width: calc(100% - 16px);
+	height: 32px;
+	margin-right: 8px;
+	line-height: 32px;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+	user-select: none;
+}
+#desktopTitle .desktop-error {
+	display: none;
+	padding-right: 0;
+}
+#desktopTitle.error {
+	background: rgb(175, 0, 0);
+}
+#desktopTitle.error .desktop-error {
+	display: block;
+}
+#desktopTitle.error .desktop-title,
+#desktopTitle.error .desktop-icon {
+	display: none;
+}
+</style>
+<div id="desktopTitle">
+  <div class="menubar">
+    <button class="eMediaMenu">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAgVBMVEVHcExfplNfplNfplNank9krlhfplNank9krlhkrlhank9ank9ank9ank9krlhkrlhkrlhkrlhank9krlhank+h0ahYnU3z+vn5/f6ZzaKSxpxiq1Zkpl+OyZXP6dne7+JttWjG5NGDu4eKwZPl8eip1q94tHmAv4ByuG2JxIlzsHJmjW84AAAAE3RSTlMABGQx7Ox49uL2n+KKOp+KOsrKmiuB8QAAAP5JREFUKM9tkumSgyAQhAcUNd4Hiroar0Q3+/4PuO21a4zfj4bqZoYqBqIFFgaRSBIRBSGjA5oPd0X42p/NuJUcsPhWxIxb8sbNWBN+8pHwpb+VfGDhHuYnF/iMQnEViJACLG2RgqL9rtvXBIEVUAR9qRyoOlV100FgRSQOFU9VPO7PfA4EfYHp3sxMezB7JMHY3UE3pqp8dGk+zB7pkKosQFntQSalTrGUWb9e3hdqaLpS9QhicueKoQRDVfXV+AOB5ZI398oWsGIHQSePmC0vsPG+mvPpO8uwuHn2Tb4N6pSYxj5C/tbN4f//QbP13dZt7fhNmOfGyPTY9bbjv8L0JmbHtGdiAAAAAElFTkSuQmCC" />
+      eMedia Library
+    </button>
+    <button class="editMenu">Edit</button>
+    <button class="windowMenu">Window</button>
+  </div>
+  <div class="titlebar">
+    ## <div class="desktop-icon"></div>
+    <div class="desktop-title">
+      #set( $title = $!mediaarchive.getCatalogSettingValue("sitetitle") )
+      #if( $title == "" )
+        #set( $title = "eMedia Library Desktop")
+      #end
+      $title
+    </div>
+    <div class="desktop-error"></div>
+  </div>
+</div>
+*#

@@ -28,9 +28,16 @@ public class Row
 			return null;
 		}
 		String data = getData(index);
+		
 		if( data != null)
 		{
-			return data.trim();
+			
+			String timstring = data.trim();
+			if (timstring.isEmpty())
+			{
+				return null;
+			}
+			return timstring;
 		}
 		return null;
 	}

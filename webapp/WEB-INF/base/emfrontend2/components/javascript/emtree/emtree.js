@@ -89,10 +89,9 @@ $(document).ready(function () {
 	lQuery(".scrolltocat").livequery(function () {
 		var tree = $(this).closest(".categorytreescrolllable");
 		var scrollTo = $(this);
-
+		if (tree.length == 0 || scrollTo.length == 0) return;
 		var position =
 			scrollTo.offset().top - tree.offset().top + tree.scrollTop() - 100;
-		//console.log(position);
 		tree.scrollTop(position);
 	});
 

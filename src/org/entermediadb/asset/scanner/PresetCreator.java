@@ -444,29 +444,23 @@ public class PresetCreator
 	}
 	
 	
-	/**
-	 * @deprecated just use inGeneraedName
-	 * 
-	 */
+	
 	public String exportOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
 	{ 
 		String usefile = inGeneratedName;
-//		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
-//		Data preset = getCachedPresetByExternalName(inArchive,rendertype,inGeneratedName);
-//		if( preset != null && Boolean.parseBoolean(preset.get("onimport")) )
-//		{
-//			usefile = basename + ".webp";
-//		}
-//		else
-//		{
-//			if(baseextension != null)
-//			{
-//				usefile = basename + "." + baseextension;
-//			}
-//			else {
-//				usefile = basename + ".jpg";
-//			}
-//		}
+		
+		String ext = PathUtilities.extractPageType(usefile);
+		
+		if (ext == null)
+		{
+			ext = inArchive.getCatalogSettingValue("default_thumbnail_extension");
+			if (ext == null)
+			{
+				ext = "jpg";
+			}
+			usefile = usefile + "." + ext;
+		}
+		
 		return usefile;
 	}
 

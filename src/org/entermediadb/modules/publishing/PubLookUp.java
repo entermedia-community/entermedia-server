@@ -48,7 +48,7 @@ public class PubLookUp implements CatalogEnabled {
 	private String RootCategory = "PRINTPRODUCTION";
 	
 
-	public String lookUpSourcepathbyPubId(String pubitem) {
+	public String lookUpSourcepathbyPubId(String pubitem, String pubsku) {
 		//Search path that matches
 		/*
 		 * ignore none 00- ?
@@ -56,12 +56,34 @@ public class PubLookUp implements CatalogEnabled {
 		 * numeric id (00-###) -> ####-####/###-##/###  
 		 * alphanumeric (00-ABC) ->  Warner-A/ABC
 		 * 
+		 * String ref_SKU (PianoVocalChords assign to fixed sourcepath: Print Production/PianoVocalChords/SKU)
+		 * 
 		 * */
 		
-		Category found = null;
+		String rootPath = "Print Production";
+		
 		String sourcepath = null;
 		
 		String [] splits = pubitem.split("-");
+		
+		//Full string
+		if(splits.length == 1) {
+			String numericRegex = "^00-(\\w+)-(\\d+)";
+			
+			Pattern pattern = Pattern.compile(numericRegex);
+			
+	        Matcher matcher = pattern.matcher(pubsku);
+	        if(matcher.find())
+			{
+				
+		        Long pubidnumeric =  Long.parseLong(matcher.group(2));
+	        
+		        sourcepath = "Digital Production/" + rangeLookUp(pubidnumeric);
+		        return sourcepath;
+			}
+	        log.info(pubsku + " Not recognized.");
+			return  null;
+		}
 		
 		//ignore none 00-xxxx
 		if(splits.length != 2) {
@@ -88,75 +110,13 @@ public class PubLookUp implements CatalogEnabled {
 		{
 			
 	        Long pubidnumeric =  Long.parseLong(matcher.group(1));
-	        
-	        //boolean isNumeric = Pattern.matches(numericRegex, pubid);
-			
-			if(pubidnumeric < 10000) {
-				//00000-09999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "00000-09999");
-			}
-			else if(pubidnumeric < 20000) {
-				//10000-19999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "10000-19999");
-			}
-			else if(pubidnumeric < 30000) {
-				//20000-29999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "20000-29999");
-			}
-			else if(pubidnumeric < 40000) {
-				//30000-39999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "30000-39999");
-			}
-			else if(pubidnumeric < 50000) {
-				//40000-49999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "40000-49999");
-			}
-			else if(pubidnumeric < 60000) {
-				//50000-59999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "50000-59999");
-			}
-			else if(pubidnumeric < 100000) {
-				//60000-99999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "60000-99999");  //EM
-			}
-			else if(pubidnumeric < 200000) {
-				//100000-199999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "100000-199999");
-			}
-			else if(pubidnumeric < 250000) {
-				//200000-249999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "200000-249999"); //EM
-			}
-			else if(pubidnumeric < 259999) {
-				//250000 - 259999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "250000");
-			}
-			else if(pubidnumeric < 880000) {
-				//260000-879999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "260000-879999"); //EM
-			}
-			else if(pubidnumeric < 890000) {
-				//880000 - 889999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "880000");
-			}
-			else if(pubidnumeric < 900000) {
-				//890000-999999
-				sourcepath = createSourcePath(pubid, pubidnumeric, "890000-899999"); //EM
-			}
-			else if(pubidnumeric < 1000000) {
-				//900000-1000000
-				sourcepath = createSourcePath(pubid, pubidnumeric, "900000-1000000");
-			}
-			else  {
-				//No numeric folder-range matched
-				log.info("No numeric folder-range matched for: " + pubidnumeric);
-			}
+			sourcepath = rootPath + "/" + rangeLookUp(pubidnumeric);
 			
 		}
 		else 
 		{
 			//Starts with something different than a digit
-			sourcepath = createSourcePathwithChar(pubid);
+			sourcepath = rootPath + "/" + createSourcePathwithChar(pubid);
 			
 		}
 		//log.info(pubitem + " Sourcepath: " + sourcepath );
@@ -166,24 +126,83 @@ public class PubLookUp implements CatalogEnabled {
 		return sourcepath;
 	}
 	
-	public String createSourcePath(String pubid, Long pubidnumeric, String pathmatch)
+	
+	public String rangeLookUp(Long pubidnumeric)
+	{
+		String sourcepath = null;
+		
+		if(pubidnumeric < 10000) {
+			//00000-09999
+			sourcepath = createSourcePath(pubidnumeric, "00000-09999");
+		}
+		else if(pubidnumeric < 20000) {
+			//10000-19999
+			sourcepath = createSourcePath( pubidnumeric, "10000-19999");
+		}
+		else if(pubidnumeric < 30000) {
+			//20000-29999
+			sourcepath = createSourcePath( pubidnumeric, "20000-29999");
+		}
+		else if(pubidnumeric < 40000) {
+			//30000-39999
+			sourcepath = createSourcePath(pubidnumeric, "30000-39999");
+		}
+		else if(pubidnumeric < 50000) {
+			//40000-49999
+			sourcepath = createSourcePath(pubidnumeric, "40000-49999");
+		}
+		else if(pubidnumeric < 60000) {
+			//50000-59999
+			sourcepath = createSourcePath( pubidnumeric, "50000-59999");
+		}
+		else if(pubidnumeric < 100000) {
+			//60000-99999
+			sourcepath = createSourcePath( pubidnumeric, "60000-99999");  //EM
+		}
+		else if(pubidnumeric < 200000) {
+			//100000-199999
+			sourcepath = createSourcePath( pubidnumeric, "100000-199999");
+		}
+		else if(pubidnumeric < 250000) {
+			//200000-249999
+			sourcepath = createSourcePath( pubidnumeric, "200000-249999"); //EM
+		}
+		else if(pubidnumeric < 259999) {
+			//250000 - 259999
+			sourcepath = createSourcePath( pubidnumeric, "250000");
+		}
+		else if(pubidnumeric < 880000) {
+			//260000-879999
+			sourcepath = createSourcePath( pubidnumeric, "260000-879999"); //EM
+		}
+		else if(pubidnumeric < 890000) {
+			//880000 - 889999
+			sourcepath = createSourcePath( pubidnumeric, "880000");
+		}
+		else if(pubidnumeric < 900000) {
+			//890000-999999
+			sourcepath = createSourcePath( pubidnumeric, "890000-899999"); //EM
+		}
+		else if(pubidnumeric < 1000000) {
+			//900000-1000000
+			sourcepath = createSourcePath( pubidnumeric, "900000-1000000");
+		}
+		else  {
+			//No numeric folder-range matched
+			log.info("No numeric folder-range matched for: " + pubidnumeric);
+		}
+		return sourcepath;
+	}
+	
+	
+	public String createSourcePath(Long pubidnumeric, String pathmatch)
 	{
 		String subrange = null;
-		int size = String.valueOf(pubidnumeric).length() + 1;
-		/*
-		int multiply = 1000;
-		if( size >  6)
-		{
-		}
-		int lowrange = size * multiply;
-		int highrange = (size+1) * multiply  -1;
-		*/
-		
 		long magnitude = (int) Math.pow(10, String.valueOf(pubidnumeric).length() - 2);
 		long lowerBound = (pubidnumeric / magnitude) * magnitude;
 		long upperBound = lowerBound + magnitude - 1;
 		
-		String finalSourcePath = "Print Production/"  + pathmatch + "/" +  lowerBound + "-" + upperBound +"/" + pubidnumeric;
+		String finalSourcePath = pathmatch + "/" +  lowerBound + "-" + upperBound +"/" + pubidnumeric;
 		return finalSourcePath;
 	}
 	
@@ -191,7 +210,7 @@ public class PubLookUp implements CatalogEnabled {
 	public String createSourcePathwithChar(String pubid)
 	{
 		String firstChar = String.valueOf(pubid.charAt(0));
-		String finalSourcePath = "Print Production/Warner-"  + firstChar.toUpperCase() + "/" + pubid;
+		String finalSourcePath = "Warner-"  + firstChar.toUpperCase() + "/" + pubid;
 		return finalSourcePath;
 	}
 	

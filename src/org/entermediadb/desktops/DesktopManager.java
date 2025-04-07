@@ -83,6 +83,10 @@ public class DesktopManager implements CatalogEnabled
 
 	public Desktop loadDesktop(User inUser, String userAgent) 
 	{
+		if(inUser == null) {
+			Desktop desktop = (Desktop) getModuleManager().getBean(getCatalogId(),"desktop");
+			return desktop;
+		}
 		String id = inUser.getId() + userAgent;
 		id = PathUtilities.extractId(id);
 		Desktop desktop = (Desktop)getConnectedClients().get(id);
