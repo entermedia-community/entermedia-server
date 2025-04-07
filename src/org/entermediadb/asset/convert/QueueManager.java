@@ -34,6 +34,32 @@ public class QueueManager implements ConversionEventListener
 	protected Map fieldRunningAssetConversions = new ConcurrentHashMap();
 	protected String fieldCatalogId;
 	protected int fieldTotalPending;
+	public int getMaxProcessors()
+	{
+		if( fieldMaxProcessors == -1 )
+		{
+			String max = getMediaArchive().getCatalogSettingValue("conversion_max_processors");
+			if( max != null)
+			{
+				fieldMaxProcessors = Integer.parseInt(max);
+			}
+			else
+			{
+				fieldMaxProcessors = getThreads().getAvailableProcessors() - 1;
+			}
+			if( fieldMaxProcessors < 1 )
+			{
+				fieldMaxProcessors = 1;
+			}
+		}
+		return fieldMaxProcessors;
+	}
+
+	public void setMaxProcessors(int inMaxProcessors)
+	{
+		fieldMaxProcessors = inMaxProcessors;
+	}
+	protected int fieldMaxProcessors = -1;
 	
 	public int getTotalPending()
 	{
@@ -213,7 +239,7 @@ public class QueueManager implements ConversionEventListener
 
 	private int availableProcessors()
 	{
-		int total = getThreads().getAvailableProcessors();
+		int total = getMaxProcessors();
 		total = total - fieldRunningAssetConversions.size();
 		return total;
 	}
