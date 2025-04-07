@@ -196,13 +196,20 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{
-		String[] supportedTypes = new String[] { "audio", "video", "image", "document", "default" };
+		Collection supportedTypes = inArchive.getCatalogSettingValues("metadata_exiftool_formats");
+		if (supportedTypes == null)
+		{
+			String[] defaultSupportedTypes = new String[] { "audio", "video", "image", "document", "default" };
+			supportedTypes = Arrays.asList(defaultSupportedTypes);
+		}
+		
+		
 		String type = PathUtilities.extractPageType(inputFile.getName());
 
 		if (type != null)
 		{
 			String mediatype = inArchive.getMediaRenderType(type); 
-			if (!Arrays.asList(supportedTypes).contains(mediatype))
+			if (!supportedTypes.contains(mediatype))
 			{
 				return false;
 			}
