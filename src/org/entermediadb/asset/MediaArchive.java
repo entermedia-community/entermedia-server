@@ -221,11 +221,11 @@ public class MediaArchive implements CatalogEnabled
 				return "card-text";
 			}
 		}
-		else
+		//else
 		{
 			return "file-earmark";
 		}
-		return mime;
+		//return mime;
 	}
 
 	public MimeTypeMap getMimeTypeMap()
