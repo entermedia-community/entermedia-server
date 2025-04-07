@@ -455,21 +455,24 @@
 					});
 
 					function shouldDisableUploadSyncBtn(data) {
-						let identifier = $(".lightbox-header-btns").data("path");
-						const btn = $(".upload-lightbox");
-						if (!identifier) {
-							identifier = $(".watch-entity").data("toplevelcategorypath");
-						}
-						if (!identifier) {
-							return;
-						}
-						if (isDuplicateIdentifier(identifier, data)) {
-							btn.prop("disabled", true);
-							btn.find("span").text("Uploading...");
-						} else {
-							btn.prop("disabled", false);
-							btn.find("span").text("Upload");
-						}
+						$(".lightbox-header-btns").forEach(function () {
+							const identifier = $(this).data("path");
+							if (!identifier) {
+								return;
+							}
+							const btn = $(this).find(".upload-lightbox");
+							const taskProg = $(this).find(".view-task-progress");
+
+							if (isDuplicateIdentifier(identifier, data)) {
+								btn.prop("disabled", true);
+								btn.find("span").text("Uploading...");
+								taskProg.show();
+							} else {
+								btn.prop("disabled", false);
+								btn.find("span").text("Upload");
+								taskProg.hide();
+							}
+						});
 					}
 
 					ipcRenderer.on(
@@ -485,21 +488,25 @@
 					);
 
 					function shouldDisableDownloadSyncBtn(data) {
-						let identifier = $(".lightbox-header-btns").data("path");
-						const btn = $(".download-lightbox");
-						if (!identifier) {
-							identifier = $(".watch-entity").data("toplevelcategorypath");
-						}
-						if (!identifier) {
-							return;
-						}
-						if (isDuplicateIdentifier(identifier, data)) {
-							btn.prop("disabled", true);
-							btn.find("span").text("Downloading...");
-						} else {
-							btn.prop("disabled", false);
-							btn.find("span").text("Download");
-						}
+						$(".lightbox-header-btns").forEach(function () {
+							const identifier = $(this).data("path");
+							if (!identifier) {
+								return;
+							}
+
+							const btn = $(this).find(".download-lightbox");
+							const taskProg = $(this).find(".view-task-progress");
+
+							if (isDuplicateIdentifier(identifier, data)) {
+								btn.prop("disabled", true);
+								btn.find("span").text("Downloading...");
+								taskProg.show();
+							} else {
+								btn.prop("disabled", false);
+								btn.find("span").text("Download");
+								taskProg.hide();
+							}
+						});
 					}
 
 					lQuery(".cancelSync").livequery("click", function (e) {
@@ -509,6 +516,22 @@
 						const identifier = btn.data("categorypath");
 						const isDownload = btn.hasClass("download");
 						ipcRenderer.send("cancelSync", { identifier, isDownload });
+					});
+
+					lQuery(".cancel-both").livequery("click", function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+						const consent = confirm(
+							"Are you sure you want to cancel the upload/download tasks?"
+						);
+						if (!consent) return;
+						const identifier = $(this)
+							.closest(".lightbox-header-btns")
+							.data("path");
+						ipcRenderer.send("cancelSync", {
+							identifier,
+							both: true,
+						});
 					});
 
 					const progItem = (identifier, dl = false) => {
@@ -590,24 +613,36 @@
 						});
 					});
 
-					ipcRenderer.on("sync-cancelled", (_, { identifier, isDownload }) => {
-						console.log("sync-cancelled", identifier);
-						const idEl = progItem(identifier, isDownload);
-						let filesCompleted = 0;
-						if (idEl) {
-							idEl.removeClass("processing");
-							idEl.data("index", undefined);
-							filesCompleted = idEl.find(".filesCompleted").text();
-						}
+					ipcRenderer.on(
+						"sync-cancelled",
+						(_, { identifier, isDownload, both }) => {
+							console.log("sync-cancelled", identifier);
+							function cancelSync(isD) {
+								const idEl = progItem(identifier, isD);
+								let filesCompleted = 0;
+								if (idEl) {
+									idEl.removeClass("processing");
+									idEl.data("index", undefined);
+									filesCompleted = idEl.find(".filesCompleted").text();
+								}
 
-						const formData = new FormData();
-						formData.append("categorypath", identifier);
-						formData.append("desktopimportstatus", "sync-cancelled");
-						if (isDownload) formData.append("isdownload", "true");
-						if (filesCompleted >= 0)
-							formData.append("completedfiles", filesCompleted);
-						desktopImportStatusUpdater(formData);
-					});
+								const formData = new FormData();
+								formData.append("categorypath", identifier);
+								formData.append("desktopimportstatus", "sync-cancelled");
+								if (isD) formData.append("isdownload", "true");
+								if (filesCompleted >= 0)
+									formData.append("completedfiles", filesCompleted);
+								desktopImportStatusUpdater(formData);
+							}
+							if (both) {
+								cancelSync(true);
+								cancelSync(false);
+							} else {
+								cancelSync(isDownload);
+							}
+							ipcRenderer.send("check-sync");
+						}
+					);
 
 					ipcRenderer.on("file-status-update", (_, data) => {
 						console.log("file-status-update", data);
