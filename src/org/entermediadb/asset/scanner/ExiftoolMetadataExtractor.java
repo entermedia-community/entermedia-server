@@ -206,7 +206,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		
 		String type = PathUtilities.extractPageType(inputFile.getName());
 
-		if (type != null)
+		if (type == null)
+		{
+			if (!supportedTypes.contains("default"))
+			{
+				return false;
+			}
+		}
+		else
 		{
 			String mediatype = inArchive.getMediaRenderType(type); 
 			if (!supportedTypes.contains(mediatype))

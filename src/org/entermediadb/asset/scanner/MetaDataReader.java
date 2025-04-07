@@ -144,6 +144,12 @@ public class MetaDataReader
 				log.info("Original asset missing " + inAsset.getSourcePath());
 				return;
 			}
+			
+			if( inputFile.getLength() == 0 )
+			{
+				log.info("Original file is empty " + inAsset.getSourcePath());
+				return;
+			}
 
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
