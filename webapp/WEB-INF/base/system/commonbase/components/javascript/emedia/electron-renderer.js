@@ -682,15 +682,6 @@ const { ipcRenderer } = require("electron");
 											" task for " +
 											elideCat(categorypath)
 									);
-								else {
-									const formData = new FormData();
-									formData.set("categorypath", categorypath);
-									formData.set("entityid", entityid);
-									formData.set("moduleid", moduleid);
-									formData.set("desktopimportstatus", "sync-cancelled");
-									if (isDownload) formData.set("isdownload", "true");
-									desktopImportStatusUpdater(formData);
-								}
 							})
 							.catch((err) => {
 								console.error("continueSync", err);
