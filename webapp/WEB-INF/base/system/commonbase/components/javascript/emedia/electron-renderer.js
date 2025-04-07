@@ -69,7 +69,7 @@
 		function getMediadb() {
 			return siteroot + "/" + mediadb;
 		}
-		const desktopTitle = $("#desktopTitle");
+		let desktopTitle = $("#desktopTitle");
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
