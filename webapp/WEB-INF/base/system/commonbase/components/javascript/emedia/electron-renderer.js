@@ -23,14 +23,6 @@
 		return bytes.toFixed(1) + units[u];
 	}
 
-	function parseVersionFromInteger(version) {
-		if (isNaN(version)) return "";
-		const major = Math.floor(version / 100);
-		const minor = Math.floor((version % 100) / 10);
-		const patch = version % 10;
-		return `${major}.${minor}.${patch}`;
-	}
-
 	function elideCat(text, maxLength = 80) {
 		text = text.replace(/\//g, " › ");
 		if (text.length <= maxLength) {
@@ -69,7 +61,6 @@
 		function getMediadb() {
 			return siteroot + "/" + mediadb;
 		}
-		let desktopTitle = $("#desktopTitle");
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
@@ -80,7 +71,6 @@
 					window.location.host +
 					"/" +
 					mediadb,
-				hasDesktopHeader: desktopTitle.length > 0,
 			})
 			.then(
 				({
@@ -95,31 +85,14 @@
 						!isNaN(currentDesktopVersion) &&
 						currentDesktopVersion !== requiredDesktopVersion
 					) {
-						const cv = parseVersionFromInteger(currentDesktopVersion);
-						const rv = parseVersionFromInteger(requiredDesktopVersion);
 						customToast(
-							`Incompatible desktop version v${cv}, required version is <a href='https://emedialibrary.com/downloads.html?v=${rv}' target='_blank'>v${rv}</a>`,
+							`Incompatible desktop API version v${currentDesktopVersion}, required API version is <a href='https://emedialibrary.com/downloads.html?v=${requiredDesktopVersion}' target='_blank'>v${requiredDesktopVersion}</a>`,
 							{
 								positive: false,
 								autohide: false,
 							}
 						);
-						desktopTitle.addClass("error");
-						desktopTitle
-							.find(".desktop-error")
-							.text(
-								"Please install version " +
-									parseVersionFromInteger(requiredDesktopVersion) +
-									" of the Desktop App"
-							);
 					}
-					if (desktopTitle.length === 0) {
-						$("body").prepend(
-							'<div id="desktopTitle"><div class="desktop-icon"></div><button class="desktop-close"><i class="fa fa-times"></i></button></div>'
-						);
-						desktopTitle = $("#desktopTitle");
-					}
-					desktopTitle.addClass(platform);
 					$("#desktopLoading").remove();
 					console.log($("#desktopLoading"));
 					app.data("local-root", rootPath);
@@ -716,32 +689,20 @@
 						ipcRenderer.send("directDownload", $(this).attr("href"));
 					});
 
-					// var favicon = document.querySelector("link[rel='icon']");
-					// if (!favicon) {
-					// 	favicon = document.querySelector("link[rel='shortcut icon']");
-					// }
-					// if (favicon) {
-					// 	$("#desktopTitle .desktop-icon").css(
-					// 		"background-image",
-					// 		"url('" + favicon.href + "')"
-					// 	);
-					// }
-
 					window.addEventListener("offline", () => {
-						desktopTitle.addClass("error");
-						desktopTitle.find(".desktop-error").text("Network connection lost");
+						customToast("Network connection lost", {
+							positive: false,
+							id: "network-connection",
+							autohideDelay: 5000,
+						});
 						console.log("The network connection has been lost.");
 					});
 
 					window.addEventListener("online", () => {
-						desktopTitle.removeClass("error");
+						customToast("Network connection restored", {
+							id: "network-connection",
+						});
 						console.log("The network connection has been restored.");
-					});
-
-					lQuery("#desktopTitle button").livequery("click", function (e) {
-						e.preventDefault();
-						var type = $(this).attr("class");
-						ipcRenderer.send("menu-action", type);
 					});
 				}
 			)
