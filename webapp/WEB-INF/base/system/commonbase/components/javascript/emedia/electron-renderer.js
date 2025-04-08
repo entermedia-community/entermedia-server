@@ -175,8 +175,13 @@
 							path = $(this).closest(".ofl-path").data("path");
 						}
 						const customRoot = $(this).data("root");
+						const dropFromFolderPath = $(this).data("removecategorysubfolder");
 						if (path) {
-							ipcRenderer.send("openFolder", { customRoot, folderPath: path });
+							ipcRenderer.send("openFolder", {
+								customRoot,
+								folderPath: path,
+								dropFromFolderPath,
+							});
 						}
 					});
 
