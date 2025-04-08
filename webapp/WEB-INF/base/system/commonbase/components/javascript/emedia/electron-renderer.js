@@ -73,13 +73,7 @@
 					mediadb,
 			})
 			.then(
-				({
-					computerName,
-					rootPath,
-					downloadPath,
-					platform,
-					currentDesktopVersion,
-				}) => {
+				({ computerName, rootPath, downloadPath, currentDesktopVersion }) => {
 					console.log({ currentDesktopVersion, requiredDesktopVersion });
 					if (
 						!isNaN(currentDesktopVersion) &&
@@ -289,8 +283,9 @@
 						ipcRenderer
 							.invoke("lightboxDownload", uploadsourcepath)
 							.then((scanStatus) => {
-								if (scanStatus === "OK") desktopImportStatusUpdater(formData);
-								else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+								if (scanStatus === "OK") {
+									desktopImportStatusUpdater(formData);
+								} else if (scanStatus === "DUPLICATE_DOWNLOAD") {
 									customToast(
 										"Already running a download task in this folder, wait until it finishes",
 										{
@@ -351,8 +346,10 @@
 							ipcRenderer
 								.invoke("lightboxDownload", uploadsourcepath)
 								.then((scanStatus) => {
-									if (scanStatus === "OK") desktopImportStatusUpdater(formData);
-									else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+									if (scanStatus === "OK") {
+										desktopImportStatusUpdater(formData);
+										headerBtns.find(".view-task-progress").show();
+									} else if (scanStatus === "DUPLICATE_DOWNLOAD") {
 										customToast(
 											"Already running a download task in this folder, wait until it finishes",
 											{
@@ -390,8 +387,10 @@
 							ipcRenderer
 								.invoke("lightboxUpload", uploadsourcepath)
 								.then((scanStatus) => {
-									if (scanStatus === "OK") desktopImportStatusUpdater(formData);
-									else if (scanStatus === "DUPLICATE_UPLOAD") {
+									if (scanStatus === "OK") {
+										desktopImportStatusUpdater(formData);
+										headerBtns.find(".view-task-progress").show();
+									} else if (scanStatus === "DUPLICATE_UPLOAD") {
 										customToast(
 											"Already running an upload task in this folder, wait until it finishes",
 											{
@@ -617,6 +616,7 @@
 								{ id: data.identifier }
 							);
 						});
+						ipcRenderer.send("check-sync");
 						const dataeditedreload = $(".dataeditedreload");
 						dataeditedreload.each(function () {
 							$(window).trigger("autoreload", [
