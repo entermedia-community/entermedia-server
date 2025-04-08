@@ -244,6 +244,20 @@
 						}
 					});
 
+					lQuery(".show-sync-progress").livequery("click", function () {
+						$(this).prop("disabled", true);
+						$("#col-sidebars").load(
+							apphome + "/components/sidebars/index.html",
+							{
+								propertyfield: "sidebarcomponent",
+								sidebarcomponent: "localdrives",
+								"sidebarcomponent.value": "localdrives",
+							}
+						);
+						closeemdialog($(this).closest(".modal"));
+						$(window).trigger("resize");
+					});
+
 					lQuery(".quick-download").livequery("click", function () {
 						$(this).prop("disabled", true);
 						$("#col-sidebars").load(
