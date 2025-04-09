@@ -39,6 +39,7 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.sources.GoogleDriveAssetSource;
 import org.entermediadb.location.GeoCoder;
 import org.entermediadb.location.Position;
 import org.entermediadb.net.HttpSharedConnection;
@@ -76,6 +77,20 @@ public class GoogleManager implements CatalogEnabled
 	protected XmlUtil fieldXmlUtil;
 	protected Date fieldTokenTime;
 	protected HttpSharedConnection connection;
+	
+	protected GoogleDriveAssetSource fieldAssetSource;
+	
+
+	public GoogleDriveAssetSource getAssetSource()
+	{
+		return fieldAssetSource;
+	}
+
+	public void setAssetSource(GoogleDriveAssetSource inAssetSource)
+	{
+		fieldAssetSource = inAssetSource;
+	}
+
 
 	public Date getTokenTime()
 	{
@@ -115,8 +130,38 @@ public class GoogleManager implements CatalogEnabled
 		}
 		return fieldMediaArchive;
 	}
+	
+	
+	public Collection listDriveRootFolders() throws Exception
+	{
+		if (getAccessToken() == null)
+		{
+			return null;
+		}
+		// https://developers.google.com/drive/v3/reference/files/list
+		// https://developers.google.com/drive/v3/web/search-parameters
+		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
+		String search = "'root' in parents";
+		url = url + "&q=" + search;
+		// TODO: Add date query from the last time we imported
+		log.info("Google Drive URL: "+url);
 
-	public Results listDriveFiles(String inAccessToken, String inParentId) throws Exception
+		Results results = new Results();
+
+		// List one folders worth of files
+		boolean keepgoing = false;
+		//do
+		{
+			keepgoing = populateMoreResults(url, results, true);
+		}
+		//while (keepgoing);
+		log.info("Finish listing Root Folders.");
+		return results.getFolders();
+	}
+	
+	
+
+	public Results listDriveFiles( String inParentId) throws Exception
 	{
 		// https://developers.google.com/drive/v3/reference/files/list
 		// https://developers.google.com/drive/v3/web/search-parameters
@@ -132,31 +177,39 @@ public class GoogleManager implements CatalogEnabled
 		boolean keepgoing = false;
 		do
 		{
-			keepgoing = populateMoreResults(inAccessToken, url, results);
+			keepgoing = populateMoreResults(url, results, false);
 		}
 		while (keepgoing);
 		log.info("Finish listing.");
 		return results;
 	}
+	
 
-	protected boolean populateMoreResults(String inAccessToken, String fileurl, Results results) throws Exception
+	protected boolean populateMoreResults( String fileurl, Results results, Boolean foldersOnly) throws Exception
 	{
 		if (results.getResultToken() != null)
 		{
 			fileurl = fileurl + "&pageToken=" + results.getResultToken();
 		}
 		
+		fileurl = URLUtilities.urlEscape(fileurl);
+		
 		HttpSharedConnection connection = getConnection(); 
-		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
+		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
+		
 		JSONObject json = connection.getJson(fileurl);
 		
+		if (json == null)
+		{
+			return false;
+		}
 		String pagekey = (String)json.get("nextPageToken");
 		if (pagekey != null)
 		{
 			results.setResultToken(pagekey);
 		}
 		JSONArray files = (JSONArray)json.get("files");
-		log.info("Google Drive, found: "+files.size()+" assets.");
+		log.info("Google Drive, found: "+files.size()+" items.");
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			JSONObject object = (JSONObject) iterator.next();
@@ -169,7 +222,7 @@ public class GoogleManager implements CatalogEnabled
 			{
 				results.addFolder(object);
 			}
-			else
+			else if (!foldersOnly)
 			{
 				results.addFile(object);
 			}
@@ -179,44 +232,44 @@ public class GoogleManager implements CatalogEnabled
 	}
 
 
-	public File saveFile(String inAccessToken, Asset inAsset) throws Exception
+	public ContentItem loadFile( Asset inAsset, ContentItem inItem) throws Exception
 	{
 
+		if (inItem.exists()) 
+		{
+			long size = inAsset.getLong("filesize");
+			if( inItem.getLength() == size)
+			{
+				return inItem;
+			}	
+		}
+		
+		
 		// GET
 		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
 		// Authorization: Bearer <ACCESS_TOKEN>
-
 		String url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("googleid") + "?alt=media";
 		HttpRequestBase httpmethod = new HttpGet(url);
 		HttpSharedConnection connection = getConnection();
-		connection.addSharedHeader("authorization", "Bearer " + inAccessToken);
+		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
 		CloseableHttpResponse resp = connection.sharedExecute(httpmethod);
 		try
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
-				log.info("Google Server error returned " + resp.getStatusLine());
-				throw new OpenEditException("Could not save to google " + inAsset.getName());
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + " " +  resp.getStatusLine());
+				//throw new OpenEditException("Could not save: " + inAsset.getName());
 			}
 	
 			HttpEntity entity = resp.getEntity();
-	
-			ContentItem item = getMediaArchive().getOriginalContent(inAsset);
-	
-			File output = new File(item.getAbsolutePath());
+			
+			File output = new File(inItem.getAbsolutePath());
 			output.getParentFile().mkdirs();
-			log.info("Google Manager Downloading " + item.getPath());
+			
+			log.info("Google Manager Downloading " + inItem.getPath());
 			filler.fill(entity.getContent(), new FileOutputStream(output), true);
 		
-			// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
-			// inAsset);
-			// ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
-			getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
-			inAsset.setProperty("previewstatus", "converting");
-			getMediaArchive().saveAsset(inAsset);
-			getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-			return output;
+			return inItem;
 		}
 		finally
 		{
@@ -229,10 +282,12 @@ public class GoogleManager implements CatalogEnabled
 
 	}
 
-	public String getAccessToken(Data authinfo) throws OpenEditException
+	public String getAccessToken() throws OpenEditException
 	{
 		try
 		{
+			Data authinfo = getMediaArchive().getData("oauthprovider", "google");
+			
 			String accesstoken = authinfo.get("httprequesttoken"); // Expired in 14 days
 			Object accesstokendate = authinfo.getValue("accesstokentime");
 			boolean force = false;
@@ -261,9 +316,11 @@ public class GoogleManager implements CatalogEnabled
 
 			if (accesstoken == null || force)
 			{
-				
-				//The client id comes from https://console.firebase.google.com/u/2/project/openinstitute-27575/settings/cloudmessaging/ios:org.openinstitute.ios.chat2
-				
+				if (authinfo.get("clientid") == null || authinfo.get("clientsecret") == null)
+				{
+					log.error("oAuth Missing Client Id or Client Secret");
+					return null;
+				}
 				
 				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
 						setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).
@@ -291,13 +348,10 @@ public class GoogleManager implements CatalogEnabled
 			}
 			return accesstoken;
 		}
-		catch (OAuthSystemException e)
+		catch (OAuthSystemException | OAuthProblemException e)
 		{
-			throw new OpenEditException(e);
-		}
-		catch (OAuthProblemException e)
-		{
-			throw new OpenEditException(e);
+			return null;
+			//throw new OpenEditException("Failed to retrieve or refresh access token", e);
 		}
 	}
 
@@ -354,6 +408,7 @@ public class GoogleManager implements CatalogEnabled
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).
 					setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(token).
 					setClientId(clientid).setClientSecret(clientsecret).
+					setParameter("access_type", "offline").
 					buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
@@ -372,6 +427,7 @@ public class GoogleManager implements CatalogEnabled
 			accesstoken = oAuthResponse.getAccessToken();
 			config.setValue("httprequesttoken", accesstoken);
 			config.setValue("accesstokentime", new Date());
+			//config.setValue("access_type", "offline");
 			config.setValue("expiresin", oAuthResponse.getExpiresIn());
 
 			getMediaArchive().getSearcher(inType).saveData(config);
@@ -380,193 +436,8 @@ public class GoogleManager implements CatalogEnabled
 		return accesstoken;
 	}
 
-	public Results syncAssets(String inAccessToken, String inRoot, boolean savenow)
-	{
-		try
-		{
-			//Load assets from Root
-			Results results = listDriveFiles(inAccessToken, "root");
-			processResults(inAccessToken, inRoot, results, savenow);
-			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
-			return results;
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
 
-	}
-
-	protected void processResults(String inAccessToken, String inCategoryPath, Results inResults, boolean savenow) throws Exception
-	{
-		if (createAssets(inAccessToken, inCategoryPath, inResults.getFiles(), savenow))
-		{
-			if (inResults.getFolders() != null)
-			{
-				for (Iterator iterator = inResults.getFolders().iterator(); iterator.hasNext();)
-				{
-					JSONObject folder = (JSONObject) iterator.next();
-					String id = (String)folder.get("id");
-					String foldername = (String)folder.get("name");
-					foldername = foldername.trim();
-					Results folderresults = listDriveFiles(inAccessToken, id);
-					Integer assetsfound = folderresults.getFiles().size();
-					if (assetsfound > 0) {
-						String categorypath = inCategoryPath + "/" + foldername;
-						log.info("Found "+assetsfound+" assets at: "+categorypath);
-						processResults(inAccessToken, categorypath, folderresults, savenow);
-					}
-				}
-			}
-		}
-
-	}
-
-	protected boolean createAssets(String inAccessToken, String categoryPath, Collection inFiles, boolean savenow) throws Exception
-	{
-		if (inFiles == null)
-		{
-			return true;
-		}
-		Category category = getMediaArchive().createCategoryPath(categoryPath);
-
-		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + categoryPath);
-		File realfile = new File(item.getAbsolutePath());
-		realfile.mkdirs();
-		long leftkb = realfile.getFreeSpace() / 1000;
-		// FileSystemUtils.freeSpaceKb(item.getAbsolutePath());
-		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
-		if (free == null)
-		{
-			free = "3000000";
-		}
-
-		Map onepage = new HashMap();
-		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
-		{
-			JSONObject object = (JSONObject) iterator.next();
-			String id = (String)object.get("id");
-			onepage.put(id, object);
-			String fs = (String)object.get("size");
-			if (fs != null)
-			{
-				leftkb = leftkb - (Long.parseLong(fs) / 1000);
-				if (leftkb < Long.parseLong(free))
-				{
-					log.info("Not enough disk space left to download more " + leftkb + "<" + free);
-					return false;
-				}
-			}
-
-			if (onepage.size() == 100)
-			{
-				createAssetsIfNeeded(inAccessToken, onepage, category, savenow);
-				onepage.clear();
-			}
-		}
-		createAssetsIfNeeded(inAccessToken, onepage, category, savenow);
-		return true;
-	}
-
-	private void createAssetsIfNeeded(String inAccessToken, Map inOnepage, Category category, boolean savenow) throws Exception
-	{
-		if (inOnepage.isEmpty())
-		{
-			log.info("empty map");
-			return;
-		}
-		Collection tosave = new ArrayList();
-
-		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
-		log.info("checking " + existingassets.size() + " assets ");
-		// Update category
-		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
-			// Remove existing assets
-			inOnepage.remove(existing.get("googleid"));
-			// existing.clearCategories();
-			if (!existing.isInCategory(category))
-			{
-				// Clear old Drive categorties
-				Category root = getMediaArchive().createCategoryPath("Drive");
-				Collection existingcategories = new ArrayList(existing.getCategories());
-				for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
-				{
-					Category drive = (Category) iterator2.next();
-					if (root.isAncestorOf(drive))
-					{
-						existing.removeCategory(drive);
-					}
-				}
-				existing.addCategory(category);
-				getMediaArchive().saveAsset(existing);
-				log.info("Asset moved categories " + existing);
-			}
-		}
-
-		// new Assets
-		for (Iterator iterator = inOnepage.keySet().iterator(); iterator.hasNext();)
-		{
-			String id = (String) iterator.next();
-			JSONObject object = (JSONObject) inOnepage.get(id);
-
-			// log.info(object.get("kind"));// "kind": "drive#file",
-			// String md5 = object.get("md5Checksum").getAsString();
-			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
-			String filename = (String)object.get("name");
-			filename = filename.trim();
-			// JsonElement webcontentelem = object.get("webContentLink");
-
-			newasset.setSourcePath(category.getCategoryPath() + "/" + filename);
-			newasset.setFolder(false);
-			newasset.setValue("googleid", id);
-			newasset.setValue("assetaddeddate", new Date());
-			newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
-			newasset.setValue("importstatus", "needsmetadata");
-			String googledownloadurl = (String)object.get("webContentLink");
-			if (googledownloadurl != null)
-			{
-				newasset.setValue("googledownloadurl", googledownloadurl);
-			}
-
-			// TODO: Add dates here
-
-			newasset.setName(filename);
-			String weblink  = (String)object.get("webViewLink");
-			if (weblink != null)
-			{
-				newasset.setValue("linkurl", weblink);
-			}
-			// JsonElement thumbnailLink = object.get("thumbnailLink");
-			// if (thumbnailLink != null)
-			// {
-			// newasset.setValue("fetchthumbnailurl", thumbnailLink.getAsString());
-			// }
-
-			// newasset.setValue("md5hex", md5);
-			newasset.addCategory(category);
-
-			// inArchive.getAssetSearcher().saveData(newasset);
-			tosave.add(newasset);
-		}
-		if (!tosave.isEmpty())
-		{
-
-			getMediaArchive().saveAssets(tosave);
-
-			log.info("Saving new assets " + tosave.size());
-			if (savenow)
-			{
-				for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
-				{
-					Asset asset = (Asset) iterator.next();
-					saveFile(inAccessToken, asset);
-				}
-			}
-		}
-	}
+	
 
 	public ArrayList syncContacts(User inAuthinfo)
 	{
@@ -772,7 +643,7 @@ public class GoogleManager implements CatalogEnabled
 			throw new OpenEditException("Input file missing " + file.getPath());
 		}
 		
-		String accesstoken = getAccessToken(inAuthInfo);
+		String accesstoken = getAccessToken();
 		
 		Map headers = new HashMap(1);
 		headers.put("authorization", "Bearer " + accesstoken);
@@ -833,7 +704,7 @@ public class GoogleManager implements CatalogEnabled
 
 		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
 
-		String accesstoken = getAccessToken(getMediaArchive().getData("oauthprovider", "google")); //TODO: Cache this?
+		String accesstoken = getAccessToken(); //TODO: Cache this?
 		
 		Map headers = new HashMap(1);
 		headers.put("authorization", "Bearer " + accesstoken);
@@ -843,7 +714,7 @@ public class GoogleManager implements CatalogEnabled
 		//This needs to loop over to get more than 1000 results
 	}
 
-	public void saveCloudFile(Data authinfo, String inUrl, ContentItem inItem) throws Exception
+	public void saveCloudFile(String inUrl, ContentItem inItem) throws Exception
 	{
 
 		// GET
@@ -851,7 +722,7 @@ public class GoogleManager implements CatalogEnabled
 		// Authorization: Bearer <ACCESS_TOKEN>
 
 		HttpRequestBase httpmethod = new HttpGet(inUrl);
-		String accesstoken = getAccessToken(authinfo);
+		String accesstoken = getAccessToken();
 		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
 
 		CloseableHttpResponse resp = getConnection().sharedExecute(httpmethod);
@@ -992,7 +863,7 @@ public class GoogleManager implements CatalogEnabled
 						//throw new OpenEditException("remote project id missing");
 						return;
 					}
-					String accesstoken = getAccessToken(authinfo);
+					String accesstoken = getAccessToken();
 					FireBase base = new FireBase();
 					base.notifyTopic(firebaseid,accesstoken, inChannel, inUser, inSubject, inMessage, inExtraData);
 				}

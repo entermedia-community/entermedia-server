@@ -46,8 +46,9 @@ public class DropboxManager implements CatalogEnabled
 	protected ModuleManager fieldModuleManager;
 	protected OutputFiller filler = new OutputFiller();
 	protected HttpSharedConnection connection;
-	protected DropboxAssetSource fieldAssetSource;
 	protected String fieldNameSpace;
+	protected DropboxAssetSource fieldAssetSource;
+	
 
 	public DropboxAssetSource getAssetSource()
 	{

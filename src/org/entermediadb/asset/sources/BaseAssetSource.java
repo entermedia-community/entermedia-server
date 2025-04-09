@@ -18,6 +18,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.FolderMonitor;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -390,7 +391,13 @@ public abstract class BaseAssetSource implements AssetSource
 		String sp = inAsset.getPath();
 		sp = sp.substring(getFolderPath().length() + 1);
 		String abpath = sp;
-		if (getExternalPath() != null) {
+		
+		if (getExternalPath() == null)
+		{
+			throw new OpenEditException("External Path is required!");
+		}
+		else 
+		{
 			abpath = getExternalPath() + "/" + sp;
 		}
 		String primaryname = inAsset.getPrimaryFile();
