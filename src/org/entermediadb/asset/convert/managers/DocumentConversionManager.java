@@ -190,9 +190,9 @@ public class DocumentConversionManager extends BaseConversionManager
 		//Now make the input image needed using the document as the input
 		
 		String customExtension = inStructions.getMediaArchive().getCatalogSettingValue("default_thumbnail_extension");
-		if (customExtension == null)
+		if (customExtension == null || customExtension != "webp")
 		{
-			customExtension = "jpg";
+			customExtension = "png";
 		}
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image3000x3000." + customExtension);
