@@ -173,7 +173,7 @@ public abstract class HtmlTreeRenderer extends BaseTreeRenderer
 		}
 		return js.toString();
 	}
-	private void renderLeaf(int level, StringBuffer js, String id, String name, String path, boolean select, String icon, int wide)
+	protected void renderLeaf(int level, StringBuffer js, String id, String name, String path, boolean select, String icon, int wide)
 	{
 //		js.append("\n	</div>\n");
 //			if (entire)
@@ -190,7 +190,7 @@ public abstract class HtmlTreeRenderer extends BaseTreeRenderer
 		//js.append("<img src='" + getHome() + getIconHome() + icon + "page.png' class='treeicon' id='" + getWebTree().getName() + "ipageTree" + id + "' alt=''  />" + name + "</a></div></div></div>");
 		js.append(name + "</a></div></div></div>");
 	}
-	private void renderRow(Object inNode, StringBuffer js, String id, String name, String path, String icon, boolean expanded, boolean shouldexpand, boolean isroot,int level, int padding, boolean select)
+	protected void renderRow(Object inNode, StringBuffer js, String id, String name, String path, String icon, boolean expanded, boolean shouldexpand, boolean isroot,int level, int padding, boolean select)
 	{
 		js.append("<div  id='" + getWebTree().getName() + "treerow" + id + "'  >");
 		js.append("<div class='" + (select ? "dTreeNodeSel ":"") + "treerowtext'  id='" + getWebTree().getName() + "treerowtext" + id + "'  path='" + path + "' nodeid='"+ id +"'>");

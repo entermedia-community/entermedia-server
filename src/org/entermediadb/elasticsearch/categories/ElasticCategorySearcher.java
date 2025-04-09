@@ -117,7 +117,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			updateIndex(tosave,null);
 			
 			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
-			getCacheManager().clear("category");
+			getCacheManager().clear(getCacheKey());
 		}
 		finally
 		{
@@ -417,7 +417,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		inCategory.setValue("parents", inCategory.getParentCategories());
 		inCategory.setValue("categorypath", path);
 		saveData(inCategory, null);
-		getCacheManager().put("category", inCategory.getId(),inCategory); //Is this too many?
+		getCacheManager().put(getCacheKey(), inCategory.getId(),inCategory); //Is this too many?
 		
 		//log.info("saved" + inCategory.hashCode() + " " + inCategory.getName());
 	}
@@ -439,7 +439,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void delete(Data inData, User inUser) {
 		// TODO Auto-generated method stub
 		super.delete(inData, inUser);
-		getCacheManager().remove("category", inData.getId() );
+		getCacheManager().remove(getCacheKey(), inData.getId() );
 		setIndexId(-1);
 	}
 
@@ -536,14 +536,14 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return allCatalogs;
 	}
 
-	protected void buildCategorySet(Category inCatalog, Set inCatalogSet) {
-		if(inCatalog==null) {
+	protected void buildCategorySet(Category inCategory, Set inCategorySet) {
+		if(inCategory==null) {
 			return;
 		}
-		inCatalogSet.add(inCatalog);
-		Category parent = inCatalog.getParentCategory();
+		inCategorySet.add(inCategory);
+		Category parent = inCategory.getParentCategory();
 		if (parent != null) {
-			buildCategorySet(parent, inCatalogSet);
+			buildCategorySet(parent, inCategorySet);
 		}
 	}
 	public Category loadCategoryByPath(String categorypath)
