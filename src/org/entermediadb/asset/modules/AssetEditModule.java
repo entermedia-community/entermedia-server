@@ -1929,7 +1929,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	public Data createMultiEditDataFromSelections(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
+		String hitssessionid = inReq.getRequestParameter("assethitssessionid");//expects session id
 		if (hitssessionid == null)
 		{
 			return null;
