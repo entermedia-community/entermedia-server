@@ -194,7 +194,11 @@ public class MediaArchive implements CatalogEnabled
 			{
 				return "file-earmark-zip";
 			}
-			if (mime.contains("excel"))  //application-vnd.ms-excel
+			if (mime.endsWith("document"))
+			{
+				return "file-earmark-word";
+			}
+			if (mime.contains("excel") || mime.contains("sheet"))  //application-vnd.ms-excel
 			{
 				return "file-earmark-excel";
 			}
@@ -615,18 +619,17 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
+		String format = inAsset.get("fileformat");
 
 		if (inAsset.get("embeddedurl") != null)
 		{
+			if( format.startsWith("gd"))
+			{
+				return "googledrive";
+			}
 			return "embedded";
 		}
-		String format = inAsset.get("fileformat");
-		String finalformat = getTranscodeTools().getRenderTypeByFileFormat(format);
-		if (finalformat == null)
-		{
-			finalformat = "none";
-		}
-		return finalformat;
+		return "large2";
 	}
 
 	public Data getDefaultAssetTypeForFile(String inFileName)

@@ -3,6 +3,7 @@ package org.entermediadb.asset.sources;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
-import org.entermediadb.dropbox.DropboxManager;
 import org.entermediadb.google.GoogleManager;
 import org.entermediadb.google.Results;
 import org.json.simple.JSONObject;
@@ -25,6 +25,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class GoogleDriveAssetSource extends BaseAssetSource
 {
@@ -389,15 +390,56 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			filename = filename.trim();
 			// JsonElement webcontentelem = object.get("webContentLink");
 
-			newasset.setSourcePath(category.getCategoryPath() + "/" + filename);
+			String sourcepath = category.getCategoryPath() + "/" + filename;
+		
+			
+			String mimetype = (String)object.get("mimeType");
+			
+			String fileformat = getMediaArchive().getMimeTypeMap().getExtensionForMimeType(mimetype);
+			if (fileformat == null)
+			{
+				fileformat = PathUtilities.extractPageType(filename.toLowerCase());
+			}
+			newasset.setValue("fileformat", fileformat);
+			
+			if (fileformat != null)
+			{
+				String[] gdriveTypes = new String[] { "gddoc", "gdsheet", "gdslide", "gddraw" };
+				if (Arrays.asList(gdriveTypes).contains(fileformat))
+				{
+					sourcepath = sourcepath + "." + fileformat;
+				}
+			}
+			
+			newasset.setSourcePath(sourcepath);
 			newasset.setFolder(false);
 			newasset.setValue("googleid", googleid);
 			newasset.setValue("assetaddeddate", new Date());
 			newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
-			newasset.setValue("importstatus", "created");
+			
+			//String rendetype =getMediaArchive().getMediaRenderType(fileformat);
+			/*
+			if( rendetype != null && rendetype.equals("embedded"))
+			{
+				newasset.setValue("previewstatus", "mime"); //unknown
+				newasset.setValue("importstatus", "complete");
+			}
+			else
+			{
+				newasset.setValue("previewstatus", "0"); //unknown
+				newasset.setValue("importstatus", "created");
+			}
+			*/
 			newasset.setValue("previewstatus", "0"); //unknown
+			newasset.setValue("importstatus", "created");
+			
 			
 			String googledownloadurl = (String)object.get("webContentLink");
+			if (googledownloadurl == null)
+			{
+				googledownloadurl = (String)object.get("thumbnailLink");	
+			}
+			
 			if (googledownloadurl != null)
 			{
 				newasset.setValue("googledownloadurl", googledownloadurl);
@@ -409,7 +451,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			String weblink  = (String)object.get("webViewLink");
 			if (weblink != null)
 			{
-				newasset.setValue("linkurl", weblink);
+				newasset.setValue("embeddedurl", weblink);
 			}
 			// JsonElement thumbnailLink = object.get("thumbnailLink");
 			// if (thumbnailLink != null)

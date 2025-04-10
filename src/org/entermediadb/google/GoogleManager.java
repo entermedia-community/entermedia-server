@@ -163,10 +163,29 @@ public class GoogleManager implements CatalogEnabled
 
 	public Results listDriveFiles( String inParentId) throws Exception
 	{
+
+		String rootParent = inParentId;
+		//verify if inParentid is a Shortcut
+		String url = "https://www.googleapis.com/drive/v3/files/" + inParentId + "?fields=*";
+		HttpSharedConnection connection = getConnection(); 
+		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
+		url = URLUtilities.urlEscape(url);
+		JSONObject json = connection.getJson(url);
+		
+		JSONObject shortcutDetails = (JSONObject)json.get("shortcutDetails");
+		if (shortcutDetails  != null) {
+			String targetid = (String)shortcutDetails.get("targetId");
+			if (targetid != null)
+			{
+				rootParent = targetid;
+			}
+			
+		}
+		
 		// https://developers.google.com/drive/v3/reference/files/list
 		// https://developers.google.com/drive/v3/web/search-parameters
-		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
-		String search = "'" + inParentId + "' in parents";
+		url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*"; //escaped later
+		String search = "'" + rootParent + "' in parents";
 		url = url + "&q=" + search;
 		// TODO: Add date query from the last time we imported
 		log.info("Google Drive URL: "+url);
@@ -193,7 +212,6 @@ public class GoogleManager implements CatalogEnabled
 		}
 		
 		fileurl = URLUtilities.urlEscape(fileurl);
-		
 		HttpSharedConnection connection = getConnection(); 
 		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
 		
@@ -217,9 +235,14 @@ public class GoogleManager implements CatalogEnabled
 			String id = (String)object.get("id");
 
 			String mt = (String)object.get("mimeType");
-
+			
+			log.info(mt + " -- " + name);
+			
 			if (mt.equals("application/vnd.google-apps.folder"))
 			{
+				results.addFolder(object);
+			}
+			else if (mt.equals("application/vnd.google-apps.shortcut")) {
 				results.addFolder(object);
 			}
 			else if (!foldersOnly)
@@ -244,11 +267,21 @@ public class GoogleManager implements CatalogEnabled
 			}	
 		}
 		
+		String url = null;
+		
+		if( inAsset.getFileFormat().startsWith("gd"))
+		{
+			url = inAsset.get("googledownloadurl");
+		}
+		else
+		{
+			url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("googleid") + "?alt=media";
+
+		}
 		
 		// GET
 		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
 		// Authorization: Bearer <ACCESS_TOKEN>
-		String url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("googleid") + "?alt=media";
 		HttpRequestBase httpmethod = new HttpGet(url);
 		HttpSharedConnection connection = getConnection();
 		connection.putSharedHeader("authorization", "Bearer " + getAccessToken());
@@ -257,8 +290,17 @@ public class GoogleManager implements CatalogEnabled
 		{
 			if (resp.getStatusLine().getStatusCode() != 200)
 			{
-				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + " " +  resp.getStatusLine());
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + " " +  resp.getStatusLine() + " File: " + inAsset.getName());
 				//throw new OpenEditException("Could not save: " + inAsset.getName());
+				
+				/*
+				 * take a look on: https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get?apix_params=%7B%22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22%7D
+				 * 
+				 * If you provide the URL parameter alt=media, then the response includes the file contents in the response body. Downloading content with alt=media only works if the file is stored in Drive. To download Google Docs, Sheets, and Slides use files.export instead. For more information, see Download & export files.
+				 * 
+				 * 
+				 * */
+				
 			}
 	
 			HttpEntity entity = resp.getEntity();
@@ -270,6 +312,10 @@ public class GoogleManager implements CatalogEnabled
 			filler.fill(entity.getContent(), new FileOutputStream(output), true);
 		
 			return inItem;
+		}
+		catch (Throwable ex) {
+			log.info("Wrong format url: " + url);
+			throw new OpenEditException(ex);
 		}
 		finally
 		{
