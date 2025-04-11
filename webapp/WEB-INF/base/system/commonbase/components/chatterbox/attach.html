@@ -10,6 +10,7 @@
 	#set($chat = $mediaarchive.getData("chatterbox",$chatid))
 #end
 #set($caneditgoal = false)
+
 #if($user && ( $canviewsettings || $caneditcollection))
 	#set($caneditgoal = true)
 #end
