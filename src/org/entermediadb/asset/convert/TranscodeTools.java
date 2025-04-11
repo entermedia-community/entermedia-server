@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.CategoryArchive;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -23,27 +24,17 @@ public class TranscodeTools
 	private static final Log log = LogFactory.getLog(TranscodeTools.class);
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
-	protected Map fieldRenderTypeCache = new HashMap(5);
-	protected Map fieldManagerCache = new HashMap(5);
 	//protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
+	protected String fieldCategoryId;
 	
-	public Map getRenderTypeCache()
+	public String getCategoryId()
 	{
-		return fieldRenderTypeCache;
-	}
-	public void setRenderTypeCache(Map inRenderTypeCache)
-	{
-		fieldRenderTypeCache = inRenderTypeCache;
+		return fieldCategoryId;
 	}
 
-
-	public Map getManagerCache()
+	public void setCategoryId(String inCategoryId)
 	{
-		return fieldManagerCache;
-	}
-	public void setManagerCache(Map inManagerCache)
-	{
-		fieldManagerCache = inManagerCache;
+		fieldCategoryId = inCategoryId;
 	}
 
 	protected PageManager fieldPageManager;
@@ -65,19 +56,11 @@ public class TranscodeTools
 			return null;
 		}
 		inFileType = inFileType.toLowerCase();
-		String render = (String)getRenderTypeCache().get(inFileType);
-		if( render == null)
+		String render = "default";
+		Data row = getMediaArchive().getCachedData("fileformat",inFileType);
+		if( row != null)
 		{
-			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
-			if( row != null)
-			{
-				render = row.get("rendertype");
-			}
-			if( render == null)
-			{
-				render = "default";
-			}
-			getRenderTypeCache().put( inFileType, render);
+			render = row.get("rendertype");
 		}
 		return render;
 	}
@@ -255,17 +238,17 @@ public class TranscodeTools
 //	}
 	public ConversionManager getManagerByRenderType(String inRenderType)
 	{
-		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inRenderType);
+		ConversionManager handler = (ConversionManager)getMediaArchive().getCacheManager().get("conversionmanager",inRenderType);
 		if( handler == null)
 		{
 			synchronized (this)
 			{
-				handler = (ConversionManager)fieldManagerCache.get(inRenderType);
+				handler = (ConversionManager)getMediaArchive().getCacheManager().get("conversionmanager",inRenderType);
 				if( handler == null)
 				{
 					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inRenderType + "ConversionManager");
 					handler.setMediaArchive(getMediaArchive());
-					fieldManagerCache.put( inRenderType, handler);
+					getMediaArchive().getCacheManager().put("conversionmanager", inRenderType, handler);
 				}	
 			}
 		}
