@@ -196,7 +196,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		CloseableHttpClient httpclient;
 		httpclient = HttpClients.createDefault();
 		HttpPost httpmethod = new HttpPost(url);
-		String accesstoken = getGoogleManager().getAccessToken(inAuthinfo);
+		String accesstoken = getGoogleManager().getAccessToken();
 		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
 		httpmethod.addHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -317,7 +317,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				httpclient = HttpClients.createDefault(); //TODO use HttpSharedConnection
 				HttpPost httpmethod = new HttpPost(url);
 
-				String accesstoken = getGoogleManager().getAccessToken(authinfo);
+				String accesstoken = getGoogleManager().getAccessToken();
 				httpmethod.addHeader("authorization", "Bearer " + accesstoken);
 				httpmethod.addHeader("Content-Type", "application/json; charset=utf-8");
 
@@ -381,7 +381,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			httpclient = HttpClients.createDefault();
 			HttpGet httpmethod = new HttpGet(url);
 			
-			String accesstoken = getGoogleManager().getAccessToken(authinfo);
+			String accesstoken = getGoogleManager().getAccessToken();
 			httpmethod.addHeader("authorization", "Bearer " + accesstoken);
 			httpmethod.addHeader("Content-Type", "application/json; charset=utf-8");
 			
