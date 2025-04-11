@@ -1,0 +1,16 @@
+  <div id="embedded-player-table" class="w-100 h-100" >
+	#set($embeddedurl = $asset.embeddedurl)
+	#if ($embeddedurl.startsWith("http"))
+	<iframe src="${embeddedurl}" 
+		width="100%" 
+		height="100%" 
+		style="border:none" 
+		webkitallowfullscreen="true" 
+		mozallowfullscreen="true" 
+		allowfullscreen="true"></iframe>
+
+	#else
+		$asset.embeddedurl
+	#end
+  </div>
+  

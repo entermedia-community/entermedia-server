@@ -275,6 +275,7 @@ public class OauthModule extends BaseMediaModule
 			String state = inReq.getRequestParameter("state"); 
 			String clientid = authinfo.get("clientid");
 			String clientsecret = authinfo.get("clientsecret");
+			
 			if( state.startsWith("hotfolder"))
 			{
 				String id = state.substring(9);
@@ -356,11 +357,15 @@ public class OauthModule extends BaseMediaModule
 				}
 				else if( state.startsWith("hotfolder"))
 				{
-					String id = state.substring(9);
+					/*String id = state.substring(9);
 					Data folder = archive.getData("hotfolder", id);
 					folder.setValue("refreshtoken", refresh);
 					folder.setValue("httprequesttoken", null);
-					archive.saveData("hotfolder", folder);
+					archive.saveData("hotfolder", folder);*/
+					
+					authinfo.setValue("refreshtoken", refresh);
+					authinfo.setValue("httprequesttoken", null);
+					archive.getSearcher("oauthprovider").saveData(authinfo);
 					
 				}
 

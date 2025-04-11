@@ -2,27 +2,47 @@ package org.entermediadb.asset.sources;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.google.GoogleManager;
 import org.entermediadb.google.Results;
+import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class GoogleDriveAssetSource extends BaseAssetSource
 {
 	private static final Log log = LogFactory.getLog(GoogleDriveAssetSource.class);
+	
+	protected GoogleManager fieldGoogleManager;
+	
 	public GoogleManager getGoogleManager()
 	{
-		return (GoogleManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"googleManager");
+		
+	    if (fieldGoogleManager == null) {
+	    	fieldGoogleManager = (GoogleManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"googleManager");
+	    	fieldGoogleManager.setAssetSource(this);
+		
+	    }
+	    return fieldGoogleManager;  
+	    
 	}
 	
 	protected String getAccessToken() {
@@ -50,10 +70,26 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	
 	
 	
-	protected File download(Asset inAsset, File file)
+	protected ContentItem loadFile(Asset inAsset)
 	{
 		try {
-			return getGoogleManager().saveFile(getAccessToken(), inAsset);
+			File file = getFile(inAsset);
+			ContentItem item = new FileItem(file);
+			
+			String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
+			path = path + inAsset.getSourcePath(); //Check archived?
+			
+			String primaryname = inAsset.getPrimaryFile();
+			if(primaryname != null && inAsset.isFolder() )
+			{
+				path = path + "/" + primaryname;
+			}
+			item.setPath(path);
+			
+			
+			
+			return getGoogleManager().loadFile(inAsset,  item);
+			
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
@@ -69,35 +105,9 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	@Override
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
-		return getOriginalContent(inAsset,true);
-	}
-	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
-	{
-		
-		
-		
-		
-		File file = getFile(inAsset);
-		FileItem item = new FileItem(file);
-		
-		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
-		path = path + inAsset.getSourcePath(); //Check archived?
-		
-		String primaryname = inAsset.getPrimaryFile();
-		if(primaryname != null && inAsset.isFolder() )
-		{
-			path = path + "/" + primaryname;
-		}
-		item.setPath(path);
-		if(downloadifNeeded)
-		{
-			//Check it exists and it matches
-			long size = inAsset.getLong("filesize");
-			if( item.getLength() != size)
-			{
-				download(inAsset, file);
-			}
-		}
+
+		//Check it exists and it matches
+		ContentItem item = loadFile(inAsset);
 		
 		return item;
 	}
@@ -179,13 +189,41 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	public int importAssets(String inBasepath)
 	{
 		refresh();
-		String subfolder = getConfig().get("subfolder");
+		String subfolder = getConfig().get("syncroot");
 		if(subfolder == null) {
 			subfolder = getName();
 		}
-		Results r= getGoogleManager().syncAssets(getAccessToken(), subfolder, true);
-		return r.getFiles().size();
+		Results r= syncAssets(subfolder);
+		if (r.getFiles() != null)
+		{
+			return r.getFiles().size();
+		}
+		return 0;
 	}
+	
+	public Results syncAssets(String inRoot)
+	{
+		try
+		{
+			//Load assets from Root
+			Results results = getGoogleManager().listDriveFiles(inRoot);
+			if (results.getFiles() != null)
+			{
+				String folderroot = getConfig().get("subfolder");
+				
+				processResults(folderroot, results);
+				
+				getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
+			}
+			return results;
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+
+	}
+
 
 		
 
@@ -221,6 +259,230 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		return dest;
 	}
 
+	
+	
+	protected void processResults(String inCategoryPath, Results inResults) throws Exception
+	{
+		if (createAssets(inCategoryPath, inResults.getFiles()))
+		{
+			if (inResults.getFolders() != null)
+			{
+				for (Iterator iterator = inResults.getFolders().iterator(); iterator.hasNext();)
+				{
+					JSONObject folder = (JSONObject) iterator.next();
+					String id = (String)folder.get("id");
+					String foldername = (String)folder.get("name");
+					foldername = foldername.trim();
+					Results folderresults = getGoogleManager().listDriveFiles(id);
+					
+					if (folderresults.getFiles() != null)
+					{
+						Integer assetsfound = folderresults.getFiles().size();
+						if (assetsfound > 0) {
+							String categorypath = inCategoryPath + "/" + foldername;
+							log.info("Found "+assetsfound+" assets at: "+categorypath);
+							processResults(categorypath, folderresults);
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	protected boolean createAssets( String categoryPath, Collection inFiles) throws Exception
+	{
+		if (inFiles == null)
+		{
+			return true;
+		}
+		Category category = getMediaArchive().createCategoryPath(categoryPath);
+
+		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + categoryPath);
+		File realfile = new File(item.getAbsolutePath());
+		realfile.mkdirs();
+		long leftkb = realfile.getFreeSpace() / 1000;
+		// FileSystemUtils.freeSpaceKb(item.getAbsolutePath());
+		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
+		if (free == null)
+		{
+			free = "3000000";
+		}
+
+		Map onepage = new HashMap();
+		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
+		{
+			JSONObject object = (JSONObject) iterator.next();
+			String id = (String)object.get("id");
+			onepage.put(id, object);
+			String fs = (String)object.get("size");
+			if (fs != null)
+			{
+				leftkb = leftkb - (Long.parseLong(fs) / 1000);
+				if (leftkb < Long.parseLong(free))
+				{
+					log.info("Not enough disk space left to download more " + leftkb + "<" + free);
+					return false;
+				}
+			}
+
+			if (onepage.size() == 100)
+			{
+				createAssetsIfNeeded(onepage, category);
+				onepage.clear();
+			}
+		}
+		createAssetsIfNeeded(onepage, category);
+		return true;
+	}
+
+	private void createAssetsIfNeeded(Map inOnepage, Category category) throws Exception
+	{
+		if (inOnepage.isEmpty())
+		{
+			log.info("empty map");
+			return;
+		}
+		Collection tosave = new ArrayList();
+
+		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
+		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			//Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
+			// Remove existing assets
+			inOnepage.remove(data.get("googleid"));
+			// existing.clearCategories();
+			/*
+			if (!existing.isInCategory(category))
+			{
+				
+				//Clear old Drive categorties
+				Category root = getMediaArchive().createCategoryPath("Drive");
+				Collection existingcategories = new ArrayList(existing.getCategories());
+				for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
+				{
+					Category drive = (Category) iterator2.next();
+					if (root.isAncestorOf(drive))
+					{
+						existing.removeCategory(drive);
+					}
+				}
+				existing.addCategory(category);
+				getMediaArchive().saveAsset(existing);
+				log.info("Asset moved categories " + existing);
+				
+			}
+			
+			*/
+		}
+
+		// Only new Assets
+		for (Iterator iterator = inOnepage.keySet().iterator(); iterator.hasNext();)
+		{
+			String googleid = (String) iterator.next();
+			JSONObject object = (JSONObject) inOnepage.get(googleid);
+
+			// log.info(object.get("kind"));// "kind": "drive#file",
+			
+			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			String filename = (String)object.get("name");
+			filename = filename.trim();
+			// JsonElement webcontentelem = object.get("webContentLink");
+
+			String sourcepath = category.getCategoryPath() + "/" + filename;
+		
+			
+			String mimetype = (String)object.get("mimeType");
+			
+			String fileformat = getMediaArchive().getMimeTypeMap().getExtensionForMimeType(mimetype);
+			if (fileformat == null)
+			{
+				fileformat = PathUtilities.extractPageType(filename.toLowerCase());
+			}
+			newasset.setValue("fileformat", fileformat);
+			
+			if (fileformat != null)
+			{
+				String[] gdriveTypes = new String[] { "gddoc", "gdsheet", "gdslide", "gddraw" };
+				if (Arrays.asList(gdriveTypes).contains(fileformat))
+				{
+					sourcepath = sourcepath + "." + fileformat;
+				}
+			}
+			
+			newasset.setSourcePath(sourcepath);
+			newasset.setFolder(false);
+			newasset.setValue("googleid", googleid);
+			newasset.setValue("assetaddeddate", new Date());
+			newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
+			
+			//String rendetype =getMediaArchive().getMediaRenderType(fileformat);
+			/*
+			if( rendetype != null && rendetype.equals("embedded"))
+			{
+				newasset.setValue("previewstatus", "mime"); //unknown
+				newasset.setValue("importstatus", "complete");
+			}
+			else
+			{
+				newasset.setValue("previewstatus", "0"); //unknown
+				newasset.setValue("importstatus", "created");
+			}
+			*/
+			newasset.setValue("previewstatus", "0"); //unknown
+			newasset.setValue("importstatus", "created");
+			
+			
+			String googledownloadurl = (String)object.get("webContentLink");
+			if (googledownloadurl == null)
+			{
+				googledownloadurl = (String)object.get("thumbnailLink");	
+			}
+			
+			if (googledownloadurl != null)
+			{
+				newasset.setValue("googledownloadurl", googledownloadurl);
+			}
+
+			// TODO: Add dates here
+
+			newasset.setName(filename);
+			String weblink  = (String)object.get("webViewLink");
+			if (weblink != null)
+			{
+				newasset.setValue("embeddedurl", weblink);
+			}
+			// JsonElement thumbnailLink = object.get("thumbnailLink");
+			// if (thumbnailLink != null)
+			// {
+			// newasset.setValue("fetchthumbnailurl", thumbnailLink.getAsString());
+			// }
+			
+			String md5 = (String)object.get("md5Checksum");
+			newasset.setValue("md5hex", md5);
+			
+			newasset.addCategory(category);
+
+			tosave.add(newasset);
+		}
+		if (!tosave.isEmpty())
+		{
+
+			getMediaArchive().saveAssets(tosave);
+
+			log.info("Saving new assets " + tosave.size());
+			
+			//Download if needed 
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				loadFile(asset);
+			}
+
+			getMediaArchive().fireSharedMediaEvent("importing/assetscreated");  //Kicks off an async saving
+		}
+	}
 
 
 }

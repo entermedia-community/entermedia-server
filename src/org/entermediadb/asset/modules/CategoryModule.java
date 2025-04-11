@@ -151,7 +151,12 @@ public class CategoryModule extends BaseMediaModule
 			if (oldwebTree == null)
 			{
 
-				renderer = new CatalogTreeRenderer(webTree);
+				String renderebean = inReq.findPathValue("treerenderer");
+				if(renderebean == null) {
+					renderebean = "category";
+				}
+				renderer = (CatalogTreeRenderer) archive.getBean(renderebean + "TreeRenderer");				
+				renderer.setWebTree(webTree);
 				renderer.setFoldersLinked(true);
 				String prefix = inReq.findValue("url-prefix");
 				prefix = inReq.getPage().getPageSettings().replaceProperty(prefix);

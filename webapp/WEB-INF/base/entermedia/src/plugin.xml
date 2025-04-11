@@ -2346,6 +2346,11 @@
 
 	<bean id="categoryTreeModel" class="org.entermediadb.asset.links.CategoryWebTreeModel" scope="prototype">
 	</bean>
+	
+	<bean id="categoryTreeRenderer" class="org.entermediadb.asset.links.CatalogTreeRenderer" scope="prototype">
+	</bean>
+	
+	
 
 	<bean id="libraryTreeModel" class="org.entermediadb.projects.LibraryWebTreeModel" scope="prototype">
 	</bean>

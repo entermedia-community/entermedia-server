@@ -1,0 +1,11 @@
+#set( $mediatype =  $mediaarchive.getMediaRenderType($asset))
+#if($asset.fileformat=="gif")
+	$context.putPageValue("useoriginal", "true")
+#end
+
+	#if ($mediatype=="document" && $asset.fileformat!="pdf")
+		#set($mediatype = "image")
+			$context.putPageValue("imagesize", "image3000x3000.png") 
+	#end
+
+	$pages.include("/${mediadbappid}/services/module/asset/players/large2/${mediatype}.html", $context)
