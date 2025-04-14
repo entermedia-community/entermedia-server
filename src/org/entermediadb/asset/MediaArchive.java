@@ -445,7 +445,7 @@ public class MediaArchive implements CatalogEnabled
 		return getAssetManager().getOriginalContent(asset);
 	}
 
-	public String getPathToOrginal(Data inAsset)
+	public String getPathToOriginal(Data inAsset)
 	{
 		Asset asset = null;
 		if( inAsset instanceof Asset)
@@ -456,7 +456,7 @@ public class MediaArchive implements CatalogEnabled
 		{
 			asset = (Asset)getAssetSearcher().loadData(inAsset);
 		}
-		String path = getAssetManager().getPathToOrginal(asset);
+		String path = getAssetManager().getPathToOriginal(asset);
 		return path;
 	}
 

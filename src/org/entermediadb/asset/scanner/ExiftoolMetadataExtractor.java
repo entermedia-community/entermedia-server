@@ -422,7 +422,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				//						inAsset.addKeyword(kword.trim());
 				//					}
 				//				}
-				else if ("FileType".equals(key))
+				else if ("FileType".equals(key) && inAsset.getProperty("fileformat") == null )
 				{
 					String mediatype = inArchive.getMediaRenderType(value.toLowerCase());
 					

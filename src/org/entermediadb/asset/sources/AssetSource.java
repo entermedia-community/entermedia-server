@@ -60,6 +60,6 @@ public interface AssetSource
 
 	void createSymbolicLink(Asset inAsset, String inCategoryPath);
 
-	public String getPathToOrginal(Asset inAsset);
+	public String getPathToOriginal(Asset inAsset);
 
 }

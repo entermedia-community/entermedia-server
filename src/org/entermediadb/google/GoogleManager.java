@@ -260,11 +260,7 @@ public class GoogleManager implements CatalogEnabled
 
 		if (inItem.exists()) 
 		{
-			long size = inAsset.getLong("filesize");
-			if( inItem.getLength() == size)
-			{
-				return inItem;
-			}	
+			return inItem;
 		}
 		
 		String url = null;

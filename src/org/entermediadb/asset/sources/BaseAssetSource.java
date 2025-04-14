@@ -386,7 +386,7 @@ public abstract class BaseAssetSource implements AssetSource
 		return Boolean.parseBoolean(enabled);
 	}
 	
-	public String getPathToOrginal(Asset inAsset)
+	public String getPathToOriginal(Asset inAsset)
 	{
 		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
 		path = path + inAsset.getSourcePath();

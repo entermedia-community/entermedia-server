@@ -516,5 +516,11 @@ public class AssetSourceManager implements CatalogEnabled
 			}
 		}
 	}
+	
+	public String getPathToOriginal(Asset inAsset) {
+		AssetSource findAssetSource = findAssetSource(inAsset);
+		String path = findAssetSource.getPathToOriginal(inAsset);
+		return path;
+	}
 
 }
