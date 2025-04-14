@@ -25,6 +25,7 @@ import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
@@ -422,13 +423,16 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				//						inAsset.addKeyword(kword.trim());
 				//					}
 				//				}
-				else if ("FileType".equals(key) && inAsset.getProperty("fileformat") == null )
+				else if ("FileType".equals(key) || "FileFormat".equals(key))
 				{
-					String mediatype = inArchive.getMediaRenderType(value.toLowerCase());
-					
-					if (!mediatype.equals("default"))
+					if(inAsset.getProperty("fileformat") == null) 
 					{
-						inAsset.setProperty("fileformat", value.toLowerCase());
+						String mediatype = inArchive.getMediaRenderType(value.toLowerCase());
+						
+						if (!mediatype.equals("default"))
+						{
+							inAsset.setProperty("fileformat", value.toLowerCase());
+						}
 					}
 					inAsset.setProperty("detectedfileformat", value.toLowerCase());
 				}
@@ -515,7 +519,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						if (m.find())
 						{
 							Searcher searcher = inArchive.getSearcherManager().getSearcher(property.getListCatalogId(), property.getListId());
-							Data lookup = (Data) searcher.query().exact("name", value).searchOne();
+							HitTracker found = inArchive.getCachedSearch(searcher.query().exact("name", value).hitsPerPage(1));
+							Data lookup = (Data) found.first();
 							if (lookup != null)
 							{
 								inAsset.setProperty(property.getId(), lookup.getId());

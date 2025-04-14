@@ -635,16 +635,21 @@ public class MediaArchive implements CatalogEnabled
 		{
 			return null;
 		}
-		String format = inAsset.get("fileformat");
 
-		if (inAsset.get("embeddedurl") != null)
+		if (inAsset.get("webviewlink") != null)
 		{
+			String format = inAsset.get("fileformat");
 			if( format.startsWith("gd"))
 			{
-				return "googledrive";
+			return "googledrive";
 			}
+
+		}
+		if (inAsset.get("embeddedurl") != null)
+		{
 			return "embedded";
 		}
+		
 		return "large2";
 	}
 

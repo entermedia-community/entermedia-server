@@ -433,27 +433,20 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			newasset.setValue("previewstatus", "0"); //unknown
 			newasset.setValue("importstatus", "created");
 			
-			
-			String googledownloadurl = (String)object.get("webContentLink");
-			if (googledownloadurl == null)
-			{
-				googledownloadurl = (String)object.get("thumbnailLink");	
-			}
-			
-			if (googledownloadurl != null)
-			{
-				newasset.setValue("googledownloadurl", googledownloadurl);
-			}
-
-			// TODO: Add dates here
-
 			newasset.setName(filename);
+			
+			
+			//String googledownloadurl = (String)object.get("webContentLink");
+			//newasset.setValue("contentlink", googledownloadurl);
+			
+			String thumbnaillink = (String)object.get("thumbnailLink");	
+			newasset.setValue("thumbnaillink", thumbnaillink);
+
 			String weblink  = (String)object.get("webViewLink");
-			if (weblink != null)
-			{
-				newasset.setValue("embeddedurl", weblink);
-			}
-			// JsonElement thumbnailLink = object.get("thumbnailLink");
+			newasset.setValue("webviewlink", weblink);
+
+				
+				// JsonElement thumbnailLink = object.get("thumbnailLink");
 			// if (thumbnailLink != null)
 			// {
 			// newasset.setValue("fetchthumbnailurl", thumbnailLink.getAsString());

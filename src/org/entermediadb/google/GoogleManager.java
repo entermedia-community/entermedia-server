@@ -267,7 +267,7 @@ public class GoogleManager implements CatalogEnabled
 		
 		if( inAsset.getFileFormat().startsWith("gd"))
 		{
-			url = inAsset.get("googledownloadurl");
+			url = inAsset.get("thumbnaillink");
 		}
 		else
 		{
@@ -324,7 +324,7 @@ public class GoogleManager implements CatalogEnabled
 
 	}
 
-	public String getAccessToken() throws OpenEditException
+	public synchronized String getAccessToken() throws OpenEditException
 	{
 		try
 		{
