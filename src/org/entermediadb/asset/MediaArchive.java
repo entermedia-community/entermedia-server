@@ -445,6 +445,22 @@ public class MediaArchive implements CatalogEnabled
 		return getAssetManager().getOriginalContent(asset);
 	}
 
+	public String getPathToOrginal(Data inAsset)
+	{
+		Asset asset = null;
+		if( inAsset instanceof Asset)
+		{
+			asset = (Asset)inAsset;
+		}
+		else
+		{
+			asset = (Asset)getAssetSearcher().loadData(inAsset);
+		}
+		String path = getAssetManager().getPathToOrginal(asset);
+		return path;
+	}
+
+	
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
 		return getAssetManager().getOriginalDocumentStream(inAsset);
