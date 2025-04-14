@@ -292,7 +292,6 @@ public class GoogleManager implements CatalogEnabled
 				/*
 				 * take a look on: https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get?apix_params=%7B%22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22%7D
 				 * 
-				 * If you provide the URL parameter alt=media, then the response includes the file contents in the response body. Downloading content with alt=media only works if the file is stored in Drive. To download Google Docs, Sheets, and Slides use files.export instead. For more information, see Download & export files.
 				 * 
 				 * 
 				 * */

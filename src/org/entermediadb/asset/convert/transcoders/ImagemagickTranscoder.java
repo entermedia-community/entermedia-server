@@ -2,6 +2,8 @@ package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -92,8 +94,12 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					}
 				}
 			}	
+			
+			Collection needsDensity = Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw", "eps", "ai");
+			
+			
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
-			if ("eps".equalsIgnoreCase(ext) || "pdf".equalsIgnoreCase(ext) || "ai".equalsIgnoreCase(ext))
+			if (needsDensity.contains(ext))
 			{
 				//check input width
 				int width = asset.getInt("width");

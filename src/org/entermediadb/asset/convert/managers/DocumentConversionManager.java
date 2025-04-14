@@ -1,5 +1,8 @@
 package org.entermediadb.asset.convert.managers;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.BaseConversionManager;
@@ -145,14 +148,16 @@ public class DocumentConversionManager extends BaseConversionManager
 //			return result.getOutput();
 //	}
 	
-	
+	Collection validDocFormats = Arrays.asList("pdf", "gddoc", "gdsheet", "gdslide", "gddraw");
 	
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		//if output == jpg and no time offset - standard
 		String fileFormat = inStructions.getAsset().getFileFormat();
-		if(!"pdf".equals(fileFormat))
+		
+		if(!validDocFormats.contains(fileFormat))
 		{
+			
 			//Lets always have a PDF version of all document formats?
 			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
 			ConvertInstructions instructions2 = inStructions.copy(preset);

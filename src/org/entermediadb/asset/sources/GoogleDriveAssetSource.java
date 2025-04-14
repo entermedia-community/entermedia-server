@@ -116,7 +116,8 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	public boolean removeOriginal(User inUser, Asset inAsset)
 	{
 	
-
+		ContentItem item = loadFile(inAsset);
+		getPageManager().getRepository().remove(item);
 		return false;
 	}
 
@@ -408,7 +409,25 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 				if (Arrays.asList(gdriveTypes).contains(fileformat))
 				{
 					sourcepath = sourcepath + "." + fileformat;
+					
+					if (fileformat.equals("gdsheet") || fileformat.equals("gdslide"))
+					{
+						newasset.setValue("width", "1000");
+						newasset.setValue("height", "500");
+					}
+					else if (fileformat.equals("gddraw"))
+					{
+						newasset.setValue("width", "500");
+						newasset.setValue("height", "500");
+					}
+					else
+					{
+						newasset.setValue("width", "500");
+						newasset.setValue("height", "1000");
+					}
+					
 				}
+				
 			}
 			
 			newasset.setSourcePath(sourcepath);
@@ -439,8 +458,21 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			//String googledownloadurl = (String)object.get("webContentLink");
 			//newasset.setValue("contentlink", googledownloadurl);
 			
-			String thumbnaillink = (String)object.get("thumbnailLink");	
+			String thumbnaillink = null;
+			Map exportlinks = (Map)object.get("exportLinks");
+			if (exportlinks != null)
+			{
+				thumbnaillink = (String)exportlinks.get("application/pdf");
+			}
+			
+			if (thumbnaillink == null)
+			{
+				thumbnaillink = (String)object.get("thumbnailLink");
+			}
+			
 			newasset.setValue("thumbnaillink", thumbnaillink);
+			
+			
 
 			String weblink  = (String)object.get("webViewLink");
 			newasset.setValue("webviewlink", weblink);
