@@ -610,6 +610,7 @@ public class UserManagerModule extends BaseMediaModule
 		checkAdminPermission(inReq);
 		Group group = loadGroup(inReq);
 		getUserManager(inReq).deleteGroup(group);
+		inReq.setRequestParameter("groupid", "");
 	}
 
 	public void deleteUsers( WebPageRequest inReq ) throws OpenEditException
