@@ -165,7 +165,8 @@ public class DropboxManager implements CatalogEnabled
 						if (download != null)
 						{
 							Asset newAsset = getMediaArchive().getAssetImporter().createAssetFromPage(archive, false, null, download, null);
-							newAsset.setValue("dropboxid", id);
+							newAsset.setValue("embeddedid", id);
+							newAsset.setValue("embeddedtype", "dropbox");
 							if( newAsset.getValue("ordering") == null)
 							{
 								newAsset.setValue("ordering",total); 

@@ -193,7 +193,6 @@ public class PresetCreator
 		
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 		
-		//CHANGE to IMAGE here?
 		
 		if(rendertype == null)
 		{

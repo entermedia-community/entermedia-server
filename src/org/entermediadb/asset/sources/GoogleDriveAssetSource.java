@@ -346,13 +346,13 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		}
 		Collection tosave = new ArrayList();
 
-		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
+		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("embeddedid", inOnepage.keySet()).search();
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			//Asset existing = (Asset) getMediaArchive().getAssetSearcher().loadData(data);
 			// Remove existing assets
-			inOnepage.remove(data.get("googleid"));
+			inOnepage.remove(data.get("embeddedid"));
 			// existing.clearCategories();
 			/*
 			if (!existing.isInCategory(category))
@@ -432,7 +432,8 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 			
 			newasset.setSourcePath(sourcepath);
 			newasset.setFolder(false);
-			newasset.setValue("googleid", googleid);
+			newasset.setValue("embeddedid", googleid);
+			newasset.setValue("embeddedtype", "googledrive");
 			newasset.setValue("assetaddeddate", new Date());
 			newasset.setValue("retentionpolicy", "deleteoriginal"); // Default
 			

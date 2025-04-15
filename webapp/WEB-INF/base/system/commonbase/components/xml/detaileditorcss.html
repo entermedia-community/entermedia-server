@@ -13,8 +13,9 @@ $context.putPageValue("xmledithome",$xmledithome)
 #ifnull($details)
 	#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
 	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
-	
-#end	
+#end
+
+
 #ifnull($details)
 	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
 #end	

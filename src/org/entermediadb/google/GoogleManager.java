@@ -271,7 +271,7 @@ public class GoogleManager implements CatalogEnabled
 		}
 		else
 		{
-			url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("googleid") + "?alt=media";
+			url = "https://www.googleapis.com/drive/v3/files/" + inAsset.get("embeddedid") + "?alt=media";
 
 		}
 		
@@ -290,10 +290,7 @@ public class GoogleManager implements CatalogEnabled
 				//throw new OpenEditException("Could not save: " + inAsset.getName());
 				
 				/*
-				 * take a look on: https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get?apix_params=%7B%22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22%7D
-				 * 
-				 * 
-				 * 
+				 * https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get?apix_params=%7B%22fileId%22%3A%2216LawVTbF9eiC7sGghSNwBxRJwQ36das%22%2C%22fields%22%3A%22*%22%7D
 				 * */
 				
 			}

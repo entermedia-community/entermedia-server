@@ -125,6 +125,11 @@ public class AssetTypeManager extends EnterMediaObject
 		}
 		assettype = findCorrectAssetType(hit,assettype);
 		
+		if(assettype == null)
+		{
+			return;
+		}
+		
 		if(currentassettype == null || currentassettype.length()==0 || !assettype.equals(currentassettype))
 		{
 			hit.setProperty("assettype", assettype);
