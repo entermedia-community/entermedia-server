@@ -558,6 +558,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		//TODO: Find right way to do this not matches
 		categorypath = categorypath.replace('\\', '/'); //Unix paths
 		
+		categorypath = categorypath.replace("//", "/"); //Double Slash
+		
 		if (categorypath.endsWith("/"))
 		{
 			categorypath = categorypath.substring(0,categorypath.length()-1);

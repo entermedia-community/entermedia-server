@@ -392,20 +392,26 @@ public class EntityManager implements CatalogEnabled
 		return tosave.size();
 	}
 	
-	public Boolean addAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, Asset asset) 
+	public Boolean addAssetToEntity(User inUser,String pickedmoduleid, String pickedentityid, Asset asset)
 	{
 		Data module = getMediaArchive().getCachedData("module", pickedmoduleid);
 		Data entity =getMediaArchive().getCachedData(pickedmoduleid,pickedentityid);
 		Category category = loadDefaultFolder(module, entity, inUser, true);
-
-		if(category != null)
+		
+		return addAssetToEntity(inUser, module, entity, asset, category);
+	}
+	
+	public Boolean addAssetToEntity(User inUser,Data module, Data entity, Asset asset, Category destinationCategory) 
+	{
+		
+		if(destinationCategory != null)
 		{
-			asset.addCategory(category);
+			asset.addCategory(destinationCategory);
 		}
 		getMediaArchive().saveAsset(asset); 
 		Collection tosave = new ArrayList();
 		tosave.add(asset);
-		getMediaArchive().getAssetManager().createLinksTo(tosave,category.getCategoryPath());
+		getMediaArchive().getAssetManager().createLinksTo(tosave,destinationCategory.getCategoryPath());
 
 		return true;
 	}
@@ -475,17 +481,23 @@ public class EntityManager implements CatalogEnabled
 		
 		Category rootcategory = loadDefaultFolder(module, entity, inUser, true);
 		
+		return addCategoryToEntity(inUser,module,entity,categoryid,rootcategory);
+	}
+	
+	public Boolean addCategoryToEntity(User inUser,Data module, Data entity, String categoryid, Category destinationCategory) 
+	{
+		
 		Category copyingcategory =  getMediaArchive().getCategory(categoryid);
 		
 		if(copyingcategory != null)
 		{
-			Category existing =	rootcategory.getChildByName(copyingcategory.getName());
+			Category existing =	destinationCategory.getChildByName(copyingcategory.getName());
 			if( existing == null)
 			{
 				Searcher categorysearcher = getMediaArchive().getSearcher("category");
 				existing = (Category) categorysearcher.createNewData();
 				existing.setName(copyingcategory.getName());
-				rootcategory.addChild(existing);
+				destinationCategory.addChild(existing);
 				categorysearcher.saveData(existing);
 			}
 			

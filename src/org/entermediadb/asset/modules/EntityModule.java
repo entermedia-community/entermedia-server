@@ -310,12 +310,26 @@ public class EntityModule extends BaseMediaModule
 		String moduleid = inReq.getRequestParameter("moduleid");
 		String entityid = inReq.getRequestParameter("entityid");
 		
+		Data module = archive.getCachedData("module", moduleid);
+		Data entity = archive.getCachedData(moduleid, entityid);
+		
+		
+		String destinationcategorypath = inReq.getRequestParameter("destinationcategorypath");
+		Category destinationCategory = null;
+		if(destinationcategorypath!= null)
+		{
+			destinationCategory = archive.getCategorySearcher().createCategoryPath(destinationcategorypath);
+		}
+		else {
+			destinationCategory = entityManager.loadDefaultFolder(module, entity, inReq.getUser());
+		}
+		
 		String[] categoryid = inReq.getRequestParameters("categoryid");
 		if (categoryid != null)
 		{
 			for (int i = 0; i < categoryid.length; i++)
 			{
-				entityManager.addCategoryToEntity(inReq.getUser(), moduleid, entityid, categoryid[i]);
+				entityManager.addCategoryToEntity(inReq.getUser(), module, entity, categoryid[i], destinationCategory);
 			}
 		}
 		
@@ -325,7 +339,7 @@ public class EntityModule extends BaseMediaModule
 			for (int i = 0; i < assetids.length; i++)
 			{
 				Asset asset = archive.getAsset(assetids[i]);
-				entityManager.addAssetToEntity(inReq.getUser(), moduleid, entityid, asset);
+				entityManager.addAssetToEntity(inReq.getUser(), module, entity, asset, destinationCategory);
 			}
 		}
 		
