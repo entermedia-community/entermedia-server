@@ -265,6 +265,12 @@ public class GoogleManager implements CatalogEnabled
 		
 		String url = null;
 		
+		if(inAsset.getFileFormat() == null)
+		{
+			log.error("Invalid file format: " + inAsset);
+			return null;
+		}
+		
 		if( inAsset.getFileFormat().startsWith("gd"))
 		{
 			url = inAsset.get("thumbnaillink");
