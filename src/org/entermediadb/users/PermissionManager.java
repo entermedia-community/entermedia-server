@@ -754,4 +754,24 @@ public class PermissionManager implements CatalogEnabled
 		}
 		
 	}
+	
+	public void updateEntityCategoryPermissions(Data inModule, MultiValued inEntity)
+	{
+		MediaArchive archive = getMediaArchive();
+		
+		Category entityCategory = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+		
+		entityCategory.setValue("securityenabled", inEntity.getValue("securityenabled"));
+		entityCategory.setValue("viewusers", inEntity.getValue("customusers"));
+		entityCategory.setValue("viewgroups", inEntity.getValue("customgroups"));
+		entityCategory.setValue("viewroles", inEntity.getValue("customroles"));
+		archive.getCategorySearcher().saveCategory(entityCategory);
+		
+		HitTracker assets =  archive.getAssetSearcher().query().exact("category", entityCategory).search();
+		archive.getAssetSearcher().saveAllData(assets, null);
+		
+		
+	}
+	
+	
 }

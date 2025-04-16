@@ -1335,6 +1335,8 @@ public class EntityModule extends BaseMediaModule
 		}
 		
 		archive.getPermissionManager().addEntityPermissions(module, (MultiValued)entity, tosave);
+		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+		
 		archive.saveData(module.getId(),entity);
 		inReq.putPageValue("saved", tosave);
 	}
@@ -1377,6 +1379,10 @@ public class EntityModule extends BaseMediaModule
 			}
 		}
 		archive.saveData(module.getId(),entity);
+		
+		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+		
+		
 	}	
 	public void entityPermissionRemove(WebPageRequest inReq) 
 	{
@@ -1400,8 +1406,10 @@ public class EntityModule extends BaseMediaModule
 		entity.removeValue("editorgroups", dataid);			
 
 		archive.saveData(module.getId(),entity);
+		
+		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
 	}
-
+/*
 	public void removeEntityPermission(WebPageRequest inReq) 
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1410,6 +1418,7 @@ public class EntityModule extends BaseMediaModule
 		//TODO: Loop over and remove the one
 		inReq.putPageValue("entitypermissions", all);
 	}
+	*/
 	
 	public void snapshotData(WebPageRequest inReq) {
 
