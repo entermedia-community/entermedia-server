@@ -485,6 +485,10 @@ public class PermissionManager implements CatalogEnabled
 			rootcat.setValue("viewusers", module.getValue("defaultusers"));
 			rootcat.setValue("viewgroups", module.getValue("defaultgroups"));
 			rootcat.setValue("viewroles", module.getValue("defaultroles"));
+			
+			rootcat.setValue("defaultroles", module.getValue("defaultroles"));
+			rootcat.setValue("defaultusers", module.getValue("defaultusers"));
+			rootcat.setValue("defaultgroups", module.getValue("defaultgroups"));
 			archive.getCategorySearcher().saveCategory(rootcat);
 			getSearcher(module.getId()).reIndexAll();
 			buffer.append("Module " + module.getId() + " Permissions update completed");
@@ -516,6 +520,23 @@ public class PermissionManager implements CatalogEnabled
 		return (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
 	}
 	
+	
+//	public void updateEntityCategoryPermissions(Data inModule, MultiValued inEntity)
+//	{
+//		MediaArchive archive = getMediaArchive();
+//		
+//		Category entityCategory = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
+//		
+//		entityCategory.setValue("securityenabled", inEntity.getValue("securityenabled"));
+//		entityCategory.setValue("viewusers", inEntity.getValue("customusers"));
+//		entityCategory.setValue("viewgroups", inEntity.getValue("customgroups"));
+//		entityCategory.setValue("viewroles", inEntity.getValue("customroles"));
+//		archive.getCategorySearcher().saveCategory(entityCategory);
+//		
+//		
+//	}
+
+	
 	public void checkEntityCategoryPermission(Data inModule, Data inEntity)
 	{
 	    MediaArchive archive = getMediaArchive();
@@ -528,7 +549,7 @@ public class PermissionManager implements CatalogEnabled
 	    String[] fieldsToCompare = {"users", "groups", "roles"};
 	    for (String field : fieldsToCompare) {
 	        // Get values from both the root category and the module
-	        Collection<String> rootValues = rootcat.getValues( "view" + field);
+	        Collection<String> rootValues = rootcat.getValues( "custom" + field);
 	        Collection<String> moduleValues = inEntity.getValues("custom" + field);
 	        // Normalize null values to empty collections
 	        if (rootValues == null) {
@@ -547,13 +568,17 @@ public class PermissionManager implements CatalogEnabled
 	        }
 	    }
 	    if(needsupdate) {
-	    	rootcat.setValue("viewusers", inEntity.getValue("customusers"));
-			rootcat.setValue("viewgroups", inEntity.getValue("customgroups"));
-			rootcat.setValue("viewroles", inEntity.getValue("customroles"));
+	    	rootcat.setValue("customusers", inEntity.getValue("customusers"));
+			rootcat.setValue("customgroups", inEntity.getValue("customgroups"));
+			rootcat.setValue("customroles", inEntity.getValue("customroles"));
 			archive.getCategorySearcher().saveCategory(rootcat);
-			archive.saveData(inModule.getId(), inEntity);			
+			archive.saveData(inModule.getId(), inEntity);
+			
+			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
+			assets.enableBulkOperations();
+			archive.getAssetSearcher().saveAllData(assets, null);
+
 	    }    
-	    
 		
 	}
 	
@@ -568,7 +593,7 @@ public class PermissionManager implements CatalogEnabled
 	    String[] fieldsToCompare = {"users", "groups", "roles"};
 	    for (String field : fieldsToCompare) {
 	        // Get values from both the root category and the module
-	        Collection<String> rootValues = rootcat.getValues( "view" + field);
+	        Collection<String> rootValues = rootcat.getValues( "default" + field);
 	        Collection<String> moduleValues = inModule.getValues("default" + field);
 
 	        // Normalize null values to empty collections
@@ -766,25 +791,5 @@ public class PermissionManager implements CatalogEnabled
 		}
 		
 	}
-	
-	public void updateEntityCategoryPermissions(Data inModule, MultiValued inEntity)
-	{
-		MediaArchive archive = getMediaArchive();
-		
-		Category entityCategory = archive.getEntityManager().loadDefaultFolder(inModule, inEntity, null);
-		
-		entityCategory.setValue("securityenabled", inEntity.getValue("securityenabled"));
-		entityCategory.setValue("viewusers", inEntity.getValue("customusers"));
-		entityCategory.setValue("viewgroups", inEntity.getValue("customgroups"));
-		entityCategory.setValue("viewroles", inEntity.getValue("customroles"));
-		archive.getCategorySearcher().saveCategory(entityCategory);
-		
-		HitTracker assets =  archive.getAssetSearcher().query().exact("category", entityCategory).search();
-		assets.enableBulkOperations();
-		archive.getAssetSearcher().saveAllData(assets, null);
-		
-		
-	}
-	
 	
 }

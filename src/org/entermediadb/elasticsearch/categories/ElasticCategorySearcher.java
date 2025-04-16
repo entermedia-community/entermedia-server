@@ -622,27 +622,18 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		{
 			cat = (Category)loadData(inData);
 		}
+
+		Collection viewusers = cat.collectValues("customusers");
+		Collection viewgroups = cat.collectValues("customgroups");
+		Collection viewroles = cat.collectValues("customroles");
 		
-		Collection users = cat.collectValues("viewusers");
-		Collection groups = cat.collectValues("viewgroups");
-		Collection roles = cat.collectValues("viewroles");
 		
-		if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
+		inContent.field("viewusers", viewusers);
+		inContent.field("viewgroups", viewgroups);
+		inContent.field("viewroles", viewroles);
+		if( !viewusers.isEmpty() || !viewgroups.isEmpty() || !viewroles.isEmpty() )
 		{
-			if (users != null)
-			{
-				inContent.field("viewusers", users);
-			}
-			if (groups != null)
-			{
-				inContent.field("viewgroups", groups);
-			}
-			if (roles != null)
-			{
-				inContent.field("viewroles", roles);
-			}
 			inContent.field("securityenabled", true);
-			return;
 		}
 		
 				

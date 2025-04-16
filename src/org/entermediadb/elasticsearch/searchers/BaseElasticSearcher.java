@@ -3098,9 +3098,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							continue;
 						}
 						
-						users = c.collectValues("viewusers");
-						groups = c.collectValues("viewgroups");
-						roles = c.collectValues("viewroles");
+						users = c.findValues("viewusers"); //These are already combined from customusers
+						groups = c.findValues("viewgroups");
+						roles = c.findValues("viewroles");
 							
 						if (users != null)
 						{
