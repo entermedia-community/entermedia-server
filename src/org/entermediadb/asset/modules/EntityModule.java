@@ -1378,9 +1378,15 @@ public class EntityModule extends BaseMediaModule
 				}
 			}
 		}
+<<<<<<< HEAD
 		archive.saveData(module.getId(),entity);
 		
 		archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
+=======
+		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+>>>>>>> refs/remotes/origin/em11
+		
+		archive.saveData(module.getId(),entity);
 		
 		
 	}	
@@ -1405,9 +1411,15 @@ public class EntityModule extends BaseMediaModule
 		entity.removeValue("editorroles", dataid);			
 		entity.removeValue("editorgroups", dataid);			
 
+<<<<<<< HEAD
 		archive.saveData(module.getId(),entity);
 		
 		archive.getPermissionManager().checkEntityCategoryPermission(module, (MultiValued)entity);
+=======
+		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+	
+		archive.saveData(module.getId(),entity);
+>>>>>>> refs/remotes/origin/em11
 	}
 /*
 	public void removeEntityPermission(WebPageRequest inReq) 

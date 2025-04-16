@@ -896,6 +896,7 @@ public class BaseCategory extends BaseData implements Category
 		collectValues(inKey,values);
 		return values;
 	}
+	
 	public void collectValues(String inKey, Collection<String> values)
 	{
 		Collection morevalues = getValues(inKey);
@@ -905,7 +906,7 @@ public class BaseCategory extends BaseData implements Category
 		}
 		if( getParentCategory() != null)
 		{
-			collectValues( inKey, values);
+			getParentCategory().collectValues( inKey, values);
 		}
 	}
 
