@@ -3032,22 +3032,35 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		Collection groups = inData.getValues("customgroups");
 		Collection roles = inData.getValues("customroles");
 		
-		if ((users != null && !users.isEmpty()) || (groups != null) && !groups.isEmpty() || (roles != null && !roles.isEmpty()))
+		if (users != null)
 		{
-			if (users != null)
-			{
-				combinedusers.addAll(users);
-			}
-			if (groups != null)
-			{
-				combinedgroups.addAll(groups);
-			}
-			if (roles != null)
-			{
-				combinedroles.addAll(roles);
-			}
+			combinedusers.addAll(users);
+		}
+		if (groups != null)
+		{
+			combinedgroups.addAll(groups);
+		}
+		if (roles != null)
+		{
+			combinedroles.addAll(roles);
 		}
 		
+		users = inData.getValues("editorusers");
+		groups = inData.getValues("editorgroups");
+		roles = inData.getValues("editorroles");
+		
+		if (users != null)
+		{
+			combinedusers.addAll(users);
+		}
+		if (groups != null)
+		{
+			combinedgroups.addAll(groups);
+		}
+		if (roles != null)
+		{
+			combinedroles.addAll(roles);
+		}
 				
 		String securityfield = (String) detail.getValue("securityfield");
 		if (securityfield != null)
@@ -3062,9 +3075,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 			String categorysearchertype = securefield.getListId();//category 
 			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
 
-			if ("category".equals(securefield.getViewType()))
+			if ("category".equals(securefield.getViewType()))  //View type can be rootcategory OR category-exact
 			{
-
 				Collection exact = inData.getValues(securityfield);
 				if (exact != null)
 				{
@@ -3086,9 +3098,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							continue;
 						}
 						
-						users = c.findValues("viewusers");
-						groups = c.findValues("viewgroups");
-						roles = c.findValues("viewroles");
+						users = c.collectValues("viewusers");
+						groups = c.collectValues("viewgroups");
+						roles = c.collectValues("viewroles");
 							
 						if (users != null)
 						{

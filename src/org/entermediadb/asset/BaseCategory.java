@@ -6,9 +6,11 @@ package org.entermediadb.asset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -888,6 +890,24 @@ public class BaseCategory extends BaseData implements Category
 		return value;
 	}
 
+	public Collection<String> collectValues(String inKey)
+	{
+		Set<String> values = new HashSet<String>();
+		collectValues(inKey,values);
+		return values;
+	}
+	public void collectValues(String inKey, Collection<String> values)
+	{
+		Collection morevalues = getValues(inKey);
+		if( morevalues != null)
+		{
+			values.addAll(morevalues);
+		}
+		if( getParentCategory() != null)
+		{
+			collectValues( inKey, values);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Category2#hasLoadedParent()
