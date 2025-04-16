@@ -3044,7 +3044,7 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		{
 			combinedroles.addAll(roles);
 		}
-		
+		//Only available in entities
 		users = inData.getValues("editorusers");
 		groups = inData.getValues("editorgroups");
 		roles = inData.getValues("editorroles");
