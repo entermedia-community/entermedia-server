@@ -487,7 +487,19 @@ public class PermissionManager implements CatalogEnabled
 			rootcat.setValue("viewroles", module.getValue("defaultroles"));
 			archive.getCategorySearcher().saveCategory(rootcat);
 			getSearcher(module.getId()).reIndexAll();
-			buffer.append("Module " + module.getId() + " Permissions update completed");					
+			buffer.append("Module " + module.getId() + " Permissions update completed");
+			
+			HitTracker assets =  archive.getAssetSearcher().query().exact("category", rootcat).search();
+			assets.enableBulkOperations();
+			if (assets.size() < 25000)
+			{
+				archive.getAssetSearcher().saveAllData(assets, null);
+			}
+			else
+			{
+				log.error("Must manually reindex asset table");
+			}
+			
 		}
 		
 		Data finishedinfo = searcher.createNewData();
@@ -768,6 +780,7 @@ public class PermissionManager implements CatalogEnabled
 		archive.getCategorySearcher().saveCategory(entityCategory);
 		
 		HitTracker assets =  archive.getAssetSearcher().query().exact("category", entityCategory).search();
+		assets.enableBulkOperations();
 		archive.getAssetSearcher().saveAllData(assets, null);
 		
 		
