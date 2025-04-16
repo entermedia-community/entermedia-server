@@ -1378,9 +1378,9 @@ public class EntityModule extends BaseMediaModule
 				}
 			}
 		}
-		archive.saveData(module.getId(),entity);
-		
 		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+		
+		archive.saveData(module.getId(),entity);
 		
 		
 	}	
@@ -1405,9 +1405,9 @@ public class EntityModule extends BaseMediaModule
 		entity.removeValue("editorroles", dataid);			
 		entity.removeValue("editorgroups", dataid);			
 
-		archive.saveData(module.getId(),entity);
-		
 		archive.getPermissionManager().updateEntityCategoryPermissions(module, (MultiValued)entity);
+	
+		archive.saveData(module.getId(),entity);
 	}
 /*
 	public void removeEntityPermission(WebPageRequest inReq) 
