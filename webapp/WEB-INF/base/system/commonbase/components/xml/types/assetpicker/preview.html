@@ -24,6 +24,11 @@
 		#set( $rendertype = "videothumbnail" )
 	#end
 	$context.putPageValue("type", $rendertype)
+	
+	#set($searchhome = "$apphome/views/modules/asset/results/default")
+	$!context.putPageValue("searchhome", $searchhome)
+	
+	
 		
 	#if($rendertype == "audio")
 		#if($hit.getValue("length"))
@@ -31,7 +36,12 @@
 		#end
 		$context.putPageValue("length", $length )
      	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
-			$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+   
+		   #if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+		   	 	$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&prefixid=field${detailid}",$context)
+		   	#else
+		   		$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+		   	#end
 		</div>       
 		<div class="previewassetname">
 		<a class="stackedplayer " 
@@ -42,7 +52,11 @@
 	#else
 		#if($noassetlink)
 			 <div class="emthumbimage emcrop" data-assetid="${foundrow.id}" >
-				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+				#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+			   	 	$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&prefixid=field${detailid}",$context)
+			   	#else
+			   		$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			   	#end
 			</div>
 			 
 		#else
@@ -51,7 +65,11 @@
 			data-assetid="$foundrow.id" 
 			title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
 	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
-				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+				#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+			   	 	$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&prefixid=field${detailid}",$context)
+			   	#else
+			   		$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			   	#end
 			</div>       
 		</a>
 		#end
