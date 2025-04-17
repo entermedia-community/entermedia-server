@@ -709,7 +709,7 @@ public class EntityModule extends BaseMediaModule
 				
 				Data folder = (Data) query.searchOne();
 				
-				if(folder == null)
+				if(folder == null && desktopimportstatus != "sync-cancelled")
 				{
 					String entityid = inReq.getRequestParameter("entityid");
 					String moduleid = inReq.getRequestParameter("moduleid");
@@ -734,26 +734,29 @@ public class EntityModule extends BaseMediaModule
 					archive.saveData("desktopsyncfolder", folder);
 				}
 				
-				String completedfiles = inReq.getRequestParameter("completedfiles");
-				if(completedfiles != null)
-				{			
-					folder.setValue("completedfiles", completedfiles);
+				if(folder != null)
+				{					
+					String completedfiles = inReq.getRequestParameter("completedfiles");
+					if(completedfiles != null)
+					{			
+						folder.setValue("completedfiles", completedfiles);
+					}
+					
+					String failedfiles = inReq.getRequestParameter("failedfiles");
+					if(failedfiles != null)
+					{
+						folder.setValue("failedfiles", failedfiles);
+					}
+					
+					
+					folder.setValue("desktopimportstatus", desktopimportstatus);
+					if(desktopimportstatus.equals("scan-started"))
+					{
+						folder.setValue("lastscandate", new Date());
+					}
+					
+					searcher.saveData(folder, null);
 				}
-				
-				String failedfiles = inReq.getRequestParameter("failedfiles");
-				if(failedfiles != null)
-				{
-					folder.setValue("failedfiles", failedfiles);
-				}
-				
-				
-				folder.setValue("desktopimportstatus", desktopimportstatus);
-				if(desktopimportstatus.equals("scan-started"))
-				{
-					folder.setValue("lastscandate", new Date());
-				}
-
-				searcher.saveData(folder, null);
 			}
 		}
 		Collection syncfolders = searcher.query().exact("desktop", desktop).sort("lastscandateDown").search();
