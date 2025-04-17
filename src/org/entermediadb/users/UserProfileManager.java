@@ -314,7 +314,7 @@ public class UserProfileManager
 			if (userprofile.hasPermission("viewsettings"))
 			{
 				Searcher msearcher = mediaArchive.getSearcher("module");
-				SearchQuery mainquery = msearcher.query().all().sort("name").getQuery();
+				SearchQuery mainquery = msearcher.query().all().sort("ordering").sort("name").getQuery();
 				SearchQuery securityfilter = msearcher.query().or().match("securityenabled", "false").orgroup("viewgroups", user.getGroups()).match("viewroles", userprofile.getSettingsGroup().getId()).match("owner", inUserName).match("viewusers", inUserName).getQuery();
 				mainquery.addChildQuery(securityfilter);
 
