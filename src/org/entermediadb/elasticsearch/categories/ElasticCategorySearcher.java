@@ -271,6 +271,13 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
     public void saveCategoryTree(Category inRootCategory)
 	{
+    	/*
+    	 * 
+    	HitTracker all = query().exact("parents", inRootCategory).search();
+    	all.enableBulkOperations();
+		saveAllData(all, null);
+    	 * */
+    	saveCategory(inRootCategory);
     	List tosave = new ArrayList(1000);
 		saveCategoryTree(inRootCategory,tosave);
 		saveAllData(tosave, null);
@@ -623,10 +630,22 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			cat = (Category)loadData(inData);
 		}
 
-		Collection viewusers = cat.collectValues("customusers");
-		Collection viewgroups = cat.collectValues("customgroups");
-		Collection viewroles = cat.collectValues("customroles");
+		Collection viewusers = cat.collectValues("viewerusers");
+		Collection viewgroups = cat.collectValues("viewergroups");
+		Collection viewroles = cat.collectValues("viewerroles");
 		
+		if( cat.getValues("customusers") != null)
+		{
+			viewusers.addAll( cat.getValues("customusers"));
+		}
+		if( cat.getValues("customgroups") != null)
+		{
+			viewgroups.addAll( cat.getValues("customgroups"));
+		}
+		if( cat.getValues("customroles") != null)
+		{
+			viewroles.addAll( cat.getValues("customroles"));
+		}
 		
 		inContent.field("viewusers", viewusers);
 		inContent.field("viewgroups", viewgroups);

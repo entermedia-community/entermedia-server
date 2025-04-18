@@ -3028,49 +3028,21 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		Collection combinedroles = new HashSet();
 		
 		boolean securityenabled = false;
-		Collection users = inData.getValues("customusers");
-		Collection groups = inData.getValues("customgroups");
-		Collection roles = inData.getValues("customroles");
-		
-		if (users != null)
-		{
-			combinedusers.addAll(users);
-		}
-		if (groups != null)
-		{
-			combinedgroups.addAll(groups);
-		}
-		if (roles != null)
-		{
-			combinedroles.addAll(roles);
-		}
-		//Only available in entities
-		users = inData.getValues("editorusers");
-		groups = inData.getValues("editorgroups");
-		roles = inData.getValues("editorroles");
-		
-		if (users != null)
-		{
-			combinedusers.addAll(users);
-		}
-		if (groups != null)
-		{
-			combinedgroups.addAll(groups);
-		}
-		if (roles != null)
-		{
-			combinedroles.addAll(roles);
-		}
 				
 		String securityfield = (String) detail.getValue("securityfield");
-		if (securityfield != null)
+		
+		if (securityfield == null)
+		{
+			combinedusers = inData.getValues("viewusers");
+			combinedgroups = inData.getValues("viewgroups");
+			combinedroles = inData.getValues("viewroles");
+
+		}
+		else
 		{
 
 			PropertyDetail securefield = getDetail(securityfield);
-			if(securefield == null)
-			{
-				return;
-			}
+			
 			String fieldid = securefield.getId();
 			String categorysearchertype = securefield.getListId();//category 
 			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
@@ -3080,7 +3052,8 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				Collection exact = inData.getValues(securityfield);
 				if (exact != null)
 				{
-
+						
+					
 					for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 					{
 						Object obj = iterator.next();
@@ -3098,21 +3071,21 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 							continue;
 						}
 						
-						users = c.findValues("viewusers"); //These are already combined from customusers
-						groups = c.findValues("viewgroups");
-						roles = c.findValues("viewroles");
-							
-						if (users != null)
+						Collection moreusers = c.collectValues("viewerusers"); //These are already combined from customusers
+						Collection moregroups = c.collectValues("viewergroups");
+						Collection moreroles = c.collectValues("viewerroles");
+						
+						if (moreusers != null)
 						{
-							combinedusers.addAll(users);
+							combinedusers.addAll(moreusers);
 						}
-						if (groups != null)
+						if (moregroups != null)
 						{
-							combinedgroups.addAll(groups);
+							combinedgroups.addAll(moregroups);
 						}
-						if (roles != null)
+						if (moreroles != null)
 						{
-							combinedroles.addAll(roles);
+							combinedroles.addAll(moreroles);
 						}
 
 					}
@@ -3120,21 +3093,22 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 
 			}
 		}
-		if (!combinedusers.isEmpty())
+		if (combinedusers != null && !combinedusers.isEmpty())
 		{
 			inContent.field("viewusers", combinedusers);
 			securityenabled = true;
 		}
-		if (!combinedgroups.isEmpty())
+		if (combinedgroups != null && !combinedgroups.isEmpty())
 		{
 			inContent.field("viewgroups", combinedgroups);
 			securityenabled = true;
 		}
-		if (!combinedroles.isEmpty())
+		if (combinedroles != null && !combinedroles.isEmpty())
 		{
 			inContent.field("viewroles", combinedroles);
 			securityenabled = true;
 		}
+		
 		inContent.field("securityenabled", securityenabled);
 
 	}
