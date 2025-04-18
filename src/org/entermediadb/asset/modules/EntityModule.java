@@ -709,7 +709,7 @@ public class EntityModule extends BaseMediaModule
 				
 				Data folder = (Data) query.searchOne();
 				
-				if(folder == null && desktopimportstatus != "sync-cancelled")
+				if(folder == null && !"sync-cancelled".equals(desktopimportstatus))
 				{
 					String entityid = inReq.getRequestParameter("entityid");
 					String moduleid = inReq.getRequestParameter("moduleid");
