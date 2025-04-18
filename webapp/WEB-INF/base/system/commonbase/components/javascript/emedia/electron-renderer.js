@@ -45,13 +45,11 @@
 	}
 
 	jQuery(document).ready(function () {
-		
-		if( typeof require !== "function")
-		{
+		if (typeof require !== "function") {
 			$("#desktopLoading").remove();
 			return;
 		}
-		
+
 		const { ipcRenderer } = require("electron");
 
 		const app = $("#application");
@@ -65,9 +63,6 @@
 
 		const headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
 
-		function getMediadb() {
-			return siteroot + "/" + mediadb;
-		}
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
@@ -224,12 +219,12 @@
 						closeemdialog($(this).closest(".modal"));
 					});
 
-					lQuery(".deleteSync").livequery("click", function () {
+					lQuery(".deleteSyncFolder").livequery("click", function () {
 						if (confirm("Are you sure you want to remove this sync task?")) {
 							const identifier = $(this).data("categorypath");
 							const isDownload = $(this).hasClass("download");
 							const delId = $(this).data("id");
-							ipcRenderer.send("deleteSyncFolder", {
+							ipcRenderer.send("deleteSync", {
 								identifier,
 								isDownload,
 								delId,
@@ -481,7 +476,7 @@
 					});
 
 					function shouldDisableUploadSyncBtn(data) {
-						$(".lightbox-header-btns").forEach(function () {
+						$(".lightbox-header-btns").each(function () {
 							const identifier = $(this).data("path");
 							if (!identifier) {
 								return;
@@ -514,7 +509,7 @@
 					);
 
 					function shouldDisableDownloadSyncBtn(data) {
-						$(".lightbox-header-btns").forEach(function () {
+						$(".lightbox-header-btns").each(function () {
 							const identifier = $(this).data("path");
 							if (!identifier) {
 								return;
