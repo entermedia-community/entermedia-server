@@ -127,6 +127,7 @@ public class DesktopModule extends BaseMediaModule
 			{
 				FolderManager manager = getFolderManager(inReq);
 				desktop = manager.getDesktopManager().loadDesktop(inReq.getUser(),System.getenv("HOSTNAME"));
+				inReq.putPageValue("desktop", desktop);
 				inReq.putSessionValue("desktop", desktop);
 			}
 		}

@@ -45,6 +45,13 @@
 	}
 
 	jQuery(document).ready(function () {
+		
+		if( typeof require !== "function")
+		{
+			$("#desktopLoading").remove();
+			return;
+		}
+		
 		const { ipcRenderer } = require("electron");
 
 		const app = $("#application");
