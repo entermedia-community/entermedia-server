@@ -719,7 +719,12 @@ public class FinderModule extends BaseMediaModule
 			}
 			else
 			{
-				hits = archive.query(module.getId()).contains("description", keywords).search(inReq);
+				hits = archive.query(module.getId()).freeform("description", keywords).search(inReq);
+			}
+			
+			if( hits.isEmpty() )
+			{
+				//Search all?
 			}
 			
 			inReq.putPageValue("airesultshits", hits);
