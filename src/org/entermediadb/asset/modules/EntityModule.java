@@ -709,7 +709,7 @@ public class EntityModule extends BaseMediaModule
 				
 				Data folder = (Data) query.searchOne();
 				
-				if(folder == null && desktopimportstatus != "sync-cancelled")
+				if(folder == null && !"sync-cancelled".equals(desktopimportstatus))
 				{
 					String entityid = inReq.getRequestParameter("entityid");
 					String moduleid = inReq.getRequestParameter("moduleid");
@@ -1363,9 +1363,10 @@ public class EntityModule extends BaseMediaModule
 			String[] permissiontype = inReq.getRequestParameters("permissiontype");
 			for (int i = 0; i < dataid.length; i++)
 			{
-				entity.removeValue("customusers", dataid[i]);
-				entity.removeValue("customroles", dataid[i]);			
-				entity.removeValue("customgroups", dataid[i]);			
+				entity.removeValue("viewerusers", dataid[i]);
+				entity.removeValue("viewerroles", dataid[i]);			
+				entity.removeValue("viewergroups", dataid[i]);	
+				
 				entity.removeValue("editorusers", dataid[i]);
 				entity.removeValue("editorroles", dataid[i]);			
 				entity.removeValue("editorgroups", dataid[i]);
@@ -1377,7 +1378,7 @@ public class EntityModule extends BaseMediaModule
 				}
 				else
 				{
-					entity.addValue("custom" + fieldname, dataid[i]);
+					entity.addValue("viewer" + fieldname, dataid[i]);
 				}
 			}
 		}
@@ -1400,9 +1401,9 @@ public class EntityModule extends BaseMediaModule
 		//Add to the type we want
 		
 		//Check the type
-		entity.removeValue("customusers", dataid);
-		entity.removeValue("customroles", dataid);			
-		entity.removeValue("customgroups", dataid);			
+		entity.removeValue("viewerusers", dataid);
+		entity.removeValue("viewerroles", dataid);			
+		entity.removeValue("viewergroups", dataid);			
 
 		entity.removeValue("editorusers", dataid);
 		entity.removeValue("editorroles", dataid);			

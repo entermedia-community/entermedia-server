@@ -1,0 +1,17 @@
+#
+#Mon Apr 21 12:44:26 CST 2025
+Flag\ as\ Goal=Marcar como gol
+Make\ Agenda=Hacer agenda
+Message=Mensaje
+Replying\ to=Respondiendo a
+Page=P\u00E1gina
+Attachments=Archivos adjuntos
+Processing=Tratamiento
+Send=Enviar
+Edit\ Message=Editar mensaje
+Cancel\ Reply=Cancelar respuesta
+of=de
+Next=Pr\u00F3ximo
+Previous=Anterior
+Reply=Responder
+Emoji=Emoji

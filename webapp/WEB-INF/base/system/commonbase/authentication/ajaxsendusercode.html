@@ -1,16 +1,16 @@
-<div id="ajaxloginformdiv">
+
     
     #set($loginok = $context.findValue("loginokpage") ) 
 	#set( $email = $context.getRequestParameter("email") )
-	<div class="my-4">
+	<div class="my-4 w-100">
 	#if( $commandSucceeded == "ok")
-    	<div class="pb-4 text-center"><strong>[[Please check your email]]</strong></div>
+    	<div class="mb-4 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
     #else
     	$error
     #end
 	<form name="login" 
 		id="login"
-		class="ajaxform  row justify-content-md-center g-3" 
+		class="ajaxform  row justify-content-md-center" 
 		data-targetdiv="ajaxloginformdiv"
 		action="$home$content.loginroot/ajaxlogin.html" 
 		method="POST" >
@@ -48,4 +48,3 @@
 			$context.removeSessionValue("oe-exception")
 	#end
 	
-</div>

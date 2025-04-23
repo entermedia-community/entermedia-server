@@ -92,19 +92,7 @@ public void addUser()
 	User newuser = createUser();
 	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
-	List details = usersearcher.getDetailsForView("simpleuseradd", context.getPageValue("userprofile"));
-	
-	fieldlist = []
-	details.each { fieldlist << it.id; }
-	def fields = fieldlist as String[]
-	
-	//Validation
-	context.setRequestParameter("id.value", newuser.getId());
-	String email = context.getRequestParameter("email.value");
-	if ( email != null)
-	{
-		context.setRequestParameter("email.value", email.toLowerCase().trim());
-	}
+	def fields = context.getRequestParameters("field");//fieldlist as String[]
 	
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
@@ -117,44 +105,8 @@ public void addUser()
 //	mediaArchive.fire
 }
 
-public void editUser()
-{
-	String ok = context.getRequestParameter("save");
-	if (ok == "true")
-	{
-		User loggedin = context.getPageValue("user");
-		
-		String userid = context.getRequestParameter("userid");
-		
-		User edituser = usermanager.getUser(userid);
-		
-		//save the user object
-		Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
-
-		List details = usersearcher.getDetailsForView("useredit", loggedin);
-		
-		fieldlist = []
-		
-		details.each {
-			fieldlist << it.id;
-		}
-		
-		def fields = fieldlist as String[]		
-		usersearcher.saveDetails(context,fields,edituser,userid);
-		
-		//save the userprofileobject
-		saveUserProfile(userid);
-		
-		context.putPageValue("saved", "true");
-	}
-}
-
 String method = context.getRequestParameter("method");
 if (method == "adduser")
 {
 	addUser();
-}
-else if (method == "edituser")
-{
-	editUser();
 }

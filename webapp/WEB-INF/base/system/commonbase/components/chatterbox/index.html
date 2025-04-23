@@ -2,15 +2,15 @@
 $context.putPageValue("chatterboxhome", $chatterboxhome)
 #set($moduleid = $module.getId())
 #ifnull($moduleid)
-#set($moduleid = $page.module) 
+	#set($moduleid = $page.module) 
 #end
 #ifnull($collectionid)
-#set($collectionid = $librarycol.getId()) 
+	#set($collectionid = $librarycol.getId()) 
 #end
 
 #set($cansendchat = false)
 #if($page.openchat || ($user && $permissions && $permissions.canModule($module, "chat_send_messages")))
-#set($cansendchat = true)
+	#set($cansendchat = true)
 #end
 
 <div class='chatterbox #if($cansendchat == "false") chatterbox-readonly#end'

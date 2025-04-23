@@ -15,8 +15,10 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.CatalogEnabled;
+import org.openedit.OpenEditException;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.Group;
 import org.openedit.util.RequestUtils;
 
 public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnabled
@@ -120,97 +122,59 @@ public class CategoryWebTreeModel extends BaseTreeModel implements CatalogEnable
 
 	protected boolean okToAdd(Category inCat)
 	{
-		if (inCat.getParentCategory() == null)
+
+		if( getUserProfile() == null)
+		{
+			throw new OpenEditException("Must have a user profile");
+		}
+		
+		if (getUserProfile().isInRole("administrator"))
 		{
 			return true;
 		}
-		if (getHiddenCatalogs().contains(inCat.getId()))
-		{
-			return false;
-		}
+			boolean hassecurity = false; 
+	    	Collection users = inCat.getValues("viewuser");
+	    	if (users != null && !users.isEmpty())
+	    	{
+	    		hassecurity = true;
+	    		if( users.contains(getUserProfile().getUserId()))
+	    		{
+	    			return true;
+	    		}
+	    	}
+	    
+	    	Collection roles = inCat.getValues("viewroles");
+	    	
+	    	if (roles != null&& !roles.isEmpty())
+	    	{
+	    		hassecurity = true;
+	    		if( roles.contains(getUserProfile().getSettingsGroup().getId() ))
+	    		{
+	    			return true;
+	    		}
+	    	}
 
-/*
-		if (getLimitToCatalogs().size() > 0)
-		{
-			// Only worry about including these catalogs
-			for (Iterator iterator = getLimitToCatalogs().iterator(); iterator.hasNext();)
-			{
-				Category okid = (Category) iterator.next();
-				if (inCat.getId().equals(okid.getId()) || okid.hasParent(inCat.getId()))
+	    	Collection viewgroups = inCat.getValues("viewgroups");
+	    	
+	    	if (viewgroups != null&& !viewgroups.isEmpty())
+	    	{
+	    		hassecurity = true;
+	    		for (Iterator iterator = getUserProfile().getUser().getGroups().iterator(); iterator.hasNext();)
 				{
-					return true;
+					Group group = (Group) iterator.next();
+		    		if( viewgroups.contains(group.getId()))
+		    		{
+		    			return true;
+		    		}
+					
 				}
-			}
-			// This could be slow
-			for (Iterator iterator = getLimitToCatalogs().iterator(); iterator.hasNext();)
-			{
-				Category okid = (Category) iterator.next();
-				if (inCat.hasParent(okid.getId()))
-				{
-					return true;
-				}
-			}
-
-			// None found so cancel if at same level as included one
-			for (Iterator iterator = getLimitToCatalogs().iterator(); iterator.hasNext();)
-			{
-				Category okid = (Category) iterator.next();
-				if (inCat.getLevel() == okid.getLevel())
-				{
-					return false;
-				}
-			}
-			// index/photo2/stuff1 nostuff
-			return true;
-		}
-		*/
-		if( getUserProfile() != null && getUserProfile().getSettingsGroup() != null && getUserProfile().getSettingsGroup().getId().equals("administrator"))
-		{
-			return true;
-		}
-		 
-		Collection<Category> viewableparents = getUserProfile().getViewCategories();
-
-		/*
-		 * Collection<Category> privatecats = getMediaArchive().listHiddenCategories();
-		 
-		for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
-		{
-			Category hiddencategory = (Category)iterator.next();
-			for (Iterator iterator2 = viewableparents.iterator(); iterator2.hasNext();)
-			{
-				Category specificchild = (Category) iterator2.next();
-				if( inCat.hasParent(specificchild.getId()))
-				{
-					return true;
-				}
-			}
-			if( inCat.hasParent(hiddencategory.getId()) )  //This cat is within this hidden so check it well
-			{
-				return false;
-			}
-		}
-		*/
-		
-//		//In case it's new system TODO: Is this needed?
-//		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
-//		{
-//			return true;
-//		}
-		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );  //deprate this
-		allowed.addAll(viewableparents);
-		
-		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
-		{
-			Category viewable = (Category) iterator.next();
-			if( viewable.hasParentCategory(inCat) || inCat.hasParentCategory(viewable))
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
+	    	}
+	    	if( hassecurity)
+	    	{
+	    		return false;
+	    	}
+	    	return true;
+	}	
 
 	public Set getHiddenCatalogs()
 	{

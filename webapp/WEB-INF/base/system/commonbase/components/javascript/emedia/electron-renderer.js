@@ -45,13 +45,11 @@
 	}
 
 	jQuery(document).ready(function () {
-		
-		if( typeof require !== "function")
-		{
+		if (typeof require !== "function") {
 			$("#desktopLoading").remove();
 			return;
 		}
-		
+
 		const { ipcRenderer } = require("electron");
 
 		const app = $("#application");
@@ -65,9 +63,6 @@
 
 		const headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
 
-		function getMediadb() {
-			return siteroot + "/" + mediadb;
-		}
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
@@ -226,29 +221,36 @@
 
 					lQuery(".deleteSyncFolder").livequery("click", function () {
 						if (confirm("Are you sure you want to remove this sync task?")) {
-							const delId = $(this).data("id");
 							const identifier = $(this).data("categorypath");
 							const isDownload = $(this).hasClass("download");
-							ipcRenderer.send("cancelSync", { identifier, isDownload });
-							jQuery.ajax({
-								type: "DELETE",
-								url:
-									getMediadb() +
-									"/services/module/desktopsyncfolder/data/" +
-									delId,
-								success: function () {
-									$("#wf-" + delId).remove();
-									customToast("Sync task deleted successfully!");
-								},
-								error: function (xhr, status, error) {
-									console.log("deleteSyncFolder", error);
-									customToast("Error deleting sync task!", {
-										positive: false,
-									});
-								},
+							const delId = $(this).data("id");
+							ipcRenderer.send("deleteSync", {
+								identifier,
+								isDownload,
+								delId,
 							});
 						}
 					});
+
+					ipcRenderer.on(
+						"sync-folder-deleted",
+						(_, { delId, isDownload, remaining, success = true }) => {
+							if (success) {
+								$("#wf-" + delId).remove();
+								if (isDownload) {
+									shouldDisableDownloadSyncBtn(remaining);
+								} else {
+									shouldDisableUploadSyncBtn(remaining);
+								}
+
+								customToast("Sync task deleted successfully!");
+							} else {
+								customToast("Error deleting sync task!", {
+									positive: false,
+								});
+							}
+						}
+					);
 
 					lQuery(".show-sync-progress").livequery("click", function () {
 						$(this).prop("disabled", true);
@@ -344,7 +346,8 @@
 
 						headerBtns.on("click", ".download-lightbox", function () {
 							customToast(
-								elideCat(categorypath) + " download task added to Cloud Sync"
+								elideCat(categorypath) + " download task added to Cloud Sync",
+								{ id: categorypath }
 							);
 
 							$(this).prop("disabled", true);
@@ -386,7 +389,8 @@
 
 						headerBtns.on("click", ".upload-lightbox", function () {
 							customToast(
-								elideCat(categorypath) + " upload task added to Cloud Sync"
+								elideCat(categorypath) + " upload task added to Cloud Sync",
+								{ id: categorypath }
 							);
 
 							$(this).prop("disabled", true);
@@ -458,9 +462,7 @@
 												ch.join(" & ") +
 												"in " +
 												elideCat(categorypath),
-											{
-												id: categorypath,
-											}
+											{ id: categorypath }
 										);
 									} else {
 										customToast(
@@ -480,7 +482,7 @@
 					});
 
 					function shouldDisableUploadSyncBtn(data) {
-						$(".lightbox-header-btns").forEach(function () {
+						$(".lightbox-header-btns").each(function () {
 							const identifier = $(this).data("path");
 							if (!identifier) {
 								return;
@@ -513,7 +515,7 @@
 					);
 
 					function shouldDisableDownloadSyncBtn(data) {
-						$(".lightbox-header-btns").forEach(function () {
+						$(".lightbox-header-btns").each(function () {
 							const identifier = $(this).data("path");
 							if (!identifier) {
 								return;
@@ -641,8 +643,7 @@
 
 					ipcRenderer.on(
 						"sync-cancelled",
-						(_, { identifier, isDownload, both }) => {
-							console.log("sync-cancelled", identifier);
+						(_, { identifier, isDownload, both, remaining }) => {
 							function cancelSync(isD) {
 								const idEl = progItem(identifier, isD);
 								let filesCompleted = 0;
@@ -658,7 +659,13 @@
 								if (isD) formData.append("isdownload", "true");
 								if (filesCompleted >= 0)
 									formData.append("completedfiles", filesCompleted);
-								desktopImportStatusUpdater(formData);
+								desktopImportStatusUpdater(formData, () => {
+									if (isDownload) {
+										shouldDisableDownloadSyncBtn(remaining);
+									} else {
+										shouldDisableUploadSyncBtn(remaining);
+									}
+								});
 							}
 							if (both) {
 								cancelSync(true);
@@ -737,10 +744,11 @@
 							.then((scanStatus) => {
 								if (scanStatus === "OK")
 									customToast(
-										"Continuing " +
+										"Started " +
 											(isDownload ? "download" : "upload") +
 											" task for " +
-											elideCat(categorypath)
+											elideCat(categorypath),
+										{ id: categorypath }
 									);
 							})
 							.catch((err) => {

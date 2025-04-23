@@ -591,9 +591,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		PropertyDetail detail = getDetail("securityenabled");
 
 		boolean securityenabled = false;
-		Collection users = null;
-		Collection groups = null;
-		Collection roles = null;
+		
+		Collection users = new HashSet(3);
+		Collection groups = new HashSet(3);
+		Collection roles = new HashSet(3);
 
 		if (detail == null)
 		{
@@ -609,9 +610,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			String categorysearchertype = securefield.getListId();//category 
 			CategorySearcher searcher = (CategorySearcher) getSearcherManager().getSearcher(getCatalogId(), categorysearchertype);
 
-			HashSet localusers = new HashSet();
-			HashSet localgroups = new HashSet();
-			HashSet localroles = new HashSet();
+
 			Collection exact = inData.getValues("category-exact");
 			if (exact == null)
 			{
@@ -620,6 +619,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			for (Iterator iterator = exact.iterator(); iterator.hasNext();)
 			{
 				Object something = iterator.next();
+				
 				Category cat = null;
 				if (something instanceof String)
 				{
@@ -635,43 +635,39 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 					continue;
 				}
 
-				Collection u = cat.findValues("viewusers");
-				Collection g = cat.findValues("viewgroups");
-				Collection r = cat.findValues("viewroles");
+				Collection u = cat.collectValues("viewerusers");
+				Collection g = cat.collectValues("viewergroups");
+				Collection r = cat.collectValues("viewerroles");
 				if (u != null)
 				{
-					localusers.addAll(u);
+					users.addAll(u);
 				}
 				if (g != null)
 				{
-					localgroups.addAll(g);
+					groups.addAll(g);
 				}
 				if (r != null)
 				{
-					localroles.addAll(r);
+					roles.addAll(r);
 				}
 			}
-			roles = localroles;
-			users = localusers;
-			groups = localgroups;
 		}
 
-		if (users != null || roles != null || groups != null)
-		{
-			securityenabled = true;
-		}
 
-		if (users != null)
+		if (users != null && !users.isEmpty())
 		{
 			inContent.field("viewusers", users);
+			securityenabled = true;
 		}
-		if (groups != null)
+		if (groups != null && !groups.isEmpty())
 		{
 			inContent.field("viewgroups", groups);
+			securityenabled = true;
 		}
-		if (roles != null)
+		if (roles != null && !roles.isEmpty())
 		{
 			inContent.field("viewroles", roles);
+			securityenabled = true;
 		}
 		inContent.field("securityenabled", securityenabled);
 

@@ -239,7 +239,7 @@ public class WorkspaceManager
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
 		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
-		getMediaArchive(catalogid).getPermissionManager().queuePermissionCheck(module);
+		getMediaArchive(catalogid).getPermissionManager().queuePermissionCheck((MultiValued)module);
 		getMediaArchive(catalogid).saveData("module", module);
 	}
 
