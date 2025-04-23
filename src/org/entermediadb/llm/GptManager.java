@@ -82,7 +82,7 @@ public class GptManager extends BaseLLMManager implements CatalogEnabled, LLMMan
 		inReq.putPageValue("mediaarchive", getMediaArchive());
 
 		String input = loadInputFromTemplate(inReq, inTemplate);
-		log.info(input);
+		log.info(inTemplate + " process chat");
 		String endpoint = getApiEndpoint();
 
 		HttpPost method = new HttpPost(endpoint);
