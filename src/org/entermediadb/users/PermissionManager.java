@@ -542,18 +542,18 @@ public class PermissionManager implements CatalogEnabled
 	    	
 	    	Collection combined = inModule.getValues("viewer" + field);
 	    	
+	        // Normalize null values to empty collections
+	        if (rootValues == null) {
+	            rootValues = new ArrayList();
+	        }
+	        if (combined == null) {
+	        	combined = new ArrayList();
+	        }
+
 	    	if (inModule.getValues("editor" + field) != null)
 		    {
 		    	combined.addAll(inModule.getValues("editor" + field));
 		    }
-
-	        // Normalize null values to empty collections
-	        if (rootValues == null) {
-	            rootValues = Collections.emptyList();
-	        }
-	        if (combined == null) {
-	        	combined = Collections.emptyList();
-	        }
 
 	        // Compare values
 	        if (!rootValues.containsAll(combined) || !combined.containsAll(rootValues)) {
