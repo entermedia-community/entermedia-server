@@ -1721,7 +1721,7 @@ public class MediaArchive implements CatalogEnabled
 			value = setting.get("value");
 			if (value == null)
 			{
-				log.info("Null value " + getCatalogId() + " " + inId);
+				log.info("Null value: " +  inId + " on catalog: " + getCatalogId());
 				value = CacheManager.NULLVALUE;
 			}
 		}
