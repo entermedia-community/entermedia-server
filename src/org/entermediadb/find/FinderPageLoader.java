@@ -51,12 +51,13 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 	public RightPage getRightPage( URLUtilities util, org.openedit.servlet.Site site, Page inPage, String requestedPath)
 	{
 		String appid = inPage.getProperty("applicationid");
-
+		log.info("Debug 0" + requestedPath);
 		boolean loadmodule = false;
 		String homepage = String.format("/%s/index.html", appid); 
 		if( homepage.equals(inPage.getPath()))
 		{
 			loadmodule = true;
+			log.info("Debug A");
 		}
 		else
 		{
@@ -64,13 +65,17 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			if( homepage.equals(inPage.getPath()))
 			{
 				loadmodule = true;
+				log.info("Debug B");
 			}
+			log.info("Debug C");
 		}
 
 		if( !loadmodule )
 		{
 			//No need to preload a module. Not on a home page
 			//log.info("Could not load home page " + appid + " " + requestedPath);
+			log.info("Debug D");
+
 			return null;
 		}
 		//TODO: Pass in user and check permissions
@@ -89,8 +94,10 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 		}
 		if( path == null && topmenu.get("toplevelentity") != null)
 		{
+			log.info("Debug D1");
 			path = String.format("/%s/views/modules/%s/index.html", appid, topmenu.get("toplevelentity")); 
 		}
+		log.info("Debug E " + path);
 		if( path != null)
 		{
 			RightPage right = new RightPage();
@@ -105,14 +112,19 @@ public class FinderPageLoader implements PageLoader, CatalogEnabled
 			if( !page.exists())
 			{
 				//log.info("page missing "+ parts[0]);
+				log.info("Debug F");
+
 				return null; //?
 			}
 
-			
+			log.info("Debug F1");
+
 			right.setRightPage(page);
 			return right;
 		}
 			
+		log.info("Debug G");
+
 	    //log.info("Page:" + inPage.getPath()  + " for url: " + requestedPath);
 		return null;
 		//We only care about the home page
