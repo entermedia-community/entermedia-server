@@ -3,7 +3,12 @@
 	#set($targetdiv = $context.findValue("targetdiv") )
 #end 
 
-<div id="ajaxloginformdiv" class="p-2 ajaxloginbox">
+
+<h1 class="page-title text-center mb-5">[[Sign-up]]</h1>
+
+	<div id="ajaxloginformdiv" class="p-2 loginbox ajaxloginbox">
+	
+	
 	#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
 	#ifnotnull($customloginmessage)
 		$customloginmessage

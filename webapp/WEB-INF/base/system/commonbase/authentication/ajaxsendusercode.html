@@ -2,9 +2,9 @@
     
     #set($loginok = $context.findValue("loginokpage") ) 
 	#set( $email = $context.getRequestParameter("email") )
-	<div class="my-4 w-100">
+	<div class="my-3 w-100">
 	#if( $commandSucceeded == "ok")
-    	<div class="mb-4 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
+    	<div class="mb-3 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
     #else
     	$error
     #end
