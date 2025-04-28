@@ -731,8 +731,8 @@ public class FinderModule extends BaseMediaModule
 		inReq.putPageValue("keywords", String.join(", ", keywords));
 		
 		String conjunction = (String) d.get("conjunction");
-		if(conjunction == null || !conjunction.equals("and")) {
-			conjunction = "or";
+		if(conjunction == null || !conjunction.equals("inclusive")) {
+			conjunction = "exclusive";
 		}
 		
 		Object modules_object = d.get("modules");
@@ -782,9 +782,9 @@ public class FinderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String plainquery = "";
-		if(!conjunction.equals("and"))
+		if(!conjunction.equals("inclusive"))
 		{
-			plainquery = String.join(" OR ", keywords);
+			plainquery = String.join(" OR ", keywords); // This does not work
 		}
 		
 		

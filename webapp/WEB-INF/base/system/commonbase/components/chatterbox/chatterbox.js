@@ -65,6 +65,18 @@ function chatterbox() {
 		}
 	});
 
+	lQuery(".ai-suggest").livequery("click", function () {
+		var button = jQuery(this);
+		var message = button.text();
+		var input = $("#chatter-msg");
+		input.val(message);
+		input.focus();
+		setTimeout(function () {
+			$(".chatter-send").trigger("click");
+			button.closest(".msg-bubble").remove();
+		});
+	});
+
 	lQuery("#chatterboxreplycancel").livequery("click", function () {
 		var button = jQuery(this);
 		button.closest(".chatterboxreplyto").hide();
@@ -220,7 +232,7 @@ function connect() {
 		}
 
 		scrollToChat();
-		
+
 		var params = {};
 		params.id = message.id;
 		params.channel = message.channel;
