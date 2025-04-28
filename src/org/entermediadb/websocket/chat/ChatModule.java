@@ -791,7 +791,6 @@ public class ChatModule extends BaseMediaModule
 			//JSONObject args = (JSONObject) new JSONParser().parse(arguments);
 			//inReq.putPageValue("args", args);
 		String response;
-		Data module = null;
 		
 		try
 		{
@@ -799,15 +798,15 @@ public class ChatModule extends BaseMediaModule
 			if( functionName.equals("searchall") ) {
 				filename = "search-all";
 			}
-			else if( functionName.startsWith("search") )
+			else if( functionName.equals("searchByModule") )
 			{
-				String moduleid= functionName.substring("search".length());
-				module = archive.getCachedData("module",moduleid);
 				filename = "search-module";
-				//Tell it to use emediasearchformat
+			}
+			else if( functionName.equals("showHintOrHelpInfo") )
+			{
+				filename = "show-hints";
 			}
 			
-			inReq.putPageValue("module",module);
 			inReq.putPageValue("data", messageToUpdate);
 			
 			response = manager.loadInputFromTemplate(inReq, "/" + archive.getMediaDbId() + "/gpt/functions/" + filename + ".html");
