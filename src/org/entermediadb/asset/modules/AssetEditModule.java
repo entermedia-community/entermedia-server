@@ -2068,6 +2068,8 @@ public class AssetEditModule extends BaseMediaModule
 		//		final Map pages = savePages(inReq,archive,inPages);
 		//		final User user = inReq.getUser();
 		//		
+		MediaArchive archive = getMediaArchive(inReq);
+		
 		UploadRequest properties = (UploadRequest)inReq.getPageValue("uploadrequest");
 		if( properties == null)
 		{
@@ -2087,46 +2089,66 @@ public class AssetEditModule extends BaseMediaModule
 		if(properties.getUploadItems().size() == 0) {
 			return;
 		}
-		String moduleid = inReq.findPathValue("module");
 		
-		if(moduleid == null)
-		{
-			moduleid = inReq.findValue("searchtype");
-		}
+		String moduleid  = inReq.findPathValue("module");
 		
-		String id = inReq.getRequestParameter("id");
-		if(id == null) {
-			id = inReq.getRequestParameter("id.value");
-		}
+		String id = null;
+		Searcher searcher = null;
 		
-		final String currentcollection = inReq.getRequestParameter("collectionid");
-
 		String pageval = inReq.findActionValue("pageval");
 		if (pageval == null) 
 		{
 			pageval = "data";
 		}
 		Data target = (Data)inReq.getPageValue(pageval);
-
-		MediaArchive mediaArchive = getMediaArchive(inReq);
-		MediaArchive archive = mediaArchive;
-		if (target == null && moduleid != null && id != null)
-		{
-			target = archive.getData(moduleid, id);
-		}
-
-		Searcher searcher = archive.getSearcher(moduleid);
 		
-		if (target == null  && id == null) //new record
+		if (target != null)
+		{
+			id = target.get("id");
+			
+			String searchtype = inReq.findValue("searchtype");
+			if (searchtype != null)
+			{
+				searcher = archive.getSearcher(searchtype);
+			}
+			else {
+				target = null; //we cant continue without a searcher
+			}
+		}
+		
+		
+		//If no pageval with data provided
+		if (target == null)
 		{
 		
-			target = searcher.createNewData();
-			String[] fields = inReq.getRequestParameters("field");
-			searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
-			searcher.saveData(target, inReq.getUser());
-			id = target.getId();
-			inReq.setRequestParameter("id", id);
+			if(moduleid == null)
+			{
+				moduleid = inReq.findValue("searchtype");
+			}
+			
+			id = inReq.getRequestParameter("id");
+			
+			if(id == null) {
+				id = inReq.getRequestParameter("id.value");
+			}
+			if (moduleid != null && id != null)
+			{
+				target = archive.getData(moduleid, id);
+			}
+
+			searcher = archive.getSearcher(moduleid);
+			
+			if (target == null  && id == null) //new record
+			{
+				target = searcher.createNewData();
+				String[] fields = inReq.getRequestParameters("field");
+				searcher.updateData(inReq, fields, target);  //TODO: Skip if save = false
+				searcher.saveData(target, inReq.getUser());
+				id = target.getId();
+				inReq.setRequestParameter("id", id);
+			}
 		}
+		
 		Collection savedassets = new ArrayList();
 		
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator.hasNext();)
@@ -2141,25 +2163,23 @@ public class AssetEditModule extends BaseMediaModule
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			String sourcepath = null;
-			if (moduleid != null)
+			if (target != null)
 			{							
-				
-
 				PropertyDetail detail = searcher.getDetail(detailid);
 				if (detail != null)
 				{
 					String sourcemask = detail.get("sourcepath");
-					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target != null && target.get("uploadsourcepath") == null) 
+					if( sourcemask != null && sourcemask.contains("uploadsourcepath") && target.get("uploadsourcepath") == null) 
 					{
 						log.error("Remove ${data.uploadsourcepath}/${filename} from entities");
 						sourcemask = null; 
 					}
 					if( sourcemask == null)
 					{
-						if( target != null && searcher.getDetail("uploadsourcepath") != null )
+						if(searcher.getDetail("uploadsourcepath") != null )
 						{
-							Data entitmodule = mediaArchive.getCachedData("module",moduleid);
-							Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
+							Data entitmodule = archive.getCachedData("module",moduleid);
+							Category cat = archive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 							if( cat != null)
 							{
 								sourcepath = cat.getCategoryPath() + "/" + item.getName();
@@ -2186,8 +2206,8 @@ public class AssetEditModule extends BaseMediaModule
 						}
 					}
 				} else {
-					Data entitmodule = mediaArchive.getCachedData("module",moduleid);
-					Category cat = mediaArchive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
+					Data entitmodule = archive.getCachedData("module",moduleid);
+					Category cat = archive.getEntityManager().loadDefaultFolder(entitmodule,target, inReq.getUser());
 					if( cat != null)
 					{
 						sourcepath = cat.getCategoryPath() + "/chat/" +  inReq.getUserName() + "/" + item.getName();
@@ -2282,11 +2302,16 @@ public class AssetEditModule extends BaseMediaModule
 			//archive.fireSharedMediaEvent("importing/importassets");  //Non blocking
 			
 
+			
+			//--who is using this?
+			final String currentcollection = inReq.getRequestParameter("collectionid");
+
 			if (currentcollection != null)
 			{
 				ProjectManager manager = (ProjectManager) getModuleManager().getBean(archive.getCatalogId(), "projectManager");
 				manager.addAssetToCollection(archive, currentcollection, current);
 			}
+			//--
 			
 		}
 		inReq.putPageValue("savedassets", savedassets);
