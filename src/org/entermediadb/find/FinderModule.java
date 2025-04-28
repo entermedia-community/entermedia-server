@@ -17,6 +17,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.search.SecurityEnabledSearchSecurity;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -700,39 +701,142 @@ public class FinderModule extends BaseMediaModule
 
 		//String function = data.get("function");
 		String arguments = data.get("arguments");
+		log.error(arguments);
 		JSONObject d = (JSONObject) new JSONParser().parse(arguments);
-		String keywords = (String) d.get("keywords");
-
-		Data module = (Data)inReq.getPageValue("module");
-		if( module == null )
+		
+		Object keywords_object = d.get("keywords");
+		
+		JSONArray keywords_json = new JSONArray();
+		if(keywords_object instanceof JSONArray)
+		{			
+			keywords_json = (JSONArray) keywords_object;
+		}
+		else if(keywords_object instanceof String)
 		{
-			//Should not have run damSearch
-			log.info("Should not have run aiSearchModule without module entity");
+			keywords_json.add((String) keywords_object);
+		}
+		
+		if(keywords_json == null || keywords_json.size() == 0)
+		{
+			log.error("No keywords provided");
 			return;
 		}
-		else
+		
+		Collection<String> keywords = new ArrayList();
+		for (int i = 0; i < keywords_json.size(); i++)
 		{
-			HitTracker hits = null;
-			if(keywords.equalsIgnoreCase("all"))
-			{
-				hits = archive.query(module.getId()).all().search(inReq);
-			}
-			else
-			{
-				hits = archive.query(module.getId()).freeform("description", keywords).search(inReq);
-			}
-			
-			if( hits.isEmpty() )
-			{
-				//Search all?
-			}
-			
-			inReq.putPageValue("airesultshits", hits);
-			inReq.putSessionValue("airesultshits", hits);
+			keywords.add((String) keywords_json.get(i));
 		}
+		
+		inReq.putPageValue("keywords", String.join(", ", keywords));
+		
+		String conjunction = (String) d.get("conjunction");
+		if(conjunction == null || !conjunction.equals("and")) {
+			conjunction = "or";
+		}
+		
+		Object modules_object = d.get("modules");
 
+		JSONArray modules_json = new JSONArray();
+		if(modules_object instanceof JSONArray)
+		{			
+			modules_json = (JSONArray) modules_object;
+		}
+		else if(modules_object instanceof String)
+		{
+			modules_json.add((String) modules_object); 
+		}
+		
+		Collection<String> modules = new ArrayList();
+		
+		for (int i = 0; i < modules_json.size(); i++)
+		{
+			modules.add((String) modules_json.get(i));
+		}
+		
+		if(modules.contains("all"))
+		{
+			modules = inReq.getUserProfile().getEntitiesIds();
+		}
+		else if(!modules.isEmpty())
+		{
+			Collection<Data> modulesdata = inReq.getUserProfile().getEntitiesByIdOrName(modules);
+			Collection<String> moduleNames = new ArrayList();
+			
+			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)
+			{
+				Data module = (Data) iterator.next();
+				modules.add(module.getId());
+				moduleNames.add(module.getName());
+			}
+			
+			String modulenames = String.join(", ", moduleNames);
+			inReq.putPageValue("modulenames", modulenames);
+		}
+		
+		searchByKeywords(inReq, modules, keywords, conjunction);
 	}
 	
+	public void searchByKeywords(WebPageRequest inReq, Collection<String> moduleIds, Collection<String> keywords, String conjunction)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String plainquery = "";
+		if(!conjunction.equals("and"))
+		{
+			plainquery = String.join(" OR ", keywords);
+		}
+		
+		
+		QueryBuilder dq = archive.query("modulesearch").addFacet("entitysourcetype").freeform("description",plainquery).hitsPerPage(30);
+		dq.getQuery().setIncludeDescription(true);
+		
+		Collection searchmodules = loadUserSearchTypes(inReq, moduleIds);
+		
+		Collection searchmodulescopy = new ArrayList(searchmodules);
+		searchmodulescopy.remove("asset");
+		dq.getQuery().setValue("searchtypes", searchmodulescopy);
+		
+		SecurityEnabledSearchSecurity security = new SecurityEnabledSearchSecurity();
+		security.attachSecurity(inReq, archive.getSearcher("modulesearch"), dq.getQuery());
+		
+		HitTracker unsorted = dq.search();
+
+		Map<String,String> keywordsLower = new HashMap();
+		
+		collectMatches(keywordsLower, plainquery, unsorted);
+		
+		if( searchmodules.contains("asset"))
+		{
+			QueryBuilder assetdq = archive.query("asset").freeform("description",plainquery).hitsPerPage(15);
+			assetdq.getQuery().setIncludeDescription(true);
+			HitTracker assetunsorted = assetdq.search(inReq);
+			collectMatches(keywordsLower, plainquery, assetunsorted);
+			inReq.putPageValue("assethits", assetunsorted);
+		}
+		
+		List finallist = new ArrayList();
+		
+		for (Iterator iterator = keywordsLower.keySet().iterator(); iterator.hasNext();)
+		{
+			String keyword = (String) iterator.next();
+			String keywordcase = keywordsLower.get(keyword);
+			finallist.add(keywordcase);
+		}
+
+		Collections.sort(finallist);
+		
+		inReq.putPageValue("modulehits", unsorted);
+		inReq.putPageValue("livesearchfor", plainquery);
+		inReq.putPageValue("livesuggestions", finallist);
+		inReq.putPageValue("highlighter", new Highlighter());
+		
+		Collection pageOfHits = unsorted.getPageOfHits();
+		pageOfHits = new ArrayList(pageOfHits);
+		
+		organizeHits(inReq, unsorted, pageOfHits);
+		
+	}
 	
 	public void aiSearchAll(WebPageRequest inReq) throws Exception
 	{
@@ -1257,6 +1361,30 @@ public class FinderModule extends BaseMediaModule
 			}*/
 		//}
 		//searchmodules.remove("asset"); 
+		return searchmodules;
+	}
+
+	protected Collection loadUserSearchTypes(WebPageRequest inReq, Collection<String> moduleIds)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Collection<Data> modules = archive.query("module").exact("showonsearch",true).search(inReq);
+		Collection searchmodules = new ArrayList();
+	
+		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
+		{
+			MultiValued amodule = (MultiValued) iterator.next();
+			String id = amodule.getId();
+			if(moduleIds.isEmpty()) 
+			{
+				searchmodules.add(id);
+			}
+			else if(moduleIds.contains(id))
+			{
+				searchmodules.add(id);
+			}
+		}
+		
 		return searchmodules;
 	}
 
