@@ -1,9 +1,13 @@
+#ifnull($loginroot)
+	#set($loginroot = $content.loginroot)
+#end
 
 <div id="magiclinkcontainer">
 	#set( $to = $context.getRequestParameter("email") )	
 	#set( $username = $context.getRequestParameter("username") )
+	
 	<form class="ajaxform d-flex flex-column align-items-center g-3" 
-			action="$home$content.loginroot/ajaxsendusercode.html"
+			action="${loginroot}/ajaxsendusercode.html"
 			id="password-reminder" 
 			name="passwordReminder"  
 			method="post"
