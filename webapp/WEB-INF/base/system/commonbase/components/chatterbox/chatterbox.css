@@ -586,3 +586,9 @@ img.emoji {
 	background-color: #f1f1f1;
 	color: #3884fd;
 }
+.ai-suggest u {
+	font-weight: 500;
+	text-transform: capitalize;
+	text-decoration-style: wavy;
+	text-decoration-color: #b3d0fe;
+}
