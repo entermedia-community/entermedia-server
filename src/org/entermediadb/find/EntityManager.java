@@ -150,7 +150,7 @@ public class EntityManager implements CatalogEnabled
 	}
 	public Category loadDefaultFolder(Data module, Data entity, User inUser)
 	{
-		if( entity == null || entity.getId() == null)
+		if( module == null || entity == null || entity.getId() == null)
 		{
 			return null;
 		}

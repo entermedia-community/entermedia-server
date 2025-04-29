@@ -38,7 +38,7 @@
 			<form class="ajaxform " 
 				data-targetdivinner="ajaxloginformdiv" 
 				data-oemaxlevel="1" 
-				action="$home$content.loginroot/ajaxsendmagiclinkfinish.html" 
+				action="$!{home}${content.loginroot}/ajaxsendmagiclinkfinish.html" 
 				id="password-reminder" name="passwordReminder"  method="post">
 				#ifnotnull( $userCategory)
 					<input type="hidden" name="categoryid" value="$userCategory.id" />
