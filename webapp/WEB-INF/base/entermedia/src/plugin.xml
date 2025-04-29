@@ -2528,6 +2528,47 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+	
+	
+	<bean id="velocityRenderUtil" class="org.entermediadb.llm.VelocityRenderUtil">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+	
+
+	<bean id="McpModule" class="org.entermediadb.llm.McpModule">	
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="render">
+			<ref bean="velocityRenderUtil" />
+		</property>	
+	</bean>
+	
+	
+	<bean id="mcpGenerator" class="org.entermediadb.llm.McpGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="renderUtil">
+			<ref bean="velocityRenderUtil" />
+		</property>	
+	</bean>
+	
+	
+	<bean id="mcpManager" class="org.entermediadb.llm.McpManager">	
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		
+	</bean>
+	
+	
+	
 
 
 	<bean id="dropboxManager" class="org.entermediadb.dropbox.DropboxManager" scope="prototype">
