@@ -1051,10 +1051,14 @@ public class MediaAdminModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Data template = archive.getData("smartorganizer", id);
-		
-		Searcher s = archive.getSearcher("smartorganizer");
+		if (template == null)
+		{
+			log.error("Template doesn't exists: " + id);
+			return;
+		}
 		String json = template.get("json");
 		if(json == null) {
+			log.error("Template is empty: " + template);
 			return;
 		}
 		
