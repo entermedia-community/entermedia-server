@@ -62,6 +62,10 @@ function chatterbox() {
 			//console.log($("#chatter-msg").data("replytoid"));
 			//scroll down, delay a little?
 			scrollToChat();
+
+			if ($(".ai-suggestions").length > 0) {
+				$(".ai-suggestions").remove();
+			}
 		}
 	});
 
