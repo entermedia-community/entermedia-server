@@ -3031,7 +3031,9 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 				
 		String securityfield = (String) detail.getValue("securityfield");
 		
-		if (securityfield == null)
+		PropertyDetail securefield = getDetail(securityfield);;
+		
+		if (securefield == null)
 		{
 			combinedusers = inData.getValues("viewusers");
 			combinedgroups = inData.getValues("viewgroups");
@@ -3040,8 +3042,6 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 		}
 		else
 		{
-
-			PropertyDetail securefield = getDetail(securityfield);
 			
 			String fieldid = securefield.getId();
 			String categorysearchertype = securefield.getListId();//category 
