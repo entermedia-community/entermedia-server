@@ -65,11 +65,17 @@ public class AssetImportModule  extends BaseMediaModule
 		
 		
 		HitTracker hits = archive.query("asset").exact("importstatus", "created").search();
-		Collection<Asset> assets = new ArrayList(hits.size());
+		Collection<Asset> assets = new ArrayList(1000);
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset)asssetsearcher.loadData(hit);
 			assets.add(asset);
+			if( assets.size() == 1000 )
+			{
+				inReq.putPageValue("hits", assets);
+				archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
+				assets = new ArrayList(1000);
+			}
 		}
 		inReq.putPageValue("hits", assets);
 		archive.firePathEvent("importing/importassets",inReq.getUser(),assets);
