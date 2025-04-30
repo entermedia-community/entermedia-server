@@ -2,7 +2,7 @@
 	#set($loginroot = $content.loginroot)
 #end
 
-<div id="magiclinkcontainer">
+<div id="ajaxloginformdiv">
 	#set( $to = $context.getRequestParameter("email") )	
 	#set( $username = $context.getRequestParameter("username") )
 	
@@ -11,7 +11,7 @@
 			id="password-reminder" 
 			name="passwordReminder"  
 			method="post"
-			data-targetdiv="magiclinkcontainer">
+			data-targetdiv="ajaxloginformdiv">
 
 		<div class="mb-4 text-center text-contrast"><strong>[[Email was not found. Enter first and last name to register]]</strong></div>
 
