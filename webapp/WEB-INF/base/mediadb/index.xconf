@@ -1,20 +1,9 @@
 <page>
 
-	 	<path-action name="MediaArchiveModule.loadApplicationId" />
-  	  
-  	  
+	<path-action name="MediaArchiveModule.loadApplicationId" />
     <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
-		<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
-	
-	
-	
-	<script cancel="true" id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
-	<style cancel="true"  id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
-	<script cancel="true"  id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
-	<script cancel="true"  id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
-	<script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
-	  
 	
 	
 	<inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>

@@ -10,9 +10,9 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 <div class="container">
 	<div id="loginformdiv">
 	#if($user)
-		<div class="text-warning rounded border border-warning px-2 py-1 mb-3" role="alert">
+		<div class="alert alert-info p-3 m-5" role="alert">
 		<i class="fs-small fas fa-exclamation-triangle"></i>
-			[[You are already logged in as]] <strong>$user</strong>
+			[[You are already logged in as]] <strong>$user</strong>. <a href="logout.html">Logout here</a>.
 		</div>
 	#else
 		#set($customloginmessage = $mediaarchive.getCatalogSettingValue("customloginmessage") )
@@ -95,20 +95,25 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 					#end
 				</div> 
 			</div>
-			#set($providers = $mediaarchive.query("oauthprovider").orgroup("id", "google facebook").exact("enabled","true").search($context))
-			#if( !$providers.isEmpty() )
-				<div class="text-center my-3">
-					<span class="d-flex align-items-center text-muted" style="min-width: 250px;">
-						<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
-						<span class="px-2">
-							[[Or continue with]]
+			
+			
+			#set($allowloginproviders = $content.isPropertyTrue("allowloginproviders",true))
+			#if($allowloginproviders)
+				#set($providers = $mediaarchive.query("oauthprovider").orgroup("id", "google facebook").exact("enabled","true").search($context))
+				#if( !$providers.isEmpty() )
+					<div id="loginproviders" class="text-center my-3">
+						<span class="d-flex align-items-center text-muted" style="min-width: 250px;">
+							<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
+							<span class="px-2">
+								[[Or continue with]]
+							</span>
+							<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
 						</span>
-						<span class="flex-grow-1" style="border-top:1px solid #cfcfcf;"></span>
-					</span>
-				</div>
-				<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
-					$pages.include("$home$content.loginroot/oauth/providers.html", $context)
-				</div>
+					</div>
+					<div class="d-flex flex-wrap align-items-center justify-content-center mb-3">
+						$pages.include("$home$content.loginroot/oauth/providers.html", $context)
+					</div>
+				#end
 			#end
 
 	#end

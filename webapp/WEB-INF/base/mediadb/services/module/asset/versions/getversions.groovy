@@ -16,6 +16,10 @@ public void init()
 		String assetid = context.getRequestParameter("assetid") ? context.getRequestParameter("assetid") : context.getRequestParameter("id");
 		asset = mediaArchive.getAsset(assetid);
 	}
+	if (asset == null) {
+		log.info("Asset not found");
+		return;
+	}
 	String folder = asset.getSourcePath();
 	String catalogid = context.findValue("catalogid");
 	if (!catalogid){

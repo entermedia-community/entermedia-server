@@ -1,0 +1,68 @@
+#set($section = $content.section)
+
+#if($section == "files")
+	#set($setpagetitle = $category.getName())
+#elseif($section == "uploadmedia")
+	#set($setpagetitle = "[[Upload Media]]")
+#elseif($section == "favorites")
+	#set($setpagetitle = "[[Bookmarks]]")
+#elseif($section == "basket")
+	#set($setpagetitle = "[[Cart]]")
+#elseif($section == "settings")
+	#set($setpagetitle = "[[Settings]]")
+#end
+#if(!$moduleid)
+	##set($module = $context.findValue("module") )
+	#set($moduleid = $module.getId())
+#end
+
+##loop to know if there are submenus
+#foreach( $link in $topmenu)
+	#if($topmenuselected == $link.toplevelentity && $link.get("submenu"))
+		#set($hassubmenu = true) 
+	#end
+#end
+
+<div id="applicationmaincontent" 
+class="applicationmaincontent  applicationmaincontent$section #if($hassubmenu) entitynavsubmenu #end"
+data-setpagetitle="$!setpagetitle"
+data-section="$!section ">
+
+#set($section = $content.section)
+
+#if($section == "files")
+	#set($setpagetitle = $category.getName())
+#elseif($section == "uploadmedia")
+	#set($setpagetitle = "[[Upload Media]]")
+#elseif($section == "favorites")
+	#set($setpagetitle = "[[Bookmarks]]")
+#elseif($section == "basket")
+	#set($setpagetitle = "[[Cart]]")
+#elseif($section == "settings")
+	#set($setpagetitle = "[[Settings]]")
+#end
+#if(!$moduleid)
+	##set($module = $context.findValue("module") )
+	#set($moduleid = $module.getId())
+#end
+
+##loop to know if there are submenus
+#foreach( $link in $topmenu)
+	#if($topmenuselected == $link.toplevelentity && $link.get("submenu"))
+		#set($hassubmenu = true) 
+	#end
+#end
+
+<div id="applicationmaincontent" 
+class="applicationmaincontent  applicationmaincontent$section #if($hassubmenu) entitynavsubmenu #end"
+data-setpagetitle="$!setpagetitle"
+data-section="$!section ">
+
+	
+		$pages.streamContent()
+		
+</div>
+		$pages.streamContent()
+	#end	
+#end	
+</div>
