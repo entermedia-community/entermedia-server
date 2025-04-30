@@ -813,24 +813,24 @@ public class AdminModule extends BaseMediaModule
 			createUserSession(inReq);
 			// user is now logged in
 			log.info("User logged in " + inReq.getUser());
-			
-			String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
-			if (sendTo == null)
-			{
-				String appid = inReq.findValue("applicationid");
-				if (appid != null)
-				{
-					sendTo = "/" + appid + "/index.html";
-				}
-				else
-				{
-					sendTo = "/index.html";
-				}
-			}
 			savePasswordAsCookie(inUser, inReq);
+			
 			String cancelredirect = inReq.findValue("cancelredirect");
 			if (!Boolean.parseBoolean(cancelredirect))
 			{
+				String sendTo = (String) inReq.getSessionValue("fullOriginalEntryPage");
+				if (sendTo == null)
+				{
+					String appid = inReq.findValue("applicationid");
+					if (appid != null)
+					{
+						sendTo = "/" + appid + "/index.html";
+					}
+					else
+					{
+						sendTo = "/index.html";
+					}
+				}
 				sendTo = sendTo.replace("oemaxlevel=", "canceloemaxlevel=");
 				inReq.redirect(sendTo);
 			}

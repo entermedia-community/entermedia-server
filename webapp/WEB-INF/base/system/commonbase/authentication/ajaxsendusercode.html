@@ -2,13 +2,16 @@
 	#set($loginroot = $content.loginroot)
 #end
     
-
+<div id ="ajaxloginformdiv">
 #set( $email = $context.getRequestParameter("email") )
 <div class="my-3 w-100">
 #if( $commandSucceeded == "ok")
 	<div class="mb-3 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
 #else
-	$error
+	<div class="alert alert-danger text-center m-5 w-100" role="alert">
+	##$error
+	<strong>[[Login Error]].</strong> [[Please contact and Administrator]]
+	</div>
 #end
 
 <form name="login" 
@@ -45,9 +48,12 @@
 	#end
 	
 </form>   
+
+<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style="">[[Other login options]]</a></div>
 </div>
 #if ( $context.getPageValue("oe-exception") )
 		<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
 		$context.removeSessionValue("oe-exception")
 #end
 
+</div>
