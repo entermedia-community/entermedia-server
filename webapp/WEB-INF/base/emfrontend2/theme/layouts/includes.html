@@ -1,3 +1,5 @@
+$pages.include("/${applicationid}/components/captureclick/init.html")
+
 <script type="text/javascript"  src="$applink/components/javascript/jquery-3.6.0.min.js" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
 
 <!--  These have dependecies -->
@@ -8,7 +10,7 @@
 
 <script type="text/javascript" src="$siteroot$applink/components/javascript/index.js" ></script>
 
-
+$pages.include("/${applicationid}/components/captureclick/end.html")
 
 #foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
 	<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>	
