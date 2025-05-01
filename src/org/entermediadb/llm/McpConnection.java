@@ -1,7 +1,8 @@
 package org.entermediadb.llm;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,65 +13,48 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 
-/**
- * Represents a single SSE connection for MCP. Handles SSE framing: initial
- * handshake, endpoint discovery, ping loop, and message sending.
- */
-public class McpConnection implements Runnable
-{
+public class McpConnection implements Runnable {
 	private static final Log log = LogFactory.getLog(McpConnection.class);
 
 	private final WebPageRequest req;
-	private final Writer writer;
+	private final OutputStream out;
 	private volatile boolean active = true;
 
-	public McpConnection(WebPageRequest inReq)
-	{
+	public McpConnection(WebPageRequest inReq) {
 		this.req = inReq;
 		HttpServletResponse res = inReq.getResponse();
-		
 
-			res.resetBuffer();              // clears the body only, not the status or headers
-	        res.setStatus(HttpServletResponse.SC_OK);
-	        res.setContentType("text/event-stream");
-	        res.setCharacterEncoding("UTF-8");
-	        res.setHeader("Cache-Control", "no-cache");
-	        res.setHeader("Connection", "keep-alive");
-		
-			inReq.setCancelActions(true);		
-			inReq.setHasRedirected(true);
+		res.resetBuffer();
+		res.setStatus(HttpServletResponse.SC_OK);
+		res.setContentType("text/event-stream");
+		res.setCharacterEncoding("UTF-8");
+		res.setHeader("Cache-Control", "no-cache");
+		res.setHeader("Connection", "keep-alive");
 
-		this.writer = inReq.getWriter();
+		inReq.setCancelActions(true);
+		inReq.setHasRedirected(true);
+
+		try {
+			this.out = res.getOutputStream();
+		} catch (IOException e) {
+			throw new OpenEditException("Failed to get SSE output stream", e);
+		}
 	}
 
-	/**
-	 * Sends initial SSE framing: comment, endpoint event, then starts ping
-	 * loop.
-	 */
-	public void openStream(String inEndpoint)
-	{
+	public void openStream(String inEndpoint) {
 		String sessionId = getSessionId();
-		log.info("Opening  ID Was: + " + getSessionId() );
+		log.info("Opening  ID Was: + " + sessionId);
 
-		try
-		{
-			// 1) Prime connection for proxies
-			writer.write(": connected\n\n");
-			writer.flush();
+		try {
+			writeRaw(": connected\n\n");
 
-			// 2) Handshake: tell client where to POST JSON-RPC
-		
-			String postUrl = inEndpoint +  "?sessionId=" + sessionId;
-			writer.write("event: endpoint\n");
-			writer.write("data: " + postUrl + "\n\n");
-			writer.flush();
+			String postUrl = inEndpoint + "?sessionId=" + sessionId;
+			writeRaw("event: endpoint\n");
+			writeRaw("data: " + postUrl + "\n\n");
 
-			// 3) Send initial status
 			sendStatus("open");
 
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			active = false;
 			log.error("Failed to open SSE stream for session: " + sessionId, e);
 			throw new OpenEditException("Failed to open SSE stream", e);
@@ -78,98 +62,75 @@ public class McpConnection implements Runnable
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
-			while (active)
-			{
+	public void run() {
+		try {
+			while (active) {
 				Thread.sleep(15000);
 				sendPing();
 			}
-		}
-		catch (InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			active = false;
 			log.warn("Ping loop interrupted for session: " + getSessionId(), e);
 		}
-		
 	}
 
-	/**
-	 * Sends a JSON-RPC payload as an SSE "message" event.
-	 */
-	public synchronized void sendMessage(String jsonPayload)
-	{
+	public synchronized void sendMessage(String jsonPayload) {
 		sendEvent("message", jsonPayload);
 	}
 
-	private synchronized void sendEvent(String eventName, String data)
-	{
-		
-		
-		if (!active)
-		{
+	private synchronized void sendEvent(String eventName, String data) {
+		if (!active) {
 			log.warn("Attempted to send on inactive connection for session: " + getSessionId());
 			return;
 		}
-		try
-		{
+		try {
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(data);
 			String cleanJson = ((JSONObject) obj).toJSONString();
-			
+
 			log.info("Session ID Was: + " + getSessionId() + " DATA: " + cleanJson);
-			writer.write("event: " + eventName + "\n");
-			writer.write("data: " + cleanJson + "\n\n");
-			writer.flush();
-			
-		}
-		catch (Exception e)
-		{
+
+			writeRaw("event: " + eventName + "\n");
+			writeRaw("data: " + cleanJson + "\n\n");
+		} catch (IOException e) {
 			active = false;
-			//log.error("Failed to send SSE event '" + eventName + "' for session: " + getSessionId(), e);
-			throw new OpenEditException("Failed to send SSE event", e);
+			log.error("Client disconnected or SSE send failed", e);
+			close();
+		} catch (Exception e) {
+			log.error("Failed to send SSE event '" + eventName + "' for session: " + getSessionId(), e);
 		}
 	}
 
-	/** Sends a status event (e.g., 'open', 'connected'). */
-	public void sendStatus(String status)
-	{
+	private void writeRaw(String text) throws IOException {
+		byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+		out.write(bytes);
+		out.flush(); // this will throw IOException if the client has disconnected
+	}
+
+	public void sendStatus(String status) {
 		String json = "{\"status\":\"" + status + "\"}";
 		sendEvent("status", json);
 	}
 
-	/** Sends a ping event to keep the connection alive. */
-	public void sendPing()
-	{
-		//sendEvent("ping", "{}");
+	public void sendPing() {
+		// Optionally send keep-alive event
+		// writeRaw("event: ping\ndata: {}\n\n");
 	}
 
-	/** Closes the SSE stream. */
-	public void close()
-	{
+	public void close() {
 		active = false;
-		try
-		{
-			writer.close();
-		}
-		catch (IOException e)
-		{
-			log.error("Error closing SSE writer for session: " + getSessionId(), e);
-			throw new OpenEditException("Error closing SSE writer", e);
+		try {
+			out.close();
+		} catch (IOException e) {
+			log.error("Error closing SSE stream for session: " + getSessionId(), e);
 		}
 	}
 
-	public boolean isActive()
-	{
+	public boolean isActive() {
 		return active;
 	}
 
-	private String getSessionId()
-	{
+	private String getSessionId() {
 		return req.getRequest().getSession().getId();
 	}
-
-	
 }

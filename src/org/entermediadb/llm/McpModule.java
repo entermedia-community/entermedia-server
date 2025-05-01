@@ -66,11 +66,12 @@ public class McpModule extends BaseMediaModule
 		inReq.putPageValue("serverName", "EnterMedia MCP");
 		inReq.putPageValue("serverVersion", "1.0.0");
 
+		inReq.putPageValue("responsetext", "accepted");
+		inReq.putPageValue("render", getRender());
 		String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
 		inReq.getResponse().setStatus(202);		
 		
-		inReq.putPageValue("responsetext", "accepted");
-		
+
 		
 		new Thread(() -> {
 			try {
