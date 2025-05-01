@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.xmp.XmpWriter;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -37,39 +39,51 @@ public class GeneratedMediaGenerator extends FileGenerator
 	{
 		String catalogid = inReq.findPathValue("catalogid");
 
-		String path = null;
-		String assetrootfolder = inPage.get("assetrootfolder");
-
-		path = inPage.getPath().substring(assetrootfolder.length());
-		//Not used
-		String include = inPage.get("assetrootfolder");
-
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		String sourcepath = archive.getSourcePathForPage(inPage);
+		
 		// make sure your path tacks a filename on the end.
+		String path = inPage.getPath();
+		
 		String hasexportname = inPage.get("exportnameinpath");
 		if( Boolean.parseBoolean( hasexportname) )
 		{
+			String download = inReq.findValue("download");
+			if( Boolean.parseBoolean(download))
+			{
+				String filename = PathUtilities.extractFileName(path);
+				forceDownload(inReq,filename);
+			}
 			path = PathUtilities.extractDirectoryPath(path);
 		}
 		
+		
+		String outputfile = PathUtilities.extractDirectoryPath(path); //image1200x1200.jpg
+		
 		// Try the contentitem first. If misssing try a fake page
-		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + path);
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + sourcepath +"/" + path);
 		Page output = null;
 		boolean existed = item.exists();
+		
+		if( !existed )
+		{
+			String download = inReq.findValue("ondemand");
+			if( Boolean.parseBoolean(download))
+			{
+				TranscodeTools transcodetools = archive.getTranscodeTools();
+				ConvertResult result = transcodetools.createOutputIfNeeded(null,null,sourcepath, outputfile ); //String inSourcePath, Data inPreset, String inOutputType);
+			}
+		}
 		boolean addmetadata = Boolean.parseBoolean(inReq.findValue("includemetadata"));
 		if (existed && addmetadata)
 		{
-			MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-			String sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
-			sourcePath = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
-			sourcePath = sourcePath.substring(0, sourcePath.lastIndexOf("/"));
-
 			XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
-			Asset asset = archive.getAssetBySourcePath(sourcePath);
+			Asset asset = archive.getAssetBySourcePath(sourcepath);
 			if (asset != null)
 			{
 				try
 				{
-					writer.saveMetadata(archive, item, asset, new HashMap());
+					writer.saveMetadata(archive, item, asset, new HashMap());  //This is slow and dumb. 
 				}
 				catch (Exception e)
 				{

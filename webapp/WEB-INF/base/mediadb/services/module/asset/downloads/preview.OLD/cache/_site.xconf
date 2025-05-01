@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preview/cache</property>
+	<generator name="convertArchiveDocument"/>
+	<generator name="mp4Generator" mimetypes="video/mp4"/>
+</page>
+
+

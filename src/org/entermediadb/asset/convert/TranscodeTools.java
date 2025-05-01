@@ -256,10 +256,10 @@ public class TranscodeTools
 	}
 	
 	
-	public ConvertResult createOutputIfNeeded(Map inCreateProperties, Map inParameters, String inSourcePath, String inExportName)
+	public ConvertResult createOutputIfNeeded(Map inCreateProperties, Map inParameters, String inSourcePath, String inGeneratedOutputName)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager manager = getManagerByFileFormat(PathUtilities.extractPageType(inExportName));
+		ConversionManager manager = getManagerByFileFormat(PathUtilities.extractPageType(inGeneratedOutputName));
 		
 		ConvertResult result = null;
 		if( inCreateProperties == null )
@@ -269,7 +269,7 @@ public class TranscodeTools
 		
 		if( inParameters == null || inParameters.isEmpty() )
 		{
-			result = manager.loadExistingOuput(inCreateProperties,inSourcePath, inExportName);
+			result = manager.loadExistingOuput(inCreateProperties,inSourcePath, inGeneratedOutputName);
 			if(result.isComplete()  && result.getOutput().getLength() >2){
 				if( result.getOutput() == null)
 				{
@@ -304,7 +304,7 @@ public class TranscodeTools
 		{
 			inCreateProperties.putAll(inParameters);
 		}
-		result = manager.createOutputIfNeeded(asset, inSourcePath, inExportName, inCreateProperties);
+		result = manager.createOutputIfNeeded(asset, inSourcePath, inGeneratedOutputName, inCreateProperties);
 		if( result.isComplete() )
 		{
 			if( result.getOutput() == null)
