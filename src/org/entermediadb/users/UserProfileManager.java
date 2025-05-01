@@ -589,6 +589,7 @@ public class UserProfileManager
 	{
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 		mediaArchive.getSearcher("settingsgroup").clearIndex();
+		mediaArchive.getSearcher("userprofile").clearIndex();
 		mediaArchive.clearCaches();
 
 	}

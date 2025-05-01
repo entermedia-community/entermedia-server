@@ -2,6 +2,10 @@
   <permission name="view">
     <boolean value="true"/>
   </permission>
+  
   <property name="fallbackdirectory">/WEB-INF/base/system/commonbase/authentication</property>
   <property name="loginroot">/${applicationid}/views/authentication</property>
+  
+   <inner-layout>/${applicationid}/theme/layouts/application.html</inner-layout>
+  
 </page>
