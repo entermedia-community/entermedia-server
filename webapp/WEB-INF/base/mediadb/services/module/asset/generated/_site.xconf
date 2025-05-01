@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-
-
 	<property name="virtual">true</property>
 	<generator name="generatedMediaGenerator"/>
-	<property name="assetrootfolder">/${applicationid}/services/module/asset/generate</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/generated</property>
 	
-	<property name="ondemand">true</property> 
-	<property name="exportnameinpath">true</property> 
+	<property name="ondemand">false</property> 
+	<property name="exportnameinpath">false</property>
 	<property name="generatedfileinpath">true</property>	
-
 	
 </page>
 

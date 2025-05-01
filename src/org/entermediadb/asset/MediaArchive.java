@@ -2769,7 +2769,7 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 	}
 
-	public String asLinkToShare(Data inAsset, Data inPreset)
+	public String asLinkToShare(String inSiteRoot, Data inAsset, Data inPreset)
 	{
 		if (inAsset == null || inPreset == null)
 		{
@@ -2779,10 +2779,15 @@ public class MediaArchive implements CatalogEnabled
 
 		if (cdnprefix == null)
 		{
-			cdnprefix = "";
-		}
+			cdnprefix = inSiteRoot;
+			if( cdnprefix == null)
+			{
+				cdnprefix = "";
+			}
+		}		
 		
-		String downloadroot = "/services/module/asset/downloads/generate";
+		//This is the most useful option. It allows smart creation of any size and optional downloading
+		String downloadroot = "/services/module/asset/generate";
 		
 		String sourcepath = inAsset.getSourcePath();
 		
@@ -2894,8 +2899,8 @@ public class MediaArchive implements CatalogEnabled
 		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
 
-		String downloadroot = "/services/module/asset/downloads/";
-		String	finalroot =  "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
+		String downloadroot = "/services/module/asset/generated/";  //Will not create anything and is fast
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + sourcepath + "/" + usefile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}

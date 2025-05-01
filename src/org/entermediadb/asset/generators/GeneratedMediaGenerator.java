@@ -58,10 +58,10 @@ public class GeneratedMediaGenerator extends FileGenerator
 		}
 		
 		
-		String outputfile = PathUtilities.extractDirectoryPath(path); //image1200x1200.jpg
+		String outputfile = PathUtilities.extractFileName(path); //image1200x1200.jpg
 		
 		// Try the contentitem first. If misssing try a fake page
-		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + sourcepath +"/" + path);
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + sourcepath +"/" + outputfile);
 		Page output = null;
 		boolean existed = item.exists();
 		
