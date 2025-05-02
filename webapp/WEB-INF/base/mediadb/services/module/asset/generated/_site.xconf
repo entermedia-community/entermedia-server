@@ -3,11 +3,9 @@
 <page>
 	<property name="virtual">true</property>
 	<generator name="generatedMediaGenerator"/>
-	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
-	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/generated</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/generated</property>
 	
-	<!-- @deprecated Use generate instead with a download param if needed-->
-
+	<property name="ondemand">false</property> 
 	<property name="exportnameinpath">false</property>
 	<property name="generatedfileinpath">true</property>	
 	

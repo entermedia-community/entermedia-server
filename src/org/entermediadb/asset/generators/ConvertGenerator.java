@@ -83,12 +83,11 @@ public class ConvertGenerator extends FileGenerator
 		//TODO: Use hard coded path lookups for these based on media type?
 		
 		//We use the output extension so that we don't have look up the original input file to find the actual type
-		
-//		MediaConverter creator = archive.getCreatorManager().getMediaCreatorByOutputFormat(outputype);
-//		if( creator == null )
-//		{
-//			return;
-//		}
+		String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
+		String ext = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
+		String	name = label + "." + ext;
+
+		//Find random params?
 		Map all = new HashMap(); //TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
@@ -97,32 +96,6 @@ public class ConvertGenerator extends FileGenerator
 		}
 		all.putAll( inReq.getPageMap()); //these could be objects, needed?
 		Map args = inReq.getParameterMap();
-		
-//		if(sourcePath.contains("${")) {
-//			archive.getSearcherManager().getValue(archive.getCatalogId(), inMask, inValues)
-//		}
-		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
-		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
-		String name = inPage.get("exportname");
-		if( name == null)
-		{
-			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
-			if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
-			{
-				name = inPage.getDirectoryName();
-				sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
-			}
-			else
-			{
-				String label = org.openedit.util.PathUtilities.extractPageName(inPage.getName());
-				String type = org.openedit.util.PathUtilities.extractPageType(inPage.getName());
-//				if( type.length() > 3)
-//				{
-//					type = type.substring(0,3);
-//				}
-				name = label + "." + type;
-			}
-		}
 		extracted(inReq, archive, sourcePath, inPage, name, all, args, inOut);
 	}
 

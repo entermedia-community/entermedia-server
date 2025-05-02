@@ -12,6 +12,7 @@
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/generatedpreview</property>
 
 	<property name="exportnameinpath">false</property>
+	<property name="generatedfileinpath">true</property>	
 
 
 	<permission name="view">

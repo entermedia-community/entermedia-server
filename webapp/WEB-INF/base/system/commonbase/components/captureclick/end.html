@@ -1,0 +1,9 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		document.removeEventListener("click", waitClick, true);
+		if(capturedClick) {
+			$(capturedClick).trigger("click");
+			capturedClick = null;
+		}
+	})
+</script>

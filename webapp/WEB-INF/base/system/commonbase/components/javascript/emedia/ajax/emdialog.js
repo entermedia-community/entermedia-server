@@ -411,4 +411,13 @@ $(document).ready(function () {
 	lQuery("#closebutton").livequery("click", function () {
 		closeemdialog($(this).closest(".modal"));
 	});
+
+	var urlHash = window.location.hash;
+	if (urlHash.startsWith("#open")) {
+		var id = urlHash.substring(6);
+		var dialog = $(`#${id}`);
+		if (dialog.length && dialog.hasClass("emdialog")) {
+			dialog.emDialog();
+		}
+	}
 });

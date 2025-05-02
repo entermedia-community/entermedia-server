@@ -1,0 +1,16 @@
+<script type="text/javascript">
+	var capturedClick = null;
+	function waitClick(e) {
+		e.preventDefault();
+		var target = e.target;
+		if(target.tagName != "A") {
+			target = target.closest("a");
+		}
+		console.log(target);
+		if(!target) return;
+		if(target.classList.contains("ajax") || target.classList.contains("emdialog")) {
+			capturedClick = target;
+		}
+	}
+	document.addEventListener("click", waitClick, true);
+</script>

@@ -878,12 +878,27 @@ public class MediaArchive implements CatalogEnabled
 		if (assetrootfolder != null && assetrootfolder.length() < inPage.getPath().length())
 		{
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
-			String orig = inPage.get("sourcepathhasfilename");
-			if (Boolean.parseBoolean(orig))
+			
+			//remove 3 levels?
+			String exportnameinpath = inPage.get("exportnameinpath");
+			if (Boolean.parseBoolean(exportnameinpath))
 			{
-				// Take off the extra test.eps part
+				// Take off the extra test.eps or large.jpg junk 
 				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 			}
+			String generatedfileinpath = inPage.get("generatedfileinpath");
+			if( Boolean.parseBoolean(generatedfileinpath))
+			{
+				// Take off the extra test.eps or large.jpg junk 
+				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
+			}
+			String sourcepathhasfilename = inPage.get("sourcepathhasfilename");
+			if (Boolean.parseBoolean(sourcepathhasfilename))
+			{
+				// Take off the extra test.eps or large.jpg junk 
+				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
+			}
+			
 			if (sourcePath.endsWith("folder") || sourcePath.endsWith("_site.xconf")) //Why is this shere?
 			{
 				sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
@@ -894,7 +909,6 @@ public class MediaArchive implements CatalogEnabled
 				//This could be cut off TODO: make generic somehow
 				sourcePath = sourcePath.substring(0, sourcePath.indexOf("video.m3u8") - 1);
 			}
-
 		}
 		return sourcePath;
 	}
@@ -2690,16 +2704,16 @@ public class MediaArchive implements CatalogEnabled
 		return null;
 	}	
 
-	public String asLinkToPreview(String inId, String inGeneratedName) {
+	public String asLinkToPreview(String inId, String inGeneratedoutputfile) {
 		Data asset = getAsset(inId);
 		if(asset != null) {
-			return asLinkToPreview(asset	, inGeneratedName);
+			return asLinkToPreview(asset	, inGeneratedoutputfile);
 		}
 		return null;
 	}
-	public String asLinkToPreview(Data inAsset, String inGeneratedName) {
+	public String asLinkToPreview(Data inAsset, String inGeneratedoutputfile) {
 		
-		return asLinkToPreview(inAsset, null, inGeneratedName);
+		return asLinkToPreview(inAsset, null, inGeneratedoutputfile);
 	}	
 
 	
@@ -2754,16 +2768,45 @@ public class MediaArchive implements CatalogEnabled
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
-	
-	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName)
+
+	public String asLinkToShare(String inSiteRoot, Data inAsset, Data inPreset)
 	{
-		return asLinkToPreview(inAsset,inCollectionId,inGeneratedName,false);
+		if (inAsset == null || inPreset == null)
+		{
+			return null;
+		}
+		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+
+		if (cdnprefix == null)
+		{
+			cdnprefix = inSiteRoot;
+			if( cdnprefix == null)
+			{
+				cdnprefix = "";
+			}
+		}		
+		
+		//This is the most useful option. It allows smart creation of any size and optional downloading
+		String downloadroot = "/services/module/asset/generate";
+		
+		String sourcepath = inAsset.getSourcePath();
+		
+		String exportedname = asExportFileName(inAsset, inPreset);
+		String generatedfilename = inPreset.get("generatedoutputfile");
+		String finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "/" + sourcepath + "/" + generatedfilename + "/" + exportedname;
+		finalroot = URLUtilities.urlEscape(finalroot);
+		return finalroot;
+	}
+
+	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedoutputfile)
+	{
+		return asLinkToPreview(inAsset,inCollectionId,inGeneratedoutputfile,false);
 	}
 	
 	/**
 	 * This is create the path if needed
 	 */
-	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedName, boolean isExternalLink)
+	public String asLinkToPreview(Data inAsset, String inCollectionId, String inGeneratedoutputfile, boolean isExternalLink)
 	{
 		if (inAsset == null)
 		{
@@ -2771,7 +2814,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		
 		
-		String usefile = exportOutputName(inAsset, inGeneratedName);
+		String usefile = exportOutputName(inAsset, inGeneratedoutputfile);
 		
 	
 		String finalroot = null;
@@ -2816,9 +2859,9 @@ public class MediaArchive implements CatalogEnabled
 //			}
 //			else
 //			{
-				if( inGeneratedName.endsWith("video.m3u8"))
+				if( inGeneratedoutputfile.endsWith("video.m3u8"))
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedName + "/360/" + usefile;
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
 				}
 				else
 				{
@@ -2838,34 +2881,34 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 	
-	public String exportOutputName(Data inAsset, String inGeneratedName) 
+	public String exportOutputName(Data inAsset, String inGeneratedoutputfile) 
 	{ 
-		String name = getPresetManager().exportOutputName(this, inAsset, inGeneratedName); 
+		String name = getPresetManager().exportOutputName(this, inAsset, inGeneratedoutputfile); 
 		return name;
 	}
 
-	public String asLinkToGenerated(Data inAsset, String inGeneratedName)
+	public String asLinkToGenerated(Data inAsset, String inGeneratedoutputfile)
 	{
 		if (inAsset == null)
 		{
 			return null;
 		}
 		
-		String usefile = exportOutputName(inAsset, inGeneratedName);
+		String usefile = exportOutputName(inAsset, inGeneratedoutputfile);
 
 		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
 
-		String downloadroot = "/services/module/asset/downloads/";
-		String	finalroot =  "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + usefile;
+		String downloadroot = "/services/module/asset/generated/";  //Will not create anything and is fast
+		String	finalroot =  "/" + getMediaDbId() + downloadroot + sourcepath + "/" + usefile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 	}
 
+	
+	//@deprecated use 
 	public String asLinkToDownload(Data inAsset, Data inPreset)
 	{
-		//	<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
-
 		if (inAsset == null)
 		{
 			return null;
@@ -2875,17 +2918,6 @@ public class MediaArchive implements CatalogEnabled
 		if (cdnprefix == null)
 		{
 			cdnprefix = "";
-			//			//TODO: Look up the home variable?
-			//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
-			//			Data prefix = (Data)searcher.searchById("cdn_prefix");
-			//			if( prefix == null)
-			//			{
-			//				prefix = searcher.createNewData();
-			//				prefix.setId("cdn_prefix");
-			//			}
-			//			prefix.setValue("value", cdnprefix);
-			//			searcher.saveData(prefix);
-			//			getCacheManager().clear("catalogsettings");
 		}
 
 		if( "0".equals(inPreset.getId()) )
@@ -2896,9 +2928,9 @@ public class MediaArchive implements CatalogEnabled
 		}
 		
 		String sourcepath = inAsset.getSourcePath();
-		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
+		String inGeneratedoutputfile = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
 
-		finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/createpreset/" + sourcepath + "/" + generatedfilename;
+		finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/createpreset/" + sourcepath + "/" + inGeneratedoutputfile;
 		finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 
