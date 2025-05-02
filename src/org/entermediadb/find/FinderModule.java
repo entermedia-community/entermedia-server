@@ -754,13 +754,15 @@ public class FinderModule extends BaseMediaModule
 			modules.add((String) modules_json.get(i));
 		}
 		
+		UserProfile chatprofile = (UserProfile) inReq.getPageValue("chatprofile");
+		
 		if(modules.contains("all"))
 		{
-			modules = inReq.getUserProfile().getEntitiesIds();
+			modules = chatprofile.getEntitiesIds();
 		}
 		else if(!modules.isEmpty())
 		{
-			Collection<Data> modulesdata = inReq.getUserProfile().getEntitiesByIdOrName(modules);
+			Collection<Data> modulesdata = chatprofile.getEntitiesByIdOrName(modules);
 			Collection<String> moduleNames = new ArrayList();
 			
 			for (Iterator iterator = modulesdata.iterator(); iterator.hasNext();)

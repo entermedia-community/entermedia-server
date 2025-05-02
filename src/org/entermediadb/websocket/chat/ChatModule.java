@@ -652,20 +652,18 @@ public class ChatModule extends BaseMediaModule
 					archive.saveData("channel",channel);
 				}
 			}
-			//boolean interimmessage = false;
 
 			String userid = mostrecent.get("user");
 			if ("agent".equals(userid))
 			{
 				return;
 			}
-			inReq.putPageValue("message", mostrecent);
 			
-			respondToChannel(inReq, channel, "messagereceived", new HashMap());
+			respondToChannel(inReq, channel, mostrecent);
 		}
 	}
 
-	public void respondToChannel(WebPageRequest inReq, Data channel, String command, Map inMap) throws Exception
+	public void respondToChannel(WebPageRequest inReq, Data channel, Data message) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String model = inReq.findPathValue("model");
@@ -697,7 +695,6 @@ public class ChatModule extends BaseMediaModule
 			channeltype = "chatstreamer";
 		}
 
-		Data message = (Data) inReq.getPageValue("message");
 		if (message != null)
 		{
 			String id = message.get("user");
@@ -714,6 +711,8 @@ public class ChatModule extends BaseMediaModule
 		//Update original message processing status
 		message.setValue("processingcomplete", true);
 		chats.saveData(message);
+		
+		inReq.putPageValue("message", message);
 
 
 		String chattemplate = "/" + archive.getMediaDbId() + "/gpt/inputs/" + manager.getType() + "/" + channeltype + ".html";
