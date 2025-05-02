@@ -1,0 +1,66 @@
+
+<div id="loginformdiv" class="container">
+	<div class="loginbox">
+		<h1 class="page-title text-center mb-5">[[Sign-in]]</h1>
+			
+			#if($user)
+		    	[[Already logged in]]
+			#else
+			#set($loginok = $context.findValue("loginokpage") )
+			    <div class="mb-3 text-center text-contrast"><strong>[[Please check your email]]</strong></div>
+					<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" >
+						
+							#set( $email = $context.getRequestParameter("email") )	
+							#if( $email )
+								<input  type="hidden" name="email" value="$!{email}" />
+							#else
+								<div class="row align-items-center justify-content-md-center">
+									<div class="col-12">
+									<div class="form-group">
+										<input class="form-control required " type="text" name="email" style="margin:0 auto;" placeholder="[[Enter your Email Address]]" required />
+									</div>
+									</div>
+								</div>
+							#end
+							<div class="row align-items-center justify-content-md-center">
+								<div class="col-12 col-md-6">
+									<div class="form-group">
+										<input class="form-control grabfocus required" id="entermediakey" name="templogincode" placeholder="[[Enter six digit login code]]" required />
+									</div>
+									</div>
+								
+									<div class="col-12 col-md-auto">
+										<div class="form-group">
+											<input class="btn btn-primary" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+										</div>
+									</div>
+									
+									
+								
+								#if ( $context.getPageValue("oe-exception") )
+									<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+									$context.removeSessionValue("oe-exception")
+								#end
+							</div>
+							#if($loginok)
+								#set( $loginok = "$context.siteRoot" + "$loginok")
+								<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+							#end
+							#ifnotnull( $userCategory)
+								<input type="hidden" name="categoryid" value="$userCategory.id" />
+							#end
+						
+					</form>   
+					
+					<div class="my-4 text-center"><a href="$!{home}${content.loginroot}/login.html" style="">[[Other login options]]</a></div>
+				
+				</div>
+				#end
+		</div>
+				
+		##<div class="text-center loginformquestions my-3">[[Do you have any questions?]] [[Please]] <a href="https://emedialibrary.com/#contact" style="text-decoration: underline;">[[contact us]]</a>.</div>
+	
+					
+
+			
+		

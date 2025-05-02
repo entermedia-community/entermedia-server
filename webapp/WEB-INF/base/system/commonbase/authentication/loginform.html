@@ -7,8 +7,8 @@
 #end 
 $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 
-<div class="container">
-	<div id="loginformdiv">
+
+<div id="loginformdiv" class="container">
 	#if($user)
 		<div class="alert alert-info p-3 m-5" role="alert">
 		<i class="fs-small fas fa-exclamation-triangle"></i>
@@ -128,19 +128,20 @@ $context.putSessionValue("fullOriginalEntryPage", $!loginokpage)
 		#end
 	</div>
 	#end
-</div>
+	<script>
+	$(document).ready(function() {
+	    $('.loginmethod').click(function() {
+				$("#loginMethod").find(".nav-link").removeClass("active");
+				$(this).addClass("active");
+				var target = $(this).data("target");
+				$(".login-method").hide();
+				$(target).show();
+			})
+	});
+	</script> 
+
 </div>
 
-<script>
-$(document).ready(function() {
-    $('.loginmethod').click(function() {
-			$("#loginMethod").find(".nav-link").removeClass("active");
-			$(this).addClass("active");
-			var target = $(this).data("target");
-			$(".login-method").hide();
-			$(target).show();
-		})
-});
-</script> 	
+	
 
  

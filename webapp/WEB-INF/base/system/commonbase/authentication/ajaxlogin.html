@@ -1,11 +1,12 @@
 #if($user)
 	#set($loginok = $context.getSessionValue("fullOriginalEntryPage"))	
 	#ifnull($loginok)
-	#set($loginok = $content.loginok)	
+		#set($loginok = $content.loginok)	
 	#end
 	#ifnull($loginok)
 		#set($loginok = "/index.html")
 	#end
+	
 	<div class="redirecttopage" data-redirectok="$loginok"></div>
 	
 #else
