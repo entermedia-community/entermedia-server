@@ -44,7 +44,8 @@ public class McpModule extends BaseMediaModule
 		
 		McpConnection	currentconnnection = manager.getConnection(inReq);
 		
-
+		
+		
 		JSONObject payload = (JSONObject) inReq.getJsonRequest();
 		if (payload == null)
 		{
@@ -62,16 +63,16 @@ public class McpModule extends BaseMediaModule
 		String appid = inReq.findPathValue("applicationid");
 	
 		inReq.putPageValue("payload", payload);
-		inReq.putPageValue("protocolVersion", "2024-11-05");
+		inReq.putPageValue("protocolVersion", "2025-03-26");
 		inReq.putPageValue("serverName", "EnterMedia MCP");
 		inReq.putPageValue("serverVersion", "1.0.0");
 
+		inReq.putPageValue("responsetext", "accepted");
+		inReq.putPageValue("render", getRender());
+
 		String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
 		inReq.getResponse().setStatus(202);		
-		
-		inReq.putPageValue("responsetext", "accepted");
-		
-		
+
 		new Thread(() -> {
 			try {
 				currentconnnection.sendMessage(response);
