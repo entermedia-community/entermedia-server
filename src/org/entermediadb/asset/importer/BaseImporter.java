@@ -172,7 +172,6 @@ public class BaseImporter extends EnterMediaObject
 		Reader reader = fieldImportPage.getReader();
 		ArrayList data = new ArrayList();
 		int rowNum = 0;
-
 		try
 		{
 			ImportFile file = new ImportFile();
@@ -258,6 +257,7 @@ public class BaseImporter extends EnterMediaObject
 					data.clear();
 				}
 			}
+			file.close();
 		}
 		finally
 		{
