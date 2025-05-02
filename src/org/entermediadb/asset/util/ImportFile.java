@@ -102,7 +102,7 @@ public class ImportFile
 		String[] cells = getParser().readNext();
 		if ( cells == null || cells.length == 0)
 		{
-			//close();
+			//close(); Should not end if there is one empty row
 			return null;
 		}
 		//line = line.replace('\u001e',','); //get rid of junk chars
