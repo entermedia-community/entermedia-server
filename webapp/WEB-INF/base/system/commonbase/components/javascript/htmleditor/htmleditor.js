@@ -494,14 +494,26 @@ $(document).ready(function () {
 	});
 
 	window.onbeforeunload = function () {
-		let hasUnsaved = Object.entries(window.CK5Editor).findIndex(
+		let unsaved = Object.entries(window.CK5Editor).find(
 			([_, value]) => value.sourceElement !== null
 		);
-		if (hasUnsaved < 0) {
-			hasUnsaved = Object.entries(window.CK5EditorInline).findIndex(
+		if (!unsaved) {
+			unsaved = Object.entries(window.CK5EditorInline).find(
 				([_, value]) => value.sourceElement !== null
 			);
 		}
-		if (hasUnsaved > -1) return "You have unsaved changes";
+		if (unsaved) {
+			var id = "#" + unsaved[0];
+			setTimeout(() => {
+				$(id).css("outline", "1px solid red");
+				$([document.documentElement, document.body]).animate(
+					{
+						scrollTop: $(id).offset().top - 100,
+					},
+					200
+				);
+			});
+			return "You have unsaved changes";
+		}
 	};
 });
