@@ -63,8 +63,16 @@ function chatterbox() {
 			//scroll down, delay a little?
 			scrollToChat();
 
-			if ($(".ai-suggestions").length > 0) {
-				$(".ai-suggestions").remove();
+			var ais = $(".ai-suggestions");
+			if (ais.length > 0) {
+				ais.remove();
+			}
+			var ses = $(".sessionhistory-item.active");
+			if (ses.length > 0) {
+				var span = ses.find(".item span");
+				if (span.length > 0 && span.text() === "Current Session") {
+					span.text(message.substring(0, 25));
+				}
 			}
 		}
 	});
