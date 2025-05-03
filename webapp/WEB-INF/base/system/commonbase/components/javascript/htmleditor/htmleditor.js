@@ -492,4 +492,16 @@ $(document).ready(function () {
 			createCK5($this, options);
 		}
 	});
+
+	window.onbeforeunload = function () {
+		let hasUnsaved = Object.entries(window.CK5Editor).findIndex(
+			([_, value]) => value.sourceElement !== null
+		);
+		if (hasUnsaved < 0) {
+			hasUnsaved = Object.entries(window.CK5EditorInline).findIndex(
+				([_, value]) => value.sourceElement !== null
+			);
+		}
+		if (hasUnsaved > -1) return "You have unsaved changes";
+	};
 });
