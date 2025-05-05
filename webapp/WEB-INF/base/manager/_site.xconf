@@ -36,6 +36,10 @@
 	<script cancel="true" id="jquery-ui-i18n" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js"/>
 	<style cancel="true" id="jqueryui" href="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.css"/>
 	
+		  <!-- Ajax Plugins -->
+	<script id="runajax" src="/${applicationid}/components/javascript/emedia/ajax/runajax.js" />
+	<script id="emdialog" src="/${applicationid}/components/javascript/emedia/ajax/emdialog.js" />
+	
 	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
 	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
 	<script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
@@ -63,6 +67,7 @@
 	
 	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
 
+	  <script id="uicomponentsold" src="/${applicationid}/components/javascript/emedia/ui-components-old.js" />
 	  <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
 	  <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
 	  <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
