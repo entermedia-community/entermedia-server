@@ -1,5 +1,5 @@
 
-#set( $allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category) )
+#set( $children = $category.getChildren() )
 {
   "response":
 		{
@@ -9,12 +9,12 @@
 				"status": "notfound" 
 			#end
 			#ifnotnull($category)
-			,"size":"$allchildren.size()" 
+			,"size":"$children.size()" 
 			#end
 		}
   ,
   "categories": [
-	#foreach( $subfolder in $allchildren) #if( ${foreach.count} != 1 ), #end
+	#foreach( $subfolder in $children) #if( ${foreach.count} != 1 ), #end
 		#set($index = $foreach.count - 1)
 		{
 			"index": "$index",
