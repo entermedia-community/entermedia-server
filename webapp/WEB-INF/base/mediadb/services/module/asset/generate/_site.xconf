@@ -11,6 +11,29 @@
 	<property name="exportnameinpath">true</property> 
 	<property name="generatedfileinpath">true</property>	
 
+
+	<permission name="showunwatermarkedassets">
+		<userprofile property="showunwatermarkedassets" equals="true" />
+	</permission>
+	
+	<permission name="forcewatermarkasset">
+		<userprofile property="forcewatermarkasset" equals="true" />
+	</permission>
+	
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->	
+	<permission name="viewasset">
+		<boolean value="true" />
+	</permission>	
+	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>
+	
+	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
+
+	<property name="oe.enableautologinparam">true</property>
+	<property name="watermarkplacement">tile</property>
+
 	
 </page>
 
