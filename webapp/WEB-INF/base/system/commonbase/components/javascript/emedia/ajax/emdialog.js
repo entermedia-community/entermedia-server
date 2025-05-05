@@ -133,6 +133,13 @@
 					window.bsVersion = parseInt(bootstrap.Modal.VERSION);
 				}
 
+				if (
+					modaldialog.find(".htmleditor").length > 0 ||
+					modaldialog.find(".htmleditor-advanced").length > 0
+				) {
+					modalOptions.focus = false;
+				}
+
 				if (window.bsVersion == 5) {
 					var modIns = new bootstrap.Modal(modaldialog[0], modalOptions);
 					modIns.show();
