@@ -428,57 +428,6 @@
 									console.log("lightboxUpload", error);
 								});
 						});
-
-						headerBtns.on("click", ".scan-changes", function () {
-							customToast(
-								"Scanning for unsynced files in " + elideCat(categorypath),
-								{ id: categorypath }
-							);
-
-							$(this).prop("disabled", true);
-							$(this).addClass("scanning");
-
-							const idEl = headerBtns;
-							ipcRenderer
-								.invoke("scanChanges", uploadsourcepath)
-								.then(({ hasUploads, hasDownloads }) => {
-									const ch = [];
-
-									if (hasUploads) {
-										ch.push("upload");
-										idEl.find(".upload-lightbox").addClass("has-changes");
-									} else {
-										idEl.find(".upload-lightbox").removeClass("has-changes");
-									}
-									if (hasDownloads) {
-										ch.push("download");
-										idEl.find(".download-lightbox").addClass("has-changes");
-									} else {
-										idEl.find(".download-lightbox").removeClass("has-changes");
-									}
-									if (ch.length > 0) {
-										customToast(
-											"Found new files to " +
-												ch.join(" & ") +
-												"in " +
-												elideCat(categorypath),
-											{ id: categorypath }
-										);
-									} else {
-										customToast(
-											"No unsynced files found in " + elideCat(categorypath),
-											{ id: categorypath }
-										);
-									}
-								})
-								.catch((error) => {
-									console.log("scanChanges", error);
-								})
-								.finally(() => {
-									$(this).prop("disabled", false);
-									$(this).removeClass("scanning");
-								});
-						});
 					});
 
 					function shouldDisableUploadSyncBtn(data) {
