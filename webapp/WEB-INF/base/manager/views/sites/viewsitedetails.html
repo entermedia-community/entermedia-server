@@ -50,7 +50,7 @@
 
 	<div  style="margin-right: 0;padding:20px;">
 	
-		<form class="ajaxform autosubmitform" targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
+		<form class="ajaxform autosubmitform" data-targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
 			<input type="hidden" id="list-sitevalue" name="siteid" value="$site.id" />  
 			<input type="hidden" name="oemaxlevel" value="1" />
 			#set( $detail = $searcher.getDetail("name"))

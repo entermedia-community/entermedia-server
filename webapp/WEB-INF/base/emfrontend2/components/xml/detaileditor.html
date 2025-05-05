@@ -24,6 +24,7 @@ $context.putPageValue("longform",false)
 	#if( $context.getUserProfile() )
 		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
 		
+		
 	#else
 		#set ($details = $searcher.getDetailsForView($view))
 	#end

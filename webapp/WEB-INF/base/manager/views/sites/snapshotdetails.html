@@ -11,7 +11,7 @@
 		    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
 			$context.putPageValue("searcher", $searcher)	 
 			$context.putPageValue("data", $snapshot)	 
-			$context.putPageValue("view", "sitesnapshot/edit")	
+			$context.putPageValue("view", "sitesnapshotgeneral")	
 			<input type="hidden" name="view" value="sitesnapshot/edit"/>
 			<input type="hidden" name="save" value="true"/>
 			<input type="hidden" name="id" value="$snapshot.id"/>

@@ -4,6 +4,15 @@ formatHitCountResult = function (inRow) {
 	return inRow[1];
 };
 
+function isInViewport(cell) {
+	const rect = cell.getBoundingClientRect();
+	var isin =
+		rect.top >= 0 &&
+		rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+	return isin;
+}
+
+
 function getRandomColor() {
 	var letters = "0123456789ABCDEF".split("");
 	var color = "#";
