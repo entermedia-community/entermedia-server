@@ -3,24 +3,26 @@
 #end
 
 <style type="text/css">
-	:root {
-		--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
-		--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
-		--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
-		--filler-color: transparent;
-	}
+:root {
+	--bg-color: #if($publishing.publishingfeedlayout=="dark") #000 #else #FFFFFF #end;
+	--text-color: #if($publishing.publishingfeedlayout=="dark") #fff #else #000 #end;
+	--highlight-color: #if($publishing.publishingfeedlayout=="dark") #666 #else #444 #end;
+	--filler-color: transparent;
+}
 
-	.__main-container {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		background-color: var(--bg-color);
-		width: var(--container-width);
-	}
-	
-	._gridgallery-container {
-		flex: 1;
-	}
+.__main-container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--bg-color);
+	width: var(--container-width);
+	height: 100%;
+}
+
+._gridgallery-container {
+	flex: 1;
+	height: 100%;
+}
 	
 	
 .masonry-grid2 {
@@ -28,14 +30,17 @@
   flex-flow: row wrap;
   justify-content: center;
   position: relative;
+  height: 100%;
 }
 .scrollview {
 	padding: 0 8px 8px;
+	height: 100%;
 	
 }
 .scroll-resultsdiv {
     display: flex;
     flex-direction: column;
+	height: 100%;
 }	
 .masonry-grid2 .masonry-grid-cell {
   position: absolute;
