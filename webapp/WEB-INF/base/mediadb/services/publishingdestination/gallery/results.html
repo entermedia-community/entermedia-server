@@ -103,8 +103,12 @@
 				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
+				
 				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
-				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				
+				#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
+				#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
+				
 				$context.putPageValue("downloadlink", $downloadlink)
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)

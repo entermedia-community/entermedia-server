@@ -1,5 +1,5 @@
 #set($hits = $publishingentityassethits)
-#set($imagesize = "image3000x3000.jpg")
+#set($imagesize = "image3000x3000")
 
 
 
@@ -23,8 +23,9 @@
 		</div>
 		<div class="splide__track">
 			<ul class="splide__list">
-				#set( $preset = $mediaarchive.getCachedData("convertpreset","largeimage"))
+				#set( $convertpreset = $mediaarchive.getCachedData("convertpreset","largeimage"))
 				#foreach($hit in $hits)
+					$context.putPageValue("hit", $hit)
 					#set ($sourcepath = $hit.sourcepath)    		
 					#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 					$context.putPageValue("type", $type)
@@ -33,10 +34,7 @@
 						#set( $alwaysmime = true)
 						$context.putPageValue("alwaysmime", $alwaysmime)
 					#end
-								
 					
-					#set($imagelink = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
-											
 					#set($hittitle = "")
 					#if ($hit.name)
 							#set($hittitle = $context.getText($hit.name))
@@ -46,27 +44,41 @@
 					
 					#set($hitcaption = "")
 					#if( $publishing.image_caption_enabled  == true)
-					#if ($hit.headline)
-							#set($hitcaption = $hit.headline)
-					#elseif($hit.longcaption)
-							#set($hitcaption = $hit.longcaption)
+						#if ($hit.headline)
+								#set($hitcaption = $hit.headline)
+						#elseif($hit.longcaption)
+								#set($hitcaption = $hit.longcaption)
+						#end
 					#end
-					#end
-
-					#set($downloadimagelink = $mediaarchive.asLinkToDownload($hit, null, $preset))
+					
+					
+					
 
 					<li class="splide__slide" title="$!{hittitle}">
-						<a class="__download-img" title="[[Download]]" href="$downloadimagelink" >
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-								<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-								<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-							</svg>
-						</a>
+						#if ($type=="image")
+							#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
+							#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
+							<a class="__download-img" title="[[Download]]" href="$!{downloadlink}" >
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+									<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+								</svg>
+							</a>
+						#end
 						<div style="position: relative;height: 100%;width: 100%;" class="__image">
-							<img src="$imagelink" alt="$!{hittitle}">
-							#if($hitcaption != "")
-								<span class="__img_caption">$!{hitcaption}</span>
+							#if ($type=="video")
+								#set( $imagelink = "/${mediadbappid}/services/module/asset/players/html5/index.html")
+								$pages.include($imagelink, $context)
+							#else
+								#set($imagelink = $mediaarchive.asLinkToPreview($hit, null, $imagesize, true))
+								<img src="$imagelink" alt="$!{hittitle}">
+								#if($hitcaption != "")
+									<span class="__img_caption">$!{hitcaption}</span>
+								#end
 							#end
+							
+							
+							
 						</div>
 					</li>
 				#end
@@ -85,7 +97,9 @@
 						#set( $alwaysmime = true)
 						$context.putPageValue("alwaysmime", $alwaysmime)
 					#end
-											
+					#if ($type=="video")
+						#set( $imagesize = "image550x350")
+					#end					
 					#set($hittitle = "")
 					#if ($hit.name)
 							#set($hittitle = $context.getText($hit.name))

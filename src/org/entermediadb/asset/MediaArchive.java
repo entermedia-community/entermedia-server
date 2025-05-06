@@ -2861,7 +2861,9 @@ public class MediaArchive implements CatalogEnabled
 //			{
 				if( inGeneratedoutputfile.endsWith("video.m3u8"))
 				{
-					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
+					//finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile + "/360/" + usefile;
+					
+					finalroot = cdnprefix + "/" + getMediaDbId() + downloadroot + "generatedpreview/" + sourcepath + "/" + inGeneratedoutputfile;
 				}
 				else
 				{
