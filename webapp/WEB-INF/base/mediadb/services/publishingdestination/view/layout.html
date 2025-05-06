@@ -2,11 +2,11 @@
 
 	#if($publishing.get("distributiontype") == "gallery") 
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-3.7.1.min.js"></script>
-		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-brickvertical.js"></script>
+		<script type="text/javascript" src="$!siteroot$applink/components/javascript/emedia/brickvertical.js"></script>
 		<script type="text/javascript" src="$!siteroot$applink/components/javascript/jquery-simpleLightbox.js"></script>
 		
 		<div id="previewgallery" style="height: 100%;">
-		$pages.include("$apphome/services/publishingdestination/gallery/index.html", $context)
+		$pages.include("${apphome}/services/publishingdestination/gallery/index.html", $context)
 		</div>
 				
 		<script type="text/javascript">
@@ -25,7 +25,7 @@
 
 	#else 
 	
-		$pages.include("$apphome/services/publishingdestination/carousel/index.html", $context)
+		$pages.include("${apphome}/services/publishingdestination/carousel/index.html", $context)
 	#end
   
 #end
