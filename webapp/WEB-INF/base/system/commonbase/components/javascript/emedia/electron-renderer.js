@@ -296,10 +296,10 @@
 
 						ipcRenderer
 							.invoke("lightboxDownload", uploadsourcepath)
-							.then((scanStatus) => {
-								if (scanStatus === "OK") {
+							.then((downloadStatus) => {
+								if (downloadStatus === "OK") {
 									desktopImportStatusUpdater(formData);
-								} else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+								} else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
 									customToast(
 										"Already running a download task in this folder, wait until it finishes",
 										{
@@ -307,7 +307,7 @@
 											autohideDelay: 5000,
 										}
 									);
-								} else if (scanStatus === "TOO_MANY_DOWNLOADS") {
+								} else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
 									customToast(
 										"Wait for at least one other download task to finish",
 										{
@@ -360,11 +360,11 @@
 
 							ipcRenderer
 								.invoke("lightboxDownload", uploadsourcepath)
-								.then((scanStatus) => {
-									if (scanStatus === "OK") {
+								.then((downloadStatus) => {
+									if (downloadStatus === "OK") {
 										desktopImportStatusUpdater(formData);
 										headerBtns.find(".view-task-progress").show();
-									} else if (scanStatus === "DUPLICATE_DOWNLOAD") {
+									} else if (downloadStatus === "DUPLICATE_DOWNLOAD") {
 										customToast(
 											"Already running a download task in this folder, wait until it finishes",
 											{
@@ -372,7 +372,7 @@
 												autohideDelay: 5000,
 											}
 										);
-									} else if (scanStatus === "TOO_MANY_DOWNLOADS") {
+									} else if (downloadStatus === "TOO_MANY_DOWNLOADS") {
 										customToast(
 											"Wait for at least one other download task to finish",
 											{
@@ -402,11 +402,11 @@
 
 							ipcRenderer
 								.invoke("lightboxUpload", uploadsourcepath)
-								.then((scanStatus) => {
-									if (scanStatus === "OK") {
+								.then((uploadStatus) => {
+									if (uploadStatus === "OK") {
 										desktopImportStatusUpdater(formData);
 										headerBtns.find(".view-task-progress").show();
-									} else if (scanStatus === "DUPLICATE_UPLOAD") {
+									} else if (uploadStatus === "DUPLICATE_UPLOAD") {
 										customToast(
 											"Already running an upload task in this folder, wait until it finishes",
 											{
@@ -414,7 +414,7 @@
 												autohideDelay: 5000,
 											}
 										);
-									} else if (scanStatus === "TOO_MANY_UPLOADS") {
+									} else if (uploadStatus === "TOO_MANY_UPLOADS") {
 										customToast(
 											"Wait for at least one other upload task to finish",
 											{
@@ -690,8 +690,8 @@
 								categoryPath: uploadsourcepath,
 								isDownload,
 							})
-							.then((scanStatus) => {
-								if (scanStatus === "OK")
+							.then((downloadStatus) => {
+								if (downloadStatus === "OK") {
 									customToast(
 										"Started " +
 											(isDownload ? "download" : "upload") +
@@ -699,6 +699,7 @@
 											elideCat(categorypath),
 										{ id: categorypath }
 									);
+								}
 							})
 							.catch((err) => {
 								console.error("continueSync", err);
