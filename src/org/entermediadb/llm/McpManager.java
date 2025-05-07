@@ -4,14 +4,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
-import org.openedit.util.ExecutorManager;
+import org.openedit.users.User;
 
 public class McpManager implements CatalogEnabled {
     private static final Log log = LogFactory.getLog(McpManager.class);
@@ -20,8 +18,9 @@ public class McpManager implements CatalogEnabled {
     protected VelocityRenderUtil fieldRender;
     protected String fieldCatalogId;
     protected Map<String, McpConnection> connections = new ConcurrentHashMap<>();
-    
-    public ModuleManager getModuleManager() {
+   
+
+	public ModuleManager getModuleManager() {
         return fieldModuleManager;
     }
 
