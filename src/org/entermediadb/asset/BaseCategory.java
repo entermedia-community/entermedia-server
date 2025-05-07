@@ -345,6 +345,9 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public boolean isAncestorOf(Category inCatalog)
 	{
+		if(inCatalog == null) {
+			return false;
+		}
 		if(inCatalog.getId() == null) {
 			return false;
 		}
