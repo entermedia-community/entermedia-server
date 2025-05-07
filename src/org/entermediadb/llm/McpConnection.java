@@ -22,6 +22,18 @@ public class McpConnection implements Runnable
 	private final OutputStream out;
 	private volatile boolean active = true;
 	protected User fieldUser;
+	protected String fieldKey;
+
+
+	public String getKey()
+	{
+		return fieldKey;
+	}
+
+	public void setKey(String inKey)
+	{
+		fieldKey = inKey;
+	}
 
 	public User getUser()
 	{
