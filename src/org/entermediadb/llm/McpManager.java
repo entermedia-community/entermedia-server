@@ -6,7 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
@@ -47,17 +49,32 @@ public class McpManager implements CatalogEnabled {
     /**
      * Opens a new SSE connection for the session in inReq if none exists.
      */
-    public McpConnection createConnection(WebPageRequest inReq) {
+    public McpConnection createConnection(MediaArchive inArchive,WebPageRequest inReq) {
         String sessionId = inReq.getRequest().getSession().getId();
         if (connections.containsKey(sessionId)) {
             log.info("SSE connection already exists for session: " + sessionId);
             return getConnection(inReq);
         }
         String endpoint = inReq.findPathValue("mcp-endpoint");
+        //This is something like /sse/userkey
+        
+        
+        String key = inReq.getPage().getPageName();
+      
+
         
         McpConnection conn = new McpConnection(inReq);
         connections.put(sessionId, conn);
         conn.openStream(endpoint);
+        conn.setKey(key);
+        
+        Data row = inArchive.query("appkeys").exact("key", key).searchOne();
+        if(row != null) {
+    		String userid = row.get("user");
+    		User user = inArchive.getUser(userid);	        	
+    		conn.setUser(user);
+    	}
+
         log.info("Created MCP connection for session: " + sessionId);
       
 		try
