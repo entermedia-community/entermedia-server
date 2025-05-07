@@ -41,7 +41,7 @@ $context.putPageValue("thumbsize", $thumbsize)
        </div>
 	#else	
 		#if($useoriginal)
-			#set($imagepath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+			#set($imagepath = "$!{siteroot}/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
 			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
 			
@@ -51,30 +51,24 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($imagepath = "${imagepath}?_=$tstamp")
 		#end
 
-		$context.putPageValue("imagepath", $imagepath)
-		$context.putPageValue("asset", $asset)
-		$context.putPageValue("imagesize", $imagesize)
-		
-		#if($moduleid == "faceprofilegroup")
-			#set($faceprofilegroups = [$data] )	
-			$context.putPageValue("faceprofilegroups", $faceprofilegroups)		
-			$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
-		#elseif($hits.getInput("showfacebox"))
-				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
-				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+		#if($type=="video")
+			#set( $imagelink = "$!{siteroot}/${mediadbappid}/services/module/asset/players/play/${hit.id}.html")
 		#else
-			#set($imagelink = $mediaarchive.asLinkToPreview($hit, $librarycol.id, "image3000x3000.jpg", true))
-			<a href="$imagelink" class="lightbox" data-downloadlink="$!downloadlink">
-			<img class="imagethumb img-fluid  img$!thumbsize "
-					catalogid="$catalogid" 
-					assetid="$!{hit.id}" 
-					alt="#if($title)#esc($title)#else$!{hit.name}#end"
-					draggable="true"  
-					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-					data-imagesrc="$imagepath$!urlparams"	/>
-			#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
-			</a>
-		#end			
+			#set($imagelink = $mediaarchive.asLinkToPreview($hit, "image3000x3000")) 
+		#end
+
+		
+		
+		<a href="${imagelink}" class="lightbox" data-downloadlink="$!{downloadlink}">
+		<img class="imagethumb img-fluid  img$!thumbsize "
+				catalogid="$catalogid" 
+				assetid="$!{hit.id}" 
+				alt="#if($title)#esc($title)#else$!{hit.name}#end"
+				draggable="true"  
+				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+				data-imagesrc="$imagepath$!urlparams"	/>
+		#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+		</a>
 	#end
 </div>
 

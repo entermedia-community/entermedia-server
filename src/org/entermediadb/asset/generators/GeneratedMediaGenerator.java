@@ -40,10 +40,14 @@ public class GeneratedMediaGenerator extends FileGenerator
 		String catalogid = inReq.findPathValue("catalogid");
 
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-		String sourcepath = archive.getSourcePathForPage(inPage);
+		
 		
 		// make sure your path tacks a filename on the end.
 		String path = inPage.getPath();
+		
+		String assetrootfolder = inPage.get("assetrootfolder");
+		String endingpath = inPage.getPath().substring(assetrootfolder.length());
+	
 		
 		String hasexportname = inPage.get("exportnameinpath");
 		if( Boolean.parseBoolean( hasexportname) )
@@ -51,18 +55,18 @@ public class GeneratedMediaGenerator extends FileGenerator
 			String download = inReq.findValue("download");
 			if( Boolean.parseBoolean(download))
 			{
-				String filename = PathUtilities.extractFileName(path);
+				String filename = PathUtilities.extractFileName(endingpath);
 				forceDownload(inReq,filename);
 			}
-			path = PathUtilities.extractDirectoryPath(path);
+			endingpath = PathUtilities.extractDirectoryPath(endingpath);
 		}
 		
-		
-		String outputfile = PathUtilities.extractFileName(path); //image1200x1200.jpg
-		
 		// Try the contentitem first. If misssing try a fake page
-		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + sourcepath +"/" + outputfile);
-		Page output = null;
+
+		//String sourcepath = archive.getSourcePathForPage(inPage);
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
+		//ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated/" + sourcepath +"/" + outputfile);
+		Page output = null; 
 		boolean existed = item.exists();
 		
 		if( !existed )
@@ -71,9 +75,12 @@ public class GeneratedMediaGenerator extends FileGenerator
 			if( Boolean.parseBoolean(download))
 			{
 				TranscodeTools transcodetools = archive.getTranscodeTools();
+				String sourcepath = archive.getSourcePathForPage(inPage);
+				String outputfile = PathUtilities.extractFileName(endingpath); //image1200x1200.jpg
 				ConvertResult result = transcodetools.createOutputIfNeeded(null,null,sourcepath, outputfile ); //String inSourcePath, Data inPreset, String inOutputType);
 			}
 		}
+		/*
 		boolean addmetadata = Boolean.parseBoolean(inReq.findValue("includemetadata"));
 		if (existed && addmetadata)
 		{
@@ -91,7 +98,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 				}
 			}
 		}
-
+		 */
 		if (existed)
 		{
 
@@ -107,7 +114,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 		}
 		else
 		{
-			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + path);
+			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + endingpath);
 		}
 
 		if (!existed && !output.exists())

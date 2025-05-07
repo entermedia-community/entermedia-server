@@ -2,8 +2,8 @@
 	data-width="600"
 	data-height="400">
 #if( $asset.editstatus == "recording" )
-$pages.include("/${mediadbappid}/services/module/asset/players/hwd/index.html",$context)
+	$pages.include("/${mediadbappid}/services/module/asset/players/hwd/index.html",$context)
 #else
-$pages.include("/${mediadbappid}/components/mediaviewer/player/html5/index.html?embed=true",$context)
+	$pages.include("/${mediadbappid}/services/module/asset/players/html5/index.html?embed=true",$context)
 #end
 </div>

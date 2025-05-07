@@ -1,0 +1,155 @@
+
+#ifnull($hit) 
+	#set ($hit = $asset) 
+#end 
+
+#set( $source = $mediaarchive.asLinkToPreview($hit,"video.m3u8"))
+#set( $sourcemp4 = $mediaarchive.asLinkToPreview($hit,"video.mp4"))
+
+#set( $streams = $hit.getValues("hlsstreams")) 
+#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480")) 
+#set( $autoplay = $context.getRequestParameter("autoplay") ) 
+#set( $loop = $context.getRequestParameter("loop") )
+#set( $embed = $context.getRequestParameter("embed") ) 
+#set( $mediadbappid = $mediaarchive.getMediaDbId() ) 
+#set( $root = "$!prefix$home$page.directory") 
+#set( $catalogid = $hit.catalogId ) 
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+#set( $metricEnabled = false )
+
+<script id="videojs" src="${applink}/components/javascript/videojs/8.20.0/video.min.js"></script>
+<script id="videojs" src="${applink}/components/javascript/videojs/8.20.0/videojs-quality-selector.min.js"></script>
+
+<link href="${applink}/components/javascript/videojs/8.20.0/video-js.min.css" rel="stylesheet">
+
+<div id="playarea-$hit.id" class="player">
+	<video id="video-$hit.id" 
+		class="video-js vjs-default-skin vjs-big-play-centered" 
+		style="width: 100%!important; height: 100%!important;" 
+		poster='$thumb'
+		#if( $loop && $loop == "true") loop #end
+		#if($autoplay && $autoplay == "true") autoplay #end
+	>
+		#if( $streams )
+			#foreach( $size in $streams)
+			<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
+			#end				
+		#else	
+			<source type="video/mp4" src="$sourcemp4" label="$!hit.width">
+			#set( $short = $url_util.getPathUtilities().extractPagePath($sourcemp4) )
+			<source type="video/flash" src="mp4:$short" label="$!hit.width">
+		#end	
+		#if( $tracks && !$tracks.isEmpty() )
+			#foreach( $track in $tracks)
+				<track 
+				label="$track.sourcelang subtitles" 
+				kind="subtitles" 
+				srclang="$track.sourcelang" 
+				src="$!cdnprefix$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+				#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+			#end
+		#end
+	</video> 
+			
+</div>
+<script>
+	var baseUrl = '$!cdnprefix';
+	var applink = '${applink}';
+
+	var player = videojs.getPlayer('video-$hit.id');
+	if(player){
+		player.dispose();
+	}
+	player = videojs('video-$hit.id', { controls: true }, function() {
+		this.controlBar.addChild('QualitySelector');
+	});
+
+	#if($metricEnabled)
+		$(window).bind("beforeunload", function() {
+			PostMetrics();
+		})	
+		player.on('playlistchange', (data) => logMetris(data));
+		player.on('loadstart', (data) => logMetris(data));
+		player.on('waiting', (data) => logMetris(data));
+		player.on('canplay', (data) => logMetris(data));
+		player.on('canplaythrough', (data) => logMetris(data));
+		player.on('playing', (data) => logMetris(data));
+		player.on('ended', (data) => logMetris(data));
+		player.on('seeking', (data) => logMetris(data));
+		player.on('seeked', (data) => logMetris(data));
+		player.on('play', (data) => logMetris(data));
+		player.on('firstplay', (data) => logMetris(data));
+		player.on('pause', (data) => logMetris(data));
+		## player.on('progress', (data) => logMetris(data));
+		player.on('durationchange', (data) => logMetris(data));
+		player.on('fullscreenchange', (data) => logMetris(data));
+		player.on('error', (data) => logMetris(data));
+		player.on('suspend', (data) => logMetris(data));
+		player.on('abort', (data) => logMetris(data));
+		player.on('emptied', (data) => logMetris(data));
+		player.on('stalled', (data) => logMetris(data));
+		player.on('loadedmetadata', (data) => logMetris(data));
+		player.on('loadeddata', (data) => logMetris(data));
+		## player.on('timeupdate', (data) => logMetris(data));
+		player.on('ratechange', (data) => logMetris(data));
+		player.on('volumechange', (data) => logMetris(data));
+		player.on('texttrackchange', (data) => logMetris(data));
+		player.on('loadedmetadata', (data) => logMetris(data));
+		player.on('posterchange', (data) => logMetris(data));
+		player.on('textdata', (data) => logMetris(data));
+		var metrics = [];
+		var videoData;
+		var isTracking = false;
+		function logMetris(data) {
+		    const bufferTimer = player.buffered();
+		    var opt = {
+		        eventType: data.type,
+		        position: player.currentTime(),
+		        videoType: player.currentType(),
+		        duration: player.duration(),
+		        isEnd: player.ended(),
+		        isFullScreen: player.isFullscreen(),
+		        bufferPercent: player.bufferedPercent() * 100,
+		        volume: player.volume() * 100,
+		        datetime: Date.now()
+		    }
+		    metrics.push(opt);
+		    if (opt.eventType === 'ended') {
+		        PostMetrics();
+		    }
+		}
+		    
+		## var interval = setInterval(() => {
+		##    if (metrics.length > 0) {
+		##        PostMetrics();
+		##        metrics = [];
+		##    }
+		## }, 5000);
+		
+		function PostMetrics() {
+		    videoData = {
+		        //app: navigator.appCodeName + ' ' + navigator.appName + ' ' + navigator.appVersion,
+		        logid: '', // log id
+		        assetid: '$hit.id', // asset id
+		        app: navigator.userAgent,
+		        platform: navigator.platform,
+		        width: window.innerWidth,
+		        height: window.innerHeight,
+		        events: metrics
+		    }
+		    PostRequest(videoData, baseUrl + applink + "/services/module/asset/analytics/videolog");
+		}
+		function PostRequest(data, url) {		
+		    var xhr = new XMLHttpRequest();
+		    xhr.open('POST', url, true);
+		    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+		    xhr.send(JSON.stringify(data));
+		    xhr.onload = () => {
+		        const data = JSON.parse(xhr.responseText);
+		    }
+		}
+	#end
+</script>

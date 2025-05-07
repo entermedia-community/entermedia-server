@@ -40,7 +40,7 @@
 		$pages.include("$componenthome/results/header.html",$context) 
 	#end
 	<div class="scrollview">
-		<div class="masonry-grid2 masonry-grid-cells" 
+		<div class="masonry-grid2 masonry-grid-cells brickvertical" 
 			data-maxheight="180" 
 			data-maxwidth="180"
 			data-targeth="180"
@@ -80,24 +80,35 @@
 			<div class="masonry-grid-cell" 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
-				#if($rendertype == "audio")
-					data-width="250"
-					data-height="110"
-				#else
-					data-width="$assetwidth"
-					data-height="$assetheight"
-					$context.putPageValue("thumbheight", "180" ) 
-				#end
+
 				>
 				<div class="grid-cell-hover"></div>
+				
+				<div class="embrickcontent" 
+					data-rowname="#text($hit)"
+				#if($assetwidth > 0)
+					data-imgwidth="$!assetwidth"
+					data-imgheight="$!assetheight"
+				#elseif($rendertype == "audio")
+					data-imgwidth="250"
+					data-imgheight="110"
+				#else 
+					data-imgwidth="250"  ##moduleicon
+					data-imgheight="110"
+				#end
+				>
 				##<div class="grid-gallery-checked"></div>
 				#if(!$rendertype || $type =="rendertype")
 					#set( $rendertype = "mime" )
 				#elseif( $rendertype =="video" || $rendertype =="document")
 					#set( $rendertype = "image" )
 				#end
+				
 				#set($convertpreset = $mediaarchive.getCachedData("convertpreset", "largeimage" ) )
-				#set($downloadlink = $mediaarchive.asLinkToDownload($hit, $!librarycol.id, $convertpreset))
+				
+				#set($downloadlink = $mediaarchive.asLinkToShare($siteroot, $hit, $convertpreset))
+				#set($downloadlink = "${downloadlink}?download=true&ondemand=true")
+				
 				$context.putPageValue("downloadlink", $downloadlink)
 				<div class="grid-thumbimage " data-assetid="$!hit.id" data-rendertype="$!rendertype">
 					$pages.include("/$!mediadbappid/services/publishingdestination/gallery/rendertype/$!{rendertype}.html", $context)
@@ -142,6 +153,7 @@
 					</div>
 				</div>
 				#end
+				</div>
 			</div>
 		    #set ( $count = $count + 1) 
 		#end
