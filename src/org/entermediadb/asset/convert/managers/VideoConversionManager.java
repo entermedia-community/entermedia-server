@@ -84,29 +84,32 @@ public class VideoConversionManager extends BaseConversionManager
 		{
 			return result;
 		}
+		//Video done, now create preview image
+		
+		
 		ConvertInstructions instructions2;
 		String defaultpresetoutput = "image1900x1080.webp";
-		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
-		if (preset == null) 
+		Data imagepreviewpreset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+		if (imagepreviewpreset == null) 
 		{
 			defaultpresetoutput = "image1900x1080.jpg";
-			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+			imagepreviewpreset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
 		}
-		if (preset == null) 
+		if (imagepreviewpreset == null) 
 		{
 			defaultpresetoutput = "image1024x768.jpg";
-			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
+			imagepreviewpreset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video", defaultpresetoutput);
 		}
-		if( preset != null && inStructions.getTimeOffset() == null)
+		if( imagepreviewpreset != null && inStructions.getTimeOffset() == null)
 		{
-			//Now make the input image needed using the video as the input
-			instructions2 = createInstructions(inStructions.getAsset(),preset);
+			//Create the Preview Image using video as the input
+			instructions2 = createInstructions(inStructions.getAsset(), imagepreviewpreset);
 			instructions2.setProperty("outputfile", defaultpresetoutput);
 			instructions2.setOutputFile(null);
 		}
 		else
 		{
-			instructions2 = inStructions.copy(preset);
+			instructions2 = inStructions.copy(imagepreviewpreset);
 			
 		}
 		instructions2.setInputFile( proxyinstructions.getOutputFile() );
@@ -119,7 +122,7 @@ public class VideoConversionManager extends BaseConversionManager
 		//Finally use ImageMagick to transform the final image using the image above as the input
 		//preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
 		//ConvertInstructions IMinstructions = inStructions.copy(preset);
-		//IMinstructions.setMaxScaledSize(inStructions.getMaxScaledSize());
+		//IMinstructions.setMaxScaledSize(inStructions.getMaxScaledSize()); 
 		inStructions.setInputFile(instructions2.getOutputFile());
 		result = findTranscoder(inStructions).convertIfNeeded(inStructions);
 		if(inStructions.isWatermark())
