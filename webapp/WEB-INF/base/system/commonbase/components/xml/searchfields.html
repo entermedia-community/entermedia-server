@@ -3,9 +3,9 @@
 ##requires $searcher //used to get the catalogid and searcherManager
 
 $context.putPageValue("insearch",true)
+<div class="d-flex flex-wrap"> 
 #foreach( $detail in $details)
-
-<div class="d-flex align-items-center ml-2"> 
+<div class="mr-4 mb-4">
 	<div class="emsearchfield mr-2"> 
 	$!detail.getText($context) 
 	</div> 
@@ -49,9 +49,9 @@ $context.putPageValue("insearch",true)
 			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 		#end
 	</div>
+	</div>
 #end
 </div>
-
 #if( $details.size() == 0)
 	[[No search fields found with index]]=true 
 #end

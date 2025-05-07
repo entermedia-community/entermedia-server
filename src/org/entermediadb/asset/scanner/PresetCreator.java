@@ -446,7 +446,7 @@ public class PresetCreator
 	
 	
 	
-	public String exportOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
+	public String generatedOutputName(MediaArchive inArchive, Data inAsset, String inGeneratedName)
 	{ 
 		String usefile = inGeneratedName;
 		
@@ -467,7 +467,7 @@ public class PresetCreator
 
 	public ContentItem outPutForGenerated(MediaArchive inArchive, Data inAsset, String inGeneratedType)
 	{
-		String savedname = exportOutputName(inArchive, inAsset, inGeneratedType);
+		String savedname = generatedOutputName(inArchive, inAsset, inGeneratedType);
 		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + savedname;
 		ContentItem output = inArchive.getContent(generatedfilename);
 		return output;

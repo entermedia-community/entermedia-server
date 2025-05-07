@@ -468,7 +468,8 @@ public class MediaArchive implements CatalogEnabled
 	
 	public ContentItem getGeneratedContent(Data asset, String outputfile)
 	{
-		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		String outputname = generatedOutputName(asset, outputfile);
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputname);
 		return page;
 
 	}
@@ -2814,7 +2815,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		
 		
-		String usefile = exportOutputName(inAsset, inGeneratedoutputfile);
+		String usefile = generatedOutputName(inAsset, inGeneratedoutputfile);
 		
 	
 		String finalroot = null;
@@ -2883,9 +2884,9 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 	
-	public String exportOutputName(Data inAsset, String inGeneratedoutputfile) 
+	public String generatedOutputName(Data inAsset, String inGeneratedoutputfile) 
 	{ 
-		String name = getPresetManager().exportOutputName(this, inAsset, inGeneratedoutputfile); 
+		String name = getPresetManager().generatedOutputName(this, inAsset, inGeneratedoutputfile); 
 		return name;
 	}
 
@@ -2896,7 +2897,7 @@ public class MediaArchive implements CatalogEnabled
 			return null;
 		}
 		
-		String usefile = exportOutputName(inAsset, inGeneratedoutputfile);
+		String usefile = generatedOutputName(inAsset, inGeneratedoutputfile);
 
 		//String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String sourcepath = inAsset.getSourcePath();
