@@ -2,6 +2,7 @@ package org.entermediadb.asset.modules;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +20,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.data.ValuesMap;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
@@ -103,8 +105,10 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("gravity", "NorthWest");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
+		
+		Map prop = settings.getProperties();
         
-		ConvertInstructions instructions = manager.createInstructions(asset,preset,settings.getProperties() );
+		ConvertInstructions instructions = manager.createInstructions(asset,preset,prop );
         
 		instructions.setForce(true);
 		
@@ -127,6 +131,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		Double originalwidth = asset.getDouble("width");
 		
 		String hasheight = instructions.get("cropheight");
+		Double scalefactor = 1d;
 		//if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024)) {
 		if(hasheight != null && originalheight != null && originalwidth != null)
 		{
@@ -140,10 +145,12 @@ public class ConvertStatusModule extends BaseMediaModule
 			//{cropheight=165, assetid=AWEEgnrnvcTz0GAGVvnK, presetdataid=test, croplast=true, y1=101, x1=269, force=true, cropwidth=220, crop=true, outputextension=jpg, cachefilename=image.jpg}
 			Double cropheight = Double.parseDouble(hasheight);
 			Double cropwidth = Double.parseDouble(instructions.get("cropwidth"));
-			Double x1 = Double.parseDouble(instructions.get("x1"));
-			Double y1 = Double.parseDouble(instructions.get("y1"));
+			String x = instructions.get("x1");
+			String y = instructions.get("y1");
+			Double x1 = Double.parseDouble(x);
+			Double y1 = Double.parseDouble(y);
 
-			Double scalefactor = 1d;
+			
 			
 			Double croppreviewwidth = 1024d;
 			if (instructions.get("cropprevieww") != null) {
@@ -202,7 +209,33 @@ public class ConvertStatusModule extends BaseMediaModule
 		task.setValue("status", "complete");
 		tasks.saveData(task);
 		
-		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
+		Searcher assetcrops = archive.getSearcher("assetcrop");
+		Data assetcrop = assetcrops.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
+
+		if( assetcrop == null)
+		{
+			assetcrop = assetcrops.createNewData();
+			assetcrop.setProperty("presetid", preset.getId());
+			assetcrop.setProperty("assetid", asset.getId());
+			String userid = inReq.getUser().getId();
+			assetcrop.setProperty("userid", userid);
+		}
+		int cropx = (int) Double.parseDouble(settings.get("x1"));
+		int cropy = (int) Double.parseDouble(settings.get("y1"));
+		int cropwidth = (int) Double.parseDouble(settings.get("cropwidth"));
+		int cropheight = (int) Double.parseDouble(settings.get("cropheight"));
+		int croppreviewwidth = (int) Double.parseDouble(settings.get("cropprevieww"));
+		int croppreviewheight = (int) Double.parseDouble(settings.get("croppreviewh"));
+		
+		assetcrop.setValue("cropx", cropx);
+		assetcrop.setValue("cropy", cropy);
+		assetcrop.setValue("cropwidth", cropwidth);
+		assetcrop.setValue("cropheight", cropheight); 
+		assetcrop.setValue("croppreviewwidth", croppreviewwidth);
+		assetcrop.setValue("croppreviewheight", croppreviewheight);
+		assetcrops.saveData(assetcrop);
+		
+		archive.fireMediaEvent("usercrop", inReq.getUser(), asset );
 		
 		processConversions(inReq);//non-block
 		

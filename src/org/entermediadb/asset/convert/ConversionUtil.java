@@ -22,7 +22,7 @@ public class ConversionUtil {
 	
 	private static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
-	public static final String DECIMAL_FORMAT = "#.00";
+	public static final String DECIMAL_FORMAT = "##.##";
 	public static final String NOTHING_FOUND = "Not Converted";
 	
 	protected SearcherManager fieldSearcherManager;
@@ -55,17 +55,18 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public boolean canCrop(MediaArchive inArchive, String inCatalogId, String inPresetId, String inAssetId) throws Exception{
+	public boolean canCrop(MediaArchive inArchive, Data inPreset, Asset inAsset) throws Exception {
 		//log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
 		boolean canCrop = false;
-		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
-		Data preset = inArchive.getCachedData("convertpreset", inPresetId);
-		if (!preset.get("transcoderid").equals("imagemagick")) {
+		String inCatalogId = inArchive.getCatalogId();
+		Dimension cropDimension = getConvertPresetDimension(inArchive.getCatalogId(), inPreset.getId());
+	
+		if (!inPreset.get("transcoderid").equals("imagemagick")) {
 			return false;
 		}
 		//log.debug("Crop Dimension: "+cropDimension);
 		if (cropDimension!=null && cropDimension.getHeight()!=0 && cropDimension.getWidth()!=0){
-//			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
+//			Dimension inputDimension = getConvertPresetDimension(inArchive,"cropinput");//this needs to be in convertpreset table!
 //			log.debug("Preset Input Dimension: "+inputDimension);
 //			if (inputDimension!=null && inputDimension.getHeight()!=0 && inputDimension.getWidth()!=0){
 //				Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
@@ -101,29 +102,28 @@ public class ConversionUtil {
 //			}
 			
 			//use asset dimension instead of standardized input dimension
-			Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
 			//error check dimensions
 			double assetwidth = 0.0d;
 			try{
-				String num = asset.get("width");
+				String num = inAsset.get("width");
 				if (num!=null) num = num.trim();
 				assetwidth = (double) Integer.parseInt(num);
 				if (assetwidth<=0) {
 					return false;
 				}
 			}catch (Exception e){
-				log.warn("Exception caught parsing asset width, assetid="+asset.getId()+", width="+asset.get("width")+", defaulting value to 0");
+				log.warn("Exception caught parsing asset width, assetid="+inAsset.getId()+", width="+inAsset.get("width")+", defaulting value to 0");
 			}
 			double assetheight = 0.0d; 
 			try{
-				String num = asset.get("height");
+				String num = inAsset.get("height");
 				if (num!=null) num = num.trim();
 				assetheight = (double) Integer.parseInt(num);
 				if (assetheight<=0) {
 					return false;
 				}
 			}catch (Exception e){
-				log.warn("Exception caught parsing asset height, assetid="+asset.getId()+", height="+asset.get("height")+", defaulting value to 0");
+				log.warn("Exception caught parsing asset height, assetid="+inAsset.getId()+", height="+inAsset.get("height")+", defaulting value to 0");
 			}
 			
 			double cropwidth = cropDimension.getWidth();
@@ -143,7 +143,7 @@ public class ConversionUtil {
 		Dimension dimension = new Dimension();
 		double width = 0d;
 		double height = 0d;
-		HitTracker hits = getParameterData(inCatalogId,inPresetId);
+		HitTracker hits = getParameterData(inCatalogId, inPresetId);
 		if( hits == null)
 		{
 			return null;
@@ -290,6 +290,35 @@ public class ConversionUtil {
 		HitTracker all = inArchive.query("convertpreset").exact("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;
+	}
+	
+	public Collection getCroppablePresetList(MediaArchive inArchive, Asset inAsset)
+	{
+		String rendertype = inArchive.getMediaRenderType(inAsset.get("fileformat"));
+		
+		Collection inputtype = new ArrayList();
+		inputtype.add("all");
+		
+		if(rendertype != null) {
+			inputtype.add(rendertype);
+		}
+		
+		HitTracker all = inArchive.query("convertpreset").exact("display", "true").orgroup("inputtype", inputtype).sort("ordering").search();
+		
+		Collection croppableList = new ArrayList();
+		
+		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
+			Data preset = (Data) iterator.next();
+			Data croppable = (Data) inArchive.query("presetparameter").exact("parameterdata", preset.get("guid")).exact("name", "crop").searchOne();
+			
+			if(croppable != null)
+			{
+				croppableList.add(preset);
+			}
+			// doesPresetExist(MediaArchive inArchive, Asset inAsset, String outputname???)
+		}
+		
+		return croppableList;
 	}
 	
 	public Collection getOnImportPresetList(MediaArchive inArchive, Asset inAsset)  
