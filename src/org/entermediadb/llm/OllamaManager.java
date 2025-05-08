@@ -141,7 +141,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	    MediaArchive archive = getMediaArchive();
 	    String apikey = archive.getCatalogSettingValue("ollama-key");
 
-	    log.info("inQuery: " + inQuery);
+	    log.info("Llama function: " + inFunction + " Query: " + inQuery);
 
 	    // Use JSON Simple to create request payload
 	    JSONObject obj = new JSONObject();
@@ -175,13 +175,9 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 		        defpage = archive.getPageManager().getPage(templatepath);
 	        }
 	        if(!defpage.exists()) {
-			       throw new OpenEditException("Requested Function Does Not Exist in MEdiaDB or Catatlog:" + inFunction);
+			       throw new OpenEditException("Requested Function Does Not Exist in MediaDB or Catalog:" + inFunction);
 		    }
 	        String definition = loadInputFromTemplate(inReq, templatepath);
-	      
-	        
-	        
-	        
 	        
 	        JSONParser parser = new JSONParser();
 	        JSONObject functionDef = (JSONObject) parser.parse(definition);
@@ -207,7 +203,7 @@ public class OllamaManager extends BaseLLMManager implements CatalogEnabled, LLM
 	    
 	    JSONObject json = connection.parseJson(resp);
 
-	    log.info("returned: " + json.toJSONString());
+	    log.info("Llama returned: " + json.toJSONString());
 
 	    // Wrap and return `OllamaResponse`
 	    OllamaResponse response = new OllamaResponse();

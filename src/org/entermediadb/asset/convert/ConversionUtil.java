@@ -224,7 +224,7 @@ public class ConversionUtil {
 	public ContentItem outPutForPreset(MediaArchive inArchive, Asset inAsset, String exportName)
 	{
 		//Check output file for existance
-		String fileName = inArchive.exportOutputName(inAsset, exportName);
+		String fileName = inArchive.generatedOutputName(inAsset, exportName);
 		String generatedfilename = "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/" + fileName;
 		ContentItem output = inArchive.getContent(generatedfilename);
 		return output;
