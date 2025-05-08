@@ -29,10 +29,9 @@ $context.putPageValue("thumbsize", $thumbsize)
 #set($urlparams = $context.getPageValue("urlparams"))
 
 <div class="emthumbholder draggholder"> 
-	#if( $hit.importstatus && $hit.importstatus == "uploading" )
-		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
-	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
-		$pages.include("$componenthome/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
+	
+	#if( !$hit.importstatus || $hit.importstatus != "complete" || $hit.importstatus == "uploading")
+		$pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		
