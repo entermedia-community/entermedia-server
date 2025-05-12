@@ -103,6 +103,7 @@ public class FaceProfileManager implements CatalogEnabled
 	{
 		return (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 	}
+	
 	public boolean extractFaces(Asset inAsset)
 	{
 		try
@@ -269,7 +270,12 @@ public class FaceProfileManager implements CatalogEnabled
 		}
 		catch( Throwable ex)
 		{
-			throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
+			
+			inAsset.setValue("facescancomplete","true");
+			inAsset.setValue("facescanerror","true");
+			log.error("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath());
+			return false;
+			//throw new OpenEditException("Error on: " + inAsset.getId() + " " + inAsset.getSourcePath(),ex);
 		}
 		
 	}
