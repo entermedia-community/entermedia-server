@@ -2899,12 +2899,11 @@ public class BaseElasticSearcher extends BaseSearcher implements FullTextLoader
 					}
 					else if (value instanceof String)
 					{
-						/*
-						 * GeoPoint point = new GeoPoint((String) value);
-						 * inContent.field(key, point); Position position = new
-						 * Position(point.getLat(), point.getLon());
-						 */
-						inData.setValue(key, value); //For next time?
+						  GeoPoint point = new GeoPoint((String) value);
+						  inContent.field(key, point); 
+						  Position position = new Position(point.getLat(), point.getLon());
+						 
+						  inData.setValue(key, position); //For next time?
 					}
 					else if (value instanceof GeoPoint)
 					{
