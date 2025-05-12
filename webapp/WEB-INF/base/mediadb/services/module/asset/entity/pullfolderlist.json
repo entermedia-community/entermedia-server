@@ -15,9 +15,8 @@
   ,
   "categories": [
 	#foreach( $subfolder in $children) #if( ${foreach.count} != 1 ), #end
-		#set($index = $foreach.count - 1)
 		{
-			"index": "$index",
+			"index": "${foreach.count}",
 			"id": "$subfolder.getId()",
 			"name": "$subfolder.getName()",
 			"level": "$subfolder.getLevel()",
