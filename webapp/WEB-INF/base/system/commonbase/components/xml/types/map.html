@@ -18,7 +18,6 @@
 			      </div>
 			
 				   #set($latandlong = $data.getValue($detail.getId()))
-				   
 				   #set( $lat = $latandlong.getLatitude() )
 				   #set( $lng = $latandlong.getLongitude() )
 				   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
@@ -56,7 +55,11 @@ function getLatLngFromString(ll) {
     return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
 }
 
-var geocoder;
+
+let map;
+let geocoder;
+let marker;
+
 
 initialize = async function() {
 	var parentheight = $(".assetpanel-geomap").height();
@@ -69,7 +72,9 @@ initialize = async function() {
 	#else
 	 var centerloc = getLatLngFromString('$mediaarchive.getCatalogSettingValue("startinglatlong")');
 	#end
-	 var map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
+	
+	
+	map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
 	    #if( $latandlong )
 	    zoom: 8
 	    #else
@@ -83,7 +88,7 @@ initialize = async function() {
 	    }
 	  });
 	
-	  var marker = new google.maps.Marker({
+	  marker = new google.maps.Marker({
 			position: getLatLngFromString('$lat,$lng'),
 			draggable: true, 
 			bounds: true,
@@ -102,7 +107,15 @@ initialize = async function() {
 		});
 	
 	
-		jQuery('#${detail.id}_search').click(dosearch);
+		jQuery('#${detail.id}_search').click(function(){
+			var addressfield = $("#${detail.id}_address");
+			if (addressfield.val() != null && addressfield.val() != "")
+			{
+				geocode({ address: addressfield.val() });
+			}
+			
+			
+		});
 		
 		jQuery('#${detail.id}_address').keypress(function(e) {
 			if (e.keyCode == 13) {
@@ -111,9 +124,36 @@ initialize = async function() {
 		});
 		
 		geocoder = new google.maps.Geocoder();
+}
+
+
+function geocode(request) {
+  
+  geocoder
+    .geocode(request)
+    .then((result) => {
+      const { results } = result;
+	  clear();
+      map.setCenter(results[0].geometry.location);
+      marker.setPosition(results[0].geometry.location);
+      marker.setMap(map);
+      //mapDiv.style.display = "block";
+      //mapDiv.innerText = JSON.stringify(result, null, 2);
+	  var location = results[0].geometry.location;
+	  jQuery('#${detail.id}_latandlong').val(location.lat() + "," + location.lng());
+      return results;
+    })
+    .catch((e) => {
+      alert("Geocode was not successful for the following reason: " + e);
+    });
 	
 }
 
+function clear() {
+  marker.setMap(null);
+  //responseDiv.style.display = "none";
+}
+/*
 dosearch = function () {
 	var address = jQuery('#${detail.id}_address').val();
 	var postalCode = jQuery('#${detail.id}_postalCode').val();
@@ -139,6 +179,7 @@ dosearch = function () {
 		});
 	}
 }
+*/
 
 $(document).ready(function () {
 	initialize(); //Onload?
