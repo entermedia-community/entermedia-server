@@ -4,15 +4,21 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.util.OutputFiller;
 
 public class McpGetHandler
 {
+	private static final Log log = LogFactory.getLog(McpGetHandler.class);
+
 	OutputFiller filler = new OutputFiller();
 	
 	protected WebPageRequest fieldReq;
@@ -38,7 +44,18 @@ public class McpGetHandler
 	{
 		fieldClientReader = inClientReader;
 	}
+	protected boolean fieldActive;
+	
+	public boolean isActive()
+	{
+		return fieldActive;
+	}
 
+
+	public void setActive(boolean inActive)
+	{
+		fieldActive = inActive;
+	}
 	protected String fieldMcpSessionId;
 	
 	public String getMcpSessionId()
@@ -73,9 +90,9 @@ public class McpGetHandler
 		HttpServletResponse res = getReq().getResponse();
 
 		//res.resetBuffer(); //? Needed?
-		res.setStatus(202); 		
-		//res.setStatus(HttpServletResponse.SC_OK);
-		res.setContentType("text/event-stream");
+		res.setStatus(HttpServletResponse.SC_OK);
+		res.setContentType("application/json");
+		res.setHeader("mcp-session-id", getMcpSessionId()); 
 		res.setCharacterEncoding("UTF-8");
 		res.setHeader("Cache-Control", "no-cache");
 		res.setHeader("Connection", "keep-alive");
@@ -88,17 +105,38 @@ public class McpGetHandler
 			Writer output = new OutputStreamWriter( getReq().getResponse().getOutputStream() );
 			setClientWriter(output); //Send stuff these
 			//Now block forever?
-			while(true)
+			try
 			{
-				//filler.fill(fieldClientReader, output)
-				getReq().getRequest().getInputStream().read(); //This should block forever?
-				
+				while (isActive())
+				{
+					Thread.sleep(15000);
+					sendNothing();
+				}
 			}
+			catch (Exception e)
+			{
+				setActive( false );
+				log.warn("Ping loop interrupted for session: " + getMcpSessionId(), e);
+			}
+
 			//Shut down?
 		}
 		catch (IOException e)
 		{
 			throw new OpenEditException("Failed to get SSE output stream", e);
 		}
+	}
+
+
+	private void sendNothing() throws Exception
+	{
+		// TODO Auto-generated method stub
+		JSONObject payload = new JSONObject();
+		//payload.put("method", "initialize");
+		payload.put("jsonrpc", "2.0");
+		payload.put("result", new JSONObject());
+		
+		getClientWriter().write(payload.toJSONString());
+		getClientWriter().flush();
 	}
 }
