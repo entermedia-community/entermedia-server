@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.mcp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,8 +18,8 @@ public class McpConnection implements Runnable
 {
 	private static final Log log = LogFactory.getLog(McpConnection.class);
 
-	private final WebPageRequest req;
-	private final OutputStream out;
+	private WebPageRequest req;
+	private OutputStream out;
 	private volatile boolean active = true;
 	protected User fieldUser;
 	protected String fieldKey;
@@ -48,7 +48,11 @@ public class McpConnection implements Runnable
 	public McpConnection(WebPageRequest inReq)
 	{
 		this.req = inReq;
-		HttpServletResponse res = inReq.getResponse();
+	}
+
+	public void connect()
+	{
+		HttpServletResponse res = req.getResponse();
 
 		res.resetBuffer();
 		res.setStatus(HttpServletResponse.SC_OK);
@@ -57,8 +61,8 @@ public class McpConnection implements Runnable
 		res.setHeader("Cache-Control", "no-cache");
 		res.setHeader("Connection", "keep-alive");
 
-		inReq.setCancelActions(true);
-		inReq.setHasRedirected(true);
+		req.setCancelActions(true);
+		req.setHasRedirected(true);
 
 		try
 		{
@@ -69,7 +73,7 @@ public class McpConnection implements Runnable
 			throw new OpenEditException("Failed to get SSE output stream", e);
 		}
 	}
-
+	
 	public void openStream(String inEndpoint)
 	{
 		String sessionId = getSessionId();

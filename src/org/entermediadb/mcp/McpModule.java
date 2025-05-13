@@ -1,4 +1,4 @@
-package org.entermediadb.llm;
+package org.entermediadb.mcp;
 
 import java.util.UUID;
 
@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.llm.VelocityRenderUtil;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -63,10 +64,11 @@ public class McpModule extends BaseMediaModule
 
 		if ("GET".equals(method))
 		{
-			//TODO: Block on this one forever? Stream back events to the client
+			//TODO: Block on this one forever? Stream back events to the client? Not used?
+			
 //			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-//			
-//			inReq.getResponse().setStatus(202);		
+			McpGetHandler gethandler = manager.loadGetHandler(inReq);
+			gethandler.listen(); //This will block forver
 //
 //			new Thread(() -> {
 //				try {
@@ -77,13 +79,20 @@ public class McpModule extends BaseMediaModule
 //			}).start();
 		}
 
+		//Otherwise they are all POST requests and we stream back the reply
+		McpGetHandler gethandler = manager.loadGetHandler(inReq);
+		
+		inReq.getResponse().setStatus(202);		
+		inReq.getResponse().setHeader("mcp-session-id", gethandler.getRandomSessionId());
+		inReq.getResponse().setHeader("accept", "json/ , streaming");
+		inReq.getResponse().setHeader("content-type", "json/");
+		
 		//Authenticate:
 		JSONObject payload = (JSONObject) inReq.getJsonRequest();
 		String cmd = (String) payload.get("method");
 //		if(cmd == null) {
 //			cmd = "initialize";
 //		}
-
 		String appid = inReq.findPathValue("applicationid");
 	
 		inReq.putPageValue("payload", payload);
@@ -97,12 +106,9 @@ public class McpModule extends BaseMediaModule
 		//This could be null if anonymous
 		//inReq.putPageValue("user", currentconnnection.getUser());
 		
-		String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-		
-		inReq.getResponse().setStatus(202);		
-
-		inReq.getPageStreamer().getOutput().getWriter().write(response);
-		inReq.getPageStreamer().getOutput().getWriter().flush();
+		//TODO: Change this to be a stream of JSON in chunks. Support Streaming responses
+		//String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html"); //This is blocking
+		inReq.getPageStreamer().include( appid + "/mcp/method/" + cmd + ".html");
 		//Close?
 		
 	}
