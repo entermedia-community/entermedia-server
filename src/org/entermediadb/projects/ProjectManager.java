@@ -1515,6 +1515,8 @@ public class ProjectManager implements CatalogEnabled
 			// TODO: Log in one database table called collectionevents
 			// archive.getWebEventListener()
 			getMediaArchive().getEventManager().fireEvent(event);
+			
+			
 
 			if (addChat)
 			{
@@ -1533,27 +1535,32 @@ public class ProjectManager implements CatalogEnabled
 			}
 
 		}
-		chats.saveAllData(chatentries, inUser);
-
-		for (Iterator iterator = ownerassetmap.keySet().iterator(); iterator.hasNext();)
+		if (!chatentries.isEmpty())
 		{
-			String key = (String) iterator.next();
-			List values = (List) ownerassetmap.get(key);
-			WebEvent event = new WebEvent();
-			event.setSearchType("librarycollection");
-			event.setCatalogId(getCatalogId());
-			event.setOperation(inOperation);
-			event.setSource(this);
-			event.setUser(inUser);
-			event.setProperty("owner", key);
-			event.setValue("assetids", values);
-
-			event.setProperty("note", inNote);
-			event.setProperty("librarycollection", inCollectionid);
-			getMediaArchive().getEventManager().fireEvent(event);
-
+			chats.saveAllData(chatentries, inUser);
 		}
-
+		
+		if (inCollectionid != null)
+		{
+			for (Iterator iterator = ownerassetmap.keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				List values = (List) ownerassetmap.get(key);
+				WebEvent event = new WebEvent();
+				event.setSearchType("librarycollection");
+				event.setCatalogId(getCatalogId());
+				event.setOperation(inOperation);
+				event.setSource(this);
+				event.setUser(inUser);
+				event.setProperty("owner", key);
+				event.setValue("assetids", values);
+	
+				event.setProperty("note", inNote);
+				event.setProperty("librarycollection", inCollectionid);
+				getMediaArchive().getEventManager().fireEvent(event);
+	
+			}
+		}
 	}
 
 	public int rejectSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid, User inUser, String inNote)
