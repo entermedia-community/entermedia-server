@@ -4,21 +4,20 @@
 
 <div class="row h-100 no-gutters">
 	<div class="col-7 h-100">
-	<div  style="padding:20px;">
+	<div  style="padding:10px;">
    	<div id="${detail.id}_map" align style="width: 100%; height:460px; margin-bottom: 15px;"></div>
-   	<p class="info">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>
+   	<p class="text-muted">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>
    	</div>
    </div>
 	<div class="col-5">
 		<div class="assetpanel-editor">
 			<div class="tab-details h-100">
-			      <div style="padding: 20px 10px;">
+			      <div style="padding: 10px 10px;">
 			        <input type="text" size="60" id="${detail.id}_address" class="form-control form-control-sm" placeholder="[[Search address or location]]"  />
-			        <input class="btn btn-sm btn-dark" type="button" id="${detail.id}_search" value="[[Search]]"  />
+			        <input class="btn btn-sm  btn-accent" type="button" id="${detail.id}_search" value="[[Search]]"  />
 			      </div>
 			
 				   #set($latandlong = $data.getValue($detail.getId()))
-				   
 				   #set( $lat = $latandlong.getLatitude() )
 				   #set( $lng = $latandlong.getLongitude() )
 				   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
@@ -40,7 +39,7 @@
 				   </div>
 				   #if( $caneditasset )
 			    		<div style="padding:10px 10px;">
-			    			<input class="btn btn-dark" type="submit" 
+			    			<input class="btn  btn-sm btn-accent" type="submit" 
 			    				value="[[Save Values]]"/>
 			    		</div>
 		    		#end	
@@ -56,9 +55,14 @@ function getLatLngFromString(ll) {
     return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
 }
 
-var geocoder;
+
+
 
 initialize = async function() {
+	let map;
+	let geocoder;
+	let marker;
+
 	var parentheight = $(".assetpanel-geomap").height();
 	if (typeof parentheight !== 'undefined') {
 		var mapheight = (jQuery(".assetpanel-geomap").height()-110);
@@ -69,7 +73,9 @@ initialize = async function() {
 	#else
 	 var centerloc = getLatLngFromString('$mediaarchive.getCatalogSettingValue("startinglatlong")');
 	#end
-	 var map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
+	
+	
+	map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
 	    #if( $latandlong )
 	    zoom: 8
 	    #else
@@ -83,7 +89,7 @@ initialize = async function() {
 	    }
 	  });
 	
-	  var marker = new google.maps.Marker({
+	  marker = new google.maps.Marker({
 			position: getLatLngFromString('$lat,$lng'),
 			draggable: true, 
 			bounds: true,
@@ -100,45 +106,56 @@ initialize = async function() {
 		    	console.log(marker.getPosition());
 	            jQuery('#${detail.id}_latandlong').val(marker.getPosition().lat()+ "," + marker.getPosition().lng());
 		});
-	
-	
-		jQuery('#${detail.id}_search').click(dosearch);
-		
-		jQuery('#${detail.id}_address').keypress(function(e) {
-			if (e.keyCode == 13) {
-				dosearch()
-			}
-		});
 		
 		geocoder = new google.maps.Geocoder();
 	
+	
+		jQuery('#${detail.id}_search').click(function(){
+			var addressfield = $("#${detail.id}_address");
+			if (addressfield.val() != null && addressfield.val() != "")
+			{
+				geocode(map, marker, geocoder, { address: addressfield.val() });
+			}
+		});
+		
+		jQuery('#${detail.id}_address').keydown(function(e) {
+			if (e.keyCode == 13) {
+				e.preventDefault();
+				geocode(map, marker, geocoder, { address: $(this).val() });
+				
+			}
+		});
+		
+		
 }
 
-dosearch = function () {
-	var address = jQuery('#${detail.id}_address').val();
-	var postalCode = jQuery('#${detail.id}_postalCode').val();
-	if (address!=null) {
-		$('#${detail.id}_map').gmap('search', { 'address': address }, function(results, status) {
-		    if ( status === 'OK' ) {
-		    	$('#${detail.id}_map').gmap('clear', 'markers');
-		    	$('#${detail.id}_map').gmap('addMarker', 
-		          {
-		    		'position': results[0].geometry.location, 
-		    		'draggable': true, 
-		    		'bounds': true
-		    	  }).dragend(function(event) {
-		              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
-	    	  		}
-		    	  );
+
+function geocode(map, marker, geocoder, request) {
+  
+  geocoder
+    .geocode(request)
+    .then((result) => {
+      const { results } = result;
+	  clear(marker);
+      map.setCenter(results[0].geometry.location);
+      marker.setPosition(results[0].geometry.location);
+      marker.setMap(map);
+      //mapDiv.style.display = "block";
+      //mapDiv.innerText = JSON.stringify(result, null, 2);
+	  var location = results[0].geometry.location;
+	  jQuery('#${detail.id}_latandlong').val(location.lat() + "," + location.lng());
+      return results;
+    })
+    .catch((e) => {
+      alert("Geocode was not successful for the following reason: " + e);
+    });
 	
-		    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
-		        $('#${detail.id}_map').gmap('option', 'zoom', 12);
-	            jQuery('#${detail.id}_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
-	
-		    }
-		});
-	}
 }
+
+function clear(marker) {
+  marker.setMap(null);
+}
+
 
 $(document).ready(function () {
 	initialize(); //Onload?

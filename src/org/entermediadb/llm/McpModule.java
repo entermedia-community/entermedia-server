@@ -52,7 +52,62 @@ public class McpModule extends BaseMediaModule
 		
 	}
 	
+	public void handleMpcHttpRequest(WebPageRequest inReq) throws Exception
+	{
+		//This request is from some random client like copilot - we told it what endpoint to use:
+		//client/key
+		
+		///http://172.17.0.1:8080/oneliveweb/mcp/test.html
+		MediaArchive archive = getMediaArchive(inReq);
+		McpManager manager = (McpManager) archive.getBean("mcpManager");
+		
+		String method = inReq.getRequest().getMethod();
+
+		if ("GET".equals(method))
+		{
+			//TODO: Block on this one forever? Stream back events to the client
+//			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
+//			
+//			inReq.getResponse().setStatus(202);		
+//
+//			new Thread(() -> {
+//				try {
+//					currentconnnection.sendMessage(response);
+//				} catch (Exception e) {
+//					log.error("Failed to send SSE message", e);
+//				}
+//			}).start();
+		}
+
+		//Authenticate:
+		JSONObject payload = (JSONObject) inReq.getJsonRequest();
+		String cmd = (String) payload.get("method");
+//		if(cmd == null) {
+//			cmd = "initialize";
+//		}
+
+		String appid = inReq.findPathValue("applicationid");
 	
+		inReq.putPageValue("payload", payload);
+		inReq.putPageValue("protocolVersion", "2025-03-26");
+		inReq.putPageValue("serverName", "EnterMedia MCP");
+		inReq.putPageValue("serverVersion", "1.0.0");
+
+		inReq.putPageValue("responsetext", "accepted");
+		inReq.putPageValue("render", getRender());
+
+		//This could be null if anonymous
+		//inReq.putPageValue("user", currentconnnection.getUser());
+		
+		String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
+		
+		inReq.getResponse().setStatus(202);		
+
+		inReq.getPageStreamer().getOutput().getWriter().write(response);
+		inReq.getPageStreamer().getOutput().getWriter().flush();
+		//Close?
+		
+	}
 
 	public void handleMpcRequest(WebPageRequest inReq) throws Exception
 	{

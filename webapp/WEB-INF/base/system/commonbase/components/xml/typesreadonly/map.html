@@ -37,7 +37,7 @@ initialize = function()
       mapTypeIds: ['roadmap', 'terrain']
     }
   });
-
+  #if($latandlong)
      var marker = new google.maps.Marker({
 		position: getLatLngFromString('$lat,$lng'),
 		draggable: false, 
@@ -48,7 +48,7 @@ initialize = function()
 		#end
         title: '$asset.getName()'
      });
-     
+   #end 
      		
 }
 
