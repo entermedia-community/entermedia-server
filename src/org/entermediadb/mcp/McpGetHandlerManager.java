@@ -26,6 +26,13 @@ public class McpGetHandlerManager
 		
 		McpGetHandler connection = getGetHandlers().get(sessionid);
 		
+		if(connection != null)
+		{
+			if(!connection.isActive())
+			{
+				connection.setActive(true);
+			}
+		}
 		if( connection == null)
 		{
 			sessionid = UUID.randomUUID().toString();
