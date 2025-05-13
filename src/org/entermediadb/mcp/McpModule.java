@@ -71,8 +71,8 @@ public class McpModule extends BaseMediaModule
 			//TODO: Block on this one forever? Stream back events to the client? Not used?
 			
 //			String response = getRender().loadInputFromTemplate(inReq,  appid + "/mcp/method/" + cmd + ".html");
-			// McpGetHandler gethandler = manager.loadGetHandler(inReq);
-			// gethandler.listen(); //This will block forver
+			 McpGetHandler gethandler = manager.loadGetHandler(inReq);
+			 gethandler.listen(); //This will block forver
 //
 //			new Thread(() -> {
 //				try {
